@@ -1,13 +1,13 @@
 'use strict';
 
-const { Channel } = require('./Channel');
+const { BaseChannel } = require('./BaseChannel');
 const { Error, ErrorCodes } = require('../errors');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
- * @extends {Channel}
+ * @extends {BaseChannel}
  */
-class PartialGroupDMChannel extends Channel {
+class PartialGroupDMChannel extends BaseChannel {
   constructor(client, data) {
     super(client, data);
 

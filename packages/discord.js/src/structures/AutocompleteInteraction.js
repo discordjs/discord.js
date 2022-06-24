@@ -1,15 +1,15 @@
 'use strict';
 
 const { InteractionResponseType, Routes } = require('discord-api-types/v10');
+const BaseInteraction = require('./BaseInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const Interaction = require('./Interaction');
 const { ErrorCodes } = require('../errors');
 
 /**
  * Represents an autocomplete interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  */
-class AutocompleteInteraction extends Interaction {
+class AutocompleteInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 

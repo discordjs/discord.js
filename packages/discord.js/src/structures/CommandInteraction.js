@@ -2,17 +2,17 @@
 
 const { Collection } = require('@discordjs/collection');
 const Attachment = require('./Attachment');
-const Interaction = require('./Interaction');
+const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
  * Represents a command interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  * @abstract
  */
-class CommandInteraction extends Interaction {
+class CommandInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -86,7 +86,7 @@ class CommandInteraction extends Interaction {
    * @property {Collection<Snowflake, User>} [users] The resolved users
    * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
-   * @property {Collection<Snowflake, Channel|APIChannel>} [channels] The resolved channels
+   * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
    * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */

@@ -1,6 +1,6 @@
 'use strict';
 
-const Interaction = require('./Interaction');
+const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { lazy } = require('../util/Util');
@@ -9,10 +9,10 @@ const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a message component interaction.
- * @extends {Interaction}
+ * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
-class MessageComponentInteraction extends Interaction {
+class MessageComponentInteraction extends BaseInteraction {
   constructor(client, data) {
     super(client, data);
 

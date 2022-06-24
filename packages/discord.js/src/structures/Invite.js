@@ -169,7 +169,7 @@ class Invite extends Base {
     if ('channel' in data) {
       /**
        * The channel this invite is for
-       * @type {?Channel}
+       * @type {?BaseChannel}
        */
       this.channel =
         this.client.channels._add(data.channel, this.guild, { cache: false }) ??

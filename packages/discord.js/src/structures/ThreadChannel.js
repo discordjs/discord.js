@@ -1,7 +1,7 @@
 'use strict';
 
 const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { Channel } = require('./Channel');
+const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
@@ -9,10 +9,10 @@ const ThreadMemberManager = require('../managers/ThreadMemberManager');
 
 /**
  * Represents a thread channel on Discord.
- * @extends {Channel}
+ * @extends {BaseChannel}
  * @implements {TextBasedChannel}
  */
-class ThreadChannel extends Channel {
+class ThreadChannel extends BaseChannel {
   constructor(guild, data, client, fromInteraction = false) {
     super(guild?.client ?? client, data, false);
 

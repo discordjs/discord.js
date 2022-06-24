@@ -1,12 +1,12 @@
 'use strict';
 
-const { Channel } = require('./Channel');
+const { BaseChannel } = require('./BaseChannel');
 
 /**
  * Represents a channel that displays a directory of guilds.
- * @extends {Channel}
+ * @extends {BaseChannel}
  */
-class DirectoryChannel extends Channel {
+class DirectoryChannel extends BaseChannel {
   constructor(guild, data, client) {
     super(client, data);
 

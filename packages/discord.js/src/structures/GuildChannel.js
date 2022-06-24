@@ -1,7 +1,7 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { Channel } = require('./Channel');
+const { BaseChannel } = require('./BaseChannel');
 const { Error, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
@@ -14,10 +14,10 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * - {@link CategoryChannel}
  * - {@link NewsChannel}
  * - {@link StageChannel}
- * @extends {Channel}
+ * @extends {BaseChannel}
  * @abstract
  */
-class GuildChannel extends Channel {
+class GuildChannel extends BaseChannel {
   constructor(guild, data, client, immediatePatch = true) {
     super(guild?.client ?? client, data, false);
 

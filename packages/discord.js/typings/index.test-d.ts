@@ -127,6 +127,7 @@ import {
   UserContextMenuCommandInteraction,
   AnyThreadChannel,
   ThreadMemberManager,
+  CollectedMessageInteraction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
@@ -754,13 +755,13 @@ client.on('messageCreate', async message => {
   const defaultCollector = message.createMessageComponentCollector();
   expectAssignable<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
   expectAssignable<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
-  expectAssignable<InteractionCollector<MessageComponentInteraction>>(defaultCollector);
+  expectAssignable<InteractionCollector<CollectedMessageInteraction>>(defaultCollector);
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
-  expectType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollector);
+  expectType<InteractionCollector<CollectedMessageInteraction>>(semiDefaultCollector);
   const semiDefaultCollectorChannel = message.createMessageComponentCollector({ time: 10000 });
-  expectType<InteractionCollector<MessageComponentInteraction>>(semiDefaultCollectorChannel);
+  expectType<InteractionCollector<CollectedMessageInteraction>>(semiDefaultCollectorChannel);
 
   // Verify that interaction collector options can't be used.
   message.createMessageComponentCollector({
@@ -771,7 +772,7 @@ client.on('messageCreate', async message => {
   // Make sure filter parameters are properly inferred.
   message.createMessageComponentCollector({
     filter: i => {
-      expectType<MessageComponentInteraction>(i);
+      expectType<CollectedMessageInteraction>(i);
       return true;
     },
   });
@@ -794,7 +795,7 @@ client.on('messageCreate', async message => {
 
   message.awaitMessageComponent({
     filter: i => {
-      expectType<MessageComponentInteraction>(i);
+      expectType<CollectedMessageInteraction>(i);
       return true;
     },
   });
@@ -830,7 +831,7 @@ client.on('messageCreate', async message => {
 
   channel.awaitMessageComponent({
     filter: i => {
-      expectType<MessageComponentInteraction<'cached'>>(i);
+      expectType<CollectedMessageInteraction<'cached'>>(i);
       return true;
     },
   });

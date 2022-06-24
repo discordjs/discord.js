@@ -445,14 +445,14 @@ function discordSort(collection) {
 
 /**
  * Sets the position of a Channel or Role.
- * @param {Channel|Role} item Object to set the position of
+ * @param {BaseChannel|Role} item Object to set the position of
  * @param {number} position New position for the object
  * @param {boolean} relative Whether `position` is relative to its current position
- * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
+ * @param {Collection<string, BaseChannel|Role>} sorted A collection of the objects sorted properly
  * @param {Client} client The client to use to patch the data
  * @param {string} route Route to call PATCH on
  * @param {string} [reason] Reason for the change
- * @returns {Promise<Channel[]|Role[]>} Updated item list, with `id` and `position` properties
+ * @returns {Promise<BaseChannel[]|Role[]>} Updated item list, with `id` and `position` properties
  * @private
  */
 async function setPosition(item, position, relative, sorted, client, route, reason) {
