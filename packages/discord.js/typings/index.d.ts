@@ -328,7 +328,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public type: ApplicationCommandType;
   public version: Snowflake;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public edit(data: ApplicationCommandData): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public edit(data: Partial<ApplicationCommandData>): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setName(name: string): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setNameLocalizations(nameLocalizations: LocalizationMap): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDescription(description: string): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -336,7 +336,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     descriptionLocalizations: LocalizationMap,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDefaultMemberPermissions(
-    defaultMemberPermissions: PermissionResolvable,
+    defaultMemberPermissions: PermissionResolvable | null,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -3188,11 +3188,11 @@ export class ApplicationCommandManager<
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandDataResolvable,
+    data: Partial<ApplicationCommandDataResolvable>,
   ): Promise<ApplicationCommandScope>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandDataResolvable,
+    data: Partial<ApplicationCommandDataResolvable>,
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
   public fetch(
@@ -3690,7 +3690,7 @@ export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
   dmPermission?: boolean;
-  defaultMemberPermissions?: PermissionResolvable;
+  defaultMemberPermissions?: PermissionResolvable | null;
 }
 
 export interface AttachmentData {
