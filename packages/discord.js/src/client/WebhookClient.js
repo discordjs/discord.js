@@ -3,6 +3,7 @@
 const BaseClient = require('./BaseClient');
 const { Error, ErrorCodes } = require('../errors');
 const Webhook = require('../structures/Webhook');
+const { parseWebhookURL } = require('../util/Util');
 
 /**
  * The webhook client.
@@ -28,14 +29,12 @@ class WebhookClient extends BaseClient {
     let { id, token } = data;
 
     if ('url' in data) {
-      const url = data.url.match(
-        // eslint-disable-next-line no-useless-escape
-        /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
-      );
+      const parsed = parseWebhookURL(data.url);
+      if (!parsed) {
+        throw new Error(ErrorCodes.WebhookURLInvalid);
+      }
 
-      if (!url || url.length <= 1) throw new Error(ErrorCodes.WebhookURLInvalid);
-
-      [, id, token] = url;
+      ({ id, token } = parsed);
     }
 
     this.id = id;

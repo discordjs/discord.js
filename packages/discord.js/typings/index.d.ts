@@ -2659,6 +2659,7 @@ export function setPosition<T extends Channel | Role>(
   route: string,
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
+export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
