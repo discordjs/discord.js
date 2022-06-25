@@ -360,8 +360,10 @@ export class AutoModerationRule extends Base {
   public setName(name: string, reason?: string): Promise<AutoModerationRule>;
   // TODO: discord-api-types enum
   public setEventType(eventType: number, reason?: string): Promise<AutoModerationRule>;
-  public setKeywordFilter(triggerMetadata: string[], reason?: string): Promise<AutoModerationRule>;
+  public setKeywordFilter(keywordFilter: string[], reason?: string): Promise<AutoModerationRule>;
+  // TODO: discord-api-types enum
   public setPresets(presets: number[], reason?: string): Promise<AutoModerationRule>;
+  public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
@@ -4439,6 +4441,7 @@ export interface AutoModerationActionMetadata {
 export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
   presets: number[];
+  allowList: string[];
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;

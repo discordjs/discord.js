@@ -29,6 +29,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @typedef {Object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
    * @property {number[]} [presets] The internally pre-defined wordsets which will be searched for in the content
+   * @property {string[]} [allowList] The substrings that will be exempt from triggering trigger type 4
    */
 
   // TODO: discord-api-types enum
@@ -93,7 +94,11 @@ class AutoModerationRuleManager extends CachedManager {
         trigger_metadata:
           typeof triggerMetadata === 'undefined'
             ? undefined
-            : { keyword_filter: triggerMetadata.keywordFilter, presets: triggerMetadata.presets },
+            : {
+                keyword_filter: triggerMetadata.keywordFilter,
+                presets: triggerMetadata.presets,
+                allow_list: triggerMetadata.allowList,
+              },
         actions: actions.map(action => ({
           type: action.type,
           metadata: {
@@ -153,7 +158,11 @@ class AutoModerationRuleManager extends CachedManager {
           trigger_metadata:
             typeof triggerMetadata === 'undefined'
               ? undefined
-              : { keyword_filter: triggerMetadata.keywordFilter, presets: triggerMetadata.presets },
+              : {
+                  keyword_filter: triggerMetadata.keywordFilter,
+                  presets: triggerMetadata.presets,
+                  allow_list: triggerMetadata.allowList,
+                },
           actions: actions?.map(action => ({
             type: action.type,
             metadata: {

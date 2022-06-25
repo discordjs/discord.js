@@ -70,6 +70,7 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
        * @property {number[]} presets The internally pre-defined wordsets which will be searched for in the content
+       * @property {string[]} allowList The substrings that will be exempt from triggering trigger type 4
        */
 
       /**
@@ -79,6 +80,7 @@ class AutoModerationRule extends Base {
       this.triggerMetadata = {
         keywordFilter: data.trigger_metadata.keyword_filter ?? [],
         presets: data.trigger_metadata.presets ?? [],
+        allowList: data.trigger_metadata.allow_list ?? [],
       };
     }
 
@@ -198,6 +200,16 @@ class AutoModerationRule extends Base {
    */
   setPresets(presets, reason) {
     return this.edit({ triggerMetadata: { presets }, reason });
+  }
+
+  /**
+   * Sets the allow list for this auto moderation rule.
+   * @param {string[]} allowList The allow list of this auto moderation rule
+   * @param {string} [reason] The reason for changing the allow list of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setAllowList(allowList, reason) {
+    return this.edit({ triggerMetadata: { allowList }, reason });
   }
 
   /**
