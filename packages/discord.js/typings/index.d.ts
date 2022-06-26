@@ -615,6 +615,9 @@ export class ButtonBuilder extends BuilderButtonComponent {
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  private static normalizeEmoji(
+    selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
+  ): (APISelectMenuOption | SelectMenuOptionBuilder)[];
   public override addOptions(
     ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
   ): this;
