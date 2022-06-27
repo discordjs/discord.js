@@ -53,8 +53,11 @@
 		"@remix-run/serve": "^1.6.0",
 		"@remix-run/server-runtime": "^1.6.0",
 		"@remix-run/vercel": "^1.6.0",
+		"@vscode/codicons": "^0.0.31",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-icons": "^4.4.0",
+		"react-syntax-highlighter": "^15.5.0",
 		"remix": "^1.6.0"
 	},
 	"devDependencies": {
@@ -66,6 +69,7 @@
 		"@testing-library/user-event": "^14.2.1",
 		"@types/node": "^16.11.41",
 		"@types/react-dom": "^18.0.5",
+		"@types/react-syntax-highlighter": "^15.5.2",
 		"@typescript-eslint/eslint-plugin": "^5.29.0",
 		"@typescript-eslint/parser": "^5.29.0",
 		"@unocss/cli": "^0.39.3",
