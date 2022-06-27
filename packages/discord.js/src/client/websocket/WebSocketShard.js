@@ -466,6 +466,7 @@ class WebSocketShard extends EventEmitter {
         // Finally, emit the INVALID_SESSION event
         /**
          * Emitted when the session has been invalidated.
+         * @event WebSocketShard#invalidSession
          */
         this.emit(ShardEvents.InvalidSession);
         break;
