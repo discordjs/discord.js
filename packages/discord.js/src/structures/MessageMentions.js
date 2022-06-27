@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { FormattingPatterns } = require('discord-api-types/globals');
 const { flatten } = require('../util/Util');
 
 /**
@@ -8,32 +9,36 @@ const { flatten } = require('../util/Util');
  */
 class MessageMentions {
   /**
-   * Regular expression that globally matches `@everyone` and `@here`
+   * A regular expression that matches `@everyone` and `@here`.
+   * The `mention` group property is present on the `exec` result of this expression.
    * @type {RegExp}
    * @memberof MessageMentions
    */
-  static EveryonePattern = /@(everyone|here)/g;
+  static EveryonePattern = /@(?<mention>everyone|here)/;
 
   /**
-   * Regular expression that globally matches user mentions like `<@81440962496172032>`
+   * A regular expression that matches user mentions like `<@81440962496172032>`.
+   * The `id` group property is present on the `exec` result of this expression.
    * @type {RegExp}
    * @memberof MessageMentions
    */
-  static UsersPattern = /<@!?(\d{17,19})>/g;
+  static UsersPattern = FormattingPatterns.UserWithOptionalNickname;
 
   /**
-   * Regular expression that globally matches role mentions like `<@&297577916114403338>`
+   * A regular expression that matches role mentions like `<@&297577916114403338>`.
+   * The `id` group property is present on the `exec` result of this expression.
    * @type {RegExp}
    * @memberof MessageMentions
    */
-  static RolesPattern = /<@&(\d{17,19})>/g;
+  static RolesPattern = FormattingPatterns.Role;
 
   /**
-   * Regular expression that globally matches channel mentions like `<#222079895583457280>`
+   * A regular expression that matches channel mentions like `<#222079895583457280>`.
+   * The `id` group property is present on the `exec` result of this expression.
    * @type {RegExp}
    * @memberof MessageMentions
    */
-  static ChannelsPattern = /<#(\d{17,19})>/g;
+  static ChannelsPattern = FormattingPatterns.Channel;
 
   constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
@@ -185,11 +190,14 @@ class MessageMentions {
   get channels() {
     if (this._channels) return this._channels;
     this._channels = new Collection();
+    const globalChannelsPatern = new RegExp(this.constructor.ChannelsPattern.source, 'g');
     let matches;
-    while ((matches = this.constructor.ChannelsPattern.exec(this._content)) !== null) {
-      const chan = this.client.channels.cache.get(matches[1]);
-      if (chan) this._channels.set(chan.id, chan);
+
+    while ((matches = globalChannelsPatern.exec(this._content)) !== null) {
+      const channel = this.client.channels.cache.get(matches.groups.id);
+      if (channel) this._channels.set(channel.id, channel);
     }
+
     return this._channels;
   }
 

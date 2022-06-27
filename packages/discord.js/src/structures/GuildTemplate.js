@@ -12,11 +12,12 @@ const Events = require('../util/Events');
  */
 class GuildTemplate extends Base {
   /**
-   * Regular expression that globally matches guild template links
+   * A regular expression that globally matches guild template links.
+   * The `code` group property is present on the `exec()` result of this expression.
    * @type {RegExp}
    * @memberof GuildTemplate
    */
-  static GuildTemplatesPattern = /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/gi;
+  static GuildTemplatesPattern = /discord(?:app)?\.(?:com\/template|new)\/(?<code>[\w-]{2,255})/i;
 
   constructor(client, data) {
     super(client);
