@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { FormattingPatterns } = require('discord-api-types/globals');
+const { FormattingPatterns } = require('discord-api-types/v10');
 const { flatten } = require('../util/Util');
 
 /**
