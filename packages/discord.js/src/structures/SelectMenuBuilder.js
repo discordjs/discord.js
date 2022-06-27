@@ -24,7 +24,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
   /**
    * Normalizes a select menu option emoji
    * @param {SelectMenuOptionData|JSONEncodable<APISelectMenuOption>} selectMenuOption The option to normalize
-   * @returns {Array<SelectMenuOptionBuilder | APISelectMenuOption>}
+   * @returns {Array<SelectMenuOptionBuilder|APISelectMenuOption>}
    * @private
    */
   static normalizeEmoji(selectMenuOption) {
