@@ -34,7 +34,7 @@ class DataResolver extends null {
    * @returns {string}
    */
   static resolveCode(data, regex) {
-    return data.matchAll(regex).next().value?.[1] ?? data;
+    return new RegExp(regex.source).exec(data)?.[1] ?? data;
   }
 
   /**
