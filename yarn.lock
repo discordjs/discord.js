@@ -2027,6 +2027,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/website@workspace:packages/website"
   dependencies:
+    "@microsoft/api-extractor-model": ^7.20.0
+    "@microsoft/tsdoc": ^0.14.1
     "@remix-run/dev": ^1.6.0
     "@remix-run/node": ^1.6.0
     "@remix-run/react": ^1.6.0
