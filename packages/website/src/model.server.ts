@@ -3,6 +3,7 @@ import {
 	ApiDeclaredItem,
 	ApiDocumentedItem,
 	ApiEntryPoint,
+	ApiFunction,
 	ApiItem,
 	ApiItemKind,
 	ApiModel,
@@ -142,6 +143,7 @@ export function findMember(packageName: string, memberName: string) {
 		excerpt: member.excerpt.text,
 		refs: genReference([...findReferences(member.excerpt).values()]),
 		members: getProperties(member).map((item) => item.excerpt.text),
+		parameters: member instanceof ApiFunction ? member.parameters.map((parameter) => parameter.name) : [],
 	};
 }
 

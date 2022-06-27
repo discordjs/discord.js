@@ -15,12 +15,22 @@ export default function Member() {
 		<div>
 			<h1>{data?.name}</h1>
 			<h3>Code declaration:</h3>
-			<code>{data?.excerpt}</code>
+			<code>
+				<pre>{data?.excerpt}</pre>
+			</code>
 			<h3>Summary</h3>
 			<p>{data?.summary}</p>
 			<h3>Members</h3>
 			<ul>
 				{data?.members.map((member, i) => (
+					<li key={i}>
+						<code>{member}</code>
+					</li>
+				))}
+			</ul>
+			<h3>Parameters</h3>
+			<ul>
+				{data?.parameters.map((member, i) => (
 					<li key={i}>
 						<code>{member}</code>
 					</li>
