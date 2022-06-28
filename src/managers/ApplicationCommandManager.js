@@ -101,10 +101,7 @@ class ApplicationCommandManager extends CachedManager {
       headers: {
         'X-Discord-Locale': locale,
       },
-      query:
-        typeof withLocalizations === 'boolean'
-          ? new URLSearchParams({ with_localizations: withLocalizations })
-          : undefined,
+      query: typeof withLocalizations === 'boolean' ? { with_localizations: withLocalizations } : undefined,
     });
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
