@@ -21,6 +21,7 @@ class GuildMemberRemoveAction extends Action {
          */
         if (shard.status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
       }
+      guild.presences.cache.delete(data.user.id);
       guild.voiceStates.cache.delete(data.user.id);
     }
     return { guild, member };
