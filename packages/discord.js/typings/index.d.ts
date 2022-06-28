@@ -2178,13 +2178,13 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
 }
 
 export interface ShardEventTypes {
-  spawn: [process: ChildProcess | Worker];
   death: [process: ChildProcess | Worker];
   disconnect: [];
-  ready: [];
-  reconnecting: [];
   error: [error: Error];
   message: [message: any];
+  ready: [];
+  reconnecting: [];
+  spawn: [process: ChildProcess | Worker];
 }
 
 export class Shard extends EventEmitter {
@@ -2848,7 +2848,7 @@ export class WebSocketManager extends EventEmitter {
   private triggerClientReady(): void;
 }
 
-export interface WebSocketShardEvents {
+export interface WebSocketShardEventTypes {
   ready: [];
   resumed: [];
   invalidSession: [];
@@ -2909,14 +2909,14 @@ export class WebSocketShard extends EventEmitter {
 
   public send(data: unknown, important?: boolean): void;
 
-  public on<K extends keyof WebSocketShardEvents>(
+  public on<K extends keyof WebSocketShardEventTypes>(
     event: K,
-    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[K]) => Awaitable<void>,
   ): this;
 
-  public once<K extends keyof WebSocketShardEvents>(
+  public once<K extends keyof WebSocketShardEventTypes>(
     event: K,
-    listener: (...args: WebSocketShardEvents[K]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[K]) => Awaitable<void>,
   ): this;
 }
 
@@ -4322,6 +4322,16 @@ export declare const Events: {
 };
 
 export enum ShardEvents {
+  Death = 'death',
+  Disconnect = 'disconnect',
+  Error = 'error',
+  Message = 'message',
+  Ready = 'ready',
+  Reconnecting = 'reconnecting',
+  Spawn = 'spawn',
+}
+
+export enum WebSocketShardEvents {
   Close = 'close',
   Destroyed = 'destroyed',
   InvalidSession = 'invalidSession',

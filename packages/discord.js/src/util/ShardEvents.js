@@ -2,12 +2,13 @@
 
 /**
  * @typedef {Object} ShardEvents
- * @property {string} Close close
- * @property {string} Destroyed destroyed
- * @property {string} InvalidSession invalidSession
+ * @property {string} Death death
+ * @property {string} Disconnect disconnect
+ * @property {string} Error error
+ * @property {string} Message message
  * @property {string} Ready ready
- * @property {string} Resumed resumed
- * @property {string} AllReady allReady
+ * @property {string} Reconnecting reconnecting
+ * @property {string} Spawn spawn
  */
 
 // JSDoc for IntelliSense purposes
@@ -16,10 +17,11 @@
  * @ignore
  */
 module.exports = {
-  Close: 'close',
-  Destroyed: 'destroyed',
-  InvalidSession: 'invalidSession',
+  Death: 'death',
+  Disconnect: 'disconnect',
+  Error: 'error',
+  Message: 'message',
   Ready: 'ready',
-  Resumed: 'resumed',
-  AllReady: 'allReady',
+  Reconnecting: 'reconnecting',
+  Spawn: 'spawn',
 };
