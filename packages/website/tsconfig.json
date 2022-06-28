@@ -11,5 +11,5 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts", "src/model.server.tsx"]
 }

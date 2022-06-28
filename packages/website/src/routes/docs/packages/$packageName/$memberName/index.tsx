@@ -3,7 +3,9 @@ import { Params, useLoaderData } from '@remix-run/react';
 import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, VscSymbolVariable } from 'react-icons/vsc';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { ParameterTable } from '../../../../../components/ParameterTable';
 import { findMember } from '../../../../../model.server';
+import { constructHyperlinkedText } from '../../../../../util/util';
 
 export function loader({ params }: { params: Params }) {
 	const { packageName, memberName } = params;
@@ -23,7 +25,9 @@ const icons = {
 export default function Member() {
 	const data = useLoaderData<ReturnType<typeof findMember>>();
 
-	console.log(data?.kind);
+	console.log(data?.foo);
+
+	console.log(data?.parameters[1]);
 	return (
 		<div className="px-10">
 			<h1 style={{ fontFamily: 'JetBrains Mono' }} className="flex items-csenter content-center">
@@ -35,33 +39,41 @@ export default function Member() {
 				{data?.excerpt ?? ''}
 			</SyntaxHighlighter>
 			<h3>Summary</h3>
-			<p>{data?.summary}</p>
-			<h3>Members</h3>
-			<ul>
-				{data?.members.map((member, i) => (
-					<li key={i}>
-						<code>{member}</code>
-					</li>
-				))}
-			</ul>
-			<h3>Parameters</h3>
-			<ul>
-				{data?.parameters.map((member, i) => (
-					<li key={i}>
-						<code>{member}</code>
-					</li>
-				))}
-			</ul>
-			<h3>{'Extracted references (can be hyperlinked in code declaration in the future)'}</h3>
-			<ul>
-				{data?.refs.map((item, i) => (
-					<li key={i}>
-						<code>
-							<a href={item.path}>{item.name}</a>
-						</code>
-					</li>
-				))}
-			</ul>
+			<p>{data?.summary ?? 'No summary provided.'}</p>
+			{(data?.members.length ?? 0) > 0 && (
+				<>
+					<h3>Members</h3>
+					<ul>
+						{data?.members.map((member, i) => (
+							<li key={i}>
+								<code>{constructHyperlinkedText(member)}</code>
+							</li>
+						))}
+					</ul>
+				</>
+			)}
+
+			{(data?.parameters.length ?? 0) > 0 && (
+				<>
+					<h3>Parameters</h3>
+					<ParameterTable data={data?.parameters ?? []} />
+				</>
+			)}
+
+			{(data?.refs.length ?? 0) > 0 && (
+				<>
+					<h3>{'Type References'}</h3>
+					<ul>
+						{data?.refs.map((item, i) => (
+							<li key={i}>
+								<code>
+									<a href={item.path}>{item.name}</a>
+								</code>
+							</li>
+						))}
+					</ul>
+				</>
+			)}
 		</div>
 	);
 }

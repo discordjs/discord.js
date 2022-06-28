@@ -11,9 +11,11 @@ import {
 	ApiPackage,
 	ApiPropertyItem,
 	Excerpt,
+	ExcerptToken,
 	ExcerptTokenKind,
+	Parameter,
 } from '@microsoft/api-extractor-model';
-import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 
 const model = new ApiModel();
 model.loadPackage(path.join(__dirname, '..', 'src', 'discord.js.api.json'));
@@ -41,7 +43,7 @@ function generatePath(items: readonly ApiItem[]) {
 	return path;
 }
 
-function resolveDocComment(item: ApiItem) {
+function resolveDocComment(item: ApiDocumentedItem) {
 	if (!(item instanceof ApiDocumentedItem)) {
 		return null;
 	}
@@ -76,6 +78,7 @@ function resolveDocComment(item: ApiItem) {
 
 function findReferences(excerpt: Excerpt) {
 	const retVal: Set<ApiItem> = new Set();
+
 	for (const token of excerpt.spannedTokens) {
 		switch (token.kind) {
 			case ExcerptTokenKind.Reference: {
@@ -104,6 +107,22 @@ export function resolveName(item: ApiItem) {
 	return item.displayName;
 }
 
+export function createHyperlinkedExcerpt(excerpt: Excerpt) {
+	const html: (JSX.Element | string)[] = [];
+	for (const token of excerpt.spannedTokens) {
+		switch (token.kind) {
+			case ExcerptTokenKind.Content:
+				html.push(token.text);
+				break;
+			case ExcerptTokenKind.Reference:
+				html.push(<a href="google.com">{token.text}</a>);
+				break;
+		}
+	}
+
+	return ['1', '2', '3'];
+}
+
 function getProperties(item: ApiItem) {
 	const properties: ApiPropertyItem[] = [];
 	for (const member of item.members) {
@@ -122,6 +141,45 @@ function getProperties(item: ApiItem) {
 	return properties;
 }
 
+export interface TokenDocumentation {
+	text: string;
+	path: string | null;
+	kind: string;
+}
+
+export interface ParameterDocumentation {
+	name: string;
+	isOptional: boolean;
+	tokens: TokenDocumentation[];
+}
+
+function genReference(item: ApiItem) {
+	return {
+		name: resolveName(item),
+		path: generatePath(item.getHierarchy()),
+	};
+}
+
+function genToken(token: ExcerptToken) {
+	const item = token.canonicalReference
+		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
+		: null;
+
+	return {
+		kind: token.kind,
+		text: token.text,
+		path: item ? generatePath(item.getHierarchy()) : null,
+	};
+}
+
+function genParameter(param: Parameter): ParameterDocumentation {
+	return {
+		name: param.name,
+		isOptional: param.isOptional,
+		tokens: param.parameterTypeExcerpt.spannedTokens.map(genToken),
+	};
+}
+
 export function findMember(packageName: string, memberName: string) {
 	const pkg = findPackage(packageName)!;
 	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
@@ -130,20 +188,20 @@ export function findMember(packageName: string, memberName: string) {
 		return undefined;
 	}
 
-	const genReference = (items: readonly ApiItem[]) =>
-		items.map((item) => ({
-			name: resolveName(item),
-			path: generatePath(item.getHierarchy()),
-		}));
+	const excerpt = (member as ApiFunction).excerpt;
+
+	console.log(createHyperlinkedExcerpt(excerpt));
 
 	return {
 		name: resolveName(member),
 		kind: member.kind,
 		summary: resolveDocComment(member),
 		excerpt: member.excerpt.text,
-		refs: genReference([...findReferences(member.excerpt).values()]),
-		members: getProperties(member).map((item) => item.excerpt.text),
-		parameters: member instanceof ApiFunction ? member.parameters.map((parameter) => parameter.name) : [],
+		tokens: member.excerpt.spannedTokens.map(genToken),
+		refs: [...findReferences(member.excerpt).values()].map(genReference),
+		members: getProperties(member).map((member) => member.excerpt.spannedTokens.map(genToken)),
+		parameters: member instanceof ApiFunction ? member.parameters.map(genParameter) : [],
+		foo: excerpt.spannedTokens.map(genToken),
 	};
 }
 
