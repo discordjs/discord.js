@@ -3684,7 +3684,7 @@ export interface APIErrors {
   MAXIMUM_SERVER_MEMBERS: 30019;
   MAXIMUM_NUMBER_OF_SERVER_CATEGORIES: 30030;
   GUILD_ALREADY_HAS_TEMPLATE: 30031;
-  MAXIMUM_THREAD_PARICIPANTS: 30033;
+  MAXIMUM_THREAD_PARTICIPANTS: 30033;
   MAXIMUM_NON_GUILD_MEMBERS_BANS: 30035;
   MAXIMUM_BAN_FETCHES: 30037;
   MAXIMUM_NUMBER_OF_UNCOMPLETED_GUILD_SCHEDULED_EVENTS_REACHED: 30038;
@@ -3735,7 +3735,7 @@ export interface APIErrors {
   PAYMENT_SOURCE_REQUIRED: 50070;
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074;
   INVALID_STICKER_SENT: 50081;
-  INVALID_THREAD_ARCHIVE_STATE: 50083;
+  INVALID_OPERATION_ON_ARCHIVED_THREAD: 50083;
   INVALID_THREAD_NOTIFICATION_SETTINGS: 50084;
   PARAMETER_EARLIER_THAN_CREATION: 50085;
   GUILD_NOT_AVAILABLE_IN_LOCATION: 50095;
@@ -4431,8 +4431,6 @@ export interface ConstantsEvents {
   GUILD_CREATE: 'guildCreate';
   GUILD_DELETE: 'guildDelete';
   GUILD_UPDATE: 'guildUpdate';
-  INVITE_CREATE: 'inviteCreate';
-  INVITE_DELETE: 'inviteDelete';
   GUILD_UNAVAILABLE: 'guildUnavailable';
   GUILD_MEMBER_ADD: 'guildMemberAdd';
   GUILD_MEMBER_REMOVE: 'guildMemberRemove';
@@ -4442,6 +4440,8 @@ export interface ConstantsEvents {
   GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
   GUILD_ROLE_CREATE: 'roleCreate';
   GUILD_ROLE_DELETE: 'roleDelete';
+  INVITE_CREATE: 'inviteCreate';
+  INVITE_DELETE: 'inviteDelete';
   GUILD_ROLE_UPDATE: 'roleUpdate';
   GUILD_EMOJI_CREATE: 'emojiCreate';
   GUILD_EMOJI_DELETE: 'emojiDelete';
@@ -4518,6 +4518,7 @@ export interface ConstantsShardEvents {
   INVALID_SESSION: 'invalidSession';
   READY: 'ready';
   RESUMED: 'resumed';
+  ALL_READY: 'allReady';
 }
 
 export interface ConstantsStatus {
@@ -4527,6 +4528,9 @@ export interface ConstantsStatus {
   IDLE: 3;
   NEARLY: 4;
   DISCONNECTED: 5;
+  WAITING_FOR_GUILDS: 6;
+  IDENTIFYING: 7;
+  RESUMING: 8;
 }
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
