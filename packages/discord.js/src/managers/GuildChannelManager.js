@@ -199,8 +199,8 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * The data for a guild channel.
-   * @typedef {Object} ChannelData
+   * Options used to edit a guild channel.
+   * @typedef {Object} GuildChannelEditOptions
    * @property {string} [name] The name of the channel
    * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
@@ -224,7 +224,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Edits the channel.
    * @param {GuildChannelResolvable} channel The channel to edit
-   * @param {ChannelData} data The new data for the channel
+   * @param {GuildChannelEditOptions} data Options for editing the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
