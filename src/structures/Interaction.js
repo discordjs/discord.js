@@ -70,6 +70,12 @@ class Interaction extends Base {
     this.version = data.version;
 
     /**
+     * Set of permissions the application or bot has within the channel the interaction was sent from
+     * @type {?Readonly<Permissions>}
+     */
+    this.appPermissions = data.app_permissions ? new Permissions(data.app_permissions).freeze() : null;
+
+    /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
      * @type {?Readonly<Permissions>}
      */
