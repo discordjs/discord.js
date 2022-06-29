@@ -6,6 +6,17 @@ const { Error, RangeError, TypeError } = require('../errors');
 
 exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
+/**
+ * The types of WebSocket error codes:
+ * * 1000: WS_CLOSE_REQUESTED
+ * * 1011: INTERNAL_ERROR
+ * * 4004: TOKEN_INVALID
+ * * 4010: SHARDING_INVALID
+ * * 4011: SHARDING_REQUIRED
+ * * 4013: INVALID_INTENTS
+ * * 4014: DISALLOWED_INTENTS
+ * @typedef {Object<number, string>} WSCodes
+ */
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
   1011: 'INTERNAL_ERROR',
@@ -41,7 +52,11 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * `4096`
  */
 
-// https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints
+/**
+ * An object containing functions that return certain endpoints on the API.
+ * @typedef {Object<string, Function|string>} Endpoints
+ * @see {@link https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints}
+ */
 exports.Endpoints = {
   CDN(root) {
     return {
@@ -98,7 +113,7 @@ exports.Endpoints = {
  * * WAITING_FOR_GUILDS: 6
  * * IDENTIFYING: 7
  * * RESUMING: 8
- * @typedef {number} Status
+ * @typedef {Object<string, number>} Status
  */
 exports.Status = {
   READY: 0,
@@ -112,6 +127,22 @@ exports.Status = {
   RESUMING: 8,
 };
 
+/**
+ * The Opcodes sent to the Gateway:
+ * * DISPATCH: 0
+ * * HEARTBEAT: 1
+ * * IDENTIFY: 2
+ * * STATUS_UPDATE: 3
+ * * VOICE_STATE_UPDATE: 4
+ * * VOICE_GUILD_PING: 5
+ * * RESUME: 6
+ * * RECONNECT: 7
+ * * REQUEST_GUILD_MEMBERS: 8
+ * * INVALID_SESSION: 9
+ * * HELLO: 10
+ * * HEARTBEAT_ACK: 11
+ * @typedef {Object<string, number>} Opcodes
+ */
 exports.Opcodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
@@ -127,23 +158,93 @@ exports.Opcodes = {
   HEARTBEAT_ACK: 11,
 };
 
+/**
+ * The types of events emitted by the Client:
+ * * RATE_LIMIT: rateLimit
+ * * INVALID_REQUEST_WARNING: invalidRequestWarning
+ * * API_RESPONSE: apiResponse
+ * * API_REQUEST: apiRequest
+ * * CLIENT_READY: ready
+ * * APPLICATION_COMMAND_CREATE: applicationCommandCreate (deprecated)
+ * * APPLICATION_COMMAND_DELETE: applicationCommandDelete (deprecated)
+ * * APPLICATION_COMMAND_UPDATE: applicationCommandUpdate (deprecated)
+ * * GUILD_CREATE: guildCreate
+ * * GUILD_DELETE: guildDelete
+ * * GUILD_UPDATE: guildUpdate
+ * * GUILD_UNAVAILABLE: guildUnavailable
+ * * GUILD_MEMBER_ADD: guildMemberAdd
+ * * GUILD_MEMBER_REMOVE: guildMemberRemove
+ * * GUILD_MEMBER_UPDATE: guildMemberUpdate
+ * * GUILD_MEMBER_AVAILABLE: guildMemberAvailable
+ * * GUILD_MEMBERS_CHUNK: guildMembersChunk
+ * * GUILD_INTEGRATIONS_UPDATE: guildIntegrationsUpdate
+ * * GUILD_ROLE_CREATE: roleCreate
+ * * GUILD_ROLE_DELETE: roleDelete
+ * * INVITE_CREATE: inviteCreate
+ * * INVITE_DELETE: inviteDelete
+ * * GUILD_ROLE_UPDATE: roleUpdate
+ * * GUILD_EMOJI_CREATE: emojiCreate
+ * * GUILD_EMOJI_DELETE: emojiDelete
+ * * GUILD_EMOJI_UPDATE: emojiUpdate
+ * * GUILD_BAN_ADD: guildBanAdd
+ * * GUILD_BAN_REMOVE: guildBanRemove
+ * * CHANNEL_CREATE: channelCreate
+ * * CHANNEL_DELETE: channelDelete
+ * * CHANNEL_UPDATE: channelUpdate
+ * * CHANNEL_PINS_UPDATE: channelPinsUpdate
+ * * MESSAGE_CREATE: messageCreate
+ * * MESSAGE_DELETE: messageDelete
+ * * MESSAGE_UPDATE: messageUpdate
+ * * MESSAGE_BULK_DELETE: messageDeleteBulk
+ * * MESSAGE_REACTION_ADD: messageReactionAdd
+ * * MESSAGE_REACTION_REMOVE: messageReactionRemove
+ * * MESSAGE_REACTION_REMOVE_ALL: messageReactionRemoveAll
+ * * MESSAGE_REACTION_REMOVE_EMOJI: messageReactionRemoveEmoji
+ * * THREAD_CREATE: threadCreate
+ * * THREAD_DELETE: threadDelete
+ * * THREAD_UPDATE: threadUpdate
+ * * THREAD_LIST_SYNC: threadListSync
+ * * THREAD_MEMBER_UPDATE: threadMemberUpdate
+ * * THREAD_MEMBERS_UPDATE: threadMembersUpdate
+ * * USER_UPDATE: userUpdate
+ * * PRESENCE_UPDATE: presenceUpdate
+ * * VOICE_SERVER_UPDATE: voiceServerUpdate
+ * * VOICE_STATE_UPDATE: voiceStateUpdate
+ * * TYPING_START: typingStart
+ * * WEBHOOKS_UPDATE: webhookUpdate
+ * * INTERACTION_CREATE: interactionCreate
+ * * ERROR: error
+ * * WARN: warn
+ * * DEBUG: debug
+ * * CACHE_SWEEP: cacheSweep
+ * * SHARD_DISCONNECT: shardDisconnect
+ * * SHARD_ERROR: shardError
+ * * SHARD_RECONNECTING: shardReconnecting
+ * * SHARD_READY: shardReady
+ * * SHARD_RESUME: shardResume
+ * * INVALIDATED: invalidated
+ * * RAW: raw
+ * * STAGE_INSTANCE_CREATE: stageInstanceCreate
+ * * STAGE_INSTANCE_UPDATE: stageInstanceUpdate
+ * * STAGE_INSTANCE_DELETE: stageInstanceDelete
+ * * GUILD_STICKER_CREATE: stickerCreate
+ * * GUILD_STICKER_DELETE: stickerDelete
+ * * GUILD_STICKER_UPDATE: stickerUpdate
+ * * GUILD_SCHEDULED_EVENT_CREATE: guildScheduledEventCreate
+ * * GUILD_SCHEDULED_EVENT_UPDATE: guildScheduledEventUpdate
+ * * GUILD_SCHEDULED_EVENT_DELETE: guildScheduledEventDelete
+ * * GUILD_SCHEDULED_EVENT_USER_ADD: guildScheduledEventUserAdd
+ * * GUILD_SCHEDULED_EVENT_USER_REMOVE: guildScheduledEventUserRemove
+ * @typedef {Object<string, string>} Events
+ */
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
   API_RESPONSE: 'apiResponse',
   API_REQUEST: 'apiRequest',
   CLIENT_READY: 'ready',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
-  /**
-   * @deprecated See {@link https://github.com/discord/discord-api-docs/issues/3690 this issue} for more information.
-   */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
@@ -214,6 +315,16 @@ exports.Events = {
   GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove',
 };
 
+/**
+ * The types of events emitted by a Shard:
+ * * CLOSE: close
+ * * DESTROYED: destroyed
+ * * INVALID_SESSION: invalidSession
+ * * READY: ready
+ * * RESUMED: resumed
+ * * ALL_READY: allReady
+ * @typedef {Object<string, string>} ShardEvents
+ */
 exports.ShardEvents = {
   CLOSE: 'close',
   DESTROYED: 'destroyed',
@@ -607,11 +718,51 @@ exports.ThreadChannelTypes = ['GUILD_NEWS_THREAD', 'GUILD_PUBLIC_THREAD', 'GUILD
  */
 exports.VoiceBasedChannelTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
 
+/**
+ * The types of assets of an application:
+ * * SMALL: 1
+ * * BIG: 2
+ * @typedef {Object<string, number>} ClientApplicationAssetTypes
+ */
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
   BIG: 2,
 };
 
+/**
+ * A commonly used color:
+ * * DEFAULT
+ * * WHITE
+ * * AQUA
+ * * GREEN
+ * * BLUE
+ * * YELLOW
+ * * PURPLE
+ * * LUMINOUS_VIVID_PINK
+ * * FUCHSIA
+ * * GOLD
+ * * ORANGE
+ * * RED
+ * * GREY
+ * * NAVY
+ * * DARK_AQUA
+ * * DARK_GREEN
+ * * DARK_BLUE
+ * * DARK_PURPLE
+ * * DARK_VIVID_PINK
+ * * DARK_GOLD
+ * * DARK_ORANGE
+ * * DARK_RED
+ * * DARK_GREY
+ * * DARKER_GREY
+ * * LIGHT_GREY
+ * * DARK_NAVY
+ * * BLURPLE
+ * * GREYPLE
+ * * DARK_BUT_NOT_BLACK
+ * * NOT_QUITE_BLACK
+ * @typedef {string} Color
+ */
 exports.Colors = {
   DEFAULT: 0x000000,
   WHITE: 0xffffff,
@@ -802,7 +953,7 @@ exports.VerificationLevels = createEnum(['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_
  * * MESSAGE_ALREADY_HAS_THREAD
  * * THREAD_LOCKED
  * * MAXIMUM_ACTIVE_THREADS
- * * MAXIMUM_ACTIVE_ANNOUNCEMENT_THREAD
+ * * MAXIMUM_ACTIVE_ANNOUNCEMENT_THREADS
  * * INVALID_JSON_FOR_UPLOADED_LOTTIE_FILE
  * * UPLOADED_LOTTIES_CANNOT_CONTAIN_RASTERIZED_IMAGES
  * * STICKER_MAXIMUM_FRAMERATE_EXCEEDED
@@ -1074,6 +1225,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * * APPLICATION_COMMAND
  * * MESSAGE_COMPONENT
  * * APPLICATION_COMMAND_AUTOCOMPLETE
+ * * MODAL_SUBMIT
  * @typedef {string} InteractionType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-interaction-type}
  */
@@ -1094,6 +1246,7 @@ exports.InteractionTypes = createEnum([
  * * DEFERRED_MESSAGE_UPDATE
  * * UPDATE_MESSAGE
  * * APPLICATION_COMMAND_AUTOCOMPLETE_RESULT
+ * * MODAL
  * @typedef {string} InteractionResponseType
  * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object-interaction-callback-type}
  */
@@ -1115,6 +1268,7 @@ exports.InteractionResponseTypes = createEnum([
  * * ACTION_ROW
  * * BUTTON
  * * SELECT_MENU
+ * * TEXT_INPUT
  * @typedef {string} MessageComponentType
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
@@ -1210,6 +1364,7 @@ exports.GuildScheduledEventStatuses = createEnum([null, 'SCHEDULED', 'ACTIVE', '
  * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-types}
  */
 exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VOICE', 'EXTERNAL']);
+/* eslint-enable max-len */
 
 /**
  * The camera video quality mode of a {@link VoiceChannel}:
@@ -1219,7 +1374,6 @@ exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VO
  * @see {@link https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes}
  */
 exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
-/* eslint-enable max-len */
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
@@ -1241,38 +1395,58 @@ function createEnum(keys) {
 
 /**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
- * @property {ActivityType} ActivityTypes The type of an activity of a users presence.
- * @property {APIError} APIErrors An error encountered while performing an API request.
- * @property {ApplicationCommandOptionType} ApplicationCommandOptionTypes
+ * @property {Object<ActivityType, number>} ActivityTypes The type of an activity of a users presence.
+ * @property {Object<APIError, number>} APIErrors An error encountered while performing an API request.
+ * @property {Object<ApplicationCommandOptionType, number>} ApplicationCommandOptionTypes
  * The type of an {@link ApplicationCommandOption} object.
- * @property {ApplicationCommandPermissionType} ApplicationCommandPermissionTypes
+ * @property {Object<ApplicationCommandPermissionType, number>} ApplicationCommandPermissionTypes
  * The type of an {@link ApplicationCommandPermissions} object.
- * @property {ChannelType} ChannelTypes All available channel types.
- * @property {DefaultMessageNotificationLevel} DefaultMessageNotificationLevels
- * The value set for a guild's default message notifications.
- * @property {ExplicitContentFilterLevel} ExplicitContentFilterLevels
+ * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
+ * The type of an {@link ApplicationCommand} object.
+ * @property {Object<ChannelType, number>} ChannelTypes All available channel types.
+ * @property {ClientApplicationAssetTypes} ClientApplicationAssetTypes The types of an {@link ApplicationAsset} object.
+ * @property {Object<Color, number>} Colors An object with regularly used colors.
+ * @property {Object<DefaultMessageNotificationLevel, number>} DefaultMessageNotificationLevels
+ * The value set for a guilds default message notifications.
+ * @property {Endpoints} Endpoints Object containing functions that return certain endpoints on the API.
+ * @property {Events} Events The types of events emitted by the Client.
+ * @property {Object<ExplicitContentFilterLevel, number>} ExplicitContentFilterLevels
  * The value set for the explicit content filter levels for a guild.
- * @property {GuildScheduledEventStatus} GuildScheduledEventStatuses The status of a {@link GuildScheduledEvent} object.
- * @property {GuildScheduledEventEntityType} GuildScheduledEventEntityTypes The entity type of a
- * {@link GuildScheduledEvent} object.
- * @property {GuildScheduledEventPrivacyLevel} GuildScheduledEventPrivacyLevels Privacy level of a
- * {@link GuildScheduledEvent} object.
- * @property {InteractionResponseType} InteractionResponseTypes The type of an interaction response.
- * @property {InteractionType} InteractionTypes The type of an {@link Interaction} object.
- * @property {MembershipState} MembershipStates The value set for a team member's membership state.
- * @property {MessageButtonStyle} MessageButtonStyles The style of a message button.
- * @property {MessageComponentType} MessageComponentTypes The type of a message component.
- * @property {MFALevel} MFALevels The required MFA level for a guild.
- * @property {NSFWLevel} NSFWLevels NSFW level of a guild.
- * @property {OverwriteType} OverwriteTypes An overwrite type.
- * @property {PartialType} PartialTypes The type of Structure allowed to be a partial.
- * @property {PremiumTier} PremiumTiers The premium tier (Server Boost level) of a guild.
- * @property {PrivacyLevel} PrivacyLevels Privacy level of a {@link StageInstance} object.
+ * @property {Object<GuildScheduledEventEntityType, number>} GuildScheduledEventEntityTypes
+ * The entity type of a {@link GuildScheduledEvent} object.
+ * @property {Object<GuildScheduledEventPrivacyLevel, number>} GuildScheduledEventPrivacyLevels
+ * Privacy level of a {@link GuildScheduledEvent} object.
+ * @property {Object<GuildScheduledEventStatus, number>} GuildScheduledEventStatuses
+ * The status of a {@link GuildScheduledEvent} object.
+ * @property {Object<IntegrationExpireBehavior, number>} IntegrationExpireBehaviors
+ * The behavior of expiring subscribers for Integrations.
+ * @property {Object<InteractionResponseType, number>} InteractionResponseTypes The type of an interaction response.
+ * @property {Object<InteractionType, number>} InteractionTypes The type of an {@link Interaction} object.
+ * @property {InviteScope[]} InviteScopes The scopes of an invite.
+ * @property {Object<MembershipState, number>} MembershipStates The value set for a team members membership state.
+ * @property {Object<MessageButtonStyle, number>} MessageButtonStyles The style of a message button.
+ * @property {Object<MessageComponentType, number>} MessageComponentTypes The type of a message component.
+ * @property {Object<MFALevel, number>} MFALevels The required MFA level for a guild.
+ * @property {Object<NSFWLevel, number>} NSFWLevels NSFW level of a guild.
+ * @property {Opcodes} Opcodes The types of Opcodes sent to the Gateway.
+ * @property {Object<OverwriteType, number>} OverwriteTypes An overwrite type.
+ * @property {Object} Package The package.json of the library.
+ * @property {Object<PartialType, PartialType>} PartialTypes The type of Structure allowed to be a partial.
+ * @property {Object<PremiumTier, number>} PremiumTiers The premium tier (Server Boost level) of a guild.
+ * @property {Object<PrivacyLevel, number>} PrivacyLevels Privacy level of a {@link StageInstance} object.
+ * @property {ShardEvents} ShardEvents The type of events emitted by a Shard.
  * @property {Status} Status The available statuses of the client.
- * @property {StickerFormatType} StickerFormatTypes The value set for a sticker's format type.
- * @property {StickerType} StickerTypes The value set for a sticker's type.
- * @property {VerificationLevel} VerificationLevels The value set for the verification levels for a guild.
- * @property {VideoQualityMode} VideoQualityModes The camera video quality mode for a {@link VoiceChannel}.
- * @property {WebhookType} WebhookTypes The value set for a webhook's type.
- * @property {WSEventType} WSEvents The type of a WebSocket message event.
+ * @property {Object<StickerFormatType, number>} StickerFormatTypes The value set for a stickers format type.
+ * @property {Object<StickerType, number>} StickerTypes The value set for a stickers type.
+ * @property {SweeperKey[]} SweeperKeys The name of an item to be swept in Sweepers.
+ * @property {SystemMessageType[]} SystemMessageTypes The types of messages that are `System`.
+ * @property {Object<TextInputStyle, number>} TextInputStyles The style of a text input component.
+ * @property {string} UserAgent The user agent used for requests.
+ * @property {Object<VerificationLevel, number>} VerificationLevels
+ * The value set for the verification levels for a guild.
+ * @property {Object<VideoQualityMode, number>} VideoQualityModes
+ * The camera video quality mode for a {@link VoiceChannel}.
+ * @property {Object<WebhookType, number>} WebhookTypes The value set for a webhooks type.
+ * @property {WSCodes} WSCodes The types of WebSocket error codes.
+ * @property {Object<WSEventType, WSEventType>} WSEvents The type of a WebSocket message event.
  */
