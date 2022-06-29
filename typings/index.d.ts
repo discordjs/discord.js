@@ -2131,8 +2131,8 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
 }
 
 export interface ShardEventTypes {
-  spawn: [child: ChildProcess];
-  death: [child: ChildProcess];
+  spawn: [process: ChildProcess | Worker];
+  death: [process: ChildProcess | Worker];
   disconnect: [];
   ready: [];
   reconnecting: [];
@@ -2783,6 +2783,7 @@ export interface WebSocketShardEvents {
   ready: [];
   resumed: [];
   invalidSession: [];
+  destroyed: [];
   close: [event: CloseEvent];
   allReady: [unavailableGuilds?: Set<Snowflake>];
 }
