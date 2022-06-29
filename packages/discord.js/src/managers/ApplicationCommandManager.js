@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
@@ -111,10 +112,7 @@ class ApplicationCommandManager extends CachedManager {
       headers: {
         'X-Discord-Locale': locale,
       },
-      query:
-        typeof withLocalizations === 'boolean'
-          ? new URLSearchParams({ with_localizations: withLocalizations })
-          : undefined,
+      query: makeURLSearchParams({ with_localizations: withLocalizations }),
     });
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
