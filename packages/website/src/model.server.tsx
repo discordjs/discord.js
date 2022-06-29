@@ -16,6 +16,7 @@ import {
 	Parameter,
 } from '@microsoft/api-extractor-model';
 import { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import '@microsoft/tsdoc/schemas/tsdoc.schema.json'; // Try to work around vercel issue
 
 const model = new ApiModel();
 model.loadPackage(path.join(__dirname, '..', 'src', 'discord.js.api.json'));
