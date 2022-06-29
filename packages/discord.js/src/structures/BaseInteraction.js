@@ -71,6 +71,12 @@ class BaseInteraction extends Base {
     this.version = data.version;
 
     /**
+     * Set of permissions the application or bot has within the channel the interaction was sent from
+     * @type {?PermissionsBitField}
+     */
+    this.appPermissions = data.app_permissions ? new PermissionsBitField(data.app_permissions).freeze() : null;
+
+    /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
      * @type {?Readonly<PermissionsBitField>}
      */
