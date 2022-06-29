@@ -264,7 +264,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Edits the channel.
-   * @param {ChannelEditData} data The new data for the channel
+   * @param {GuildChannelEditOptions} data The new data for the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel

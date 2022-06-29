@@ -1248,7 +1248,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get viewable(): boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
   public delete(reason?: string): Promise<this>;
-  public edit(data: ChannelEditData): Promise<this>;
+  public edit(data: GuildChannelEditOptions): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
@@ -3330,7 +3330,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   ): Promise<MappedGuildChannelTypes[T]>;
   public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
   public createWebhook(options: WebhookCreateOptions): Promise<Webhook>;
-  public edit(channel: GuildChannelResolvable, data: ChannelEditData): Promise<GuildChannel>;
+  public edit(channel: GuildChannelResolvable, data: GuildChannelEditOptions): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<NonThreadGuildBasedChannel | null>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel>>;
   public fetchWebhooks(channel: GuildChannelResolvable): Promise<Collection<Snowflake, Webhook>>;
@@ -4011,27 +4011,6 @@ export interface ChannelCreationOverwrites {
   id: RoleResolvable | UserResolvable;
 }
 
-export interface ChannelData {
-  name?: string;
-  type?: ChannelType.GuildText | ChannelType.GuildNews;
-  position?: number;
-  topic?: string | null;
-  nsfw?: boolean;
-  bitrate?: number;
-  userLimit?: number;
-  parent?: CategoryChannelResolvable | null;
-  rateLimitPerUser?: number;
-  lockPermissions?: boolean;
-  permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
-  rtcRegion?: string | null;
-  videoQualityMode?: VideoQualityMode | null;
-}
-
-export interface ChannelEditData extends ChannelData {
-  reason?: string;
-}
-
 export type ChannelMention = `<#${Snowflake}>`;
 
 export interface ChannelPosition {
@@ -4679,6 +4658,24 @@ export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOpt
 
 export interface GuildChannelCloneOptions extends Omit<GuildChannelCreateOptions, 'name'> {
   name?: string;
+}
+
+export interface GuildChannelEditOptions {
+  name?: string;
+  type?: ChannelType.GuildText | ChannelType.GuildNews;
+  position?: number;
+  topic?: string | null;
+  nsfw?: boolean;
+  bitrate?: number;
+  userLimit?: number;
+  parent?: CategoryChannelResolvable | null;
+  rateLimitPerUser?: number;
+  lockPermissions?: boolean;
+  permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  rtcRegion?: string | null;
+  videoQualityMode?: VideoQualityMode | null;
+  reason?: string;
 }
 
 export interface GuildChannelOverwriteOptions {
