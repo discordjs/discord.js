@@ -170,7 +170,7 @@ class GuildStickerManager extends CachedManager {
   async fetchUser(sticker) {
     sticker = this.resolve(sticker);
     if (!sticker) throw new TypeError('INVALID_TYPE', 'sticker', 'StickerResolvable');
-    const data = await this.client.api.guilds(this.guildId).stickers(sticker.id).get();
+    const data = await this.client.api.guilds(this.guild.id).stickers(sticker.id).get();
     sticker._patch(data);
     return sticker.user;
   }
