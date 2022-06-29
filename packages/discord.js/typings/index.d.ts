@@ -4357,6 +4357,9 @@ export enum Status {
   Idle = 3,
   Nearly = 4,
   Disconnected = 5,
+  WaitingForGuilds = 6,
+  Identifying = 7,
+  Resuming = 8,
 }
 
 export interface CreateGuildScheduledEventInviteURLOptions extends CreateInviteOptions {
