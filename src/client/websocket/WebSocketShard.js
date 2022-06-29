@@ -466,6 +466,10 @@ class WebSocketShard extends EventEmitter {
         // Set the status to reconnecting
         this.status = Status.RECONNECTING;
         // Finally, emit the INVALID_SESSION event
+        /**
+         * Emitted when the session has been invalidated.
+         * @event WebSocketShard#invalidSession
+         */
         this.emit(ShardEvents.INVALID_SESSION);
         break;
       case Opcodes.HEARTBEAT_ACK:

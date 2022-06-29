@@ -1,4 +1,5 @@
 import type { ChildProcess } from 'child_process';
+import type { Worker } from 'worker_threads';
 import type {
   APIInteractionGuildMember,
   APIMessage,
@@ -1191,7 +1192,7 @@ client.on('interactionCreate', async interaction => {
 declare const shard: Shard;
 
 shard.on('death', process => {
-  expectType<ChildProcess>(process);
+  expectType<ChildProcess | Worker>(process);
 });
 
 declare const webSocketShard: WebSocketShard;
