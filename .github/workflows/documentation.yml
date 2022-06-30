@@ -144,7 +144,9 @@ jobs:
         run: |
           mkdir -p out/${PACKAGE}
           mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
-          mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
+          if [[ $PACKAGE != "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
+          fi
 
       - name: Move docs to correct directory
         if: ${{ !github.event.inputs.ref && env.BRANCH_OR_TAG == 'branch' }}
@@ -153,7 +155,9 @@ jobs:
         run: |
           mkdir -p out/${PACKAGE}
           mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
-          mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
+          if [[ $PACKAGE != "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
+          fi
 
       - name: Commit and push
         run: |
