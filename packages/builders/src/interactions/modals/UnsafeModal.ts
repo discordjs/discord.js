@@ -18,7 +18,8 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 
 	/**
 	 * Sets the title of the modal
-	 * @param title The title of the modal
+	 *
+	 * @param title - The title of the modal
 	 */
 	public setTitle(title: string) {
 		this.data.title = title;
@@ -27,7 +28,8 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 
 	/**
 	 * Sets the custom id of the modal
-	 * @param customId The custom id of this modal
+	 *
+	 * @param customId - The custom id of this modal
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -36,7 +38,8 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 
 	/**
 	 * Adds components to this modal
-	 * @param components The components to add to this modal
+	 *
+	 * @param components - The components to add to this modal
 	 */
 	public addComponents(
 		...components: RestOrArray<
@@ -55,7 +58,8 @@ export class UnsafeModalBuilder implements JSONEncodable<APIModalInteractionResp
 
 	/**
 	 * Sets the components in this modal
-	 * @param components The components to set this modal to
+	 *
+	 * @param components - The components to set this modal to
 	 */
 	public setComponents(...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder>>) {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));

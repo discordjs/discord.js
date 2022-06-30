@@ -10,7 +10,8 @@ import type { RequestHandler } from '../util/util';
 
 /**
  * Creates an HTTP handler used to forward requests to Discord
- * @param rest REST instance to use for the requests
+ *
+ * @param rest - REST instance to use for the requests
  */
 export function proxyRequests(rest: REST): RequestHandler {
 	return async (req, res) => {

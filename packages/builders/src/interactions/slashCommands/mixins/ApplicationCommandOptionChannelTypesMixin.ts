@@ -23,7 +23,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	/**
 	 * Adds channel types to this option
 	 *
-	 * @param channelTypes The channel types to add
+	 * @param channelTypes - The channel types to add
 	 */
 	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
 		if (this.channel_types === undefined) {

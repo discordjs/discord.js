@@ -11,7 +11,8 @@ export interface MappedComponentTypes {
 
 /**
  * Factory for creating components from API data
- * @param data The api data to transform to a component class
+ *
+ * @param data - The api data to transform to a component class
  */
 export function createComponentBuilder<T extends keyof MappedComponentTypes>(
 	data: (APIMessageComponent | APIModalComponent) & { type: T },

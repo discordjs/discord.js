@@ -9,7 +9,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the custom id for this text input
-	 * @param customId The custom id of this text input
+	 *
+	 * @param customId - The custom id of this text input
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -18,7 +19,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the label for this text input
-	 * @param label The label for this text input
+	 *
+	 * @param label - The label for this text input
 	 */
 	public setLabel(label: string) {
 		this.data.label = label;
@@ -27,7 +29,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the style for this text input
-	 * @param style The style for this text input
+	 *
+	 * @param style - The style for this text input
 	 */
 	public setStyle(style: TextInputStyle) {
 		this.data.style = style;
@@ -36,7 +39,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the minimum length of text for this text input
-	 * @param minLength The minimum length of text for this text input
+	 *
+	 * @param minLength - The minimum length of text for this text input
 	 */
 	public setMinLength(minLength: number) {
 		this.data.min_length = minLength;
@@ -45,7 +49,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the maximum length of text for this text input
-	 * @param maxLength The maximum length of text for this text input
+	 *
+	 * @param maxLength - The maximum length of text for this text input
 	 */
 	public setMaxLength(maxLength: number) {
 		this.data.max_length = maxLength;
@@ -54,7 +59,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the placeholder of this text input
-	 * @param placeholder The placeholder of this text input
+	 *
+	 * @param placeholder - The placeholder of this text input
 	 */
 	public setPlaceholder(placeholder: string) {
 		this.data.placeholder = placeholder;
@@ -63,7 +69,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets the value of this text input
-	 * @param value The value for this text input
+	 *
+	 * @param value - The value for this text input
 	 */
 	public setValue(value: string) {
 		this.data.value = value;
@@ -72,7 +79,8 @@ export class UnsafeTextInputBuilder extends ComponentBuilder<APITextInputCompone
 
 	/**
 	 * Sets whether this text input is required or not
-	 * @param required Whether this text input is required or not
+	 *
+	 * @param required - Whether this text input is required or not
 	 */
 	public setRequired(required = true) {
 		this.data.required = required;

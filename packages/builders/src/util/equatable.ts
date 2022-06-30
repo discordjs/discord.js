@@ -7,7 +7,7 @@ export interface Equatable<T> {
 
 /**
  * Indicates if an object is equatable or not.
- * @param maybeEquatable The object to check against
+ * @param maybeEquatable - The object to check against
  */
 export function isEquatable(maybeEquatable: unknown): maybeEquatable is Equatable<unknown> {
 	return maybeEquatable !== null && typeof maybeEquatable === 'object' && 'equals' in maybeEquatable;

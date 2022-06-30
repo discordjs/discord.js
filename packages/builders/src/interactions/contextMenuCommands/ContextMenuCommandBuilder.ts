@@ -53,7 +53,7 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * Sets the name
 	 *
-	 * @param name The name
+	 * @param name - The name
 	 */
 	public setName(name: string) {
 		// Assert the name matches the conditions
@@ -67,7 +67,7 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * Sets the type
 	 *
-	 * @param type The type
+	 * @param type - The type
 	 */
 	public setType(type: ContextMenuCommandType) {
 		// Assert the type is valid
@@ -83,7 +83,7 @@ export class ContextMenuCommandBuilder {
 	 *
 	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
 	 *
-	 * @param value Whether or not to enable this command by default
+	 * @param value - Whether or not to enable this command by default
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
@@ -102,7 +102,7 @@ export class ContextMenuCommandBuilder {
 	 *
 	 * **Note:** You can set this to `'0'` to disable the command by default.
 	 *
-	 * @param permissions The permissions bit field to set
+	 * @param permissions - The permissions bit field to set
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
@@ -119,7 +119,7 @@ export class ContextMenuCommandBuilder {
 	 * Sets if the command is available in DMs with the application, only for globally-scoped commands.
 	 * By default, commands are visible.
 	 *
-	 * @param enabled If the command should be enabled in DMs
+	 * @param enabled - If the command should be enabled in DMs
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
@@ -135,8 +135,8 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * Sets a name localization
 	 *
-	 * @param locale The locale to set a description for
-	 * @param localizedName The localized description for the given locale
+	 * @param locale - The locale to set a description for
+	 * @param localizedName - The localized description for the given locale
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.name_localizations) {
@@ -159,7 +159,7 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * Sets the name localizations
 	 *
-	 * @param localizedNames The dictionary of localized descriptions to set
+	 * @param localizedNames - The dictionary of localized descriptions to set
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {

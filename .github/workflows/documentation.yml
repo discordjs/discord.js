@@ -23,12 +23,12 @@ jobs:
       SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.ref || '' }}
 
       - name: Install node.js v16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
@@ -36,7 +36,7 @@ jobs:
 
       - name: Turbo cache
         id: turbo-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
@@ -49,11 +49,17 @@ jobs:
       - name: Build docs
         run: yarn docs --cache-dir=".turbo"
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+      - name: Upload docgen artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: docs
+          name: docgen
           path: packages/*/docs/docs.json
+
+      - name: Upload api-extractor artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: api-extractor
+          path: packages/*/docs/docs.api.json
 
       - name: Set outputs for upload job
         id: env
@@ -77,10 +83,10 @@ jobs:
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install node.js v16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'yarn'
@@ -88,7 +94,7 @@ jobs:
 
       - name: Turbo cache
         id: turbo-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
@@ -101,14 +107,20 @@ jobs:
       - name: Build actions
         run: yarn build --cache-dir=".turbo"
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+      - name: Download docgen artifacts
+        uses: actions/download-artifact@v3
         with:
-          name: docs
+          name: docgen
+          path: docs
+
+      - name: Download api-extractor artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: api-extractor
           path: docs
 
       - name: Checkout docs repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: 'discordjs/docs'
           token: ${{ secrets.DJS_DOCS }}
@@ -129,6 +141,7 @@ jobs:
         run: |
           mkdir -p out/${PACKAGE}
           mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
 
       - name: Move docs to correct directory
         if: ${{ !github.event.inputs.ref && env.BRANCH_OR_TAG == 'branch' }}
@@ -137,6 +150,7 @@ jobs:
         run: |
           mkdir -p out/${PACKAGE}
           mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
 
       - name: Commit and push
         run: |

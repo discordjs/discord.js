@@ -21,7 +21,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 	/**
 	 * Adds multiple choices for this option
 	 *
-	 * @param choices The choices to add
+	 * @param choices - The choices to add
 	 */
 	public addChoices(...choices: APIApplicationCommandOptionChoice<T>[]): this {
 		if (choices.length > 0 && this.autocomplete) {
@@ -65,7 +65,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends s
 
 	/**
 	 * Marks the option as autocompletable
-	 * @param autocomplete If this option should be autocompletable
+	 * @param autocomplete - If this option should be autocompletable
 	 */
 	public setAutocomplete(autocomplete: boolean): this {
 		// Assert that you actually passed a boolean

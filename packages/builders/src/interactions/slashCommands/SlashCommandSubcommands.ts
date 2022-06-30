@@ -35,7 +35,7 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 	/**
 	 * Adds a new subcommand to this group
 	 *
-	 * @param input A function that returns a subcommand builder, or an already built builder
+	 * @param input - A function that returns a subcommand builder, or an already built builder
 	 */
 	public addSubcommand(
 		input:

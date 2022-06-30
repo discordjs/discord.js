@@ -43,12 +43,12 @@ export class DiscordAPIError extends Error {
 	public requestBody: RequestBody;
 
 	/**
-	 * @param rawError The error reported by Discord
-	 * @param code The error code reported by Discord
-	 * @param status The status code of the response
-	 * @param method The method of the request that erred
-	 * @param url The url of the request that erred
-	 * @param bodyData The unparsed data for the request that errored
+	 * @param rawError - The error reported by Discord
+	 * @param code - The error code reported by Discord
+	 * @param status - The status code of the response
+	 * @param method - The method of the request that erred
+	 * @param url - The url of the request that erred
+	 * @param bodyData - The unparsed data for the request that errored
 	 */
 	public constructor(
 		public rawError: DiscordErrorData | OAuthErrorData,

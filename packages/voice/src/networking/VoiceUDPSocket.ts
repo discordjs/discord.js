@@ -125,7 +125,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	/**
 	 * Called when a message is received on the UDP socket.
 	 *
-	 * @param buffer The received buffer
+	 * @param buffer - The received buffer
 	 */
 	private onMessage(buffer: Buffer): void {
 		// Handle keep alive message

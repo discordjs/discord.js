@@ -10,7 +10,7 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets the name
 	 *
-	 * @param name The name
+	 * @param name - The name
 	 */
 	public setName(name: string): this {
 		// Assert the name matches the conditions
@@ -24,7 +24,7 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets the description
 	 *
-	 * @param description The description
+	 * @param description - The description
 	 */
 	public setDescription(description: string) {
 		// Assert the description matches the conditions
@@ -38,8 +38,8 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets a name localization
 	 *
-	 * @param locale The locale to set a description for
-	 * @param localizedName The localized description for the given locale
+	 * @param locale - The locale to set a description for
+	 * @param localizedName - The localized description for the given locale
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.name_localizations) {
@@ -62,7 +62,7 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets the name localizations
 	 *
-	 * @param localizedNames The dictionary of localized descriptions to set
+	 * @param localizedNames - The dictionary of localized descriptions to set
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
@@ -81,8 +81,8 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets a description localization
 	 *
-	 * @param locale The locale to set a description for
-	 * @param localizedDescription The localized description for the given locale
+	 * @param locale - The locale to set a description for
+	 * @param localizedDescription - The localized description for the given locale
 	 */
 	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
 		if (!this.description_localizations) {
@@ -105,7 +105,7 @@ export class SharedNameAndDescription {
 	/**
 	 * Sets the description localizations
 	 *
-	 * @param localizedDescriptions The dictionary of localized descriptions to set
+	 * @param localizedDescriptions - The dictionary of localized descriptions to set
 	 */
 	public setDescriptionLocalizations(localizedDescriptions: LocalizationMap | null) {
 		if (localizedDescriptions === null) {

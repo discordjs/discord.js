@@ -86,7 +86,7 @@ export class SlashCommandBuilder {
 	 *
 	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
 	 *
-	 * @param value Whether or not to enable this command by default
+	 * @param value - Whether or not to enable this command by default
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
@@ -105,7 +105,7 @@ export class SlashCommandBuilder {
 	 *
 	 * **Note:** You can set this to `'0'` to disable the command by default.
 	 *
-	 * @param permissions The permissions bit field to set
+	 * @param permissions - The permissions bit field to set
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
@@ -122,7 +122,7 @@ export class SlashCommandBuilder {
 	 * Sets if the command is available in DMs with the application, only for globally-scoped commands.
 	 * By default, commands are visible.
 	 *
-	 * @param enabled If the command should be enabled in DMs
+	 * @param enabled - If the command should be enabled in DMs
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
@@ -138,7 +138,7 @@ export class SlashCommandBuilder {
 	/**
 	 * Adds a new subcommand group to this command
 	 *
-	 * @param input A function that returns a subcommand group builder, or an already built builder
+	 * @param input - A function that returns a subcommand group builder, or an already built builder
 	 */
 	public addSubcommandGroup(
 		input:
@@ -164,7 +164,7 @@ export class SlashCommandBuilder {
 	/**
 	 * Adds a new subcommand to this command
 	 *
-	 * @param input A function that returns a subcommand builder, or an already built builder
+	 * @param input - A function that returns a subcommand builder, or an already built builder
 	 */
 	public addSubcommand(
 		input:

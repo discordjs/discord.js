@@ -26,10 +26,10 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install node.js v16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
@@ -38,7 +38,7 @@ jobs:
 
       - name: Turbo cache
         id: turbo-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .turbo
           key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}

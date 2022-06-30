@@ -20,7 +20,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets the placeholder for this select menu
-	 * @param placeholder The placeholder to use for this select menu
+	 *
+	 * @param placeholder - The placeholder to use for this select menu
 	 */
 	public setPlaceholder(placeholder: string) {
 		this.data.placeholder = placeholder;
@@ -29,7 +30,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets the minimum values that must be selected in the select menu
-	 * @param minValues The minimum values that must be selected
+	 *
+	 * @param minValues - The minimum values that must be selected
 	 */
 	public setMinValues(minValues: number) {
 		this.data.min_values = minValues;
@@ -38,7 +40,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets the maximum values that must be selected in the select menu
-	 * @param minValues The maximum values that must be selected
+	 *
+	 * @param minValues - The maximum values that must be selected
 	 */
 	public setMaxValues(maxValues: number) {
 		this.data.max_values = maxValues;
@@ -47,7 +50,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets the custom Id for this select menu
-	 * @param customId The custom id to use for this select menu
+	 *
+	 * @param customId - The custom id to use for this select menu
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -56,7 +60,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets whether or not this select menu is disabled
-	 * @param disabled Whether or not this select menu is disabled
+	 *
+	 * @param disabled - Whether or not this select menu is disabled
 	 */
 	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
@@ -65,8 +70,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Adds options to this select menu
-	 * @param options The options to add to this select menu
-	 * @returns
+	 *
+	 * @param options - The options to add to this select menu
 	 */
 	public addOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
 		this.options.push(
@@ -79,7 +84,8 @@ export class UnsafeSelectMenuBuilder extends ComponentBuilder<APISelectMenuCompo
 
 	/**
 	 * Sets the options on this select menu
-	 * @param options The options to set on this select menu
+	 *
+	 * @param options - The options to set on this select menu
 	 */
 	public setOptions(...options: RestOrArray<UnsafeSelectMenuOptionBuilder | APISelectMenuOption>) {
 		this.options.splice(

@@ -5,8 +5,9 @@ import type { Dispatcher } from 'undici';
 
 /**
  * Populates a server response with the data from a Discord 2xx REST response
- * @param res The server response to populate
- * @param data The data to populate the response with
+ *
+ * @param res - The server response to populate
+ * @param data - The data to populate the response with
  */
 export async function populateSuccessfulResponse(res: ServerResponse, data: Dispatcher.ResponseData): Promise<void> {
 	res.statusCode = data.statusCode;
@@ -25,8 +26,9 @@ export async function populateSuccessfulResponse(res: ServerResponse, data: Disp
 
 /**
  * Populates a server response with the data from a Discord non-2xx REST response that is NOT a 429
- * @param res The server response to populate
- * @param error The error to populate the response with
+ *
+ * @param res - The server response to populate
+ * @param error - The error to populate the response with
  */
 export function populateGeneralErrorResponse(res: ServerResponse, error: DiscordAPIError | HTTPError): void {
 	res.statusCode = error.status;
@@ -39,8 +41,9 @@ export function populateGeneralErrorResponse(res: ServerResponse, error: Discord
 
 /**
  * Populates a server response with the data from a Discord 429 REST response
- * @param res The server response to populate
- * @param error The error to populate the response with
+ *
+ * @param res - The server response to populate
+ * @param error - The error to populate the response with
  */
 export function populateRatelimitErrorResponse(res: ServerResponse, error: RateLimitError): void {
 	res.statusCode = 429;
@@ -48,8 +51,9 @@ export function populateRatelimitErrorResponse(res: ServerResponse, error: RateL
 }
 
 /**
- * Populates a server response with data relevant for a time out
- * @param res The sever response to populate
+ * Populates a server response with data relevant for a timeout
+ *
+ * @param res - The sever response to populate
  */
 export function populateAbortErrorResponse(res: ServerResponse): void {
 	res.statusCode = 504;

@@ -10,7 +10,8 @@ import { RateLimitError } from '../errors/RateLimitError';
 import { RESTEvents } from '../utils/constants';
 import { hasSublimit, parseHeader, parseResponse } from '../utils/utils';
 
-/* Invalid request limiting is done on a per-IP basis, not a per-token basis.
+/**
+ * Invalid request limiting is done on a per-IP basis, not a per-token basis.
  * The best we can do is track invalid counts process-wide (on the theory that
  * users could have multiple bots run from one process) rather than per-bot.
  * Therefore, store these at file scope here rather than in the client's
@@ -73,9 +74,9 @@ export class SequentialHandler implements IHandler {
 	#shiftSublimit = false;
 
 	/**
-	 * @param manager The request manager
-	 * @param hash The hash that this RequestHandler handles
-	 * @param majorParameter The major parameter for this handler
+	 * @param manager - The request manager
+	 * @param hash - The hash that this RequestHandler handles
+	 * @param majorParameter - The major parameter for this handler
 	 */
 	public constructor(
 		private readonly manager: RequestManager,
@@ -126,7 +127,8 @@ export class SequentialHandler implements IHandler {
 
 	/**
 	 * Emits a debug message
-	 * @param message The message to debug
+	 *
+	 * @param message - The message to debug
 	 */
 	private debug(message: string) {
 		this.manager.emit(RESTEvents.Debug, `[REST ${this.id}] ${message}`);
@@ -134,8 +136,8 @@ export class SequentialHandler implements IHandler {
 
 	/**
 	 * Delay all requests for the specified amount of time, handling global rate limits
-	 * @param time The amount of time to delay all requests for
-	 * @returns
+	 *
+	 * @param time - The amount of time to delay all requests for
 	 */
 	private async globalDelayFor(time: number): Promise<void> {
 		await sleep(time, undefined, { ref: false });
@@ -160,10 +162,11 @@ export class SequentialHandler implements IHandler {
 
 	/**
 	 * Queues a request to be sent
-	 * @param routeId The generalized api route with literal ids for major parameters
-	 * @param url The url to do the request on
-	 * @param options All the information needed to make a request
-	 * @param requestData Extra data from the user's request needed for errors and additional processing
+	 *
+	 * @param routeId - The generalized api route with literal ids for major parameters
+	 * @param url - The url to do the request on
+	 * @param options - All the information needed to make a request
+	 * @param requestData - Extra data from the user's request needed for errors and additional processing
 	 */
 	public async queueRequest(
 		routeId: RouteData,
@@ -216,11 +219,12 @@ export class SequentialHandler implements IHandler {
 
 	/**
 	 * The method that actually makes the request to the api, and updates info about the bucket accordingly
-	 * @param routeId The generalized api route with literal ids for major parameters
-	 * @param url The fully resolved url to make the request to
-	 * @param options The fetch options needed to make the request
-	 * @param requestData Extra data from the user's request needed for errors and additional processing
-	 * @param retries The number of retries this request has already attempted (recursion)
+	 *
+	 * @param routeId - The generalized api route with literal ids for major parameters
+	 * @param url - The fully resolved url to make the request to
+	 * @param options - The fetch options needed to make the request
+	 * @param requestData - Extra data from the user's request needed for errors and additional processing
+	 * @param retries - The number of retries this request has already attempted (recursion)
 	 */
 	private async runRequest(
 		routeId: RouteData,

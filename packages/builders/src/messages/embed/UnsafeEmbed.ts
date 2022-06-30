@@ -43,7 +43,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Adds fields to the embed (max 25)
 	 *
-	 * @param fields The fields to add
+	 * @param fields - The fields to add
 	 */
 	public addFields(...fields: RestOrArray<APIEmbedField>): this {
 		fields = normalizeArray(fields);
@@ -55,9 +55,9 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Removes, replaces, or inserts fields in the embed (max 25)
 	 *
-	 * @param index The index to start at
-	 * @param deleteCount The number of fields to remove
-	 * @param fields The replacing field objects
+	 * @param index - The index to start at
+	 * @param deleteCount - The number of fields to remove
+	 * @param fields - The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
@@ -67,7 +67,8 @@ export class UnsafeEmbedBuilder {
 
 	/**
 	 * Sets the embed's fields (max 25).
-	 * @param fields The fields to set
+	 *
+	 * @param fields - The fields to set
 	 */
 	public setFields(...fields: RestOrArray<APIEmbedField>) {
 		this.spliceFields(0, this.data.fields?.length ?? 0, ...normalizeArray(fields));
@@ -77,7 +78,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the author of this embed
 	 *
-	 * @param options The options for the author
+	 * @param options - The options for the author
 	 */
 	public setAuthor(options: EmbedAuthorOptions | null): this {
 		if (options === null) {
@@ -92,7 +93,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the color of this embed
 	 *
-	 * @param color The color of the embed
+	 * @param color - The color of the embed
 	 */
 	public setColor(color: number | RGBTuple | null): this {
 		if (Array.isArray(color)) {
@@ -107,7 +108,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the description of this embed
 	 *
-	 * @param description The description
+	 * @param description - The description
 	 */
 	public setDescription(description: string | null): this {
 		this.data.description = description ?? undefined;
@@ -117,7 +118,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the footer of this embed
 	 *
-	 * @param options The options for the footer
+	 * @param options - The options for the footer
 	 */
 	public setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
@@ -132,7 +133,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the image of this embed
 	 *
-	 * @param url The URL of the image
+	 * @param url - The URL of the image
 	 */
 	public setImage(url: string | null): this {
 		this.data.image = url ? { url } : undefined;
@@ -142,7 +143,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the thumbnail of this embed
 	 *
-	 * @param url The URL of the thumbnail
+	 * @param url - The URL of the thumbnail
 	 */
 	public setThumbnail(url: string | null): this {
 		this.data.thumbnail = url ? { url } : undefined;
@@ -152,7 +153,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the timestamp of this embed
 	 *
-	 * @param timestamp The timestamp or date
+	 * @param timestamp - The timestamp or date
 	 */
 	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
 		this.data.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
@@ -162,7 +163,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the title of this embed
 	 *
-	 * @param title The title
+	 * @param title - The title
 	 */
 	public setTitle(title: string | null): this {
 		this.data.title = title ?? undefined;
@@ -172,7 +173,7 @@ export class UnsafeEmbedBuilder {
 	/**
 	 * Sets the URL of this embed
 	 *
-	 * @param url The URL
+	 * @param url - The URL
 	 */
 	public setURL(url: string | null): this {
 		this.data.url = url ?? undefined;

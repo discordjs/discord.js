@@ -8,7 +8,8 @@ export class UnsafeSelectMenuOptionBuilder {
 
 	/**
 	 * Sets the label of this option
-	 * @param label The label to show on this option
+	 *
+	 * @param label - The label to show on this option
 	 */
 	public setLabel(label: string) {
 		this.data.label = label;
@@ -17,7 +18,8 @@ export class UnsafeSelectMenuOptionBuilder {
 
 	/**
 	 * Sets the value of this option
-	 * @param value The value of this option
+	 *
+	 * @param value - The value of this option
 	 */
 	public setValue(value: string) {
 		this.data.value = value;
@@ -26,7 +28,8 @@ export class UnsafeSelectMenuOptionBuilder {
 
 	/**
 	 * Sets the description of this option.
-	 * @param description The description of this option
+	 *
+	 * @param description - The description of this option
 	 */
 	public setDescription(description: string) {
 		this.data.description = description;
@@ -35,7 +38,8 @@ export class UnsafeSelectMenuOptionBuilder {
 
 	/**
 	 * Sets whether this option is selected by default
-	 * @param isDefault Whether this option is selected by default
+	 *
+	 * @param isDefault - Whether this option is selected by default
 	 */
 	public setDefault(isDefault = true) {
 		this.data.default = isDefault;
@@ -44,7 +48,8 @@ export class UnsafeSelectMenuOptionBuilder {
 
 	/**
 	 * Sets the emoji to display on this option
-	 * @param emoji The emoji to display on this option
+	 *
+	 * @param emoji - The emoji to display on this option
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
 		this.data.emoji = emoji;

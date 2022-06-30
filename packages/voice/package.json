@@ -7,7 +7,7 @@
 		"test": "jest --coverage",
 		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",
-		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript",
+		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
 		"release": "cliff-jumper"
@@ -64,6 +64,7 @@
 		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.3",
+		"@microsoft/api-extractor": "^7.28.2",
 		"@types/jest": "^28.1.2",
 		"eslint": "^8.18.0",
 		"jest": "^28.1.1",

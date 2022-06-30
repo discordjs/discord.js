@@ -6,7 +6,7 @@ import { StreamType } from '..';
 /**
  * Takes an Opus Head, and verifies whether the associated Opus audio is suitable to play in a Discord voice channel.
  *
- * @param opusHead The Opus Head to validate
+ * @param opusHead - The Opus Head to validate
  *
  * @returns `true` if suitable to play in a Discord voice channel, otherwise `false`
  */
@@ -35,9 +35,9 @@ export interface ProbeInfo {
 /**
  * Attempt to probe a readable stream to figure out whether it can be demuxed using an Ogg or WebM Opus demuxer.
  *
- * @param stream The readable stream to probe
- * @param probeSize The number of bytes to attempt to read before giving up on the probe
- * @param validator The Opus Head validator function
+ * @param stream - The readable stream to probe
+ * @param probeSize - The number of bytes to attempt to read before giving up on the probe
+ * @param validator - The Opus Head validator function
  *
  * @experimental
  */

@@ -45,7 +45,7 @@ export class SSRCMap extends EventEmitter {
 	/**
 	 * Updates the map with new user data
 	 *
-	 * @param data The data to update with
+	 * @param data - The data to update with
 	 */
 	public update(data: VoiceUserData) {
 		const existing = this.map.get(data.audioSSRC);
@@ -63,7 +63,7 @@ export class SSRCMap extends EventEmitter {
 	/**
 	 * Gets the stored voice data of a user.
 	 *
-	 * @param target The target, either their user id or audio SSRC
+	 * @param target - The target, either their user id or audio SSRC
 	 */
 	public get(target: number | string) {
 		if (typeof target === 'number') {
@@ -82,7 +82,7 @@ export class SSRCMap extends EventEmitter {
 	/**
 	 * Deletes the stored voice data about a user.
 	 *
-	 * @param target The target of the delete operation, either their audio SSRC or user id
+	 * @param target - The target of the delete operation, either their audio SSRC or user id
 	 *
 	 * @returns The data that was deleted, if any
 	 */

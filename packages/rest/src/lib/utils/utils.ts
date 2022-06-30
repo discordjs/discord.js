@@ -40,7 +40,9 @@ function serializeSearchParam(value: unknown): string | null {
 /**
  * Creates and populates an URLSearchParams instance from an object, stripping
  * out null and undefined values, while also coercing non-strings to strings.
- * @param options The options to use
+ *
+ * @param options - The options to use
+ *
  * @returns A populated URLSearchParams instance
  */
 export function makeURLSearchParams(options?: Record<string, unknown>) {
@@ -57,7 +59,8 @@ export function makeURLSearchParams(options?: Record<string, unknown>) {
 
 /**
  * Converts the response to usable data
- * @param res The fetch response
+ *
+ * @param res - The fetch response
  */
 export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
 	const header = parseHeader(res.headers['content-type']);
@@ -70,9 +73,11 @@ export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
 
 /**
  * Check whether a request falls under a sublimit
- * @param bucketRoute The buckets route identifier
- * @param body The options provided as JSON data
- * @param method The HTTP method that will be used to make the request
+ *
+ * @param bucketRoute - The buckets route identifier
+ * @param body - The options provided as JSON data
+ * @param method - The HTTP method that will be used to make the request
+ *
  * @returns Whether the request falls under a sublimit
  */
 export function hasSublimit(bucketRoute: string, body?: unknown, method?: string): boolean {

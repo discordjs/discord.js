@@ -17,7 +17,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a boolean option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addBooleanOption(
 		input: SlashCommandBooleanOption | ((builder: SlashCommandBooleanOption) => SlashCommandBooleanOption),
@@ -28,7 +28,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a user option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addUserOption(input: SlashCommandUserOption | ((builder: SlashCommandUserOption) => SlashCommandUserOption)) {
 		return this._sharedAddOptionMethod(input, SlashCommandUserOption);
@@ -37,7 +37,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a channel option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addChannelOption(
 		input: SlashCommandChannelOption | ((builder: SlashCommandChannelOption) => SlashCommandChannelOption),
@@ -48,7 +48,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a role option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addRoleOption(input: SlashCommandRoleOption | ((builder: SlashCommandRoleOption) => SlashCommandRoleOption)) {
 		return this._sharedAddOptionMethod(input, SlashCommandRoleOption);
@@ -57,7 +57,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds an attachment option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addAttachmentOption(
 		input: SlashCommandAttachmentOption | ((builder: SlashCommandAttachmentOption) => SlashCommandAttachmentOption),
@@ -68,7 +68,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a mentionable option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addMentionableOption(
 		input: SlashCommandMentionableOption | ((builder: SlashCommandMentionableOption) => SlashCommandMentionableOption),
@@ -79,7 +79,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a string option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addStringOption(
 		input:
@@ -99,7 +99,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds an integer option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addIntegerOption(
 		input:
@@ -119,7 +119,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	/**
 	 * Adds a number option
 	 *
-	 * @param input A function that returns an option builder, or an already built builder
+	 * @param input - A function that returns an option builder, or an already built builder
 	 */
 	public addNumberOption(
 		input:

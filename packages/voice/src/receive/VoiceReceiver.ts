@@ -58,7 +58,7 @@ export class VoiceReceiver {
 	/**
 	 * Called when a packet is received on the attached connection's WebSocket.
 	 *
-	 * @param packet The received packet
+	 * @param packet - The received packet
 	 *
 	 * @internal
 	 */
@@ -118,10 +118,10 @@ export class VoiceReceiver {
 	/**
 	 * Parses an audio packet, decrypting it to yield an Opus packet.
 	 *
-	 * @param buffer The buffer to parse
-	 * @param mode The encryption mode
-	 * @param nonce The nonce buffer used by the connection for encryption
-	 * @param secretKey The secret key used by the connection for encryption
+	 * @param buffer - The buffer to parse
+	 * @param mode - The encryption mode
+	 * @param nonce - The nonce buffer used by the connection for encryption
+	 * @param secretKey - The secret key used by the connection for encryption
 	 *
 	 * @returns The parsed Opus packet
 	 */
@@ -152,7 +152,7 @@ export class VoiceReceiver {
 	/**
 	 * Called when the UDP socket of the attached connection receives a message.
 	 *
-	 * @param msg The received message
+	 * @param msg - The received message
 	 *
 	 * @internal
 	 */
@@ -186,7 +186,7 @@ export class VoiceReceiver {
 	/**
 	 * Creates a subscription for the given user id.
 	 *
-	 * @param target The id of the user to subscribe to
+	 * @param target - The id of the user to subscribe to
 	 *
 	 * @returns A readable stream of Opus packets received from the target
 	 */

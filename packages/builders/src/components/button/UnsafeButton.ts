@@ -18,7 +18,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the style of this button
-	 * @param style The style of the button
+	 *
+	 * @param style - The style of the button
 	 */
 	public setStyle(style: ButtonStyle) {
 		this.data.style = style;
@@ -27,7 +28,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the URL for this button
-	 * @param url The URL to open when this button is clicked
+	 *
+	 * @param url - The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
 		(this.data as APIButtonComponentWithURL).url = url;
@@ -36,7 +38,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the custom Id for this button
-	 * @param customId The custom id to use for this button
+	 *
+	 * @param customId - The custom id to use for this button
 	 */
 	public setCustomId(customId: string) {
 		(this.data as APIButtonComponentWithCustomId).custom_id = customId;
@@ -45,7 +48,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the emoji to display on this button
-	 * @param emoji The emoji to display on this button
+	 *
+	 * @param emoji - The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
 		this.data.emoji = emoji;
@@ -54,7 +58,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets whether this button is disable or not
-	 * @param disabled Whether or not to disable this button or not
+	 *
+	 * @param disabled - Whether or not to disable this button or not
 	 */
 	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
@@ -63,7 +68,8 @@ export class UnsafeButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the label for this button
-	 * @param label The label to display on this button
+	 *
+	 * @param label - The label to display on this button
 	 */
 	public setLabel(label: string) {
 		this.data.label = label;

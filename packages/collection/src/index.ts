@@ -33,8 +33,8 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains the value of the given key if it exists, otherwise sets and returns the value provided by the default value generator.
 	 *
-	 * @param key The key to get if it exists, or set otherwise
-	 * @param defaultValueGenerator A function that generates the default value
+	 * @param key - The key to get if it exists, or set otherwise
+	 * @param defaultValueGenerator - A function that generates the default value
 	 *
 	 * @example
 	 * collection.ensure(guildId, () => defaultGuildConfig);
@@ -72,7 +72,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains the first value(s) in this collection.
 	 *
-	 * @param amount Amount of values to obtain from the beginning
+	 * @param amount - Amount of values to obtain from the beginning
 	 *
 	 * @returns A single value if no amount is provided or an array of values, starting from the end if amount is negative
 	 */
@@ -91,7 +91,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains the first key(s) in this collection.
 	 *
-	 * @param amount Amount of keys to obtain from the beginning
+	 * @param amount - Amount of keys to obtain from the beginning
 	 *
 	 * @returns A single key if no amount is provided or an array of keys, starting from the end if
 	 * amount is negative
@@ -111,7 +111,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains the last value(s) in this collection.
 	 *
-	 * @param amount Amount of values to obtain from the end
+	 * @param amount - Amount of values to obtain from the end
 	 *
 	 * @returns A single value if no amount is provided or an array of values, starting from the start if
 	 * amount is negative
@@ -129,7 +129,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains the last key(s) in this collection.
 	 *
-	 * @param amount Amount of keys to obtain from the end
+	 * @param amount - Amount of keys to obtain from the end
 	 *
 	 * @returns A single key if no amount is provided or an array of keys, starting from the start if
 	 * amount is negative
@@ -149,7 +149,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Returns the item at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
-	 * @param index The index of the element to obtain
+	 * @param index - The index of the element to obtain
 	 */
 	public at(index: number) {
 		index = Math.floor(index);
@@ -162,7 +162,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Returns the key at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
-	 * @param index The index of the key to obtain
+	 * @param index - The index of the key to obtain
 	 */
 	public keyAt(index: number) {
 		index = Math.floor(index);
@@ -173,7 +173,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains unique random value(s) from this collection.
 	 *
-	 * @param amount Amount of values to obtain randomly
+	 * @param amount - Amount of values to obtain randomly
 	 *
 	 * @returns A single value if no amount is provided or an array of values
 	 */
@@ -192,7 +192,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Obtains unique random key(s) from this collection.
 	 *
-	 * @param amount Amount of keys to obtain randomly
+	 * @param amount - Amount of keys to obtain randomly
 	 *
 	 * @returns A single key if no amount is provided or an array
 	 */
@@ -226,8 +226,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * should use the `get` method. See
 	 * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
 	 *
-	 * @param fn The function to test with (should return boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.find(user => user.username === 'Bob');
@@ -253,8 +253,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
 	 * but returns the key rather than the positional index.
 	 *
-	 * @param fn The function to test with (should return boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.findKey(user => user.username === 'Bob');
@@ -278,8 +278,8 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Removes items that satisfy the provided filter function.
 	 *
-	 * @param fn Function used to test (should return a boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function used to test (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @returns The number of removed entries
 	 */
@@ -300,8 +300,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
 	 * but returns a Collection instead of an Array.
 	 *
-	 * @param fn The function to test with (should return boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.filter(user => user.username === 'Bob');
@@ -332,8 +332,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Partitions the collection into two collections where the first collection
 	 * contains the items that passed and the second contains the items that failed.
 	 *
-	 * @param fn Function used to test (should return a boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function used to test (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
@@ -381,8 +381,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Maps each item into a Collection, then joins the results into a single Collection. Identical in behavior to
 	 * [Array.flatMap()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap).
 	 *
-	 * @param fn Function that produces a new Collection
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function that produces a new Collection
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.flatMap(guild => guild.members.cache);
@@ -401,8 +401,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Maps each item to another value into an array. Identical in behavior to
 	 * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 	 *
-	 * @param fn Function that produces an element of the new array, taking three arguments
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function that produces an element of the new array, taking three arguments
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.map(user => user.tag);
@@ -425,8 +425,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Maps each item to another value into a collection. Identical in behavior to
 	 * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
 	 *
-	 * @param fn Function that produces an element of the new collection, taking three arguments
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function that produces an element of the new collection, taking three arguments
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.mapValues(user => user.tag);
@@ -445,8 +445,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Checks if there exists an item that passes a test. Identical in behavior to
 	 * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 	 *
-	 * @param fn Function used to test (should return a boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function used to test (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.some(user => user.discriminator === '0000');
@@ -466,8 +466,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Checks if all items passes a test. Identical in behavior to
 	 * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
 	 *
-	 * @param fn Function used to test (should return a boolean)
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function used to test (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection.every(user => !user.bot);
@@ -497,9 +497,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Applies a function to produce a single value. Identical in behavior to
 	 * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
 	 *
-	 * @param fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
+	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
 	 * and `collection`
-	 * @param initialValue Starting value for the accumulator
+	 * @param initialValue - Starting value for the accumulator
 	 *
 	 * @example
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
@@ -536,8 +536,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * [Map.forEach()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach),
 	 * but returns the collection instead of undefined.
 	 *
-	 * @param fn Function to execute for each element
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function to execute for each element
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection
@@ -556,8 +556,8 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Runs a function on the collection and returns the collection.
 	 *
-	 * @param fn Function to execute
-	 * @param thisArg Value to use as `this` when executing function
+	 * @param fn - Function to execute
+	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
 	 * collection
@@ -587,7 +587,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Combines this collection with others into a new collection. None of the source collections are modified.
 	 *
-	 * @param collections Collections to merge
+	 * @param collections - Collections to merge
 	 *
 	 * @example
 	 * const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
@@ -605,7 +605,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * This is different to checking for equality using equal-signs, because
 	 * the collections may be different objects, but contain the same data.
 	 *
-	 * @param collection Collection to compare with
+	 * @param collection - Collection to compare with
 	 *
 	 * @returns Whether the collections have identical contents
 	 */
@@ -627,7 +627,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
 	 *
-	 * @param compareFunction Specifies a function that defines the sort order.
+	 * @param compareFunction - Specifies a function that defines the sort order.
 	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
 	 *
 	 * @example
@@ -650,7 +650,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * The intersect method returns a new structure containing items where the keys and values are present in both original structures.
 	 *
-	 * @param other The other Collection to filter against
+	 * @param other - The other Collection to filter against
 	 */
 	public intersect<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
@@ -665,7 +665,7 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * The difference method returns a new structure containing items where the key is present in one of the original structures but not the other.
 	 *
-	 * @param other The other Collection to filter against
+	 * @param other - The other Collection to filter against
 	 */
 	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, V | T> {
 		const coll = new this.constructor[Symbol.species]<K, V | T>();
@@ -680,10 +680,10 @@ export class Collection<K, V> extends Map<K, V> {
 
 	/**
 	 * Merges two Collections together into a new Collection.
-	 * @param other The other Collection to merge with
-	 * @param whenInSelf Function getting the result if the entry only exists in this Collection
-	 * @param whenInOther Function getting the result if the entry only exists in the other Collection
-	 * @param whenInBoth Function getting the result if the entry exists in both Collections
+	 * @param other - The other Collection to merge with
+	 * @param whenInSelf - Function getting the result if the entry only exists in this Collection
+	 * @param whenInOther - Function getting the result if the entry only exists in the other Collection
+	 * @param whenInBoth - Function getting the result if the entry exists in both Collections
 	 *
 	 * @example
 	 * // Sums up the entries in two collections.
@@ -734,7 +734,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
 	 *
-	 * @param compareFunction Specifies a function that defines the sort order.
+	 * @param compareFunction - Specifies a function that defines the sort order.
 	 * If omitted, the collection is sorted according to each character's Unicode code point value,
 	 * according to the string conversion of each element.
 	 *
@@ -756,8 +756,9 @@ export class Collection<K, V> extends Map<K, V> {
 
 	/**
 	 * Creates a Collection from a list of entries.
-	 * @param entries The list of entries
-	 * @param combine Function to combine an existing entry with a new one
+	 *
+	 * @param entries - The list of entries
+	 * @param combine - Function to combine an existing entry with a new one
 	 *
 	 * @example
 	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);

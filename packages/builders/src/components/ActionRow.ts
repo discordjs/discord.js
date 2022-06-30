@@ -36,8 +36,8 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 
 	/**
 	 * Adds components to this action row.
-	 * @param components The components to add to this action row.
-	 * @returns
+	 *
+	 * @param components - The components to add to this action row.
 	 */
 	public addComponents(...components: RestOrArray<T>) {
 		this.components.push(...normalizeArray(components));
@@ -46,7 +46,8 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 
 	/**
 	 * Sets the components in this action row
-	 * @param components The components to set this row to
+	 *
+	 * @param components - The components to set this row to
 	 */
 	public setComponents(...components: RestOrArray<T>) {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));
