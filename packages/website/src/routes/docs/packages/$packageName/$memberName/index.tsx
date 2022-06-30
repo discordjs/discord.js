@@ -27,7 +27,9 @@ export default function Member() {
 
 	console.log(data?.foo);
 
-	console.log(data?.parameters[1]);
+	console.log(data?.parameters);
+
+	console.log(data?.members);
 	return (
 		<div className="px-10">
 			<h1 style={{ fontFamily: 'JetBrains Mono' }} className="flex items-csenter content-center">
