@@ -1,15 +1,34 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { json } from '@remix-run/node';
 import { Params, useLoaderData } from '@remix-run/react';
 import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, VscSymbolVariable } from 'react-icons/vsc';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { ParameterTable } from '../../../../../components/ParameterTable';
-import { findMember } from '../../../../../model.server';
-import { constructHyperlinkedText } from '../../../../../util/util';
+import { ApiItem, ApiModel, ApiPackage } from '~/api-extractor.server';
+import { ParameterTable } from '~/components/ParameterTable';
+import { findMember } from '~/model.server';
+import { TSDocConfiguration } from '~/tsdoc.server';
+import { constructHyperlinkedText } from '~/util/util';
 
-export function loader({ params }: { params: Params }) {
-	const { packageName, memberName } = params;
-	return json(findMember(packageName!, memberName!));
+export async function loader({ params }: { params: Params }) {
+	const res = await fetch(
+		`https://raw.githubusercontent.com/discordjs/docs/main/${params.packageName!}/${params.branchName!}.api.json`,
+	);
+	const data = await res.json();
+
+	const model = new ApiModel();
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	const apiPackage = ApiItem.deserialize(data, {
+		apiJsonFilename: '',
+		toolPackage: data.metadata.toolPackage,
+		toolVersion: data.metadata.toolVersion,
+		versionToDeserialize: data.metadata.schemaVersion,
+		tsdocConfiguration: new TSDocConfiguration(),
+	}) as ApiPackage;
+	model.addMember(apiPackage);
+
+	return json(findMember(model, params.packageName!, params.memberName!));
 }
 
 const symbolClass = 'mr-2';

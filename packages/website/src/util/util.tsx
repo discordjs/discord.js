@@ -1,8 +1,10 @@
-import { TokenDocumentation } from '../model.server';
+import type { TokenDocumentation } from '../model.server';
 
 /**
  * Constructs a hyperlinked html node based on token type references
+ *
  * @param tokens An array of documentation tokens to construct the HTML
+ *
  * @returns An array of JSX elements and string comprising the hyperlinked text
  */
 export function constructHyperlinkedText(tokens: TokenDocumentation[]) {

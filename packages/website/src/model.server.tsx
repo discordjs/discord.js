@@ -14,27 +14,17 @@ import {
 	ExcerptTokenKind,
 	Parameter,
 } from '@microsoft/api-extractor-model';
-import { DocNode, DocParagraph, DocPlainText, TSDocConfiguration } from '@microsoft/tsdoc';
+import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import '@microsoft/tsdoc/schemas/tsdoc.schema.json'; // Try to work around vercel issue
-import json from './discord.js.api.json';
 
-const model = new ApiModel();
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-const apiPackage = ApiItem.deserialize(json as any, {
-	apiJsonFilename: '',
-	toolPackage: json.metadata.toolPackage,
-	toolVersion: json.metadata.toolVersion,
-	versionToDeserialize: json.metadata.schemaVersion,
-	tsdocConfiguration: new TSDocConfiguration(),
-}) as ApiPackage;
-model.addMember(apiPackage);
-
-export function findPackage(name: string): ApiPackage | undefined {
-	return model.findMembersByName(name)[0] as ApiPackage | undefined;
+export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
+	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as
+		| ApiPackage
+		| undefined;
 }
 
 function generatePath(items: readonly ApiItem[]) {
-	let path = '/docs/packages/';
+	let path = '/docs/main/packages/';
 	for (const item of items) {
 		switch (item.kind) {
 			case ApiItemKind.Model:
@@ -49,7 +39,7 @@ function generatePath(items: readonly ApiItem[]) {
 		}
 	}
 
-	return path;
+	return path.replace(/@discordjs\//, '');
 }
 
 function resolveDocComment(item: ApiDocumentedItem) {
@@ -85,7 +75,7 @@ function resolveDocComment(item: ApiDocumentedItem) {
 	return recurseNodes(summarySection.nodes);
 }
 
-function findReferences(excerpt: Excerpt) {
+function findReferences(model: ApiModel, excerpt: Excerpt) {
 	const retVal: Set<ApiItem> = new Set();
 
 	for (const token of excerpt.spannedTokens) {
@@ -169,7 +159,7 @@ function genReference(item: ApiItem) {
 	};
 }
 
-function genToken(token: ExcerptToken) {
+function genToken(model: ApiModel, token: ExcerptToken) {
 	const item = token.canonicalReference
 		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
 		: null;
@@ -181,16 +171,16 @@ function genToken(token: ExcerptToken) {
 	};
 }
 
-function genParameter(param: Parameter): ParameterDocumentation {
+function genParameter(model: ApiModel, param: Parameter): ParameterDocumentation {
 	return {
 		name: param.name,
 		isOptional: param.isOptional,
-		tokens: param.parameterTypeExcerpt.spannedTokens.map(genToken),
+		tokens: param.parameterTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
 	};
 }
 
-export function findMember(packageName: string, memberName: string) {
-	const pkg = findPackage(packageName)!;
+export function findMember(model: ApiModel, packageName: string, memberName: string) {
+	const pkg = findPackage(model, packageName)!;
 	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
 
 	if (!(member instanceof ApiDeclaredItem)) {
@@ -206,11 +196,11 @@ export function findMember(packageName: string, memberName: string) {
 		kind: member.kind,
 		summary: resolveDocComment(member),
 		excerpt: member.excerpt.text,
-		tokens: member.excerpt.spannedTokens.map(genToken),
-		refs: [...findReferences(member.excerpt).values()].map(genReference),
-		members: getProperties(member).map((member) => member.excerpt.spannedTokens.map(genToken)),
-		parameters: member instanceof ApiFunction ? member.parameters.map(genParameter) : [],
-		foo: excerpt.spannedTokens.map(genToken),
+		tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
+		refs: [...findReferences(model, member.excerpt).values()].map(genReference),
+		members: getProperties(member).map((member) => member.excerpt.spannedTokens.map((token) => genToken(model, token))),
+		parameters: member instanceof ApiFunction ? member.parameters.map((param) => genParameter(model, param)) : [],
+		foo: excerpt.spannedTokens.map((token) => genToken(model, token)),
 	};
 }
 
@@ -220,5 +210,3 @@ export function getMembers(pkg: ApiPackage) {
 		path: generatePath(member.getHierarchy()),
 	}));
 }
-
-export { model };
