@@ -46,6 +46,9 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+      - name: Build dependencies
+        run: yarn build --cache-dir=".turbo"
+
       - name: Build docs
         run: yarn docs --cache-dir=".turbo"
 

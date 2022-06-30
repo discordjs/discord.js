@@ -4,7 +4,7 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**", "docs/docs.json"]
+			"outputs": ["dist/**"]
 		},
 		"test": {
 			"dependsOn": ["^build"],
@@ -19,7 +19,7 @@
 		},
 		"docs": {
 			"dependsOn": ["^build"],
-			"outputs": ["docs/docs.json"]
+			"outputs": ["docs/docs.json", "docs/docs.api.json"]
 		},
 		"changelog": {
 			"dependsOn": ["^build"],
