@@ -1,4 +1,3 @@
-import path from 'path';
 import {
 	ApiDeclaredItem,
 	ApiDocumentedItem,
@@ -15,11 +14,20 @@ import {
 	ExcerptTokenKind,
 	Parameter,
 } from '@microsoft/api-extractor-model';
-import { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import { DocNode, DocParagraph, DocPlainText, TSDocConfiguration } from '@microsoft/tsdoc';
 import '@microsoft/tsdoc/schemas/tsdoc.schema.json'; // Try to work around vercel issue
+import json from './discord.js.api.json';
 
 const model = new ApiModel();
-model.loadPackage(path.join(__dirname, '..', 'src', 'discord.js.api.json'));
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+const apiPackage = ApiItem.deserialize(json as any, {
+	apiJsonFilename: '',
+	toolPackage: json.metadata.toolPackage,
+	toolVersion: json.metadata.toolVersion,
+	versionToDeserialize: json.metadata.schemaVersion,
+	tsdocConfiguration: new TSDocConfiguration(),
+}) as ApiPackage;
+model.addMember(apiPackage);
 
 export function findPackage(name: string): ApiPackage | undefined {
 	return model.findMembersByName(name)[0] as ApiPackage | undefined;
