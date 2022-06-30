@@ -198,7 +198,10 @@ export function findMember(model: ApiModel, packageName: string, memberName: str
 		excerpt: member.excerpt.text,
 		tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
 		refs: [...findReferences(model, member.excerpt).values()].map(genReference),
-		members: getProperties(member).map((member) => member.excerpt.spannedTokens.map((token) => genToken(model, token))),
+		members: getProperties(member).map((member) => ({
+			tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
+			summary: resolveDocComment(member),
+		})),
 		parameters: member instanceof ApiFunction ? member.parameters.map((param) => genParameter(model, param)) : [],
 		foo: excerpt.spannedTokens.map((token) => genToken(model, token)),
 	};

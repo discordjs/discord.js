@@ -67,7 +67,9 @@ export default function Member() {
 					<ul>
 						{data?.members.map((member, i) => (
 							<li key={i}>
-								<code>{constructHyperlinkedText(member)}</code>
+								<code>{constructHyperlinkedText(member.tokens)}</code>
+								<h4>Sumary</h4>
+								<p>{member.summary ?? 'No summary provided.'}</p>
 							</li>
 						))}
 					</ul>
