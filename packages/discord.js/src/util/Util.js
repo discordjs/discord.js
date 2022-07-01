@@ -474,6 +474,7 @@ function basename(path, ext) {
   const res = parse(path);
   return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
 }
+
 /**
  * The content to have all mentions replaced by the equivalent text.
  * @param {string} str The string to be converted
@@ -481,32 +482,37 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  str = str
-    .replace(/<@!?[0-9]+>/g, input => {
-      const id = input.replace(/<|!|>|@/g, '');
-      if (channel.type === ChannelType.DM) {
-        const user = channel.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
-      }
+  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
+    switch (type) {
+      case '@':
+      case '@!': {
+        if (channel.type === ChannelType.DM) {
+          const user = channel.client.users.cache.get(id);
+          return user ? `@${user.username}` : match;
+        }
 
-      const member = channel.guild.members.cache.get(id);
-      if (member) {
-        return `@${member.displayName}`;
-      } else {
-        const user = channel.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
+        const member = channel.guild.members.cache.get(id);
+        if (member) {
+          return `@${member.displayName}`;
+        } else {
+          const user = channel.client.users.cache.get(id);
+          return user ? `@${user.username}` : match;
+        }
       }
-    })
-    .replace(/<#[0-9]+>/g, input => {
-      const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));
-      return mentionedChannel ? `#${mentionedChannel.name}` : input;
-    })
-    .replace(/<@&[0-9]+>/g, input => {
-      if (channel.type === ChannelType.DM) return input;
-      const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
-      return role ? `@${role.name}` : input;
-    });
-  return str;
+      case '@&': {
+        if (channel.type === ChannelType.DM) return match;
+        const role = channel.guild.roles.cache.get(id);
+        return role ? `@${role.name}` : match;
+      }
+      case '#': {
+        const mentionedChannel = channel.client.channels.cache.get(id);
+        return mentionedChannel ? `#${mentionedChannel.name}` : match;
+      }
+      default: {
+        return match;
+      }
+    }
+  });
 }
 
 /**
