@@ -11,8 +11,8 @@ export function Interface({ data }: InterfaceProps) {
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
 			<>
-				<PropertyList data={data.properties} />
-				<MethodList data={data.methods} />
+				{data.properties.length ? <PropertyList data={data.properties} /> : null}
+				{data.methods.length ? <MethodList data={data.methods} /> : null}
 			</>
 		</DocContainer>
 	);
