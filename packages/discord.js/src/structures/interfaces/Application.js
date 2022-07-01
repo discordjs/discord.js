@@ -5,6 +5,7 @@ const Base = require('../Base');
 
 /**
  * Represents an OAuth2 Application.
+ * @extends {Base}
  * @abstract
  */
 class Application extends Base {

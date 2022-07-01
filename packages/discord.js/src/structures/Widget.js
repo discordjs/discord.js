@@ -7,6 +7,7 @@ const WidgetMember = require('./WidgetMember');
 
 /**
  * Represents a Widget.
+ * @extends {Base}
  */
 class Widget extends Base {
   constructor(client, data) {
