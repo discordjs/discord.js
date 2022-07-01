@@ -23,6 +23,7 @@ const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a modal interaction
+ * @extends {BaseInteraction}
  * @implements {InteractionResponses}
  */
 class ModalSubmitInteraction extends BaseInteraction {

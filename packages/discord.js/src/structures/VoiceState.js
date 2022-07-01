@@ -6,6 +6,7 @@ const { Error, TypeError, ErrorCodes } = require('../errors');
 
 /**
  * Represents the voice state for a Guild Member.
+ * @extends {Base}
  */
 class VoiceState extends Base {
   constructor(guild, data) {
