@@ -486,18 +486,13 @@ function cleanContent(str, channel) {
     switch (type) {
       case '@':
       case '@!': {
-        if (channel.type === ChannelType.DM) {
-          const user = channel.client.users.cache.get(id);
-          return user ? `@${user.username}` : match;
-        }
-
-        const member = channel.guild.members.cache.get(id);
+        const member = channel.guild?.members.cache.get(id);
         if (member) {
           return `@${member.displayName}`;
-        } else {
-          const user = channel.client.users.cache.get(id);
-          return user ? `@${user.username}` : match;
         }
+        
+        const user = channel.client.users.cache.get(id);
+        return user ? `@${user.username}` : match;
       }
       case '@&': {
         if (channel.type === ChannelType.DM) return match;
