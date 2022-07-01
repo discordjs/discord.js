@@ -490,7 +490,7 @@ function cleanContent(str, channel) {
         if (member) {
           return `@${member.displayName}`;
         }
-        
+
         const user = channel.client.users.cache.get(id);
         return user ? `@${user.username}` : match;
       }
