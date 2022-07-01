@@ -40,6 +40,14 @@ class MessageMentions {
    */
   static ChannelsPattern = FormattingPatterns.Channel;
 
+  /**
+   * A global regular expression variant of {@link MessageMentions.ChannelsPattern}.
+   * @type {RegExp}
+   * @memberof MessageMentions
+   * @private
+   */
+  static GlobalChannelsPattern = new RegExp(this.ChannelsPattern.source, 'g');
+
   constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
      * The client the message is from
@@ -190,10 +198,9 @@ class MessageMentions {
   get channels() {
     if (this._channels) return this._channels;
     this._channels = new Collection();
-    const globalChannelsPatern = new RegExp(this.constructor.ChannelsPattern.source, 'g');
     let matches;
 
-    while ((matches = globalChannelsPatern.exec(this._content)) !== null) {
+    while ((matches = this.constructor.GlobalChannelsPattern.exec(this._content)) !== null) {
       const channel = this.client.channels.cache.get(matches.groups.id);
       if (channel) this._channels.set(channel.id, channel);
     }

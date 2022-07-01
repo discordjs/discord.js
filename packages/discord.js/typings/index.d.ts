@@ -1874,6 +1874,7 @@ export class MessageMentions {
   public toJSON(): unknown;
 
   public static ChannelsPattern: typeof FormattingPatterns.Channel;
+  private static GlobalChannelsPattern: RegExp;
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
