@@ -2628,7 +2628,6 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
 
 export function basename(path: string, ext?: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
-export function cloneObject(obj: unknown): unknown;
 export function discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
   collection: Collection<K, V>,
 ): Collection<K, V>;

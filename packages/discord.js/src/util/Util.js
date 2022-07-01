@@ -267,16 +267,6 @@ function resolvePartialEmoji(emoji) {
 }
 
 /**
- * Shallow-copies an object with its class/prototype intact.
- * @param {Object} obj Object to clone
- * @returns {Object}
- * @private
- */
-function cloneObject(obj) {
-  return Object.assign(Object.create(obj), obj);
-}
-
-/**
  * Sets default properties on an object that aren't already specified.
  * @param {Object} def Default properties
  * @param {Object} given Object to assign defaults to
@@ -567,7 +557,6 @@ module.exports = {
   fetchRecommendedShards,
   parseEmoji,
   resolvePartialEmoji,
-  cloneObject,
   mergeDefault,
   makeError,
   makePlainError,
