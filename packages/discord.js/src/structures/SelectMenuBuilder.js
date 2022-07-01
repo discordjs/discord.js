@@ -35,7 +35,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
     const { emoji, ...option } = selectMenuOption;
     return {
       ...option,
-      emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
+      emoji: typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
     };
   }
 
