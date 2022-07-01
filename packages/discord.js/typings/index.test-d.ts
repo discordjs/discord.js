@@ -131,7 +131,13 @@ import {
   CollectedMessageInteraction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import { UnsafeButtonBuilder, UnsafeEmbedBuilder, UnsafeSelectMenuBuilder } from '@discordjs/builders';
+import {
+  ContextMenuCommandBuilder,
+  SlashCommandBuilder,
+  UnsafeButtonBuilder,
+  UnsafeEmbedBuilder,
+  UnsafeSelectMenuBuilder,
+} from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -155,6 +161,9 @@ const testUserId = '987654321098765432'; // example id
 const globalCommandId = '123456789012345678'; // example id
 const guildCommandId = '234567890123456789'; // example id
 
+declare const slashCommandBuilder: SlashCommandBuilder;
+declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
+
 client.on('ready', async () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);
 
@@ -170,6 +179,11 @@ client.on('ready', async () => {
   const globalCommand = await client.application?.commands.fetch(globalCommandId);
   const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandId, { guildId: testGuildId });
   const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch(guildCommandId);
+
+  await client.application?.commands.create(slashCommandBuilder);
+  await client.application?.commands.create(contextMenuCommandBuilder);
+  await guild.commands.create(slashCommandBuilder);
+  await guild.commands.create(contextMenuCommandBuilder);
 
   await client.application?.commands.edit(globalCommandId, { defaultMemberPermissions: null });
   await globalCommand?.edit({ defaultMemberPermissions: null });
