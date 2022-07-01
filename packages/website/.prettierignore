@@ -9,3 +9,5 @@ coverage/
 tsup.config.*.mjs
 .cache
 build/
+src/styles/unocss.css
+api/

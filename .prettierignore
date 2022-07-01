@@ -1,9 +1,0 @@
-**/CHANGELOG.md
-**/.turbo
-**/.yarn*
-**/dist/
-**/docs/**/*
-**/!docs/index.yml
-**/!docs/README.md
-**/coverage/
-**/LICENSE

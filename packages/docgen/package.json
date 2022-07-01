@@ -53,7 +53,7 @@
 		"commander": "^9.3.0",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.0-beta.4"
+		"typedoc": "^0.23.2"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.3",

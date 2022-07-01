@@ -11,5 +11,5 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts", "src/**/*.tsx", "remix.env.d.ts", "types.d.ts"]
 }

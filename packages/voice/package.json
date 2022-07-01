@@ -67,7 +67,7 @@
 		"@microsoft/api-extractor": "^7.28.2",
 		"@types/jest": "^28.1.2",
 		"eslint": "^8.18.0",
-		"jest": "^28.1.1",
+		"jest": "^28.1.2",
 		"jest-websocket-mock": "^2.3.0",
 		"mock-socket": "^9.1.5",
 		"prettier": "^2.7.1",
