@@ -1,4 +1,4 @@
-import type { TokenDocumentation } from '../model.server';
+import type { TokenDocumentation } from './parse.server';
 
 /**
  * Constructs a hyperlinked html node based on token type references

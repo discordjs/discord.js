@@ -1,21 +1,17 @@
 import {
-	ApiDeclaredItem,
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiFunction,
-	ApiItem,
+	type ApiModel,
+	type ApiPackage,
+	type ApiItem,
 	ApiItemKind,
-	ApiModel,
-	ApiNameMixin,
-	ApiPackage,
-	ApiPropertyItem,
-	Excerpt,
-	ExcerptToken,
+	ApiDocumentedItem,
+	type Excerpt,
 	ExcerptTokenKind,
-	Parameter,
+	ApiNameMixin,
+	type ApiPropertyItem,
+	type ExcerptToken,
+	type Parameter,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import '@microsoft/tsdoc/schemas/tsdoc.schema.json'; // Try to work around vercel issue
 
 export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
 	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as
@@ -42,7 +38,7 @@ function generatePath(items: readonly ApiItem[]) {
 	return path.replace(/@discordjs\//, '');
 }
 
-function resolveDocComment(item: ApiDocumentedItem) {
+export function resolveDocComment(item: ApiDocumentedItem) {
 	if (!(item instanceof ApiDocumentedItem)) {
 		return null;
 	}
@@ -55,7 +51,7 @@ function resolveDocComment(item: ApiDocumentedItem) {
 
 	const { summarySection } = tsdocComment;
 
-	function recurseNodes(nodes: readonly DocNode[] | undefined): string | null | undefined {
+	function recurseNodes(nodes: readonly DocNode[] | undefined): string | null {
 		if (!nodes) {
 			return null;
 		}
@@ -70,12 +66,14 @@ function resolveDocComment(item: ApiDocumentedItem) {
 					return null;
 			}
 		}
+
+		return null;
 	}
 
 	return recurseNodes(summarySection.nodes);
 }
 
-function findReferences(model: ApiModel, excerpt: Excerpt) {
+export function findReferences(model: ApiModel, excerpt: Excerpt) {
 	const retVal: Set<ApiItem> = new Set();
 
 	for (const token of excerpt.spannedTokens) {
@@ -106,23 +104,7 @@ export function resolveName(item: ApiItem) {
 	return item.displayName;
 }
 
-export function createHyperlinkedExcerpt(excerpt: Excerpt) {
-	const html: (JSX.Element | string)[] = [];
-	for (const token of excerpt.spannedTokens) {
-		switch (token.kind) {
-			case ExcerptTokenKind.Content:
-				html.push(token.text);
-				break;
-			case ExcerptTokenKind.Reference:
-				html.push(<a href="google.com">{token.text}</a>);
-				break;
-		}
-	}
-
-	return ['1', '2', '3'];
-}
-
-function getProperties(item: ApiItem) {
+export function getProperties(item: ApiItem) {
 	const properties: ApiPropertyItem[] = [];
 	for (const member of item.members) {
 		switch (member.kind) {
@@ -152,14 +134,14 @@ export interface ParameterDocumentation {
 	tokens: TokenDocumentation[];
 }
 
-function genReference(item: ApiItem) {
+export function genReference(item: ApiItem) {
 	return {
 		name: resolveName(item),
 		path: generatePath(item.getHierarchy()),
 	};
 }
 
-function genToken(model: ApiModel, token: ExcerptToken) {
+export function genToken(model: ApiModel, token: ExcerptToken) {
 	const item = token.canonicalReference
 		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
 		: null;
@@ -171,39 +153,11 @@ function genToken(model: ApiModel, token: ExcerptToken) {
 	};
 }
 
-function genParameter(model: ApiModel, param: Parameter): ParameterDocumentation {
+export function genParameter(model: ApiModel, param: Parameter): ParameterDocumentation {
 	return {
 		name: param.name,
 		isOptional: param.isOptional,
 		tokens: param.parameterTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
-	};
-}
-
-export function findMember(model: ApiModel, packageName: string, memberName: string) {
-	const pkg = findPackage(model, packageName)!;
-	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
-
-	if (!(member instanceof ApiDeclaredItem)) {
-		return undefined;
-	}
-
-	const excerpt = (member as ApiFunction).excerpt;
-
-	console.log(createHyperlinkedExcerpt(excerpt));
-
-	return {
-		name: resolveName(member),
-		kind: member.kind,
-		summary: resolveDocComment(member),
-		excerpt: member.excerpt.text,
-		tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
-		refs: [...findReferences(model, member.excerpt).values()].map(genReference),
-		members: getProperties(member).map((member) => ({
-			tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
-			summary: resolveDocComment(member),
-		})),
-		parameters: member instanceof ApiFunction ? member.parameters.map((param) => genParameter(model, param)) : [],
-		foo: excerpt.spannedTokens.map((token) => genToken(model, token)),
 	};
 }
 

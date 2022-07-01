@@ -2,14 +2,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { json } from '@remix-run/node';
 import { Params, useLoaderData } from '@remix-run/react';
-import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, VscSymbolVariable } from 'react-icons/vsc';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import type { DocClass } from '~/DocModel/DocClass';
+import type { DocEnum } from '~/DocModel/DocEnum';
+import type { DocFunction } from '~/DocModel/DocFunction';
+import type { DocInterface } from '~/DocModel/DocInterface';
+import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
+import type { DocVariable } from '~/DocModel/DocVariable';
 import { ApiItem, ApiModel, ApiPackage } from '~/api-extractor.server';
-import { ParameterTable } from '~/components/ParameterTable';
+import { Class } from '~/components/model/Class';
+import { Enum } from '~/components/model/Enum';
+import { Function } from '~/components/model/Function';
+import { Interface } from '~/components/model/Interface';
+import { TypeAlias } from '~/components/model/TypeAlias';
+import { Variable } from '~/components/model/Variable';
 import { findMember } from '~/model.server';
 import { TSDocConfiguration } from '~/tsdoc.server';
-import { constructHyperlinkedText } from '~/util/util';
 
 export async function loader({ params }: { params: Params }) {
 	const res = await fetch(
@@ -27,76 +34,26 @@ export async function loader({ params }: { params: Params }) {
 		tsdocConfiguration: new TSDocConfiguration(),
 	}) as ApiPackage;
 	model.addMember(apiPackage);
-
-	return json(findMember(model, params.packageName!, params.memberName!));
+	return json(findMember(model, params.packageName!, params.memberName!)?.toJSON());
 }
 
-const symbolClass = 'mr-2';
-const icons = {
-	Class: <VscSymbolClass color="blue" className={symbolClass} />,
-	Method: <VscSymbolMethod className={symbolClass} />,
-	Function: <VscSymbolMethod color="purple" className={symbolClass} />,
-	Enum: <VscSymbolEnum className={symbolClass} />,
-	Interface: <VscSymbolInterface color="blue" className={symbolClass} />,
-	TypeAlias: <VscSymbolVariable color="blue" className={symbolClass} />,
-};
-
 export default function Member() {
-	const data = useLoaderData<ReturnType<typeof findMember>>();
+	const data = useLoaderData();
 
-	console.log(data?.foo);
-
-	console.log(data?.parameters);
-
-	console.log(data?.members);
-	return (
-		<div className="px-10">
-			<h1 style={{ fontFamily: 'JetBrains Mono' }} className="flex items-csenter content-center">
-				{icons[data?.kind ?? 'Class']}
-				{data?.name}
-			</h1>
-			<h3>Code declaration:</h3>
-			<SyntaxHighlighter language="typescript" style={vs} codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}>
-				{data?.excerpt ?? ''}
-			</SyntaxHighlighter>
-			<h3>Summary</h3>
-			<p>{data?.summary ?? 'No summary provided.'}</p>
-			{(data?.members.length ?? 0) > 0 && (
-				<>
-					<h3>Members</h3>
-					<ul>
-						{data?.members.map((member, i) => (
-							<li key={i}>
-								<code>{constructHyperlinkedText(member.tokens)}</code>
-								<h4>Sumary</h4>
-								<p>{member.summary ?? 'No summary provided.'}</p>
-							</li>
-						))}
-					</ul>
-				</>
-			)}
-
-			{(data?.parameters.length ?? 0) > 0 && (
-				<>
-					<h3>Parameters</h3>
-					<ParameterTable data={data?.parameters ?? []} />
-				</>
-			)}
-
-			{(data?.refs.length ?? 0) > 0 && (
-				<>
-					<h3>{'Type References'}</h3>
-					<ul>
-						{data?.refs.map((item, i) => (
-							<li key={i}>
-								<code>
-									<a href={item.path}>{item.name}</a>
-								</code>
-							</li>
-						))}
-					</ul>
-				</>
-			)}
-		</div>
-	);
+	switch (data.kind) {
+		case 'Class':
+			return <Class data={data as ReturnType<DocClass['toJSON']>} />;
+		case 'Function':
+			return <Function data={data as ReturnType<DocFunction['toJSON']>} />;
+		case 'Interface':
+			return <Interface data={data as ReturnType<DocInterface['toJSON']>} />;
+		case 'TypeAlias':
+			return <TypeAlias data={data as ReturnType<DocTypeAlias['toJSON']>} />;
+		case 'Variable':
+			return <Variable data={data as ReturnType<DocVariable['toJSON']>} />;
+		case 'Enum':
+			return <Enum data={data as ReturnType<DocEnum['toJSON']>} />;
+		default:
+			return <div>Cannot render that item type</div>;
+	}
 }

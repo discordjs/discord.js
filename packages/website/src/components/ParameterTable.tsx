@@ -1,5 +1,5 @@
-import { ParameterDocumentation } from '../model.server';
 import { constructHyperlinkedText } from '../util/util';
+import type { ParameterDocumentation } from '~/util/parse.server';
 
 interface ParameterDetailProps {
 	data: ParameterDocumentation[];

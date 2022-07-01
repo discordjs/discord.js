@@ -3,8 +3,8 @@
 import { json } from '@remix-run/node';
 import { Params, useLoaderData } from '@remix-run/react';
 import { ApiItem, ApiModel, ApiPackage } from '~/api-extractor.server';
-import { findPackage, getMembers } from '~/model.server';
 import { TSDocConfiguration } from '~/tsdoc.server';
+import { findPackage, getMembers } from '~/util/parse.server';
 
 export async function loader({ params }: { params: Params }) {
 	const res = await fetch(
