@@ -185,6 +185,11 @@ client.on('ready', async () => {
   await guild.commands.create(slashCommandBuilder);
   await guild.commands.create(contextMenuCommandBuilder);
 
+  await client.application?.commands.edit(globalCommandId, slashCommandBuilder);
+  await client.application?.commands.edit(globalCommandId, contextMenuCommandBuilder);
+  await guild.commands.edit(guildCommandId, slashCommandBuilder);
+  await guild.commands.edit(guildCommandId, contextMenuCommandBuilder);
+
   await client.application?.commands.edit(globalCommandId, { defaultMemberPermissions: null });
   await globalCommand?.edit({ defaultMemberPermissions: null });
   await globalCommand?.setDefaultMemberPermissions(null);
