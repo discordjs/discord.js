@@ -567,7 +567,7 @@ class ApplicationCommand extends Base {
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
       [minLengthKey]: option.minLength ?? option.min_length,
-      [maxLengthKey]: option.maxLength ?? option.max_length,      
+      [maxLengthKey]: option.maxLength ?? option.max_length,
     };
   }
 }
