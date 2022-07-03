@@ -7,7 +7,7 @@ const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, cloneObject, verifyString, lazy } = require('../util/Util');
+const { basename, verifyString, lazy } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
@@ -165,9 +165,8 @@ class MessagePayload {
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
 
-    if (allowedMentions) {
-      allowedMentions = cloneObject(allowedMentions);
-      allowedMentions.replied_user = allowedMentions.repliedUser;
+    if (typeof allowedMentions?.repliedUser !== 'undefined') {
+      allowedMentions = { ...allowedMentions, replied_user: allowedMentions.repliedUser };
       delete allowedMentions.repliedUser;
     }
 
