@@ -441,6 +441,8 @@ class ApplicationCommand extends Base {
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
       (option.maxValue ?? option.max_value) !== existing.maxValue ||
+      (option.minLength ?? option.min_length) !== existing.minLength ||
+      (option.maxLength ?? option.max_length) !== existing.maxLength ||
       !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
       !isEqual(
         option.descriptionLocalizations ?? option.description_localizations ?? {},
@@ -509,6 +511,10 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [minLength] The minimum length for an {@link ApplicationCommandOptionType.String} option
+   * (minimum of 0, maximum of `6000`)
+   * @property {number} [maxLength] The maximum length for an {@link ApplicationCommandOptionType.String} option
+   * (minimum of 1, maximum of `6000`)
    */
 
   /**
@@ -531,6 +537,8 @@ class ApplicationCommand extends Base {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
+    const minLengthKey = received ? 'minLength' : 'min_length';
+    const maxLengthKey = received ? 'maxLength' : 'max_length';
     const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
     const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
     const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
@@ -560,6 +568,8 @@ class ApplicationCommand extends Base {
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
+      [minLengthKey]: option.minLength ?? option.min_length,
+      [maxLengthKey]: option.maxLength ?? option.max_length,
     };
   }
 }
