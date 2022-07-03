@@ -3,6 +3,7 @@
 	"version": "1.0.0-dev",
 	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
+		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",

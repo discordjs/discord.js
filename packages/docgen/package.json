@@ -3,6 +3,7 @@
 	"version": "0.12.0-dev",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
+		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts --fix --cache",

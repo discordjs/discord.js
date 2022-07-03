@@ -4,6 +4,7 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"private": true,
 	"scripts": {
+		"test": "vitest run",
 		"build": "yarn build:css && yarn build:remix",
 		"build:css": "yarn generate:css",
 		"build:remix": "remix build",
