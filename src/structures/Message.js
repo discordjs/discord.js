@@ -331,7 +331,8 @@ class Message extends Base {
      * @typedef {Object} MessageInteraction
      * @property {Snowflake} id The interaction's id
      * @property {InteractionType} type The type of the interaction
-     * @property {string} commandName The name of the interaction's application command
+     * @property {string} commandName The name of the interaction's application command,
+     * as well as the subcommand and subcommand group, where applicable
      * @property {User} user The user that invoked the interaction
      */
 
