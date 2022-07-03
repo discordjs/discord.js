@@ -33,5 +33,9 @@ jobs:
       - name: Tests
         run: yarn test
 
+      - name: Upload Coverage
+        uses: ./packages/actions/src/uploadCoverage
+        if: github.repository_owner == 'discordjs'
+
       - name: Build
         run: yarn build --cache-dir=".turbo"
