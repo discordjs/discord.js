@@ -6,6 +6,7 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Error, ErrorCodes } = require('../errors');
+const ShardEvents = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
 let childProcess = null;
 let Worker = null;
@@ -135,7 +136,7 @@ class Shard extends EventEmitter {
      * @event Shard#spawn
      * @param {ChildProcess|Worker} process Child process/worker that was created
      */
-    this.emit('spawn', child);
+    this.emit(ShardEvents.Spawn, child);
 
     if (timeout === -1 || timeout === Infinity) return Promise.resolve(child);
     return new Promise((resolve, reject) => {
@@ -327,7 +328,7 @@ class Shard extends EventEmitter {
          * Emitted upon the shard's {@link Client#event:shardReady} event.
          * @event Shard#ready
          */
-        this.emit('ready');
+        this.emit(ShardEvents.Ready);
         return;
       }
 
@@ -338,7 +339,7 @@ class Shard extends EventEmitter {
          * Emitted upon the shard's {@link Client#event:shardDisconnect} event.
          * @event Shard#disconnect
          */
-        this.emit('disconnect');
+        this.emit(ShardEvents.Disconnect);
         return;
       }
 
@@ -349,7 +350,7 @@ class Shard extends EventEmitter {
          * Emitted upon the shard's {@link Client#event:shardReconnecting} event.
          * @event Shard#reconnecting
          */
-        this.emit('reconnecting');
+        this.emit(ShardEvents.Reconnecting);
         return;
       }
 
@@ -388,7 +389,7 @@ class Shard extends EventEmitter {
      * @event Shard#message
      * @param {*} message Message that was received
      */
-    this.emit('message', message);
+    this.emit(ShardEvents.Message, message);
   }
 
   /**
@@ -404,7 +405,7 @@ class Shard extends EventEmitter {
      * @event Shard#death
      * @param {ChildProcess|Worker} process Child process/worker that exited
      */
-    this.emit('death', this.process ?? this.worker);
+    this.emit(ShardEvents.Death, this.process ?? this.worker);
 
     this.ready = false;
     this.process = null;
@@ -412,7 +413,7 @@ class Shard extends EventEmitter {
     this._evals.clear();
     this._fetches.clear();
 
-    if (respawn) this.spawn(timeout).catch(err => this.emit('error', err));
+    if (respawn) this.spawn(timeout).catch(err => this.emit(ShardEvents.Error, err));
   }
 
   /**

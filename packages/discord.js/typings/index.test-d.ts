@@ -102,7 +102,7 @@ import {
   InteractionResponseFields,
   ThreadChannelType,
   Events,
-  ShardEvents,
+  WebSocketShardEvents,
   Status,
   CategoryChannelChildManager,
   ActionRowData,
@@ -129,6 +129,7 @@ import {
   AnyThreadChannel,
   ThreadMemberManager,
   CollectedMessageInteraction,
+  ShardEvents,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import {
@@ -1099,7 +1100,8 @@ reactionCollector.on('dispose', (...args) => {
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
 expectAssignable<'messageCreate'>(Events.MessageCreate);
-expectAssignable<'close'>(ShardEvents.Close);
+expectAssignable<'close'>(WebSocketShardEvents.Close);
+expectAssignable<'death'>(ShardEvents.Death);
 expectAssignable<1>(Status.Connecting);
 
 declare const applicationCommandData: ApplicationCommandData;
