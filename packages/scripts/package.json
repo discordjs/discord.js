@@ -4,6 +4,7 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
+		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts --fix --cache"

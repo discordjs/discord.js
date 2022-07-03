@@ -3,6 +3,7 @@
 	"version": "0.8.0-dev",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
+		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",

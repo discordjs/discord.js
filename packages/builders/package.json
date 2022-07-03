@@ -3,6 +3,7 @@
 	"version": "0.16.0-dev",
 	"description": "A set of builders that you can use when creating your bot",
 	"scripts": {
+		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
 		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",

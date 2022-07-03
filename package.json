@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
-		"test": "turbo run test && vitest run",
+		"test": "turbo run test",
 		"lint": "turbo run lint",
 		"format": "turbo run format",
 		"fmt": "turbo run format",
