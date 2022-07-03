@@ -121,6 +121,7 @@ import {
   APIAttachment,
   APIChannel,
   ThreadAutoArchiveDuration,
+  FormattingPatterns,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1873,10 +1874,11 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static ChannelsPattern: RegExp;
+  public static ChannelsPattern: typeof FormattingPatterns.Channel;
+  private static GlobalChannelsPattern: RegExp;
   public static EveryonePattern: RegExp;
-  public static RolesPattern: RegExp;
-  public static UsersPattern: RegExp;
+  public static RolesPattern: typeof FormattingPatterns.Role;
+  public static UsersPattern: typeof FormattingPatterns.User;
 }
 
 export class MessagePayload {
