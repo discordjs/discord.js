@@ -1,4 +1,4 @@
-import type { APITextInputComponent } from 'discord-api-types/v10';
+import type { APITextInputComponent, TextInputStyle } from 'discord-api-types/v10';
 import {
 	maxLengthValidator,
 	minLengthValidator,
@@ -6,10 +6,25 @@ import {
 	requiredValidator,
 	valueValidator,
 	validateRequiredParameters,
+	labelValidator,
+	textInputStyleValidator,
 } from './Assertions';
 import { UnsafeTextInputBuilder } from './UnsafeTextInput';
+import { customIdValidator } from '../Assertions';
 
 export class TextInputBuilder extends UnsafeTextInputBuilder {
+	public override setCustomId(customId: string): this {
+		return super.setCustomId(customIdValidator.parse(customId));
+	}
+
+	public override setLabel(label: string): this {
+		return super.setLabel(labelValidator.parse(label));
+	}
+
+	public override setStyle(style: TextInputStyle): this {
+		return super.setStyle(textInputStyleValidator.parse(style));
+	}
+
 	public override setMinLength(minLength: number) {
 		return super.setMinLength(minLengthValidator.parse(minLength));
 	}
@@ -18,16 +33,16 @@ export class TextInputBuilder extends UnsafeTextInputBuilder {
 		return super.setMaxLength(maxLengthValidator.parse(maxLength));
 	}
 
-	public override setRequired(required = true) {
-		return super.setRequired(requiredValidator.parse(required));
+	public override setPlaceholder(placeholder: string) {
+		return super.setPlaceholder(placeholderValidator.parse(placeholder));
 	}
 
 	public override setValue(value: string) {
 		return super.setValue(valueValidator.parse(value));
 	}
 
-	public override setPlaceholder(placeholder: string) {
-		return super.setPlaceholder(placeholderValidator.parse(placeholder));
+	public override setRequired(required = true) {
+		return super.setRequired(requiredValidator.parse(required));
 	}
 
 	public override toJSON(): APITextInputComponent {

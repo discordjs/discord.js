@@ -82,6 +82,12 @@ describe('Text Input Components', () => {
 					.setStyle(TextInputStyle.Paragraph)
 					.toJSON();
 			}).not.toThrowError();
+
+			expect(() => {
+				// Issue #8107
+				// @ts-expect-error: shapeshift maps the enum key to the value when parsing
+				textInputComponent().setCustomId('Custom').setLabel('Guess').setStyle('Short').toJSON();
+			}).not.toThrowError();
 		});
 	});
 
