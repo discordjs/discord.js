@@ -22,17 +22,30 @@ class SelectMenuBuilder extends BuildersSelectMenu {
   }
 
   /**
+   * Normalizes a select menu option emoji
+   * @param {SelectMenuOptionData|JSONEncodable<APISelectMenuOption>} selectMenuOption The option to normalize
+   * @returns {Array<SelectMenuOptionBuilder|APISelectMenuOption>}
+   * @private
+   */
+  static normalizeEmoji(selectMenuOption) {
+    if (isJSONEncodable(selectMenuOption)) {
+      return selectMenuOption;
+    }
+
+    const { emoji, ...option } = selectMenuOption;
+    return {
+      ...option,
+      emoji: typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
+    };
+  }
+
+  /**
    * Adds options to this select menu
    * @param {RestOrArray<APISelectMenuOption>} options The options to add to this select menu
    * @returns {SelectMenuBuilder}
    */
   addOptions(...options) {
-    return super.addOptions(
-      normalizeArray(options).map(({ emoji, ...option }) => ({
-        ...option,
-        emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
-      })),
-    );
+    return super.addOptions(normalizeArray(options).map(option => SelectMenuBuilder.normalizeEmoji(option)));
   }
 
   /**
@@ -41,12 +54,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
    * @returns {SelectMenuBuilder}
    */
   setOptions(...options) {
-    return super.setOptions(
-      normalizeArray(options).map(({ emoji, ...option }) => ({
-        ...option,
-        emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
-      })),
-    );
+    return super.setOptions(normalizeArray(options).map(option => SelectMenuBuilder.normalizeEmoji(option)));
   }
 
   /**
