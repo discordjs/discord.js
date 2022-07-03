@@ -368,6 +368,7 @@ class GuildAuditLogsEntry {
             },
             { id: data.target_id, guild_id: guild.id },
           ),
+          guild,
         );
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
