@@ -3872,7 +3872,7 @@ export interface ApplicationCommandChoicesData extends Omit<BaseApplicationComma
 }
 
 export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
+  type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoiceData[];
   autocomplete?: false;
 }
@@ -3894,13 +3894,13 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
 }
 
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
-  type: Exclude<CommandOptionNumericResolvableType, ApplicationCommandOptionTypes>;
+  type: CommandOptionNumericResolvableType;
   minValue?: number;
   maxValue?: number;
 }
 
 export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption {
-  type: Exclude<ApplicationCommandOptionTypes.STRING, ApplicationCommandOptionTypes>;
+  type: ApplicationCommandOptionTypes.STRING;
   minLength?: number;
   maxLength?: number;
 }
