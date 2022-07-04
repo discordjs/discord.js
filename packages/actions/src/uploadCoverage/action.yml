@@ -48,5 +48,5 @@ runs:
     - name: Upload Utilities Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/docgen/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
+        files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
         flags: utilities
