@@ -35,7 +35,7 @@ const Sweepers = require('../util/Sweepers');
  * The main hub for interacting with the Discord API, and the starting point for any bot.
  * @extends {BaseClient}
  */
-class Client extends BaseClient {
+class ClientBuilder extends BaseClient {
   /**
    * @param {ClientOptions} options Options for the client
    */
