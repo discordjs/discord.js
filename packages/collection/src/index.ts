@@ -41,7 +41,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public ensure(key: K, defaultValueGenerator: (key: K, collection: this) => V): V {
 		if (this.has(key)) return this.get(key)!;
-		if (typeof defaultValueGenerator !== 'function') throw new TypeError(`${defaultValueGenerator} is not a function.`);
+		if (typeof defaultValueGenerator !== 'function') throw new TypeError(`${defaultValueGenerator} is not a function`);
 		const defaultValue = defaultValueGenerator(key, this);
 		this.set(key, defaultValue);
 		return defaultValue;
