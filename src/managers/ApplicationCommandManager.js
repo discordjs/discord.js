@@ -1,5 +1,6 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
@@ -53,6 +54,13 @@ class ApplicationCommandManager extends CachedManager {
    * * A Snowflake
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
+
+  /* eslint-disable max-len */
+  /**
+   * Data that resolves to the data of an ApplicationCommand
+   * @typedef {ApplicationCommandData|APIApplicationCommand|SlashCommandBuilder|ContextMenuCommandBuilder} ApplicationCommandDataResolvable
+   */
+  /* eslint-enable max-len */
 
   /**
    * Options used to fetch data from Discord
@@ -108,7 +116,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Creates an application command.
-   * @param {ApplicationCommandData|APIApplicationCommand} command The command
+   * @param {ApplicationCommandDataResolvable} command The command
    * @param {Snowflake} [guildId] The guild's id to create this command in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -130,7 +138,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Sets all the commands for this application or guild.
-   * @param {ApplicationCommandData[]|APIApplicationCommand[]} commands The commands
+   * @param {ApplicationCommandDataResolvable[]} commands The commands
    * @param {Snowflake} [guildId] The guild's id to create the commands in,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
@@ -160,7 +168,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
-   * @param {Partial<ApplicationCommandData|APIApplicationCommand>} data The data to update the command with
+   * @param {Partial<ApplicationCommandDataResolvable>} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
    * ignored when using a {@link GuildApplicationCommandManager}
    * @returns {Promise<ApplicationCommand>}
@@ -207,11 +215,13 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
-   * @param {ApplicationCommandData|APIApplicationCommand} command The command to transform
+   * @param {ApplicationCommandDataResolvable} command The command to transform
    * @returns {APIApplicationCommand}
    * @private
    */
   static transformCommand(command) {
+    if (isJSONEncodable(command)) return command.toJSON();
+
     let default_member_permissions;
 
     if ('default_member_permissions' in command) {
@@ -241,3 +251,13 @@ class ApplicationCommandManager extends CachedManager {
 }
 
 module.exports = ApplicationCommandManager;
+
+/**
+ * @external SlashCommandBuilder
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/SlashCommandBuilder}
+ */
+
+/**
+ * @external ContextMenuCommandBuilder
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/ContextMenuCommandBuilder}
+ */
