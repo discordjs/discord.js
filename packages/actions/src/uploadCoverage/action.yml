@@ -6,47 +6,47 @@ runs:
     - name: Upload Builders Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/builders/coverage/clover.xml
+        files: ./packages/builders/coverage/lcov.info
         flags: builders
 
     - name: Upload Collection Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/collection/coverage/clover.xml
+        files: ./packages/collection/coverage/lcov.info
         flags: collection
 
     - name: Upload Discord.js Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/discord.js/coverage/clover.xml
+        files: ./packages/discord.js/coverage/lcov.info
         flags: discord.js
 
     - name: Upload Proxy Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/proxy/coverage/clover.xml
+        files: ./packages/proxy/coverage/lcov.info
         flags: proxy
 
     - name: Upload Rest Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/rest/coverage/clover.xml
+        files: ./packages/rest/coverage/lcov.info
         flags: rest
 
     - name: Upload Voice Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/voice/coverage/clover.xml
+        files: ./packages/voice/coverage/lcov.info
         flags: voice
 
     - name: Upload Website Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/website/coverage/clover.xml
+        files: ./packages/website/coverage/lcov.info
         flags: website
 
     - name: Upload Utilities Coverage
       uses: codecov/codecov-action@v3
       with:
-        files: ./packages/actions/coverage/clover.xml, ./packages/docgen/coverage/clover.xml, ./packages/scripts/coverage/clover.xml
+        files: ./packages/actions/coverage/lcov.info, ./packages/docgen/coverage/lcov.info, ./packages/scripts/coverage/lcov.info
         flags: utilities
