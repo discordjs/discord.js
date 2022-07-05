@@ -8,7 +8,6 @@ import type { DocFunction } from '~/DocModel/DocFunction';
 import type { DocInterface } from '~/DocModel/DocInterface';
 import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
 import type { DocVariable } from '~/DocModel/DocVariable';
-import { ApiItem, ApiModel, ApiPackage } from '~/api-extractor.server';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Function } from '~/components/model/Function';
@@ -16,24 +15,15 @@ import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { findMember } from '~/model.server';
-import { TSDocConfiguration } from '~/tsdoc.server';
+import { createApiModel } from '~/util/api-model.server';
 
 export async function loader({ params }: { params: Params }) {
 	const res = await fetch(
 		`https://raw.githubusercontent.com/discordjs/docs/main/${params.packageName!}/${params.branchName!}.api.json`,
 	);
 	const data = await res.json();
+	const model = createApiModel(data);
 
-	const model = new ApiModel();
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-	const apiPackage = ApiItem.deserialize(data, {
-		apiJsonFilename: '',
-		toolPackage: data.metadata.toolPackage,
-		toolVersion: data.metadata.toolVersion,
-		versionToDeserialize: data.metadata.schemaVersion,
-		tsdocConfiguration: new TSDocConfiguration(),
-	}) as ApiPackage;
-	model.addMember(apiPackage);
 	return json(findMember(model, params.packageName!, params.memberName!)?.toJSON());
 }
 
