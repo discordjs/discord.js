@@ -1,7 +1,14 @@
 import type { ApiMethod, ApiModel } from '@microsoft/api-extractor-model';
 import { DocItem } from './DocItem';
 import { Visibility } from './Visibility';
-import { type ParameterDocumentation, type TokenDocumentation, genParameter, genToken } from '~/util/parse.server';
+import {
+	type ParameterDocumentation,
+	type TokenDocumentation,
+	genParameter,
+	genToken,
+	generateTypeParamData,
+	TypeParameterData,
+} from '~/util/parse.server';
 
 export class DocMethod extends DocItem<ApiMethod> {
 	public readonly parameters: ParameterDocumentation[];
@@ -10,6 +17,7 @@ export class DocMethod extends DocItem<ApiMethod> {
 	public readonly visibility: Visibility;
 	public readonly returnTypeTokens: TokenDocumentation[];
 	public readonly overloadIndex: number;
+	public readonly typeParameters: TypeParameterData[] = [];
 
 	public constructor(model: ApiModel, item: ApiMethod) {
 		super(model, item);
@@ -19,6 +27,7 @@ export class DocMethod extends DocItem<ApiMethod> {
 		this.visibility = item.isProtected ? Visibility.Protected : Visibility.Public;
 		this.returnTypeTokens = item.returnTypeExcerpt.spannedTokens.map((token) => genToken(this.model, token));
 		this.overloadIndex = item.overloadIndex;
+		this.typeParameters = item.typeParameters.map((typeParam) => generateTypeParamData(this.model, typeParam));
 	}
 
 	public override toJSON() {

@@ -19,5 +19,5 @@ export function createApiModel(data: any) {
 		tsdocConfiguration,
 	}) as ApiPackage;
 	model.addMember(apiPackage);
-	return apiPackage as unknown as ApiModel;
+	return model;
 }

@@ -1,6 +1,8 @@
 import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, VscSymbolVariable } from 'react-icons/vsc';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { TypeParamTable } from './TypeParamTable';
+import type { TypeParameterData } from '~/util/parse.server';
 
 export interface DocContainerProps {
 	name: string;
@@ -8,6 +10,7 @@ export interface DocContainerProps {
 	excerpt: string;
 	summary?: string | null;
 	children?: JSX.Element;
+	typeParams?: TypeParameterData[];
 }
 
 const symbolClass = 'mr-2';
@@ -20,7 +23,7 @@ const icons = {
 	TypeAlias: <VscSymbolVariable color="blue" className={symbolClass} />,
 };
 
-export function DocContainer({ name, kind, excerpt, summary, children }: DocContainerProps) {
+export function DocContainer({ name, kind, excerpt, summary, typeParams, children }: DocContainerProps) {
 	return (
 		<div className="px-10">
 			<h1 style={{ fontFamily: 'JetBrains Mono' }} className="flex items-csenter content-center">
@@ -31,6 +34,12 @@ export function DocContainer({ name, kind, excerpt, summary, children }: DocCont
 			<SyntaxHighlighter language="typescript" style={vs} codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}>
 				{excerpt}
 			</SyntaxHighlighter>
+			{typeParams && typeParams.length > 0 && (
+				<>
+					<h3>Type Parameters</h3>
+					<TypeParamTable data={typeParams} />
+				</>
+			)}
 			<h3>Summary</h3>
 			<p>{summary ?? 'No summary provided.'}</p>
 			{children}

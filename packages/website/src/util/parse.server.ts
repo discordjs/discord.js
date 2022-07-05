@@ -10,6 +10,7 @@ import {
 	type ApiPropertyItem,
 	type ExcerptToken,
 	type Parameter,
+	type TypeParameter,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 
@@ -166,4 +167,23 @@ export function getMembers(pkg: ApiPackage) {
 		name: member.displayName,
 		path: generatePath(member.getHierarchy()),
 	}));
+}
+
+export interface TypeParameterData {
+	name: string;
+	constraintTokens: TokenDocumentation[];
+	defaultTokens: TokenDocumentation[];
+	optional: boolean;
+}
+
+export function generateTypeParamData(model: ApiModel, typeParam: TypeParameter): TypeParameterData {
+	const constraintTokens = typeParam.constraintExcerpt.spannedTokens.map((token) => genToken(model, token));
+	const defaultTokens = typeParam.defaultTypeExcerpt.spannedTokens.map((token) => genToken(model, token));
+
+	return {
+		name: typeParam.name,
+		constraintTokens,
+		defaultTokens,
+		optional: typeParam.isOptional,
+	};
 }
