@@ -3,13 +3,16 @@ import {
   bold,
   channelMention,
   codeBlock,
+  ContextMenuCommandBuilder,
   formatEmoji,
   hideLinkEmbed,
   hyperlink,
   inlineCode,
   italic,
+  JSONEncodable,
   quote,
   roleMention,
+  SlashCommandBuilder,
   spoiler,
   strikethrough,
   time,
@@ -3065,7 +3068,11 @@ export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 
-export type ApplicationCommandDataResolvable = ApplicationCommandData | RESTPostAPIApplicationCommandsJSONBody;
+export type ApplicationCommandDataResolvable =
+  | ApplicationCommandData
+  | RESTPostAPIApplicationCommandsJSONBody
+  | SlashCommandBuilder
+  | ContextMenuCommandBuilder;
 
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
@@ -3107,9 +3114,7 @@ export class ApplicationCommandManager<
     commands: ApplicationCommandDataResolvable[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
-  private static transformCommand(
-    command: ApplicationCommandData,
-  ): Omit<APIApplicationCommand, 'id' | 'application_id' | 'guild_id'>;
+  private static transformCommand(command: ApplicationCommandDataResolvable): RESTPostAPIApplicationCommandsJSONBody;
 }
 
 export class ApplicationCommandPermissionsManager<
@@ -3178,7 +3183,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
   public edit(
     command: ApplicationCommandResolvable,
-    data: ApplicationCommandDataResolvable,
+    data: Partial<ApplicationCommandDataResolvable>,
   ): Promise<ApplicationCommand>;
   public fetch(id: Snowflake, options?: FetchGuildApplicationCommandFetchOptions): Promise<ApplicationCommand>;
   public fetch(options: FetchGuildApplicationCommandFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
