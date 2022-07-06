@@ -12,15 +12,18 @@ export interface ItemListProps {
 export function ItemSidebar({ packageName, data }: ItemListProps) {
 	return (
 		<div className="flex flex-col px-7">
-			<div className="flex items-center content-center">
-				<h1 className="px-2 font-mono">
+			<div>
+				<h1 className="px-2 font-mono flex items-center content-center">
 					<VscPackage className="px-1" />
 					{`${packageName}`}
 				</h1>
 			</div>
 			{data.members.map((member, i) => (
 				<div key={i} className="mb-1">
-					<a className="flex content-center items-center align-center font-mono no-underline break-all color-blue-500" href={member.path}>
+					<a
+						className="flex content-center items-center align-center font-mono no-underline break-all color-blue-500"
+						href={member.path}
+					>
 						{generateIcon(member.kind, 'px-1')}
 						{member.name}
 					</a>
