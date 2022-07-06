@@ -5,11 +5,11 @@ import { ItemSidebar } from '~/components/ItemSidebar';
 import { createApiModel } from '~/util/api-model.server';
 import { findPackage, getMembers } from '~/util/parse.server';
 
-const UnknownResponse = new Response('Not Found', {
-	status: 404,
-});
-
 export async function loader({ params }: { params: Params }) {
+	const UnknownResponse = new Response('Not Found', {
+		status: 404,
+	});
+
 	const res = await fetch(
 		`https://raw.githubusercontent.com/discordjs/docs/main/${params.packageName!}/${params.branchName!}.api.json`,
 	);
