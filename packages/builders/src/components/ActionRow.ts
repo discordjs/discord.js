@@ -7,7 +7,9 @@ import {
 } from 'discord-api-types/v10';
 import { ComponentBuilder } from './Component';
 import { createComponentBuilder } from './Components';
-import type { ButtonBuilder, SelectMenuBuilder, TextInputBuilder } from '..';
+import type { ButtonBuilder } from './button/Button';
+import type { SelectMenuBuilder } from './selectMenu/SelectMenu';
+import type { TextInputBuilder } from './textInput/TextInput';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray';
 
 export type MessageComponentBuilder =

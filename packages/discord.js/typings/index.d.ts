@@ -17,7 +17,7 @@ import {
   roleMention,
   SelectMenuBuilder as BuilderSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
-  UnsafeSelectMenuOptionBuilder as BuildersSelectMenuOption,
+  SelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
   strikethrough,
   time,
