@@ -226,6 +226,10 @@ class ApplicationCommand extends Base {
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [minLength] The minimum length for a `STRING` option
+   * (maximum of `6000`)
+   * @property {number} [maxLength] The maximum length for a `STRING` option
+   * (maximum of `6000`)
    */
 
   /**
@@ -513,9 +517,9 @@ class ApplicationCommand extends Base {
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
    * @property {number} [minLength] The minimum length for a `STRING` option
-   * (minimum of `0`, maximum of `6000`)
+   * (maximum of `6000`)
    * @property {number} [maxLength] The maximum length for a `STRING` option
-   * (minimum of `1`, maximum of `6000`)
+   * (maximum of `6000`)
    */
 
   /**
