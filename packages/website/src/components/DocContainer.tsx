@@ -34,12 +34,12 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 			<SyntaxHighlighter language="typescript" style={vs} codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}>
 				{excerpt}
 			</SyntaxHighlighter>
-			{typeParams && typeParams.length > 0 && (
+			{typeParams?.length ? (
 				<>
 					<h3>Type Parameters</h3>
 					<TypeParamTable data={typeParams} />
 				</>
-			)}
+			) : null}
 			<h3>Summary</h3>
 			<p>{summary ?? 'No summary provided.'}</p>
 			{children}
