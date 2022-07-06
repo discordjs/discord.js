@@ -43,7 +43,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder
 					? option
-					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as unknown as APISelectMenuOption),
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
 			),
 		);
 		return this;
@@ -58,7 +58,7 @@ export class SelectMenuBuilder extends UnsafeSelectMenuBuilder {
 			...options.map((option) =>
 				option instanceof UnsafeSelectMenuOptionBuilder
 					? option
-					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse(option) as unknown as APISelectMenuOption),
+					: new UnsafeSelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
 			),
 		);
 		return this;
