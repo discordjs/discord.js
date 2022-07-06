@@ -3877,7 +3877,7 @@ export interface ApplicationCommandChoicesData extends Omit<BaseApplicationComma
 }
 
 export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type: Exclude<CommandOptionChoiceResolvableType, ApplicationCommandOptionTypes>;
+  type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoiceData[];
   autocomplete?: false;
 }
@@ -3890,10 +3890,24 @@ export interface ApplicationCommandNumericOptionData extends ApplicationCommandC
   max_value?: number;
 }
 
+export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData {
+  type: ApplicationCommandOptionTypes.STRING;
+  minLength?: number;
+  min_length?: number;
+  maxLength?: number;
+  max_length?: number;
+}
+
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
-  type: Exclude<CommandOptionNumericResolvableType, ApplicationCommandOptionTypes>;
+  type: CommandOptionNumericResolvableType;
   minValue?: number;
   maxValue?: number;
+}
+
+export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption {
+  type: ApplicationCommandOptionTypes.STRING;
+  minLength?: number;
+  maxLength?: number;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3914,6 +3928,7 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandChannelOptionData
     | ApplicationCommandAutocompleteOption
     | ApplicationCommandNumericOptionData
+    | ApplicationCommandStringOptionData
   )[];
 }
 
@@ -3937,6 +3952,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandChoicesData
   | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
+  | ApplicationCommandStringOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3945,6 +3961,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
+  | ApplicationCommandStringOption
   | ApplicationCommandSubCommand;
 
 export interface ApplicationCommandOptionChoiceData {

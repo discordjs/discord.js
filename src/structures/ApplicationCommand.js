@@ -226,6 +226,10 @@ class ApplicationCommand extends Base {
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [minLength] The minimum length for a `STRING` option
+   * (maximum of `6000`)
+   * @property {number} [maxLength] The maximum length for a `STRING` option
+   * (maximum of `6000`)
    */
 
   /**
@@ -454,7 +458,9 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.max_value) !== existing.maxValue
+      (option.maxValue ?? option.max_value) !== existing.maxValue ||
+      (option.minLength ?? option.min_length) !== existing.minLength ||
+      (option.maxLength ?? option.max_length) !== existing.maxLength
     ) {
       return false;
     }
@@ -510,6 +516,10 @@ class ApplicationCommand extends Base {
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an `INTEGER` or `NUMBER` option
    * @property {number} [maxValue] The maximum value for an `INTEGER` or `NUMBER` option
+   * @property {number} [minLength] The minimum length for a `STRING` option
+   * (maximum of `6000`)
+   * @property {number} [maxLength] The maximum length for a `STRING` option
+   * (maximum of `6000`)
    */
 
   /**
@@ -533,6 +543,8 @@ class ApplicationCommand extends Base {
     const channelTypesKey = received ? 'channelTypes' : 'channel_types';
     const minValueKey = received ? 'minValue' : 'min_value';
     const maxValueKey = received ? 'maxValue' : 'max_value';
+    const minLengthKey = received ? 'minLength' : 'min_length';
+    const maxLengthKey = received ? 'maxLength' : 'max_length';
     const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
     const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
     const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
@@ -562,6 +574,8 @@ class ApplicationCommand extends Base {
           option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
+      [minLengthKey]: option.minLength ?? option.min_length,
+      [maxLengthKey]: option.maxLength ?? option.max_length,
     };
   }
 }
