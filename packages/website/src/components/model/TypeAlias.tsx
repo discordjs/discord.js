@@ -12,7 +12,7 @@ export function TypeAlias({ data }: TypeAliasProps) {
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameters}
+			typeParams={data.typeParameterData}
 		>
 			<div>WIP</div>
 		</DocContainer>

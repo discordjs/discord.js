@@ -14,7 +14,7 @@ export function Interface({ data }: InterfaceProps) {
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameters}
+			typeParams={data.typeParameterData}
 		>
 			<>
 				{data.properties.length ? <PropertyList data={data.properties} /> : null}

@@ -1,7 +1,7 @@
-import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, VscSymbolVariable } from 'react-icons/vsc';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { TypeParamTable } from './TypeParamTable';
+import { generateIcon } from '~/util/icon';
 import type { TypeParameterData } from '~/util/parse.server';
 
 export interface DocContainerProps {
@@ -13,27 +13,25 @@ export interface DocContainerProps {
 	typeParams?: TypeParameterData[];
 }
 
-const symbolClass = 'mr-2';
-const icons = {
-	Class: <VscSymbolClass color="blue" className={symbolClass} />,
-	Method: <VscSymbolMethod className={symbolClass} />,
-	Function: <VscSymbolMethod color="purple" className={symbolClass} />,
-	Enum: <VscSymbolEnum className={symbolClass} />,
-	Interface: <VscSymbolInterface color="blue" className={symbolClass} />,
-	TypeAlias: <VscSymbolVariable color="blue" className={symbolClass} />,
-};
-
 export function DocContainer({ name, kind, excerpt, summary, typeParams, children }: DocContainerProps) {
 	return (
 		<div className="px-10">
-			<h1 style={{ fontFamily: 'JetBrains Mono' }} className="flex items-csenter content-center">
-				{icons[kind as keyof typeof icons]}
+			<h1 className="font-mono flex items-center content-center break-all">
+				{generateIcon(kind, 'mr-2')}
 				{name}
 			</h1>
 			<h3>Code declaration:</h3>
-			<SyntaxHighlighter language="typescript" style={vs} codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}>
-				{excerpt}
-			</SyntaxHighlighter>
+			<div>
+				<SyntaxHighlighter
+					wrapLines
+					wrapLongLines
+					language="typescript"
+					style={vs}
+					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+				>
+					{excerpt}
+				</SyntaxHighlighter>
+			</div>
 			{typeParams?.length ? (
 				<>
 					<h3>Type Parameters</h3>

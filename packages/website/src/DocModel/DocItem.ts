@@ -2,6 +2,8 @@ import type { ApiModel, ApiDeclaredItem } from '@microsoft/api-extractor-model';
 import type { ReferenceData } from '~/model.server';
 import { resolveName, genReference, resolveDocComment, TokenDocumentation, genToken } from '~/util/parse.server';
 
+export type DocItemConstructor<T = DocItem> = new (...args: any[]) => T;
+
 export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 	public readonly item: T;
 	public readonly name: string;
