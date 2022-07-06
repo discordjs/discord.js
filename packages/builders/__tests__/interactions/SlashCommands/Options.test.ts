@@ -167,11 +167,13 @@ describe('Application Command toJSON() results', () => {
 	});
 
 	test('GIVEN a string option THEN calling toJSON should return a valid JSON', () => {
-		expect(getStringOption().toJSON()).toEqual<APIApplicationCommandStringOption>({
+		expect(getStringOption().setMinLength(1).setMaxLength(10).toJSON()).toEqual<APIApplicationCommandStringOption>({
 			name: 'owo',
 			description: 'Testing 123',
 			type: ApplicationCommandOptionType.String,
 			required: true,
+			max_length: 10,
+			min_length: 1,
 		});
 
 		expect(getStringOption().setAutocomplete(true).setChoices().toJSON()).toEqual<APIApplicationCommandStringOption>({
