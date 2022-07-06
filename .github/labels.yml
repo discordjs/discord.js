@@ -4,6 +4,8 @@
   color: '5663e9'
 - name: 'backlog'
   color: '7ef7ef'
+- name: 'blocked'
+  color: 'fc1423'
 - name: 'bug'
   color: 'd73a4a'
 - name: 'caching'
