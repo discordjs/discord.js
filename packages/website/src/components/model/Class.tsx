@@ -9,7 +9,13 @@ export interface ClassProps {
 
 export function Class({ data }: ClassProps) {
 	return (
-		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
+		<DocContainer
+			name={data.name}
+			kind={data.kind}
+			excerpt={data.excerpt}
+			summary={data.summary}
+			typeParams={data.typeParameters}
+		>
 			<>
 				{data.properties.length ? <PropertyList data={data.properties} /> : null}
 				{data.methods.length ? <MethodList data={data.methods} /> : null}

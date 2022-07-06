@@ -7,7 +7,13 @@ export interface TypeAliasProps {
 
 export function TypeAlias({ data }: TypeAliasProps) {
 	return (
-		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
+		<DocContainer
+			name={data.name}
+			kind={data.kind}
+			excerpt={data.excerpt}
+			summary={data.summary}
+			typeParams={data.typeParameters}
+		>
 			<div>WIP</div>
 		</DocContainer>
 	);

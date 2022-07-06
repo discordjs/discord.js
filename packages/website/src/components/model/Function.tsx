@@ -8,7 +8,13 @@ export interface FunctionProps {
 
 export function Function({ data }: FunctionProps) {
 	return (
-		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
+		<DocContainer
+			name={data.name}
+			kind={data.kind}
+			excerpt={data.excerpt}
+			summary={data.summary}
+			typeParams={data.typeParameters}
+		>
 			<ParameterTable data={data.parameters} />
 		</DocContainer>
 	);
