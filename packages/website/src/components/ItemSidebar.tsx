@@ -19,8 +19,8 @@ export function ItemSidebar({ packageName, data }: ItemListProps) {
 				</h1>
 			</div>
 			{data.members.map((member, i) => (
-				<div key={i} className="flex mb-1 content-center items-center align-center">
-					<a className="font-mono no-underline break-all color-blue-500" href={member.path}>
+				<div key={i} className="mb-1">
+					<a className="flex content-center items-center align-center font-mono no-underline break-all color-blue-500" href={member.path}>
 						{generateIcon(member.kind, 'px-1')}
 						{member.name}
 					</a>
