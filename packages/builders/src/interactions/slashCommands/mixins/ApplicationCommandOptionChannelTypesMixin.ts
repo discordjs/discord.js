@@ -30,6 +30,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 			Reflect.set(this, 'channel_types', []);
 		}
 
+		// @ts-expect-error: Shapeshift TODO
 		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
 
 		return this;
