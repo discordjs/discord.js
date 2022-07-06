@@ -1,8 +1,8 @@
+import { createWriteStream } from 'node:fs';
+import { pipeline } from 'node:stream';
 import { EndBehaviorType, VoiceReceiver } from '@discordjs/voice';
 import type { User } from 'discord.js';
-import { createWriteStream } from 'node:fs';
-import prism from 'prism-media';
-import { pipeline } from 'node:stream';
+import * as prism from 'prism-media';
 
 function getDisplayName(userId: string, user?: User) {
 	return user ? `${user.username}_${user.discriminator}` : userId;
@@ -12,7 +12,7 @@ export function createListeningStream(receiver: VoiceReceiver, userId: string, u
 	const opusStream = receiver.subscribe(userId, {
 		end: {
 			behavior: EndBehaviorType.AfterSilence,
-			duration: 100,
+			duration: 1000,
 		},
 	});
 
