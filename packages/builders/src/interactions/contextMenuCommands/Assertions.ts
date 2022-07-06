@@ -1,14 +1,16 @@
 import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandType } from 'discord-api-types/v10';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
+import { isValidationEnabled } from '../../util/validation';
 
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
-	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u);
-
-const typePredicate = s.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message));
-
+	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u)
+	.setValidationEnabled(isValidationEnabled);
+const typePredicate = s
+	.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message))
+	.setValidationEnabled(isValidationEnabled);
 const booleanPredicate = s.boolean;
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {

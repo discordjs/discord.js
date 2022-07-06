@@ -1,30 +1,73 @@
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-import { UnsafeSelectMenuOptionBuilder } from './UnsafeSelectMenuOption';
+
 import {
 	defaultValidator,
 	emojiValidator,
-	labelValueValidator,
+	labelValueDescriptionValidator,
 	validateRequiredSelectMenuOptionParameters,
 } from '../Assertions';
 
 /**
- * Represents a validated option within a select menu component
+ * Represents a option within a select menu component
  */
-export class SelectMenuOptionBuilder extends UnsafeSelectMenuOptionBuilder {
-	public override setDescription(description: string) {
-		return super.setDescription(labelValueValidator.parse(description));
+export class SelectMenuOptionBuilder {
+	public constructor(public data: Partial<APISelectMenuOption> = {}) {}
+
+	/**
+	 * Sets the label of this option
+	 *
+	 * @param label - The label to show on this option
+	 */
+	public setLabel(label: string) {
+		this.data.label = labelValueDescriptionValidator.parse(label);
+		return this;
 	}
 
-	public override setDefault(isDefault = true) {
-		return super.setDefault(defaultValidator.parse(isDefault));
+	/**
+	 * Sets the value of this option
+	 *
+	 * @param value - The value of this option
+	 */
+	public setValue(value: string) {
+		this.data.value = labelValueDescriptionValidator.parse(value);
+		return this;
 	}
 
-	public override setEmoji(emoji: APIMessageComponentEmoji) {
-		return super.setEmoji(emojiValidator.parse(emoji));
+	/**
+	 * Sets the description of this option
+	 *
+	 * @param description - The description of this option
+	 */
+	public setDescription(description: string) {
+		this.data.description = labelValueDescriptionValidator.parse(description);
+		return this;
 	}
 
-	public override toJSON(): APISelectMenuOption {
+	/**
+	 * Sets whether this option is selected by default
+	 *
+	 * @param isDefault - Whether this option is selected by default
+	 */
+	public setDefault(isDefault = true) {
+		this.data.default = defaultValidator.parse(isDefault);
+		return this;
+	}
+
+	/**
+	 * Sets the emoji to display on this option
+	 *
+	 * @param emoji - The emoji to display on this option
+	 */
+	public setEmoji(emoji: APIMessageComponentEmoji) {
+		this.data.emoji = emojiValidator.parse(emoji);
+		return this;
+	}
+
+	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
-		return super.toJSON();
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+		return {
+			...this.data,
+		} as APISelectMenuOption;
 	}
 }

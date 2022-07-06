@@ -132,13 +132,7 @@ import {
   ShardEvents,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import {
-  ContextMenuCommandBuilder,
-  SlashCommandBuilder,
-  UnsafeButtonBuilder,
-  UnsafeEmbedBuilder,
-  UnsafeSelectMenuBuilder,
-} from '@discordjs/builders';
+import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -879,7 +873,6 @@ client.on('messageCreate', async message => {
     type: ComponentType.ActionRow,
     components: [
       new ButtonBuilder(),
-      new UnsafeButtonBuilder(),
       { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
       {
         type: ComponentType.Button,
@@ -893,7 +886,6 @@ client.on('messageCreate', async message => {
     type: ComponentType.ActionRow,
     components: [
       new SelectMenuBuilder(),
-      new UnsafeSelectMenuBuilder(),
       {
         type: ComponentType.SelectMenu,
         label: 'select menu',
@@ -903,9 +895,8 @@ client.on('messageCreate', async message => {
     ],
   };
 
-  const buildersEmbed = new UnsafeEmbedBuilder();
   const embedData = { description: 'test', color: 0xff0000 };
-  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
+  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, embedData] });
 });
 
 client.on('threadCreate', thread => {

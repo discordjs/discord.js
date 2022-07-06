@@ -1,11 +1,11 @@
-import type {
+import {
+	ComponentType,
 	ButtonStyle,
-	APIMessageComponentEmoji,
-	APIButtonComponent,
-	APIButtonComponentWithCustomId,
-	APIButtonComponentWithURL,
+	type APIMessageComponentEmoji,
+	type APIButtonComponent,
+	type APIButtonComponentWithURL,
+	type APIButtonComponentWithCustomId,
 } from 'discord-api-types/v10';
-import { UnsafeButtonBuilder } from './UnsafeButton';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,
@@ -15,36 +15,77 @@ import {
 	urlValidator,
 	validateRequiredButtonParameters,
 } from '../Assertions';
+import { ComponentBuilder } from '../Component';
 
 /**
- * Represents a validated button component
+ * Represents a button component
  */
-export class ButtonBuilder extends UnsafeButtonBuilder {
-	public override setStyle(style: ButtonStyle) {
-		return super.setStyle(buttonStyleValidator.parse(style));
+export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
+	public constructor(data?: Partial<APIButtonComponent>) {
+		super({ type: ComponentType.Button, ...data });
 	}
 
-	public override setURL(url: string) {
-		return super.setURL(urlValidator.parse(url));
+	/**
+	 * Sets the style of this button
+	 *
+	 * @param style - The style of the button
+	 */
+	public setStyle(style: ButtonStyle) {
+		this.data.style = buttonStyleValidator.parse(style);
+		return this;
 	}
 
-	public override setCustomId(customId: string) {
-		return super.setCustomId(customIdValidator.parse(customId));
+	/**
+	 * Sets the URL for this button
+	 *
+	 * @param url - The URL to open when this button is clicked
+	 */
+	public setURL(url: string) {
+		(this.data as APIButtonComponentWithURL).url = urlValidator.parse(url);
+		return this;
 	}
 
-	public override setEmoji(emoji: APIMessageComponentEmoji) {
-		return super.setEmoji(emojiValidator.parse(emoji));
+	/**
+	 * Sets the custom id for this button
+	 *
+	 * @param customId - The custom id to use for this button
+	 */
+	public setCustomId(customId: string) {
+		(this.data as APIButtonComponentWithCustomId).custom_id = customIdValidator.parse(customId);
+		return this;
 	}
 
-	public override setDisabled(disabled = true) {
-		return super.setDisabled(disabledValidator.parse(disabled));
+	/**
+	 * Sets the emoji to display on this button
+	 *
+	 * @param emoji - The emoji to display on this button
+	 */
+	public setEmoji(emoji: APIMessageComponentEmoji) {
+		this.data.emoji = emojiValidator.parse(emoji);
+		return this;
 	}
 
-	public override setLabel(label: string) {
-		return super.setLabel(buttonLabelValidator.parse(label));
+	/**
+	 * Sets whether this button is disabled
+	 *
+	 * @param disabled - Whether to disable this button
+	 */
+	public setDisabled(disabled = true) {
+		this.data.disabled = disabledValidator.parse(disabled);
+		return this;
 	}
 
-	public override toJSON(): APIButtonComponent {
+	/**
+	 * Sets the label for this button
+	 *
+	 * @param label - The label to display on this button
+	 */
+	public setLabel(label: string) {
+		this.data.label = buttonLabelValidator.parse(label);
+		return this;
+	}
+
+	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(
 			this.data.style,
 			this.data.label,
@@ -52,6 +93,9 @@ export class ButtonBuilder extends UnsafeButtonBuilder {
 			(this.data as APIButtonComponentWithCustomId).custom_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
-		return super.toJSON();
+		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+		return {
+			...this.data,
+		} as APIButtonComponent;
 	}
 }
