@@ -1,6 +1,6 @@
 import { getVoiceConnection } from '@discordjs/voice';
 import { GatewayIntentBits } from 'discord-api-types/v9';
-import Discord, { Interaction } from 'discord.js';
+import Discord, { Interaction, Constants } from 'discord.js';
 import { deploy } from './deploy';
 import { interactionHandlers } from './interactions';
 
@@ -11,9 +11,11 @@ const client = new Discord.Client({
 	intents: [GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds],
 });
 
-client.on('ready', () => console.log('Ready!'));
+const { Events } = Constants;
 
-client.on('messageCreate', async (message) => {
+client.on(Events.CLIENT_READY, () => console.log('Ready!'));
+
+client.on(Events.MESSAGE_CREATE, async (message) => {
 	if (!message.guild) return;
 	if (!client.application?.owner) await client.application?.fetch();
 
@@ -28,7 +30,7 @@ client.on('messageCreate', async (message) => {
  */
 const recordable = new Set<string>();
 
-client.on('interactionCreate', async (interaction: Interaction) => {
+client.on(Events.INTERACTION_CREATE, async (interaction: Interaction) => {
 	if (!interaction.isCommand() || !interaction.guildId) return;
 
 	const handler = interactionHandlers.get(interaction.commandName);
@@ -44,6 +46,6 @@ client.on('interactionCreate', async (interaction: Interaction) => {
 	}
 });
 
-client.on('error', console.warn);
+client.on(Events.ERROR, console.warn);
 
 void client.login(token);
