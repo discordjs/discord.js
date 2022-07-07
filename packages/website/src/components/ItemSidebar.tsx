@@ -23,11 +23,11 @@ export function ItemSidebar({ packageName, data }: ItemListProps) {
 					<VscPackage className="px-1" />
 					{`${packageName}`}
 				</h1>
-				<button className="sm:hidden mr-2 bg-transparent border-none" onClick={onMenuClick}>
+				<button className="lg:hidden mr-2 bg-transparent border-none" onClick={onMenuClick}>
 					<AiOutlineMenu size={32} />
 				</button>
 			</div>
-			<div className="hidden sm:block overflow-y-scroll overflow-x-clip p-7">
+			<div className="hidden lg:block overflow-y-scroll overflow-x-clip p-7">
 				{data.members.map((member, i) => (
 					<div key={i} className="mb-1">
 						<a
