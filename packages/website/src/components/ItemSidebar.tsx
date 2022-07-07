@@ -11,24 +11,26 @@ export interface ItemListProps {
 
 export function ItemSidebar({ packageName, data }: ItemListProps) {
 	return (
-		<div className="flex flex-col px-7">
-			<div>
+		<div className="flex flex-col max-h-full min-w-[270px] border-r-solid border-b-solid border-gray border-width-0.5">
+			<div className="border-b-solid border-gray border-width-0.5">
 				<h1 className="px-2 font-mono flex items-center content-center">
 					<VscPackage className="px-1" />
 					{`${packageName}`}
 				</h1>
 			</div>
-			{data.members.map((member, i) => (
-				<div key={i} className="mb-1">
-					<a
-						className="flex content-center items-center align-center font-mono no-underline break-all color-blue-500"
-						href={member.path}
-					>
-						{generateIcon(member.kind, 'px-1')}
-						{member.name}
-					</a>
-				</div>
-			))}
+			<div className="overflow-y-scroll overflow-x-clip p-7">
+				{data.members.map((member, i) => (
+					<div key={i} className="mb-1">
+						<a
+							className="flex content-center items-center align-center font-mono no-underline break-all color-blue-500"
+							href={member.path}
+						>
+							{generateIcon(member.kind, 'px-1')}
+							{member.name}
+						</a>
+					</div>
+				))}
+			</div>
 		</div>
 	);
 }

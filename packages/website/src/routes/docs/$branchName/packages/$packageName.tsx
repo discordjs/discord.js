@@ -40,10 +40,10 @@ export default function Package() {
 
 	return (
 		<div className="flex flex-row overflow-none max-w-full h-full">
-			<div className="overflow-y-scroll overflow-x-clip min-w-1/4 max-w-1/4 border-r-solid border-gray border-width-0.5">
+			<div className="w-full sm:min-w-1/4 sm:max-w-1/4">
 				<ItemSidebar packageName={packageName!} data={data} />
 			</div>
-			<div className="grow">
+			<div className="hidden sm:block">
 				<Outlet />
 			</div>
 		</div>
