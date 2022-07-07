@@ -221,6 +221,10 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
+   * @property {number} [minLength] The minimum length for an {@link ApplicationCommandOptionType.String} option
+   * (maximum of `6000`)
+   * @property {number} [maxLength] The maximum length for an {@link ApplicationCommandOptionType.String} option
+   * (maximum of `6000`)
    */
 
   /**
@@ -512,9 +516,9 @@ class ApplicationCommand extends Base {
    * @property {number} [maxValue] The maximum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
    * @property {number} [minLength] The minimum length for an {@link ApplicationCommandOptionType.String} option
-   * (minimum of 0, maximum of `6000`)
+   * (maximum of `6000`)
    * @property {number} [maxLength] The maximum length for an {@link ApplicationCommandOptionType.String} option
-   * (minimum of 1, maximum of `6000`)
+   * (maximum of `6000`)
    */
 
   /**
