@@ -1,14 +1,14 @@
 import { DocItem } from './DocItem';
 import { DocMethodSignature } from './DocMethodSignature';
 import { DocProperty } from './DocProperty';
+import { TypeParameterMixin } from './TypeParameterMixin';
 import { ApiInterface, ApiItemKind, ApiMethodSignature, ApiModel, ApiPropertySignature } from '~/api-extractor.server';
-import { type TokenDocumentation, genToken, type TypeParameterData, generateTypeParamData } from '~/util/parse.server';
+import { type TokenDocumentation, genToken } from '~/util/parse.server';
 
-export class DocInterface extends DocItem<ApiInterface> {
+export class DocInterface extends TypeParameterMixin(DocItem<ApiInterface>) {
 	public readonly extendsTokens: TokenDocumentation[][] | null;
 	public readonly methods: DocMethodSignature[] = [];
 	public readonly properties: DocProperty[] = [];
-	public readonly typeParameters: TypeParameterData[] = [];
 
 	public constructor(model: ApiModel, item: ApiInterface) {
 		super(model, item);
@@ -16,8 +16,6 @@ export class DocInterface extends DocItem<ApiInterface> {
 		this.extendsTokens = item.extendsTypes.map((excerpt) =>
 			excerpt.excerpt.spannedTokens.map((token) => genToken(this.model, token)),
 		);
-
-		this.typeParameters = item.typeParameters.map((typeParam) => generateTypeParamData(this.model, typeParam));
 
 		for (const member of item.members) {
 			switch (member.kind) {
@@ -39,7 +37,6 @@ export class DocInterface extends DocItem<ApiInterface> {
 			extendsTokens: this.extendsTokens,
 			methods: this.methods.map((method) => method.toJSON()),
 			properties: this.properties.map((prop) => prop.toJSON()),
-			typeParameters: this.typeParameters,
 		};
 	}
 }

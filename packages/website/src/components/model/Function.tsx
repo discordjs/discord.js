@@ -13,7 +13,7 @@ export function Function({ data }: FunctionProps) {
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameters}
+			typeParams={data.typeParameterData}
 		>
 			<ParameterTable data={data.parameters} />
 		</DocContainer>

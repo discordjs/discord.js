@@ -165,6 +165,7 @@ export function genParameter(model: ApiModel, param: Parameter): ParameterDocume
 export function getMembers(pkg: ApiPackage) {
 	return pkg.members[0]!.members.map((member) => ({
 		name: member.displayName,
+		kind: member.kind,
 		path: generatePath(member.getHierarchy()),
 	}));
 }
