@@ -17,10 +17,12 @@ export interface DocContainerProps {
 export function DocContainer({ name, kind, excerpt, summary, typeParams, children }: DocContainerProps) {
 	return (
 		<div className="px-10">
-			<h1 className="font-mono flex items-center content-center break-all">
-				{generateIcon(kind, 'mr-2')}
-				{name}
-			</h1>
+			<div className="bg-white border-b-solid border-gray border-width-0.5 sticky top-21px">
+				<h1 className="font-mono break-all">
+					{generateIcon(kind, 'mr-2')}
+					{name}
+				</h1>
+			</div>
 			<div>
 				<SyntaxHighlighter
 					wrapLines

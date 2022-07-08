@@ -17,7 +17,7 @@ function onMenuClick() {
 
 export function ItemSidebar({ packageName, data }: ItemListProps) {
 	return (
-		<div className="flex flex-col max-h-full min-w-[270px] border-r-solid border-b-solid border-gray border-width-0.5">
+		<div className="flex flex-col max-h-full min-w-[270px] lg:border-r-solid border-b-solid border-gray border-width-0.5">
 			<div className="flex justify-between content-center items-center border-b-solid border-gray border-width-0.5">
 				<h1 className="px-2 font-mono flex items-center content-center">
 					<VscPackage className="px-1" />

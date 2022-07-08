@@ -39,11 +39,11 @@ export default function Package() {
 	const { packageName } = useParams();
 
 	return (
-		<div className="flex flex-col lg:flex-row overflow-none max-w-full h-full">
+		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full">
 			<div className="w-full lg:min-w-1/4 lg:max-w-1/4">
 				<ItemSidebar packageName={packageName!} data={data} />
 			</div>
-			<div className="max-h-full grow">
+			<div className="max-h-full grow overflow-auto">
 				<Outlet />
 			</div>
 		</div>
