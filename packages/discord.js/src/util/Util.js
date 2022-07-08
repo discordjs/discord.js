@@ -105,8 +105,42 @@ function escapeMarkdown(
       .join(codeBlock ? '\\`\\`\\`' : '```');
   }
   if (!inlineCodeContent) {
-    return text
-      .split(/(?<=^|[^`])`(?=[^`]|$)/g)
+    const noTriple = text.split("```");
+    const arr = [];
+    const tripleArr = [];
+    for (const doubleChunk of noTriple) {
+      const noDouble = doubleChunk.split("``");
+      const doubleArr = [];
+      for (const singleChunk of noDouble) {
+        const noSingle = singleChunk.split("`");
+        doubleArr.push(noSingle);
+      }
+      const forTriple = [];
+      for (let ii = 0; ii < doubleArr.length; ii++) {
+        const chunk = doubleArr[ii];
+        if (!chunk || !chunk.length) continue;
+        for (let jj = 0; jj < chunk.length; jj++) {
+          var element = chunk[jj];
+          if (jj == chunk.length - 1) {
+            if (ii != chunk.length - 1 && doubleArr[ii + 1]) element += "``" + (doubleArr[ii + 1].shift() || "");
+            forTriple.push(element);
+          } else forTriple.push(element);
+        }
+      }
+      tripleArr.push(forTriple);
+    }
+    for (let ii = 0; ii < tripleArr.length; ii++) {
+      const chunk = tripleArr[ii];
+      if (!chunk || !chunk.length) continue;
+      for (let jj = 0; jj < chunk.length; jj++) {
+        var element = chunk[jj];
+        if (jj == chunk.length - 1) {
+          if (ii != chunk.length - 1 && tripleArr[ii + 1]) element += "```" + (tripleArr[ii + 1].shift() || "");
+          arr.push(element);
+        } else arr.push(element);
+      }
+    }
+    return arr
       .map((subString, index, array) => {
         if (index % 2 && index !== array.length - 1) return subString;
         return escapeMarkdown(subString, {
