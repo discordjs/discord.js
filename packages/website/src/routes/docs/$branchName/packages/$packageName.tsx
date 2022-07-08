@@ -43,7 +43,7 @@ export default function Package() {
 			<div className="w-full lg:min-w-1/4 lg:max-w-1/4">
 				<ItemSidebar packageName={packageName!} data={data} />
 			</div>
-			<div>
+			<div className="max-h-full grow">
 				<Outlet />
 			</div>
 		</div>

@@ -1,5 +1,6 @@
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { Separator } from './Seperator';
 import { TypeParamTable } from './TypeParamTable';
 import { generateIcon } from '~/util/icon';
 import type { TypeParameterData } from '~/util/parse.server';
@@ -9,7 +10,7 @@ export interface DocContainerProps {
 	kind: string;
 	excerpt: string;
 	summary?: string | null;
-	children?: JSX.Element;
+	children?: JSX.Element | JSX.Element[];
 	typeParams?: TypeParameterData[];
 }
 
@@ -20,7 +21,6 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 				{generateIcon(kind, 'mr-2')}
 				{name}
 			</h1>
-			<h3>Code declaration:</h3>
 			<div>
 				<SyntaxHighlighter
 					wrapLines
@@ -32,15 +32,17 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 					{excerpt}
 				</SyntaxHighlighter>
 			</div>
+			<h2>Summary</h2>
+			<p className="color-slate-500">{summary ?? 'No summary provided.'}</p>
+			<Separator />
 			{typeParams?.length ? (
 				<>
-					<h3>Type Parameters</h3>
-					<TypeParamTable data={typeParams} />
+					<h2>Type Parameters</h2>
+					<TypeParamTable data={typeParams} className="mb-5 p-3" />
+					<Separator />
 				</>
 			) : null}
-			<h3>Summary</h3>
-			<p>{summary ?? 'No summary provided.'}</p>
-			{children}
+			<div>{children}</div>
 		</div>
 	);
 }

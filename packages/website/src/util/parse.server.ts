@@ -143,6 +143,11 @@ export function genReference(item: ApiItem) {
 }
 
 export function genToken(model: ApiModel, token: ExcerptToken) {
+	if (token.canonicalReference) {
+		// @ts-expect-error
+		token.canonicalReference._navigation = '.';
+	}
+
 	const item = token.canonicalReference
 		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
 		: null;

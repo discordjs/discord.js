@@ -15,6 +15,7 @@ export function Function({ data }: FunctionProps) {
 			summary={data.summary}
 			typeParams={data.typeParameterData}
 		>
+			<h2>Parameters</h2>
 			<ParameterTable data={data.parameters} />
 		</DocContainer>
 	);
