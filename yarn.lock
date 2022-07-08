@@ -2855,7 +2855,7 @@ __metadata:
     "@sapphire/shapeshift": ^3.4.1
     "@types/node": ^18.0.3
     c8: ^7.11.3
-    discord-api-types: ^0.33.5
+    discord-api-types: ^0.36.1
     eslint: ^8.19.0
     fast-deep-equal: ^3.1.3
     prettier: ^2.7.1
@@ -3001,7 +3001,7 @@ __metadata:
     "@sapphire/async-queue": ^1.3.2
     "@sapphire/snowflake": ^3.2.2
     c8: ^7.11.3
-    discord-api-types: ^0.33.5
+    discord-api-types: ^0.36.1
     eslint: ^8.19.0
     prettier: ^2.7.1
     tslib: ^2.4.0
@@ -3041,7 +3041,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.28.3
     "@types/jest": ^28.1.4
     "@types/ws": ^8.5.3
-    discord-api-types: ^0.33.5
+    discord-api-types: ^0.36.1
     eslint: ^8.19.0
     jest: ^28.1.2
     jest-websocket-mock: ^2.3.0
@@ -7886,10 +7886,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.33.3, discord-api-types@npm:^0.33.5":
+"discord-api-types@npm:^0.33.3":
   version: 0.33.5
   resolution: "discord-api-types@npm:0.33.5"
   checksum: 6dcaad640c5693a69c9a4f5e444e739dde11ba835164ae6fd3dd5a1ab7b4d7f96cd022ed653eeaff2c8051ead0d998a5d502a2915cfacdde596364b82d9e3b3f
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.36.1":
+  version: 0.36.1
+  resolution: "discord-api-types@npm:0.36.1"
+  checksum: 6f9cae3d855a5c8fe6585f5f827795260683038d7b66ba9f1633e96005047d4c0d07bc084eb7bfbb967c5b99a0257b03cb94634fe7cd8a4975fce12bba89b306
   languageName: node
   linkType: hard
 
@@ -7905,7 +7912,7 @@ __metadata:
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^18.0.3
     "@types/ws": ^8.5.3
-    discord-api-types: ^0.33.5
+    discord-api-types: ^0.36.1
     dtslint: ^4.2.1
     eslint: ^8.19.0
     fast-deep-equal: ^3.1.3
