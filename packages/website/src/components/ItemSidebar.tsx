@@ -1,4 +1,4 @@
-import { AiOutlineMenu } from 'react-icons/ai';
+import { FiMenu } from 'react-icons/fi';
 import { VscPackage } from 'react-icons/vsc';
 import { generateIcon } from '~/util/icon';
 import type { getMembers } from '~/util/parse.server';
@@ -23,8 +23,8 @@ export function ItemSidebar({ packageName, data }: ItemListProps) {
 					<VscPackage className="px-1" />
 					{`${packageName}`}
 				</h1>
-				<button className="lg:hidden mr-2 bg-transparent border-none" onClick={onMenuClick}>
-					<AiOutlineMenu size={32} />
+				<button className="lg:hidden mr-2 bg-transparent border-none cursor-pointer" onClick={onMenuClick}>
+					<FiMenu size={32} />
 				</button>
 			</div>
 			<div className="hidden lg:block overflow-y-scroll overflow-x-clip p-7">

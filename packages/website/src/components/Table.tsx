@@ -13,7 +13,7 @@ export interface TableProps {
 export function Table({ rows, columns, columnStyles, className }: TableProps) {
 	return (
 		<div className={className}>
-			<table className="table-fixed w-full p-b-10 border-collapse">
+			<table className="table-fixed w-full pb-10 border-collapse">
 				<thead>
 					<tr>
 						{columns.map((column) => (
