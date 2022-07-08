@@ -44,7 +44,7 @@ export function MethodItem({ data }: MethodItemProps) {
 			</div>
 			<div className="mx-10">
 				{data.summary && <p className="color-slate-500 mt-2">{data.summary}</p>}
-				{data.parameters.length ? <ParameterTable className="mb-10 mx-10" data={data.parameters} /> : null}
+				{data.parameters.length ? <ParameterTable className="mb-10 mx-5" data={data.parameters} /> : null}
 			</div>
 		</div>
 	);
