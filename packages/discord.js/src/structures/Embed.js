@@ -80,7 +80,7 @@ class Embed {
   /**
    * The thumbnail of this embed.
    * @type {?EmbedAssetData}
-   * @readonly1
+   * @readonly
    */
   get thumbnail() {
     if (!this.data.thumbnail) return null;
