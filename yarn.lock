@@ -3079,6 +3079,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.30.5
     "@typescript-eslint/parser": ^5.30.5
     "@unocss/cli": ^0.43.2
+    "@unocss/reset": ^0.43.2
     "@vitejs/plugin-react": ^1.3.2
     "@vscode/codicons": ^0.0.31
     c8: ^7.11.3
@@ -5089,7 +5090,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unocss/reset@npm:0.43.2":
+"@unocss/reset@npm:0.43.2, @unocss/reset@npm:^0.43.2":
   version: 0.43.2
   resolution: "@unocss/reset@npm:0.43.2"
   checksum: ea9a47d09b179f9b0ee2ff96e5f1617b8f6f3e790f809f9c8e2824e2bb048f0c5b0f653f50f2501f2b1e46e604f344981c94054e70deb1728b34cd440b119be3

@@ -13,8 +13,6 @@ export function TypeAlias({ data }: TypeAliasProps) {
 			excerpt={data.excerpt}
 			summary={data.summary}
 			typeParams={data.typeParameterData}
-		>
-			<div>WIP</div>
-		</DocContainer>
+		/>
 	);
 }

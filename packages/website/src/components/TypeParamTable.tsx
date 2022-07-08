@@ -1,39 +1,33 @@
+import { Table } from './Table';
 import type { TypeParameterData } from '~/util/parse.server';
 import { constructHyperlinkedText } from '~/util/util';
 
 export interface TableProps {
 	data: TypeParameterData[];
+	className?: string;
 }
 
-export function TypeParamTable({ data }: TableProps) {
+export function TypeParamTable({ data, className }: TableProps) {
+	const rows = data.map((typeParam) => ({
+		Name: typeParam.name,
+		Constraints: constructHyperlinkedText(typeParam.constraintTokens),
+		Optional: typeParam.optional ? 'Yes' : 'No',
+		Default: constructHyperlinkedText(typeParam.defaultTokens),
+		Description: 'None',
+	}));
+
+	const rowElements = {
+		Name: 'font-mono',
+		Constraints: 'font-mono',
+		Default: 'font-mono',
+	};
+
 	return (
-		<div className="p-10 border border-gray-200 solid rounded-md">
-			<table className="w-full text-sm text-left text-black-500 dark:text-gray-400">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Constraint</th>
-						<th>Optional</th>
-						<th>Default</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					{data.map((parameter) => (
-						<tr key={parameter.name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-							<th className="py-4 font-normal text-gray-900 dark:text-white whitespace-nowrap">{parameter.name}</th>
-							<th>
-								<code>{constructHyperlinkedText(parameter.constraintTokens)}</code>
-							</th>
-							<th>{parameter.optional ? 'Yes' : 'No'}</th>
-							<th>
-								<code>{constructHyperlinkedText(parameter.defaultTokens)}</code>
-							</th>
-							<th>None</th>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+		<Table
+			className={className}
+			columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
+			rows={rows}
+			columnStyles={rowElements}
+		/>
 	);
 }
