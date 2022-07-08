@@ -105,13 +105,17 @@ function escapeMarkdown(
       .join(codeBlock ? '\\`\\`\\`' : '```');
   }
   if (!inlineCodeContent) {
+    // Because webkit doesn't support regex lookbehind, 1 line became 36
+    // Split the triple backticks
     const noTriple = text.split("```");
     const arr = [];
     const tripleArr = [];
     for (const doubleChunk of noTriple) {
+      // Split the double backticks
       const noDouble = doubleChunk.split("``");
       const doubleArr = [];
       for (const singleChunk of noDouble) {
+        // Split the single backtick and put array into array
         const noSingle = singleChunk.split("`");
         doubleArr.push(noSingle);
       }
@@ -122,6 +126,7 @@ function escapeMarkdown(
         for (let jj = 0; jj < chunk.length; jj++) {
           var element = chunk[jj];
           if (jj == chunk.length - 1) {
+            // Last element of the inner array takes the first element of the next inner array
             if (ii != chunk.length - 1 && doubleArr[ii + 1]) element += "``" + (doubleArr[ii + 1].shift() || "");
             forTriple.push(element);
           } else forTriple.push(element);
@@ -129,6 +134,7 @@ function escapeMarkdown(
       }
       tripleArr.push(forTriple);
     }
+    // L137-147: Same thing as L122-135
     for (let ii = 0; ii < tripleArr.length; ii++) {
       const chunk = tripleArr[ii];
       if (!chunk || !chunk.length) continue;
@@ -140,6 +146,7 @@ function escapeMarkdown(
         } else arr.push(element);
       }
     }
+    // Replaced text.split with the array
     return arr
       .map((subString, index, array) => {
         if (index % 2 && index !== array.length - 1) return subString;
