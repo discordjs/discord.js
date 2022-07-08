@@ -7,13 +7,13 @@ const isEqual = require('fast-deep-equal');
  */
 class Embed {
   /**
-   * Creates a new embed object
+   * Creates a new embed object.
    * @param {APIEmbed} data API embed data
    * @private
    */
   constructor(data) {
     /**
-     * The API embed data
+     * The API embed data.
      * @type {APIEmbed}
      * @readonly
      */
@@ -21,7 +21,7 @@ class Embed {
   }
 
   /**
-   * An array of fields of this embed
+   * An array of fields of this embed.
    * @type {?Array<APIEmbedField>}
    * @readonly
    */
@@ -30,7 +30,7 @@ class Embed {
   }
 
   /**
-   * The embed title
+   * The title of this embed.
    * @type {?string}
    * @readonly
    */
@@ -39,7 +39,7 @@ class Embed {
   }
 
   /**
-   * The embed description
+   * The description of this embed.
    * @type {?string}
    * @readonly
    */
@@ -48,7 +48,7 @@ class Embed {
   }
 
   /**
-   * The embed URL
+   * The URL of this embed.
    * @type {?string}
    * @readonly
    */
@@ -57,7 +57,7 @@ class Embed {
   }
 
   /**
-   * The embed color
+   * The color of this embed.
    * @type {?number}
    * @readonly
    */
@@ -66,7 +66,7 @@ class Embed {
   }
 
   /**
-   * The timestamp of the embed in an ISO 8601 format
+   * The timestamp of this embed. This is in an ISO 8601 format.
    * @type {?string}
    * @readonly
    */
@@ -75,9 +75,17 @@ class Embed {
   }
 
   /**
-   * The embed thumbnail data
-   * @type {?EmbedImageData}
-   * @readonly
+   * @typedef {Object} EmbedAssetData
+   * @property {?string} url The URL of the image
+   * @property {?string} proxyURL The proxy URL of the image
+   * @property {?string} height The height of the image
+   * @property {?string} width The width of the image
+   */
+
+  /**
+   * The thumbnail of this embed.
+   * @type {?EmbedAssetData}
+   * @readonly1
    */
   get thumbnail() {
     if (!this.data.thumbnail) return null;
@@ -90,8 +98,8 @@ class Embed {
   }
 
   /**
-   * The embed image data
-   * @type {?EmbedImageData}
+   * The image of this embed.
+   * @type {?EmbedAssetData}
    * @readonly
    */
   get image() {
@@ -105,16 +113,30 @@ class Embed {
   }
 
   /**
-   * Received video data
-   * @type {?EmbedVideoData}
+   * The video of this embed.
+   * @type {?EmbedAssetData}
    * @readonly
    */
   get video() {
-    return this.data.video ?? null;
+    if (!this.data.video) return null;
+    return {
+      url: this.data.image.url,
+      proxyURL: this.data.image.proxy_url,
+      height: this.data.image.height,
+      width: this.data.image.width,
+    };
   }
 
   /**
-   * The embed author data
+   * @typedef {Object} EmbedAuthorData
+   * @property {string} name The name of the author
+   * @property {?string} url The URL of the author
+   * @property {?string} iconURL The icon URL of the author
+   * @property {?string} proxyIconURL The proxy icon URL of the author
+   */
+
+  /**
+   * The author of this embed.
    * @type {?EmbedAuthorData}
    * @readonly
    */
@@ -129,8 +151,8 @@ class Embed {
   }
 
   /**
-   * Received data about the embed provider
-   * @type {?EmbedProvider}
+   * The provider of this embed.
+   * @type {?APIEmbedProvider}
    * @readonly
    */
   get provider() {
@@ -138,7 +160,14 @@ class Embed {
   }
 
   /**
-   * The embed footer data
+   * @typedef {Object} EmbedFooterData
+   * @property {string} text The text of the footer
+   * @property {?string} iconURL The URL of the icon
+   * @property {?string} proxyIconURL The proxy URL of the icon
+   */
+
+  /**
+   * The footer of this embed.
    * @type {?EmbedFooterData}
    * @readonly
    */
@@ -152,7 +181,7 @@ class Embed {
   }
 
   /**
-   * The accumulated length for the embed title, description, fields, footer text, and author name
+   * The accumulated length for the embed title, description, fields, footer text, and author name.
    * @type {number}
    * @readonly
    */
@@ -167,7 +196,7 @@ class Embed {
   }
 
   /**
-   * The hex color of the current color of the embed
+   * The hex color of this embed.
    * @type {?string}
    * @readonly
    */
@@ -178,7 +207,7 @@ class Embed {
   }
 
   /**
-   * Returns the API-compatible JSON for this embed
+   * Returns the API-compatible JSON for this embed.
    * @returns {APIEmbed}
    */
   toJSON() {
@@ -186,7 +215,7 @@ class Embed {
   }
 
   /**
-   * Whether or not the given embeds are equal
+   * Whether the given embeds are equal.
    * @param {Embed|APIEmbed} other The embed to compare against
    * @returns {boolean}
    */
