@@ -31,24 +31,6 @@ describe('entersState', () => {
 		await expect(promise).rejects.toThrowError();
 	});
 
-	test('Returns the target once the state has been entered before signal is aborted', async () => {
-		jest.useRealTimers();
-		const vc = createFakeVoiceConnection();
-		const ac = new AbortController();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));
-		const result = await entersState(vc, VoiceConnectionStatus.Ready, ac.signal);
-		expect(result).toEqual(vc);
-	});
-
-	test('Rejects once the signal is aborted', async () => {
-		const vc = createFakeVoiceConnection();
-		const ac = new AbortController();
-		const promise = entersState(vc, VoiceConnectionStatus.Ready, ac.signal);
-		ac.abort();
-		await expect(promise).rejects.toThrowError();
-	});
-
 	test('Resolves immediately when target already in desired state', async () => {
 		const vc = createFakeVoiceConnection();
 		await expect(entersState(vc, VoiceConnectionStatus.Signalling, 1000)).resolves.toEqual(vc);
