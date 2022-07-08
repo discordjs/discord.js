@@ -6,11 +6,6 @@ const isEqual = require('fast-deep-equal');
  * Represents an embed.
  */
 class Embed {
-  /**
-   * Creates a new embed object.
-   * @param {APIEmbed} data API embed data
-   * @private
-   */
   constructor(data) {
     /**
      * The API embed data.
