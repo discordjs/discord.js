@@ -1575,10 +1575,10 @@ export class InteractionWebhook extends PartialWebhookMixin() {
   public token: string;
   public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
   public editMessage(
-    message: MessageResolvable,
+    message: MessageResolvable | '@original',
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<Message>;
-  public fetchMessage(message: string): Promise<Message>;
+  public fetchMessage(message: Snowflake | '@original'): Promise<Message>;
 }
 
 export class Invite extends Base {
@@ -2809,6 +2809,13 @@ export class Webhook extends WebhookMixin() {
     applicationId: null;
     owner: User | APIUser;
   };
+
+  public editMessage(
+    message: MessageResolvable,
+    options: string | MessagePayload | WebhookEditMessageOptions,
+  ): Promise<Message>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
+  public send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message>;
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {

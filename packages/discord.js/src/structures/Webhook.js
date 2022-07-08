@@ -148,7 +148,7 @@ class Webhook {
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
-   * @returns {Promise<APIMessage>}
+   * @returns {Promise<Message>}
    * @example
    * // Send a basic message
    * webhook.send('hello!')
@@ -288,7 +288,7 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    * @param {Snowflake|'@original'} message The id of the message to fetch
    * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
-   * @returns {Promise<APIMessage>} Returns the message sent by this webhook
+   * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { threadId } = {}) {
     if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
@@ -309,7 +309,7 @@ class Webhook {
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
-   * @returns {Promise<APIMessage>} Returns the message edited by this webhook
+   * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
     if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
