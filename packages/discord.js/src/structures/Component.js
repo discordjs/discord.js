@@ -6,11 +6,6 @@ const isEqual = require('fast-deep-equal');
  * Represents a component
  */
 class Component {
-  /**
-   * Creates a new component from API data
-   * @param {APIMessageComponent} data The API component data
-   * @private
-   */
   constructor(data) {
     /**
      * The API data associated with this component
