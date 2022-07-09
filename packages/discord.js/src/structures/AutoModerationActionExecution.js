@@ -86,7 +86,7 @@ class AutoModerationActionExecution {
    * @readonly
    */
   get autoModerationRule() {
-    return this.guild?.autoModerationRules.cache.get(this.ruleId) ?? null;
+    return this.guild.autoModerationRules.cache.get(this.ruleId) ?? null;
   }
 }
 
