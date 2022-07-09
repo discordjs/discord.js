@@ -52,6 +52,7 @@ import {
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
+  MessageActivityType,
   RESTPostAPIApplicationCommandsJSONBody,
   Snowflake,
   LocalizationMap,
@@ -5301,7 +5302,7 @@ export interface MessageActionRowOptions<
 
 export interface MessageActivity {
   partyId: string;
-  type: number;
+  type: MessageActivityType;
 }
 
 export interface BaseButtonOptions extends BaseMessageComponentOptions {
