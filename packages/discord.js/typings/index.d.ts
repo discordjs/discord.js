@@ -113,7 +113,6 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
-  APIEmbedVideo,
   VideoQualityMode,
   LocalizationMap,
   LocaleString,
