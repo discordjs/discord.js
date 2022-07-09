@@ -2946,12 +2946,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/ws@workspace:packages/ws"
   dependencies:
+    "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
+    "@discordjs/rest": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.3
     "@types/node": ^18.0.3
     c8: ^7.11.3
+    discord-api-types: ^0.36.1
     eslint: ^8.19.0
     prettier: ^2.7.1
     tslib: ^2.4.0

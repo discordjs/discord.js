@@ -52,6 +52,9 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@discordjs/collection": "workspace:^",
+		"@discordjs/rest": "workspace:^",
+		"discord-api-types": "^0.36.1",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
