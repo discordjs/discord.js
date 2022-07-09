@@ -2942,6 +2942,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/ws@workspace:packages/ws":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/ws@workspace:packages/ws"
+  dependencies:
+    "@discordjs/docgen": "workspace:^"
+    "@discordjs/scripts": "workspace:^"
+    "@favware/cliff-jumper": ^1.8.5
+    "@microsoft/api-extractor": ^7.28.3
+    "@types/node": ^18.0.3
+    c8: ^7.11.3
+    eslint: ^8.19.0
+    prettier: ^2.7.1
+    tslib: ^2.4.0
+    tsup: ^6.1.3
+    typescript: ^4.7.4
+    vitest: ^0.17.0
+  languageName: unknown
+  linkType: soft
+
 "@esbuild-plugins/node-modules-polyfill@npm:^0.1.4":
   version: 0.1.4
   resolution: "@esbuild-plugins/node-modules-polyfill@npm:0.1.4"
