@@ -137,7 +137,6 @@ export class WebSocketManager {
 		}
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
-		data.session_start_limit.reset_after;
 
 		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
 		return this.gatewayInformation;
