@@ -17,11 +17,11 @@ class Embed {
 
   /**
    * An array of fields of this embed.
-   * @type {?Array<APIEmbedField>}
+   * @type {Array<APIEmbedField>}
    * @readonly
    */
   get fields() {
-    return this.data.fields ?? null;
+    return this.data.fields ?? [];
   }
 
   /**

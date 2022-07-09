@@ -672,7 +672,7 @@ export interface EmbedData {
   thumbnail?: EmbedAssetData;
   provider?: APIEmbedProvider;
   author?: EmbedAuthorData;
-  fields?: EmbedFieldData[];
+  fields?: APIEmbedField[];
   video?: EmbedAssetData;
 }
 
@@ -698,7 +698,7 @@ export class EmbedBuilder extends BuildersEmbed {
 export class Embed {
   private constructor(data: APIEmbed);
   public readonly data: Readonly<APIEmbed>;
-  public get fields(): APIEmbedField[] | null;
+  public get fields(): APIEmbedField[];
   public get footer(): EmbedFooterData | null;
   public get title(): string | null;
   public get description(): string | null;
@@ -4402,12 +4402,6 @@ export interface EmbedField {
   name: string;
   value: string;
   inline: boolean;
-}
-
-export interface EmbedFieldData {
-  name: string;
-  value: string;
-  inline?: boolean;
 }
 
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
