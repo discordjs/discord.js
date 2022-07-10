@@ -70,7 +70,7 @@ export interface WebSocketManagerOptions {
 	 */
 	version: string;
 	/**
-	 * Function used to retrieve session information (and resume) for a given shard
+	 * Function used to retrieve session information (and attempt to resume) for a given shard
 	 * @example
 	 * const manager = new WebSocketManager({
 	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
@@ -104,6 +104,14 @@ export class WebSocketManager {
 		expiresAt: number;
 	} | null = null;
 
+	/**
+	 * Internal cache for the shard ids
+	 */
+	private shardIds: number[] | null = null;
+
+	/**
+	 * Map of the shards this manager is handling
+	 */
 	private readonly shards = new Collection<number, WebSocketShard>();
 
 	public constructor(options?: Partial<WebSocketManagerOptions>) {
@@ -132,10 +140,6 @@ export class WebSocketManager {
 			}
 		}
 
-		if (this.gatewayInformation && !force) {
-			return this.gatewayInformation;
-		}
-
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
 		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
@@ -155,7 +159,7 @@ export class WebSocketManager {
 
 		this.shards.clear();
 
-		const shardIds = await this.getShardIds();
+		const shardIds = await this.getShardIds(true);
 		for (const shardId of shardIds) {
 			// TODO(DD): Connect...?
 			this.shards.set(shardId, new WebSocketShard());
@@ -180,15 +184,24 @@ export class WebSocketManager {
 	/**
 	 * Yields the IDs of the shards this manager should manage
 	 */
-	public async getShardIds(): Promise<number[]> {
+	public async getShardIds(force = false): Promise<number[]> {
+		if (this.shardIds && !force) {
+			return this.shardIds;
+		}
+
+		let shardIds: number[];
 		if (this.options.shardIds) {
 			if (Array.isArray(this.options.shardIds)) {
-				return this.options.shardIds;
+				shardIds = this.options.shardIds;
+			} else {
+				shardIds = range(this.options.shardIds);
 			}
-			return range(this.options.shardIds);
 		}
 
 		const info = await this.fetchGatewayInformation();
-		return range({ start: 0, end: info.data.shards });
+		shardIds = range({ start: 0, end: info.data.shards });
+
+		this.shardIds = shardIds;
+		return shardIds;
 	}
 }
