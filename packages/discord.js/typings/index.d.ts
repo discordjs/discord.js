@@ -494,7 +494,7 @@ export abstract class BaseGuild extends Base {
   protected constructor(client: Client, data: RawBaseGuildData);
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  public features: GuildFeature[];
+  public features: `${GuildFeature}`[];
   public icon: string | null;
   public id: Snowflake;
   public name: string;
@@ -1339,7 +1339,7 @@ export class GuildPreview extends Base {
   public discoverySplash: string | null;
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
   public stickers: Collection<Snowflake, Sticker>;
-  public features: GuildFeature[];
+  public features: `${GuildFeature}`[];
   public icon: string | null;
   public id: Snowflake;
   public name: string;
@@ -4754,7 +4754,7 @@ export interface GuildEditData {
   preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   description?: string | null;
-  features?: GuildFeature[];
+  features?: `${GuildFeature}`[];
   reason?: string;
 }
 
