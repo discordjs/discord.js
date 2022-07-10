@@ -10,3 +10,8 @@ export type Awaitable<T> = T | Promise<T>;
 export function range({ start, end }: ShardRange): number[] {
 	return Array.from({ length: end - start + 1 }, (_, i) => i + start);
 }
+
+export function lazy<T>(cb: () => T): () => T {
+	let defaultValue: T;
+	return () => (defaultValue ??= cb());
+}

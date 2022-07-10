@@ -2952,7 +2952,10 @@ __metadata:
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.3
+    "@sapphire/async-queue": ^1.3.1
     "@types/node": ^18.0.3
+    "@types/ws": ^8.5.3
+    "@vladfrangu/async_event_emitter": ^2.0.1
     c8: ^7.11.3
     discord-api-types: ^0.36.1
     eslint: ^8.19.0
@@ -2961,6 +2964,8 @@ __metadata:
     tsup: ^6.1.3
     typescript: ^4.7.4
     vitest: ^0.17.0
+    ws: ^8.8.0
+    zlib-sync: ^0.1.7
   languageName: unknown
   linkType: soft
 
@@ -5132,6 +5137,13 @@ __metadata:
   peerDependencies:
     vite: ^3.0.0
   checksum: 27e7968a46c04dffcd32e3a3cce5e0506b6d31544e18964224abcc688ccfa74d8fe99397f99489acf72c324f5a12cb7df39d3f261259603e256b296d5c6f4a89
+  languageName: node
+  linkType: hard
+
+"@vladfrangu/async_event_emitter@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@vladfrangu/async_event_emitter@npm:2.0.1"
+  checksum: 96aec2c774676c3af47651167cb8ce1eba386c512aeac44731b09080f3a6faed7286993c37086da6cf600027f3281572d7beb8bc650f2fb257749ac99e6e2f6a
   languageName: node
   linkType: hard
 
@@ -14602,6 +14614,15 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
+"nan@npm:^2.14.0":
+  version: 2.16.0
+  resolution: "nan@npm:2.16.0"
+  dependencies:
+    node-gyp: latest
+  checksum: cb16937273ea55b01ea47df244094c12297ce6b29b36e845d349f1f7c268b8d7c5abd126a102c5678a1e1afd0d36bba35ea0cc959e364928ce60561c9306064a
+  languageName: node
+  linkType: hard
+
 "nanoid@npm:^3.3.4":
   version: 3.3.4
   resolution: "nanoid@npm:3.3.4"
@@ -19912,6 +19933,16 @@ dts-critic@latest:
   bin:
     z-schema: bin/z-schema
   checksum: eb6c2c3c2878c4c333fd3755703616c8f846158da0154f60f81f188c3c4ce7ad5b8ff5ce570d6372d4803fb5c8c9d97b4e54becdd5a832b1a31240d149b87191
+  languageName: node
+  linkType: hard
+
+"zlib-sync@npm:^0.1.7":
+  version: 0.1.7
+  resolution: "zlib-sync@npm:0.1.7"
+  dependencies:
+    nan: ^2.14.0
+    node-gyp: latest
+  checksum: 8f6ef7bf5726b41fefffa4509f5679872b425ef47227a59d8c787b32518db6220961262f78b0f6eb1dcd9b52cd71bc8213d4f061b8b56a9b7e82c345a548e6f4
   languageName: node
   linkType: hard
 

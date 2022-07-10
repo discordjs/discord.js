@@ -1,7 +1,11 @@
-import { Collection } from '@discordjs/collection';
 import type { REST } from '@discordjs/rest';
-import { APIGatewayBotInfo, RESTGetAPIGatewayBotResult, Routes } from 'discord-api-types/v10';
-import { WebSocketShard } from './WebSocketShard';
+import {
+	APIGatewayBotInfo,
+	GatewayIdentifyProperties,
+	GatewayPresenceUpdateData,
+	RESTGetAPIGatewayBotResult,
+	Routes,
+} from 'discord-api-types/v10';
 import { DefaultWebSocketManagerOptions } from '../utils/constants';
 import { Awaitable, range } from '../utils/utils';
 
@@ -36,6 +40,20 @@ export interface SessionInfo {
 }
 
 /**
+ * Valid encoding types
+ */
+export enum Encoding {
+	JSON = 'json',
+}
+
+/**
+ * Valid compression methods
+ */
+export enum CompressionMethod {
+	ZlibStream = 'zlib-stream',
+}
+
+/**
  * Options for the WebSocketManager
  */
 export interface WebSocketManagerOptions {
@@ -61,6 +79,24 @@ export interface WebSocketManagerOptions {
 	 */
 	shardIds: number[] | ShardRange | null;
 	/**
+	 * The intents to request
+	 */
+	// Wonder if there's a better abstraction that could be done here?
+	// TOOD(DD): Make intents required
+	intents: number;
+	/**
+	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
+	 */
+	largeThreshold: number | null;
+	/**
+	 * Initial presence data to send to the gateway when identifying
+	 */
+	initialPresence: GatewayPresenceUpdateData | null;
+	/**
+	 * Properties to send to the gateway when identifying
+	 */
+	identifyProperties: GatewayIdentifyProperties;
+	/**
 	 * The REST instance to use for fetching gateway information
 	 */
 	rest: REST;
@@ -69,6 +105,16 @@ export interface WebSocketManagerOptions {
 	 * @default '10'
 	 */
 	version: string;
+	/**
+	 * The encoding to use
+	 * @default 'json'
+	 */
+	encoding: Encoding;
+	/**
+	 * The compression method to use
+	 * @default null (no compression)
+	 */
+	compression: CompressionMethod | null;
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
 	 * @example
@@ -85,6 +131,14 @@ export interface WebSocketManagerOptions {
 	 * Function used to store session information for a given shard
 	 */
 	updateSessionInfo: (sessionInfo: SessionInfo) => Awaitable<void>;
+	/**
+	 * How long to wait for a shard's HELLO packet before giving up
+	 */
+	helloTimeout: number | null;
+	/**
+	 * How long to wait for a shard's READY packet before giving up
+	 */
+	readyTimeout: number | null;
 }
 
 export class WebSocketManager {
@@ -109,11 +163,6 @@ export class WebSocketManager {
 	 */
 	private shardIds: number[] | null = null;
 
-	/**
-	 * Map of the shards this manager is handling
-	 */
-	private readonly shards = new Collection<number, WebSocketShard>();
-
 	public constructor(options?: Partial<WebSocketManagerOptions>) {
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 	}
@@ -136,18 +185,14 @@ export class WebSocketManager {
 			if (this.gatewayInformation.expiresAt <= Date.now()) {
 				this.gatewayInformation = null;
 			} else if (!force) {
-				return this.gatewayInformation;
+				return this.gatewayInformation.data;
 			}
 		}
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
 		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
-		return this.gatewayInformation;
-	}
-
-	public getToken(): string | null {
-		return this.#token;
+		return this.gatewayInformation.data;
 	}
 
 	/**
@@ -155,14 +200,10 @@ export class WebSocketManager {
 	 * @param shardCount The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
-		// TODO(DD): Destroy current shards before clearing the collection
-
-		this.shards.clear();
+		// TODO(DD)
 
 		const shardIds = await this.getShardIds(true);
 		for (const shardId of shardIds) {
-			// TODO(DD): Connect...?
-			this.shards.set(shardId, new WebSocketShard());
 		}
 
 		this.options.shardCount = shardCount;
@@ -177,8 +218,8 @@ export class WebSocketManager {
 			return this.options.shardCount;
 		}
 
-		const info = await this.fetchGatewayInformation();
-		return info.data.shards;
+		const data = await this.fetchGatewayInformation();
+		return data.shards;
 	}
 
 	/**
@@ -198,8 +239,8 @@ export class WebSocketManager {
 			}
 		}
 
-		const info = await this.fetchGatewayInformation();
-		shardIds = range({ start: 0, end: info.data.shards });
+		const data = await this.fetchGatewayInformation();
+		shardIds = range({ start: 0, end: data.shards });
 
 		this.shardIds = shardIds;
 		return shardIds;
