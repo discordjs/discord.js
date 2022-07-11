@@ -2,25 +2,34 @@ import { once } from 'node:events';
 import { setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { TextDecoder } from 'node:util';
+import { inflate } from 'node:zlib';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import { GatewayIdentifyData, GatewayOpcodes, GatewayReceivePayload, GatewaySendPayload } from 'discord-api-types/v10';
+import {
+	GatewayDispatchEvents,
+	GatewayIdentifyData,
+	GatewayOpcodes,
+	GatewayReceivePayload,
+	GatewaySendPayload,
+} from 'discord-api-types/v10';
 import { RawData, WebSocket } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { SessionInfo } from './WebSocketManager';
-import type { IStrategy } from '../strategies/IStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants';
 import { lazy } from '../utils/utils';
 
-const getZlibSync = lazy(() => import('zlib-sync').catch(() => null));
+const getZlibSync = lazy(() => import('zlib-sync').then((mod) => mod.default).catch(() => null));
 
 export enum WebSocketShardEvents {
+	Debug = 'debug',
 	Hello = 'hello',
 	Ready = 'ready',
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type WebSocketShardEventsMap = {
+	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [];
 };
@@ -28,7 +37,7 @@ export type WebSocketShardEventsMap = {
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private readonly strategy: IStrategy;
+	private readonly strategy: IContextFetchingStrategy;
 	private readonly id: number;
 
 	private useIdentifyCompress = false;
@@ -45,7 +54,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly sendQueue = new AsyncQueue();
 
-	public constructor(strategy: IStrategy, id: number) {
+	public constructor(strategy: IContextFetchingStrategy, id: number) {
 		super();
 		this.strategy = strategy;
 		this.id = id;
@@ -77,6 +86,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isReady = false;
 
 		const url = `${data.url}?${params.toString()}`;
+		this.emit(WebSocketShardEvents.Debug, { message: `Connecting to ${url}` });
 		const connection = new WebSocket(url)
 			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			.on('message', this.onMessage.bind(this))
@@ -91,13 +101,20 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		const session = await this.strategy.retrieveSessionInfo(this.id);
 		if (session?.shardCount === this.strategy.options.shardCount) {
+			this.emit(WebSocketShardEvents.Debug, { message: 'Resuming session' });
 			await this.resume(session);
 		} else {
+			this.emit(WebSocketShardEvents.Debug, { message: 'Identifying' });
 			await this.identify();
 		}
 	}
 
+	public async destroy() {}
+
 	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null) {
+		this.emit(WebSocketShardEvents.Debug, {
+			message: `Waiting for event ${event} for ${timeoutDuration ? `${timeoutDuration}ms` : 'indefinitely'}`,
+		});
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
 		await once(this, event, { signal: controller.signal });
@@ -132,13 +149,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.connection.send(JSON.stringify(payload));
 	}
 
+	// TODO(DD): deal with identify limits
 	private async identify() {
 		const d: GatewayIdentifyData = {
-			token: this.strategy.token,
+			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
 			compress: this.useIdentifyCompress,
-			shard: [this.id, await this.strategy.fetchShardCount()],
+			shard: [this.id, await this.strategy.getShardCount()],
 		};
 
 		if (this.strategy.options.largeThreshold) {
@@ -162,7 +180,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		return this.send({
 			op: GatewayOpcodes.Resume,
 			d: {
-				token: this.strategy.token,
+				token: this.strategy.options.token,
 				seq: session.sequence,
 				session_id: session.sessionId,
 			},
@@ -175,6 +193,19 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		// Deal with no compression
 		if (!isBinary) {
 			return JSON.parse(this.textDecoder.decode(decompressable)) as GatewayReceivePayload;
+		}
+
+		// Deal with identify compress
+		if (this.useIdentifyCompress) {
+			return new Promise((resolve, reject) => {
+				inflate(decompressable, { chunkSize: 65535 }, (err, result) => {
+					if (err) {
+						return reject(err);
+					}
+
+					resolve(JSON.parse(this.textDecoder.decode(result)) as GatewayReceivePayload);
+				});
+			});
 		}
 
 		// Deal with gw wide zlib-stream compression
@@ -206,9 +237,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
 		}
 
-		// Deal with identify compression
-
-		// TODO(DD): I have no clue how to implement this. I know of no gateway implementation that uses this
+		// TODO(DD): Consider throwing?
 		return null;
 	}
 
@@ -219,6 +248,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		switch (payload.op) {
+			case GatewayOpcodes.Dispatch: {
+				if (payload.t === GatewayDispatchEvents.Ready) {
+					this.emit(WebSocketShardEvents.Ready);
+				}
+
+				break;
+			}
+
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
 				break;

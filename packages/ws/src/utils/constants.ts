@@ -1,19 +1,24 @@
 import { REST } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
-import { Encoding, WebSocketManagerOptions } from '../struct/WebSocketManager';
+import { Encoding, OptionalWebSocketManagerOptions } from '../struct/WebSocketManager';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+const Package = require('../../package.json');
+
+// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
+export const DefaultDeviceProperty = `@discordjs/ws ${Package.version}`;
 
 /**
  * Default options used by the manager
  */
-export const DefaultWebSocketManagerOptions: WebSocketManagerOptions = {
+export const DefaultWebSocketManagerOptions: OptionalWebSocketManagerOptions = {
 	shardCount: null,
 	shardIds: null,
-	intents: 0,
 	largeThreshold: null,
 	initialPresence: null,
 	identifyProperties: {
-		browser: '@discordjs/ws',
-		device: '@discordjs/ws',
+		browser: DefaultDeviceProperty,
+		device: DefaultDeviceProperty,
 		os: process.platform,
 	},
 	get rest() {

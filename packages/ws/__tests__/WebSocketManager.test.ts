@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest';
 import type { APIGatewayBotInfo } from 'discord-api-types/v10';
 import { MockAgent } from 'undici';
-import { describe, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 import { WebSocketManager } from '../src';
 
 test('fetch gateway information', async () => {
@@ -10,7 +10,7 @@ test('fetch gateway information', async () => {
 	mockAgent.disableNetConnect();
 
 	const rest = new REST().setAgent(mockAgent);
-	const manager = new WebSocketManager({ rest }).setToken('A-Very-Fake-Token');
+	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest });
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
@@ -40,4 +40,6 @@ test('fetch gateway information', async () => {
 
 	const initialData = await manager.fetchGatewayInformation();
 	expect(initialData).toEqual(data);
+
+	// TODO: Test cache usage
 });

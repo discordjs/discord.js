@@ -1,4 +1,5 @@
 import type { REST } from '@discordjs/rest';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	APIGatewayBotInfo,
 	GatewayIdentifyProperties,
@@ -6,6 +7,10 @@ import {
 	RESTGetAPIGatewayBotResult,
 	Routes,
 } from 'discord-api-types/v10';
+import type { WebSocketShardEventsMap } from './WebSocketShard';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
+import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy';
 import { DefaultWebSocketManagerOptions } from '../utils/constants';
 import { Awaitable, range } from '../utils/utils';
 
@@ -54,9 +59,24 @@ export enum CompressionMethod {
 }
 
 /**
- * Options for the WebSocketManager
+ * Required options for the WebSocketManager
  */
-export interface WebSocketManagerOptions {
+export interface RequiredWebsSocketManagerOptions {
+	/**
+	 * The token to use for identifying with the gateway
+	 */
+	token: string;
+	/**
+	 * The intents to request
+	 */
+	// Wonder if there's a better abstraction that could be done here?
+	intents: number;
+}
+
+/**
+ * Optional additional configuration for the WebSocketManager
+ */
+export interface OptionalWebSocketManagerOptions {
 	/**
 	 * The total number of shards across all WebsocketManagers you intend to instantiate.
 	 * Use `null` to use Discord's recommended shard count
@@ -78,12 +98,7 @@ export interface WebSocketManagerOptions {
 	 * });
 	 */
 	shardIds: number[] | ShardRange | null;
-	/**
-	 * The intents to request
-	 */
-	// Wonder if there's a better abstraction that could be done here?
-	// TOOD(DD): Make intents required
-	intents: number;
+
 	/**
 	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
 	 */
@@ -141,14 +156,19 @@ export interface WebSocketManagerOptions {
 	readyTimeout: number | null;
 }
 
-export class WebSocketManager {
+export type WebSocketManagerOptions = RequiredWebsSocketManagerOptions & OptionalWebSocketManagerOptions;
+
+export type ManagerShardEventsMap = {
+	[K in keyof WebSocketShardEventsMap]: [
+		WebSocketShardEventsMap[K] extends [] ? { shardId: number } : WebSocketShardEventsMap[K][0] & { shardId: number },
+	];
+};
+
+export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements IContextFetchingStrategy {
 	/**
 	 * The options being used by this manager
 	 */
 	public readonly options: WebSocketManagerOptions;
-
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-	#token: string | null = null;
 
 	/**
 	 * Internal cache for a GET /gateway/bot result
@@ -163,17 +183,30 @@ export class WebSocketManager {
 	 */
 	private shardIds: number[] | null = null;
 
-	public constructor(options?: Partial<WebSocketManagerOptions>) {
+	/**
+	 * Strategy used to manage shards
+	 * @default SimpleManagerToShardStrategy
+	 */
+	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
+
+	public constructor(options: RequiredWebsSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
+		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
+		// TODO(DD): Consider making rest a required prop so we don't have to do this
+		this.options.rest.setToken(this.options.token);
 	}
 
-	/**
-	 * Sets the token this manager should use
-	 */
-	public setToken(token: string) {
-		this.#token = token;
-		this.options.rest.setToken(token);
+	public setStrategy(strategy: IShardingStrategy) {
+		this.strategy = strategy;
 		return this;
+	}
+
+	public retrieveSessionInfo(shardId: number) {
+		return this.options.retrieveSessionInfo(shardId);
+	}
+
+	public updateSessionInfo(sessionInfo: SessionInfo) {
+		return this.options.updateSessionInfo(sessionInfo);
 	}
 
 	/**
@@ -196,15 +229,14 @@ export class WebSocketManager {
 	}
 
 	/**
-	 * Updates your total shard count on-the-fly.
+	 * Updates your total shard count on-the-fly, spawning shards as needed
 	 * @param shardCount The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
-		// TODO(DD)
+		await this.strategy.destroy();
 
 		const shardIds = await this.getShardIds(true);
-		for (const shardId of shardIds) {
-		}
+		await this.strategy.spawn(shardIds);
 
 		this.options.shardCount = shardCount;
 		return this;
@@ -240,9 +272,21 @@ export class WebSocketManager {
 		}
 
 		const data = await this.fetchGatewayInformation();
-		shardIds = range({ start: 0, end: data.shards });
+		shardIds = range({ start: 0, end: data.shards - 1 });
 
 		this.shardIds = shardIds;
 		return shardIds;
+	}
+
+	public async connect() {
+		// TODO(DD): Check if already connected maybe
+		const shardCount = await this.getShardCount();
+		// First, make sure all our shards are spawned
+		await this.updateShardCount(shardCount);
+		await this.strategy.connect();
+	}
+
+	public destroy() {
+		return this.strategy.destroy();
 	}
 }

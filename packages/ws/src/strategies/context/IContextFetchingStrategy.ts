@@ -1,14 +1,14 @@
+import type { Awaitable } from '@vladfrangu/async_event_emitter';
 import type { APIGatewayBotInfo } from 'discord-api-types/v10';
-import type { SessionInfo, WebSocketManagerOptions } from '../struct/WebSocketManager';
-import type { Awaitable } from '../utils/utils';
+import type { SessionInfo, WebSocketManagerOptions } from '../../struct/WebSocketManager';
 
-export interface IStrategy {
-	readonly token: string;
+/**
+ * Strategies responsible solely for making manager information accessible
+ */
+export interface IContextFetchingStrategy {
 	readonly options: Omit<WebSocketManagerOptions, 'retrieveSessionInfo' | 'updateSessionInfo'>;
-	connect: () => Promise<void>;
-	destroy: () => void;
 	fetchGatewayInformation: () => Awaitable<APIGatewayBotInfo>;
-	fetchShardCount: () => Awaitable<number>;
+	getShardCount: () => Awaitable<number>;
 	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
 	updateSessionInfo: (sessionInfo: SessionInfo) => Awaitable<void>;
 }
