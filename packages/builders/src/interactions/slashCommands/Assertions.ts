@@ -8,7 +8,7 @@ import { isValidationEnabled } from '../../util/validation';
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
-	.regex(/^[\P{Lu}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u)
+	.regex(/^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u)
 	.setValidationEnabled(isValidationEnabled);
 
 export function validateName(name: unknown): asserts name is string {
