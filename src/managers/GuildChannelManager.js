@@ -257,7 +257,7 @@ class GuildChannelManager extends CachedManager {
           );
         }
       } else if (channel.parent) {
-        permission_overwrites = this.parent.permissionOverwrites.cache.map(o =>
+        permission_overwrites = channel.parent.permissionOverwrites.cache.map(o =>
           PermissionOverwrites.resolve(o, this.guild),
         );
       }
