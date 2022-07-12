@@ -1,5 +1,5 @@
+import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
-import { HyperlinkedText } from '../util/util';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
 interface ParameterDetailProps {

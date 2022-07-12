@@ -1,6 +1,6 @@
+import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import type { TypeParameterData } from '~/util/parse.server';
-import { HyperlinkedText } from '~/util/util';
 
 export interface TableProps {
 	data: TypeParameterData[];

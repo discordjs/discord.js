@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vs } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
 import { generateIcon } from '~/util/icon';
 import type { TokenDocumentation, TypeParameterData } from '~/util/parse.server';
-import { HyperlinkedText } from '~/util/util';
 
 export interface DocContainerProps {
 	name: string;

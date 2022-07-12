@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
+import { HyperlinkedText } from './HyperlinkedText';
 import type { TokenDocumentation } from '~/util/parse.server';
-import { HyperlinkedText } from '~/util/util';
 
 export enum CodeListingSeparatorType {
 	Type = ':',

@@ -1,8 +1,8 @@
 import { FiLink } from 'react-icons/fi';
+import { HyperlinkedText } from './HyperlinkedText';
 import { ParameterTable } from './ParameterTable';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
-import { HyperlinkedText } from '~/util/util';
 
 type MethodResolvable = ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>;
 

@@ -1,4 +1,4 @@
-import type { TokenDocumentation } from './parse.server';
+import type { TokenDocumentation } from '~/util/parse.server';
 
 export interface HyperlinkedTextProps {
 	tokens: TokenDocumentation[];
