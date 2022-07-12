@@ -1,8 +1,8 @@
 import { FiLink } from 'react-icons/fi';
+import { HyperlinkedText } from './HyperlinkedText';
 import { ParameterTable } from './ParameterTable';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
-import { constructHyperlinkedText } from '~/util/util';
 
 type MethodResolvable = ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>;
 
@@ -37,7 +37,7 @@ export function MethodItem({ data }: MethodItemProps) {
 						<h4 className="font-mono my-0 break-all">{`${getShorthandName(data)}`}</h4>
 						<h4 className="mx-3 my-0">:</h4>
 						<h4 className="font-mono color-blue-800 my-0 break-all ">
-							{constructHyperlinkedText(data.returnTypeTokens)}
+							<HyperlinkedText tokens={data.returnTypeTokens} />
 						</h4>
 					</div>
 				</div>

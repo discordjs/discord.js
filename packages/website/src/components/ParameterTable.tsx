@@ -1,5 +1,5 @@
+import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
-import { constructHyperlinkedText } from '../util/util';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
 interface ParameterDetailProps {
@@ -10,7 +10,7 @@ interface ParameterDetailProps {
 export function ParameterTable({ data, className }: ParameterDetailProps) {
 	const rows = data.map((param) => ({
 		Name: param.name,
-		Type: constructHyperlinkedText(param.tokens),
+		Type: <HyperlinkedText tokens={param.tokens} />,
 		Optional: param.isOptional ? 'Yes' : 'No',
 		Description: 'None',
 	}));

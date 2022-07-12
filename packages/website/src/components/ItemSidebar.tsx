@@ -18,11 +18,11 @@ function onMenuClick() {
 export function ItemSidebar({ packageName, data }: ItemListProps) {
 	return (
 		<div className="flex flex-col max-h-full min-w-[270px] lg:border-r-solid border-b-solid border-gray border-width-0.5">
-			<div className="flex justify-between content-center items-center border-b-solid border-gray border-width-0.5">
-				<h1 className="px-2 font-mono flex items-center content-center">
+			<div className="flex justify-between content-center items-center border-b-solid border-gray border-width-0.5 py-2">
+				<h2 className="px-2 font-mono flex items-center content-center m-0">
 					<VscPackage className="px-1" />
 					{`${packageName}`}
-				</h1>
+				</h2>
 				<button className="lg:hidden mr-2 bg-transparent border-none cursor-pointer" onClick={onMenuClick}>
 					<FiMenu size={32} />
 				</button>
