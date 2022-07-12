@@ -41,9 +41,9 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 *
 	 * @param components - The components to add to this action row.
 	 */
-	public addComponents(...components: RestOrArray<T>) {
+	public addComponents<U extends T>(...components: RestOrArray<U>): ActionRowBuilder<U> {
 		this.components.push(...normalizeArray(components));
-		return this;
+		return this as unknown as ActionRowBuilder<U>;
 	}
 
 	/**
@@ -51,9 +51,9 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 *
 	 * @param components - The components to set this row to
 	 */
-	public setComponents(...components: RestOrArray<T>) {
+	public setComponents<U extends T>(...components: RestOrArray<U>): ActionRowBuilder<U> {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));
-		return this;
+		return this as unknown as ActionRowBuilder<U>;
 	}
 
 	public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>> {
