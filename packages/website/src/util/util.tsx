@@ -1,5 +1,9 @@
 import type { TokenDocumentation } from './parse.server';
 
+export interface HyperlinkedTextProps {
+	tokens: TokenDocumentation[],
+}
+
 /**
  * Constructs a hyperlinked html node based on token type references
  *
@@ -7,17 +11,16 @@ import type { TokenDocumentation } from './parse.server';
  *
  * @returns An array of JSX elements and string comprising the hyperlinked text
  */
-export function constructHyperlinkedText(tokens: TokenDocumentation[]) {
-	const html: (JSX.Element | string)[] = [];
+export function HyperlinkedText({ tokens }: HyperlinkedTextProps) {
+	return (
+		<>
+			{tokens.map(token => {
+				if (token.path) {
+					return <a key={token.text} href={token.path}>{token.text}</a>
+				}
 
-	for (const token of tokens) {
-		if (token.path) {
-			html.push(<a href={token.path}>{token.text}</a>);
-			continue;
-		}
-
-		html.push(token.text);
-	}
-
-	return html;
+				return token.text
+			})}
+		</>
+	)
 }

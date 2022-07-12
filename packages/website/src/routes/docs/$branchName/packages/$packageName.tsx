@@ -39,7 +39,7 @@ export default function Package() {
 	const { packageName } = useParams();
 
 	return (
-		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full">
+		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full dark:bg-slate-800">
 			<div className="w-full lg:min-w-1/4 lg:max-w-1/4">
 				<ItemSidebar packageName={packageName!} data={data} />
 			</div>

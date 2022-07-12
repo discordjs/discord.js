@@ -9,7 +9,6 @@ export interface MethodListProps {
 export function MethodList({ data }: MethodListProps) {
 	return (
 		<div>
-			<h2>Methods</h2>
 			<div className="flex flex-col">
 				{data.map((method) => (
 					<MethodItem key={method.name} data={method} />

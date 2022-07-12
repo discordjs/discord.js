@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 export interface RowData {
 	monospace?: boolean;
 	content: string;
@@ -6,7 +8,7 @@ export interface RowData {
 export interface TableProps {
 	columns: string[];
 	columnStyles?: Record<string, string>;
-	rows: Record<string, string | (string | JSX.Element)[]>[];
+	rows: Record<string, ReactNode>[];
 	className?: string | undefined;
 }
 
@@ -26,20 +28,16 @@ export function Table({ rows, columns, columnStyles, className }: TableProps) {
 				<tbody>
 					{rows.map((row, i) => (
 						<tr key={i}>
-							{Object.entries(row).map(([colName, val]) => {
-								console.log(colName);
-								console.log(columnStyles?.[colName]);
-								return (
-									<td
-										key={colName}
-										className={`p-2 text-sm border-b text-left border-slate-300 break-all ${
-											columnStyles?.[colName] ?? ''
-										}`}
-									>
-										{val}
-									</td>
-								);
-							})}
+							{Object.entries(row).map(([colName, val]) => (
+								<td
+									key={colName}
+									className={`p-2 text-sm border-b text-left border-slate-300 break-all ${
+										columnStyles?.[colName] ?? ''
+									}`}
+								>
+									{val}
+								</td>
+							))}
 						</tr>
 					))}
 				</tbody>

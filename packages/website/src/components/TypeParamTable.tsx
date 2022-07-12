@@ -1,6 +1,6 @@
 import { Table } from './Table';
 import type { TypeParameterData } from '~/util/parse.server';
-import { constructHyperlinkedText } from '~/util/util';
+import { HyperlinkedText } from '~/util/util';
 
 export interface TableProps {
 	data: TypeParameterData[];
@@ -10,9 +10,9 @@ export interface TableProps {
 export function TypeParamTable({ data, className }: TableProps) {
 	const rows = data.map((typeParam) => ({
 		Name: typeParam.name,
-		Constraints: constructHyperlinkedText(typeParam.constraintTokens),
+		Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
 		Optional: typeParam.optional ? 'Yes' : 'No',
-		Default: constructHyperlinkedText(typeParam.defaultTokens),
+		Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
 		Description: 'None',
 	}));
 

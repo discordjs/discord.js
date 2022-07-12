@@ -1,5 +1,5 @@
 import { DocContainer } from '../DocContainer';
-import { ParameterTable } from '../ParameterTable';
+import { ParametersSection } from '../Sections';
 import type { DocFunction } from '~/DocModel/DocFunction';
 
 export interface FunctionProps {
@@ -15,8 +15,7 @@ export function Function({ data }: FunctionProps) {
 			summary={data.summary}
 			typeParams={data.typeParameterData}
 		>
-			<h2>Parameters</h2>
-			<ParameterTable data={data.parameters} />
+			<ParametersSection data={data.parameters} />
 		</DocContainer>
 	);
 }

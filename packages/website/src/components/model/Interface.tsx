@@ -1,6 +1,5 @@
 import { DocContainer } from '../DocContainer';
-import { MethodList } from '../MethodList';
-import { PropertyList } from '../PropertyList';
+import { MethodsSection, PropertiesSection } from '../Sections';
 import type { DocInterface } from '~/DocModel/DocInterface';
 
 export interface InterfaceProps {
@@ -16,10 +15,8 @@ export function Interface({ data }: InterfaceProps) {
 			summary={data.summary}
 			typeParams={data.typeParameterData}
 		>
-			<>
-				{data.properties.length ? <PropertyList data={data.properties} /> : null}
-				{data.methods.length ? <MethodList data={data.methods} /> : null}
-			</>
+			<PropertiesSection data={data.properties} />
+			<MethodsSection data={data.methods} />
 		</DocContainer>
 	);
 }

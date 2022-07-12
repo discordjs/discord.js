@@ -13,6 +13,7 @@ import {
 	type TypeParameter,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import { Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
 
 export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
 	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as
@@ -135,6 +136,17 @@ export interface ParameterDocumentation {
 	tokens: TokenDocumentation[];
 }
 
+function createDapiTypesURL(meaning: Meaning, name: string) {
+	const base = 'https://discord-api-types.dev/api/discord-api-types-v10';
+
+	switch (meaning) {
+		case 'type':
+			return `${base}#${name}`;
+		default:
+			return `${base}/${meaning}/${name}`;
+	}
+}
+
 export function genReference(item: ApiItem) {
 	return {
 		name: resolveName(item),
@@ -146,6 +158,19 @@ export function genToken(model: ApiModel, token: ExcerptToken) {
 	if (token.canonicalReference) {
 		// @ts-expect-error
 		token.canonicalReference._navigation = '.';
+	}
+
+	if (
+		token.canonicalReference?.source instanceof ModuleSource &&
+		token.canonicalReference.symbol &&
+		token.canonicalReference.source.packageName === 'discord-api-types' &&
+		token.canonicalReference.symbol.meaning
+	) {
+		return {
+			kind: token.kind,
+			text: token.text,
+			path: createDapiTypesURL(token.canonicalReference.symbol.meaning, token.text),
+		};
 	}
 
 	const item = token.canonicalReference
