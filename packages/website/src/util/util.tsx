@@ -1,7 +1,7 @@
 import type { TokenDocumentation } from './parse.server';
 
 export interface HyperlinkedTextProps {
-	tokens: TokenDocumentation[],
+	tokens: TokenDocumentation[];
 }
 
 /**
@@ -14,13 +14,17 @@ export interface HyperlinkedTextProps {
 export function HyperlinkedText({ tokens }: HyperlinkedTextProps) {
 	return (
 		<>
-			{tokens.map(token => {
+			{tokens.map((token) => {
 				if (token.path) {
-					return <a key={token.text} href={token.path}>{token.text}</a>
+					return (
+						<a key={token.text} href={token.path}>
+							{token.text}
+						</a>
+					);
 				}
 
-				return token.text
+				return token.text;
 			})}
 		</>
-	)
+	);
 }
