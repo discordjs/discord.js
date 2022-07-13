@@ -21,11 +21,7 @@ export function entersState(
  * @param status - The status that the audio player should be in
  * @param timeout - The maximum time we are allowing for this to occur
  */
-export function entersState(
-	target: AudioPlayer,
-	status: AudioPlayerStatus,
-	timeout: number,
-): Promise<AudioPlayer>;
+export function entersState(target: AudioPlayer, status: AudioPlayerStatus, timeout: number): Promise<AudioPlayer>;
 
 /**
  * Allows a target a specified amount of time to enter a given state, otherwise rejects with an error.
