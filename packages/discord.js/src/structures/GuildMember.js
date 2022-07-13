@@ -211,6 +211,15 @@ class GuildMember extends Base {
   }
 
   /**
+   * The DM between the client's user and this member
+   * @type {?DMChannel}
+   * @readonly
+   */
+  get dmChannel() {
+    return this.client.users.dmChannel(this.id);
+  }
+
+  /**
    * The nickname of this member, or their username if they don't have one
    * @type {?string}
    * @readonly
