@@ -5,8 +5,8 @@
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
 		"test": "jest --coverage",
-		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
-		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",
+		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",

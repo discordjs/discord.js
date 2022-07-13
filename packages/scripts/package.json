@@ -6,8 +6,8 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts --cache",
-		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts --fix --cache"
+		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
