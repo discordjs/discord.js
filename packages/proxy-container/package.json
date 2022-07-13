@@ -4,8 +4,8 @@
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts --cache",
-		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts --fix --cache",
+		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy-container/*'"
 	},

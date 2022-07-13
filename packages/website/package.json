@@ -12,8 +12,8 @@
 		"dev:css": "yarn generate:css --watch",
 		"dev:remix": "remix dev",
 		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
-		"lint": "prettier --cache --check . && eslint src --ext mjs,js,ts,tsx --cache",
-		"format": "prettier --cache --write . && eslint src --ext mjs,js,ts,tsx --fix --cache"
+		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
+		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
