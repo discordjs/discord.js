@@ -146,7 +146,7 @@ export interface OptionalWebSocketManagerOptions {
 	/**
 	 * Function used to store session information for a given shard
 	 */
-	updateSessionInfo: (sessionInfo: SessionInfo) => Awaitable<void>;
+	updateSessionInfo: (shardId: number, sessionInfo: SessionInfo | null) => Awaitable<void>;
 	/**
 	 * How long to wait for a shard's HELLO packet before giving up
 	 */
@@ -206,8 +206,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		return this.options.retrieveSessionInfo(shardId);
 	}
 
-	public updateSessionInfo(sessionInfo: SessionInfo) {
-		return this.options.updateSessionInfo(sessionInfo);
+	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
+		return this.options.updateSessionInfo(shardId, sessionInfo);
 	}
 
 	/**

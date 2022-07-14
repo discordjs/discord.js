@@ -10,5 +10,5 @@ export interface IContextFetchingStrategy {
 	fetchGatewayInformation: () => Awaitable<APIGatewayBotInfo>;
 	getShardCount: () => Awaitable<number>;
 	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
-	updateSessionInfo: (sessionInfo: SessionInfo) => Awaitable<void>;
+	updateSessionInfo: (shardId: number, sessionInfo: SessionInfo | null) => Awaitable<void>;
 }

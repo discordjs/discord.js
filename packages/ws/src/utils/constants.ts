@@ -10,7 +10,7 @@ const Package = require('../../package.json');
 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultDeviceProperty = `@discordjs/ws ${Package.version}`;
 
-const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo>());
+const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
 
 /**
  * Default options used by the manager
@@ -35,9 +35,9 @@ export const DefaultWebSocketManagerOptions: OptionalWebSocketManagerOptions = {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;
 	},
-	updateSessionInfo(info: SessionInfo) {
+	updateSessionInfo(shardId: number, info: SessionInfo | null) {
 		const store = getDefaultSessionStore();
-		store.set(info.shardId, info);
+		store.set(shardId, info);
 	},
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
