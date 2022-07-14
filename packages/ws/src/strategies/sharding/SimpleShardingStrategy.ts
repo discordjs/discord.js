@@ -1,4 +1,5 @@
 import { Collection } from '@discordjs/collection';
+import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import type { WebSocketManager } from '../../struct/WebSocketManager';
 import { WebSocketShard } from '../../struct/WebSocketShard';
@@ -15,9 +16,10 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		this.manager = manager;
 	}
 
-	public spawn(shardIds: number[]) {
+	public async spawn(shardIds: number[]) {
+		await this.destroy();
 		for (const shardId of shardIds) {
-			// the manager is purposefully assignable to IContextFetchingStrategy to avoid another class here
+			// the manager purposefully implements IContextFetchingStrategy to avoid another class here
 			const shard = new WebSocketShard(this.manager, shardId);
 			bindShardEvents(this.manager, shard, shardId);
 			this.shards.set(shardId, shard);
@@ -35,5 +37,11 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 			await shard.destroy();
 		}
 		this.shards.clear();
+	}
+
+	public send(shardId: number, payload: GatewaySendPayload) {
+		const shard = this.shards.get(shardId);
+		if (!shard) throw new Error(`Shard ${shardId} not found`);
+		return shard.send(payload);
 	}
 }

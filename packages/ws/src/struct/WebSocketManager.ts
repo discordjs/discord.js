@@ -4,6 +4,7 @@ import {
 	APIGatewayBotInfo,
 	GatewayIdentifyProperties,
 	GatewayPresenceUpdateData,
+	GatewaySendPayload,
 	RESTGetAPIGatewayBotResult,
 	Routes,
 } from 'discord-api-types/v10';
@@ -276,6 +277,10 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 
 		this.shardIds = shardIds;
 		return shardIds;
+	}
+
+	public send(shardId: number, payload: GatewaySendPayload) {
+		return this.strategy.send(shardId, payload);
 	}
 
 	public async connect() {

@@ -1,7 +1,34 @@
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
+import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import type { WebSocketManager } from '../../struct/WebSocketManager';
+import type { WebSocketShardEvents } from '../../struct/WebSocketShard';
+
+export interface WorkerData {
+	token: string;
+	shardIds: number[];
+}
+
+export enum WorkerSendPayloadOp {
+	spawn,
+	connect,
+	destroy,
+	send,
+}
+
+export type WorkerSendPayload =
+	| { op: WorkerSendPayloadOp.spawn }
+	| { op: WorkerSendPayloadOp.connect }
+	| { op: WorkerSendPayloadOp.destroy }
+	| { op: WorkerSendPayloadOp.send; shardId: number; payload: GatewaySendPayload };
+
+// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
+export interface WorkerRecievePayload {
+	shardId: number;
+	event: WebSocketShardEvents;
+	data: any;
+}
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -33,8 +60,16 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		let shards = 0;
 		while (shards !== shardIds.length) {
 			const slice = shardIds.slice(shards, shardsPerWorker + shards);
-			// TODO(DD)
-			const worker = new Worker('abc');
+			const workerData: WorkerData = {
+				token: this.manager.options.token,
+				shardIds: slice,
+			};
+			// TODO(DD): Deal with events other than message
+			const worker = new Worker('./worker', { workerData });
+			worker.on('message', (payload: WorkerRecievePayload) => {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
+			});
 
 			for (const shardId of slice) {
 				this.workers.set(shardId, worker);
@@ -44,14 +79,36 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 	}
 
-	public async connect() {
+	public connect() {
 		for (const worker of this.workers.values()) {
+			const payload: WorkerSendPayload = {
+				op: WorkerSendPayloadOp.connect,
+			};
+			worker.postMessage(payload);
 		}
 	}
 
-	public async destroy() {
+	public destroy() {
 		for (const worker of this.workers.values()) {
+			const payload: WorkerSendPayload = {
+				op: WorkerSendPayloadOp.destroy,
+			};
+			worker.postMessage(payload);
 		}
 		this.workers.clear();
+	}
+
+	public send(shardId: number, data: GatewaySendPayload) {
+		const worker = this.workers.get(shardId);
+		if (!worker) {
+			throw new Error(`No worker found for shard ${shardId}`);
+		}
+
+		const payload: WorkerSendPayload = {
+			op: WorkerSendPayloadOp.send,
+			shardId,
+			payload: data,
+		};
+		worker.postMessage(payload);
 	}
 }

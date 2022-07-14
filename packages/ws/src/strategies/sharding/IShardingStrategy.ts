@@ -1,3 +1,4 @@
+import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { Awaitable } from '../../utils/utils';
 
 /**
@@ -11,9 +12,13 @@ export interface IShardingStrategy {
 	/**
 	 * Initializes all the shards
 	 */
-	connect: () => Promise<void>;
+	connect: () => Awaitable<void>;
 	/**
 	 * Destroys all the shards
 	 */
-	destroy: () => Promise<void>;
+	destroy: () => Awaitable<void>;
+	/**
+	 * Sends a payload to a shard
+	 */
+	send: (shardId: number, payload: GatewaySendPayload) => Awaitable<void>;
 }

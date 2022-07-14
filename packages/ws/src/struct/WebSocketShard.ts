@@ -47,10 +47,17 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private isReady = false;
 
+	private isAck = true;
+
 	private sendRateLimitState = {
 		remaining: 120,
 		resetAt: Date.now(),
 	};
+
+	private heartbeatInterval: NodeJS.Timer | null = null;
+	private lastHeartbeatAt = -1;
+
+	private session: SessionInfo | null = null;
 
 	private readonly sendQueue = new AsyncQueue();
 
@@ -96,11 +103,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
 
-		// TODO(DD): Heartbeating
 		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 
 		const session = await this.strategy.retrieveSessionInfo(this.id);
-		if (session?.shardCount === this.strategy.options.shardCount) {
+		if (session?.shardCount === (await this.strategy.getShardCount())) {
 			this.emit(WebSocketShardEvents.Debug, { message: 'Resuming session' });
 			await this.resume(session);
 		} else {
@@ -109,7 +115,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	public async destroy() {}
+	public destroy() {
+		if (this.heartbeatInterval) {
+			clearInterval(this.heartbeatInterval);
+		}
+	}
 
 	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null) {
 		this.emit(WebSocketShardEvents.Debug, {
@@ -123,7 +133,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	private async send(payload: GatewaySendPayload) {
+	public async send(payload: GatewaySendPayload) {
 		if (!this.connection) {
 			throw new Error("WebSocketShard wasn't connected");
 		}
@@ -185,6 +195,20 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				session_id: session.sessionId,
 			},
 		});
+	}
+
+	private async heartbeat(requested = false) {
+		if (!this.isAck && !requested) {
+			return this.destroy();
+		}
+
+		await this.send({
+			op: GatewayOpcodes.Heartbeat,
+			d: this.session?.sequence ?? null,
+		});
+
+		this.lastHeartbeatAt = Date.now();
+		this.isAck = false;
 	}
 
 	private async unpackMessage(data: Buffer | ArrayBuffer, isBinary: boolean): Promise<GatewayReceivePayload | null> {
@@ -251,6 +275,21 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			case GatewayOpcodes.Dispatch: {
 				if (payload.t === GatewayDispatchEvents.Ready) {
 					this.emit(WebSocketShardEvents.Ready);
+
+					if (this.session) {
+						if (payload.s > this.session.sequence) {
+							this.session.sequence = payload.s;
+						}
+					} else {
+						this.session = {
+							sequence: payload.s,
+							sessionId: payload.d.session_id,
+							shardId: this.id,
+							shardCount: await this.strategy.getShardCount(),
+						};
+					}
+
+					await this.strategy.updateSessionInfo(this.session);
 				}
 
 				break;
@@ -258,6 +297,23 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
+				this.emit(WebSocketShardEvents.Debug, {
+					message: `Starting to heartbeat every ${payload.d.heartbeat_interval}ms`,
+				});
+				this.heartbeatInterval = setInterval(() => void this.heartbeat(), payload.d.heartbeat_interval);
+				break;
+			}
+
+			case GatewayOpcodes.Heartbeat: {
+				await this.heartbeat(true);
+				break;
+			}
+
+			case GatewayOpcodes.HeartbeatAck: {
+				this.isAck = true;
+				this.emit(WebSocketShardEvents.Debug, {
+					message: `Got heartbeat ack after ${Date.now() - this.lastHeartbeatAt}ms`,
+				});
 				break;
 			}
 		}
