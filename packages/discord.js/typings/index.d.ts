@@ -4963,8 +4963,6 @@ export interface MakeErrorOptions {
   stack: string;
 }
 
-export type MemberMention = UserMention | `<@!${Snowflake}>`;
-
 export type ActionRowComponentOptions = ButtonComponentData | SelectMenuComponentData;
 
 export type MessageActionRowComponentResolvable = MessageActionRowComponent | ActionRowComponentOptions;
