@@ -251,8 +251,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 			return this.options.shardCount;
 		}
 
-		const data = await this.fetchGatewayInformation();
-		return data.shards;
+		const shardIds = await this.getShardIds();
+		return shardIds.length;
 	}
 
 	/**
@@ -273,7 +273,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		const data = await this.fetchGatewayInformation();
-		shardIds = range({ start: 0, end: data.shards - 1 });
+		shardIds ??= range({ start: 0, end: data.shards - 1 });
 
 		this.shardIds = shardIds;
 		return shardIds;
