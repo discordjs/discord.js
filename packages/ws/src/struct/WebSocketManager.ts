@@ -8,7 +8,7 @@ import {
 	RESTGetAPIGatewayBotResult,
 	Routes,
 } from 'discord-api-types/v10';
-import type { WebSocketShardEventsMap } from './WebSocketShard';
+import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy';
@@ -291,7 +291,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		await this.strategy.connect();
 	}
 
-	public destroy() {
-		return this.strategy.destroy();
+	public destroy(options?: WebSocketShardDestroyOptions) {
+		return this.strategy.destroy(options);
 	}
 }

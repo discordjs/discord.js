@@ -3,7 +3,7 @@ import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import type { WebSocketManager } from '../../struct/WebSocketManager';
-import type { WebSocketShardEvents } from '../../struct/WebSocketShard';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../struct/WebSocketShard';
 
 export interface WorkerData {
 	token: string;
@@ -20,7 +20,7 @@ export enum WorkerSendPayloadOp {
 export type WorkerSendPayload =
 	| { op: WorkerSendPayloadOp.spawn }
 	| { op: WorkerSendPayloadOp.connect }
-	| { op: WorkerSendPayloadOp.destroy }
+	| { op: WorkerSendPayloadOp.destroy; options?: WebSocketShardDestroyOptions }
 	| { op: WorkerSendPayloadOp.send; shardId: number; payload: GatewaySendPayload };
 
 // Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
@@ -55,6 +55,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	public spawn(shardIds: number[]) {
+		this.destroy({ reason: 'User is adjusting their shards' });
 		const shardsPerWorker = this.options.shardsPerWorker === 'all' ? shardIds.length : this.options.shardsPerWorker;
 
 		let shards = 0;
@@ -88,10 +89,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 	}
 
-	public destroy() {
+	public destroy(options: WebSocketShardDestroyOptions = {}) {
 		for (const worker of this.workers.values()) {
 			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.destroy,
+				options,
 			};
 			worker.postMessage(payload);
 		}

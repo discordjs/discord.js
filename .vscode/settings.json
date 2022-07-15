@@ -6,5 +6,6 @@
 		"source.fixAll": true,
 		"source.organizeImports": false
 	},
-	"unocss.root": "./packages/website"
+	"unocss.root": "./packages/website",
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

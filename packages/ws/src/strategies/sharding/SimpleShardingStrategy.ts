@@ -2,7 +2,7 @@ import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import type { WebSocketManager } from '../../struct/WebSocketManager';
-import { WebSocketShard } from '../../struct/WebSocketShard';
+import { WebSocketShard, WebSocketShardDestroyOptions } from '../../struct/WebSocketShard';
 import { bindShardEvents } from '../../utils/utils';
 
 /**
@@ -17,7 +17,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	}
 
 	public async spawn(shardIds: number[]) {
-		await this.destroy();
+		await this.destroy({ reason: 'User is adjusting their shards' });
 		for (const shardId of shardIds) {
 			// the manager purposefully implements IContextFetchingStrategy to avoid another class here
 			const shard = new WebSocketShard(this.manager, shardId);
@@ -32,9 +32,9 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		}
 	}
 
-	public async destroy() {
+	public async destroy(options?: WebSocketShardDestroyOptions) {
 		for (const shard of this.shards.values()) {
-			await shard.destroy();
+			await shard.destroy(options);
 		}
 		this.shards.clear();
 	}

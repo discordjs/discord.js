@@ -1,4 +1,5 @@
 import type { GatewaySendPayload } from 'discord-api-types/v10';
+import type { WebSocketShardDestroyOptions } from '../../struct/WebSocketShard';
 import type { Awaitable } from '../../utils/utils';
 
 /**
@@ -16,7 +17,7 @@ export interface IShardingStrategy {
 	/**
 	 * Destroys all the shards
 	 */
-	destroy: () => Awaitable<void>;
+	destroy: (options?: WebSocketShardDestroyOptions) => Awaitable<void>;
 	/**
 	 * Sends a payload to a shard
 	 */

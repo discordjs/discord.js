@@ -6,6 +6,7 @@ import { inflate } from 'node:zlib';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
+	GatewayCloseCodes,
 	GatewayDispatchEvents,
 	GatewayIdentifyData,
 	GatewayOpcodes,
@@ -33,6 +34,7 @@ export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [];
+	[WebSocketShardEvents.Resumed]: [];
 };
 
 export enum WebSocketShardStatus {
@@ -48,7 +50,7 @@ export enum WebSocketShardDestroyRecovery {
 }
 
 export interface WebSocketShardDestroyOptions {
-	reason: string;
+	reason?: string;
 	code?: number;
 	recover?: WebSocketShardDestroyRecovery;
 }
@@ -113,22 +115,23 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 		}
 
-		this.status = WebSocketShardStatus.Idle;
-
 		const url = `${data.url}?${params.toString()}`;
 		this.debug([`Connecting to ${url}`]);
 		const connection = new WebSocket(url)
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises
+			/* eslint-disable @typescript-eslint/no-misused-promises */
 			.on('message', this.onMessage.bind(this))
 			.on('error', this.onError.bind(this))
 			.on('close', this.onClose.bind(this));
+		/* eslint-enable @typescript-eslint/no-misused-promises */
 
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
 
+		this.status = WebSocketShardStatus.Connecting;
+
 		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 
-		const session = await this.strategy.retrieveSessionInfo(this.id);
+		const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
 		if (session?.shardCount === (await this.strategy.getShardCount())) {
 			await this.resume(session);
 		} else {
@@ -136,7 +139,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	public async destroy(options: WebSocketShardDestroyOptions) {
+	public async destroy(options: WebSocketShardDestroyOptions = {}) {
 		if (this.status === WebSocketShardStatus.Idle) {
 			throw new Error('Tried to destroy a shard that was idle');
 		}
@@ -147,7 +150,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([
 			'Destroying shard',
-			`Reason: ${options.reason}`,
+			`Reason: ${options.reason ?? 'none'}`,
 			`Code: ${options.code}`,
 			`Recover: ${options.recover === undefined ? 'none' : WebSocketShardDestroyRecovery[options.recover]!}`,
 		]);
@@ -167,6 +170,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		if (this.connection && (this.connection.readyState === OPEN || this.connection.readyState === CONNECTING)) {
 			this.connection.close(options.code, options.reason);
+		}
+
+		this.status = WebSocketShardStatus.Idle;
+
+		if (options.recover !== undefined) {
+			return this.connect();
 		}
 	}
 
@@ -346,6 +355,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					case GatewayDispatchEvents.Resumed: {
 						this.status = WebSocketShardStatus.Ready;
 						this.debug([`Resumed and replayed ${this.replayedEvents} events`]);
+						this.emit(WebSocketShardEvents.Resumed);
 						break;
 					}
 
@@ -401,15 +411,98 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	private onError() {}
+	private onError(err: Error) {
+		this.emit('error', { err });
+	}
 
-	private onClose() {}
+	private async onClose(code: number) {
+		switch (code) {
+			case 1000:
+			case 4200: {
+				this.debug([`Disconnected normally from code ${code}`]);
+				break;
+			}
+
+			case GatewayCloseCodes.UnknownError: {
+				this.debug([`An unknown error occured: ${code}`]);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+			}
+
+			case GatewayCloseCodes.UnknownOpcode: {
+				this.debug(['An invalid opcode was sent to Discord.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+			}
+
+			case GatewayCloseCodes.DecodeError: {
+				this.debug(['An invalid payload was sent to Discord.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+			}
+
+			case GatewayCloseCodes.NotAuthenticated: {
+				this.debug(['A request was somehow sent before the identify/resume payload.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Reconnect });
+			}
+
+			case GatewayCloseCodes.AuthenticationFailed: {
+				throw new Error('Authentication failed');
+			}
+
+			case GatewayCloseCodes.AlreadyAuthenticated: {
+				this.debug(['More than one auth payload was sent.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Reconnect });
+			}
+
+			case GatewayCloseCodes.InvalidSeq: {
+				this.debug(['An invalid sequence was sent.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Reconnect });
+			}
+
+			case GatewayCloseCodes.RateLimited: {
+				this.debug(['Somehow hit the WS rate limit, this should not be happening']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Reconnect });
+			}
+
+			case GatewayCloseCodes.SessionTimedOut: {
+				this.debug(['Session timed out.']);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+			}
+
+			case GatewayCloseCodes.InvalidShard: {
+				throw new Error('Invalid shard');
+			}
+
+			case GatewayCloseCodes.ShardingRequired: {
+				throw new Error('Sharding is required');
+			}
+
+			case GatewayCloseCodes.InvalidAPIVersion: {
+				throw new Error('Used an invalid API version');
+			}
+
+			case GatewayCloseCodes.InvalidIntents: {
+				throw new Error('Used invalid intents');
+			}
+
+			case GatewayCloseCodes.DisallowedIntents: {
+				throw new Error('Used disallowed intents');
+			}
+
+			default: {
+				this.debug([`The gateway closed with an unexpected code ${code}, attempting to resume.`]);
+				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+			}
+		}
+	}
 
 	private debug(messages: [string, ...string[]]) {
-		const message = `${messages[0]}\n${messages
-			.slice(1)
-			.map((m) => `	${m}`)
-			.join('\n')}`;
+		const message = `${messages[0]}${
+			messages.length > 1
+				? `\n${messages
+						.slice(1)
+						.map((m) => `	${m}`)
+						.join('\n')}`
+				: ''
+		}`;
 
 		this.emit(WebSocketShardEvents.Debug, { message });
 	}
