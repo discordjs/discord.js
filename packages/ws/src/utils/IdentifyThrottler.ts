@@ -1,5 +1,5 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import type { WebSocketManager } from '../struct/WebSocketManager';
+import type { WebSocketManager } from '../ws/WebSocketManager';
 
 export class IdentifyThrottler {
 	private identifyState = {

@@ -1,10 +1,10 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
-import type { WebSocketManager } from '../../struct/WebSocketManager';
-import { WebSocketShard, WebSocketShardDestroyOptions } from '../../struct/WebSocketShard';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
 import { bindShardEvents } from '../../utils/utils';
+import type { WebSocketManager } from '../../ws/WebSocketManager';
+import { WebSocketShard, WebSocketShardDestroyOptions } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy';
 

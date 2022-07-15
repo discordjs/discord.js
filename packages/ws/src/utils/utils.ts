@@ -1,6 +1,6 @@
 import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type { ShardRange, WebSocketManager } from '../struct/WebSocketManager';
-import { WebSocketShardEvents, WebSocketShardEventsMap } from '../struct/WebSocketShard';
+import type { ShardRange, WebSocketManager } from '../ws/WebSocketManager';
+import { WebSocketShardEvents, WebSocketShardEventsMap } from '../ws/WebSocketShard';
 
 export type Awaitable<T> = T | Promise<T>;
 

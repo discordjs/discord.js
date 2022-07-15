@@ -1,7 +1,7 @@
 import { isMainThread, parentPort } from 'worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
-import type { SessionInfo } from '../../struct/WebSocketManager';
+import type { SessionInfo } from '../../ws/WebSocketManager';
 import {
 	WorkerRecievePayload,
 	WorkerRecievePayloadOp,

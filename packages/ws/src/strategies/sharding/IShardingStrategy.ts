@@ -1,6 +1,6 @@
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { WebSocketShardDestroyOptions } from '../../struct/WebSocketShard';
 import type { Awaitable } from '../../utils/utils';
+import type { WebSocketShardDestroyOptions } from '../../ws/WebSocketShard';
 
 /**
  * Strategies responsible for spawning, initializing connections, destroying shards, and relaying events

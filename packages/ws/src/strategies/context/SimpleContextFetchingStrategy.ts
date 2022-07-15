@@ -1,5 +1,5 @@
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
-import type { SessionInfo, WebSocketManager } from '../../struct/WebSocketManager';
+import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
 
 export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 	public constructor(private readonly manager: WebSocketManager, public readonly options: FetchingStrategyOptions) {}

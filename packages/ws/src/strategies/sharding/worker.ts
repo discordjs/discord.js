@@ -7,7 +7,7 @@ import {
 	WorkerSendPayload,
 	WorkerSendPayloadOp,
 } from './WorkerShardingStrategy';
-import { WebSocketShard, WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../struct/WebSocketShard';
+import { WebSocketShard, WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
 import { WorkerContextFetchingStrategy } from '../context/WorkerContextFetchingStrategy';
 
 if (isMainThread) {

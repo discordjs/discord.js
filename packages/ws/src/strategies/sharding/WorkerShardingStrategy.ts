@@ -4,9 +4,9 @@ import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
-import type { SessionInfo, WebSocketManager } from '../../struct/WebSocketManager';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../struct/WebSocketShard';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
+import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
 import { FetchingStrategyOptions, managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
 
 export interface WorkerData extends FetchingStrategyOptions {

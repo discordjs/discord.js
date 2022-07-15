@@ -4,7 +4,7 @@ import { Collection } from '@discordjs/collection';
 import { REST } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { lazy } from './utils';
-import { Encoding, OptionalWebSocketManagerOptions, SessionInfo } from '../struct/WebSocketManager';
+import { Encoding, OptionalWebSocketManagerOptions, SessionInfo } from '../ws/WebSocketManager';
 
 const packageJson = readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8');
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
