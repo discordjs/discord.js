@@ -1,11 +1,14 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { Collection } from '@discordjs/collection';
 import { REST } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { lazy } from './utils';
 import { Encoding, OptionalWebSocketManagerOptions, SessionInfo } from '../struct/WebSocketManager';
 
+const packageJson = readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8');
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
-const Package = require('../../package.json');
+const Package = JSON.parse(packageJson);
 
 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultDeviceProperty = `@discordjs/ws ${Package.version}`;
@@ -37,7 +40,11 @@ export const DefaultWebSocketManagerOptions: OptionalWebSocketManagerOptions = {
 	},
 	updateSessionInfo(shardId: number, info: SessionInfo | null) {
 		const store = getDefaultSessionStore();
-		store.set(shardId, info);
+		if (info) {
+			store.set(shardId, info);
+		} else {
+			store.delete(shardId);
+		}
 	},
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,

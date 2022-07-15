@@ -13,6 +13,7 @@ type ConfigOptions = Pick<
 	| 'noExternal'
 	| 'esbuildOptions'
 	| 'dts'
+	| 'bundle'
 >;
 
 export const createTsupConfig = ({
@@ -32,6 +33,7 @@ export const createTsupConfig = ({
 			};
 		}
 	},
+	bundle,
 }: ConfigOptions = {}) =>
 	defineConfig({
 		clean: true,
@@ -47,4 +49,6 @@ export const createTsupConfig = ({
 		globalName,
 		noExternal,
 		esbuildOptions,
+		bundle,
+		shims: true,
 	});

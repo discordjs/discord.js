@@ -58,7 +58,6 @@ export interface WebSocketShardDestroyOptions {
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private readonly strategy: IContextFetchingStrategy;
 	private readonly id: number;
 
 	private useIdentifyCompress = false;
@@ -84,6 +83,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly sendQueue = new AsyncQueue();
 
+	public readonly strategy: IContextFetchingStrategy;
+
 	public constructor(strategy: IContextFetchingStrategy, id: number) {
 		super();
 		this.strategy = strategy;
@@ -95,7 +96,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
-		const data = await this.strategy.fetchGatewayInformation();
+		const data = this.strategy.options.gatewayInformation;
 
 		const { version, encoding, compression } = this.strategy.options;
 		const params = new URLSearchParams({ v: version, encoding });
@@ -132,7 +133,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 
 		const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
-		if (session?.shardCount === (await this.strategy.getShardCount())) {
+		if (session?.shardCount === this.strategy.options.shardCount) {
 			await this.resume(session);
 		} else {
 			await this.identify();
@@ -215,7 +216,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.connection.send(JSON.stringify(payload));
 	}
 
-	// TODO(DD): deal with identify limits
 	private async identify() {
 		this.debug(['Identifying']);
 		const d: GatewayIdentifyData = {
@@ -223,7 +223,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
 			compress: this.useIdentifyCompress,
-			shard: [this.id, await this.strategy.getShardCount()],
+			shard: [this.id, this.strategy.options.shardCount],
 		};
 
 		if (this.strategy.options.largeThreshold) {
@@ -321,7 +321,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
 		}
 
-		// TODO(DD): Consider throwing?
+		this.debug([
+			'Received a message we were unable to decompress',
+			`isBinary: ${isBinary.toString()}`,
+			`useIdentifyCompress: ${this.useIdentifyCompress.toString()}`,
+			`inflate: ${Boolean(this.inflate).toString()}`,
+		]);
+
 		return null;
 	}
 
@@ -345,7 +351,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 							sequence: payload.s,
 							sessionId: payload.d.session_id,
 							shardId: this.id,
-							shardCount: await this.strategy.getShardCount(),
+							shardCount: this.strategy.options.shardCount,
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);

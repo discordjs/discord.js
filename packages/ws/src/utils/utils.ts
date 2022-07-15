@@ -21,6 +21,9 @@ export function lazy<T>(cb: () => T): () => T {
 	return () => (defaultValue ??= cb());
 }
 
+/**
+ * Binds a shard's events to a WebSocketManager
+ */
 export function bindShardEvents(
 	manager: WebSocketManager,
 	emitter: AsyncEventEmitter<WebSocketShardEventsMap>,

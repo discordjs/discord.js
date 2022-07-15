@@ -4,12 +4,10 @@ import {
 	APIGatewayBotInfo,
 	GatewayIdentifyProperties,
 	GatewayPresenceUpdateData,
-	GatewaySendPayload,
 	RESTGetAPIGatewayBotResult,
 	Routes,
 } from 'discord-api-types/v10';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy';
 import { DefaultWebSocketManagerOptions } from '../utils/constants';
@@ -99,7 +97,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * });
 	 */
 	shardIds: number[] | ShardRange | null;
-
 	/**
 	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
 	 */
@@ -165,7 +162,7 @@ export type ManagerShardEventsMap = {
 	];
 };
 
-export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements IContextFetchingStrategy {
+export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	/**
 	 * The options being used by this manager
 	 */
@@ -193,21 +190,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	public constructor(options: RequiredWebsSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
-		// TODO(DD): Consider making rest a required prop so we don't have to do this
 		this.options.rest.setToken(this.options.token);
 	}
 
 	public setStrategy(strategy: IShardingStrategy) {
 		this.strategy = strategy;
 		return this;
-	}
-
-	public retrieveSessionInfo(shardId: number) {
-		return this.options.retrieveSessionInfo(shardId);
-	}
-
-	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
-		return this.options.updateSessionInfo(shardId, sessionInfo);
 	}
 
 	/**
@@ -273,18 +261,13 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		const data = await this.fetchGatewayInformation();
-		shardIds ??= range({ start: 0, end: data.shards - 1 });
+		shardIds ??= range({ start: 0, end: (this.options.shardCount ?? data.shards) - 1 });
 
 		this.shardIds = shardIds;
 		return shardIds;
 	}
 
-	public send(shardId: number, payload: GatewaySendPayload) {
-		return this.strategy.send(shardId, payload);
-	}
-
 	public async connect() {
-		// TODO(DD): Check if already connected maybe
 		const shardCount = await this.getShardCount();
 		// First, make sure all our shards are spawned
 		await this.updateShardCount(shardCount);

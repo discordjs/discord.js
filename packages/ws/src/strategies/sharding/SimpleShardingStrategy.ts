@@ -3,7 +3,10 @@ import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import type { WebSocketManager } from '../../struct/WebSocketManager';
 import { WebSocketShard, WebSocketShardDestroyOptions } from '../../struct/WebSocketShard';
+import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
 import { bindShardEvents } from '../../utils/utils';
+import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
+import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy';
 
 /**
  * Simple strategy that just spawns shards in the current process
@@ -12,30 +15,49 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	private readonly manager: WebSocketManager;
 	private readonly shards = new Collection<number, WebSocketShard>();
 
+	private readonly throttler: IdentifyThrottler;
+
 	public constructor(manager: WebSocketManager) {
 		this.manager = manager;
+		this.throttler = new IdentifyThrottler(manager);
 	}
 
 	public async spawn(shardIds: number[]) {
 		await this.destroy({ reason: 'User is adjusting their shards' });
 		for (const shardId of shardIds) {
 			// the manager purposefully implements IContextFetchingStrategy to avoid another class here
-			const shard = new WebSocketShard(this.manager, shardId);
+			const strategy = new SimpleContextFetchingStrategy(
+				this.manager,
+				await managerToFetchingStrategyOptions(this.manager),
+			);
+			const shard = new WebSocketShard(strategy, shardId);
 			bindShardEvents(this.manager, shard, shardId);
 			this.shards.set(shardId, shard);
 		}
 	}
 
 	public async connect() {
+		const promises = [];
+
 		for (const shard of this.shards.values()) {
-			await shard.connect();
+			await this.throttler.waitForIdentify();
+			promises.push(shard.connect());
 		}
+
+		await Promise.all(promises);
 	}
 
 	public async destroy(options?: WebSocketShardDestroyOptions) {
+		const promises = [];
+
 		for (const shard of this.shards.values()) {
-			await shard.destroy(options);
+			if (options?.recover !== undefined) {
+				await this.throttler.waitForIdentify();
+			}
+			promises.push(shard.destroy(options));
 		}
+
+		await Promise.all(promises);
 		this.shards.clear();
 	}
 
