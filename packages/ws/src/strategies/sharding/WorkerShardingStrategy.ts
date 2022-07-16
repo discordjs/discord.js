@@ -166,10 +166,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			case WorkerRecievePayloadOp.Connected: {
 				const resolve = this.connectPromises.get(payload.shardId);
 				if (!resolve) {
-					throw new Error(`No connect promise found for shard ${payload.shardId}`);
+					console.warn(`No connect promise found for shard ${payload.shardId}`);
 				}
 
-				resolve();
+				resolve!();
 				this.connectPromises.delete(payload.shardId);
 				break;
 			}
@@ -177,10 +177,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			case WorkerRecievePayloadOp.Destroyed: {
 				const resolve = this.destroyPromises.get(payload.shardId);
 				if (!resolve) {
-					throw new Error(`No destroy promise found for shard ${payload.shardId}`);
+					console.warn(`No destroy promise found for shard ${payload.shardId}`);
 				}
 
-				resolve();
+				resolve!();
 				this.destroyPromises.delete(payload.shardId);
 				break;
 			}

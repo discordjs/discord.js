@@ -401,7 +401,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			case GatewayOpcodes.Reconnect: {
 				await this.destroy({
 					reason: 'Told to reconnect by Discord',
-					recover: WebSocketShardDestroyRecovery.Reconnect,
+					recover: WebSocketShardDestroyRecovery.Resume,
 				});
 				break;
 			}
