@@ -75,12 +75,13 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 	public async spawn(shardIds: number[]) {
 		const shardsPerWorker = this.options.shardsPerWorker === 'all' ? shardIds.length : this.options.shardsPerWorker;
+		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
 
 		let shards = 0;
 		while (shards !== shardIds.length) {
 			const slice = shardIds.slice(shards, shardsPerWorker + shards);
 			const workerData: WorkerData = {
-				...(await managerToFetchingStrategyOptions(this.manager)),
+				...strategyOptions,
 				shardIds: slice,
 			};
 
