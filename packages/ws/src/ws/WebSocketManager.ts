@@ -213,11 +213,11 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 */
 	public async updateShardCount(shardCount: number | null) {
 		await this.strategy.destroy();
+		this.options.shardCount = shardCount;
 
 		const shardIds = await this.getShardIds(true);
 		await this.strategy.spawn(shardIds);
 
-		this.options.shardCount = shardCount;
 		return this;
 	}
 
