@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Collection } from '@discordjs/collection';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { lazy } from './utils';
