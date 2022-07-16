@@ -164,23 +164,15 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
 		switch (payload.op) {
 			case WorkerRecievePayloadOp.Connected: {
-				const resolve = this.connectPromises.get(payload.shardId);
-				if (!resolve) {
-					console.warn(`No connect promise found for shard ${payload.shardId}`);
-				}
-
-				resolve!();
+				const resolve = this.connectPromises.get(payload.shardId)!;
+				resolve();
 				this.connectPromises.delete(payload.shardId);
 				break;
 			}
 
 			case WorkerRecievePayloadOp.Destroyed: {
-				const resolve = this.destroyPromises.get(payload.shardId);
-				if (!resolve) {
-					console.warn(`No destroy promise found for shard ${payload.shardId}`);
-				}
-
-				resolve!();
+				const resolve = this.destroyPromises.get(payload.shardId)!;
+				resolve();
 				this.destroyPromises.delete(payload.shardId);
 				break;
 			}
