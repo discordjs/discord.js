@@ -53,6 +53,7 @@ const manager = new WebSocketManager({
 	intents: 0,
 	rest,
 	shardCount: 4,
+});
 
 // The manager also supports being responsible for only a sub-set of your shards:
 
