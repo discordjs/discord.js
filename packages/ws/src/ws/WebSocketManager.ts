@@ -56,6 +56,10 @@ export interface RequiredWebsSocketManagerOptions {
 	 */
 	// Wonder if there's a better abstraction that could be done here?
 	intents: number;
+	/**
+	 * The REST instance to use for fetching gateway information
+	 */
+	rest: REST;
 }
 
 /**
@@ -95,10 +99,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * Properties to send to the gateway when identifying
 	 */
 	identifyProperties: GatewayIdentifyProperties;
-	/**
-	 * The REST instance to use for fetching gateway information
-	 */
-	rest: REST;
 	/**
 	 * The gateway version to use
 	 * @default '10'
@@ -180,7 +180,6 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	public constructor(options: RequiredWebsSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
-		this.options.rest.setToken(this.options.token);
 	}
 
 	public setStrategy(strategy: IShardingStrategy) {

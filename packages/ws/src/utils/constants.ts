@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { Collection } from '@discordjs/collection';
-import { REST } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { lazy } from './utils';
 import type { OptionalWebSocketManagerOptions, SessionInfo } from '../ws/WebSocketManager';
@@ -41,9 +40,6 @@ export const DefaultWebSocketManagerOptions: OptionalWebSocketManagerOptions = {
 		browser: DefaultDeviceProperty,
 		device: DefaultDeviceProperty,
 		os: process.platform,
-	},
-	get rest() {
-		return new REST();
 	},
 	version: APIVersion,
 	encoding: Encoding.JSON,

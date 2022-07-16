@@ -14,7 +14,7 @@ test('fetch gateway information', async () => {
 	const mockPool = mockAgent.get('https://discord.com');
 	mockAgent.disableNetConnect();
 
-	const rest = new REST().setAgent(mockAgent);
+	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest });
 
 	const data: APIGatewayBotInfo = {
