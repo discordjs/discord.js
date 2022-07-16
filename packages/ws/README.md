@@ -95,9 +95,9 @@ const manager = new WebSocketManager({
 });
 
 // This will cause 3 workers to spawn, 2 shards per each
-manager.setStrategy(new WorkerShardingStrategy({ shardsPerWorker: 2 }));
+manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }));
 // Or maybe you want all your shards under a single worker
-manager.setStrategy(new WorkerShardingStrategy({ shardsPerWorker: 'all' }));
+manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }));
 ```
 
 ## Links
