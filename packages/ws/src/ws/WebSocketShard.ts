@@ -139,6 +139,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
 		if (session?.shardCount === this.strategy.options.shardCount) {
+			this.session = session;
 			await this.resume(session);
 		} else {
 			await this.identify();
