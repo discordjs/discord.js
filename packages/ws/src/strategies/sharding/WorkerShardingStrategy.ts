@@ -134,11 +134,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				options,
 			};
 
-			const promise = new Promise<void>((resolve) => this.destroyPromises.set(shardId, resolve));
+			promises.push(
+				new Promise<void>((resolve) => this.destroyPromises.set(shardId, resolve)).then(() => worker.terminate()),
+			);
 			worker.postMessage(payload);
-			promises.push(promise);
-
-			await worker.terminate();
 		}
 
 		this.workers = [];

@@ -23,7 +23,6 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 
 	public async spawn(shardIds: number[]) {
 		for (const shardId of shardIds) {
-			// the manager purposefully implements IContextFetchingStrategy to avoid another class here
 			const strategy = new SimpleContextFetchingStrategy(
 				this.manager,
 				await managerToFetchingStrategyOptions(this.manager),
