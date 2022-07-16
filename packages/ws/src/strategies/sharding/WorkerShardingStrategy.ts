@@ -59,8 +59,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	private readonly manager: WebSocketManager;
 	private readonly options: WorkerShardingStrategyOptions;
 
-	private workers: Worker[] = [];
-	private readonly workerByShardId = new Collection<number, Worker>();
+	#workers: Worker[] = [];
+	readonly #workerByShardId = new Collection<number, Worker>();
 
 	private readonly connectPromises = new Collection<number, () => void>();
 	private readonly destroyPromises = new Collection<number, () => void>();
@@ -97,9 +97,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				// eslint-disable-next-line @typescript-eslint/no-misused-promises
 				.on('message', (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
 
-			this.workers.push(worker);
+			this.#workers.push(worker);
 			for (const shardId of slice) {
-				this.workerByShardId.set(shardId, worker);
+				this.#workerByShardId.set(shardId, worker);
 			}
 
 			shards += slice.length;
@@ -109,7 +109,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	public async connect() {
 		const promises = [];
 
-		for (const [shardId, worker] of this.workerByShardId.entries()) {
+		for (const [shardId, worker] of this.#workerByShardId.entries()) {
 			await this.throttler.waitForIdentify();
 
 			const payload: WorkerSendPayload = {
@@ -128,7 +128,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	public async destroy(options: Omit<WebSocketShardDestroyOptions, 'recover'> = {}) {
 		const promises = [];
 
-		for (const [shardId, worker] of this.workerByShardId.entries()) {
+		for (const [shardId, worker] of this.#workerByShardId.entries()) {
 			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.Destroy,
 				shardId,
@@ -141,14 +141,14 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			worker.postMessage(payload);
 		}
 
-		this.workers = [];
-		this.workerByShardId.clear();
+		this.#workers = [];
+		this.#workerByShardId.clear();
 
 		await Promise.all(promises);
 	}
 
 	public send(shardId: number, data: GatewaySendPayload) {
-		const worker = this.workerByShardId.get(shardId);
+		const worker = this.#workerByShardId.get(shardId);
 		if (!worker) {
 			throw new Error(`No worker found for shard ${shardId}`);
 		}
