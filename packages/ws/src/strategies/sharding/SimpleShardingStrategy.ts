@@ -49,13 +49,10 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		await Promise.all(promises);
 	}
 
-	public async destroy(options?: WebSocketShardDestroyOptions) {
+	public async destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
 		const promises = [];
 
 		for (const shard of this.shards.values()) {
-			if (options?.recover !== undefined) {
-				await this.throttler.waitForIdentify();
-			}
 			promises.push(shard.destroy(options));
 		}
 

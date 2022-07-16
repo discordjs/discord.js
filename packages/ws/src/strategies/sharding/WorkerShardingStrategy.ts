@@ -125,14 +125,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		await Promise.all(promises);
 	}
 
-	public async destroy(options: WebSocketShardDestroyOptions = {}) {
+	public async destroy(options: Omit<WebSocketShardDestroyOptions, 'recover'> = {}) {
 		const promises = [];
 
 		for (const [shardId, worker] of this.workerByShardId.entries()) {
-			if (options.recover !== undefined) {
-				await this.throttler.waitForIdentify();
-			}
-
 			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.destroy,
 				shardId,
@@ -143,15 +139,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			worker.postMessage(payload);
 			promises.push(promise);
 
-			if (options.recover === undefined) {
-				await worker.terminate();
-			}
+			await worker.terminate();
 		}
 
-		if (options.recover === undefined) {
-			this.workers = [];
-			this.workerByShardId.clear();
-		}
+		this.workers = [];
+		this.workerByShardId.clear();
 
 		await Promise.all(promises);
 	}

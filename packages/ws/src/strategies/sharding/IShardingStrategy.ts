@@ -17,7 +17,7 @@ export interface IShardingStrategy {
 	/**
 	 * Destroys all the shards
 	 */
-	destroy: (options?: WebSocketShardDestroyOptions) => Awaitable<void>;
+	destroy: (options?: Omit<WebSocketShardDestroyOptions, 'recover'>) => Awaitable<void>;
 	/**
 	 * Sends a payload to a shard
 	 */

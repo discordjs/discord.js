@@ -264,7 +264,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 		await this.strategy.connect();
 	}
 
-	public destroy(options?: WebSocketShardDestroyOptions) {
+	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
 		return this.strategy.destroy(options);
 	}
 }
