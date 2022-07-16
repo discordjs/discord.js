@@ -39,7 +39,7 @@ for (const shardId of data.shardIds) {
 		// @ts-expect-error
 		shard.on(event, (data) => {
 			const payload: WorkerRecievePayload = {
-				op: WorkerRecievePayloadOp.event,
+				op: WorkerRecievePayloadOp.Event,
 				event,
 				data,
 				shardId,
@@ -57,27 +57,27 @@ parentPort!
 	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	.on('message', async (payload: WorkerSendPayload) => {
 		switch (payload.op) {
-			case WorkerSendPayloadOp.connect: {
+			case WorkerSendPayloadOp.Connect: {
 				await connect(payload.shardId);
 				const response: WorkerRecievePayload = {
-					op: WorkerRecievePayloadOp.connected,
+					op: WorkerRecievePayloadOp.Connected,
 					shardId: payload.shardId,
 				};
 				parentPort!.postMessage(response);
 				break;
 			}
 
-			case WorkerSendPayloadOp.destroy: {
+			case WorkerSendPayloadOp.Destroy: {
 				await destroy(payload.shardId, payload.options);
 				const response: WorkerRecievePayload = {
-					op: WorkerRecievePayloadOp.destroyed,
+					op: WorkerRecievePayloadOp.Destroyed,
 					shardId: payload.shardId,
 				};
 				parentPort!.postMessage(response);
 				break;
 			}
 
-			case WorkerSendPayloadOp.send: {
+			case WorkerSendPayloadOp.Send: {
 				const shard = shards.get(payload.shardId);
 				if (!shard) {
 					throw new Error(`Shard ${payload.shardId} does not exist`);
@@ -86,7 +86,7 @@ parentPort!
 				break;
 			}
 
-			case WorkerSendPayloadOp.sessionInfoResponse: {
+			case WorkerSendPayloadOp.SessionInfoResponse: {
 				break;
 			}
 		}

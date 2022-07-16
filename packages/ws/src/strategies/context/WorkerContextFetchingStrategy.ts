@@ -18,7 +18,7 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 		}
 
 		parentPort!.on('message', (payload: WorkerSendPayload) => {
-			if (payload.op === WorkerSendPayloadOp.sessionInfoResponse) {
+			if (payload.op === WorkerSendPayloadOp.SessionInfoResponse) {
 				const resolve = this.sessionPromises.get(payload.nonce);
 				resolve?.(payload.session);
 				this.sessionPromises.delete(payload.nonce);
@@ -29,7 +29,7 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		const nonce = Math.random();
 		const payload: WorkerRecievePayload = {
-			op: WorkerRecievePayloadOp.retrieveSessionInfo,
+			op: WorkerRecievePayloadOp.RetrieveSessionInfo,
 			shardId,
 			nonce,
 		};
@@ -40,7 +40,7 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
 		const payload: WorkerRecievePayload = {
-			op: WorkerRecievePayloadOp.updateSessionInfo,
+			op: WorkerRecievePayloadOp.UpdateSessionInfo,
 			shardId,
 			session: sessionInfo,
 		};

@@ -14,33 +14,33 @@ export interface WorkerData extends FetchingStrategyOptions {
 }
 
 export enum WorkerSendPayloadOp {
-	connect,
-	destroy,
-	send,
-	sessionInfoResponse,
+	Connect,
+	Destroy,
+	Send,
+	SessionInfoResponse,
 }
 
 export type WorkerSendPayload =
-	| { op: WorkerSendPayloadOp.connect; shardId: number }
-	| { op: WorkerSendPayloadOp.destroy; shardId: number; options?: WebSocketShardDestroyOptions }
-	| { op: WorkerSendPayloadOp.send; shardId: number; payload: GatewaySendPayload }
-	| { op: WorkerSendPayloadOp.sessionInfoResponse; nonce: number; session: SessionInfo | null };
+	| { op: WorkerSendPayloadOp.Connect; shardId: number }
+	| { op: WorkerSendPayloadOp.Destroy; shardId: number; options?: WebSocketShardDestroyOptions }
+	| { op: WorkerSendPayloadOp.Send; shardId: number; payload: GatewaySendPayload }
+	| { op: WorkerSendPayloadOp.SessionInfoResponse; nonce: number; session: SessionInfo | null };
 
 export enum WorkerRecievePayloadOp {
-	connected,
-	destroyed,
-	event,
-	retrieveSessionInfo,
-	updateSessionInfo,
+	Connected,
+	Destroyed,
+	Event,
+	RetrieveSessionInfo,
+	UpdateSessionInfo,
 }
 
 export type WorkerRecievePayload =
-	| { op: WorkerRecievePayloadOp.connected; shardId: number }
-	| { op: WorkerRecievePayloadOp.destroyed; shardId: number }
+	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
+	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
-	| { op: WorkerRecievePayloadOp.event; shardId: number; event: WebSocketShardEvents; data: any }
-	| { op: WorkerRecievePayloadOp.retrieveSessionInfo; shardId: number; nonce: number }
-	| { op: WorkerRecievePayloadOp.updateSessionInfo; shardId: number; session: SessionInfo | null };
+	| { op: WorkerRecievePayloadOp.Event; shardId: number; event: WebSocketShardEvents; data: any }
+	| { op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number; nonce: number }
+	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; shardId: number; session: SessionInfo | null };
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -112,7 +112,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			await this.throttler.waitForIdentify();
 
 			const payload: WorkerSendPayload = {
-				op: WorkerSendPayloadOp.connect,
+				op: WorkerSendPayloadOp.Connect,
 				shardId,
 			};
 
@@ -129,7 +129,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 		for (const [shardId, worker] of this.workerByShardId.entries()) {
 			const payload: WorkerSendPayload = {
-				op: WorkerSendPayloadOp.destroy,
+				op: WorkerSendPayloadOp.Destroy,
 				shardId,
 				options,
 			};
@@ -154,7 +154,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 
 		const payload: WorkerSendPayload = {
-			op: WorkerSendPayloadOp.send,
+			op: WorkerSendPayloadOp.Send,
 			shardId,
 			payload: data,
 		};
@@ -163,7 +163,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
 		switch (payload.op) {
-			case WorkerRecievePayloadOp.connected: {
+			case WorkerRecievePayloadOp.Connected: {
 				const resolve = this.connectPromises.get(payload.shardId);
 				if (!resolve) {
 					throw new Error(`No connect promise found for shard ${payload.shardId}`);
@@ -174,7 +174,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				break;
 			}
 
-			case WorkerRecievePayloadOp.destroyed: {
+			case WorkerRecievePayloadOp.Destroyed: {
 				const resolve = this.destroyPromises.get(payload.shardId);
 				if (!resolve) {
 					throw new Error(`No destroy promise found for shard ${payload.shardId}`);
@@ -185,16 +185,16 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				break;
 			}
 
-			case WorkerRecievePayloadOp.event: {
+			case WorkerRecievePayloadOp.Event: {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
 				break;
 			}
 
-			case WorkerRecievePayloadOp.retrieveSessionInfo: {
+			case WorkerRecievePayloadOp.RetrieveSessionInfo: {
 				const session = await this.manager.options.retrieveSessionInfo(payload.shardId);
 				const response: WorkerSendPayload = {
-					op: WorkerSendPayloadOp.sessionInfoResponse,
+					op: WorkerSendPayloadOp.SessionInfoResponse,
 					nonce: payload.nonce,
 					session,
 				};
@@ -202,7 +202,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				break;
 			}
 
-			case WorkerRecievePayloadOp.updateSessionInfo: {
+			case WorkerRecievePayloadOp.UpdateSessionInfo: {
 				await this.manager.options.updateSessionInfo(payload.shardId, payload.session);
 				break;
 			}
