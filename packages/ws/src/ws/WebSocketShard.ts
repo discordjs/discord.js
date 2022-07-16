@@ -408,10 +408,15 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.InvalidSession: {
 				this.debug([`Invalid session; will attempt to resume: ${payload.d.toString()}`]);
-				await this.destroy({
-					reason: 'Invalid session',
-					recover: payload.d ? WebSocketShardDestroyRecovery.Resume : WebSocketShardDestroyRecovery.Reconnect,
-				});
+				const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
+				if (payload.d && session) {
+					await this.resume(session);
+				} else {
+					await this.destroy({
+						reason: 'Invalid session',
+						recover: WebSocketShardDestroyRecovery.Reconnect,
+					});
+				}
 				break;
 			}
 
