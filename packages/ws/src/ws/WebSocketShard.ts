@@ -203,7 +203,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		if (this.status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
-			throw new Error('Tried to send a message before the shard was ready');
+			await once(this, WebSocketShardEvents.Ready);
 		}
 
 		await this.sendQueue.wait();
