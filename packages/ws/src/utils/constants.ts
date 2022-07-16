@@ -60,6 +60,7 @@ export const DefaultWebSocketManagerOptions: OptionalWebSocketManagerOptions = {
 			store.delete(shardId);
 		}
 	},
+	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
 };

@@ -131,6 +131,10 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	updateSessionInfo: (shardId: number, sessionInfo: SessionInfo | null) => Awaitable<void>;
 	/**
+	 * How long to wait for a shard to connect before giving up
+	 */
+	handshakeTimeout: number | null;
+	/**
 	 * How long to wait for a shard's HELLO packet before giving up
 	 */
 	helloTimeout: number | null;
