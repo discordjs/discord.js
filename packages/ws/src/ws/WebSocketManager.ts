@@ -211,7 +211,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param shardCount The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
-		await this.strategy.destroy();
+		await this.strategy.destroy({ reason: 'User is adjusting their shards' });
 		this.options.shardCount = shardCount;
 
 		const shardIds = await this.getShardIds(true);

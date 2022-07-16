@@ -74,7 +74,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	public async spawn(shardIds: number[]) {
-		await this.destroy({ reason: 'User is adjusting their shards' });
 		const shardsPerWorker = this.options.shardsPerWorker === 'all' ? shardIds.length : this.options.shardsPerWorker;
 
 		let shards = 0;

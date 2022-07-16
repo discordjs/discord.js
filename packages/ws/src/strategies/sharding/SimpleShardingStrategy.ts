@@ -22,7 +22,6 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	}
 
 	public async spawn(shardIds: number[]) {
-		await this.destroy({ reason: 'User is adjusting their shards' });
 		for (const shardId of shardIds) {
 			// the manager purposefully implements IContextFetchingStrategy to avoid another class here
 			const strategy = new SimpleContextFetchingStrategy(
