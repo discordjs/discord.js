@@ -2,9 +2,8 @@ import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { IShardingStrategy } from './IShardingStrategy';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
-import { bindShardEvents } from '../../utils/utils';
 import type { WebSocketManager } from '../../ws/WebSocketManager';
-import { WebSocketShard, WebSocketShardDestroyOptions } from '../../ws/WebSocketShard';
+import { WebSocketShard, WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy';
 
@@ -31,7 +30,10 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 				await managerToFetchingStrategyOptions(this.manager),
 			);
 			const shard = new WebSocketShard(strategy, shardId);
-			bindShardEvents(this.manager, shard, shardId);
+			for (const event of Object.values(WebSocketShardEvents)) {
+				// @ts-expect-error
+				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
+			}
 			this.shards.set(shardId, shard);
 		}
 	}

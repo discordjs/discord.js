@@ -1,6 +1,4 @@
-import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type { ShardRange, WebSocketManager } from '../ws/WebSocketManager';
-import { WebSocketShardEvents, WebSocketShardEventsMap } from '../ws/WebSocketShard';
+import type { ShardRange } from '../ws/WebSocketManager';
 
 export type Awaitable<T> = T | Promise<T>;
 
@@ -19,18 +17,4 @@ export function range({ start, end }: ShardRange): number[] {
 export function lazy<T>(cb: () => T): () => T {
 	let defaultValue: T;
 	return () => (defaultValue ??= cb());
-}
-
-/**
- * Binds a shard's events to a WebSocketManager
- */
-export function bindShardEvents(
-	manager: WebSocketManager,
-	emitter: AsyncEventEmitter<WebSocketShardEventsMap>,
-	shardId: number,
-) {
-	for (const event of Object.values(WebSocketShardEvents)) {
-		// @ts-expect-error
-		emitter.on(event, (payload) => manager.emit(event, { ...payload, shardId }));
-	}
 }

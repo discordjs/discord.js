@@ -10,7 +10,7 @@ import {
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy';
-import { DefaultWebSocketManagerOptions } from '../utils/constants';
+import { CompressionMethod, DefaultWebSocketManagerOptions, Encoding } from '../utils/constants';
 import { Awaitable, range } from '../utils/utils';
 
 /**
@@ -41,20 +41,6 @@ export interface SessionInfo {
 	 * The total number of shards at the time of this shard identifying
 	 */
 	shardCount: number;
-}
-
-/**
- * Valid encoding types
- */
-export enum Encoding {
-	JSON = 'json',
-}
-
-/**
- * Valid compression methods
- */
-export enum CompressionMethod {
-	ZlibStream = 'zlib-stream',
 }
 
 /**

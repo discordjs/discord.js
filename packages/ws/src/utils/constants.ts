@@ -4,7 +4,21 @@ import { Collection } from '@discordjs/collection';
 import { REST } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { lazy } from './utils';
-import { Encoding, OptionalWebSocketManagerOptions, SessionInfo } from '../ws/WebSocketManager';
+import type { OptionalWebSocketManagerOptions, SessionInfo } from '../ws/WebSocketManager';
+
+/**
+ * Valid encoding types
+ */
+export enum Encoding {
+	JSON = 'json',
+}
+
+/**
+ * Valid compression methods
+ */
+export enum CompressionMethod {
+	ZlibStream = 'zlib-stream',
+}
 
 const packageJson = readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8');
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment

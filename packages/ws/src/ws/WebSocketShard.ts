@@ -29,14 +29,6 @@ export enum WebSocketShardEvents {
 	Resumed = 'resumed',
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type WebSocketShardEventsMap = {
-	[WebSocketShardEvents.Debug]: [payload: { message: string }];
-	[WebSocketShardEvents.Hello]: [];
-	[WebSocketShardEvents.Ready]: [];
-	[WebSocketShardEvents.Resumed]: [];
-};
-
 export enum WebSocketShardStatus {
 	Idle,
 	Connecting,
@@ -48,6 +40,14 @@ export enum WebSocketShardDestroyRecovery {
 	Reconnect,
 	Resume,
 }
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type WebSocketShardEventsMap = {
+	[WebSocketShardEvents.Debug]: [payload: { message: string }];
+	[WebSocketShardEvents.Hello]: [];
+	[WebSocketShardEvents.Ready]: [];
+	[WebSocketShardEvents.Resumed]: [];
+};
 
 export interface WebSocketShardDestroyOptions {
 	reason?: string;
