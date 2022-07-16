@@ -3,6 +3,7 @@ import { setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
+import { Collection } from '@discordjs/collection';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -87,6 +88,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private session: SessionInfo | null = null;
 
 	private readonly sendQueue = new AsyncQueue();
+
+	private readonly timeouts = new Collection<WebSocketShardEvents, NodeJS.Timeout>();
 
 	public readonly strategy: IContextFetchingStrategy;
 
@@ -191,9 +194,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.debug([`Waiting for event ${event} for ${timeoutDuration ? `${timeoutDuration}ms` : 'indefinitely'}`]);
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
+		if (timeout) {
+			this.timeouts.set(event, timeout);
+		}
 		await once(this, event, { signal: controller.signal });
 		if (timeout) {
 			clearTimeout(timeout);
+			this.timeouts.delete(event);
 		}
 	}
 
@@ -407,6 +414,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayOpcodes.InvalidSession: {
+				const readyTimeout = this.timeouts.get(WebSocketShardEvents.Ready);
+				readyTimeout?.refresh();
 				this.debug([`Invalid session; will attempt to resume: ${payload.d.toString()}`]);
 				const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
 				if (payload.d && session) {
