@@ -27,6 +27,76 @@ yarn add @discordjs/ws
 pnpm add @discordjs/ws
 ```
 
+## Example usage
+
+```ts
+import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { REST } from '@discordjs/rest';
+
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+// This example will spawn Discord's recommended shard count, all under the current process.
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0, // for no intents
+	rest,
+});
+
+await manager.connect();
+```
+
+### Specify shards
+
+```ts
+// Spawn 4 shards
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+	shardCount: 4,
+
+// The manager also supports being responsible for only a sub-set of your shards:
+
+// Your bot will run 8 shards overall
+// This manager will only take care of 0, 2, 4, and 6
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+	shardCount: 8,
+	shards: [0, 2, 4, 6],
+});
+
+// Alternatively, if your shards are consecutive, you can pass in a range
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+	shardCount: 8,
+	shards: {
+		start: 0,
+		end: 4,
+	},
+});
+```
+
+### You can also have the shards spawned in `worker_thread`s.
+
+```ts
+import { WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
+
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+	shardCount: 6,
+});
+
+// This will cause 3 workers to spawn, 2 shards per each
+manager.setStrategy(new WorkerShardingStrategy({ shardsPerWorker: 2 }));
+// Or maybe you want all your shards under a single worker
+manager.setStrategy(new WorkerShardingStrategy({ shardsPerWorker: 'all' }));
+```
+
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
