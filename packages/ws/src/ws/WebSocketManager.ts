@@ -72,7 +72,7 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	shardCount: number | null;
 	/**
-	 * The IDs of the shards this WebSocketManager should manage.
+	 * The ids of the shards this WebSocketManager should manage.
 	 * Use `null` to simply spawn 0 through `shardCount - 1`
 	 * @example
 	 * const manager = new WebSocketManager({
@@ -233,7 +233,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	}
 
 	/**
-	 * Yields the IDs of the shards this manager should manage
+	 * Yields the ids of the shards this manager should manage
 	 */
 	public async getShardIds(force = false): Promise<number[]> {
 		if (this.shardIds && !force) {
