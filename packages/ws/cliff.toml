@@ -26,9 +26,8 @@ body = """
 		  {% endif %}\
 			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/discordjs/discord.js/commit/{{ commit.id }}))\
 		{% if commit.breaking %}\
-			\n\n {% raw %}  {% endraw %} ### Breaking Changes:\n \
 			{% for breakingChange in commit.footers %}\
-				{% raw %}  {% endraw %} - {{ breakingChange }}\n\
+				\n{% raw %}  {% endraw %}- **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
 			{% endfor %}\
 		{% endif %}\
 	{% endfor %}
@@ -58,8 +57,7 @@ commit_parsers = [
 	{ body = ".*security", group = "Security"},
 ]
 filter_commits = true
-tag_pattern = "@discordjs\\/ws@.*"
-skip_tags = "v[0-9]*|11|12"
+tag_pattern = "@discordjs/ws@[0-9]*"
 ignore_tags = ""
 topo_order = false
 sort_commits = "newest"

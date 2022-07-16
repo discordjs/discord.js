@@ -55,6 +55,11 @@ export interface WebSocketShardDestroyOptions {
 	recover?: WebSocketShardDestroyRecovery;
 }
 
+export enum CloseCodes {
+	Normal = 1000,
+	Resuming = 4200,
+}
+
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
@@ -142,11 +147,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
 		if (this.status === WebSocketShardStatus.Idle) {
-			throw new Error('Tried to destroy a shard that was idle');
+			this.debug(['Tried to destroy a shard that was idle']);
+			return;
 		}
 
 		if (!options.code) {
-			options.code = options.recover === WebSocketShardDestroyRecovery.Resume ? 4200 : 1000;
+			options.code = options.recover === WebSocketShardDestroyRecovery.Resume ? CloseCodes.Resuming : CloseCodes.Normal;
 		}
 
 		this.debug([
@@ -217,7 +223,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async identify() {
-		this.debug(['Identifying']);
+		this.debug([
+			'Identifying',
+			`shard id: ${this.id.toString()}`,
+			`shard count: ${this.strategy.options.shardCount}`,
+			`intents: ${this.strategy.options.intents}`,
+			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
+		]);
 		const d: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
@@ -464,7 +476,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.RateLimited: {
-				this.debug(['Somehow hit the WS rate limit, this should not be happening']);
+				this.debug(['The WebSocket rate limit has been hit, this should never happen']);
 				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Reconnect });
 			}
 

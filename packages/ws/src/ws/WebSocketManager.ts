@@ -5,6 +5,7 @@ import {
 	GatewayIdentifyProperties,
 	GatewayPresenceUpdateData,
 	RESTGetAPIGatewayBotResult,
+	GatewayIntentBits,
 	Routes,
 } from 'discord-api-types/v10';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
@@ -46,7 +47,7 @@ export interface SessionInfo {
 /**
  * Required options for the WebSocketManager
  */
-export interface RequiredWebsSocketManagerOptions {
+export interface RequiredWebSocketManagerOptions {
 	/**
 	 * The token to use for identifying with the gateway
 	 */
@@ -54,8 +55,7 @@ export interface RequiredWebsSocketManagerOptions {
 	/**
 	 * The intents to request
 	 */
-	// Wonder if there's a better abstraction that could be done here?
-	intents: number;
+	intents: GatewayIntentBits;
 	/**
 	 * The REST instance to use for fetching gateway information
 	 */
@@ -144,7 +144,7 @@ export interface OptionalWebSocketManagerOptions {
 	readyTimeout: number | null;
 }
 
-export type WebSocketManagerOptions = RequiredWebsSocketManagerOptions & OptionalWebSocketManagerOptions;
+export type WebSocketManagerOptions = RequiredWebSocketManagerOptions & OptionalWebSocketManagerOptions;
 
 export type ManagerShardEventsMap = {
 	[K in keyof WebSocketShardEventsMap]: [
@@ -177,7 +177,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
-	public constructor(options: RequiredWebsSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
+	public constructor(options: RequiredWebSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 	}
@@ -229,7 +229,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 		}
 
 		const shardIds = await this.getShardIds();
-		return shardIds.length;
+		return Math.max(...shardIds) + 1;
 	}
 
 	/**

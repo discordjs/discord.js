@@ -84,7 +84,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				shardIds: slice,
 			};
 
-			const worker = new Worker(join(__dirname, 'worker'), { workerData });
+			const worker = new Worker(join(__dirname, 'worker.js'), { workerData });
 			await once(worker, 'online');
 			worker
 				.on('error', (err) => {

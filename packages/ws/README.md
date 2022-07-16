@@ -15,7 +15,7 @@
 
 ## About
 
-`@discordjs/ws` is a powerful wrapper around Discord's gateway
+`@discordjs/ws` is a powerful wrapper around Discord's gateway.
 
 ## Installation
 
@@ -55,7 +55,7 @@ const manager = new WebSocketManager({
 	shardCount: 4,
 });
 
-// The manager also supports being responsible for only a sub-set of your shards:
+// The manager also supports being responsible for only a subset of your shards:
 
 // Your bot will run 8 shards overall
 // This manager will only take care of 0, 2, 4, and 6
@@ -64,7 +64,7 @@ const manager = new WebSocketManager({
 	intents: 0,
 	rest,
 	shardCount: 8,
-	shards: [0, 2, 4, 6],
+	shardIds: [0, 2, 4, 6],
 });
 
 // Alternatively, if your shards are consecutive, you can pass in a range
@@ -73,14 +73,16 @@ const manager = new WebSocketManager({
 	intents: 0,
 	rest,
 	shardCount: 8,
-	shards: {
+	shardIds: {
 		start: 0,
 		end: 4,
 	},
 });
 ```
 
-### You can also have the shards spawned in `worker_thread`s.
+### Specify `worker_threads`
+
+You can also have the shards spawn in worker threads:
 
 ```ts
 import { WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';

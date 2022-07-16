@@ -13,8 +13,7 @@ export class IdentifyThrottler {
 		if (this.identifyState.remaining <= 0) {
 			const diff = this.identifyState.resetsAt - Date.now();
 			if (diff <= 5_000) {
-				// I managed to get it to identify too fast by only multiplying even with 1_200... somehow
-				const time = diff + Math.random() * 1_300;
+				const time = diff + Math.random() * 1_500;
 				await sleep(time);
 			}
 
