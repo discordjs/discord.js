@@ -113,7 +113,6 @@ import {
   APIEmbedAuthor,
   APIEmbedFooter,
   APIEmbedImage,
-  APIEmbedVideo,
   VideoQualityMode,
   LocalizationMap,
   LocaleString,
@@ -122,6 +121,7 @@ import {
   APIChannel,
   ThreadAutoArchiveDuration,
   FormattingPatterns,
+  APIEmbedProvider,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -667,12 +667,12 @@ export interface EmbedData {
   timestamp?: string | number | Date;
   color?: number;
   footer?: EmbedFooterData;
-  image?: EmbedImageData;
-  thumbnail?: EmbedImageData;
-  provider?: EmbedProviderData;
+  image?: EmbedAssetData;
+  thumbnail?: EmbedAssetData;
+  provider?: APIEmbedProvider;
   author?: EmbedAuthorData;
-  fields?: EmbedFieldData[];
-  video?: EmbedVideoData;
+  fields?: APIEmbedField[];
+  video?: EmbedAssetData;
 }
 
 export interface IconData {
@@ -684,16 +684,7 @@ export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'
 
 export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
 
-export interface EmbedProviderData {
-  name?: string;
-  url?: string;
-}
-
-export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
-  proxyURL?: string;
-}
-
-export interface EmbedVideoData extends Omit<APIEmbedVideo, 'proxy_url'> {
+export interface EmbedAssetData extends Omit<APIEmbedImage, 'proxy_url'> {
   proxyURL?: string;
 }
 
@@ -706,7 +697,7 @@ export class EmbedBuilder extends BuildersEmbed {
 export class Embed {
   private constructor(data: APIEmbed);
   public readonly data: Readonly<APIEmbed>;
-  public get fields(): APIEmbedField[] | null;
+  public get fields(): APIEmbedField[];
   public get footer(): EmbedFooterData | null;
   public get title(): string | null;
   public get description(): string | null;
@@ -714,11 +705,11 @@ export class Embed {
   public get color(): number | null;
   public get hexColor(): string | null;
   public get timestamp(): string | null;
-  public get thumbnail(): EmbedImageData | null;
-  public get image(): EmbedImageData | null;
+  public get thumbnail(): EmbedAssetData | null;
+  public get image(): EmbedAssetData | null;
   public get author(): EmbedAuthorData | null;
-  public get provider(): EmbedProviderData | null;
-  public get video(): EmbedVideoData | null;
+  public get provider(): APIEmbedProvider | null;
+  public get video(): EmbedAssetData | null;
   public get length(): number;
   public equals(other: Embed | APIEmbed): boolean;
   public toJSON(): APIEmbed;
@@ -4411,12 +4402,6 @@ export interface EmbedField {
   name: string;
   value: string;
   inline: boolean;
-}
-
-export interface EmbedFieldData {
-  name: string;
-  value: string;
-  inline?: boolean;
 }
 
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
