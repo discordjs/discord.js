@@ -299,11 +299,13 @@ class GuildMemberManager extends CachedManager {
     }
     data.roles &&= data.roles.map(role => (role instanceof Role ? role.id : role));
 
-    data.communication_disabled_until =
-      // eslint-disable-next-line eqeqeq
-      data.communicationDisabledUntil != null
-        ? new Date(data.communicationDisabledUntil).toISOString()
-        : data.communicationDisabledUntil;
+    if (typeof data.communicationDisabledUntil !== 'undefined') {
+      data.communication_disabled_until =
+        // eslint-disable-next-line eqeqeq
+        data.communicationDisabledUntil != null
+          ? new Date(data.communicationDisabledUntil).toISOString()
+          : data.communicationDisabledUntil;
+    }
 
     let endpoint;
     if (id === this.client.user.id) {
