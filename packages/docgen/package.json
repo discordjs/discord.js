@@ -49,7 +49,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "^0.7.0",
+		"@discordjs/collection": "^1.0.0",
 		"commander": "^9.4.0",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",

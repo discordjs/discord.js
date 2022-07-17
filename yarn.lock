@@ -2219,6 +2219,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@discordjs/collection@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@discordjs/collection@npm:1.0.0"
+  checksum: d8eafd35e782a6a2ee83a22c31679958bc827fce8cd5ffc7e5942cf681c96fd9543334b48c743ecda45179fcefa8d7be7a13f771d7f14effaec8a8ca25077031
+  languageName: node
+  linkType: hard
+
 "@discordjs/collection@workspace:^, @discordjs/collection@workspace:packages/collection":
   version: 0.0.0-use.local
   resolution: "@discordjs/collection@workspace:packages/collection"
@@ -2265,7 +2272,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/docgen@workspace:packages/docgen"
   dependencies:
-    "@discordjs/collection": ^0.7.0
+    "@discordjs/collection": ^1.0.0
     "@favware/cliff-jumper": ^1.8.5
     "@types/jsdoc-to-markdown": ^7.0.3
     "@types/node": ^16.11.45
@@ -2286,8 +2293,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
   dependencies:
-    "@discordjs/proxy": ^1.0.0-dev
-    "@discordjs/rest": ^0.5.0
+    "@discordjs/proxy": ^1.0.0
+    "@discordjs/rest": ^1.0.0
     "@types/node": ^16.11.45
     eslint: ^8.20.0
     prettier: ^2.7.1
@@ -2297,12 +2304,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/proxy@^1.0.0-dev, @discordjs/proxy@workspace:packages/proxy":
+"@discordjs/proxy@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@discordjs/proxy@npm:1.0.0"
+  dependencies:
+    "@discordjs/rest": ^0.5.0
+    tslib: ^2.4.0
+    undici: ^5.7.0
+  checksum: 6f596edbc26c5f167078f6f05ffe2e3e4091d69fe07c04513825718ef38e5875f8c2080d9b2087b00abce20c0a8e2c601226e21544c32625653de84ff28c9f98
+  languageName: node
+  linkType: hard
+
+"@discordjs/proxy@workspace:packages/proxy":
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
     "@discordjs/docgen": "workspace:^"
-    "@discordjs/rest": ^0.5.0
+    "@discordjs/rest": ^1.0.0
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.4
@@ -2331,6 +2349,21 @@ __metadata:
     tslib: ^2.4.0
     undici: ^5.4.0
   checksum: 36427fd77ff11285da4400e9960fccb71aafa657e43c3de4fe4772d1497f20c3d84754c844ad44d2c6f68fed45303ace790191fd811c94414312fde20d0346c2
+  languageName: node
+  linkType: hard
+
+"@discordjs/rest@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@discordjs/rest@npm:1.0.0"
+  dependencies:
+    "@discordjs/collection": ^1.0.0
+    "@sapphire/async-queue": ^1.3.2
+    "@sapphire/snowflake": ^3.2.2
+    discord-api-types: ^0.36.2
+    file-type: ^17.1.2
+    tslib: ^2.4.0
+    undici: ^5.7.0
+  checksum: dfe4348ce3d9cd7e91b1ee090b4b7c9eaf9f0b5a2acb4e2a1e71cb9a08afa260393190db5461e5873663d7d3bd29fbeda1ebec1bd74dcce87577371cf887cbbe
   languageName: node
   linkType: hard
 
@@ -2440,7 +2473,7 @@ __metadata:
     eslint-plugin-import: ^2.26.0
     eslint-plugin-react: ^7.30.1
     eslint-plugin-react-hooks: ^4.6.0
-    happy-dom: ^6.0.3
+    happy-dom: ^6.0.4
     msw: ^0.44.1
     prettier: ^2.7.1
     react: ^18.2.0
@@ -9854,9 +9887,9 @@ dts-critic@latest:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "happy-dom@npm:6.0.3"
+"happy-dom@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "happy-dom@npm:6.0.4"
   dependencies:
     css.escape: ^1.5.1
     he: ^1.2.0
@@ -9865,7 +9898,7 @@ dts-critic@latest:
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: ce294526cd12af6b0537e413a19758fd218ab7e28db887f49b97d914f15fefa608a8d94f91dbd137aa4918354af88099685f811e5d31a23c9c0a681ef9367fba
+  checksum: 4bfd97f07ab459fd48fe93f597deb903527f0ffffbc98f2ab1cacc1362ae09d11dfc21d8b166d8e0d19fc49d7c1dcc4b250c1da131d6f70e3cf2e82b39d60657
   languageName: node
   linkType: hard
 
