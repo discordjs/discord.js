@@ -211,7 +211,7 @@ function escapeSpoiler(text) {
 }
 
 /**
- * @typedef {Object} FetchRecommendedShardsOptions
+ * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
  */
@@ -219,10 +219,10 @@ function escapeSpoiler(text) {
 /**
  * Gets the recommended shard count from Discord.
  * @param {string} token Discord auth token
- * @param {FetchRecommendedShardsOptions} [options] Options for fetching the recommended shard count
+ * @param {FetchRecommendedShardCountOptions} [options] Options for fetching the recommended shard count
  * @returns {Promise<number>} The recommended number of shards
  */
-async function fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
   if (!token) throw new DiscordError(ErrorCodes.TokenMissing);
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
@@ -232,8 +232,8 @@ async function fetchRecommendedShards(token, { guildsPerShard = 1_000, multipleO
     if (response.status === 401) throw new DiscordError(ErrorCodes.TokenInvalid);
     throw response;
   }
-  const { shards } = await response.json();
-  return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
+  const { shardCount } = await response.json();
+  return Math.ceil((shardCount * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
 }
 
 /**
@@ -555,7 +555,7 @@ module.exports = {
   escapeUnderline,
   escapeStrikethrough,
   escapeSpoiler,
-  fetchRecommendedShards,
+  fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,
   mergeDefault,
