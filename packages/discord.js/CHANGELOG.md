@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.9.0](https://github.com/discordjs/discord.js/compare/13.8.1...13.9.0) - (2022-07-17)
+
+## Bug Fixes
+
+- **PermissionOverwriteManager:** Mutates user (#8282) ([4d86cf4](https://github.com/discordjs/discord.js/commit/4d86cf4ce0f56c4025533ef978417a5a71bd1b5c))
+- **GuildChannelManager:** Access `resolveId` correctly (v13) (#8297) ([beb3d8e](https://github.com/discordjs/discord.js/commit/beb3d8ec26d2dd8545b4d32a10a8bfcc4b0bc4bb))
+- **GuildChannelManager:** Edit lockPermissions (#8267) ([8fe166d](https://github.com/discordjs/discord.js/commit/8fe166dcfddaec0255872fa1d3f333399c8852e9))
+- **applicationcommandmanager:** Explicitly allow passing builders to methods (v13) (#8229) ([f457cdd](https://github.com/discordjs/discord.js/commit/f457cdd2dea53614e3547dca7cff99d2492455b5))
+- Pass in the expected query object type for application commands (#8189) ([f704b26](https://github.com/discordjs/discord.js/commit/f704b261c03fe45f100e30637c86338583f3510f))
+- Use non-global flag whilst resolving regular expressions (#8178) ([4063b90](https://github.com/discordjs/discord.js/commit/4063b90cefeba052168315b5899cbe69d11206c3))
+- **GuildStickerManager.fetchUser:** Changed guildId to guild.id (#8176) ([0e0f784](https://github.com/discordjs/discord.js/commit/0e0f784447e6915cb067a06d1f2589ac839d05f7))
+- **guildmemberremove:** Remove member's presence for v13 (#8182) ([e8d72c7](https://github.com/discordjs/discord.js/commit/e8d72c7245f61f730b09b0dfed71f270d87f2019))
+- **WebSocketShard:** Backport error handler preservation on connections (#8164) ([c198e89](https://github.com/discordjs/discord.js/commit/c198e893c9b8904c2877599473472bcf0a3eb158))
+
+## Documentation
+
+- Add new HTTP Error Codes `50068` (v13) (#8273) ([00a7057](https://github.com/discordjs/discord.js/commit/00a705707ea5494a31e245bf010b14607dc1174f))
+- Add `MessageActivityType` (v13) (#8257) ([9cc336c](https://github.com/discordjs/discord.js/commit/9cc336c43b0a618bdd74bb4cb7ccde674d43e263))
+- **MessageInteraction:** Update `commandName` description (v13) (#8220) ([feb8e30](https://github.com/discordjs/discord.js/commit/feb8e30d2e8dc5d55961416812dac1f4232eeab0))
+- **constants:** Document missing constants (#8168) ([4ae08ad](https://github.com/discordjs/discord.js/commit/4ae08ad9efd49eaf6cbb6d88bc278aecf435b4a1))
+
+## Features
+
+- **ApplicationCommand:** Add `min_length` and `max_length` for string option (v13) (#8217) ([a93f4b1](https://github.com/discordjs/discord.js/commit/a93f4b1ba2a08df5b5319776fe97ff9eb64476d6))
+- **interaction:** Add `appPermissions` (v13) (#8195) ([222fc9c](https://github.com/discordjs/discord.js/commit/222fc9c6792272be7a123e790f6eb13fcabdba86))
+- Partially backport perms v2 for v13 (#8162) ([125696f](https://github.com/discordjs/discord.js/commit/125696fc79df4b4d6d670acf3203955e1c300d3f))
+
+## Typings
+
+- **GuildMemberManager:** Non-void return of `edit()` (v13) (#8187) ([631abee](https://github.com/discordjs/discord.js/commit/631abee69310d59eb4625501cde1c44f6c44a7af))
+- Add missing shard types (v13) (#8192) ([079973f](https://github.com/discordjs/discord.js/commit/079973f1cfbbbcab9e4708ba82d0034398703ec7))
+
 # [13.8.1](https://github.com/discordjs/discord.js/compare/13.8.0...13.8.1) - (2022-06-23)
 
 ## Bug Fixes
@@ -104,7 +136,6 @@ All notable changes to this project will be documented in this file.
 - **threadchannel:** Fix autoArchiveDuration types (#7817) ([7afcd95](https://github.com/discordjs/discord.js/commit/7afcd9594a5706526be20cb26f0de388b094c1b4))
 - **InteractionCollector:** Fix guild and channel types (#7624) ([7814074](https://github.com/discordjs/discord.js/commit/78140748ce4a64977426a93fd72c9e2783e5919d))
 - V13 channel create overloads fix (#7480) ([0b54089](https://github.com/discordjs/discord.js/commit/0b54089c43b60a325e02b78dd0126771ac71f746))
-
 
 # [13.6.0](https://github.com/discordjs/discord.js/compare/13.5.1...13.6.0) - (2022-01-13)
 
