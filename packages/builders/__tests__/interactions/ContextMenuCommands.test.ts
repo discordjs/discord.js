@@ -86,6 +86,10 @@ describe('Context Menu Commands', () => {
 			test('GIVEN valid builder with defaultPermission false THEN does not throw error', () => {
 				expect(() => getBuilder().setName('foo').setDefaultPermission(false)).not.toThrowError();
 			});
+
+			test('GIVEN valid builder with dmPermission false THEN does not throw error', () => {
+				expect(() => getBuilder().setName('foo').setDMPermission(false)).not.toThrowError();
+			});
 		});
 
 		describe('Context menu command localizations', () => {

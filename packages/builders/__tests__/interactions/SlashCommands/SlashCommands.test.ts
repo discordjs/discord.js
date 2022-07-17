@@ -93,6 +93,7 @@ describe('Slash Commands', () => {
 		test('GIVEN valid array of options or choices THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength([])).not.toThrowError();
 
+			expect(() => SlashCommandAssertions.validateChoicesLength(25)).not.toThrowError();
 			expect(() => SlashCommandAssertions.validateChoicesLength(25, [])).not.toThrowError();
 		});
 
@@ -133,6 +134,7 @@ describe('Slash Commands', () => {
 					getBuilder()
 						.setName('example')
 						.setDescription('Example command')
+						.setDMPermission(false)
 						.addBooleanOption((boolean) =>
 							boolean.setName('iscool').setDescription('Are we cool or what?').setRequired(true),
 						)
