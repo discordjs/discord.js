@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "dist",
+		"skipLibCheck": true,
 		"paths": {
 			"@discordjs/voice": ["../../"],
 			"libsodium-wrappers": ["./node_modules/libsodium-wrappers"]

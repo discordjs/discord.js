@@ -1,4 +1,6 @@
+import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';
+import { Section } from '../Section';
 import type { DocEnum } from '~/DocModel/DocEnum';
 
 export interface EnumProps {
@@ -8,14 +10,19 @@ export interface EnumProps {
 export function Enum({ data }: EnumProps) {
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<>
-				<h3>Members</h3>
-				<ul>
+			<Section title="Members">
+				<div className="flex flex-col">
 					{data.members.map((member) => (
-						<li key={member.name}>{member.name}</li>
+						<CodeListing
+							key={member.name}
+							name={member.name}
+							separator={CodeListingSeparatorType.Value}
+							typeTokens={member.initializerTokens}
+							summary={member.summary}
+						/>
 					))}
-				</ul>
-			</>
+				</div>
+			</Section>
 		</DocContainer>
 	);
 }

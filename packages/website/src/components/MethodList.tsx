@@ -1,3 +1,4 @@
+import { MethodItem } from './MethodItem';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
 
@@ -8,12 +9,11 @@ export interface MethodListProps {
 export function MethodList({ data }: MethodListProps) {
 	return (
 		<div>
-			<h3>Methods</h3>
-			<ul>
+			<div className="flex flex-col">
 				{data.map((method) => (
-					<li key={method.name}>{method.name}</li>
+					<MethodItem key={method.name} data={method} />
 				))}
-			</ul>
+			</div>
 		</div>
 	);
 }

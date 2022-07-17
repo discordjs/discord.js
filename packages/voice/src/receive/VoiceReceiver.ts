@@ -130,20 +130,9 @@ export class VoiceReceiver {
 		if (!packet) return;
 
 		// Strip RTP Header Extensions (one-byte only)
-		if (packet[0] === 0xbe && packet[1] === 0xde && packet.length > 4) {
+		if (packet[0] === 0xbe && packet[1] === 0xde) {
 			const headerExtensionLength = packet.readUInt16BE(2);
-			let offset = 4;
-			for (let i = 0; i < headerExtensionLength; i++) {
-				const byte = packet[offset]!;
-				offset++;
-				if (byte === 0) continue;
-				offset += 1 + (byte >> 4);
-			}
-			// Skip over undocumented Discord byte (if present)
-			const byte = packet.readUInt8(offset);
-			if (byte === 0x00 || byte === 0x02) offset++;
-
-			packet = packet.slice(offset);
+			packet = packet.subarray(4 + 4 * headerExtensionLength);
 		}
 
 		return packet;

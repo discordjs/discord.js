@@ -8,9 +8,10 @@ import {
 import { DocItem } from './DocItem';
 import { DocMethod } from './DocMethod';
 import { DocProperty } from './DocProperty';
+import { TypeParameterMixin } from './TypeParameterMixin';
 import { type TokenDocumentation, genToken } from '~/util/parse.server';
 
-export class DocClass extends DocItem<ApiClass> {
+export class DocClass extends TypeParameterMixin(DocItem<ApiClass>) {
 	public readonly extendsTokens: TokenDocumentation[] | null;
 	public readonly implementsTokens: TokenDocumentation[][];
 	public readonly methods: DocMethod[] = [];
@@ -19,9 +20,11 @@ export class DocClass extends DocItem<ApiClass> {
 	public constructor(model: ApiModel, item: ApiClass) {
 		super(model, item);
 		const extendsExcerpt = item.extendsType?.excerpt;
+
 		this.extendsTokens = extendsExcerpt
 			? extendsExcerpt.spannedTokens.map((token) => genToken(this.model, token))
 			: null;
+
 		this.implementsTokens = item.implementsTypes.map((excerpt) =>
 			excerpt.excerpt.spannedTokens.map((token) => genToken(this.model, token)),
 		);

@@ -1,35 +1,31 @@
-import { constructHyperlinkedText } from '../util/util';
+import { HyperlinkedText } from './HyperlinkedText';
+import { Table } from './Table';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
 interface ParameterDetailProps {
 	data: ParameterDocumentation[];
+	className?: string | undefined;
 }
 
-export function ParameterTable({ data }: ParameterDetailProps) {
+export function ParameterTable({ data, className }: ParameterDetailProps) {
+	const rows = data.map((param) => ({
+		Name: param.name,
+		Type: <HyperlinkedText tokens={param.tokens} />,
+		Optional: param.isOptional ? 'Yes' : 'No',
+		Description: 'None',
+	}));
+
+	const columnStyles = {
+		Name: 'font-mono',
+		Type: 'font-mono',
+	};
+
 	return (
-		<div className="p-10 border border-gray-200 solid rounded-md">
-			<table className="w-full text-sm text-left text-black-500 dark:text-gray-400">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Optional</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					{data.map((parameter) => (
-						<tr key={parameter.name} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-							<th className="py-4 font-normal text-gray-900 dark:text-white whitespace-nowrap">{parameter.name}</th>
-							<th>
-								<code>{constructHyperlinkedText(parameter.tokens)}</code>
-							</th>
-							<th>{parameter.isOptional ? 'Yes' : 'No'}</th>
-							<th>None</th>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
+		<Table
+			className={className}
+			columns={['Name', 'Type', 'Optional', 'Description']}
+			rows={rows}
+			columnStyles={columnStyles}
+		/>
 	);
 }

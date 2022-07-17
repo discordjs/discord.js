@@ -101,31 +101,36 @@ class DataResolver extends null {
    */
 
   /**
+   * @typedef {Object} ResolvedFile
+   * @property {Buffer} data Buffer containing the file data
+   * @property {string} [contentType] Content type of the file
+   */
+
+  /**
    * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @returns {Promise<Buffer>}
+   * @returns {Promise<ResolvedFile>}
    */
   static async resolveFile(resource) {
-    if (!resource) return null;
-    if (Buffer.isBuffer(resource)) return resource;
+    if (Buffer.isBuffer(resource)) return { data: resource };
 
     if (typeof resource[Symbol.asyncIterator] === 'function') {
       const buffers = [];
       for await (const data of resource) buffers.push(data);
-      return Buffer.concat(buffers);
+      return { data: Buffer.concat(buffers) };
     }
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
-        return Buffer.from(await res.arrayBuffer());
+        return { data: Buffer.from(await res.arrayBuffer()), contentType: res.headers.get('content-type') };
       }
 
       const file = path.resolve(resource);
 
       const stats = await fs.stat(file);
       if (!stats.isFile()) throw new DiscordError(ErrorCodes.FileNotFound, file);
-      return fs.readFile(file);
+      return { data: await fs.readFile(file) };
     }
 
     throw new TypeError(ErrorCodes.ReqResourceType);

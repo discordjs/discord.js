@@ -7,10 +7,14 @@ export default defineConfig({
 		coverage: {
 			enabled: true,
 			all: true,
-			reporter: ['text', 'lcov', 'clover'],
+			reporter: ['text', 'lcov', 'cobertura'],
 			include: ['src'],
-			// All ts files that only contain types, due to ALL
-			exclude: ['**/*.{interface,type,d}.ts'],
+			exclude: [
+				// All ts files that only contain types, due to ALL
+				'**/*.{interface,type,d}.ts',
+				// All index files that *should* only contain exports from other files
+				'**/index.{js,ts}',
+			],
 		},
 	},
 });

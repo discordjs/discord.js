@@ -1,5 +1,5 @@
 import { DocContainer } from '../DocContainer';
-import { ParameterTable } from '../ParameterTable';
+import { ParametersSection } from '../Sections';
 import type { DocFunction } from '~/DocModel/DocFunction';
 
 export interface FunctionProps {
@@ -8,8 +8,14 @@ export interface FunctionProps {
 
 export function Function({ data }: FunctionProps) {
 	return (
-		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<ParameterTable data={data.parameters} />
+		<DocContainer
+			name={data.name}
+			kind={data.kind}
+			excerpt={data.excerpt}
+			summary={data.summary}
+			typeParams={data.typeParameterData}
+		>
+			<ParametersSection data={data.parameters} />
 		</DocContainer>
 	);
 }

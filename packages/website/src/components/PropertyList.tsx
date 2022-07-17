@@ -1,3 +1,4 @@
+import { CodeListing } from './CodeListing';
 import type { DocProperty } from '~/DocModel/DocProperty';
 
 export interface PropertyListProps {
@@ -6,13 +7,10 @@ export interface PropertyListProps {
 
 export function PropertyList({ data }: PropertyListProps) {
 	return (
-		<div>
-			<h3>Properties</h3>
-			<ul>
-				{data.map((prop) => (
-					<li key={prop.name}>{prop.name}</li>
-				))}
-			</ul>
+		<div className="flex flex-col">
+			{data.map((prop) => (
+				<CodeListing key={prop.name} name={prop.name} typeTokens={prop.propertyTypeTokens} summary={prop.summary} />
+			))}
 		</div>
 	);
 }

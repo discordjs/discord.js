@@ -9,6 +9,12 @@ import { SequentialHandler } from './handlers/SequentialHandler';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
 import { resolveBody } from './utils/utils';
 
+// Make this a lazy dynamic import as file-type is a pure ESM package
+const getFileType = (): Promise<typeof import('file-type')> => {
+	let cached: Promise<typeof import('file-type')>;
+	return (cached ??= import('file-type'));
+};
+
 /**
  * Represents a file to be added to the request
  */
@@ -27,6 +33,10 @@ export interface RawFile {
 	 * The actual data for the file
 	 */
 	data: string | number | boolean | Buffer;
+	/**
+	 * Content-Type of the file
+	 */
+	contentType?: string;
 }
 
 /**
@@ -401,11 +411,14 @@ export class RequestManager extends EventEmitter {
 				// FormData.append only accepts a string or Blob.
 				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
-				if (Buffer.isBuffer(file.data) || typeof file.data === 'string') {
-					formData.append(fileKey, new Blob([file.data]), file.name);
+				if (Buffer.isBuffer(file.data)) {
+					// Try to infer the content type from the buffer if one isn't passed
+					const { fileTypeFromBuffer } = await getFileType();
+					const contentType = file.contentType ?? (await fileTypeFromBuffer(file.data))?.mime;
+					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
 				} else {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					formData.append(fileKey, new Blob([`${file.data}`]), file.name);
+					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
 				}
 			}
 

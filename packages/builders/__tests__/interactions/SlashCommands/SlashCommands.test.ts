@@ -42,6 +42,8 @@ describe('Slash Commands', () => {
 	describe('Assertions tests', () => {
 		test('GIVEN valid name THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateName('ping')).not.toThrowError();
+			expect(() => SlashCommandAssertions.validateName('hello-world_command')).not.toThrowError();
+			expect(() => SlashCommandAssertions.validateName('aˇ㐆1٢〣²अก')).not.toThrowError();
 		});
 
 		test('GIVEN invalid name THEN throw error', () => {
@@ -51,7 +53,10 @@ describe('Slash Commands', () => {
 			expect(() => SlashCommandAssertions.validateName('')).toThrowError();
 
 			// Invalid characters used
+			expect(() => SlashCommandAssertions.validateName('ABC')).toThrowError();
 			expect(() => SlashCommandAssertions.validateName('ABC123$%^&')).toThrowError();
+			expect(() => SlashCommandAssertions.validateName('help ping')).toThrowError();
+			expect(() => SlashCommandAssertions.validateName('🦦')).toThrowError();
 
 			// Too long of a name
 			expect(() =>
@@ -88,6 +93,7 @@ describe('Slash Commands', () => {
 		test('GIVEN valid array of options or choices THEN does not throw error', () => {
 			expect(() => SlashCommandAssertions.validateMaxOptionsLength([])).not.toThrowError();
 
+			expect(() => SlashCommandAssertions.validateChoicesLength(25)).not.toThrowError();
 			expect(() => SlashCommandAssertions.validateChoicesLength(25, [])).not.toThrowError();
 		});
 
@@ -128,6 +134,7 @@ describe('Slash Commands', () => {
 					getBuilder()
 						.setName('example')
 						.setDescription('Example command')
+						.setDMPermission(false)
 						.addBooleanOption((boolean) =>
 							boolean.setName('iscool').setDescription('Are we cool or what?').setRequired(true),
 						)

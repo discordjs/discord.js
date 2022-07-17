@@ -1,8 +1,9 @@
 import type { ApiModel, ApiTypeAlias } from '@microsoft/api-extractor-model';
 import { DocItem } from './DocItem';
+import { TypeParameterMixin } from './TypeParameterMixin';
 import { type TokenDocumentation, genToken } from '~/util/parse.server';
 
-export class DocTypeAlias extends DocItem<ApiTypeAlias> {
+export class DocTypeAlias extends TypeParameterMixin(DocItem<ApiTypeAlias>) {
 	public readonly typeTokens: TokenDocumentation[];
 
 	public constructor(model: ApiModel, item: ApiTypeAlias) {

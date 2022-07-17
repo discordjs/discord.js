@@ -23,6 +23,7 @@ import {
   APITextInputComponent,
   APIEmbed,
   ApplicationCommandType,
+  APIMessage,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -130,15 +131,12 @@ import {
   ThreadMemberManager,
   CollectedMessageInteraction,
   ShardEvents,
+  Webhook,
+  WebhookClient,
+  InteractionWebhook,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import {
-  ContextMenuCommandBuilder,
-  SlashCommandBuilder,
-  UnsafeButtonBuilder,
-  UnsafeEmbedBuilder,
-  UnsafeSelectMenuBuilder,
-} from '@discordjs/builders';
+import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -879,7 +877,6 @@ client.on('messageCreate', async message => {
     type: ComponentType.ActionRow,
     components: [
       new ButtonBuilder(),
-      new UnsafeButtonBuilder(),
       { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
       {
         type: ComponentType.Button,
@@ -893,7 +890,6 @@ client.on('messageCreate', async message => {
     type: ComponentType.ActionRow,
     components: [
       new SelectMenuBuilder(),
-      new UnsafeSelectMenuBuilder(),
       {
         type: ComponentType.SelectMenu,
         label: 'select menu',
@@ -903,9 +899,8 @@ client.on('messageCreate', async message => {
     ],
   };
 
-  const buildersEmbed = new UnsafeEmbedBuilder();
   const embedData = { description: 'test', color: 0xff0000 };
-  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, buildersEmbed, embedData] });
+  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, embedData] });
 });
 
 client.on('threadCreate', thread => {
@@ -1700,3 +1695,20 @@ expectType<ChannelMention>(partialGroupDMChannel.toString());
 expectType<UserMention>(dmChannel.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
+
+declare const webhook: Webhook;
+declare const webhookClient: WebhookClient;
+declare const interactionWebhook: InteractionWebhook;
+declare const snowflake: Snowflake;
+
+expectType<Promise<Message>>(webhook.send('content'));
+expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+
+expectType<Promise<APIMessage>>(webhookClient.send('content'));
+expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
+expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
+
+expectType<Promise<Message>>(interactionWebhook.send('content'));
+expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));

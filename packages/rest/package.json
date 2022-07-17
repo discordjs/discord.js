@@ -1,12 +1,12 @@
 {
 	"name": "@discordjs/rest",
-	"version": "0.6.0-dev",
+	"version": "0.7.0-dev",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --cache --check . && eslint src __tests__ --ext mjs,js,ts --cache",
-		"format": "prettier --cache --write . && eslint src __tests__ --ext mjs,js,ts --fix --cache",
+		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
+		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
@@ -52,21 +52,25 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
-		"@sapphire/async-queue": "^1.3.1",
+		"@sapphire/async-queue": "^1.3.2",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.33.5",
+		"discord-api-types": "^0.36.2",
+		"file-type": "^17.1.2",
 		"tslib": "^2.4.0",
-		"undici": "^5.5.1"
+		"undici": "^5.7.0"
 	},
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^1.8.3",
-		"@microsoft/api-extractor": "^7.28.2",
-		"eslint": "^8.18.0",
+		"@favware/cliff-jumper": "^1.8.5",
+		"@microsoft/api-extractor": "^7.28.4",
+		"@types/node": "^16.11.45",
+		"c8": "^7.11.3",
+		"eslint": "^8.20.0",
 		"prettier": "^2.7.1",
-		"tsup": "^6.1.2",
-		"typescript": "^4.7.4"
+		"tsup": "^6.1.3",
+		"typescript": "^4.7.4",
+		"vitest": "^0.18.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -49,6 +49,11 @@
  */
 
 /**
+ * @external APIEmbedProvider
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbedProvider}
+ */
+
+/**
  * @external APIEmoji
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmoji}
  */
