@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "14.0.0-dev",
+  "version": "14.0.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "yarn docs:test && yarn test:typescript",
