@@ -2290,7 +2290,7 @@ export class ShardingManager extends EventEmitter {
   public once(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
 }
 
-export interface FetchRecommendedShardsOptions {
+export interface FetchRecommendedShardCountOptions {
   guildsPerShard?: number;
   multipleOf?: number;
 }
@@ -2640,7 +2640,7 @@ export function escapeUnderline(text: string): string;
 export function escapeStrikethrough(text: string): string;
 export function escapeSpoiler(text: string): string;
 export function cleanCodeBlockContent(text: string): string;
-export function fetchRecommendedShards(token: string, options?: FetchRecommendedShardsOptions): Promise<number>;
+export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
 export function makeError(obj: MakeErrorOptions): Error;
 export function makePlainError(err: Error): MakeErrorOptions;
