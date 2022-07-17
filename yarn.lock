@@ -2852,7 +2852,7 @@ __metadata:
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.3
-    "@sapphire/shapeshift": ^3.4.1
+    "@sapphire/shapeshift": ^3.5.1
     "@types/node": ^18.0.3
     c8: ^7.11.3
     discord-api-types: ^0.36.1
@@ -4032,10 +4032,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/shapeshift@npm:^3.4.1":
-  version: 3.4.1
-  resolution: "@sapphire/shapeshift@npm:3.4.1"
-  checksum: 97006b34941136c26dd1a8259c1838df08e7e15e869e515a3e4e844d2c5757c4bb92d79eeec72c73ff856e9be00876c88bf71142d11f4b55e043ec76153365cd
+"@sapphire/shapeshift@npm:^3.5.1":
+  version: 3.5.1
+  resolution: "@sapphire/shapeshift@npm:3.5.1"
+  dependencies:
+    fast-deep-equal: ^3.1.3
+    lodash.uniqwith: ^4.5.0
+  checksum: caecfef844c9e43e921a5051da888fae7da8980bfd9f9bb4f7fee85931d40929ffb9b6dfae464c0dccee61e56f7698f998e4d9a54d25f35fad39a51ba1a4f391
   languageName: node
   linkType: hard
 
@@ -12967,6 +12970,13 @@ dts-critic@latest:
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c
+  languageName: node
+  linkType: hard
+
+"lodash.uniqwith@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.uniqwith@npm:4.5.0"
+  checksum: d49a4565ed64efd86674127d321622673c29cde3e060baebc0f30372f22886c61b2ead44709db8c890053db1b9660e8ed689689812c1a485eb5703caa94d1150
   languageName: node
   linkType: hard
 
