@@ -1,4 +1,5 @@
 import {
+	APIApplicationCommandAttachmentOption,
 	APIApplicationCommandBooleanOption,
 	APIApplicationCommandChannelOption,
 	APIApplicationCommandIntegerOption,
@@ -12,6 +13,7 @@ import {
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
+	SlashCommandAttachmentOption,
 	SlashCommandBooleanOption,
 	SlashCommandChannelOption,
 	SlashCommandIntegerOption,
@@ -57,6 +59,9 @@ const getRoleOption = () => new SlashCommandRoleOption().setName('owo').setDescr
 
 const getMentionableOption = () =>
 	new SlashCommandMentionableOption().setName('owo').setDescription('Testing 123').setRequired(true);
+
+const getAttachmentOption = () =>
+	new SlashCommandAttachmentOption().setName('attachment').setDescription('attachment').setRequired(true);
 
 describe('Application Command toJSON() results', () => {
 	test('GIVEN a boolean option THEN calling toJSON should return a valid JSON', () => {
@@ -202,6 +207,15 @@ describe('Application Command toJSON() results', () => {
 			name: 'owo',
 			description: 'Testing 123',
 			type: ApplicationCommandOptionType.User,
+			required: true,
+		});
+	});
+
+	test('GIVEN an attachment option THEN calling toJSON should return a valid JSON', () => {
+		expect(getAttachmentOption().toJSON()).toEqual<APIApplicationCommandAttachmentOption>({
+			name: 'attachment',
+			description: 'attachment',
+			type: ApplicationCommandOptionType.Attachment,
 			required: true,
 		});
 	});
