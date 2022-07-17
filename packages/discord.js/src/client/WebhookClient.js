@@ -42,12 +42,32 @@ class WebhookClient extends BaseClient {
   }
 
   // These are here only for documentation purposes - they are implemented by Webhook
-  /* eslint-disable no-empty-function */
+  /* eslint-disable no-empty-function, valid-jsdoc */
+  /**
+   * Sends a message with this webhook.
+   * @param {string|MessagePayload|WebhookMessageOptions} options The content for the reply
+   * @returns {Promise<APIMessage>}
+   */
   send() {}
-  sendSlackMessage() {}
+
+  /**
+   * Gets a message that was sent by this webhook.
+   * @param {Snowflake} message The id of the message to fetch
+   * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
+   * @returns {Promise<APIMessage>} Returns the message sent by this webhook
+   */
   fetchMessage() {}
-  edit() {}
+
+  /**
+   * Edits a message that was sent by this webhook.
+   * @param {MessageResolvable} message The message to edit
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @returns {Promise<APIMessage>} Returns the message edited by this webhook
+   */
   editMessage() {}
+
+  sendSlackMessage() {}
+  edit() {}
   delete() {}
   deleteMessage() {}
   get createdTimestamp() {}

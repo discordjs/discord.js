@@ -23,6 +23,7 @@ import {
   APITextInputComponent,
   APIEmbed,
   ApplicationCommandType,
+  APIMessage,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -130,6 +131,9 @@ import {
   ThreadMemberManager,
   CollectedMessageInteraction,
   ShardEvents,
+  Webhook,
+  WebhookClient,
+  InteractionWebhook,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1691,3 +1695,20 @@ expectType<ChannelMention>(partialGroupDMChannel.toString());
 expectType<UserMention>(dmChannel.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
+
+declare const webhook: Webhook;
+declare const webhookClient: WebhookClient;
+declare const interactionWebhook: InteractionWebhook;
+declare const snowflake: Snowflake;
+
+expectType<Promise<Message>>(webhook.send('content'));
+expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+
+expectType<Promise<APIMessage>>(webhookClient.send('content'));
+expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
+expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
+
+expectType<Promise<Message>>(interactionWebhook.send('content'));
+expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
