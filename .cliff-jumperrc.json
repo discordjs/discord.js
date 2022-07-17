@@ -1,0 +1,4 @@
+{
+  "name": "discord.js",
+  "tagTemplate": "{{new-version}}"
+}
