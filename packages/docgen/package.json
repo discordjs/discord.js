@@ -50,16 +50,16 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/collection": "^0.7.0",
-		"commander": "^9.3.0",
+		"commander": "^9.4.0",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.5"
+		"typedoc": "^0.23.7"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.5",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^18.0.3",
-		"eslint": "^8.19.0",
+		"@types/node": "^16.11.45",
+		"eslint": "^8.20.0",
 		"prettier": "^2.7.1",
 		"tsup": "^6.1.3",
 		"typescript": "^4.7.4"
