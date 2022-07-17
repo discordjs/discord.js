@@ -232,8 +232,8 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
     if (response.status === 401) throw new DiscordError(ErrorCodes.TokenInvalid);
     throw response;
   }
-  const { shardCount } = await response.json();
-  return Math.ceil((shardCount * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
+  const { shards } = await response.json();
+  return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
 }
 
 /**
