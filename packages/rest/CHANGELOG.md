@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.6.0...@discordjs/rest@1.0.0) - (2022-07-17)
+
+## Info
+
+- 1.0.0 release bump, no new features.
+
 # [@discordjs/rest@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@0.5.0...@discordjs/rest@0.6.0) - (2022-07-17)
 
 ## Documentation

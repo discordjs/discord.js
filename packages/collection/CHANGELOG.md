@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.8.0...@discordjs/collection@1.0.0) - (2022-07-17)
+
+## Info
+
+- 1.0.0 release bump, no new features.
+
 # [@discordjs/collection@0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.7.0...@discordjs/collection@0.8.0) - (2022-07-17)
 
 ## Bug Fixes

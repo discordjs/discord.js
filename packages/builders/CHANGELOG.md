@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.16.0...@discordjs/builders@1.0.0) - (2022-07-17)
+
+## Info
+
+- 1.0.0 release bump, no new features.
+
 # [@discordjs/builders@0.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.15.0...@discordjs/builders@0.16.0) - (2022-07-17)
 
 ## Bug Fixes
