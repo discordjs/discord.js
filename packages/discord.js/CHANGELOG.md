@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.0.1](https://github.com/discordjs/discord.js/compare/14.0.0...14.0.1) - (2022-07-17)
+
+## Info
+
+- 14.0.1 release bump, no new features.
+
 # [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.0...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
