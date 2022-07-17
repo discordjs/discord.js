@@ -7,11 +7,6 @@ const { ErrorCodes } = require('../errors');
  * Represents an interaction's response
  */
 class InteractionResponse {
-  /**
-   * @param {BaseInteraction} interaction The interaction associated with this response
-   * @param {Snowflake?} id The interaction id associated with the original response
-   * @private
-   */
   constructor(interaction, id) {
     /**
      * The interaction associated with the interaction response
