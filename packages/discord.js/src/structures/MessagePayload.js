@@ -255,8 +255,8 @@ class MessagePayload {
       name = fileLike.name ?? findName(attachment);
     }
 
-    const data = await DataResolver.resolveFile(attachment);
-    return { data, name };
+    const { data, contentType } = await DataResolver.resolveFile(attachment);
+    return { data, name, contentType };
   }
 
   /**
