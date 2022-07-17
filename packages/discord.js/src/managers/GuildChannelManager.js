@@ -396,7 +396,7 @@ class GuildChannelManager extends CachedManager {
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: typeof r.parent !== 'undefined' ? this.channels.resolveId(r.parent) : undefined,
+      parent_id: typeof r.parent !== 'undefined' ? this.resolveId(r.parent) : undefined,
     }));
 
     await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });
