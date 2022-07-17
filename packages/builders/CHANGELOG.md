@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@0.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.15.0...@discordjs/builders@0.16.0) - (2022-07-17)
+
+## Bug Fixes
+
+- Slash command name regex (#8265) ([32f9056](https://github.com/discordjs/discord.js/commit/32f9056b15edede3bab07de96afb4b56d3a9ecca))
+- **TextInputBuilder:** Parse `custom_id`, `label`, and `style` (#8216) ([2d9dfa3](https://github.com/discordjs/discord.js/commit/2d9dfa3c6ea4bb972da2f7e088d148b798c866d9))
+
+## Documentation
+
+- Add codecov coverage badge to readmes (#8226) ([f6db285](https://github.com/discordjs/discord.js/commit/f6db285c073898a749fe4591cbd4463d1896daf5))
+
+## Features
+
+- **builder:** Add max min length in string option (#8214) ([96c8d21](https://github.com/discordjs/discord.js/commit/96c8d21f95eb366c46ae23505ba9054f44821b25))
+- Codecov (#8219) ([f10f4cd](https://github.com/discordjs/discord.js/commit/f10f4cdcd88ca6be7ec735ed3a415ba13da83db0))
+- **docgen:** Update typedoc ([b3346f4](https://github.com/discordjs/discord.js/commit/b3346f4b9b3d4f96443506643d4631dc1c6d7b21))
+- Website (#8043) ([127931d](https://github.com/discordjs/discord.js/commit/127931d1df7a2a5c27923c2f2151dbf3824e50cc))
+- **docgen:** Typescript support ([3279b40](https://github.com/discordjs/discord.js/commit/3279b40912e6aa61507bedb7db15a2b8668de44b))
+- Docgen package (#8029) ([8b979c0](https://github.com/discordjs/discord.js/commit/8b979c0245c42fd824d8e98745ee869f5360fc86))
+
+## Refactor
+
+- **builder:** Remove `unsafe*Builder`s (#8074) ([a4d1862](https://github.com/discordjs/discord.js/commit/a4d18629828234f43f03d1bd4851d4b727c6903b))
+- Remove @sindresorhus/is as it's now esm only (#8133) ([c6f285b](https://github.com/discordjs/discord.js/commit/c6f285b7b089b004776fbeb444fe973a68d158d8))
+- Move all the config files to root (#8033) ([769ea0b](https://github.com/discordjs/discord.js/commit/769ea0bfe78c4f1d413c6b397c604ffe91e39c6a))
+
+## Typings
+
+- Remove expect error (#8242) ([7e6dbaa](https://github.com/discordjs/discord.js/commit/7e6dbaaed900c07d1a04e23bbbf9cd0d1b0501c5))
+- **builder:** Remove casting (#8241) ([8198da5](https://github.com/discordjs/discord.js/commit/8198da5cd0898e06954615a2287853321e7ebbd4))
+
+# [@discordjs/builders@0.15.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.14.0...@discordjs/builders@0.15.0) - (2022-06-06)
+
+## Features
+
+- Allow builders to accept rest params and arrays (#7874) ([ad75be9](https://github.com/discordjs/discord.js/commit/ad75be9a9cf90c8624495df99b75177e6c24022f))
+- Use vitest instead of jest for more speed ([8d8e6c0](https://github.com/discordjs/discord.js/commit/8d8e6c03decd7352a2aa180f6e5bc1a13602539b))
+- Add scripts package for locally used scripts ([f2ae1f9](https://github.com/discordjs/discord.js/commit/f2ae1f9348bfd893332a9060f71a8a5f272a1b8b))
+
 # [@discordjs/builders@0.15.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.14.0...@discordjs/builders@0.15.0) - (2022-06-05)
 
 ## Features
