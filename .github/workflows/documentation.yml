@@ -34,23 +34,14 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
-      - name: Turbo cache
-        id: turbo-cache
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-${{ github.job }}-${{ github.ref_name }}-
-
       - name: Install dependencies
         run: yarn --immutable
 
       - name: Build dependencies
-        run: yarn build --cache-dir=".turbo"
+        run: yarn build
 
       - name: Build docs
-        run: yarn docs --cache-dir=".turbo"
+        run: yarn docs
 
       - name: Upload docgen artifacts
         uses: actions/upload-artifact@v3
@@ -95,20 +86,11 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
-      - name: Turbo cache
-        id: turbo-cache
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-${{ github.job }}-${{ github.ref_name }}-
-
       - name: Install dependencies
         run: yarn --immutable
 
       - name: Build actions
-        run: yarn build --cache-dir=".turbo"
+        run: yarn build
 
       - name: Download docgen artifacts
         uses: actions/download-artifact@v3

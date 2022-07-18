@@ -36,15 +36,6 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
-      - name: Turbo cache
-        id: turbo-cache
-        uses: actions/cache@v3
-        with:
-          path: .turbo
-          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            turbo-${{ github.job }}-${{ github.ref_name }}-
-
       - name: Check previous released version
         id: pre-release
         run: |
@@ -58,7 +49,7 @@ jobs:
 
       - name: Build dependencies
         if: steps.pre-release.outputs.release == 'true'
-        run: yarn build --cache-dir=".turbo"
+        run: yarn build
 
       - name: Deprecate old versions
         if: steps.pre-release.outputs.release == 'true'
