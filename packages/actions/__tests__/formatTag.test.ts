@@ -11,8 +11,8 @@ describe('Format Tag', () => {
 	});
 
 	test('GIVEN tag with no prefix THEN return tag', () => {
-		expect(formatTag('13.5.1')).toEqual({ semver: '13.5.1' });
-		expect(formatTag('13.7.0')).toEqual({ package: undefined, semver: '13.7.0' });
+		expect(formatTag('13.5.1')).toEqual({ package: 'discord.js', semver: '13.5.1' });
+		expect(formatTag('13.7.0')).toEqual({ package: 'discord.js', semver: '13.7.0' });
 	});
 
 	test('GIVEN no or invalid tag THEN return null', () => {
