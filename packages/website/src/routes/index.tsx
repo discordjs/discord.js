@@ -28,7 +28,7 @@ export default function IndexRoute() {
 					</div>
 				</div>
 			</div>
-			<div className="flex justify-center w-full max-w-full box-border px-10">
+			<div className="flex justify-center w-full max-w-full box-border px-10 bg-white dark:bg-dark">
 				<div className="flex flex-row grow max-w-[1100px] mt-10 pb-10 space-x-20">
 					<div className="flex flex-col">
 						<h1 className="font-bold text-6xl max-w-[500px] text-blurple mb-2">{text.heroTitle}</h1>
