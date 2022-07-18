@@ -8,9 +8,7 @@ export default defineConfig({
 		},
 	},
 	presets: [
-		presetUno({
-			dark: 'media',
-		}),
+		presetUno({ dark: 'class' }),
 		presetWebFonts({
 			provider: 'google',
 			fonts: {

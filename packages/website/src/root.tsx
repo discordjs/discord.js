@@ -24,6 +24,17 @@ export default function App() {
 				<Links />
 			</head>
 			<body>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `(() => {
+							const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+							const persistedColorPreference = localStorage.getItem('theme') || 'auto';
+							if (persistedColorPreference === 'dark' || (prefersDarkMode && persistedColorPreference !== 'light')) {
+								document.documentElement.classList.toggle('dark', true);
+							}
+						})();`,
+					}}
+				/>
 				<Outlet />
 				<ScrollRestoration />
 				<Scripts />
