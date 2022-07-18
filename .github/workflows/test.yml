@@ -18,6 +18,9 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
+      - name: Build dependencies
+        run: yarn build
+
       - name: ESLint
         run: yarn lint
 
@@ -27,6 +30,3 @@ jobs:
       - name: Upload Coverage
         uses: ./packages/actions/src/uploadCoverage
         if: github.repository_owner == 'discordjs'
-
-      - name: Build
-        run: yarn build

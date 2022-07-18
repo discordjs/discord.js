@@ -36,29 +36,7 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
-      - name: Check previous released version
-        id: pre-release
-        run: |
-          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json)\..*-$(git rev-parse --short HEAD)") ]]; \
-          then echo '::set-output name=release::false'; \
-          else echo '::set-output name=release::true'; fi
-
-      - name: Install dependencies
-        if: steps.pre-release.outputs.release == 'true'
-        run: yarn --immutable
-
-      - name: Build dependencies
-        if: steps.pre-release.outputs.release == 'true'
-        run: yarn build
-
-      - name: Deprecate old versions
-        if: steps.pre-release.outputs.release == 'true'
-        run: npm deprecate ${{ matrix.package }}@"~$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json)" "no longer supported" || true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-
       - name: Publish
-        if: steps.pre-release.outputs.release == 'true'
         run: |
           yarn workspace ${{ matrix.package }} release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
           yarn workspace ${{ matrix.package }} npm publish --tag dev || true

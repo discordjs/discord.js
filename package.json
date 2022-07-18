@@ -4,13 +4,13 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "yarn workspaces foreach --topological run build",
-		"test": "yarn workspaces foreach --topological run test",
-		"lint": "yarn workspaces foreach --topological run lint",
-		"format": "yarn workspaces foreach --topological run format",
+		"build": "yarn workspaces foreach --parallel --topological run build",
+		"test": "yarn workspaces foreach --parallel --topological run test",
+		"lint": "yarn workspaces foreach --parallel --topological run lint",
+		"format": "yarn workspaces foreach --parallel --topological run format",
 		"fmt": "yarn format",
 		"postinstall": "is-ci || husky install",
-		"docs": "yarn workspaces foreach --topological run docs",
+		"docs": "yarn workspaces foreach --parallel --topological run docs",
 		"update": "yarn upgrade-interactive"
 	},
 	"contributors": [
