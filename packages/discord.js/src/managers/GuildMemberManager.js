@@ -76,18 +76,18 @@ class GuildMemberManager extends CachedManager {
    * @typedef {Object} AddGuildMemberOptions
    * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
    * bot's application
-   * @property {string} [nick] The nickname to give to the member (requires {@link PermissionFlagBits.ManageNicknames})
+   * @property {string} [nick] The nickname to give to the member (requires {@link PermissionFlagsBits.ManageNicknames})
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
-   * (requires {@link PermissionFlagBits.ManageRoles})
-   * @property {boolean} [mute] Whether the member should be muted (requires {@link PermissionFlagBits.MuteMembers})
+   * (requires {@link PermissionFlagsBits.ManageRoles})
+   * @property {boolean} [mute] Whether the member should be muted (requires {@link PermissionFlagsBits.MuteMembers})
    * @property {boolean} [deaf] Whether the member should be deafened
-   * (requires {@link PermissionFlagBits.DeafenMembers})
+   * (requires {@link PermissionFlagsBits.DeafenMembers})
    * @property {boolean} [force] Whether to skip the cache check and call the API directly
    * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
    */
 
   /**
-   * Adds a user to the guild using OAuth2. Requires the {@link PermissionFlagBits.CreateInstantInvite} permission.
+   * Adds a user to the guild using OAuth2. Requires the {@link PermissionFlagsBits.CreateInstantInvite} permission.
    * @param {UserResolvable} user The user to add to the guild
    * @param {AddGuildMemberOptions} options Options for adding the user to the guild
    * @returns {Promise<GuildMember|null>}

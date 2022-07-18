@@ -179,7 +179,7 @@ class ThreadManager extends CachedManager {
    * @typedef {Object} FetchArchivedThreadOptions
    * @property {string} [type='public'] The type of threads to fetch, either `public` or `private`
    * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when type is `private`.
-   * Requires {@link PermissionFlagBits.ManageThreads} if true
+   * Requires {@link PermissionFlagsBits.ManageThreads} if true
    * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were created before this Date
    * or Snowflake. <warn>Must be a {@link ThreadChannelResolvable} when type is `private` and fetchAll is `false`</warn>
    * @property {number} [limit] Maximum number of threads to return
@@ -193,7 +193,7 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * Obtains a set of archived threads from Discord, requires {@link PermissionFlagBits.ReadMessageHistory}
+   * Obtains a set of archived threads from Discord, requires {@link PermissionFlagsBits.ReadMessageHistory}
    * in the parent channel.
    * @param {FetchArchivedThreadOptions} [options] The options to fetch archived threads
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
@@ -232,7 +232,7 @@ class ThreadManager extends CachedManager {
   }
 
   /**
-   * Obtains the accessible active threads from Discord, requires {@link PermissionFlagBits.ReadMessageHistory}
+   * Obtains the accessible active threads from Discord, requires {@link PermissionFlagsBits.ReadMessageHistory}
    * in the parent channel.
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
    * @returns {Promise<FetchedThreads>}
