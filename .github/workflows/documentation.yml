@@ -1,0 +1,108 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - 'v13'
+      - '!docs'
+    tags:
+      - '**'
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'The branch, tag or SHA to checkout'
+        required: true
+jobs:
+  build:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    outputs:
+      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ steps.env.outputs.SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref || '' }}
+
+      - name: Install node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build dependencies
+        run: npm run build
+
+      - name: Build docs
+        run: npm run docs
+
+      - name: Upload docgen artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: docgen
+          path: docs/docs.json
+
+      - name: Set outputs for upload job
+        id: env
+        run: |
+          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
+          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
+          echo "::set-output name=SHA::${GITHUB_SHA}"
+
+  upload:
+    name: Upload Documentation
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
+      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
+      SHA: ${{ needs.build.outputs.SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build actions
+        run: npm run build
+
+      - name: Download docgen artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: docgen
+          path: docs
+
+      - name: Checkout docs repository
+        uses: actions/checkout@v3
+        with:
+          repository: 'discordjs/docs'
+          token: ${{ secrets.DJS_DOCS }}
+          path: 'out'
+
+      - name: Move docs to correct directory
+        run: |
+          mkdir -p out/discord.js
+          mv docs/docs/docs.json out/discord.js/${BRANCH_NAME}.json
+
+      - name: Commit and push
+        run: |
+          cd out
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git push
