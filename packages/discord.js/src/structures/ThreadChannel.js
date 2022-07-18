@@ -75,7 +75,8 @@ class ThreadChannel extends BaseChannel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
-       * Whether members without `MANAGE_THREADS` can invite other members without `MANAGE_THREADS`
+       * Whether members without {@link PermissionFlagBits.ManageThreads} can invite other members without
+       * {@link PermissionFlagBits.ManageThreads}
        * <info>Always `null` in public threads</info>
        * @type {?boolean}
        */
@@ -361,8 +362,8 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether members without the `MANAGE_THREADS` permission can invite other members without the
-   * `MANAGE_THREADS` permission to this thread.
+   * Sets whether members without the {@link PermissionFlagBits.ManageThreads} permission can invite other members
+   * without the {@link PermissionFlagBits.ManageThreads} permission to this thread.
    * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
@@ -375,8 +376,8 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether the thread can be **unarchived** by anyone with `SEND_MESSAGES` permission.
-   * When a thread is locked only members with `MANAGE_THREADS` can unarchive it.
+   * Sets whether the thread can be **unarchived** by anyone with {@link PermissionFlagBits.SendMessages} permission.
+   * When a thread is locked only members with {@link PermissionFlagBits.ManageThreads} can unarchive it.
    * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}

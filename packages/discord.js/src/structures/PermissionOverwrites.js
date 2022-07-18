@@ -65,7 +65,7 @@ class PermissionOverwrites extends Base {
    * @example
    * // Update permission overwrites
    * permissionOverwrites.edit({
-   *   SEND_MESSAGES: false
+   *   SendMessages: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
