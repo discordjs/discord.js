@@ -90,7 +90,7 @@ jobs:
       - name: Move docs to correct directory
         run: |
           mkdir -p out/discord.js
-          mv docs/docs/docs.json out/discord.js/${BRANCH_NAME}.json
+          mv docs/docs.json out/discord.js/${BRANCH_NAME}.json
 
       - name: Commit and push
         run: |
