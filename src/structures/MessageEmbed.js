@@ -315,7 +315,7 @@ class MessageEmbed {
    * @param {string} value The value of this field
    * @param {boolean} [inline=false] If this field will be displayed inline
    * @returns {MessageEmbed}
-   * @deprecated This method is a wrapper for {@link MessageEmbed#addFields}, use that instead.
+   * @deprecated This method is a wrapper for {@link MessageEmbed.addFields}, use that instead.
    */
   addField(name, value, inline) {
     if (!deprecationEmittedForAddField) {
