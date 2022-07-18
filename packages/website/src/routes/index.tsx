@@ -16,7 +16,7 @@ function Button({ title }: ButtonProps) {
 
 export default function IndexRoute() {
 	return (
-		<main className="w-full max-w-full max-h-full h-full flex-col">
+		<main className="w-full max-w-full max-h-full h-full flex-col bg-white dark:bg-dark overflow-y-auto">
 			<div className="flex h-[65px] sticky top-0 border-b border-slate-300 justify-center px-10 bg-white dark:bg-dark">
 				<div className="flex align-center items-center w-full max-w-[1100px] justify-between">
 					<div className="h-[50px] w-[50px] rounded-lg overflow-hidden">
@@ -28,17 +28,17 @@ export default function IndexRoute() {
 					</div>
 				</div>
 			</div>
-			<div className="flex justify-center w-full max-w-full box-border px-10 bg-white dark:bg-dark">
-				<div className="flex flex-row grow max-w-[1100px] mt-10 pb-10 space-x-20">
-					<div className="flex flex-col">
-						<h1 className="font-bold text-6xl max-w-[500px] text-blurple mb-2">{text.heroTitle}</h1>
-						<p className="max-w-[500px] text-xl text-slate-500">{text.heroDescription}</p>
+			<div className="xl:flex xl:justify-center w-full max-w-full box-border px-10">
+				<div className="flex flex-col xl:flex-row grow max-w-[1100px] mt-10 pb-10 space-y-10 xl:space-x-20 place-items-center">
+					<div className="flex flex-col max-w-[800px] lt-xl:items-center">
+						<h1 className="font-bold text-6xl text-blurple mb-2">{text.heroTitle}</h1>
+						<p className="text-xl text-dark-100 dark:text-gray-400">{text.heroDescription}</p>
 						<div className="flex flew-row space-x-4">
 							<Button title="Read the guide" />
 							<Button title="Check out the docs" />
 						</div>
 					</div>
-					<div className="flex grow h-full align-center items-center">
+					<div className="sm:flex sm:grow sm:shrink h-full sm:align-center xl:items-center hidden">
 						<img src={codeSample} className="max-w-[600px] rounded-xl shadow-md overflow-hidden" />
 					</div>
 				</div>
