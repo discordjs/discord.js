@@ -1,13 +1,14 @@
 {
 	"name": "@discordjs/scripts",
-	"version": "0.1.0-dev",
+	"version": "0.1.0",
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix"
+		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
+		"fmt": "yarn format"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",

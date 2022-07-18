@@ -1,11 +1,12 @@
 {
 	"name": "@discordjs/docgen",
-	"version": "0.12.0-dev",
+	"version": "0.12.0",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
 		"build": "tsup",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
+		"fmt": "yarn format",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
 		"release": "cliff-jumper"
@@ -49,11 +50,11 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "^1.0.0",
+		"@discordjs/collection": "workspace:^",
 		"commander": "^9.4.0",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.7"
+		"typedoc": "^0.23.8"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.5",

@@ -1,12 +1,13 @@
 {
 	"name": "@discordjs/collection",
-	"version": "1.1.0-dev",
+	"version": "1.0.0",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"fmt": "yarn format",
 		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'",
@@ -50,7 +51,6 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",
-		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.5",
 		"@microsoft/api-extractor": "^7.28.4",
 		"@types/node": "^16.11.45",

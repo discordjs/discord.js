@@ -1,12 +1,13 @@
 {
 	"name": "@discordjs/voice",
-	"version": "0.12.0-dev",
+	"version": "0.12.0",
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
 		"test": "jest --coverage",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"fmt": "yarn format",
 		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
@@ -58,8 +59,8 @@
 		"ws": "^8.8.1"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.18.6",
-		"@babel/preset-env": "^7.18.6",
+		"@babel/core": "^7.18.9",
+		"@babel/preset-env": "^7.18.9",
 		"@babel/preset-typescript": "^7.18.6",
 		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
