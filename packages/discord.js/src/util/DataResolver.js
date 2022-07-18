@@ -66,7 +66,7 @@ class DataResolver extends null {
       return image;
     }
     const file = await this.resolveFile(image);
-    return this.resolveBase64(file);
+    return this.resolveBase64(file.data);
   }
 
   /**
