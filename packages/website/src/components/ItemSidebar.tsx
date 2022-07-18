@@ -27,7 +27,7 @@ export function ItemSidebar({ packageName, data }: ItemListProps) {
 					<FiMenu size={32} />
 				</button>
 			</div>
-			<div className="hidden lg:block overflow-y-scroll overflow-x-clip p-7">
+			<div className="hidden lg:block lg:min-h-screen overflow-y-scroll overflow-x-clip p-7">
 				{data.members.map((member, i) => (
 					<div key={i} className="mb-1">
 						<a

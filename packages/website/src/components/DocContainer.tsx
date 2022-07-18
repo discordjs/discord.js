@@ -21,7 +21,7 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 	return (
 		<>
 			<div className="bg-white border-b-solid border-gray border-width-0.5 sticky top-0 px-10 py-2">
-				<h2 className="font-mono break-all m-0">
+				<h2 className="flex items-center font-mono break-all m-0">
 					{generateIcon(kind, 'mr-2')}
 					{name}
 				</h2>
