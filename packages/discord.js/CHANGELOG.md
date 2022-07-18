@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.0.2](https://github.com/discordjs/discord.js/compare/14.0.1...14.0.2) - (2022-07-18)
+
+## Bug Fixes
+
+- **DataResolver#resolveImage:** Adjust to updated resolveFile (#8308) ([3a7e93d](https://github.com/discordjs/discord.js/commit/3a7e93df576172c797f1d8bd6483234bb6af2d00))
+
 # [14.0.1](https://github.com/discordjs/discord.js/compare/14.0.0...14.0.1) - (2022-07-17)
 
 ## Info
