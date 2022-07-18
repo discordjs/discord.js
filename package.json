@@ -41,6 +41,8 @@
 		"@commitlint/config-angular": "^17.0.3",
 		"@favware/cliff-jumper": "^1.8.5",
 		"@favware/npm-deprecate": "^1.0.4",
+		"@types/webidl-conversions": "^6.1.1",
+		"@types/whatwg-url": "^8.2.2",
 		"@typescript-eslint/eslint-plugin": "^5.30.6",
 		"@typescript-eslint/parser": "^5.30.6",
 		"conventional-changelog-cli": "^2.2.2",

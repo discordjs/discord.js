@@ -1736,7 +1736,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
 }
 
 export class AttachmentBuilder {
-  public constructor(attachment: BufferResolvable | Stream, data?: AttachmentData);
+  public constructor(data: AttachmentData);
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
@@ -3703,6 +3703,7 @@ export interface BaseApplicationCommandData {
 }
 
 export interface AttachmentData {
+  attachment: BufferResolvable | Stream;
   name?: string;
   description?: string;
 }

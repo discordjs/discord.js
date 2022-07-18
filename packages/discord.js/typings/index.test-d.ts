@@ -719,7 +719,7 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
-  const attachment = new AttachmentBuilder('file.png');
+  const attachment = new AttachmentBuilder({ attachment: 'file.png' });
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));

@@ -7,15 +7,14 @@ const { basename, flatten } = require('../util/Util');
  */
 class AttachmentBuilder {
   /**
-   * @param {BufferResolvable|Stream} attachment The file
    * @param {APIAttachment} [data] Extra data
    */
-  constructor(attachment, data = {}) {
+  constructor(data = {}) {
     /**
      * The file associated with this attachment.
      * @type {BufferResolvable|Stream}
      */
-    this.attachment = attachment;
+    this.attachment = data.attachment;
     /**
      * The name of this attachment
      * @type {?string}

@@ -2717,6 +2717,8 @@ __metadata:
     "@commitlint/config-angular": ^17.0.3
     "@favware/cliff-jumper": ^1.8.5
     "@favware/npm-deprecate": ^1.0.4
+    "@types/webidl-conversions": ^6.1.1
+    "@types/whatwg-url": ^8.2.2
     "@typescript-eslint/eslint-plugin": ^5.30.6
     "@typescript-eslint/parser": ^5.30.6
     conventional-changelog-cli: ^2.2.2
@@ -4620,6 +4622,23 @@ __metadata:
   version: 2.0.6
   resolution: "@types/unist@npm:2.0.6"
   checksum: 25cb860ff10dde48b54622d58b23e66214211a61c84c0f15f88d38b61aa1b53d4d46e42b557924a93178c501c166aa37e28d7f6d994aba13d24685326272d5db
+  languageName: node
+  linkType: hard
+
+"@types/webidl-conversions@npm:*, @types/webidl-conversions@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@types/webidl-conversions@npm:6.1.1"
+  checksum: bd0faad4dfec232010d96a42fbd7b5ac4df557899050a6676a75d30ced8553f19e5a3c747fd2b4317f2810d4cf5d2d6dd47ad22ecfb9e6b21119aba678b8897f
+  languageName: node
+  linkType: hard
+
+"@types/whatwg-url@npm:^8.2.2":
+  version: 8.2.2
+  resolution: "@types/whatwg-url@npm:8.2.2"
+  dependencies:
+    "@types/node": "*"
+    "@types/webidl-conversions": "*"
+  checksum: 5dc5afe078dfa1a8a266745586fa3db9baa8ce7cc904789211d1dca1d34d7f3dd17d0b7423c36bc9beab9d98aa99338f1fc60798c0af6cbb8356f20e20d9f243
   languageName: node
   linkType: hard
 
