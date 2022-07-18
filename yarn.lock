@@ -2460,6 +2460,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.30.6
     "@typescript-eslint/parser": ^5.30.6
     "@unocss/cli": ^0.44.3
+    "@unocss/preset-web-fonts": ^0.44.3
     "@unocss/reset": ^0.44.3
     "@vitejs/plugin-react": ^2.0.0
     "@vscode/codicons": ^0.0.31
@@ -4472,7 +4473,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unocss/preset-web-fonts@npm:0.44.3":
+"@unocss/preset-web-fonts@npm:0.44.3, @unocss/preset-web-fonts@npm:^0.44.3":
   version: 0.44.3
   resolution: "@unocss/preset-web-fonts@npm:0.44.3"
   dependencies:

@@ -11,7 +11,7 @@ export interface PropertiesSectionProps {
 
 export function PropertiesSection({ data }: PropertiesSectionProps) {
 	return data.length ? (
-		<Section title="Properties">
+		<Section title="Properties" className="dark:text-white">
 			<PropertyList data={data} />
 		</Section>
 	) : null;
@@ -35,7 +35,7 @@ export interface ParametersSectionProps {
 
 export function ParametersSection({ data }: ParametersSectionProps) {
 	return data.length ? (
-		<Section title="Parameters">
+		<Section title="Parameters" className="dark:text-white">
 			<ParameterTable data={data} />
 		</Section>
 	) : null;

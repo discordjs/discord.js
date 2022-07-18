@@ -74,6 +74,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.30.6",
 		"@typescript-eslint/parser": "^5.30.6",
 		"@unocss/cli": "^0.44.3",
+		"@unocss/preset-web-fonts": "^0.44.3",
 		"@unocss/reset": "^0.44.3",
 		"@vitejs/plugin-react": "^2.0.0",
 		"c8": "^7.11.3",
