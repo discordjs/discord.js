@@ -23,7 +23,7 @@ export interface MethodsSectionProps {
 
 export function MethodsSection({ data }: MethodsSectionProps) {
 	return data.length ? (
-		<Section title="Methods">
+		<Section title="Methods" className="dark:text-white">
 			<MethodList data={data} />
 		</Section>
 	) : null;
