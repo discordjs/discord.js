@@ -36,9 +36,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build dependencies
-        run: npm run build
-
       - name: Build docs
         run: npm run docs
 
@@ -76,9 +73,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Build actions
-        run: npm run build
 
       - name: Download docgen artifacts
         uses: actions/download-artifact@v3
