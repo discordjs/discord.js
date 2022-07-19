@@ -1,19 +1,19 @@
 export {
 	AudioPlayer,
 	AudioPlayerStatus,
-	AudioPlayerState,
+	type AudioPlayerState,
 	NoSubscriberBehavior,
 	createAudioPlayer,
-	AudioPlayerBufferingState,
-	AudioPlayerIdleState,
-	AudioPlayerPausedState,
-	AudioPlayerPlayingState,
-	CreateAudioPlayerOptions,
+	type AudioPlayerBufferingState,
+	type AudioPlayerIdleState,
+	type AudioPlayerPausedState,
+	type AudioPlayerPlayingState,
+	type CreateAudioPlayerOptions,
 } from './AudioPlayer';
 
 export { AudioPlayerError } from './AudioPlayerError';
 
-export { AudioResource, CreateAudioResourceOptions, createAudioResource } from './AudioResource';
+export { AudioResource, type CreateAudioResourceOptions, createAudioResource } from './AudioResource';
 
 export { PlayerSubscription } from './PlayerSubscription';
 

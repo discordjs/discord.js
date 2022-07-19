@@ -15,12 +15,13 @@
 		"noUncheckedIndexedAccess": true,
 
 		// Modules
-		"module": "CommonJS",
+		"module": "ESNext",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 
 		// Emit
 		"declaration": true,
+		"declarationMap": true,
 		"importHelpers": true,
 		"importsNotUsedAsValues": "error",
 		"inlineSources": true,
