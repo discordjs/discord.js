@@ -2,7 +2,7 @@
 
 const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
 const { toSnakeCase } = require('../util/Transformers');
-const { parseEmoji } = require('../util/Util');
+const { resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Class used to build select menu components to be sent through the API
@@ -15,7 +15,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
         ...data,
         options: options?.map(({ emoji, ...option }) => ({
           ...option,
-          emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
+          emoji: emoji && typeof emoji === 'string' ? resolvePartialEmoji(emoji) : emoji,
         })),
       }),
     );
@@ -35,7 +35,7 @@ class SelectMenuBuilder extends BuildersSelectMenu {
     const { emoji, ...option } = selectMenuOption;
     return {
       ...option,
-      emoji: typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
+      emoji: typeof emoji === 'string' ? resolvePartialEmoji(emoji) : emoji,
     };
   }
 

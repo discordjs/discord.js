@@ -2,7 +2,7 @@
 
 const { SelectMenuOptionBuilder: BuildersSelectMenuOption, isJSONEncodable } = require('@discordjs/builders');
 const { toSnakeCase } = require('../util/Transformers');
-const { parseEmoji } = require('../util/Util');
+const { resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Represents a select menu option builder.
@@ -13,7 +13,7 @@ class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
     super(
       toSnakeCase({
         ...data,
-        emoji: emoji && typeof emoji === 'string' ? parseEmoji(emoji) : emoji,
+        emoji: emoji && typeof emoji === 'string' ? resolvePartialEmoji(emoji) : emoji,
       }),
     );
   }
@@ -24,7 +24,7 @@ class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
    */
   setEmoji(emoji) {
     if (typeof emoji === 'string') {
-      return super.setEmoji(parseEmoji(emoji));
+      return super.setEmoji(resolvePartialEmoji(emoji));
     }
     return super.setEmoji(emoji);
   }
