@@ -322,8 +322,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				decompressable[l - 2] === 0xff &&
 				decompressable[l - 1] === 0xff;
 
-			const zlib = await getZlibSync();
-			this.inflate.push(Buffer.from(decompressable), flush ? zlib!.Z_SYNC_FLUSH : zlib!.Z_NO_FLUSH);
+			const zlib = (await getZlibSync())!;
+			this.inflate.push(Buffer.from(decompressable), flush ? zlib.Z_SYNC_FLUSH : zlib.Z_NO_FLUSH);
 
 			if (this.inflate.err) {
 				this.emit('error', `${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`);

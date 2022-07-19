@@ -20,7 +20,7 @@ export enum CompressionMethod {
 }
 
 const packageJson = readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8');
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const Package = JSON.parse(packageJson);
 
 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
