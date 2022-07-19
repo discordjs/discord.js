@@ -35,18 +35,18 @@ export const labelValueDescriptionValidator = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
-export const optionValidator = s
-	.union(
-		s.object({
-			label: labelValueDescriptionValidator,
-			value: labelValueDescriptionValidator,
-			description: labelValueDescriptionValidator.optional,
-			emoji: emojiValidator.optional,
-			default: s.boolean.optional,
-		}),
-		s.instance(SelectMenuOptionBuilder),
-	)
+
+export const jsonOptionValidator = s
+	.object({
+		label: labelValueDescriptionValidator,
+		value: labelValueDescriptionValidator,
+		description: labelValueDescriptionValidator.optional,
+		emoji: emojiValidator.optional,
+		default: s.boolean.optional,
+	})
 	.setValidationEnabled(isValidationEnabled);
+
+export const optionValidator = s.instance(SelectMenuOptionBuilder).setValidationEnabled(isValidationEnabled);
 
 export const optionsValidator = optionValidator.array
 	.lengthGreaterThanOrEqual(0)
