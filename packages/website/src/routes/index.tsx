@@ -29,8 +29,8 @@ export default function IndexRoute() {
 					</div>
 				</div>
 			</div>
-			<div className="xl:flex xl:justify-center w-full max-w-full box-border p-10">
-				<div className="flex flex-col xl:flex-row grow max-w-[1100px] pb-10 space-y-10 xl:space-x-20 place-items-center">
+			<div className="xl:flex xl:flex-col xl:justify-center w-full max-w-full box-border p-10">
+				<div className="flex flex-col xl:flex-row grow max-w-[1100px] pb-10 space-y-10 xl:space-x-20 place-items-center place-self-center">
 					<div className="flex flex-col max-w-[800px] lt-xl:items-center">
 						<h1 className="font-bold text-6xl text-blurple my-2">{text.heroTitle}</h1>
 						<p className="text-xl text-dark-100 dark:text-gray-400">{text.heroDescription}</p>
@@ -44,7 +44,7 @@ export default function IndexRoute() {
 					</div>
 				</div>
 				<div className="flex place-content-center">
-					<img src={vercelLogo} alt="Vercel" className="shadow-md" />
+					<img src={vercelLogo} alt="Vercel" className="max-w-[250px] shadow-md overflow-hidden" />
 				</div>
 			</div>
 		</main>
