@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.0.3](https://github.com/discordjs/discord.js/compare/14.0.2...14.0.3) - (2022-07-18)
+
+## Bug Fixes
+
+- **Components:** Support emoji id strings (#8310) ([660e212](https://github.com/discordjs/discord.js/commit/660e212e83df026c684ee2cda7fb4e98870f342e))
+
 # [14.0.2](https://github.com/discordjs/discord.js/compare/14.0.1...14.0.2) - (2022-07-18)
 
 ## Bug Fixes
