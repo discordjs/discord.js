@@ -1,5 +1,6 @@
 import codeSample from '../assets/code-sample.png';
 import logo from '../assets/djs_logo_rainbow_400x400.png';
+import vercelLogo from '../assets/powered-by-vercel.svg';
 import * as text from '../text.json';
 
 interface ButtonProps {
@@ -28,10 +29,10 @@ export default function IndexRoute() {
 					</div>
 				</div>
 			</div>
-			<div className="xl:flex xl:justify-center w-full max-w-full box-border px-10">
-				<div className="flex flex-col xl:flex-row grow max-w-[1100px] mt-10 pb-10 space-y-10 xl:space-x-20 place-items-center">
+			<div className="xl:flex xl:justify-center w-full max-w-full box-border p-10">
+				<div className="flex flex-col xl:flex-row grow max-w-[1100px] pb-10 space-y-10 xl:space-x-20 place-items-center">
 					<div className="flex flex-col max-w-[800px] lt-xl:items-center">
-						<h1 className="font-bold text-6xl text-blurple mb-2">{text.heroTitle}</h1>
+						<h1 className="font-bold text-6xl text-blurple my-2">{text.heroTitle}</h1>
 						<p className="text-xl text-dark-100 dark:text-gray-400">{text.heroDescription}</p>
 						<div className="flex flew-row space-x-4">
 							<Button title="Read the guide" />
@@ -41,6 +42,9 @@ export default function IndexRoute() {
 					<div className="sm:flex sm:grow sm:shrink h-full sm:align-center xl:items-center hidden">
 						<img src={codeSample} className="max-w-[600px] rounded-xl shadow-md overflow-hidden" />
 					</div>
+				</div>
+				<div className="flex place-content-center">
+					<img src={vercelLogo} alt="Vercel" className="shadow-md" />
 				</div>
 			</div>
 		</main>
