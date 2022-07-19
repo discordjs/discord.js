@@ -44,7 +44,9 @@ export default function IndexRoute() {
 					</div>
 				</div>
 				<div className="flex place-content-center">
-					<img src={vercelLogo} alt="Vercel" className="max-w-[250px] shadow-md overflow-hidden" />
+					<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
+						<img src={vercelLogo} alt="Vercel" className="max-w-[250px] shadow-md overflow-hidden" />
+					</a>
 				</div>
 			</div>
 		</main>
