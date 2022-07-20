@@ -365,9 +365,10 @@ class ApplicationCommand extends Base {
     }
 
     if ('defaultMemberPermissions' in command) {
-      defaultMemberPermissions = command.defaultMemberPermissions
-        ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
-        : null;
+      defaultMemberPermissions =
+        command.defaultMemberPermissions !== null
+          ? new PermissionsBitField(command.defaultMemberPermissions).bitfield
+          : null;
     }
 
     // Check top level parameters
