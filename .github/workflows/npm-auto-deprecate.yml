@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 1 * * *'
 jobs:
-  auto-deprecate:
+  npm-auto-deprecate:
     name: npm auto deprecate
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
