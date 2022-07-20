@@ -3,7 +3,7 @@
 	"version": "0.12.0",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
-		"build": "tsup",
+		"build": "unbuild",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
@@ -11,15 +11,7 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/index.js",
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
-	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
-	},
+	"bin": "./dist/index.cjs",
 	"directories": {
 		"lib": "src"
 	},
@@ -62,8 +54,10 @@
 		"@types/node": "^16.11.45",
 		"eslint": "^8.20.0",
 		"prettier": "^2.7.1",
+		"rollup-plugin-typescript2": "0.32.1",
 		"tsup": "^6.1.3",
-		"typescript": "^4.7.4"
+		"typescript": "^4.7.4",
+		"unbuild": "^0.7.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -3,7 +3,7 @@
 	"version": "0.12.0",
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
-		"build": "tsup && node scripts/postbuild.mjs",
+		"build": "unbuild",
 		"test": "jest --coverage",
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
@@ -13,12 +13,12 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
+	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
+		"require": "./dist/index.cjs",
 		"types": "./dist/index.d.ts"
 	},
 	"directories": {
@@ -73,9 +73,11 @@
 		"jest-websocket-mock": "^2.3.0",
 		"mock-socket": "^9.1.5",
 		"prettier": "^2.7.1",
+		"rollup-plugin-typescript2": "0.32.1",
 		"tsup": "^6.1.3",
 		"tweetnacl": "^1.0.3",
-		"typescript": "^4.7.4"
+		"typescript": "^4.7.4",
+		"unbuild": "^0.7.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"
