@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [[ "$VERCEL_GIT_COMMIT_REF" == "main" ]]; then
+git diff HEAD^ HEAD --quiet .
+
+if [[ "$VERCEL_GIT_COMMIT_REF" == "main" && $? -eq 1 ]]; then
 	# Proceed with the build
 	echo "✅ - Proceed"
 	exit 1;
