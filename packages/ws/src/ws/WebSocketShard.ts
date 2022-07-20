@@ -9,6 +9,7 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayCloseCodes,
 	GatewayDispatchEvents,
+	GatewayDispatchPayload,
 	GatewayIdentifyData,
 	GatewayOpcodes,
 	GatewayReceivePayload,
@@ -28,6 +29,7 @@ export enum WebSocketShardEvents {
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
+	Dispatch = 'dispatch',
 }
 
 export enum WebSocketShardStatus {
@@ -48,6 +50,7 @@ export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [];
 	[WebSocketShardEvents.Resumed]: [];
+	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
 };
 
 export interface WebSocketShardDestroyOptions {
@@ -359,6 +362,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
+				if (this.status === WebSocketShardStatus.Ready || this.status === WebSocketShardStatus.Resuming) {
+					this.emit(WebSocketShardEvents.Dispatch, { data: payload });
+				}
+
 				if (this.status === WebSocketShardStatus.Resuming) {
 					this.replayedEvents++;
 				}
