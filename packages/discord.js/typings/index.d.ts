@@ -4442,6 +4442,7 @@ export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
   presets: number[];
   allowList: string[];
+  mentionTotalLimit: number | null;
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;

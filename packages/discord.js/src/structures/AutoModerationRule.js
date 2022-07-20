@@ -71,6 +71,7 @@ class AutoModerationRule extends Base {
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
        * @property {number[]} presets The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering trigger type 4
+       * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
        */
 
       /**
@@ -81,6 +82,7 @@ class AutoModerationRule extends Base {
         keywordFilter: data.trigger_metadata.keyword_filter ?? [],
         presets: data.trigger_metadata.presets ?? [],
         allowList: data.trigger_metadata.allow_list ?? [],
+        mentionTotalLimit: data.trigger_metadata.mention_total_limit ?? null,
       };
     }
 

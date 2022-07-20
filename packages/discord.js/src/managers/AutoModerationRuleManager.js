@@ -30,6 +30,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
    * @property {number[]} [presets] The internally pre-defined wordsets which will be searched for in the content
    * @property {string[]} [allowList] The substrings that will be exempt from triggering trigger type 4
+   * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
    */
 
   // TODO: discord-api-types enum
@@ -98,6 +99,7 @@ class AutoModerationRuleManager extends CachedManager {
                 keyword_filter: triggerMetadata.keywordFilter,
                 presets: triggerMetadata.presets,
                 allow_list: triggerMetadata.allowList,
+                mention_total_limit: triggerMetadata.mentionTotalLimit,
               },
         actions: actions.map(action => ({
           type: action.type,
@@ -162,6 +164,7 @@ class AutoModerationRuleManager extends CachedManager {
                   keyword_filter: triggerMetadata.keywordFilter,
                   presets: triggerMetadata.presets,
                   allow_list: triggerMetadata.allowList,
+                  mention_total_limit: triggerMetadata.mentionTotalLimit,
                 },
           actions: actions?.map(action => ({
             type: action.type,
