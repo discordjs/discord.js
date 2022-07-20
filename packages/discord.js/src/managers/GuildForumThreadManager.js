@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
-const { TypeError } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
@@ -47,7 +47,7 @@ class GuildForumThreadManager extends ThreadManager {
     rateLimitPerUser,
   } = {}) {
     if (!message) {
-      throw new TypeError('GUILD_FORUM_MESSAGE_REQUIRED');
+      throw new TypeError(ErrorCodes.GuildForumMessageRequired);
     }
 
     const messagePayload =

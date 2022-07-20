@@ -180,6 +180,17 @@ class ThreadChannel extends BaseChannel {
       this.memberCount ??= null;
     }
 
+    if ('total_message_sent' in data) {
+      /**
+       * The number of messages ever sent in a thread, similar to `ThreadChannel#messageCount` except it
+       * will not decrement whenever a message is deleted
+       * @type {?number}
+       */
+      this.totalMessageSent = data.total_message_sent;
+    } else {
+      this.totalMessageSent ??= null;
+    }
+
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
     if (data.messages) for (const message of data.messages) this.messages._add(message);
   }

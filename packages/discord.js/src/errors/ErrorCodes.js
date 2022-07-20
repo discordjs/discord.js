@@ -288,6 +288,8 @@ const keys = [
   'NotImplemented',
 
   'SweepFilterReturn',
+
+  'GuildForumMessageRequired',
 ];
 
 // JSDoc for IntelliSense purposes
