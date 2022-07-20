@@ -59,7 +59,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {number} eventType The event type of the auto moderation rule
    * @property {number} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
-   * <info>This property is required if using a `triggerType` of 1 or 4.</info>
+   * <info>This property is required if using a `triggerType` of 1, 4, or 5.</info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
