@@ -1,8 +1,8 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  lint:
-    name: Lint
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

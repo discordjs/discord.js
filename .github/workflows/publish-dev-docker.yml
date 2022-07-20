@@ -1,14 +1,13 @@
-name: Publish dev Docker Images
+name: Publish dev docker images
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 */12 * * *'
 jobs:
-  docker:
-    name: Docker
+  docker-publish:
+    name: Docker publish
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3

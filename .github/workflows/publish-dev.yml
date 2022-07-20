@@ -4,8 +4,8 @@ on:
   schedule:
     - cron: '0 */12 * * *'
 jobs:
-  npm:
-    name: npm
+  npm-publish:
+    name: npm publish
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +42,7 @@ jobs:
       - name: Build dependencies
         run: yarn build
 
-      - name: Publish
+      - name: Publish package
         run: |
           yarn workspace ${{ matrix.package }} release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
           yarn workspace ${{ matrix.package }} npm publish --tag dev || true

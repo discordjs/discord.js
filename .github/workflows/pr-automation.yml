@@ -1,8 +1,9 @@
-name: 'PR Automation'
+name: 'PR Triage'
 on:
   pull_request_target:
 jobs:
-  triage:
+  pr-triage:
+    name: PR Triage
     runs-on: ubuntu-latest
     steps:
       - name: Automatically label PR
