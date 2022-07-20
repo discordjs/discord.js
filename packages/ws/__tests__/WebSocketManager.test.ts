@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest';
-import type { APIGatewayBotInfo } from 'discord-api-types/v10';
+import { APIGatewayBotInfo, GatewayOpcodes, GatewaySendPayload } from 'discord-api-types/v10';
 import { MockAgent, Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { WebSocketManager } from '../src';
+import { IShardingStrategy, WebSocketManager } from '../src';
 
 vi.useFakeTimers();
 
@@ -166,4 +166,32 @@ test('it handles passing in both shardIds and shardCount', async () => {
 
 	expect(await manager.getShardCount()).toBe(4);
 	expect(await manager.getShardIds()).toStrictEqual([2, 3]);
+});
+
+test('strategies', async () => {
+	class MockStrategy implements IShardingStrategy {
+		public spawn = vi.fn();
+		public connect = vi.fn();
+		public destroy = vi.fn();
+		public send = vi.fn();
+	}
+
+	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
+	const shardIds = [0, 1, 2];
+	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
+
+	const strategy = new MockStrategy();
+	manager.setStrategy(strategy);
+
+	await manager.connect();
+	expect(strategy.spawn).toHaveBeenCalledWith(shardIds);
+	expect(strategy.connect).toHaveBeenCalled();
+
+	const destroyOptions = { reason: ':3' };
+	await manager.destroy(destroyOptions);
+	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
+
+	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
+	await manager.send(0, send);
+	expect(strategy.send).toHaveBeenCalledWith(0, send);
 });

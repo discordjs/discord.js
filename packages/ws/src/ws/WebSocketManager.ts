@@ -7,6 +7,7 @@ import {
 	RESTGetAPIGatewayBotResult,
 	GatewayIntentBits,
 	Routes,
+	GatewaySendPayload,
 } from 'discord-api-types/v10';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
@@ -265,5 +266,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
 		return this.strategy.destroy(options);
+	}
+
+	public send(shardId: number, payload: GatewaySendPayload) {
+		return this.strategy.send(shardId, payload);
 	}
 }
