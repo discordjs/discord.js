@@ -231,9 +231,10 @@ class ApplicationCommandManager extends CachedManager {
     }
 
     if ('defaultMemberPermissions' in command) {
-      default_member_permissions = command.defaultMemberPermissions
-        ? new Permissions(command.defaultMemberPermissions).bitfield.toString()
-        : command.defaultMemberPermissions;
+      default_member_permissions =
+        command.defaultMemberPermissions !== null
+          ? new Permissions(command.defaultMemberPermissions).bitfield.toString()
+          : command.defaultMemberPermissions;
     }
 
     return {
