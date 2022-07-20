@@ -8,7 +8,7 @@
 		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
-		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "downlevel-dts . docs --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint && yarn test",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
 		"release": "cliff-jumper"
@@ -68,6 +68,7 @@
 		"@microsoft/api-extractor": "^7.28.4",
 		"@types/jest": "^28.1.6",
 		"@types/node": "^16.11.45",
+		"downlevel-dts": "^0.10.0",
 		"eslint": "^8.20.0",
 		"jest": "^28.1.3",
 		"jest-websocket-mock": "^2.3.0",

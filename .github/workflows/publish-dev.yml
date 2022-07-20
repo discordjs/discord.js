@@ -36,6 +36,12 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build dependencies
+        run: yarn build
+
       - name: Publish
         run: |
           yarn workspace ${{ matrix.package }} release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
