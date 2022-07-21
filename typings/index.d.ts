@@ -1765,8 +1765,8 @@ export class MessageEmbed {
   public type: string;
   public url: string | null;
   public readonly video: MessageEmbedVideo | null;
-  public addField(name: string, value: string, inline?: boolean): this;
   /** @deprecated This method is a wrapper for {@link MessageEmbed#addFields}. Use that instead. */
+  public addField(name: string, value: string, inline?: boolean): this;
   public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public setFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
   public setAuthor(options: EmbedAuthorData | null): this;
