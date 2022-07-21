@@ -194,6 +194,14 @@ class BaseInteraction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is an {@link AutocompleteInteraction}
+   * @returns {boolean}
+   */
+  isAutocomplete() {
+    return this.type === InteractionType.ApplicationCommandAutocomplete;
+  }
+
+  /**
    * Indicates whether this interaction is a {@link ChatInputCommandInteraction}.
    * @returns {boolean}
    */
@@ -210,6 +218,14 @@ class BaseInteraction extends Base {
       this.type === InteractionType.ApplicationCommand &&
       [ApplicationCommandType.User, ApplicationCommandType.Message].includes(this.commandType)
     );
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link ModalSubmitInteraction}
+   * @returns {boolean}
+   */
+  isModalSubmit() {
+    return this.type === InteractionType.ModalSubmit;
   }
 
   /**
