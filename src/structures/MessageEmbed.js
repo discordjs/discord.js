@@ -320,7 +320,7 @@ class MessageEmbed {
   addField(name, value, inline) {
     if (!deprecationEmittedForAddField) {
       process.emitWarning(
-        'MessageEmbed#addField is deprecated and removed in the next major. Use MessageEmbed#addFields instead.',
+        'MessageEmbed#addField is deprecated and will be removed in the next major update. Use MessageEmbed#addFields instead.',
         'DeprecationWarning',
       );
 
