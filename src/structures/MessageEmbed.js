@@ -320,6 +320,7 @@ class MessageEmbed {
   addField(name, value, inline) {
     if (!deprecationEmittedForAddField) {
       process.emitWarning(
+        // eslint-disable-next-line max-len
         'MessageEmbed#addField is deprecated and will be removed in the next major update. Use MessageEmbed#addFields instead.',
         'DeprecationWarning',
       );
