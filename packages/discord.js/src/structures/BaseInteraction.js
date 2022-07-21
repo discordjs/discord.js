@@ -202,6 +202,14 @@ class BaseInteraction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link CommandInteraction}
+   * @returns {boolean}
+   */
+  isCommand() {
+    return this.type === InteractionType.ApplicationCommand;
+  }
+
+  /**
    * Indicates whether this interaction is a {@link ChatInputCommandInteraction}.
    * @returns {boolean}
    */
@@ -218,6 +226,14 @@ class BaseInteraction extends Base {
       this.type === InteractionType.ApplicationCommand &&
       [ApplicationCommandType.User, ApplicationCommandType.Message].includes(this.commandType)
     );
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link MessageComponentInteraction}
+   * @returns {boolean}
+   */
+  isMessageComponent() {
+    return this.type === InteractionType.MessageComponent;
   }
 
   /**

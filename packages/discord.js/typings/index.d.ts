@@ -1527,7 +1527,9 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isButton(): this is ButtonInteraction<Cached>;
   public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isChatInputCommand(): this is ChatInputCommandInteraction<Cached>;
+  public isCommand(): this is CommandInteraction<Cached>;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction<Cached>;
+  public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
