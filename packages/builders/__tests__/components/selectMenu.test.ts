@@ -157,7 +157,7 @@ describe('Select Menu Components', () => {
 				}),
 			).not.toThrowError();
 
-			expect(() => selectMenu().addOptions(selectMenuOption().setLabel('test').setValue('test')));
+			expect(() => selectMenu().addOptions(selectMenuOption().setLabel('test').setValue('test'))).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
