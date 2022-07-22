@@ -16,7 +16,7 @@ import {
 	WorkerShardingStrategy,
 	WebSocketShardEvents,
 	SessionInfo,
-} from '../src';
+} from '../../src';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;

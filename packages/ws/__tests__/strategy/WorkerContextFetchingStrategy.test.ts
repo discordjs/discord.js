@@ -9,7 +9,7 @@ import {
 	WebSocketManager,
 	WorkerSendPayloadOp,
 	WorkerRecievePayloadOp,
-} from '../src';
+} from '../../src';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;

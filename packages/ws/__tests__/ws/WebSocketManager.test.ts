@@ -2,7 +2,7 @@ import { REST } from '@discordjs/rest';
 import { APIGatewayBotInfo, GatewayOpcodes, GatewaySendPayload } from 'discord-api-types/v10';
 import { MockAgent, Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { IShardingStrategy, WebSocketManager } from '../src';
+import { IShardingStrategy, WebSocketManager } from '../../src';
 
 vi.useFakeTimers();
 
