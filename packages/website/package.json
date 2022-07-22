@@ -46,7 +46,6 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@microsoft/api-extractor-model": "^7.22.1",
-		"@microsoft/tsdoc": "^0.14.1",
 		"@vscode/codicons": "^0.0.31",
 		"next": "^12.2.3",
 		"react": "^18.2.0",
@@ -89,5 +88,8 @@
 	},
 	"engines": {
 		"node": ">=16.9.0"
+	},
+	"installConfig": {
+		"hoistingLimits": "workspaces"
 	}
 }

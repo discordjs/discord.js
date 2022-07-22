@@ -10,7 +10,6 @@ import {
 	ApiTypeAlias,
 	ApiVariable,
 } from '@microsoft/api-extractor-model';
-import '@microsoft/tsdoc/schemas/tsdoc.schema.json'; // Try to work around vercel issue
 import { DocClass } from './DocModel/DocClass';
 import { DocEnum } from './DocModel/DocEnum';
 import { DocFunction } from './DocModel/DocFunction';
