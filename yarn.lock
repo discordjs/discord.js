@@ -1931,8 +1931,8 @@ __metadata:
   resolution: "@discordjs/website@workspace:packages/website"
   dependencies:
     "@microsoft/api-extractor-model": ^7.22.1
-    "@microsoft/tsdoc": ^0.14.1
-    "@microsoft/tsdoc-config": ^0.16.1
+    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/tsdoc-config": 0.16.1
     "@testing-library/cypress": ^8.0.3
     "@testing-library/dom": ^8.16.0
     "@testing-library/jest-dom": ^5.16.4
@@ -2501,7 +2501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:^0.16.1, @microsoft/tsdoc-config@npm:~0.16.1":
+"@microsoft/tsdoc-config@npm:0.16.1, @microsoft/tsdoc-config@npm:~0.16.1":
   version: 0.16.1
   resolution: "@microsoft/tsdoc-config@npm:0.16.1"
   dependencies:
@@ -2513,7 +2513,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc@npm:0.14.1, @microsoft/tsdoc@npm:^0.14.1":
+"@microsoft/tsdoc-config@patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch::locator=%40discordjs%2Fdiscord.js%40workspace%3A.":
+  version: 0.16.1
+  resolution: "@microsoft/tsdoc-config@patch:@microsoft/tsdoc-config@npm%3A0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch::version=0.16.1&hash=7098b2&locator=%40discordjs%2Fdiscord.js%40workspace%3A."
+  dependencies:
+    "@microsoft/tsdoc": 0.14.1
+    ajv: ~6.12.6
+    jju: ~1.4.0
+    resolve: ~1.19.0
+  checksum: e3fb3753a44da5230ab12a899ae6c961adfe5b41200305a8e3c924a6682b5c089fd12ca79625f631ab8cd3a3bb0e7d0377ccca1de8dea78531755d6928399989
+  languageName: node
+  linkType: hard
+
+"@microsoft/tsdoc@npm:0.14.1":
   version: 0.14.1
   resolution: "@microsoft/tsdoc@npm:0.14.1"
   checksum: e4ad038ccff2cd96e0d53ee42e2136f0f5a925b16cfda14261f1c2eb55ba0088a0e3b08ff819b476ddc69b2242a391925fab7f6ae2afabb19b96f87e19c114fc
