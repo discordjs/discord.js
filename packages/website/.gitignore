@@ -21,6 +21,7 @@ typings/
 build/
 api/
 src/styles/unocss.css
+.next/
 
 # Miscellaneous
 .tmp/
