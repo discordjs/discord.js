@@ -2047,9 +2047,11 @@ __metadata:
     eslint: ^8.19.0
     mock-socket: ^9.1.5
     prettier: ^2.7.1
+    rollup-plugin-typescript2: ^0.32.1
     tslib: ^2.4.0
     tsup: ^6.1.3
     typescript: ^4.7.4
+    unbuild: ^0.7.6
     undici: ^5.8.0
     vitest: ^0.17.0
     ws: ^8.8.0
@@ -14968,7 +14970,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-typescript2@npm:0.32.1":
+"rollup-plugin-typescript2@npm:0.32.1, rollup-plugin-typescript2@npm:^0.32.1":
   version: 0.32.1
   resolution: "rollup-plugin-typescript2@npm:0.32.1"
   dependencies:
