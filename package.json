@@ -58,7 +58,7 @@
 	},
 	"resolutions": {
 		"rollup-plugin-typescript2@0.32.1": "patch:rollup-plugin-typescript2@npm:0.32.1#.yarn/patches/rollup-plugin-typescript2-npm-0.32.1-b5887420f2.patch",
-		"@microsoft/tsdoc-config@0.16.1": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
+		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"

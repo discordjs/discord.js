@@ -2501,7 +2501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc-config@npm:0.16.1, @microsoft/tsdoc-config@npm:~0.16.1":
+"@microsoft/tsdoc-config@npm:0.16.1":
   version: 0.16.1
   resolution: "@microsoft/tsdoc-config@npm:0.16.1"
   dependencies:
