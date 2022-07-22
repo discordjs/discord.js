@@ -24,7 +24,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		await Promise.all(
 			packages.map(async (packageName) => {
 				if (packageName === 'rest') {
-					return { params: { slug: ['main', 'packages', packageName, ''] } };
+					return { params: { slug: ['main', 'packages', packageName] } };
 				}
 
 				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
@@ -34,7 +34,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 				const model = createApiModel(data);
 				const pkg = findPackage(model, packageName);
 
-				return getMembers(pkg!).map((member) => ({ params: { slug: ['main', 'packages', packageName, member.name] } }));
+				return [
+					{ params: { slug: ['main', 'packages', packageName] } },
+					...getMembers(pkg!).map((member) => ({ params: { slug: ['main', 'packages', packageName, member.name] } })),
+				];
 			}),
 		)
 	).flat();
@@ -46,31 +49,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const [branchName, , packageName, memberName] = params!.slug as string[];
+	const [branchName = 'main', , packageName = 'builders', memberName] = params!.slug as string[];
 
-	const UnknownResponse = new Response('Not Found', {
-		status: 404,
-	});
-
-	const res = await fetch(`https://docs.discordjs.dev/docs/${packageName!}/${branchName!}.api.json`);
+	const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const data = await res.json().catch(() => {
-		throw UnknownResponse;
-	});
+	const data = await res.json();
 
 	const model = createApiModel(data);
-	const pkg = findPackage(model, packageName!);
-
-	if (!pkg) {
-		throw UnknownResponse;
-	}
+	const pkg = findPackage(model, packageName);
 
 	return {
 		props: {
 			packageName,
 			data: {
-				members: getMembers(pkg),
-				member: memberName ? findMember(model, packageName!, memberName)!.toJSON() : null,
+				members: pkg ? getMembers(pkg) : [],
+				member: memberName ? findMember(model, packageName, memberName)?.toJSON() ?? null : null,
 			},
 		},
 	};
