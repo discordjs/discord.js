@@ -45,6 +45,12 @@ runs:
         files: ./packages/website/coverage/cobertura-coverage.xml
         flags: website
 
+    - name: Upload WS Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./packages/ws/coverage/cobertura-coverage.xml
+        flags: ws
+
     - name: Upload Utilities Coverage
       uses: codecov/codecov-action@v3
       with:
