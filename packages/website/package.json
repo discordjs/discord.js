@@ -46,6 +46,8 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@microsoft/api-extractor-model": "^7.22.1",
+		"@microsoft/tsdoc": "^0.14.1",
+		"@microsoft/tsdoc-config": "^0.16.1",
 		"@vscode/codicons": "^0.0.31",
 		"next": "^12.2.3",
 		"react": "^18.2.0",
@@ -84,6 +86,7 @@
 		"prettier": "^2.7.1",
 		"typescript": "^4.7.4",
 		"unocss": "^0.44.5",
+		"vercel": "^27.2.0",
 		"vitest": "^0.18.1"
 	},
 	"engines": {

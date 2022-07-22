@@ -7,6 +7,10 @@ const UnoCSS = require('@unocss/webpack').default;
 module.exports = {
 	reactStrictMode: true,
 	swcMinify: true,
+	eslint: {
+		ignoreDuringBuilds: true,
+	},
+	cleanDistDir: true,
 	experimental: {
 		images: {
 			allowFutureImage: true,

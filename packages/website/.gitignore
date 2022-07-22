@@ -26,3 +26,4 @@ src/styles/unocss.css
 # Miscellaneous
 .tmp/
 coverage/
+.vercel
