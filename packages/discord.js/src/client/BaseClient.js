@@ -63,7 +63,7 @@ class BaseClient extends EventEmitter {
   }
 
   toJSON(...props) {
-    return flatten(this, { domain: false }, ...props);
+    return flatten(this, ...props);
   }
 }
 
