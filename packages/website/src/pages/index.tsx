@@ -41,15 +41,14 @@ export default function IndexRoute() {
 						</div>
 					</div>
 					<div className="sm:flex sm:grow sm:shrink h-full sm:align-center xl:items-center hidden">
-						<img src={codeSample} className="max-w-[600px] rounded-xl shadow-md overflow-hidden" />
+						<Image src={codeSample} className="max-w-[600px] h-full rounded-xl shadow-md overflow-hidden" />
 					</div>
 				</div>
 				<div className="flex place-content-center">
 					<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
 						<Image
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 							src={vercelLogo}
-							width={110}
-							height={110}
 							alt="Vercel"
 							className="max-w-[250px] shadow-md overflow-hidden"
 						/>

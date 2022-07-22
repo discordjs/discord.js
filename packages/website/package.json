@@ -5,14 +5,10 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build": "yarn build:css && yarn build:remix",
+		"build": "next build",
 		"build:css": "yarn generate:css",
-		"build:next": "next build",
-		"build:remix": "remix build",
-		"dev": "concurrently 'yarn dev:css' 'yarn dev:remix'",
+		"dev": "next dev",
 		"dev:css": "yarn generate:css --watch",
-		"dev:next": "next dev",
-		"dev:remix": "remix dev",
 		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
 		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
 		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
@@ -51,21 +47,15 @@
 	"dependencies": {
 		"@microsoft/api-extractor-model": "^7.22.1",
 		"@microsoft/tsdoc": "^0.14.1",
-		"@remix-run/node": "^1.6.5",
-		"@remix-run/react": "^1.6.5",
-		"@remix-run/serve": "^1.6.5",
-		"@remix-run/server-runtime": "^1.6.5",
-		"@remix-run/vercel": "^1.6.5",
 		"@vscode/codicons": "^0.0.31",
 		"next": "^12.2.3",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.4.0",
 		"react-syntax-highlighter": "^15.5.0",
-		"remix": "^1.6.5"
+		"sharp": "^0.30.7"
 	},
 	"devDependencies": {
-		"@remix-run/dev": "^1.6.5",
 		"@testing-library/cypress": "^8.0.3",
 		"@testing-library/dom": "^8.16.0",
 		"@testing-library/jest-dom": "^5.16.4",
@@ -82,7 +72,6 @@
 		"@unocss/webpack": "^0.44.5",
 		"@vitejs/plugin-react": "^2.0.0",
 		"c8": "^7.12.0",
-		"concurrently": "^7.3.0",
 		"cypress": "^10.3.1",
 		"eslint": "^8.20.0",
 		"eslint-config-marine": "^9.4.1",
