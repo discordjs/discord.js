@@ -47,7 +47,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@microsoft/api-extractor-model": "^7.22.0",
+		"@microsoft/api-extractor-model": "^7.22.1",
 		"@microsoft/tsdoc": "^0.14.1",
 		"@remix-run/node": "^1.6.5",
 		"@remix-run/react": "^1.6.5",

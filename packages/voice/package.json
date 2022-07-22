@@ -65,7 +65,7 @@
 		"@discordjs/docgen": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.5",
-		"@microsoft/api-extractor": "^7.28.5",
+		"@microsoft/api-extractor": "^7.28.6",
 		"@types/jest": "^28.1.6",
 		"@types/node": "^16.11.45",
 		"downlevel-dts": "^0.10.0",

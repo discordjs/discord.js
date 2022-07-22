@@ -1771,7 +1771,7 @@ __metadata:
   dependencies:
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.5
+    "@microsoft/api-extractor": ^7.28.6
     "@sapphire/shapeshift": ^3.5.1
     "@types/node": ^16.11.45
     c8: ^7.12.0
@@ -1796,7 +1796,7 @@ __metadata:
   dependencies:
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.5
+    "@microsoft/api-extractor": ^7.28.6
     "@types/node": ^16.11.45
     c8: ^7.12.0
     downlevel-dts: ^0.10.0
@@ -1882,7 +1882,7 @@ __metadata:
     "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": ^1.0.0
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.5
+    "@microsoft/api-extractor": ^7.28.6
     "@types/node": ^16.11.45
     "@types/supertest": ^2.0.12
     c8: ^7.12.0
@@ -1907,7 +1907,7 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.5
+    "@microsoft/api-extractor": ^7.28.6
     "@sapphire/async-queue": ^1.3.2
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.45
@@ -1955,7 +1955,7 @@ __metadata:
     "@discordjs/docgen": "workspace:^"
     "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.5
+    "@microsoft/api-extractor": ^7.28.6
     "@types/jest": ^28.1.6
     "@types/node": ^16.11.45
     "@types/ws": ^8.5.3
@@ -1981,7 +1981,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/website@workspace:packages/website"
   dependencies:
-    "@microsoft/api-extractor-model": ^7.22.0
+    "@microsoft/api-extractor-model": ^7.22.1
     "@microsoft/tsdoc": ^0.14.1
     "@remix-run/dev": ^1.6.5
     "@remix-run/node": ^1.6.5
@@ -2035,26 +2035,25 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": "workspace:^"
-    "@discordjs/scripts": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
-    "@microsoft/api-extractor": ^7.28.3
-    "@sapphire/async-queue": ^1.3.1
-    "@types/node": ^18.0.3
+    "@microsoft/api-extractor": ^7.28.6
+    "@sapphire/async-queue": ^1.3.2
+    "@types/node": ^16.11.45
     "@types/ws": ^8.5.3
     "@vladfrangu/async_event_emitter": ^2.0.1
-    c8: ^7.11.3
-    discord-api-types: ^0.36.1
-    eslint: ^8.19.0
+    c8: ^7.12.0
+    discord-api-types: ^0.36.3
+    eslint: ^8.20.0
     mock-socket: ^9.1.5
     prettier: ^2.7.1
-    rollup-plugin-typescript2: ^0.32.1
+    rollup-plugin-typescript2: 0.32.1
     tslib: ^2.4.0
     tsup: ^6.1.3
     typescript: ^4.7.4
     unbuild: ^0.7.6
     undici: ^5.8.0
-    vitest: ^0.17.0
-    ws: ^8.8.0
+    vitest: ^0.18.1
+    ws: ^8.8.1
     zlib-sync: ^0.1.7
   languageName: unknown
   linkType: soft
@@ -2493,7 +2492,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.22.1, @microsoft/api-extractor-model@npm:^7.22.0":
+"@microsoft/api-extractor-model@npm:7.22.1, @microsoft/api-extractor-model@npm:^7.22.1":
   version: 7.22.1
   resolution: "@microsoft/api-extractor-model@npm:7.22.1"
   dependencies:
@@ -2504,7 +2503,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.28.3, @microsoft/api-extractor@npm:^7.28.5":
+"@microsoft/api-extractor@npm:^7.28.6":
   version: 7.28.6
   resolution: "@microsoft/api-extractor@npm:7.28.6"
   dependencies:
@@ -3016,7 +3015,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/async-queue@npm:^1.3.1, @sapphire/async-queue@npm:^1.3.2":
+"@sapphire/async-queue@npm:^1.3.2":
   version: 1.3.2
   resolution: "@sapphire/async-queue@npm:1.3.2"
   checksum: 348f35a278bff68cb6d5e2c2219b03ce66243162522003bb14426e5fdad251300bea8ef3883043eb034c181dddd52296a519e9f377075a5b31074807fe163e76
@@ -3572,7 +3571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=12, @types/node@npm:^18.0.3":
+"@types/node@npm:*, @types/node@npm:>=12":
   version: 18.0.6
   resolution: "@types/node@npm:18.0.6"
   checksum: 780f8885a6b6eb12f4c0246617747fdc37a451931b3c01ce8148d356c0903b705dcb16cc6a914de63d48b0dc1b002c7a3dfae681f580e1761aa551d3cd996813
@@ -5141,7 +5140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"c8@npm:^7.11.3, c8@npm:^7.12.0":
+"c8@npm:^7.12.0":
   version: 7.12.0
   resolution: "c8@npm:7.12.0"
   dependencies:
@@ -6811,7 +6810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.36.1, discord-api-types@npm:^0.36.3":
+"discord-api-types@npm:^0.36.3":
   version: 0.36.3
   resolution: "discord-api-types@npm:0.36.3"
   checksum: 3089c0fb37425dc5df03c76d82988d43fcc272699b06a02fc830d0a3bef550009aaebdf6d646529e8a7ccea76ae3f43b099d736ea5ef37a0be143142ab49871d
@@ -7804,7 +7803,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.19.0, eslint@npm:^8.20.0":
+"eslint@npm:^8.20.0":
   version: 8.20.0
   resolution: "eslint@npm:8.20.0"
   dependencies:
@@ -14970,7 +14969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup-plugin-typescript2@npm:0.32.1, rollup-plugin-typescript2@npm:^0.32.1":
+"rollup-plugin-typescript2@npm:0.32.1":
   version: 0.32.1
   resolution: "rollup-plugin-typescript2@npm:0.32.1"
   dependencies:
@@ -16340,17 +16339,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinypool@npm:^0.2.1, tinypool@npm:^0.2.4":
+"tinypool@npm:^0.2.4":
   version: 0.2.4
   resolution: "tinypool@npm:0.2.4"
   checksum: f050bd36c89529a2a0d3f9c1fdbba3f317114e3ee6eb5d5ba72c51e887d45ef3ef8d8533fb2ca2eba7189d19d2231712b81b3a75e099248532f5563369929c33
-  languageName: node
-  linkType: hard
-
-"tinyspy@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "tinyspy@npm:0.3.3"
-  checksum: 1beb8f04c100d9ac769ff85266594f07d6f08f41cfb95c4bef9da3e59988b42e8d4e66c2ec455d3ecad80027347920e87d7a7098c5a2a28637f9fee25e11a8f1
   languageName: node
   linkType: hard
 
@@ -17490,42 +17482,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^0.17.0":
-  version: 0.17.1
-  resolution: "vitest@npm:0.17.1"
-  dependencies:
-    "@types/chai": ^4.3.1
-    "@types/chai-subset": ^1.3.3
-    "@types/node": "*"
-    chai: ^4.3.6
-    debug: ^4.3.4
-    local-pkg: ^0.4.1
-    tinypool: ^0.2.1
-    tinyspy: ^0.3.3
-    vite: ^2.9.12 || ^3.0.0-0
-  peerDependencies:
-    "@edge-runtime/vm": "*"
-    "@vitest/ui": "*"
-    c8: "*"
-    happy-dom: "*"
-    jsdom: "*"
-  peerDependenciesMeta:
-    "@edge-runtime/vm":
-      optional: true
-    "@vitest/ui":
-      optional: true
-    c8:
-      optional: true
-    happy-dom:
-      optional: true
-    jsdom:
-      optional: true
-  bin:
-    vitest: vitest.mjs
-  checksum: eae2d024d97a46ba08f3cc7e0703a330c92dc0a6f4c7a9bc20ec8a5129bf787d8ebabd14bf31ae810897c1813e29178af59f63ec8b24b5944cfa62e225cd207c
-  languageName: node
-  linkType: hard
-
 "vitest@npm:^0.18.1":
   version: 0.18.1
   resolution: "vitest@npm:0.18.1"
@@ -17829,7 +17785,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.8.0, ws@npm:^8.8.1":
+"ws@npm:^8.8.1":
   version: 8.8.1
   resolution: "ws@npm:8.8.1"
   peerDependencies:
