@@ -12,7 +12,7 @@
 		<a href="https://codecov.io/gh/discordjs/discord.js" ><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2&flag=rest" alt="Code coverage" /></a>
 	</p>
 	<p>
-		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://github.com/discordjs/discord.js/blob/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
 	</p>
 </div>
 
