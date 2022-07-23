@@ -27,17 +27,21 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					return { params: { slug: ['main', 'packages', packageName] } };
 				}
 
-				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-				const data = await res.json();
+				try {
+					const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+					const data = await res.json();
 
-				const model = createApiModel(data);
-				const pkg = findPackage(model, packageName);
+					const model = createApiModel(data);
+					const pkg = findPackage(model, packageName);
 
-				return [
-					{ params: { slug: ['main', 'packages', packageName] } },
-					...getMembers(pkg!).map((member) => ({ params: { slug: ['main', 'packages', packageName, member.name] } })),
-				];
+					return [
+						{ params: { slug: ['main', 'packages', packageName] } },
+						...getMembers(pkg!).map((member) => ({ params: { slug: ['main', 'packages', packageName, member.name] } })),
+					];
+				} catch {
+					return { params: { slug: ['', '', '', ''] } };
+				}
 			}),
 		)
 	).flat();
@@ -51,22 +55,30 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [branchName = 'main', , packageName = 'builders', memberName] = params!.slug as string[];
 
-	const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const data = await res.json();
+	try {
+		const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const data = await res.json();
 
-	const model = createApiModel(data);
-	const pkg = findPackage(model, packageName);
+		const model = createApiModel(data);
+		const pkg = findPackage(model, packageName);
 
-	return {
-		props: {
-			packageName,
-			data: {
-				members: pkg ? getMembers(pkg) : [],
-				member: memberName ? findMember(model, packageName, memberName)?.toJSON() ?? null : null,
+		return {
+			props: {
+				packageName,
+				data: {
+					members: pkg ? getMembers(pkg) : [],
+					member: memberName ? findMember(model, packageName, memberName)?.toJSON() ?? null : null,
+				},
 			},
-		},
-	};
+		};
+	} catch {
+		return {
+			props: {
+				error: 'FetchError',
+			},
+		};
+	}
 };
 
 const member = (props: any) => {
@@ -89,8 +101,12 @@ const member = (props: any) => {
 	}
 };
 
-export default function Slug(props: Partial<ItemListProps & { data: { member: ReturnType<typeof findMember> } }>) {
-	return (
+export default function Slug(
+	props: Partial<ItemListProps & { error?: string; data: { member: ReturnType<typeof findMember> } }>,
+) {
+	return props.error ? (
+		<div className="flex max-w-full h-full bg-white dark:bg-dark">{props.error}</div>
+	) : (
 		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full bg-white dark:bg-dark">
 			<div className="w-full lg:min-w-1/4 lg:max-w-1/4">
 				{props.packageName && props.data ? <ItemSidebar packageName={props.packageName} data={props.data} /> : null}
