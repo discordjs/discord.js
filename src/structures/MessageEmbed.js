@@ -6,6 +6,7 @@ const Util = require('../util/Util');
 
 let deprecationEmittedForSetAuthor = false;
 let deprecationEmittedForSetFooter = false;
+let deprecationEmittedForAddField = false;
 
 // TODO: Remove the deprecated code for `setAuthor()` and `setFooter()`.
 
@@ -314,8 +315,18 @@ class MessageEmbed {
    * @param {string} value The value of this field
    * @param {boolean} [inline=false] If this field will be displayed inline
    * @returns {MessageEmbed}
+   * @deprecated This method is a wrapper for {@link MessageEmbed#addFields}. Use that instead.
    */
   addField(name, value, inline) {
+    if (!deprecationEmittedForAddField) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        'MessageEmbed#addField is deprecated and will be removed in the next major update. Use MessageEmbed#addFields instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForAddField = true;
+    }
     return this.addFields({ name, value, inline });
   }
 
