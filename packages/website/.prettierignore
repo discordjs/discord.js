@@ -11,3 +11,6 @@ tsup.config.*.mjs
 build/
 src/styles/unocss.css
 api/
+.next/
+.vercel/
+.cache/

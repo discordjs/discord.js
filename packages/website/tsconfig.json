@@ -13,6 +13,6 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "middleware.ts", "next-env.d.ts", "types.d.ts"],
 	"exclude": ["node_modules"]
 }
