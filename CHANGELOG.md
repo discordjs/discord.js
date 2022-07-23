@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.9.1](https://github.com/discordjs/discord.js/compare/13.9.0...13.9.1) - (2022-07-23)
+
+## Bug Fixes
+
+- **ApplicationCommandManager:** Allow passing 0n to defaultMemberPermissions (v13) (#8312) ([4cf0555](https://github.com/discordjs/discord.js/commit/4cf05559a2cc6c4dfc409f8aab60256e5b030bca))
+
+## Refactor
+
+- **embed:** Deprecate addField (#8318) ([be35db2](https://github.com/discordjs/discord.js/commit/be35db2410c24fcca8b28ddfb3c1c580e7e2a22f))
+- **Presence:** Remove redundant date parsing (v13) (#8341) ([e95caa7](https://github.com/discordjs/discord.js/commit/e95caa7e4515beab627b5394d011a6b6a8ae6a18))
+
 # [13.9.0](https://github.com/discordjs/discord.js/compare/13.8.1...13.9.0) - (2022-07-17)
 
 ## Bug Fixes
