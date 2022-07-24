@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/proxy-container",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
 		"build": "unbuild",
