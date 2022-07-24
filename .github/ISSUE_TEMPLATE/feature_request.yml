@@ -20,6 +20,7 @@ body:
         - proxy
         - proxy-container
         - voice
+        - ws
     validations:
       required: true
   - type: textarea

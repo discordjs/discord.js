@@ -69,7 +69,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice']
+        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
       BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}

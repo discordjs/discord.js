@@ -22,6 +22,8 @@ jobs:
             folder: 'rest'
           - package: '@discordjs/voice'
             folder: 'voice'
+          - package: '@discordjs/ws'
+            folder: 'ws'
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
     steps:
