@@ -21,7 +21,7 @@ export class DocumentedVarType extends DocumentedItem<VarType> {
 		}
 
 		const data = this.data;
-		const names = data.names?.map((name) => splitVarName(name));
+		const names = (data.names ?? data.type?.names)?.map((name) => splitVarName(name));
 
 		if (!data.description && !data.nullable) {
 			return names;
