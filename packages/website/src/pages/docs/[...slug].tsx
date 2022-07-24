@@ -6,7 +6,7 @@ import type { DocFunction } from '~/DocModel/DocFunction';
 import type { DocInterface } from '~/DocModel/DocInterface';
 import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
 import type { DocVariable } from '~/DocModel/DocVariable';
-import { ItemSidebar, type ItemListProps } from '~/components/ItemSidebar';
+import type { ItemListProps } from '~/components/ItemSidebar';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Function } from '~/components/model/Function';
@@ -106,12 +106,7 @@ export default function Slug(
 ) {
 	return props.error ? (
 		<div className="flex max-w-full h-full bg-white dark:bg-dark">{props.error}</div>
-	) : (
-		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full bg-white dark:bg-dark">
-			<div className="w-full lg:min-w-1/4 lg:max-w-1/4">
-				{props.packageName && props.data ? <ItemSidebar packageName={props.packageName} data={props.data} /> : null}
-			</div>
-			<div className="max-h-full grow overflow-auto">{props.data?.member ? member(props.data.member) : null}</div>
-		</div>
-	);
+	) : props.data?.member ? (
+		member(props.data.member)
+	) : null;
 }
