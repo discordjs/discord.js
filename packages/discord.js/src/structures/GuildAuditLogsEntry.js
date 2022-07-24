@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { OverwriteType, AuditLogEvent } = require('discord-api-types/v10');
+const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
@@ -189,18 +189,18 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ChannelOverwriteUpdate:
       case AuditLogEvent.ChannelOverwriteDelete:
         switch (data.options.type) {
-          case OverwriteType.Role:
+          case AuditLogOptionsType.Role:
             this.extra = guild.roles.cache.get(data.options.id) ?? {
               id: data.options.id,
               name: data.options.role_name,
-              type: OverwriteType.Role,
+              type: AuditLogOptionsType.Role,
             };
             break;
 
-          case OverwriteType.Member:
+          case AuditLogOptionsType.Member:
             this.extra = guild.members.cache.get(data.options.id) ?? {
               id: data.options.id,
-              type: OverwriteType.Member,
+              type: AuditLogOptionsType.Member,
             };
             break;
 
