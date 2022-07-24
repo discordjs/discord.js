@@ -51,6 +51,7 @@
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"@vscode/codicons": "^0.0.31",
+		"framer-motion": "^6.5.1",
 		"next": "^12.2.3",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

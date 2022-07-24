@@ -1,4 +1,6 @@
 import Image from 'next/future/image';
+import Link from 'next/link';
+import { forwardRef, MouseEventHandler, Ref } from 'react';
 import codeSample from '../assets/code-sample.png';
 import logo from '../assets/djs_logo_rainbow_400x400.png';
 import vercelLogo from '../assets/powered-by-vercel.svg';
@@ -6,15 +8,17 @@ import text from '../text.json';
 
 interface ButtonProps {
 	title: string;
+	href?: string;
+	ref?: Ref<HTMLAnchorElement>;
+	onClick?: MouseEventHandler<HTMLAnchorElement>;
 }
 
-function Button({ title }: ButtonProps) {
-	return (
-		<div className="max-h-[70px] bg-blurple px-3 py-4 rounded-lg">
-			<p className="font-semibold text-white m-0">{title}</p>
-		</div>
-	);
-}
+// eslint-disable-next-line react/display-name
+const LinkButton = forwardRef<HTMLAnchorElement, ButtonProps>(({ title, onClick, href }: ButtonProps, ref) => (
+	<a href={href} onClick={onClick} ref={ref} className="max-h-[70px] bg-blurple px-3 py-4 rounded-lg">
+		<p className="font-semibold text-white m-0">{title}</p>
+	</a>
+));
 
 export default function IndexRoute() {
 	return (
@@ -36,8 +40,10 @@ export default function IndexRoute() {
 						<h1 className="font-bold text-6xl text-blurple my-2">{text.heroTitle}</h1>
 						<p className="text-xl text-dark-100 dark:text-gray-400">{text.heroDescription}</p>
 						<div className="flex flew-row space-x-4">
-							<Button title="Read the guide" />
-							<Button title="Check out the docs" />
+							<LinkButton title="Read the guide" />
+							<Link href="/docs/" passHref>
+								<LinkButton title="Check out the docs" />
+							</Link>
 						</div>
 					</div>
 					<div className="sm:flex sm:grow sm:shrink h-full sm:align-center xl:items-center hidden">
