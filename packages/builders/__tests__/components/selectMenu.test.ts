@@ -149,6 +149,17 @@ describe('Select Menu Components', () => {
 			}).toThrowError();
 		});
 
+		test('GIVEN valid option types THEN does not throw', () => {
+			expect(() =>
+				selectMenu().addOptions({
+					label: 'test',
+					value: 'test',
+				}),
+			).not.toThrowError();
+
+			expect(() => selectMenu().addOptions(selectMenuOption().setLabel('test').setValue('test'))).not.toThrowError();
+		});
+
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
 			expect(
 				new SelectMenuBuilder(selectMenuDataWithoutOptions)

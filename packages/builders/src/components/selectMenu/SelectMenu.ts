@@ -4,9 +4,9 @@ import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import {
 	customIdValidator,
 	disabledValidator,
+	jsonOptionValidator,
 	minMaxValidator,
 	optionsLengthValidator,
-	optionValidator,
 	placeholderValidator,
 	validateRequiredSelectMenuParameters,
 } from '../Assertions';
@@ -90,7 +90,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 			...options.map((option) =>
 				option instanceof SelectMenuOptionBuilder
 					? option
-					: new SelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
+					: new SelectMenuOptionBuilder(jsonOptionValidator.parse(option)),
 			),
 		);
 		return this;
@@ -110,7 +110,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 			...options.map((option) =>
 				option instanceof SelectMenuOptionBuilder
 					? option
-					: new SelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
+					: new SelectMenuOptionBuilder(jsonOptionValidator.parse(option)),
 			),
 		);
 		return this;
