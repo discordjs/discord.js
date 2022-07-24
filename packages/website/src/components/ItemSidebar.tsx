@@ -35,7 +35,7 @@ export function ItemSidebar({ packageName, data, selectedMember }: ItemListProps
 						<div className="flex items-center align-center no-underline break-all text-blue-500 dark:text-blue-300">
 							<Link href={member.path}>
 								<a
-									className={`no-underline m-0  ${
+									className={`no-underline m-0 hover:color-black hover:font-semibold  ${
 										selectedMember === member.name ? 'color-black font-semibold' : 'color-gray-600'
 									}`}
 								>
