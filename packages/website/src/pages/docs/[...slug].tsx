@@ -7,6 +7,7 @@ import type { DocInterface } from '~/DocModel/DocInterface';
 import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
 import type { DocVariable } from '~/DocModel/DocVariable';
 import type { ItemListProps } from '~/components/ItemSidebar';
+import { SidebarLayout } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Function } from '~/components/model/Function';
@@ -106,7 +107,7 @@ export default function Slug(
 ) {
 	return props.error ? (
 		<div className="flex max-w-full h-full bg-white dark:bg-dark">{props.error}</div>
-	) : props.data?.member ? (
-		member(props.data.member)
-	) : null;
+	) : (
+		<SidebarLayout {...props}>{props.data?.member ? member(props.data.member) : null}</SidebarLayout>
+	);
 }
