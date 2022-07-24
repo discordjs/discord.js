@@ -122,6 +122,7 @@ import {
   ThreadAutoArchiveDuration,
   FormattingPatterns,
   APIEmbedProvider,
+  AuditLogOptionsType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -4618,18 +4619,18 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.ChannelOverwriteCreate]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: 'Role' }
-    | { id: Snowflake; type: 'Member' };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteUpdate]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: 'Role' }
-    | { id: Snowflake; type: 'Member' };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteDelete]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: OverwriteType.Role }
-    | { id: Snowflake; type: OverwriteType.Member };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
