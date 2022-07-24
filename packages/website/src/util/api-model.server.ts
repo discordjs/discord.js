@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ApiItem, ApiModel, ApiPackage } from '~/api-extractor.server';
-import { TSDocConfigFile } from '~/tsdoc-config.server';
-import { TSDocConfiguration } from '~/tsdoc.server';
+import { ApiItem, ApiModel, ApiPackage } from '~/util/api-extractor.server';
+import { TSDocConfigFile } from '~/util/tsdoc-config.server';
+import { TSDocConfiguration } from '~/util/tsdoc.server';
 
 export function createApiModel(data: any) {
 	const model = new ApiModel();

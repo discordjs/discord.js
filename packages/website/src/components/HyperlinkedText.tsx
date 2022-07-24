@@ -19,12 +19,16 @@ export function HyperlinkedText({ tokens }: HyperlinkedTextProps) {
 				if (token.path) {
 					return (
 						<Link key={token.text} href={token.path}>
-							{token.text}
+							<a className="text-blue-500 dark:text-blue-300">{token.text}</a>
 						</Link>
 					);
 				}
 
-				return token.text;
+				return (
+					<span key={token.text} className="text-blue-500 dark:text-blue-300">
+						{token.text}
+					</span>
+				);
 			})}
 		</>
 	);

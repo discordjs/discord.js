@@ -14,12 +14,12 @@ import { Function } from '~/components/model/Function';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
-import { findMember } from '~/model.server';
 import { createApiModel } from '~/util/api-model.server';
+import { findMember } from '~/util/model.server';
 import { findPackage, getMembers } from '~/util/parse.server';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice'];
+	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
 
 	const pkgs = (
 		await Promise.all(

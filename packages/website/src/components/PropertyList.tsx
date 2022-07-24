@@ -7,7 +7,7 @@ export interface PropertyListProps {
 
 export function PropertyList({ data }: PropertyListProps) {
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col gap-5">
 			{data.map((prop) => (
 				<CodeListing key={prop.name} name={prop.name} typeTokens={prop.propertyTypeTokens} summary={prop.summary} />
 			))}

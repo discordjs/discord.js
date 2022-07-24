@@ -28,23 +28,23 @@ function onAnchorClick() {
 export function MethodItem({ data }: MethodItemProps) {
 	return (
 		<div className="flex flex-col">
-			<div className="flex content-center">
+			<div className="flex">
 				<button className="bg-transparent border-none cursor-pointer dark:text-white" onClick={onAnchorClick}>
 					<FiLink size={16} />
 				</button>
-				<div className="flex flex-col ml-3">
-					<div className="w-full flex flex-row">
-						<h4 className="font-mono my-0 break-all">{`${getShorthandName(data)}`}</h4>
-						<h4 className="mx-3 my-0">:</h4>
-						<h4 className="font-mono text-blue-800 dark:text-blue-400 my-0 break-all ">
+				<div className="flex flex-col">
+					<div className="w-full flex flex-row gap-3">
+						<h4 className="font-mono m-0 break-all">{`${getShorthandName(data)}`}</h4>
+						<h4 className="m-0">:</h4>
+						<h4 className="font-mono m-0 break-all">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
 						</h4>
 					</div>
 				</div>
 			</div>
-			<div className="mx-10">
-				{data.summary && <p className="text-dark-100 dark:text-gray-400 mt-2">{data.summary}</p>}
-				{data.parameters.length ? <ParameterTable className="mb-10 mx-5" data={data.parameters} /> : null}
+			<div className="mx-7 mb-5">
+				{data.summary && <p className="text-dark-100 dark:text-gray-300">{data.summary}</p>}
+				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
 			</div>
 		</div>
 	);

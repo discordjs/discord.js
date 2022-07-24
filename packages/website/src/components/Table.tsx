@@ -19,7 +19,7 @@ export function Table({ rows, columns, columnStyles, className }: TableProps) {
 				<thead>
 					<tr>
 						{columns.map((column) => (
-							<th key={column} className="border-b z-10 text-left text-sm pl-2 border-slate-400">
+							<th key={column} className="border-b z-10 text-left text-sm pl-2 border-gray">
 								{column}
 							</th>
 						))}
@@ -31,9 +31,7 @@ export function Table({ rows, columns, columnStyles, className }: TableProps) {
 							{Object.entries(row).map(([colName, val]) => (
 								<td
 									key={colName}
-									className={`p-2 text-sm border-b text-left border-slate-300 break-all ${
-										columnStyles?.[colName] ?? ''
-									}`}
+									className={`p-2 text-sm border-b text-left border-gray break-all ${columnStyles?.[colName] ?? ''}`}
 								>
 									{val}
 								</td>

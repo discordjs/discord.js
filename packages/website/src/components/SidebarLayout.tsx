@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import { type ItemListProps, ItemSidebar } from './ItemSidebar';
-import type { findMember } from '~/model.server';
+import type { findMember } from '~/util/model.server';
 
 export function SidebarLayout({
 	packageName,

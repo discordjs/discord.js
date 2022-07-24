@@ -26,15 +26,15 @@ export function CodeListing({
 }: CodeListingProps) {
 	return (
 		<div className={className}>
-			<div key={name} className="flex flex-col mb-2 ml-3">
-				<div className="w-full flex flex-row">
-					<h4 className="font-mono my-0">{`${name}`}</h4>
-					<h4 className="mx-3 my-0">{separator}</h4>
-					<h4 className="font-mono text-blue-800 dark:text-blue-400 my-0">
+			<div key={name} className="flex flex-col">
+				<div className="w-full flex flex-row gap-3">
+					<h4 className="font-mono m-0">{`${name}`}</h4>
+					<h4 className="m-0">{separator}</h4>
+					<h4 className="font-mono m-0">
 						<HyperlinkedText tokens={typeTokens} />
 					</h4>
 				</div>
-				{summary && <p className="text-dark-100 mt-2">{summary}</p>}
+				{summary && <p className="text-dark-100 dark:text-gray-300">{summary}</p>}
 				{children}
 			</div>
 		</div>

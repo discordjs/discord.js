@@ -2,12 +2,12 @@ import { VscSymbolClass, VscSymbolMethod, VscSymbolEnum, VscSymbolInterface, Vsc
 
 export function generateIcon(kind: string, className?: string) {
 	const icons = {
-		Class: <VscSymbolClass color="blue" className={className} />,
+		Class: <VscSymbolClass className={className} />,
 		Method: <VscSymbolMethod className={className} />,
 		Function: <VscSymbolMethod color="purple" className={className} />,
 		Enum: <VscSymbolEnum className={className} />,
-		Interface: <VscSymbolInterface color="blue" className={className} />,
-		TypeAlias: <VscSymbolVariable color="blue" className={className} />,
+		Interface: <VscSymbolInterface className={className} />,
+		TypeAlias: <VscSymbolVariable className={className} />,
 	};
 
 	return icons[kind as keyof typeof icons];

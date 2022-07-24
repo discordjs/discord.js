@@ -10,14 +10,14 @@ import {
 	ApiTypeAlias,
 	ApiVariable,
 } from '@microsoft/api-extractor-model';
-import { DocClass } from './DocModel/DocClass';
-import { DocEnum } from './DocModel/DocEnum';
-import { DocFunction } from './DocModel/DocFunction';
-import { DocInterface } from './DocModel/DocInterface';
-import { DocItem } from './DocModel/DocItem';
-import { DocTypeAlias } from './DocModel/DocTypeAlias';
-import { DocVariable } from './DocModel/DocVariable';
-import { findPackage } from './util/parse.server';
+import { findPackage } from './parse.server';
+import { DocClass } from '../DocModel/DocClass';
+import { DocEnum } from '../DocModel/DocEnum';
+import { DocFunction } from '../DocModel/DocFunction';
+import { DocInterface } from '../DocModel/DocInterface';
+import { DocItem } from '../DocModel/DocItem';
+import { DocTypeAlias } from '../DocModel/DocTypeAlias';
+import { DocVariable } from '../DocModel/DocVariable';
 
 export interface ReferenceData {
 	name: string;

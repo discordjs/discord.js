@@ -1,5 +1,5 @@
 import type { ApiModel, ApiDeclaredItem } from '@microsoft/api-extractor-model';
-import type { ReferenceData } from '~/model.server';
+import type { ReferenceData } from '~/util/model.server';
 import { resolveName, genReference, resolveDocComment, TokenDocumentation, genToken } from '~/util/parse.server';
 
 export type DocItemConstructor<T = DocItem> = new (...args: any[]) => T;

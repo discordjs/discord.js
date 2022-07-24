@@ -2,7 +2,13 @@ import { DocItem } from './DocItem';
 import { DocMethodSignature } from './DocMethodSignature';
 import { DocProperty } from './DocProperty';
 import { TypeParameterMixin } from './TypeParameterMixin';
-import { ApiInterface, ApiItemKind, ApiMethodSignature, ApiModel, ApiPropertySignature } from '~/api-extractor.server';
+import {
+	ApiInterface,
+	ApiItemKind,
+	ApiMethodSignature,
+	ApiModel,
+	ApiPropertySignature,
+} from '~/util/api-extractor.server';
 import { type TokenDocumentation, genToken } from '~/util/parse.server';
 
 export class DocInterface extends TypeParameterMixin(DocItem<ApiInterface>) {
