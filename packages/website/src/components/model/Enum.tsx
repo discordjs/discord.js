@@ -10,8 +10,8 @@ export interface EnumProps {
 export function Enum({ data }: EnumProps) {
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Section title="Members">
-				<div className="flex flex-col space-y-5">
+			<Section title="Members" className="dark:text-white">
+				<div className="flex flex-col gap-5">
 					{data.members.map((member) => (
 						<CodeListing
 							key={member.name}
