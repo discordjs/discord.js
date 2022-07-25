@@ -66,7 +66,7 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 			<AnimatePresence exitBeforeEnter initial={false}>
 				{showList ? (
 					<motion.div
-						className={`ml-10 mt-2 space-y-3`}
+						className="ml-10 mt-2 space-y-3"
 						transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
 						key="content"
 						initial="collapsed"
