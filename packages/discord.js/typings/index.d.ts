@@ -332,7 +332,7 @@ export class AutoModerationActionExecution {
   public channelId: Snowflake | null;
   public messageId: Snowflake | null;
   public alertSystemMessageId: Snowflake | null;
-  public content: string;
+  public content: string | null;
   public matchedKeyword: string | null;
   public matchedContent: string | null;
   public get autoModerationRule(): AutoModerationRule | null;
