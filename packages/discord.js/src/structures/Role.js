@@ -223,7 +223,8 @@ class Role extends Base {
    * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
    * taking into account permission overwrites.
    * @param {GuildChannel|Snowflake} channel The guild channel to use as context
-   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
+   * @param {boolean} [checkAdmin=true] Whether having {@link PermissionFlagsBits.Administrator}
+   * will return all permissions
    * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel, checkAdmin = true) {

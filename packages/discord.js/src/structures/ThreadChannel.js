@@ -75,7 +75,8 @@ class ThreadChannel extends BaseChannel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
-       * Whether members without `MANAGE_THREADS` can invite other members without `MANAGE_THREADS`
+       * Whether members without {@link PermissionFlagsBits.ManageThreads} can invite other members without
+       * {@link PermissionFlagsBits.ManageThreads}
        * <info>Always `null` in public threads</info>
        * @type {?boolean}
        */
@@ -252,7 +253,8 @@ class ThreadChannel extends BaseChannel {
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
-   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
+   * @param {boolean} [checkAdmin=true] Whether having {@link PermissionFlagsBits.Administrator}
+   * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
    */
   permissionsFor(memberOrRole, checkAdmin) {
@@ -361,8 +363,8 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether members without the `MANAGE_THREADS` permission can invite other members without the
-   * `MANAGE_THREADS` permission to this thread.
+   * Sets whether members without the {@link PermissionFlagsBits.ManageThreads} permission can invite other members
+   * without the {@link PermissionFlagsBits.ManageThreads} permission to this thread.
    * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
@@ -375,8 +377,8 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether the thread can be **unarchived** by anyone with `SEND_MESSAGES` permission.
-   * When a thread is locked only members with `MANAGE_THREADS` can unarchive it.
+   * Sets whether the thread can be **unarchived** by anyone with {@link PermissionFlagsBits.SendMessages} permission.
+   * When a thread is locked only members with {@link PermissionFlagsBits.ManageThreads} can unarchive it.
    * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}

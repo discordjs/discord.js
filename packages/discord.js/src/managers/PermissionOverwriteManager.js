@@ -115,7 +115,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @example
    * // Create or Replace permission overwrites for a message author
    * message.channel.permissionOverwrites.create(message.author, {
-   *   SEND_MESSAGES: false
+   *   SendMessages: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);
@@ -133,7 +133,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @example
    * // Edit or Create permission overwrites for a message author
    * message.channel.permissionOverwrites.edit(message.author, {
-   *   SEND_MESSAGES: false
+   *   SendMessages: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);

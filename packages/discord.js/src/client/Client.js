@@ -165,7 +165,7 @@ class Client extends BaseClient {
     this.application = null;
 
     /**
-     * Timestamp of the time the client was last `READY` at
+     * Timestamp of the time the client was last {@link Status.Ready} at
      * @type {?number}
      */
     this.readyTimestamp = null;
@@ -185,7 +185,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Time at which the client was last regarded as being in the `READY` state
+   * Time at which the client was last regarded as being in the {@link Status.Ready} state
    * (each time the client disconnects and successfully reconnects, this will be overwritten)
    * @type {?Date}
    * @readonly
@@ -195,7 +195,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
+   * How long it has been since the client last entered the {@link Status.Ready} state in milliseconds
    * @type {?number}
    * @readonly
    */
