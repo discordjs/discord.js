@@ -16,6 +16,7 @@ class AutoModerationRuleDeleteAction extends Action {
 
         /**
          * Emitted whenever an auto moderation rule is deleted.
+         * <info>This event requires the {@link PermissionFlagsBits.ManageGuild ManageGuild} permission.</info>
          * @event Client#autoModerationRuleDelete
          * @param {AutoModerationRule} autoModerationRule The deleted auto moderation rule
          */

@@ -14,6 +14,7 @@ class AutoModerationRuleUpdateAction extends Action {
 
       /**
        * Emitted whenever an auto moderation rule gets updated.
+       * <info>This event requires the {@link PermissionFlagsBits.ManageGuild ManageGuild} permission.</info>
        * @event Client#autoModerationRuleUpdate
        * @param {?AutoModerationRule} oldAutoModerationRule The auto moderation rule before the update
        * @param {AutoModerationRule} newAutoModerationRule The auto moderation rule after the update
