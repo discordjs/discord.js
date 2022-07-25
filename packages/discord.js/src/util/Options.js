@@ -33,8 +33,8 @@ const { toSnakeCase } = require('./Transformers');
  * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
- * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that Clients with the GUILDS intent should wait for
- * missing guilds to be received before starting the bot. If not specified, the default is 15 seconds.
+ * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that clients with the
+ * {@link GatewayIntentBits.Guilds} gateway intent should wait for missing guilds to be received before being ready.
  * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager

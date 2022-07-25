@@ -122,7 +122,8 @@ class ThreadMemberManager extends CachedManager {
    */
 
   /**
-   * Fetches thread member(s) from Discord. Requires the {@link GatewayIntentBits.GuildMembers} gateway intent.
+   * Fetches thread member(s) from Discord.
+   * <info>This method requires the {@link GatewayIntentBits.GuildMembers} privileged gateway intent.</info>
    * @param {ThreadMemberResolvable|FetchThreadMemberOptions|FetchThreadMembersOptions} [options]
    * Options for fetching thread member(s)
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
