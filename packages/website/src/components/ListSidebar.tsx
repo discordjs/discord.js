@@ -3,30 +3,31 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { VscChevronDown, VscChevronRight } from 'react-icons/vsc';
 import type { ItemListProps } from './ItemSidebar';
-import type { getMembers } from '~/util/parse.server';
+
+export type Members = ItemListProps['data']['members'];
 
 export interface ListSidebarSectionProps {
-	members: ReturnType<typeof getMembers>;
+	members: Members;
 	selectedMember?: string | undefined;
 	title: string;
 }
 
 interface GroupedMembers {
-	Classes: ItemListProps['data']['members'];
-	Functions: ItemListProps['data']['members'];
-	Enums: ItemListProps['data']['members'];
-	Interfaces: ItemListProps['data']['members'];
-	Types: ItemListProps['data']['members'];
-	Variables: ItemListProps['data']['members'];
+	Classes: Members;
+	Functions: Members;
+	Enums: Members;
+	Interfaces: Members;
+	Types: Members;
+	Variables: Members;
 }
 
 function groupMembers(members: ItemListProps['data']['members']): GroupedMembers {
-	const Classes: ItemListProps['data']['members'] = [];
-	const Enums: ItemListProps['data']['members'] = [];
-	const Interfaces: ItemListProps['data']['members'] = [];
-	const Types: ItemListProps['data']['members'] = [];
-	const Variables: ItemListProps['data']['members'] = [];
-	const Functions: ItemListProps['data']['members'] = [];
+	const Classes: Members = [];
+	const Enums: Members = [];
+	const Interfaces: Members = [];
+	const Types: Members = [];
+	const Variables: Members = [];
+	const Functions: Members = [];
 
 	for (const member of members) {
 		switch (member.kind) {
