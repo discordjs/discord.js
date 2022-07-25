@@ -21,7 +21,7 @@ interface GroupedMembers {
 	Variables: Members;
 }
 
-function groupMembers(members: ItemListProps['data']['members']): GroupedMembers {
+function groupMembers(members: Members): GroupedMembers {
 	const Classes: Members = [];
 	const Enums: Members = [];
 	const Interfaces: Members = [];
