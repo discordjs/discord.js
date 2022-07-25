@@ -13,6 +13,7 @@ export interface ListSidebarSectionProps {
 
 interface GroupedMembers {
 	Classes: ItemListProps['data']['members'];
+	Functions: ItemListProps['data']['members'];
 	Enums: ItemListProps['data']['members'];
 	Interfaces: ItemListProps['data']['members'];
 	Types: ItemListProps['data']['members'];
@@ -25,6 +26,7 @@ function groupMembers(members: ItemListProps['data']['members']): GroupedMembers
 	const Interfaces: ItemListProps['data']['members'] = [];
 	const Types: ItemListProps['data']['members'] = [];
 	const Variables: ItemListProps['data']['members'] = [];
+	const Functions: ItemListProps['data']['members'] = [];
 
 	for (const member of members) {
 		switch (member.kind) {
@@ -43,12 +45,15 @@ function groupMembers(members: ItemListProps['data']['members']): GroupedMembers
 			case 'Variable':
 				Variables.push(member);
 				break;
+			case 'Function':
+				Functions.push(member);
+				break;
 			default:
 				break;
 		}
 	}
 
-	return { Classes, Enums, Interfaces, Types, Variables };
+	return { Classes, Functions, Enums, Interfaces, Types, Variables };
 }
 
 export function ListSidebarSection({ members, selectedMember, title }: ListSidebarSectionProps) {
@@ -66,7 +71,7 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 			<AnimatePresence exitBeforeEnter initial={false}>
 				{showList ? (
 					<motion.div
-						className="ml-10 mt-2 space-y-3"
+						className="ml-7 mt-2 space-y-3"
 						transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
 						key="content"
 						initial="collapsed"
@@ -93,7 +98,7 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 										className={`no-underline m-0 text-sm ${
 											selectedMember === member.name
 												? 'text-blue-500 dark:text-blue-300 font-semibold'
-												: 'text-gray-500 dark:text-white hover:text-dark-100 dark:hover:text-black'
+												: 'text-gray-500 dark:text-gray-300 hover:text-dark-100 dark:hover:text-white'
 										}`}
 									>
 										{member.name}

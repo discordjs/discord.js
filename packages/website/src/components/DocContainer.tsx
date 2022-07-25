@@ -28,7 +28,7 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 				</h2>
 			</div>
 
-			<div className="px-10 pt-5 pb-10 rounded-xl">
+			<div className="px-10 pt-5 pb-10">
 				<SyntaxHighlighter
 					wrapLines
 					wrapLongLines
