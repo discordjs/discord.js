@@ -15,7 +15,7 @@ import {
 	GatewayReceivePayload,
 	GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { CONNECTING, OPEN, RawData, WebSocket } from 'ws';
+import { RawData, WebSocket } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { SessionInfo } from './WebSocketManager';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
@@ -182,7 +182,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
-		if (this.connection && (this.connection.readyState === OPEN || this.connection.readyState === CONNECTING)) {
+		if (
+			this.connection &&
+			(this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING)
+		) {
 			this.connection.close(options.code, options.reason);
 		}
 
