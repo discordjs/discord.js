@@ -24,11 +24,11 @@ import {
 describe('Message formatters', () => {
 	describe('codeBlock', () => {
 		test('GIVEN "discord.js" with no language THEN returns "```\\ndiscord.js```"', () => {
-			expect<'```\ndiscord.js```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js```');
+			expect<'```\ndiscord.js\n```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js\n```');
 		});
 
 		test('GIVEN "discord.js" with "js" as language THEN returns "```js\\ndiscord.js```"', () => {
-			expect<'```js\ndiscord.js```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js```');
+			expect<'```js\ndiscord.js\n```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js\n```');
 		});
 	});
 
