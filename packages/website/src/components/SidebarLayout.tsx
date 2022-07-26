@@ -9,7 +9,7 @@ export function SidebarLayout({
 }: PropsWithChildren<Partial<ItemListProps & { data: { member: ReturnType<typeof findMember> } }>>) {
 	return (
 		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full max-h-full bg-white dark:bg-dark">
-			<div className="w-full lg:max-w-1/4 lg:min-w-1/4">
+			<div className="w-full lg:max-w-[370px] lg:min-w-[370px]">
 				{packageName && data ? (
 					<ItemSidebar packageName={packageName} data={data} selectedMember={data.member?.name} />
 				) : null}
