@@ -21,7 +21,7 @@ class WebhookClient extends BaseClient {
   /**
    * Represents the credentials used for a webhook in the form of a URL.
    * @typedef {Object} WebhookClientDataURL
-   * @property {string} [url] The full URL for the webhook
+   * @property {string} url The full URL for the webhook
    */
 
   /**
