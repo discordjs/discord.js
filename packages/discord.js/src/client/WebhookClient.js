@@ -12,11 +12,21 @@ const { parseWebhookURL } = require('../util/Util');
  */
 class WebhookClient extends BaseClient {
   /**
-   * The data for the webhook client containing either an id and token or just a URL
-   * @typedef {Object} WebhookClientData
-   * @property {Snowflake} [id] The id of the webhook
-   * @property {string} [token] The token of the webhook
-   * @property {string} [url] The full URL for the webhook client
+   * Represents the credentials used for a webhook in the form of its id and token.
+   * @typedef {Object} WebhookClientDataIdWithToken
+   * @property {Snowflake} id The webhook's id
+   * @property {string} token The webhook's token
+   */
+
+  /**
+   * Represents the credentials used for a webhook in the form of a URL.
+   * @typedef {Object} WebhookClientDataURL
+   * @property {string} [url] The full URL for the webhook
+   */
+
+  /**
+   * Represents the credentials used for a webhook.
+   * @typedef {WebhookClientDataIdWithToken|WebhookClientDataURL} WebhookClientData
    */
 
   /**
