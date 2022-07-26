@@ -133,6 +133,23 @@ const {
  */
 
 /**
+ * Formats a channel link for a channel.
+ * @method channelLink
+ * @param {Snowflake} channelId The id of the channel
+ * @param {Snowflake} [guildId] The id of the guild
+ * @returns {string}
+ */
+
+/**
+ * Formats a message link for a channel.
+ * @method messageLink
+ * @param {Snowflake} channelId The id of the channel
+ * @param {Snowflake} messageId The id of the message
+ * @param {Snowflake} [guildId] The id of the guild
+ * @returns {string}
+ */
+
+/**
  * A message formatting timestamp style, as defined in
  * [here](https://discord.com/developers/docs/reference#message-formatting-timestamp-styles).
  * * `t` Short time format, consisting of hours and minutes, e.g. 16:20.
