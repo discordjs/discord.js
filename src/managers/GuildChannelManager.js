@@ -274,7 +274,7 @@ class GuildChannelManager extends CachedManager {
         nsfw: data.nsfw,
         bitrate: data.bitrate ?? channel.bitrate,
         user_limit: data.userLimit ?? channel.userLimit,
-        rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        rtc_region: 'rtcRegion' in data ? data.rtcRegion : channel.rtcRegion,
         video_quality_mode:
           typeof data.videoQualityMode === 'string' ? VideoQualityModes[data.videoQualityMode] : data.videoQualityMode,
         parent_id: parent,
