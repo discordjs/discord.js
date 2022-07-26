@@ -12,7 +12,7 @@ class AutoModerationActionExecutionAction extends Action {
     if (guild) {
       /**
        * Emitted whenever an auto moderation rule is triggered.
-       * <info>This event requires the {@link PermissionFlagsBits.ManageGuild ManageGuild} permission.</info>
+       * <info>This event requires the {@link PermissionFlagsBits.ManageGuild} permission.</info>
        * @event Client#autoModerationActionExecution
        * @param {AutoModerationActionExecution} autoModerationActionExecution The data of the execution
        */

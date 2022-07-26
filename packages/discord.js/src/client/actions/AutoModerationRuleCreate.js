@@ -13,7 +13,7 @@ class AutoModerationRuleCreateAction extends Action {
 
       /**
        * Emitted whenever an auto moderation rule is created.
-       * <info>This event requires the {@link PermissionFlagsBits.ManageGuild ManageGuild} permission.</info>
+       * <info>This event requires the {@link PermissionFlagsBits.ManageGuild} permission.</info>
        * @event Client#autoModerationRuleCreate
        * @param {AutoModerationRule} autoModerationRule The created auto moderation rule
        */

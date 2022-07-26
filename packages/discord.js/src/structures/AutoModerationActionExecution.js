@@ -63,7 +63,7 @@ class AutoModerationActionExecution {
 
     /**
      * The content that triggered this action.
-     * <info>This property requires the {@link GatewayIntentBits.MessageContent MessageContent} gateway intent.</info>
+     * <info>This property requires the {@link GatewayIntentBits.MessageContent} gateway intent.</info>
      * @type {?string}
      */
     this.content = data.content ?? null;
