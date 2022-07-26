@@ -42,7 +42,7 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 					<div className="flex flex-row items-center dark:text-white gap-3">
 						<h3 className="m-0">Extends:</h3>
 						<h3 className="m-0">{CodeListingSeparatorType.Type}</h3>
-						<p className="font-mono">
+						<p className="font-mono break-all">
 							<HyperlinkedText tokens={extendsTokens} />
 						</p>
 					</div>

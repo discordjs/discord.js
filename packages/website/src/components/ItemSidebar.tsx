@@ -19,7 +19,7 @@ function onMenuClick() {
 
 export function ItemSidebar({ packageName, data, selectedMember }: ItemListProps) {
 	return (
-		<div className="flex flex-col max-h-full grow min-w-[270px] lg:border-r-solid border-0.5 border-gray">
+		<div className="flex flex-col min-h-full max-h-full grow min-w-[270px] lg:border-r-solid border-0.5 border-gray">
 			<div className="border-b-0.5 border-gray py-2">
 				<h2 className="flex gap-2 items-center m-0 px-2 dark:text-white">
 					<VscPackage />
@@ -29,7 +29,7 @@ export function ItemSidebar({ packageName, data, selectedMember }: ItemListProps
 					<FiMenu size={32} />
 				</button>
 			</div>
-			<div className="hidden lg:block lg:min-h-full overflow-y-scroll overflow-x-clip p-7 space-y-2">
+			<div className="hidden lg:block lg:min-h-full overflow-y-auto overflow-x-clip py-7 px-4">
 				<ListSidebar members={data.members} title="test" selectedMember={selectedMember} />
 			</div>
 		</div>

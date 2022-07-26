@@ -16,10 +16,11 @@ export function Section({ title, children, className, defaultClosed }: SectionPr
 	return (
 		<div className={className}>
 			<AnimatePresence initial={false}>
-				<h3 className="flex gap-2 whitespace-pre-wrap font-semibold dark:text-white">
-					<div onClick={() => setCollapsed(!collapsed)}>
-						{collapsed ? <VscChevronRight size={20} /> : <VscChevronDown size={20} />}
-					</div>
+				<h3
+					className="flex gap-2 whitespace-pre-wrap font-semibold dark:text-white cursor-pointer"
+					onClick={() => setCollapsed(!collapsed)}
+				>
+					{collapsed ? <VscChevronRight size={20} /> : <VscChevronDown size={20} />}
 					{title}
 				</h3>
 				{collapsed ? null : (

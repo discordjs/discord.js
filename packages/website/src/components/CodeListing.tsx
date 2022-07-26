@@ -30,7 +30,7 @@ export function CodeListing({
 				<div className="w-full flex flex-row gap-3">
 					<h4 className="font-mono m-0">{`${name}`}</h4>
 					<h4 className="m-0">{separator}</h4>
-					<h4 className="font-mono m-0">
+					<h4 className="font-mono m-0 break-all">
 						<HyperlinkedText tokens={typeTokens} />
 					</h4>
 				</div>

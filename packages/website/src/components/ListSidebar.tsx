@@ -63,7 +63,7 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 	return (
 		<div>
 			<h3
-				className="flex items-center dark:text-white m-0 text-sm font-semibold gap-2"
+				className="flex items-center dark:text-white m-0 py-3 font-semibold gap-2 cursor-pointer"
 				onClick={() => setShowList(!showList)}
 			>
 				{showList ? <VscChevronDown size={20} /> : <VscChevronRight size={20} />}
@@ -72,7 +72,7 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 			<AnimatePresence exitBeforeEnter initial={false}>
 				{showList ? (
 					<motion.div
-						className="ml-7 mt-2 space-y-3"
+						className="ml-7 space-y-3"
 						transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
 						key="content"
 						initial="collapsed"
@@ -96,9 +96,9 @@ export function ListSidebarSection({ members, selectedMember, title }: ListSideb
 							>
 								<Link href={member.path}>
 									<a
-										className={`no-underline m-0 text-sm ${
+										className={`no-underline m-0 text-sm font-semibold ${
 											selectedMember === member.name
-												? 'text-blue-500 dark:text-blue-300 font-semibold'
+												? 'text-blue-500 dark:text-blue-300'
 												: 'text-gray-500 dark:text-gray-300 hover:text-dark-100 dark:hover:text-white'
 										}`}
 									>
@@ -118,7 +118,7 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 	const groupItems = groupMembers(members);
 
 	return (
-		<div className="space-y-2">
+		<>
 			{Object.keys(groupItems).map((group, i) => (
 				<ListSidebarSection
 					key={i}
@@ -127,6 +127,6 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 					title={group}
 				/>
 			))}
-		</div>
+		</>
 	);
 }
