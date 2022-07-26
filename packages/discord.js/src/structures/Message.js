@@ -1,5 +1,6 @@
 'use strict';
 
+const { messageLink } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
@@ -439,7 +440,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.guildId ?? '@me'}/${this.channelId}/${this.id}`;
+    return this.inGuild() ? messageLink(this.channelId, this.id, this.guildId) : messageLink(this.channelId, this.id);
   }
 
   /**
