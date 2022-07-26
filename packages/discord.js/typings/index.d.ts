@@ -5603,4 +5603,4 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export * from 'discord-api-types/v10';
 export * from '@discordjs/builders';
-export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
+export * from '@discordjs/rest';
