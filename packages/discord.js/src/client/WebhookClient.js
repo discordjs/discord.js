@@ -30,8 +30,15 @@ class WebhookClient extends BaseClient {
    */
 
   /**
+   * Options for a webhook client.
+   * @typedef {Object} WebhookClientOptions
+   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link WebhookMessageOptions#allowedMentions}
+   * @property {RESTOptions} [rest] Options for the REST manager
+   */
+
+  /**
    * @param {WebhookClientData} data The data of the webhook
-   * @param {ClientOptions} [options] Options for the client
+   * @param {WebhookClientOptions} [options] Options for the webhook client
    */
   constructor(data, options) {
     super(options);
@@ -50,6 +57,12 @@ class WebhookClient extends BaseClient {
     this.id = id;
     Object.defineProperty(this, 'token', { value: token, writable: true, configurable: true });
   }
+
+  /**
+   * The options the webhook client was instantiated with.
+   * @type {WebhookClientOptions}
+   * @name WebhookClient#options
+   */
 
   // These are here only for documentation purposes - they are implemented by Webhook
   /* eslint-disable no-empty-function, valid-jsdoc */
