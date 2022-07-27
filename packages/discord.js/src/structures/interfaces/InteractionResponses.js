@@ -238,6 +238,7 @@ class InteractionResponses {
   /**
    * Shows a modal component
    * @param {APIModal|ModalData|Modal} modal The modal to show
+   * @returns {Promise<void>}
    */
   async showModal(modal) {
     if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
