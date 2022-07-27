@@ -81,7 +81,9 @@ class Message extends Base {
 
     if ('content' in data) {
       /**
-       * The content of the message
+       * The content of the message.
+       * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
+       * in a guild for messages that do not mention the client.</info>
        * @type {?string}
        */
       this.content = data.content;
@@ -133,7 +135,9 @@ class Message extends Base {
 
     if ('embeds' in data) {
       /**
-       * A list of embeds in the message - e.g. YouTube Player
+       * An array of embeds in the message - e.g. YouTube Player.
+       * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
+       * in a guild for messages that do not mention the client.</info>
        * @type {Embed[]}
        */
       this.embeds = data.embeds.map(e => new Embed(e));
@@ -143,7 +147,9 @@ class Message extends Base {
 
     if ('components' in data) {
       /**
-       * A list of MessageActionRows in the message
+       * An array of of action rows in the message.
+       * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
+       * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}
        */
       this.components = data.components.map(c => createComponent(c));
@@ -153,7 +159,9 @@ class Message extends Base {
 
     if ('attachments' in data) {
       /**
-       * A collection of attachments in the message - e.g. Pictures - mapped by their ids
+       * A collection of attachments in the message - e.g. Pictures - mapped by their ids.
+       * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
+       * in a guild for messages that do not mention the client.</info>
        * @type {Collection<Snowflake, Attachment>}
        */
       this.attachments = new Collection();
