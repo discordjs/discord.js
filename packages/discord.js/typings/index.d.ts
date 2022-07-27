@@ -2699,41 +2699,41 @@ export function createComponentBuilder<T extends keyof MappedComponentBuilderTyp
 export function createComponentBuilder<C extends ComponentBuilder>(data: C): C;
 export function createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
 
-/** @deprecated This class is redundant as all methods of the class are top-level exports. */
+/** @deprecated This class is redundant as all methods of the class can be imported from discord.js directly. */
 export class Formatters extends null {
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static blockQuote: typeof blockQuote;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static bold: typeof bold;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static channelMention: typeof channelMention;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static codeBlock: typeof codeBlock;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static formatEmoji: typeof formatEmoji;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static hideLinkEmbed: typeof hideLinkEmbed;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static hyperlink: typeof hyperlink;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static inlineCode: typeof inlineCode;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static italic: typeof italic;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static quote: typeof quote;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static roleMention: typeof roleMention;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static spoiler: typeof spoiler;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static strikethrough: typeof strikethrough;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static time: typeof time;
-  /** @deprecated Use this property as a top-level property instead. */
+  /** @deprecated Import this property directly from discord.js instead. */
   public static TimestampStyles: typeof TimestampStyles;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static underscore: typeof underscore;
-  /** @deprecated Use this method as a top-level function instead. */
+  /** @deprecated Import this method directly from discord.js instead. */
   public static userMention: typeof userMention;
 }
 
