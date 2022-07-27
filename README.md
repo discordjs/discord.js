@@ -46,7 +46,7 @@ pnpm add discord.js
 
 ## Example usage
 
-Install all required dependencies:
+Install discord.js:
 
 ```sh-session
 npm install discord.js
