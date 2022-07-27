@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/ws",
-	"version": "0.1.0-dev",
+	"version": "0.1.0",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run",
