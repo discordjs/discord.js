@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/rest",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
