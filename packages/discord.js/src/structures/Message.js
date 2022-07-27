@@ -641,8 +641,8 @@ class Message extends Base {
    * @property {?string} [content] Content to be edited
    * @property {Embed[]|APIEmbed[]} [embeds] Embeds to be added/edited
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {MessageFlags} [flags] Which flags to set for the message.
-   * Only {@link MessageFlags.SuppressEmbeds} can be edited.
+   * @property {MessageFlags} [flags] Which flags to set for the message
+   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
    * @property {Attachment[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]

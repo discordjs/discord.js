@@ -74,20 +74,23 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used to add a user to a guild using OAuth2.
    * @typedef {Object} AddGuildMemberOptions
-   * @property {string} accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
-   * bot's application
-   * @property {string} [nick] The nickname to give to the member (requires {@link PermissionFlagsBits.ManageNicknames})
+   * @property {string} accessToken An OAuth2 access token for the user with the {@link OAuth2Scopes.GuildsJoin}
+   * scope granted to the bot's application
+   * @property {string} [nick] The nickname to give to the member
+   * <info>This property requires the {@link PermissionFlagsBits.ManageNicknames} permission.</info>
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to add to the member
-   * (requires {@link PermissionFlagsBits.ManageRoles})
-   * @property {boolean} [mute] Whether the member should be muted (requires {@link PermissionFlagsBits.MuteMembers})
+   * <info>This property requires the {@link PermissionFlagsBits.ManageRoles} permission.</info>
+   * @property {boolean} [mute] Whether the member should be muted
+   * <info>This property requires the {@link PermissionFlagsBits.MuteMembers} permission.</info>
    * @property {boolean} [deaf] Whether the member should be deafened
-   * (requires {@link PermissionFlagsBits.DeafenMembers})
-   * @property {boolean} [force] Whether to skip the cache check and call the API directly
+   * <info>This property requires the {@link PermissionFlagsBits.MuteMembers} permission.</info>
+   * @property {boolean} [force] Whether to skip the cache check and request the API directly
    * @property {boolean} [fetchWhenExisting=true] Whether to fetch the user if not cached and already a member
    */
 
   /**
-   * Adds a user to the guild using OAuth2. Requires the {@link PermissionFlagsBits.CreateInstantInvite} permission.
+   * Adds a user to the guild using OAuth2.
+   * <info>This method requires the {@link PermissionFlagsBits.CreateInstantInvite} permission.
    * @param {UserResolvable} user The user to add to the guild
    * @param {AddGuildMemberOptions} options Options for adding the user to the guild
    * @returns {Promise<GuildMember|null>}
