@@ -159,7 +159,7 @@ describe('Message formatters', () => {
 			);
 		});
 
-		test('GIVEN channelId WITH guildId THEN returns "https://discord.com/channels/987654321987654/123456789012345678"', () => {
+		test('GIVEN channelId WITH guildId THEN returns "https://discord.com/channels/${guildId}/${channelId}"', () => {
 			expect<'https://discord.com/channels/987654321987654/123456789012345678'>(
 				channelLink('123456789012345678', '987654321987654'),
 			).toEqual('https://discord.com/channels/987654321987654/123456789012345678');
@@ -167,13 +167,13 @@ describe('Message formatters', () => {
 	});
 
 	describe('messageLink', () => {
-		test('GIVEN channelId AND messageId THEN returns "`https://discord.com/channels/@me/123456789012345678/102938475657483"', () => {
+		test('GIVEN channelId AND messageId THEN returns "https://discord.com/channels/@me/${channelId}/${messageId}"', () => {
 			expect<'https://discord.com/channels/@me/123456789012345678/102938475657483'>(
 				messageLink('123456789012345678', '102938475657483'),
 			).toEqual('https://discord.com/channels/@me/123456789012345678/102938475657483');
 		});
 
-		test('GIVEN channelId AND messageId WITH guildId THEN returns "https://discord.com/channels/987654321987654/123456789012345678/102938475657483"', () => {
+		test('GIVEN channelId AND messageId WITH guildId THEN returns "https://discord.com/channels/${guildId}/${channelId}/${messageId}"', () => {
 			expect<'https://discord.com/channels/987654321987654/123456789012345678/102938475657483'>(
 				messageLink('123456789012345678', '102938475657483', '987654321987654'),
 			).toEqual('https://discord.com/channels/987654321987654/123456789012345678/102938475657483');
