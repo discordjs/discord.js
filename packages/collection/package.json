@@ -59,10 +59,10 @@
 		"eslint": "^8.20.0",
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "0.32.1",
-		"tsup": "^6.1.3",
+		"tsup": "^6.2.0",
 		"typescript": "^4.7.4",
 		"unbuild": "^0.7.6",
-		"vitest": "^0.18.1"
+		"vitest": "^0.19.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -67,12 +67,12 @@
 		"@testing-library/user-event": "^14.3.0",
 		"@types/node": "^16.11.45",
 		"@types/react-dom": "^18.0.6",
-		"@types/react-syntax-highlighter": "^15.5.3",
-		"@typescript-eslint/eslint-plugin": "^5.30.7",
-		"@typescript-eslint/parser": "^5.30.7",
-		"@unocss/cli": "^0.44.5",
-		"@unocss/preset-web-fonts": "^0.44.5",
-		"@unocss/reset": "^0.44.5",
+		"@types/react-syntax-highlighter": "^15.5.4",
+		"@typescript-eslint/eslint-plugin": "^5.31.0",
+		"@typescript-eslint/parser": "^5.31.0",
+		"@unocss/cli": "^0.44.7",
+		"@unocss/preset-web-fonts": "^0.44.7",
+		"@unocss/reset": "^0.44.7",
 		"@vitejs/plugin-react": "^2.0.0",
 		"c8": "^7.12.0",
 		"concurrently": "^7.3.0",
@@ -88,9 +88,9 @@
 		"msw": "^0.44.2",
 		"prettier": "^2.7.1",
 		"typescript": "^4.7.4",
-		"unocss": "^0.44.5",
+		"unocss": "^0.44.7",
 		"vercel": "^27.2.0",
-		"vitest": "^0.18.1"
+		"vitest": "^0.19.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
