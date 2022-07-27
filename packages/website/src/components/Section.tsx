@@ -46,8 +46,10 @@ export function Section({
 								open: {
 									opacity: 1,
 									height: 'auto',
+									paddingLeft: '1.75rem',
+									paddingRight: '1.75rem',
 								},
-								collapsed: { opacity: 0, height: 0 },
+								collapsed: { opacity: 0, height: 0, paddingLeft: '1.75rem', paddingRight: '1.75rem', paddingBottom: 0 },
 							}}
 						>
 							{children}

@@ -50,7 +50,7 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 				) : null}
 				<div className="space-y-10">
 					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
-						<p className="text-dark-100 dark:text-gray-300 m-0 mb-5">{summary ?? 'No summary provided.'}</p>
+						<p className="text-dark-100 dark:text-gray-300 m-0">{summary ?? 'No summary provided.'}</p>
 					</Section>
 					{typeParams?.length ? (
 						<Section
