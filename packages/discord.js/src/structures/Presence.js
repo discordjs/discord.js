@@ -268,7 +268,7 @@ class Activity {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the activities' name instead of the Activity object.
+   * When concatenated with a string, this automatically returns the activity's name instead of the Activity object.
    * @returns {string}
    */
   toString() {

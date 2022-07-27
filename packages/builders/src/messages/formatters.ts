@@ -6,7 +6,7 @@ import type { Snowflake } from 'discord-api-types/globals';
  *
  * @param content - The content to wrap
  */
-export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\`\`\``;
+export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
 
 /**
  * Wraps the content inside a codeblock with the specified language
@@ -14,9 +14,9 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\`\`\``;
  * @param language - The language for the codeblock
  * @param content - The content to wrap
  */
-export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\`\`\``;
+export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
 export function codeBlock(language: string, content?: string): string {
-	return typeof content === 'undefined' ? `\`\`\`\n${language}\`\`\`` : `\`\`\`${language}\n${content}\`\`\``;
+	return typeof content === 'undefined' ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 
 /**

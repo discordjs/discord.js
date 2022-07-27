@@ -4729,7 +4729,7 @@ export interface GuildChannelEditOptions {
 
 export interface GuildChannelOverwriteOptions {
   reason?: string;
-  type?: number;
+  type?: OverwriteType;
 }
 
 export interface GuildCreateOptions {
