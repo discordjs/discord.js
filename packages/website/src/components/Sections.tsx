@@ -1,4 +1,4 @@
-import { VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
+import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
@@ -36,7 +36,7 @@ export interface ParametersSectionProps {
 
 export function ParametersSection({ data }: ParametersSectionProps) {
 	return data.length ? (
-		<Section title="Parameters" className="dark:text-white">
+		<Section iconElement={<VscSymbolConstant />} title="Parameters" className="dark:text-white">
 			<ParameterTable data={data} />
 		</Section>
 	) : null;
