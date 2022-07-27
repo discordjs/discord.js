@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('node:util');
 const {
   blockQuote,
   bold,
@@ -166,7 +167,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static blockQuote = blockQuote;
+  static blockQuote = deprecate(
+    blockQuote,
+    'Formatters.blockQuote() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content into bold text.
@@ -176,7 +180,7 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static bold = bold;
+  static bold = deprecate(bold, 'Formatters.bold() is deprecated. Use this method as a top-level function instead.');
 
   /**
    * Formats a channel id into a channel mention.
@@ -186,7 +190,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static channelMention = channelMention;
+  static channelMention = deprecate(
+    channelMention,
+    'Formatters.channelMention() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Wraps the content inside a code block with an optional language.
@@ -197,7 +204,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static codeBlock = codeBlock;
+  static codeBlock = deprecate(
+    codeBlock,
+    'Formatters.codeBlock() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats an emoji id into a fully qualified emoji identifier.
@@ -208,7 +218,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static formatEmoji = formatEmoji;
+  static formatEmoji = deprecate(
+    formatEmoji,
+    'Formatters.formatEmoji() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Wraps the URL into `<>`, which stops it from embedding.
@@ -218,7 +231,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static hideLinkEmbed = hideLinkEmbed;
+  static hideLinkEmbed = deprecate(
+    hideLinkEmbed,
+    'Formatters.hideLinkEmbed() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content and the URL into a masked URL with an optional title.
@@ -230,7 +246,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static hyperlink = hyperlink;
+  static hyperlink = deprecate(
+    hyperlink,
+    'Formatters.hyperlink() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Wraps the content inside \`backticks\`, which formats it as inline code.
@@ -240,7 +259,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static inlineCode = inlineCode;
+  static inlineCode = deprecate(
+    inlineCode,
+    'Formatters.inlineCode() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content into italic text.
@@ -250,7 +272,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static italic = italic;
+  static italic = deprecate(
+    italic,
+    'Formatters.italic() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content into a quote. This needs to be at the start of the line for Discord to format it.
@@ -260,7 +285,7 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static quote = quote;
+  static quote = deprecate(quote, 'Formatters.quote() is deprecated. Use this method as a top-level function instead.');
 
   /**
    * Formats a role id into a role mention.
@@ -270,7 +295,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static roleMention = roleMention;
+  static roleMention = deprecate(
+    roleMention,
+    'Formatters.roleMention() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content into spoiler text.
@@ -280,7 +308,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static spoiler = spoiler;
+  static spoiler = deprecate(
+    spoiler,
+    'Formatters.spoiler() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats the content into strike-through text.
@@ -290,7 +321,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static strikethrough = strikethrough;
+  static strikethrough = deprecate(
+    strikethrough,
+    'Formatters.strikethrough() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats a date into a short date-time string.
@@ -301,7 +335,7 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static time = time;
+  static time = deprecate(time, 'Formatters.time() is deprecated. Use this method as a top-level function instead.');
 
   /**
    * The message formatting timestamp
@@ -320,7 +354,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static underscore = underscore;
+  static underscore = deprecate(
+    underscore,
+    'Formatters.underscore() is deprecated. Use this method as a top-level function instead.',
+  );
 
   /**
    * Formats a user id into a user mention.
@@ -330,7 +367,10 @@ class Formatters extends null {
    * @returns {string}
    * @deprecated Use this method as a top-level function instead.
    */
-  static userMention = userMention;
+  static userMention = deprecate(
+    userMention,
+    'Formatters.userMention() is deprecated. Use this method as a top-level function instead.',
+  );
 }
 
 module.exports = Formatters;
