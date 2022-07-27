@@ -1,3 +1,4 @@
+import { VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
@@ -11,7 +12,7 @@ export interface PropertiesSectionProps {
 
 export function PropertiesSection({ data }: PropertiesSectionProps) {
 	return data.length ? (
-		<Section title="Properties" className="dark:text-white">
+		<Section iconElement={<VscSymbolProperty />} title="Properties" className="dark:text-white">
 			<PropertyList data={data} />
 		</Section>
 	) : null;
@@ -23,7 +24,7 @@ export interface MethodsSectionProps {
 
 export function MethodsSection({ data }: MethodsSectionProps) {
 	return data.length ? (
-		<Section title="Methods" className="dark:text-white">
+		<Section iconElement={<VscSymbolMethod />} title="Methods" className="dark:text-white">
 			<MethodList data={data} />
 		</Section>
 	) : null;

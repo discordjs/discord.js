@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CodeListingSeparatorType } from './CodeListing';
@@ -48,11 +49,16 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 					</div>
 				) : null}
 				<div className="space-y-10">
-					<Section title="Summary" className="dark:text-white">
-						<p className="text-dark-100 dark:text-gray-300 m-0">{summary ?? 'No summary provided.'}</p>
+					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
+						<p className="text-dark-100 dark:text-gray-300 m-0 mb-5">{summary ?? 'No summary provided.'}</p>
 					</Section>
 					{typeParams?.length ? (
-						<Section title="Type Parameters" className="dark:text-white" defaultClosed>
+						<Section
+							iconElement={<VscSymbolParameter />}
+							title="Type Parameters"
+							className="dark:text-white"
+							defaultClosed
+						>
 							<TypeParamTable data={typeParams} />
 						</Section>
 					) : null}
