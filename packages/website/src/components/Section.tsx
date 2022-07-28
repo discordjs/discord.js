@@ -36,7 +36,6 @@ export function Section({
 				{collapsed ? null : (
 					<>
 						<motion.div
-							className="ml-7 mb-5"
 							transition={{ duration: 0.5, ease: [0.04, 0.62, 0.23, 0.98] }}
 							key="content"
 							initial="collapsed"

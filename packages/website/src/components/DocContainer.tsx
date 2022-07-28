@@ -21,15 +21,15 @@ export interface DocContainerProps {
 
 export function DocContainer({ name, kind, excerpt, summary, typeParams, children, extendsTokens }: DocContainerProps) {
 	return (
-		<>
-			<div className="bg-white dark:bg-dark border-b-solid border-gray border-0.5 border-width-0.5 sticky top-0 px-10 py-2">
+		<div className="flex flex-col min-h-full max-h-full grow">
+			<div className="border-0.5 border-gray px-10 py-2">
 				<h2 className="flex gap-2 items-center break-all m-0 dark:text-white">
 					{generateIcon(kind)}
 					{name}
 				</h2>
 			</div>
 
-			<div className="px-10 pt-5 pb-10">
+			<div className="min-h-full overflow-y-auto overflow-x-clip px-10 pt-5 pb-10">
 				<SyntaxHighlighter
 					wrapLines
 					wrapLongLines
@@ -50,7 +50,7 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 				) : null}
 				<div className="space-y-10">
 					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
-						<p className="text-dark-100 dark:text-gray-300 m-0">{summary ?? 'No summary provided.'}</p>
+						<p className="text-dark-100 dark:text-gray-300">{summary ?? 'No summary provided.'}</p>
 					</Section>
 					{typeParams?.length ? (
 						<Section
@@ -65,6 +65,6 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 					<div className="space-y-10">{children}</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }

@@ -29,7 +29,7 @@ export function ItemSidebar({ packageName, data, selectedMember }: ItemListProps
 					<FiMenu size={32} />
 				</button>
 			</div>
-			<div className="hidden lg:block lg:min-h-full overflow-y-auto overflow-x-clip py-7 px-4">
+			<div className="hidden lg:block lg:min-h-full overflow-y-auto overflow-x-clip py-3 px-4">
 				<ListSidebar members={data.members} title="test" selectedMember={selectedMember} />
 			</div>
 		</div>
