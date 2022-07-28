@@ -3,7 +3,7 @@ FROM node:16-alpine
 WORKDIR /usr/proxy
 
 # First copy over dependencies separate from src for better caching
-COPY package.json yarn.lock tsconfig.json .yarnrc.yml ./
+COPY package.json yarn.lock tsconfig.json .yarnrc.yml build.config.ts ./
 COPY .yarn ./.yarn
 COPY ./packages/proxy-container/package.json ./packages/proxy-container/
 
