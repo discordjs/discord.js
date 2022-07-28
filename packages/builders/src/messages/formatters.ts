@@ -302,7 +302,7 @@ export function time(timeOrSeconds?: number | Date, style?: TimestampStylesStrin
 }
 
 /**
- * The [message formatting timestamp styles](https://discord.com/developers/docs/reference#message-formatting-timestamp-styles) supported by Discord
+ * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles message formatting timestamp styles} supported by Discord
  */
 export const TimestampStyles = {
 	/**

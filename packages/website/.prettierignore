@@ -6,7 +6,6 @@ docs/**/*
 !docs/index.yml
 !docs/README.md
 coverage/
-tsup.config.*.mjs
 .cache
 build/
 src/styles/unocss.css

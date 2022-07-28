@@ -71,7 +71,6 @@
 		"mock-socket": "^9.1.5",
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "0.32.1",
-		"tsup": "^6.2.0",
 		"typescript": "^4.7.4",
 		"unbuild": "^0.7.6",
 		"undici": "^5.8.0",

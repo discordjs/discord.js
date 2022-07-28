@@ -1,3 +1,4 @@
+import { VscSymbolEnumMember } from 'react-icons/vsc';
 import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';
 import { Section } from '../Section';
@@ -10,7 +11,7 @@ export interface EnumProps {
 export function Enum({ data }: EnumProps) {
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Section title="Members" className="dark:text-white">
+			<Section iconElement={<VscSymbolEnumMember />} title="Members" className="dark:text-white">
 				<div className="flex flex-col gap-5">
 					{data.members.map((member) => (
 						<CodeListing

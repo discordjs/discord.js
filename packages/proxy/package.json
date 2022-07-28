@@ -70,7 +70,6 @@
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "0.32.1",
 		"supertest": "^6.2.4",
-		"tsup": "^6.2.0",
 		"typescript": "^4.7.4",
 		"unbuild": "^0.7.6",
 		"vitest": "^0.19.1"

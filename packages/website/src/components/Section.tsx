@@ -8,21 +8,31 @@ export interface SectionProps {
 	title: string;
 	className?: string | undefined;
 	defaultClosed?: boolean;
+	iconElement?: JSX.Element;
+	showSeparator?: boolean;
 }
 
-export function Section({ title, children, className, defaultClosed }: SectionProps) {
+export function Section({
+	title,
+	children,
+	className,
+	defaultClosed,
+	iconElement,
+	showSeparator = true,
+}: SectionProps) {
 	const [collapsed, setCollapsed] = useState(defaultClosed ?? false);
 
 	return (
 		<div className={className}>
-			<AnimatePresence initial={false}>
-				<h3
-					className="flex gap-2 whitespace-pre-wrap font-semibold dark:text-white cursor-pointer"
-					onClick={() => setCollapsed(!collapsed)}
-				>
-					{collapsed ? <VscChevronRight size={20} /> : <VscChevronDown size={20} />}
-					{title}
-				</h3>
+			<h3
+				className="flex gap-2 whitespace-pre-wrap font-semibold dark:text-white cursor-pointer"
+				onClick={() => setCollapsed(!collapsed)}
+			>
+				{collapsed ? <VscChevronRight size={20} /> : <VscChevronDown size={20} />}
+				{iconElement ?? null}
+				{title}
+			</h3>
+			<AnimatePresence initial={false} exitBeforeEnter>
 				{collapsed ? null : (
 					<>
 						<motion.div
@@ -37,14 +47,13 @@ export function Section({ title, children, className, defaultClosed }: SectionPr
 									height: 'auto',
 									paddingLeft: '1.75rem',
 									paddingRight: '1.75rem',
-									paddingBottom: '2.5rem',
 								},
 								collapsed: { opacity: 0, height: 0, paddingLeft: '1.75rem', paddingRight: '1.75rem', paddingBottom: 0 },
 							}}
 						>
 							{children}
 						</motion.div>
-						<Separator />
+						{showSeparator && <Separator />}
 					</>
 				)}
 			</AnimatePresence>
