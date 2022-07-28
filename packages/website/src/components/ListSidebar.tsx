@@ -85,30 +85,32 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 
 	return (
 		<>
-			{(Object.keys(groupItems) as (keyof GroupedMembers)[]).map((group, i) => (
-				<Section iconElement={resolveIcon(group)} key={i} title={group} showSeparator={false}>
-					<div className="space-y-2">
-						{groupItems[group].map((member, i) => (
-							<div
-								key={i}
-								className="flex gap-2 whitespace-pre-wrap no-underline break-all text-blue-500 dark:text-blue-300"
-							>
-								<Link href={member.path}>
-									<a
-										className={`no-underline m-0 text-sm font-semibold ${
-											selectedMember === member.name
-												? 'text-blue-500 dark:text-blue-300'
-												: 'text-gray-500 dark:text-gray-300 hover:text-dark-100 dark:hover:text-white'
-										}`}
-									>
-										{member.name}
-									</a>
-								</Link>
-							</div>
-						))}
-					</div>
-				</Section>
-			))}
+			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
+				.filter((group) => groupItems[group].length)
+				.map((group, i) => (
+					<Section iconElement={resolveIcon(group)} key={i} title={group} showSeparator={false}>
+						<div className="space-y-2">
+							{groupItems[group].map((member, i) => (
+								<div
+									key={i}
+									className="flex gap-2 whitespace-pre-wrap no-underline break-all text-blue-500 dark:text-blue-300"
+								>
+									<Link href={member.path}>
+										<a
+											className={`no-underline m-0 text-sm font-semibold ${
+												selectedMember === member.name
+													? 'text-blue-500 dark:text-blue-300'
+													: 'text-gray-500 dark:text-gray-300 hover:text-dark-100 dark:hover:text-white'
+											}`}
+										>
+											{member.name}
+										</a>
+									</Link>
+								</div>
+							))}
+						</div>
+					</Section>
+				))}
 		</>
 	);
 }
