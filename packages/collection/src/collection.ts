@@ -663,7 +663,7 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The missing method returns a new structure containing items where the keys and values of other structure are not present in the original.
+	 * The complement method returns a new structure containing items where the keys and values of other structure are not present in the original.
 	 *
 	 * @param other - The other Collection to filter against
 	 */
