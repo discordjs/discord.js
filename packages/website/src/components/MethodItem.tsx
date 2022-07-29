@@ -1,4 +1,5 @@
 import { FiLink } from 'react-icons/fi';
+import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
 import { ParameterTable } from './ParameterTable';
 import type { DocMethod } from '~/DocModel/DocMethod';
@@ -43,7 +44,7 @@ export function MethodItem({ data }: MethodItemProps) {
 				</div>
 			</div>
 			<div className="mx-7 mb-5">
-				{data.summary && <p className="text-dark-100 dark:text-gray-300">{data.summary}</p>}
+				{data.summary && <CommentSection textClassName="text-dark-100 dark:text-gray-300" node={data.summary} />}
 				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
 			</div>
 		</div>

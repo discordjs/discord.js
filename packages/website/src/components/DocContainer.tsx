@@ -3,9 +3,11 @@ import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CodeListingSeparatorType } from './CodeListing';
+import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
+import type { DocItem } from '~/DocModel/DocItem';
 import { generateIcon } from '~/util/icon';
 import type { TokenDocumentation, TypeParameterData } from '~/util/parse.server';
 
@@ -13,7 +15,7 @@ export interface DocContainerProps {
 	name: string;
 	kind: string;
 	excerpt: string;
-	summary?: string | null;
+	summary?: ReturnType<DocItem['toJSON']>['summary'];
 	children?: ReactNode;
 	extendsTokens?: TokenDocumentation[] | null;
 	typeParams?: TypeParameterData[];
@@ -50,7 +52,11 @@ export function DocContainer({ name, kind, excerpt, summary, typeParams, childre
 				) : null}
 				<div className="space-y-10">
 					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
-						<p className="text-dark-100 dark:text-gray-300">{summary ?? 'No summary provided.'}</p>
+						{summary ? (
+							<CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />
+						) : (
+							<p className="text-dark-100 dark:text-gray-300">No summary provided.</p>
+						)}
 					</Section>
 					{typeParams?.length ? (
 						<Section
