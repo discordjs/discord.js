@@ -30,7 +30,6 @@ export function DocContainer({
 	extendsTokens,
 	implementsTokens,
 }: DocContainerProps) {
-	console.log(implementsTokens);
 	return (
 		<div className="flex flex-col min-h-full max-h-full grow">
 			<div className="border-0.5 border-gray px-10 py-2">
