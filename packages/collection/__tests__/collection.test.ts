@@ -418,7 +418,7 @@ describe('intersect() tests', () => {
 	});
 });
 
-describe('missing() tests', () => {
+describe('complement() tests', () => {
 	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
 	const coll2 = createCollectionFrom(['b', 2], ['c', 3]);
 
