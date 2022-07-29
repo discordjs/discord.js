@@ -90,7 +90,7 @@ jobs:
         run: yarn --immutable
 
       - name: Build actions
-        run: yarn build
+        run: yarn workspace @discordjs/actions build
 
       - name: Download docgen artifacts
         uses: actions/download-artifact@v3
