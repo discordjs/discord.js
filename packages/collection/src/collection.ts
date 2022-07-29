@@ -670,7 +670,7 @@ export class Collection<K, V> extends Map<K, V> {
 	public complement<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
 		for (const [k, v] of other) {
-			if (!(this.has(k) || Object.is(v, this.get(k)))) {
+			if (!this.has(k) && !Object.is(v, this.get(k))) {
 				coll.set(k, v);
 			}
 		}
