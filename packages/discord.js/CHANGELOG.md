@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 
 - 14.0.1 release bump, no new features.
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.0...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.2...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
@@ -425,6 +425,25 @@ All notable changes to this project will be documented in this file.
 - **interaction:** Remove renamed typeguards (#7220) ([68b9564](https://github.com/discordjs/discord.js/commit/68b9564f1821726377a1e929a3ca1fc65b4ad598))
 - AssertType -> expectType ([3f36746](https://github.com/discordjs/discord.js/commit/3f36746561a40cd61a7cd2e054b7ef80d58fc707))
 - Fix cache types resolving to `never` (#7164) ([c978dbb](https://github.com/discordjs/discord.js/commit/c978dbb6233bcd85408caf0bca7619c9c5d508f0))
+
+# [13.9.2](https://github.com/discordjs/discord.js/compare/13.9.1...13.9.2) - (2022-07-29)
+
+## Bug Fixes
+
+- **MessageMentions:** `ignoreRepliedUser` option in `has()` (v13) (#8365) ([d0a4199](https://github.com/discordjs/discord.js/commit/d0a4199760b4c7fe64f558d8d4d2302873f78b0e))
+- **GuildChannelManager:** Allow unsetting rtcRegion (v13) (#8362) ([9612507](https://github.com/discordjs/discord.js/commit/96125079a23c87fe0fb3ee01a0de5a9889fc1057))
+- **ThreadChannel:** Omit webhook fetching (v13) (#8352) ([4f7c1e3](https://github.com/discordjs/discord.js/commit/4f7c1e35c38bb9f1d524406c008ffceb2cfde3db))
+
+# [13.9.1](https://github.com/discordjs/discord.js/compare/13.9.0...13.9.1) - (2022-07-23)
+
+## Bug Fixes
+
+- **ApplicationCommandManager:** Allow passing 0n to defaultMemberPermissions (v13) (#8312) ([4cf0555](https://github.com/discordjs/discord.js/commit/4cf05559a2cc6c4dfc409f8aab60256e5b030bca))
+
+## Refactor
+
+- **embed:** Deprecate addField (#8318) ([be35db2](https://github.com/discordjs/discord.js/commit/be35db2410c24fcca8b28ddfb3c1c580e7e2a22f))
+- **Presence:** Remove redundant date parsing (v13) (#8341) ([e95caa7](https://github.com/discordjs/discord.js/commit/e95caa7e4515beab627b5394d011a6b6a8ae6a18))
 
 # [13.9.0](https://github.com/discordjs/discord.js/compare/13.8.1...13.9.0) - (2022-07-17)
 
