@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
+import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
+import type { DocItem } from '~/DocModel/DocItem';
 import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
@@ -9,7 +11,7 @@ export enum CodeListingSeparatorType {
 
 export interface CodeListingProps {
 	name: string;
-	summary?: string | null;
+	summary?: ReturnType<DocItem['toJSON']>['summary'];
 	typeTokens: TokenDocumentation[];
 	separator?: CodeListingSeparatorType;
 	children?: ReactNode;
@@ -34,7 +36,7 @@ export function CodeListing({
 						<HyperlinkedText tokens={typeTokens} />
 					</h4>
 				</div>
-				{summary && <p className="text-dark-100 dark:text-gray-300">{summary}</p>}
+				{summary && <CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />}
 				{children}
 			</div>
 		</div>
