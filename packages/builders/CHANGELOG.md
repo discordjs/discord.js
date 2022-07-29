@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.0.0...@discordjs/builders@1.1.0) - (2022-07-29)
+
+## Bug Fixes
+
+- Use proper format for `@link` text (#8384) ([2655639](https://github.com/discordjs/discord.js/commit/26556390a3800e954974a00c1328ff47d3e67e9a))
+- **Formatters:** Add newline in `codeBlock` (#8369) ([5d8bd03](https://github.com/discordjs/discord.js/commit/5d8bd030d60ef364de3ef5f9963da8bda5c4efd4))
+- **selectMenu:** Allow json to be used for select menu options (#8322) ([6a2d0d8](https://github.com/discordjs/discord.js/commit/6a2d0d8e96d157d5b85cee7f17bffdfff4240074))
+
+## Documentation
+
+- Use link tags (#8382) ([5494791](https://github.com/discordjs/discord.js/commit/549479131318c659f86f0eb18578d597e22522d3))
+
+## Features
+
+- Add channel & message URL formatters (#8371) ([a7deb8f](https://github.com/discordjs/discord.js/commit/a7deb8f89830ead6185c5fb46a49688b6d209ed1))
+
 # [@discordjs/builders@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.16.0...@discordjs/builders@1.0.0) - (2022-07-17)
 
 ## Info
