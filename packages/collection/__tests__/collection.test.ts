@@ -113,6 +113,19 @@ describe('combineEntries() tests', () => {
 	});
 });
 
+describe('complement() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
+	const coll2 = createCollectionFrom(['b', 2], ['c', 3]);
+
+	test('it returns a new collection', () => {
+		const c = coll1.complement(coll2);
+		expect(c).toBeInstanceOf(Collection);
+		expect(c.size).toStrictEqual(1);
+
+		expect(c).toStrictEqual(createCollectionFrom(['c', 3]));
+	});
+});
+
 describe('difference() tests', () => {
 	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
 	const coll2 = createTestCollection();
@@ -415,19 +428,6 @@ describe('intersect() tests', () => {
 		expect(c.size).toStrictEqual(1);
 
 		expect(c).toStrictEqual(createCollectionFrom(['a', 1]));
-	});
-});
-
-describe('complement() tests', () => {
-	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
-	const coll2 = createCollectionFrom(['b', 2], ['c', 3]);
-
-	test('it returns a new collection', () => {
-		const c = coll1.complement(coll2);
-		expect(c).toBeInstanceOf(Collection);
-		expect(c.size).toStrictEqual(1);
-
-		expect(c).toStrictEqual(createCollectionFrom(['c', 3]));
 	});
 });
 
