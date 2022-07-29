@@ -46,19 +46,18 @@ pnpm add discord.js
 
 ## Example usage
 
-Install all required dependencies:
+Install discord.js:
 
 ```sh-session
-npm install discord.js @discordjs/rest
-yarn add discord.js @discordjs/rest
-pnpm add discord.js @discordjs/rest
+npm install discord.js
+yarn add discord.js
+pnpm add discord.js
 ```
 
 Register a slash command against the Discord API:
 
 ```js
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord.js');
+const { REST, Routes } = require('discord.js');
 
 const commands = [
 	{
