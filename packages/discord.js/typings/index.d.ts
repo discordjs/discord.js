@@ -1865,6 +1865,7 @@ export class MessageMentions {
   private _channels: Collection<Snowflake, Channel> | null;
   private readonly _content: string;
   private _members: Collection<Snowflake, GuildMember> | null;
+  private _parsedUsers: Collection<Snowflake, User> | null;
 
   public get channels(): Collection<Snowflake, Channel>;
   public readonly client: Client;
@@ -1872,6 +1873,7 @@ export class MessageMentions {
   public readonly guild: Guild;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
   public get members(): Collection<Snowflake, GuildMember> | null;
+  public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
   public roles: Collection<Snowflake, Role>;
   public users: Collection<Snowflake, User>;

@@ -134,6 +134,13 @@ class MessageMentions {
     this._channels = null;
 
     /**
+     * Cached users for {@link MessageMentions#parsedUsers}
+     * @type {?Collection<Snowflake, User>}
+     * @private
+     */
+    this._parsedUsers = null;
+
+    /**
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
      * @property {Snowflake} channelId The mentioned channel's id
@@ -209,6 +216,23 @@ class MessageMentions {
   }
 
   /**
+   * Any user mentions that were included in the message content
+   * <info>Order as they appear first in the message content</info>
+   * @type {Collection<Snowflake, User>}
+   * @readonly
+   */
+  get parsedUsers() {
+    if (this._parsedUsers) return this._parsedUsers;
+    this._parsedUsers = new Collection();
+    let matches;
+    while ((matches = this.constructor.UsersPattern.exec(this._content)) !== null) {
+      const user = this.client.users.cache.get(matches[1]);
+      if (user) this._parsedUsers.set(user.id, user);
+    }
+    return this._parsedUsers;
+  }
+
+  /**
    * Options used to check for a mention.
    * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
@@ -227,16 +251,23 @@ class MessageMentions {
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = false, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data);
-    const role = this.guild?.roles.resolve(data);
-    const channel = this.client.channels.resolve(data);
 
-    if (!ignoreRepliedUser && this.users.has(this.repliedUser?.id) && this.repliedUser?.id === user?.id) return true;
+    if (!ignoreEveryone && user && this.everyone) return true;
+
+    const userWasRepliedTo = user && this.repliedUser?.id === user.id;
+
+    if (!ignoreRepliedUser && userWasRepliedTo && this.users.has(user.id)) return true;
+
     if (!ignoreDirect) {
-      if (this.users.has(user?.id)) return true;
-      if (this.roles.has(role?.id)) return true;
-      if (this.channels.has(channel?.id)) return true;
+      if (user && (!ignoreRepliedUser || this.parsedUsers.has(user.id)) && this.users.has(user.id)) return true;
+
+      const role = this.guild?.roles.resolve(data);
+      if (role && this.roles.has(role.id)) return true;
+
+      const channel = this.client.channels.resolve(data);
+      if (channel && this.channels.has(channel.id)) return true;
     }
-    if (user && !ignoreEveryone && this.everyone) return true;
+
     if (!ignoreRoles) {
       const member = this.guild?.members.resolve(data);
       if (member) {
