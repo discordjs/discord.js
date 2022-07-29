@@ -1701,7 +1701,7 @@ __metadata:
   resolution: "@discordjs/actions@workspace:packages/actions"
   dependencies:
     "@actions/core": ^1.9.0
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     c8: ^7.12.0
     eslint: ^8.20.0
     prettier: ^2.7.1
@@ -1721,7 +1721,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.6
     "@sapphire/shapeshift": ^3.5.1
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     c8: ^7.12.0
     discord-api-types: ^0.36.3
     downlevel-dts: ^0.10.0
@@ -1744,7 +1744,7 @@ __metadata:
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.6
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     c8: ^7.12.0
     downlevel-dts: ^0.10.0
     eslint: ^8.20.0
@@ -1788,7 +1788,7 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@types/jsdoc-to-markdown": ^7.0.3
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     commander: ^9.4.0
     eslint: ^8.20.0
     jsdoc-to-markdown: ^7.1.1
@@ -1809,7 +1809,7 @@ __metadata:
   dependencies:
     "@discordjs/proxy": ^1.0.0
     "@discordjs/rest": ^1.0.0
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     eslint: ^8.20.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
@@ -1827,7 +1827,7 @@ __metadata:
     "@discordjs/rest": ^1.0.0
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.6
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     "@types/supertest": ^2.0.12
     c8: ^7.12.0
     downlevel-dts: ^0.10.0
@@ -1853,7 +1853,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.28.6
     "@sapphire/async-queue": ^1.3.2
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     c8: ^7.12.0
     discord-api-types: ^0.36.3
     downlevel-dts: ^0.10.0
@@ -1873,7 +1873,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     c8: ^7.12.0
     commander: ^9.4.0
     eslint: ^8.20.0
@@ -1898,7 +1898,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.6
     "@types/jest": ^28.1.6
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     "@types/ws": ^8.5.3
     discord-api-types: ^0.36.3
     downlevel-dts: ^0.10.0
@@ -1929,7 +1929,7 @@ __metadata:
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^14.3.0
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     "@types/react-dom": ^18.0.6
     "@types/react-syntax-highlighter": ^15.5.4
     "@typescript-eslint/eslint-plugin": ^5.31.0
@@ -1961,7 +1961,7 @@ __metadata:
     sharp: ^0.30.7
     typescript: ^4.7.4
     unocss: ^0.44.7
-    vercel: ^27.2.0
+    vercel: ^27.3.1
     vitest: ^0.19.1
   languageName: unknown
   linkType: soft
@@ -1976,7 +1976,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.5
     "@microsoft/api-extractor": ^7.28.6
     "@sapphire/async-queue": ^1.3.2
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     "@types/ws": ^8.5.3
     "@vladfrangu/async_event_emitter": ^2.0.1
     c8: ^7.12.0
@@ -3503,10 +3503,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.45":
-  version: 16.11.45
-  resolution: "@types/node@npm:16.11.45"
-  checksum: 57d61c951024f66d796e71e4a972faef266007398cd4e93a195822fea2d5deb41d0615f394a99ece89772b145ff057321d138c7e3442455dc7d785ff67cebde3
+"@types/node@npm:^16.11.46":
+  version: 16.11.46
+  resolution: "@types/node@npm:16.11.46"
+  checksum: 9fff6b70fc8a47019c28f080ead5484bd4620fad1d25bfa3c55ebe444a1adbb7e339db5fcc33227d8a272232039221a31bf0b026c1b77410c49760976fa4cce1
   languageName: node
   linkType: hard
 
@@ -4014,40 +4014,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/build-utils@npm:5.0.4":
-  version: 5.0.4
-  resolution: "@vercel/build-utils@npm:5.0.4"
-  checksum: 0628daf26b6c190d5ca796a89b114d93992ff52f6ab674c608385510dc300e2cf838b76a1b5b7906ec1590ab434e10ab9186f49c984fa5fa8b59094e6fe667fc
+"@vercel/build-utils@npm:5.0.6":
+  version: 5.0.6
+  resolution: "@vercel/build-utils@npm:5.0.6"
+  checksum: 031dd87f680bb47b392b697a8ea2c3d5db4ce060a9759274e58101b827ceead5af0fc6d391df674416f975b488a1ccebfd7826d35ccd21d4cb1ac783a28e838b
   languageName: node
   linkType: hard
 
-"@vercel/go@npm:2.0.8":
-  version: 2.0.8
-  resolution: "@vercel/go@npm:2.0.8"
-  checksum: 8fe60f7019560d397d031884c0004ffee21cbc74d654c4ecc2e3aec156f348021fbfea57f23ae510a78666927d4d0f4bbe9924ea5e5be88c1e2ad57c44657115
+"@vercel/go@npm:2.0.10":
+  version: 2.0.10
+  resolution: "@vercel/go@npm:2.0.10"
+  checksum: 514ed7004aa7b537d1408f28e8758091431dd5cdbc50e5f1314211513691b0c91cbf2a9d86f399e1295f8166dd6ca42a8b71efc06dafc809a1c241b94b025a8f
   languageName: node
   linkType: hard
 
-"@vercel/hydrogen@npm:0.0.5":
-  version: 0.0.5
-  resolution: "@vercel/hydrogen@npm:0.0.5"
-  checksum: d4d6c380cfc089a83965cb0a13a1f0693a66e306a7caf7ab3c80938154570b429ada3a42b55cb7dd3ab7303625f921e42d7126356da788c4e9898fb355f78ed9
+"@vercel/hydrogen@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@vercel/hydrogen@npm:0.0.7"
+  checksum: e686370fb4c3fe23b1e49fe8881ed2ded8117fe1a597e27ed9612f1e319bf30532282338a8ff403eabdfe57d0821aaad77c283cf6559f49275ee053bd041ad2a
   languageName: node
   linkType: hard
 
-"@vercel/next@npm:3.1.8":
-  version: 3.1.8
-  resolution: "@vercel/next@npm:3.1.8"
-  checksum: 8169da7f2b3c095170f68df43db9ad46f1fb073f09713f597cbae6d9c254572bf377b3dc2227ea9e7a4224e2960193f151812df5f5fba357f6d21569b1509f53
+"@vercel/next@npm:3.1.10":
+  version: 3.1.10
+  resolution: "@vercel/next@npm:3.1.10"
+  checksum: 3988e20c274ea7ff64d4f453dd00dbb457954876d88c03f1c2635986aeb710602f52ce0e390cbfeeab1146c550130a5921d2cb36ee03e41b7986e61ace108c8a
   languageName: node
   linkType: hard
 
-"@vercel/nft@npm:0.20.1":
-  version: 0.20.1
-  resolution: "@vercel/nft@npm:0.20.1"
+"@vercel/nft@npm:0.21.0":
+  version: 0.21.0
+  resolution: "@vercel/nft@npm:0.21.0"
   dependencies:
     "@mapbox/node-pre-gyp": ^1.0.5
     acorn: ^8.6.0
+    async-sema: ^3.1.1
     bindings: ^1.4.0
     estree-walker: 2.0.2
     glob: ^7.1.3
@@ -4058,7 +4059,7 @@ __metadata:
     rollup-pluginutils: ^2.8.2
   bin:
     nft: out/cli.js
-  checksum: 4c1c01ee1d9273b793fd2a580a82e91bf1afae8adc63105475c3c3df40c7599a074c44e79427ead77e6ece64c2c5d4841a9cfb0091f422fedb49cfdb5caa130c
+  checksum: 832e71f0770ce0f1a01da432ebceedc3a20bca1f6b99db1451134b889a96e69c23e9774f2eebeb507798f448de13770997bd851eecd80fff6b15fd1cfc5b1dda
   languageName: node
   linkType: hard
 
@@ -4069,12 +4070,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/node@npm:2.4.5":
-  version: 2.4.5
-  resolution: "@vercel/node@npm:2.4.5"
+"@vercel/node@npm:2.5.1":
+  version: 2.5.1
+  resolution: "@vercel/node@npm:2.5.1"
   dependencies:
     "@types/node": "*"
-    "@vercel/build-utils": 5.0.4
+    "@vercel/build-utils": 5.0.6
     "@vercel/node-bridge": 3.0.0
     "@vercel/static-config": 2.0.1
     edge-runtime: 1.0.1
@@ -4083,34 +4084,34 @@ __metadata:
     node-fetch: 2.6.7
     ts-node: 8.9.1
     typescript: 4.3.4
-  checksum: 65b91d288979ce1e154c59b492aa27f37b6eb883a755ed47f2d88037018fb6f859039cd32bba84b827429be54fb3c12bd3e901d5f6175b9e3b9bab70210ae579
+  checksum: 401a8a3e856a775fc7adaebb1f019faf170506135c68b11c4a6724a413434393b524e988c028c7381a4bbc11657bad7efccdbc899b730c2e8990d602ac696668
   languageName: node
   linkType: hard
 
-"@vercel/python@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@vercel/python@npm:3.1.0"
-  checksum: deb472b7b0e958cba9e7cd7284c0b2b180cad73a81e103b7c7dd77d36629513030e0651b211570d7f0659179eb22a897ad5c862cdecb126357fefd37f26bf5f4
+"@vercel/python@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@vercel/python@npm:3.1.2"
+  checksum: bc985c0299d5202eb5512c69d7c655b6415c345b7263f012fbf7c362e127594f346f679a86de8fef30a7e49c97e480389975a8d3679043cdd27b0b1ba0107fe2
   languageName: node
   linkType: hard
 
-"@vercel/redwood@npm:1.0.9":
-  version: 1.0.9
-  resolution: "@vercel/redwood@npm:1.0.9"
+"@vercel/redwood@npm:1.0.11":
+  version: 1.0.11
+  resolution: "@vercel/redwood@npm:1.0.11"
   dependencies:
-    "@vercel/nft": 0.20.1
+    "@vercel/nft": 0.21.0
     "@vercel/routing-utils": 2.0.0
     semver: 6.1.1
-  checksum: 63e5d1ad5a5b9d329e65cc88f6e1544374fe164fa4a43c1c2cbb7b26cf9933d12cde3126b042f98723bc9bcab6fa17b9a355a2ef0203715d7065021f7ddc594e
+  checksum: 4b045e02bc5c9469ac59f585a021728c8b4aaa865790366ae3b202a1386aef00c6fa7689a316ffc6c37d0131b0ea01cbba89eb9b0b1d3a4333e0d00668a59a6f
   languageName: node
   linkType: hard
 
-"@vercel/remix@npm:1.0.10":
-  version: 1.0.10
-  resolution: "@vercel/remix@npm:1.0.10"
+"@vercel/remix@npm:1.0.12":
+  version: 1.0.12
+  resolution: "@vercel/remix@npm:1.0.12"
   dependencies:
-    "@vercel/nft": 0.20.1
-  checksum: 33d95c62b6970b01e07a7bb532a6f662a6cdcd4ad51b1c2a2c731caf4e8f2a3adcfc4fc774e02ecfde74d2ddf6676c097e4a5b7b80d220d3cf940de64436d667
+    "@vercel/nft": 0.21.0
+  checksum: 5ecce6aef8a02c30acd0e1dab0691934f38ca7a6bca3350f1bc07547bf2be7182b3ccab8878a58fdf1f75900bc5c07b6d7aa573b95e3943aa01edd40bf3f5c18
   languageName: node
   linkType: hard
 
@@ -4127,17 +4128,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/ruby@npm:1.3.16":
-  version: 1.3.16
-  resolution: "@vercel/ruby@npm:1.3.16"
-  checksum: 958d905c872990b006ead5d46fc0f48f84d8445a990351fcf75ca7340d8ad0a2d53cd82b216cc8a2de742edea574b1a3fe4bb3109cabc1ddd0a845882f981c04
+"@vercel/ruby@npm:1.3.18":
+  version: 1.3.18
+  resolution: "@vercel/ruby@npm:1.3.18"
+  checksum: 24c8d7a3166b6874a641055b4612ad0646cff045c5a9827103a0f5a9bf941ebdbeb2fa1a3c8a28bf7f036b039776b5cd1130dcbf237a5546062b5d0d863f75a6
   languageName: node
   linkType: hard
 
-"@vercel/static-build@npm:1.0.9":
-  version: 1.0.9
-  resolution: "@vercel/static-build@npm:1.0.9"
-  checksum: 93cc00416a73642c2e74b8d9b9adf1a0cf3efce514588119df08ee04eac55c9e71f39c9c9238fb09fa4740aa69e464e86aaee56d384a6dee4f75ee1e1b0ca691
+"@vercel/static-build@npm:1.0.11":
+  version: 1.0.11
+  resolution: "@vercel/static-build@npm:1.0.11"
+  checksum: fac2e7fae85c6fef668968ac80fbe5d86efc0c84ab1c557a3f93ca82da35fcbcfbbb57466ad1621aabde355b8d1533d07ba12af94b43e8d2237020acaa817933
   languageName: node
   linkType: hard
 
@@ -4637,6 +4638,13 @@ __metadata:
   version: 2.0.0
   resolution: "astral-regex@npm:2.0.0"
   checksum: 876231688c66400473ba505731df37ea436e574dd524520294cc3bbc54ea40334865e01fa0d074d74d036ee874ee7e62f486ea38bc421ee8e6a871c06f011766
+  languageName: node
+  linkType: hard
+
+"async-sema@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "async-sema@npm:3.1.1"
+  checksum: 07b8c51f6cab107417ecdd8126b7a9fe5a75151b7f69fdd420dcc8ee08f9e37c473a217247e894b56e999b088b32e902dbe41637e4e9b594d3f8dfcdddfadc5e
   languageName: node
   linkType: hard
 
@@ -6505,7 +6513,7 @@ __metadata:
     "@discordjs/rest": "workspace:^"
     "@favware/cliff-jumper": ^1.8.5
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.45
+    "@types/node": ^16.11.46
     "@types/ws": ^8.5.3
     discord-api-types: ^0.36.3
     dtslint: ^4.2.1
@@ -15300,25 +15308,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^27.2.0":
-  version: 27.2.0
-  resolution: "vercel@npm:27.2.0"
+"vercel@npm:^27.3.1":
+  version: 27.3.1
+  resolution: "vercel@npm:27.3.1"
   dependencies:
-    "@vercel/build-utils": 5.0.4
-    "@vercel/go": 2.0.8
-    "@vercel/hydrogen": 0.0.5
-    "@vercel/next": 3.1.8
-    "@vercel/node": 2.4.5
-    "@vercel/python": 3.1.0
-    "@vercel/redwood": 1.0.9
-    "@vercel/remix": 1.0.10
-    "@vercel/ruby": 1.3.16
-    "@vercel/static-build": 1.0.9
+    "@vercel/build-utils": 5.0.6
+    "@vercel/go": 2.0.10
+    "@vercel/hydrogen": 0.0.7
+    "@vercel/next": 3.1.10
+    "@vercel/node": 2.5.1
+    "@vercel/python": 3.1.2
+    "@vercel/redwood": 1.0.11
+    "@vercel/remix": 1.0.12
+    "@vercel/ruby": 1.3.18
+    "@vercel/static-build": 1.0.11
     update-notifier: 5.1.0
   bin:
     vc: dist/index.js
     vercel: dist/index.js
-  checksum: 07436a5f5b84abccea1bd6e69939d0b09741859d807daa12fdf5b8b09610c9c7edde9a225125fcd3a6dd14c12c9d3d59a927208d89324b6f5c4fda241a8a46e6
+  checksum: e2cca364039c191219a7161ed2fc96977e3fa9e3e8d82222d6387f051b2a046e22eda3bb8e0cf64815474511db081ee42abfdd67feaee4bd0d9a7b0d2039053e
   languageName: node
   linkType: hard
 
