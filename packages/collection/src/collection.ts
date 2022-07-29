@@ -663,14 +663,14 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The missing method returns a new structure containing items where the keys and values of original structure are not present in the other.
+	 * The missing method returns a new structure containing items where the keys and values of other structure are not present in the original.
 	 *
 	 * @param other - The other Collection to filter against
 	 */
-	public missing<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
-		const coll = new this.constructor[Symbol.species]<K, V>();
-		for (const [k, v] of this) {
-			if (!(other.has(k) || Object.is(v, other.get(k)))) {
+	public complement<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
+		const coll = new this.constructor[Symbol.species]<K, T>();
+		for (const [k, v] of other) {
+			if (!(this.has(k) || Object.is(v, this.get(k)))) {
 				coll.set(k, v);
 			}
 		}

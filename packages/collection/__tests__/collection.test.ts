@@ -423,11 +423,11 @@ describe('missing() tests', () => {
 	const coll2 = createCollectionFrom(['b', 2], ['c', 3]);
 
 	test('it returns a new collection', () => {
-		const c = coll1.missing(coll2);
+		const c = coll1.complement(coll2);
 		expect(c).toBeInstanceOf(Collection);
 		expect(c.size).toStrictEqual(1);
 
-		expect(c).toStrictEqual(createCollectionFrom(['a', 1]));
+		expect(c).toStrictEqual(createCollectionFrom(['c', 3]));
 	});
 });
 
