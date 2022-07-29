@@ -15,6 +15,7 @@ export function Class({ data }: ClassProps) {
 			summary={data.summary}
 			typeParams={data.typeParameterData}
 			extendsTokens={data.extendsTokens}
+			implementsTokens={data.implementsTokens}
 		>
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />
