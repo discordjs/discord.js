@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.1.0](https://github.com/discordjs/discord.js/compare/14.0.3...14.1.0) - (2022-07-29)
+
+## Bug Fixes
+
+- **MessageMentions:** `ignoreRepliedUser` option in `has()` (#8202) ([b4e2c0c](https://github.com/discordjs/discord.js/commit/b4e2c0c4d5538b945f9d597c6410a6f84b315084))
+- **GuildChannelManager:** Allow unsetting rtcRegion (#8359) ([a7d49e5](https://github.com/discordjs/discord.js/commit/a7d49e56fc7c34d2e4548d9e5bf0aec45273506e))
+- **ThreadChannel:** Omit webhook fetching (#8351) ([3839958](https://github.com/discordjs/discord.js/commit/3839958e3f682c715f1017da05436d2fe34900fd))
+- **GuildAuditLogsEntry:** Replace OverwriteType with AuditLogOptionsType (#8345) ([58c1b51](https://github.com/discordjs/discord.js/commit/58c1b51c5ceab137ad9851919b338419eeeab69e))
+- **ShardClientUtil#\_respond:** Construct global error (#8348) ([8e520f9](https://github.com/discordjs/discord.js/commit/8e520f946a5b9f93a939290facf4ccca2c05ff21))
+- **Presence:** Do not return NaN for activity timestamp (#8340) ([df42fdf](https://github.com/discordjs/discord.js/commit/df42fdfc421f1190f0a2267a66efd3c921ec2348))
+- **Client:** Omit private properties from toJSON (#8337) ([830c670](https://github.com/discordjs/discord.js/commit/830c670c61dcb17d8ab2a894a3203c68917d27e0))
+- **ApplicationCommandManager:** Allow passing 0n to defaultMemberPermissions (#8311) ([1fb7b30](https://github.com/discordjs/discord.js/commit/1fb7b30963cfe7ea4c05b1f3b42171c879c46a1d))
+
+## Documentation
+
+- **InteractionResponses:** Add `showModal()` return type (#8376) ([0b61dbf](https://github.com/discordjs/discord.js/commit/0b61dbf720e844322b066e30080c3537ab3d8174))
+- **WebhookClient:** Document working options (#8375) ([ba6797e](https://github.com/discordjs/discord.js/commit/ba6797e74209161b64c412de1b6f307cb28736b8))
+- **Message:** Document gateway intent for content (#8364) ([2130aae](https://github.com/discordjs/discord.js/commit/2130aae3210a8eaf91c5ccae5463940d49052c7d))
+- Use info blocks for requirements (#8361) ([80b9738](https://github.com/discordjs/discord.js/commit/80b9738957ebf5b6eb7c9858cec0fb1c897d0a1f))
+- **WebhookClient:** Make constructor a union (#8370) ([e9920a9](https://github.com/discordjs/discord.js/commit/e9920a9c98ffb78bd7d0ae00d486476367296646))
+- Update docs and examples to PascalCase links (#8305) ([34ba9d1](https://github.com/discordjs/discord.js/commit/34ba9d1c4c80eff7e6ac199a40232d07491432cc))
+
+## Features
+
+- Add channel & message URL formatters (#8371) ([a7deb8f](https://github.com/discordjs/discord.js/commit/a7deb8f89830ead6185c5fb46a49688b6d209ed1))
+- Restore missing typeguards (#8328) ([77ed407](https://github.com/discordjs/discord.js/commit/77ed407f6aadb68e729470c5269e9b526cb1b3f0))
+- **GuildMember:** Add dmChannel getter (#8281) ([4fc2c60](https://github.com/discordjs/discord.js/commit/4fc2c60a3bb43671b4b0202ae75eab42aba163ff))
+
+## Refactor
+
+- Deprecate `Formatter` class (#8373) ([7fd9ed8](https://github.com/discordjs/discord.js/commit/7fd9ed8f13d17ce7e98e34f7454d9047054d8467))
+- **PermissionOverwriteManager:** Use `OverwriteType` (#8374) ([6d24805](https://github.com/discordjs/discord.js/commit/6d248051cfd431e9cb1c65cb98f56aa0a6556407))
+
+## Typings
+
+- **GuildAuditLogsEntryExtraField:** Use `AuditLogOptionsType` (#8349) ([200ab91](https://github.com/discordjs/discord.js/commit/200ab91f527d8a5706d277b89a975096f75d141a))
+
 # [14.0.3](https://github.com/discordjs/discord.js/compare/14.0.2...14.0.3) - (2022-07-18)
 
 ## Bug Fixes
