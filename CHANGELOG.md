@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.9.2](https://github.com/discordjs/discord.js/compare/13.9.1...13.9.2) - (2022-07-29)
+
+## Bug Fixes
+
+- **MessageMentions:** `ignoreRepliedUser` option in `has()` (v13) (#8365) ([d0a4199](https://github.com/discordjs/discord.js/commit/d0a4199760b4c7fe64f558d8d4d2302873f78b0e))
+- **GuildChannelManager:** Allow unsetting rtcRegion (v13) (#8362) ([9612507](https://github.com/discordjs/discord.js/commit/96125079a23c87fe0fb3ee01a0de5a9889fc1057))
+- **ThreadChannel:** Omit webhook fetching (v13) (#8352) ([4f7c1e3](https://github.com/discordjs/discord.js/commit/4f7c1e35c38bb9f1d524406c008ffceb2cfde3db))
+
 # [13.9.1](https://github.com/discordjs/discord.js/compare/13.9.0...13.9.1) - (2022-07-23)
 
 ## Bug Fixes

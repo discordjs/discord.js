@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "13.9.1",
+  "version": "13.9.2",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
