@@ -208,6 +208,63 @@ export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): 
 }
 
 /**
+ * Formats a channel link for a direct message channel.
+ *
+ * @param channelId - The channel's id
+ */
+export function channelLink<C extends Snowflake>(channelId: C): `https://discord.com/channels/@me/${C}`;
+
+/**
+ * Formats a channel link for a guild channel.
+ *
+ * @param channelId - The channel's id
+ * @param guildId - The guild's id
+ */
+export function channelLink<C extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	guildId: G,
+): `https://discord.com/channels/${G}/${C}`;
+
+export function channelLink<C extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	guildId?: G,
+): `https://discord.com/channels/@me/${C}` | `https://discord.com/channels/${G}/${C}` {
+	return `https://discord.com/channels/${guildId ?? '@me'}/${channelId}`;
+}
+
+/**
+ * Formats a message link for a direct message channel.
+ *
+ * @param channelId - The channel's id
+ * @param messageId - The message's id
+ */
+export function messageLink<C extends Snowflake, M extends Snowflake>(
+	channelId: C,
+	messageId: M,
+): `https://discord.com/channels/@me/${C}/${M}`;
+
+/**
+ * Formats a message link for a guild channel.
+ *
+ * @param channelId - The channel's id
+ * @param messageId - The message's id
+ * @param guildId - The guild's id
+ */
+export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	messageId: M,
+	guildId: G,
+): `https://discord.com/channels/${G}/${C}/${M}`;
+
+export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	messageId: M,
+	guildId?: G,
+): `https://discord.com/channels/@me/${C}/${M}` | `https://discord.com/channels/${G}/${C}/${M}` {
+	return `${typeof guildId === 'undefined' ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
+}
+
+/**
  * Formats a date into a short date-time string
  *
  * @param date - The date to format, defaults to the current time
