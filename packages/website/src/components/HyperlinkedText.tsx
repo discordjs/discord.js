@@ -19,7 +19,7 @@ export function HyperlinkedText({ tokens }: HyperlinkedTextProps) {
 				if (token.path) {
 					return (
 						<Link key={token.text} href={token.path}>
-							<a className="text-blue-500 dark:text-blue-300">{token.text}</a>
+							<a className="text-blue-500 dark:text-blue-300 no-underline hover:underline">{token.text}</a>
 						</Link>
 					);
 				}
