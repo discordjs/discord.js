@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.1.0...@discordjs/ws@0.2.0) - (2022-07-30)
+
+## Bug Fixes
+
+- **WebSocketShard:** Account code 1000 with no prior indication (#8399) ([5137bfc](https://github.com/discordjs/discord.js/commit/5137bfc17d763488083b76ee9008611df333272a))
+
 # [@discordjs/ws@0.1.0](https://github.com/discordjs/discord.js/tree/@discordjs/ws@0.1.0) - (2022-07-27)
 
 ## Bug Fixes
