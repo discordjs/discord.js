@@ -73,8 +73,8 @@ class Embed {
    * @typedef {Object} EmbedAssetData
    * @property {?string} url The URL of the image
    * @property {?string} proxyURL The proxy URL of the image
-   * @property {?string} height The height of the image
-   * @property {?string} width The width of the image
+   * @property {?number} height The height of the image
+   * @property {?number} width The width of the image
    */
 
   /**
