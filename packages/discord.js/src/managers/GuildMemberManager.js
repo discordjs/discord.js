@@ -442,7 +442,7 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * The options for {@link GuildMemberManager#addRole} and {@link GuildMemberManager#removeRole}
+   * The options for {@link GuildMemberManager#addRole} and {@link GuildMemberManager#removeRole}.
    * @typedef RoleAddOptions
    * @property {RoleResolvable} role
    * @property {string} [reason]
