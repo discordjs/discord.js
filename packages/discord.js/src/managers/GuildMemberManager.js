@@ -450,8 +450,8 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * Adds a role to a member.
-   * @param {User} user 
-   * @param {RoleAddOptions} options 
+   * @param {User} user The member to add a role to
+   * @param {RoleAddOptions} options Options for the role adding
    */
   async addRole(user, { role, reason }) {
     user = this.guild.members.resolveId(user);
