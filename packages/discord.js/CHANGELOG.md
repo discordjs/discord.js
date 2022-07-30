@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.1.2](https://github.com/discordjs/discord.js/compare/14.1.1...14.1.2) - (2022-07-30)
+
+## Bug Fixes
+
+- **errors:** Error codes (#8398) ([480c85c](https://github.com/discordjs/discord.js/commit/480c85c9c3d129204b3399ed726a4e570e0b2852))
+
+## Documentation
+
+- **Embed:** Ensure height and width are numbers (#8396) ([fca3dad](https://github.com/discordjs/discord.js/commit/fca3dada2a565eecfc7e5275cc9317df1d261871))
+
 # [14.1.0](https://github.com/discordjs/discord.js/compare/14.0.3...14.1.0) - (2022-07-29)
 
 ## Bug Fixes
