@@ -448,7 +448,7 @@ class GuildMemberManager extends CachedManager {
    * @property {string} [reason]
    */
   /**
-   * 
+   * Adds a single role to a member
    * @param {User} user 
    * @param {RoleAddOptions} options 
    */
@@ -459,7 +459,7 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * 
+   * Removes a single role from a member
    * @param {User} user 
    * @param {RoleAddOptions} options 
    */
