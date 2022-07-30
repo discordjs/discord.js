@@ -460,7 +460,7 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Removes a single role from a member
+   * Removes a role from a member.
    * @param {User} user 
    * @param {RoleAddOptions} options 
    */
