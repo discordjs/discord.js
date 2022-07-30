@@ -3021,152 +3021,152 @@ export const version: string;
 
 //#region Errors
 export enum DiscordjsErrorCodes {
-  ClientInvalidOption,
-  ClientInvalidProvidedShards,
-  ClientMissingIntents,
-  ClientNotReady,
+  ClientInvalidOption = 'ClientInvalidOption',
+  ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
+  ClientMissingIntents = 'ClientMissingIntents',
+  ClientNotReady = 'ClientNotReady',
 
-  TokenInvalid,
-  TokenMissing,
-  ApplicationCommandPermissionsTokenMissing,
+  TokenInvalid = 'TokenInvalid',
+  TokenMissing = 'TokenMissing',
+  ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
-  WSCloseRequested,
-  WSConnectionExists,
-  WSNotOpen,
-  ManagerDestroyed,
+  WSCloseRequested = 'WSCloseRequested',
+  WSConnectionExists = 'WSConnectionExists',
+  WSNotOpen = 'WSNotOpen',
+  ManagerDestroyed = 'ManagerDestroyed',
 
-  BitFieldInvalid,
+  BitFieldInvalid = 'BitFieldInvalid',
 
-  ShardingInvalid,
-  ShardingRequired,
-  InvalidIntents,
-  DisallowedIntents,
-  ShardingNoShards,
-  ShardingInProcess,
-  ShardingInvalidEvalBroadcast,
-  ShardingShardNotFound,
-  ShardingAlreadySpawned,
-  ShardingProcessExists,
-  ShardingWorkerExists,
-  ShardingReadyTimeout,
-  ShardingReadyDisconnected,
-  ShardingReadyDied,
-  ShardingNoChildExists,
-  ShardingShardMiscalculation,
+  ShardingInvalid = 'ShardingInvalid',
+  ShardingRequired = 'ShardingRequired',
+  InvalidIntents = 'InvalidIntents',
+  DisallowedIntents = 'DisallowedIntents',
+  ShardingNoShards = 'ShardingNoShards',
+  ShardingInProcess = 'ShardingInProcess',
+  ShardingInvalidEvalBroadcast = 'ShardingInvalidEvalBroadcast',
+  ShardingShardNotFound = 'ShardingShardNotFound',
+  ShardingAlreadySpawned = 'ShardingAlreadySpawned',
+  ShardingProcessExists = 'ShardingProcessExists',
+  ShardingWorkerExists = 'ShardingWorkerExists',
+  ShardingReadyTimeout = 'ShardingReadyTimeout',
+  ShardingReadyDisconnected = 'ShardingReadyDisconnected',
+  ShardingReadyDied = 'ShardingReadyDied',
+  ShardingNoChildExists = 'ShardingNoChildExists',
+  ShardingShardMiscalculation = 'ShardingShardMiscalculation',
 
-  ColorRange,
-  ColorConvert,
+  ColorRange = 'ColorRange',
+  ColorConvert = 'ColorConvert',
 
-  InviteOptionsMissingChannel,
+  InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
-  ButtonLabel,
-  ButtonURL,
-  ButtonCustomId,
+  ButtonLabel = 'ButtonLabel',
+  ButtonURL = 'ButtonURL',
+  ButtonCustomId = 'ButtonCustomId',
 
-  SelectMenuCustomId,
-  SelectMenuPlaceholder,
-  SelectOptionLabel,
-  SelectOptionValue,
-  SelectOptionDescription,
+  SelectMenuCustomId = 'SelectMenuCustomId',
+  SelectMenuPlaceholder = 'SelectMenuPlaceholder',
+  SelectOptionLabel = 'SelectOptionLabel',
+  SelectOptionValue = 'SelectOptionValue',
+  SelectOptionDescription = 'SelectOptionDescription',
 
-  InteractionCollectorError,
+  InteractionCollectorError = 'InteractionCollectorError',
 
-  FileNotFound,
+  FileNotFound = 'FileNotFound',
 
-  UserBannerNotFetched,
-  UserNoDMChannel,
+  UserBannerNotFetched = 'UserBannerNotFetched',
+  UserNoDMChannel = 'UserNoDMChannel',
 
-  VoiceNotStageChannel,
+  VoiceNotStageChannel = 'VoiceNotStageChannel',
 
-  VoiceStateNotOwn,
-  VoiceStateInvalidType,
+  VoiceStateNotOwn = 'VoiceStateNotOwn',
+  VoiceStateInvalidType = 'VoiceStateInvalidType',
 
-  ReqResourceType,
+  ReqResourceType = 'ReqResourceType',
 
-  ImageFormat,
-  ImageSize,
+  ImageFormat = 'ImageFormat',
+  ImageSize = 'ImageSize',
 
-  MessageBulkDeleteType,
-  MessageNonceType,
-  MessageContentType,
+  MessageBulkDeleteType = 'MessageBulkDeleteType',
+  MessageNonceType = 'MessageNonceType',
+  MessageContentType = 'MessageContentType',
 
-  SplitMaxLen,
+  SplitMaxLen = 'SplitMaxLen',
 
-  BanResolveId,
-  FetchBanResolveId,
+  BanResolveId = 'BanResolveId',
+  FetchBanResolveId = 'FetchBanResolveId',
 
-  PruneDaysType,
+  PruneDaysType = 'PruneDaysType',
 
-  GuildChannelResolve,
-  GuildVoiceChannelResolve,
-  GuildChannelOrphan,
-  GuildChannelUnowned,
-  GuildOwned,
-  GuildMembersTimeout,
-  GuildUncachedMe,
-  ChannelNotCached,
-  StageChannelResolve,
-  GuildScheduledEventResolve,
-  FetchOwnerId,
+  GuildChannelResolve = 'GuildChannelResolve',
+  GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
+  GuildChannelOrphan = 'GuildChannelOrphan',
+  GuildChannelUnowned = 'GuildChannelUnowned',
+  GuildOwned = 'GuildOwned',
+  GuildMembersTimeout = 'GuildMembersTimeout',
+  GuildUncachedMe = 'GuildUncachedMe',
+  ChannelNotCached = 'ChannelNotCached',
+  StageChannelResolve = 'StageChannelResolve',
+  GuildScheduledEventResolve = 'GuildScheduledEventResolve',
+  FetchOwnerId = 'FetchOwnerId',
 
-  InvalidType,
-  InvalidElement,
+  InvalidType = 'InvalidType',
+  InvalidElement = 'InvalidElement',
 
-  MessageThreadParent,
-  MessageExistingThread,
-  ThreadInvitableType,
+  MessageThreadParent = 'MessageThreadParent',
+  MessageExistingThread = 'MessageExistingThread',
+  ThreadInvitableType = 'ThreadInvitableType',
 
-  WebhookMessage,
-  WebhookTokenUnavailable,
-  WebhookURLInvalid,
-  WebhookApplication,
-  MessageReferenceMissing,
+  WebhookMessage = 'WebhookMessage',
+  WebhookTokenUnavailable = 'WebhookTokenUnavailable',
+  WebhookURLInvalid = 'WebhookURLInvalid',
+  WebhookApplication = 'WebhookApplication',
+  MessageReferenceMissing = 'MessageReferenceMissing',
 
-  EmojiType,
-  EmojiManaged,
-  MissingManageEmojisAndStickersPermission,
-  NotGuildSticker,
+  EmojiType = 'EmojiType',
+  EmojiManaged = 'EmojiManaged',
+  MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
+  NotGuildSticker = 'NotGuildSticker',
 
-  ReactionResolveUser,
+  ReactionResolveUser = 'ReactionResolveUser',
 
-  VanityURL,
+  VanityURL = 'VanityURL',
 
-  InviteResolveCode,
+  InviteResolveCode = 'InviteResolveCode',
 
-  InviteNotFound,
+  InviteNotFound = 'InviteNotFound',
 
-  DeleteGroupDMChannel,
-  FetchGroupDMChannel,
+  DeleteGroupDMChannel = 'DeleteGroupDMChannel',
+  FetchGroupDMChannel = 'FetchGroupDMChannel',
 
-  MemberFetchNonceLength,
+  MemberFetchNonceLength = 'MemberFetchNonceLength',
 
-  GlobalCommandPermissions,
-  GuildUncachedEntityResolve,
+  GlobalCommandPermissions = 'GlobalCommandPermissions',
+  GuildUncachedEntityResolve = 'GuildUncachedEntityResolve',
 
-  InteractionAlreadyReplied,
-  InteractionNotReplied,
-  InteractionEphemeralReplied,
+  InteractionAlreadyReplied = 'InteractionAlreadyReplied',
+  InteractionNotReplied = 'InteractionNotReplied',
+  InteractionEphemeralReplied = 'InteractionEphemeralReplied',
 
-  CommandInteractionOptionNotFound,
-  CommandInteractionOptionType,
-  CommandInteractionOptionEmpty,
-  CommandInteractionOptionNoSubcommand,
-  CommandInteractionOptionNoSubcommandGroup,
-  AutocompleteInteractionOptionNoFocusedOption,
+  CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
+  CommandInteractionOptionType = 'CommandInteractionOptionType',
+  CommandInteractionOptionEmpty = 'CommandInteractionOptionEmpty',
+  CommandInteractionOptionNoSubcommand = 'CommandInteractionOptionNoSubcommand',
+  CommandInteractionOptionNoSubcommandGroup = 'CommandInteractionOptionNoSubcommandGroup',
+  AutocompleteInteractionOptionNoFocusedOption = 'AutocompleteInteractionOptionNoFocusedOption',
 
-  ModalSubmitInteractionFieldNotFound,
-  ModalSubmitInteractionFieldType,
+  ModalSubmitInteractionFieldNotFound = 'ModalSubmitInteractionFieldNotFound',
+  ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
 
-  InvalidMissingScopes,
+  InvalidMissingScopes = 'InvalidMissingScopes',
 
-  NotImplemented,
+  NotImplemented = 'NotImplemented',
 
-  SweepFilterReturn,
+  SweepFilterReturn = 'SweepFilterReturn',
 }
 
 export interface DiscordjsErrorFields<Name extends string> {
-  readonly name: `${Name} [${keyof typeof DiscordjsErrorCodes}]`;
-  get code(): keyof typeof DiscordjsErrorCodes;
+  readonly name: `${Name} [${DiscordjsErrorCodes}]`;
+  get code(): DiscordjsErrorCodes;
 }
 
 export function DiscordjsErrorMixin<T, N extends string>(
