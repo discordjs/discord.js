@@ -461,8 +461,8 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * Removes a role from a member.
-   * @param {User} user 
-   * @param {RoleAddOptions} options 
+   * @param {User} user The member to remove a role from
+   * @param {RoleAddOptions} options Options for the role removal
    */
    async removeRole(user, { role, reason }) {
     user = this.guild.members.resolveId(user);
