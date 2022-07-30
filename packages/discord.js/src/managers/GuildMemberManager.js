@@ -447,6 +447,7 @@ class GuildMemberManager extends CachedManager {
    * @property {RoleResolvable} role
    * @property {string} [reason]
    */
+
   /**
    * Adds a role to a member.
    * @param {User} user 
