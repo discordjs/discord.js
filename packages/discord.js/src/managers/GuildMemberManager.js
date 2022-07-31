@@ -443,14 +443,14 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * The options for {@link GuildMemberManager#addRole} and {@link GuildMemberManager#removeRole}.
-   * @typedef RoleModifyOptions
+   * @typedef {Object} RoleModifyOptions
    * @property {RoleResolvable} role The role to add or remove
    * @property {string} [reason] The reason for this role addition or removal
    */
 
   /**
    * Adds a role to a member.
-   * @param {User} user The member to add a role to
+   * @param {GuildMemberResolvable} user The member to add a role to
    * @param {RoleModifyOptions} options Options for the role adding
    * @returns {Promise<void>}
    */
@@ -462,7 +462,7 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * Removes a role from a member.
-   * @param {User} user The member to remove a role from
+   * @param {GuildMemberResolvable} user The member to remove a role from
    * @param {RoleModifyOptions} options Options for the role removal
    * @returns {Promise<void>}
    */
