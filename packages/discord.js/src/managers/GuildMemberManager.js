@@ -444,8 +444,8 @@ class GuildMemberManager extends CachedManager {
   /**
    * Adds a role to a member.
    * @param {GuildMemberResolvable} user The member to add a role to
-   * @param {RoleResolvable} role Options for the role adding
-   * @param {string} [reason]
+   * @param {RoleResolvable} role The role to add
+   * @param {string} [reason] The reason for adding the role
    * @returns {Promise<void>}
    */
   async addRole(user, role, reason) {
@@ -457,8 +457,8 @@ class GuildMemberManager extends CachedManager {
   /**
    * Removes a role from a member.
    * @param {GuildMemberResolvable} user The member to remove a role from
-   * @param {RoleResolvable} role Options for the role removal
-   * @param {string} [reason]
+   * @param {RoleResolvable} role The role to remove
+   * @param {string} [reason] The reason for removing the role
    * @returns {Promise<void>}
    */
   async removeRole(user, role, reason) {
