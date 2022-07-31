@@ -129,7 +129,7 @@ class GuildBanManager extends CachedManager {
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
    * @property {number} [deleteMessageDays] Number of days of messages to delete, must be between 0 and 7, inclusive
-   * (deprecated, use deleteMessageSeconds instead)
+   * <warn>This property is deprecated. Use `deleteMessageSeconds` instead.</warn>
    * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
    * must be between 0 and 604800 (7 days), inclusive
    * @property {string} [reason] The reason for the ban
@@ -154,8 +154,10 @@ class GuildBanManager extends CachedManager {
     if (!id) throw new Error(ErrorCodes.BanResolveId, true);
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
       body: {
-        delete_message_days: options.deleteMessageDays,
-        delete_message_seconds: options.deleteMessageSeconds,
+        delete_message_seconds:
+          typeof options.deleteMessageSeconds !== 'undefined'
+            ? options.deleteMessageSeconds
+            : (options.deleteMessageDays ?? 0) * 24 * 60 * 60,
       },
       reason: options.reason,
     });
