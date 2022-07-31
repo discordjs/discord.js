@@ -442,19 +442,13 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * The options for {@link GuildMemberManager#addRole} and {@link GuildMemberManager#removeRole}.
-   * @typedef {Object} RoleModifyOptions
-   * @property {RoleResolvable} role The role to add or remove
-   * @property {string} [reason] The reason for this role addition or removal
-   */
-
-  /**
    * Adds a role to a member.
    * @param {GuildMemberResolvable} user The member to add a role to
-   * @param {RoleModifyOptions} options Options for the role adding
+   * @param {RoleResolvable} role Options for the role adding
+   * @param {string} [reason]
    * @returns {Promise<void>}
    */
-  async addRole(user, { role, reason }) {
+  async addRole(user, role, reason) {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.put(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
@@ -463,10 +457,11 @@ class GuildMemberManager extends CachedManager {
   /**
    * Removes a role from a member.
    * @param {GuildMemberResolvable} user The member to remove a role from
-   * @param {RoleModifyOptions} options Options for the role removal
+   * @param {RoleResolvable} role Options for the role removal
+   * @param {string} [reason]
    * @returns {Promise<void>}
    */
-  async removeRole(user, { role, reason }) {
+  async removeRole(user, role, reason) {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
