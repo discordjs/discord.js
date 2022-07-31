@@ -3426,8 +3426,8 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User | null>;
-  public addRole(user: GuildMemberResolvable, options: RoleAddOptions): Promise<void>
-  public removeRole(user: GuildMemberResolvable, options: RoleAddOptions): Promise<void>
+  public addRole(user: GuildMemberResolvable, options: RoleModifyOptions): Promise<void>
+  public removeRole(user: GuildMemberResolvable, options: RoleModifyOptions): Promise<void>
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
@@ -4054,7 +4054,7 @@ export interface CategoryCreateChannelOptions {
   reason?: string;
 }
 
-export interface RoleAddOptions {
+export interface RoleModifyOptions {
   role: RoleResolvable;
   reason?: string;
 }
