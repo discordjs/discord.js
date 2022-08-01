@@ -455,7 +455,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(err: Error) {
-		this.emit('error', { err });
+		this.emit('error', err);
 	}
 
 	private async onClose(code: number) {
