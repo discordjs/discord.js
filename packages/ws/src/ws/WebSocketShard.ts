@@ -462,15 +462,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		switch (code) {
 			case CloseCodes.Normal: {
 				this.debug([`Disconnected normally from code ${code}`]);
-				if (this.status === WebSocketShardStatus.Ready) {
-					return this.destroy({
-						code,
-						reason: 'Got disconnected by Discord',
-						recover: WebSocketShardDestroyRecovery.Reconnect,
-					});
-				}
-
-				break;
+				return this.destroy({
+					code,
+					reason: 'Got disconnected by Discord',
+					recover: WebSocketShardDestroyRecovery.Reconnect,
+				});
 			}
 
 			case CloseCodes.Resuming: {
