@@ -663,7 +663,7 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The subtract method returns a new structure containing items where the keys and values of original structure are not present in the other.
+	 * The subtract method returns a new structure containing items where the keys and values of the original structure are not present in the other.
 	 *
 	 * @param other - The other Collection to filter against
 	 */
