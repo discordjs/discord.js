@@ -8,7 +8,7 @@ const { basename, flatten } = require('../util/Util');
 class AttachmentBuilder {
   /**
    * @param {BufferResolvable|Stream} attachment The file
-   * @param {APIAttachment} [data] Extra data
+   * @param {AttachmentData} [data] Extra data
    */
   constructor(attachment, data = {}) {
     /**
