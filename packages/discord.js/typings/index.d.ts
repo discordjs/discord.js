@@ -1083,6 +1083,7 @@ export class Guild extends AnonymousGuild {
   public afkChannelId: Snowflake | null;
   public afkTimeout: number;
   public applicationId: Snowflake | null;
+  public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
   public available: boolean;
