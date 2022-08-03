@@ -550,7 +550,7 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Collection<string, GuildTemplate>>}
    */
   async fetchTemplates() {
-    const templates = await this.client.rest.get(Routes.guildTemplate(this.id));
+    const templates = await this.client.rest.get(Routes.guildTemplates(this.id));
     return templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection());
   }
 
