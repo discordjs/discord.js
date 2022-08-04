@@ -1885,6 +1885,7 @@ export class MessageMentions {
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
+  private static GlobalUsersPattern: RegExp;
 }
 
 export class MessagePayload {
