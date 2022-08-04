@@ -1,5 +1,6 @@
 import { relative, resolve } from 'node:path';
 import glob from 'fast-glob';
+import isCi from 'is-ci';
 import typescript from 'rollup-plugin-typescript2';
 import { defineBuildConfig, BuildEntry } from 'unbuild';
 
@@ -26,7 +27,7 @@ export function createUnbuildConfig({
 	preserveModules = true,
 	preserveModulesRoot = 'src',
 	declaration = true,
-	typeCheck = false,
+	typeCheck = isCi,
 }: Partial<ConfigOptions> = {}) {
 	const files = glob
 		.sync('**', { cwd: 'src' })

@@ -41,6 +41,7 @@
 		"@commitlint/config-angular": "^17.0.3",
 		"@favware/cliff-jumper": "^1.8.6",
 		"@favware/npm-deprecate": "^1.0.5",
+		"@types/is-ci": "^3.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.33.0",
 		"@typescript-eslint/parser": "^5.33.0",
 		"conventional-changelog-cli": "^2.2.2",
