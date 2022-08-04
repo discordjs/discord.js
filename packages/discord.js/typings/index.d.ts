@@ -3738,7 +3738,6 @@ export type CommandOptionChannelResolvableType = ApplicationCommandOptionType.Ch
 
 export type CommandOptionChoiceResolvableType =
   | ApplicationCommandOptionType.String
-  | ApplicationCommandOptionType.Boolean
   | CommandOptionNumericResolvableType;
 
 export type CommandOptionNumericResolvableType =
@@ -3834,7 +3833,7 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
-export interface ApplicationCommandBooleanOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandBooleanOptionData extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Boolean;
 }
 
@@ -3850,7 +3849,7 @@ export interface ApplicationCommandStringOption extends ApplicationCommandChoice
   maxLength?: number;
 }
 
-export interface ApplicationCommandBooleanOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandBooleanOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Boolean;
 }
 
