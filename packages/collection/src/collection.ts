@@ -670,7 +670,7 @@ export class Collection<K, V> extends Map<K, V> {
 	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
 		const coll = new this.constructor[Symbol.species]<K, V>();
 		for (const [k, v] of this) {
-			if (!other.has(k) && !Object.is(v, other.get(k))) {
+			if (!other.has(k) || !Object.is(v, other.get(k))) {
 				coll.set(k, v);
 			}
 		}
