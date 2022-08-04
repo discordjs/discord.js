@@ -3738,6 +3738,7 @@ export type CommandOptionChannelResolvableType = ApplicationCommandOptionType.Ch
 
 export type CommandOptionChoiceResolvableType =
   | ApplicationCommandOptionType.String
+  | ApplicationCommandOptionType.Boolean
   | CommandOptionNumericResolvableType;
 
 export type CommandOptionNumericResolvableType =
@@ -3833,6 +3834,10 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
+export interface ApplicationCommandBooleanOptionData extends ApplicationCommandChoicesData {
+  type: ApplicationCommandOptionType.Boolean;
+}
+
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
@@ -3843,6 +3848,10 @@ export interface ApplicationCommandStringOption extends ApplicationCommandChoice
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
+}
+
+export interface ApplicationCommandBooleanOption extends ApplicationCommandChoicesOption {
+  type: ApplicationCommandOptionType.Boolean;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3864,6 +3873,7 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandAutocompleteOption
     | ApplicationCommandNumericOptionData
     | ApplicationCommandStringOptionData
+    | ApplicationCommandBooleanOption
   )[];
 }
 
@@ -3888,6 +3898,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
+  | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3897,6 +3908,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
+  | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
