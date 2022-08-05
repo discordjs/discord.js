@@ -110,7 +110,7 @@
     "key-spacing": "error",
     "keyword-spacing": "error",
     "max-depth": "error",
-    "max-len": ["error", 120, 2],
+    "max-len": ["error", 120, 2, { "ignorePattern": "^exports\\.\\w+\\s=\\srequire" }],
     "max-nested-callbacks": ["error", { "max": 4 }],
     "max-statements-per-line": ["error", { "max": 2 }],
     "new-cap": "off",

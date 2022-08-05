@@ -13,7 +13,7 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
    * @readonly
    */
   get targetUser() {
-    return this.options.getUser('user');
+    return this.options.getUser(true);
   }
 
   /**
@@ -22,7 +22,7 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
    * @readonly
    */
   get targetMember() {
-    return this.options.getMember('user');
+    return this.options.getMember();
   }
 }
 

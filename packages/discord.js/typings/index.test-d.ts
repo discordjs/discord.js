@@ -35,7 +35,6 @@ import {
   ApplicationCommandSubGroupData,
   CommandInteraction,
   ButtonInteraction,
-  CacheType,
   CategoryChannel,
   Client,
   ClientApplication,
@@ -44,7 +43,6 @@ import {
   Collection,
   ChatInputCommandInteraction,
   CommandInteractionOption,
-  CommandInteractionOptionResolver,
   CommandOptionNonChoiceResolvableType,
   ContextMenuCommandInteraction,
   DMChannel,
@@ -1445,7 +1443,6 @@ client.on('interactionCreate', async interaction => {
     }
 
     expectType<ChatInputCommandInteraction>(interaction);
-    expectType<Omit<CommandInteractionOptionResolver<CacheType>, 'getFocused' | 'getMessage'>>(interaction.options);
     expectType<readonly CommandInteractionOption[]>(interaction.options.data);
 
     const optionalOption = interaction.options.get('name');

@@ -421,21 +421,6 @@ export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : fals
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
-    | 'getMessage'
-    | 'getFocused'
-    | 'getMentionable'
-    | 'getRole'
-    | 'getAttachment'
-    | 'getNumber'
-    | 'getInteger'
-    | 'getString'
-    | 'getChannel'
-    | 'getBoolean'
-    | 'getSubcommandGroup'
-    | 'getSubcommand'
-  >;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
@@ -919,42 +904,11 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   ): this;
 }
 
-export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
-  public commandType: ApplicationCommandType.ChatInput;
-  public options: Omit<CommandInteractionOptionResolver<Cached>, 'getMessage' | 'getFocused'>;
-  public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
-  public inRawGuild(): this is ChatInputCommandInteraction<'raw'>;
-  public toString(): string;
-}
-
-export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
-  public type: InteractionType.ApplicationCommandAutocomplete;
-  public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public channelId: Snowflake;
-  public commandId: Snowflake;
-  public commandName: string;
-  public commandType: ApplicationCommandType.ChatInput;
-  public commandGuildId: Snowflake | null;
-  public responded: boolean;
-  public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
-    'getMessage' | 'getUser' | 'getAttachment' | 'getChannel' | 'getMember' | 'getMentionable' | 'getRole'
-  >;
-  public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
-  public inRawGuild(): this is AutocompleteInteraction<'raw'>;
-  public respond(options: ApplicationCommandOptionChoiceData[]): Promise<void>;
-}
-
-export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
-  private constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
+export abstract class InteractionOptionResolver<Cached extends CacheType> {
+  public constructor(client: Client, options: CommandInteractionOption[], resolved: CommandInteractionResolvedData);
   public readonly client: Client;
   public readonly data: readonly CommandInteractionOption<Cached>[];
   public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>> | null;
-  private _group: string | null;
-  private _hoistedOptions: CommandInteractionOption<Cached>[];
-  private _subcommand: string | null;
   private _getTypedOption(
     name: string,
     type: ApplicationCommandOptionType,
@@ -970,7 +924,24 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 
   public get(name: string, required: true): CommandInteractionOption<Cached>;
   public get(name: string, required?: boolean): CommandInteractionOption<Cached> | null;
+}
 
+export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public commandType: ApplicationCommandType.ChatInput;
+  public options: ChatInputCommandInteractionOptionResolver<Cached>;
+  public inGuild(): this is ChatInputCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
+  public inRawGuild(): this is ChatInputCommandInteraction<'raw'>;
+  public toString(): string;
+}
+
+export class ChatInputCommandInteractionOptionResolver<
+  Cached extends CacheType = CacheType,
+> extends InteractionOptionResolver<Cached> {
+  public readonly resolved: Readonly<Omit<CommandInteractionResolvedData<Cached>, 'messages'>>;
+  private _group: string | null;
+  private _hoistedOptions: CommandInteractionOption<Cached>[];
+  private _subcommand: string | null;
   public getSubcommand(required?: true): string;
   public getSubcommand(required: boolean): string | null;
   public getSubcommandGroup(required: true): string;
@@ -1003,32 +974,54 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     name: string,
     required?: boolean,
   ): NonNullable<CommandInteractionOption<Cached>['member' | 'role' | 'user']> | null;
-  public getMessage(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
-  public getMessage(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
+}
+
+export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
+  public type: InteractionType.ApplicationCommandAutocomplete;
+  public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
+  public channelId: Snowflake;
+  public commandId: Snowflake;
+  public commandName: string;
+  public commandType: ApplicationCommandType.ChatInput;
+  public commandGuildId: Snowflake | null;
+  public responded: boolean;
+  public options: AutocompleteInteractionOptionResolver<Cached>;
+  public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
+  public inRawGuild(): this is AutocompleteInteraction<'raw'>;
+  public respond(options: ApplicationCommandOptionChoiceData[]): Promise<void>;
+}
+
+export class AutocompleteInteractionOptionResolver<
+  Cached extends CacheType = CacheType,
+> extends InteractionOptionResolver<Cached> {
+  public readonly resolved: null;
+  private constructor(client: Client, options: CommandInteractionOption[]);
   public getFocused(getFull: true): AutocompleteFocusedOption;
   public getFocused(getFull?: boolean): string;
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
-  public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
-    | 'getFocused'
-    | 'getMentionable'
-    | 'getRole'
-    | 'getNumber'
-    | 'getInteger'
-    | 'getString'
-    | 'getChannel'
-    | 'getBoolean'
-    | 'getSubcommandGroup'
-    | 'getSubcommand'
-  >;
+  public options: ContextMenuCommandInteractionOptionResolver<Cached>;
   public targetId: Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
+}
+
+export class ContextMenuCommandInteractionOptionResolver<
+  Cached extends CacheType = CacheType,
+> extends InteractionOptionResolver<Cached> {
+  public readonly resolved: Readonly<
+    Omit<CommandInteractionResolvedData<Cached>, 'roles' | 'channels' | 'attachments'>
+  >;
+  public getUser(required: true): NonNullable<CommandInteractionOption<Cached>['user']>;
+  public getUser(required?: boolean): NonNullable<CommandInteractionOption<Cached>['user']> | null;
+  public getMember(): NonNullable<CommandInteractionOption<Cached>['member']> | null;
+  public getMessage(required: true): NonNullable<CommandInteractionOption<Cached>['message']>;
+  public getMessage(required?: boolean): NonNullable<CommandInteractionOption<Cached>['message']> | null;
 }
 
 export interface ResolvedFile {

@@ -1,7 +1,7 @@
 'use strict';
 
+const ChatInputCommandInteractionOptionResolver = require('./ChatInputCommandInteractionOptionResolver');
 const CommandInteraction = require('./CommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 
 /**
  * Represents a command interaction.
@@ -15,7 +15,7 @@ class ChatInputCommandInteraction extends CommandInteraction {
      * The options passed to the command.
      * @type {CommandInteractionOptionResolver}
      */
-    this.options = new CommandInteractionOptionResolver(
+    this.options = new ChatInputCommandInteractionOptionResolver(
       this.client,
       data.data.options?.map(option => this.transformOption(option, data.data.resolved)) ?? [],
       this.transformResolved(data.data.resolved ?? {}),

@@ -13,7 +13,7 @@ class MessageContextMenuCommandInteraction extends ContextMenuCommandInteraction
    * @readonly
    */
   get targetMessage() {
-    return this.options.getMessage('message');
+    return this.options.getMessage(true);
   }
 }
 
