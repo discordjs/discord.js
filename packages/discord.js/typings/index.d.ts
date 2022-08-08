@@ -1881,8 +1881,9 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   private static GlobalChannelsPattern: RegExp;
+  private static GlobalUsersPattern: RegExp;
+  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
