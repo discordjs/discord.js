@@ -276,7 +276,7 @@ function resolvePartialEmoji(emoji) {
 function mergeDefault(def, given) {
   if (!given) return def;
   for (const key in def) {
-    if (!Object.hasOwn(given, key) || given[key] === undefined) {
+    if (!Object.hasOwnProperty(given, key) || given[key] === undefined) {
       given[key] = def[key];
     } else if (given[key] === Object(given[key])) {
       given[key] = mergeDefault(def[key], given[key]);
