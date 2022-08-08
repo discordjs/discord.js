@@ -63,10 +63,10 @@ class AutoModerationActionExecution {
 
     /**
      * The content that triggered this action.
-     * <info>This property requires the {@link GatewayIntentBits.MessageContent} gateway intent.</info>
-     * @type {?string}
+     * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged gateway intent.</info>
+     * @type {string}
      */
-    this.content = data.content ?? null;
+    this.content = data.content;
 
     /**
      * The word or phrase configured in the rule that triggered this action.
