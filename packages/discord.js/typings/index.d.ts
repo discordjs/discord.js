@@ -3813,7 +3813,7 @@ export interface ApplicationCommandMentionableOptionData extends BaseApplication
   type: ApplicationCommandOptionType.Mentionable;
 }
 
-export interface ApplicationCommandMentionableOption extends BaseApplicationCommandData {
+export interface ApplicationCommandMentionableOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Mentionable;
 }
 
