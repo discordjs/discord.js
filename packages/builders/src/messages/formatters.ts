@@ -1,3 +1,4 @@
+import process from 'node:process';
 import type { URL } from 'url';
 import type { Snowflake } from 'discord-api-types/globals';
 
@@ -11,12 +12,21 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
 /**
  * Wraps the content inside a codeblock with the specified language
  *
- * @param language - The language for the codeblock
  * @param content - The content to wrap
+ * @param language - The language for the codeblock
  */
-export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
-export function codeBlock(language: string, content?: string): string {
-	return typeof content === 'undefined' ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
+export function codeBlock<C extends string, L extends string>(content: C, language: L): `\`\`\`${L}\n${C}\n\`\`\``;
+export function codeBlock(content: string, language?: string): string {
+	if (language && language.length > 18) {
+		process.emitWarning(
+			'Passing the language as the first parameter in the codeBlock method is deprecated. Please pass it as the second parameter instead.',
+			'DeprecationWarning',
+		);
+		const tempLanguage = language;
+		language = content;
+		content = tempLanguage;
+	}
+	return typeof language === 'undefined' ? `\`\`\`\n${content}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 
 /**
