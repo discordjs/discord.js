@@ -17,7 +17,9 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
  */
 export function codeBlock<C extends string, L extends string>(content: C, language: L): `\`\`\`${L}\n${C}\n\`\`\``;
 export function codeBlock(content: string, language?: string): string {
-	if (language && language.length > 18) {
+	// unicorn-rails-log is the longest named language known to be supported at the time of this commit
+	// That's why we use 17 here, because it's the length of that language
+	if (language && language.length > 17) {
 		process.emitWarning(
 			'Passing the language as the first parameter in the codeBlock method is deprecated. Please pass it as the second parameter instead.',
 			'DeprecationWarning',
