@@ -10,7 +10,9 @@ const { resolveColor } = require('../util/Util');
  */
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
-    super(toSnakeCase(data));
+    const snakeCased = toSnakeCase(data);
+    if (data?.timestamp) snakeCased.timestamp = data.timestamp;
+    super(snakeCased);
   }
 
   /**
