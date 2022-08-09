@@ -29,8 +29,8 @@ describe('Message formatters', () => {
 			expect<'```\ndiscord.js\n```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js\n```');
 		});
 
-		test('GIVEN "discord.js" with "js" as language THEN returns "```js\\ndiscord.js```"', () => {
-			expect<'```js\ndiscord.js\n```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js\n```');
+		test('GIVEN "discord.js" with "js" as language THEN returns "```js\\ndiscord.js\n```"', () => {
+			expect<'```js\ndiscord.js\n```'>(codeBlock('discord.js', 'js')).toEqual('```js\ndiscord.js\n```');
 		});
 	});
 
