@@ -3537,7 +3537,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
-  ): Promise<Collection<Snowflake, Message>>;
+  ): Promise<Collection<Snowflake, Message | PartialMessage | undefined>>;
   createMessageComponentCollector<T extends MessageComponentTypeResolvable = 'ACTION_ROW'>(
     options?: MessageChannelCollectorOptionsParams<T, true>,
   ): InteractionCollector<MappedInteractionTypes[T]>;
