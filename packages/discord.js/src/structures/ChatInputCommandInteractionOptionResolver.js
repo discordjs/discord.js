@@ -2,7 +2,7 @@
 
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const InteractionOptionResolver = require('./InteractionOptionResolver');
-const { ErrorCodes } = require('../errors');
+const { TypeError, ErrorCodes } = require('../errors');
 
 /**
  * A resolver for chat input interaction options.
