@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.10.1](https://github.com/discordjs/discord.js/compare/13.10.0...13.10.1) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (v13) (#8467) ([2a46d9f](https://github.com/discordjs/discord.js/commit/2a46d9f58e4714c8580218a3459992bbfec2bcf7))
+
 # [13.10.0](https://github.com/discordjs/discord.js/compare/13.9.2...13.10.0) - (2022-08-08)
 
 ## Features
