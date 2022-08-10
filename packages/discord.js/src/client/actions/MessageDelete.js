@@ -12,7 +12,7 @@ class MessageDeleteAction extends Action {
       if (!channel.isTextBased()) return {};
 
       message = this.getMessage(data, channel);
-      if (message) {
+      if ((message && message.embeds.length > 0) || message.content.length > 0) {
         channel.messages.cache.delete(message.id);
         /**
          * Emitted whenever a message is deleted.
