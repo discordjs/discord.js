@@ -997,6 +997,18 @@ export class AutocompleteInteractionOptionResolver<
 > extends InteractionOptionResolver<Cached> {
   public readonly resolved: null;
   private constructor(client: Client, options: CommandInteractionOption[]);
+  public getSubcommand(required?: true): string;
+  public getSubcommand(required: boolean): string | null;
+  public getSubcommandGroup(required: true): string;
+  public getSubcommandGroup(required?: boolean): string | null;
+  public getBoolean(name: string, required: true): boolean;
+  public getBoolean(name: string, required?: boolean): boolean | null;
+  public getString(name: string, required: true): string;
+  public getString(name: string, required?: boolean): string | null;
+  public getInteger(name: string, required: true): number;
+  public getInteger(name: string, required?: boolean): number | null;
+  public getNumber(name: string, required: true): number;
+  public getNumber(name: string, required?: boolean): number | null;
   public getFocused(getFull: true): AutocompleteFocusedOption;
   public getFocused(getFull?: boolean): string;
 }
