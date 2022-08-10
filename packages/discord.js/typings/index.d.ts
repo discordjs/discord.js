@@ -3795,6 +3795,30 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: ChannelType[];
 }
 
+export interface ApplicationCommandRoleOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Role;
+}
+
+export interface ApplicationCommandRoleOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Role;
+}
+
+export interface ApplicationCommandUserOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.User;
+}
+
+export interface ApplicationCommandUserOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.User;
+}
+
+export interface ApplicationCommandMentionableOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Mentionable;
+}
+
+export interface ApplicationCommandMentionableOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Mentionable;
+}
+
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Attachment;
 }
@@ -3873,6 +3897,9 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandChannelOptionData
     | ApplicationCommandAutocompleteOption
     | ApplicationCommandNumericOptionData
+    | ApplicationCommandRoleOptionData
+    | ApplicationCommandUserOptionData
+    | ApplicationCommandMentionableOptionData
     | ApplicationCommandStringOptionData
     | ApplicationCommandBooleanOption
   )[];
@@ -3899,6 +3926,9 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
+  | ApplicationCommandRoleOptionData
+  | ApplicationCommandUserOptionData
+  | ApplicationCommandMentionableOptionData
   | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
@@ -3909,6 +3939,9 @@ export type ApplicationCommandOption =
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
+  | ApplicationCommandRoleOption
+  | ApplicationCommandUserOption
+  | ApplicationCommandMentionableOption
   | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
