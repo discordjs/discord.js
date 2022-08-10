@@ -280,7 +280,7 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
+   * @param {Collection<Snowflake, Message|undefined>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Returns the deleted messages
