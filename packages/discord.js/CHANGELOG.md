@@ -67,7 +67,7 @@ All notable changes to this project will be documented in this file.
 
 - 14.0.1 release bump, no new features.
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.10.0...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.10.1...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
@@ -472,6 +472,12 @@ All notable changes to this project will be documented in this file.
 - **interaction:** Remove renamed typeguards (#7220) ([68b9564](https://github.com/discordjs/discord.js/commit/68b9564f1821726377a1e929a3ca1fc65b4ad598))
 - AssertType -> expectType ([3f36746](https://github.com/discordjs/discord.js/commit/3f36746561a40cd61a7cd2e054b7ef80d58fc707))
 - Fix cache types resolving to `never` (#7164) ([c978dbb](https://github.com/discordjs/discord.js/commit/c978dbb6233bcd85408caf0bca7619c9c5d508f0))
+
+# [13.10.1](https://github.com/discordjs/discord.js/compare/13.10.0...13.10.1) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (v13) (#8467) ([2a46d9f](https://github.com/discordjs/discord.js/commit/2a46d9f58e4714c8580218a3459992bbfec2bcf7))
 
 # [13.10.0](https://github.com/discordjs/discord.js/compare/13.9.2...13.10.0) - (2022-08-08)
 
