@@ -67,7 +67,7 @@ All notable changes to this project will be documented in this file.
 
 - 14.0.1 release bump, no new features.
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.2...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.10.0...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
@@ -472,6 +472,12 @@ All notable changes to this project will be documented in this file.
 - **interaction:** Remove renamed typeguards (#7220) ([68b9564](https://github.com/discordjs/discord.js/commit/68b9564f1821726377a1e929a3ca1fc65b4ad598))
 - AssertType -> expectType ([3f36746](https://github.com/discordjs/discord.js/commit/3f36746561a40cd61a7cd2e054b7ef80d58fc707))
 - Fix cache types resolving to `never` (#7164) ([c978dbb](https://github.com/discordjs/discord.js/commit/c978dbb6233bcd85408caf0bca7619c9c5d508f0))
+
+# [13.10.0](https://github.com/discordjs/discord.js/compare/13.9.2...13.10.0) - (2022-08-08)
+
+## Features
+
+- **Guild:** Add `max_video_channel_users` (v13) (#8424) ([ae43bca](https://github.com/discordjs/discord.js/commit/ae43bca8b0afd8b90db7a1d99f67205b29338c2d))
 
 # [13.9.2](https://github.com/discordjs/discord.js/compare/13.9.1...13.9.2) - (2022-07-29)
 
