@@ -48,6 +48,14 @@ class MessageMentions {
    */
   static GlobalChannelsPattern = new RegExp(this.ChannelsPattern.source, 'g');
 
+  /**
+   * A global regular expression variant of {@link MessageMentions.UsersPattern}.
+   * @type {RegExp}
+   * @memberof MessageMentions
+   * @private
+   */
+  static GlobalUsersPattern = new RegExp(this.UsersPattern.source, 'g');
+
   constructor(message, users, roles, everyone, crosspostedChannels, repliedUser) {
     /**
      * The client the message is from
@@ -225,7 +233,7 @@ class MessageMentions {
     if (this._parsedUsers) return this._parsedUsers;
     this._parsedUsers = new Collection();
     let matches;
-    while ((matches = this.constructor.UsersPattern.exec(this._content)) !== null) {
+    while ((matches = this.constructor.GlobalUsersPattern.exec(this._content)) !== null) {
       const user = this.client.users.cache.get(matches[1]);
       if (user) this._parsedUsers.set(user.id, user);
     }

@@ -1083,6 +1083,7 @@ export class Guild extends AnonymousGuild {
   public afkChannelId: Snowflake | null;
   public afkTimeout: number;
   public applicationId: Snowflake | null;
+  public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
   public available: boolean;
@@ -1880,8 +1881,9 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   private static GlobalChannelsPattern: RegExp;
+  private static GlobalUsersPattern: RegExp;
+  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
@@ -3857,6 +3859,10 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
+export interface ApplicationCommandBooleanOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
+}
+
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
@@ -3867,6 +3873,10 @@ export interface ApplicationCommandStringOption extends ApplicationCommandChoice
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
+}
+
+export interface ApplicationCommandBooleanOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3891,6 +3901,7 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandUserOptionData
     | ApplicationCommandMentionableOptionData
     | ApplicationCommandStringOptionData
+    | ApplicationCommandBooleanOption
   )[];
 }
 
@@ -3918,6 +3929,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandRoleOptionData
   | ApplicationCommandUserOptionData
   | ApplicationCommandMentionableOptionData
+  | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3930,6 +3942,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandRoleOption
   | ApplicationCommandUserOption
   | ApplicationCommandMentionableOption
+  | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
