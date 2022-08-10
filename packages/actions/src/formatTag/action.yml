@@ -11,4 +11,4 @@ outputs:
     description: 'The semver string that was extracted from this tag'
 runs:
   using: node16
-  main: ../../dist/formatTag/index.mjs
+  main: ../../dist/index.mjs

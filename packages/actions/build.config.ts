@@ -5,6 +5,7 @@ export default createUnbuildConfig({
 		{ builder: 'rollup', input: 'src/index' },
 		{ builder: 'rollup', input: 'src/formatTag/index' },
 	],
+	preserveModules: false,
 	minify: true,
 	emitCJS: false,
 });
