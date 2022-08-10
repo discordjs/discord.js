@@ -1083,6 +1083,7 @@ export class Guild extends AnonymousGuild {
   public afkChannelId: Snowflake | null;
   public afkTimeout: number;
   public applicationId: Snowflake | null;
+  public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
   public available: boolean;
@@ -1880,8 +1881,9 @@ export class MessageMentions {
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   private static GlobalChannelsPattern: RegExp;
+  private static GlobalUsersPattern: RegExp;
+  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
@@ -1972,8 +1974,6 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message>;
-  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
@@ -2004,6 +2004,8 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
@@ -3833,6 +3835,10 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
+export interface ApplicationCommandBooleanOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
+}
+
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
@@ -3843,6 +3849,10 @@ export interface ApplicationCommandStringOption extends ApplicationCommandChoice
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
+}
+
+export interface ApplicationCommandBooleanOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3864,6 +3874,7 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandAutocompleteOption
     | ApplicationCommandNumericOptionData
     | ApplicationCommandStringOptionData
+    | ApplicationCommandBooleanOption
   )[];
 }
 
@@ -3888,6 +3899,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
+  | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3897,6 +3909,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
+  | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
@@ -4121,7 +4134,7 @@ export interface ClientEvents {
     reactions: Collection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
-  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: TextBasedChannel];
+  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: GuildTextBasedChannel];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
