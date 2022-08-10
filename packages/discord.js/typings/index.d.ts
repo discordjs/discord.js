@@ -3835,6 +3835,10 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
+export interface ApplicationCommandBooleanOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
+}
+
 export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
@@ -3845,6 +3849,10 @@ export interface ApplicationCommandStringOption extends ApplicationCommandChoice
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
+}
+
+export interface ApplicationCommandBooleanOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3866,6 +3874,7 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandAutocompleteOption
     | ApplicationCommandNumericOptionData
     | ApplicationCommandStringOptionData
+    | ApplicationCommandBooleanOption
   )[];
 }
 
@@ -3890,6 +3899,7 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandAutocompleteOption
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
+  | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
@@ -3899,6 +3909,7 @@ export type ApplicationCommandOption =
   | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
+  | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
