@@ -9,7 +9,7 @@ export interface FunctionProps {
 export function Function({ data }: FunctionProps) {
 	return (
 		<DocContainer
-			name={data.name}
+			name={`${data.name}${data.overloadIndex ? ` (${data.overloadIndex})` : ''}`}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}

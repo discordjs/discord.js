@@ -11,13 +11,13 @@ export function SidebarLayout({
 		<div className="flex flex-col lg:flex-row overflow-hidden max-w-full h-full max-h-full bg-white dark:bg-dark">
 			<div className="h-full w-full lg:max-w-[310px] lg:min-w-[310px]">
 				{packageName && data ? (
-					<ItemSidebar packageName={packageName} data={data} selectedMember={data.member?.name} />
+					<ItemSidebar packageName={packageName} data={data} selectedMember={data.member} />
 				) : null}
 			</div>
 			<div className="h-full grow">{children}</div>
 			<div className="h-full w-full lg:max-w-[310px] lg:min-w-[310px]">
 				{packageName && data?.member ? (
-					<ItemSidebar packageName={packageName} data={data} selectedMember={data.member.name} />
+					<ItemSidebar packageName={packageName} data={data} selectedMember={data.member} />
 				) : null}
 			</div>
 		</div>

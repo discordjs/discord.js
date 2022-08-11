@@ -1,6 +1,7 @@
 import { FiMenu } from 'react-icons/fi';
 import { VscPackage } from 'react-icons/vsc';
 import { ListSidebar } from './ListSidebar';
+import type { DocItem } from '~/DocModel/DocItem';
 import type { getMembers } from '~/util/parse.server';
 
 export interface ItemListProps {
@@ -9,7 +10,7 @@ export interface ItemListProps {
 		members: ReturnType<typeof getMembers>;
 	};
 
-	selectedMember?: string | undefined;
+	selectedMember?: ReturnType<DocItem['toJSON']> | undefined;
 }
 
 function onMenuClick() {

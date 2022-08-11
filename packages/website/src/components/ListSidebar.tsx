@@ -9,12 +9,13 @@ import {
 } from 'react-icons/vsc';
 import type { ItemListProps } from './ItemSidebar';
 import { Section } from './Section';
+import type { DocItem } from '~/DocModel/DocItem';
 
 export type Members = ItemListProps['data']['members'];
 
 export interface ListSidebarSectionProps {
 	members: Members;
-	selectedMember?: string | undefined;
+	selectedMember?: ReturnType<DocItem['toJSON']> | undefined;
 	title: string;
 }
 
@@ -93,12 +94,12 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 							{groupItems[group].map((member, i) => (
 								<div
 									key={i}
-									className="flex gap-2 whitespace-pre-wrap no-underline break-all text-blue-500 dark:text-blue-300"
+									className="flex gap-2 whitespace-pre-wrap no-underline break-all text-blue-500 dark:text-blue-300 justify-between"
 								>
 									<Link href={member.path}>
 										<a
 											className={`no-underline m-0 text-sm font-semibold ${
-												selectedMember === member.name
+												selectedMember?.containerKey === member.containerKey
 													? 'text-blue-500 dark:text-blue-300'
 													: 'text-gray-500 dark:text-gray-300 hover:text-dark-100 dark:hover:text-white'
 											}`}
@@ -106,6 +107,13 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 											{member.name}
 										</a>
 									</Link>
+									<div>
+										{member.overloadIndex && member.overloadIndex > 1 && (
+											<div className="flex font-mono w-[15px] h-[15px] items-center justify-center rounded-md font-bold text-sm color-gray-500 border border-2">
+												<p className="font-semibold">{`${member.overloadIndex}`}</p>
+											</div>
+										)}
+									</div>
 								</div>
 							))}
 						</div>

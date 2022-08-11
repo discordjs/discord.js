@@ -5,6 +5,7 @@ import {
 	ApiEnum,
 	ApiFunction,
 	ApiInterface,
+	ApiItem,
 	ApiItemKind,
 	ApiModel,
 	ApiTypeAlias,
@@ -24,10 +25,7 @@ export interface ReferenceData {
 	path: string;
 }
 
-export function findMember(model: ApiModel, packageName: string, memberName: string): DocItem | undefined {
-	const pkg = findPackage(model, packageName)!;
-	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
-
+function createDocItem(model: ApiModel, member: ApiItem) {
 	if (!(member instanceof ApiDeclaredItem)) {
 		return undefined;
 	}
@@ -48,19 +46,26 @@ export function findMember(model: ApiModel, packageName: string, memberName: str
 		default:
 			return new DocItem(model, member);
 	}
+}
 
-	// return {
-	// 	name: resolveName(member),
-	// 	kind: member.kind,
-	// 	summary: resolveDocComment(member),
-	// 	excerpt: member.excerpt.text,
-	// 	tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
-	// 	refs: [...findReferences(model, member.excerpt).values()].map(genReference),
-	// 	members: getProperties(member).map((member) => ({
-	// 		tokens: member.excerpt.spannedTokens.map((token) => genToken(model, token)),
-	// 		summary: resolveDocComment(member),
-	// 	})),
-	// 	parameters: member instanceof ApiFunction ? member.parameters.map((param) => genParameter(model, param)) : [],
-	// 	foo: excerpt.spannedTokens.map((token) => genToken(model, token)),
-	// };
+export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
+	const pkg = findPackage(model, packageName)!;
+	const member = (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
+
+	if (!member) {
+		return undefined;
+	}
+
+	return createDocItem(model, member);
+}
+
+export function findMember(model: ApiModel, packageName: string, memberName: string): DocItem | undefined {
+	const pkg = findPackage(model, packageName)!;
+	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
+
+	if (!member) {
+		return undefined;
+	}
+
+	return createDocItem(model, member);
 }
