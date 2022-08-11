@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.2.0](https://github.com/discordjs/discord.js/compare/14.1.2...14.2.0) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (#8466) ([afa27b1](https://github.com/discordjs/discord.js/commit/afa27b15c5b92bc8d55b8285834d8e03f6692d06))
+- Remove DM channels from `Client#messageDeleteBulk`'s types (#8460) ([6c6fe74](https://github.com/discordjs/discord.js/commit/6c6fe74dd84859c5319efa999404e8168f189710))
+- **Transformers:** Do not transform `Date` objects (#8463) ([0e2a095](https://github.com/discordjs/discord.js/commit/0e2a09571c8e5ee61153b04e45334a226a1b4534))
+- **ModalSubmitInteraction:** Allow deferUpdate (#8455) ([0fab869](https://github.com/discordjs/discord.js/commit/0fab869e5179dca7ddec75b5519615278e51ad82))
+- **Guild:** Unable to fetch templates (#8420) ([aac8acc](https://github.com/discordjs/discord.js/commit/aac8acc22be7d7af99933ef099eca7deda43cb40))
+- **MessageMentions:** Infinite loop in `parsedUsers` getter (#8430) ([b8a3136](https://github.com/discordjs/discord.js/commit/b8a31360a220e3d796f5381bd215d30a379ecb7c))
+- **DataResolver:** Make `Buffer` from string (#8416) ([e72b986](https://github.com/discordjs/discord.js/commit/e72b986939e2958547c0e54d6d27472c8d111609))
+
+## Documentation
+
+- Change registration example to use global commands (#8454) ([64a4041](https://github.com/discordjs/discord.js/commit/64a4041a05e9514334a9f9e1f38a1ea18bb676d5))
+- **Colors:** Provide enum descriptions (#8437) ([6ef4754](https://github.com/discordjs/discord.js/commit/6ef4754d40c5ec65715fc1e00e643c52fe0a6209))
+- **AttachmentBuilder:** Fix #8407 (#8421) ([5b053cf](https://github.com/discordjs/discord.js/commit/5b053cf82ec2f2b717a490485af052dc956fe3c9))
+
+## Features
+
+- **Guild:** Add `max_video_channel_users` (#8423) ([3a96ce7](https://github.com/discordjs/discord.js/commit/3a96ce7970947f6268c21a1323d986aac8cb736d))
+
+## Typings
+
+- **Message:** Correct `bulkDelete` return type (#8465) ([c5b96a1](https://github.com/discordjs/discord.js/commit/c5b96a185cb8ba836b7cd10526c14059866f218f))
+- Fix missing types for mentionable options (#8443) ([452e94f](https://github.com/discordjs/discord.js/commit/452e94fd3ecc12de9e3408982c5c7fd931bae634))
+- **ApplicationCommandOption:** Add `ApplicationCommandBooleanOption` (#8434) ([38275fc](https://github.com/discordjs/discord.js/commit/38275fc53d633ce77ed2b142aff788dcbd4fad8c))
+
 # [14.1.2](https://github.com/discordjs/discord.js/compare/14.1.1...14.1.2) - (2022-07-30)
 
 ## Bug Fixes
@@ -67,7 +95,7 @@ All notable changes to this project will be documented in this file.
 
 - 14.0.1 release bump, no new features.
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.2...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.10.2...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
@@ -472,6 +500,24 @@ All notable changes to this project will be documented in this file.
 - **interaction:** Remove renamed typeguards (#7220) ([68b9564](https://github.com/discordjs/discord.js/commit/68b9564f1821726377a1e929a3ca1fc65b4ad598))
 - AssertType -> expectType ([3f36746](https://github.com/discordjs/discord.js/commit/3f36746561a40cd61a7cd2e054b7ef80d58fc707))
 - Fix cache types resolving to `never` (#7164) ([c978dbb](https://github.com/discordjs/discord.js/commit/c978dbb6233bcd85408caf0bca7619c9c5d508f0))
+
+# [13.10.2](https://github.com/discordjs/discord.js/compare/13.10.1...13.10.2) - (2022-08-10)
+
+## Typings
+
+- **Message:** Correct `bulkDelete` return type (v13) (#8469) ([03c59e3](https://github.com/discordjs/discord.js/commit/03c59e3a837edcaa428549c8387ef4d29e3ef6e4))
+
+# [13.10.1](https://github.com/discordjs/discord.js/compare/13.10.0...13.10.1) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (v13) (#8467) ([2a46d9f](https://github.com/discordjs/discord.js/commit/2a46d9f58e4714c8580218a3459992bbfec2bcf7))
+
+# [13.10.0](https://github.com/discordjs/discord.js/compare/13.9.2...13.10.0) - (2022-08-08)
+
+## Features
+
+- **Guild:** Add `max_video_channel_users` (v13) (#8424) ([ae43bca](https://github.com/discordjs/discord.js/commit/ae43bca8b0afd8b90db7a1d99f67205b29338c2d))
 
 # [13.9.2](https://github.com/discordjs/discord.js/compare/13.9.1...13.9.2) - (2022-07-29)
 

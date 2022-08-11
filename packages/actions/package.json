@@ -39,18 +39,18 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@actions/core": "^1.9.0",
+		"@actions/core": "^1.9.1",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.46",
+		"@types/node": "^16.11.47",
 		"c8": "^7.12.0",
-		"eslint": "^8.20.0",
+		"eslint": "^8.21.0",
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "0.32.1",
 		"typescript": "^4.7.4",
-		"unbuild": "^0.7.6",
-		"vitest": "^0.19.1"
+		"unbuild": "^0.8.4",
+		"vitest": "^0.21.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
