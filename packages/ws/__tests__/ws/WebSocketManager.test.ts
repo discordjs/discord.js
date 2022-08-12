@@ -183,6 +183,34 @@ test('strategies', async () => {
 	const strategy = new MockStrategy();
 	manager.setStrategy(strategy);
 
+	const data: APIGatewayBotInfo = {
+		shards: 1,
+		session_start_limit: {
+			max_concurrency: 3,
+			reset_after: 60,
+			remaining: 3,
+			total: 3,
+		},
+		url: 'wss://gateway.discord.gg',
+	};
+
+	const fetch = vi.fn(() => ({
+		data,
+		statusCode: 200,
+		responseOptions: {
+			headers: {
+				'content-type': 'application/json',
+			},
+		},
+	}));
+
+	mockPool
+		.intercept({
+			path: '/api/v10/gateway/bot',
+			method: 'GET',
+		})
+		.reply(fetch);
+
 	await manager.connect();
 	expect(strategy.spawn).toHaveBeenCalledWith(shardIds);
 	expect(strategy.connect).toHaveBeenCalled();
