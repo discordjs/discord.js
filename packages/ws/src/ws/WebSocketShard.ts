@@ -186,7 +186,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.connection &&
 			(this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING)
 		) {
+			// No longer need to listen to messages
+			this.connection.removeAllListeners('message');
+			// Prevent a reconnection loop by unbinding the main close event
+			this.connection.removeAllListeners('close');
 			this.connection.close(options.code, options.reason);
+
+			// Actually wait for the connection to close
+			await once(this.connection, 'close');
+
+			// Lastly, remove the error event.
+			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
+			this.connection.removeAllListeners('error');
 		}
 
 		this.status = WebSocketShardStatus.Idle;
