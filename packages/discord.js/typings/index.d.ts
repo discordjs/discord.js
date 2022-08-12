@@ -3907,7 +3907,19 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions | ApplicationCommandChannelOption)[];
+  options?: (    
+    | ApplicationCommandNonOptionsData
+    | ApplicationCommandChannelOptionData
+    | ApplicationCommandChoicesData
+    | ApplicationCommandAutocompleteOption
+    | ApplicationCommandNumericOptionData
+    | ApplicationCommandStringOptionData
+    | ApplicationCommandRoleOptionData
+    | ApplicationCommandUserOptionData
+    | ApplicationCommandMentionableOptionData
+    | ApplicationCommandBooleanOptionData
+    | ApplicationCommandAttachmentOption
+  )[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
