@@ -108,11 +108,11 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 										</a>
 									</Link>
 									<div>
-										{member.overloadIndex && member.overloadIndex > 1 && (
-											<div className="flex font-mono w-[15px] h-[15px] items-center justify-center rounded-md font-bold text-sm color-gray-500 border border-2">
+										{member.overloadIndex && member.overloadIndex > 1 ? (
+											<div className="flex font-mono w-[15px] h-[15px] items-center justify-center rounded-md font-bold text-sm color-gray-500 dark:color-gray-300 border border-2">
 												<p className="font-semibold">{`${member.overloadIndex}`}</p>
 											</div>
-										)}
+										) : null}
 									</div>
 								</div>
 							))}
