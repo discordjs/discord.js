@@ -46,7 +46,7 @@ export interface SessionInfo {
 	/**
 	 * URL to use when resuming
 	 */
-	resumeUrl: string;
+	resumeURL: string;
 }
 
 /**
