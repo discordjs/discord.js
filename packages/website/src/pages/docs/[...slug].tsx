@@ -41,7 +41,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					return [
 						{ params: { slug: ['main', 'packages', packageName] } },
 						...getMembers(pkg!).map((member) => {
-							if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 0) {
+							if (member.kind === 'Function' && member.overloadIndex) {
 								return {
 									params: {
 										slug: ['main', 'packages', packageName, `${member.name}:${member.overloadIndex}`],
