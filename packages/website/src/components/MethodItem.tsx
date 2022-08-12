@@ -30,7 +30,12 @@ export function MethodItem({ data }: MethodItemProps) {
 	return (
 		<div className="flex flex-col">
 			<div className="flex">
-				<button className="bg-transparent border-none cursor-pointer dark:text-white" onClick={onAnchorClick}>
+				<button
+					type="button"
+					className="bg-transparent border-none cursor-pointer dark:text-white"
+					title="Anchor"
+					onClick={onAnchorClick}
+				>
 					<FiLink size={16} />
 				</button>
 				<div className="flex flex-col">
