@@ -13,14 +13,14 @@ export interface RemarksBlockProps {
 }
 
 export function CommentSection({ node, textClassName }: RemarksBlockProps): JSX.Element {
-	const createNode = (node: ReturnType<CommentNode['toJSON']>): ReactNode => {
+	const createNode = (node: ReturnType<CommentNode['toJSON']>, idx?: number): ReactNode => {
 		switch (node.kind) {
 			case 'PlainText':
 				return <span>{(node as ReturnType<PlainTextCommentNode['toJSON']>).text}</span>;
 			case 'Paragraph':
 				return (
-					<p className={textClassName}>
-						{(node as ReturnType<CommentNodeContainer['toJSON']>).nodes.map((node) => createNode(node))}
+					<p key={idx} className={textClassName}>
+						{(node as ReturnType<CommentNodeContainer['toJSON']>).nodes.map((node, idx) => createNode(node, idx))}
 					</p>
 				);
 			case 'SoftBreak':
@@ -52,7 +52,7 @@ export function CommentSection({ node, textClassName }: RemarksBlockProps): JSX.
 	return (
 		<div>
 			{node.kind === 'Paragraph' || node.kind === 'Section' ? (
-				<>{(node as CommentNodeContainer).nodes.map(createNode)}</>
+				<>{(node as CommentNodeContainer).nodes.map((node, idx) => createNode(node, idx))}</>
 			) : (
 				<>{createNode(node)}</>
 			)}

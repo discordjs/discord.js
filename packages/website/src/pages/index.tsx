@@ -58,7 +58,7 @@ export default function IndexRoute() {
 					</div>
 				</div>
 				<div className="flex place-content-center">
-					<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
+					<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" title="Vercel">
 						<Image
 							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 							src={vercelLogo}
