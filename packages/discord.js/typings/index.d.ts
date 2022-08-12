@@ -3908,16 +3908,16 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
   options?: (    
-    | ApplicationCommandNonOptionsData
-    | ApplicationCommandChannelOptionData
-    | ApplicationCommandChoicesData
+    | ApplicationCommandNonOptions
+    | ApplicationCommandChannelOption
+    | ApplicationCommandChoicesOption
     | ApplicationCommandAutocompleteOption
-    | ApplicationCommandNumericOptionData
-    | ApplicationCommandStringOptionData
-    | ApplicationCommandRoleOptionData
-    | ApplicationCommandUserOptionData
-    | ApplicationCommandMentionableOptionData
-    | ApplicationCommandBooleanOptionData
+    | ApplicationCommandNumericOption
+    | ApplicationCommandStringOption
+    | ApplicationCommandRoleOption
+    | ApplicationCommandUserOption
+    | ApplicationCommandMentionableOption
+    | ApplicationCommandBooleanOption
     | ApplicationCommandAttachmentOption
   )[];
 }
