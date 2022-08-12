@@ -265,7 +265,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 			throw new Error(
 				`Not enough sessions remaining to spawn ${shardCount} shards; only ${
 					data.session_start_limit.remaining
-				} remaining; resets in ${Date.now() + data.session_start_limit.reset_after}ms`,
+				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
 			);
 		}
 
