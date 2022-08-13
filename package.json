@@ -4,7 +4,7 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "yarn workspaces foreach --parallel --topological run build",
+		"build": "yarn workspaces foreach --exclude @discordjs/website --parallel --topological run build",
 		"test": "yarn workspaces foreach --parallel --topological run test",
 		"lint": "yarn workspaces foreach --parallel --topological run lint",
 		"format": "yarn workspaces foreach --parallel --topological run format",
