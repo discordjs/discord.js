@@ -26,7 +26,12 @@ export function ItemSidebar({ packageName, data, selectedMember }: ItemListProps
 					<VscPackage />
 					{`${packageName}`}
 				</h2>
-				<button className="lg:hidden mr-2 bg-transparent border-none cursor-pointer" onClick={onMenuClick}>
+				<button
+					type="button"
+					className="lg:hidden mr-2 bg-transparent border-none cursor-pointer"
+					title="Menu"
+					onClick={onMenuClick}
+				>
 					<FiMenu size={32} />
 				</button>
 			</div>
