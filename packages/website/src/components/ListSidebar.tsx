@@ -94,7 +94,7 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 							{groupItems[group].map((member, i) => (
 								<div
 									key={i}
-									className="flex gap-2 whitespace-pre-wrap no-underline break-all text-blue-500 dark:text-blue-300 justify-between"
+									className="flex gap-2 whitespace-pre-wrap no-underline break-all justify-between text-blue-500 dark:text-blue-300"
 								>
 									<Link href={member.path}>
 										<a
@@ -109,7 +109,7 @@ export function ListSidebar({ members, selectedMember }: ListSidebarSectionProps
 									</Link>
 									<div>
 										{member.overloadIndex && member.overloadIndex > 1 ? (
-											<div className="flex font-mono w-[15px] h-[15px] items-center justify-center rounded-md font-bold text-sm color-gray-500 dark:color-gray-300 border border-2">
+											<div className="flex font-mono w-[15px] h-[15px] items-center justify-center rounded-md border border-2 font-bold text-sm color-gray-500 dark:color-gray-300">
 												<p className="font-semibold">{`${member.overloadIndex}`}</p>
 											</div>
 										) : null}
