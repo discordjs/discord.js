@@ -42,6 +42,13 @@ export function DocContainer({
 			</div>
 
 			<div className="min-h-full overflow-y-auto overflow-x-clip px-10 pt-5 pb-10">
+				<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
+					{summary ? (
+						<CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />
+					) : (
+						<p className="text-dark-100 dark:text-gray-300">No summary provided.</p>
+					)}
+				</Section>
 				<SyntaxHighlighter
 					wrapLines
 					wrapLongLines
@@ -75,13 +82,6 @@ export function DocContainer({
 					</div>
 				) : null}
 				<div className="space-y-10">
-					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
-						{summary ? (
-							<CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />
-						) : (
-							<p className="text-dark-100 dark:text-gray-300">No summary provided.</p>
-						)}
-					</Section>
 					{typeParams?.length ? (
 						<Section
 							iconElement={<VscSymbolParameter />}

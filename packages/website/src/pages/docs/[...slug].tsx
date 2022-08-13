@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-throw-literal */
+import { ApiFunction } from '@microsoft/api-extractor-model';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import type { DocClass } from '~/DocModel/DocClass';
 import type { DocEnum } from '~/DocModel/DocEnum';
@@ -14,8 +15,9 @@ import { Function } from '~/components/model/Function';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
+import { MemberProvider } from '~/contexts/member';
 import { createApiModel } from '~/util/api-model.server';
-import { findMember } from '~/util/model.server';
+import { findMember, findMemberByKey } from '~/util/model.server';
 import { findPackage, getMembers } from '~/util/parse.server';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -38,7 +40,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 					return [
 						{ params: { slug: ['main', 'packages', packageName] } },
-						...getMembers(pkg!).map((member) => ({ params: { slug: ['main', 'packages', packageName, member.name] } })),
+						...getMembers(pkg!).map((member) => {
+							if (member.kind === 'Function' && member.overloadIndex) {
+								return {
+									params: {
+										slug: ['main', 'packages', packageName, `${member.name}:${member.overloadIndex}`],
+									},
+								};
+							}
+							return { params: { slug: ['main', 'packages', packageName, member.name] } };
+						}),
 					];
 				} catch {
 					return { params: { slug: ['', '', '', ''] } };
@@ -54,7 +65,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const [branchName = 'main', , packageName = 'builders', memberName] = params!.slug as string[];
+	const [branchName = 'main', , packageName = 'builders', member = 'ActionRowBuilder'] = params!.slug as string[];
+
+	const [memberName, overloadIndex] = member.split(':') as [string, string | undefined];
 
 	try {
 		const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
@@ -64,12 +77,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		const model = createApiModel(data);
 		const pkg = findPackage(model, packageName);
 
+		let { containerKey, name } = findMember(model, packageName, memberName)!;
+		if (overloadIndex) {
+			containerKey = ApiFunction.getContainerKey(name, parseInt(overloadIndex, 10));
+		}
+
 		return {
 			props: {
 				packageName,
 				data: {
 					members: pkg ? getMembers(pkg) : [],
-					member: memberName ? findMember(model, packageName, memberName)?.toJSON() ?? null : null,
+					member: memberName ? findMemberByKey(model, packageName, containerKey)?.toJSON() ?? null : null,
 				},
 			},
 		};
@@ -108,6 +126,8 @@ export default function Slug(
 	return props.error ? (
 		<div className="flex max-w-full h-full bg-white dark:bg-dark">{props.error}</div>
 	) : (
-		<SidebarLayout {...props}>{props.data?.member ? member(props.data.member) : null}</SidebarLayout>
+		<MemberProvider member={props.data?.member}>
+			<SidebarLayout {...props}>{props.data?.member ? member(props.data.member) : null}</SidebarLayout>
+		</MemberProvider>
 	);
 }

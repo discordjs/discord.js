@@ -15,6 +15,7 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 	public readonly kind: string;
 	public readonly remarks: CommentNodeContainer | null;
 	public readonly summary: CommentNodeContainer | null;
+	public readonly containerKey: string;
 
 	public constructor(model: ApiModel, item: T) {
 		this.item = item;
@@ -30,6 +31,23 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 		this.summary = item.tsdocComment?.summarySection
 			? new CommentNodeContainer(item.tsdocComment.summarySection, model, item.parent)
 			: null;
+		this.containerKey = item.containerKey;
+	}
+
+	public get path() {
+		const path = [];
+		for (const item of this.item.getHierarchy()) {
+			switch (item.kind) {
+				case 'None':
+				case 'EntryPoint':
+				case 'Model':
+					break;
+				default:
+					path.push(resolveName(item));
+			}
+		}
+
+		return path;
 	}
 
 	public toJSON() {
@@ -41,6 +59,8 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 			excerptTokens: this.excerptTokens,
 			kind: this.kind,
 			remarks: this.remarks?.toJSON() ?? null,
+			path: this.path,
+			containerKey: this.containerKey,
 		};
 	}
 }
