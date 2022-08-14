@@ -1798,8 +1798,14 @@ __metadata:
   dependencies:
     "@actions/core": ^1.9.1
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
     tslib: ^2.4.0
@@ -1818,10 +1824,16 @@ __metadata:
     "@microsoft/api-extractor": ^7.29.2
     "@sapphire/shapeshift": ^3.5.1
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
     discord-api-types: ^0.37.2
     downlevel-dts: ^0.10.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     fast-deep-equal: ^3.1.3
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
@@ -1841,9 +1853,15 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.6
     "@microsoft/api-extractor": ^7.29.2
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
     downlevel-dts: ^0.10.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
     typescript: ^4.7.4
@@ -1860,19 +1878,11 @@ __metadata:
     "@commitlint/config-angular": ^17.0.3
     "@favware/cliff-jumper": ^1.8.6
     "@favware/npm-deprecate": ^1.0.5
-    "@typescript-eslint/eslint-plugin": ^5.33.0
-    "@typescript-eslint/parser": ^5.33.0
     conventional-changelog-cli: ^2.2.2
-    eslint: ^8.21.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-prettier: ^8.5.0
-    eslint-import-resolver-typescript: ^3.4.0
-    eslint-plugin-import: ^2.26.0
     fast-glob: ^3.2.11
     husky: ^8.0.1
     is-ci: ^3.0.1
     lint-staged: ^13.0.3
-    prettier: ^2.7.1
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
@@ -1885,8 +1895,14 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.6
     "@types/jsdoc-to-markdown": ^7.0.3
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     commander: ^9.4.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     jsdoc-to-markdown: ^7.1.1
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
@@ -1906,7 +1922,13 @@ __metadata:
     "@discordjs/proxy": ^1.0.0
     "@discordjs/rest": ^1.0.0
     "@types/node": ^16.11.47
-    eslint: ^8.21.0
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
     tslib: ^2.4.0
@@ -1925,9 +1947,15 @@ __metadata:
     "@microsoft/api-extractor": ^7.29.2
     "@types/node": ^16.11.47
     "@types/supertest": ^2.0.12
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
     downlevel-dts: ^0.10.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
     supertest: ^6.2.4
@@ -1950,10 +1978,16 @@ __metadata:
     "@sapphire/async-queue": ^1.4.0
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
     discord-api-types: ^0.37.2
     downlevel-dts: ^0.10.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     file-type: ^17.1.6
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
@@ -1970,9 +2004,15 @@ __metadata:
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
     "@types/node": ^16.11.47
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     c8: ^7.12.0
     commander: ^9.4.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
     tslib: ^2.4.0
@@ -1996,9 +2036,15 @@ __metadata:
     "@types/jest": ^28.1.6
     "@types/node": ^16.11.47
     "@types/ws": ^8.5.3
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     discord-api-types: ^0.37.2
     downlevel-dts: ^0.10.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     jest: ^28.1.3
     jest-websocket-mock: ^2.4.0
     mock-socket: ^9.1.5
@@ -2038,10 +2084,10 @@ __metadata:
     c8: ^7.12.0
     concurrently: ^7.3.0
     cypress: ^10.4.0
-    eslint: ^8.21.0
+    eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
-    eslint-import-resolver-typescript: ^3.4.0
+    eslint-import-resolver-typescript: ^3.4.1
     eslint-plugin-import: ^2.26.0
     eslint-plugin-react: ^7.30.1
     eslint-plugin-react-hooks: ^4.6.0
@@ -2074,10 +2120,16 @@ __metadata:
     "@sapphire/async-queue": ^1.4.0
     "@types/node": ^16.11.47
     "@types/ws": ^8.5.3
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     "@vladfrangu/async_event_emitter": ^2.0.1
     c8: ^7.12.0
     discord-api-types: ^0.37.2
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     mock-socket: ^9.1.5
     prettier: ^2.7.1
     rollup-plugin-typescript2: 0.32.1
@@ -4376,7 +4428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.4.1, acorn@npm:^8.6.0, acorn@npm:^8.7.1, acorn@npm:^8.8.0":
+"acorn@npm:^8.4.1, acorn@npm:^8.6.0, acorn@npm:^8.8.0":
   version: 8.8.0
   resolution: "acorn@npm:8.8.0"
   bin:
@@ -6600,9 +6652,15 @@ __metadata:
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.47
     "@types/ws": ^8.5.3
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
     discord-api-types: ^0.37.2
     dtslint: ^4.2.1
-    eslint: ^8.21.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.4.1
+    eslint-plugin-import: ^2.26.0
     fast-deep-equal: ^3.1.3
     jest: ^28.1.3
     lodash.snakecase: ^4.1.1
@@ -7648,9 +7706,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "eslint-import-resolver-typescript@npm:3.4.0"
+"eslint-import-resolver-typescript@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "eslint-import-resolver-typescript@npm:3.4.1"
   dependencies:
     debug: ^4.3.4
     enhanced-resolve: ^5.10.0
@@ -7662,17 +7720,19 @@ __metadata:
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
-  checksum: 42fa7fbf7a2144d27152567a2f2a6e6847d964a87ef7da29f559d09be44d0328a1894ea5186cf0824cecf3c9aec95bbb481d8ecbc129a3dd21614fbf3eb9a3b6
+  checksum: 952aaa4f25435b009e6604bf8a81acee2db064de1cefcac0628fd5167711721829e911910534f8773fbfe6a12c21d60bb0d324351ad25cd092481d9f80f6105d
   languageName: node
   linkType: hard
 
 "eslint-module-utils@npm:^2.7.3":
-  version: 2.7.3
-  resolution: "eslint-module-utils@npm:2.7.3"
+  version: 2.7.4
+  resolution: "eslint-module-utils@npm:2.7.4"
   dependencies:
     debug: ^3.2.7
-    find-up: ^2.1.0
-  checksum: 77048263f309167a1e6a1e1b896bfb5ddd1d3859b2e2abbd9c32c432aee13d610d46e6820b1ca81b37fba437cf423a404bc6649be64ace9148a3062d1886a678
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 5da13645daff145a5c922896b258f8bba560722c3767254e458d894ff5fbb505d6dfd945bffa932a5b0ae06714da2379bd41011c4c20d2d59cc83e23895360f7
   languageName: node
   linkType: hard
 
@@ -7784,9 +7844,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.21.0":
-  version: 8.21.0
-  resolution: "eslint@npm:8.21.0"
+"eslint@npm:^8.22.0":
+  version: 8.22.0
+  resolution: "eslint@npm:8.22.0"
   dependencies:
     "@eslint/eslintrc": ^1.3.0
     "@humanwhocodes/config-array": ^0.10.4
@@ -7829,22 +7889,11 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 1d39ddb08772ea230cb7d74f7f81f85b9d46965d3600725c7eb39a27bcdaf28cb2a780dacf6cfa1cfbf2da606b57a5e7e3ab373ab474cbcf0ba042076821f501
+  checksum: 2d84a7a2207138cdb250759b047fdb05a57fede7f87b7a039d9370edba7f26e23a873a208becfd4b2c9e4b5499029f3fc3b9318da3290e693d25c39084119c80
   languageName: node
   linkType: hard
 
-"espree@npm:^9.3.2":
-  version: 9.3.2
-  resolution: "espree@npm:9.3.2"
-  dependencies:
-    acorn: ^8.7.1
-    acorn-jsx: ^5.3.2
-    eslint-visitor-keys: ^3.3.0
-  checksum: 9a790d6779847051e87f70d720a0f6981899a722419e80c92ab6dee01e1ab83b8ce52d11b4dc96c2c490182efb5a4c138b8b0d569205bfe1cd4629e658e58c30
-  languageName: node
-  linkType: hard
-
-"espree@npm:^9.3.3":
+"espree@npm:^9.3.2, espree@npm:^9.3.3":
   version: 9.3.3
   resolution: "espree@npm:9.3.3"
   dependencies:
@@ -8234,7 +8283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-up@npm:^2.0.0, find-up@npm:^2.1.0":
+"find-up@npm:^2.0.0":
   version: 2.1.0
   resolution: "find-up@npm:2.1.0"
   dependencies:
@@ -9559,12 +9608,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.1.0, is-core-module@npm:^2.5.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.1.0, is-core-module@npm:^2.5.0, is-core-module@npm:^2.9.0":
   version: 2.9.0
   resolution: "is-core-module@npm:2.9.0"
   dependencies:
     has: ^1.0.3
   checksum: b27034318b4b462f1c8f1dfb1b32baecd651d891a4e2d1922135daeff4141dfced2b82b07aef83ef54275c4a3526aa38da859223664d0868ca24182badb784ce
+  languageName: node
+  linkType: hard
+
+"is-core-module@npm:^2.8.1":
+  version: 2.10.0
+  resolution: "is-core-module@npm:2.10.0"
+  dependencies:
+    has: ^1.0.3
+  checksum: 0f3f77811f430af3256fa7bbc806f9639534b140f8ee69476f632c3e1eb4e28a38be0b9d1b8ecf596179c841b53576129279df95e7051d694dac4ceb6f967593
   languageName: node
   linkType: hard
 
@@ -14478,12 +14536,12 @@ __metadata:
   linkType: hard
 
 "synckit@npm:^0.8.1":
-  version: 0.8.1
-  resolution: "synckit@npm:0.8.1"
+  version: 0.8.3
+  resolution: "synckit@npm:0.8.3"
   dependencies:
     "@pkgr/utils": ^2.3.0
     tslib: ^2.4.0
-  checksum: 36a1b699996f3bb251c8f828364e101cf08b2a20225cb39df9d7c2186380554b8172374babfe10f03f4b52ab8c453c16447c3cbf61108221f2c58c446bf8425a
+  checksum: ba6baa7c32e69b38eebb322a8eb1712a117f7f1eaa42e75623c7d6da43f0e61d3ac33fa962c2c58a8b37742f1e0ae9d21f04c9da0dbf34d618a8780055e9e1fa
   languageName: node
   linkType: hard
 
