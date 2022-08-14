@@ -5774,7 +5774,7 @@ export interface RolePosition {
   position: number;
 }
 
-export type RoleResolvable = Role | Snowflake;
+export type RoleResolvable = Role | Snowflake | APIRole;
 
 export interface RoleTagData {
   botId?: Snowflake;
