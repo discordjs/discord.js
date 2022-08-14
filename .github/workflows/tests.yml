@@ -29,7 +29,7 @@ jobs:
 
   tests:
     name: Tests
-    needs: changes
+    needs: detect-changes
     strategy:
       matrix:
         package: ${{ fromJSON(needs.changes.outputs.packages) }}
