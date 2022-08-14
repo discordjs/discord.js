@@ -58,6 +58,8 @@ jobs:
     strategy:
       matrix:
         package: ${{ fromJSON(needs.changes.outputs.packages) }}
+        exclude:
+          - package: shared
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
