@@ -42,17 +42,28 @@ export function DocContainer({
 			</div>
 
 			<div className="min-h-full overflow-y-auto overflow-x-clip px-10 pt-5 pb-10">
-				<SyntaxHighlighter
-					wrapLines
-					wrapLongLines
-					language="typescript"
-					style={vscDarkPlus}
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-				>
-					{excerpt}
-				</SyntaxHighlighter>
+				<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white mb-5">
+					{summary ? (
+						<CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />
+					) : (
+						<p className="text-dark-100 dark:text-gray-300">No summary provided.</p>
+					)}
+				</Section>
+				<div className={extendsTokens?.length ? 'mb-2' : 'mb-10'}>
+					<SyntaxHighlighter
+						wrapLines
+						wrapLongLines
+						language="typescript"
+						style={vscDarkPlus}
+						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+					>
+						{excerpt}
+					</SyntaxHighlighter>
+				</div>
 				{extendsTokens?.length ? (
-					<div className="flex flex-row items-center dark:text-white gap-3">
+					<div
+						className={`flex flex-row items-center dark:text-white gap-3 ${implementsTokens?.length ? '' : 'mb-10'}`}
+					>
 						<h3 className="m-0">Extends</h3>
 						<h3 className="m-0">{CodeListingSeparatorType.Type}</h3>
 						<p className="font-mono break-all">
@@ -61,7 +72,7 @@ export function DocContainer({
 					</div>
 				) : null}
 				{implementsTokens?.length ? (
-					<div className="flex flex-row items-center dark:text-white gap-3">
+					<div className={`flex flex-row items-center dark:text-white gap-3 mb-10`}>
 						<h3 className="m-0">Implements</h3>
 						<h3 className="m-0">{CodeListingSeparatorType.Type}</h3>
 						<p className="font-mono break-all">
@@ -75,13 +86,6 @@ export function DocContainer({
 					</div>
 				) : null}
 				<div className="space-y-10">
-					<Section iconElement={<VscListSelection />} title="Summary" className="dark:text-white">
-						{summary ? (
-							<CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />
-						) : (
-							<p className="text-dark-100 dark:text-gray-300">No summary provided.</p>
-						)}
-					</Section>
 					{typeParams?.length ? (
 						<Section
 							iconElement={<VscSymbolParameter />}

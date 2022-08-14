@@ -10,6 +10,7 @@ export interface SectionProps {
 	defaultClosed?: boolean;
 	iconElement?: JSX.Element;
 	showSeparator?: boolean;
+	margin?: boolean;
 }
 
 export function Section({
@@ -19,6 +20,7 @@ export function Section({
 	defaultClosed,
 	iconElement,
 	showSeparator = true,
+	margin = true,
 }: SectionProps) {
 	const [collapsed, setCollapsed] = useState(defaultClosed ?? false);
 
@@ -47,8 +49,16 @@ export function Section({
 									height: 'auto',
 									paddingLeft: '1.75rem',
 									paddingRight: '1.75rem',
+									marginBottom: margin ? '1.25rem' : 0,
 								},
-								collapsed: { opacity: 0, height: 0, paddingLeft: '1.75rem', paddingRight: '1.75rem', paddingBottom: 0 },
+								collapsed: {
+									opacity: 0,
+									height: 0,
+									paddingLeft: '1.75rem',
+									paddingRight: '1.75rem',
+									paddingBottom: 0,
+									marginBottom: 0,
+								},
 							}}
 						>
 							{children}

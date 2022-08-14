@@ -16,7 +16,7 @@ export function CommentSection({ node, textClassName }: RemarksBlockProps): JSX.
 	const createNode = (node: ReturnType<CommentNode['toJSON']>, idx?: number): ReactNode => {
 		switch (node.kind) {
 			case 'PlainText':
-				return <span>{(node as ReturnType<PlainTextCommentNode['toJSON']>).text}</span>;
+				return <span key={idx}>{(node as ReturnType<PlainTextCommentNode['toJSON']>).text}</span>;
 			case 'Paragraph':
 				return (
 					<p key={idx} className={textClassName}>
@@ -24,7 +24,7 @@ export function CommentSection({ node, textClassName }: RemarksBlockProps): JSX.
 					</p>
 				);
 			case 'SoftBreak':
-				return <br />;
+				return <br key={idx} />;
 			case 'LinkTag': {
 				const { codeDestination, urlDestination, text } = node as ReturnType<LinkTagCommentNode['toJSON']>;
 
