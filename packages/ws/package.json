@@ -65,7 +65,7 @@
 		"@discordjs/docgen": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.6",
 		"@microsoft/api-extractor": "^7.29.2",
-		"@types/node": "^16.11.47",
+		"@types/node": "^16.11.48",
 		"@typescript-eslint/eslint-plugin": "^5.33.0",
 		"@typescript-eslint/parser": "^5.33.0",
 		"c8": "^7.12.0",
@@ -78,7 +78,7 @@
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "0.32.1",
 		"typescript": "^4.7.4",
-		"unbuild": "^0.8.4",
+		"unbuild": "^0.8.8",
 		"undici": "^5.8.2",
 		"vitest": "^0.21.1",
 		"zlib-sync": "^0.1.7"

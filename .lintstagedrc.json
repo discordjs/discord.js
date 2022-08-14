@@ -1,5 +1,5 @@
 {
 	"*": "prettier --ignore-unknown --write",
 	"{src/**,__tests__/**}.{mjs,js,ts}": "eslint --ext mjs,js,ts --fix",
-	"src/**.ts": "vitest related"
+	"src/**.ts": "vitest related --run"
 }

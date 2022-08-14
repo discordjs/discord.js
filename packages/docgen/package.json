@@ -11,7 +11,7 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/index.cjs",
+	"bin": "./dist/cli.cjs",
 	"directories": {
 		"lib": "src"
 	},

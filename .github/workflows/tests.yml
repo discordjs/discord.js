@@ -72,10 +72,12 @@ jobs:
           cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn workspaces focus ${{ matrix.package }}
+        run: yarn install --immutable
 
       - name: Build dependencies
-        run: yarn workspace ${{ matrix.package }} build
+        run: |
+          yarn workspace @discordjs/docgen build
+          yarn workspaces foreach --parallel --topological --recursive --from ${{ matrix.package }} build
 
       - name: ESLint
         run: yarn workspace ${{ matrix.package }} lint
