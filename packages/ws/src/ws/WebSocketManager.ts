@@ -43,6 +43,10 @@ export interface SessionInfo {
 	 * The total number of shards at the time of this shard identifying
 	 */
 	shardCount: number;
+	/**
+	 * URL to use when resuming
+	 */
+	resumeURL: string;
 }
 
 /**
