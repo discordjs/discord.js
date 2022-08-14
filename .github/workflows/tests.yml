@@ -1,8 +1,38 @@
 name: Tests
 on: [push, pull_request]
 jobs:
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            '@discordjs/actions': 'packages/actions'
+            '@discordjs/builders': 'packages/builders'
+            '@discordjs/collection': 'packages/collection'
+            'discord.js': 'packages/discord.js'
+            '@discordjs/docgen': 'packages/docgen'
+            '@discordjs/proxy': 'packages/proxy'
+            '@discordjs/proxy-container': 'packages/proxy-container'
+            '@discordjs/rest': 'packages/rest'
+            '@discordjs/scripts': 'packages/scripts'
+            '@discordjs/voice': 'packages/voice'
+            '@discordjs/website': 'packages/website'
+            '@discordjs/ws': 'packages/ws'
+
   tests:
     name: Tests
+    needs: changes
+    strategy:
+      matrix:
+        package: ${{ fromJSON(needs.changes.outputs.packages) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,16 +46,16 @@ jobs:
           cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn workspaces focus ${{ matrix.package }}
 
       - name: Build dependencies
-        run: yarn build
+        run: yarn workspace ${{ matrix.package }} build
 
       - name: ESLint
-        run: yarn lint
+        run: yarn workspace ${{ matrix.package }} lint
 
       - name: Tests
-        run: yarn test
+        run: yarn workspace ${{ matrix.package }} test
 
       - name: Upload Coverage
         uses: ./packages/actions/src/uploadCoverage
