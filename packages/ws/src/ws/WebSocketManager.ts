@@ -80,16 +80,21 @@ export interface OptionalWebSocketManagerOptions {
 	 * The ids of the shards this WebSocketManager should manage.
 	 * Use `null` to simply spawn 0 through `shardCount - 1`
 	 * @example
+	 * ```
 	 * const manager = new WebSocketManager({
 	 *   shardIds: [1, 3, 7], // spawns shard 1, 3, and 7, nothing else
 	 * });
+	 * ```
+	 *
 	 * @example
+	 * ```
 	 * const manager = new WebSocketManager({
 	 *   shardIds: {
 	 *     start: 3,
 	 *     end: 6,
 	 *   }, // spawns shards 3, 4, 5, and 6
 	 * });
+	 * ```
 	 */
 	shardIds: number[] | ShardRange | null;
 	/**
@@ -122,6 +127,7 @@ export interface OptionalWebSocketManagerOptions {
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
 	 * @example
+	 * ```
 	 * const manager = new WebSocketManager({
 	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
 	 *     // Fetch this info from redis or similar
@@ -129,6 +135,7 @@ export interface OptionalWebSocketManagerOptions {
 	 *     // Return null if no information is found
 	 *   },
 	 * });
+	 * ```
 	 */
 	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
 	/**
