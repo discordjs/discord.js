@@ -1,7 +1,7 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  detect-changes:
+  changes:
     name: Detect changes
     runs-on: ubuntu-latest
     outputs:
@@ -54,7 +54,7 @@ jobs:
 
   tests:
     name: Tests
-    needs: detect-changes
+    needs: changes
     strategy:
       matrix:
         package: ${{ fromJSON(needs.changes.outputs.packages) }}
