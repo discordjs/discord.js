@@ -47,32 +47,13 @@ class Emoji extends Base {
     return encodeURIComponent(this.name);
   }
 
-/**
+  /**
    * The URL to the emoji file if it's a custom emoji
    * @type {?string}
-   * @param {string} extension the extension of emoji
-   * @returns {string}
+   * @readonly
    */
-  url(extension) {
-    let final_result;
-    if (extension === 'png' && !this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'png');
-    } else if (this.animated && extension === 'gif') {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'gif');
-    } else if (extension === 'webp' && !this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'webp');
-    } else if (extension === 'jpeg' && !this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'jpeg');
-    } else if (extension === 'jpg' && !this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'jpg');
-    } else if (!extension && !this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'png');
-    } else if (!extension && this.animated) {
-      final_result = this.id && this.client.rest.cdn.emoji(this.id, 'gif');
-    } else {
-      final_result = undefined;
-    }
-    return final_result;
+  get url() {
+    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? 'gif' : 'png');
   }
 
   /**
