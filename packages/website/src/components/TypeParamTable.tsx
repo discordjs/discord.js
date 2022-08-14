@@ -2,12 +2,7 @@ import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import type { TypeParameterData } from '~/util/parse.server';
 
-export interface TableProps {
-	data: TypeParameterData[];
-	className?: string;
-}
-
-export function TypeParamTable({ data, className }: TableProps) {
+export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	const rows = data.map((typeParam) => ({
 		Name: typeParam.name,
 		Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
@@ -24,7 +19,6 @@ export function TypeParamTable({ data, className }: TableProps) {
 
 	return (
 		<Table
-			className={className}
 			columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
 			rows={rows}
 			columnStyles={rowElements}

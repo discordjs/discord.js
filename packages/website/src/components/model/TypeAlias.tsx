@@ -1,11 +1,7 @@
 import { DocContainer } from '../DocContainer';
 import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
 
-export interface TypeAliasProps {
-	data: ReturnType<DocTypeAlias['toJSON']>;
-}
-
-export function TypeAlias({ data }: TypeAliasProps) {
+export function TypeAlias({ data }: { data: ReturnType<DocTypeAlias['toJSON']> }) {
 	return (
 		<DocContainer
 			name={data.name}

@@ -3,11 +3,15 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["**/dist/**"]
+			"outputs": ["dist/**"]
+		},
+		"@discordjs/website#build": {
+			"dependsOn": ["^build"],
+			"outputs": [".next/**"]
 		},
 		"test": {
 			"dependsOn": ["^build"],
-			"outputs": ["**/coverage/**"]
+			"outputs": []
 		},
 		"lint": {
 			"dependsOn": ["^build"],
@@ -19,7 +23,7 @@
 		},
 		"docs": {
 			"dependsOn": ["^build"],
-			"outputs": ["**/docs/docs.json", "**/docs/docs.api.json"]
+			"outputs": ["docs/docs.json", "docs/docs.api.json"]
 		},
 		"changelog": {
 			"dependsOn": ["^build"],
