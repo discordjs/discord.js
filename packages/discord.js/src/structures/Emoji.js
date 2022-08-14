@@ -53,7 +53,7 @@ class Emoji extends Base {
    * @readonly
    */
   get url() {
-    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? 'gif' : 'png');
+    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? 'gif' : 'png' || 'webp' || 'jpeg' || 'jpg');
   }
 
   /**
