@@ -14,18 +14,43 @@ jobs:
         id: filter
         with:
           filters: |
-            '@discordjs/actions': 'packages/actions'
-            '@discordjs/builders': 'packages/builders'
-            '@discordjs/collection': 'packages/collection'
-            'discord.js': 'packages/discord.js'
-            '@discordjs/docgen': 'packages/docgen'
-            '@discordjs/proxy': 'packages/proxy'
-            '@discordjs/proxy-container': 'packages/proxy-container'
-            '@discordjs/rest': 'packages/rest'
-            '@discordjs/scripts': 'packages/scripts'
-            '@discordjs/voice': 'packages/voice'
-            '@discordjs/website': 'packages/website'
-            '@discordjs/ws': 'packages/ws'
+            shared: &shared
+              - '!(packages)**'
+            '@discordjs/actions':
+              - *shared
+              - 'packages/actions'
+            '@discordjs/builders':
+              - *shared
+              - 'packages/builders'
+            '@discordjs/collection':
+              - *shared
+              - 'packages/collection'
+            'discord.js':
+              - 'packages/discord.js'
+            '@discordjs/docgen':
+              - *shared
+              - 'packages/docgen'
+            '@discordjs/proxy':
+              - *shared
+              - 'packages/proxy'
+            '@discordjs/proxy-container':
+              - *shared
+              - 'packages/proxy-container'
+            '@discordjs/rest':
+              - *shared
+              - 'packages/rest'
+            '@discordjs/scripts':
+              - *shared
+              - 'packages/scripts'
+            '@discordjs/voice':
+              - *shared
+              - 'packages/voice'
+            '@discordjs/website':
+              - *shared
+              - 'packages/website'
+            '@discordjs/ws':
+              - *shared
+              - 'packages/ws'
 
   tests:
     name: Tests
@@ -43,7 +68,6 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn workspaces focus ${{ matrix.package }}

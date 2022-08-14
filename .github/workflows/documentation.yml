@@ -32,7 +32,6 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable
@@ -84,7 +83,6 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable
