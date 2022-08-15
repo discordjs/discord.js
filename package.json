@@ -4,7 +4,7 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "turbo run build --parallel",
+		"build": "turbo run build",
 		"test": "turbo run test --parallel",
 		"lint": "turbo run lint --parallel",
 		"format": "turbo run format --parallel",
