@@ -16,11 +16,14 @@ jobs:
   build:
     name: Build documentation
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'discordjs'
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     outputs:
       BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
       SHA: ${{ steps.env.outputs.SHA }}
+    if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -71,6 +74,8 @@ jobs:
         package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}

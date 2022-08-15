@@ -1,66 +1,12 @@
 name: Tests
 on: [push, pull_request]
 jobs:
-  changes:
-    name: Detect changes
-    runs-on: ubuntu-latest
-    outputs:
-      packages: ${{ steps.filter.outputs.changes }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            shared: &shared
-              - '!(packages)**'
-            '@discordjs/actions':
-              - *shared
-              - 'packages/actions'
-            '@discordjs/builders':
-              - *shared
-              - 'packages/builders'
-            '@discordjs/collection':
-              - *shared
-              - 'packages/collection'
-            'discord.js':
-              - 'packages/discord.js'
-            '@discordjs/docgen':
-              - *shared
-              - 'packages/docgen'
-            '@discordjs/proxy':
-              - *shared
-              - 'packages/proxy'
-            '@discordjs/proxy-container':
-              - *shared
-              - 'packages/proxy-container'
-            '@discordjs/rest':
-              - *shared
-              - 'packages/rest'
-            '@discordjs/scripts':
-              - *shared
-              - 'packages/scripts'
-            '@discordjs/voice':
-              - *shared
-              - 'packages/voice'
-            '@discordjs/website':
-              - *shared
-              - 'packages/website'
-            '@discordjs/ws':
-              - *shared
-              - 'packages/ws'
-
   tests:
     name: Tests
-    needs: changes
-    strategy:
-      matrix:
-        package: ${{ fromJSON(needs.changes.outputs.packages) }}
-        exclude:
-          - package: shared
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -75,15 +21,13 @@ jobs:
         run: yarn install --immutable
 
       - name: Build dependencies
-        run: |
-          yarn workspace @discordjs/docgen build
-          yarn workspaces foreach --parallel --topological --recursive --from ${{ matrix.package }} build
+        run: yarn build
 
       - name: ESLint
-        run: yarn workspace ${{ matrix.package }} lint
+        run: yarn lint
 
       - name: Tests
-        run: yarn workspace ${{ matrix.package }} test
+        run: yarn test
 
       - name: Upload Coverage
         uses: ./packages/actions/src/uploadCoverage

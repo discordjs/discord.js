@@ -4,13 +4,13 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "yarn workspaces foreach --exclude @discordjs/website --parallel --topological run build",
-		"test": "yarn workspaces foreach --parallel --topological run test",
-		"lint": "yarn workspaces foreach --parallel --topological run lint",
-		"format": "yarn workspaces foreach --parallel --topological run format",
-		"fmt": "yarn format",
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"lint": "turbo run lint",
+		"format": "turbo run format",
+		"fmt": "turbo run format",
 		"postinstall": "is-ci || husky install",
-		"docs": "yarn workspaces foreach --parallel --topological run docs",
+		"docs": "turbo run docs",
 		"update": "yarn upgrade-interactive"
 	},
 	"contributors": [
@@ -47,6 +47,7 @@
 		"husky": "^8.0.1",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",
+		"turbo": "^1.4.3",
 		"typescript": "^4.7.4"
 	},
 	"resolutions": {

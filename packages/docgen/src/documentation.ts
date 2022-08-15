@@ -1,5 +1,4 @@
 import { dirname, join, relative } from 'node:path';
-import { Collection } from '@discordjs/collection';
 import type { DeclarationReflection } from 'typedoc';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
@@ -13,15 +12,15 @@ import { DocumentedTypeDef } from './types/typedef.js';
 import packageFile from '../package.json';
 
 export class Documentation {
-	public readonly classes = new Collection<string, DocumentedClass>();
+	public readonly classes = new Map<string, DocumentedClass>();
 
-	public readonly functions = new Collection<string, DocumentedMethod>();
+	public readonly functions = new Map<string, DocumentedMethod>();
 
-	public readonly interfaces = new Collection<string, DocumentedInterface>();
+	public readonly interfaces = new Map<string, DocumentedInterface>();
 
-	public readonly typedefs = new Collection<string, DocumentedTypeDef>();
+	public readonly typedefs = new Map<string, DocumentedTypeDef>();
 
-	public readonly externals = new Collection<string, DocumentedExternal>();
+	public readonly externals = new Map<string, DocumentedExternal>();
 
 	public constructor(
 		data: RootTypes[] | DeclarationReflection[],
@@ -244,11 +243,11 @@ export class Documentation {
 				format: Documentation.FORMAT_VERSION,
 				date: Date.now(),
 			},
-			classes: this.classes.map((c) => c.serialize()),
-			functions: this.functions.map((f) => f.serialize()),
-			interfaces: this.interfaces.map((i) => i.serialize()),
-			typedefs: this.typedefs.map((t) => t.serialize()),
-			externals: this.externals.map((e) => e.serialize()),
+			classes: [...this.classes.values()].map((c) => c.serialize()),
+			functions: [...this.functions.values()].map((f) => f.serialize()),
+			interfaces: [...this.interfaces.values()].map((i) => i.serialize()),
+			typedefs: [...this.typedefs.values()].map((t) => t.serialize()),
+			externals: [...this.externals.values()].map((e) => e.serialize()),
 			custom: this.custom,
 		};
 	}
