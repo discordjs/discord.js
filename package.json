@@ -4,13 +4,13 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "turbo run build",
-		"test": "turbo run test",
-		"lint": "turbo run lint",
-		"format": "turbo run format",
-		"fmt": "turbo run format",
+		"build": "turbo run build --parallel",
+		"test": "turbo run test --parallel",
+		"lint": "turbo run lint --parallel",
+		"format": "turbo run format --parallel",
+		"fmt": "turbo run format --parallel",
 		"postinstall": "is-ci || husky install",
-		"docs": "turbo run docs",
+		"docs": "turbo run docs --parallel",
 		"update": "yarn upgrade-interactive"
 	},
 	"contributors": [
