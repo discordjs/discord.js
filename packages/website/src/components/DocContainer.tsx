@@ -38,7 +38,7 @@ export function DocContainer({
 
 	return (
 		<Stack>
-			<Title order={2} ml="xs">
+			<Title order={2} ml="xs" className="break-all">
 				<Group>
 					{generateIcon(kind)}
 					{name}

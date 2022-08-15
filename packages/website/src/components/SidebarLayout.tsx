@@ -123,7 +123,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 									<Menu
 										onOpen={() => setOpenedPicker(true)}
 										onClose={() => setOpenedPicker(false)}
-										radius="md"
+										radius="xs"
 										width="target"
 									>
 										<Menu.Target>

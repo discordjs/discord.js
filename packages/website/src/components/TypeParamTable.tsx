@@ -1,3 +1,4 @@
+import { Box } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import type { TypeParameterData } from '~/util/parse.server';
@@ -18,10 +19,12 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	};
 
 	return (
-		<Table
-			columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
-			rows={rows}
-			columnStyles={rowElements}
-		/>
+		<Box className="overflow-x-auto">
+			<Table
+				columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
+				rows={rows}
+				columnStyles={rowElements}
+			/>
+		</Box>
 	);
 }

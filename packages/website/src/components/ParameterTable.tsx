@@ -1,3 +1,4 @@
+import { Box } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import type { ParameterDocumentation } from '~/util/parse.server';
@@ -15,5 +16,9 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 		Type: 'font-mono',
 	};
 
-	return <Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />;
+	return (
+		<Box className="overflow-x-auto">
+			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+		</Box>
+	);
 }
