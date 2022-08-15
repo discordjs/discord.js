@@ -47,17 +47,25 @@ class Emoji extends Base {
     return encodeURIComponent(this.name);
   }
 
-/**
+  /**
    * The URL to the emoji file if it's a custom emoji
    * @type {?string}
-   * @param {ImageExtension} extension the extension of emoji
+   * @readonly
+   */
+  get url() {
+    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? 'gif' : 'png');
+  }
+
+  /**
+   * @type {?string}
+   * @param {ImageExtension} ext the extension of emoji
    * @returns {string}
    */
-  url(extension) {
+  getUrl(ext) {
     const extensions = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
-    if (!extensions.includes(extension)) extension = this.animated ? 'gif' : 'png';
-    return this.id && this.client.rest.cdn.emoji(this.id, extension);
-  }
+    if (!extensions.includes(ext) || !ext) return undefined;
+    return this.id && this.client.rest.cdn.emoji(this.id, ext);
+  }  
 
   /**
    * The timestamp the emoji was created at, or null if unicode
