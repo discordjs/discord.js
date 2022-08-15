@@ -5,8 +5,8 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "unbuild",
-		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
+		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
 		"docs": "downlevel-dts . docs --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",

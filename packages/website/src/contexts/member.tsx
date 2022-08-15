@@ -5,11 +5,10 @@ export type DocItemJSON = ReturnType<DocItem['toJSON']>;
 
 export const MemberContext = createContext<DocItemJSON | undefined>(undefined);
 
-export interface MemberProviderProps {
+export const MemberProvider = ({
+	member,
+	children,
+}: {
 	member: DocItemJSON | undefined;
 	children: React.ReactNode;
-}
-
-export const MemberProvider = ({ member, children }: MemberProviderProps) => (
-	<MemberContext.Provider value={member}>{children}</MemberContext.Provider>
-);
+}) => <MemberContext.Provider value={member}>{children}</MemberContext.Provider>;

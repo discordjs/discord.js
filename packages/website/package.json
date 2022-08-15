@@ -12,8 +12,8 @@
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
-		"lint": "prettier --check . && eslint src --ext mjs,js,ts,tsx",
-		"format": "prettier --write . && eslint src --ext mjs,js,ts,tsx --fix"
+		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts,tsx",
+		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts,tsx --fix"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -47,11 +47,17 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@emotion/react": "^11.10.0",
+		"@emotion/server": "^11.10.0",
+		"@mantine/core": "^5.1.6",
+		"@mantine/hooks": "^5.1.6",
+		"@mantine/next": "^5.1.6",
+		"@mantine/nprogress": "^5.1.6",
+		"@mantine/spotlight": "^5.1.6",
 		"@microsoft/api-extractor-model": "^7.23.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"@vscode/codicons": "^0.0.32",
-		"framer-motion": "^7.1.0",
 		"next": "^12.2.5",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
@@ -60,9 +66,6 @@
 		"sharp": "^0.30.7"
 	},
 	"devDependencies": {
-		"@testing-library/cypress": "^8.0.3",
-		"@testing-library/dom": "^8.17.1",
-		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/react": "^13.3.0",
 		"@testing-library/user-event": "^14.4.3",
 		"@types/node": "^16.11.48",
@@ -85,7 +88,6 @@
 		"eslint-plugin-react": "^7.30.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"happy-dom": "^6.0.4",
-		"msw": "^0.44.2",
 		"prettier": "^2.7.1",
 		"typescript": "^4.7.4",
 		"unocss": "^0.45.6",

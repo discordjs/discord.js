@@ -2,11 +2,7 @@ import { DocContainer } from '../DocContainer';
 import { MethodsSection, PropertiesSection } from '../Sections';
 import type { DocClass } from '~/DocModel/DocClass';
 
-export interface ClassProps {
-	data: ReturnType<DocClass['toJSON']>;
-}
-
-export function Class({ data }: ClassProps) {
+export function Class({ data }: { data: ReturnType<DocClass['toJSON']> }) {
 	return (
 		<DocContainer
 			name={data.name}
