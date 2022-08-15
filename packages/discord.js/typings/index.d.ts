@@ -32,7 +32,7 @@ import {
   type RestOrArray,
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
-import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { BaseImageURLOptions, ImageExtension, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   APIActionRowComponent,
   APIApplicationCommand,
@@ -1069,7 +1069,7 @@ export class Emoji extends Base {
   public id: Snowflake | null;
   public name: string | null;
   public get identifier(): string;
-  public get url(): string | null;
+  public url(extension?: ImageExtension): string;
   public toJSON(): unknown;
   public toString(): string;
 }
