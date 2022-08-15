@@ -1070,7 +1070,7 @@ export class Emoji extends Base {
   public name: string | null;
   public get identifier(): string;
   public get url(): string | null;
-  public getUrl(ext: ImageExtension): string;
+  public getURL(ext: ImageExtension): string;
   public toJSON(): unknown;
   public toString(): string;
 }
