@@ -20,7 +20,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', message => {
   if (message.content === 'emoji-test') {
-    message.guild.emojis.fetch('emoji-id').then(m => console.log(m.getUrl('jpg')));
+    message.guild.emojis.fetch('emoji-id').then(m => console.log(m.getURL('jpg')));
   }
 });
 
