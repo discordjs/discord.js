@@ -65,7 +65,7 @@ class Emoji extends Base {
     const extensions = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
     if (!extensions.includes(ext) || !ext) return undefined;
     return this.id && this.client.rest.cdn.emoji(this.id, ext);
-  }  
+  }
 
   /**
    * The timestamp the emoji was created at, or null if unicode
