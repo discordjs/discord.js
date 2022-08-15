@@ -20,7 +20,7 @@ class AutoModerationRuleDeleteAction extends Action {
          * @event Client#autoModerationRuleDelete
          * @param {AutoModerationRule} autoModerationRule The deleted auto moderation rule
          */
-        client.emit(Events.AutoModerationRuleUpdate, autoModerationRule);
+        client.emit(Events.AutoModerationRuleDelete, autoModerationRule);
       }
     }
 
