@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-throw-literal */
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { Box } from '@mantine/core';
 import { ApiFunction } from '@microsoft/api-extractor-model';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
@@ -27,9 +29,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		await Promise.all(
 			packages.map(async (packageName) => {
 				try {
-					const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-					const data = await res.json();
+					let data;
+					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+						const res = await readFile(
+							join(__dirname, '..', '..', '..', '..', '..', packageName, 'docs', 'docs.api.json'),
+							'utf-8',
+						);
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+						data = JSON.parse(res);
+					} else {
+						const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+						data = await res.json();
+					}
 
 					const model = createApiModel(data);
 					const pkg = findPackage(model, packageName);
@@ -71,9 +83,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [memberName, overloadIndex] = member.split(':') as [string, string | undefined];
 
 	try {
-		const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		const data = await res.json();
+		let data;
+		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+			const res = await readFile(
+				join(__dirname, '..', '..', '..', '..', '..', packageName, 'docs', 'docs.api.json'),
+				'utf-8',
+			);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			data = JSON.parse(res);
+		} else {
+			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			data = await res.json();
+		}
 
 		const model = createApiModel(data);
 		const pkg = findPackage(model, packageName);

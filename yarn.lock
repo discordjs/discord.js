@@ -2007,6 +2007,7 @@ __metadata:
     eslint-plugin-react: ^7.30.1
     eslint-plugin-react-hooks: ^4.6.0
     happy-dom: ^6.0.4
+    is-ci: ^3.0.1
     next: ^12.2.5
     prettier: ^2.7.1
     react: ^18.2.0
