@@ -62,8 +62,6 @@ class Emoji extends Base {
    * @returns {string}
    */
   getURL(ext) {
-    const extensions = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
-    if (!extensions.includes(ext) || !ext) return undefined;
     return this.id && this.client.rest.cdn.emoji(this.id, ext);
   }
 
