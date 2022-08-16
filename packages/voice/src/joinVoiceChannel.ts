@@ -10,7 +10,7 @@ export interface CreateVoiceConnectionOptions {
 	 * If true, debug messages will be enabled for the voice connection and its
 	 * related components. Defaults to false.
 	 */
-	debug?: boolean;
+	debug?: boolean | undefined;
 
 	adapterCreator: DiscordGatewayAdapterCreator;
 }

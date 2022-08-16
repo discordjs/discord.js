@@ -1,19 +1,13 @@
-import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocPlainText } from '@microsoft/tsdoc';
-import { CommentNode } from './CommentNode';
+import { DocNodeJSON, node } from './CommentNode';
 
-export class PlainTextCommentNode extends CommentNode<DocPlainText> {
-	public readonly text: string;
+export interface DocPlainTextJSON extends DocNodeJSON {
+	text: string;
+}
 
-	public constructor(node: DocPlainText, model: ApiModel, parentItem?: ApiItem) {
-		super(node, model, parentItem);
-		this.text = node.text;
-	}
-
-	public override toJSON() {
-		return {
-			...super.toJSON(),
-			text: this.text,
-		};
-	}
+export function plainTextNode(plainTextNode: DocPlainText): DocPlainTextJSON {
+	return {
+		...node(plainTextNode),
+		text: plainTextNode.text,
+	};
 }

@@ -2,14 +2,10 @@ import { DocContainer } from '../DocContainer';
 import { ParametersSection } from '../Sections';
 import type { DocFunction } from '~/DocModel/DocFunction';
 
-export interface FunctionProps {
-	data: ReturnType<DocFunction['toJSON']>;
-}
-
-export function Function({ data }: FunctionProps) {
+export function Function({ data }: { data: ReturnType<DocFunction['toJSON']> }) {
 	return (
 		<DocContainer
-			name={data.name}
+			name={`${data.name}${data.overloadIndex ? ` (${data.overloadIndex})` : ''}`}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}

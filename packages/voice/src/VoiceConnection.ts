@@ -53,7 +53,7 @@ export enum VoiceConnectionStatus {
  */
 export interface VoiceConnectionSignallingState {
 	status: VoiceConnectionStatus.Signalling;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -88,7 +88,7 @@ export enum VoiceConnectionDisconnectReason {
  */
 export interface VoiceConnectionDisconnectedBaseState {
 	status: VoiceConnectionStatus.Disconnected;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -128,7 +128,7 @@ export type VoiceConnectionDisconnectedState =
 export interface VoiceConnectionConnectingState {
 	status: VoiceConnectionStatus.Connecting;
 	networking: Networking;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -139,7 +139,7 @@ export interface VoiceConnectionConnectingState {
 export interface VoiceConnectionReadyState {
 	status: VoiceConnectionStatus.Ready;
 	networking: Networking;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -688,7 +688,7 @@ export class VoiceConnection extends EventEmitter {
 	 *
 	 * @param subscription - The removed subscription
 	 */
-	private onSubscriptionRemoved(subscription: PlayerSubscription) {
+	protected onSubscriptionRemoved(subscription: PlayerSubscription) {
 		if (this.state.status !== VoiceConnectionStatus.Destroyed && this.state.subscription === subscription) {
 			this.state = {
 				...this.state,

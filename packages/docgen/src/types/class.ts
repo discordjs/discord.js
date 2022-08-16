@@ -1,5 +1,4 @@
 import { parse } from 'node:path';
-import { Collection } from '@discordjs/collection';
 import type { DeclarationReflection } from 'typedoc';
 import { DocumentedConstructor } from './constructor.js';
 import { DocumentedEvent } from './event.js';
@@ -12,11 +11,11 @@ import type { Class, Config } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 
 export class DocumentedClass extends DocumentedItem<Class | DeclarationReflection> {
-	public readonly props = new Collection<string, DocumentedMember>();
+	public readonly props = new Map<string, DocumentedMember>();
 
-	public readonly methods = new Collection<string, DocumentedMethod>();
+	public readonly methods = new Map<string, DocumentedMethod>();
 
-	public readonly events = new Collection<string, DocumentedEvent>();
+	public readonly events = new Map<string, DocumentedEvent>();
 
 	public construct: DocumentedConstructor | null = null;
 
@@ -120,9 +119,9 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 							.trim() ?? true
 					: undefined,
 				construct: this.construct?.serialize(),
-				props: this.props.size ? this.props.map((p) => p.serialize()) : undefined,
-				methods: this.methods.size ? this.methods.map((m) => m.serialize()) : undefined,
-				events: this.events.size ? this.events.map((e) => e.serialize()) : undefined,
+				props: this.props.size ? [...this.props.values()].map((p) => p.serialize()) : undefined,
+				methods: this.methods.size ? [...this.methods.values()].map((m) => m.serialize()) : undefined,
+				events: this.events.size ? [...this.events.values()].map((e) => e.serialize()) : undefined,
 				meta,
 			};
 		}
@@ -138,9 +137,9 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 			abstract: data.virtual,
 			deprecated: data.deprecated,
 			construct: this.construct?.serialize(),
-			props: this.props.size ? this.props.map((p) => p.serialize()) : undefined,
-			methods: this.methods.size ? this.methods.map((m) => m.serialize()) : undefined,
-			events: this.events.size ? this.events.map((e) => e.serialize()) : undefined,
+			props: this.props.size ? [...this.props.values()].map((p) => p.serialize()) : undefined,
+			methods: this.methods.size ? [...this.methods.values()].map((m) => m.serialize()) : undefined,
+			events: this.events.size ? [...this.events.values()].map((e) => e.serialize()) : undefined,
 			meta: new DocumentedItemMeta(data.meta, this.config).serialize(),
 		};
 	}

@@ -81,7 +81,7 @@ export interface NetworkingReadyState {
 	udp: VoiceUDPSocket;
 	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
-	preparedPacket?: Buffer;
+	preparedPacket?: Buffer | undefined;
 }
 
 /**
@@ -94,7 +94,7 @@ export interface NetworkingResumingState {
 	udp: VoiceUDPSocket;
 	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
-	preparedPacket?: Buffer;
+	preparedPacket?: Buffer | undefined;
 }
 
 /**

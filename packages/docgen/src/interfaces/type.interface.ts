@@ -1,3 +1,3 @@
 export interface Type {
-	names?: string[];
+	names?: string[] | undefined;
 }

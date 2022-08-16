@@ -37,7 +37,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param defaultValueGenerator - A function that generates the default value
 	 *
 	 * @example
+	 * ```
 	 * collection.ensure(guildId, () => defaultGuildConfig);
+	 * ```
 	 */
 	public ensure(key: K, defaultValueGenerator: (key: K, collection: this) => V): V {
 		if (this.has(key)) return this.get(key)!;
@@ -230,7 +232,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.find(user => user.username === 'Bob');
+	 * ```
 	 */
 	public find<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
 	public find(fn: (value: V, key: K, collection: this) => boolean): V | undefined;
@@ -257,7 +261,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.findKey(user => user.username === 'Bob');
+	 * ```
 	 */
 	public findKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
 	public findKey(fn: (value: V, key: K, collection: this) => boolean): K | undefined;
@@ -304,7 +310,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.filter(user => user.username === 'Bob');
+	 * ```
 	 */
 	public filter<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): Collection<K2, V>;
 	public filter<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): Collection<K, V2>;
@@ -336,7 +344,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
+	 * ```
 	 */
 	public partition<K2 extends K>(
 		fn: (value: V, key: K, collection: this) => key is K2,
@@ -385,7 +395,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.flatMap(guild => guild.members.cache);
+	 * ```
 	 */
 	public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
 	public flatMap<T, This>(
@@ -405,7 +417,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.map(user => user.tag);
+	 * ```
 	 */
 	public map<T>(fn: (value: V, key: K, collection: this) => T): T[];
 	public map<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): T[];
@@ -429,7 +443,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.mapValues(user => user.tag);
+	 * ```
 	 */
 	public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
 	public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
@@ -449,7 +465,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.some(user => user.discriminator === '0000');
+	 * ```
 	 */
 	public some(fn: (value: V, key: K, collection: this) => boolean): boolean;
 	public some<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): boolean;
@@ -470,7 +488,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection.every(user => !user.bot);
+	 * ```
 	 */
 	public every<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): this is Collection<K2, V>;
 	public every<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): this is Collection<K, V2>;
@@ -502,7 +522,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param initialValue - Starting value for the accumulator
 	 *
 	 * @example
+	 * ```
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
+	 * ```
 	 */
 	public reduce<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -540,10 +562,12 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection
 	 *  .each(user => console.log(user.username))
 	 *  .filter(user => user.bot)
 	 *  .each(user => console.log(user.username));
+	 * ```
 	 */
 	public each(fn: (value: V, key: K, collection: this) => void): this;
 	public each<T>(fn: (this: T, value: V, key: K, collection: this) => void, thisArg: T): this;
@@ -560,10 +584,12 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
+	 * ```
 	 * collection
 	 *  .tap(coll => console.log(coll.size))
 	 *  .filter(user => user.bot)
 	 *  .tap(coll => console.log(coll.size))
+	 * ```
 	 */
 	public tap(fn: (collection: this) => void): this;
 	public tap<T>(fn: (this: T, collection: this) => void, thisArg: T): this;
@@ -578,7 +604,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Creates an identical shallow copy of this collection.
 	 *
 	 * @example
+	 * ```
 	 * const newColl = someColl.clone();
+	 * ```
 	 */
 	public clone(): Collection<K, V> {
 		return new this.constructor[Symbol.species](this);
@@ -590,7 +618,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param collections - Collections to merge
 	 *
 	 * @example
+	 * ```
 	 * const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
+	 * ```
 	 */
 	public concat(...collections: ReadonlyCollection<K, V>[]) {
 		const newColl = this.clone();
@@ -631,7 +661,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
 	 *
 	 * @example
+	 * ```
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+	 * ```
 	 */
 	public sort(compareFunction: Comparator<K, V> = Collection.defaultSort) {
 		const entries = [...this.entries()];
@@ -686,6 +718,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param whenInBoth - Function getting the result if the entry exists in both Collections
 	 *
 	 * @example
+	 * ```
 	 * // Sums up the entries in two collections.
 	 * coll.merge(
 	 *  other,
@@ -693,8 +726,10 @@ export class Collection<K, V> extends Map<K, V> {
 	 *  y => ({ keep: true, value: y }),
 	 *  (x, y) => ({ keep: true, value: x + y }),
 	 * );
+	 * ```
 	 *
 	 * @example
+	 * ```
 	 * // Intersects two collections in a left-biased manner.
 	 * coll.merge(
 	 *  other,
@@ -702,6 +737,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 *  y => ({ keep: false }),
 	 *  (x, _) => ({ keep: true, value: x }),
 	 * );
+	 * ```
 	 */
 	public merge<T, R>(
 		other: ReadonlyCollection<K, T>,
@@ -739,7 +775,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * according to the string conversion of each element.
 	 *
 	 * @example
+	 * ```
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+	 * ```
 	 */
 	public sorted(compareFunction: Comparator<K, V> = Collection.defaultSort) {
 		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
@@ -761,8 +799,10 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param combine - Function to combine an existing entry with a new one
 	 *
 	 * @example
+	 * ```
 	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);
 	 * // returns Collection { "a" => 3, "b" => 2 }
+	 * ```
 	 */
 	public static combineEntries<K, V>(
 		entries: Iterable<[K, V]>,

@@ -11,6 +11,7 @@ import {
 	type ExcerptToken,
 	type Parameter,
 	type TypeParameter,
+	ApiFunction,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
@@ -31,6 +32,9 @@ export function generatePath(items: readonly ApiItem[]) {
 				break;
 			case ApiItemKind.Package:
 				path += `${item.displayName}/`;
+				break;
+			case ApiItemKind.Function:
+				path += `${item.displayName}:${(item as ApiFunction).overloadIndex}/`;
 				break;
 			default:
 				path += `${item.displayName}/`;
@@ -195,8 +199,10 @@ export function genParameter(model: ApiModel, param: Parameter): ParameterDocume
 export function getMembers(pkg: ApiPackage) {
 	return pkg.members[0]!.members.map((member) => ({
 		name: member.displayName,
-		kind: member.kind,
+		kind: member.kind as string,
 		path: generatePath(member.getHierarchy()),
+		containerKey: member.containerKey,
+		overloadIndex: member.kind === 'Function' ? (member as ApiFunction).overloadIndex : null,
 	}));
 }
 

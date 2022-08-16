@@ -73,7 +73,7 @@ export class AudioResource<T = unknown> {
 	/**
 	 * The audio player that the resource is subscribed to, if any.
 	 */
-	public audioPlayer?: AudioPlayer;
+	public audioPlayer?: AudioPlayer | undefined;
 
 	/**
 	 * The playback duration of this audio resource, given in milliseconds.

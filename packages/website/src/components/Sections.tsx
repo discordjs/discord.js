@@ -1,3 +1,4 @@
+import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
@@ -6,37 +7,31 @@ import { Section } from './Section';
 import type { DocInterface } from '~/DocModel/DocInterface';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
-export interface PropertiesSectionProps {
-	data: ReturnType<DocInterface['toJSON']>['properties'];
-}
+export function PropertiesSection({ data }: { data: ReturnType<DocInterface['toJSON']>['properties'] }) {
+	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
-export function PropertiesSection({ data }: PropertiesSectionProps) {
 	return data.length ? (
-		<Section iconElement={<VscSymbolProperty />} title="Properties" className="dark:text-white">
+		<Section title="Properties" icon={<VscSymbolProperty />} padded dense={matches}>
 			<PropertyList data={data} />
 		</Section>
 	) : null;
 }
 
-export interface MethodsSectionProps {
-	data: ReturnType<DocInterface['toJSON']>['methods'];
-}
+export function MethodsSection({ data }: { data: ReturnType<DocInterface['toJSON']>['methods'] }) {
+	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
-export function MethodsSection({ data }: MethodsSectionProps) {
 	return data.length ? (
-		<Section iconElement={<VscSymbolMethod />} title="Methods" className="dark:text-white">
+		<Section title="Methods" icon={<VscSymbolMethod />} padded dense={matches}>
 			<MethodList data={data} />
 		</Section>
 	) : null;
 }
 
-export interface ParametersSectionProps {
-	data: ParameterDocumentation[];
-}
+export function ParametersSection({ data }: { data: ParameterDocumentation[] }) {
+	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
-export function ParametersSection({ data }: ParametersSectionProps) {
 	return data.length ? (
-		<Section iconElement={<VscSymbolConstant />} title="Parameters" className="dark:text-white">
+		<Section title="Parameters" icon={<VscSymbolConstant />} padded dense={matches}>
 			<ParameterTable data={data} />
 		</Section>
 	) : null;

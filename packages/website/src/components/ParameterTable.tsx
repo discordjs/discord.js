@@ -1,13 +1,9 @@
+import { Box } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
-interface ParameterDetailProps {
-	data: ParameterDocumentation[];
-	className?: string | undefined;
-}
-
-export function ParameterTable({ data, className }: ParameterDetailProps) {
+export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 	const rows = data.map((param) => ({
 		Name: param.name,
 		Type: <HyperlinkedText tokens={param.tokens} />,
@@ -21,11 +17,8 @@ export function ParameterTable({ data, className }: ParameterDetailProps) {
 	};
 
 	return (
-		<Table
-			className={className}
-			columns={['Name', 'Type', 'Optional', 'Description']}
-			rows={rows}
-			columnStyles={columnStyles}
-		/>
+		<Box className="overflow-x-auto">
+			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+		</Box>
 	);
 }
