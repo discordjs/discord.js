@@ -3761,7 +3761,7 @@ export interface BaseApplicationCommandOptionsData {
   description: string;
   descriptionLocalizations?: LocalizationMap;
   required?: boolean;
-  autocomplete?: boolean;
+  autocomplete?: never;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
