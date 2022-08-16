@@ -1,7 +1,9 @@
+import { Group, Stack, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
-import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocItem } from '~/DocModel/DocItem';
+import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
@@ -9,36 +11,36 @@ export enum CodeListingSeparatorType {
 	Value = '=',
 }
 
-export interface CodeListingProps {
+export function CodeListing({
+	name,
+	separator = CodeListingSeparatorType.Type,
+	summary,
+	typeTokens,
+	children,
+	comment,
+}: {
 	name: string;
 	summary?: ReturnType<DocItem['toJSON']>['summary'];
 	typeTokens: TokenDocumentation[];
 	separator?: CodeListingSeparatorType;
 	children?: ReactNode;
 	className?: string | undefined;
-}
-
-export function CodeListing({
-	name,
-	className,
-	separator = CodeListingSeparatorType.Type,
-	summary,
-	typeTokens,
-	children,
-}: CodeListingProps) {
+	comment?: AnyDocNodeJSON | null;
+}) {
 	return (
-		<div className={className}>
-			<div key={name} className="flex flex-col">
-				<div className="w-full flex flex-row gap-3">
-					<h4 className="font-mono m-0">{`${name}`}</h4>
-					<h4 className="m-0">{separator}</h4>
-					<h4 className="font-mono m-0 break-all">
-						<HyperlinkedText tokens={typeTokens} />
-					</h4>
-				</div>
-				{summary && <CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />}
-				{children}
-			</div>
-		</div>
+		<Stack key={name}>
+			<Group>
+				<Title order={4} className="font-mono">
+					{name}
+				</Title>
+				<Title order={4}>{separator}</Title>
+				<Title order={4} className="font-mono break-all">
+					<HyperlinkedText tokens={typeTokens} />
+				</Title>
+			</Group>
+			{summary && <TSDoc node={summary} />}
+			{comment && <TSDoc node={comment} />}
+			{children}
+		</Stack>
 	);
 }

@@ -1,7 +1,13 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocDeclarationReference, DocLinkTag } from '@microsoft/tsdoc';
-import { CommentNode } from './CommentNode';
+import { DocNodeJSON, node } from './CommentNode';
 import { generatePath, resolveName } from '~/util/parse.server';
+
+export interface DocLinkTagJSON extends DocNodeJSON {
+	text: string | null;
+	codeDestination: LinkTagCodeLink | null;
+	urlDestination: string | null;
+}
 
 export function genToken(
 	model: ApiModel,
@@ -31,24 +37,16 @@ export interface LinkTagCodeLink {
 	path: string;
 }
 
-export class LinkTagCommentNode extends CommentNode<DocLinkTag> {
-	public readonly codeDestination: LinkTagCodeLink | null;
-	public readonly text: string | null;
-	public readonly urlDestination: string | null;
+export function linkTagNode(linkNode: DocLinkTag, model: ApiModel, parentItem?: ApiItem): DocLinkTagJSON {
+	const codeDestination =
+		linkNode.codeDestination && parentItem ? genToken(model, linkNode.codeDestination, parentItem) : null;
+	const text = linkNode.linkText ?? null;
+	const urlDestination = linkNode.urlDestination ?? null;
 
-	public constructor(node: DocLinkTag, model: ApiModel, parentItem?: ApiItem) {
-		super(node, model, parentItem);
-		this.codeDestination = node.codeDestination ? genToken(model, node.codeDestination, this.parentItem) : null;
-		this.text = node.linkText ?? null;
-		this.urlDestination = node.urlDestination ?? null;
-	}
-
-	public override toJSON() {
-		return {
-			...super.toJSON(),
-			text: this.text,
-			codeDestination: this.codeDestination,
-			urlDestination: this.urlDestination,
-		};
-	}
+	return {
+		...node(linkNode),
+		text,
+		codeDestination,
+		urlDestination,
+	};
 }

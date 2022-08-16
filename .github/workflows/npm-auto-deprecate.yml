@@ -1,8 +1,8 @@
 name: npm auto deprecate
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'
+  workflow_dispatch:
 jobs:
   npm-auto-deprecate:
     name: npm auto deprecate
@@ -17,7 +17,6 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable

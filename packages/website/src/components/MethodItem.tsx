@@ -1,15 +1,11 @@
-import { FiLink } from 'react-icons/fi';
-import { CommentSection } from './Comment';
+import { Group, Stack, Title } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { ParameterTable } from './ParameterTable';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
 
 type MethodResolvable = ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>;
-
-export interface MethodItemProps {
-	data: MethodResolvable;
-}
 
 function getShorthandName(data: MethodResolvable) {
 	return `${data.name}(${data.parameters.reduce((prev, cur, index) => {
@@ -21,32 +17,25 @@ function getShorthandName(data: MethodResolvable) {
 	}, '')})`;
 }
 
-function onAnchorClick() {
-	console.log('anchor clicked');
-	// Todo implement jump-to links
-}
-
-export function MethodItem({ data }: MethodItemProps) {
+export function MethodItem({ data }: { data: MethodResolvable }) {
 	return (
-		<div className="flex flex-col">
-			<div className="flex">
-				<button className="bg-transparent border-none cursor-pointer dark:text-white" onClick={onAnchorClick}>
-					<FiLink size={16} />
-				</button>
-				<div className="flex flex-col">
-					<div className="w-full flex flex-row gap-3">
-						<h4 className="font-mono m-0 break-all">{`${getShorthandName(data)}`}</h4>
-						<h4 className="m-0">:</h4>
-						<h4 className="font-mono m-0 break-all">
+		<Stack>
+			<Group>
+				<Stack>
+					<Group>
+						<Title order={5} className="font-mono break-all">{`${getShorthandName(data)}`}</Title>
+						<Title order={5}>:</Title>
+						<Title order={5} className="font-mono break-all">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
-						</h4>
-					</div>
-				</div>
-			</div>
-			<div className="mx-7 mb-5">
-				{data.summary && <CommentSection textClassName="text-dark-100 dark:text-gray-300" node={data.summary} />}
+						</Title>
+					</Group>
+				</Stack>
+			</Group>
+			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg">
+				{data.summary ? <TSDoc node={data.summary} /> : null}
+				{data.comment ? <TSDoc node={data.comment} /> : null}
 				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
-			</div>
-		</div>
+			</Group>
+		</Stack>
 	);
 }
