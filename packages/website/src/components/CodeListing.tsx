@@ -38,7 +38,7 @@ export function CodeListing({
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
-			<Group ml="md">
+			<Group>
 				{summary && <TSDoc node={summary} />}
 				{comment && <TSDoc node={comment} />}
 				{children}

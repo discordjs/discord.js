@@ -31,7 +31,7 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 					</Group>
 				</Stack>
 			</Group>
-			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg" ml="md">
+			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg">
 				{data.summary ? <TSDoc node={data.summary} /> : null}
 				{data.comment ? <TSDoc node={data.comment} /> : null}
 				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
