@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "is-ci && yarn build:ci || yarn build:prod",
-		"build:ci": "yarn run --top-level docs && yarn build:prod",
+		"build:ci": "yarn run --top-level docs --force && yarn build:prod",
 		"build:prod": "yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
