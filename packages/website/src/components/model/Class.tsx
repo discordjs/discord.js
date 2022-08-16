@@ -12,6 +12,7 @@ export function Class({ data }: { data: ReturnType<DocClass['toJSON']> }) {
 			typeParams={data.typeParameterData}
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
+			comment={data.comment}
 		>
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />

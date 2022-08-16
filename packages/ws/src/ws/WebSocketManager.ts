@@ -79,6 +79,7 @@ export interface OptionalWebSocketManagerOptions {
 	/**
 	 * The ids of the shards this WebSocketManager should manage.
 	 * Use `null` to simply spawn 0 through `shardCount - 1`
+	 *
 	 * @example
 	 * ```
 	 * const manager = new WebSocketManager({

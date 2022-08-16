@@ -1,7 +1,7 @@
 import { Group, Stack, Title } from '@mantine/core';
-import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
 import { ParameterTable } from './ParameterTable';
+import { CommentSection } from './tsdoc/Comment';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
 
@@ -33,6 +33,7 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 			</Group>
 			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg">
 				{data.summary ? <CommentSection node={data.summary} /> : null}
+				{data.comment ? <CommentSection node={data.comment} /> : null}
 				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
 			</Group>
 		</Stack>

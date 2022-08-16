@@ -1,5 +1,7 @@
 import type { ApiModel, ApiDeclaredItem } from '@microsoft/api-extractor-model';
-import { CommentNodeContainer } from './comment/CommentNodeContainer';
+import { createCommentNode } from './comment';
+import type { AnyDocNodeJSON } from './comment/CommentNode';
+import type { DocNodeContainerJSON } from './comment/CommentNodeContainer';
 import type { ReferenceData } from '~/util/model.server';
 import { resolveName, genReference, TokenDocumentation, genToken } from '~/util/parse.server';
 
@@ -13,9 +15,10 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 	public readonly excerpt: string;
 	public readonly excerptTokens: TokenDocumentation[] = [];
 	public readonly kind: string;
-	public readonly remarks: CommentNodeContainer | null;
-	public readonly summary: CommentNodeContainer | null;
+	public readonly remarks: DocNodeContainerJSON | null;
+	public readonly summary: DocNodeContainerJSON | null;
 	public readonly containerKey: string;
+	public readonly comment: AnyDocNodeJSON | null;
 
 	public constructor(model: ApiModel, item: T) {
 		this.item = item;
@@ -26,12 +29,13 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 		this.excerpt = item.excerpt.text;
 		this.excerptTokens = item.excerpt.spannedTokens.map((token) => genToken(model, token));
 		this.remarks = item.tsdocComment?.remarksBlock
-			? new CommentNodeContainer(item.tsdocComment.remarksBlock.content, model, item.parent)
+			? (createCommentNode(item.tsdocComment.remarksBlock, model, item.parent) as DocNodeContainerJSON)
 			: null;
 		this.summary = item.tsdocComment?.summarySection
-			? new CommentNodeContainer(item.tsdocComment.summarySection, model, item.parent)
+			? (createCommentNode(item.tsdocComment.summarySection, model, item.parent) as DocNodeContainerJSON)
 			: null;
 		this.containerKey = item.containerKey;
+		this.comment = item.tsdocComment ? createCommentNode(item.tsdocComment, model, item.parent) : null;
 	}
 
 	public get path() {
@@ -54,13 +58,14 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 		return {
 			name: this.name,
 			referenceData: this.referenceData,
-			summary: this.summary?.toJSON() ?? null,
+			summary: this.summary,
 			excerpt: this.excerpt,
 			excerptTokens: this.excerptTokens,
 			kind: this.kind,
-			remarks: this.remarks?.toJSON() ?? null,
+			remarks: this.remarks,
 			path: this.path,
 			containerKey: this.containerKey,
+			comment: this.comment,
 		};
 	}
 }
