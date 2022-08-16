@@ -1,22 +1,43 @@
 import type { ApiModel, ApiItem } from '@microsoft/api-extractor-model';
-import type { DocNode, DocPlainText, DocLinkTag, DocParagraph, DocFencedCode } from '@microsoft/tsdoc';
-import { CommentNode } from './CommentNode';
-import { CommentNodeContainer } from './CommentNodeContainer';
-import { FencedCodeCommentNode } from './FencedCodeCommentNode';
-import { LinkTagCommentNode } from './LinkTagCommentNode';
-import { PlainTextCommentNode } from './PlainTextCommentNode';
+import {
+	type DocNode,
+	type DocPlainText,
+	type DocLinkTag,
+	type DocParagraph,
+	type DocFencedCode,
+	DocNodeKind,
+	type DocBlock,
+	DocComment,
+	DocCodeSpan,
+} from '@microsoft/tsdoc';
+import { block } from './CommentBlock';
+import { codeSpan } from './CommentCodeSpan';
+import type { AnyDocNodeJSON } from './CommentNode';
+import { node as _node } from './CommentNode';
+import { nodeContainer } from './CommentNodeContainer';
+import { fencedCode } from './FencedCodeCommentNode';
+import { linkTagNode } from './LinkTagCommentNode';
+import { plainTextNode } from './PlainTextCommentNode';
+import { comment } from './RootComment';
 
-export function createCommentNode(node: DocNode, model: ApiModel, parentItem?: ApiItem): CommentNode {
+export function createCommentNode(node: DocNode, model: ApiModel, parentItem?: ApiItem): AnyDocNodeJSON {
 	switch (node.kind) {
-		case 'PlainText':
-			return new PlainTextCommentNode(node as DocPlainText, model, parentItem);
-		case 'LinkTag':
-			return new LinkTagCommentNode(node as DocLinkTag, model, parentItem);
-		case 'Paragraph':
-			return new CommentNodeContainer(node as DocParagraph, model, parentItem);
-		case 'FencedCode':
-			return new FencedCodeCommentNode(node as DocFencedCode, model, parentItem);
+		case DocNodeKind.PlainText:
+			return plainTextNode(node as DocPlainText);
+		case DocNodeKind.LinkTag:
+			return linkTagNode(node as DocLinkTag, model, parentItem);
+		case DocNodeKind.Paragraph:
+		case DocNodeKind.Section:
+			return nodeContainer(node as DocParagraph, model, parentItem);
+		case DocNodeKind.FencedCode:
+			return fencedCode(node as DocFencedCode);
+		case DocNodeKind.CodeSpan:
+			return codeSpan(node as DocCodeSpan);
+		case DocNodeKind.Block:
+			return block(node as DocBlock, model, parentItem);
+		case DocNodeKind.Comment:
+			return comment(node as DocComment, model, parentItem);
 		default:
-			return new CommentNode(node, model, parentItem);
+			return _node(node);
 	}
 }

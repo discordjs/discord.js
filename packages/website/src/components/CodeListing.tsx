@@ -1,8 +1,9 @@
 import { Group, Stack, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
-import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocItem } from '~/DocModel/DocItem';
+import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
@@ -16,6 +17,7 @@ export function CodeListing({
 	summary,
 	typeTokens,
 	children,
+	comment,
 }: {
 	name: string;
 	summary?: ReturnType<DocItem['toJSON']>['summary'];
@@ -23,6 +25,7 @@ export function CodeListing({
 	separator?: CodeListingSeparatorType;
 	children?: ReactNode;
 	className?: string | undefined;
+	comment?: AnyDocNodeJSON | null;
 }) {
 	return (
 		<Stack key={name}>
@@ -35,7 +38,8 @@ export function CodeListing({
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
-			{summary && <CommentSection node={summary} />}
+			{summary && <TSDoc node={summary} />}
+			{comment && <TSDoc node={comment} />}
 			{children}
 		</Stack>
 	);

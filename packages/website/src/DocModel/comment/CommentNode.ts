@@ -1,22 +1,28 @@
-import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
-import type { DocNode } from '@microsoft/tsdoc';
+import type { DocNode, DocNodeKind } from '@microsoft/tsdoc';
+import type { DocBlockJSON } from './CommentBlock';
+import type { DocCodeSpanJSON } from './CommentCodeSpan';
+import type { DocNodeContainerJSON } from './CommentNodeContainer';
+import type { DocFencedCodeJSON } from './FencedCodeCommentNode';
+import type { DocLinkTagJSON } from './LinkTagCommentNode';
+import type { DocPlainTextJSON } from './PlainTextCommentNode';
+import type { DocCommentJSON } from './RootComment';
 
-export class CommentNode<T extends DocNode = DocNode> {
-	public readonly node: T;
-	public readonly kind: string;
-	public readonly model: ApiModel;
-	public readonly parentItem: ApiItem | null;
+export interface DocNodeJSON {
+	kind: DocNodeKind;
+}
 
-	public constructor(node: T, model: ApiModel, parentItem?: ApiItem) {
-		this.node = node;
-		this.kind = node.kind;
-		this.model = model;
-		this.parentItem = parentItem ?? null;
-	}
+export type AnyDocNodeJSON =
+	| DocNodeJSON
+	| DocPlainTextJSON
+	| DocNodeContainerJSON
+	| DocLinkTagJSON
+	| DocFencedCodeJSON
+	| DocBlockJSON
+	| DocCommentJSON
+	| DocCodeSpanJSON;
 
-	public toJSON() {
-		return {
-			kind: this.kind,
-		};
-	}
+export function node(node: DocNode): DocNodeJSON {
+	return {
+		kind: node.kind as DocNodeKind,
+	};
 }

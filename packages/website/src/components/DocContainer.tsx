@@ -5,11 +5,12 @@ import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CodeListingSeparatorType } from './CodeListing';
-import { CommentSection } from './Comment';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocItem } from '~/DocModel/DocItem';
+import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import { generateIcon } from '~/util/icon';
 import type { TokenDocumentation, TypeParameterData } from '~/util/parse.server';
 
@@ -22,6 +23,7 @@ export interface DocContainerProps {
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
 	typeParams?: TypeParameterData[];
+	comment?: AnyDocNodeJSON | null;
 }
 
 export function DocContainer({
@@ -46,7 +48,7 @@ export function DocContainer({
 			</Title>
 
 			<Section title="Summary" icon={<VscListSelection />} padded dense={matches}>
-				{summary ? <CommentSection node={summary} /> : <Text>No summary provided.</Text>}
+				{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
 			</Section>
 
 			<Box px="xs" pb="xs">
