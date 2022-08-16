@@ -3761,7 +3761,7 @@ export interface BaseApplicationCommandOptionsData {
   description: string;
   descriptionLocalizations?: LocalizationMap;
   required?: boolean;
-  autocomplete?: never;
+  autocomplete?: boolean;
 }
 
 export interface UserApplicationCommandData extends BaseApplicationCommandData {
@@ -3828,19 +3828,19 @@ export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicati
     | ApplicationCommandOptionType.String
     | ApplicationCommandOptionType.Number
     | ApplicationCommandOptionType.Integer;
-  autocomplete: true;
+  autocomplete: boolean;
 }
 
 export interface ApplicationCommandChoicesData extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoiceData[];
-  autocomplete?: false;
+  autocomplete?: boolean;
 }
 
 export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
   choices?: ApplicationCommandOptionChoiceData[];
-  autocomplete?: false;
+  autocomplete?: boolean;
 }
 
 export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
