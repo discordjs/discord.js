@@ -1,6 +1,5 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
 const Component = require('./Component');
 const { createComponent } = require('../util/Components');
 
@@ -18,18 +17,6 @@ class ActionRow extends Component {
      * @readonly
      */
     this.components = components.map(c => createComponent(c));
-  }
-
-  /**
-   * Creates a new action row builder from JSON data
-   * @param {JSONEncodable<APIActionRowComponent>|APIActionRowComponent} other The other data
-   * @returns {ActionRowBuilder}
-   */
-  static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
   }
 
   /**
