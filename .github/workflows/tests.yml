@@ -1,5 +1,10 @@
 name: Tests
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   tests:
     name: Tests
@@ -31,5 +36,5 @@ jobs:
         run: yarn test
 
       - name: Upload Coverage
-        uses: ./packages/actions/src/uploadCoverage
         if: github.repository_owner == 'discordjs'
+        uses: ./packages/actions/src/uploadCoverage

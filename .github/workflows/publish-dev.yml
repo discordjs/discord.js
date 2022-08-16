@@ -1,8 +1,8 @@
 name: Publish dev
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 */12 * * *'
+  workflow_dispatch:
 jobs:
   npm-publish:
     name: npm publish

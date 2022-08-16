@@ -1,8 +1,8 @@
 name: npm auto deprecate
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 1 * * *'
+  workflow_dispatch:
 jobs:
   npm-auto-deprecate:
     name: npm auto deprecate

@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'stable'
-      - '!docs'
     tags:
       - '**'
   workflow_dispatch:
@@ -12,6 +10,16 @@ on:
       ref:
         description: 'The branch, tag or SHA to checkout'
         required: true
+      ref_type:
+        type: choice
+        description: 'Branch or tag'
+        options:
+          - branch
+          - tag
+        required: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build documentation
@@ -77,7 +85,7 @@ jobs:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
+      BRANCH_OR_TAG: ${{ github.event.inputs.ref_type || needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout repository
@@ -115,14 +123,14 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ github.event.inputs.ref_type === 'tag' || env.BRANCH_OR_TAG == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
           tag: ${{ env.BRANCH_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ (github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ (github.event.inputs.ref_type == 'tag' || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
@@ -134,7 +142,7 @@ jobs:
           fi
 
       - name: Move docs to correct directory
-        if: ${{ !github.event.inputs.ref && env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ !github.event.inputs.ref_type == 'branch' && env.BRANCH_OR_TAG == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
