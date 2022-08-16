@@ -5,8 +5,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build": "is-ci && yarn build:ci || yarn build:prod",
-		"build:ci": "yarn run --top-level docs && yarn build:prod",
+		"build:local": "yarn run --top-level docs --force && yarn build:prod",
 		"build:prod": "yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
@@ -90,7 +89,6 @@
 		"eslint-plugin-react": "^7.30.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"happy-dom": "^6.0.4",
-		"is-ci": "^3.0.1",
 		"prettier": "^2.7.1",
 		"typescript": "^4.7.4",
 		"unocss": "^0.45.6",

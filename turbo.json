@@ -5,7 +5,7 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**"]
 		},
-		"@discordjs/website#build": {
+		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build"],
 			"outputs": [".next/**"]
 		},
