@@ -3919,37 +3919,12 @@ export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandO
 
 export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (
-    | ApplicationCommandChoicesData
-    | ApplicationCommandNonOptionsData
-    | ApplicationCommandChannelOptionData
-    | ApplicationCommandAutocompleteNumericOptionData
-    | ApplicationCommandAutocompleteStringOptionData
-    | ApplicationCommandNumericOptionData
-    | ApplicationCommandRoleOptionData
-    | ApplicationCommandUserOptionData
-    | ApplicationCommandMentionableOptionData
-    | ApplicationCommandStringOptionData
-    | ApplicationCommandBooleanOption
-  )[];
+  options?: Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>[];
 }
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (
-    | ApplicationCommandNonOptions
-    | ApplicationCommandChannelOption
-    | ApplicationCommandChoicesOption
-    | ApplicationCommandAutocompleteNumericOption
-    | ApplicationCommandAutocompleteStringOption
-    | ApplicationCommandNumericOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandUserOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandAttachmentOption
-  )[];
+  options?: Exclude<ApplicationCommandOption, ApplicationCommandSubGroup | ApplicationCommandSubCommand>[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
