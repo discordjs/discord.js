@@ -1,7 +1,7 @@
 import { Group, Stack, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
-import { CommentSection } from './tsdoc/Comment';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocItem } from '~/DocModel/DocItem';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
@@ -38,8 +38,8 @@ export function CodeListing({
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
-			{summary && <CommentSection node={summary} />}
-			{comment && <CommentSection node={comment} />}
+			{summary && <TSDoc node={summary} />}
+			{comment && <TSDoc node={comment} />}
 			{children}
 		</Stack>
 	);

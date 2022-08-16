@@ -13,7 +13,7 @@ import type { DocLinkTagJSON } from '~/DocModel/comment/LinkTagCommentNode';
 import type { DocPlainTextJSON } from '~/DocModel/comment/PlainTextCommentNode';
 import type { DocCommentJSON } from '~/DocModel/comment/RootComment';
 
-export function CommentSection({ node }: { node: AnyDocNodeJSON }): JSX.Element {
+export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 	let numberOfExamples = 0;
 	let exampleIndex = 0;
 

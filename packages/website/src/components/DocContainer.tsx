@@ -8,7 +8,7 @@ import { CodeListingSeparatorType } from './CodeListing';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
-import { CommentSection } from './tsdoc/Comment';
+import { TSDoc } from './tsdoc/TSDoc';
 import type { DocItem } from '~/DocModel/DocItem';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import { generateIcon } from '~/util/icon';
@@ -48,7 +48,7 @@ export function DocContainer({
 			</Title>
 
 			<Section title="Summary" icon={<VscListSelection />} padded dense={matches}>
-				{summary ? <CommentSection node={summary} /> : <Text>No summary provided.</Text>}
+				{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
 			</Section>
 
 			<Box px="xs" pb="xs">
