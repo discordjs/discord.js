@@ -3823,11 +3823,39 @@ export interface ApplicationCommandAttachmentOption extends BaseApplicationComma
   type: ApplicationCommandOptionType.Attachment;
 }
 
-export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Number
-    | ApplicationCommandOptionType.Integer;
+export interface ApplicationCommandAutocompleteNumericOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  maxValue?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteStringOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  maxLength?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteNumericOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  min_value?: number;
+  maxValue?: number;
+  max_value?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteStringOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  min_length?: number;
+  maxLength?: number;
+  max_length?: number;
   autocomplete: true;
 }
 
@@ -3895,7 +3923,8 @@ export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCo
     | ApplicationCommandChoicesData
     | ApplicationCommandNonOptionsData
     | ApplicationCommandChannelOptionData
-    | ApplicationCommandAutocompleteOption
+    | ApplicationCommandAutocompleteNumericOptionData
+    | ApplicationCommandAutocompleteStringOptionData
     | ApplicationCommandNumericOptionData
     | ApplicationCommandRoleOptionData
     | ApplicationCommandUserOptionData
@@ -3911,7 +3940,8 @@ export interface ApplicationCommandSubCommand extends Omit<BaseApplicationComman
     | ApplicationCommandNonOptions
     | ApplicationCommandChannelOption
     | ApplicationCommandChoicesOption
-    | ApplicationCommandAutocompleteOption
+    | ApplicationCommandAutocompleteNumericOption
+    | ApplicationCommandAutocompleteStringOption
     | ApplicationCommandNumericOption
     | ApplicationCommandStringOption
     | ApplicationCommandRoleOption
@@ -3935,7 +3965,8 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-  | ApplicationCommandAutocompleteOption
+  | ApplicationCommandAutocompleteNumericOptionData
+  | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
   | ApplicationCommandRoleOptionData
@@ -3946,6 +3977,8 @@ export type ApplicationCommandOptionData =
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
+  | ApplicationCommandAutocompleteNumericOption
+  | ApplicationCommandAutocompleteStringOption
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
