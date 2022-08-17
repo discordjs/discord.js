@@ -6,6 +6,7 @@
  * @property {'ClientInvalidOption'} ClientInvalidOption
  * @property {'ClientInvalidProvidedShards'} ClientInvalidProvidedShards
  * @property {'ClientMissingIntents'} ClientMissingIntents
+ * @property {'ClientMissingGuildIntent'} ClientMissingGuildIntent
  * @property {'ClientNotReady'} ClientNotReady
 
  * @property {'TokenInvalid'} TokenInvalid
@@ -150,6 +151,7 @@ const keys = [
   'ClientInvalidOption',
   'ClientInvalidProvidedShards',
   'ClientMissingIntents',
+  'ClientMissingGuildIntent',
   'ClientNotReady',
 
   'TokenInvalid',

@@ -3026,6 +3026,7 @@ export enum DiscordjsErrorCodes {
   ClientInvalidOption = 'ClientInvalidOption',
   ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
   ClientMissingIntents = 'ClientMissingIntents',
+  ClientMissingGuildIntent = 'ClientMissingGuildIntent',
   ClientNotReady = 'ClientNotReady',
 
   TokenInvalid = 'TokenInvalid',

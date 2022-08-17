@@ -4,6 +4,7 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { OAuth2Scopes, Routes } = require('discord-api-types/v10');
+const { GatewayIntentBits } = require('discord-api-types/v10');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -480,6 +481,9 @@ class Client extends BaseClient {
       throw new TypeError(ErrorCodes.ClientMissingIntents);
     } else {
       options.intents = IntentsBitField.resolve(options.intents);
+      if (options.intents !== (options.intents | GatewayIntentBits.Guilds)) {
+        throw new TypeError(ErrorCodes.ClientMissingGuildIntent);
+      }
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');

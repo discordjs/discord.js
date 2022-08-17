@@ -6,6 +6,7 @@ const Messages = {
   [DjsErrorCodes.ClientInvalidOption]: (prop, must) => `The ${prop} option must be ${must}`,
   [DjsErrorCodes.ClientInvalidProvidedShards]: 'None of the provided shards were valid.',
   [DjsErrorCodes.ClientMissingIntents]: 'Valid intents must be provided for the Client.',
+  [DjsErrorCodes.ClientMissingGuildIntent]: 'The required Guild intent is missing.',
   [DjsErrorCodes.ClientNotReady]: action => `The client needs to be logged in to ${action}.`,
 
   [DjsErrorCodes.TokenInvalid]: 'An invalid token was provided.',
