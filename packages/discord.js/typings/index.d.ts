@@ -3323,7 +3323,7 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client, iterable: Iterable<RawChannelData>);
-  public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
+  public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel>;
 }
 
 export type FetchGuildApplicationCommandFetchOptions = Omit<FetchApplicationCommandOptions, 'guildId'>;
