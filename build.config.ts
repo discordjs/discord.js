@@ -37,6 +37,7 @@ export function createUnbuildConfig({
 	return defineBuildConfig({
 		entries,
 		clean: true,
+		failOnWarn: false,
 		rollup: {
 			esbuild: {
 				minify,
