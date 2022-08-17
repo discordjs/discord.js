@@ -1,3 +1,4 @@
+import { Alert } from '@mantine/core';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { ReactNode } from 'react';
 import { VscWarning } from 'react-icons/vsc';
@@ -33,13 +34,9 @@ export function ExampleBlock({ children, exampleIndex }: ExampleBlockProps): JSX
 
 export function DeprecatedBlock({ children }: { children: ReactNode }): JSX.Element {
 	return (
-		<div className="bg-red-3 border border-red-4 rounded-xl p-2 color-black">
-			<h3 className="m-0 flex items-center space-x-[10px] color-black">
-				<VscWarning className="mr-2 color-red-9" />
-				Deprecated
-			</h3>
-			<span>{children}</span>
-		</div>
+		<Alert icon={<VscWarning />} title="Deprecated" color="red" radius="xs">
+			{children}
+		</Alert>
 	);
 }
 
