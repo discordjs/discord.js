@@ -7,6 +7,7 @@ import { DocNodeJSON, node } from './CommentNode';
 export interface DocCommentJSON extends DocNodeJSON {
 	summary: DocNodeJSON[];
 	remarks: DocNodeJSON[];
+	deprecated: DocNodeJSON[];
 	customBlocks: DocBlockJSON[];
 }
 
@@ -15,6 +16,7 @@ export function comment(comment: DocComment, model: ApiModel, parentItem?: ApiIt
 		...node(comment),
 		summary: comment.summarySection.nodes.map((node) => createCommentNode(node, model, parentItem)),
 		remarks: comment.remarksBlock?.content.nodes.map((node) => createCommentNode(node, model, parentItem)) ?? [],
+		deprecated: comment.deprecatedBlock?.content.nodes.map((node) => createCommentNode(node, model, parentItem)) ?? [],
 		customBlocks: comment.customBlocks.map((_block) => block(_block, model, parentItem)),
 	};
 }

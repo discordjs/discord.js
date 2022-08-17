@@ -17,6 +17,7 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 	public readonly kind: string;
 	public readonly remarks: DocNodeContainerJSON | null;
 	public readonly summary: DocNodeContainerJSON | null;
+	public readonly deprecated: DocNodeContainerJSON | null;
 	public readonly containerKey: string;
 	public readonly comment: AnyDocNodeJSON | null;
 
@@ -33,6 +34,9 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 			: null;
 		this.summary = item.tsdocComment?.summarySection
 			? (createCommentNode(item.tsdocComment.summarySection, model, item.parent) as DocNodeContainerJSON)
+			: null;
+		this.deprecated = item.tsdocComment?.deprecatedBlock
+			? (createCommentNode(item.tsdocComment.deprecatedBlock, model, item.parent) as DocNodeContainerJSON)
 			: null;
 		this.containerKey = item.containerKey;
 		this.comment = item.tsdocComment ? createCommentNode(item.tsdocComment, model, item.parent) : null;
@@ -63,6 +67,7 @@ export class DocItem<T extends ApiDeclaredItem = ApiDeclaredItem> {
 			excerptTokens: this.excerptTokens,
 			kind: this.kind,
 			remarks: this.remarks,
+			deprecated: this.deprecated,
 			path: this.path,
 			containerKey: this.containerKey,
 			comment: this.comment,
