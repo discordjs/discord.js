@@ -1711,7 +1711,7 @@ __metadata:
     "@types/node": ^16.11.48
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
@@ -1722,7 +1722,7 @@ __metadata:
     tslib: ^2.4.0
     typescript: ^4.7.4
     unbuild: ^0.8.8
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1737,7 +1737,7 @@ __metadata:
     "@types/node": ^16.11.48
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     discord-api-types: ^0.37.2
     downlevel-dts: ^0.10.0
     eslint: ^8.22.0
@@ -1752,7 +1752,7 @@ __metadata:
     tslib: ^2.4.0
     typescript: ^4.7.4
     unbuild: ^0.8.8
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1766,7 +1766,7 @@ __metadata:
     "@types/node": ^16.11.48
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     downlevel-dts: ^0.10.0
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
@@ -1777,7 +1777,7 @@ __metadata:
     rollup-plugin-typescript2: 0.32.1
     typescript: ^4.7.4
     unbuild: ^0.8.8
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1861,7 +1861,7 @@ __metadata:
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     downlevel-dts: ^0.10.0
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
@@ -1875,7 +1875,7 @@ __metadata:
     typescript: ^4.7.4
     unbuild: ^0.8.8
     undici: ^5.8.2
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1892,7 +1892,7 @@ __metadata:
     "@types/node": ^16.11.48
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     discord-api-types: ^0.37.2
     downlevel-dts: ^0.10.0
     eslint: ^8.22.0
@@ -1907,7 +1907,7 @@ __metadata:
     typescript: ^4.7.4
     unbuild: ^0.8.8
     undici: ^5.8.2
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1918,7 +1918,7 @@ __metadata:
     "@types/node": ^16.11.48
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
-    c8: ^7.12.0
+    "@vitest/coverage-c8": ^0.22.0
     commander: ^9.4.0
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
@@ -1930,7 +1930,7 @@ __metadata:
     tslib: ^2.4.0
     typescript: ^4.7.4
     unbuild: ^0.8.8
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -1995,8 +1995,8 @@ __metadata:
     "@unocss/preset-web-fonts": ^0.45.6
     "@unocss/reset": ^0.45.6
     "@vitejs/plugin-react": ^2.0.1
+    "@vitest/coverage-c8": ^0.22.0
     "@vscode/codicons": ^0.0.32
-    c8: ^7.12.0
     concurrently: ^7.3.0
     cypress: ^10.4.0
     eslint: ^8.22.0
@@ -2017,7 +2017,7 @@ __metadata:
     typescript: ^4.7.4
     unocss: ^0.45.6
     vercel: ^28.0.1
-    vitest: ^0.21.1
+    vitest: ^0.22.0
   languageName: unknown
   linkType: soft
 
@@ -2035,8 +2035,8 @@ __metadata:
     "@types/ws": ^8.5.3
     "@typescript-eslint/eslint-plugin": ^5.33.0
     "@typescript-eslint/parser": ^5.33.0
+    "@vitest/coverage-c8": ^0.22.0
     "@vladfrangu/async_event_emitter": ^2.0.1
-    c8: ^7.12.0
     discord-api-types: ^0.37.2
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
@@ -2050,7 +2050,7 @@ __metadata:
     typescript: ^4.7.4
     unbuild: ^0.8.8
     undici: ^5.8.2
-    vitest: ^0.21.1
+    vitest: ^0.22.0
     ws: ^8.8.1
     zlib-sync: ^0.1.7
   languageName: unknown
@@ -4471,6 +4471,16 @@ __metadata:
   peerDependencies:
     vite: ^3.0.0
   checksum: 90702768ee34bd7e5021398ab827c682cfe1ebfce0988a532a678b664d80b9ad991d1c24f81045626b811c9aa2aae7d9d0fd563db5c6b7b8fd36c8eecdfc04b9
+  languageName: node
+  linkType: hard
+
+"@vitest/coverage-c8@npm:^0.22.0":
+  version: 0.22.0
+  resolution: "@vitest/coverage-c8@npm:0.22.0"
+  dependencies:
+    c8: ^7.12.0
+    vitest: 0.22.0
+  checksum: 6472eb7d32d380ac13756e77a4607c0ad78744a55a749c81cd0745cca3fbca23a69fcf6399e0575b3ece73cb2be483366945d088c06e0c3f2f34b807b6f92655
   languageName: node
   linkType: hard
 
@@ -15863,9 +15873,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^0.21.1":
-  version: 0.21.1
-  resolution: "vitest@npm:0.21.1"
+"vitest@npm:0.22.0, vitest@npm:^0.22.0":
+  version: 0.22.0
+  resolution: "vitest@npm:0.22.0"
   dependencies:
     "@types/chai": ^4.3.3
     "@types/chai-subset": ^1.3.3
@@ -15880,7 +15890,6 @@ __metadata:
     "@edge-runtime/vm": "*"
     "@vitest/browser": "*"
     "@vitest/ui": "*"
-    c8: "*"
     happy-dom: "*"
     jsdom: "*"
   peerDependenciesMeta:
@@ -15890,15 +15899,13 @@ __metadata:
       optional: true
     "@vitest/ui":
       optional: true
-    c8:
-      optional: true
     happy-dom:
       optional: true
     jsdom:
       optional: true
   bin:
     vitest: vitest.mjs
-  checksum: 27c8cd0a1e2443e1311b1ed236d66caad77dcea2c4b49364475688d89d6f8dba2074b1a2da8e7ca529ded15bd5314ff4b36119a0010a33d2dcd34333d4043bd5
+  checksum: 717ae0ba4b70fae97cde7daeac256e1b973ce5673737a4f8c436d50a8eea4f5109c9015dbbd762a9d36b24a29d2ccd0f126fedc1246026d8a0ed9df214885497
   languageName: node
   linkType: hard
 

@@ -4,7 +4,6 @@ import type { ReactNode } from 'react';
 import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { CodeListingSeparatorType } from './CodeListing';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
@@ -67,9 +66,6 @@ export function DocContainer({
 					<Title order={3} ml="xs">
 						Extends
 					</Title>
-					<Title order={3} ml="xs">
-						{CodeListingSeparatorType.Type}
-					</Title>
 					<Text className="font-mono break-all">
 						<HyperlinkedText tokens={extendsTokens} />
 					</Text>
@@ -80,9 +76,6 @@ export function DocContainer({
 				<Group noWrap>
 					<Title order={3} ml="xs">
 						Implements
-					</Title>
-					<Title order={3} ml="xs">
-						{CodeListingSeparatorType.Type}
 					</Title>
 					<Text className="font-mono break-all">
 						{implementsTokens.map((token, idx) => (
