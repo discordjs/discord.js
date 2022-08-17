@@ -38,7 +38,7 @@ export function generatePath(items: readonly ApiItem[]) {
 				const functionItem = item as ApiFunction;
 				path += `${functionItem.displayName}${
 					functionItem.overloadIndex && functionItem.overloadIndex > 1 ? `:${functionItem.overloadIndex}` : ''
-				}:/`;
+				}/`;
 				break;
 			default:
 				path += `${item.displayName}/`;

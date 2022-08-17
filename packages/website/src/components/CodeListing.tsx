@@ -42,7 +42,7 @@ export function CodeListing({
 					{optional ? '?' : ''}
 				</Title>
 				<Title order={4}>{separator}</Title>
-				<Title order={4} className="font-mono break-all">
+				<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>

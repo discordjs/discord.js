@@ -34,9 +34,9 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 							<Badge variant="filled">Protected</Badge>
 						) : null}
 						{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
-						<Title order={4} className="font-mono break-all">{`${getShorthandName(data)}`}</Title>
+						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">{`${getShorthandName(data)}`}</Title>
 						<Title order={4}>:</Title>
-						<Title order={4} className="font-mono break-all">
+						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
 						</Title>
 					</Group>

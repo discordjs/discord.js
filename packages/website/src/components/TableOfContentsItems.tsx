@@ -38,7 +38,9 @@ export function TableOfContentsItems({
 		return (
 			<Box<'a'> key={key} href={`#${key}`} component="a" className={classes.link}>
 				<Group>
-					<Text className="line-clamp-1 text-ellipsis overflow-hidden">{member.name}</Text>
+					<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+						{member.name}
+					</Text>
 					{member.overloadIndex && member.overloadIndex > 1 ? (
 						<Text size="xs" color="dimmed">
 							{member.overloadIndex}

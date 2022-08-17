@@ -3,7 +3,6 @@ import {
 	AppShell,
 	Navbar,
 	MediaQuery,
-	Aside,
 	Header,
 	Burger,
 	Anchor,
@@ -26,8 +25,6 @@ import { type PropsWithChildren, useState } from 'react';
 import { VscChevronDown, VscPackage } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import { SidebarItems } from './SidebarItems';
-import { TableOfContentsItems } from './TableOfContentsItems';
-import type { DocClass } from '~/DocModel/DocClass';
 import type { DocItem } from '~/DocModel/DocItem';
 import type { findMember } from '~/util/model.server';
 import type { getMembers } from '~/util/parse.server';
@@ -154,21 +151,6 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 						</>
 					) : null}
 				</Navbar>
-			}
-			aside={
-				packageName && data?.member && data.member.kind === 'Class' ? (
-					<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-						<Aside hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
-							<ScrollArea p="xs">
-								<TableOfContentsItems
-									members={(data.member as unknown as ReturnType<DocClass['toJSON']>).methods}
-								></TableOfContentsItems>
-							</ScrollArea>
-						</Aside>
-					</MediaQuery>
-				) : (
-					<></>
-				)
 			}
 			// footer={
 			// 	<Footer height={60} p="md">

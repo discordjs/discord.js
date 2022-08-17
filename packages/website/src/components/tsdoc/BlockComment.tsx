@@ -1,4 +1,4 @@
-import { Alert } from '@mantine/core';
+import { Alert, Box, Title } from '@mantine/core';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { ReactNode } from 'react';
 import { VscWarning } from 'react-icons/vsc';
@@ -10,10 +10,10 @@ export interface BlockProps {
 
 export function Block({ children, title }: BlockProps) {
 	return (
-		<div>
-			<h3 className="m-0">{title}</h3>
+		<Box>
+			<Title order={3}>{title}</Title>
 			{children}
-		</div>
+		</Box>
 	);
 }
 

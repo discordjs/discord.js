@@ -13,6 +13,7 @@ export function Class({ data }: { data: ReturnType<DocClass['toJSON']> }) {
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
 			comment={data.comment}
+			methods={data.methods}
 		>
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />

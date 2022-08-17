@@ -41,7 +41,7 @@ export function Section({
 	const { classes } = useStyles({ opened });
 
 	return (
-		<Box className="break-all">
+		<Box sx={{ wordBreak: 'break-all' }}>
 			<UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
 				<Group position="apart">
 					<Group>

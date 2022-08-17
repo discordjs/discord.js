@@ -17,7 +17,7 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 	};
 
 	return (
-		<Box className="overflow-x-auto">
+		<Box sx={{ overflowX: 'auto' }}>
 			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
 		</Box>
 	);

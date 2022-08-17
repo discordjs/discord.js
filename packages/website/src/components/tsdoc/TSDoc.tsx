@@ -1,4 +1,4 @@
-import { Anchor, Box, Text } from '@mantine/core';
+import { Anchor, Box, Code, Text } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -61,9 +61,9 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<pre key={idx} className="inline">
+					<Code key={idx} sx={{ display: 'inline' }} className="text-sm font-mono">
 						{code}
-					</pre>
+					</Code>
 				);
 			}
 			case DocNodeKind.FencedCode: {
