@@ -1,9 +1,9 @@
-import { Anchor, Box, Code, Text } from '@mantine/core';
-import { Prism } from '@mantine/prism';
+import { Anchor, Box, Text } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
-import type { Language } from 'prism-react-renderer';
 import type { ReactNode } from 'react';
+import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { BlockComment } from './BlockComment';
 import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
@@ -61,17 +61,24 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<Code key={idx} className="inline text-sm font-mono">
+					<pre key={idx} className="inline">
 						{code}
-					</Code>
+					</pre>
 				);
 			}
 			case DocNodeKind.FencedCode: {
 				const { language, code } = node as DocFencedCodeJSON;
 				return (
-					<Prism key={idx} language={language as Language} withLineNumbers colorScheme="dark">
+					<SyntaxHighlighter
+						key={idx}
+						wrapLines
+						wrapLongLines
+						language={language}
+						style={vscDarkPlus}
+						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+					>
 						{code}
-					</Prism>
+					</SyntaxHighlighter>
 				);
 			}
 			case DocNodeKind.Block: {
