@@ -91,6 +91,7 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"happy-dom": "^6.0.4",
 		"prettier": "^2.7.1",
+		"prism-react-renderer": "^1.3.5",
 		"typescript": "^4.7.4",
 		"unocss": "^0.45.6",
 		"vercel": "^28.0.1",
