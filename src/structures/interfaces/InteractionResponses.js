@@ -250,7 +250,7 @@ class InteractionResponses {
    * An object containing the same properties as CollectorOptions, but a few more:
    * @typedef {Object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
-   * @property {number} time Time to wait for an interaction before rejecting
+   * @property {number} time Time in milliseconds to wait for an interaction before rejecting
    */
 
   /**
