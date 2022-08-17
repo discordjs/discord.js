@@ -78,7 +78,7 @@
 		"@unocss/preset-web-fonts": "^0.45.6",
 		"@unocss/reset": "^0.45.6",
 		"@vitejs/plugin-react": "^2.0.1",
-		"c8": "^7.12.0",
+		"@vitest/coverage-c8": "^0.22.0",
 		"concurrently": "^7.3.0",
 		"cypress": "^10.4.0",
 		"eslint": "^8.22.0",
@@ -93,7 +93,7 @@
 		"typescript": "^4.7.4",
 		"unocss": "^0.45.6",
 		"vercel": "^28.0.1",
-		"vitest": "^0.21.1"
+		"vitest": "^0.22.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"
