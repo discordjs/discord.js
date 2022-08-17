@@ -19,13 +19,13 @@ function getShorthandName(data: MethodResolvable) {
 
 export function MethodItem({ data }: { data: MethodResolvable }) {
 	return (
-		<Stack>
+		<Stack spacing="xs">
 			<Group>
 				<Stack>
 					<Group>
-						<Title order={5} className="font-mono break-all">{`${getShorthandName(data)}`}</Title>
-						<Title order={5}>:</Title>
-						<Title order={5} className="font-mono break-all">
+						<Title order={4} className="font-mono break-all">{`${getShorthandName(data)}`}</Title>
+						<Title order={4}>:</Title>
+						<Title order={4} className="font-mono break-all">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
 						</Title>
 					</Group>

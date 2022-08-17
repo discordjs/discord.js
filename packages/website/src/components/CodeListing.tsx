@@ -28,7 +28,7 @@ export function CodeListing({
 	comment?: AnyDocNodeJSON | null;
 }) {
 	return (
-		<Stack key={name}>
+		<Stack spacing="xs" key={name}>
 			<Group>
 				<Title order={4} className="font-mono">
 					{name}
@@ -38,9 +38,11 @@ export function CodeListing({
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
-			{summary && <TSDoc node={summary} />}
-			{comment && <TSDoc node={comment} />}
-			{children}
+			<Group>
+				{summary && <TSDoc node={summary} />}
+				{comment && <TSDoc node={comment} />}
+				{children}
+			</Group>
 		</Stack>
 	);
 }

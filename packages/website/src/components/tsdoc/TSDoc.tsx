@@ -21,13 +21,13 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return (
-					<Text key={idx} span>
+					<Text key={idx} span style={{ wordBreak: 'break-word' }}>
 						{(node as DocPlainTextJSON).text}
 					</Text>
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<Text key={idx} inline>
+					<Text key={idx} inline style={{ wordBreak: 'break-word' }}>
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
 					</Text>
 				);
