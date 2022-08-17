@@ -2,7 +2,9 @@ import { Badge, Group, Stack, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { DocProperty } from '~/DocModel/DocProperty';
+import type { DocItem } from '~/DocModel/DocItem';
+import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
+import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
 	Type = ':',
@@ -10,30 +12,40 @@ export enum CodeListingSeparatorType {
 }
 
 export function CodeListing({
-	prop,
+	name,
 	separator = CodeListingSeparatorType.Type,
+	typeTokens,
+	readonly = false,
+	optional = false,
+	summary,
+	comment,
 	children,
 }: {
-	prop: ReturnType<DocProperty['toJSON']>;
+	name: string;
 	separator?: CodeListingSeparatorType;
+	typeTokens: TokenDocumentation[];
+	readonly?: boolean;
+	optional?: boolean;
+	summary?: ReturnType<DocItem['toJSON']>['summary'];
+	comment?: AnyDocNodeJSON | null;
 	children?: ReactNode;
 }) {
 	return (
-		<Stack spacing="xs" key={prop.name}>
+		<Stack spacing="xs" key={name}>
 			<Group>
-				{prop.readonly ? <Badge variant="filled">Readonly</Badge> : null}
-				{prop.optional ? <Badge variant="filled">Optional</Badge> : null}
+				{readonly ? <Badge variant="filled">Readonly</Badge> : null}
+				{optional ? <Badge variant="filled">Optional</Badge> : null}
 				<Title order={4} className="font-mono">
-					{prop.name}
+					{name}
 				</Title>
 				<Title order={4}>{separator}</Title>
 				<Title order={4} className="font-mono break-all">
-					<HyperlinkedText tokens={prop.propertyTypeTokens} />
+					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
 			<Group>
-				{prop.summary && <TSDoc node={prop.summary} />}
-				{prop.comment && <TSDoc node={prop.comment} />}
+				{summary && <TSDoc node={summary} />}
+				{comment && <TSDoc node={comment} />}
 				{children}
 			</Group>
 		</Stack>
