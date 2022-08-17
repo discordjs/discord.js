@@ -1,9 +1,8 @@
 import { Group, Stack, Title, Text, Box } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { Prism } from '@mantine/prism';
 import type { ReactNode } from 'react';
 import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TypeParamTable } from './TypeParamTable';
@@ -51,14 +50,9 @@ export function DocContainer({
 			</Section>
 
 			<Box px="xs" pb="xs">
-				<SyntaxHighlighter
-					wrapLongLines
-					language="typescript"
-					style={vscDarkPlus}
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-				>
+				<Prism language="typescript" colorScheme="dark">
 					{excerpt}
-				</SyntaxHighlighter>
+				</Prism>
 			</Box>
 
 			{extendsTokens?.length ? (

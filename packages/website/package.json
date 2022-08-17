@@ -54,6 +54,7 @@
 		"@mantine/hooks": "^5.1.6",
 		"@mantine/next": "^5.1.6",
 		"@mantine/nprogress": "^5.1.6",
+		"@mantine/prism": "^5.1.6",
 		"@mantine/spotlight": "^5.1.6",
 		"@microsoft/api-extractor-model": "^7.23.0",
 		"@microsoft/tsdoc": "0.14.1",
