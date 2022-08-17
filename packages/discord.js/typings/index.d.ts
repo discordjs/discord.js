@@ -3407,6 +3407,12 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
 }
 
+export interface AddOrRemoveGuildMemberRoleOptions {
+  user: GuildMemberResolvable;
+  role: RoleResolvable;
+  reason?: string;
+}
+
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
@@ -3429,6 +3435,8 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User | null>;
+  public addRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
+  public removeRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
