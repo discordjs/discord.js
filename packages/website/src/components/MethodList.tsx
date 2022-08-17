@@ -12,7 +12,10 @@ export function MethodList({
 		<Stack>
 			{data.map((method) => (
 				<>
-					<MethodItem key={method.name} data={method} />
+					<MethodItem
+						key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
+						data={method}
+					/>
 					<Divider className="bg-gray-100" size="md" />
 				</>
 			))}

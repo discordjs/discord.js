@@ -53,7 +53,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 							// causing next.js export to error
 							.filter((member) => member.name !== 'RESTEvents')
 							.map((member) => {
-								if (member.kind === 'Function' && member.overloadIndex) {
+								if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
 									return {
 										params: {
 											slug: ['main', 'packages', packageName, `${member.name}:${member.overloadIndex}`],
