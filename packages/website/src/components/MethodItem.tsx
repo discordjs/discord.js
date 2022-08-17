@@ -43,9 +43,13 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 				</Stack>
 			</Group>
 			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg">
-				{data.summary ? <TSDoc node={data.summary} /> : null}
-				{data.comment ? <TSDoc node={data.comment} /> : null}
-				{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
+				<Stack>
+					{data.deprecated ? <TSDoc node={data.deprecated} /> : null}
+					{data.summary ? <TSDoc node={data.summary} /> : null}
+					{data.remarks ? <TSDoc node={data.remarks} /> : null}
+					{data.comment ? <TSDoc node={data.comment} /> : null}
+					{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
+				</Stack>
 			</Group>
 		</Stack>
 	);

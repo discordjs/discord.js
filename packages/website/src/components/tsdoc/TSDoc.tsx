@@ -32,7 +32,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 					</Text>
 				);
 			case DocNodeKind.SoftBreak:
-				return <br key={idx} />;
+				return <></>;
 			case DocNodeKind.LinkTag: {
 				const { codeDestination, urlDestination, text } = node as DocLinkTagJSON;
 

@@ -18,8 +18,9 @@ export function CodeListing({
 	readonly = false,
 	optional = false,
 	summary,
-	comment,
 	children,
+	comment,
+	deprecation,
 }: {
 	name: string;
 	separator?: CodeListingSeparatorType;
@@ -29,6 +30,7 @@ export function CodeListing({
 	summary?: ReturnType<DocItem['toJSON']>['summary'];
 	comment?: AnyDocNodeJSON | null;
 	children?: ReactNode;
+	deprecation?: AnyDocNodeJSON | null;
 }) {
 	return (
 		<Stack spacing="xs" key={name}>
@@ -44,9 +46,12 @@ export function CodeListing({
 				</Title>
 			</Group>
 			<Group>
-				{summary && <TSDoc node={summary} />}
-				{comment && <TSDoc node={comment} />}
-				{children}
+				<Stack>
+					{deprecation ? <TSDoc node={deprecation} /> : null}
+					{summary && <TSDoc node={summary} />}
+					{comment && <TSDoc node={comment} />}
+					{children}
+				</Stack>
 			</Group>
 		</Stack>
 	);
