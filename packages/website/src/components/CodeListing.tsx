@@ -39,6 +39,7 @@ export function CodeListing({
 				{optional ? <Badge variant="filled">Optional</Badge> : null}
 				<Title order={4} className="font-mono">
 					{name}
+					{optional ? '?' : ''}
 				</Title>
 				<Title order={4}>{separator}</Title>
 				<Title order={4} className="font-mono break-all">

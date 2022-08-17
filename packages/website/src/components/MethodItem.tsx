@@ -9,12 +9,12 @@ import { Visibility } from '~/DocModel/Visibility';
 type MethodResolvable = ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>;
 
 function getShorthandName(data: MethodResolvable) {
-	return `${data.name}(${data.parameters.reduce((prev, cur, index) => {
+	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
 		if (index === 0) {
-			return `${prev}${cur.name}`;
+			return `${prev}${cur.isOptional ? `[${cur.name}]` : cur.name}`;
 		}
 
-		return `${prev}, ${cur.name}`;
+		return `${prev}, ${cur.isOptional ? `[${cur.name}]` : cur.name}`;
 	}, '')})`;
 }
 
