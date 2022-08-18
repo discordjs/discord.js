@@ -19,7 +19,7 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	};
 
 	return (
-		<Box className="overflow-x-auto">
+		<Box sx={{ overflowX: 'auto' }}>
 			<Table
 				columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
 				rows={rows}

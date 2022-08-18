@@ -37,7 +37,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param defaultValueGenerator - A function that generates the default value
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.ensure(guildId, () => defaultGuildConfig);
 	 * ```
 	 */
@@ -232,7 +232,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.find(user => user.username === 'Bob');
 	 * ```
 	 */
@@ -261,7 +261,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.findKey(user => user.username === 'Bob');
 	 * ```
 	 */
@@ -310,7 +310,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.filter(user => user.username === 'Bob');
 	 * ```
 	 */
@@ -344,7 +344,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
 	 * ```
 	 */
@@ -395,7 +395,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.flatMap(guild => guild.members.cache);
 	 * ```
 	 */
@@ -417,7 +417,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.map(user => user.tag);
 	 * ```
 	 */
@@ -443,7 +443,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.mapValues(user => user.tag);
 	 * ```
 	 */
@@ -465,7 +465,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.some(user => user.discriminator === '0000');
 	 * ```
 	 */
@@ -488,7 +488,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.every(user => !user.bot);
 	 * ```
 	 */
@@ -522,7 +522,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param initialValue - Starting value for the accumulator
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
 	 * ```
 	 */
@@ -562,7 +562,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection
 	 *  .each(user => console.log(user.username))
 	 *  .filter(user => user.bot)
@@ -584,7 +584,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection
 	 *  .tap(coll => console.log(coll.size))
 	 *  .filter(user => user.bot)
@@ -604,7 +604,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Creates an identical shallow copy of this collection.
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const newColl = someColl.clone();
 	 * ```
 	 */
@@ -618,7 +618,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param collections - Collections to merge
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
 	 * ```
 	 */
@@ -661,7 +661,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
@@ -718,7 +718,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param whenInBoth - Function getting the result if the entry exists in both Collections
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * // Sums up the entries in two collections.
 	 * coll.merge(
 	 *  other,
@@ -729,7 +729,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * ```
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * // Intersects two collections in a left-biased manner.
 	 * coll.merge(
 	 *  other,
@@ -775,7 +775,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * according to the string conversion of each element.
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
@@ -799,7 +799,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param combine - Function to combine an existing entry with a new one
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);
 	 * // returns Collection { "a" => 3, "b" => 2 }
 	 * ```

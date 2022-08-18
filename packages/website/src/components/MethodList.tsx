@@ -1,4 +1,4 @@
-import { Stack } from '@mantine/core';
+import { Divider, Stack } from '@mantine/core';
 import { MethodItem } from './MethodItem';
 import type { DocMethod } from '~/DocModel/DocMethod';
 import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
@@ -11,7 +11,13 @@ export function MethodList({
 	return (
 		<Stack>
 			{data.map((method) => (
-				<MethodItem key={method.name} data={method} />
+				<>
+					<MethodItem
+						key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
+						data={method}
+					/>
+					<Divider className="bg-gray-100" size="md" />
+				</>
 			))}
 		</Stack>
 	);

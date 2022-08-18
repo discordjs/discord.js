@@ -1,4 +1,4 @@
-import { Anchor, Box, Text } from '@mantine/core';
+import { Anchor, Box, Code, Text } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -21,18 +21,18 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return (
-					<Text key={idx} span>
+					<Text key={idx} span style={{ wordBreak: 'break-word' }}>
 						{(node as DocPlainTextJSON).text}
 					</Text>
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<Text key={idx} inline>
+					<Text key={idx} inline style={{ wordBreak: 'break-word' }}>
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
 					</Text>
 				);
 			case DocNodeKind.SoftBreak:
-				return <br key={idx} />;
+				return <></>;
 			case DocNodeKind.LinkTag: {
 				const { codeDestination, urlDestination, text } = node as DocLinkTagJSON;
 
@@ -61,9 +61,9 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<pre key={idx} className="inline">
+					<Code key={idx} sx={{ display: 'inline' }} className="text-sm font-mono">
 						{code}
-					</pre>
+					</Code>
 				);
 			}
 			case DocNodeKind.FencedCode: {

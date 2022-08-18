@@ -106,7 +106,7 @@ class GuildAuditLogsEntry {
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
-     * Specific action type of this entry in its string presentation
+     * The type of action that occured.
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;

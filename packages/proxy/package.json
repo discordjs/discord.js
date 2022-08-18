@@ -66,7 +66,7 @@
 		"@types/supertest": "^2.0.12",
 		"@typescript-eslint/eslint-plugin": "^5.33.0",
 		"@typescript-eslint/parser": "^5.33.0",
-		"c8": "^7.12.0",
+		"@vitest/coverage-c8": "^0.22.0",
 		"downlevel-dts": "^0.10.0",
 		"eslint": "^8.22.0",
 		"eslint-config-marine": "^9.4.1",
@@ -78,7 +78,7 @@
 		"supertest": "^6.2.4",
 		"typescript": "^4.7.4",
 		"unbuild": "^0.8.8",
-		"vitest": "^0.21.1"
+		"vitest": "^0.22.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

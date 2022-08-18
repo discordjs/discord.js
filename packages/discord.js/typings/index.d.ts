@@ -1970,6 +1970,7 @@ export class ModalSubmitFields {
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
   extends ModalSubmitInteraction<Cached> {
   message: Message<BooleanCache<Cached>>;
+  channelId: Snowflake;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
   update(
     options: string | MessagePayload | InteractionUpdateOptions,
@@ -3823,11 +3824,39 @@ export interface ApplicationCommandAttachmentOption extends BaseApplicationComma
   type: ApplicationCommandOptionType.Attachment;
 }
 
-export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Number
-    | ApplicationCommandOptionType.Integer;
+export interface ApplicationCommandAutocompleteNumericOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  maxValue?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteStringOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  maxLength?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteNumericOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  min_value?: number;
+  maxValue?: number;
+  max_value?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteStringOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  min_length?: number;
+  maxLength?: number;
+  max_length?: number;
   autocomplete: true;
 }
 
@@ -3891,35 +3920,12 @@ export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandO
 
 export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (
-    | ApplicationCommandChoicesData
-    | ApplicationCommandNonOptionsData
-    | ApplicationCommandChannelOptionData
-    | ApplicationCommandAutocompleteOption
-    | ApplicationCommandNumericOptionData
-    | ApplicationCommandRoleOptionData
-    | ApplicationCommandUserOptionData
-    | ApplicationCommandMentionableOptionData
-    | ApplicationCommandStringOptionData
-    | ApplicationCommandBooleanOption
-  )[];
+  options?: Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>[];
 }
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (
-    | ApplicationCommandNonOptions
-    | ApplicationCommandChannelOption
-    | ApplicationCommandChoicesOption
-    | ApplicationCommandAutocompleteOption
-    | ApplicationCommandNumericOption
-    | ApplicationCommandStringOption
-    | ApplicationCommandRoleOption
-    | ApplicationCommandUserOption
-    | ApplicationCommandMentionableOption
-    | ApplicationCommandBooleanOption
-    | ApplicationCommandAttachmentOption
-  )[];
+  options?: Exclude<ApplicationCommandOption, ApplicationCommandSubGroup | ApplicationCommandSubCommand>[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
@@ -3935,7 +3941,8 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandChoicesData
-  | ApplicationCommandAutocompleteOption
+  | ApplicationCommandAutocompleteNumericOptionData
+  | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
   | ApplicationCommandRoleOptionData
@@ -3946,6 +3953,8 @@ export type ApplicationCommandOptionData =
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
+  | ApplicationCommandAutocompleteNumericOption
+  | ApplicationCommandAutocompleteStringOption
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
   | ApplicationCommandChoicesOption
