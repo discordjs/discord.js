@@ -14,11 +14,11 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 
 	const columnStyles = {
 		Name: 'font-mono whitespace-nowrap',
-		Type: 'font-mono whitespace-pre-wrap max-w-[250px] break-normal overflow-scroll',
+		Type: 'font-mono whitespace-pre-wrap max-w-[250px] break-normal',
 	};
 
 	return (
-		<Box sx={{ overflowX: 'scroll' }}>
+		<Box sx={{ overflowX: 'auto' }}>
 			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
 		</Box>
 	);
