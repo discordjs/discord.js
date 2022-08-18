@@ -43,7 +43,7 @@ export function DocContainer({
 
 	return (
 		<Group>
-			<Stack sx={{ flexGrow: 1 }}>
+			<Stack sx={{ flexGrow: 1 }} className="max-w-full">
 				<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
 					<Group>
 						{generateIcon(kind)}

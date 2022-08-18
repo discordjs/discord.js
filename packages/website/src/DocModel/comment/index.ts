@@ -9,6 +9,7 @@ import {
 	type DocBlock,
 	DocComment,
 	DocCodeSpan,
+	DocParamBlock,
 } from '@microsoft/tsdoc';
 import { block } from './CommentBlock';
 import { codeSpan } from './CommentCodeSpan';
@@ -17,6 +18,7 @@ import { node as _node } from './CommentNode';
 import { nodeContainer } from './CommentNodeContainer';
 import { fencedCode } from './FencedCodeCommentNode';
 import { linkTagNode } from './LinkTagCommentNode';
+import { paramBlock } from './ParamBlock';
 import { plainTextNode } from './PlainTextCommentNode';
 import { comment } from './RootComment';
 
@@ -35,6 +37,8 @@ export function createCommentNode(node: DocNode, model: ApiModel, parentItem?: A
 			return codeSpan(node as DocCodeSpan);
 		case DocNodeKind.Block:
 			return block(node as DocBlock, model, parentItem);
+		case DocNodeKind.ParamBlock:
+			return paramBlock(node as DocParamBlock, model, parentItem);
 		case DocNodeKind.Comment:
 			return comment(node as DocComment, model, parentItem);
 		default:
