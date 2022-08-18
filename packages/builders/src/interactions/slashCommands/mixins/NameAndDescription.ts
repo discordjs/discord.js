@@ -79,6 +79,20 @@ export class SharedNameAndDescription {
 	}
 
 	/**
+	 * Sets the name and the name localizations
+	 * 
+	 * @param locale - The locale to set the base name for
+	 * @param localizedNames - The dictionary of localized names to set
+	 */
+	public setNames(locale: LocaleString, localizedNames: LocalizationMap) {
+		if (!localizedNames[locale]) throw new Error(`No name provided for the given locale ${locale}`);
+
+		this.setName(localizedNames[locale]);
+		this.setNameLocalization(locale, localizedNames[locale]);
+		return this;
+	}
+
+	/**
 	 * Sets a description localization
 	 *
 	 * @param locale - The locale to set a description for
@@ -117,6 +131,20 @@ export class SharedNameAndDescription {
 		Object.entries(localizedDescriptions).forEach((args) =>
 			this.setDescriptionLocalization(...(args as [LocaleString, string | null])),
 		);
+		return this;
+	}
+
+	/**
+	 * Sets the description and the description localizations
+	 * 
+	 * @param locale - The locale to set the base name for
+	 * @param localizedDescriptions - The dictionary of localized descriptions to set
+	 */
+	public setDescriptions(locale: LocaleString, localizedDescriptions: LocalizationMap) {
+		if (!localizedDescriptions[locale]) throw new Error(`No description provided for the given locale ${locale}`);
+
+		this.setDescription(localizedDescriptions[locale]);
+		this.setDescriptionLocalization(locale, localizedDescriptions[locale]);
 		return this;
 	}
 }

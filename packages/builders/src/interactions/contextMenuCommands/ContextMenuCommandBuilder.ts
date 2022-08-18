@@ -176,6 +176,20 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
+	 * Set the name & the name localizations
+	 * 
+	 * @param locale - The locale to set the base name for
+	 * @param localizedNames - The dictionary of localized names to set
+	 */
+	public setNames(locale: LocaleString, localizedNames: LocalizationMap) {
+		if (!localizedNames[locale]) throw new Error(`No name provided for the given locale ${locale}`);
+		
+		this.setName(localizedNames[locale]);
+		this.setNameLocalizations(localizedNames);
+		return this;
+	}
+
+	/**
 	 * Returns the final data that should be sent to Discord.
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
