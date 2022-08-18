@@ -30,6 +30,11 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 			<Group>
 				<Stack>
 					<Group>
+						{data.deprecated ? (
+							<Badge variant="filled" color="red">
+								Deprecated
+							</Badge>
+						) : null}
 						{data.kind === 'Method' && method.visibility === Visibility.Protected ? (
 							<Badge variant="filled">Protected</Badge>
 						) : null}

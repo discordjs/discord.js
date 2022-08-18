@@ -35,6 +35,11 @@ export function CodeListing({
 	return (
 		<Stack spacing="xs" key={name}>
 			<Group>
+				{deprecation ? (
+					<Badge variant="filled" color="red">
+						Deprecated
+					</Badge>
+				) : null}
 				{readonly ? <Badge variant="filled">Readonly</Badge> : null}
 				{optional ? <Badge variant="filled">Optional</Badge> : null}
 				<Title order={4} className="font-mono">
