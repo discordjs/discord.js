@@ -227,6 +227,16 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      // TODO: discord-api-types enum
+      case 143:
+      case 144:
+      case 145:
+        this.extra = {
+          autoModerationRuleName: data.options.auto_moderation_rule_name,
+          autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+        };
+        break;
+
       default:
         break;
     }

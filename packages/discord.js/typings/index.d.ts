@@ -5193,6 +5193,10 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
+  // TODO: discord-api-types enum
+  143: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
+  144: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
+  145: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
