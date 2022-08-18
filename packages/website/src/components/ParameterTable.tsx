@@ -1,4 +1,4 @@
-import { Box } from '@mantine/core';
+import { Box, ScrollArea } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -14,12 +14,14 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 
 	const columnStyles = {
 		Name: 'font-mono whitespace-nowrap',
-		Type: 'font-mono whitespace-pre-wrap max-w-[250px] break-normal',
+		Type: 'font-mono whitespace-pre-wrap break-normal',
 	};
 
 	return (
-		<Box sx={{ overflowX: 'auto' }}>
-			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+		<Box>
+			<ScrollArea type="auto">
+				<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+			</ScrollArea>
 		</Box>
 	);
 }
