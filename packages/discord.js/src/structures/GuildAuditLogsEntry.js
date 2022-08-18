@@ -220,7 +220,6 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ApplicationCommandPermissionUpdate:
         this.extra = {
           applicationId: data.options.application_id,
-          guild: guild.client.guilds.cache.get(data.options.guild_id) ?? { id: data.options.guild_id },
         };
         break;
 
