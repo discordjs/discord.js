@@ -15,6 +15,8 @@ import {
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
+import { createCommentNode } from '~/DocModel/comment';
+import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
 
 export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
 	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as
@@ -142,6 +144,7 @@ export interface ParameterDocumentation {
 	name: string;
 	isOptional: boolean;
 	tokens: TokenDocumentation[];
+	paramCommentBlock: DocBlockJSON | null;
 }
 
 function createDapiTypesURL(meaning: Meaning, name: string) {
@@ -197,6 +200,7 @@ export function genParameter(model: ApiModel, param: Parameter): ParameterDocume
 		name: param.name,
 		isOptional: param.isOptional,
 		tokens: param.parameterTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
+		paramCommentBlock: param.tsdocParamBlock ? (createCommentNode(param.tsdocParamBlock, model) as DocBlockJSON) : null,
 	};
 }
 

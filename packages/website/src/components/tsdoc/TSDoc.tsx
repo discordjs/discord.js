@@ -81,6 +81,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 					</SyntaxHighlighter>
 				);
 			}
+			case DocNodeKind.ParamBlock:
 			case DocNodeKind.Block: {
 				const { tag } = node as DocBlockJSON;
 
@@ -103,9 +104,10 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 					(block) => block.tag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
 				).length;
 
-				return <div>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
+				return <div key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
 			}
 			default:
+				console.log(`Captured unknown node kind: ${node.kind}`);
 				break;
 		}
 

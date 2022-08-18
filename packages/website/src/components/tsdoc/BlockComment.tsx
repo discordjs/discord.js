@@ -1,4 +1,4 @@
-import { Alert, Box, Title } from '@mantine/core';
+import { Alert, Box, Title, Text } from '@mantine/core';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { ReactNode } from 'react';
 import { VscWarning } from 'react-icons/vsc';
@@ -11,7 +11,7 @@ export interface BlockProps {
 export function Block({ children, title }: BlockProps) {
 	return (
 		<Box>
-			<Title order={3}>{title}</Title>
+			<Title order={5}>{title}</Title>
 			{children}
 		</Box>
 	);
@@ -52,7 +52,9 @@ export function BlockComment({ children, tagName, index }: BlockCommentProps): J
 			return <DeprecatedBlock>{children}</DeprecatedBlock>;
 		case StandardTags.remarks.tagNameWithUpperCase:
 			return <RemarksBlock>{children}</RemarksBlock>;
+		case StandardTags.param.tagNameWithUpperCase:
+			return <Text>{children}</Text>;
 		default: // TODO: Support more blocks in the future.
-			return <></>;
+			return <>{children}</>;
 	}
 }
