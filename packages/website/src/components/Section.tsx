@@ -11,7 +11,7 @@ const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
 		fontSize: theme.fontSizes.sm,
 
 		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
 			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 		},
 	},
@@ -41,7 +41,7 @@ export function Section({
 	const { classes } = useStyles({ opened });
 
 	return (
-		<Box className="break-all">
+		<Box sx={{ wordBreak: 'break-all' }}>
 			<UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
 				<Group position="apart">
 					<Group>

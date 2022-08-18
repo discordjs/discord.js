@@ -3,7 +3,6 @@ import {
 	AppShell,
 	Navbar,
 	MediaQuery,
-	// Aside,
 	Header,
 	Burger,
 	Anchor,
@@ -59,7 +58,7 @@ const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
 
 		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
 			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 		},
 	},
@@ -153,19 +152,6 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 					) : null}
 				</Navbar>
 			}
-			// aside={
-			// 	packageName && data?.member ? (
-			// 		<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-			// 			<Aside hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
-			// 				<ScrollArea p="xs">
-			// 					<SidebarItems members={data.members} />
-			// 				</ScrollArea>
-			// 			</Aside>
-			// 		</MediaQuery>
-			// 	) : (
-			// 		<></>
-			// 	)
-			// }
 			// footer={
 			// 	<Footer height={60} p="md">
 			// 		Application footer
@@ -195,7 +181,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 							onClick={() => toggleColorScheme()}
 							title="Toggle color scheme"
 						>
-							{dark ? <WiDaySunny size={18} /> : <WiNightClear size={18} />}
+							{dark ? <WiDaySunny size={20} /> : <WiNightClear size={20} />}
 						</ActionIcon>
 					</Box>
 				</Header>

@@ -10,8 +10,11 @@ export function PropertyList({ data }: { data: ReturnType<DocProperty['toJSON']>
 					key={prop.name}
 					name={prop.name}
 					typeTokens={prop.propertyTypeTokens}
+					readonly={prop.readonly}
+					optional={prop.optional}
 					summary={prop.summary}
 					comment={prop.comment}
+					deprecation={prop.deprecated}
 				/>
 			))}
 		</Stack>

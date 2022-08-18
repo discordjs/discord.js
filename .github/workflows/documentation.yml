@@ -142,7 +142,7 @@ jobs:
           fi
 
       - name: Move docs to correct directory
-        if: ${{ !github.event.inputs.ref_type == 'branch' && env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ github.event.inputs.ref_type == 'branch' || env.BRANCH_OR_TAG == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |

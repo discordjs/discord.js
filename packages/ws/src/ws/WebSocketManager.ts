@@ -81,14 +81,14 @@ export interface OptionalWebSocketManagerOptions {
 	 * Use `null` to simply spawn 0 through `shardCount - 1`
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   shardIds: [1, 3, 7], // spawns shard 1, 3, and 7, nothing else
 	 * });
 	 * ```
 	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   shardIds: {
 	 *     start: 3,
@@ -127,8 +127,9 @@ export interface OptionalWebSocketManagerOptions {
 	compression: CompressionMethod | null;
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
+	 *
 	 * @example
-	 * ```
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
 	 *     // Fetch this info from redis or similar

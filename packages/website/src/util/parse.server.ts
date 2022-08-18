@@ -34,7 +34,11 @@ export function generatePath(items: readonly ApiItem[]) {
 				path += `${item.displayName}/`;
 				break;
 			case ApiItemKind.Function:
-				path += `${item.displayName}:${(item as ApiFunction).overloadIndex}/`;
+				// eslint-disable-next-line no-case-declarations
+				const functionItem = item as ApiFunction;
+				path += `${functionItem.displayName}${
+					functionItem.overloadIndex && functionItem.overloadIndex > 1 ? `:${functionItem.overloadIndex}` : ''
+				}/`;
 				break;
 			default:
 				path += `${item.displayName}/`;

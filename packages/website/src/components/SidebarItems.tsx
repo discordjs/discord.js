@@ -77,7 +77,7 @@ const useStyles = createStyles((theme) => ({
 		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
 
 		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
 			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 		},
 	},
@@ -103,7 +103,9 @@ export function SidebarItems({
 							<Link key={i} href={member.path} passHref>
 								<UnstyledButton className={classes.link} component="a" onClick={() => setOpened((o) => !o)}>
 									<Group>
-										<Text>{member.name}</Text>
+										<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+											{member.name}
+										</Text>
 										{member.overloadIndex && member.overloadIndex > 1 ? (
 											<Text size="xs" color="dimmed">
 												{member.overloadIndex}

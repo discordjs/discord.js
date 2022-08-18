@@ -4,10 +4,15 @@ import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
 import { Section } from './Section';
+import type { DocClass } from '~/DocModel/DocClass';
 import type { DocInterface } from '~/DocModel/DocInterface';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
-export function PropertiesSection({ data }: { data: ReturnType<DocInterface['toJSON']>['properties'] }) {
+export function PropertiesSection({
+	data,
+}: {
+	data: ReturnType<DocClass['toJSON']>['properties'] | ReturnType<DocInterface['toJSON']>['properties'];
+}) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
@@ -17,7 +22,11 @@ export function PropertiesSection({ data }: { data: ReturnType<DocInterface['toJ
 	) : null;
 }
 
-export function MethodsSection({ data }: { data: ReturnType<DocInterface['toJSON']>['methods'] }) {
+export function MethodsSection({
+	data,
+}: {
+	data: ReturnType<DocClass['toJSON']>['methods'] | ReturnType<DocInterface['toJSON']>['methods'];
+}) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (

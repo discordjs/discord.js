@@ -1,4 +1,4 @@
-import { Group, Stack, Title } from '@mantine/core';
+import { Badge, Group, Stack, Title } from '@mantine/core';
 import type { ReactNode } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -14,33 +14,46 @@ export enum CodeListingSeparatorType {
 export function CodeListing({
 	name,
 	separator = CodeListingSeparatorType.Type,
-	summary,
 	typeTokens,
+	readonly = false,
+	optional = false,
+	summary,
 	children,
 	comment,
+	deprecation,
 }: {
 	name: string;
-	summary?: ReturnType<DocItem['toJSON']>['summary'];
-	typeTokens: TokenDocumentation[];
 	separator?: CodeListingSeparatorType;
-	children?: ReactNode;
-	className?: string | undefined;
+	typeTokens: TokenDocumentation[];
+	readonly?: boolean;
+	optional?: boolean;
+	summary?: ReturnType<DocItem['toJSON']>['summary'];
 	comment?: AnyDocNodeJSON | null;
+	children?: ReactNode;
+	deprecation?: AnyDocNodeJSON | null;
 }) {
 	return (
-		<Stack key={name}>
+		<Stack spacing="xs" key={name}>
 			<Group>
+				{readonly ? <Badge variant="filled">Readonly</Badge> : null}
+				{optional ? <Badge variant="filled">Optional</Badge> : null}
 				<Title order={4} className="font-mono">
 					{name}
+					{optional ? '?' : ''}
 				</Title>
 				<Title order={4}>{separator}</Title>
-				<Title order={4} className="font-mono break-all">
+				<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
 					<HyperlinkedText tokens={typeTokens} />
 				</Title>
 			</Group>
-			{summary && <TSDoc node={summary} />}
-			{comment && <TSDoc node={comment} />}
-			{children}
+			<Group>
+				<Stack>
+					{deprecation ? <TSDoc node={deprecation} /> : null}
+					{summary && <TSDoc node={summary} />}
+					{comment && <TSDoc node={comment} />}
+					{children}
+				</Stack>
+			</Group>
 		</Stack>
 	);
 }

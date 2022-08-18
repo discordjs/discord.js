@@ -53,7 +53,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 							// causing next.js export to error
 							.filter((member) => member.name !== 'RESTEvents')
 							.map((member) => {
-								if (member.kind === 'Function' && member.overloadIndex) {
+								if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
 									return {
 										params: {
 											slug: ['main', 'packages', packageName, `${member.name}:${member.overloadIndex}`],
@@ -146,7 +146,7 @@ const member = (props: any) => {
 
 export default function Slug(props: Partial<SidebarLayoutProps & { error?: string }>) {
 	return props.error ? (
-		<div className="flex max-w-full h-full bg-white dark:bg-dark">{props.error}</div>
+		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
 		<MemberProvider member={props.data?.member}>
 			<SidebarLayout {...props}>{props.data?.member ? member(props.data.member) : null}</SidebarLayout>
