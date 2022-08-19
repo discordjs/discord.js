@@ -50,13 +50,13 @@ export interface RequestData {
 	/**
 	 * If this request needs the `Authorization` header
 	 *
-	 * @default true
+	 * @defaultValue `true`
 	 */
 	auth?: boolean;
 	/**
 	 * The authorization prefix to use for this request, useful if you use this with bearer tokens
 	 *
-	 * @default 'Bot'
+	 * @defaultValue `'Bot'`
 	 */
 	authPrefix?: 'Bot' | 'Bearer';
 	/**
@@ -92,7 +92,7 @@ export interface RequestData {
 	/**
 	 * If this request should be versioned
 	 *
-	 * @default true
+	 * @defaultValue `true`
 	 */
 	versioned?: boolean;
 }
