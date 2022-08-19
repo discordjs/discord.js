@@ -1,5 +1,6 @@
 import { Badge, Group, Stack, Title } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
+import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
 import { TSDoc } from './tsdoc/TSDoc';
 import type { DocMethod } from '~/DocModel/DocMethod';
@@ -20,7 +21,6 @@ function getShorthandName(data: MethodResolvable) {
 
 export function MethodItem({ data }: { data: MethodResolvable }) {
 	const method = data as ReturnType<DocMethod['toJSON']>;
-
 	return (
 		<Stack
 			id={`${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`}
@@ -54,6 +54,7 @@ export function MethodItem({ data }: { data: MethodResolvable }) {
 					{data.remarks ? <TSDoc node={data.remarks} /> : null}
 					{data.comment ? <TSDoc node={data.comment} /> : null}
 					{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
+					{data.inheritanceData ? <InheritanceText data={data.inheritanceData} /> : null}
 				</Stack>
 			</Group>
 		</Stack>
