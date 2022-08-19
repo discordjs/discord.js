@@ -40,6 +40,10 @@ export function DeprecatedBlock({ children }: { children: ReactNode }): JSX.Elem
 	);
 }
 
+export function DefaultValueBlock({ children }: { children: ReactNode }): JSX.Element {
+	return <Block title="Default value">{children}</Block>;
+}
+
 export function RemarksBlock({ children }: { children: ReactNode }): JSX.Element {
 	return <Block title="Remarks">{children}</Block>;
 }
@@ -52,6 +56,8 @@ export function BlockComment({ children, tagName, index }: BlockCommentProps): J
 			return <DeprecatedBlock>{children}</DeprecatedBlock>;
 		case StandardTags.remarks.tagNameWithUpperCase:
 			return <RemarksBlock>{children}</RemarksBlock>;
+		case StandardTags.defaultValue.tagNameWithUpperCase:
+			return <DefaultValueBlock>{children}</DefaultValueBlock>;
 		case StandardTags.typeParam.tagNameWithUpperCase:
 		case StandardTags.param.tagNameWithUpperCase:
 			return <Text>{children}</Text>;
