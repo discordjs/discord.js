@@ -1,3 +1,9 @@
+/**
+ * Represents a structure that can be checked against another
+ * given structure for equality
+ *
+ * @typeParam T - The type of object to compare the current object to
+ */
 export interface Equatable<T> {
 	/**
 	 * Whether or not this is equal to another structure

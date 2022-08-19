@@ -1,7 +1,7 @@
 import { Anchor, Box, Code, Text } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { BlockComment } from './BlockComment';
@@ -32,7 +32,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 					</Text>
 				);
 			case DocNodeKind.SoftBreak:
-				return <></>;
+				return <Fragment key={idx} />;
 			case DocNodeKind.LinkTag: {
 				const { codeDestination, urlDestination, text } = node as DocLinkTagJSON;
 
