@@ -6,7 +6,7 @@ export function InheritanceText({ data }: { data: InheritanceData }) {
 	return (
 		<Text className="font-semibold">
 			{'Inherited from '}
-			<Link href={data.path}>
+			<Link href={data.path} passHref>
 				<Anchor component="a" className="font-mono">
 					{data.parentName}
 				</Anchor>
