@@ -1178,7 +1178,7 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
+export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
@@ -1190,23 +1190,26 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = null,
+  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : 'All',
+    : GuildAuditLogsActionType,
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : 'Unknown',
+    : GuildAuditLogsTargetType,
+  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
   public static Targets: GuildAuditLogsTargets;
-  public action: TAction;
+  public action: TResolvedType;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
-  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
+  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
+    ? GuildAuditLogsEntryExtraField[TResolvedType]
+    : null;
   public id: Snowflake;
   public reason: string | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
