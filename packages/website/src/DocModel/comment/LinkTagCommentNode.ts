@@ -34,10 +34,6 @@ export interface LinkTagCodeLink {
 }
 
 export function linkTagNode(linkNode: DocLinkTag, model: ApiModel, parentItem?: ApiItem): DocLinkTagJSON {
-	if (!parentItem) {
-		console.log('no parent item');
-	}
-
 	// If we weren't provided a parent object, fallback to the package entrypoint.
 	const packageEntryPoint = linkNode.codeDestination?.importPath
 		? model.getAssociatedPackage()?.findEntryPointsByPath(linkNode.codeDestination.importPath)[0]
