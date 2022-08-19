@@ -28,6 +28,9 @@ export interface Collection<K, V> extends Map<K, V> {
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
+ *
+ * @typeParam K - The key type this collection holds
+ * @typeParam V - The value type this collection holds
  */
 export class Collection<K, V> extends Map<K, V> {
 	/**
