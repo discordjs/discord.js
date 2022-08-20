@@ -216,6 +216,8 @@ class Guild extends AnonymousGuild {
        * @type {?boolean}
        */
       this.widgetEnabled = data.widget_enabled;
+    } else {
+      this.widgetEnabled ??= null;
     }
 
     if ('widget_channel_id' in data) {
@@ -224,6 +226,8 @@ class Guild extends AnonymousGuild {
        * @type {?string}
        */
       this.widgetChannelId = data.widget_channel_id;
+    } else {
+      this.widgetChannelId ??= null;
     }
 
     if ('explicit_content_filter' in data) {
@@ -489,7 +493,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?TextChannel}
+   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel)}
    * @readonly
    */
   get widgetChannel() {
@@ -656,14 +660,14 @@ class Guild extends AnonymousGuild {
    * Data for the Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannel} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel)} channel The widget invite channel
    */
 
   /**
    * The Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannelResolvable} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|Snowflake)} channel The widget invite channel
    */
 
   /**
