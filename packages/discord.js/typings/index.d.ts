@@ -3873,19 +3873,21 @@ export interface ApplicationCommandAutocompleteStringOptionData
   autocomplete: true;
 }
 
-export interface ApplicationCommandChoicesData extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandChoicesData<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandChoicesOption<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   min_value?: number;
@@ -3893,7 +3895,7 @@ export interface ApplicationCommandNumericOptionData extends ApplicationCommandC
   max_value?: number;
 }
 
-export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   min_length?: number;
@@ -3905,13 +3907,13 @@ export interface ApplicationCommandBooleanOptionData extends BaseApplicationComm
   type: ApplicationCommandOptionType.Boolean;
 }
 
-export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   maxValue?: number;
 }
 
-export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
@@ -3953,7 +3955,6 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
-  | ApplicationCommandChoicesData
   | ApplicationCommandAutocompleteNumericOptionData
   | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandNumericOptionData
@@ -3970,7 +3971,6 @@ export type ApplicationCommandOption =
   | ApplicationCommandAutocompleteStringOption
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
-  | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
   | ApplicationCommandRoleOption
@@ -3980,10 +3980,10 @@ export type ApplicationCommandOption =
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
-export interface ApplicationCommandOptionChoiceData {
+export interface ApplicationCommandOptionChoiceData<Value extends string | number = string | number> {
   name: string;
   nameLocalizations?: LocalizationMap;
-  value: string | number;
+  value: Value;
 }
 
 export interface ApplicationCommandPermissions {
