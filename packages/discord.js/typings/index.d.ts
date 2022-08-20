@@ -192,7 +192,10 @@ declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
     public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
-    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(
+      eventEmitter: Client,
+      eventName: K,
+    ): AsyncIterableIterator<ClientEvents[K]>;
   }
 }
 
@@ -4735,7 +4738,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
-  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake; guild: Guild | { id: Snowflake } };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
