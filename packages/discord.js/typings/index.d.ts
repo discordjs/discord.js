@@ -192,7 +192,10 @@ declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
     public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
-    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(
+      eventEmitter: Client,
+      eventName: K,
+    ): AsyncIterableIterator<ClientEvents[K]>;
   }
 }
 
@@ -1178,35 +1181,37 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
+export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-  public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = null,
+  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : 'All',
+    : GuildAuditLogsActionType,
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : 'Unknown',
+    : GuildAuditLogsTargetType,
+  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
   public static Targets: GuildAuditLogsTargets;
-  public action: TAction;
+  public action: TResolvedType;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
-  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
+  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
+    ? GuildAuditLogsEntryExtraField[TResolvedType]
+    : null;
   public id: Snowflake;
   public reason: string | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
@@ -4152,7 +4157,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -4733,7 +4738,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
-  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake; guild: Guild | { id: Snowflake } };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
