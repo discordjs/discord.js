@@ -85,6 +85,9 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc JSONEncodable.toJSON}
+	 */
 	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(
 			this.data.style,

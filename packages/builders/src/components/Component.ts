@@ -10,6 +10,8 @@ export type AnyAPIActionRowComponent = APIActionRowComponentTypes | APIActionRow
 
 /**
  * Represents a discord component
+ *
+ * @typeParam DataType - The type of internal API data that is stored within the component
  */
 export abstract class ComponentBuilder<
 	DataType extends Partial<APIBaseComponent<ComponentType>> = APIBaseComponent<ComponentType>,
@@ -20,6 +22,9 @@ export abstract class ComponentBuilder<
 	 */
 	public readonly data: Partial<DataType>;
 
+	/**
+	 * {@inheritDoc JSONEncodable.toJSON}
+	 */
 	public abstract toJSON(): AnyAPIActionRowComponent;
 
 	public constructor(data: Partial<DataType>) {

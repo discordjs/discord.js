@@ -1,6 +1,6 @@
 import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import type { ReactNode } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
@@ -11,9 +11,10 @@ import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
 import type { DocClass } from '~/DocModel/DocClass';
 import type { DocItem } from '~/DocModel/DocItem';
+import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import { generateIcon } from '~/util/icon';
-import type { TokenDocumentation, TypeParameterData } from '~/util/parse.server';
+import type { TokenDocumentation } from '~/util/parse.server';
 
 export interface DocContainerProps {
 	name: string;
@@ -84,10 +85,10 @@ export function DocContainer({
 						</Title>
 						<Text sx={{ wordBreak: 'break-all' }} className="font-mono">
 							{implementsTokens.map((token, idx) => (
-								<>
+								<Fragment key={idx}>
 									<HyperlinkedText tokens={token} />
 									{idx < implementsTokens.length - 1 ? ', ' : ''}
-								</>
+								</Fragment>
 							))}
 						</Text>
 					</Group>

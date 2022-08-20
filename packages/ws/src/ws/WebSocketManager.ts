@@ -112,17 +112,17 @@ export interface OptionalWebSocketManagerOptions {
 	identifyProperties: GatewayIdentifyProperties;
 	/**
 	 * The gateway version to use
-	 * @default '10'
+	 * @defaultValue `'10'`
 	 */
 	version: string;
 	/**
 	 * The encoding to use
-	 * @default 'json'
+	 * @defaultValue `'json'`
 	 */
 	encoding: Encoding;
 	/**
 	 * The compression method to use
-	 * @default null (no compression)
+	 * @defaultValue `null` (no compression)
 	 */
 	compression: CompressionMethod | null;
 	/**
@@ -187,7 +187,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Strategy used to manage shards
-	 * @default SimpleManagerToShardStrategy
+	 * @defaultValue `SimpleManagerToShardStrategy`
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
