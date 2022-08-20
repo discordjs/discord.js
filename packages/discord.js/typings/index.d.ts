@@ -1185,7 +1185,6 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> 
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-  public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
 }
 
@@ -4155,7 +4154,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
 }
 
 export interface ClientEvents {

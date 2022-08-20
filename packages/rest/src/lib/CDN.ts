@@ -15,7 +15,7 @@ export interface BaseImageURLOptions {
 	/**
 	 * The extension to use for the image URL
 	 *
-	 * @default 'webp'
+	 * @defaultValue `'webp'`
 	 */
 	extension?: ImageExtension;
 	/**
@@ -41,7 +41,7 @@ export interface MakeURLOptions {
 	/**
 	 * The extension to use for the image URL
 	 *
-	 * @default 'webp'
+	 * @defaultValue `'webp'`
 	 */
 	extension?: string | undefined;
 	/**
