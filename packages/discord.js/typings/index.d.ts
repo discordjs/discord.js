@@ -192,7 +192,10 @@ declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
     public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
-    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(
+      eventEmitter: Client,
+      eventName: K,
+    ): AsyncIterableIterator<ClientEvents[K]>;
   }
 }
 
@@ -1185,7 +1188,6 @@ export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-  public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
 }
 
@@ -4152,7 +4154,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
 }
 
 export interface ClientEvents {

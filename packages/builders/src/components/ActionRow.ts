@@ -22,6 +22,8 @@ export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalAction
 
 /**
  * Represents an action row component
+ *
+ * @typeParam T - The types of components this action row holds
  */
 export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBuilder<
 	APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
@@ -56,6 +58,9 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc JSONEncodable.toJSON}
+	 */
 	public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>> {
 		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {

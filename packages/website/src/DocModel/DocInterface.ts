@@ -23,14 +23,29 @@ export class DocInterface extends TypeParameterMixin(DocItem<ApiInterface>) {
 			excerpt.excerpt.spannedTokens.map((token) => genToken(this.model, token)),
 		);
 
-		for (const member of item.members) {
+		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
-				case ApiItemKind.MethodSignature:
-					this.methods.push(new DocMethodSignature(this.model, member as ApiMethodSignature));
+				case ApiItemKind.MethodSignature: {
+					const method = member as ApiMethodSignature;
+
+					if (method.parent?.containerKey !== this.containerKey) {
+						this.methods.push(new DocMethodSignature(this.model, method, true));
+						break;
+					}
+					this.methods.push(new DocMethodSignature(this.model, method));
 					break;
-				case ApiItemKind.PropertySignature:
-					this.properties.push(new DocProperty(this.model, member as ApiPropertySignature));
+				}
+				case ApiItemKind.PropertySignature: {
+					const property = member as ApiPropertySignature;
+
+					if (property.parent?.containerKey !== this.containerKey) {
+						this.properties.push(new DocProperty(this.model, property, true));
+						break;
+					}
+
+					this.properties.push(new DocProperty(this.model, property));
 					break;
+				}
 				default:
 					break;
 			}
