@@ -29,14 +29,29 @@ export class DocClass extends TypeParameterMixin(DocItem<ApiClass>) {
 			excerpt.excerpt.spannedTokens.map((token) => genToken(this.model, token)),
 		);
 
-		for (const member of item.members) {
+		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
-				case ApiItemKind.Method:
-					this.methods.push(new DocMethod(this.model, member as ApiMethod));
+				case ApiItemKind.Method: {
+					const method = member as ApiMethod;
+
+					if (method.parent?.containerKey !== this.containerKey) {
+						this.methods.push(new DocMethod(this.model, method, true));
+						break;
+					}
+					this.methods.push(new DocMethod(this.model, method));
 					break;
-				case ApiItemKind.Property:
-					this.properties.push(new DocProperty(this.model, member as ApiPropertyItem));
+				}
+				case ApiItemKind.Property: {
+					const property = member as ApiPropertyItem;
+
+					if (property.parent?.containerKey !== this.containerKey) {
+						this.properties.push(new DocProperty(this.model, property, true));
+						break;
+					}
+
+					this.properties.push(new DocProperty(this.model, property));
 					break;
+				}
 				default:
 					break;
 			}

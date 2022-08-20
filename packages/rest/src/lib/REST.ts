@@ -25,45 +25,45 @@ export interface RESTOptions {
 	agent: Dispatcher;
 	/**
 	 * The base api path, without version
-	 * @default 'https://discord.com/api'
+	 * @defaultValue `'https://discord.com/api'`
 	 */
 	api: string;
 	/**
 	 * The authorization prefix to use for requests, useful if you want to use
 	 * bearer tokens
 	 *
-	 * @default 'Bot'
+	 * @defaultValue `'Bot'`
 	 */
 	authPrefix: 'Bot' | 'Bearer';
 	/**
 	 * The cdn path
 	 *
-	 * @default 'https://cdn.discordapp.com'
+	 * @defaultValue 'https://cdn.discordapp.com'
 	 */
 	cdn: string;
 	/**
 	 * Additional headers to send for all API requests
 	 *
-	 * @default {}
+	 * @defaultValue `{}`
 	 */
 	headers: Record<string, string>;
 	/**
 	 * The number of invalid REST requests (those that return 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings).
 	 * That is, if set to 500, warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
 	 *
-	 * @default 0
+	 * @defaultValue `0`
 	 */
 	invalidRequestWarningInterval: number;
 	/**
 	 * How many requests to allow sending per second (Infinity for unlimited, 50 for the standard global limit used by Discord)
 	 *
-	 * @default 50
+	 * @defaultValue `50`
 	 */
 	globalRequestsPerSecond: number;
 	/**
 	 * The extra offset to add to rate limits in milliseconds
 	 *
-	 * @default 50
+	 * @defaultValue `50`
 	 */
 	offset: number;
 	/**
@@ -72,50 +72,50 @@ export interface RESTOptions {
 	 * (e.g. `/channels` to match any route starting with `/channels` such as `/channels/:id/messages`)
 	 * for which to throw {@link RateLimitError}s. All other request routes will be queued normally
 	 *
-	 * @default null
+	 * @defaultValue `null`
 	 */
 	rejectOnRateLimit: string[] | RateLimitQueueFilter | null;
 	/**
 	 * The number of retries for errors with the 500 code, or errors
 	 * that timeout
 	 *
-	 * @default 3
+	 * @defaultValue `3`
 	 */
 	retries: number;
 	/**
 	 * The time to wait in milliseconds before a request is aborted
 	 *
-	 * @default 15_000
+	 * @defaultValue `15_000`
 	 */
 	timeout: number;
 	/**
 	 * Extra information to add to the user agent
 	 *
-	 * @default `Node.js ${process.version}`
+	 * @defaultValue ``Node.js ${process.version}``
 	 */
 	userAgentAppendix: string;
 	/**
 	 * The version of the API to use
 	 *
-	 * @default '10'
+	 * @defaultValue `'10'`
 	 */
 	version: string;
 	/**
 	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 4h)
 	 *
-	 * @default 14_400_000
+	 * @defaultValue `14_400_000`
 	 */
 	hashSweepInterval: number;
 	/**
 	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request (defaults to 24h)
 	 *
-	 * @default 86_400_000
+	 * @defaultValue `86_400_000`
 	 */
 	hashLifetime: number;
 	/**
 	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 1h)
 	 *
-	 * @default 3_600_000
+	 * @defaultValue `3_600_000`
 	 */
 	handlerSweepInterval: number;
 }

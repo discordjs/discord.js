@@ -15,6 +15,7 @@ export function PropertyList({ data }: { data: ReturnType<DocProperty['toJSON']>
 					summary={prop.summary}
 					comment={prop.comment}
 					deprecation={prop.deprecated}
+					inheritanceData={prop.inheritanceData}
 				/>
 			))}
 		</Stack>

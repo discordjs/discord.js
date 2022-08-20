@@ -10,11 +10,15 @@ import {
 	labelValidator,
 	textInputStyleValidator,
 } from './Assertions';
+import type { Equatable } from '../../util/equatable';
 import { isJSONEncodable, type JSONEncodable } from '../../util/jsonEncodable';
 import { customIdValidator } from '../Assertions';
 import { ComponentBuilder } from '../Component';
 
-export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
+export class TextInputBuilder
+	extends ComponentBuilder<APITextInputComponent>
+	implements Equatable<JSONEncodable<APITextInputComponent> | APITextInputComponent>
+{
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
 	}
@@ -99,6 +103,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc JSONEncodable.toJSON}
+	 */
 	public toJSON(): APITextInputComponent {
 		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);
 		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -107,6 +114,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 		} as APITextInputComponent;
 	}
 
+	/**
+	 * {@inheritDoc Equatable.equals}
+	 */
 	public equals(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): boolean {
 		if (isJSONEncodable(other)) {
 			return isEqual(other.toJSON(), this.data);
