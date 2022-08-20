@@ -183,6 +183,16 @@ export function roleMention<C extends Snowflake>(roleId: C): `<@&${C}>` {
 }
 
 /**
+ * Formats a chat input application command ID and name into a slash command mention
+ * 
+ * @param chatInputId - The chat input application command ID to format
+ * @param name - The chat input application command name to format
+ */
+export function chatInputMention<C extends Snowflake, N extends string>(chatInputId: C, name: N): `</${N}:${C}>` {
+	return `</${name}:${chatInputId}>`;
+}
+
+/**
  * Formats an emoji ID into a fully qualified emoji identifier
  *
  * @param emojiId - The emoji ID to format

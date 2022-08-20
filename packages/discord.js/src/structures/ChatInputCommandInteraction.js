@@ -1,5 +1,6 @@
 'use strict';
 
+const { chatInputMention } = require('@discordjs/builders');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
 
@@ -23,18 +24,14 @@ class ChatInputCommandInteraction extends CommandInteraction {
   }
 
   /**
-   * Returns a string representation of the command interaction.
-   * This can then be copied by a user and executed again in a new command while keeping the option order.
+   * When concatenated with a string, this automatically returns the command's instead of the ChatInputCommandInteraction object.
    * @returns {string}
+   * @example
+   * // Logs: Hello from </123456789012345678>!
+   * console.log(`Hello from ${interaction}!`);
    */
   toString() {
-    const properties = [
-      this.commandName,
-      this.options._group,
-      this.options._subcommand,
-      ...this.options._hoistedOptions.map(o => `${o.name}:${o.value}`),
-    ];
-    return `/${properties.filter(Boolean).join(' ')}`;
+    return chatInputMention(this.id, this.commandName);
   }
 }
 
