@@ -1127,7 +1127,7 @@ export class Guild extends AnonymousGuild {
   public vanityURLUses: number | null;
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-  public get widgetChannel(): TextChannel | null;
+  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -4830,7 +4830,7 @@ export interface GuildCreateOptions {
 
 export interface GuildWidgetSettings {
   enabled: boolean;
-  channel: NonThreadGuildBasedChannel | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | null;
 }
 
 export interface GuildEditData {
@@ -4908,7 +4908,7 @@ export interface GuildPruneMembersOptions {
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
-  channel: GuildChannelResolvable | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | Snowflake | null;
 }
 
 export interface GuildSearchMembersOptions {
