@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { DocItem } from '~/DocModel/DocItem';
+import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { InheritanceData } from '~/DocModel/DocMethod';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
@@ -30,7 +30,7 @@ export function CodeListing({
 	typeTokens: TokenDocumentation[];
 	readonly?: boolean;
 	optional?: boolean;
-	summary?: ReturnType<DocItem['toJSON']>['summary'];
+	summary?: ApiItemJSON['summary'];
 	comment?: AnyDocNodeJSON | null;
 	children?: ReactNode;
 	deprecation?: AnyDocNodeJSON | null;

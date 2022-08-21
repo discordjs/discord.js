@@ -1,14 +1,12 @@
 import { createContext } from 'react';
-import type { DocItem } from '~/DocModel/DocItem';
+import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export type DocItemJSON = ReturnType<DocItem['toJSON']>;
-
-export const MemberContext = createContext<DocItemJSON | undefined>(undefined);
+export const MemberContext = createContext<ApiItemJSON | undefined>(undefined);
 
 export const MemberProvider = ({
 	member,
 	children,
 }: {
-	member: DocItemJSON | undefined;
+	member: ApiItemJSON | undefined;
 	children: React.ReactNode;
 }) => <MemberContext.Provider value={member}>{children}</MemberContext.Provider>;

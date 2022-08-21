@@ -4,12 +4,7 @@ import { join } from 'node:path';
 import { Box } from '@mantine/core';
 import { ApiFunction } from '@microsoft/api-extractor-model';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import type { DocClass } from '~/DocModel/DocClass';
-import type { DocEnum } from '~/DocModel/DocEnum';
-import type { DocFunction } from '~/DocModel/DocFunction';
-import type { DocInterface } from '~/DocModel/DocInterface';
-import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
-import type { DocVariable } from '~/DocModel/DocVariable';
+import type { ApiClassJSON, ApiEnumJSON, ApiFunctionJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -110,8 +105,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				packageName,
 				data: {
 					members: pkg ? getMembers(pkg) : [],
-					member:
-						memberName && containerKey ? findMemberByKey(model, packageName, containerKey)?.toJSON() ?? null : null,
+					member: memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null,
 				},
 			},
 		};
@@ -128,17 +122,17 @@ const member = (props: any) => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 	switch (props.kind) {
 		case 'Class':
-			return <Class data={props as ReturnType<DocClass['toJSON']>} />;
+			return <Class data={props as ApiClassJSON} />;
 		case 'Function':
-			return <Function data={props as ReturnType<DocFunction['toJSON']>} />;
+			return <Function data={props as ApiFunctionJSON} />;
 		case 'Interface':
-			return <Interface data={props as ReturnType<DocInterface['toJSON']>} />;
+			return <Interface data={props} />;
 		case 'TypeAlias':
-			return <TypeAlias data={props as ReturnType<DocTypeAlias['toJSON']>} />;
+			return <TypeAlias data={props} />;
 		case 'Variable':
-			return <Variable data={props as ReturnType<DocVariable['toJSON']>} />;
+			return <Variable data={props} />;
 		case 'Enum':
-			return <Enum data={props as ReturnType<DocEnum['toJSON']>} />;
+			return <Enum data={props as ApiEnumJSON} />;
 		default:
 			return <Box>Cannot render that item type</Box>;
 	}

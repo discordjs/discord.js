@@ -1,7 +1,6 @@
 import { createStyles, Group, Text, Box } from '@mantine/core';
 import { VscListSelection } from 'react-icons/vsc';
-import type { DocClass } from '~/DocModel/DocClass';
-import type { DocInterface } from '~/DocModel/DocInterface';
+import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 const useStyles = createStyles((theme) => ({
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -25,11 +24,7 @@ const useStyles = createStyles((theme) => ({
 	},
 }));
 
-export function TableOfContentsItems({
-	members,
-}: {
-	members: ReturnType<DocClass['toJSON']>['methods'] | ReturnType<DocInterface['toJSON']>['methods'];
-}) {
+export function TableOfContentsItems({ members }: { members: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] }) {
 	const { classes } = useStyles();
 
 	const items = members.map((member) => {

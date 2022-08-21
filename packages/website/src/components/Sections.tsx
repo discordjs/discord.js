@@ -4,15 +4,10 @@ import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
 import { Section } from './Section';
-import type { DocClass } from '~/DocModel/DocClass';
-import type { DocInterface } from '~/DocModel/DocInterface';
+import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { ParameterDocumentation } from '~/util/parse.server';
 
-export function PropertiesSection({
-	data,
-}: {
-	data: ReturnType<DocClass['toJSON']>['properties'] | ReturnType<DocInterface['toJSON']>['properties'];
-}) {
+export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
@@ -22,11 +17,7 @@ export function PropertiesSection({
 	) : null;
 }
 
-export function MethodsSection({
-	data,
-}: {
-	data: ReturnType<DocClass['toJSON']>['methods'] | ReturnType<DocInterface['toJSON']>['methods'];
-}) {
+export function MethodsSection({ data }: { data: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] }) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
