@@ -134,6 +134,8 @@ import {
   Webhook,
   WebhookClient,
   InteractionWebhook,
+  GuildAuditLogsActionType,
+  GuildAuditLogsTargetType,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1100,6 +1102,7 @@ expectAssignable<'death'>(ShardEvents.Death);
 expectAssignable<1>(Status.Connecting);
 
 declare const applicationCommandData: ApplicationCommandData;
+declare const applicationCommandOptionData: ApplicationCommandOptionData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
 {
@@ -1119,6 +1122,24 @@ declare const applicationCommandManager: ApplicationCommandManager;
   expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
     applicationCommandManager.set([applicationCommandData], '0'),
   );
+
+  // Test inference of choice values.
+  if ('choices' in applicationCommandOptionData) {
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.String) {
+      expectType<string>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<number>(applicationCommandOptionData.choices[0]!.value);
+    }
+
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Integer) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
+
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Number) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
+  }
 }
 
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
@@ -1533,7 +1554,7 @@ expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
 );
 
 expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: null }));
-expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs());
+expectType<Promise<GuildAuditLogs<AuditLogEvent>>>(guild.fetchAuditLogs());
 
 expectType<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
@@ -1542,10 +1563,10 @@ expectAssignable<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete',
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
 );
 
-expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 

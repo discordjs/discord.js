@@ -192,7 +192,10 @@ declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
     public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
-    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(
+      eventEmitter: Client,
+      eventName: K,
+    ): AsyncIterableIterator<ClientEvents[K]>;
   }
 }
 
@@ -1178,35 +1181,37 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
+export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-  public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = null,
+  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : 'All',
+    : GuildAuditLogsActionType,
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : 'Unknown',
+    : GuildAuditLogsTargetType,
+  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
   public static Targets: GuildAuditLogsTargets;
-  public action: TAction;
+  public action: TResolvedType;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
-  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
+  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
+    ? GuildAuditLogsEntryExtraField[TResolvedType]
+    : null;
   public id: Snowflake;
   public reason: string | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
@@ -3868,19 +3873,21 @@ export interface ApplicationCommandAutocompleteStringOptionData
   autocomplete: true;
 }
 
-export interface ApplicationCommandChoicesData extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandChoicesData<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandChoicesOption<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   min_value?: number;
@@ -3888,7 +3895,7 @@ export interface ApplicationCommandNumericOptionData extends ApplicationCommandC
   max_value?: number;
 }
 
-export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   min_length?: number;
@@ -3900,13 +3907,13 @@ export interface ApplicationCommandBooleanOptionData extends BaseApplicationComm
   type: ApplicationCommandOptionType.Boolean;
 }
 
-export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   maxValue?: number;
 }
 
-export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
@@ -3948,7 +3955,6 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
-  | ApplicationCommandChoicesData
   | ApplicationCommandAutocompleteNumericOptionData
   | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandNumericOptionData
@@ -3965,7 +3971,6 @@ export type ApplicationCommandOption =
   | ApplicationCommandAutocompleteStringOption
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
-  | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
   | ApplicationCommandRoleOption
@@ -3975,10 +3980,10 @@ export type ApplicationCommandOption =
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
-export interface ApplicationCommandOptionChoiceData {
+export interface ApplicationCommandOptionChoiceData<Value extends string | number = string | number> {
   name: string;
   nameLocalizations?: LocalizationMap;
-  value: string | number;
+  value: Value;
 }
 
 export interface ApplicationCommandPermissions {
@@ -4152,7 +4157,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -4733,7 +4738,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
-  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake; guild: Guild | { id: Snowflake } };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
