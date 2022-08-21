@@ -65,7 +65,7 @@ export interface RequestData {
 	 */
 	body?: BodyInit | unknown;
 	/**
-	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} to use for the request.
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} to use for the request.
 	 */
 	dispatcher?: Agent;
 	/**
@@ -174,7 +174,7 @@ export interface RequestManager {
  */
 export class RequestManager extends EventEmitter {
 	/**
-	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} for all requests
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
 	 */
 	public agent: Dispatcher | null = null;
@@ -342,7 +342,7 @@ export class RequestManager extends EventEmitter {
 	 * @param hash - The hash for the route
 	 * @param majorParameter - The major parameter for this handler
 	 *
-	 * @private
+	 * @internal
 	 */
 	private createHandler(hash: string, majorParameter: string) {
 		// Create the async request queue to handle requests
@@ -487,7 +487,7 @@ export class RequestManager extends EventEmitter {
 	 * @param endpoint - The raw endpoint to generalize
 	 * @param method - The HTTP method this endpoint is called without
 	 *
-	 * @private
+	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
 		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{16,19})/.exec(endpoint);

@@ -154,27 +154,27 @@ export type AudioPlayerState =
 export interface AudioPlayer extends EventEmitter {
 	/**
 	 * Emitted when there is an error emitted from the audio resource played by the audio player
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'error', listener: (error: AudioPlayerError) => void): this;
 	/**
 	 * Emitted debugging information about the audio player
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	/**
 	 * Emitted when the state of the audio player changes
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'stateChange', listener: (oldState: AudioPlayerState, newState: AudioPlayerState) => void): this;
 	/**
 	 * Emitted when the audio player is subscribed to a voice connection
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'subscribe' | 'unsubscribe', listener: (subscription: PlayerSubscription) => void): this;
 	/**
 	 * Emitted when the status of state changes to a specific status
-	 * @event
+	 * @eventProperty
 	 */
 	on<T extends AudioPlayerStatus>(
 		event: T,

@@ -10,13 +10,13 @@ export interface VoiceWebSocket extends EventEmitter {
 	/**
 	 * Debug event for VoiceWebSocket.
 	 *
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	/**
 	 * Packet event.
 	 *
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'packet', listener: (packet: any) => void): this;
 }

@@ -1,5 +1,5 @@
 import { DocContainer } from '../DocContainer';
-import { MethodsSection, PropertiesSection } from '../Sections';
+import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
 import type { ApiClassJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function Class({ data }: { data: ApiClassJSON }) {
@@ -15,6 +15,7 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			comment={data.comment}
 			methods={data.methods}
 		>
+			{data.constructor && <ConstructorSection data={data.constructor} />}
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />
 		</DocContainer>

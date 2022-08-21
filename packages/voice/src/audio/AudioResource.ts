@@ -7,7 +7,7 @@ import { noop } from '../util/util';
 /**
  * Options that are set when creating a new audio resource.
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export interface CreateAudioResourceOptions<T> {
 	/**
@@ -38,7 +38,7 @@ export interface CreateAudioResourceOptions<T> {
 /**
  * Represents an audio resource that can be played by an audio player.
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export class AudioResource<T = unknown> {
 	/**
@@ -204,7 +204,7 @@ export function inferStreamType(stream: Readable): {
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T>(
 	input: string | Readable,
@@ -228,7 +228,7 @@ export function createAudioResource<T>(
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T extends null | undefined>(
 	input: string | Readable,
@@ -248,7 +248,7 @@ export function createAudioResource<T extends null | undefined>(
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T>(
 	input: string | Readable,

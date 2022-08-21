@@ -15,6 +15,7 @@ import {
 	ApiPropertySignature,
 	ApiVariable,
 	ApiItem,
+	ApiConstructor,
 } from '@microsoft/api-extractor-model';
 import { generateTypeParamData } from './TypeParameterMixin';
 import { Visibility } from './Visibility';
@@ -61,8 +62,11 @@ export interface ApiTypeParameterJSON {
 	commentBlock: DocBlockJSON | null;
 }
 
-export interface ApiMethodSignatureJSON extends ApiItemJSON, ApiTypeParameterListJSON {
+export interface ApiParameterListJSON {
 	parameters: ApiParameterJSON[];
+}
+
+export interface ApiMethodSignatureJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
 	returnTypeTokens: TokenDocumentation[];
 	optional: boolean;
 	overloadIndex: number;
@@ -81,6 +85,7 @@ export interface ApiParameterJSON {
 }
 
 export interface ApiClassJSON extends ApiItemJSON, ApiTypeParameterListJSON {
+	constructor: ApiConstructorJSON | null;
 	properties: ApiPropertyItemJSON[];
 	methods: ApiMethodJSON[];
 	extendsTokens: TokenDocumentation[];
@@ -113,9 +118,12 @@ export interface ApiVariableJSON extends ApiItemJSON {
 }
 
 export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON {
-	parameters: ApiParameterJSON[];
 	returnTypeTokens: TokenDocumentation[];
 	overloadIndex: number;
+}
+
+export interface ApiConstructorJSON extends ApiItemJSON, ApiParameterListJSON {
+	protected: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -145,6 +153,8 @@ export class ApiNodeJSONEncoder {
 				return this.encodeEnum(model, node as ApiEnum);
 			case ApiItemKind.Variable:
 				return this.encodeVariable(model, node as ApiVariable);
+			case ApiItemKind.Constructor:
+				return this.encodeConstructor(model, node as ApiConstructor);
 			default:
 				throw new Error(`Unknown API item kind: ${node.kind}`);
 		}
@@ -239,6 +249,8 @@ export class ApiNodeJSONEncoder {
 		const methods: ApiMethodJSON[] = [];
 		const properties: ApiPropertyItemJSON[] = [];
 
+		let constructor: ApiConstructor | undefined;
+
 		for (const member of item.members) {
 			switch (member.kind) {
 				case ApiItemKind.Method:
@@ -246,6 +258,9 @@ export class ApiNodeJSONEncoder {
 					break;
 				case ApiItemKind.Property:
 					properties.push(this.encodeProperty(model, member as ApiPropertyItem));
+					break;
+				case ApiItemKind.Constructor:
+					constructor = member as ApiConstructor;
 					break;
 				default:
 					break;
@@ -255,6 +270,7 @@ export class ApiNodeJSONEncoder {
 		return {
 			...this.encodeItem(model, item),
 			...this.encodeTypeParameterList(model, item),
+			constructor: constructor ? this.encodeConstructor(model, constructor) : null,
 			extendsTokens: extendsExcerpt ? extendsExcerpt.spannedTokens.map((token) => genToken(model, token)) : [],
 			implementsTokens: item.implementsTypes.map((excerpt) =>
 				excerpt.excerpt.spannedTokens.map((token) => genToken(model, token)),
@@ -316,6 +332,14 @@ export class ApiNodeJSONEncoder {
 			...this.encodeItem(model, item),
 			typeTokens: item.variableTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
 			readonly: item.isReadonly,
+		};
+	}
+
+	public static encodeConstructor(model: ApiModel, item: ApiConstructor): ApiConstructorJSON {
+		return {
+			...this.encodeItem(model, item),
+			...this.encodeParameterList(model, item),
+			protected: item.isProtected,
 		};
 	}
 }

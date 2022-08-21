@@ -43,6 +43,7 @@
 		"@favware/npm-deprecate": "^1.0.5",
 		"@types/is-ci": "^3.0.0",
 		"conventional-changelog-cli": "^2.2.2",
+		"eslint-plugin-tsdoc": "^0.2.16",
 		"fast-glob": "^3.2.11",
 		"husky": "^8.0.1",
 		"is-ci": "^3.0.1",

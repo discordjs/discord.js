@@ -1791,6 +1791,7 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.5
     "@types/is-ci": ^3.0.0
     conventional-changelog-cli: ^2.2.2
+    eslint-plugin-tsdoc: ^0.2.16
     fast-glob: ^3.2.11
     husky: ^8.0.1
     is-ci: ^3.0.1
@@ -7922,6 +7923,16 @@ __metadata:
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
   checksum: 553fb9ece6beb7c14cf6f84670c786c8ac978c2918421994dcc4edd2385302022e5d5ac4a39fafdb35954e29cecddefed61758040c3c530cafcf651f674a9d51
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-tsdoc@npm:^0.2.16":
+  version: 0.2.16
+  resolution: "eslint-plugin-tsdoc@npm:0.2.16"
+  dependencies:
+    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/tsdoc-config": 0.16.1
+  checksum: 37ca88b060b90223aa938656d267eead4291d5859e790f95eb8271eb8f315c16010e500fac4ef535710350e36d7394cecb7e61fbb3635568066008e3425dcac7
   languageName: node
   linkType: hard
 

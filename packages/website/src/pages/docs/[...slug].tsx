@@ -4,7 +4,14 @@ import { join } from 'node:path';
 import { Box } from '@mantine/core';
 import { ApiFunction } from '@microsoft/api-extractor-model';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import type { ApiClassJSON, ApiEnumJSON, ApiFunctionJSON } from '~/DocModel/ApiNodeJSONEncoder';
+import type {
+	ApiClassJSON,
+	ApiEnumJSON,
+	ApiFunctionJSON,
+	ApiInterfaceJSON,
+	ApiTypeAliasJSON,
+	ApiVariableJSON,
+} from '~/DocModel/ApiNodeJSONEncoder';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -126,11 +133,11 @@ const member = (props: any) => {
 		case 'Function':
 			return <Function data={props as ApiFunctionJSON} />;
 		case 'Interface':
-			return <Interface data={props} />;
+			return <Interface data={props as ApiInterfaceJSON} />;
 		case 'TypeAlias':
-			return <TypeAlias data={props} />;
+			return <TypeAlias data={props as ApiTypeAliasJSON} />;
 		case 'Variable':
-			return <Variable data={props} />;
+			return <Variable data={props as ApiVariableJSON} />;
 		case 'Enum':
 			return <Enum data={props as ApiEnumJSON} />;
 		default:
