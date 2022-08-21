@@ -1,10 +1,6 @@
 {
 	"root": true,
 	"extends": "marine/prettier/node",
-	"plugins": ["eslint-plugin-tsdoc"],
-	"rules": {
-		"tsdoc/syntax": "warn"
-	},
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json"
 	},
