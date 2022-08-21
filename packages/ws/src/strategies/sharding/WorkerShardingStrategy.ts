@@ -73,6 +73,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		this.options = options;
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.spawn}
+	 */
 	public async spawn(shardIds: number[]) {
 		const shardsPerWorker = this.options.shardsPerWorker === 'all' ? shardIds.length : this.options.shardsPerWorker;
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
@@ -106,6 +109,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.connect}
+	 */
 	public async connect() {
 		const promises = [];
 
@@ -125,6 +131,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		await Promise.all(promises);
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.destroy}
+	 */
 	public async destroy(options: Omit<WebSocketShardDestroyOptions, 'recover'> = {}) {
 		const promises = [];
 
@@ -147,6 +156,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		await Promise.all(promises);
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.send}
+	 */
 	public send(shardId: number, data: GatewaySendPayload) {
 		const worker = this.#workerByShardId.get(shardId);
 		if (!worker) {
