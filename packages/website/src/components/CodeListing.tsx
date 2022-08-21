@@ -3,8 +3,7 @@ import type { ReactNode } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
-import type { InheritanceData } from '~/DocModel/DocMethod';
+import type { ApiItemJSON, InheritanceData } from '~/DocModel/ApiNodeJSONEncoder';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 

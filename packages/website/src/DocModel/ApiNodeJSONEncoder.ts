@@ -16,6 +16,7 @@ import {
 	ApiVariable,
 	ApiItem,
 	ApiConstructor,
+	ApiItemContainerMixin,
 } from '@microsoft/api-extractor-model';
 import { generateTypeParamData } from './TypeParameterMixin';
 import { Visibility } from './Visibility';
@@ -23,11 +24,28 @@ import { createCommentNode } from './comment';
 import type { DocBlockJSON } from './comment/CommentBlock';
 import type { AnyDocNodeJSON } from './comment/CommentNode';
 import { DocNodeContainerJSON, nodeContainer } from './comment/CommentNodeContainer';
-import { genParameter, genReference, genToken, resolveName, TokenDocumentation } from '~/util/parse.server';
+import {
+	generatePath,
+	genParameter,
+	genReference,
+	genToken,
+	resolveName,
+	TokenDocumentation,
+} from '~/util/parse.server';
 
 export interface ReferenceData {
 	name: string;
 	path: string;
+}
+
+export interface InheritanceData {
+	parentName: string;
+	path: string;
+	parentKey: string;
+}
+
+export interface ApiInheritableJSON {
+	inheritanceData: InheritanceData | null;
 }
 
 export interface ApiItemJSON {
@@ -44,7 +62,7 @@ export interface ApiItemJSON {
 	path: string[];
 }
 
-export interface ApiPropertyItemJSON extends ApiItemJSON {
+export interface ApiPropertyItemJSON extends ApiItemJSON, ApiInheritableJSON {
 	propertyTypeTokens: TokenDocumentation[];
 	readonly: boolean;
 	optional: boolean;
@@ -66,7 +84,11 @@ export interface ApiParameterListJSON {
 	parameters: ApiParameterJSON[];
 }
 
-export interface ApiMethodSignatureJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
+export interface ApiMethodSignatureJSON
+	extends ApiItemJSON,
+		ApiTypeParameterListJSON,
+		ApiParameterListJSON,
+		ApiInheritableJSON {
 	returnTypeTokens: TokenDocumentation[];
 	optional: boolean;
 	overloadIndex: number;
@@ -117,7 +139,7 @@ export interface ApiVariableJSON extends ApiItemJSON {
 	readonly: boolean;
 }
 
-export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON {
+export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
 	returnTypeTokens: TokenDocumentation[];
 	overloadIndex: number;
 }
@@ -140,21 +162,12 @@ export class ApiNodeJSONEncoder {
 				return this.encodeFunction(model, node as ApiFunction);
 			case ApiItemKind.Interface:
 				return this.encodeInterface(model, node as ApiInterface);
-			case ApiItemKind.Method:
-				return this.encodeMethod(model, node as ApiMethod);
-			case ApiItemKind.MethodSignature:
-				return this.encodeMethodSignature(model, node as ApiMethodSignature);
-			case ApiItemKind.PropertySignature:
-			case ApiItemKind.Property:
-				return this.encodeProperty(model, node as ApiPropertyItem);
 			case ApiItemKind.TypeAlias:
 				return this.encodeTypeAlias(model, node as ApiTypeAlias);
 			case ApiItemKind.Enum:
 				return this.encodeEnum(model, node as ApiEnum);
 			case ApiItemKind.Variable:
 				return this.encodeVariable(model, node as ApiVariable);
-			case ApiItemKind.Constructor:
-				return this.encodeConstructor(model, node as ApiConstructor);
 			default:
 				throw new Error(`Unknown API item kind: ${node.kind}`);
 		}
@@ -209,12 +222,30 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeProperty(model: ApiModel, item: ApiPropertyItem): ApiPropertyItemJSON {
+	public static encodeProperty(
+		model: ApiModel,
+		item: ApiPropertyItem,
+		parent: ApiItemContainerMixin,
+	): ApiPropertyItemJSON {
 		return {
 			...this.encodeItem(model, item),
+			...this.encodeInheritanceData(item, parent),
 			propertyTypeTokens: item.propertyTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
 			readonly: item.isReadonly,
 			optional: item.isOptional,
+		};
+	}
+
+	public static encodeInheritanceData(item: ApiDeclaredItem, parent: ApiItemContainerMixin): ApiInheritableJSON {
+		return {
+			inheritanceData:
+				item.parent && item.parent.containerKey !== parent.containerKey
+					? {
+							parentKey: item.parent.containerKey,
+							parentName: item.parent.displayName,
+							path: generatePath(item.parent.getHierarchy()),
+					  }
+					: null,
 		};
 	}
 
@@ -228,16 +259,21 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeMethodSignature(model: ApiModel, item: ApiMethodSignature): ApiMethodSignatureJSON {
+	public static encodeMethodSignature(
+		model: ApiModel,
+		item: ApiMethodSignature,
+		parent: ApiItemContainerMixin,
+	): ApiMethodSignatureJSON {
 		return {
 			...this.encodeFunction(model, item),
+			...this.encodeInheritanceData(item, parent),
 			optional: item.isOptional,
 		};
 	}
 
-	public static encodeMethod(model: ApiModel, item: ApiMethod): ApiMethodJSON {
+	public static encodeMethod(model: ApiModel, item: ApiMethod, parent: ApiItemContainerMixin): ApiMethodJSON {
 		return {
-			...this.encodeMethodSignature(model, item),
+			...this.encodeMethodSignature(model, item, parent),
 			static: item.isStatic,
 			visibility: item.isProtected ? Visibility.Protected : Visibility.Public,
 		};
@@ -251,13 +287,13 @@ export class ApiNodeJSONEncoder {
 
 		let constructor: ApiConstructor | undefined;
 
-		for (const member of item.members) {
+		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
 				case ApiItemKind.Method:
-					methods.push(this.encodeMethod(model, member as ApiMethod));
+					methods.push(this.encodeMethod(model, member as ApiMethod, item));
 					break;
 				case ApiItemKind.Property:
-					properties.push(this.encodeProperty(model, member as ApiPropertyItem));
+					properties.push(this.encodeProperty(model, member as ApiPropertyItem, item));
 					break;
 				case ApiItemKind.Constructor:
 					constructor = member as ApiConstructor;
@@ -303,13 +339,13 @@ export class ApiNodeJSONEncoder {
 		const methods: ApiMethodSignatureJSON[] = [];
 		const properties: ApiPropertyItemJSON[] = [];
 
-		for (const member of item.members) {
+		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
 				case ApiItemKind.MethodSignature:
-					methods.push(this.encodeMethodSignature(model, member as ApiMethodSignature));
+					methods.push(this.encodeMethodSignature(model, member as ApiMethodSignature, item));
 					break;
 				case ApiItemKind.PropertySignature:
-					properties.push(this.encodeProperty(model, member as ApiPropertySignature));
+					properties.push(this.encodeProperty(model, member as ApiPropertySignature, item));
 					break;
 				default:
 					break;
