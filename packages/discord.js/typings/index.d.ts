@@ -1728,23 +1728,23 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public createMessageComponentCollector<T extends MessageComponentType>(
     options?: MessageCollectorOptionsParams<T, InGuild>,
   ): InteractionCollector<MappedInteractionTypes<InGuild>[T]>;
-  public delete(): Promise<Message>;
-  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
+  public delete(): Promise<Message<InGuild>>;
+  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message<InGuild>>;
   public equals(message: Message, rawData: unknown): boolean;
-  public fetchReference(): Promise<Message>;
+  public fetchReference(): Promise<Message<InGuild>>;
   public fetchWebhook(): Promise<Webhook>;
-  public crosspost(): Promise<Message>;
-  public fetch(force?: boolean): Promise<Message>;
-  public pin(reason?: string): Promise<Message>;
+  public crosspost(): Promise<Message<InGuild>>;
+  public fetch(force?: boolean): Promise<Message<InGuild>>;
+  public pin(reason?: string): Promise<Message<InGuild>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-  public removeAttachments(): Promise<Message>;
-  public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
+  public removeAttachments(): Promise<Message<InGuild>>;
+  public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message<InGuild>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
-  public suppressEmbeds(suppress?: boolean): Promise<Message>;
+  public suppressEmbeds(suppress?: boolean): Promise<Message<InGuild>>;
   public toJSON(): unknown;
   public toString(): string;
-  public unpin(reason?: string): Promise<Message>;
+  public unpin(reason?: string): Promise<Message<InGuild>>;
   public inGuild(): this is Message<true> & this;
 }
 
