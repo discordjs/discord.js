@@ -19,7 +19,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 		if (!method || !url) {
 			throw new TypeError(
-				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMesage',
+				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMessage',
 			);
 		}
 
