@@ -165,22 +165,22 @@ export type VoiceConnectionState =
 export interface VoiceConnection extends EventEmitter {
 	/**
 	 * Emitted when there is an error emitted from the voice connection
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'error', listener: (error: Error) => void): this;
 	/**
 	 * Emitted debugging information about the voice connection
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	/**
 	 * Emitted when the state of the voice connection changes
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'stateChange', listener: (oldState: VoiceConnectionState, newState: VoiceConnectionState) => void): this;
 	/**
 	 * Emitted when the state of the voice connection changes to a specific status
-	 * @event
+	 * @eventProperty
 	 */
 	on<T extends VoiceConnectionStatus>(
 		event: T,

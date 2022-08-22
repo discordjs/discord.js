@@ -9,8 +9,7 @@ import { Section } from './Section';
 import { TableOfContentsItems } from './TableOfContentsItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { DocClass } from '~/DocModel/DocClass';
-import type { DocItem } from '~/DocModel/DocItem';
+import type { ApiClassJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import { generateIcon } from '~/util/icon';
@@ -20,13 +19,13 @@ export interface DocContainerProps {
 	name: string;
 	kind: string;
 	excerpt: string;
-	summary?: ReturnType<DocItem['toJSON']>['summary'];
+	summary?: ApiItemJSON['summary'];
 	children?: ReactNode;
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
 	typeParams?: TypeParameterData[];
 	comment?: AnyDocNodeJSON | null;
-	methods?: ReturnType<DocClass['toJSON']>['methods'] | null;
+	methods?: ApiClassJSON['methods'] | null;
 }
 
 export function DocContainer({

@@ -65,7 +65,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	}
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);

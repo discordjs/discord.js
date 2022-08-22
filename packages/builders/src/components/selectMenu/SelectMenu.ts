@@ -117,7 +117,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	}
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APISelectMenuComponent {
 		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);

@@ -1,8 +1,8 @@
 import { Stack } from '@mantine/core';
 import { CodeListing } from './CodeListing';
-import type { DocProperty } from '~/DocModel/DocProperty';
+import type { ApiPropertyItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export function PropertyList({ data }: { data: ReturnType<DocProperty['toJSON']>[] }) {
+export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
 	return (
 		<Stack>
 			{data.map((prop) => (

@@ -21,6 +21,9 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		this.throttler = new IdentifyThrottler(manager);
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.spawn}
+	 */
 	public async spawn(shardIds: number[]) {
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
 		for (const shardId of shardIds) {
@@ -34,6 +37,9 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		}
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.connect}
+	 */
 	public async connect() {
 		const promises = [];
 
@@ -45,6 +51,9 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		await Promise.all(promises);
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.destroy}
+	 */
 	public async destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
 		const promises = [];
 
@@ -56,6 +65,9 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		this.shards.clear();
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.send}
+	 */
 	public send(shardId: number, payload: GatewaySendPayload) {
 		const shard = this.shards.get(shardId);
 		if (!shard) throw new Error(`Shard ${shardId} not found`);
