@@ -26,7 +26,7 @@ import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type PropsWithChildren, useState } from 'react';
-import { VscChevronDown, VscPackage, VscVersions } from 'react-icons/vsc';
+import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
 import { SidebarItems } from './SidebarItems';
@@ -110,7 +110,6 @@ export function SidebarLayout({
 	);
 	const theme = useMantineTheme();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-	const dark = colorScheme === 'dark';
 
 	const [opened, setOpened] = useState(false);
 	const [openedLibPicker, setOpenedLibPicker] = useState(false);
@@ -239,14 +238,29 @@ export function SidebarLayout({
 								<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
 							</MediaQuery>
 						</Box>
-						<ActionIcon
-							variant="outline"
-							color={dark ? 'yellow' : 'blurple'}
-							onClick={() => toggleColorScheme()}
-							title="Toggle color scheme"
-						>
-							{dark ? <WiDaySunny size={20} /> : <WiNightClear size={20} />}
-						</ActionIcon>
+						<Group>
+							<Link href="https://github.com/discordjs/discord.js" passHref>
+								<ActionIcon
+									component="a"
+									target="_blank"
+									rel="noopener noreferrer"
+									variant="transparent"
+									color="dark"
+									title="GitHub repository"
+								>
+									<VscGithubInverted size={20} />
+								</ActionIcon>
+							</Link>
+							<ActionIcon
+								variant="subtle"
+								color={colorScheme === 'dark' ? 'yellow' : 'blue'}
+								onClick={() => toggleColorScheme()}
+								title="Toggle color scheme"
+								radius="xs"
+							>
+								{colorScheme === 'dark' ? <WiDaySunny size={30} /> : <WiNightClear size={30} />}
+							</ActionIcon>
+						</Group>
 					</Box>
 				</Header>
 			}
@@ -267,6 +281,7 @@ export function SidebarLayout({
 				</Box>
 				<Box sx={{ height: 200 }}></Box>
 				<Box
+					component="footer"
 					sx={(theme) => ({
 						position: 'fixed',
 						bottom: 0,
