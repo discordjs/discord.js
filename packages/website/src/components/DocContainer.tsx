@@ -53,7 +53,7 @@ export function DocContainer({
 					</Group>
 				</Title>
 
-				<Section title="Summary" icon={<VscListSelection />} padded dense={matches}>
+				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 					{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
 				</Section>
 
@@ -97,7 +97,13 @@ export function DocContainer({
 
 				<Stack>
 					{typeParams?.length ? (
-						<Section title="Type Parameters" icon={<VscSymbolParameter />} padded dense={matches} defaultClosed>
+						<Section
+							title="Type Parameters"
+							icon={<VscSymbolParameter size={20} />}
+							padded
+							dense={matches}
+							defaultClosed
+						>
 							<TypeParamTable data={typeParams} />
 						</Section>
 					) : null}

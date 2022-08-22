@@ -8,7 +8,6 @@ const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
 		width: '100%',
 		padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-		fontSize: theme.fontSizes.sm,
 
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
@@ -45,11 +44,7 @@ export function Section({
 			<UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
 				<Group position="apart">
 					<Group>
-						{icon ? (
-							<ThemeIcon variant="outline" size={30}>
-								{icon}
-							</ThemeIcon>
-						) : null}
+						{icon ? <ThemeIcon size={30}>{icon}</ThemeIcon> : null}
 						<Text weight={600} size="md">
 							{title}
 						</Text>

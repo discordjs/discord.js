@@ -1,5 +1,5 @@
-import { createStyles, Group, Text, Box, Stack } from '@mantine/core';
-import { VscListSelection } from 'react-icons/vsc';
+import { createStyles, Group, Text, Box, Stack, ThemeIcon } from '@mantine/core';
+import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 const useStyles = createStyles((theme) => ({
@@ -13,13 +13,14 @@ const useStyles = createStyles((theme) => ({
 		fontSize: theme.fontSizes.sm,
 		padding: theme.spacing.xs,
 		paddingLeft: theme.spacing.md,
-		marginLeft: 8,
+		marginLeft: 14,
 		borderTopRightRadius: theme.radius.sm,
 		borderBottomRightRadius: theme.radius.sm,
 		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
 
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
+			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 		},
 	},
 }));
@@ -64,20 +65,38 @@ export function TableOfContentItems({
 
 	return (
 		<Box>
-			<Group mb="md">
-				<VscListSelection size={20} />
-				<Text>Table of content</Text>
+			<Group mb="md" ml={2}>
+				<VscListSelection size={25} />
+				<Text>Table of contents</Text>
 			</Group>
-			<Stack>
+			<Stack spacing={0}>
 				{propertyItems.length ? (
 					<Box>
-						<Text>Properties</Text>
+						<Group>
+							<ThemeIcon size={30}>
+								<VscSymbolProperty size={20} />
+							</ThemeIcon>
+							<Box p="sm" pl={0}>
+								<Text weight={600} size="md">
+									Properties
+								</Text>
+							</Box>
+						</Group>
 						{propertyItems}
 					</Box>
 				) : null}
 				{methodItems.length ? (
 					<Box>
-						<Text>Methods</Text>
+						<Group spacing="xs">
+							<ThemeIcon size={30}>
+								<VscSymbolMethod size={20} />
+							</ThemeIcon>
+							<Box p="sm" pl={0}>
+								<Text weight={600} size="md">
+									Methods
+								</Text>
+							</Box>
+						</Group>
 						{methodItems}
 					</Box>
 				) : null}

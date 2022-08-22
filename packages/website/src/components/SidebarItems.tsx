@@ -51,17 +51,17 @@ function groupMembers(members: Members): GroupedMembers {
 function resolveIcon(item: keyof GroupedMembers) {
 	switch (item) {
 		case 'Classes':
-			return <VscSymbolClass />;
+			return <VscSymbolClass size={20} />;
 		case 'Enums':
-			return <VscSymbolEnum />;
+			return <VscSymbolEnum size={20} />;
 		case 'Interfaces':
-			return <VscSymbolInterface />;
+			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField />;
+			return <VscSymbolField size={20} />;
 		case 'Variables':
-			return <VscSymbolVariable />;
+			return <VscSymbolVariable size={20} />;
 		case 'Functions':
-			return <VscSymbolMethod />;
+			return <VscSymbolMethod size={20} />;
 	}
 }
 

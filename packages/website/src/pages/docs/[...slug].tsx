@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-throw-literal */
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Box } from '@mantine/core';
 import { ApiFunction } from '@microsoft/api-extractor-model';
+import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import type {
 	ApiClassJSON,
@@ -150,7 +150,16 @@ export default function Slug(props: Partial<SidebarLayoutProps & { error?: strin
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
 		<MemberProvider member={props.data?.member}>
-			<SidebarLayout {...props}>{props.data?.member ? member(props.data.member) : null}</SidebarLayout>
+			<SidebarLayout {...props}>
+				{props.data?.member ? (
+					<>
+						<Head>
+							<title key="title">discord.js | {props.data.member.name}</title>
+						</Head>
+						{member(props.data.member)}
+					</>
+				) : null}
+			</SidebarLayout>
 		</MemberProvider>
 	);
 }

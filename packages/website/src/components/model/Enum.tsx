@@ -11,7 +11,7 @@ export function Enum({ data }: { data: ApiEnumJSON }) {
 
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Section title="Members" icon={<VscSymbolEnumMember />} padded dense={matches}>
+			<Section title="Members" icon={<VscSymbolEnumMember size={20} />} padded dense={matches}>
 				<Stack>
 					{data.members.map((member) => (
 						<CodeListing

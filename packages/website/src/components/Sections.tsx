@@ -14,7 +14,7 @@ export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] |
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
-		<Section title="Properties" icon={<VscSymbolProperty />} padded dense={matches}>
+		<Section title="Properties" icon={<VscSymbolProperty size={20} />} padded dense={matches}>
 			<PropertyList data={data} />
 		</Section>
 	) : null;
@@ -24,7 +24,7 @@ export function MethodsSection({ data }: { data: ApiClassJSON['methods'] | ApiIn
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
-		<Section title="Methods" icon={<VscSymbolMethod />} padded dense={matches}>
+		<Section title="Methods" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
 			<MethodList data={data} />
 		</Section>
 	) : null;
@@ -34,7 +34,7 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return data.length ? (
-		<Section title="Parameters" icon={<VscSymbolConstant />} padded dense={matches}>
+		<Section title="Parameters" icon={<VscSymbolConstant size={20} />} padded dense={matches}>
 			<ParameterTable data={data} />
 		</Section>
 	) : null;
@@ -53,7 +53,7 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 		}, '')})`;
 
 	return data.parameters.length ? (
-		<Section title="Constructor" icon={<VscSymbolMethod />} padded dense={matches}>
+		<Section title="Constructor" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
 			<Stack id={`${data.name}`} className="scroll-mt-30" spacing="xs">
 				<Group>
 					<Stack>

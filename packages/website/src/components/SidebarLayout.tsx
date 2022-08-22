@@ -130,8 +130,8 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 											<UnstyledButton className={classes.control}>
 												<Group position="apart">
 													<Group>
-														<ThemeIcon variant="outline" size={30}>
-															<VscPackage />
+														<ThemeIcon size={30}>
+															<VscPackage size={20} />
 														</ThemeIcon>
 														<Text weight="600" size="md">
 															{packageName}
