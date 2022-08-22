@@ -123,14 +123,14 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ github.event.inputs.ref_type == 'tag' || env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ env.BRANCH_OR_TAG == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
           tag: ${{ env.BRANCH_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ (github.event.inputs.ref_type == 'tag' || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ env.BRANCH_OR_TAG == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
@@ -142,7 +142,7 @@ jobs:
           fi
 
       - name: Move docs to correct directory
-        if: ${{ github.event.inputs.ref_type == 'branch' || env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ env.BRANCH_OR_TAG == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
