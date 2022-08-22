@@ -44,8 +44,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/proxy": "^1.0.0",
-		"@discordjs/rest": "^1.0.0",
+		"@discordjs/proxy": "^1.1.0",
+		"@discordjs/rest": "^1.1.0",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
