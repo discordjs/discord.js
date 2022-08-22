@@ -9,7 +9,7 @@ import { Section } from './Section';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiClassJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
+import type { ApiClassJSON, ApiInterfaceJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import { generateIcon } from '~/util/icon';
@@ -25,8 +25,8 @@ export interface DocContainerProps {
 	implementsTokens?: TokenDocumentation[][];
 	typeParams?: TypeParameterData[];
 	comment?: AnyDocNodeJSON | null;
-	methods?: ApiClassJSON['methods'] | null;
-	properties?: ApiClassJSON['properties'] | null;
+	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
+	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
 }
 
 export function DocContainer({
@@ -110,7 +110,7 @@ export function DocContainer({
 					<Stack>{children}</Stack>
 				</Stack>
 			</Stack>
-			{kind === 'Class' && (methods?.length || properties?.length) ? (
+			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
 					<Aside
 						sx={{ backgroundColor: 'transparent' }}

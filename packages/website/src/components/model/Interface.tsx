@@ -10,6 +10,8 @@ export function Interface({ data }: { data: ApiInterfaceJSON }) {
 			excerpt={data.excerpt}
 			summary={data.summary}
 			typeParams={data.typeParameters}
+			methods={data.methods}
+			properties={data.properties}
 		>
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />
