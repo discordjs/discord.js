@@ -16,9 +16,13 @@ export function findMemberByKey(model: ApiModel, packageName: string, containerK
 export function findMember(
 	model: ApiModel,
 	packageName: string,
-	memberName: string,
+	memberName: string | undefined,
 	version: string,
 ): ReturnType<typeof ApiNodeJSONEncoder['encode']> | undefined {
+	if (!memberName) {
+		return undefined;
+	}
+
 	const pkg = findPackage(model, packageName)!;
 	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
 

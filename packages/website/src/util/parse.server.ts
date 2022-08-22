@@ -212,7 +212,7 @@ export function genParameter(model: ApiModel, param: Parameter, version: string)
 	};
 }
 
-export function getMembers(pkg: ApiPackage, version = 'main') {
+export function getMembers(pkg: ApiPackage, version: string) {
 	return pkg.members[0]!.members.map((member) => ({
 		name: member.displayName,
 		kind: member.kind as string,

@@ -69,7 +69,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 							...versions.map((version) => ({ params: { slug: ['packages', packageName, version] } })),
 							...pkgs
 								.map((pkg, idx) =>
-									getMembers(pkg)
+									getMembers(pkg, versions[idx]!)
 										// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
 										// causing next.js export to error
 										.filter((member) => member.name !== 'RESTEvents')
@@ -94,7 +94,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 					return [
 						{ params: { slug: ['packages', packageName, 'main'] } },
-						...getMembers(pkg!)
+						...getMembers(pkg!, 'main')
 							// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
 							// causing next.js export to error
 							.filter((member) => member.name !== 'RESTEvents')
@@ -124,9 +124,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const [, packageName = 'builders', branchName = 'main', member = 'ActionRowBuilder'] = params!.slug as string[];
+	const [, packageName = 'builders', branchName = 'main', member] = params!.slug as string[];
 
-	const [memberName, overloadIndex] = member.split(':') as [string, string | undefined];
+	const [memberName, overloadIndex] = member?.split(':') ?? [];
 
 	try {
 		const readme = await readFile(join(__dirname, '..', '..', '..', '..', '..', packageName, 'README.md'), 'utf-8');
