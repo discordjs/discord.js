@@ -40,11 +40,11 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 	) : null;
 }
 
-export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
+export function ConstructorSection({ data, name }: { data: ApiConstructorJSON; name: string }) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	const getShorthandName = () =>
-		`constructor(${data.parameters.reduce((prev, cur, index) => {
+		`new ${name}(${data.parameters.reduce((prev, cur, index) => {
 			if (index === 0) {
 				return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 			}

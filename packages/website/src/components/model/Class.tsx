@@ -16,7 +16,7 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			methods={data.methods}
 			properties={data.properties}
 		>
-			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
+			{data.constructor ? <ConstructorSection data={data.constructor} name={data.name} /> : null}
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />
 		</DocContainer>
