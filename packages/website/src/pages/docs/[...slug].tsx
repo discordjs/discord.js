@@ -174,6 +174,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
 				},
+				key: `${memberName ?? 'index'}-${branchName}`,
 				revalidate: 3600,
 			},
 		};
