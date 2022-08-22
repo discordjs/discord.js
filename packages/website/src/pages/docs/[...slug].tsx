@@ -2,13 +2,21 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Box } from '@mantine/core';
 import { ApiFunction, ApiPackage } from '@microsoft/api-extractor-model';
+import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeIgnore from 'rehype-ignore';
+import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
+import remarkGfm from 'remark-gfm';
 import type {
 	ApiClassJSON,
 	ApiEnumJSON,
 	ApiFunctionJSON,
 	ApiInterfaceJSON,
+	ApiItemJSON,
 	ApiTypeAliasJSON,
 	ApiVariableJSON,
 } from '~/DocModel/ApiNodeJSONEncoder';
@@ -121,6 +129,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [memberName, overloadIndex] = member.split(':') as [string, string | undefined];
 
 	try {
+		const readme = await readFile(join(__dirname, '..', '..', '..', '..', '..', packageName, 'README.md'), 'utf-8');
+
+		const mdxSource = await serialize(readme, {
+			mdxOptions: {
+				remarkPlugins: [remarkGfm],
+				remarkRehypeOptions: { allowDangerousHtml: true },
+				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug, [rehypeHighlight, { ignoreMissing: true }]],
+				format: 'md',
+			},
+		});
+
 		let data;
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 			const res = await readFile(
@@ -150,6 +169,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 					members: pkg ? getMembers(pkg, branchName) : [],
 					member:
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
+					source: mdxSource,
 				},
 			},
 		};
@@ -162,9 +182,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 };
 
-const member = (props: any) => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-	switch (props.kind) {
+const member = (props?: ApiItemJSON | undefined) => {
+	switch (props?.kind) {
 		case 'Class':
 			return <Class data={props as ApiClassJSON} />;
 		case 'Function':
@@ -195,6 +214,10 @@ export default function Slug(props: Partial<SidebarLayoutProps & { error?: strin
 						</Head>
 						{member(props.data.member)}
 					</>
+				) : props.data?.source ? (
+					<Box px="xl">
+						<MDXRemote {...props.data.source} />
+					</Box>
 				) : null}
 			</SidebarLayout>
 		</MemberProvider>

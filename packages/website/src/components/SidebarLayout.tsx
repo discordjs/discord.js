@@ -19,6 +19,7 @@ import {
 	useMantineColorScheme,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type PropsWithChildren, useState } from 'react';
@@ -34,6 +35,7 @@ export interface SidebarLayoutProps {
 	data: {
 		members: ReturnType<typeof getMembers>;
 		member: ReturnType<typeof findMember>;
+		source: MDXRemoteSerializeResult;
 	};
 
 	selectedMember?: ApiItemJSON | undefined;
@@ -161,7 +163,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 			header={
 				<Header height={70} p="md">
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
-						<div>
+						<Box>
 							<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
 								<Burger
 									opened={opened}
@@ -175,7 +177,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 							<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 								<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
 							</MediaQuery>
-						</div>
+						</Box>
 						<ActionIcon
 							variant="outline"
 							color={dark ? 'yellow' : 'blurple'}

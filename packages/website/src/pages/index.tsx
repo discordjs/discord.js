@@ -1,4 +1,4 @@
-import { createStyles, Container, Title, Button, Group, Text, Center } from '@mantine/core';
+import { createStyles, Container, Title, Button, Group, Text, Center, Box } from '@mantine/core';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import codeSample from '../assets/code-sample.png';
@@ -67,50 +67,49 @@ const useStyles = createStyles((theme) => ({
 
 export default function IndexRoute() {
 	const { classes } = useStyles();
-	return (
-		<div>
-			<Container size="lg">
-				<div className={classes.inner}>
-					<div className={classes.content}>
-						<Title className={classes.title}>
-							The <span className={classes.highlight}>most popular</span> way to build Discord <br /> bots.
-						</Title>
-						<Text color="dimmed" mt="md">
-							discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It
-							takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s
-							code significantly tidier and easier to comprehend.
-						</Text>
 
-						<Group mt={30}>
-							<Link href="/docs" passHref>
-								<Button component="a" radius="xl" size="md" className={classes.control}>
-									Docs
-								</Button>
-							</Link>
-							<Link href="https://discordjs.guide" passHref>
-								<Button component="a" variant="default" radius="xl" size="md" className={classes.control}>
-									Guide
-								</Button>
-							</Link>
-						</Group>
-					</div>
-					<Image src={codeSample} className={classes.image} />
-				</div>
-				<Center>
-					<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
-						<a title="Vercel">
-							<Image
-								src="/powered-by-vercel.svg"
-								alt="Vercel"
-								width={0}
-								height={0}
-								style={{ height: '100%', width: '100%', maxWidth: 250 }}
-								className={classes.vercel}
-							/>
-						</a>
-					</Link>
-				</Center>
-			</Container>
-		</div>
+	return (
+		<Container size="lg">
+			<Box className={classes.inner}>
+				<Box className={classes.content}>
+					<Title className={classes.title}>
+						The <span className={classes.highlight}>most popular</span> way to build Discord <br /> bots.
+					</Title>
+					<Text color="dimmed" mt="md">
+						discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It
+						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
+						significantly tidier and easier to comprehend.
+					</Text>
+
+					<Group mt={30}>
+						<Link href="/docs" passHref>
+							<Button component="a" radius="xl" size="md" className={classes.control}>
+								Docs
+							</Button>
+						</Link>
+						<Link href="https://discordjs.guide" passHref>
+							<Button component="a" variant="default" radius="xl" size="md" className={classes.control}>
+								Guide
+							</Button>
+						</Link>
+					</Group>
+				</Box>
+				<Image src={codeSample} className={classes.image} />
+			</Box>
+			<Center>
+				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
+					<a title="Vercel">
+						<Image
+							src="/powered-by-vercel.svg"
+							alt="Vercel"
+							width={0}
+							height={0}
+							style={{ height: '100%', width: '100%', maxWidth: 250 }}
+							className={classes.vercel}
+						/>
+					</a>
+				</Link>
+			</Center>
+		</Container>
 	);
 }
