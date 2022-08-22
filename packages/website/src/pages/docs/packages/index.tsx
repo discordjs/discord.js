@@ -1,4 +1,4 @@
-import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack } from '@mantine/core';
+import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Title } from '@mantine/core';
 import Link from 'next/link';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 
@@ -21,13 +21,16 @@ export default function PackagesRoute() {
 	return (
 		<Container pt={96} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
+				<Title order={2} ml="xs">
+					Select a package:
+				</Title>
 				{packages.map((pkg) => (
-					<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref>
+					<Link key={pkg} href={`/docs/packages/${pkg}`} passHref>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>
 									<ThemeIcon size={30}>
-										<VscPackage />
+										<VscPackage size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">
 										{pkg}

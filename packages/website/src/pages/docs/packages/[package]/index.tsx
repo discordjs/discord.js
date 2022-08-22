@@ -1,4 +1,4 @@
-import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Box } from '@mantine/core';
+import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Box, Title } from '@mantine/core';
 import Link from 'next/link';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
@@ -66,13 +66,16 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	) : (
 		<Container pt={96} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
+				<Title order={2} ml="xs">
+					Select a version:
+				</Title>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>
 									<ThemeIcon size={30}>
-										<VscPackage />
+										<VscPackage size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">
 										{version}
