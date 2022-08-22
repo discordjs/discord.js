@@ -158,11 +158,6 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 					) : null}
 				</Navbar>
 			}
-			// footer={
-			// 	<Footer height={60} p="md">
-			// 		Application footer
-			// 	</Footer>
-			// }
 			header={
 				<Header height={70} p="md">
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
@@ -197,11 +192,11 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 				<Box
 					sx={{
 						position: 'relative',
-						minHeight: 'calc(100vh - 150px)',
+						minHeight: 'calc(100vh - 50px)',
 						zIndex: 1,
 						background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
 					}}
-					p="sm"
+					p="lg"
 					pb={80}
 				>
 					{children}
@@ -219,7 +214,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 						paddingRight: 324,
 
 						[theme.fn.smallerThan('lg')]: {
-							paddingRight: 14,
+							paddingRight: 24,
 						},
 
 						[theme.fn.smallerThan('md')]: {

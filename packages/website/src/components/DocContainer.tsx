@@ -132,15 +132,7 @@ export function DocContainer({
 			</Stack>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-					<Aside
-						sx={(theme) => ({
-							zIndex: 1,
-							background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
-						})}
-						hiddenBreakpoint="lg"
-						width={{ lg: 300 }}
-						withBorder={false}
-					>
+					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
 						<ScrollArea p="xs">
 							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
 						</ScrollArea>
