@@ -13,6 +13,7 @@ export function genToken(
 	model: ApiModel,
 	ref: DocDeclarationReference,
 	context: ApiItem | null,
+	version: string,
 ): LinkTagCodeLink | null {
 	const item = model.resolveDeclarationReference(ref, context ?? undefined).resolvedApiItem ?? null;
 
@@ -23,7 +24,7 @@ export function genToken(
 	return {
 		name: resolveName(item),
 		kind: item.kind,
-		path: generatePath(item.getHierarchy()),
+		path: generatePath(item.getHierarchy(), version),
 	};
 }
 
@@ -33,14 +34,19 @@ export interface LinkTagCodeLink {
 	path: string;
 }
 
-export function linkTagNode(linkNode: DocLinkTag, model: ApiModel, parentItem?: ApiItem): DocLinkTagJSON {
+export function linkTagNode(
+	linkNode: DocLinkTag,
+	model: ApiModel,
+	version: string,
+	parentItem?: ApiItem,
+): DocLinkTagJSON {
 	// If we weren't provided a parent object, fallback to the package entrypoint.
 	const packageEntryPoint = linkNode.codeDestination?.importPath
 		? model.getAssociatedPackage()?.findEntryPointsByPath(linkNode.codeDestination.importPath)[0]
 		: null;
 
 	const codeDestination = linkNode.codeDestination
-		? genToken(model, linkNode.codeDestination, parentItem ?? packageEntryPoint ?? null)
+		? genToken(model, linkNode.codeDestination, parentItem ?? packageEntryPoint ?? null, version)
 		: null;
 	const text = linkNode.linkText ?? null;
 	const urlDestination = linkNode.urlDestination ?? null;

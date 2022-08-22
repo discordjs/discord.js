@@ -2,7 +2,7 @@ import type { ApiEntryPoint, ApiModel } from '@microsoft/api-extractor-model';
 import { findPackage } from './parse.server';
 import { ApiNodeJSONEncoder } from '~/DocModel/ApiNodeJSONEncoder';
 
-export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
+export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string, version: string) {
 	const pkg = findPackage(model, packageName)!;
 	const member = (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
 
@@ -10,13 +10,14 @@ export function findMemberByKey(model: ApiModel, packageName: string, containerK
 		return undefined;
 	}
 
-	return ApiNodeJSONEncoder.encode(model, member);
+	return ApiNodeJSONEncoder.encode(model, member, version);
 }
 
 export function findMember(
 	model: ApiModel,
 	packageName: string,
 	memberName: string,
+	version: string,
 ): ReturnType<typeof ApiNodeJSONEncoder['encode']> | undefined {
 	const pkg = findPackage(model, packageName)!;
 	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
@@ -25,5 +26,5 @@ export function findMember(
 		return undefined;
 	}
 
-	return ApiNodeJSONEncoder.encode(model, member);
+	return ApiNodeJSONEncoder.encode(model, member, version);
 }

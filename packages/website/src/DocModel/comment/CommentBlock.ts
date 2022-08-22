@@ -9,10 +9,10 @@ export interface DocBlockJSON extends DocNodeJSON {
 	tag: DocBlockTagJSON;
 }
 
-export function block(block: DocBlock, model: ApiModel, parentItem?: ApiItem) {
+export function block(block: DocBlock, model: ApiModel, version: string, parentItem?: ApiItem) {
 	return {
 		...node(block),
-		content: block.content.nodes.map((node) => createCommentNode(node, model, parentItem)),
+		content: block.content.nodes.map((node) => createCommentNode(node, model, version, parentItem)),
 		tag: blockTag(block.blockTag),
 	};
 }

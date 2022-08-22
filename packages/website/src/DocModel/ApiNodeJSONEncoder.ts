@@ -150,30 +150,30 @@ export interface ApiConstructorJSON extends ApiItemJSON, ApiParameterListJSON {
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ApiNodeJSONEncoder {
-	public static encode(model: ApiModel, node: ApiItem) {
+	public static encode(model: ApiModel, node: ApiItem, version: string) {
 		if (!(node instanceof ApiDeclaredItem)) {
 			throw new Error(`Cannot serialize node of type ${node.kind}`);
 		}
 
 		switch (node.kind) {
 			case ApiItemKind.Class:
-				return this.encodeClass(model, node as ApiClass);
+				return this.encodeClass(model, node as ApiClass, version);
 			case ApiItemKind.Function:
-				return this.encodeFunction(model, node as ApiFunction);
+				return this.encodeFunction(model, node as ApiFunction, version);
 			case ApiItemKind.Interface:
-				return this.encodeInterface(model, node as ApiInterface);
+				return this.encodeInterface(model, node as ApiInterface, version);
 			case ApiItemKind.TypeAlias:
-				return this.encodeTypeAlias(model, node as ApiTypeAlias);
+				return this.encodeTypeAlias(model, node as ApiTypeAlias, version);
 			case ApiItemKind.Enum:
-				return this.encodeEnum(model, node as ApiEnum);
+				return this.encodeEnum(model, node as ApiEnum, version);
 			case ApiItemKind.Variable:
-				return this.encodeVariable(model, node as ApiVariable);
+				return this.encodeVariable(model, node as ApiVariable, version);
 			default:
 				throw new Error(`Unknown API item kind: ${node.kind}`);
 		}
 	}
 
-	public static encodeItem(model: ApiModel, item: ApiDeclaredItem): ApiItemJSON {
+	public static encodeItem(model: ApiModel, item: ApiDeclaredItem, version: string): ApiItemJSON {
 		const path = [];
 		for (const _item of item.getHierarchy()) {
 			switch (_item.kind) {
@@ -189,36 +189,41 @@ export class ApiNodeJSONEncoder {
 		return {
 			kind: item.kind,
 			name: resolveName(item),
-			referenceData: genReference(item),
+			referenceData: genReference(item, version),
 			excerpt: item.excerpt.text,
-			excerptTokens: item.excerpt.spannedTokens.map((token) => genToken(model, token)),
+			excerptTokens: item.excerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			remarks: item.tsdocComment?.remarksBlock
-				? (createCommentNode(item.tsdocComment.remarksBlock, model, item.parent) as DocNodeContainerJSON)
+				? (createCommentNode(item.tsdocComment.remarksBlock, model, version, item.parent) as DocNodeContainerJSON)
 				: null,
 			summary: item.tsdocComment?.summarySection
-				? (createCommentNode(item.tsdocComment.summarySection, model, item.parent) as DocNodeContainerJSON)
+				? (createCommentNode(item.tsdocComment.summarySection, model, version, item.parent) as DocNodeContainerJSON)
 				: null,
 			deprecated: item.tsdocComment?.deprecatedBlock
-				? (createCommentNode(item.tsdocComment.deprecatedBlock, model, item.parent) as DocNodeContainerJSON)
+				? (createCommentNode(item.tsdocComment.deprecatedBlock, model, version, item.parent) as DocNodeContainerJSON)
 				: null,
 			path,
 			containerKey: item.containerKey,
-			comment: item.tsdocComment ? createCommentNode(item.tsdocComment, model, item.parent) : null,
+			comment: item.tsdocComment ? createCommentNode(item.tsdocComment, model, version, item.parent) : null,
 		};
 	}
 
 	public static encodeParameterList(
 		model: ApiModel,
 		item: ApiParameterListMixin & ApiDeclaredItem,
+		version: string,
 	): { parameters: ApiParameterJSON[] } {
 		return {
-			parameters: item.parameters.map((param) => genParameter(model, param)),
+			parameters: item.parameters.map((param) => genParameter(model, param, version)),
 		};
 	}
 
-	public static encodeTypeParameterList(model: ApiModel, item: ApiTypeParameterListMixin & ApiDeclaredItem) {
+	public static encodeTypeParameterList(
+		model: ApiModel,
+		item: ApiTypeParameterListMixin & ApiDeclaredItem,
+		version: string,
+	) {
 		return {
-			typeParameters: item.typeParameters.map((param) => generateTypeParamData(model, param, item.parent)),
+			typeParameters: item.typeParameters.map((param) => generateTypeParamData(model, param, version, item.parent)),
 		};
 	}
 
@@ -226,35 +231,40 @@ export class ApiNodeJSONEncoder {
 		model: ApiModel,
 		item: ApiPropertyItem,
 		parent: ApiItemContainerMixin,
+		version: string,
 	): ApiPropertyItemJSON {
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeInheritanceData(item, parent),
-			propertyTypeTokens: item.propertyTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
+			...this.encodeItem(model, item, version),
+			...this.encodeInheritanceData(item, parent, version),
+			propertyTypeTokens: item.propertyTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			readonly: item.isReadonly,
 			optional: item.isOptional,
 		};
 	}
 
-	public static encodeInheritanceData(item: ApiDeclaredItem, parent: ApiItemContainerMixin): ApiInheritableJSON {
+	public static encodeInheritanceData(
+		item: ApiDeclaredItem,
+		parent: ApiItemContainerMixin,
+		version: string,
+	): ApiInheritableJSON {
 		return {
 			inheritanceData:
 				item.parent && item.parent.containerKey !== parent.containerKey
 					? {
 							parentKey: item.parent.containerKey,
 							parentName: item.parent.displayName,
-							path: generatePath(item.parent.getHierarchy()),
+							path: generatePath(item.parent.getHierarchy(), version),
 					  }
 					: null,
 		};
 	}
 
-	public static encodeFunction(model: ApiModel, item: ApiFunction) {
+	public static encodeFunction(model: ApiModel, item: ApiFunction, version: string) {
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeParameterList(model, item),
-			...this.encodeTypeParameterList(model, item),
-			returnTypeTokens: item.returnTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
+			...this.encodeItem(model, item, version),
+			...this.encodeParameterList(model, item, version),
+			...this.encodeTypeParameterList(model, item, version),
+			returnTypeTokens: item.returnTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			overloadIndex: item.overloadIndex,
 		};
 	}
@@ -263,23 +273,29 @@ export class ApiNodeJSONEncoder {
 		model: ApiModel,
 		item: ApiMethodSignature,
 		parent: ApiItemContainerMixin,
+		version: string,
 	): ApiMethodSignatureJSON {
 		return {
-			...this.encodeFunction(model, item),
-			...this.encodeInheritanceData(item, parent),
+			...this.encodeFunction(model, item, version),
+			...this.encodeInheritanceData(item, parent, version),
 			optional: item.isOptional,
 		};
 	}
 
-	public static encodeMethod(model: ApiModel, item: ApiMethod, parent: ApiItemContainerMixin): ApiMethodJSON {
+	public static encodeMethod(
+		model: ApiModel,
+		item: ApiMethod,
+		parent: ApiItemContainerMixin,
+		version: string,
+	): ApiMethodJSON {
 		return {
-			...this.encodeMethodSignature(model, item, parent),
+			...this.encodeMethodSignature(model, item, parent, version),
 			static: item.isStatic,
 			visibility: item.isProtected ? Visibility.Protected : Visibility.Public,
 		};
 	}
 
-	public static encodeClass(model: ApiModel, item: ApiClass): ApiClassJSON {
+	public static encodeClass(model: ApiModel, item: ApiClass, version: string): ApiClassJSON {
 		const extendsExcerpt = item.extendsType?.excerpt;
 
 		const methods: ApiMethodJSON[] = [];
@@ -290,10 +306,10 @@ export class ApiNodeJSONEncoder {
 		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
 				case ApiItemKind.Method:
-					methods.push(this.encodeMethod(model, member as ApiMethod, item));
+					methods.push(this.encodeMethod(model, member as ApiMethod, item, version));
 					break;
 				case ApiItemKind.Property:
-					properties.push(this.encodeProperty(model, member as ApiPropertyItem, item));
+					properties.push(this.encodeProperty(model, member as ApiPropertyItem, item, version));
 					break;
 				case ApiItemKind.Constructor:
 					constructor = member as ApiConstructor;
@@ -304,48 +320,49 @@ export class ApiNodeJSONEncoder {
 		}
 
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeTypeParameterList(model, item),
-			constructor: constructor ? this.encodeConstructor(model, constructor) : null,
-			extendsTokens: extendsExcerpt ? extendsExcerpt.spannedTokens.map((token) => genToken(model, token)) : [],
+			...this.encodeItem(model, item, version),
+			...this.encodeTypeParameterList(model, item, version),
+			constructor: constructor ? this.encodeConstructor(model, constructor, version) : null,
+			extendsTokens: extendsExcerpt ? extendsExcerpt.spannedTokens.map((token) => genToken(model, token, version)) : [],
 			implementsTokens: item.implementsTypes.map((excerpt) =>
-				excerpt.excerpt.spannedTokens.map((token) => genToken(model, token)),
+				excerpt.excerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			),
 			methods,
 			properties,
 		};
 	}
 
-	public static encodeTypeAlias(model: ApiModel, item: ApiTypeAlias): ApiTypeAliasJSON {
+	public static encodeTypeAlias(model: ApiModel, item: ApiTypeAlias, version: string): ApiTypeAliasJSON {
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeTypeParameterList(model, item),
-			typeTokens: item.typeExcerpt.spannedTokens.map((token) => genToken(model, token)),
+			...this.encodeItem(model, item, version),
+			...this.encodeTypeParameterList(model, item, version),
+			typeTokens: item.typeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
 		};
 	}
 
-	public static encodeEnum(model: ApiModel, item: ApiEnum): ApiEnumJSON {
+	public static encodeEnum(model: ApiModel, item: ApiEnum, version: string): ApiEnumJSON {
 		return {
-			...this.encodeItem(model, item),
+			...this.encodeItem(model, item, version),
 			members: item.members.map((member) => ({
 				name: member.name,
-				initializerTokens: member.initializerExcerpt?.spannedTokens.map((token) => genToken(model, token)) ?? [],
-				summary: member.tsdocComment ? nodeContainer(member.tsdocComment.summarySection, model, member) : null,
+				initializerTokens:
+					member.initializerExcerpt?.spannedTokens.map((token) => genToken(model, token, version)) ?? [],
+				summary: member.tsdocComment ? nodeContainer(member.tsdocComment.summarySection, model, version, member) : null,
 			})),
 		};
 	}
 
-	public static encodeInterface(model: ApiModel, item: ApiInterface): ApiInterfaceJSON {
+	public static encodeInterface(model: ApiModel, item: ApiInterface, version: string): ApiInterfaceJSON {
 		const methods: ApiMethodSignatureJSON[] = [];
 		const properties: ApiPropertyItemJSON[] = [];
 
 		for (const member of item.findMembersWithInheritance().items) {
 			switch (member.kind) {
 				case ApiItemKind.MethodSignature:
-					methods.push(this.encodeMethodSignature(model, member as ApiMethodSignature, item));
+					methods.push(this.encodeMethodSignature(model, member as ApiMethodSignature, item, version));
 					break;
 				case ApiItemKind.PropertySignature:
-					properties.push(this.encodeProperty(model, member as ApiPropertySignature, item));
+					properties.push(this.encodeProperty(model, member as ApiPropertySignature, item, version));
 					break;
 				default:
 					break;
@@ -353,28 +370,28 @@ export class ApiNodeJSONEncoder {
 		}
 
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeTypeParameterList(model, item),
+			...this.encodeItem(model, item, version),
+			...this.encodeTypeParameterList(model, item, version),
 			extendsTokens: item.extendsTypes.map((excerpt) =>
-				excerpt.excerpt.spannedTokens.map((token) => genToken(model, token)),
+				excerpt.excerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			),
 			methods,
 			properties,
 		};
 	}
 
-	public static encodeVariable(model: ApiModel, item: ApiVariable): ApiVariableJSON {
+	public static encodeVariable(model: ApiModel, item: ApiVariable, version: string): ApiVariableJSON {
 		return {
-			...this.encodeItem(model, item),
-			typeTokens: item.variableTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
+			...this.encodeItem(model, item, version),
+			typeTokens: item.variableTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
 			readonly: item.isReadonly,
 		};
 	}
 
-	public static encodeConstructor(model: ApiModel, item: ApiConstructor): ApiConstructorJSON {
+	public static encodeConstructor(model: ApiModel, item: ApiConstructor, version: string): ApiConstructorJSON {
 		return {
-			...this.encodeItem(model, item),
-			...this.encodeParameterList(model, item),
+			...this.encodeItem(model, item, version),
+			...this.encodeParameterList(model, item, version),
 			protected: item.isProtected,
 		};
 	}

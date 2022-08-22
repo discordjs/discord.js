@@ -13,16 +13,19 @@ export interface TypeParameterData {
 export function generateTypeParamData(
 	model: ApiModel,
 	typeParam: TypeParameter,
+	version: string,
 	parentItem?: ApiItem,
 ): TypeParameterData {
-	const constraintTokens = typeParam.constraintExcerpt.spannedTokens.map((token) => genToken(model, token));
-	const defaultTokens = typeParam.defaultTypeExcerpt.spannedTokens.map((token) => genToken(model, token));
+	const constraintTokens = typeParam.constraintExcerpt.spannedTokens.map((token) => genToken(model, token, version));
+	const defaultTokens = typeParam.defaultTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version));
 
 	return {
 		name: typeParam.name,
 		constraintTokens,
 		defaultTokens,
 		optional: typeParam.isOptional,
-		commentBlock: typeParam.tsdocTypeParamBlock ? block(typeParam.tsdocTypeParamBlock, model, parentItem) : null,
+		commentBlock: typeParam.tsdocTypeParamBlock
+			? block(typeParam.tsdocTypeParamBlock, model, version, parentItem)
+			: null,
 	};
 }

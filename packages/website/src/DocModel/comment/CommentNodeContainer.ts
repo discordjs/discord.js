@@ -10,10 +10,11 @@ export interface DocNodeContainerJSON extends DocNodeJSON {
 export function nodeContainer(
 	container: DocNodeContainer,
 	model: ApiModel,
+	version: string,
 	parentItem?: ApiItem,
 ): DocNodeContainerJSON {
 	return {
 		...node(container),
-		nodes: container.nodes.map((node) => createCommentNode(node, model, parentItem)),
+		nodes: container.nodes.map((node) => createCommentNode(node, model, version, parentItem)),
 	};
 }

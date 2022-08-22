@@ -23,7 +23,7 @@ export function findPackage(model: ApiModel, name: string): ApiPackage | undefin
 		| undefined;
 }
 
-export function generatePath(items: readonly ApiItem[]) {
+export function generatePath(items: readonly ApiItem[], version: string) {
 	let path = '/docs/packages';
 	for (const item of items) {
 		switch (item.kind) {
@@ -53,7 +53,7 @@ export function generatePath(items: readonly ApiItem[]) {
 		}
 	}
 
-	return path.replace(/@discordjs\/(.*)\/(.*)?/, '$1/main/$2');
+	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
 }
 
 export function resolveDocComment(item: ApiDocumentedItem) {
@@ -164,14 +164,14 @@ function createDapiTypesURL(meaning: Meaning, name: string) {
 	}
 }
 
-export function genReference(item: ApiItem) {
+export function genReference(item: ApiItem, version: string) {
 	return {
 		name: resolveName(item),
-		path: generatePath(item.getHierarchy()),
+		path: generatePath(item.getHierarchy(), version),
 	};
 }
 
-export function genToken(model: ApiModel, token: ExcerptToken) {
+export function genToken(model: ApiModel, token: ExcerptToken, version: string) {
 	if (token.canonicalReference) {
 		// @ts-expect-error
 		token.canonicalReference._navigation = '.';
@@ -197,24 +197,26 @@ export function genToken(model: ApiModel, token: ExcerptToken) {
 	return {
 		kind: token.kind,
 		text: token.text,
-		path: item ? generatePath(item.getHierarchy()) : null,
+		path: item ? generatePath(item.getHierarchy(), version) : null,
 	};
 }
 
-export function genParameter(model: ApiModel, param: Parameter): ParameterDocumentation {
+export function genParameter(model: ApiModel, param: Parameter, version: string): ParameterDocumentation {
 	return {
 		name: param.name,
 		isOptional: param.isOptional,
-		tokens: param.parameterTypeExcerpt.spannedTokens.map((token) => genToken(model, token)),
-		paramCommentBlock: param.tsdocParamBlock ? (createCommentNode(param.tsdocParamBlock, model) as DocBlockJSON) : null,
+		tokens: param.parameterTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
+		paramCommentBlock: param.tsdocParamBlock
+			? (createCommentNode(param.tsdocParamBlock, model, version) as DocBlockJSON)
+			: null,
 	};
 }
 
-export function getMembers(pkg: ApiPackage) {
+export function getMembers(pkg: ApiPackage, version = 'main') {
 	return pkg.members[0]!.members.map((member) => ({
 		name: member.displayName,
 		kind: member.kind as string,
-		path: generatePath(member.getHierarchy()),
+		path: generatePath(member.getHierarchy(), version),
 		containerKey: member.containerKey,
 		overloadIndex: member.kind === 'Function' ? (member as ApiFunction).overloadIndex : null,
 	}));

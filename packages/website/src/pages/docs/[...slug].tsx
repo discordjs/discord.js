@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Box } from '@mantine/core';
-import { ApiFunction } from '@microsoft/api-extractor-model';
+import { ApiFunction, ApiPackage } from '@microsoft/api-extractor-model';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import type {
@@ -31,7 +31,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 		await Promise.all(
 			packages.map(async (packageName) => {
 				try {
-					let data;
+					let data: any[] = [];
+					let versions: string[] = [];
 					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 						const res = await readFile(
 							join(__dirname, '..', '..', '..', '..', '..', packageName, 'docs', 'docs.api.json'),
@@ -40,9 +41,44 @@ export const getStaticPaths: GetStaticPaths = async () => {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						data = JSON.parse(res);
 					} else {
-						const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/main.api.json`);
+						const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-						data = await res.json();
+						versions = await response.json();
+
+						for (const version of versions) {
+							const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+							data = [...data, await res.json()];
+						}
+					}
+
+					if (Array.isArray(data)) {
+						const models = data.map((d) => createApiModel(d));
+						const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
+
+						return [
+							{ params: { slug: ['packages', packageName, 'main'] } },
+							...versions.map((version) => ({ params: { slug: ['packages', packageName, version] } })),
+							...pkgs
+								.map((pkg, idx) =>
+									getMembers(pkg)
+										// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
+										// causing next.js export to error
+										.filter((member) => member.name !== 'RESTEvents')
+										.map((member) => {
+											if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
+												return {
+													params: {
+														slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.overloadIndex}`],
+													},
+												};
+											}
+
+											return { params: { slug: ['packages', packageName, versions[idx]!, member.name] } };
+										}),
+								)
+								.flat(),
+						];
 					}
 
 					const model = createApiModel(data);
@@ -67,7 +103,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 							}),
 					];
 				} catch {
-					return { params: { slug: ['', '', '', ''] } };
+					return { params: { slug: [] } };
 				}
 			}),
 		)
@@ -102,7 +138,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		const model = createApiModel(data);
 		const pkg = findPackage(model, packageName);
 
-		let { containerKey, name } = findMember(model, packageName, memberName) ?? {};
+		let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
 		if (name && overloadIndex) {
 			containerKey = ApiFunction.getContainerKey(name, parseInt(overloadIndex, 10));
 		}
@@ -111,8 +147,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			props: {
 				packageName,
 				data: {
-					members: pkg ? getMembers(pkg) : [],
-					member: memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null,
+					members: pkg ? getMembers(pkg, branchName) : [],
+					member:
+						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 				},
 			},
 		};
