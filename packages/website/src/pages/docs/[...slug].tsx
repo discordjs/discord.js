@@ -121,7 +121,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	return {
 		paths: pkgs,
-		fallback: true,
+		fallback: 'blocking',
 	};
 };
 
@@ -174,6 +174,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
 				},
+				revalidate: 3600,
 			},
 		};
 	} catch {

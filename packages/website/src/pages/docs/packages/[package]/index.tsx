@@ -17,7 +17,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 	return {
 		paths: versions,
-		fallback: true,
+		fallback: 'blocking',
 	};
 };
 
@@ -41,6 +41,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				data: {
 					versions: data,
 				},
+				revalidate: 3600,
 			},
 		};
 	} catch {
