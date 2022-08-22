@@ -26,7 +26,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 			<ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
 				<MantineProvider
 					theme={{
-						fontFamily: 'Inter',
+						fontFamily: 'Inter var',
+						fontFamilyMonospace: 'JetBrains Mono',
+						headings: {
+							fontFamily: 'Inter var',
+						},
 						colorScheme,
 						colors: {
 							blurple: [
