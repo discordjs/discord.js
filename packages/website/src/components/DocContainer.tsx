@@ -1,5 +1,6 @@
-import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea } from '@mantine/core';
+import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { useRouter } from 'next/router';
 import { Fragment, ReactNode } from 'react';
 import {
 	VscSymbolClass,
@@ -61,32 +62,39 @@ export function DocContainer({
 	methods,
 	properties,
 }: DocContainerProps) {
+	const router = useRouter();
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
 	return (
 		<Group>
 			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
-				<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
-					<Group>
-						{generateIcon(kind)}
-						{name}
-					</Group>
-				</Title>
+				<Skeleton visible={router.isFallback}>
+					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
+						<Group>
+							{generateIcon(kind)}
+							{name}
+						</Group>
+					</Title>
+				</Skeleton>
 
-				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
-					{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
-				</Section>
+				<Skeleton visible={router.isFallback}>
+					<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
+						{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
+					</Section>
+				</Skeleton>
 
-				<Box px="xs" pb="xs">
-					<SyntaxHighlighter
-						wrapLongLines
-						language="typescript"
-						style={vscDarkPlus}
-						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					>
-						{excerpt}
-					</SyntaxHighlighter>
-				</Box>
+				<Skeleton visible={router.isFallback}>
+					<Box px="xs" pb="xs">
+						<SyntaxHighlighter
+							wrapLongLines
+							language="typescript"
+							style={vscDarkPlus}
+							codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+						>
+							{excerpt}
+						</SyntaxHighlighter>
+					</Box>
+				</Skeleton>
 
 				{extendsTokens?.length ? (
 					<Group noWrap>
@@ -115,20 +123,22 @@ export function DocContainer({
 					</Group>
 				) : null}
 
-				<Stack>
-					{typeParams?.length ? (
-						<Section
-							title="Type Parameters"
-							icon={<VscSymbolParameter size={20} />}
-							padded
-							dense={matches}
-							defaultClosed
-						>
-							<TypeParamTable data={typeParams} />
-						</Section>
-					) : null}
-					<Stack>{children}</Stack>
-				</Stack>
+				<Skeleton visible={router.isFallback}>
+					<Stack>
+						{typeParams?.length ? (
+							<Section
+								title="Type Parameters"
+								icon={<VscSymbolParameter size={20} />}
+								padded
+								dense={matches}
+								defaultClosed
+							>
+								<TypeParamTable data={typeParams} />
+							</Section>
+						) : null}
+						<Stack>{children}</Stack>
+					</Stack>
+				</Skeleton>
 			</Stack>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>

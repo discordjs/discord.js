@@ -121,7 +121,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	return {
 		paths: pkgs,
-		fallback: 'blocking',
+		fallback: true,
 	};
 };
 

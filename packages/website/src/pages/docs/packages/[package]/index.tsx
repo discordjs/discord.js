@@ -30,7 +30,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 	return {
 		paths: versions,
-		fallback: 'blocking',
+		fallback: false,
 	};
 };
 

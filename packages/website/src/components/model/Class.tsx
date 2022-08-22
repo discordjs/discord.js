@@ -1,8 +1,12 @@
+import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
 import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
 import type { ApiClassJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function Class({ data }: { data: ApiClassJSON }) {
+	const router = useRouter();
+
 	return (
 		<DocContainer
 			name={data.name}
@@ -17,8 +21,12 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			properties={data.properties}
 		>
 			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
+			<Skeleton visible={router.isFallback}>
+				<PropertiesSection data={data.properties} />
+			</Skeleton>
+			<Skeleton visible={router.isFallback}>
+				<MethodsSection data={data.methods} />
+			</Skeleton>
 		</DocContainer>
 	);
 }
