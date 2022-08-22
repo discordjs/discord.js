@@ -21,7 +21,7 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 
 	return (
 		<Box sx={{ overflowX: 'auto' }}>
-			<ScrollArea type="auto">
+			<ScrollArea offsetScrollbars>
 				<Table
 					columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
 					rows={rows}

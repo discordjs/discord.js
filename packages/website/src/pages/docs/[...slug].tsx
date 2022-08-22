@@ -179,7 +179,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	} catch {
 		return {
 			props: {
-				error: 'FetchError',
+				notFound: true,
 			},
 		};
 	}

@@ -29,6 +29,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const data: string[] = await res.json();
 
+		if (!data.length) {
+			return {
+				notFound: true,
+			};
+		}
+
 		return {
 			props: {
 				packageName,
@@ -37,10 +43,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				},
 			},
 		};
-	} catch (error) {
+	} catch {
 		return {
 			props: {
-				error: 'FetchError',
+				notFound: true,
 			},
 		};
 	}
