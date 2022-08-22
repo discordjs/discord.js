@@ -11,10 +11,10 @@ type MethodResolvable = ApiMethodJSON | ApiMethodSignatureJSON;
 function getShorthandName(data: MethodResolvable) {
 	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
 		if (index === 0) {
-			return `${prev}${cur.isOptional ? `[${cur.name}]` : cur.name}`;
+			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 		}
 
-		return `${prev}, ${cur.isOptional ? `[${cur.name}]` : cur.name}`;
+		return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
 	}, '')})`;
 }
 

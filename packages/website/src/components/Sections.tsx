@@ -43,15 +43,14 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
-	function getShorthandName(): string {
-		return `constructor(${data.parameters.reduce((prev, cur, index) => {
+	const getShorthandName = () =>
+		`constructor(${data.parameters.reduce((prev, cur, index) => {
 			if (index === 0) {
-				return `${prev}${cur.isOptional ? `[${cur.name}]` : cur.name}`;
+				return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 			}
 
-			return `${prev}, ${cur.isOptional ? `[${cur.name}]` : cur.name}`;
+			return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
 		}, '')})`;
-	}
 
 	return data.parameters.length ? (
 		<Section title="Constructor" icon={<VscSymbolMethod />} padded dense={matches}>
