@@ -17,9 +17,11 @@ import {
 	Menu,
 	ActionIcon,
 	useMantineColorScheme,
+	Center,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
+import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type PropsWithChildren, useState } from 'react';
@@ -108,16 +110,17 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 
 	return (
 		<AppShell
-			styles={{
+			sx={{
 				main: {
 					background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
 					overflowX: 'auto',
 				},
 			}}
-			navbarOffsetBreakpoint="sm"
-			asideOffsetBreakpoint="sm"
+			padding={0}
+			navbarOffsetBreakpoint="md"
+			asideOffsetBreakpoint="md"
 			navbar={
-				<Navbar hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
+				<Navbar hiddenBreakpoint="md" hidden={!opened} width={{ md: 300 }}>
 					{packageName && data ? (
 						<>
 							<Navbar.Section p="xs">
@@ -164,7 +167,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 				<Header height={70} p="md">
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
 						<Box>
-							<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+							<MediaQuery largerThan="md" styles={{ display: 'none' }}>
 								<Burger
 									opened={opened}
 									onClick={() => setOpened((o) => !o)}
@@ -174,7 +177,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 								/>
 							</MediaQuery>
 
-							<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+							<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
 								<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
 							</MediaQuery>
 						</Box>
@@ -190,7 +193,56 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 				</Header>
 			}
 		>
-			{children}
+			<article>
+				<Box
+					sx={{
+						position: 'relative',
+						minHeight: 'calc(100vh - 150px)',
+						zIndex: 1,
+						background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
+					}}
+					p="sm"
+					pb={80}
+				>
+					{children}
+				</Box>
+				<Box sx={{ height: 200 }}></Box>
+				<Box
+					sx={{
+						position: 'fixed',
+						bottom: 0,
+						left: 0,
+						right: 0,
+						height: 200,
+						background: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
+						paddingLeft: 324,
+						paddingRight: 324,
+
+						[theme.fn.smallerThan('lg')]: {
+							paddingRight: 14,
+						},
+
+						[theme.fn.smallerThan('md')]: {
+							paddingLeft: 24,
+						},
+					}}
+					pt={70}
+				>
+					<Center>
+						<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
+							<a title="Vercel">
+								<Image
+									src="/powered-by-vercel.svg"
+									alt="Vercel"
+									width={0}
+									height={0}
+									style={{ height: '100%', width: '100%', maxWidth: 250 }}
+								/>
+							</a>
+						</Link>
+					</Center>
+				</Box>
+			</article>
 		</AppShell>
 	);
 }

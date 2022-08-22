@@ -1,7 +1,15 @@
 import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Fragment, ReactNode } from 'react';
-import { VscListSelection, VscSymbolParameter } from 'react-icons/vsc';
+import {
+	VscSymbolClass,
+	VscSymbolMethod,
+	VscSymbolEnum,
+	VscSymbolInterface,
+	VscSymbolVariable,
+	VscListSelection,
+	VscSymbolParameter,
+} from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -12,7 +20,6 @@ import { TSDoc } from './tsdoc/TSDoc';
 import type { ApiClassJSON, ApiInterfaceJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import { generateIcon } from '~/util/icon';
 import type { TokenDocumentation } from '~/util/parse.server';
 
 export interface DocContainerProps {
@@ -27,6 +34,19 @@ export interface DocContainerProps {
 	comment?: AnyDocNodeJSON | null;
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+}
+
+function generateIcon(kind: string) {
+	const icons = {
+		Class: <VscSymbolClass />,
+		Method: <VscSymbolMethod />,
+		Function: <VscSymbolMethod />,
+		Enum: <VscSymbolEnum />,
+		Interface: <VscSymbolInterface />,
+		TypeAlias: <VscSymbolVariable />,
+	};
+
+	return icons[kind as keyof typeof icons];
 }
 
 export function DocContainer({
@@ -111,11 +131,14 @@ export function DocContainer({
 				</Stack>
 			</Stack>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
-				<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
+				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside
-						sx={{ backgroundColor: 'transparent' }}
-						hiddenBreakpoint="md"
-						width={{ md: 200, lg: 300 }}
+						sx={(theme) => ({
+							zIndex: 1,
+							background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
+						})}
+						hiddenBreakpoint="lg"
+						width={{ lg: 300 }}
 						withBorder={false}
 					>
 						<ScrollArea p="xs">
