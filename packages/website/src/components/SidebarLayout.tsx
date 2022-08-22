@@ -109,6 +109,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 			styles={{
 				main: {
 					background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
+					overflowX: 'auto',
 				},
 			}}
 			navbarOffsetBreakpoint="sm"
