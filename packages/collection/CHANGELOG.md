@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.0.1...@discordjs/collection@1.1.0) - (2022-08-22)
+
+## Bug Fixes
+
+- Use proper format for `@link` text (#8384) ([2655639](https://github.com/discordjs/discord.js/commit/26556390a3800e954974a00c1328ff47d3e67e9a))
+
+## Documentation
+
+- Fence examples in codeblocks ([193b252](https://github.com/discordjs/discord.js/commit/193b252672440a860318d3c2968aedd9cb88e0ce))
+- Use link tags (#8382) ([5494791](https://github.com/discordjs/discord.js/commit/549479131318c659f86f0eb18578d597e22522d3))
+
+## Features
+
+- **website:** Show `constructor` information (#8540) ([e42fd16](https://github.com/discordjs/discord.js/commit/e42fd1636973b10dd7ed6fb4280ee1a4a8f82007))
+- **website:** Show descriptions for `@typeParam` blocks (#8523) ([e475b63](https://github.com/discordjs/discord.js/commit/e475b63f257f6261d73cb89fee9ecbcdd84e2a6b))
+
+## Refactor
+
+- **website:** Adjust typography (#8503) ([0f83402](https://github.com/discordjs/discord.js/commit/0f834029850d2448981596cf082ff59917018d66))
+- Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
+
 # [@discordjs/collection@0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.7.0...@discordjs/collection@0.8.0) - (2022-07-17)
 
 ## Bug Fixes
