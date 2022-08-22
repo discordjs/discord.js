@@ -6,7 +6,7 @@ import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
-import { TableOfContentsItems } from './TableOfContentsItems';
+import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
 import type { ApiClassJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
@@ -26,6 +26,7 @@ export interface DocContainerProps {
 	typeParams?: TypeParameterData[];
 	comment?: AnyDocNodeJSON | null;
 	methods?: ApiClassJSON['methods'] | null;
+	properties?: ApiClassJSON['properties'] | null;
 }
 
 export function DocContainer({
@@ -38,6 +39,7 @@ export function DocContainer({
 	extendsTokens,
 	implementsTokens,
 	methods,
+	properties,
 }: DocContainerProps) {
 	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 
@@ -102,7 +104,7 @@ export function DocContainer({
 					<Stack>{children}</Stack>
 				</Stack>
 			</Stack>
-			{kind === 'Class' && methods ? (
+			{kind === 'Class' && methods && properties ? (
 				<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
 					<Aside
 						sx={{ backgroundColor: 'transparent' }}
@@ -111,7 +113,7 @@ export function DocContainer({
 						withBorder={false}
 					>
 						<ScrollArea p="xs">
-							<TableOfContentsItems members={methods}></TableOfContentsItems>
+							<TableOfContentItems properties={properties} methods={methods}></TableOfContentItems>
 						</ScrollArea>
 					</Aside>
 				</MediaQuery>

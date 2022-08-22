@@ -36,7 +36,7 @@ export function CodeListing({
 	inheritanceData?: InheritanceData | null;
 }) {
 	return (
-		<Stack spacing="xs" key={name}>
+		<Stack id={name} className="scroll-mt-30" spacing="xs">
 			<Group>
 				{deprecation ? (
 					<Badge variant="filled" color="red">

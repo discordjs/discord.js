@@ -24,10 +24,26 @@ const useStyles = createStyles((theme) => ({
 	},
 }));
 
-export function TableOfContentsItems({ members }: { members: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] }) {
+export function TableOfContentItems({
+	methods,
+	properties,
+}: {
+	methods: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'];
+	properties: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'];
+}) {
 	const { classes } = useStyles();
 
-	const items = members.map((member) => {
+	const propertyItems = properties.map((prop) => (
+		<Box<'a'> key={prop.name} href={`#${prop.name}`} component="a" className={classes.link}>
+			<Group>
+				<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+					{prop.name}
+				</Text>
+			</Group>
+		</Box>
+	));
+
+	const methodItems = methods.map((member) => {
 		const key = `${member.name}${member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''}`;
 
 		return (
@@ -50,9 +66,12 @@ export function TableOfContentsItems({ members }: { members: ApiClassJSON['metho
 		<Box>
 			<Group mb="md">
 				<VscListSelection size={20} />
-				<Text>Table of contents</Text>
+				<Text>Table of content</Text>
 			</Group>
-			{items}
+			<Text>Properties</Text>
+			{propertyItems}
+			<Text>Methods</Text>
+			{methodItems}
 		</Box>
 	);
 }

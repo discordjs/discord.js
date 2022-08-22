@@ -14,6 +14,7 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			implementsTokens={data.implementsTokens}
 			comment={data.comment}
 			methods={data.methods}
+			properties={data.properties}
 		>
 			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
 			<PropertiesSection data={data.properties} />
