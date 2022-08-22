@@ -19,7 +19,7 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 
 	return (
 		<Box>
-			<ScrollArea offsetScrollbars>
+			<ScrollArea pb="xs" offsetScrollbars>
 				<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
 			</ScrollArea>
 		</Box>

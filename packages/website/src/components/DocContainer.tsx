@@ -133,7 +133,7 @@ export function DocContainer({
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
-						<ScrollArea p="xs" offsetScrollbars>
+						<ScrollArea p="sm" offsetScrollbars>
 							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
 						</ScrollArea>
 					</Aside>

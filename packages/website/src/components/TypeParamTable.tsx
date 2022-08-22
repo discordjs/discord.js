@@ -1,4 +1,4 @@
-import { Box, ScrollArea } from '@mantine/core';
+import { ScrollArea } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -20,14 +20,12 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	};
 
 	return (
-		<Box sx={{ overflowX: 'auto' }}>
-			<ScrollArea offsetScrollbars>
-				<Table
-					columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
-					rows={rows}
-					columnStyles={rowElements}
-				/>
-			</ScrollArea>
-		</Box>
+		<ScrollArea pb="xs" offsetScrollbars>
+			<Table
+				columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
+				rows={rows}
+				columnStyles={rowElements}
+			/>
+		</ScrollArea>
 	);
 }

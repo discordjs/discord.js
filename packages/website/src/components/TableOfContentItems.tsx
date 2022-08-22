@@ -67,9 +67,9 @@ export function TableOfContentItems({
 
 	return (
 		<Box sx={{ wordBreak: 'break-all' }}>
-			<Group mb="md" ml={2}>
+			<Group mt={2} mb="sm" ml={2}>
 				<VscListSelection size={25} />
-				<Text>Table of contents</Text>
+				<Text weight={600}>Table of contents</Text>
 			</Group>
 			<Stack spacing={0}>
 				{propertyItems.length ? (

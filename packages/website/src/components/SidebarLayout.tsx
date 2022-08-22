@@ -140,12 +140,12 @@ export function SidebarLayout({
 
 	return (
 		<AppShell
-			sx={{
+			sx={(theme) => ({
 				main: {
 					background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
 					overflowX: 'auto',
 				},
-			}}
+			})}
 			padding={0}
 			navbarOffsetBreakpoint="md"
 			asideOffsetBreakpoint="md"
@@ -213,7 +213,16 @@ export function SidebarLayout({
 				</Navbar>
 			}
 			header={
-				<Header height={70} p="md">
+				<Header
+					sx={(theme) => ({
+						boxShadow:
+							theme.colorScheme === 'dark'
+								? '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)'
+								: 'unset',
+					})}
+					height={70}
+					p="md"
+				>
 					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
 						<Box>
 							<MediaQuery largerThan="md" styles={{ display: 'none' }}>
@@ -244,12 +253,13 @@ export function SidebarLayout({
 		>
 			<article>
 				<Box
-					sx={{
+					sx={(theme) => ({
 						position: 'relative',
 						minHeight: 'calc(100vh - 50px)',
 						zIndex: 1,
 						background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
-					}}
+						boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+					})}
 					p="lg"
 					pb={80}
 				>
@@ -257,7 +267,7 @@ export function SidebarLayout({
 				</Box>
 				<Box sx={{ height: 200 }}></Box>
 				<Box
-					sx={{
+					sx={(theme) => ({
 						position: 'fixed',
 						bottom: 0,
 						left: 0,
@@ -274,7 +284,7 @@ export function SidebarLayout({
 						[theme.fn.smallerThan('md')]: {
 							paddingLeft: 24,
 						},
-					}}
+					})}
 					pt={70}
 				>
 					<Center>
