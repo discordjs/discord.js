@@ -234,7 +234,21 @@ export default function Slug(props: Partial<SidebarLayoutProps & { error?: strin
 						</Affix>
 					</>
 				) : props.data?.source ? (
-					<Box px="xl">
+					<Box
+						sx={(theme) => ({
+							a: {
+								backgroundColor: 'transparent',
+								color: theme.colors.blurple![0],
+								textDecoration: 'none',
+							},
+							img: {
+								borderStyle: 'none',
+								maxWidth: '100%',
+								boxSizing: 'content-box',
+							},
+						})}
+						px="xl"
+					>
 						<MDXRemote {...props.data.source} />
 					</Box>
 				) : null}
