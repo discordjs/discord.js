@@ -22,7 +22,7 @@ export default function PackagesRoute() {
 		<Container pt={96} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				{packages.map((pkg) => (
-					<Link key={pkg} href={`/docs/main/packages/${pkg}`} passHref>
+					<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>

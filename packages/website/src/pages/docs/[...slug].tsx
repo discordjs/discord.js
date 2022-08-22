@@ -49,7 +49,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					const pkg = findPackage(model, packageName);
 
 					return [
-						{ params: { slug: ['main', 'packages', packageName] } },
+						{ params: { slug: ['packages', packageName, 'main'] } },
 						...getMembers(pkg!)
 							// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
 							// causing next.js export to error
@@ -58,12 +58,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
 								if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
 									return {
 										params: {
-											slug: ['main', 'packages', packageName, `${member.name}:${member.overloadIndex}`],
+											slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}`],
 										},
 									};
 								}
 
-								return { params: { slug: ['main', 'packages', packageName, member.name] } };
+								return { params: { slug: ['packages', packageName, 'main', member.name] } };
 							}),
 					];
 				} catch {
@@ -80,7 +80,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const [branchName = 'main', , packageName = 'builders', member = 'ActionRowBuilder'] = params!.slug as string[];
+	const [, packageName = 'builders', branchName = 'main', member = 'ActionRowBuilder'] = params!.slug as string[];
 
 	const [memberName, overloadIndex] = member.split(':') as [string, string | undefined];
 

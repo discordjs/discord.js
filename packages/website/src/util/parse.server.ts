@@ -24,7 +24,7 @@ export function findPackage(model: ApiModel, name: string): ApiPackage | undefin
 }
 
 export function generatePath(items: readonly ApiItem[]) {
-	let path = '/docs/main/packages';
+	let path = '/docs/packages';
 	for (const item of items) {
 		switch (item.kind) {
 			case ApiItemKind.Model:
@@ -53,7 +53,7 @@ export function generatePath(items: readonly ApiItem[]) {
 		}
 	}
 
-	return path.replace(/@discordjs\//, '');
+	return path.replace(/@discordjs\/(.*)\/(.*)?/, '$1/main/$2');
 }
 
 export function resolveDocComment(item: ApiDocumentedItem) {
