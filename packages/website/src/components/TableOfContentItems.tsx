@@ -1,4 +1,4 @@
-import { createStyles, Group, Text, Box } from '@mantine/core';
+import { createStyles, Group, Text, Box, Stack } from '@mantine/core';
 import { VscListSelection } from 'react-icons/vsc';
 import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
@@ -68,18 +68,20 @@ export function TableOfContentItems({
 				<VscListSelection size={20} />
 				<Text>Table of content</Text>
 			</Group>
-			{propertyItems.length ? (
-				<>
-					<Text>Properties</Text>
-					{propertyItems}
-				</>
-			) : null}
-			{methodItems.length ? (
-				<>
-					<Text>Methods</Text>
-					{methodItems}
-				</>
-			) : null}
+			<Stack>
+				{propertyItems.length ? (
+					<Box>
+						<Text>Properties</Text>
+						{propertyItems}
+					</Box>
+				) : null}
+				{methodItems.length ? (
+					<Box>
+						<Text>Methods</Text>
+						{methodItems}
+					</Box>
+				) : null}
+			</Stack>
 		</Box>
 	);
 }

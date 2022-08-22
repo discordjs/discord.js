@@ -2,7 +2,6 @@ import { createStyles, Container, Title, Button, Group, Text, Center } from '@ma
 import Image from 'next/future/image';
 import Link from 'next/link';
 import codeSample from '../assets/code-sample.png';
-import vercelLogo from '../assets/powered-by-vercel.svg';
 
 const useStyles = createStyles((theme) => ({
 	inner: {
@@ -62,8 +61,6 @@ const useStyles = createStyles((theme) => ({
 	},
 
 	vercel: {
-		height: '100%',
-		maxWidth: 250,
 		paddingBottom: theme.spacing.xl * 4,
 	},
 }));
@@ -103,9 +100,11 @@ export default function IndexRoute() {
 					<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
 						<a title="Vercel">
 							<Image
-								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-								src={vercelLogo}
+								src="/powered-by-vercel.svg"
 								alt="Vercel"
+								width={0}
+								height={0}
+								style={{ height: '100%', width: '100%', maxWidth: 250 }}
 								className={classes.vercel}
 							/>
 						</a>
