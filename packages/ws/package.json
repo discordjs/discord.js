@@ -7,7 +7,7 @@
 		"build": "unbuild",
 		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "downlevel-dts dist docs/dist --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
 		"release": "cliff-jumper"
@@ -69,6 +69,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.33.1",
 		"@typescript-eslint/parser": "^5.33.1",
 		"@vitest/coverage-c8": "^0.22.1",
+		"downlevel-dts": "^0.10.0",
 		"eslint": "^8.22.0",
 		"eslint-config-marine": "^9.4.1",
 		"eslint-config-prettier": "^8.5.0",

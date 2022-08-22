@@ -1998,6 +1998,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.22.1
     "@vladfrangu/async_event_emitter": ^2.0.1
     discord-api-types: ^0.37.3
+    downlevel-dts: ^0.10.0
     eslint: ^8.22.0
     eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0

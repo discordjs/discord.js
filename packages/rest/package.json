@@ -8,7 +8,7 @@
 		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
-		"docs": "downlevel-dts . docs --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "downlevel-dts dist docs/dist --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
