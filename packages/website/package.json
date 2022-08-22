@@ -9,6 +9,7 @@
 		"build:prod": "yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
+		"build:index": "tsc --module CommonJS --esModuleInterop generateIndex.ts && node generateIndex.js",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",

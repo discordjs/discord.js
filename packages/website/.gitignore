@@ -27,3 +27,5 @@ src/styles/unocss.css
 .tmp/
 coverage/
 .vercel
+generateIndex.js
+searchIndex/
