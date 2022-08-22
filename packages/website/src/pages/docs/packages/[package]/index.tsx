@@ -1,7 +1,20 @@
-import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Box, Title } from '@mantine/core';
+import {
+	Container,
+	UnstyledButton,
+	createStyles,
+	Group,
+	ThemeIcon,
+	Text,
+	Stack,
+	Box,
+	Title,
+	useMantineColorScheme,
+	Affix,
+} from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import { VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
 
 interface VersionProps {
 	packageName: string;
@@ -57,6 +70,7 @@ const useStyles = createStyles((theme) => ({
 	control: {
 		padding: theme.spacing.xs,
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+		borderRadius: theme.radius.xs,
 
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
@@ -66,7 +80,9 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
+	const router = useRouter();
 	const { classes } = useStyles();
+	const { colorScheme } = useMantineColorScheme();
 
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
@@ -81,7 +97,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>
-									<ThemeIcon size={30}>
+									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
 										<VscPackage size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">
@@ -94,6 +110,11 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 					</Link>
 				)) ?? null}
 			</Stack>
+			<Affix position={{ top: 20, left: 20 }}>
+				<UnstyledButton onClick={() => void router.push('/docs/packages')}>
+					<VscArrowLeft size={25} />
+				</UnstyledButton>
+			</Affix>
 		</Container>
 	);
 }

@@ -66,9 +66,11 @@ const useStyles = createStyles(
 			width: '100%',
 			padding: theme.spacing.xs,
 			color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![1],
+			borderRadius: theme.radius.xs,
 
 			'&:hover': {
-				backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
+				backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![5] : theme.colors.gray![2],
 				color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 			},
 		},
@@ -163,7 +165,7 @@ export function SidebarLayout({
 											<UnstyledButton className={classes.control}>
 												<Group position="apart">
 													<Group>
-														<ThemeIcon size={30}>
+														<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
 															<VscPackage size={20} />
 														</ThemeIcon>
 														<Text weight="600" size="md">
@@ -187,7 +189,7 @@ export function SidebarLayout({
 											<UnstyledButton className={classes.control}>
 												<Group position="apart">
 													<Group>
-														<ThemeIcon size={30}>
+														<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
 															<VscVersions size={20} />
 														</ThemeIcon>
 														<Text weight="600" size="md">

@@ -1,4 +1,13 @@
-import { createStyles, UnstyledButton, Group, ThemeIcon, Collapse, Box, Text } from '@mantine/core';
+import {
+	createStyles,
+	UnstyledButton,
+	Group,
+	ThemeIcon,
+	Collapse,
+	Box,
+	Text,
+	useMantineColorScheme,
+} from '@mantine/core';
 import { type ReactNode, useState } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 
@@ -8,9 +17,11 @@ const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
 		width: '100%',
 		padding: theme.spacing.xs,
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+		backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![7] : 'transparent',
+		borderRadius: theme.radius.xs,
 
 		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![5] : theme.colors.gray![2],
 			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 		},
 	},
@@ -37,6 +48,7 @@ export function Section({
 	children: ReactNode;
 }) {
 	const [opened, setOpened] = useState(!defaultClosed);
+	const { colorScheme } = useMantineColorScheme();
 	const { classes } = useStyles({ opened });
 
 	return (
@@ -44,7 +56,11 @@ export function Section({
 			<UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
 				<Group position="apart">
 					<Group>
-						{icon ? <ThemeIcon size={30}>{icon}</ThemeIcon> : null}
+						{icon ? (
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+								{icon}
+							</ThemeIcon>
+						) : null}
 						<Text weight={600} size="md">
 							{title}
 						</Text>

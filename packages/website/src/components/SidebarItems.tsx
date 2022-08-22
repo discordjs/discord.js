@@ -1,5 +1,6 @@
-import { createStyles, UnstyledButton, Group, Text } from '@mantine/core';
+import { createStyles, Group, Text, NavLink } from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { Dispatch, SetStateAction } from 'react';
 import {
 	VscSymbolClass,
@@ -69,6 +70,7 @@ const useStyles = createStyles((theme) => ({
 	link: {
 		fontWeight: 500,
 		display: 'block',
+		width: 'unset',
 		padding: 5,
 		paddingLeft: 31,
 		marginLeft: 25,
@@ -90,6 +92,7 @@ export function SidebarItems({
 	members: Members;
 	setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
+	const router = useRouter();
 	const { classes } = useStyles();
 	const groupItems = groupMembers(members);
 
@@ -101,18 +104,25 @@ export function SidebarItems({
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
 						{groupItems[group].map((member, i) => (
 							<Link key={i} href={member.path} passHref>
-								<UnstyledButton className={classes.link} component="a" onClick={() => setOpened((o) => !o)}>
-									<Group>
-										<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-											{member.name}
-										</Text>
-										{member.overloadIndex && member.overloadIndex > 1 ? (
-											<Text size="xs" color="dimmed">
-												{member.overloadIndex}
+								<NavLink
+									className={classes.link}
+									component="a"
+									onClick={() => setOpened((o) => !o)}
+									label={
+										<Group>
+											<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+												{member.name}
 											</Text>
-										) : null}
-									</Group>
-								</UnstyledButton>
+											{member.overloadIndex && member.overloadIndex > 1 ? (
+												<Text size="xs" color="dimmed">
+													{member.overloadIndex}
+												</Text>
+											) : null}
+										</Group>
+									}
+									active={router.asPath === member.path}
+									variant="filled"
+								></NavLink>
 							</Link>
 						))}
 					</Section>

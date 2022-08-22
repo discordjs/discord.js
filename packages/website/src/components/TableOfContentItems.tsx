@@ -1,4 +1,4 @@
-import { createStyles, Group, Text, Box, Stack, ThemeIcon } from '@mantine/core';
+import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
@@ -8,7 +8,7 @@ const useStyles = createStyles((theme) => ({
 		...theme.fn.focusStyles(),
 		display: 'block',
 		textDecoration: 'none',
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
 		lineHeight: 1.2,
 		fontSize: theme.fontSizes.sm,
 		padding: theme.spacing.xs,
@@ -17,6 +17,7 @@ const useStyles = createStyles((theme) => ({
 		borderTopRightRadius: theme.radius.sm,
 		borderBottomRightRadius: theme.radius.sm,
 		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
+		fontWeight: 500,
 
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
@@ -32,6 +33,7 @@ export function TableOfContentItems({
 	methods: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'];
 	properties: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'];
 }) {
+	const { colorScheme } = useMantineColorScheme();
 	const { classes } = useStyles();
 
 	const propertyItems = properties.map((prop) => (
@@ -73,7 +75,7 @@ export function TableOfContentItems({
 				{propertyItems.length ? (
 					<Box>
 						<Group>
-							<ThemeIcon size={30}>
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
 								<VscSymbolProperty size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>
@@ -88,7 +90,7 @@ export function TableOfContentItems({
 				{methodItems.length ? (
 					<Box>
 						<Group spacing="xs">
-							<ThemeIcon size={30}>
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
 								<VscSymbolMethod size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>
