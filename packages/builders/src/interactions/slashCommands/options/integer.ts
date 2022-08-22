@@ -15,7 +15,7 @@ export class SlashCommandIntegerOption
 	public readonly type = ApplicationCommandOptionType.Integer as const;
 
 	/**
-	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.getMaxValue}
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
 	 */
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
@@ -26,7 +26,7 @@ export class SlashCommandIntegerOption
 	}
 
 	/**
-	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.getMinValue}
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
 	 */
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
