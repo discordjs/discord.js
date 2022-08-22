@@ -23,7 +23,11 @@ export abstract class ComponentBuilder<
 	public readonly data: Partial<DataType>;
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * Serializes this component to an API-compatible JSON object
+	 *
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
 	 */
 	public abstract toJSON(): AnyAPIActionRowComponent;
 

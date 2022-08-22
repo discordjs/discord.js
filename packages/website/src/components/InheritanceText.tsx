@@ -1,6 +1,6 @@
 import { Anchor, Text } from '@mantine/core';
 import Link from 'next/link';
-import type { InheritanceData } from '~/DocModel/DocMethod';
+import type { InheritanceData } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function InheritanceText({ data }: { data: InheritanceData }) {
 	return (

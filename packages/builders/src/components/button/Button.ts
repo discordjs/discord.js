@@ -21,6 +21,35 @@ import { ComponentBuilder } from '../Component';
  * Represents a button component
  */
 export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
+	/**
+	 * Creates a new button from API data
+	 * @param data - The API data to create this button with
+	 *
+	 * @example
+	 * Creating a button from an API data object
+	 * ```ts
+	 * const button = new ButtonBuilder({
+	 * 	style: 'primary',
+	 * 	label: 'Click Me',
+	 * 	emoji: {
+	 * 		name: ':smile:',
+	 * 		id: '12345678901234567890123456789012',
+	 * 	},
+	 *  custom_id: '12345678901234567890123456789012',
+	 * });
+	 * ```
+	 *
+	 * @example
+	 * Creating a button using setters and API data
+	 * ```ts
+	 * const button = new ButtonBuilder({
+	 * 	style: 'primary',
+	 * 	label: 'Click Me',
+	 * })
+	 * .setEmoji({ name: ':smile:', id: '12345678901234567890123456789012' })
+	 * .setCustomId('12345678901234567890123456789012');
+	 * ```
+	 */
 	public constructor(data?: Partial<APIButtonComponent>) {
 		super({ type: ComponentType.Button, ...data });
 	}
@@ -38,6 +67,10 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	/**
 	 * Sets the URL for this button
 	 *
+	 * @remarks
+	 * This method is only available to buttons using the `Link` button style.
+	 * Only three types of URL schemes are currently supported: `https://`, `http://` and `discord://`
+	 *
 	 * @param url - The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
@@ -47,6 +80,9 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 
 	/**
 	 * Sets the custom id for this button
+	 *
+	 * @remarks
+	 * This method is only applicable to buttons that are not using the `Link` button style.
 	 *
 	 * @param customId - The custom id to use for this button
 	 */
@@ -86,7 +122,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	}
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(

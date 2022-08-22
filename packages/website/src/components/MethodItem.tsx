@@ -3,11 +3,10 @@ import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { DocMethod } from '~/DocModel/DocMethod';
-import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
+import type { ApiMethodJSON, ApiMethodSignatureJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import { Visibility } from '~/DocModel/Visibility';
 
-type MethodResolvable = ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>;
+type MethodResolvable = ApiMethodJSON | ApiMethodSignatureJSON;
 
 function getShorthandName(data: MethodResolvable) {
 	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
@@ -20,7 +19,8 @@ function getShorthandName(data: MethodResolvable) {
 }
 
 export function MethodItem({ data }: { data: MethodResolvable }) {
-	const method = data as ReturnType<DocMethod['toJSON']>;
+	const method = data as ApiMethodJSON;
+
 	return (
 		<Stack
 			id={`${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`}

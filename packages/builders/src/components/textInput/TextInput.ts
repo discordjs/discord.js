@@ -104,7 +104,7 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APITextInputComponent {
 		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);

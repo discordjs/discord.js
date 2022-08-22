@@ -155,7 +155,7 @@ export interface Networking extends EventEmitter {
 	/**
 	 * Debug event for Networking.
 	 *
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	on(event: 'error', listener: (error: Error) => void): this;

@@ -25,7 +25,7 @@ import { type PropsWithChildren, useState } from 'react';
 import { VscChevronDown, VscPackage } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import { SidebarItems } from './SidebarItems';
-import type { DocItem } from '~/DocModel/DocItem';
+import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { findMember } from '~/util/model.server';
 import type { getMembers } from '~/util/parse.server';
 
@@ -36,7 +36,7 @@ export interface SidebarLayoutProps {
 		member: ReturnType<typeof findMember>;
 	};
 
-	selectedMember?: ReturnType<DocItem['toJSON']> | undefined;
+	selectedMember?: ApiItemJSON | undefined;
 }
 
 export type Members = SidebarLayoutProps['data']['members'];

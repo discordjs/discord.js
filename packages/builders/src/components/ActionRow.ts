@@ -59,7 +59,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	}
 
 	/**
-	 * {@inheritDoc JSONEncodable.toJSON}
+	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>> {
 		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions

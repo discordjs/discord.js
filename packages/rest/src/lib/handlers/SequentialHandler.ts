@@ -30,7 +30,7 @@ const enum QueueType {
  */
 export class SequentialHandler implements IHandler {
 	/**
-	 * The unique id of the handler
+	 * {@inheritDoc IHandler.id}
 	 */
 	public readonly id: string;
 
@@ -87,7 +87,7 @@ export class SequentialHandler implements IHandler {
 	}
 
 	/**
-	 * If the bucket is currently inactive (no pending requests)
+	 * {@inheritDoc IHandler.inactive}
 	 */
 	public get inactive(): boolean {
 		return (
@@ -161,12 +161,7 @@ export class SequentialHandler implements IHandler {
 	}
 
 	/**
-	 * Queues a request to be sent
-	 *
-	 * @param routeId - The generalized api route with literal ids for major parameters
-	 * @param url - The url to do the request on
-	 * @param options - All the information needed to make a request
-	 * @param requestData - Extra data from the user's request needed for errors and additional processing
+	 * {@inheritDoc IHandler.queueRequest}
 	 */
 	public async queueRequest(
 		routeId: RouteData,

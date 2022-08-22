@@ -35,7 +35,7 @@ export class ContextMenuCommandBuilder {
 	 * Whether the command is enabled by default when the app is added to a guild
 	 *
 	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * You should use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
@@ -86,7 +86,7 @@ export class ContextMenuCommandBuilder {
 	 * @param value - Whether or not to enable this command by default
 	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions

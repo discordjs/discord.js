@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/collection",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
 		"test": "vitest run",
@@ -51,23 +51,24 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",
-		"@favware/cliff-jumper": "^1.8.6",
-		"@microsoft/api-extractor": "^7.29.2",
-		"@types/node": "^16.11.48",
-		"@typescript-eslint/eslint-plugin": "^5.33.0",
-		"@typescript-eslint/parser": "^5.33.0",
-		"@vitest/coverage-c8": "^0.22.0",
+		"@favware/cliff-jumper": "^1.8.7",
+		"@microsoft/api-extractor": "^7.29.3",
+		"@types/node": "^16.11.52",
+		"@typescript-eslint/eslint-plugin": "^5.33.1",
+		"@typescript-eslint/parser": "^5.33.1",
+		"@vitest/coverage-c8": "^0.22.1",
 		"downlevel-dts": "^0.10.0",
 		"eslint": "^8.22.0",
 		"eslint-config-marine": "^9.4.1",
 		"eslint-config-prettier": "^8.5.0",
-		"eslint-import-resolver-typescript": "^3.4.1",
+		"eslint-import-resolver-typescript": "^3.4.2",
 		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-tsdoc": "^0.2.16",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
+		"rollup-plugin-typescript2": "^0.33.0",
 		"typescript": "^4.7.4",
-		"unbuild": "^0.8.8",
-		"vitest": "^0.22.0"
+		"unbuild": "^0.8.9",
+		"vitest": "^0.22.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

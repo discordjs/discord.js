@@ -203,7 +203,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Fetches the gateway information from Discord - or returns it from cache if available
-	 * @param force Whether to ignore the cache and force a fresh fetch
+	 * @param force - Whether to ignore the cache and force a fresh fetch
 	 */
 	public async fetchGatewayInformation(force = false) {
 		if (this.gatewayInformation) {
@@ -222,7 +222,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Updates your total shard count on-the-fly, spawning shards as needed
-	 * @param shardCount The new shard count to use
+	 * @param shardCount - The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
 		await this.strategy.destroy({ reason: 'User is adjusting their shards' });

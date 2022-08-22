@@ -70,6 +70,9 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APIModalInteractionResponseCallbackData {
 		validateRequiredParameters(this.data.custom_id, this.data.title, this.components);
 		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
