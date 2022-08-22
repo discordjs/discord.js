@@ -6,5 +6,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/docs', '/docs/:branch', '/docs/:branch/packages'],
+	matcher: ['/docs', '/docs/:branch'],
 };

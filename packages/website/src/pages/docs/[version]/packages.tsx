@@ -1,0 +1,44 @@
+import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack } from '@mantine/core';
+import Link from 'next/link';
+import { VscArrowRight, VscPackage } from 'react-icons/vsc';
+
+const useStyles = createStyles((theme) => ({
+	control: {
+		padding: theme.spacing.xs,
+		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+
+		'&:hover': {
+			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
+			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+		},
+	},
+}));
+
+export default function PackagesRoute() {
+	const { classes } = useStyles();
+	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
+
+	return (
+		<Container pt={96} size="xs">
+			<Stack sx={{ flexGrow: 1 }}>
+				{packages.map((pkg) => (
+					<Link key={pkg} href={`/docs/main/packages/${pkg}`} passHref>
+						<UnstyledButton className={classes.control} component="a">
+							<Group position="apart">
+								<Group>
+									<ThemeIcon size={30}>
+										<VscPackage />
+									</ThemeIcon>
+									<Text weight={600} size="md">
+										{pkg}
+									</Text>
+								</Group>
+								<VscArrowRight size={20} />
+							</Group>
+						</UnstyledButton>
+					</Link>
+				))}
+			</Stack>
+		</Container>
+	);
+}
