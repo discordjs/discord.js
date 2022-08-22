@@ -92,7 +92,7 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 	const { classes } = useStyles({ opened: openedPicker });
 
 	const libraryMenuItems = libraries.map((item) => (
-		<Menu.Item key={item.label} component={NextLink} href={`/docs/main/packages/${item.value}`}>
+		<Menu.Item key={item.label} component={NextLink} href={`/docs/packages/${item.value}/main`}>
 			{item.label}
 		</Menu.Item>
 	));
