@@ -2052,6 +2052,7 @@ __metadata:
     rehype-slug: ^5.0.1
     remark-gfm: ^3.0.1
     sharp: ^0.30.7
+    swr: ^1.3.0
     typescript: ^4.7.4
     unocss: ^0.45.12
     vercel: ^28.1.0
@@ -15630,6 +15631,15 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"swr@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "swr@npm:1.3.0"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0
+  checksum: e7a184f0d560e9c8be85c023cc8e65e56a88a6ed46f9394b301b07f838edca23d2e303685319a4fcd620b81d447a7bcb489c7fa0a752c259f91764903c690cdb
   languageName: node
   linkType: hard
 

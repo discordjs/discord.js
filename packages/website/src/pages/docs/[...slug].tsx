@@ -1,11 +1,13 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Box } from '@mantine/core';
+import { Affix, Box, Button, Transition } from '@mantine/core';
+import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiPackage } from '@microsoft/api-extractor-model';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
+import { VscChevronUp } from 'react-icons/vsc';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeIgnore from 'rehype-ignore';
 import rehypeRaw from 'rehype-raw';
@@ -165,6 +167,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		return {
 			props: {
 				packageName,
+				branchName,
 				data: {
 					members: pkg ? getMembers(pkg, branchName) : [],
 					member:
@@ -202,6 +205,9 @@ const member = (props?: ApiItemJSON | undefined) => {
 };
 
 export default function Slug(props: Partial<SidebarLayoutProps & { error?: string }>) {
+	const [scroll, scrollTo] = useWindowScroll();
+	const matches = useMediaQuery('(max-width: 1200px)', true, { getInitialValueInEffect: false });
+
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
@@ -213,6 +219,19 @@ export default function Slug(props: Partial<SidebarLayoutProps & { error?: strin
 							<title key="title">discord.js | {props.data.member.name}</title>
 						</Head>
 						{member(props.data.member)}
+						<Affix position={{ bottom: 20, right: matches ? 20 : 280 }}>
+							<Transition transition="slide-up" mounted={scroll.y > 250}>
+								{(transitionStyles) => (
+									<Button
+										leftIcon={<VscChevronUp size={20} />}
+										style={transitionStyles}
+										onClick={() => scrollTo({ y: 0 })}
+									>
+										Scroll to top
+									</Button>
+								)}
+							</Transition>
+						</Affix>
 					</>
 				) : props.data?.source ? (
 					<Box px="xl">

@@ -18,6 +18,7 @@ import {
 	ActionIcon,
 	useMantineColorScheme,
 	Center,
+	Stack,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
@@ -25,15 +26,19 @@ import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type PropsWithChildren, useState } from 'react';
-import { VscChevronDown, VscPackage } from 'react-icons/vsc';
+import { VscChevronDown, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
+import useSWR from 'swr';
 import { SidebarItems } from './SidebarItems';
 import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { findMember } from '~/util/model.server';
 import type { getMembers } from '~/util/parse.server';
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export interface SidebarLayoutProps {
 	packageName: string;
+	branchName: string;
 	data: {
 		members: ReturnType<typeof getMembers>;
 		member: ReturnType<typeof findMember>;
@@ -54,24 +59,31 @@ export interface GroupedMembers {
 	Variables: Members;
 }
 
-const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
-	control: {
-		display: 'block',
-		width: '100%',
-		padding: theme.spacing.xs,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+const useStyles = createStyles(
+	(theme, { openedLib, openedVersion }: { openedLib: boolean; openedVersion: boolean }) => ({
+		control: {
+			display: 'block',
+			width: '100%',
+			padding: theme.spacing.xs,
+			color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
 
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+			'&:hover': {
+				backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
+				color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+			},
 		},
-	},
 
-	icon: {
-		transition: 'transform 150ms ease',
-		transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
-	},
-}));
+		iconLib: {
+			transition: 'transform 150ms ease',
+			transform: openedLib ? 'rotate(180deg)' : 'rotate(0deg)',
+		},
+
+		iconVersion: {
+			transition: 'transform 150ms ease',
+			transform: openedVersion ? 'rotate(180deg)' : 'rotate(0deg)',
+		},
+	}),
+);
 
 const libraries = [
 	{ label: 'builders', value: 'builders' },
@@ -83,23 +95,39 @@ const libraries = [
 	{ label: 'ws', value: 'ws' },
 ];
 
-export function SidebarLayout({ packageName, data, children }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
+export function SidebarLayout({
+	packageName,
+	branchName,
+	data,
+	children,
+}: PropsWithChildren<Partial<SidebarLayoutProps>>) {
 	const router = useRouter();
-
+	const { data: versions } = useSWR<string[]>(
+		`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
+		fetcher,
+	);
 	const theme = useMantineTheme();
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 	const dark = colorScheme === 'dark';
 
 	const [opened, setOpened] = useState(false);
-	const [openedPicker, setOpenedPicker] = useState(false);
+	const [openedLibPicker, setOpenedLibPicker] = useState(false);
+	const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
 
-	const { classes } = useStyles({ opened: openedPicker });
+	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
 
 	const libraryMenuItems = libraries.map((item) => (
 		<Menu.Item key={item.label} component={NextLink} href={`/docs/packages/${item.value}/main`}>
 			{item.label}
 		</Menu.Item>
 	));
+
+	const versionMenuItems =
+		versions?.map((item) => (
+			<Menu.Item key={item} component={NextLink} href={`/docs/packages/${packageName ?? 'builders'}/${item}`}>
+				{item}
+			</Menu.Item>
+		)) ?? [];
 
 	const asPathWithoutQuery = router.asPath.split('?')[0]?.split('#')[0];
 	const breadcrumbs = asPathWithoutQuery?.split('/').map((path, idx, original) => (
@@ -124,10 +152,10 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 					{packageName && data ? (
 						<>
 							<Navbar.Section p="xs">
-								<>
+								<Stack spacing="xs">
 									<Menu
-										onOpen={() => setOpenedPicker(true)}
-										onClose={() => setOpenedPicker(false)}
+										onOpen={() => setOpenedLibPicker(true)}
+										onClose={() => setOpenedLibPicker(false)}
 										radius="xs"
 										width="target"
 									>
@@ -142,16 +170,40 @@ export function SidebarLayout({ packageName, data, children }: PropsWithChildren
 															{packageName}
 														</Text>
 													</Group>
-													<VscChevronDown className={classes.icon} size={20} />
+													<VscChevronDown className={classes.iconLib} size={20} />
 												</Group>
 											</UnstyledButton>
 										</Menu.Target>
 										<Menu.Dropdown>{libraryMenuItems}</Menu.Dropdown>
 									</Menu>
-								</>
+
+									<Menu
+										onOpen={() => setOpenedVersionPicker(true)}
+										onClose={() => setOpenedVersionPicker(false)}
+										radius="xs"
+										width="target"
+									>
+										<Menu.Target>
+											<UnstyledButton className={classes.control}>
+												<Group position="apart">
+													<Group>
+														<ThemeIcon size={30}>
+															<VscVersions size={20} />
+														</ThemeIcon>
+														<Text weight="600" size="md">
+															{branchName}
+														</Text>
+													</Group>
+													<VscChevronDown className={classes.iconVersion} size={20} />
+												</Group>
+											</UnstyledButton>
+										</Menu.Target>
+										<Menu.Dropdown>{versionMenuItems}</Menu.Dropdown>
+									</Menu>
+								</Stack>
 							</Navbar.Section>
 
-							<Navbar.Section p="xs" grow component={ScrollArea}>
+							<Navbar.Section px="xs" pb="xs" grow component={ScrollArea}>
 								<SidebarItems members={data.members} setOpened={setOpened} />
 							</Navbar.Section>
 						</>
