@@ -104,7 +104,7 @@ export function DocContainer({
 					<Stack>{children}</Stack>
 				</Stack>
 			</Stack>
-			{kind === 'Class' && methods && properties ? (
+			{kind === 'Class' && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
 					<Aside
 						sx={{ backgroundColor: 'transparent' }}
@@ -113,7 +113,7 @@ export function DocContainer({
 						withBorder={false}
 					>
 						<ScrollArea p="xs">
-							<TableOfContentItems properties={properties} methods={methods}></TableOfContentItems>
+							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
 						</ScrollArea>
 					</Aside>
 				</MediaQuery>

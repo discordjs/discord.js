@@ -68,10 +68,18 @@ export function TableOfContentItems({
 				<VscListSelection size={20} />
 				<Text>Table of content</Text>
 			</Group>
-			<Text>Properties</Text>
-			{propertyItems}
-			<Text>Methods</Text>
-			{methodItems}
+			{propertyItems.length ? (
+				<>
+					<Text>Properties</Text>
+					{propertyItems}
+				</>
+			) : null}
+			{methodItems.length ? (
+				<>
+					<Text>Methods</Text>
+					{methodItems}
+				</>
+			) : null}
 		</Box>
 	);
 }
