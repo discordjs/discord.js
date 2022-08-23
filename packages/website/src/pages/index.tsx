@@ -8,8 +8,8 @@ const useStyles = createStyles((theme) => ({
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingTop: theme.spacing.xl * 4,
-		paddingBottom: theme.spacing.xl * 4,
+		paddingTop: theme.spacing.xl * 6,
+		paddingBottom: theme.spacing.xl * 2,
 
 		[theme.fn.smallerThan('md')]: {
 			flexDirection: 'column',
