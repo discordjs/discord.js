@@ -108,7 +108,7 @@ export function SidebarItems({
 	}, [router.asPath]);
 
 	return (
-		<Box pb="xl">
+		<Box sx={(theme) => ({ paddingBottom: 48, [theme.fn.smallerThan('md')]: { paddingBottom: 128 } })}>
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (

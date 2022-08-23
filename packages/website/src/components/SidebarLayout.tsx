@@ -345,7 +345,7 @@ export function SidebarLayout({
 									/>
 								</a>
 							</Link>
-							<Group align="flex-start" spacing={48}>
+							<Group sx={(theme) => ({ gap: 50, [theme.fn.smallerThan('sm')]: { gap: 25 } })} align="flex-start">
 								<Stack spacing={8}>
 									<Title order={4}>Community</Title>
 									<Stack spacing={0}>
