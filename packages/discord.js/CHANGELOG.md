@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.3.0](https://github.com/discordjs/discord.js/compare/14.2.0...14.3.0) - (2022-08-22)
+
+## Bug Fixes
+
+- **GuildMemberManager:** `add()` method throws an error (#8539) ([3bef901](https://github.com/discordjs/discord.js/commit/3bef9018c0be3c5dc51d03b796d08b925dc4e1b9))
+- **Guild:** Widget channel types and fixes (#8530) ([23a0b6c](https://github.com/discordjs/discord.js/commit/23a0b6ccf27410963bd4f5c53d9ee2ce019e90a8))
+- **Embed:** Reference video in video (#8473) ([c97977a](https://github.com/discordjs/discord.js/commit/c97977a3e806bd5d8682bc7fb22ebec1a8ceecdc))
+
+## Documentation
+
+- **GuildAuditLogsEntry:** Correct `action` wording (#8499) ([7d25072](https://github.com/discordjs/discord.js/commit/7d2507279cc9d1397c7d61e7c7b856ff4bc17c86))
+
+## Features
+
+- **GuildMemberManager:** AddRole and removeRole (#8510) ([cda3f00](https://github.com/discordjs/discord.js/commit/cda3f005b1546fdb8410e9550526956f840857fc))
+- Deprecate `ActionRow.from()` (#8504) ([f9c25dd](https://github.com/discordjs/discord.js/commit/f9c25ddcfe68f089e13f1090c3df4bd7cd74d2b7))
+- **WebSocketShard:** Support new resume url (#8480) ([bc06cc6](https://github.com/discordjs/discord.js/commit/bc06cc638d2f57ab5c600e8cdb6afc8eb2180166))
+
+## Refactor
+
+- **GuildAuditLogsEntry:** Remove `guild` from application command permission update extra (#8520) ([2b8074d](https://github.com/discordjs/discord.js/commit/2b8074dd12f2f1e957caffb57e5fd4d7be88dc25))
+
+## Typings
+
+- Inference of guild in `MessageManager` (#8538) ([6bb1474](https://github.com/discordjs/discord.js/commit/6bb1474d2001b76773954c959b2c2687e1df0136))
+- Allow choice's value type to be strictly inferred (#8529) ([b3f7c32](https://github.com/discordjs/discord.js/commit/b3f7c32f7f91f12766178f5e17585856e81d9a87))
+- **GuildAuditLogs:** Allow fetching to return all possible values (#8522) ([0dba8ad](https://github.com/discordjs/discord.js/commit/0dba8adbd2e6efd634bd3eb31df09467ba8a8a0d))
+- Correct `EventEmitter.on (static)` return type (#8524) ([16bbc8a](https://github.com/discordjs/discord.js/commit/16bbc8aa208a8a16c22be24696f57d5f7a5faf2b))
+- **GuildAuditLogs:** Remove static `Entry` (#8521) ([7a3d18d](https://github.com/discordjs/discord.js/commit/7a3d18dd6d1fe27393d00019b9ecd35c98b95ee7))
+- Disallow some channel types from webhook creation (#8531) ([4882b17](https://github.com/discordjs/discord.js/commit/4882b17a77484f801faa19fb971f2e6abd88e59f))
+- Implement max/min values for autocomplete (#8498) ([812f7f1](https://github.com/discordjs/discord.js/commit/812f7f1ea86fc953aa796875cbc7ccc434203d77))
+- **ModalMessageModalSubmitInteraction:** ChannelId is not nullable (#8496) ([c31a5cf](https://github.com/discordjs/discord.js/commit/c31a5cfcc82706667768eac77b5f99ba69cf3c91))
+- Change type of ApplicationCommandSubCommand.options (#8476) ([ebaf158](https://github.com/discordjs/discord.js/commit/ebaf158006d3c7db3b8c695e7c027b8af11999ba))
+
 # [14.2.0](https://github.com/discordjs/discord.js/compare/14.1.2...14.2.0) - (2022-08-10)
 
 ## Bug Fixes

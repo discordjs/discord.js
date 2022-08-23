@@ -116,6 +116,9 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APISelectMenuComponent {
 		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
 		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions

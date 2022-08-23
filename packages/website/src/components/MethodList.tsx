@@ -1,19 +1,19 @@
+import { Divider, Stack } from '@mantine/core';
+import { Fragment } from 'react';
 import { MethodItem } from './MethodItem';
-import type { DocMethod } from '~/DocModel/DocMethod';
-import type { DocMethodSignature } from '~/DocModel/DocMethodSignature';
+import type { ApiMethodJSON, ApiMethodSignatureJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export interface MethodListProps {
-	data: (ReturnType<DocMethod['toJSON']> | ReturnType<DocMethodSignature['toJSON']>)[];
-}
-
-export function MethodList({ data }: MethodListProps) {
+export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignatureJSON)[] }) {
 	return (
-		<div>
-			<div className="flex flex-col gap-5">
-				{data.map((method) => (
-					<MethodItem key={method.name} data={method} />
-				))}
-			</div>
-		</div>
+		<Stack>
+			{data.map((method) => (
+				<Fragment
+					key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
+				>
+					<MethodItem data={method} />
+					<Divider size="md" />
+				</Fragment>
+			))}
+		</Stack>
 	);
 }

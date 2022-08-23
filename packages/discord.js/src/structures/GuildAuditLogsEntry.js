@@ -106,7 +106,7 @@ class GuildAuditLogsEntry {
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
-     * Specific action type of this entry in its string presentation
+     * The type of action that occured.
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
@@ -220,7 +220,6 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ApplicationCommandPermissionUpdate:
         this.extra = {
           applicationId: data.options.application_id,
-          guild: guild.client.guilds.cache.get(data.options.guild_id) ?? { id: data.options.guild_id },
         };
         break;
 

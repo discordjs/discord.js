@@ -43,6 +43,10 @@ export interface SessionInfo {
 	 * The total number of shards at the time of this shard identifying
 	 */
 	shardCount: number;
+	/**
+	 * URL to use when resuming
+	 */
+	resumeURL: string;
 }
 
 /**
@@ -75,17 +79,23 @@ export interface OptionalWebSocketManagerOptions {
 	/**
 	 * The ids of the shards this WebSocketManager should manage.
 	 * Use `null` to simply spawn 0 through `shardCount - 1`
+	 *
 	 * @example
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   shardIds: [1, 3, 7], // spawns shard 1, 3, and 7, nothing else
 	 * });
+	 * ```
+	 *
 	 * @example
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   shardIds: {
 	 *     start: 3,
 	 *     end: 6,
 	 *   }, // spawns shards 3, 4, 5, and 6
 	 * });
+	 * ```
 	 */
 	shardIds: number[] | ShardRange | null;
 	/**
@@ -102,22 +112,24 @@ export interface OptionalWebSocketManagerOptions {
 	identifyProperties: GatewayIdentifyProperties;
 	/**
 	 * The gateway version to use
-	 * @default '10'
+	 * @defaultValue `'10'`
 	 */
 	version: string;
 	/**
 	 * The encoding to use
-	 * @default 'json'
+	 * @defaultValue `'json'`
 	 */
 	encoding: Encoding;
 	/**
 	 * The compression method to use
-	 * @default null (no compression)
+	 * @defaultValue `null` (no compression)
 	 */
 	compression: CompressionMethod | null;
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
+	 *
 	 * @example
+	 * ```ts
 	 * const manager = new WebSocketManager({
 	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
 	 *     // Fetch this info from redis or similar
@@ -125,6 +137,7 @@ export interface OptionalWebSocketManagerOptions {
 	 *     // Return null if no information is found
 	 *   },
 	 * });
+	 * ```
 	 */
 	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
 	/**
@@ -174,7 +187,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Strategy used to manage shards
-	 * @default SimpleManagerToShardStrategy
+	 * @defaultValue `SimpleManagerToShardStrategy`
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
@@ -190,7 +203,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Fetches the gateway information from Discord - or returns it from cache if available
-	 * @param force Whether to ignore the cache and force a fresh fetch
+	 * @param force - Whether to ignore the cache and force a fresh fetch
 	 */
 	public async fetchGatewayInformation(force = false) {
 		if (this.gatewayInformation) {
@@ -209,7 +222,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Updates your total shard count on-the-fly, spawning shards as needed
-	 * @param shardCount The new shard count to use
+	 * @param shardCount - The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
 		await this.strategy.destroy({ reason: 'User is adjusting their shards' });
@@ -259,6 +272,16 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public async connect() {
 		const shardCount = await this.getShardCount();
+
+		const data = await this.fetchGatewayInformation();
+		if (data.session_start_limit.remaining < shardCount) {
+			throw new Error(
+				`Not enough sessions remaining to spawn ${shardCount} shards; only ${
+					data.session_start_limit.remaining
+				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
+			);
+		}
+
 		// First, make sure all our shards are spawned
 		await this.updateShardCount(shardCount);
 		await this.strategy.connect();

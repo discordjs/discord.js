@@ -1,6 +1,5 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
@@ -128,8 +127,12 @@ class GuildMemberManager extends CachedManager {
       resolvedOptions.roles = resolvedRoles;
     }
     const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
-    // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
+    // Data is an empty Uint8Array if the member is already part of the guild.
+    return data instanceof Uint8Array
+      ? options.fetchWhenExisting === false
+        ? null
+        : this.fetch(userId)
+      : this._add(data);
   }
 
   /**
@@ -439,6 +442,42 @@ class GuildMemberManager extends CachedManager {
    */
   unban(user, reason) {
     return this.guild.bans.remove(user, reason);
+  }
+
+  /**
+   * Options used for adding or removing a role from a member.
+   * @typedef {Object} AddOrRemoveGuildMemberRoleOptions
+   * @property {GuildMemberResolvable} user The user to add/remove the role from
+   * @property {RoleResolvable} role The role to add/remove
+   * @property {string} [reason] Reason for adding/removing the role
+   */
+
+  /**
+   * Adds a role to a member.
+   * @param {AddOrRemoveGuildMemberRoleOptions} options Options for adding the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async addRole(options) {
+    const { user, role, reason } = options;
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+    await this.client.rest.put(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
+  }
+
+  /**
+   * Removes a role from a member.
+   * @param {AddOrRemoveGuildMemberRoleOptions} options Options for removing the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async removeRole(options) {
+    const { user, role, reason } = options;
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+    await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
 
   async _fetchSingle({ user, cache, force = false }) {

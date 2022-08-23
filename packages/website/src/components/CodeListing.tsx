@@ -1,7 +1,12 @@
-import type { ReactNode } from 'react';
-import { CommentSection } from './Comment';
+import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import type { PropsWithChildren } from 'react';
+import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
-import type { DocItem } from '~/DocModel/DocItem';
+import { InheritanceText } from './InheritanceText';
+import { TSDoc } from './tsdoc/TSDoc';
+import type { ApiItemJSON, InheritanceData } from '~/DocModel/ApiNodeJSONEncoder';
+import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
@@ -9,36 +14,83 @@ export enum CodeListingSeparatorType {
 	Value = '=',
 }
 
-export interface CodeListingProps {
-	name: string;
-	summary?: ReturnType<DocItem['toJSON']>['summary'];
-	typeTokens: TokenDocumentation[];
-	separator?: CodeListingSeparatorType;
-	children?: ReactNode;
-	className?: string | undefined;
-}
+const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		alignItems: 'center',
+		gap: 16,
+
+		[theme.fn.smallerThan('sm')]: {
+			flexDirection: 'column',
+			alignItems: 'unset',
+		},
+	},
+}));
 
 export function CodeListing({
 	name,
-	className,
 	separator = CodeListingSeparatorType.Type,
-	summary,
 	typeTokens,
+	readonly = false,
+	optional = false,
+	summary,
 	children,
-}: CodeListingProps) {
+	comment,
+	deprecation,
+	inheritanceData,
+}: PropsWithChildren<{
+	name: string;
+	separator?: CodeListingSeparatorType;
+	typeTokens: TokenDocumentation[];
+	readonly?: boolean;
+	optional?: boolean;
+	summary?: ApiItemJSON['summary'];
+	comment?: AnyDocNodeJSON | null;
+	deprecation?: AnyDocNodeJSON | null;
+	inheritanceData?: InheritanceData | null;
+}>) {
+	const { classes } = useStyles();
+	const matches = useMediaQuery('(max-width: 768px)');
+
 	return (
-		<div className={className}>
-			<div key={name} className="flex flex-col">
-				<div className="w-full flex flex-row gap-3">
-					<h4 className="font-mono m-0">{`${name}`}</h4>
-					<h4 className="m-0">{separator}</h4>
-					<h4 className="font-mono m-0 break-all">
+		<Stack id={name} className="scroll-mt-30" spacing="xs">
+			<Box className={classes.outer} ml={matches ? 0 : -45}>
+				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+					<ActionIcon component="a" href={`#${name}`} variant="transparent">
+						<FiLink size={20} />
+					</ActionIcon>
+				</MediaQuery>
+				{deprecation || readonly || optional ? (
+					<Group spacing={10} noWrap>
+						{deprecation ? (
+							<Badge variant="filled" color="red">
+								Deprecated
+							</Badge>
+						) : null}
+						{readonly ? <Badge variant="filled">Readonly</Badge> : null}
+						{optional ? <Badge variant="filled">Optional</Badge> : null}
+					</Group>
+				) : null}
+				<Group spacing={10}>
+					<Title order={4} className="font-mono">
+						{name}
+						{optional ? '?' : ''}
+					</Title>
+					<Title order={4}>{separator}</Title>
+					<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
 						<HyperlinkedText tokens={typeTokens} />
-					</h4>
-				</div>
-				{summary && <CommentSection textClassName="text-dark-100 dark:text-gray-300" node={summary} />}
-				{children}
-			</div>
-		</div>
+					</Title>
+				</Group>
+			</Box>
+			<Group>
+				<Stack>
+					{deprecation ? <TSDoc node={deprecation} /> : null}
+					{summary && <TSDoc node={summary} />}
+					{comment && <TSDoc node={comment} />}
+					{inheritanceData ? <InheritanceText data={inheritanceData} /> : null}
+					{children}
+				</Stack>
+			</Group>
+		</Stack>
 	);
 }

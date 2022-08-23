@@ -53,7 +53,7 @@ export enum VoiceConnectionStatus {
  */
 export interface VoiceConnectionSignallingState {
 	status: VoiceConnectionStatus.Signalling;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -88,7 +88,7 @@ export enum VoiceConnectionDisconnectReason {
  */
 export interface VoiceConnectionDisconnectedBaseState {
 	status: VoiceConnectionStatus.Disconnected;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -128,7 +128,7 @@ export type VoiceConnectionDisconnectedState =
 export interface VoiceConnectionConnectingState {
 	status: VoiceConnectionStatus.Connecting;
 	networking: Networking;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -139,7 +139,7 @@ export interface VoiceConnectionConnectingState {
 export interface VoiceConnectionReadyState {
 	status: VoiceConnectionStatus.Ready;
 	networking: Networking;
-	subscription?: PlayerSubscription;
+	subscription?: PlayerSubscription | undefined;
 	adapter: DiscordGatewayAdapterImplementerMethods;
 }
 
@@ -165,22 +165,22 @@ export type VoiceConnectionState =
 export interface VoiceConnection extends EventEmitter {
 	/**
 	 * Emitted when there is an error emitted from the voice connection
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'error', listener: (error: Error) => void): this;
 	/**
 	 * Emitted debugging information about the voice connection
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	/**
 	 * Emitted when the state of the voice connection changes
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'stateChange', listener: (oldState: VoiceConnectionState, newState: VoiceConnectionState) => void): this;
 	/**
 	 * Emitted when the state of the voice connection changes to a specific status
-	 * @event
+	 * @eventProperty
 	 */
 	on<T extends VoiceConnectionStatus>(
 		event: T,
@@ -688,7 +688,7 @@ export class VoiceConnection extends EventEmitter {
 	 *
 	 * @param subscription - The removed subscription
 	 */
-	private onSubscriptionRemoved(subscription: PlayerSubscription) {
+	protected onSubscriptionRemoved(subscription: PlayerSubscription) {
 		if (this.state.status !== VoiceConnectionStatus.Destroyed && this.state.subscription === subscription) {
 			this.state = {
 				...this.state,

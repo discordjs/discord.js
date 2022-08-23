@@ -1,21 +1,23 @@
+import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
 import { ParametersSection } from '../Sections';
-import type { DocFunction } from '~/DocModel/DocFunction';
+import type { ApiFunctionJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export interface FunctionProps {
-	data: ReturnType<DocFunction['toJSON']>;
-}
+export function Function({ data }: { data: ApiFunctionJSON }) {
+	const router = useRouter();
 
-export function Function({ data }: FunctionProps) {
 	return (
 		<DocContainer
-			name={data.name}
+			name={`${data.name}${data.overloadIndex && data.overloadIndex > 1 ? ` (${data.overloadIndex})` : ''}`}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameterData}
+			typeParams={data.typeParameters}
 		>
-			<ParametersSection data={data.parameters} />
+			<Skeleton visible={router.isFallback} radius="sm">
+				<ParametersSection data={data.parameters} />
+			</Skeleton>
 		</DocContainer>
 	);
 }

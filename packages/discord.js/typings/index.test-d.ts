@@ -134,6 +134,8 @@ import {
   Webhook,
   WebhookClient,
   InteractionWebhook,
+  GuildAuditLogsActionType,
+  GuildAuditLogsTargetType,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1047,11 +1049,11 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test whether the structures implement send
-expectType<TextBasedChannelFields['send']>(dmChannel.send);
-expectType<TextBasedChannelFields['send']>(threadChannel.send);
-expectType<TextBasedChannelFields['send']>(newsChannel.send);
-expectType<TextBasedChannelFields['send']>(textChannel.send);
-expectType<TextBasedChannelFields['send']>(voiceChannel.send);
+expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
+expectType<TextBasedChannelFields<true>['send']>(threadChannel.send);
+expectType<TextBasedChannelFields<true>['send']>(newsChannel.send);
+expectType<TextBasedChannelFields<true>['send']>(textChannel.send);
+expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
@@ -1100,6 +1102,7 @@ expectAssignable<'death'>(ShardEvents.Death);
 expectAssignable<1>(Status.Connecting);
 
 declare const applicationCommandData: ApplicationCommandData;
+declare const applicationCommandOptionData: ApplicationCommandOptionData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
 {
@@ -1119,6 +1122,24 @@ declare const applicationCommandManager: ApplicationCommandManager;
   expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
     applicationCommandManager.set([applicationCommandData], '0'),
   );
+
+  // Test inference of choice values.
+  if ('choices' in applicationCommandOptionData) {
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.String) {
+      expectType<string>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<number>(applicationCommandOptionData.choices[0]!.value);
+    }
+
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Integer) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
+
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Number) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
+  }
 }
 
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
@@ -1169,6 +1190,34 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
   expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
+
+  const channel = guildChannelManager.cache.first()!;
+
+  if (channel.isTextBased()) {
+    const { messages } = channel;
+    const message = await messages.fetch('123');
+    expectType<MessageManager<true>>(messages);
+    expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
+    expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
+    expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
+    expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Guild>(message.guild);
+    expectType<Snowflake>(message.guildId);
+    expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+  }
+}
+
+{
+  const { messages } = dmChannel;
+  const message = await messages.fetch('123');
+  expectType<MessageManager<false>>(messages);
+  expectType<Promise<Message<false>>>(messages.crosspost('1234567890')); // This shouldn't even exist!
+  expectType<Promise<Message<false>>>(messages.edit('1234567890', 'text'));
+  expectType<Promise<Message<false>>>(messages.fetch('1234567890'));
+  expectType<Promise<Collection<Snowflake, Message<false>>>>(messages.fetchPinned());
+  expectType<null>(message.guild);
+  expectType<null>(message.guildId);
+  expectType<TextBasedChannel>(message.channel.messages.channel);
 }
 
 declare const messageManager: MessageManager;
@@ -1533,7 +1582,7 @@ expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
 );
 
 expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: null }));
-expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs());
+expectType<Promise<GuildAuditLogs<AuditLogEvent>>>(guild.fetchAuditLogs());
 
 expectType<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
@@ -1542,10 +1591,10 @@ expectAssignable<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete',
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
 );
 
-expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<null, 'All', 'Unknown'> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 

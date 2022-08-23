@@ -52,9 +52,31 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Adds fields to the embed (max 25)
+	 * Appends fields to the embed
 	 *
-	 * @param fields The fields to add
+	 * @remarks
+	 * This method accepts either an array of fields or a variable number of field parameters.
+	 * The maximum amount of fields that can be added is 25.
+	 *
+	 * @example
+	 * Using an array
+	 * ```ts
+	 * const fields: APIEmbedField[] = ...;
+	 * const embed = new EmbedBuilder()
+	 * 	.addFields(fields);
+	 * ```
+	 *
+	 * @example
+	 * Using rest parameters (variadic)
+	 * ```ts
+	 * const embed = new EmbedBuilder()
+	 * 	.addFields(
+	 * 		{ name: 'Field 1', value: 'Value 1' },
+	 * 		{ name: 'Field 2', value: 'Value 2' },
+	 * 	);
+	 * ```
+	 *
+	 * @param fields - The fields to add
 	 */
 	public addFields(...fields: RestOrArray<APIEmbedField>): this {
 		fields = normalizeArray(fields);
@@ -70,11 +92,37 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Removes, replaces, or inserts fields in the embed (max 25)
+	 * Removes, replaces, or inserts fields in the embed.
 	 *
-	 * @param index The index to start at
-	 * @param deleteCount The number of fields to remove
-	 * @param fields The replacing field objects
+	 * @remarks
+	 * This method behaves similarly
+	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice}.
+	 * The maximum amount of fields that can be added is 25.
+	 *
+	 * It's useful for modifying and adjusting order of the already-existing fields of an embed.
+	 *
+	 * @example
+	 * Remove the first field
+	 * ```ts
+	 * embed.spliceFields(0, 1);
+	 * ```
+	 *
+	 * @example
+	 * Remove the first n fields
+	 * ```ts
+	 * const n = 4
+	 * embed.spliceFields(0, n);
+	 * ```
+	 *
+	 * @example
+	 * Remove the last field
+	 * ```ts
+	 * embed.spliceFields(-1, 1);
+	 * ```
+	 *
+	 * @param index - The index to start at
+	 * @param deleteCount - The number of fields to remove
+	 * @param fields - The replacing field objects
 	 */
 	public spliceFields(index: number, deleteCount: number, ...fields: APIEmbedField[]): this {
 		// Ensure adding these fields won't exceed the 25 field limit
@@ -88,8 +136,15 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the embed's fields (max 25).
-	 * @param fields The fields to set
+	 * Sets the embed's fields
+	 *
+	 * @remarks
+	 * This method is an alias for {@link EmbedBuilder.spliceFields}. More specifically,
+	 * it splices the entire array of fields, replacing them with the provided fields.
+	 *
+	 * You can set a maximum of 25 fields.
+	 *
+	 * @param fields - The fields to set
 	 */
 	public setFields(...fields: RestOrArray<APIEmbedField>) {
 		this.spliceFields(0, this.data.fields?.length ?? 0, ...normalizeArray(fields));
@@ -99,7 +154,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the author of this embed
 	 *
-	 * @param options The options for the author
+	 * @param options - The options for the author
 	 */
 
 	public setAuthor(options: EmbedAuthorOptions | null): this {
@@ -118,7 +173,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the color of this embed
 	 *
-	 * @param color The color of the embed
+	 * @param color - The color of the embed
 	 */
 	public setColor(color: number | RGBTuple | null): this {
 		// Data assertions
@@ -136,7 +191,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the description of this embed
 	 *
-	 * @param description The description
+	 * @param description - The description
 	 */
 	public setDescription(description: string | null): this {
 		// Data assertions
@@ -149,7 +204,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the footer of this embed
 	 *
-	 * @param options The options for the footer
+	 * @param options - The options for the footer
 	 */
 	public setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
@@ -167,7 +222,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the image of this embed
 	 *
-	 * @param url The URL of the image
+	 * @param url - The URL of the image
 	 */
 	public setImage(url: string | null): this {
 		// Data assertions
@@ -180,7 +235,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the thumbnail of this embed
 	 *
-	 * @param url The URL of the thumbnail
+	 * @param url - The URL of the thumbnail
 	 */
 	public setThumbnail(url: string | null): this {
 		// Data assertions
@@ -193,7 +248,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the timestamp of this embed
 	 *
-	 * @param timestamp The timestamp or date
+	 * @param timestamp - The timestamp or date
 	 */
 	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
 		// Data assertions
@@ -206,7 +261,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the title of this embed
 	 *
-	 * @param title The title
+	 * @param title - The title
 	 */
 	public setTitle(title: string | null): this {
 		// Data assertions
@@ -219,7 +274,7 @@ export class EmbedBuilder {
 	/**
 	 * Sets the URL of this embed
 	 *
-	 * @param url The URL
+	 * @param url - The URL
 	 */
 	public setURL(url: string | null): this {
 		// Data assertions

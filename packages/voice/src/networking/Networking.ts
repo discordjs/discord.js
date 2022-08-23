@@ -81,7 +81,7 @@ export interface NetworkingReadyState {
 	udp: VoiceUDPSocket;
 	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
-	preparedPacket?: Buffer;
+	preparedPacket?: Buffer | undefined;
 }
 
 /**
@@ -94,7 +94,7 @@ export interface NetworkingResumingState {
 	udp: VoiceUDPSocket;
 	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
-	preparedPacket?: Buffer;
+	preparedPacket?: Buffer | undefined;
 }
 
 /**
@@ -155,7 +155,7 @@ export interface Networking extends EventEmitter {
 	/**
 	 * Debug event for Networking.
 	 *
-	 * @event
+	 * @eventProperty
 	 */
 	on(event: 'debug', listener: (message: string) => void): this;
 	on(event: 'error', listener: (error: Error) => void): this;

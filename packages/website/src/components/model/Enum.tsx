@@ -1,29 +1,33 @@
+import { Skeleton, Stack } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { useRouter } from 'next/router';
 import { VscSymbolEnumMember } from 'react-icons/vsc';
 import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';
 import { Section } from '../Section';
-import type { DocEnum } from '~/DocModel/DocEnum';
+import type { ApiEnumJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export interface EnumProps {
-	data: ReturnType<DocEnum['toJSON']>;
-}
+export function Enum({ data }: { data: ApiEnumJSON }) {
+	const router = useRouter();
+	const matches = useMediaQuery('(max-width: 768px)');
 
-export function Enum({ data }: EnumProps) {
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Section iconElement={<VscSymbolEnumMember />} title="Members" className="dark:text-white">
-				<div className="flex flex-col gap-5">
-					{data.members.map((member) => (
-						<CodeListing
-							key={member.name}
-							name={member.name}
-							separator={CodeListingSeparatorType.Value}
-							typeTokens={member.initializerTokens}
-							summary={member.summary}
-						/>
-					))}
-				</div>
-			</Section>
+			<Skeleton visible={router.isFallback} radius="sm">
+				<Section title="Members" icon={<VscSymbolEnumMember size={20} />} padded dense={matches}>
+					<Stack>
+						{data.members.map((member) => (
+							<CodeListing
+								key={member.name}
+								name={member.name}
+								separator={CodeListingSeparatorType.Value}
+								typeTokens={member.initializerTokens}
+								summary={member.summary}
+							/>
+						))}
+					</Stack>
+				</Section>
+			</Skeleton>
 		</DocContainer>
 	);
 }

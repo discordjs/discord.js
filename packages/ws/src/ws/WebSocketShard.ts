@@ -107,8 +107,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
-		const data = this.strategy.options.gatewayInformation;
-
 		const { version, encoding, compression } = this.strategy.options;
 		const params = new URLSearchParams({ v: version, encoding });
 		if (compression) {
@@ -127,7 +125,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 		}
 
-		const url = `${data.url}?${params.toString()}`;
+		const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
+
+		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
 		this.debug([`Connecting to ${url}`]);
 		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
 			/* eslint-disable @typescript-eslint/no-misused-promises */
@@ -143,7 +143,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 
-		const session = this.session ?? (await this.strategy.retrieveSessionInfo(this.id));
 		if (session?.shardCount === this.strategy.options.shardCount) {
 			this.session = session;
 			await this.resume(session);
@@ -186,7 +185,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.connection &&
 			(this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING)
 		) {
+			// No longer need to listen to messages
+			this.connection.removeAllListeners('message');
+			// Prevent a reconnection loop by unbinding the main close event
+			this.connection.removeAllListeners('close');
 			this.connection.close(options.code, options.reason);
+
+			// Actually wait for the connection to close
+			await once(this.connection, 'close');
+
+			// Lastly, remove the error event.
+			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
+			this.connection.removeAllListeners('error');
 		}
 
 		this.status = WebSocketShardStatus.Idle;
@@ -382,6 +392,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 							sessionId: payload.d.session_id,
 							shardId: this.id,
 							shardCount: this.strategy.options.shardCount,
+							resumeURL: payload.d.resume_gateway_url,
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);

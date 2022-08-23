@@ -1,20 +1,20 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocNodeContainer } from '@microsoft/tsdoc';
 import { createCommentNode } from '.';
-import { CommentNode } from './CommentNode';
+import { type AnyDocNodeJSON, type DocNodeJSON, node } from './CommentNode';
 
-export class CommentNodeContainer<T extends DocNodeContainer = DocNodeContainer> extends CommentNode<DocNodeContainer> {
-	public readonly nodes: CommentNode[];
+export interface DocNodeContainerJSON extends DocNodeJSON {
+	nodes: AnyDocNodeJSON[];
+}
 
-	public constructor(container: T, model: ApiModel, parentItem?: ApiItem) {
-		super(container, model, parentItem);
-		this.nodes = container.nodes.map((node) => createCommentNode(node, model, parentItem));
-	}
-
-	public override toJSON() {
-		return {
-			...super.toJSON(),
-			nodes: this.nodes.map((node) => node.toJSON()),
-		};
-	}
+export function nodeContainer(
+	container: DocNodeContainer,
+	model: ApiModel,
+	version: string,
+	parentItem?: ApiItem,
+): DocNodeContainerJSON {
+	return {
+		...node(container),
+		nodes: container.nodes.map((node) => createCommentNode(node, model, version, parentItem)),
+	};
 }

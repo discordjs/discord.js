@@ -14,6 +14,9 @@ export class SlashCommandNumberOption
 {
 	public readonly type = ApplicationCommandOptionType.Number as const;
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
+	 */
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
 
@@ -22,6 +25,9 @@ export class SlashCommandNumberOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
+	 */
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
 

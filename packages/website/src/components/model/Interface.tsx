@@ -1,22 +1,28 @@
+import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
 import { MethodsSection, PropertiesSection } from '../Sections';
-import type { DocInterface } from '~/DocModel/DocInterface';
+import type { ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export interface InterfaceProps {
-	data: ReturnType<DocInterface['toJSON']>;
-}
+export function Interface({ data }: { data: ApiInterfaceJSON }) {
+	const router = useRouter();
 
-export function Interface({ data }: InterfaceProps) {
 	return (
 		<DocContainer
 			name={data.name}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameterData}
+			typeParams={data.typeParameters}
+			methods={data.methods}
+			properties={data.properties}
 		>
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
+			<Skeleton visible={router.isFallback} radius="sm">
+				<PropertiesSection data={data.properties} />
+			</Skeleton>
+			<Skeleton visible={router.isFallback} radius="sm">
+				<MethodsSection data={data.methods} />
+			</Skeleton>
 		</DocContainer>
 	);
 }

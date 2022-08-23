@@ -1,24 +1,32 @@
+import { Skeleton } from '@mantine/core';
+import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
-import { MethodsSection, PropertiesSection } from '../Sections';
-import type { DocClass } from '~/DocModel/DocClass';
+import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
+import type { ApiClassJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
-export interface ClassProps {
-	data: ReturnType<DocClass['toJSON']>;
-}
+export function Class({ data }: { data: ApiClassJSON }) {
+	const router = useRouter();
 
-export function Class({ data }: ClassProps) {
 	return (
 		<DocContainer
 			name={data.name}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameterData}
+			typeParams={data.typeParameters}
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
+			comment={data.comment}
+			methods={data.methods}
+			properties={data.properties}
 		>
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
+			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
+			<Skeleton visible={router.isFallback} radius="sm">
+				<PropertiesSection data={data.properties} />
+			</Skeleton>
+			<Skeleton visible={router.isFallback} radius="sm">
+				<MethodsSection data={data.methods} />
+			</Skeleton>
 		</DocContainer>
 	);
 }
