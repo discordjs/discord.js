@@ -1737,7 +1737,7 @@ __metadata:
   resolution: "@discordjs/actions@workspace:packages/actions"
   dependencies:
     "@actions/core": ^1.9.1
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     "@vitest/coverage-c8": ^0.22.1
@@ -1763,7 +1763,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
     "@sapphire/shapeshift": ^3.5.1
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     "@vitest/coverage-c8": ^0.22.1
@@ -1793,7 +1793,7 @@ __metadata:
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     "@vitest/coverage-c8": ^0.22.1
@@ -1837,7 +1837,7 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.8.7
     "@types/jsdoc-to-markdown": ^7.0.3
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     commander: ^9.4.0
@@ -1864,7 +1864,7 @@ __metadata:
   dependencies:
     "@discordjs/proxy": ^1.1.0
     "@discordjs/rest": ^1.1.0
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     eslint: ^8.22.0
@@ -1888,7 +1888,7 @@ __metadata:
     "@discordjs/rest": ^1.0.0
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@types/supertest": ^2.0.12
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -1920,7 +1920,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.29.3
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     "@vitest/coverage-c8": ^0.22.1
@@ -1947,7 +1947,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
     "@vitest/coverage-c8": ^0.22.1
@@ -1977,7 +1977,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
     "@types/jest": ^28.1.7
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@types/ws": ^8.5.3
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -2019,7 +2019,7 @@ __metadata:
     "@microsoft/tsdoc-config": 0.16.1
     "@testing-library/react": ^13.3.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@types/react-dom": ^18.0.6
     "@types/react-syntax-highlighter": ^15.5.4
     "@typescript-eslint/eslint-plugin": ^5.34.0
@@ -2056,7 +2056,7 @@ __metadata:
     swr: ^1.3.0
     typescript: ^4.7.4
     unocss: ^0.45.12
-    vercel: ^28.1.0
+    vercel: ^28.1.1
     vitest: ^0.22.1
   languageName: unknown
   linkType: soft
@@ -2071,7 +2071,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
     "@sapphire/async-queue": ^1.5.0
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@types/ws": ^8.5.3
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -3958,10 +3958,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.52":
-  version: 16.11.52
-  resolution: "@types/node@npm:16.11.52"
-  checksum: eb688bff28015f1399264b7aa347d5f40e165d438306bd5884d78993671c5e43b7849b8ddc74b91bf7c7b73e15ba54fc56ea1db2118b0e3f59f9fabd2adc7fe7
+"@types/node@npm:^16.11.54":
+  version: 16.11.54
+  resolution: "@types/node@npm:16.11.54"
+  checksum: fa4d6a94498cc6ef96932a25557082587a178b5fa1da5e208bdb171b85265110a7ca6a4f296e740dca1b29d2a44b3c1e76e21d255e5eeed8be5f67ea538dcb9c
   languageName: node
   linkType: hard
 
@@ -4476,10 +4476,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/next@npm:3.1.19":
-  version: 3.1.19
-  resolution: "@vercel/next@npm:3.1.19"
-  checksum: cfcda13d756eaf6e956caf8e1705f0ad11fa3f2fb8366d306c58866999274b0ca28fb2c1a748582234280bdc554282c5b607376ace264886fa8d36b93497123f
+"@vercel/next@npm:3.1.20":
+  version: 3.1.20
+  resolution: "@vercel/next@npm:3.1.20"
+  checksum: 8e846dc44ffdae1e7e01d3bbae49d852fe10670eb1c6a20bd1ff6f7aa52a950d6b108047fc41fb8c4d18d6842c888c16ee83b7d32822008046571c52507bbf91
   languageName: node
   linkType: hard
 
@@ -4530,10 +4530,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/python@npm:3.1.9":
-  version: 3.1.9
-  resolution: "@vercel/python@npm:3.1.9"
-  checksum: c9cf3cd84d09eb99f75c9cc47cba1fefa47240d6a598937fac7983ab2cbd417371d4b3a6dffeda2675368fa5d791ad6cae4c13a864f9945e63d609839b7f2e2d
+"@vercel/python@npm:3.1.10":
+  version: 3.1.10
+  resolution: "@vercel/python@npm:3.1.10"
+  checksum: 956b2e1d3df2a5270d7e6d6a990c5d9cc767e07481c3a8e727ff13fc21629dc295efacc49896b41cfe2d76a4a806d3f682e55386972241a92f775d6f823a9f3a
   languageName: node
   linkType: hard
 
@@ -6839,7 +6839,7 @@ __metadata:
     "@discordjs/rest": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.52
+    "@types/node": ^16.11.54
     "@types/ws": ^8.5.3
     discord-api-types: ^0.37.4
     dtslint: ^4.2.1
@@ -17058,16 +17058,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^28.1.0":
-  version: 28.1.0
-  resolution: "vercel@npm:28.1.0"
+"vercel@npm:^28.1.1":
+  version: 28.1.1
+  resolution: "vercel@npm:28.1.1"
   dependencies:
     "@vercel/build-utils": 5.3.1
     "@vercel/go": 2.2.0
     "@vercel/hydrogen": 0.0.14
-    "@vercel/next": 3.1.19
+    "@vercel/next": 3.1.20
     "@vercel/node": 2.5.8
-    "@vercel/python": 3.1.9
+    "@vercel/python": 3.1.10
     "@vercel/redwood": 1.0.18
     "@vercel/remix": 1.0.19
     "@vercel/ruby": 1.3.27
@@ -17076,7 +17076,7 @@ __metadata:
   bin:
     vc: dist/index.js
     vercel: dist/index.js
-  checksum: aa25e12a67eab2ebc18fbc0b4749460e8f8ccef2b50b716f0b917ce3562e06494a3d68660a5f40549d188337b4e1e78f2e79f32da6d2168cccc3e6b1342b2e6f
+  checksum: a24f32b69847ac10789714b67b26de1f25388b767ef499a73a827860d58e2df3c68c571a9860e72b889f2153b6f6d5d240bb7cb1c167ec86d5f2b4530558ace9
   languageName: node
   linkType: hard
 

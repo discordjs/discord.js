@@ -49,7 +49,7 @@
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.52",
+		"@types/node": "^16.11.54",
 		"@typescript-eslint/eslint-plugin": "^5.34.0",
 		"@typescript-eslint/parser": "^5.34.0",
 		"eslint": "^8.22.0",

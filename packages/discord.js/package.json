@@ -64,7 +64,7 @@
   "devDependencies": {
     "@discordjs/docgen": "workspace:^",
     "@favware/cliff-jumper": "^1.8.7",
-    "@types/node": "^16.11.52",
+    "@types/node": "^16.11.54",
     "dtslint": "^4.2.1",
     "eslint": "^8.22.0",
     "jest": "^28.1.3",
