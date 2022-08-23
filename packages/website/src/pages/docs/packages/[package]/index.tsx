@@ -14,7 +14,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
@@ -97,7 +97,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 							<Group position="apart">
 								<Group>
 									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
-										<VscPackage size={20} />
+										<VscVersions size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">
 										{version}
