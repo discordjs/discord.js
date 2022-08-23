@@ -21,5 +21,5 @@ export function RouterTransition() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [router.asPath]);
 
-	return <NavigationProgress />;
+	return <NavigationProgress color="blurple" />;
 }

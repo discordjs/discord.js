@@ -28,7 +28,7 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { type PropsWithChildren, useState, useEffect } from 'react';
+import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
@@ -170,18 +170,25 @@ export function SidebarLayout({
 
 	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
 
-	const versionMenuItems =
-		versions?.map((item) => (
-			<Menu.Item key={item} component={NextLink} href={`/docs/packages/${packageName ?? 'builders'}/${item}`}>
-				{item}
-			</Menu.Item>
-		)) ?? [];
+	const versionMenuItems = useMemo(
+		() =>
+			versions?.map((item) => (
+				<Menu.Item key={item} component={NextLink} href={`/docs/packages/${packageName ?? 'builders'}/${item}`}>
+					{item}
+				</Menu.Item>
+			)) ?? [],
+		[versions],
+	);
 
-	const breadcrumbs = asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
-		<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref>
-			<Anchor component="a">{path}</Anchor>
-		</Link>
-	));
+	const breadcrumbs = useMemo(
+		() =>
+			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
+				<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref>
+					<Anchor component="a">{path}</Anchor>
+				</Link>
+			)),
+		[asPathWithoutQueryAndAnchor],
+	);
 
 	return (
 		<AppShell

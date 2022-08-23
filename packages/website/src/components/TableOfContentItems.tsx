@@ -1,4 +1,5 @@
 import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
+import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
@@ -36,34 +37,44 @@ export function TableOfContentItems({
 	const { colorScheme } = useMantineColorScheme();
 	const { classes } = useStyles();
 
-	const propertyItems = properties.map((prop) => (
-		<Box<'a'> key={prop.name} href={`#${prop.name}`} component="a" className={classes.link}>
-			<Group>
-				<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-					{prop.name}
-				</Text>
-			</Group>
-		</Box>
-	));
-
-	const methodItems = methods.map((member) => {
-		const key = `${member.name}${member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''}`;
-
-		return (
-			<Box<'a'> key={key} component="a" href={`#${key}`} className={classes.link}>
-				<Group>
-					<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-						{member.name}
-					</Text>
-					{member.overloadIndex && member.overloadIndex > 1 ? (
-						<Text size="xs" color="dimmed">
-							{member.overloadIndex}
+	const propertyItems = useMemo(
+		() =>
+			properties.map((prop) => (
+				<Box<'a'> key={prop.name} href={`#${prop.name}`} component="a" className={classes.link}>
+					<Group>
+						<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+							{prop.name}
 						</Text>
-					) : null}
-				</Group>
-			</Box>
-		);
-	});
+					</Group>
+				</Box>
+			)),
+		[properties],
+	);
+
+	const methodItems = useMemo(
+		() =>
+			methods.map((member) => {
+				const key = `${member.name}${
+					member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''
+				}`;
+
+				return (
+					<Box<'a'> key={key} component="a" href={`#${key}`} className={classes.link}>
+						<Group>
+							<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
+								{member.name}
+							</Text>
+							{member.overloadIndex && member.overloadIndex > 1 ? (
+								<Text size="xs" color="dimmed">
+									{member.overloadIndex}
+								</Text>
+							) : null}
+						</Group>
+					</Box>
+				);
+			}),
+		[methods],
+	);
 
 	return (
 		<Box sx={{ wordBreak: 'break-all' }} pb="xl">

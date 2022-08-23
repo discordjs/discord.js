@@ -1,7 +1,7 @@
 import { createStyles, Group, Text, NavLink, Box } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState, useMemo } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolEnum,
@@ -101,7 +101,7 @@ export function SidebarItems({
 	const router = useRouter();
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { classes } = useStyles();
-	const groupItems = groupMembers(members);
+	const groupItems = useMemo(() => groupMembers(members), [members]);
 
 	useEffect(() => {
 		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
