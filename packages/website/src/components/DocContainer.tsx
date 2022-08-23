@@ -68,7 +68,7 @@ export function DocContainer({
 	return (
 		<Group>
 			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
-				<Skeleton visible={router.isFallback}>
+				<Skeleton visible={router.isFallback} radius="xs">
 					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
 						<Group>
 							{generateIcon(kind)}
@@ -77,13 +77,13 @@ export function DocContainer({
 					</Title>
 				</Skeleton>
 
-				<Skeleton visible={router.isFallback}>
+				<Skeleton visible={router.isFallback} radius="xs">
 					<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 						{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
 					</Section>
 				</Skeleton>
 
-				<Skeleton visible={router.isFallback}>
+				<Skeleton visible={router.isFallback} radius="xs">
 					<Box px="xs" pb="xs">
 						<SyntaxHighlighter
 							wrapLongLines
@@ -123,7 +123,7 @@ export function DocContainer({
 					</Group>
 				) : null}
 
-				<Skeleton visible={router.isFallback}>
+				<Skeleton visible={router.isFallback} radius="xs">
 					<Stack>
 						{typeParams?.length ? (
 							<Section

@@ -13,7 +13,7 @@ export function Enum({ data }: { data: ApiEnumJSON }) {
 
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Skeleton visible={router.isFallback}>
+			<Skeleton visible={router.isFallback} radius="xs">
 				<Section title="Members" icon={<VscSymbolEnumMember size={20} />} padded dense={matches}>
 					<Stack>
 						{data.members.map((member) => (

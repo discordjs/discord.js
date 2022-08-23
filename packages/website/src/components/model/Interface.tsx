@@ -17,10 +17,10 @@ export function Interface({ data }: { data: ApiInterfaceJSON }) {
 			methods={data.methods}
 			properties={data.properties}
 		>
-			<Skeleton visible={router.isFallback}>
+			<Skeleton visible={router.isFallback} radius="xs">
 				<PropertiesSection data={data.properties} />
 			</Skeleton>
-			<Skeleton visible={router.isFallback}>
+			<Skeleton visible={router.isFallback} radius="xs">
 				<MethodsSection data={data.methods} />
 			</Skeleton>
 		</DocContainer>

@@ -1,11 +1,12 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Affix, Box, Button, Transition } from '@mantine/core';
+import { Affix, Box, Button, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiPackage } from '@microsoft/api-extractor-model';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscChevronUp } from 'react-icons/vsc';
 import rehypeHighlight from 'rehype-highlight';
@@ -206,9 +207,18 @@ const member = (props?: ApiItemJSON | undefined) => {
 	}
 };
 
-export default function Slug(props: Partial<SidebarLayoutProps & { error?: string }>) {
+export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
+	const router = useRouter();
 	const [scroll, scrollTo] = useWindowScroll();
 	const matches = useMediaQuery('(max-width: 1200px)', true, { getInitialValueInEffect: false });
+
+	if (router.isFallback) {
+		return (
+			<SidebarLayout>
+				<LoadingOverlay visible overlayBlur={2} />
+			</SidebarLayout>
+		);
+	}
 
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>

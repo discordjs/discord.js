@@ -19,6 +19,8 @@ import {
 	useMantineColorScheme,
 	Center,
 	Stack,
+	Skeleton,
+	LoadingOverlay,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
@@ -149,67 +151,76 @@ export function SidebarLayout({
 			navbarOffsetBreakpoint="md"
 			asideOffsetBreakpoint="md"
 			navbar={
-				<Navbar hiddenBreakpoint="md" hidden={!opened} width={{ md: 300 }}>
-					{packageName && data ? (
-						<>
-							<Navbar.Section p="xs">
-								<Stack spacing="xs">
-									<Menu
-										onOpen={() => setOpenedLibPicker(true)}
-										onClose={() => setOpenedLibPicker(false)}
-										radius="xs"
-										width="target"
-									>
-										<Menu.Target>
-											<UnstyledButton className={classes.control}>
-												<Group position="apart">
-													<Group>
-														<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
-															<VscPackage size={20} />
-														</ThemeIcon>
-														<Text weight="600" size="md">
-															{packageName}
-														</Text>
+				<>
+					<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
+						<LoadingOverlay
+							sx={{ position: 'fixed', top: 70, width: 300 }}
+							visible={router.isFallback}
+							overlayBlur={2}
+						/>
+					</MediaQuery>
+					<Navbar hiddenBreakpoint="md" hidden={!opened} width={{ md: 300 }}>
+						{packageName && data ? (
+							<>
+								<Navbar.Section p="xs">
+									<Stack spacing="xs">
+										<Menu
+											onOpen={() => setOpenedLibPicker(true)}
+											onClose={() => setOpenedLibPicker(false)}
+											radius="xs"
+											width="target"
+										>
+											<Menu.Target>
+												<UnstyledButton className={classes.control}>
+													<Group position="apart">
+														<Group>
+															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+																<VscPackage size={20} />
+															</ThemeIcon>
+															<Text weight="600" size="md">
+																{packageName}
+															</Text>
+														</Group>
+														<VscChevronDown className={classes.iconLib} size={20} />
 													</Group>
-													<VscChevronDown className={classes.iconLib} size={20} />
-												</Group>
-											</UnstyledButton>
-										</Menu.Target>
-										<Menu.Dropdown>{libraryMenuItems}</Menu.Dropdown>
-									</Menu>
+												</UnstyledButton>
+											</Menu.Target>
+											<Menu.Dropdown>{libraryMenuItems}</Menu.Dropdown>
+										</Menu>
 
-									<Menu
-										onOpen={() => setOpenedVersionPicker(true)}
-										onClose={() => setOpenedVersionPicker(false)}
-										radius="xs"
-										width="target"
-									>
-										<Menu.Target>
-											<UnstyledButton className={classes.control}>
-												<Group position="apart">
-													<Group>
-														<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
-															<VscVersions size={20} />
-														</ThemeIcon>
-														<Text weight="600" size="md">
-															{branchName}
-														</Text>
+										<Menu
+											onOpen={() => setOpenedVersionPicker(true)}
+											onClose={() => setOpenedVersionPicker(false)}
+											radius="xs"
+											width="target"
+										>
+											<Menu.Target>
+												<UnstyledButton className={classes.control}>
+													<Group position="apart">
+														<Group>
+															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+																<VscVersions size={20} />
+															</ThemeIcon>
+															<Text weight="600" size="md">
+																{branchName}
+															</Text>
+														</Group>
+														<VscChevronDown className={classes.iconVersion} size={20} />
 													</Group>
-													<VscChevronDown className={classes.iconVersion} size={20} />
-												</Group>
-											</UnstyledButton>
-										</Menu.Target>
-										<Menu.Dropdown>{versionMenuItems}</Menu.Dropdown>
-									</Menu>
-								</Stack>
-							</Navbar.Section>
+												</UnstyledButton>
+											</Menu.Target>
+											<Menu.Dropdown>{versionMenuItems}</Menu.Dropdown>
+										</Menu>
+									</Stack>
+								</Navbar.Section>
 
-							<Navbar.Section px="xs" pb="xs" grow component={ScrollArea}>
-								<SidebarItems members={data.members} setOpened={setOpened} />
-							</Navbar.Section>
-						</>
-					) : null}
-				</Navbar>
+								<Navbar.Section px="xs" pb="xs" grow component={ScrollArea}>
+									<SidebarItems members={data.members} setOpened={setOpened} />
+								</Navbar.Section>
+							</>
+						) : null}
+					</Navbar>
+				</>
 			}
 			header={
 				<Header
@@ -227,7 +238,7 @@ export function SidebarLayout({
 							<MediaQuery largerThan="md" styles={{ display: 'none' }}>
 								<Burger
 									opened={opened}
-									onClick={() => setOpened((o) => !o)}
+									onClick={() => (router.isFallback ? null : setOpened((o) => !o))}
 									size="sm"
 									color={theme.colors.gray![6]}
 									mr="xl"
@@ -235,7 +246,9 @@ export function SidebarLayout({
 							</MediaQuery>
 
 							<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-								<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
+								<Skeleton visible={router.isFallback} radius="xs">
+									<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
+								</Skeleton>
 							</MediaQuery>
 						</Box>
 						<Group>
