@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -28,9 +28,11 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 			<Group>
 				<Stack>
 					<Group ml={matches ? 0 : -45}>
-						<ActionIcon component="a" href={`#${key}`} variant="transparent">
-							<FiLink size={20} />
-						</ActionIcon>
+						<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+							<ActionIcon component="a" href={`#${key}`} variant="transparent">
+								<FiLink size={20} />
+							</ActionIcon>
+						</MediaQuery>
 						{data.deprecated ? (
 							<Badge variant="filled" color="red">
 								Deprecated

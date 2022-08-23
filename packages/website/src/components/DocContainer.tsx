@@ -84,7 +84,7 @@ export function DocContainer({
 				</Skeleton>
 
 				<Skeleton visible={router.isFallback} radius="sm">
-					<Box px="xs" pb="xs">
+					<Box pb="xs">
 						<SyntaxHighlighter
 							wrapLongLines
 							language="typescript"

@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import type { ReactNode } from 'react';
 import { FiLink } from 'react-icons/fi';
@@ -42,9 +42,11 @@ export function CodeListing({
 	return (
 		<Stack id={name} className="scroll-mt-30" spacing="xs">
 			<Group ml={matches ? 0 : -45}>
-				<ActionIcon component="a" href={`#${name}`} variant="transparent">
-					<FiLink size={20} />
-				</ActionIcon>
+				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+					<ActionIcon component="a" href={`#${name}`} variant="transparent">
+						<FiLink size={20} />
+					</ActionIcon>
+				</MediaQuery>
 				{deprecation ? (
 					<Badge variant="filled" color="red">
 						Deprecated
