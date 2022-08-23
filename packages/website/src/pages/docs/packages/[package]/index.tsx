@@ -66,6 +66,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		height: '100%',
+		alignItems: 'center',
+	},
+
 	control: {
 		padding: theme.spacing.xs,
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
@@ -86,7 +92,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
-		<Container py={96} size="xs">
+		<Container className={classes.outer} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				<Title order={2} ml="xs">
 					Select a version:

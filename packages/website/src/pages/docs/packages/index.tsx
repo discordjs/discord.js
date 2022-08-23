@@ -14,6 +14,12 @@ import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
 
 const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		height: '100%',
+		alignItems: 'center',
+	},
+
 	control: {
 		padding: theme.spacing.xs,
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
@@ -31,7 +37,7 @@ export default function PackagesRoute() {
 	const { colorScheme } = useMantineColorScheme();
 
 	return (
-		<Container py={96} size="xs">
+		<Container className={classes.outer} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				<Title order={2} ml="xs">
 					Select a package:
