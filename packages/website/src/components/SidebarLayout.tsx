@@ -294,7 +294,7 @@ export function SidebarLayout({
 				>
 					{children}
 				</Box>
-				<Box sx={{ height: 200 }}></Box>
+				<Box sx={(theme) => ({ height: 200, [theme.fn.smallerThan('sm')]: { height: 300 } })}></Box>
 				<Box
 					component="footer"
 					sx={(theme) => ({
@@ -314,11 +314,26 @@ export function SidebarLayout({
 						[theme.fn.smallerThan('md')]: {
 							paddingLeft: 24,
 						},
+
+						[theme.fn.smallerThan('sm')]: {
+							height: 300,
+						},
 					})}
 					pt={50}
 				>
 					<Container>
-						<Group position="apart">
+						<Box
+							sx={(theme) => ({
+								display: 'flex',
+								justifyContent: 'space-between',
+
+								[theme.fn.smallerThan('sm')]: {
+									flexDirection: 'column',
+									alignItems: 'center',
+									gap: 50,
+								},
+							})}
+						>
 							<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
 								<a title="Vercel">
 									<Image
@@ -367,7 +382,7 @@ export function SidebarLayout({
 									</Stack>
 								</Stack>
 							</Group>
-						</Group>
+						</Box>
 					</Container>
 				</Box>
 			</article>
