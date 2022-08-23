@@ -215,6 +215,9 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 		);
 	}
 
+	// Just in case
+	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
+
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
