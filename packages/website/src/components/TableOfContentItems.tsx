@@ -7,18 +7,18 @@ const useStyles = createStyles((theme) => ({
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	link: {
 		...theme.fn.focusStyles(),
+		fontWeight: 500,
 		display: 'block',
 		textDecoration: 'none',
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
 		lineHeight: 1.2,
 		fontSize: theme.fontSizes.sm,
-		padding: theme.spacing.xs,
+		padding: 5,
 		paddingLeft: theme.spacing.md,
 		marginLeft: 14,
 		borderTopRightRadius: theme.radius.sm,
 		borderBottomRightRadius: theme.radius.sm,
 		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
-		fontWeight: 500,
 
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
@@ -48,7 +48,7 @@ export function TableOfContentItems({
 					</Group>
 				</Box>
 			)),
-		[properties],
+		[properties, colorScheme],
 	);
 
 	const methodItems = useMemo(
@@ -73,7 +73,7 @@ export function TableOfContentItems({
 					</Box>
 				);
 			}),
-		[methods],
+		[methods, colorScheme],
 	);
 
 	return (

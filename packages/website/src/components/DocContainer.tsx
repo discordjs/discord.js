@@ -121,7 +121,7 @@ export function DocContainer({
 				) : null}
 
 				{implementsTokens?.length ? (
-					<Group noWrap>
+					<Group pb="xs" noWrap>
 						<Title order={3} ml="xs">
 							Implements
 						</Title>

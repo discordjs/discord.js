@@ -130,11 +130,18 @@ const useStyles = createStyles(
 				gap: 50,
 			},
 		},
+
+		link: { color: theme.colorScheme === 'dark' ? theme.white : theme.black },
 	}),
 );
 
 const packageMenuItems = PACKAGES.map((pkg) => (
-	<Menu.Item key={pkg} component={NextLink} href={`/docs/packages/${pkg}/main`}>
+	<Menu.Item
+		key={pkg}
+		component={NextLink}
+		href={`/docs/packages/${pkg}/main`}
+		sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
+	>
 		{pkg}
 	</Menu.Item>
 ));
@@ -173,7 +180,12 @@ export function SidebarLayout({
 	const versionMenuItems = useMemo(
 		() =>
 			versions?.map((item) => (
-				<Menu.Item key={item} component={NextLink} href={`/docs/packages/${packageName ?? 'builders'}/${item}`}>
+				<Menu.Item
+					key={item}
+					component={NextLink}
+					href={`/docs/packages/${packageName ?? 'builders'}/${item}`}
+					sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
+				>
 					{item}
 				</Menu.Item>
 			)) ?? [],
@@ -184,7 +196,9 @@ export function SidebarLayout({
 		() =>
 			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
 				<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref>
-					<Anchor component="a">{path}</Anchor>
+					<Anchor component="a" sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}>
+						{path}
+					</Anchor>
 				</Link>
 			)),
 		[asPathWithoutQueryAndAnchor],
@@ -358,12 +372,12 @@ export function SidebarLayout({
 									<Title order={4}>Community</Title>
 									<Stack spacing={0}>
 										<Link href="https://discord.gg/djs" passHref>
-											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+											<Anchor component="a" target="_blank" rel="noopener noreferrer" className={classes.link}>
 												Discord
 											</Anchor>
 										</Link>
 										<Link href="https://github.com/discordjs/discord.js/discussions" passHref>
-											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+											<Anchor component="a" target="_blank" rel="noopener noreferrer" className={classes.link}>
 												GitHub discussions
 											</Anchor>
 										</Link>
@@ -373,17 +387,17 @@ export function SidebarLayout({
 									<Title order={4}>Project</Title>
 									<Stack spacing={0}>
 										<Link href="https://github.com/discordjs/discord.js" passHref>
-											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+											<Anchor component="a" target="_blank" rel="noopener noreferrer" className={classes.link}>
 												discord.js
 											</Anchor>
 										</Link>
 										<Link href="https://discordjs.guide" passHref>
-											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+											<Anchor component="a" target="_blank" rel="noopener noreferrer" className={classes.link}>
 												discord.js guide
 											</Anchor>
 										</Link>
 										<Link href="https://discord-api-types.dev" passHref>
-											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+											<Anchor component="a" target="_blank" rel="noopener noreferrer" className={classes.link}>
 												discord-api-types
 											</Anchor>
 										</Link>

@@ -67,7 +67,9 @@ function resolveIcon(item: keyof GroupedMembers) {
 }
 
 const useStyles = createStyles((theme) => ({
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	link: {
+		...theme.fn.focusStyles(),
 		fontWeight: 500,
 		display: 'block',
 		width: 'unset',

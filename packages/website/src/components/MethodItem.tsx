@@ -43,7 +43,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 				<Stack>
 					<Box className={classes.outer} ml={matches ? 0 : -45}>
 						<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-							<ActionIcon component="a" href={`#${key}`} variant="transparent">
+							<ActionIcon component="a" href={`#${key}`} variant="transparent" color="dark">
 								<FiLink size={20} />
 							</ActionIcon>
 						</MediaQuery>
