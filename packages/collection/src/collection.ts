@@ -227,9 +227,9 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Searches for a single item where the given function returns a truthy value. This behaves like
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
-	 * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
+	 * All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
 	 * should use the `get` method. See
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.</warn>
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
 	 * @param fn - The function to test with (should return boolean)
 	 * @param thisArg - Value to use as `this` when executing function
