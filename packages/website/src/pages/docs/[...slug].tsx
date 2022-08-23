@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { cwd } from 'node:process';
 import { Affix, Box, Button, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
@@ -43,10 +44,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					let data: any[] = [];
 					let versions: string[] = [];
 					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-						const res = await readFile(
-							join(__dirname, '..', '..', '..', '..', '..', packageName, 'docs', 'docs.api.json'),
-							'utf-8',
-						);
+						const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf-8');
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						data = JSON.parse(res);
 					} else {
@@ -130,7 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [memberName, overloadIndex] = member?.split(':') ?? [];
 
 	try {
-		const readme = await readFile(join(__dirname, '..', '..', '..', '..', '..', packageName, 'README.md'), 'utf-8');
+		const readme = await readFile(join(cwd(), '..', packageName, 'README.md'), 'utf-8');
 
 		const mdxSource = await serialize(readme, {
 			mdxOptions: {
@@ -143,10 +141,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		let data;
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(
-				join(__dirname, '..', '..', '..', '..', '..', packageName, 'docs', 'docs.api.json'),
-				'utf-8',
-			);
+			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf-8');
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			data = JSON.parse(res);
 		} else {

@@ -243,8 +243,8 @@ export function SidebarLayout({
 							</MediaQuery>
 
 							<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-								<Skeleton visible={router.isFallback || !router.isReady} radius="xs">
-									{router.isReady ? <Breadcrumbs>{breadcrumbs}</Breadcrumbs> : null}
+								<Skeleton visible={router.isFallback} radius="xs">
+									<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
 								</Skeleton>
 							</MediaQuery>
 						</Box>

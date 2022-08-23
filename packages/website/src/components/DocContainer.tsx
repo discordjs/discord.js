@@ -12,7 +12,7 @@ import {
 	VscSymbolParameter,
 } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import vscDarkPlus from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { TableOfContentItems } from './TableOfContentItems';

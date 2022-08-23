@@ -16,16 +16,7 @@
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts,tsx",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts,tsx --fix"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
-	"directories": {
-		"lib": "src",
-		"test": "__tests__"
-	},
-	"files": [
-		"dist"
-	],
+	"type": "module",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>"
 	],

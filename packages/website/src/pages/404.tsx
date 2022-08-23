@@ -1,4 +1,5 @@
 import { Container, Title, Group, Button, Box, createStyles } from '@mantine/core';
+import Head from 'next/head';
 import Link from 'next/link';
 
 const useStyles = createStyles((theme) => ({
@@ -20,16 +21,21 @@ export default function FourOhFourPage() {
 	const { classes } = useStyles();
 
 	return (
-		<Container pt={96} pb={96}>
-			<Box className={classes.label}>404</Box>
-			<Title align="center">Not found.</Title>
-			<Group position="center">
-				<Link href="/docs/packages" passHref>
-					<Button component="a" variant="filled" size="md" mt="xl">
-						Take me back
-					</Button>
-				</Link>
-			</Group>
-		</Container>
+		<>
+			<Head>
+				<title key="title">discord.js | 404</title>
+			</Head>
+			<Container pt={96} pb={96}>
+				<Box className={classes.label}>404</Box>
+				<Title align="center">Not found.</Title>
+				<Group position="center">
+					<Link href="/docs/packages" passHref>
+						<Button component="a" variant="filled" size="md" mt="xl">
+							Take me back
+						</Button>
+					</Link>
+				</Group>
+			</Container>
+		</>
 	);
 }
