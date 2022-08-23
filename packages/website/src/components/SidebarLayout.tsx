@@ -17,10 +17,11 @@ import {
 	Menu,
 	ActionIcon,
 	useMantineColorScheme,
-	Center,
 	Stack,
 	Skeleton,
 	LoadingOverlay,
+	Container,
+	Title,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
@@ -314,21 +315,60 @@ export function SidebarLayout({
 							paddingLeft: 24,
 						},
 					})}
-					pt={70}
+					pt={50}
 				>
-					<Center>
-						<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
-							<a title="Vercel">
-								<Image
-									src="/powered-by-vercel.svg"
-									alt="Vercel"
-									width={0}
-									height={0}
-									style={{ height: '100%', width: '100%', maxWidth: 250 }}
-								/>
-							</a>
-						</Link>
-					</Center>
+					<Container>
+						<Group position="apart">
+							<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
+								<a title="Vercel">
+									<Image
+										src="/powered-by-vercel.svg"
+										alt="Vercel"
+										width={0}
+										height={0}
+										style={{ height: '100%', width: '100%', maxWidth: 200 }}
+									/>
+								</a>
+							</Link>
+							<Group align="flex-start" spacing={48}>
+								<Stack spacing={8}>
+									<Title order={4}>Community</Title>
+									<Stack spacing={0}>
+										<Link href="https://discord.gg/djs" passHref>
+											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+												Discord
+											</Anchor>
+										</Link>
+										<Link href="https://github.com/discordjs/discord.js/discussions" passHref>
+											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+												GitHub discussions
+											</Anchor>
+										</Link>
+									</Stack>
+								</Stack>
+								<Stack spacing={8}>
+									<Title order={4}>Project</Title>
+									<Stack spacing={0}>
+										<Link href="https://github.com/discordjs/discord.js" passHref>
+											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+												discord.js
+											</Anchor>
+										</Link>
+										<Link href="https://discordjs.guide" passHref>
+											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+												discord.js guide
+											</Anchor>
+										</Link>
+										<Link href="https://discord-api-types.dev" passHref>
+											<Anchor component="a" target="_blank" rel="noopener noreferrer">
+												discord-api-types
+											</Anchor>
+										</Link>
+									</Stack>
+								</Stack>
+							</Group>
+						</Group>
+					</Container>
 				</Box>
 			</article>
 		</AppShell>

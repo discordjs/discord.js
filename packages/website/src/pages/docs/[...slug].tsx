@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import { Affix, Box, Button, LoadingOverlay, Transition } from '@mantine/core';
+import { ActionIcon, Affix, Box, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import { MDXRemote } from 'next-mdx-remote';
@@ -255,9 +255,15 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 				>
 					<Transition transition="slide-up" mounted={scroll.y > 200}>
 						{(transitionStyles) => (
-							<Button leftIcon={<VscChevronUp size={20} />} style={transitionStyles} onClick={() => scrollTo({ y: 0 })}>
-								Scroll to top
-							</Button>
+							<ActionIcon
+								variant="filled"
+								color="blurple"
+								size={30}
+								style={transitionStyles}
+								onClick={() => scrollTo({ y: 0 })}
+							>
+								<VscChevronUp size={20} />
+							</ActionIcon>
 						)}
 					</Transition>
 				</Affix>
