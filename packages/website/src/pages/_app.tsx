@@ -1,10 +1,9 @@
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
-import { useColorScheme } from '@mantine/hooks';
+import { type ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import { type SpotlightAction, SpotlightProvider } from '@mantine/spotlight';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { type NextRouter, useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import { VscPackage } from 'react-icons/vsc';
 import { RouterTransition } from '~/components/RouterTransition';
 import '../styles/unocss.css';
@@ -69,14 +68,13 @@ const actions: (router: NextRouter) => SpotlightAction[] = (router: NextRouter) 
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	const router = useRouter();
-	const preferredColorScheme = useColorScheme('dark', { getInitialValueInEffect: true });
-	const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme);
+	const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+		key: 'theme',
+		defaultValue: 'dark',
+		getInitialValueInEffect: true,
+	});
 	const toggleColorScheme = (value?: ColorScheme) =>
 		setColorScheme(value ?? (colorScheme === 'dark' ? 'light' : 'dark'));
-
-	useEffect(() => {
-		setColorScheme(preferredColorScheme);
-	}, [preferredColorScheme]);
 
 	return (
 		<>
