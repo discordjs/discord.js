@@ -169,14 +169,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
 				},
-				revalidate: 3600,
 			},
+			revalidate: 3600,
 		};
 	} catch {
 		return {
-			props: {
-				notFound: true,
-			},
+			notFound: true,
 		};
 	}
 };
