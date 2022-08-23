@@ -86,7 +86,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
-		<Container pt={128} size="xs">
+		<Container py={96} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				<Title order={2} ml="xs">
 					Select a version:

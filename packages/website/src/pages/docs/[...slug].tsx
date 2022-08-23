@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscChevronUp } from 'react-icons/vsc';
 import rehypeIgnore from 'rehype-ignore';
+import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
@@ -134,7 +135,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			mdxOptions: {
 				remarkPlugins: [remarkGfm],
 				remarkRehypeOptions: { allowDangerousHtml: true },
-				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug],
+				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug, [rehypePrettyCode, { theme: 'dark-plus' }]],
 				format: 'md',
 			},
 		});

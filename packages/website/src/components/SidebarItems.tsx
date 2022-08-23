@@ -1,7 +1,7 @@
 import { createStyles, Group, Text, NavLink, Box } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { Dispatch, SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolEnum,
@@ -99,10 +99,13 @@ export function SidebarItems({
 	setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
 	const router = useRouter();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { classes } = useStyles();
 	const groupItems = groupMembers(members);
 
-	const asPathWithoutQueryAndAnchor = router.asPath.split('?')[0]?.split('#')[0];
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
+	}, [router.asPath]);
 
 	return (
 		<Box pb="xl">

@@ -2047,10 +2047,12 @@ __metadata:
     react-icons: ^4.4.0
     react-syntax-highlighter: ^15.5.0
     rehype-ignore: ^1.0.1
+    rehype-pretty-code: ^0.3.2
     rehype-raw: ^6.1.1
     rehype-slug: ^5.0.1
     remark-gfm: ^3.0.1
     sharp: ^0.30.7
+    shiki: ^0.11.1
     swr: ^1.3.0
     typescript: ^4.7.4
     unocss: ^0.45.12
@@ -13397,6 +13399,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-numeric-range@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "parse-numeric-range@npm:1.3.0"
+  checksum: 289ca126d5b8ace7325b199218de198014f58ea6895ccc88a5247491d07f0143bf047f80b4a31784f1ca8911762278d7d6ecb90a31dfae31da91cc1a2524c8ce
+  languageName: node
+  linkType: hard
+
 "parse5@npm:^6.0.0":
   version: 6.0.1
   resolution: "parse5@npm:6.0.1"
@@ -14304,6 +14313,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rehype-pretty-code@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "rehype-pretty-code@npm:0.3.2"
+  dependencies:
+    parse-numeric-range: ^1.3.0
+  peerDependencies:
+    shiki: "*"
+  checksum: 7d5f5dc4758e65f4a141bb22fe6863d3d7f1e9b1712fab5bde3a0e5611c89cc4d5945fda59b5d51f993404785d62c1dcac14ccc368ac7892fbed8cee026c843b
+  languageName: node
+  linkType: hard
+
 "rehype-raw@npm:^6.1.1":
   version: 6.1.1
   resolution: "rehype-raw@npm:6.1.1"
@@ -14896,6 +14916,17 @@ __metadata:
     vscode-oniguruma: ^1.6.1
     vscode-textmate: 5.2.0
   checksum: fb746f3cb3de7e545e3b10a6cb658d3938f840e4ccc9a3c90ceb7e69a8f89dbb432171faac1e9f02a03f103684dad88ee5e54b5c4964fa6b579fca6e8e26424d
+  languageName: node
+  linkType: hard
+
+"shiki@npm:^0.11.1":
+  version: 0.11.1
+  resolution: "shiki@npm:0.11.1"
+  dependencies:
+    jsonc-parser: ^3.0.0
+    vscode-oniguruma: ^1.6.1
+    vscode-textmate: ^6.0.0
+  checksum: 2a4ebc3b466816263fc244ae4f67a4ff96aa74d863b9c5e7e4affc50f37fd6d1a781405de0dbf763b777bc33e49a0d441de7ff3fededb8b01e3b8dbb37e2927d
   languageName: node
   linkType: hard
 
@@ -17182,6 +17213,13 @@ __metadata:
   version: 5.2.0
   resolution: "vscode-textmate@npm:5.2.0"
   checksum: 5449b42d451080f6f3649b66948f4b5ee4643c4e88cfe3558a3b31c84c78060cfdd288c4958c1690eaa5cd65d09992fa6b7c3bef9d4aa72b3651054a04624d20
+  languageName: node
+  linkType: hard
+
+"vscode-textmate@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "vscode-textmate@npm:6.0.0"
+  checksum: ff6f17a406c2906586afc14ef01cb122e33acd35312e815abb5c924347a777c6783ce3fe7db8b83f1760ebf843c669843b9390f905b69c433b3395af28e4b483
   languageName: node
   linkType: hard
 

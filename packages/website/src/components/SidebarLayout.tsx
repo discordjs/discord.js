@@ -103,6 +103,7 @@ export function SidebarLayout({
 	children,
 }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
 	const router = useRouter();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { data: versions } = useSWR<string[]>(
 		`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
 		fetcher,
@@ -120,6 +121,10 @@ export function SidebarLayout({
 		setOpenedVersionPicker(false);
 	}, []);
 
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
+	}, [router.asPath]);
+
 	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
 
 	const versionMenuItems =
@@ -129,8 +134,7 @@ export function SidebarLayout({
 			</Menu.Item>
 		)) ?? [];
 
-	const asPathWithoutQueryAndAnchor = router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0];
-	const breadcrumbs = asPathWithoutQueryAndAnchor?.split('/').map((path, idx, original) => (
+	const breadcrumbs = asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
 		<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref>
 			<Anchor component="a">{path}</Anchor>
 		</Link>

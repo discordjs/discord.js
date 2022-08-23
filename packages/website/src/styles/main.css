@@ -24,10 +24,21 @@ body {
 	height: 100%;
 }
 
-code {
-	font-family: 'JetBrains Mono';
+pre {
+	font-size: 13px !important;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	line-height: 1.5;
+	tab-size: 4;
+	hyphens: none;
+	padding: 1em;
+	margin: 0.5em 0;
+	overflow: auto;
+	background: #1e1e1e;
+	border-radius: 4px;
 }
 
-pre {
-	font-family: 'JetBrains Mono';
+code {
+	font-family: 'JetBrains Mono' !important;
 }

@@ -31,7 +31,7 @@ export default function PackagesRoute() {
 	const { colorScheme } = useMantineColorScheme();
 
 	return (
-		<Container pt={128} size="xs">
+		<Container py={96} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				<Title order={2} ml="xs">
 					Select a package:
