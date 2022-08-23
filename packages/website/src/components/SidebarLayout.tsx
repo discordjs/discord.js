@@ -138,8 +138,8 @@ export function SidebarLayout({
 			</Menu.Item>
 		)) ?? [];
 
-	const asPathWithoutQuery = router.asPath.split('?')[0]?.split('#')[0];
-	const breadcrumbs = asPathWithoutQuery?.split('/').map((path, idx, original) => (
+	const asPathWithoutQueryAndAnchor = router.asPath.split('?')[0]?.split('#')[0];
+	const breadcrumbs = asPathWithoutQueryAndAnchor?.split('/').map((path, idx, original) => (
 		<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref>
 			<Anchor component="a">{path}</Anchor>
 		</Link>

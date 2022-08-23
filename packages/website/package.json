@@ -65,7 +65,6 @@
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.4.0",
 		"react-syntax-highlighter": "^15.5.0",
-		"rehype-highlight": "^5.0.2",
 		"rehype-ignore": "^1.0.1",
 		"rehype-raw": "^6.1.1",
 		"rehype-slug": "^5.0.1",

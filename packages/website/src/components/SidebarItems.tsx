@@ -102,6 +102,8 @@ export function SidebarItems({
 	const { classes } = useStyles();
 	const groupItems = groupMembers(members);
 
+	const asPathWithoutQueryAndAnchor = router.asPath.split('?')[0]?.split('#')[0];
+
 	return (
 		<>
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
@@ -126,7 +128,7 @@ export function SidebarItems({
 											) : null}
 										</Group>
 									}
-									active={router.asPath === member.path}
+									active={asPathWithoutQueryAndAnchor === member.path}
 									variant="filled"
 								></NavLink>
 							</Link>

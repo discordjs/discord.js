@@ -9,7 +9,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscChevronUp } from 'react-icons/vsc';
-import rehypeHighlight from 'rehype-highlight';
 import rehypeIgnore from 'rehype-ignore';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
@@ -138,7 +137,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			mdxOptions: {
 				remarkPlugins: [remarkGfm],
 				remarkRehypeOptions: { allowDangerousHtml: true },
-				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug, [rehypeHighlight, { ignoreMissing: true }]],
+				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug],
 				format: 'md',
 			},
 		});
