@@ -34,6 +34,7 @@ import useSWR from 'swr';
 import { SidebarItems } from './SidebarItems';
 import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { findMember } from '~/util/model.server';
+import { PACKAGES } from '~/util/packages';
 import type { getMembers } from '~/util/parse.server';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -89,19 +90,9 @@ const useStyles = createStyles(
 	}),
 );
 
-const libraries = [
-	{ label: 'builders', value: 'builders' },
-	{ label: 'collection', value: 'collection' },
-	{ label: 'discord.js', value: 'discord.js' },
-	{ label: 'proxy', value: 'proxy' },
-	{ label: 'rest', value: 'rest' },
-	{ label: 'voice', value: 'voice' },
-	{ label: 'ws', value: 'ws' },
-];
-
-const libraryMenuItems = libraries.map((item) => (
-	<Menu.Item key={item.label} component={NextLink} href={`/docs/packages/${item.value}/main`}>
-		{item.label}
+const packageMenuItems = PACKAGES.map((pkg) => (
+	<Menu.Item key={pkg} component={NextLink} href={`/docs/packages/${pkg}/main`}>
+		{pkg}
 	</Menu.Item>
 ));
 
@@ -191,7 +182,7 @@ export function SidebarLayout({
 													</Group>
 												</UnstyledButton>
 											</Menu.Target>
-											<Menu.Dropdown>{libraryMenuItems}</Menu.Dropdown>
+											<Menu.Dropdown>{packageMenuItems}</Menu.Dropdown>
 										</Menu>
 
 										<Menu

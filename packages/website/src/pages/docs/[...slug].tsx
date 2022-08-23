@@ -32,14 +32,13 @@ import { Variable } from '~/components/model/Variable';
 import { MemberProvider } from '~/contexts/member';
 import { createApiModel } from '~/util/api-model.server';
 import { findMember, findMemberByKey } from '~/util/model.server';
+import { PACKAGES } from '~/util/packages';
 import { findPackage, getMembers } from '~/util/parse.server';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
-
 	const pkgs = (
 		await Promise.all(
-			packages.map(async (packageName) => {
+			PACKAGES.map(async (packageName) => {
 				try {
 					let data: any[] = [];
 					let versions: string[] = [];
@@ -121,7 +120,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	return {
 		paths: pkgs,
-		fallback: true,
+		fallback: 'blocking',
 	};
 };
 

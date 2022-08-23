@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
 	packageName: string;
@@ -24,9 +25,7 @@ interface VersionProps {
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
-	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
-
-	const versions = packages.map((packageName) => ({ params: { package: packageName } }));
+	const versions = PACKAGES.map((packageName) => ({ params: { package: packageName } }));
 
 	return {
 		paths: versions,

@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { PACKAGES } from '~/util/packages';
 
 const useStyles = createStyles((theme) => ({
 	control: {
@@ -29,15 +30,13 @@ export default function PackagesRoute() {
 	const { classes } = useStyles();
 	const { colorScheme } = useMantineColorScheme();
 
-	const packages = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
-
 	return (
 		<Container pt={128} size="xs">
 			<Stack sx={{ flexGrow: 1 }}>
 				<Title order={2} ml="xs">
 					Select a package:
 				</Title>
-				{packages.map((pkg) => (
+				{PACKAGES.map((pkg) => (
 					<Link key={pkg} href={`/docs/packages/${pkg}`} passHref>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">

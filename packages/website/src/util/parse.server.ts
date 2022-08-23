@@ -25,6 +25,7 @@ export function findPackage(model: ApiModel, name: string): ApiPackage | undefin
 
 export function generatePath(items: readonly ApiItem[], version: string) {
 	let path = '/docs/packages';
+
 	for (const item of items) {
 		switch (item.kind) {
 			case ApiItemKind.Model:
