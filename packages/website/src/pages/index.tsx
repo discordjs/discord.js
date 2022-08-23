@@ -1,18 +1,30 @@
 import { createStyles, Container, Title, Button, Group, Text, Center, Box } from '@mantine/core';
 import Image from 'next/future/image';
 import Link from 'next/link';
-import codeSample from '../assets/code-sample.png';
+import { FiExternalLink } from 'react-icons/fi';
+import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		flexDirection: 'column',
+		height: '100%',
+		justifyContent: 'center',
+		gap: 50,
+		padding: 32,
+
+		[theme.fn.smallerThan('md')]: {
+			height: 'unset',
+		},
+	},
+
 	inner: {
 		display: 'flex',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingTop: theme.spacing.xl * 6,
-		paddingBottom: theme.spacing.xl * 2,
 
 		[theme.fn.smallerThan('md')]: {
-			paddingTop: theme.spacing.xl * 2,
 			flexDirection: 'column',
 			gap: 50,
 		},
@@ -20,7 +32,7 @@ const useStyles = createStyles((theme) => ({
 
 	content: {
 		maxWidth: 480,
-		marginRight: theme.spacing.xl * 3,
+		marginRight: theme.spacing.xl,
 
 		[theme.fn.smallerThan('md')]: {
 			marginRight: 0,
@@ -44,33 +56,13 @@ const useStyles = createStyles((theme) => ({
 		borderRadius: theme.radius.sm,
 		padding: '4px 12px',
 	},
-
-	control: {
-		[theme.fn.smallerThan('xs')]: {
-			flex: 1,
-		},
-	},
-
-	image: {
-		flex: 1,
-		height: '100%',
-		maxWidth: 550,
-
-		[theme.fn.smallerThan('xs')]: {
-			maxWidth: 350,
-		},
-	},
-
-	vercel: {
-		paddingBottom: theme.spacing.xl * 4,
-	},
 }));
 
 export default function IndexRoute() {
 	const { classes } = useStyles();
 
 	return (
-		<Container size="lg">
+		<Container className={classes.outer} size="lg">
 			<Box className={classes.inner}>
 				<Box className={classes.content}>
 					<Title className={classes.title}>
@@ -84,18 +76,43 @@ export default function IndexRoute() {
 
 					<Group mt={30}>
 						<Link href="/docs" passHref>
-							<Button component="a" radius="sm" size="md" className={classes.control}>
+							<Button component="a" radius="sm" size="md">
 								Docs
 							</Button>
 						</Link>
 						<Link href="https://discordjs.guide" passHref>
-							<Button component="a" variant="default" radius="sm" size="md" className={classes.control}>
+							<Button component="a" variant="default" radius="sm" size="md" rightIcon={<FiExternalLink />}>
 								Guide
 							</Button>
 						</Link>
 					</Group>
 				</Box>
-				<Image src={codeSample} className={classes.image} />
+				<Box pb="xs">
+					<SyntaxHighlighter
+						wrapLongLines
+						language="typescript"
+						style={vscDarkPlus}
+						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+					>
+						{`import { Client, GatewayIntentBits } from 'discord.js';
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+client.on('ready', () => {
+	console.log(\`Logged in as \${client.user.tag}!\`);
+});
+
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	if (interaction.commandName === 'ping') {
+		await interaction.reply('Pong!');
+	}
+});
+
+await client.login('token');`}
+					</SyntaxHighlighter>
+				</Box>
 			</Box>
 			<Center>
 				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
@@ -106,7 +123,6 @@ export default function IndexRoute() {
 							width={0}
 							height={0}
 							style={{ height: '100%', width: '100%', maxWidth: 250 }}
-							className={classes.vercel}
 						/>
 					</a>
 				</Link>
