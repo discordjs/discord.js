@@ -66,16 +66,16 @@ export function TableOfContentItems({
 	});
 
 	return (
-		<Box sx={{ wordBreak: 'break-all' }}>
-			<Group mt={2} mb="sm" ml={2}>
+		<Box sx={{ wordBreak: 'break-all' }} pb="xl">
+			<Group spacing="xs" mt={6} mb="sm" ml={6}>
 				<VscListSelection size={25} />
 				<Text weight={600}>Table of contents</Text>
 			</Group>
-			<Stack spacing={0}>
+			<Stack spacing={0} mt={26} ml={4}>
 				{propertyItems.length ? (
 					<Box>
-						<Group>
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+						<Group spacing="xs">
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								<VscSymbolProperty size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>
@@ -90,7 +90,7 @@ export function TableOfContentItems({
 				{methodItems.length ? (
 					<Box>
 						<Group spacing="xs">
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								<VscSymbolMethod size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>

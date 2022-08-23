@@ -62,7 +62,7 @@ export function Section({
 				<Group position="apart">
 					<Group>
 						{icon ? (
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								{icon}
 							</ThemeIcon>
 						) : null}

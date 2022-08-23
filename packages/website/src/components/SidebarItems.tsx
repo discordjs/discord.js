@@ -1,4 +1,4 @@
-import { createStyles, Group, Text, NavLink } from '@mantine/core';
+import { createStyles, Group, Text, NavLink, Box } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { Dispatch, SetStateAction } from 'react';
@@ -105,7 +105,7 @@ export function SidebarItems({
 	const asPathWithoutQueryAndAnchor = router.asPath.split('?')[0]?.split('#')[0];
 
 	return (
-		<>
+		<Box pb="xl">
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
@@ -135,6 +135,6 @@ export function SidebarItems({
 						))}
 					</Section>
 				))}
-		</>
+		</Box>
 	);
 }

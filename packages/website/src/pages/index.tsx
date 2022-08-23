@@ -84,12 +84,12 @@ export default function IndexRoute() {
 
 					<Group mt={30}>
 						<Link href="/docs" passHref>
-							<Button component="a" radius="xl" size="md" className={classes.control}>
+							<Button component="a" radius="sm" size="md" className={classes.control}>
 								Docs
 							</Button>
 						</Link>
 						<Link href="https://discordjs.guide" passHref>
-							<Button component="a" variant="default" radius="xl" size="md" className={classes.control}>
+							<Button component="a" variant="default" radius="sm" size="md" className={classes.control}>
 								Guide
 							</Button>
 						</Link>

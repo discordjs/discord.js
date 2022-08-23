@@ -1,7 +1,7 @@
 import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
-import { Fragment, ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolMethod,
@@ -68,7 +68,7 @@ export function DocContainer({
 	return (
 		<Group>
 			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
-				<Skeleton visible={router.isFallback} radius="xs">
+				<Skeleton visible={router.isFallback} radius="sm">
 					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
 						<Group>
 							{generateIcon(kind)}
@@ -77,13 +77,13 @@ export function DocContainer({
 					</Title>
 				</Skeleton>
 
-				<Skeleton visible={router.isFallback} radius="xs">
+				<Skeleton visible={router.isFallback} radius="sm">
 					<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 						{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
 					</Section>
 				</Skeleton>
 
-				<Skeleton visible={router.isFallback} radius="xs">
+				<Skeleton visible={router.isFallback} radius="sm">
 					<Box px="xs" pb="xs">
 						<SyntaxHighlighter
 							wrapLongLines
@@ -123,7 +123,7 @@ export function DocContainer({
 					</Group>
 				) : null}
 
-				<Skeleton visible={router.isFallback} radius="xs">
+				<Skeleton visible={router.isFallback} radius="sm">
 					<Stack>
 						{typeParams?.length ? (
 							<Section

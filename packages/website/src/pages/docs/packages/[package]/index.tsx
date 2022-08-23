@@ -96,7 +96,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>
-									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 										<VscVersions size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">

@@ -164,14 +164,14 @@ export function SidebarLayout({
 										<Menu
 											onOpen={() => setOpenedLibPicker(true)}
 											onClose={() => setOpenedLibPicker(false)}
-											radius="xs"
+											radius="sm"
 											width="target"
 										>
 											<Menu.Target>
 												<UnstyledButton className={classes.control}>
 													<Group position="apart">
 														<Group>
-															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 																<VscPackage size={20} />
 															</ThemeIcon>
 															<Text weight="600" size="md">
@@ -188,14 +188,14 @@ export function SidebarLayout({
 										<Menu
 											onOpen={() => setOpenedVersionPicker(true)}
 											onClose={() => setOpenedVersionPicker(false)}
-											radius="xs"
+											radius="sm"
 											width="target"
 										>
 											<Menu.Target>
 												<UnstyledButton className={classes.control}>
 													<Group position="apart">
 														<Group>
-															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} size={30}>
+															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 																<VscVersions size={20} />
 															</ThemeIcon>
 															<Text weight="600" size="md">
@@ -243,7 +243,7 @@ export function SidebarLayout({
 							</MediaQuery>
 
 							<MediaQuery smallerThan="md" styles={{ display: 'none' }}>
-								<Skeleton visible={router.isFallback} radius="xs">
+								<Skeleton visible={router.isFallback} radius="sm">
 									<Breadcrumbs>{breadcrumbs}</Breadcrumbs>
 								</Skeleton>
 							</MediaQuery>
@@ -266,7 +266,7 @@ export function SidebarLayout({
 								color={colorScheme === 'dark' ? 'yellow' : 'blue'}
 								onClick={() => toggleColorScheme()}
 								title="Toggle color scheme"
-								radius="xs"
+								radius="sm"
 							>
 								{colorScheme === 'dark' ? <WiDaySunny size={30} /> : <WiNightClear size={30} />}
 							</ActionIcon>

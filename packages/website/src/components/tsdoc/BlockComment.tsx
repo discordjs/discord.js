@@ -24,7 +24,7 @@ export function ExampleBlock({
 
 export function DeprecatedBlock({ children }: { children: ReactNode }): JSX.Element {
 	return (
-		<Alert icon={<VscWarning />} title="Deprecated" variant="outline" color="red" radius="xs">
+		<Alert icon={<VscWarning />} title="Deprecated" variant="outline" color="red" radius="sm">
 			{children}
 		</Alert>
 	);

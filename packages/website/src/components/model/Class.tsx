@@ -21,10 +21,10 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			properties={data.properties}
 		>
 			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
-			<Skeleton visible={router.isFallback} radius="xs">
+			<Skeleton visible={router.isFallback} radius="sm">
 				<PropertiesSection data={data.properties} />
 			</Skeleton>
-			<Skeleton visible={router.isFallback} radius="xs">
+			<Skeleton visible={router.isFallback} radius="sm">
 				<MethodsSection data={data.methods} />
 			</Skeleton>
 		</DocContainer>

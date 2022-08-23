@@ -15,7 +15,7 @@ export function Function({ data }: { data: ApiFunctionJSON }) {
 			summary={data.summary}
 			typeParams={data.typeParameters}
 		>
-			<Skeleton visible={router.isFallback} radius="xs">
+			<Skeleton visible={router.isFallback} radius="sm">
 				<ParametersSection data={data.parameters} />
 			</Skeleton>
 		</DocContainer>
