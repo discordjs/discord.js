@@ -40,17 +40,17 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 				const functionItem = item as ApiFunction;
 				path += `/${functionItem.displayName}${
 					functionItem.overloadIndex && functionItem.overloadIndex > 1 ? `:${functionItem.overloadIndex}` : ''
-				}`;
+				}:${item.kind}`;
 				break;
 			case ApiItemKind.Property:
 			case ApiItemKind.Method:
 			case ApiItemKind.MethodSignature:
 			case ApiItemKind.PropertySignature:
 				// TODO: Take overloads into account
-				path += `#${item.displayName}`;
+				path += `#${item.displayName}:${item.kind}`;
 				break;
 			default:
-				path += `/${item.displayName}`;
+				path += `/${item.displayName}:${item.kind}`;
 		}
 	}
 

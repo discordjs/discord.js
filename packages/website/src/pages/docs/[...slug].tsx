@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Affix, Box, Button, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
-import { ApiFunction, type ApiPackage } from '@microsoft/api-extractor-model';
+import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
@@ -66,25 +66,29 @@ export const getStaticPaths: GetStaticPaths = async () => {
 						const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
 
 						return [
-							{ params: { slug: ['packages', packageName, 'main'] } },
 							...versions.map((version) => ({ params: { slug: ['packages', packageName, version] } })),
 							...pkgs
 								.map((pkg, idx) =>
-									getMembers(pkg, versions[idx]!)
-										// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
-										// causing next.js export to error
-										.filter((member) => member.name !== 'RESTEvents')
-										.map((member) => {
-											if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
-												return {
-													params: {
-														slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.overloadIndex}`],
-													},
-												};
-											}
+									getMembers(pkg, versions[idx]!).map((member) => {
+										if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+											return {
+												params: {
+													slug: [
+														'packages',
+														packageName,
+														versions[idx]!,
+														`${member.name}:${member.overloadIndex}:${member.kind}`,
+													],
+												},
+											};
+										}
 
-											return { params: { slug: ['packages', packageName, versions[idx]!, member.name] } };
-										}),
+										return {
+											params: {
+												slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.kind}`],
+											},
+										};
+									}),
 								)
 								.flat(),
 						];
@@ -95,21 +99,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 					return [
 						{ params: { slug: ['packages', packageName, 'main'] } },
-						...getMembers(pkg!, 'main')
-							// Filtering out enum `RESTEvents` because of interface with similar name `RestEvents`
-							// causing next.js export to error
-							.filter((member) => member.name !== 'RESTEvents')
-							.map((member) => {
-								if (member.kind === 'Function' && member.overloadIndex && member.overloadIndex > 1) {
-									return {
-										params: {
-											slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}`],
-										},
-									};
-								}
+						...getMembers(pkg!, 'main').map((member) => {
+							if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+								return {
+									params: {
+										slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+									},
+								};
+							}
 
-								return { params: { slug: ['packages', packageName, 'main', member.name] } };
-							}),
+							return { params: { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] } };
+						}),
 					];
 				} catch {
 					return { params: { slug: [] } };
@@ -120,7 +120,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 	return {
 		paths: pkgs,
-		fallback: 'blocking',
+		fallback: true,
 	};
 };
 
@@ -159,7 +159,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		const pkg = findPackage(model, packageName);
 
 		let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
-		if (name && overloadIndex) {
+		if (name && overloadIndex && !Number.isNaN(parseInt(overloadIndex, 10))) {
 			containerKey = ApiFunction.getContainerKey(name, parseInt(overloadIndex, 10));
 		}
 
@@ -209,6 +209,8 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	const [scroll, scrollTo] = useWindowScroll();
 	const matches = useMediaQuery('(max-width: 1200px)', true, { getInitialValueInEffect: false });
 
+	const name = `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`;
+
 	if (router.isFallback) {
 		return (
 			<SidebarLayout>
@@ -225,7 +227,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 				{props.data?.member ? (
 					<>
 						<Head>
-							<title key="title">discord.js | {props.data.member.name}</title>
+							<title key="title">{name}</title>
 						</Head>
 						{member(props.data.member)}
 						<Affix position={{ bottom: 20, right: matches ? 20 : 280 }}>
