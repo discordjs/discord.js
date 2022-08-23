@@ -1,5 +1,5 @@
 {
-	"name": "proxy",
+	"name": "brokers",
 	"org": "discordjs",
-	"packagePath": "packages/proxy"
+	"packagePath": "packages/brokers"
 }
