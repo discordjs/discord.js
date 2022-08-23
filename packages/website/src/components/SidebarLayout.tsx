@@ -107,7 +107,7 @@ const useStyles = createStyles(
 			paddingLeft: 324,
 
 			[theme.fn.smallerThan('lg')]: {
-				paddingRight: 24,
+				paddingRight: 54,
 			},
 
 			[theme.fn.smallerThan('md')]: {
@@ -115,6 +115,7 @@ const useStyles = createStyles(
 			},
 
 			[theme.fn.smallerThan('sm')]: {
+				paddingRight: 24,
 				height: 300,
 			},
 		},
@@ -328,7 +329,7 @@ export function SidebarLayout({
 				<Box sx={(theme) => ({ height: 200, [theme.fn.smallerThan('sm')]: { height: 300 } })}></Box>
 				<Box
 					component="footer"
-					sx={{ paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 24 : 324 }}
+					sx={{ paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 54 : 324 }}
 					className={classes.footer}
 					pt={50}
 				>

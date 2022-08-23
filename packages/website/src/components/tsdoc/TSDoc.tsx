@@ -1,9 +1,9 @@
-import { Anchor, Box, Code, Text } from '@mantine/core';
+import { Anchor, Box, Code, Text, useMantineColorScheme } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, type ReactNode } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { BlockComment } from './BlockComment';
 import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
@@ -14,6 +14,8 @@ import type { DocPlainTextJSON } from '~/DocModel/comment/PlainTextCommentNode';
 import type { DocCommentJSON } from '~/DocModel/comment/RootComment';
 
 export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
+	const { colorScheme } = useMantineColorScheme();
+
 	let numberOfExamples = 0;
 	let exampleIndex = 0;
 
@@ -74,7 +76,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 						wrapLines
 						wrapLongLines
 						language={language}
-						style={vscDarkPlus}
+						style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
 						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 					>
 						{code}

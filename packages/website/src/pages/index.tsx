@@ -1,9 +1,9 @@
-import { createStyles, Container, Title, Button, Group, Text, Center, Box } from '@mantine/core';
+import { createStyles, Container, Title, Button, Group, Text, Center, Box, useMantineColorScheme } from '@mantine/core';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { FiExternalLink } from 'react-icons/fi';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const useStyles = createStyles((theme) => ({
 	outer: {
@@ -60,6 +60,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function IndexRoute() {
 	const { classes } = useStyles();
+	const { colorScheme } = useMantineColorScheme();
 
 	return (
 		<Container className={classes.outer} size="lg">
@@ -91,7 +92,7 @@ export default function IndexRoute() {
 					<SyntaxHighlighter
 						wrapLongLines
 						language="typescript"
-						style={vscDarkPlus}
+						style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
 						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 					>
 						{`import { Client, GatewayIntentBits } from 'discord.js';

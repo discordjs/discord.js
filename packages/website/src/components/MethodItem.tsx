@@ -11,10 +11,12 @@ import { Visibility } from '~/DocModel/Visibility';
 const useStyles = createStyles((theme) => ({
 	outer: {
 		display: 'flex',
+		alignItems: 'center',
 		gap: 16,
 
 		[theme.fn.smallerThan('sm')]: {
 			flexDirection: 'column',
+			alignItems: 'unset',
 		},
 	},
 }));
