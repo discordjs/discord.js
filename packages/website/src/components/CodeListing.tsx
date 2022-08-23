@@ -1,5 +1,7 @@
-import { Badge, Group, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Group, Stack, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import type { ReactNode } from 'react';
+import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -35,9 +37,14 @@ export function CodeListing({
 	deprecation?: AnyDocNodeJSON | null;
 	inheritanceData?: InheritanceData | null;
 }) {
+	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+
 	return (
 		<Stack id={name} className="scroll-mt-30" spacing="xs">
-			<Group>
+			<Group ml={matches ? 0 : -45}>
+				<ActionIcon component="a" href={`#${name}`} variant="transparent">
+					<FiLink size={20} />
+				</ActionIcon>
 				{deprecation ? (
 					<Badge variant="filled" color="red">
 						Deprecated

@@ -1,4 +1,6 @@
-import { Badge, Group, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Group, Stack, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
@@ -17,17 +19,18 @@ function getShorthandName(data: ApiMethodJSON | ApiMethodSignatureJSON) {
 }
 
 export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
+	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
 	const method = data as ApiMethodJSON;
+	const key = `${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`;
 
 	return (
-		<Stack
-			id={`${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`}
-			className="scroll-mt-30"
-			spacing="xs"
-		>
+		<Stack id={key} className="scroll-mt-30" spacing="xs">
 			<Group>
 				<Stack>
-					<Group>
+					<Group ml={matches ? 0 : -45}>
+						<ActionIcon component="a" href={`#${key}`} variant="transparent">
+							<FiLink size={20} />
+						</ActionIcon>
 						{data.deprecated ? (
 							<Badge variant="filled" color="red">
 								Deprecated

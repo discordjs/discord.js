@@ -78,13 +78,15 @@ const useStyles = createStyles((theme) => ({
 		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
 		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
 
+		'&[data-active]': {
+			'&:hover': {
+				color: theme.white,
+			},
+		},
+
 		'&:hover': {
 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
 			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-
-			'&[data-active]': {
-				color: theme.white,
-			},
 		},
 	},
 }));

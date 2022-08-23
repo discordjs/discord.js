@@ -11,7 +11,7 @@ export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignature
 					key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
 				>
 					<MethodItem data={method} />
-					<Divider className="bg-gray-100" size="md" />
+					<Divider size="md" />
 				</Fragment>
 			))}
 		</Stack>

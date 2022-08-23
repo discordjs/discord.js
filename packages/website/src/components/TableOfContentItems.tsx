@@ -50,7 +50,7 @@ export function TableOfContentItems({
 		const key = `${member.name}${member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''}`;
 
 		return (
-			<Box<'a'> key={key} href={`#${key}`} component="a" className={classes.link}>
+			<Box<'a'> key={key} component="a" href={`#${key}`} className={classes.link}>
 				<Group>
 					<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
 						{member.name}

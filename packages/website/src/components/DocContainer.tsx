@@ -97,7 +97,7 @@ export function DocContainer({
 				</Skeleton>
 
 				{extendsTokens?.length ? (
-					<Group noWrap>
+					<Group pb="xs" noWrap>
 						<Title order={3} ml="xs">
 							Extends
 						</Title>

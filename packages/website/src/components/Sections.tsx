@@ -53,7 +53,7 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 
 	return data.parameters.length ? (
 		<Section title="Constructor" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
-			<Stack id={`${data.name}`} className="scroll-mt-30" spacing="xs">
+			<Stack id={data.name} className="scroll-mt-30" spacing="xs">
 				<Group>
 					<Stack>
 						<Group>
