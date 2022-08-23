@@ -253,7 +253,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 					position={{
 						bottom: 20,
 						right:
-							matches || (props.data?.member?.kind !== 'Class' && props.data?.member?.kind !== 'Interface') ? 20 : 280,
+							matches || (props.data?.member?.kind !== 'Class' && props.data?.member?.kind !== 'Interface') ? 20 : 268,
 					}}
 				>
 					<Transition transition="slide-up" mounted={scroll.y > 200}>
