@@ -1168,7 +1168,7 @@ declare const guildChannelManager: GuildChannelManager;
 
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
-  expectType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
+  expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
 }
 
 declare const messageManager: MessageManager;
