@@ -1,7 +1,7 @@
 import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton, Divider } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
-import { Fragment, type ReactNode } from 'react';
+import { Fragment, type PropsWithChildren } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolMethod,
@@ -23,19 +23,18 @@ import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 
-interface DocContainerProps {
+type DocContainerProps = PropsWithChildren<{
 	name: string;
 	kind: string;
 	excerpt: string;
 	summary?: ApiItemJSON['summary'];
-	children?: ReactNode;
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
 	typeParams?: TypeParameterData[];
 	comment?: AnyDocNodeJSON | null;
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
-}
+}>;
 
 function generateIcon(kind: string) {
 	const icons = {
@@ -63,7 +62,7 @@ export function DocContainer({
 	properties,
 }: DocContainerProps) {
 	const router = useRouter();
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return (
 		<Group>

@@ -8,7 +8,7 @@ import {
 	Text,
 	useMantineColorScheme,
 } from '@mantine/core';
-import { type ReactNode, useState, useEffect } from 'react';
+import { useState, useEffect, type PropsWithChildren } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 
 const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
@@ -39,14 +39,13 @@ export function Section({
 	dense = false,
 	defaultClosed = false,
 	children,
-}: {
+}: PropsWithChildren<{
 	title: string;
 	icon?: JSX.Element;
 	padded?: boolean;
 	dense?: boolean;
 	defaultClosed?: boolean;
-	children: ReactNode;
-}) {
+}>) {
 	const [opened, setOpened] = useState(!defaultClosed);
 	const { colorScheme } = useMantineColorScheme();
 	const { classes } = useStyles({ opened });

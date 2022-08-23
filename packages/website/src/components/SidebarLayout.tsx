@@ -88,6 +88,47 @@ const useStyles = createStyles(
 			transition: 'transform 150ms ease',
 			transform: openedVersion ? 'rotate(180deg)' : 'rotate(0deg)',
 		},
+
+		content: {
+			position: 'relative',
+			minHeight: 'calc(100vh - 50px)',
+			zIndex: 1,
+			background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
+			boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+		},
+
+		footer: {
+			position: 'fixed',
+			bottom: 0,
+			left: 0,
+			right: 0,
+			height: 200,
+			background: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
+			paddingLeft: 324,
+
+			[theme.fn.smallerThan('lg')]: {
+				paddingRight: 24,
+			},
+
+			[theme.fn.smallerThan('md')]: {
+				paddingLeft: 24,
+			},
+
+			[theme.fn.smallerThan('sm')]: {
+				height: 300,
+			},
+		},
+
+		links: {
+			display: 'flex',
+			justifyContent: 'space-between',
+
+			[theme.fn.smallerThan('sm')]: {
+				flexDirection: 'column',
+				alignItems: 'center',
+				gap: 50,
+			},
+		},
 	}),
 );
 
@@ -281,59 +322,18 @@ export function SidebarLayout({
 			}
 		>
 			<article>
-				<Box
-					sx={(theme) => ({
-						position: 'relative',
-						minHeight: 'calc(100vh - 50px)',
-						zIndex: 1,
-						background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
-						boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-					})}
-					p="lg"
-					pb={80}
-				>
+				<Box className={classes.content} p="lg" pb={80}>
 					{children}
 				</Box>
 				<Box sx={(theme) => ({ height: 200, [theme.fn.smallerThan('sm')]: { height: 300 } })}></Box>
 				<Box
 					component="footer"
-					sx={(theme) => ({
-						position: 'fixed',
-						bottom: 0,
-						left: 0,
-						right: 0,
-						height: 200,
-						background: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
-						paddingLeft: 324,
-						paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 24 : 324,
-
-						[theme.fn.smallerThan('lg')]: {
-							paddingRight: 24,
-						},
-
-						[theme.fn.smallerThan('md')]: {
-							paddingLeft: 24,
-						},
-
-						[theme.fn.smallerThan('sm')]: {
-							height: 300,
-						},
-					})}
+					sx={{ paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 24 : 324 }}
+					className={classes.footer}
 					pt={50}
 				>
 					<Container>
-						<Box
-							sx={(theme) => ({
-								display: 'flex',
-								justifyContent: 'space-between',
-
-								[theme.fn.smallerThan('sm')]: {
-									flexDirection: 'column',
-									alignItems: 'center',
-									gap: 50,
-								},
-							})}
-						>
+						<Box className={classes.links}>
 							<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
 								<a title="Vercel">
 									<Image

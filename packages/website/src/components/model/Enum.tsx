@@ -9,7 +9,7 @@ import type { ApiEnumJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function Enum({ data }: { data: ApiEnumJSON }) {
 	const router = useRouter();
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>

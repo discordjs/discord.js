@@ -203,7 +203,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
 	const router = useRouter();
 	const [scroll, scrollTo] = useWindowScroll();
-	const matches = useMediaQuery('(max-width: 1200px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 1200px)');
 
 	const name = `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`;
 

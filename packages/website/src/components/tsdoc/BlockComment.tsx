@@ -1,9 +1,9 @@
 import { Alert, Box, Title, Text } from '@mantine/core';
 import { StandardTags } from '@microsoft/tsdoc';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import { VscWarning } from 'react-icons/vsc';
 
-export function Block({ children, title }: { children: ReactNode; title: string }) {
+export function Block({ children, title }: PropsWithChildren<{ title: string }>) {
 	return (
 		<Box>
 			<Title order={5}>{title}</Title>
@@ -15,14 +15,11 @@ export function Block({ children, title }: { children: ReactNode; title: string 
 export function ExampleBlock({
 	children,
 	exampleIndex,
-}: {
-	children: ReactNode;
-	exampleIndex?: number | undefined;
-}): JSX.Element {
+}: PropsWithChildren<{ exampleIndex?: number | undefined }>): JSX.Element {
 	return <Block title={`Example ${exampleIndex ? exampleIndex : ''}`}>{children}</Block>;
 }
 
-export function DeprecatedBlock({ children }: { children: ReactNode }): JSX.Element {
+export function DeprecatedBlock({ children }: PropsWithChildren): JSX.Element {
 	return (
 		<Alert icon={<VscWarning />} title="Deprecated" variant="outline" color="red" radius="sm">
 			{children}
@@ -30,11 +27,11 @@ export function DeprecatedBlock({ children }: { children: ReactNode }): JSX.Elem
 	);
 }
 
-export function DefaultValueBlock({ children }: { children: ReactNode }): JSX.Element {
+export function DefaultValueBlock({ children }: PropsWithChildren): JSX.Element {
 	return <Block title="Default value">{children}</Block>;
 }
 
-export function RemarksBlock({ children }: { children: ReactNode }): JSX.Element {
+export function RemarksBlock({ children }: PropsWithChildren): JSX.Element {
 	return <Block title="Remarks">{children}</Block>;
 }
 
@@ -42,11 +39,10 @@ export function BlockComment({
 	children,
 	tagName,
 	index,
-}: {
+}: PropsWithChildren<{
 	tagName: string;
-	children: ReactNode;
 	index?: number | undefined;
-}): JSX.Element {
+}>): JSX.Element {
 	switch (tagName.toUpperCase()) {
 		case StandardTags.example.tagNameWithUpperCase:
 			return <ExampleBlock exampleIndex={index}>{children}</ExampleBlock>;

@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Box, Group, MediaQuery, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -7,6 +7,17 @@ import { ParameterTable } from './ParameterTable';
 import { TSDoc } from './tsdoc/TSDoc';
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import { Visibility } from '~/DocModel/Visibility';
+
+const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		gap: 16,
+
+		[theme.fn.smallerThan('sm')]: {
+			flexDirection: 'column',
+		},
+	},
+}));
 
 function getShorthandName(data: ApiMethodJSON | ApiMethodSignatureJSON) {
 	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
@@ -19,7 +30,8 @@ function getShorthandName(data: ApiMethodJSON | ApiMethodSignatureJSON) {
 }
 
 export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const { classes } = useStyles();
+	const matches = useMediaQuery('(max-width: 768px)');
 	const method = data as ApiMethodJSON;
 	const key = `${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`;
 
@@ -27,17 +39,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 		<Stack id={key} className="scroll-mt-30" spacing="xs">
 			<Group>
 				<Stack>
-					<Box
-						sx={(theme) => ({
-							display: 'flex',
-							gap: 16,
-
-							[theme.fn.smallerThan('sm')]: {
-								flexDirection: 'column',
-							},
-						})}
-						ml={matches ? 0 : -45}
-					>
+					<Box className={classes.outer} ml={matches ? 0 : -45}>
 						<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 							<ActionIcon component="a" href={`#${key}`} variant="transparent">
 								<FiLink size={20} />

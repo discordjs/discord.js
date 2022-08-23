@@ -1,6 +1,6 @@
-import { ActionIcon, Badge, Box, Group, MediaQuery, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
@@ -14,6 +14,17 @@ export enum CodeListingSeparatorType {
 	Value = '=',
 }
 
+const useStyles = createStyles((theme) => ({
+	outer: {
+		display: 'flex',
+		gap: 16,
+
+		[theme.fn.smallerThan('sm')]: {
+			flexDirection: 'column',
+		},
+	},
+}));
+
 export function CodeListing({
 	name,
 	separator = CodeListingSeparatorType.Type,
@@ -25,7 +36,7 @@ export function CodeListing({
 	comment,
 	deprecation,
 	inheritanceData,
-}: {
+}: PropsWithChildren<{
 	name: string;
 	separator?: CodeListingSeparatorType;
 	typeTokens: TokenDocumentation[];
@@ -33,25 +44,15 @@ export function CodeListing({
 	optional?: boolean;
 	summary?: ApiItemJSON['summary'];
 	comment?: AnyDocNodeJSON | null;
-	children?: ReactNode;
 	deprecation?: AnyDocNodeJSON | null;
 	inheritanceData?: InheritanceData | null;
-}) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+}>) {
+	const { classes } = useStyles();
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return (
 		<Stack id={name} className="scroll-mt-30" spacing="xs">
-			<Box
-				sx={(theme) => ({
-					display: 'flex',
-					gap: 16,
-
-					[theme.fn.smallerThan('sm')]: {
-						flexDirection: 'column',
-					},
-				})}
-				ml={matches ? 0 : -45}
-			>
+			<Box className={classes.outer} ml={matches ? 0 : -45}>
 				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 					<ActionIcon component="a" href={`#${name}`} variant="transparent">
 						<FiLink size={20} />

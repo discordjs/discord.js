@@ -10,7 +10,7 @@ import type { ApiClassJSON, ApiConstructorJSON, ApiInterfaceJSON } from '~/DocMo
 import type { ParameterDocumentation } from '~/util/parse.server';
 
 export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return data.length ? (
 		<Section title="Properties" icon={<VscSymbolProperty size={20} />} padded dense={matches}>
@@ -20,7 +20,7 @@ export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] |
 }
 
 export function MethodsSection({ data }: { data: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] }) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return data.length ? (
 		<Section title="Methods" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
@@ -30,7 +30,7 @@ export function MethodsSection({ data }: { data: ApiClassJSON['methods'] | ApiIn
 }
 
 export function ParametersSection({ data }: { data: ParameterDocumentation[] }) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	return data.length ? (
 		<Section title="Parameters" icon={<VscSymbolConstant size={20} />} padded dense={matches}>
@@ -40,7 +40,7 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 }
 
 export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
-	const matches = useMediaQuery('(max-width: 768px)', true, { getInitialValueInEffect: false });
+	const matches = useMediaQuery('(max-width: 768px)');
 
 	const getShorthandName = () =>
 		`constructor(${data.parameters.reduce((prev, cur, index) => {
