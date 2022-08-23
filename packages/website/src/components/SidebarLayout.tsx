@@ -304,7 +304,7 @@ export function SidebarLayout({
 						height: 200,
 						background: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
 						paddingLeft: 324,
-						paddingRight: 324,
+						paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 24 : 324,
 
 						[theme.fn.smallerThan('lg')]: {
 							paddingRight: 24,

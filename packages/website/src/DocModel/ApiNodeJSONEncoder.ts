@@ -221,7 +221,7 @@ export class ApiNodeJSONEncoder {
 		model: ApiModel,
 		item: ApiTypeParameterListMixin & ApiDeclaredItem,
 		version: string,
-	) {
+	): ApiTypeParameterListJSON {
 		return {
 			typeParameters: item.typeParameters.map((param) => generateTypeParamData(model, param, version, item.parent)),
 		};
@@ -259,7 +259,7 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeFunction(model: ApiModel, item: ApiFunction, version: string) {
+	public static encodeFunction(model: ApiModel, item: ApiFunction, version: string): ApiFunctionJSON {
 		return {
 			...this.encodeItem(model, item, version),
 			...this.encodeParameterList(model, item, version),

@@ -226,19 +226,6 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 							<title key="title">{name}</title>
 						</Head>
 						{member(props.data.member)}
-						<Affix position={{ bottom: 20, right: matches ? 20 : 280 }}>
-							<Transition transition="slide-up" mounted={scroll.y > 250}>
-								{(transitionStyles) => (
-									<Button
-										leftIcon={<VscChevronUp size={20} />}
-										style={transitionStyles}
-										onClick={() => scrollTo({ y: 0 })}
-									>
-										Scroll to top
-									</Button>
-								)}
-							</Transition>
-						</Affix>
 					</>
 				) : props.data?.source ? (
 					<Box
@@ -259,6 +246,21 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 						<MDXRemote {...props.data.source} />
 					</Box>
 				) : null}
+				<Affix
+					position={{
+						bottom: 20,
+						right:
+							matches || (props.data?.member?.kind !== 'Class' && props.data?.member?.kind !== 'Interface') ? 20 : 280,
+					}}
+				>
+					<Transition transition="slide-up" mounted={scroll.y > 200}>
+						{(transitionStyles) => (
+							<Button leftIcon={<VscChevronUp size={20} />} style={transitionStyles} onClick={() => scrollTo({ y: 0 })}>
+								Scroll to top
+							</Button>
+						)}
+					</Transition>
+				</Affix>
 			</SidebarLayout>
 		</MemberProvider>
 	);
