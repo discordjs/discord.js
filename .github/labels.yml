@@ -40,8 +40,6 @@
   color: 4b1f8e
 - name: help wanted
   color: '008672'
-- name: interactions
-  color: 80c042
 - name: in progress
   color: ffccd7
 - name: in review
@@ -50,6 +48,8 @@
   color: e4e669
 - name: need repro
   color: c66037
+- name: packages:brokers
+  color: fbca04
 - name: packages:builders
   color: fbca04
 - name: packages:collection

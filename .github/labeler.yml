@@ -6,6 +6,11 @@ apps:website:
   - apps/website/**/*
 
 packages:builders:
+'packages:brokers':
+  - packages/brokers/*
+  - packages/brokers/**/*
+
+'packages:builders':
   - packages/builders/*
   - packages/builders/**/*
 packages:collection:
