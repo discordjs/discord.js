@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ApiItem, ApiModel, ApiPackage } from '~/util/api-extractor.server';
+import { ApiItem, ApiModel, type ApiPackage } from '~/util/api-extractor.server';
 import { TSDocConfigFile } from '~/util/tsdoc-config.server';
 import { TSDocConfiguration } from '~/util/tsdoc.server';
 

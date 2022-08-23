@@ -1,5 +1,5 @@
 import type { DocCodeSpan } from '@microsoft/tsdoc';
-import { DocNodeJSON, node } from './CommentNode';
+import { type DocNodeJSON, node } from './CommentNode';
 
 export interface DocCodeSpanJSON extends DocNodeJSON {
 	code: string;

@@ -3,12 +3,7 @@ import { StandardTags } from '@microsoft/tsdoc';
 import type { ReactNode } from 'react';
 import { VscWarning } from 'react-icons/vsc';
 
-export interface BlockProps {
-	children: ReactNode;
-	title: string;
-}
-
-export function Block({ children, title }: BlockProps) {
+export function Block({ children, title }: { children: ReactNode; title: string }) {
 	return (
 		<Box>
 			<Title order={5}>{title}</Title>
@@ -17,18 +12,13 @@ export function Block({ children, title }: BlockProps) {
 	);
 }
 
-export interface BlockCommentProps {
-	tagName: string;
-	children: ReactNode;
-	index?: number | undefined;
-}
-
-export interface ExampleBlockProps {
+export function ExampleBlock({
+	children,
+	exampleIndex,
+}: {
 	children: ReactNode;
 	exampleIndex?: number | undefined;
-}
-
-export function ExampleBlock({ children, exampleIndex }: ExampleBlockProps): JSX.Element {
+}): JSX.Element {
 	return <Block title={`Example ${exampleIndex ? exampleIndex : ''}`}>{children}</Block>;
 }
 
@@ -48,7 +38,15 @@ export function RemarksBlock({ children }: { children: ReactNode }): JSX.Element
 	return <Block title="Remarks">{children}</Block>;
 }
 
-export function BlockComment({ children, tagName, index }: BlockCommentProps): JSX.Element {
+export function BlockComment({
+	children,
+	tagName,
+	index,
+}: {
+	tagName: string;
+	children: ReactNode;
+	index?: number | undefined;
+}): JSX.Element {
 	switch (tagName.toUpperCase()) {
 		case StandardTags.example.tagNameWithUpperCase:
 			return <ExampleBlock exampleIndex={index}>{children}</ExampleBlock>;

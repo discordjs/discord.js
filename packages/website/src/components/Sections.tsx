@@ -1,7 +1,6 @@
 import { Stack, Group, Badge, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
-
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';

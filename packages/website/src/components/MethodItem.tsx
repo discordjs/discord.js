@@ -6,9 +6,7 @@ import { TSDoc } from './tsdoc/TSDoc';
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import { Visibility } from '~/DocModel/Visibility';
 
-type MethodResolvable = ApiMethodJSON | ApiMethodSignatureJSON;
-
-function getShorthandName(data: MethodResolvable) {
+function getShorthandName(data: ApiMethodJSON | ApiMethodSignatureJSON) {
 	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
 		if (index === 0) {
 			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
@@ -18,7 +16,7 @@ function getShorthandName(data: MethodResolvable) {
 	}, '')})`;
 }
 
-export function MethodItem({ data }: { data: MethodResolvable }) {
+export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
 	const method = data as ApiMethodJSON;
 
 	return (

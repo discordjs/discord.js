@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Affix, Box, Button, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
-import { ApiFunction, ApiPackage } from '@microsoft/api-extractor-model';
+import { ApiFunction, type ApiPackage } from '@microsoft/api-extractor-model';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
@@ -175,7 +175,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
 				},
-				key: `${memberName ?? 'index'}-${branchName}`,
 				revalidate: 3600,
 			},
 		};

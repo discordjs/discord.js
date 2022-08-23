@@ -1,36 +1,36 @@
 import {
-	ApiModel,
+	type ApiModel,
 	ApiDeclaredItem,
-	ApiPropertyItem,
-	ApiMethod,
-	ApiParameterListMixin,
-	ApiTypeParameterListMixin,
-	ApiClass,
-	ApiFunction,
+	type ApiPropertyItem,
+	type ApiMethod,
+	type ApiParameterListMixin,
+	type ApiTypeParameterListMixin,
+	type ApiClass,
+	type ApiFunction,
 	ApiItemKind,
-	ApiTypeAlias,
-	ApiEnum,
-	ApiInterface,
-	ApiMethodSignature,
-	ApiPropertySignature,
-	ApiVariable,
-	ApiItem,
-	ApiConstructor,
-	ApiItemContainerMixin,
+	type ApiTypeAlias,
+	type ApiEnum,
+	type ApiInterface,
+	type ApiMethodSignature,
+	type ApiPropertySignature,
+	type ApiVariable,
+	type ApiItem,
+	type ApiConstructor,
+	type ApiItemContainerMixin,
 } from '@microsoft/api-extractor-model';
 import { generateTypeParamData } from './TypeParameterMixin';
 import { Visibility } from './Visibility';
 import { createCommentNode } from './comment';
 import type { DocBlockJSON } from './comment/CommentBlock';
 import type { AnyDocNodeJSON } from './comment/CommentNode';
-import { DocNodeContainerJSON, nodeContainer } from './comment/CommentNodeContainer';
+import { type DocNodeContainerJSON, nodeContainer } from './comment/CommentNodeContainer';
 import {
 	generatePath,
 	genParameter,
 	genReference,
 	genToken,
 	resolveName,
-	TokenDocumentation,
+	type TokenDocumentation,
 } from '~/util/parse.server';
 
 export interface ReferenceData {

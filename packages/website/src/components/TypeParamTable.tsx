@@ -4,6 +4,12 @@ import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
 import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 
+const rowElements = {
+	Name: 'font-mono whitespace-nowrap',
+	Constraints: 'font-mono whitespace-pre break-normal',
+	Default: 'font-mono whitespace-pre break-normal',
+};
+
 export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	const rows = data.map((typeParam) => ({
 		Name: typeParam.name,
@@ -12,12 +18,6 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 		Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
 		Description: typeParam.commentBlock ? <TSDoc node={typeParam.commentBlock} /> : 'None',
 	}));
-
-	const rowElements = {
-		Name: 'font-mono whitespace-nowrap',
-		Constraints: 'font-mono whitespace-pre break-normal',
-		Default: 'font-mono whitespace-pre break-normal',
-	};
 
 	return (
 		<ScrollArea pb="xs" offsetScrollbars>

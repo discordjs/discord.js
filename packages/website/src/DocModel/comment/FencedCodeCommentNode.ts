@@ -1,5 +1,5 @@
 import type { DocFencedCode } from '@microsoft/tsdoc';
-import { DocNodeJSON, node } from './CommentNode';
+import { type DocNodeJSON, node } from './CommentNode';
 
 export interface DocFencedCodeJSON extends DocNodeJSON {
 	code: string;

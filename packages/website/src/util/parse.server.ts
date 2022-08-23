@@ -10,10 +10,10 @@ import {
 	type ApiPropertyItem,
 	type ExcerptToken,
 	type Parameter,
-	ApiFunction,
+	type ApiFunction,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
+import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
 import { createCommentNode } from '~/DocModel/comment';
 import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
 

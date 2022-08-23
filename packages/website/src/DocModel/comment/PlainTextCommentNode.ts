@@ -1,5 +1,5 @@
 import type { DocPlainText } from '@microsoft/tsdoc';
-import { DocNodeJSON, node } from './CommentNode';
+import { type DocNodeJSON, node } from './CommentNode';
 
 export interface DocPlainTextJSON extends DocNodeJSON {
 	text: string;

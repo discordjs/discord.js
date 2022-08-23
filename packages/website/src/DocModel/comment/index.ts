@@ -7,9 +7,9 @@ import {
 	type DocFencedCode,
 	DocNodeKind,
 	type DocBlock,
-	DocComment,
-	DocCodeSpan,
-	DocParamBlock,
+	type DocComment,
+	type DocCodeSpan,
+	type DocParamBlock,
 } from '@microsoft/tsdoc';
 import { block } from './CommentBlock';
 import { codeSpan } from './CommentCodeSpan';

@@ -1,6 +1,6 @@
 import type { ApiItem, ApiModel, TypeParameter } from '@microsoft/api-extractor-model';
-import { block, DocBlockJSON } from './comment/CommentBlock';
-import { genToken, TokenDocumentation } from '~/util/parse.server';
+import { block, type DocBlockJSON } from './comment/CommentBlock';
+import { genToken, type TokenDocumentation } from '~/util/parse.server';
 
 export interface TypeParameterData {
 	name: string;

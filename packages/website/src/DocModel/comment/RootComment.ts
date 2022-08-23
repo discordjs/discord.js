@@ -1,8 +1,8 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocComment } from '@microsoft/tsdoc';
 import { createCommentNode } from '.';
-import { block, DocBlockJSON } from './CommentBlock';
-import { DocNodeJSON, node } from './CommentNode';
+import { block, type DocBlockJSON } from './CommentBlock';
+import { type DocNodeJSON, node } from './CommentNode';
 
 export interface DocCommentJSON extends DocNodeJSON {
 	summary: DocNodeJSON[];

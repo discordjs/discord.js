@@ -8,7 +8,7 @@ import {
 	Text,
 	useMantineColorScheme,
 } from '@mantine/core';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 
 const useStyles = createStyles((theme, { opened }: { opened: boolean }) => ({
@@ -50,6 +50,11 @@ export function Section({
 	const [opened, setOpened] = useState(!defaultClosed);
 	const { colorScheme } = useMantineColorScheme();
 	const { classes } = useStyles({ opened });
+
+	useEffect(() => {
+		setOpened(!defaultClosed);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Box sx={{ wordBreak: 'break-all' }}>

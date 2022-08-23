@@ -1,7 +1,13 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocDeclarationReference, DocLinkTag } from '@microsoft/tsdoc';
-import { DocNodeJSON, node } from './CommentNode';
+import { type DocNodeJSON, node } from './CommentNode';
 import { generatePath, resolveName } from '~/util/parse.server';
+
+interface LinkTagCodeLink {
+	name: string;
+	kind: string;
+	path: string;
+}
 
 export interface DocLinkTagJSON extends DocNodeJSON {
 	text: string | null;
@@ -26,12 +32,6 @@ export function genToken(
 		kind: item.kind,
 		path: generatePath(item.getHierarchy(), version),
 	};
-}
-
-export interface LinkTagCodeLink {
-	name: string;
-	kind: string;
-	path: string;
 }
 
 export function linkTagNode(

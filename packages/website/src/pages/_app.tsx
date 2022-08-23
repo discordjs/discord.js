@@ -1,6 +1,6 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { useColorScheme } from '@mantine/hooks';
-import { SpotlightAction, SpotlightProvider } from '@mantine/spotlight';
+import { type SpotlightAction, SpotlightProvider } from '@mantine/spotlight';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { type NextRouter, useRouter } from 'next/router';

@@ -27,7 +27,7 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { type PropsWithChildren, useState } from 'react';
+import { type PropsWithChildren, useState, useEffect } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
@@ -99,6 +99,12 @@ const libraries = [
 	{ label: 'ws', value: 'ws' },
 ];
 
+const libraryMenuItems = libraries.map((item) => (
+	<Menu.Item key={item.label} component={NextLink} href={`/docs/packages/${item.value}/main`}>
+		{item.label}
+	</Menu.Item>
+));
+
 export function SidebarLayout({
 	packageName,
 	branchName,
@@ -117,13 +123,13 @@ export function SidebarLayout({
 	const [openedLibPicker, setOpenedLibPicker] = useState(false);
 	const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
 
-	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
+	useEffect(() => {
+		setOpened(false);
+		setOpenedLibPicker(false);
+		setOpenedVersionPicker(false);
+	}, []);
 
-	const libraryMenuItems = libraries.map((item) => (
-		<Menu.Item key={item.label} component={NextLink} href={`/docs/packages/${item.value}/main`}>
-			{item.label}
-		</Menu.Item>
-	));
+	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
 
 	const versionMenuItems =
 		versions?.map((item) => (

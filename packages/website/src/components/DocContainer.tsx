@@ -23,7 +23,7 @@ import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
 import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
 import type { TokenDocumentation } from '~/util/parse.server';
 
-export interface DocContainerProps {
+interface DocContainerProps {
 	name: string;
 	kind: string;
 	excerpt: string;
