@@ -12,6 +12,7 @@ const useStyles = createStyles((theme) => ({
 		paddingBottom: theme.spacing.xl * 2,
 
 		[theme.fn.smallerThan('md')]: {
+			paddingTop: theme.spacing.xl * 2,
 			flexDirection: 'column',
 			gap: 50,
 		},
@@ -97,7 +98,7 @@ export default function IndexRoute() {
 				<Image src={codeSample} className={classes.image} />
 			</Box>
 			<Center>
-				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
+				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
 					<a title="Vercel">
 						<Image
 							src="/powered-by-vercel.svg"
