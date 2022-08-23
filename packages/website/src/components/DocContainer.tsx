@@ -1,4 +1,4 @@
-import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton } from '@mantine/core';
+import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton, Divider } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { Fragment, type ReactNode } from 'react';
@@ -80,6 +80,7 @@ export function DocContainer({
 				<Skeleton visible={router.isFallback} radius="sm">
 					<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 						{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
+						<Divider size="md" mt={20} />
 					</Section>
 				</Skeleton>
 

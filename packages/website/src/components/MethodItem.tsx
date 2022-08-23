@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, MediaQuery, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -27,27 +27,47 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 		<Stack id={key} className="scroll-mt-30" spacing="xs">
 			<Group>
 				<Stack>
-					<Group ml={matches ? 0 : -45}>
+					<Box
+						sx={(theme) => ({
+							display: 'flex',
+							gap: 16,
+
+							[theme.fn.smallerThan('sm')]: {
+								flexDirection: 'column',
+							},
+						})}
+						ml={matches ? 0 : -45}
+					>
 						<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 							<ActionIcon component="a" href={`#${key}`} variant="transparent">
 								<FiLink size={20} />
 							</ActionIcon>
 						</MediaQuery>
-						{data.deprecated ? (
-							<Badge variant="filled" color="red">
-								Deprecated
-							</Badge>
+						{data.deprecated ||
+						(data.kind === 'Method' && method.visibility === Visibility.Protected) ||
+						(data.kind === 'Method' && method.static) ? (
+							<Group spacing={10} noWrap>
+								{data.deprecated ? (
+									<Badge variant="filled" color="red">
+										Deprecated
+									</Badge>
+								) : null}
+								{data.kind === 'Method' && method.visibility === Visibility.Protected ? (
+									<Badge variant="filled">Protected</Badge>
+								) : null}
+								{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
+							</Group>
 						) : null}
-						{data.kind === 'Method' && method.visibility === Visibility.Protected ? (
-							<Badge variant="filled">Protected</Badge>
-						) : null}
-						{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
-						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">{`${getShorthandName(data)}`}</Title>
-						<Title order={4}>:</Title>
-						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
-							<HyperlinkedText tokens={data.returnTypeTokens} />
-						</Title>
-					</Group>
+						<Group spacing={10}>
+							<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">{`${getShorthandName(
+								data,
+							)}`}</Title>
+							<Title order={4}>:</Title>
+							<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
+								<HyperlinkedText tokens={data.returnTypeTokens} />
+							</Title>
+						</Group>
+					</Box>
 				</Stack>
 			</Group>
 			<Group sx={{ display: data.summary || data.parameters.length ? 'block' : 'none' }} mb="lg">

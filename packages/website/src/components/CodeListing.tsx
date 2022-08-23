@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, MediaQuery, Stack, Title } from '@mantine/core';
+import { ActionIcon, Badge, Box, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import type { ReactNode } from 'react';
 import { FiLink } from 'react-icons/fi';
@@ -41,28 +41,44 @@ export function CodeListing({
 
 	return (
 		<Stack id={name} className="scroll-mt-30" spacing="xs">
-			<Group ml={matches ? 0 : -45}>
+			<Box
+				sx={(theme) => ({
+					display: 'flex',
+					gap: 16,
+
+					[theme.fn.smallerThan('sm')]: {
+						flexDirection: 'column',
+					},
+				})}
+				ml={matches ? 0 : -45}
+			>
 				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 					<ActionIcon component="a" href={`#${name}`} variant="transparent">
 						<FiLink size={20} />
 					</ActionIcon>
 				</MediaQuery>
-				{deprecation ? (
-					<Badge variant="filled" color="red">
-						Deprecated
-					</Badge>
+				{deprecation || readonly || optional ? (
+					<Group spacing={10} noWrap>
+						{deprecation ? (
+							<Badge variant="filled" color="red">
+								Deprecated
+							</Badge>
+						) : null}
+						{readonly ? <Badge variant="filled">Readonly</Badge> : null}
+						{optional ? <Badge variant="filled">Optional</Badge> : null}
+					</Group>
 				) : null}
-				{readonly ? <Badge variant="filled">Readonly</Badge> : null}
-				{optional ? <Badge variant="filled">Optional</Badge> : null}
-				<Title order={4} className="font-mono">
-					{name}
-					{optional ? '?' : ''}
-				</Title>
-				<Title order={4}>{separator}</Title>
-				<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
-					<HyperlinkedText tokens={typeTokens} />
-				</Title>
-			</Group>
+				<Group spacing={10}>
+					<Title order={4} className="font-mono">
+						{name}
+						{optional ? '?' : ''}
+					</Title>
+					<Title order={4}>{separator}</Title>
+					<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
+						<HyperlinkedText tokens={typeTokens} />
+					</Title>
+				</Group>
+			</Box>
 			<Group>
 				<Stack>
 					{deprecation ? <TSDoc node={deprecation} /> : null}
