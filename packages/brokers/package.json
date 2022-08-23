@@ -54,6 +54,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@msgpack/msgpack": "^2.7.2",
 		"@vladfrangu/async_event_emitter": "^2.0.1",
 		"ioredis": "^5.2.2",
 		"tslib": "^2.4.0"

@@ -2227,6 +2227,7 @@ __metadata:
     "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
+    "@msgpack/msgpack": ^2.7.2
     "@types/node": ^16.11.52
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -3668,6 +3669,20 @@ __metadata:
   version: 0.14.2
   resolution: "@microsoft/tsdoc@npm:0.14.2"
   checksum: b167c89e916ba73ee20b9c9d5dba6aa3a0de25ed3d50050e8a344dca7cd43cb2e1059bd515c820369b6e708901dd3fda476a42bc643ca74a35671ce77f724a3a
+  languageName: node
+  linkType: hard
+
+"@msgpack/msgpack@npm:^2.7.2":
+  version: 2.7.2
+  resolution: "@msgpack/msgpack@npm:2.7.2"
+  checksum: 85258ef7a3fb74c1e1f8be017413c1311938bb614b46cf1643fb33a9469b79a08ce61ab81cc139644b12d537178687f4d107d902337062ff728d55825c492b83
+  languageName: node
+  linkType: hard
+
+"@next/env@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/env@npm:12.3.0"
+  checksum: 9f5d0894de00f8827f887dc737b0beebc1f268cc6809dc0f49acbcc035f4398f2af1dccb2c2f470f2ac31ef450ff5214a1a63ddd5c906b3ea52960824a2552be
   languageName: node
   linkType: hard
 
