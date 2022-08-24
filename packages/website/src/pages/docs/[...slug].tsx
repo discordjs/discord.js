@@ -174,7 +174,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		};
 	} catch (e) {
 		const error = e as Error;
-		console.log(error);
+		console.error(error);
 
 		return {
 			notFound: true,

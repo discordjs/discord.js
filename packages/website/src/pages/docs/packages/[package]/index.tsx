@@ -42,7 +42,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		const data: string[] = await res.json();
 
 		if (!data.length) {
-			console.log('No tags');
+			console.error('No tags');
 
 			return {
 				notFound: true,
@@ -60,7 +60,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		};
 	} catch (e) {
 		const error = e as Error;
-		console.log(error);
+		console.error(error);
 
 		return {
 			notFound: true,
