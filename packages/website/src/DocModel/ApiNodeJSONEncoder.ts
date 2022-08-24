@@ -152,7 +152,8 @@ export interface ApiConstructorJSON extends ApiItemJSON, ApiParameterListJSON {
 export class ApiNodeJSONEncoder {
 	public static encode(model: ApiModel, node: ApiItem, version: string) {
 		if (!(node instanceof ApiDeclaredItem)) {
-			throw new Error(`Cannot serialize node of type ${node.kind}`);
+			console.log(`Cannot serialize node of type ${node.kind}`);
+			return undefined;
 		}
 
 		switch (node.kind) {
@@ -169,7 +170,8 @@ export class ApiNodeJSONEncoder {
 			case ApiItemKind.Variable:
 				return this.encodeVariable(model, node as ApiVariable, version);
 			default:
-				throw new Error(`Unknown API item kind: ${node.kind}`);
+				console.log(`Unknown API item kind: ${node.kind}`);
+				return undefined;
 		}
 	}
 
