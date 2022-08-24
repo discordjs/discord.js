@@ -46,6 +46,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 			return {
 				notFound: true,
+				revalidate: 3600,
 			};
 		}
 
@@ -64,6 +65,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		return {
 			notFound: true,
+			revalidate: 3600,
 		};
 	}
 };
