@@ -3,8 +3,11 @@
 	"version": "0.1.0",
 	"description": "A set of builders that you can use when creating your bot",
 	"private": true,
+	"types": "dist/index.d.ts",
+	"main": "dist/index.js",
 	"scripts": {
 		"test": "vitest run",
+		"build": "tsc",
 		"build:local": "yarn run --top-level docs --force && yarn build:prod",
 		"build:prod": "yarn build:css && yarn build:next",
 		"build:next": "next build",

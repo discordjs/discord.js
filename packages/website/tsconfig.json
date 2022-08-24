@@ -5,8 +5,8 @@
 		"isolatedModules": true,
 		"jsx": "preserve",
 		"baseUrl": ".",
-		"noEmit": true,
 		"allowJs": false,
+		"outDir": "dist",
 		"incremental": true,
 		"skipLibCheck": true,
 		"paths": {

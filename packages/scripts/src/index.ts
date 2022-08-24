@@ -1,1 +1,1 @@
-export {};
+export { visitNodes } from './generateIndex';
