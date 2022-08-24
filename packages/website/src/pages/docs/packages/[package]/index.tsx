@@ -45,7 +45,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			console.error('No tags');
 
 			return {
-				notFound: true,
+				props: {
+					error: 'No tags',
+				},
 				revalidate: 3600,
 			};
 		}
@@ -64,7 +66,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		console.error(error);
 
 		return {
-			notFound: true,
+			props: {
+				error: e,
+			},
 			revalidate: 3600,
 		};
 	}
