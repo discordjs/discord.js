@@ -27,12 +27,12 @@ export type ToEventMap<
 > = {
 	[TKey in keyof TRecord]: [
 		event: { data: TRecord[TKey] } & (TResponses extends Record<keyof TRecord, any>
-			? { reply: (data: TResponses[TKey]) => Promise<void> }
+			? { ack: () => Promise<void>; reply: (data: TResponses[TKey]) => Promise<void> }
 			: { ack: () => Promise<void> }),
 	];
 } & { [K: string]: any };
 
-interface IBaseBroker<TEvents extends Record<string, any>> {
+export interface IBaseBroker<TEvents extends Record<string, any>> {
 	subscribe: (group: string, events: (keyof TEvents)[]) => Promise<void>;
 	unsubscribe: (group: string, events: (keyof TEvents)[]) => Promise<void>;
 }
@@ -46,5 +46,5 @@ export interface IPubSubBroker<TEvents extends Record<string, any>>
 export interface IRPCBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
 	extends IBaseBroker<TEvents>,
 		AsyncEventEmitter<ToEventMap<TEvents, TResponses>> {
-	call: <T extends keyof TEvents>(event: T, data: TEvents[T]) => Promise<TResponses[T]>;
+	call: <T extends keyof TEvents>(event: T, data: TEvents[T], timeoutDuration?: number) => Promise<TResponses[T]>;
 }
