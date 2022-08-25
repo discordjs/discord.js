@@ -40,8 +40,9 @@
 	"keywords": [
 		"discord",
 		"api",
-		"rest",
-		"proxy",
+		"message",
+		"brokers",
+		"redis",
 		"discordapp",
 		"discordjs"
 	],
