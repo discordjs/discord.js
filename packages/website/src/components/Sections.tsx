@@ -1,3 +1,4 @@
+import type { ApiClassJSON, ApiInterfaceJSON, ParameterDocumentation, ApiConstructorJSON } from '@discordjs/api-extractor-utils';
 import { Stack, Group, Badge, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
@@ -6,8 +7,6 @@ import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
 import { Section } from './Section';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiClassJSON, ApiConstructorJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
-import type { ParameterDocumentation } from '~/util/parse.server';
 
 export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
 	const matches = useMediaQuery('(max-width: 768px)');

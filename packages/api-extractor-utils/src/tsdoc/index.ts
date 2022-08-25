@@ -50,3 +50,14 @@ export function createCommentNode(
 			return _node(node);
 	}
 }
+
+export * from './CommentNode';
+export * from './CommentNodeContainer';
+export * from './CommentBlock';
+export * from './CommentBlockTag';
+export * from './CommentCodeSpan';
+export * from './FencedCodeCommentNode';
+export * from './LinkTagCommentNode';
+export * from './ParamBlock';
+export * from './PlainTextCommentNode';
+export * from './RootComment';

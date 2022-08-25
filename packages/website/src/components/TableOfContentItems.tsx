@@ -1,7 +1,7 @@
+import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
 import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
-import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 const useStyles = createStyles((theme) => ({
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

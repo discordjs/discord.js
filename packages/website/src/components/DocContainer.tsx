@@ -1,3 +1,11 @@
+import type {
+	ApiItemJSON,
+	TokenDocumentation,
+	TypeParameterData,
+	AnyDocNodeJSON,
+	ApiClassJSON,
+	ApiInterfaceJSON,
+} from '@discordjs/api-extractor-utils';
 import {
 	Group,
 	Stack,
@@ -30,10 +38,6 @@ import { Section } from './Section';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiClassJSON, ApiInterfaceJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
-import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
-import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import type { TokenDocumentation } from '~/util/parse.server';
 
 type DocContainerProps = PropsWithChildren<{
 	name: string;

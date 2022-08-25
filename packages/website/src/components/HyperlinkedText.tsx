@@ -1,6 +1,6 @@
+import type { TokenDocumentation } from '@discordjs/api-extractor-utils';
 import { Anchor, Text } from '@mantine/core';
 import Link from 'next/link';
-import type { TokenDocumentation } from '~/util/parse.server';
 
 /**
  * Constructs a hyperlinked html node based on token type references
