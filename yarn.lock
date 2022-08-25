@@ -1970,6 +1970,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
+    "@discordjs/api-extractor-utils": "workspace:^"
+    "@microsoft/api-extractor-model": ^7.23.3
+    "@microsoft/tsdoc": ^0.14.1
     "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0

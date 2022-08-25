@@ -1,8 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { generatePath } from '@discordjs/api-extractor-utils';
 import { ApiDeclaredItem, ApiItem, ApiItemContainerMixin, ApiModel } from '@microsoft/api-extractor-model';
 import { DocCodeSpan, DocNode, DocNodeKind, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { generatePath } from './parse';
 
 interface MemberJSON {
 	name: string;
@@ -52,7 +52,7 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 	return retVal;
 }
 
-export function visitNodes(model: ApiItem) {
+export function generateNodes(model: ApiItem) {
 	const members: MemberJSON[] = [];
 
 	for (const member of model.members) {
@@ -61,7 +61,7 @@ export function visitNodes(model: ApiItem) {
 		}
 
 		if (ApiItemContainerMixin.isBaseClassOf(member)) {
-			members.push(...visitNodes(member));
+			members.push(...generateNodes(member));
 		}
 
 		members.push({
@@ -87,7 +87,7 @@ if (!fs.existsSync(dir)) {
 
 const members = packageNames.reduce<MemberJSON[]>((acc, pkg) => {
 	model.loadPackage(path.join('..', pkg, 'docs', 'docs.api.json'));
-	return acc.concat(visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!));
+	return acc.concat(generateNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!));
 }, []);
 
 fs.writeFile(path.join('searchIndex', 'doc-index.json'), JSON.stringify(members, undefined, 2), (err) => {

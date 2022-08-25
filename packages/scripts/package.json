@@ -44,6 +44,9 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@discordjs/api-extractor-utils": "workspace:^",
+		"@microsoft/api-extractor-model": "^7.23.3",
+		"@microsoft/tsdoc": "^0.14.1",
 		"commander": "^9.4.0",
 		"tslib": "^2.4.0"
 	},
