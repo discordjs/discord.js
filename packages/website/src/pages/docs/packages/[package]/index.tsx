@@ -107,7 +107,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 					Select a version:
 				</Title>
 				{props.data?.versions.map((version) => (
-					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref>
+					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref prefetch={false}>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>

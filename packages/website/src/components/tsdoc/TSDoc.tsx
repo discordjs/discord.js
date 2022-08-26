@@ -41,7 +41,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 					if (codeDestination) {
 						return (
-							<Link key={idx} href={codeDestination.path} passHref>
+							<Link key={idx} href={codeDestination.path} passHref prefetch={false}>
 								<Anchor component="a" className="font-mono">
 									{text ?? codeDestination.name}
 								</Anchor>
@@ -51,7 +51,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 					if (urlDestination) {
 						return (
-							<Link key={idx} href={urlDestination} passHref>
+							<Link key={idx} href={urlDestination} passHref prefetch={false}>
 								<Anchor component="a" className="font-mono">
 									{text ?? urlDestination}
 								</Anchor>

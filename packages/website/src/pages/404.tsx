@@ -29,7 +29,7 @@ export default function FourOhFourPage() {
 				<Box className={classes.label}>404</Box>
 				<Title align="center">Not found.</Title>
 				<Group position="center">
-					<Link href="/docs/packages" passHref>
+					<Link href="/docs/packages" passHref prefetch={false}>
 						<Button component="a" variant="filled" size="md" mt="xl">
 							Take me back
 						</Button>

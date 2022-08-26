@@ -116,7 +116,7 @@ export function SidebarItems({
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
 						{groupItems[group].map((member, i) => (
-							<Link key={i} href={member.path} passHref>
+							<Link key={i} href={member.path} passHref prefetch={false}>
 								<NavLink
 									className={classes.link}
 									component="a"

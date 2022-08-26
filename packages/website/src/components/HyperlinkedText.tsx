@@ -15,7 +15,7 @@ export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
 			{tokens.map((token, idx) => {
 				if (token.path) {
 					return (
-						<Link key={idx} href={token.path} passHref>
+						<Link key={idx} href={token.path} passHref prefetch={false}>
 							<Anchor component="a" inherit>
 								{token.text}
 							</Anchor>
