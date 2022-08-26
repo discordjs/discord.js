@@ -8,12 +8,12 @@ export abstract class ApplicationCommandNumericOptionMinMaxValueMixin {
 	 *
 	 * @param max - The maximum value this option can be
 	 */
-	public abstract setMaxValue(max: number): this;
+	public abstract setMaxValue(max: number | null): this;
 
 	/**
 	 * Sets the minimum number value of this option
 	 *
 	 * @param min - The minimum value this option can be
 	 */
-	public abstract setMinValue(min: number): this;
+	public abstract setMinValue(min: number | null): this;
 }

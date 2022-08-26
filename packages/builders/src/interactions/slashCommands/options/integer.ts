@@ -5,7 +5,7 @@ import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/Appli
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
 
-const numberValidator = s.number.int;
+const numberValidator = s.number.int.nullable;
 
 @mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandIntegerOption
@@ -17,7 +17,7 @@ export class SlashCommandIntegerOption
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
 	 */
-	public setMaxValue(max: number): this {
+	public setMaxValue(max: number | null): this {
 		numberValidator.parse(max);
 
 		Reflect.set(this, 'max_value', max);
@@ -28,7 +28,7 @@ export class SlashCommandIntegerOption
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
 	 */
-	public setMinValue(min: number): this {
+	public setMinValue(min: number | null): this {
 		numberValidator.parse(min);
 
 		Reflect.set(this, 'min_value', min);

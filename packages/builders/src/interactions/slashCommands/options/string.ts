@@ -20,7 +20,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	 *
 	 * @param max - The maximum length this option can be
 	 */
-	public setMaxLength(max: number): this {
+	public setMaxLength(max: number | null): this {
 		maxLengthValidator.parse(max);
 
 		Reflect.set(this, 'max_length', max);
@@ -33,7 +33,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	 *
 	 * @param min - The minimum length this option can be
 	 */
-	public setMinLength(min: number): this {
+	public setMinLength(min: number | null): this {
 		minLengthValidator.parse(min);
 
 		Reflect.set(this, 'min_length', min);

@@ -17,7 +17,7 @@ export class SlashCommandNumberOption
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
 	 */
-	public setMaxValue(max: number): this {
+	public setMaxValue(max: number | null): this {
 		numberValidator.parse(max);
 
 		Reflect.set(this, 'max_value', max);
@@ -28,7 +28,7 @@ export class SlashCommandNumberOption
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
 	 */
-	public setMinValue(min: number): this {
+	public setMinValue(min: number | null): this {
 		numberValidator.parse(min);
 
 		Reflect.set(this, 'min_value', min);

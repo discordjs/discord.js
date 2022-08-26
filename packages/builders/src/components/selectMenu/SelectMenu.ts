@@ -32,8 +32,8 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 *
 	 * @param placeholder - The placeholder to use for this select menu
 	 */
-	public setPlaceholder(placeholder: string) {
-		this.data.placeholder = placeholderValidator.parse(placeholder);
+	public setPlaceholder(placeholder: string | null) {
+		this.data.placeholder = placeholderValidator.parse(placeholder) || undefined;
 		return this;
 	}
 
@@ -42,8 +42,8 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 *
 	 * @param minValues - The minimum values that must be selected
 	 */
-	public setMinValues(minValues: number) {
-		this.data.min_values = minMaxValidator.parse(minValues);
+	public setMinValues(minValues: number | null) {
+		this.data.min_values = minMaxValidator.parse(minValues) || undefined;
 		return this;
 	}
 
@@ -52,8 +52,8 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 *
 	 * @param maxValues - The maximum values that must be selected
 	 */
-	public setMaxValues(maxValues: number) {
-		this.data.max_values = minMaxValidator.parse(maxValues);
+	public setMaxValues(maxValues: number | null) {
+		this.data.max_values = minMaxValidator.parse(maxValues) || undefined;
 		return this;
 	}
 

@@ -14,22 +14,24 @@ export const emojiValidator = s
 		name: s.string,
 		animated: s.boolean,
 	})
-	.partial.strict.setValidationEnabled(isValidationEnabled);
+	.partial.strict.nullish.setValidationEnabled(isValidationEnabled);
 
 export const disabledValidator = s.boolean;
 
 export const buttonLabelValidator = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(80)
-	.setValidationEnabled(isValidationEnabled);
+	.nullish.setValidationEnabled(isValidationEnabled);
 
 export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
-export const placeholderValidator = s.string.lengthLessThanOrEqual(150).setValidationEnabled(isValidationEnabled);
+export const placeholderValidator = s.string
+	.lengthLessThanOrEqual(150)
+	.nullish.setValidationEnabled(isValidationEnabled);
 export const minMaxValidator = s.number.int
 	.greaterThanOrEqual(0)
 	.lessThanOrEqual(25)
-	.setValidationEnabled(isValidationEnabled);
+	.nullish.setValidationEnabled(isValidationEnabled);
 
 export const labelValueDescriptionValidator = s.string
 	.lengthGreaterThanOrEqual(1)
