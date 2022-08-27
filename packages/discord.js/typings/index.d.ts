@@ -2551,7 +2551,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
-  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message | null>;
+  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message<true> | null>;
   public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
