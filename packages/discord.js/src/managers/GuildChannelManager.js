@@ -99,6 +99,24 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * Adds the target channel to channel's followers.
+   * @param {TextChannelResolvable} channel The channel the follower should be added to
+   * @param {TextChannelResolvable} targetChannel The channel where the webhook should be created
+   * @param {string} [reason] Reason for creating the webhook
+   * @returns {Promise<Snowflake>} Returns created target webhook id.
+   */
+  async addFollower(channel, targetChannel, reason) {
+    const channelId = this.client.channels.resolveId(channel);
+    const targetChannelId = this.client.channels.resolveId(targetChannel);
+    if (!channelId || !targetChannelId) throw new Error(ErrorCodes.GuildChannelResolve);
+    const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
+      body: { webhook_channel_id: targetChannelId },
+      reason,
+    });
+    return webhook_id;
+  }
+
+  /**
    * Options used to create a new channel in a guild.
    * @typedef {CategoryCreateChannelOptions} GuildChannelCreateOptions
    * @property {?CategoryChannelResolvable} [parent] Parent of the new channel
