@@ -3458,7 +3458,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public guild: Guild;
 
   public addFollower(
-    channel: TextChannelResolvable,
+    channel: NewsChannel | Snowflake,
     targetChannel: TextChannelResolvable,
     reason?: string,
   ): Promise<Snowflake>;

@@ -100,7 +100,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Adds the target channel to a channel's followers.
-   * @param {TextChannelResolvable} channel The channel the follower should be added to
+   * @param {NewsChannel|Snowflake} channel The channel the follower should be added to
    * @param {TextChannelResolvable} targetChannel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<Snowflake>} Returns created target webhook id.
