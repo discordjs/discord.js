@@ -398,28 +398,6 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Message | APIMessage
 >;
 
-export interface InteractionResponseFields<Cached extends CacheType = CacheType> {
-  deferred: boolean;
-  ephemeral: boolean | null;
-  replied: boolean;
-  webhook: InteractionWebhook;
-  reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message>;
-  reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  deleteReply(): Promise<void>;
-  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message>;
-  deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message>;
-  deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  fetchReply(): Promise<Message>;
-  followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
-  showModal(
-    modal:
-      | JSONEncodable<APIModalInteractionResponseCallbackData>
-      | ModalComponentData
-      | APIModalInteractionResponseCallbackData,
-  ): Promise<void>;
-  awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction<Cached>>;
-}
-
 export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
