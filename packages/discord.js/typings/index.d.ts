@@ -1503,11 +1503,7 @@ export type Interaction<Cached extends CacheType = CacheType> =
   | AutocompleteInteraction<Cached>
   | ModalSubmitInteraction<Cached>;
 
-export type RepliableInteraction<Cached extends CacheType = CacheType> =
-  | CommandInteraction<CacheType>
-  | MessageComponentInteraction<CacheType>
-  | ModalSubmitInteraction<CacheType>;
-
+export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude<Interaction, AutocompleteInteraction>;
 export class BaseInteraction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
