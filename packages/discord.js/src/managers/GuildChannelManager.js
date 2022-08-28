@@ -106,8 +106,8 @@ class GuildChannelManager extends CachedManager {
    * @returns {Promise<Snowflake>} Returns created target webhook id.
    */
   async addFollower(channel, targetChannel, reason) {
-    const channelId = this.client.channels.resolveId(channel);
-    const targetChannelId = this.client.channels.resolveId(targetChannel);
+    const channelId = this.resolveId(channel);
+    const targetChannelId = this.resolveId(targetChannel);
     if (!channelId || !targetChannelId) throw new Error(ErrorCodes.GuildChannelResolve);
     const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
       body: { webhook_channel_id: targetChannelId },
