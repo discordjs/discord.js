@@ -4,7 +4,6 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"test": "vitest run",
 		"build": "unbuild",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",

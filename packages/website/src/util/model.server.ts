@@ -1,4 +1,4 @@
-import { findPackage, ApiNodeJSONEncoder } from '@discordjs/api-extractor-utils'
+import { findPackage, ApiNodeJSONEncoder } from '@discordjs/api-extractor-utils';
 import type { ApiEntryPoint, ApiModel } from '@microsoft/api-extractor-model';
 
 export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string, version: string) {

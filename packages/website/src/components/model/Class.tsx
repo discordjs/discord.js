@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
 import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
 
-
 export function Class({ data }: { data: ApiClassJSON }) {
 	const router = useRouter();
 

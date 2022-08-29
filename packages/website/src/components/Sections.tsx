@@ -1,4 +1,9 @@
-import type { ApiClassJSON, ApiInterfaceJSON, ParameterDocumentation, ApiConstructorJSON } from '@discordjs/api-extractor-utils';
+import type {
+	ApiClassJSON,
+	ApiInterfaceJSON,
+	ParameterDocumentation,
+	ApiConstructorJSON,
+} from '@discordjs/api-extractor-utils';
 import { Stack, Group, Badge, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';

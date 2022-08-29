@@ -5,10 +5,9 @@
 	"private": true,
 	"scripts": {
 		"build": "unbuild",
-		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
-		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn test && yarn build"
+		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"fmt": "yarn format"
 	},
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",

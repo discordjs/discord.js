@@ -5,7 +5,6 @@ import { ApiModel, ApiItem, type ApiPackage } from '@microsoft/api-extractor-mod
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 
-
 export function createApiModel(data: any) {
 	const model = new ApiModel();
 	const tsdocConfiguration = new TSDocConfiguration();
