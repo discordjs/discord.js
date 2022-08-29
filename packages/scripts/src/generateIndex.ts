@@ -1,10 +1,10 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { ApiDeclaredItem, ApiItem, ApiItemContainerMixin, ApiModel } from '@microsoft/api-extractor-model';
 import { DocCodeSpan, DocNode, DocNodeKind, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 
-interface MemberJSON {
+export interface MemberJSON {
 	name: string;
 	kind: string;
 	summary: string | null;
@@ -52,46 +52,40 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 	return retVal;
 }
 
-export function generateNodes(model: ApiItem) {
+export function visitNodes(item: ApiItem, tag: string) {
 	const members: MemberJSON[] = [];
 
-	for (const member of model.members) {
+	for (const member of item.members) {
 		if (!(member instanceof ApiDeclaredItem)) {
 			continue;
 		}
 
 		if (ApiItemContainerMixin.isBaseClassOf(member)) {
-			members.push(...generateNodes(member));
+			members.push(...visitNodes(member, tag));
 		}
 
 		members.push({
 			name: member.displayName,
 			kind: member.kind,
 			summary: tryResolveSummaryText(member),
-			path: generatePath(member.getHierarchy(), '{BRANCH}'),
+			path: generatePath(member.getHierarchy(), tag),
 		});
 	}
 
 	return members;
 }
 
-const packageNames = ['builders', 'voice', 'rest', 'ws', 'proxy', 'collection'];
+export async function generateIndex(model: ApiModel, packageName: string, tag: string) {
+	const members = visitNodes(model, tag);
 
-const model = new ApiModel();
+	const dir = 'searchIndex';
 
-const dir = 'searchIndex';
-
-if (!fs.existsSync(dir)) {
-	fs.mkdirSync(dir);
-}
-
-const members = packageNames.reduce<MemberJSON[]>((acc, pkg) => {
-	model.loadPackage(path.join('..', pkg, 'docs', 'docs.api.json'));
-	return acc.concat(generateNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!));
-}, []);
-
-fs.writeFile(path.join('searchIndex', 'doc-index.json'), JSON.stringify(members, undefined, 2), (err) => {
-	if (err) {
-		throw err;
+	if (!(await fs.stat(dir)).isDirectory()) {
+		await fs.mkdir(dir);
 	}
-});
+
+	await fs.writeFile(
+		path.join('searchIndex', `${packageName}-${tag}-doc-index.json`),
+		JSON.stringify(members, undefined, 2),
+	);
+}
