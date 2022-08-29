@@ -1,5 +1,5 @@
+import type { ApiTypeAliasJSON } from '@discordjs/api-extractor-utils';
 import { DocContainer } from '../DocContainer';
-import type { ApiTypeAliasJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function TypeAlias({ data }: { data: ApiTypeAliasJSON }) {
 	return (

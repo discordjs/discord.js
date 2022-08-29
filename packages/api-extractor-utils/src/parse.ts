@@ -14,8 +14,8 @@ import {
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
-import { createCommentNode } from '~/DocModel/comment';
-import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
+import { createCommentNode } from './tsdoc';
+import type { DocBlockJSON } from './tsdoc/CommentBlock';
 
 export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
 	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as

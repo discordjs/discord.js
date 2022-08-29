@@ -1755,6 +1755,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/api-extractor-utils@workspace:^, @discordjs/api-extractor-utils@workspace:packages/api-extractor-utils":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/api-extractor-utils@workspace:packages/api-extractor-utils"
+  dependencies:
+    "@favware/cliff-jumper": ^1.8.7
+    "@microsoft/api-extractor-model": ^7.23.3
+    "@microsoft/tsdoc": ^0.14.1
+    "@types/node": ^16.11.54
+    "@typescript-eslint/eslint-plugin": ^5.34.0
+    "@typescript-eslint/parser": ^5.34.0
+    eslint: ^8.22.0
+    eslint-config-marine: ^9.4.1
+    eslint-config-prettier: ^8.5.0
+    eslint-import-resolver-typescript: ^3.5.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-tsdoc: ^0.2.16
+    prettier: ^2.7.1
+    rollup-plugin-typescript2: ^0.33.0
+    typescript: ^4.7.4
+    unbuild: ^0.8.9
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/builders@workspace:^, @discordjs/builders@workspace:packages/builders":
   version: 0.0.0-use.local
   resolution: "@discordjs/builders@workspace:packages/builders"
@@ -1947,6 +1970,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
+    "@discordjs/api-extractor-utils": "workspace:^"
+    "@microsoft/api-extractor-model": ^7.23.3
+    "@microsoft/tsdoc": ^0.14.1
     "@types/node": ^16.11.54
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -2007,6 +2033,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/website@workspace:packages/website"
   dependencies:
+    "@discordjs/api-extractor-utils": "workspace:^"
     "@emotion/react": ^11.10.0
     "@emotion/server": ^11.10.0
     "@mantine/core": ^5.2.3
@@ -2908,7 +2935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.23.1, @microsoft/api-extractor-model@npm:^7.23.1":
+"@microsoft/api-extractor-model@npm:7.23.1":
   version: 7.23.1
   resolution: "@microsoft/api-extractor-model@npm:7.23.1"
   dependencies:
@@ -2916,6 +2943,17 @@ __metadata:
     "@microsoft/tsdoc-config": ~0.16.1
     "@rushstack/node-core-library": 3.50.2
   checksum: 8295761acf053dc792efaa51d7a46d60e941a713ab9953e4a1d452d3c63e60b922f8f8f5c16632144e20c161f5b010a46523e3d937fd204baa2719b8f57c0748
+  languageName: node
+  linkType: hard
+
+"@microsoft/api-extractor-model@npm:^7.23.1, @microsoft/api-extractor-model@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@microsoft/api-extractor-model@npm:7.23.3"
+  dependencies:
+    "@microsoft/tsdoc": 0.14.1
+    "@microsoft/tsdoc-config": ~0.16.1
+    "@rushstack/node-core-library": 3.51.1
+  checksum: 00ec7a31d1f6d1583c3fcd97b16130bf8570e27cd3be2ecd07cf601b0c91ef63885a55bf068932c5d9278f8a9ab2046dc8305c0047158e6df5e86f5e56e35b77
   languageName: node
   linkType: hard
 
@@ -2965,7 +3003,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/tsdoc@npm:0.14.1":
+"@microsoft/tsdoc@npm:0.14.1, @microsoft/tsdoc@npm:^0.14.1":
   version: 0.14.1
   resolution: "@microsoft/tsdoc@npm:0.14.1"
   checksum: e4ad038ccff2cd96e0d53ee42e2136f0f5a925b16cfda14261f1c2eb55ba0088a0e3b08ff819b476ddc69b2242a391925fab7f6ae2afabb19b96f87e19c114fc
@@ -3398,6 +3436,22 @@ __metadata:
     timsort: ~0.3.0
     z-schema: ~5.0.2
   checksum: 7c48c6533181c7514c688f3c7677de81d69258a7e0ff938c8cb53390722b68446ccf68e1860a4785f192da771b1c6d4684febe602b1e2548309ca5f51f2fe65e
+  languageName: node
+  linkType: hard
+
+"@rushstack/node-core-library@npm:3.51.1":
+  version: 3.51.1
+  resolution: "@rushstack/node-core-library@npm:3.51.1"
+  dependencies:
+    "@types/node": 12.20.24
+    colors: ~1.2.1
+    fs-extra: ~7.0.1
+    import-lazy: ~4.0.0
+    jju: ~1.4.0
+    resolve: ~1.17.0
+    semver: ~7.3.0
+    z-schema: ~5.0.2
+  checksum: 92f7e39f03f4931a7007b4a79427d82bfe078146133a138219205abf873607898f7667fa368e3cb28c93bb1a2b9dc70ddaf2d316bc47a9a17b591d69d1025068
   languageName: node
   linkType: hard
 
@@ -3959,9 +4013,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^16.11.54":
-  version: 16.11.54
-  resolution: "@types/node@npm:16.11.54"
-  checksum: fa4d6a94498cc6ef96932a25557082587a178b5fa1da5e208bdb171b85265110a7ca6a4f296e740dca1b29d2a44b3c1e76e21d255e5eeed8be5f67ea538dcb9c
+  version: 16.11.56
+  resolution: "@types/node@npm:16.11.56"
+  checksum: b4efade16eb08a39810921c54a1637e69c8f3184a20d87e8fe74d557d9bda73f0829ac318e2a30a32b1903e4b099812defd1dfe438be70b98dbfbea5b0d99a53
   languageName: node
   linkType: hard
 

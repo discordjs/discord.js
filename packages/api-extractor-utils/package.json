@@ -1,7 +1,7 @@
 {
-	"name": "@discordjs/scripts",
-	"version": "0.1.0",
-	"description": "A set of scripts that we use for our workflows",
+	"name": "@discordjs/api-extractor-utils",
+	"version": "1.0.0",
+	"description": "Utilities for api-extractor",
 	"private": true,
 	"scripts": {
 		"build": "unbuild",
@@ -18,54 +18,48 @@
 		"types": "./dist/index.d.ts"
 	},
 	"directories": {
-		"lib": "src"
+		"lib": "src",
+		"test": "__tests__"
 	},
 	"files": [
 		"dist"
 	],
 	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
 	],
 	"license": "Apache-2.0",
-	"keywords": [
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordjs"
-	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "git+https://github.com/discordjs/discord.js.git"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/api-extractor-model": "^7.23.3",
-		"@microsoft/tsdoc": "^0.14.1",
-		"commander": "^9.4.0",
-		"tslib": "^2.4.0"
+		"@microsoft/tsdoc": "^0.14.1"
 	},
 	"devDependencies": {
+		"@favware/cliff-jumper": "^1.8.7",
 		"@types/node": "^16.11.54",
 		"@typescript-eslint/eslint-plugin": "^5.34.0",
 		"@typescript-eslint/parser": "^5.34.0",
-		"@vitest/coverage-c8": "^0.22.1",
 		"eslint": "^8.22.0",
 		"eslint-config-marine": "^9.4.1",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-import-resolver-typescript": "^3.5.0",
 		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-tsdoc": "^0.2.16",
 		"prettier": "^2.7.1",
 		"rollup-plugin-typescript2": "^0.33.0",
 		"typescript": "^4.7.4",
-		"unbuild": "^0.8.9",
-		"vitest": "^0.22.1"
+		"unbuild": "^0.8.9"
 	},
 	"engines": {
 		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
