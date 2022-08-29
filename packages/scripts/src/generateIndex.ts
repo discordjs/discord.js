@@ -1,5 +1,5 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { stat, mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { ApiDeclaredItem, ApiItem, ApiItemContainerMixin, ApiModel } from '@microsoft/api-extractor-model';
 import { DocCodeSpan, DocNode, DocNodeKind, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
@@ -80,12 +80,9 @@ export async function generateIndex(model: ApiModel, packageName: string, tag: s
 
 	const dir = 'searchIndex';
 
-	if (!(await fs.stat(dir)).isDirectory()) {
-		await fs.mkdir(dir);
+	if (!(await stat(dir)).isDirectory()) {
+		await mkdir(dir);
 	}
 
-	await fs.writeFile(
-		path.join('searchIndex', `${packageName}-${tag}-doc-index.json`),
-		JSON.stringify(members, undefined, 2),
-	);
+	await writeFile(join('searchIndex', `${packageName}-${tag}-doc-index.json`), JSON.stringify(members, undefined, 2));
 }
