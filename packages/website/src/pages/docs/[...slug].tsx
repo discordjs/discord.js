@@ -1,6 +1,17 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+import {
+	findPackage,
+	getMembers,
+	type ApiItemJSON,
+	type ApiClassJSON,
+	type ApiFunctionJSON,
+	type ApiInterfaceJSON,
+	type ApiTypeAliasJSON,
+	type ApiVariableJSON,
+	type ApiEnumJSON,
+} from '@discordjs/api-extractor-utils';
 import { ActionIcon, Affix, Box, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
@@ -15,15 +26,6 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import type {
-	ApiClassJSON,
-	ApiEnumJSON,
-	ApiFunctionJSON,
-	ApiInterfaceJSON,
-	ApiItemJSON,
-	ApiTypeAliasJSON,
-	ApiVariableJSON,
-} from '~/DocModel/ApiNodeJSONEncoder';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -35,7 +37,6 @@ import { MemberProvider } from '~/contexts/member';
 import { createApiModel } from '~/util/api-model.server';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { PACKAGES } from '~/util/packages';
-import { findPackage, getMembers } from '~/util/parse.server';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (
@@ -94,11 +95,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					}
 
 					const model = createApiModel(data);
-					const pkg = findPackage(model, packageName);
+					const pkg = findPackage(model, packageName)!;
 
 					return [
 						{ params: { slug: ['packages', packageName, 'main'] } },
-						...getMembers(pkg!, 'main').map((member) => {
+						...getMembers(pkg, 'main').map((member) => {
 							if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 								return {
 									params: {

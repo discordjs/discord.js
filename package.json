@@ -37,8 +37,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.0.3",
-		"@commitlint/config-angular": "^17.0.3",
+		"@commitlint/cli": "^17.1.2",
+		"@commitlint/config-angular": "^17.1.0",
 		"@favware/cliff-jumper": "^1.8.7",
 		"@favware/npm-deprecate": "^1.0.5",
 		"@types/is-ci": "^3.0.0",
@@ -48,7 +48,7 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",
 		"turbo": "^1.4.3",
-		"typescript": "^4.7.4"
+		"typescript": "^4.8.2"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
