@@ -1,10 +1,13 @@
 'use strict';
 
+const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError, Error } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const { GuildMember } = require('../structures/GuildMember');
+
+let deprecationEmittedForDays = false;
 
 /**
  * Manages API methods for GuildBans and stores their cache.
@@ -126,6 +129,9 @@ class GuildBanManager extends CachedManager {
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
    * @property {number} [days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
+   * <warn>This property is deprecated. Use `deleteMessageSeconds` instead.</warn>
+   * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
+   * must be between 0 and 604800 (7 days), inclusive
    * @property {string} [reason] The reason for the ban
    */
 
@@ -142,15 +148,30 @@ class GuildBanManager extends CachedManager {
    *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
    *   .catch(console.error);
    */
-  async create(user, options = { days: 0 }) {
+  async create(user, options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     const id = this.client.users.resolveId(user);
     if (!id) throw new Error('BAN_RESOLVE_ID', true);
+
+    if (typeof options.days !== 'undefined' && !deprecationEmittedForDays) {
+      process.emitWarning(
+        'The days option for GuildBanManager#create() is deprecated. Use the deleteMessageSeconds option instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForDays = true;
+    }
+
     await this.client.api
       .guilds(this.guild.id)
       .bans(id)
       .put({
-        data: { delete_message_days: options.days },
+        data: {
+          delete_message_seconds:
+            typeof options.deleteMessageSeconds !== 'undefined'
+              ? options.deleteMessageSeconds
+              : (options.days ?? 0) * 24 * 60 * 60,
+        },
         reason: options.reason,
       });
     if (user instanceof GuildMember) return user;
