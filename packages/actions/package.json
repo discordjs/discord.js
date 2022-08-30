@@ -44,8 +44,8 @@
 	},
 	"devDependencies": {
 		"@types/node": "^16.11.56",
-		"@typescript-eslint/eslint-plugin": "^5.35.1",
-		"@typescript-eslint/parser": "^5.35.1",
+		"@typescript-eslint/eslint-plugin": "^5.36.1",
+		"@typescript-eslint/parser": "^5.36.1",
 		"@vitest/coverage-c8": "^0.22.1",
 		"eslint": "^8.23.0",
 		"eslint-config-marine": "^9.4.1",
