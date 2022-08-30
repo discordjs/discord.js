@@ -6,6 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
+const { transformGuildForumTag } = require('../util/Channels');
 
 /**
  * Represents a thread channel on Discord.
@@ -193,6 +194,14 @@ class ThreadChannel extends BaseChannel {
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
     if (data.messages) for (const message of data.messages) this.messages._add(message);
+
+    if ('applied_tags' in data) {
+      /**
+       * The tags applied to this thread
+       * @type {?GuildForumTag[]}
+       */
+      this.appliedTags = data.applied_tags.map(tag => transformGuildForumTag(tag));
+    }
   }
 
   /**
@@ -334,6 +343,7 @@ class ThreadChannel extends BaseChannel {
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
         invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
+        applied_tags: data.appliedTags,
       },
       reason: data.reason,
     });
@@ -428,6 +438,16 @@ class ThreadChannel extends BaseChannel {
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
     return this.edit({ rateLimitPerUser, reason });
+  }
+
+  /**
+   * Set the applied tags for this channel (only applicable to forum threads)
+   * @param {GuildForumTag[]} appliedTags The tags to set for this channel
+   * @returns {Promise<GuildForumThreadChannel>}
+   */
+  async setAppliedTags(appliedTags) {
+    await this.edit({ appliedTags });
+    return this;
   }
 
   /**

@@ -2040,6 +2040,30 @@ export class PartialGroupDMChannel extends BaseChannel {
   public toString(): ChannelMention;
 }
 
+export interface GuildForumTag {
+  id: Snowflake;
+  name: string;
+  moderated: boolean;
+  emojiId?: Snowflake | null;
+  emoji?: GuildEmoji | null;
+}
+
+export interface DefaultReaction {
+  emojiId: Snowflake;
+  emojiName?: string;
+}
+
+export class GuildForumChannel extends GuildChannel {
+  public threads: GuildForumThreadManager;
+  public availableTags: GuildForumTag[];
+  public defaultReactionEmoji: DefaultReaction | null;
+  public defaultThreadRateLimitPerUser: number | null;
+
+  public setAvailableTags(tags: GuildForumTag[]): Promise<this>;
+  public setDefaultReaction(emojiId: DefaultReaction): Promise<this>;
+  public setDefaultThreadRateLimitPerUser(rateLimit: number): Promise<this>;
+}
+
 export class PermissionOverwrites extends Base {
   private constructor(client: Client<true>, data: RawPermissionOverwriteData, channel: NonThreadGuildBasedChannel);
   public allow: Readonly<PermissionsBitField>;
@@ -2560,6 +2584,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
+  public setAppliedTags(appliedTags: GuildForumTag[]): Promise<AnyThreadChannel>;
   public toString(): ChannelMention;
 }
 
@@ -5549,7 +5574,8 @@ export type Channel =
   | StageChannel
   | TextChannel
   | AnyThreadChannel
-  | VoiceChannel;
+  | VoiceChannel
+  | GuildForumChannel;
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, PartialGroupDMChannel>;
 
@@ -5581,6 +5607,7 @@ export interface GuildTextThreadCreateOptions<AllowedThreadType> extends StartTh
 
 export interface GuildForumThreadCreateOptions extends StartThreadOptions {
   message: MessageOptions | MessagePayload;
+  appliedTags?: GuildForumTag[];
 }
 
 export interface ThreadEditData {

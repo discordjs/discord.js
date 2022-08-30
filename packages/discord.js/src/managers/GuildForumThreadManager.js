@@ -11,6 +11,7 @@ class GuildForumThreadManager extends ThreadManager {
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
    * @property {MessageOptions|MessagePayload} message The message associated with the thread post
+   * @property {GuildForumTag[]} [appliedTags] The tags to apply to the thread
    */
 
   /**
@@ -45,6 +46,7 @@ class GuildForumThreadManager extends ThreadManager {
     message,
     reason,
     rateLimitPerUser,
+    appliedTags,
   } = {}) {
     if (!message) {
       throw new TypeError(ErrorCodes.GuildForumMessageRequired);
@@ -62,13 +64,13 @@ class GuildForumThreadManager extends ThreadManager {
         name,
         auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: rateLimitPerUser,
+        applied_tags: appliedTags,
         ...body,
       },
       files,
       reason,
     });
 
-    // TODO: Posts will most likely need to be serialized differently than regular threads.
     return this.client.actions.ThreadCreate.handle(data).thread;
   }
 }

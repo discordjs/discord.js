@@ -274,6 +274,9 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
+        available_tags: data.availableTags,
+        default_reaction_emoji: data.defaultReactionEmoji,
+        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
       },
       reason: data.reason,
     });

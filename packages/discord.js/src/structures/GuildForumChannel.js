@@ -2,6 +2,23 @@
 
 const GuildChannel = require('./GuildChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
+const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
+
+/**
+ * @typedef {Object} GuildForumTag
+ * @property {Snowflake} id The id of the tag
+ * @property {string} name The name of the tag
+ * @property {boolean} moderated Whether this tag can only be added to or removed from threads
+ *  by a member with the `ManageThreads` permission
+ * @property {Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
+ * @property {string} [emojiName] The unicode character of the emoji
+ */
+
+/**
+ * @typedef {Object} DefaultReaction
+ * @property {Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
+ * @property {string} [emojiName] The unicode character of the emoji
+ */
 
 /**
  * Represents a channel that only contains threads
@@ -16,6 +33,71 @@ class GuildForumChannel extends GuildChannel {
      * @type {GuildForumThreadManager}
      */
     this.threads = new GuildForumThreadManager(this);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    super._patch(data);
+    if ('available_tags' in data) {
+      /**
+       * The set of tags that can be used in this channel.
+       * @type {GuildForumTag[]}
+       */
+      this.availableTags = data.available_tags.map(tag => transformGuildForumTag(tag));
+    } else {
+      this.availableTags ??= [];
+    }
+
+    if ('default_reaction_emoji' in data) {
+      /**
+       * The emoji to show in the add reaction button on a thread in a guild forum channel
+       * @type {DefaultReaction}
+       */
+      this.defaultReaction = transformGuildDefaultReaction(data.default_reaction_emoji);
+    } else {
+      this.defaultReaction ??= null;
+    }
+
+    if ('default_thread_rate_limit_per_user' in data) {
+      /**
+       * The initial rate_limit_per_user to set on newly created threads in a channel.
+       * @type {number}
+       */
+      this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
+    } else {
+      this.defaultThreadRateLimitPerUser ??= null;
+    }
+  }
+
+  /**
+   * Sets the available tags for this forum channel
+   * @param {GuildForumTag[]} availableTags The tags to set as available in this channel
+   * @returns {Promise<GuildForumChannel>}
+   */
+  async setAvailableTags(availableTags) {
+    await this.edit({ availableTags });
+    return this;
+  }
+
+  /**
+   * Sets the default reaction emoji for this channel
+   * @param {DefaultReaction} defaultReactionEmoji The emoji to set as the default reaction emoji
+   * @returns {Promise<GuildForumChannel>}
+   */
+  async setDefaultReactionEmoji(defaultReactionEmoji) {
+    await this.edit({ defaultReactionEmoji });
+    return this;
+  }
+
+  /**
+   * Sets the default rate_limit_per_user for new threads in this channel
+   * @param {number} defaultThreadRateLimitPerUser The rate limit to set on newly created threads in this channel
+   * @returns {Promise<GuildForumChannel>}
+   */
+  async setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser) {
+    await this.edit({ defaultThreadRateLimitPerUser });
+    return this;
   }
 }
 
