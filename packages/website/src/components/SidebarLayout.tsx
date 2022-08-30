@@ -1,3 +1,4 @@
+import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
 import {
 	useMantineTheme,
 	AppShell,
@@ -33,10 +34,8 @@ import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'reac
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
 import { SidebarItems } from './SidebarItems';
-import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 import type { findMember } from '~/util/model.server';
 import { PACKAGES } from '~/util/packages';
-import type { getMembers } from '~/util/parse.server';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 

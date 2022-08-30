@@ -1,6 +1,5 @@
+import { findPackage, ApiNodeJSONEncoder } from '@discordjs/api-extractor-utils';
 import type { ApiEntryPoint, ApiModel } from '@microsoft/api-extractor-model';
-import { findPackage } from './parse.server';
-import { ApiNodeJSONEncoder } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string, version: string) {
 	const pkg = findPackage(model, packageName)!;

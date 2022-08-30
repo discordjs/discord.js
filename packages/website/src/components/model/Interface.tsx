@@ -1,8 +1,8 @@
+import type { ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
 import { DocContainer } from '../DocContainer';
 import { MethodsSection, PropertiesSection } from '../Sections';
-import type { ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function Interface({ data }: { data: ApiInterfaceJSON }) {
 	const router = useRouter();

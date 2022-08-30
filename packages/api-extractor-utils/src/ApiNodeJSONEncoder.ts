@@ -18,20 +18,12 @@ import {
 	type ApiConstructor,
 	type ApiItemContainerMixin,
 } from '@microsoft/api-extractor-model';
-import { generateTypeParamData } from './TypeParameterMixin';
-import { Visibility } from './Visibility';
-import { createCommentNode } from './comment';
-import type { DocBlockJSON } from './comment/CommentBlock';
-import type { AnyDocNodeJSON } from './comment/CommentNode';
-import { type DocNodeContainerJSON, nodeContainer } from './comment/CommentNodeContainer';
-import {
-	generatePath,
-	genParameter,
-	genReference,
-	genToken,
-	resolveName,
-	type TokenDocumentation,
-} from '~/util/parse.server';
+import { generateTypeParamData } from './TypeParameterJSONEncoder';
+import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse';
+import { createCommentNode } from './tsdoc';
+import type { DocBlockJSON } from './tsdoc/CommentBlock';
+import type { AnyDocNodeJSON } from './tsdoc/CommentNode';
+import { type DocNodeContainerJSON, nodeContainer } from './tsdoc/CommentNodeContainer';
 
 export interface ReferenceData {
 	name: string;
@@ -96,7 +88,7 @@ export interface ApiMethodSignatureJSON
 
 export interface ApiMethodJSON extends ApiMethodSignatureJSON {
 	static: boolean;
-	visibility: Visibility;
+	protected: boolean;
 }
 
 export interface ApiParameterJSON {
@@ -293,7 +285,7 @@ export class ApiNodeJSONEncoder {
 		return {
 			...this.encodeMethodSignature(model, item, parent, version),
 			static: item.isStatic,
-			visibility: item.isProtected ? Visibility.Protected : Visibility.Public,
+			protected: item.isProtected,
 		};
 	}
 

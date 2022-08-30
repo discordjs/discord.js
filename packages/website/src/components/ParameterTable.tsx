@@ -1,8 +1,8 @@
+import type { ParameterDocumentation } from '@discordjs/api-extractor-utils';
 import { Box, ScrollArea } from '@mantine/core';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ParameterDocumentation } from '~/util/parse.server';
 
 const columnStyles = {
 	Name: 'font-mono whitespace-nowrap',
