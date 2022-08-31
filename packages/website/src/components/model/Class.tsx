@@ -1,8 +1,8 @@
 import type { ApiClassJSON } from '@discordjs/api-extractor-utils';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
-import { DocContainer } from '../DocContainer';
-import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
+import { DocContainer } from '../DocContainer.jsx';
+import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections.jsx';
 
 export function Class({ data }: { data: ApiClassJSON }) {
 	const router = useRouter();
@@ -16,7 +16,6 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			typeParams={data.typeParameters}
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
-			comment={data.comment}
 			methods={data.methods}
 			properties={data.properties}
 		>

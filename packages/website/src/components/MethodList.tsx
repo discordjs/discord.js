@@ -1,7 +1,7 @@
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
 import { Divider, Stack } from '@mantine/core';
 import { Fragment } from 'react';
-import { MethodItem } from './MethodItem';
+import { MethodItem } from './MethodItem.jsx';
 
 export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignatureJSON)[] }) {
 	return (

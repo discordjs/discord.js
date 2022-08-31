@@ -10,7 +10,7 @@ import {
 	VscSymbolVariable,
 	VscSymbolMethod,
 } from 'react-icons/vsc';
-import { Section } from './Section';
+import { Section } from './Section.jsx';
 import type { GroupedMembers, Members } from './SidebarLayout';
 
 function groupMembers(members: Members): GroupedMembers {
@@ -61,7 +61,7 @@ function resolveIcon(item: keyof GroupedMembers) {
 			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
-		case 'Functions':
+		default:
 			return <VscSymbolMethod size={20} />;
 	}
 }
@@ -115,12 +115,12 @@ export function SidebarItems({
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
-						{groupItems[group].map((member, i) => (
-							<Link key={i} href={member.path} passHref prefetch={false}>
+						{groupItems[group].map((member, index) => (
+							<Link key={index} href={member.path} passHref prefetch={false}>
 								<NavLink
 									className={classes.link}
 									component="a"
-									onClick={() => setOpened((o) => !o)}
+									onClick={() => setOpened((isOpened) => !isOpened)}
 									label={
 										<Group>
 											<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
@@ -135,7 +135,7 @@ export function SidebarItems({
 									}
 									active={asPathWithoutQueryAndAnchor === member.path}
 									variant="filled"
-								></NavLink>
+								/>
 							</Link>
 						))}
 					</Section>

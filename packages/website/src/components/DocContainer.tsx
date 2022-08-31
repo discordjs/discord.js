@@ -2,7 +2,6 @@ import type {
 	ApiItemJSON,
 	TokenDocumentation,
 	TypeParameterData,
-	AnyDocNodeJSON,
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
@@ -33,23 +32,22 @@ import {
 } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { HyperlinkedText } from './HyperlinkedText';
-import { Section } from './Section';
-import { TableOfContentItems } from './TableOfContentItems';
-import { TypeParamTable } from './TypeParamTable';
-import { TSDoc } from './tsdoc/TSDoc';
+import { HyperlinkedText } from './HyperlinkedText.jsx';
+import { Section } from './Section.jsx';
+import { TableOfContentItems } from './TableOfContentItems.jsx';
+import { TypeParamTable } from './TypeParamTable.jsx';
+import { TSDoc } from './tsdoc/TSDoc.jsx';
 
 type DocContainerProps = PropsWithChildren<{
-	name: string;
-	kind: string;
 	excerpt: string;
-	summary?: ApiItemJSON['summary'];
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
-	typeParams?: TypeParameterData[];
-	comment?: AnyDocNodeJSON | null;
+	kind: string;
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
+	name: string;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	summary?: ApiItemJSON['summary'];
+	typeParams?: TypeParameterData[];
 }>;
 
 function generateIcon(kind: string) {
@@ -161,7 +159,7 @@ export function DocContainer({
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
 						<ScrollArea p="sm" offsetScrollbars>
-							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
+							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
 						</ScrollArea>
 					</Aside>
 				</MediaQuery>

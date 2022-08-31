@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+import process, { cwd } from 'node:process';
 import {
 	findPackage,
 	getMembers,
@@ -15,28 +15,28 @@ import {
 import { ActionIcon, Affix, Box, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
-import { MDXRemote } from 'next-mdx-remote';
-import { serialize } from 'next-mdx-remote/serialize';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
+import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import { VscChevronUp } from 'react-icons/vsc';
 import rehypeIgnore from 'rehype-ignore';
 import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
-import { Class } from '~/components/model/Class';
-import { Enum } from '~/components/model/Enum';
-import { Function } from '~/components/model/Function';
-import { Interface } from '~/components/model/Interface';
-import { TypeAlias } from '~/components/model/TypeAlias';
-import { Variable } from '~/components/model/Variable';
-import { MemberProvider } from '~/contexts/member';
+import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout.jsx';
+import { Class } from '~/components/model/Class.jsx';
+import { Enum } from '~/components/model/Enum.jsx';
+import { Function } from '~/components/model/Function.jsx';
+import { Interface } from '~/components/model/Interface.jsx';
+import { TypeAlias } from '~/components/model/TypeAlias.jsx';
+import { Variable } from '~/components/model/Variable.jsx';
+import { MemberProvider } from '~/contexts/member.jsx';
 import { createApiModel } from '~/util/api-model.server';
 import { findMember, findMemberByKey } from '~/util/model.server';
-import { PACKAGES } from '~/util/packages';
+import { PACKAGES } from '~/util/packages.js';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (
@@ -46,7 +46,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					let data: any[] = [];
 					let versions: string[] = [];
 					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-						const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf-8');
+						const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						data = JSON.parse(res);
 					} else {
@@ -62,35 +62,33 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					}
 
 					if (Array.isArray(data)) {
-						const models = data.map((d) => createApiModel(d));
+						const models = data.map((innerData) => createApiModel(innerData));
 						const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
 
 						return [
 							...versions.map((version) => ({ params: { slug: ['packages', packageName, version] } })),
-							...pkgs
-								.map((pkg, idx) =>
-									getMembers(pkg, versions[idx]!).map((member) => {
-										if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-											return {
-												params: {
-													slug: [
-														'packages',
-														packageName,
-														versions[idx]!,
-														`${member.name}:${member.overloadIndex}:${member.kind}`,
-													],
-												},
-											};
-										}
-
+							...pkgs.flatMap((pkg, idx) =>
+								getMembers(pkg, versions[idx]!).map((member) => {
+									if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 										return {
 											params: {
-												slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.kind}`],
+												slug: [
+													'packages',
+													packageName,
+													versions[idx]!,
+													`${member.name}:${member.overloadIndex}:${member.kind}`,
+												],
 											},
 										};
-									}),
-								)
-								.flat(),
+									}
+
+									return {
+										params: {
+											slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.kind}`],
+										},
+									};
+								}),
+							),
 						];
 					}
 
@@ -130,7 +128,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [memberName, overloadIndex] = member?.split(':') ?? [];
 
 	try {
-		const readme = await readFile(join(cwd(), '..', packageName, 'README.md'), 'utf-8');
+		const readme = await readFile(join(cwd(), '..', packageName, 'README.md'), 'utf8');
 
 		const mdxSource = await serialize(readme, {
 			mdxOptions: {
@@ -143,7 +141,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		let data;
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf-8');
+			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			data = JSON.parse(res);
 		} else {
@@ -155,9 +153,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		const model = createApiModel(data);
 		const pkg = findPackage(model, packageName);
 
+		// eslint-disable-next-line prefer-const
 		let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
-		if (name && overloadIndex && !Number.isNaN(parseInt(overloadIndex, 10))) {
-			containerKey = ApiFunction.getContainerKey(name, parseInt(overloadIndex, 10));
+		if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
+			containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 		}
 
 		return {
@@ -171,17 +170,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 					source: mdxSource,
 				},
 			},
-			revalidate: 3600,
+			revalidate: 3_600,
 		};
-	} catch (e) {
-		const error = e as Error;
+	} catch (error_) {
+		const error = error_ as Error;
 		console.error(error);
 
 		return {
 			props: {
-				error: e,
+				error: error_,
 			},
-			revalidate: 3600,
+			revalidate: 3_600,
 		};
 	}
 };

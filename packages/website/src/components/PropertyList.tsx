@@ -1,6 +1,6 @@
 import type { ApiPropertyItemJSON } from '@discordjs/api-extractor-utils';
 import { Stack } from '@mantine/core';
-import { CodeListing } from './CodeListing';
+import { CodeListing } from './CodeListing.jsx';
 
 export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
 	return (

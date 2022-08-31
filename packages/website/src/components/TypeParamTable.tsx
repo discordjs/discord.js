@@ -1,8 +1,8 @@
 import type { TypeParameterData } from '@discordjs/api-extractor-utils';
 import { ScrollArea } from '@mantine/core';
-import { HyperlinkedText } from './HyperlinkedText';
-import { Table } from './Table';
-import { TSDoc } from './tsdoc/TSDoc';
+import { HyperlinkedText } from './HyperlinkedText.jsx';
+import { Table } from './Table.jsx';
+import { TSDoc } from './tsdoc/TSDoc.jsx';
 
 const rowElements = {
 	Name: 'font-mono whitespace-nowrap',

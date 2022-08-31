@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
-import { PACKAGES } from '~/util/packages';
+import { PACKAGES } from '~/util/packages.js';
 
 const useStyles = createStyles((theme) => ({
 	outer: {

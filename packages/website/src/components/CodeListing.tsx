@@ -3,9 +3,9 @@ import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title }
 import { useMediaQuery } from '@mantine/hooks';
 import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
-import { HyperlinkedText } from './HyperlinkedText';
-import { InheritanceText } from './InheritanceText';
-import { TSDoc } from './tsdoc/TSDoc';
+import { HyperlinkedText } from './HyperlinkedText.jsx';
+import { InheritanceText } from './InheritanceText.jsx';
+import { TSDoc } from './tsdoc/TSDoc.jsx';
 
 export enum CodeListingSeparatorType {
 	Type = ':',
@@ -37,15 +37,15 @@ export function CodeListing({
 	deprecation,
 	inheritanceData,
 }: PropsWithChildren<{
-	name: string;
-	separator?: CodeListingSeparatorType;
-	typeTokens: TokenDocumentation[];
-	readonly?: boolean;
-	optional?: boolean;
-	summary?: ApiItemJSON['summary'];
 	comment?: AnyDocNodeJSON | null;
 	deprecation?: AnyDocNodeJSON | null;
 	inheritanceData?: InheritanceData | null;
+	name: string;
+	optional?: boolean;
+	readonly?: boolean;
+	separator?: CodeListingSeparatorType;
+	summary?: ApiItemJSON['summary'];
+	typeTokens: TokenDocumentation[];
 }>) {
 	const { classes } = useStyles();
 	const matches = useMediaQuery('(max-width: 768px)');

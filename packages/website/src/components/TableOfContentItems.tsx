@@ -48,7 +48,7 @@ export function TableOfContentItems({
 					</Group>
 				</Box>
 			)),
-		[properties, colorScheme],
+		[properties, classes.link],
 	);
 
 	const methodItems = useMemo(
@@ -73,7 +73,7 @@ export function TableOfContentItems({
 					</Box>
 				);
 			}),
-		[methods, colorScheme],
+		[methods, classes.link],
 	);
 
 	return (

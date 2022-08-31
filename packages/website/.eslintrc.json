@@ -1,5 +1,5 @@
 {
-	"extends": ["marine/prettier/react", "../../.eslintrc.json"],
+	"extends": ["neon/react", "neon/next", "../../.eslintrc.json"],
 	"settings": {
 		"react": {
 			"version": "detect"

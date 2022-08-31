@@ -2,10 +2,10 @@ import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extra
 import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { FiLink } from 'react-icons/fi';
-import { HyperlinkedText } from './HyperlinkedText';
-import { InheritanceText } from './InheritanceText';
-import { ParameterTable } from './ParameterTable';
-import { TSDoc } from './tsdoc/TSDoc';
+import { HyperlinkedText } from './HyperlinkedText.jsx';
+import { InheritanceText } from './InheritanceText.jsx';
+import { ParameterTable } from './ParameterTable.jsx';
+import { TSDoc } from './tsdoc/TSDoc.jsx';
 
 const useStyles = createStyles((theme) => ({
 	outer: {
