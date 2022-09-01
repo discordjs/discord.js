@@ -34,6 +34,67 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-eslint/bundled-angular-compiler@npm:14.0.3":
+  version: 14.0.3
+  resolution: "@angular-eslint/bundled-angular-compiler@npm:14.0.3"
+  checksum: 7f686f52d34d20767d9ab5fcc70c0a228b23c4a17b79b774c8568293cdbcfdad6492c432b1462ecb974bd948f4f52cf59db9ba5ae5bd703442864a33adbf89a3
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/eslint-plugin-template@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "@angular-eslint/eslint-plugin-template@npm:14.0.3"
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler": 14.0.3
+    "@typescript-eslint/utils": 5.29.0
+    aria-query: 5.0.0
+    axobject-query: 3.0.1
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+    typescript: "*"
+  checksum: 16b20170f2c69fb59f67cc18b26f451a92c18aaaac1cf64e544f6cb9bdf2083815674c2086c30e78e1c97b00fc5b52f11f9d715ac3d151cc982fc74c54809e98
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/eslint-plugin@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "@angular-eslint/eslint-plugin@npm:14.0.3"
+  dependencies:
+    "@angular-eslint/utils": 14.0.3
+    "@typescript-eslint/utils": 5.29.0
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+    typescript: "*"
+  checksum: 9c4296c61b1e2cc27ff72facfc87f68fdbc64e25125a684b7d6d804267526d6ab127baf00044238f0cbedb466ecda46d60fdfd1bb9740dbf7140d514353f7095
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/template-parser@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "@angular-eslint/template-parser@npm:14.0.3"
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler": 14.0.3
+    eslint-scope: ^5.1.0
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+    typescript: "*"
+  checksum: 921bdd9336bb95773b5c7eb63c5759a6ab55e1f3f59458b0e37609d4e73b54eaa6a8679e8c149f7e4ec1bccfbb00f29605cb85e6f2c4ba83c54a4e3245cfb0fd
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/utils@npm:14.0.3":
+  version: 14.0.3
+  resolution: "@angular-eslint/utils@npm:14.0.3"
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler": 14.0.3
+    "@typescript-eslint/utils": 5.29.0
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+    typescript: "*"
+  checksum: 937a66534858ad10609781e9e4eaf194947d0f212f128223a896a17a624a0f26684e74a7e873d5f692d4a5bb77ea3d45272d99715d6c292407ceb017ac9cc4cf
+  languageName: node
+  linkType: hard
+
 "@antfu/install-pkg@npm:^0.1.0":
   version: 0.1.0
   resolution: "@antfu/install-pkg@npm:0.1.0"
@@ -1682,8 +1743,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.36.1
     "@vitest/coverage-c8": ^0.22.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1706,8 +1766,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.36.1
     "@typescript-eslint/parser": ^5.36.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1734,8 +1793,7 @@ __metadata:
     discord-api-types: ^0.37.5
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1764,8 +1822,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.22.1
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1808,7 +1865,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.36.1
     commander: ^9.4.0
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1834,8 +1890,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.36.1
     "@typescript-eslint/parser": ^5.36.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1862,8 +1917,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.22.1
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1895,8 +1949,7 @@ __metadata:
     discord-api-types: ^0.37.5
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1925,8 +1978,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.22.1
     commander: ^9.4.0
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1957,8 +2009,7 @@ __metadata:
     discord-api-types: ^0.37.5
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -2007,8 +2058,7 @@ __metadata:
     "@vscode/codicons": ^0.0.32
     concurrently: ^7.3.0
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: latest
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -2056,8 +2106,7 @@ __metadata:
     discord-api-types: ^0.37.5
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
-    eslint-config-marine: ^9.4.1
-    eslint-config-neon: ^0.1.13
+    eslint-config-neon: ^0.1.22
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -4216,6 +4265,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/scope-manager@npm:5.29.0":
+  version: 5.29.0
+  resolution: "@typescript-eslint/scope-manager@npm:5.29.0"
+  dependencies:
+    "@typescript-eslint/types": 5.29.0
+    "@typescript-eslint/visitor-keys": 5.29.0
+  checksum: 540642bef9c55fd7692af98dfb42ab99eeb82553f42ab2a3c4e132e02b5ba492da1c6bf1ca6b02b900a678fc74399ad6c564c0ca20d91032090b6cbcb01a5bde
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/scope-manager@npm:5.36.1":
   version: 5.36.1
   resolution: "@typescript-eslint/scope-manager@npm:5.36.1"
@@ -4243,10 +4302,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/types@npm:5.29.0":
+  version: 5.29.0
+  resolution: "@typescript-eslint/types@npm:5.29.0"
+  checksum: 982ecdd69103105cabff8deac7f82f6002cf909238702ce902133e9af655cd962f977d5adf650c5ddae80d8c0e46abe1612a9141b25c7ed20ba8d662eb7ab871
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/types@npm:5.36.1":
   version: 5.36.1
   resolution: "@typescript-eslint/types@npm:5.36.1"
   checksum: 10c8965c64e16bc6920dc0c62aae2b139062aca945d03df2ad6fe7c299d2faa684621d571f8d9807a67643d4e9fa5217c69d5f538f9936fc757f9df5ded57623
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/typescript-estree@npm:5.29.0":
+  version: 5.29.0
+  resolution: "@typescript-eslint/typescript-estree@npm:5.29.0"
+  dependencies:
+    "@typescript-eslint/types": 5.29.0
+    "@typescript-eslint/visitor-keys": 5.29.0
+    debug: ^4.3.4
+    globby: ^11.1.0
+    is-glob: ^4.0.3
+    semver: ^7.3.7
+    tsutils: ^3.21.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: b91107a9fc31bf511aaa70f1e6d1d832d3acf08cfe999c870169447a7c223abff54c1d604bbb08d7c069dd98b43fb279bc314d1726097704fe8ad4c6e0969b12
   languageName: node
   linkType: hard
 
@@ -4268,6 +4352,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/utils@npm:5.29.0":
+  version: 5.29.0
+  resolution: "@typescript-eslint/utils@npm:5.29.0"
+  dependencies:
+    "@types/json-schema": ^7.0.9
+    "@typescript-eslint/scope-manager": 5.29.0
+    "@typescript-eslint/types": 5.29.0
+    "@typescript-eslint/typescript-estree": 5.29.0
+    eslint-scope: ^5.1.1
+    eslint-utils: ^3.0.0
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+  checksum: 216f51fb9c176437919af55db9ed14db8af7b020611e954c06e69956b9e3248cbfe6a218013d6c17b716116dca6566a4c03710f9b48ce4e94f89312d61c16d07
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/utils@npm:5.36.1, @typescript-eslint/utils@npm:^5.10.0":
   version: 5.36.1
   resolution: "@typescript-eslint/utils@npm:5.36.1"
@@ -4281,6 +4381,16 @@ __metadata:
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
   checksum: 77853d526af86ac508d7938916046ed4ad6374c7414981064c5122a2baa96fa234751137f481ac264a07387fd4dcec1cd26b33e29732cc58e855aae77a001d7c
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:5.29.0":
+  version: 5.29.0
+  resolution: "@typescript-eslint/visitor-keys@npm:5.29.0"
+  dependencies:
+    "@typescript-eslint/types": 5.29.0
+    eslint-visitor-keys: ^3.3.0
+  checksum: 15f228ad9ffaf0e42cc6b2ee4e5095c1e89c4c2dc46a65d19ca0e2296d88c08a1192039d942bd9600b1496176749f6322d636dd307602dbab90404a9501b4d6e
   languageName: node
   linkType: hard
 
@@ -4970,6 +5080,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aria-query@npm:5.0.0, aria-query@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "aria-query@npm:5.0.0"
+  checksum: c41f98866c5a304561ee8cae55856711cddad6f3f85d8cb43cc5f79667078d9b8979ce32d244c1ff364e6463a4d0b6865804a33ccc717fed701b281cf7dc6296
+  languageName: node
+  linkType: hard
+
 "aria-query@npm:^4.2.2":
   version: 4.2.2
   resolution: "aria-query@npm:4.2.2"
@@ -4977,13 +5094,6 @@ __metadata:
     "@babel/runtime": ^7.10.2
     "@babel/runtime-corejs3": ^7.10.2
   checksum: 38401a9a400f26f3dcc24b84997461a16b32869a9893d323602bed8da40a8bcc0243b8d2880e942249a1496cea7a7de769e93d21c0baa439f01e1ee936fed665
-  languageName: node
-  linkType: hard
-
-"aria-query@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "aria-query@npm:5.0.0"
-  checksum: c41f98866c5a304561ee8cae55856711cddad6f3f85d8cb43cc5f79667078d9b8979ce32d244c1ff364e6463a4d0b6865804a33ccc717fed701b281cf7dc6296
   languageName: node
   linkType: hard
 
@@ -5189,6 +5299,13 @@ __metadata:
   version: 4.4.3
   resolution: "axe-core@npm:4.4.3"
   checksum: c3ea000d9ace3ba0bc747c8feafc24b0de62a0f7d93021d0f77b19c73fca15341843510f6170da563d51535d6cfb7a46c5fc0ea36170549dbb44b170208450a2
+  languageName: node
+  linkType: hard
+
+"axobject-query@npm:3.0.1":
+  version: 3.0.1
+  resolution: "axobject-query@npm:3.0.1"
+  checksum: c4eede240d332936c85b15725695f55797304366063ee025db5a0c5df98bb35ec826129191c3e91a0355a56854029c7bd6f63b505022737b6e3ab83cef6bf7df
   languageName: node
   linkType: hard
 
@@ -6960,7 +7077,7 @@ __metadata:
     discord-api-types: ^0.37.5
     dtslint: ^4.2.1
     eslint: ^8.23.0
-    eslint-config-neon: latest
+    eslint-config-neon: ^0.1.22
     fast-deep-equal: ^3.1.3
     jest: ^29.0.1
     lodash.snakecase: ^4.1.1
@@ -8022,26 +8139,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-aqua@npm:^9.2.0":
-  version: 9.2.1
-  resolution: "eslint-config-aqua@npm:9.2.1"
-  checksum: f91424cdcc227d29dd299c69bb030dcaa8fb7c03feced29297de24cf04b382d5cf81f0822ac2050321ca6ddbb0345f8f34534315821ecf315e76935ce888238a
-  languageName: node
-  linkType: hard
-
-"eslint-config-marine@npm:^9.4.1":
-  version: 9.4.1
-  resolution: "eslint-config-marine@npm:9.4.1"
+"eslint-config-neon@npm:^0.1.22":
+  version: 0.1.22
+  resolution: "eslint-config-neon@npm:0.1.22"
   dependencies:
-    eslint-config-aqua: ^9.2.0
-  checksum: 380969b39b9a5c43fcb8cfc283cee83ef046084e854c59e53dfc6eb08578e92914be12b992eb3cd6231610c008657ac4c03ecd96f8983efaa146c41f0f07cc09
-  languageName: node
-  linkType: hard
-
-"eslint-config-neon@npm:^0.1.13":
-  version: 0.1.13
-  resolution: "eslint-config-neon@npm:0.1.13"
-  dependencies:
+    "@angular-eslint/eslint-plugin": ^14.0.3
+    "@angular-eslint/eslint-plugin-template": ^14.0.3
+    "@angular-eslint/template-parser": ^14.0.3
     "@next/eslint-plugin-next": ^12.2.5
     "@rushstack/eslint-patch": ^1.1.4
     "@typescript-eslint/eslint-plugin": ^5.36.1
@@ -8060,33 +8164,7 @@ __metadata:
     eslint-plugin-tsdoc: ^0.2.16
     eslint-plugin-typescript-sort-keys: ^2.1.0
     eslint-plugin-unicorn: ^43.0.2
-  checksum: 22a1dd540a599a943c7d22336fa513606245be46aadab5db4d3b36740f28231e0128e8d39dcec7d21b95b494b8ccf161e67ea7c7cf65e84a1a1f4f36278618c8
-  languageName: node
-  linkType: hard
-
-"eslint-config-neon@npm:latest":
-  version: 0.1.12
-  resolution: "eslint-config-neon@npm:0.1.12"
-  dependencies:
-    "@next/eslint-plugin-next": ^12.2.5
-    "@rushstack/eslint-patch": ^1.1.4
-    "@typescript-eslint/eslint-plugin": ^5.36.1
-    "@typescript-eslint/parser": ^5.36.1
-    eslint-config-prettier: ^8.5.0
-    eslint-plugin-cypress: ^2.12.1
-    eslint-plugin-import: "npm:eslint-plugin-i@latest"
-    eslint-plugin-jest: ^27.0.1
-    eslint-plugin-jsdoc: ^39.3.6
-    eslint-plugin-jsx-a11y: ^6.6.1
-    eslint-plugin-lodash: ^7.4.0
-    eslint-plugin-n: ^15.2.5
-    eslint-plugin-promise: ^6.0.1
-    eslint-plugin-react: ^7.31.1
-    eslint-plugin-react-hooks: ^4.6.0
-    eslint-plugin-tsdoc: ^0.2.16
-    eslint-plugin-typescript-sort-keys: ^2.1.0
-    eslint-plugin-unicorn: ^43.0.2
-  checksum: 7861586399926abae9e33ddcf3ee3b226819eb5320657285f7221935386f7e82aca749155ac7ddb4c27c9c2e9d7809fbb935d84a2a3c94188d7b475136042c7a
+  checksum: 0cecd806345bc824d9f845b5ae45fcc04f29b649848e3c3c38f550bba0ae389e0ec914797e5014370a8a99964dc8044b43c2c6d76596310b6972dddab819b41c
   languageName: node
   linkType: hard
 
@@ -8412,7 +8490,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-scope@npm:^5.1.1":
+"eslint-scope@npm:^5.1.0, eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
   dependencies:

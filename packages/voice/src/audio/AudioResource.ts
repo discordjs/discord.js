@@ -1,12 +1,9 @@
 import type { Buffer } from 'node:buffer';
-import type { Readable } from 'node:stream';
-import { pipeline } from 'node:stream';
+import { pipeline, type Readable } from 'node:stream';
 import prism from 'prism-media';
 import { noop } from '../util/util';
-import type { AudioPlayer } from './AudioPlayer';
-import { SILENCE_FRAME } from './AudioPlayer';
-import type { Edge } from './TransformerGraph';
-import { findPipeline, StreamType, TransformerType } from './TransformerGraph';
+import { SILENCE_FRAME, type AudioPlayer } from './AudioPlayer';
+import { findPipeline, StreamType, TransformerType, type Edge } from './TransformerGraph';
 
 /**
  * Options that are set when creating a new audio resource.

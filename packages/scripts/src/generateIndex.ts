@@ -1,10 +1,8 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
-import { ApiDeclaredItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
-import type { DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { DocNodeKind } from '@microsoft/tsdoc';
+import { ApiDeclaredItem, ApiItemContainerMixin, type ApiItem, type ApiModel } from '@microsoft/api-extractor-model';
+import { DocNodeKind, type DocCodeSpan, type DocNode, type DocParagraph, type DocPlainText } from '@microsoft/tsdoc';
 
 export interface MemberJSON {
 	kind: string;

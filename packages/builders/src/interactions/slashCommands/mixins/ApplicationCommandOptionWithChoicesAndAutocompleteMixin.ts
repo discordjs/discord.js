@@ -1,6 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);

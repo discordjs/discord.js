@@ -1,5 +1,4 @@
-import type { APISelectMenuOption } from 'discord-api-types/v10';
-import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
+import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import {
 	customIdValidator,

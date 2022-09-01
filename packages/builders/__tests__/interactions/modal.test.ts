@@ -1,9 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { APIModalInteractionResponseCallbackData, APITextInputComponent } from 'discord-api-types/v10';
-import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
+import {
+	ComponentType,
+	TextInputStyle,
+	type APIModalInteractionResponseCallbackData,
+	type APITextInputComponent,
+} from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import type { ModalActionRowComponentBuilder } from '../../src';
-import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from '../../src/index.js';
+import {
+	ActionRowBuilder,
+	ButtonBuilder,
+	ModalBuilder,
+	TextInputBuilder,
+	type ModalActionRowComponentBuilder,
+} from '../../src/index.js';
 import {
 	componentsValidator,
 	titleValidator,

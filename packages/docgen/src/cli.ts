@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+/* eslint-disable n/shebang */
 import process from 'node:process';
 import { createCommand } from 'commander';
 import packageFile from '../package.json';

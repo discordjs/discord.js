@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import { ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+import { ChannelType, PermissionFlagsBits, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,

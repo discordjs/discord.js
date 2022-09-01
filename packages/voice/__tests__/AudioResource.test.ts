@@ -5,8 +5,7 @@ import { PassThrough, Readable } from 'node:stream';
 import { opus, VolumeTransformer } from 'prism-media';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../src/audio/AudioResource';
-import type { Edge } from '../src/audio/TransformerGraph';
-import { findPipeline as _findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
+import { findPipeline as _findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
 jest.mock('prism-media');
 jest.mock('../src/audio/TransformerGraph');

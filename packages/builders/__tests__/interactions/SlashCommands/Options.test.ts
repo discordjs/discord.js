@@ -1,15 +1,16 @@
-import type {
-	APIApplicationCommandAttachmentOption,
-	APIApplicationCommandBooleanOption,
-	APIApplicationCommandChannelOption,
-	APIApplicationCommandIntegerOption,
-	APIApplicationCommandMentionableOption,
-	APIApplicationCommandNumberOption,
-	APIApplicationCommandRoleOption,
-	APIApplicationCommandStringOption,
-	APIApplicationCommandUserOption,
+import {
+	ApplicationCommandOptionType,
+	ChannelType,
+	type APIApplicationCommandAttachmentOption,
+	type APIApplicationCommandBooleanOption,
+	type APIApplicationCommandChannelOption,
+	type APIApplicationCommandIntegerOption,
+	type APIApplicationCommandMentionableOption,
+	type APIApplicationCommandNumberOption,
+	type APIApplicationCommandRoleOption,
+	type APIApplicationCommandStringOption,
+	type APIApplicationCommandUserOption,
 } from 'discord-api-types/v10';
-import { ApplicationCommandOptionType, ChannelType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAttachmentOption,

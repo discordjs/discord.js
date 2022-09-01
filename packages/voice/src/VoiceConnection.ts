@@ -15,8 +15,7 @@ import {
 import type { AudioPlayer } from './audio/AudioPlayer';
 import type { PlayerSubscription } from './audio/PlayerSubscription';
 import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
-import type { NetworkingState } from './networking/Networking';
-import { Networking, NetworkingStatusCode } from './networking/Networking';
+import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking';
 import { VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
 import { noop } from './util/util';

@@ -1,5 +1,4 @@
-import type { APIApplicationCommandChannelOption } from 'discord-api-types/v10';
-import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandChannelOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionChannelTypesMixin } from '../mixins/ApplicationCommandOptionChannelTypesMixin.js';

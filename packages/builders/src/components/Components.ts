@@ -1,5 +1,4 @@
-import type { APIMessageComponent, APIModalComponent } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import { ComponentType, type APIMessageComponent, type APIModalComponent } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
 	type AnyComponentBuilder,

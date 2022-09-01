@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 import { Buffer } from 'node:buffer';
-import type { Socket } from 'node:dgram';
-import { createSocket } from 'node:dgram';
+import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';
 

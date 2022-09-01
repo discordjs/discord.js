@@ -6,8 +6,7 @@ import type { GatewaySendPayload } from 'discord-api-types/v10';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
-import type { FetchingStrategyOptions } from '../context/IContextFetchingStrategy';
-import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
+import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy';
 
 export interface WorkerData extends FetchingStrategyOptions {

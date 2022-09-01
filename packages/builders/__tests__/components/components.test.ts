@@ -1,11 +1,13 @@
-import type {
-	APIActionRowComponent,
-	APIButtonComponent,
-	APIMessageActionRowComponent,
-	APISelectMenuComponent,
-	APITextInputComponent,
+import {
+	ButtonStyle,
+	ComponentType,
+	TextInputStyle,
+	type APIButtonComponent,
+	type APIMessageActionRowComponent,
+	type APISelectMenuComponent,
+	type APITextInputComponent,
+	type APIActionRowComponent,
 } from 'discord-api-types/v10';
-import { ButtonStyle, ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,

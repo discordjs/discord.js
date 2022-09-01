@@ -1,6 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import type { APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
-import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';

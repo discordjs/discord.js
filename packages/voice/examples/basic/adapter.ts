@@ -1,5 +1,5 @@
 import { DiscordGatewayAdapterCreator, DiscordGatewayAdapterLibraryMethods } from '../../';
-import { Snowflake, Client, Guild, VoiceBasedChannel, Status, Events } from 'discord';
+import { Snowflake, Client, Guild, VoiceBasedChannel, Status, Events } from 'discord.js';
 import {
 	GatewayDispatchEvents,
 	GatewayVoiceServerUpdateDispatchData,

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import type { MessageEvent } from 'ws';
-import WebSocket from 'ws';
+import WebSocket, { type MessageEvent } from 'ws';
 
 export interface VoiceWebSocket extends EventEmitter {
 	on(event: 'error', listener: (error: Error) => void): this;

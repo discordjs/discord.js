@@ -1,9 +1,10 @@
-import type {
-	APIMessageActionRowComponent,
-	APIModalActionRowComponent,
-	APIActionRowComponentTypes,
+import {
+	type APIActionRowComponent,
+	ComponentType,
+	type APIMessageActionRowComponent,
+	type APIModalActionRowComponent,
+	type APIActionRowComponentTypes,
 } from 'discord-api-types/v10';
-import { type APIActionRowComponent, ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { ComponentBuilder } from './Component.js';
 import { createComponentBuilder } from './Components.js';

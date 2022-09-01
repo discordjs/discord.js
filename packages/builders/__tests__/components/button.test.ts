@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { APIButtonComponentWithCustomId, APIButtonComponentWithURL } from 'discord-api-types/v10';
-import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import {
+	ButtonStyle,
+	ComponentType,
+	type APIButtonComponentWithCustomId,
+	type APIButtonComponentWithURL,
+} from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions.js';
 import { ButtonBuilder } from '../../src/components/button/Button.js';

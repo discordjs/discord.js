@@ -6,16 +6,14 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import EventEmitter from 'node:events';
 import * as _DataStore from '../src/DataStore';
-import type {
-	VoiceConnectionConnectingState,
-	VoiceConnectionReadyState,
-	VoiceConnectionSignallingState,
-} from '../src/VoiceConnection';
 import {
 	createVoiceConnection,
 	VoiceConnection,
 	VoiceConnectionDisconnectReason,
 	VoiceConnectionStatus,
+	type VoiceConnectionConnectingState,
+	type VoiceConnectionReadyState,
+	type VoiceConnectionSignallingState,
 } from '../src/VoiceConnection';
 import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';

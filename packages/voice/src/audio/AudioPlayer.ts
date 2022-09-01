@@ -2,8 +2,7 @@
 import { Buffer } from 'node:buffer';
 import EventEmitter from 'node:events';
 import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
-import type { VoiceConnection } from '../VoiceConnection';
-import { VoiceConnectionStatus } from '../VoiceConnection';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import { noop } from '../util/util';
 import { AudioPlayerError } from './AudioPlayerError';
 import type { AudioResource } from './AudioResource';

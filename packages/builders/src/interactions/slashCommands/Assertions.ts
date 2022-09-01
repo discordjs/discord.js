@@ -1,6 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import type { LocalizationMap } from 'discord-api-types/v10';
-import { type APIApplicationCommandOptionChoice, Locale } from 'discord-api-types/v10';
+import { type APIApplicationCommandOptionChoice, Locale, type LocalizationMap } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';

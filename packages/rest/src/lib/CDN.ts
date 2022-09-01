@@ -1,11 +1,13 @@
 /* eslint-disable jsdoc/check-param-names */
 import { URL } from 'node:url';
-import type { ImageExtension, ImageSize, StickerExtension } from './utils/constants';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,
 	ALLOWED_STICKER_EXTENSIONS,
 	DefaultRestOptions,
+	type ImageExtension,
+	type ImageSize,
+	type StickerExtension,
 } from './utils/constants.js';
 
 /**

@@ -1,11 +1,8 @@
 import { REST } from '@discordjs/rest';
-import type { APIGatewayBotInfo, GatewaySendPayload } from 'discord-api-types/v10';
-import { GatewayOpcodes } from 'discord-api-types/v10';
-import type { Interceptable } from 'undici';
-import { MockAgent } from 'undici';
+import { GatewayOpcodes, type APIGatewayBotInfo, type GatewaySendPayload } from 'discord-api-types/v10';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import type { IShardingStrategy } from '../../src';
-import { WebSocketManager } from '../../src/index.js';
+import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 
 vi.useFakeTimers();
 

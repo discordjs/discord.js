@@ -1,18 +1,23 @@
 /* eslint-disable id-length */
 import { setImmediate } from 'node:timers';
 import { REST } from '@discordjs/rest';
-import type { GatewayDispatchPayload, GatewaySendPayload } from 'discord-api-types/v10';
-import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
-import type { Interceptable } from 'undici';
-import { MockAgent } from 'undici';
+import {
+	GatewayDispatchEvents,
+	GatewayOpcodes,
+	type GatewayDispatchPayload,
+	type GatewaySendPayload,
+} from 'discord-api-types/v10';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, test, vi, expect, afterEach } from 'vitest';
-import type { WorkerRecievePayload, WorkerSendPayload, SessionInfo } from '../../src';
 import {
 	WebSocketManager,
 	WorkerSendPayloadOp,
 	WorkerRecievePayloadOp,
 	WorkerShardingStrategy,
 	WebSocketShardEvents,
+	type WorkerRecievePayload,
+	type WorkerSendPayload,
+	type SessionInfo,
 } from '../../src/index.js';
 
 let mockAgent: MockAgent;

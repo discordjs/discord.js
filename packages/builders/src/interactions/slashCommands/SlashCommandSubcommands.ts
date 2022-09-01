@@ -1,8 +1,9 @@
-import type {
-	APIApplicationCommandSubcommandGroupOption,
-	APIApplicationCommandSubcommandOption,
+import type {} from 'discord-api-types/v10';
+import {
+	ApplicationCommandOptionType,
+	type APIApplicationCommandSubcommandGroupOption,
+	type APIApplicationCommandSubcommandOption,
 } from 'discord-api-types/v10';
-import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { assertReturnOfBuilder, validateMaxOptionsLength, validateRequiredParameters } from './Assertions.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';

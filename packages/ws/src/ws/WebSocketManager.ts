@@ -1,20 +1,18 @@
 import type { REST } from '@discordjs/rest';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type {
-	APIGatewayBotInfo,
-	GatewayIdentifyProperties,
-	GatewayPresenceUpdateData,
-	RESTGetAPIGatewayBotResult,
-	GatewayIntentBits,
-	GatewaySendPayload,
+import {
+	Routes,
+	type APIGatewayBotInfo,
+	type GatewayIdentifyProperties,
+	type GatewayPresenceUpdateData,
+	type RESTGetAPIGatewayBotResult,
+	type GatewayIntentBits,
+	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
-import type { CompressionMethod, Encoding } from '../utils/constants';
-import { DefaultWebSocketManagerOptions } from '../utils/constants.js';
-import type { Awaitable } from '../utils/utils';
-import { range } from '../utils/utils.js';
+import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
+import { range, type Awaitable } from '../utils/utils.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
 
 /**

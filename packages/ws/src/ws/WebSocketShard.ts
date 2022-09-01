@@ -9,15 +9,16 @@ import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type {
-	GatewayDispatchPayload,
-	GatewayIdentifyData,
-	GatewayReceivePayload,
-	GatewaySendPayload,
+import {
+	GatewayCloseCodes,
+	GatewayDispatchEvents,
+	GatewayOpcodes,
+	type GatewayDispatchPayload,
+	type GatewayIdentifyData,
+	type GatewayReceivePayload,
+	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { GatewayCloseCodes, GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
-import type { RawData } from 'ws';
-import { WebSocket } from 'ws';
+import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants.js';

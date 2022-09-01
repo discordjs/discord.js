@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { APISelectMenuComponent, APISelectMenuOption } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
 

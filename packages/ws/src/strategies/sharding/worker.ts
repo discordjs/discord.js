@@ -1,10 +1,14 @@
 import { isMainThread, workerData, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
-import type { WebSocketShardDestroyOptions } from '../../ws/WebSocketShard';
-import { WebSocketShard, WebSocketShardEvents } from '../../ws/WebSocketShard.js';
+import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { WorkerContextFetchingStrategy } from '../context/WorkerContextFetchingStrategy.js';
-import { WorkerRecievePayloadOp, WorkerSendPayloadOp } from './WorkerShardingStrategy.js';
-import type { WorkerData, WorkerRecievePayload, WorkerSendPayload } from './WorkerShardingStrategy.js';
+import {
+	WorkerRecievePayloadOp,
+	WorkerSendPayloadOp,
+	type WorkerData,
+	type WorkerRecievePayload,
+	type WorkerSendPayload,
+} from './WorkerShardingStrategy.js';
 
 if (isMainThread) {
 	throw new Error('Expected worker script to not be ran within the main thread');

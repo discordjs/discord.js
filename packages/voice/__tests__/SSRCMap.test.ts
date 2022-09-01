@@ -2,8 +2,7 @@
 import type EventEmitter from 'node:events';
 import { once } from 'node:events';
 import process from 'node:process';
-import type { VoiceUserData } from '../src/receive/SSRCMap';
-import { SSRCMap } from '../src/receive/SSRCMap';
+import { SSRCMap, type VoiceUserData } from '../src/receive/SSRCMap';
 
 async function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
 	return new Promise((resolve, reject) => {

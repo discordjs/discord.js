@@ -13,8 +13,7 @@ import {
 } from '@microsoft/tsdoc';
 import { block } from './CommentBlock.js';
 import { codeSpan } from './CommentCodeSpan.js';
-import type { AnyDocNodeJSON } from './CommentNode';
-import { node as _node } from './CommentNode.js';
+import { node as _node, type AnyDocNodeJSON } from './CommentNode.js';
 import { nodeContainer } from './CommentNodeContainer.js';
 import { fencedCode } from './FencedCodeCommentNode.js';
 import { linkTagNode } from './LinkTagCommentNode.js';

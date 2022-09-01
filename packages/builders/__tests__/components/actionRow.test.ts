@@ -1,5 +1,9 @@
-import type { APIActionRowComponent, APIMessageActionRowComponent } from 'discord-api-types/v10';
-import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import {
+	ButtonStyle,
+	ComponentType,
+	type APIActionRowComponent,
+	type APIMessageActionRowComponent,
+} from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,

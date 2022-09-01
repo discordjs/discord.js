@@ -1,6 +1,12 @@
 import { URL } from 'node:url';
-import type { RequestMethod, REST, RouteLike } from '@discordjs/rest';
-import { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
+import {
+	DiscordAPIError,
+	HTTPError,
+	RateLimitError,
+	type RequestMethod,
+	type REST,
+	type RouteLike,
+} from '@discordjs/rest';
 import {
 	populateAbortErrorResponse,
 	populateGeneralErrorResponse,

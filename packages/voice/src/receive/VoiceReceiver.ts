@@ -4,8 +4,11 @@ import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
-import type { AudioReceiveStreamOptions } from './AudioReceiveStream';
-import { AudioReceiveStream, createDefaultAudioReceiveStreamOptions } from './AudioReceiveStream';
+import {
+	AudioReceiveStream,
+	createDefaultAudioReceiveStreamOptions,
+	type AudioReceiveStreamOptions,
+} from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
 import { SpeakingMap } from './SpeakingMap';
 
