@@ -2228,6 +2228,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
     "@msgpack/msgpack": ^2.7.2
+    "@types/ioredis-mock": ^5.6.0
     "@types/node": ^16.11.52
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -2239,7 +2240,8 @@ __metadata:
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
-    ioredis: ^5.2.2
+    ioredis: ^5.2.3
+    ioredis-mock: ^8.2.2
     prettier: ^2.7.1
     rollup-plugin-typescript2: ^0.33.0
     tslib: ^2.4.0
@@ -2884,6 +2886,13 @@ __metadata:
     kolorist: ^1.5.1
     local-pkg: ^0.4.2
   checksum: eeff65b99a45b5ed5920c7a471ab3ab55a1d42e25ebc67635a1307439efd10daa6a76b5b4712446280fbfb8a12411ea846fea921e96f862a5b166479c496629b
+  languageName: node
+  linkType: hard
+
+"@ioredis/as-callback@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@ioredis/as-callback@npm:3.0.0"
+  checksum: 2835e39631497fe4f8b07d95576abea165c9f7efef81e9e55c733588051ff4edcb31eeb59f36127923dae0cb1a8e21b4e27ee3ab79a065a0baeecf861c3bc0b1
   languageName: node
   linkType: hard
 
@@ -4735,6 +4744,24 @@ __metadata:
   version: 3.0.0
   resolution: "@types/html-escaper@npm:3.0.0"
   checksum: 45262fe292d132675abad3db4c9058d18e8a73e3c7e2e5b82a552e73697e5f50fead5142db432cb0685aba5b091a1ea275ae6fb96b8b1a2964ca45f8e50c0fdf
+  languageName: node
+  linkType: hard
+
+"@types/ioredis-mock@npm:^5.6.0":
+  version: 5.6.0
+  resolution: "@types/ioredis-mock@npm:5.6.0"
+  dependencies:
+    "@types/ioredis": "*"
+  checksum: df430006c5a90d5fe9d23145b37dc324f9d21bc4c8a1763f70b3ff6ca70ea5a8dadb6e5cd1c170e8ddb7669f459b5b0843550da9fdc028419ab2addea84a0c41
+  languageName: node
+  linkType: hard
+
+"@types/ioredis@npm:*":
+  version: 4.28.10
+  resolution: "@types/ioredis@npm:4.28.10"
+  dependencies:
+    "@types/node": "*"
+  checksum: 0f2788cf25f490d3b345db8c5f8b8ce3f6c92cc99abcf744c8f974f02b9b3875233b3d22098614c462a0d6c41c523bd655509418ea88eb6249db6652290ce7cf
   languageName: node
   linkType: hard
 
@@ -11604,6 +11631,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fengari-interop@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "fengari-interop@npm:0.1.3"
+  peerDependencies:
+    fengari: ^0.1.0
+  checksum: f483e0aedec3a0b49911ffd3207a55f73c861f95ef84fb7582deb45bc65afa2e7bf8f9fc3734563f6c106a438909f94059b5d08f5a7872ffcc3d45d260a3ee15
+  languageName: node
+  linkType: hard
+
+"fengari@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "fengari@npm:0.1.4"
+  dependencies:
+    readline-sync: ^1.4.9
+    sprintf-js: ^1.1.1
+    tmp: ^0.0.33
+  checksum: bd6b04f9738f9cbb58e3c80684a72bf6f7e74c902d26e4e812b1cfbd69c06da5ffb2a8a67a62ecd75603fc565b6b183c1b72be60f2e60c18aa487aad65b62196
+  languageName: node
+  linkType: hard
+
 "fetch-blob@npm:^3.1.2, fetch-blob@npm:^3.1.4":
   version: 3.2.0
   resolution: "fetch-blob@npm:3.2.0"
@@ -13244,7 +13291,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ioredis@npm:^5.2.2":
+"ioredis-mock@npm:^8.2.2":
+  version: 8.2.2
+  resolution: "ioredis-mock@npm:8.2.2"
+  dependencies:
+    "@ioredis/as-callback": ^3.0.0
+    "@ioredis/commands": ^1.1.1
+    fengari: ^0.1.4
+    fengari-interop: ^0.1.3
+  peerDependencies:
+    ioredis: 5.x
+  checksum: b233d9762ff99468340e0bd8bac83cdf281df2e7243fdc2557587c7ff5762920c09a53cc21de894af5235132299b2be567d8891a2f3f27aa0b10952002a7bda1
+  languageName: node
+  linkType: hard
+
+"ioredis@npm:^5.2.3":
   version: 5.2.3
   resolution: "ioredis@npm:5.2.3"
   dependencies:
@@ -17549,6 +17610,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"os-tmpdir@npm:~1.0.2":
+  version: 1.0.2
+  resolution: "os-tmpdir@npm:1.0.2"
+  checksum: 5666560f7b9f10182548bf7013883265be33620b1c1b4a4d405c25be2636f970c5488ff3e6c48de75b55d02bde037249fe5dbfbb4c0fb7714953d56aed062e6d
+  languageName: node
+  linkType: hard
+
 "p-cancelable@npm:^1.0.0":
   version: 1.1.0
   resolution: "p-cancelable@npm:1.1.0"
@@ -18817,6 +18885,13 @@ __metadata:
   dependencies:
     picomatch: ^2.2.1
   checksum: 1ced032e6e45670b6d7352d71d21ce7edf7b9b928494dcaba6f11fba63180d9da6cd7061ebc34175ffda6ff529f481818c962952004d273178acd70f7059b320
+  languageName: node
+  linkType: hard
+
+"readline-sync@npm:^1.4.9":
+  version: 1.4.10
+  resolution: "readline-sync@npm:1.4.10"
+  checksum: 4dbd8925af028dc4cb1bb813f51ca3479035199aa5224886b560eec8e768ab27d7ebf11d69a67ed93d5a130b7c994f0bdb77796326e563cf928bbfd560e3747e
   languageName: node
   linkType: hard
 
@@ -20359,6 +20434,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sprintf-js@npm:^1.1.1":
+  version: 1.1.2
+  resolution: "sprintf-js@npm:1.1.2"
+  checksum: d4bb46464632b335e5faed381bd331157e0af64915a98ede833452663bc672823db49d7531c32d58798e85236581fb7342fd0270531ffc8f914e186187bf1c90
+  languageName: node
+  linkType: hard
+
 "sprintf-js@npm:^1.1.2":
   version: 1.1.2
   resolution: "sprintf-js@npm:1.1.2"
@@ -21261,6 +21343,15 @@ __metadata:
   version: 1.0.1
   resolution: "titleize@npm:1.0.1"
   checksum: 686ec747309423d820e1ca549dfa421cc196368affad30e2998d5b952af9c2b62b77dd36b2a822f069c83d3e4135d45d883563769829e9c639f37b078c556c95
+  languageName: node
+  linkType: hard
+
+"tmp@npm:^0.0.33":
+  version: 0.0.33
+  resolution: "tmp@npm:0.0.33"
+  dependencies:
+    os-tmpdir: ~1.0.2
+  checksum: 902d7aceb74453ea02abbf58c203f4a8fc1cead89b60b31e354f74ed5b3fb09ea817f94fb310f884a5d16987dd9fa5a735412a7c2dd088dd3d415aa819ae3a28
   languageName: node
   linkType: hard
 

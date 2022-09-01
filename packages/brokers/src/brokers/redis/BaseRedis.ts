@@ -1,13 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type { Redis } from 'ioredis';
+import { Redis, ReplyError } from 'ioredis';
 import { BaseBrokerOptions, DefaultBrokerOptions, IBaseBroker, ToEventMap } from '../Broker.interface';
 
 // For some reason ioredis doesn't have this typed, but it exists
 declare module 'ioredis' {
 	interface Redis {
-		xreadgroupBuffer: (...args: Array<string | Buffer>) => Promise<[Buffer, [Buffer, Buffer[]][]][]>;
+		xreadgroupBuffer: (...args: Array<string | Buffer>) => Promise<[Buffer, [Buffer, Buffer[]][]][] | null>;
 	}
 }
 
@@ -17,15 +17,15 @@ export interface RedisBrokerOptions extends BaseBrokerOptions {
 
 export const STREAM_DATA_KEY = 'data' as const;
 
-export class BaseRedisBroker<TEvents extends Record<string, any>>
+export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	extends AsyncEventEmitter<ToEventMap<TEvents>>
 	implements IBaseBroker<TEvents>
 {
 	protected readonly options: Required<RedisBrokerOptions>;
 	protected readonly subscribedEvents = new Set<string>();
+	protected readonly streamReadClient: Redis;
 
 	protected listening = false;
-	protected streamReadClient?: Redis;
 
 	public constructor(options: RedisBrokerOptions) {
 		super();
@@ -34,13 +34,20 @@ export class BaseRedisBroker<TEvents extends Record<string, any>>
 			numberOfKeys: 1,
 			lua: readFileSync(resolve(__dirname, '..', '..', '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
 		});
+		this.streamReadClient = options.redisClient.duplicate();
 	}
 
 	public async subscribe(group: string, events: (keyof TEvents)[]): Promise<void> {
 		await Promise.all(
-			events.map((event) => {
+			events.map(async (event) => {
 				this.subscribedEvents.add(event as string);
-				return this.options.redisClient.xgroup('CREATE', event as string, group, 0, 'MKSTREAM');
+				try {
+					return await this.options.redisClient.xgroup('CREATE', event as string, group, 0, 'MKSTREAM');
+				} catch (error) {
+					if (!(error instanceof ReplyError)) {
+						throw error;
+					}
+				}
 			}),
 		);
 		void this.listen(group);
@@ -70,7 +77,7 @@ export class BaseRedisBroker<TEvents extends Record<string, any>>
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		while (true) {
 			try {
-				const data = await (this.streamReadClient ??= this.options.redisClient.duplicate()).xreadgroupBuffer(
+				const data = await this.streamReadClient.xreadgroupBuffer(
 					'GROUP',
 					group,
 					this.options.name,
@@ -82,6 +89,10 @@ export class BaseRedisBroker<TEvents extends Record<string, any>>
 					...this.subscribedEvents,
 					...Array<string>(this.subscribedEvents.size).fill('>'),
 				);
+
+				if (!data) {
+					continue;
+				}
 
 				for (const [event, info] of data) {
 					for (const [id, packet] of info) {
@@ -95,14 +106,7 @@ export class BaseRedisBroker<TEvents extends Record<string, any>>
 							continue;
 						}
 
-						const payload: { data: unknown; ack: () => Promise<void> } = {
-							data: this.options.decode(data),
-							ack: async () => {
-								await this.options.redisClient.xack(event, group, id);
-							},
-						};
-
-						this.emit(event.toString('utf8'), payload);
+						this.emitEvent(id, group, event.toString('utf8'), this.options.decode(data));
 					}
 				}
 			} catch (error) {
@@ -113,4 +117,6 @@ export class BaseRedisBroker<TEvents extends Record<string, any>>
 
 		this.listening = false;
 	}
+
+	protected abstract emitEvent(id: Buffer, group: string, event: string, data: unknown): unknown;
 }

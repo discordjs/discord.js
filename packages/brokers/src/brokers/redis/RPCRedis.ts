@@ -26,6 +26,15 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 	public constructor(options: RPCRedisBrokerOptions) {
 		super(options);
 		this.options = { ...DefaultRPCRedisBrokerOptions, ...options };
+
+		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
+			const [, id] = channel.toString().split(':');
+			if (id && this.promises.has(id)) {
+				const { resolve, timeout } = this.promises.get(id)!;
+				resolve(this.options.decode(message));
+				clearTimeout(timeout);
+			}
+		});
 	}
 
 	public async call<T extends keyof TEvents>(
@@ -39,26 +48,28 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		// See: https://redis.io/commands/xadd/
 		const rpcChannel = `${event as string}:${id!}`;
 
-		if (!this.streamReadClient) {
-			this.streamReadClient = this.options.redisClient.duplicate();
-			this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
-				const [, id] = channel.toString().split(':');
-				if (id && this.promises.has(id)) {
-					const { resolve, timeout } = this.promises.get(id)!;
-					resolve(this.options.decode(message));
-					clearTimeout(timeout);
-				}
-			});
-		}
+		// Construct the error here for better stack traces
+		const timedOut = new Error(`timed out after ${timeoutDuration}ms`);
 
 		await this.streamReadClient.subscribe(rpcChannel);
 		return new Promise<TResponses[T]>((resolve, reject) => {
-			const timeout = setTimeout(
-				() => reject(new Error(`timed out after ${timeoutDuration}`)),
-				timeoutDuration,
-			).unref();
+			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });
-		}).finally(() => void this.streamReadClient!.unsubscribe(rpcChannel));
+		}).finally(() => void this.streamReadClient.unsubscribe(rpcChannel));
+	}
+
+	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
+		const payload: { data: unknown; ack: () => Promise<void>; reply: (data: unknown) => Promise<void> } = {
+			data,
+			ack: async () => {
+				await this.options.redisClient.xack(event, group, id);
+			},
+			reply: async (data) => {
+				await this.options.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
+			},
+		};
+
+		this.emit(event, payload);
 	}
 }
