@@ -15,44 +15,48 @@ import {
 	isInferredType,
 	isIntrinsicType,
 	isUnknownType,
-} from './types';
+} from './types.js';
 
-export function parseType(t: JSONOutput.SomeType | JSONOutput.Type | string): string {
-	if (typeof t === 'string') {
-		return t;
+export function parseType(someType: JSONOutput.SomeType | JSONOutput.Type | string): string {
+	if (typeof someType === 'string') {
+		return someType;
 	}
 
-	if (isArrayType(t)) {
-		return `Array<${parseType(t.elementType)}>`;
+	if (isArrayType(someType)) {
+		return `Array<${parseType(someType.elementType)}>`;
 	}
 
-	if (isConditionalType(t)) {
-		const { checkType, extendsType, trueType, falseType } = t;
+	if (isConditionalType(someType)) {
+		const { checkType, extendsType, trueType, falseType } = someType;
 		return `${parseType(checkType)} extends ${parseType(extendsType)} ? ${parseType(trueType)} : ${parseType(
 			falseType,
 		)}`;
 	}
 
-	if (isIndexedAccessType(t)) {
-		return `${parseType(t.objectType)}[${parseType(t.indexType)}]`;
+	if (isIndexedAccessType(someType)) {
+		return `${parseType(someType.objectType)}[${parseType(someType.indexType)}]`;
 	}
 
-	if (isIntersectionType(t)) {
-		return t.types.map(parseType).join(' & ');
+	if (isIntersectionType(someType)) {
+		return someType.types.map(parseType).join(' & ');
 	}
 
-	if (isPredicateType(t)) {
-		return (t.asserts ? 'asserts ' : '') + t.name + (t.targetType ? ` is ${parseType(t.targetType)}` : '');
+	if (isPredicateType(someType)) {
+		return (
+			(someType.asserts ? 'asserts ' : '') +
+			someType.name +
+			(someType.targetType ? ` is ${parseType(someType.targetType)}` : '')
+		);
 	}
 
-	if (isReferenceType(t)) {
-		return t.name + (t.typeArguments ? `<${t.typeArguments.map(parseType).join(', ')}>` : '');
+	if (isReferenceType(someType)) {
+		return someType.name + (someType.typeArguments ? `<${someType.typeArguments.map(parseType).join(', ')}>` : '');
 	}
 
-	if (isReflectionType(t)) {
+	if (isReflectionType(someType)) {
 		const obj: Record<string, any> = {};
 
-		const { children, signatures } = t.declaration!;
+		const { children, signatures } = someType.declaration!;
 
 		// This is run when we're parsing interface-like declaration
 		if (children && children.length > 0) {
@@ -62,6 +66,7 @@ export function parseType(t: JSONOutput.SomeType | JSONOutput.Type | string): st
 					obj[child.name] = parseType(type);
 				}
 			}
+
 			return `{\n${Object.entries(obj)
 				.map(([key, value]) => `${key}: ${value as string}`)
 				.join(',\n')}\n}`;
@@ -69,43 +74,48 @@ export function parseType(t: JSONOutput.SomeType | JSONOutput.Type | string): st
 
 		// This is run if we're parsing a function type
 		if (signatures && signatures.length > 0) {
-			const s = signatures[0];
-			const params = s?.parameters?.map((p) => `${p.name}: ${p.type ? parseType(p.type) : 'unknown'}`);
-			return `(${params?.join(', ') ?? '...args: unknown[]'}) => ${s?.type ? parseType(s.type) : 'unknown'}`;
+			const signature = signatures[0];
+			const params = signature?.parameters?.map(
+				(param) => `${param.name}: ${param.type ? parseType(param.type) : 'unknown'}`,
+			);
+			return `(${params?.join(', ') ?? '...args: unknown[]'}) => ${
+				signature?.type ? parseType(signature.type) : 'unknown'
+			}`;
 		}
 
 		return '{}';
 	}
 
-	if (isLiteralType(t)) {
-		if (typeof t.value == 'string') {
-			return `'${t.value}'`;
+	if (isLiteralType(someType)) {
+		if (typeof someType.value === 'string') {
+			return `'${someType.value}'`;
 		}
+
 		// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-		return `${t.value}`;
+		return `${someType.value}`;
 	}
 
-	if (isTupleType(t)) {
-		return `[${(t.elements ?? []).map(parseType).join(', ')}]`;
+	if (isTupleType(someType)) {
+		return `[${(someType.elements ?? []).map(parseType).join(', ')}]`;
 	}
 
-	if (isTypeOperatorType(t)) {
-		return `${t.operator} ${parseType(t.target)}`;
+	if (isTypeOperatorType(someType)) {
+		return `${someType.operator} ${parseType(someType.target)}`;
 	}
 
-	if (isUnionType(t)) {
-		return t.types
+	if (isUnionType(someType)) {
+		return someType.types
 			.map(parseType)
-			.filter((s) => Boolean(s) && s.trim().length > 0)
+			.filter((currentType) => Boolean(currentType) && currentType.trim().length > 0)
 			.join(' | ');
 	}
 
-	if (isQueryType(t)) {
-		return `(typeof ${parseType(t.queryType)})`;
+	if (isQueryType(someType)) {
+		return `(typeof ${parseType(someType.queryType)})`;
 	}
 
-	if (isInferredType(t) || isIntrinsicType(t) || isUnknownType(t)) {
-		return t.name;
+	if (isInferredType(someType) || isIntrinsicType(someType) || isUnknownType(someType)) {
+		return someType.name;
 	}
 
 	return 'unknown';

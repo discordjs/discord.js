@@ -16,7 +16,6 @@ export function Class({ data }: { data: ApiClassJSON }) {
 			typeParams={data.typeParameters}
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
-			comment={data.comment}
 			methods={data.methods}
 			properties={data.properties}
 		>

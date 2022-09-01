@@ -1,15 +1,15 @@
 import {
-	APIApplicationCommandAttachmentOption,
-	APIApplicationCommandBooleanOption,
-	APIApplicationCommandChannelOption,
-	APIApplicationCommandIntegerOption,
-	APIApplicationCommandMentionableOption,
-	APIApplicationCommandNumberOption,
-	APIApplicationCommandRoleOption,
-	APIApplicationCommandStringOption,
-	APIApplicationCommandUserOption,
 	ApplicationCommandOptionType,
 	ChannelType,
+	type APIApplicationCommandAttachmentOption,
+	type APIApplicationCommandBooleanOption,
+	type APIApplicationCommandChannelOption,
+	type APIApplicationCommandIntegerOption,
+	type APIApplicationCommandMentionableOption,
+	type APIApplicationCommandNumberOption,
+	type APIApplicationCommandRoleOption,
+	type APIApplicationCommandStringOption,
+	type APIApplicationCommandUserOption,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -22,7 +22,7 @@ import {
 	SlashCommandRoleOption,
 	SlashCommandStringOption,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const getBooleanOption = () =>
 	new SlashCommandBooleanOption().setName('owo').setDescription('Testing 123').setRequired(true);

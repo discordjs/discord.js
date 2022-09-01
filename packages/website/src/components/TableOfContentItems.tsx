@@ -48,6 +48,7 @@ export function TableOfContentItems({
 					</Group>
 				</Box>
 			)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[properties, colorScheme],
 	);
 
@@ -73,7 +74,7 @@ export function TableOfContentItems({
 					</Box>
 				);
 			}),
-		[methods, colorScheme],
+		[methods, classes.link],
 	);
 
 	return (

@@ -18,10 +18,10 @@ import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
-	packageName: string;
 	data: {
 		versions: string[];
 	};
+	packageName: string;
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -48,7 +48,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				props: {
 					error: 'No tags',
 				},
-				revalidate: 3600,
+				revalidate: 3_600,
 			};
 		}
 
@@ -59,17 +59,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 					versions: data,
 				},
 			},
-			revalidate: 3600,
+			revalidate: 3_600,
 		};
-	} catch (e) {
-		const error = e as Error;
+	} catch (error_) {
+		const error = error_ as Error;
 		console.error(error);
 
 		return {
 			props: {
-				error: e,
+				error: error_,
 			},
-			revalidate: 3600,
+			revalidate: 3_600,
 		};
 	}
 };

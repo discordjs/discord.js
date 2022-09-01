@@ -6,7 +6,7 @@ import {
 	enableValidators,
 	disableValidators,
 	isValidationEnabled,
-} from '../src/index';
+} from '../src/index.js';
 
 describe('isEquatable', () => {
 	test('returns true if the object is equatable', () => {

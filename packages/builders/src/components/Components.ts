@@ -1,14 +1,14 @@
-import { APIMessageComponent, APIModalComponent, ComponentType } from 'discord-api-types/v10';
+import { ComponentType, type APIMessageComponent, type APIModalComponent } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
 	type AnyComponentBuilder,
 	type MessageComponentBuilder,
 	type ModalComponentBuilder,
-} from './ActionRow';
-import { ComponentBuilder } from './Component';
-import { ButtonBuilder } from './button/Button';
-import { SelectMenuBuilder } from './selectMenu/SelectMenu';
-import { TextInputBuilder } from './textInput/TextInput';
+} from './ActionRow.js';
+import { ComponentBuilder } from './Component.js';
+import { ButtonBuilder } from './button/Button.js';
+import { SelectMenuBuilder } from './selectMenu/SelectMenu.js';
+import { TextInputBuilder } from './textInput/TextInput.js';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder<AnyComponentBuilder>;
@@ -23,7 +23,8 @@ export interface MappedComponentTypes {
  * @param data - The api data to transform to a component class
  */
 export function createComponentBuilder<T extends keyof MappedComponentTypes>(
-	data: (APIMessageComponent | APIModalComponent) & { type: T },
+	// eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+	data: (APIModalComponent | APIMessageComponent) & { type: T },
 ): MappedComponentTypes[T];
 export function createComponentBuilder<C extends MessageComponentBuilder | ModalComponentBuilder>(data: C): C;
 export function createComponentBuilder(
@@ -43,7 +44,7 @@ export function createComponentBuilder(
 		case ComponentType.TextInput:
 			return new TextInputBuilder(data);
 		default:
-			// @ts-expect-error
+			// @ts-expect-error: This case can still occur if we get a newer unsupported component type
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}

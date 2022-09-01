@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { makeURLSearchParams } from '../src';
+import { makeURLSearchParams } from '../src/index.js';
 
 describe('makeURLSearchParams', () => {
 	test('GIVEN undefined THEN returns empty URLSearchParams', () => {
@@ -41,7 +41,7 @@ describe('makeURLSearchParams', () => {
 
 	describe('objects', () => {
 		test('GIVEN a record of date values THEN URLSearchParams with ISO string values', () => {
-			const params = makeURLSearchParams({ before: new Date('2022-04-04T15:43:05.108Z'), after: new Date(NaN) });
+			const params = makeURLSearchParams({ before: new Date('2022-04-04T15:43:05.108Z'), after: new Date(Number.NaN) });
 
 			expect([...params.entries()]).toEqual([['before', '2022-04-04T15:43:05.108Z']]);
 		});

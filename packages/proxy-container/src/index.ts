@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import process from 'node:process';
 import { proxyRequests } from '@discordjs/proxy';
 import { REST } from '@discordjs/rest';
 
@@ -11,5 +12,5 @@ const api = new REST({ rejectOnRateLimit: () => true, retries: 0 }).setToken(pro
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 const server = createServer(proxyRequests(api));
 
-const port = parseInt(process.env.PORT ?? '8080', 10);
+const port = Number.parseInt(process.env.PORT ?? '8080', 10);
 server.listen(port, () => console.log(`Listening on port ${port}`));

@@ -1,5 +1,7 @@
+/* eslint-disable unicorn/no-array-method-this-argument */
+/* eslint-disable id-length */
 import { describe, test, expect } from 'vitest';
-import { Collection } from '../src';
+import { Collection } from '../src/index.js';
 
 type TestCollection = Collection<string, number>;
 
@@ -131,9 +133,9 @@ describe('each() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.each());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.each(123), 123);
 	});
 
@@ -152,7 +154,7 @@ describe('each() tests', () => {
 describe('ensure() tests', () => {
 	test('throws if defaultValueGenerator is not a function', () => {
 		const coll = createTestCollection();
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.ensure('d', 'abc'), 'abc');
 	});
 
@@ -176,7 +178,7 @@ describe('equals() tests', () => {
 	const coll2 = createTestCollection();
 
 	test('returns false if no collection is passed', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expect(coll1.equals()).toBeFalsy();
 	});
 
@@ -198,9 +200,9 @@ describe('every() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.every());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.every(123), 123);
 	});
 
@@ -224,9 +226,9 @@ describe('filter() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.filter());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.filter(123), 123);
 	});
 
@@ -251,9 +253,9 @@ describe('find() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => createCollection().find());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => createCollection().find(123), 123);
 	});
 
@@ -275,9 +277,9 @@ describe('findKey() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.findKey());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.findKey(123), 123);
 	});
 
@@ -506,9 +508,9 @@ describe('map() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.map());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.map(123), 123);
 	});
 
@@ -529,9 +531,9 @@ describe('mapValues() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.mapValues());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.mapValues(123), 123);
 	});
 
@@ -606,9 +608,9 @@ describe('partition() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.partition());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.partition(123), 123);
 	});
 
@@ -690,9 +692,9 @@ describe('reduce() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.reduce());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.reduce(123), 123);
 	});
 
@@ -729,18 +731,14 @@ describe('some() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.some());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.some(123), 123);
 	});
 
 	test('returns false if no items pass the predicate', () => {
 		expect(coll.some((v) => v > 3)).toBeFalsy();
-	});
-
-	test('returns true if at least one item passes the predicate', () => {
-		expect(coll.some((x) => x === 2)).toBeTruthy();
 	});
 });
 
@@ -777,9 +775,9 @@ describe('sweep() test', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.sweep());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.sweep(123), 123);
 	});
 
@@ -804,9 +802,9 @@ describe('tap() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.tap());
-		// @ts-expect-error
+		// @ts-expect-error: invalid function
 		expectInvalidFunctionError(() => coll.tap(123), 123);
 	});
 

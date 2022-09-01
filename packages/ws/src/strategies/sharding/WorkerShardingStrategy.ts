@@ -3,11 +3,11 @@ import { join } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { IShardingStrategy } from './IShardingStrategy';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
+import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
-import { FetchingStrategyOptions, managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
+import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
+import type { IShardingStrategy } from './IShardingStrategy.js';
 
 export interface WorkerData extends FetchingStrategyOptions {
 	shardIds: number[];
@@ -21,10 +21,10 @@ export enum WorkerSendPayloadOp {
 }
 
 export type WorkerSendPayload =
+	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
-	| { op: WorkerSendPayloadOp.Destroy; shardId: number; options?: WebSocketShardDestroyOptions }
-	| { op: WorkerSendPayloadOp.Send; shardId: number; payload: GatewaySendPayload }
-	| { op: WorkerSendPayloadOp.SessionInfoResponse; nonce: number; session: SessionInfo | null };
+	| { op: WorkerSendPayloadOp.Destroy; options?: WebSocketShardDestroyOptions; shardId: number }
+	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number };
 
 export enum WorkerRecievePayloadOp {
 	Connected,
@@ -35,12 +35,12 @@ export enum WorkerRecievePayloadOp {
 }
 
 export type WorkerRecievePayload =
+	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
+	| { data: any; event: WebSocketShardEvents; op: WorkerRecievePayloadOp.Event; shardId: number }
+	| { nonce: number; op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
 	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
-	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
-	| { op: WorkerRecievePayloadOp.Event; shardId: number; event: WebSocketShardEvents; data: any }
-	| { op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number; nonce: number }
-	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; shardId: number; session: SessionInfo | null };
+	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number };
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -57,12 +57,15 @@ export interface WorkerShardingStrategyOptions {
  */
 export class WorkerShardingStrategy implements IShardingStrategy {
 	private readonly manager: WebSocketManager;
+
 	private readonly options: WorkerShardingStrategyOptions;
 
 	#workers: Worker[] = [];
+
 	readonly #workerByShardId = new Collection<number, Worker>();
 
 	private readonly connectPromises = new Collection<number, () => void>();
+
 	private readonly destroyPromises = new Collection<number, () => void>();
 
 	private readonly throttler: IdentifyThrottler;
@@ -98,7 +101,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 					throw err;
 				})
 				// eslint-disable-next-line @typescript-eslint/no-misused-promises
-				.on('message', (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
+				.on('message', async (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
 
 			this.#workers.push(worker);
 			for (const shardId of slice) {
@@ -123,7 +126,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				shardId,
 			};
 
+			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<void>((resolve) => this.connectPromises.set(shardId, resolve));
+			// eslint-disable-next-line unicorn/require-post-message-target-origin
 			worker.postMessage(payload);
 			promises.push(promise);
 		}
@@ -145,8 +150,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			};
 
 			promises.push(
-				new Promise<void>((resolve) => this.destroyPromises.set(shardId, resolve)).then(() => worker.terminate()),
+				// eslint-disable-next-line no-promise-executor-return, promise/prefer-await-to-then
+				new Promise<void>((resolve) => this.destroyPromises.set(shardId, resolve)).then(async () => worker.terminate()),
 			);
+			// eslint-disable-next-line unicorn/require-post-message-target-origin
 			worker.postMessage(payload);
 		}
 
@@ -170,10 +177,12 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			shardId,
 			payload: data,
 		};
+		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		worker.postMessage(payload);
 	}
 
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
+		// eslint-disable-next-line default-case
 		switch (payload.op) {
 			case WorkerRecievePayloadOp.Connected: {
 				const resolve = this.connectPromises.get(payload.shardId)!;
@@ -202,6 +211,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 					nonce: payload.nonce,
 					session,
 				};
+				// eslint-disable-next-line unicorn/require-post-message-target-origin
 				worker.postMessage(response);
 				break;
 			}

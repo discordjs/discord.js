@@ -1,14 +1,16 @@
+/* eslint-disable jsdoc/check-param-names */
+import { Buffer } from 'node:buffer';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import {
-	AudioReceiveStream,
-	AudioReceiveStreamOptions,
-	createDefaultAudioReceiveStreamOptions,
-} from './AudioReceiveStream';
-import { SSRCMap } from './SSRCMap';
-import { SpeakingMap } from './SpeakingMap';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
+import {
+	AudioReceiveStream,
+	createDefaultAudioReceiveStreamOptions,
+	type AudioReceiveStreamOptions,
+} from './AudioReceiveStream';
+import { SSRCMap } from './SSRCMap';
+import { SpeakingMap } from './SpeakingMap';
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -59,7 +61,6 @@ export class VoiceReceiver {
 	 * Called when a packet is received on the attached connection's WebSocket.
 	 *
 	 * @param packet - The received packet
-	 *
 	 * @internal
 	 */
 	public onWsPacket(packet: any) {
@@ -112,6 +113,7 @@ export class VoiceReceiver {
 		// Open packet
 		const decrypted = methods.open(buffer.slice(12, end), nonce, secretKey);
 		if (!decrypted) return;
+		// eslint-disable-next-line consistent-return
 		return Buffer.from(decrypted);
 	}
 
@@ -122,7 +124,6 @@ export class VoiceReceiver {
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
-	 *
 	 * @returns The parsed Opus packet
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
@@ -135,6 +136,7 @@ export class VoiceReceiver {
 			packet = packet.subarray(4 + 4 * headerExtensionLength);
 		}
 
+		// eslint-disable-next-line consistent-return
 		return packet;
 	}
 
@@ -142,7 +144,6 @@ export class VoiceReceiver {
 	 * Called when the UDP socket of the attached connection receives a message.
 	 *
 	 * @param msg - The received message
-	 *
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
@@ -176,7 +177,6 @@ export class VoiceReceiver {
 	 * Creates a subscription for the given user id.
 	 *
 	 * @param target - The id of the user to subscribe to
-	 *
 	 * @returns A readable stream of Opus packets received from the target
 	 */
 	public subscribe(userId: string, options?: Partial<AudioReceiveStreamOptions>) {

@@ -1,12 +1,12 @@
 import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { Event } from '../interfaces/index.js';
+import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 import { DocumentedVarType } from './var-type.js';
-import type { Event } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
 
-export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflection> {
+export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Event> {
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
@@ -19,45 +19,47 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 			}
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@see')
-						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+						.filter((block) => block.tag === '@see')
+						.map((block) => block.content.find((contentText) => contentText.kind === 'text')?.text.trim())
 				: undefined;
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const examples = signature.comment?.blockTags?.filter((t) => t.tag === '@example').length
+			const examples = signature.comment?.blockTags?.filter((block) => block.tag === '@example').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@example')
-						.map((t) => t.content.reduce((prev, curr) => (prev += curr.text), '').trim())
+						.filter((block) => block.tag === '@example')
+						// eslint-disable-next-line no-param-reassign
+						.map((block) => block.content.reduce((prev, curr) => (prev += curr.text), '').trim())
 				: undefined;
 
 			return {
-				// @ts-expect-error
+				// @ts-expect-error: No type for params
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				name: signature.parameters?.[0]?.type?.value,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
 				examples,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
-							.find((t) => t.tag === '@deprecated')
+							.find((block) => block.tag === '@deprecated')
+							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							.trim() ?? true
 					: undefined,
-				// @ts-expect-error
+				// @ts-expect-error: Parameters type is not available
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters
 							?.slice(1)
-							.map((p) => new DocumentedParam(p, this.config).serialize())
+							.map((param) => new DocumentedParam(param, this.config).serialize())
 					: undefined,
 				returns: signature.type
 					? [
@@ -67,7 +69,8 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 									description:
 										signature.comment?.blockTags
 											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-											?.find((t) => t.tag === '@returns')
+											?.find((block) => block.tag === '@returns')
+											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
 											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 											.trim() || undefined,
@@ -79,7 +82,8 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 				returnsDescription:
 					signature.comment?.blockTags
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						?.find((t) => t.tag === '@returns')
+						?.find((block) => block.tag === '@returns')
+						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() || undefined,
@@ -93,7 +97,9 @@ export class DocumentedEvent extends DocumentedItem<Event | DeclarationReflectio
 			description: data.description,
 			see: data.see,
 			deprecated: data.deprecated,
-			params: data.params?.length ? data.params.map((p) => new DocumentedParam(p, this.config).serialize()) : undefined,
+			params: data.params?.length
+				? data.params.map((param) => new DocumentedParam(param, this.config).serialize())
+				: undefined,
 			meta: new DocumentedItemMeta(data.meta, this.config).serialize(),
 		};
 	}

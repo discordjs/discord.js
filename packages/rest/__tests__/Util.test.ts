@@ -1,6 +1,7 @@
-import { Blob } from 'node:buffer';
+import { Blob, Buffer } from 'node:buffer';
+import { URLSearchParams } from 'node:url';
 import { test, expect } from 'vitest';
-import { resolveBody, parseHeader } from '../src/lib/utils/utils';
+import { resolveBody, parseHeader } from '../src/lib/utils/utils.js';
 
 test('GIVEN string parseHeader returns string', () => {
 	const header = 'application/json';
@@ -37,7 +38,7 @@ test('resolveBody', async () => {
 
 	const iterable: Iterable<Uint8Array> = {
 		*[Symbol.iterator]() {
-			for (let i = 0; i < 3; i++) {
+			for (let index = 0; index < 3; index++) {
 				yield new Uint8Array([1, 2, 3]);
 			}
 		},
@@ -46,15 +47,15 @@ test('resolveBody', async () => {
 
 	const asyncIterable: AsyncIterable<Uint8Array> = {
 		[Symbol.asyncIterator]() {
-			let i = 0;
+			let index = 0;
 			return {
-				next() {
-					if (i < 3) {
-						i++;
-						return Promise.resolve({ value: new Uint8Array([1, 2, 3]), done: false });
+				async next() {
+					if (index < 3) {
+						index++;
+						return { value: new Uint8Array([1, 2, 3]), done: false };
 					}
 
-					return Promise.resolve({ value: undefined, done: true });
+					return { value: undefined, done: true };
 				},
 			};
 		},

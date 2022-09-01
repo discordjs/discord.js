@@ -40,11 +40,11 @@ export function Section({
 	defaultClosed = false,
 	children,
 }: PropsWithChildren<{
-	title: string;
+	defaultClosed?: boolean;
+	dense?: boolean;
 	icon?: JSX.Element;
 	padded?: boolean;
-	dense?: boolean;
-	defaultClosed?: boolean;
+	title: string;
 }>) {
 	const [opened, setOpened] = useState(!defaultClosed);
 	const { colorScheme } = useMantineColorScheme();
@@ -57,7 +57,7 @@ export function Section({
 
 	return (
 		<Box sx={{ wordBreak: 'break-all' }}>
-			<UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
+			<UnstyledButton className={classes.control} onClick={() => setOpened((isOpen) => !isOpen)}>
 				<Group position="apart">
 					<Group>
 						{icon ? (

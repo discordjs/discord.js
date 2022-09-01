@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import EventEmitter, { once } from 'node:events';
-import { SSRCMap, VoiceUserData } from '../src/receive/SSRCMap';
+import type EventEmitter from 'node:events';
+import { once } from 'node:events';
+import process from 'node:process';
+import { SSRCMap, type VoiceUserData } from '../src/receive/SSRCMap';
 
-function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
+async function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
 	return new Promise((resolve, reject) => {
 		target.on(event, resolve);
 		setTimeout(() => reject(new Error('Time up')), after);

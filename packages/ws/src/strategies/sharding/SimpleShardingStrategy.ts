@@ -1,17 +1,18 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { IShardingStrategy } from './IShardingStrategy';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler';
+import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { WebSocketManager } from '../../ws/WebSocketManager';
-import { WebSocketShard, WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
-import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy';
-import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy';
+import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
+import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
+import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';
+import type { IShardingStrategy } from './IShardingStrategy.js';
 
 /**
  * Simple strategy that just spawns shards in the current process
  */
 export class SimpleShardingStrategy implements IShardingStrategy {
 	private readonly manager: WebSocketManager;
+
 	private readonly shards = new Collection<number, WebSocketShard>();
 
 	private readonly throttler: IdentifyThrottler;
@@ -30,9 +31,10 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
 			for (const event of Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error
+				// @ts-expect-error: Intentional
 				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
 			}
+
 			this.shards.set(shardId, shard);
 		}
 	}
@@ -68,7 +70,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	/**
 	 * {@inheritDoc IShardingStrategy.send}
 	 */
-	public send(shardId: number, payload: GatewaySendPayload) {
+	public async send(shardId: number, payload: GatewaySendPayload) {
 		const shard = this.shards.get(shardId);
 		if (!shard) throw new Error(`Shard ${shardId} not found`);
 		return shard.send(payload);

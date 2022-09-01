@@ -1,12 +1,12 @@
 import type { DeclarationReflection } from 'typedoc';
+import type { Member } from '../interfaces/index.js';
+import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 import { DocumentedVarType } from './var-type.js';
-import type { Member } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
 
-export class DocumentedMember extends DocumentedItem<Member | DeclarationReflection> {
+export class DocumentedMember extends DocumentedItem<DeclarationReflection | Member> {
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
@@ -19,31 +19,32 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 			}
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@see')
-						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+						.filter((block) => block.tag === '@see')
+						.map((block) => block.content.find((contentText) => contentText.kind === 'text')?.text.trim())
 				: undefined;
 
 			const base = {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
 				readonly: data.flags.isReadonly,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
-				abstract: signature.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
+				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
-							.find((t) => t.tag === '@deprecated')
+							.find((block) => block.tag === '@deprecated')
+							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							.trim() ?? true
 					: undefined,
@@ -51,7 +52,8 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 					(data.defaultValue === '...' ? undefined : data.defaultValue) ??
 					(signature.comment?.blockTags
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						?.find((t) => t.tag === '@default')
+						?.find((block) => block.tag === '@default')
+						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() ||
@@ -75,30 +77,31 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 				}
 
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				const see = getter.comment?.blockTags?.filter((t) => t.tag === '@see').length
+				const see = getter.comment?.blockTags?.filter((block) => block.tag === '@see').length
 					? getter.comment.blockTags
-							.filter((t) => t.tag === '@see')
-							.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+							.filter((block) => block.tag === '@see')
+							.map((block) => block.content.find((contentText) => contentText.kind === 'text')?.text.trim())
 					: undefined;
 
 				return {
 					...base,
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 					description: getter.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 					see,
 					access:
 						data.flags.isPrivate ||
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						getter.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+						getter.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 							? 'private'
 							: undefined,
 					readonly: base.readonly || !hasSetter,
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
-					abstract: getter.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
+					abstract: getter.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					deprecated: getter.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+					deprecated: getter.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 						? getter.comment.blockTags
-								.find((t) => t.tag === '@deprecated')
+								.find((block) => block.tag === '@deprecated')
+								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
 								.trim() ?? true
 						: undefined,
@@ -106,7 +109,8 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 						base.default ??
 						(getter.comment?.blockTags
 							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							?.find((t) => t.tag === '@default')
+							?.find((block) => block.tag === '@default')
+							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 							.trim() ||
@@ -132,7 +136,7 @@ export class DocumentedMember extends DocumentedItem<Member | DeclarationReflect
 			default: data.default,
 			type: new DocumentedVarType(data.type, this.config).serialize(),
 			props: data.properties?.length
-				? data.properties.map((p) => new DocumentedParam(p, this.config).serialize())
+				? data.properties.map((prop) => new DocumentedParam(prop, this.config).serialize())
 				: undefined,
 			meta: new DocumentedItemMeta(data.meta, this.config).serialize(),
 		};

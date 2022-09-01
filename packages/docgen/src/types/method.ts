@@ -1,12 +1,12 @@
 import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { Method } from '../interfaces/index.js';
+import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
 import { DocumentedVarType } from './var-type.js';
-import type { Method } from '../interfaces/index.js';
-import { parseType } from '../util/parseType.js';
 
-export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflection> {
+export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Method> {
 	public override serializer() {
 		if (this.config.typescript) {
 			const data = this.data as DeclarationReflection;
@@ -19,46 +19,50 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 			}
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@see')
-						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+						.filter((block) => block.tag === '@see')
+						.map((block) => block.content.find((innerContent) => innerContent.kind === 'text')?.text.trim())
 				: undefined;
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const examples = signature.comment?.blockTags?.filter((t) => t.tag === '@example').length
+			const examples = signature.comment?.blockTags?.filter((block) => block.tag === '@example').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@example')
-						.map((t) => t.content.reduce((prev, curr) => (prev += curr.text), '').trim())
+						.filter((block) => block.tag === '@example')
+						// eslint-disable-next-line no-param-reassign
+						.map((block) => block.content.reduce((prev, curr) => (prev += curr.text), '').trim())
 				: undefined;
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
 				examples,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
-				abstract: signature.comment?.blockTags?.some((t) => t.tag === '@abstract') || undefined,
+				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-				deprecated: signature.comment?.blockTags?.some((t) => t.tag === '@deprecated')
+				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
-							.find((t) => t.tag === '@deprecated')
+							.find((block) => block.tag === '@deprecated')
+							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							.trim() ?? true
 					: undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
-				// @ts-expect-error
+				// @ts-expect-error: Typescript doesn't know that this is a SignatureReflection
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
+					? (signature as SignatureReflection).parameters?.map((param) =>
+							new DocumentedParam(param, this.config).serialize(),
+					  )
 					: undefined,
 				returns: signature.type
 					? [
@@ -68,7 +72,8 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 									description:
 										signature.comment?.blockTags
 											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-											?.find((t) => t.tag === '@returns')
+											?.find((block) => block.tag === '@returns')
+											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
 											// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 											.trim() || undefined,
@@ -80,7 +85,8 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 				returnsDescription:
 					signature.comment?.blockTags
 						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						?.find((t) => t.tag === '@returns')
+						?.find((block) => block.tag === '@returns')
+						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() || undefined,
@@ -103,13 +109,15 @@ export class DocumentedMethod extends DocumentedItem<Method | DeclarationReflect
 			deprecated: data.deprecated,
 			emits: data.fires,
 			throws: data.exceptions,
-			params: data.params?.length ? data.params.map((p) => new DocumentedParam(p, this.config).serialize()) : undefined,
+			params: data.params?.length
+				? data.params.map((param) => new DocumentedParam(param, this.config).serialize())
+				: undefined,
 			async: data.async,
 			generator: data.generator,
 			returns: data.returns?.length
-				? data.returns.map((p) =>
+				? data.returns.map((param) =>
 						new DocumentedVarType(
-							{ names: p.type.names, description: p.description, nullable: p.nullable },
+							{ names: param.type.names, description: param.description, nullable: param.nullable },
 							this.config,
 						).serialize(),
 				  )

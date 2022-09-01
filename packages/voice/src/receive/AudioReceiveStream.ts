@@ -1,4 +1,5 @@
-import { Readable, ReadableOptions } from 'node:stream';
+import type { Buffer } from 'node:buffer';
+import { Readable, type ReadableOptions } from 'node:stream';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
 /**
@@ -23,11 +24,11 @@ export enum EndBehaviorType {
 
 export type EndBehavior =
 	| {
-			behavior: EndBehaviorType.Manual;
+			behavior: EndBehaviorType.AfterInactivity | EndBehaviorType.AfterSilence;
+			duration: number;
 	  }
 	| {
-			behavior: EndBehaviorType.AfterSilence | EndBehaviorType.AfterInactivity;
-			duration: number;
+			behavior: EndBehaviorType.Manual;
 	  };
 
 export interface AudioReceiveStreamOptions extends ReadableOptions {
@@ -64,14 +65,13 @@ export class AudioReceiveStream extends Readable {
 	}
 
 	public override push(buffer: Buffer | null) {
-		if (buffer) {
-			if (
-				this.end.behavior === EndBehaviorType.AfterInactivity ||
+		if (
+			buffer &&
+			(this.end.behavior === EndBehaviorType.AfterInactivity ||
 				(this.end.behavior === EndBehaviorType.AfterSilence &&
-					(buffer.compare(SILENCE_FRAME) !== 0 || typeof this.endTimeout === 'undefined'))
-			) {
-				this.renewEndTimeout(this.end);
-			}
+					(buffer.compare(SILENCE_FRAME) !== 0 || typeof this.endTimeout === 'undefined')))
+		) {
+			this.renewEndTimeout(this.end);
 		}
 
 		return super.push(buffer);
@@ -81,6 +81,7 @@ export class AudioReceiveStream extends Readable {
 		if (this.endTimeout) {
 			clearTimeout(this.endTimeout);
 		}
+
 		this.endTimeout = setTimeout(() => this.push(null), end.duration);
 	}
 

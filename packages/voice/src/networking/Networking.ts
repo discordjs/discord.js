@@ -1,15 +1,19 @@
+/* eslint-disable jsdoc/check-param-names */
+/* eslint-disable id-length */
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/method-signature-style */
+import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { CloseEvent } from 'ws';
-import { VoiceUDPSocket } from './VoiceUDPSocket';
-import { VoiceWebSocket } from './VoiceWebSocket';
 import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
+import { VoiceUDPSocket } from './VoiceUDPSocket';
+import { VoiceWebSocket } from './VoiceWebSocket';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
-const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
+const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
 export const SUPPORTED_ENCRYPTION_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
@@ -35,8 +39,8 @@ export enum NetworkingStatusCode {
  */
 export interface NetworkingOpeningWsState {
 	code: NetworkingStatusCode.OpeningWs;
-	ws: VoiceWebSocket;
 	connectionOptions: ConnectionOptions;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -44,8 +48,8 @@ export interface NetworkingOpeningWsState {
  */
 export interface NetworkingIdentifyingState {
 	code: NetworkingStatusCode.Identifying;
-	ws: VoiceWebSocket;
 	connectionOptions: ConnectionOptions;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -54,10 +58,10 @@ export interface NetworkingIdentifyingState {
  */
 export interface NetworkingUdpHandshakingState {
 	code: NetworkingStatusCode.UdpHandshaking;
-	ws: VoiceWebSocket;
-	udp: VoiceUDPSocket;
-	connectionOptions: ConnectionOptions;
 	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionOptions: ConnectionOptions;
+	udp: VoiceUDPSocket;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -65,10 +69,10 @@ export interface NetworkingUdpHandshakingState {
  */
 export interface NetworkingSelectingProtocolState {
 	code: NetworkingStatusCode.SelectingProtocol;
-	ws: VoiceWebSocket;
-	udp: VoiceUDPSocket;
-	connectionOptions: ConnectionOptions;
 	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionOptions: ConnectionOptions;
+	udp: VoiceUDPSocket;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -77,11 +81,11 @@ export interface NetworkingSelectingProtocolState {
  */
 export interface NetworkingReadyState {
 	code: NetworkingStatusCode.Ready;
-	ws: VoiceWebSocket;
-	udp: VoiceUDPSocket;
-	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
+	connectionOptions: ConnectionOptions;
 	preparedPacket?: Buffer | undefined;
+	udp: VoiceUDPSocket;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -90,11 +94,11 @@ export interface NetworkingReadyState {
  */
 export interface NetworkingResumingState {
 	code: NetworkingStatusCode.Resuming;
-	ws: VoiceWebSocket;
-	udp: VoiceUDPSocket;
-	connectionOptions: ConnectionOptions;
 	connectionData: ConnectionData;
+	connectionOptions: ConnectionOptions;
 	preparedPacket?: Buffer | undefined;
+	udp: VoiceUDPSocket;
+	ws: VoiceWebSocket;
 }
 
 /**
@@ -109,13 +113,13 @@ export interface NetworkingClosedState {
  * The various states that a networking instance can be in.
  */
 export type NetworkingState =
-	| NetworkingOpeningWsState
+	| NetworkingClosedState
 	| NetworkingIdentifyingState
-	| NetworkingUdpHandshakingState
-	| NetworkingSelectingProtocolState
+	| NetworkingOpeningWsState
 	| NetworkingReadyState
 	| NetworkingResumingState
-	| NetworkingClosedState;
+	| NetworkingSelectingProtocolState
+	| NetworkingUdpHandshakingState;
 
 /**
  * Details required to connect to the Discord voice gateway. These details
@@ -123,11 +127,11 @@ export type NetworkingState =
  * and VOICE_STATE_UPDATE packets.
  */
 interface ConnectionOptions {
+	endpoint: string;
 	serverId: string;
-	userId: string;
 	sessionId: string;
 	token: string;
-	endpoint: string;
+	userId: string;
 }
 
 /**
@@ -135,15 +139,15 @@ interface ConnectionOptions {
  * the connection, timing information for playback of streams.
  */
 export interface ConnectionData {
-	ssrc: number;
 	encryptionMode: string;
-	secretKey: Uint8Array;
-	sequence: number;
-	timestamp: number;
-	packetsPlayed: number;
 	nonce: number;
 	nonceBuffer: Buffer;
+	packetsPlayed: number;
+	secretKey: Uint8Array;
+	sequence: number;
 	speaking: boolean;
+	ssrc: number;
+	timestamp: number;
 }
 
 /**
@@ -186,16 +190,17 @@ function chooseEncryptionMode(options: string[]): string {
 	if (!option) {
 		throw new Error(`No compatible encryption modes. Available include: ${options.join(', ')}`);
 	}
+
 	return option;
 }
 
 /**
  * Returns a random number that is in the range of n bits.
  *
- * @param n - The number of bits
+ * @param numberOfBits - The number of bits
  */
-function randomNBit(n: number) {
-	return Math.floor(Math.random() * 2 ** n);
+function randomNBit(numberOfBits: number) {
+	return Math.floor(Math.random() * 2 ** numberOfBits);
 }
 
 /**
@@ -207,7 +212,7 @@ export class Networking extends EventEmitter {
 	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
-	private readonly debug: null | ((message: string) => void);
+	private readonly debug: ((message: string) => void) | null;
 
 	/**
 	 * Creates a new Networking instance.
@@ -287,7 +292,6 @@ export class Networking extends EventEmitter {
 	 * Creates a new WebSocket to a Discord Voice gateway.
 	 *
 	 * @param endpoint - The endpoint to connect to
-	 * @param debug - Whether to enable debug logging
 	 */
 	private createWebSocket(endpoint: string) {
 		const ws = new VoiceWebSocket(`wss://${endpoint}?v=4`, Boolean(this.debug));
@@ -351,7 +355,7 @@ export class Networking extends EventEmitter {
 	 * @param code - The close code
 	 */
 	private onWsClose({ code }: CloseEvent) {
-		const canResume = code === 4015 || code < 4000;
+		const canResume = code === 4_015 || code < 4_000;
 		if (canResume && this.state.code === NetworkingStatusCode.Ready) {
 			this.state = {
 				...this.state,
@@ -400,6 +404,7 @@ export class Networking extends EventEmitter {
 			udp
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				.performIPDiscovery(ssrc)
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.then((localConfig) => {
 					if (this.state.code !== NetworkingStatusCode.UdpHandshaking) return;
 					this.state.ws.sendPacket({
@@ -419,6 +424,7 @@ export class Networking extends EventEmitter {
 						code: NetworkingStatusCode.SelectingProtocol,
 					};
 				})
+				// eslint-disable-next-line promise/prefer-await-to-then, promise/prefer-await-to-callbacks
 				.catch((error: Error) => this.emit('error', error));
 
 			this.state = {
@@ -489,15 +495,14 @@ export class Networking extends EventEmitter {
 	 * @remarks
 	 * Calling this method while there is already a prepared audio packet that has not yet been dispatched
 	 * will overwrite the existing audio packet. This should be avoided.
-	 *
 	 * @param opusPacket - The Opus packet to encrypt
-	 *
 	 * @returns The audio packet that was prepared
 	 */
 	public prepareAudioPacket(opusPacket: Buffer) {
 		const state = this.state;
 		if (state.code !== NetworkingStatusCode.Ready) return;
 		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData);
+		// eslint-disable-next-line consistent-return
 		return state.preparedPacket;
 	}
 
@@ -513,6 +518,7 @@ export class Networking extends EventEmitter {
 			state.preparedPacket = undefined;
 			return true;
 		}
+
 		return false;
 	}
 
@@ -598,6 +604,7 @@ export class Networking extends EventEmitter {
 			const random = secretbox.methods.random(24, connectionData.nonceBuffer);
 			return [secretbox.methods.close(opusPacket, random, secretKey), random];
 		}
+
 		return [secretbox.methods.close(opusPacket, nonce, secretKey)];
 	}
 }

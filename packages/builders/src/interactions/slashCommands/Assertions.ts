@@ -1,9 +1,9 @@
 import { s } from '@sapphire/shapeshift';
-import { type APIApplicationCommandOptionChoice, Locale, LocalizationMap } from 'discord-api-types/v10';
+import { Locale, type APIApplicationCommandOptionChoice, type LocalizationMap } from 'discord-api-types/v10';
+import { isValidationEnabled } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase';
-import { isValidationEnabled } from '../../util/validation';
 
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)

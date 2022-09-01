@@ -37,15 +37,15 @@ export function CodeListing({
 	deprecation,
 	inheritanceData,
 }: PropsWithChildren<{
-	name: string;
-	separator?: CodeListingSeparatorType;
-	typeTokens: TokenDocumentation[];
-	readonly?: boolean;
-	optional?: boolean;
-	summary?: ApiItemJSON['summary'];
 	comment?: AnyDocNodeJSON | null;
 	deprecation?: AnyDocNodeJSON | null;
 	inheritanceData?: InheritanceData | null;
+	name: string;
+	optional?: boolean;
+	readonly?: boolean;
+	separator?: CodeListingSeparatorType;
+	summary?: ApiItemJSON['summary'];
+	typeTokens: TokenDocumentation[];
 }>) {
 	const { classes } = useStyles();
 	const matches = useMediaQuery('(max-width: 768px)');

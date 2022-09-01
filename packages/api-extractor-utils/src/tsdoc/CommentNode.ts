@@ -12,14 +12,14 @@ export interface DocNodeJSON {
 }
 
 export type AnyDocNodeJSON =
-	| DocNodeJSON
-	| DocPlainTextJSON
-	| DocNodeContainerJSON
-	| DocLinkTagJSON
-	| DocFencedCodeJSON
 	| DocBlockJSON
+	| DocCodeSpanJSON
 	| DocCommentJSON
-	| DocCodeSpanJSON;
+	| DocFencedCodeJSON
+	| DocLinkTagJSON
+	| DocNodeContainerJSON
+	| DocNodeJSON
+	| DocPlainTextJSON;
 
 export function node(node: DocNode): DocNodeJSON {
 	return {
