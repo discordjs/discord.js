@@ -1,5 +1,5 @@
-import type { Edge } from '../src/audio/TransformerGraph.js';
-import { findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph.js';
+import type { Edge } from '../src/audio/TransformerGraph';
+import { findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
 
 const noConstraint = () => true;
 

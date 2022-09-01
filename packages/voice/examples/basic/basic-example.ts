@@ -1,4 +1,4 @@
-import { Client, VoiceBasedChannel, VoiceChannel } from 'discord.js';
+import { Client, VoiceBasedChannel, VoiceChannel } from 'discord';
 import {
 	joinVoiceChannel,
 	createAudioPlayer,

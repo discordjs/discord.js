@@ -6,10 +6,10 @@ import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { CloseEvent } from 'ws';
-import * as secretbox from '../util/Secretbox.js';
-import { noop } from '../util/util.js';
-import { VoiceUDPSocket } from './VoiceUDPSocket.js';
-import { VoiceWebSocket } from './VoiceWebSocket.js';
+import * as secretbox from '../util/Secretbox';
+import { noop } from '../util/util';
+import { VoiceUDPSocket } from './VoiceUDPSocket';
+import { VoiceWebSocket } from './VoiceWebSocket';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;

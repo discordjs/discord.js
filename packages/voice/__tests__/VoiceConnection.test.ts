@@ -5,21 +5,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/dot-notation */
 import EventEmitter from 'node:events';
-import * as _DataStore from '../src/DataStore.js';
+import * as _DataStore from '../src/DataStore';
 import type {
 	VoiceConnectionConnectingState,
 	VoiceConnectionReadyState,
 	VoiceConnectionSignallingState,
-} from '../src/VoiceConnection.js';
+} from '../src/VoiceConnection';
 import {
 	createVoiceConnection,
 	VoiceConnection,
 	VoiceConnectionDisconnectReason,
 	VoiceConnectionStatus,
-} from '../src/VoiceConnection.js';
-import * as _AudioPlayer from '../src/audio/AudioPlayer.js';
-import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription.js';
-import * as _Networking from '../src/networking/Networking.js';
+} from '../src/VoiceConnection';
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
+import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
+import * as _Networking from '../src/networking/Networking';
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 
 jest.mock('../src/audio/AudioPlayer');

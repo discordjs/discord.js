@@ -9,12 +9,12 @@ export {
 	type AudioPlayerPausedState,
 	type AudioPlayerPlayingState,
 	type CreateAudioPlayerOptions,
-} from './AudioPlayer.js';
+} from './AudioPlayer';
 
-export { AudioPlayerError } from './AudioPlayerError.js';
+export { AudioPlayerError } from './AudioPlayerError';
 
-export { AudioResource, type CreateAudioResourceOptions, createAudioResource } from './AudioResource.js';
+export { AudioResource, type CreateAudioResourceOptions, createAudioResource } from './AudioResource';
 
-export { PlayerSubscription } from './PlayerSubscription.js';
+export { PlayerSubscription } from './PlayerSubscription';
 
-export { StreamType } from './TransformerGraph.js';
+export { StreamType } from './TransformerGraph';

@@ -1,7 +1,7 @@
-export * from './joinVoiceChannel.js';
-export * from './audio/index.js';
-export * from './util/index.js';
-export * from './receive/index.js';
+export * from './joinVoiceChannel';
+export * from './audio/index';
+export * from './util/index';
+export * from './receive/index';
 
 export {
 	VoiceConnection,
@@ -16,6 +16,6 @@ export {
 	VoiceConnectionDisconnectReason,
 	type VoiceConnectionReadyState,
 	type VoiceConnectionSignallingState,
-} from './VoiceConnection.js';
+} from './VoiceConnection';
 
-export { type JoinConfig, getVoiceConnection, getVoiceConnections, getGroups } from './DataStore.js';
+export { type JoinConfig, getVoiceConnection, getVoiceConnections, getGroups } from './DataStore';

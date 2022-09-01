@@ -1,4 +1,4 @@
-import { abortAfter } from '../src/util/abortAfter.js';
+import { abortAfter } from '../src/util/abortAfter';
 
 jest.useFakeTimers();
 

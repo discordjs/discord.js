@@ -2,7 +2,7 @@ import type EventEmitter from 'node:events';
 import { once } from 'node:events';
 import type { VoiceConnection, VoiceConnectionStatus } from '../VoiceConnection';
 import type { AudioPlayer, AudioPlayerStatus } from '../audio/AudioPlayer';
-import { abortAfter } from './abortAfter.js';
+import { abortAfter } from './abortAfter';
 
 /**
  * Allows a voice connection a specified amount of time to enter a given state, otherwise rejects with an error.

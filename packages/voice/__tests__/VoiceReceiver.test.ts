@@ -5,10 +5,10 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp.js';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection.js';
-import { VoiceReceiver } from '../src/receive/VoiceReceiver.js';
-import { methods } from '../src/util/Secretbox.js';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
+import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { VoiceReceiver } from '../src/receive/VoiceReceiver';
+import { methods } from '../src/util/Secretbox';
 
 jest.mock('../src/VoiceConnection');
 jest.mock('../src/receive/SSRCMap');

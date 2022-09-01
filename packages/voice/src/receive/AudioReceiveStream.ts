@@ -2,7 +2,7 @@ import type { Buffer } from 'node:buffer';
 import type { ReadableOptions } from 'node:stream';
 import { Readable } from 'node:stream';
 import { setTimeout, clearTimeout } from 'node:timers';
-import { SILENCE_FRAME } from '../audio/AudioPlayer.js';
+import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
 /**
  * The different behaviors an audio receive stream can have for deciding when to end.

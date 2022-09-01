@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import * as VoiceConnection from '../src/VoiceConnection.js';
-import { joinVoiceChannel } from '../src/joinVoiceChannel.js';
+import * as VoiceConnection from '../src/VoiceConnection';
+import { joinVoiceChannel } from '../src/joinVoiceChannel';
 
 const adapterCreator = () => ({ destroy: jest.fn(), send: jest.fn() } as any);
 const createVoiceConnection = jest.spyOn(VoiceConnection, 'createVoiceConnection');

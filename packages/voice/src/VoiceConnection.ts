@@ -11,15 +11,15 @@ import {
 	createJoinVoiceChannelPayload,
 	trackVoiceConnection,
 	untrackVoiceConnection,
-} from './DataStore.js';
+} from './DataStore';
 import type { AudioPlayer } from './audio/AudioPlayer';
 import type { PlayerSubscription } from './audio/PlayerSubscription';
 import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
 import type { NetworkingState } from './networking/Networking';
-import { Networking, NetworkingStatusCode } from './networking/Networking.js';
-import { VoiceReceiver } from './receive/index.js';
+import { Networking, NetworkingStatusCode } from './networking/Networking';
+import { VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
-import { noop } from './util/util.js';
+import { noop } from './util/util';
 import type { CreateVoiceConnectionOptions } from '.';
 
 /**

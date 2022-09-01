@@ -3,11 +3,11 @@ import { Buffer } from 'node:buffer';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
-import { methods } from '../util/Secretbox.js';
+import { methods } from '../util/Secretbox';
 import type { AudioReceiveStreamOptions } from './AudioReceiveStream';
-import { AudioReceiveStream, createDefaultAudioReceiveStreamOptions } from './AudioReceiveStream.js';
-import { SSRCMap } from './SSRCMap.js';
-import { SpeakingMap } from './SpeakingMap.js';
+import { AudioReceiveStream, createDefaultAudioReceiveStreamOptions } from './AudioReceiveStream';
+import { SSRCMap } from './SSRCMap';
+import { SpeakingMap } from './SpeakingMap';
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other

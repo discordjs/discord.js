@@ -2,13 +2,13 @@
 import { Buffer } from 'node:buffer';
 import EventEmitter from 'node:events';
 import { setImmediate } from 'node:timers';
-import { addAudioPlayer, deleteAudioPlayer } from '../DataStore.js';
-import type { VoiceConnection } from '../VoiceConnection.js';
-import { VoiceConnectionStatus } from '../VoiceConnection.js';
-import { noop } from '../util/util.js';
-import { AudioPlayerError } from './AudioPlayerError.js';
-import type { AudioResource } from './AudioResource.js';
-import { PlayerSubscription } from './PlayerSubscription.js';
+import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
+import type { VoiceConnection } from '../VoiceConnection';
+import { VoiceConnectionStatus } from '../VoiceConnection';
+import { noop } from '../util/util';
+import { AudioPlayerError } from './AudioPlayerError';
+import type { AudioResource } from './AudioResource';
+import { PlayerSubscription } from './PlayerSubscription';
 
 // The Opus "silent" frame
 export const SILENCE_FRAME = Buffer.from([0xf8, 0xff, 0xfe]);

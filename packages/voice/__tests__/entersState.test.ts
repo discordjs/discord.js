@@ -3,8 +3,8 @@
 import EventEmitter from 'node:events';
 import process from 'node:process';
 import type { VoiceConnection } from '../src/VoiceConnection';
-import { VoiceConnectionStatus } from '../src/VoiceConnection.js';
-import { entersState } from '../src/util/entersState.js';
+import { VoiceConnectionStatus } from '../src/VoiceConnection';
+import { entersState } from '../src/util/entersState';
 
 function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 	const vc = new EventEmitter() as any;

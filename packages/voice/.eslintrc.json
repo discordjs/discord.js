@@ -2,7 +2,8 @@
 	"extends": "../../.eslintrc.json",
 	"plugins": ["eslint-plugin-tsdoc"],
 	"rules": {
-		"tsdoc/syntax": "warn"
+		"tsdoc/syntax": "warn",
+		"import/extensions": "off"
 	},
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json",

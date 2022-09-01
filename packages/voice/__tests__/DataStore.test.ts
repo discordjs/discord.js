@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { setImmediate } from 'node:timers';
 import { GatewayOpcodes } from 'discord-api-types/v10';
-import * as DataStore from '../src/DataStore.js';
-import type { VoiceConnection } from '../src/VoiceConnection.js';
-import * as _AudioPlayer from '../src/audio/AudioPlayer.js';
+import * as DataStore from '../src/DataStore';
+import type { VoiceConnection } from '../src/VoiceConnection';
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
 
 jest.mock('../src/VoiceConnection');
 jest.mock('../src/audio/AudioPlayer');

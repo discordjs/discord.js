@@ -76,27 +76,23 @@ describe('Select Menu Components', () => {
 					]),
 			).not.toThrowError();
 
-			const options = Array.from({ length: 25 }).fill({ label: 'test', value: 'test' });
-			// @ts-expect-error
+			const options = Array.from<APISelectMenuOption>({ length: 25 }).fill({ label: 'test', value: 'test' });
+
 			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
-			// @ts-expect-error
 			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
-			// @ts-expect-error
 			expect(() => selectMenu().addOptions(options)).not.toThrowError();
-			// @ts-expect-error
 			expect(() => selectMenu().setOptions(options)).not.toThrowError();
 
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
-					// @ts-expect-error
-					.addOptions(...Array.from({ length: 24 }).fill({ label: 'test', value: 'test' })),
+
+					.addOptions(...Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
-					// @ts-expect-error
-					.addOptions(Array.from({ length: 24 }).fill({ label: 'test', value: 'test' })),
+					.addOptions(Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 		});
 
@@ -130,22 +126,19 @@ describe('Select Menu Components', () => {
 			// @ts-expect-error
 			expect(() => selectMenu().addOptions([{ default: true }])).toThrowError();
 
-			const tooManyOptions = Array.from({ length: 26 }).fill({ label: 'test', value: 'test' });
-			// @ts-expect-error
+			const tooManyOptions = Array.from<APISelectMenuOption>({ length: 26 }).fill({ label: 'test', value: 'test' });
+
 			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
-			// @ts-expect-error
 			expect(() => selectMenu().setOptions(tooManyOptions)).toThrowError();
 
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
-					// @ts-expect-error
 					.addOptions(...tooManyOptions),
 			).toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
-					// @ts-expect-error
 					.addOptions(tooManyOptions),
 			).toThrowError();
 

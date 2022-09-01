@@ -1,6 +1,6 @@
 import { setTimeout } from 'node:timers';
-import { SpeakingMap } from '../src/receive/SpeakingMap.js';
-import { noop } from '../src/util/util.js';
+import { SpeakingMap } from '../src/receive/SpeakingMap';
+import { noop } from '../src/util/util';
 
 jest.useFakeTimers();
 

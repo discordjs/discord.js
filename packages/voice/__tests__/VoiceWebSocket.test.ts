@@ -5,7 +5,7 @@ import { once } from 'node:events';
 import { setTimeout } from 'node:timers';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import WS from 'jest-websocket-mock';
-import { VoiceWebSocket } from '../src/networking/VoiceWebSocket.js';
+import { VoiceWebSocket } from '../src/networking/VoiceWebSocket';
 
 beforeEach(() => {
 	WS.clean();
