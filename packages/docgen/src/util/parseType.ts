@@ -91,7 +91,6 @@ export function parseType(someType: JSONOutput.SomeType | JSONOutput.Type | stri
 			return `'${someType.value}'`;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 		return `${someType.value}`;
 	}
 

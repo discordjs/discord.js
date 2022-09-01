@@ -47,16 +47,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					let versions: string[] = [];
 					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 						const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						data = JSON.parse(res);
 					} else {
 						const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						versions = await response.json();
 
 						for (const version of versions) {
 							const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 							data = [...data, await res.json()];
 						}
 					}
@@ -142,11 +139,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		let data;
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			data = JSON.parse(res);
 		} else {
 			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			data = await res.json();
 		}
 

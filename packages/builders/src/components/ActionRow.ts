@@ -8,9 +8,9 @@ import {
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { ComponentBuilder } from './Component.js';
 import { createComponentBuilder } from './Components.js';
-import type { ButtonBuilder } from './button/Button';
-import type { SelectMenuBuilder } from './selectMenu/SelectMenu';
-import type { TextInputBuilder } from './textInput/TextInput';
+import type { ButtonBuilder } from './button/Button.js';
+import type { SelectMenuBuilder } from './selectMenu/SelectMenu.js';
+import type { TextInputBuilder } from './textInput/TextInput.js';
 
 export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>
@@ -62,7 +62,6 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>> {
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),

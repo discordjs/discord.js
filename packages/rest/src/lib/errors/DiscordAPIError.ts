@@ -101,13 +101,11 @@ export class DiscordAPIError extends Error {
 
 			if (typeof val === 'string') {
 				yield val;
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			} else if (isErrorGroupWrapper(val)) {
 				for (const error of val._errors) {
 					yield* this.flattenDiscordError(error, nextKey);
 				}
 			} else {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				yield* this.flattenDiscordError(val, nextKey);
 			}
 		}

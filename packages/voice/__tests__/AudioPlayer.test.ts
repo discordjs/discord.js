@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
@@ -8,7 +6,7 @@ import process from 'node:process';
 import { Readable } from 'node:stream';
 import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
-import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME, type AudioPlayerState } from '../src/audio/AudioPlayer';
+import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';
 import { NoSubscriberBehavior } from '../src/index';
@@ -23,7 +21,6 @@ const AudioPlayerErrorMock = AudioPlayerError as unknown as jest.Mock<typeof Aud
 const VoiceConnectionMock = VoiceConnection as unknown as jest.Mock<VoiceConnection>;
 
 function* silence() {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	while (true) {
 		yield Buffer.from([0xf8, 0xff, 0xfe]);
 	}

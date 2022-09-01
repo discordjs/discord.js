@@ -129,7 +129,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 			(this.data as APIButtonComponentWithCustomId).custom_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APIButtonComponent;

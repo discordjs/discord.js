@@ -16,7 +16,6 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 };
 
 const api = new REST().setToken('A-Very-Fake-Token');
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 const server = createServer(proxyRequests(api));
 
 beforeEach(() => {

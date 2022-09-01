@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { type EventEmitter, once } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import WS from 'jest-websocket-mock';
@@ -115,7 +113,6 @@ describe.skip('VoiceWebSocket: heartbeating', () => {
 		const endpoint = 'ws://localhost:1234';
 		const server = new WS(endpoint, { jsonProtocol: true });
 		const ws = new VoiceWebSocket(endpoint, false);
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		ws.on('error', () => {});
 		await server.connected;
 		const rcv = onceIgnoreError(ws, 'close');

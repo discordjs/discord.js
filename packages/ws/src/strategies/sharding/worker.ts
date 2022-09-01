@@ -58,9 +58,7 @@ parentPort!
 	.on('messageerror', (err) => {
 		throw err;
 	})
-	// eslint-disable-next-line @typescript-eslint/no-misused-promises
 	.on('message', async (payload: WorkerSendPayload) => {
-		// eslint-disable-next-line default-case
 		switch (payload.op) {
 			case WorkerSendPayloadOp.Connect: {
 				await connect(payload.shardId);

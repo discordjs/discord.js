@@ -38,7 +38,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 	try {
 		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const data: string[] = await res.json();
 
 		if (!data.length) {

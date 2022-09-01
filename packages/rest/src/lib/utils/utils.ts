@@ -113,7 +113,6 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 		return new Uint8Array(await body.arrayBuffer());
 	} else if (body instanceof FormData) {
 		return body;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
 		const chunks = [...(body as Iterable<Uint8Array>)];
 		const length = chunks.reduce((a, b) => a + b.length, 0);
@@ -126,7 +125,6 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 			lengthUsed += b.length;
 			return a;
 		}, uint8);
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if ((body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator]) {
 		const chunks: Uint8Array[] = [];
 

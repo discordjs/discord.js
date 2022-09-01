@@ -123,7 +123,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 */
 	public toJSON(): APISelectMenuComponent {
 		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 			options: this.options.map((option) => option.toJSON()),

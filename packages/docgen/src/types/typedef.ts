@@ -19,7 +19,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@see')
@@ -28,16 +27,14 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 			const baseReturn = {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
 					data.flags.isPrivate ||
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
@@ -64,7 +61,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								name: child.name,
 								description:
 									child.comment?.summary
-										// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-param-reassign
+										// eslint-disable-next-line no-param-reassign
 										?.reduce((prev, curr) => (prev += curr.text), '')
 										// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 										.trim() || undefined,
@@ -82,18 +79,17 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						name: child.name,
 						description:
 							child.comment?.summary
-								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-param-reassign
+								// eslint-disable-next-line no-param-reassign
 								?.reduce((prev, curr) => (prev += curr.text), '')
 								// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 								.trim() ||
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 							child.signatures?.[0]?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() ||
 							undefined,
 						optional: child.flags.isOptional || typeof child.defaultValue !== 'undefined',
 						default:
 							(child.defaultValue === '...' ? undefined : child.defaultValue) ??
 							(child.comment?.blockTags
-								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 								?.find((block) => block.tag === '@default')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -112,7 +108,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 											}),
 										],
 										description: child.signatures?.[0]?.comment?.blockTags
-											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 											?.find((block) => block.tag === '@returns')
 											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -134,13 +129,12 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 					const params = sig?.parameters?.map((param) => ({
 						name: param.name,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 						description: param.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 						optional: param.flags.isOptional || typeof param.defaultValue !== 'undefined',
 						default:
 							(param.defaultValue === '...' ? undefined : param.defaultValue) ??
 							(param.comment?.blockTags
-								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 								?.find((block) => block.tag === '@default')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -152,7 +146,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 							: undefined,
 					}));
 
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					const see = sig?.comment?.blockTags?.filter((block) => block.tag === '@see').length
 						? sig.comment.blockTags
 								.filter((block) => block.tag === '@see')
@@ -161,16 +154,14 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 
 					return {
 						...baseReturn,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 						description: sig?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 						see,
 						access:
 							sig?.flags.isPrivate ||
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 							sig?.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 								? 'private'
 								: undefined,
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						deprecated: sig?.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 							? sig.comment.blockTags
 									.find((block) => block.tag === '@deprecated')
@@ -186,7 +177,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 											names: [parseType(sig.type)],
 											description:
 												sig.comment?.blockTags
-													// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 													?.find((block) => block.tag === '@returns')
 													// eslint-disable-next-line no-param-reassign
 													?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -199,7 +189,6 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 							: undefined,
 						returnsDescription:
 							sig?.comment?.blockTags
-								// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 								?.find((block) => block.tag === '@returns')
 								// eslint-disable-next-line no-param-reassign
 								?.content.reduce((prev, curr) => (prev += curr.text), '')

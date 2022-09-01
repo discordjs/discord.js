@@ -53,25 +53,21 @@ export class SequentialHandler implements IHandler {
 	/**
 	 * The interface used to sequence async requests sequentially
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#asyncQueue = new AsyncQueue();
 
 	/**
 	 * The interface used to sequence sublimited async requests sequentially
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#sublimitedQueue: AsyncQueue | null = null;
 
 	/**
 	 * A promise wrapper for when the sublimited queue is finished being processed or null when not being processed
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#sublimitPromise: { promise: Promise<void>; resolve(): void } | null = null;
 
 	/**
 	 * Whether the sublimit queue needs to be shifted in the finally block
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#shiftSublimit = false;
 
 	/**

@@ -73,7 +73,6 @@ export class VoiceWebSocket extends EventEmitter {
 		this.ws = new WebSocket(address);
 		this.ws.onmessage = (err) => this.onMessage(err);
 		this.ws.onopen = (err) => this.emit('open', err);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		this.ws.onerror = (err: Error | WebSocket.ErrorEvent) => this.emit('error', err instanceof Error ? err : err.error);
 		this.ws.onclose = (err) => this.emit('close', err);
 
@@ -110,7 +109,6 @@ export class VoiceWebSocket extends EventEmitter {
 
 		let packet: any;
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			packet = JSON.parse(event.data);
 		} catch (error) {
 			const err = error as Error;
@@ -118,7 +116,6 @@ export class VoiceWebSocket extends EventEmitter {
 			return;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.HeartbeatAck) {
 			this.lastHeartbeatAck = Date.now();
 			this.missedHeartbeats = 0;

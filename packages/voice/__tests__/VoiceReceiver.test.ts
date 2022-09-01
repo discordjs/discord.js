@@ -1,5 +1,4 @@
 /* eslint-disable id-length */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
@@ -39,7 +38,6 @@ describe('VoiceReceiver', () => {
 	let receiver: VoiceReceiver;
 
 	beforeEach(() => {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		voiceConnection = new VoiceConnection({} as any, {} as any);
 		voiceConnection.state = {
 			status: VoiceConnectionStatus.Signalling,

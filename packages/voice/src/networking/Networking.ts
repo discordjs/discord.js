@@ -387,22 +387,16 @@ export class Networking extends EventEmitter {
 	 * @param packet - The received packet
 	 */
 	private onWsPacket(packet: any) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.Hello && this.state.code !== NetworkingStatusCode.Closed) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 			this.state.ws.setHeartbeatInterval(packet.d.heartbeat_interval);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (packet.op === VoiceOpcodes.Ready && this.state.code === NetworkingStatusCode.Identifying) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			const { ip, port, ssrc, modes } = packet.d;
 
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const udp = new VoiceUDPSocket({ ip, port });
 			udp.on('error', this.onChildError);
 			udp.on('debug', this.onUdpDebug);
 			udp.once('close', this.onUdpClose);
 			udp
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				.performIPDiscovery(ssrc)
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.then((localConfig) => {
@@ -414,7 +408,6 @@ export class Networking extends EventEmitter {
 							data: {
 								address: localConfig.ip,
 								port: localConfig.port,
-								// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 								mode: chooseEncryptionMode(modes),
 							},
 						},
@@ -432,25 +425,20 @@ export class Networking extends EventEmitter {
 				code: NetworkingStatusCode.UdpHandshaking,
 				udp,
 				connectionData: {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					ssrc,
 				},
 			};
 		} else if (
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.SessionDescription &&
 			this.state.code === NetworkingStatusCode.SelectingProtocol
 		) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			const { mode: encryptionMode, secret_key: secretKey } = packet.d;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Ready,
 				connectionData: {
 					...this.state.connectionData,
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					encryptionMode,
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					secretKey: new Uint8Array(secretKey),
 					sequence: randomNBit(16),
 					timestamp: randomNBit(32),
@@ -460,7 +448,6 @@ export class Networking extends EventEmitter {
 					packetsPlayed: 0,
 				},
 			};
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (packet.op === VoiceOpcodes.Resumed && this.state.code === NetworkingStatusCode.Resuming) {
 			this.state = {
 				...this.state,

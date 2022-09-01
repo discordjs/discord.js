@@ -108,7 +108,7 @@ export class TextInputBuilder
 	 */
 	public toJSON(): APITextInputComponent {
 		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APITextInputComponent;

@@ -18,14 +18,12 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@see')
 						.map((block) => block.content.find((contentText) => contentText.kind === 'text')?.text.trim())
 				: undefined;
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const examples = signature.comment?.blockTags?.filter((block) => block.tag === '@example').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@example')
@@ -35,19 +33,16 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 
 			return {
 				// @ts-expect-error: No type for params
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				name: signature.parameters?.[0]?.type?.value,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
 					data.flags.isPrivate ||
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
 				examples,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
@@ -68,7 +63,6 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 									names: [parseType(signature.type)],
 									description:
 										signature.comment?.blockTags
-											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 											?.find((block) => block.tag === '@returns')
 											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -81,7 +75,6 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 					: undefined,
 				returnsDescription:
 					signature.comment?.blockTags
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						?.find((block) => block.tag === '@returns')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')

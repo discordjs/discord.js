@@ -58,7 +58,6 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 			this.construct = item;
 		} else if (item instanceof DocumentedMethod) {
 			// @ts-expect-error: No type for methods
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			const prefix = item.data.scope === 'static' || item.data.flags?.isStatic ? 's-' : '';
 			if (this.methods.has(prefix + item.data.name)) {
 				throw new Error(`Doc ${this.data.name} already has method ${item.data.name}`);
@@ -91,7 +90,6 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@see')
@@ -100,7 +98,6 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 
 			return {
 				// @ts-expect-error: Type cannot be inferred
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				name: signature.name === 'default' ? parse(meta?.file ?? 'default').name : signature.name,
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
@@ -109,13 +106,11 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 				implements: this.implements?.serialize(),
 				access:
 					data.flags.isPrivate ||
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/no-unnecessary-condition
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')

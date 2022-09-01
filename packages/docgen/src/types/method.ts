@@ -18,14 +18,12 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 				meta = new DocumentedItemMeta(sources, this.config).serialize();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@see')
 						.map((block) => block.content.find((innerContent) => innerContent.kind === 'text')?.text.trim())
 				: undefined;
 
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			const examples = signature.comment?.blockTags?.filter((block) => block.tag === '@example').length
 				? signature.comment.blockTags
 						.filter((block) => block.tag === '@example')
@@ -35,20 +33,18 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				scope: data.flags.isStatic ? 'static' : undefined,
 				access:
 					data.flags.isPrivate ||
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
 				examples,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
@@ -56,7 +52,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							.trim() ?? true
 					: undefined,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
 				// @ts-expect-error: Typescript doesn't know that this is a SignatureReflection
 				params: signature.parameters
@@ -71,7 +66,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 									names: [parseType(signature.type)],
 									description:
 										signature.comment?.blockTags
-											// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 											?.find((block) => block.tag === '@returns')
 											// eslint-disable-next-line no-param-reassign
 											?.content.reduce((prev, curr) => (prev += curr.text), '')
@@ -84,7 +78,6 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 					: undefined,
 				returnsDescription:
 					signature.comment?.blockTags
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						?.find((block) => block.tag === '@returns')
 						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')

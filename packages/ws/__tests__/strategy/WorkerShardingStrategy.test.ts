@@ -50,14 +50,12 @@ vi.mock('node:worker_threads', async () => {
 	class MockWorker extends EventEmitter {
 		public constructor(...args: any[]) {
 			super();
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			mockConstructor(...args);
 			// need to delay this by an event loop cycle to allow the strategy to attach a listener
 			setImmediate(() => this.emit('online'));
 		}
 
 		public postMessage(message: WorkerSendPayload) {
-			// eslint-disable-next-line default-case
 			switch (message.op) {
 				case WorkerSendPayloadOp.Connect: {
 					const response: WorkerRecievePayload = {
@@ -180,7 +178,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(
 		expect.stringContaining('worker.cjs'),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 

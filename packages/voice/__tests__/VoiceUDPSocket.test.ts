@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
-import EventEmitter, { once } from 'node:events';
+import { EventEmitter } from 'node:events';
 import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
 jest.mock('node:dgram');

@@ -2,9 +2,9 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, extname, basename, relative } from 'node:path';
 import jsdoc2md from 'jsdoc-to-markdown';
 import { type DeclarationReflection, Application, TSConfigReader } from 'typedoc';
-import type { CLIOptions } from './cli';
+import type { CLIOptions } from './cli.js';
 import { Documentation } from './documentation.js';
-import type { RootTypes, ChildTypes, CustomDocs } from './interfaces';
+import type { RootTypes, ChildTypes, CustomDocs } from './interfaces/index.js';
 
 interface CustomFiles {
 	files: {

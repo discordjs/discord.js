@@ -384,7 +384,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return;
 		}
 
-		// eslint-disable-next-line default-case
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
 				if (this.status === WebSocketShardStatus.Ready || this.status === WebSocketShardStatus.Resuming) {

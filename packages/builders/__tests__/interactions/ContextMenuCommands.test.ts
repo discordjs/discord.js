@@ -105,9 +105,9 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error: invalid localization
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error: invalid localization
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 

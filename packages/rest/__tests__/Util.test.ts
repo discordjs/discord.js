@@ -62,7 +62,7 @@ test('resolveBody', async () => {
 	};
 	await expect(resolveBody(asyncIterable)).resolves.toStrictEqual(Buffer.from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
 
-	// unknown type
-	// @ts-expect-error This test is ensuring that this throws
+	// Unknown type
+	// @ts-expect-error: This test is ensuring that this throws
 	await expect(resolveBody(true)).rejects.toThrow(TypeError);
 });

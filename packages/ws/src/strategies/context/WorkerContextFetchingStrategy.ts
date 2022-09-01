@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/require-post-message-target-origin */
 import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { SessionInfo } from '../../ws/WebSocketManager.js';
@@ -35,7 +36,6 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 		};
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
-		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		parentPort!.postMessage(payload);
 		return promise;
 	}
@@ -46,7 +46,6 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 			shardId,
 			session: sessionInfo,
 		};
-		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		parentPort!.postMessage(payload);
 	}
 }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Buffer } from 'node:buffer';
 import EventEmitter, { once } from 'node:events';
 import process from 'node:process';
@@ -27,8 +24,7 @@ async function* gen(num: number) {
 }
 
 function range(num: number) {
-	// eslint-disable-next-line unicorn/no-new-array
-	return Buffer.from(Array.from(new Array(num).keys()));
+	return Buffer.from(Array.from(Array.from({ length: num }).keys()));
 }
 
 const validHead = Buffer.from([
@@ -80,7 +76,6 @@ describe('demuxProbe', () => {
 
 	test('Detects WebM', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		webmWrite.mockImplementation(function mock(data: Buffer) {
 			if (data[0] === 5) this.emit('head', validHead);
 		} as any);
@@ -91,7 +86,6 @@ describe('demuxProbe', () => {
 
 	test('Detects Ogg', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		oggWrite.mockImplementation(function mock(data: Buffer) {
 			if (data[0] === 5) this.emit('head', validHead);
 		} as any);
@@ -102,7 +96,6 @@ describe('demuxProbe', () => {
 
 	test('Rejects invalid OpusHead', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		oggWrite.mockImplementation(function mock(data: Buffer) {
 			if (data[0] === 5) this.emit('head', invalidHead);
 		} as any);

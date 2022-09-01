@@ -1,7 +1,7 @@
 import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
-import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
+import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)

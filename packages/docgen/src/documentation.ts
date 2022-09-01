@@ -123,7 +123,6 @@ export class Documentation {
 
 					case 'Method': {
 						const event = prop?.groups?.find((group) => group.title === 'Events');
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 						if ((event?.children as unknown as number[])?.includes(member.id)) {
 							item = new DocumentedEvent(member, this.config);
 							break;
@@ -139,7 +138,6 @@ export class Documentation {
 					}
 
 					default: {
-						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 						console.warn(`- Unknown documentation kind "${member.kindString}" - \n${JSON.stringify(member)}\n`);
 					}
 				}
@@ -212,7 +210,6 @@ export class Documentation {
 
 					default: {
 						// @ts-expect-error: This is a valid case
-						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 						console.warn(`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`);
 					}
 				}
@@ -233,7 +230,6 @@ export class Documentation {
 				const info = [];
 				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
 				// @ts-expect-error: Typescript can't infer this
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-condition
 				const memberof = member.memberof ?? item?.data?.memberof;
 				const meta =
 					member.kind === 'constructor'

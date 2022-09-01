@@ -5,8 +5,8 @@ import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST';
-import type { IHandler } from './handlers/IHandler';
+import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
 import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants.js';
 import { resolveBody } from './utils/utils.js';
@@ -208,7 +208,6 @@ export class RequestManager extends EventEmitter {
 	 */
 	public readonly handlers = new Collection<string, IHandler>();
 
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#token: string | null = null;
 
 	private hashTimer!: NodeJS.Timer;
@@ -422,7 +421,6 @@ export class RequestManager extends EventEmitter {
 					const contentType = file.contentType ?? (await fileTypeFromBuffer(file.data))?.mime;
 					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
 				} else {
-					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
 				}
 			}
@@ -457,7 +455,6 @@ export class RequestManager extends EventEmitter {
 		finalBody = await resolveBody(finalBody);
 
 		const fetchOptions: RequestOptions = {
-			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 			headers: { ...request.headers, ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
 		};

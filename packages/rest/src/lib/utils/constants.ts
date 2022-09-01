@@ -2,10 +2,9 @@ import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
 import { getGlobalDispatcher } from 'undici';
 import type { RESTOptions } from '../REST.js';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const Package = require('../../../package.json');
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {

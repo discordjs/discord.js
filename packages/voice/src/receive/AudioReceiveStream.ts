@@ -85,6 +85,5 @@ export class AudioReceiveStream extends Readable {
 		this.endTimeout = setTimeout(() => this.push(null), end.duration);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	public override _read() {}
 }

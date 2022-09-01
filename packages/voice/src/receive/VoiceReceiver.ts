@@ -64,34 +64,22 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onWsPacket(packet: any) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.ClientDisconnect && typeof packet.d?.user_id === 'string') {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 			this.ssrcMap.delete(packet.d.user_id);
 		} else if (
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.Speaking &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.user_id === 'string' &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.ssrc === 'number'
 		) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
 		} else if (
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.ClientConnect &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.user_id === 'string' &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.audio_ssrc === 'number'
 		) {
 			this.ssrcMap.update({
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				userId: packet.d.user_id,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				audioSSRC: packet.d.audio_ssrc,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				videoSSRC: packet.d.video_ssrc === 0 ? undefined : packet.d.video_ssrc,
 			});
 		}

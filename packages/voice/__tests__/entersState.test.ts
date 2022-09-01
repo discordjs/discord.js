@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'node:events';
 import process from 'node:process';
 import { VoiceConnectionStatus, type VoiceConnection } from '../src/VoiceConnection';
 import { entersState } from '../src/util/entersState';
@@ -19,7 +17,6 @@ describe('entersState', () => {
 	test('Returns the target once the state has been entered before timeout', async () => {
 		jest.useRealTimers();
 		const vc = createFakeVoiceConnection();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));
 		const result = await entersState(vc, VoiceConnectionStatus.Ready, 1_000);
 		expect(result).toEqual(vc);
@@ -36,7 +33,6 @@ describe('entersState', () => {
 		jest.useRealTimers();
 		const vc = createFakeVoiceConnection();
 		const ac = new AbortController();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));
 		const result = await entersState(vc, VoiceConnectionStatus.Ready, ac.signal);
 		expect(result).toEqual(vc);

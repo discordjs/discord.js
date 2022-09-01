@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 
 const useStyles = createStyles((theme) => ({
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	link: {
 		...theme.fn.focusStyles(),
 		fontWeight: 500,

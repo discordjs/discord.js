@@ -68,7 +68,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 */
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APISelectMenuOption;

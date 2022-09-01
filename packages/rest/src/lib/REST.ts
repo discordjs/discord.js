@@ -11,7 +11,7 @@ import {
 	type RequestData,
 	type RouteLike,
 } from './RequestManager.js';
-import type { IHandler } from './handlers/IHandler';
+import type { IHandler } from './handlers/IHandler.js';
 import { DefaultRestOptions, RESTEvents } from './utils/constants.js';
 import { parseResponse } from './utils/utils.js';
 

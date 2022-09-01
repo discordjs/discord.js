@@ -9,56 +9,40 @@ interface Methods {
 const libs = {
 	'sodium-native': (sodium: any): Methods => ({
 		open: (buffer: Buffer, nonce: Buffer, secretKey: Uint8Array) => {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (buffer) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				const output = Buffer.allocUnsafe(buffer.length - sodium.crypto_box_MACBYTES);
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 				if (sodium.crypto_secretbox_open_easy(output, buffer, nonce, secretKey)) return output;
 			}
 
 			return null;
 		},
 		close: (opusPacket: Buffer, nonce: Buffer, secretKey: Uint8Array) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/restrict-plus-operands
+			// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 			const output = Buffer.allocUnsafe(opusPacket.length + sodium.crypto_box_MACBYTES);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.crypto_secretbox_easy(output, opusPacket, nonce, secretKey);
 			return output;
 		},
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		random: (num: number, buffer: Buffer = Buffer.allocUnsafe(num)) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.randombytes_buf(buffer);
 			return buffer;
 		},
 	}),
 	sodium: (sodium: any): Methods => ({
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		open: sodium.api.crypto_secretbox_open_easy,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: sodium.api.crypto_secretbox_easy,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		random: (num: number, buffer: Buffer = Buffer.allocUnsafe(num)) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.api.randombytes_buf(buffer);
 			return buffer;
 		},
 	}),
 	'libsodium-wrappers': (sodium: any): Methods => ({
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		open: sodium.crypto_secretbox_open_easy,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: sodium.crypto_secretbox_easy,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		random: sodium.randombytes_buf,
 	}),
 	tweetnacl: (tweetnacl: any): Methods => ({
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		open: tweetnacl.secretbox.open,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: tweetnacl.secretbox,
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		random: tweetnacl.randomBytes,
 	}),
 } as const;
@@ -82,7 +66,6 @@ void (async () => {
 		try {
 			// eslint-disable-next-line unicorn/no-abusive-eslint-disable, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 			const lib = require(libName);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready;
 			Object.assign(methods, libs[libName](lib));
 			break;

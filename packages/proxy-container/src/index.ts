@@ -9,7 +9,6 @@ if (!process.env.DISCORD_TOKEN) {
 
 // We want to let upstream handle retrying
 const api = new REST({ rejectOnRateLimit: () => true, retries: 0 }).setToken(process.env.DISCORD_TOKEN);
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 const server = createServer(proxyRequests(api));
 
 const port = Number.parseInt(process.env.PORT ?? '8080', 10);

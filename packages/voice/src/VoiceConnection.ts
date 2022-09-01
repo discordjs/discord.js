@@ -325,7 +325,6 @@ export class VoiceConnection extends EventEmitter {
 
 		this.emit('stateChange', oldState, newState);
 		if (oldState.status !== newState.status) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			this.emit(newState.status, oldState, newState as any);
 		}
 	}
@@ -391,7 +390,6 @@ export class VoiceConnection extends EventEmitter {
 			newUdp?.on('message', this.receiver.onUdpMessage);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		this.receiver.connectionData = Reflect.get(newState, 'connectionData') ?? {};
 	}
 

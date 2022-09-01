@@ -96,7 +96,6 @@ export function hideLinkEmbed<C extends string>(url: C): `<${C}>`;
  */
 export function hideLinkEmbed(url: URL): `<${string}>`;
 export function hideLinkEmbed(url: URL | string) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 	return `<${url}>`;
 }
 
@@ -142,7 +141,6 @@ export function hyperlink<C extends string, U extends string, T extends string>(
 	title: T,
 ): `[${C}](${U} "${T}")`;
 export function hyperlink(content: string, url: URL | string, title?: string) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 	return title ? `[${content}](${url} "${title}")` : `[${content}](${url})`;
 }
 

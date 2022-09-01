@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/require-post-message-target-origin */
 import { once } from 'node:events';
 import { join } from 'node:path';
 import { Worker } from 'node:worker_threads';
@@ -100,7 +101,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				.on('messageerror', (err) => {
 					throw err;
 				})
-				// eslint-disable-next-line @typescript-eslint/no-misused-promises
 				.on('message', async (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
 
 			this.#workers.push(worker);
@@ -128,7 +128,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<void>((resolve) => this.connectPromises.set(shardId, resolve));
-			// eslint-disable-next-line unicorn/require-post-message-target-origin
 			worker.postMessage(payload);
 			promises.push(promise);
 		}
@@ -153,7 +152,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				// eslint-disable-next-line no-promise-executor-return, promise/prefer-await-to-then
 				new Promise<void>((resolve) => this.destroyPromises.set(shardId, resolve)).then(async () => worker.terminate()),
 			);
-			// eslint-disable-next-line unicorn/require-post-message-target-origin
 			worker.postMessage(payload);
 		}
 
@@ -177,12 +175,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			shardId,
 			payload: data,
 		};
-		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		worker.postMessage(payload);
 	}
 
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
-		// eslint-disable-next-line default-case
 		switch (payload.op) {
 			case WorkerRecievePayloadOp.Connected: {
 				const resolve = this.connectPromises.get(payload.shardId)!;
@@ -199,7 +195,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerRecievePayloadOp.Event: {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
 				break;
 			}
@@ -211,7 +206,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 					nonce: payload.nonce,
 					session,
 				};
-				// eslint-disable-next-line unicorn/require-post-message-target-origin
 				worker.postMessage(response);
 				break;
 			}

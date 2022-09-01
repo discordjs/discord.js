@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/method-signature-style */
 import { Buffer } from 'node:buffer';
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'node:events';
 import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import { noop } from '../util/util';
@@ -356,7 +356,6 @@ export class AudioPlayer extends EventEmitter {
 
 		this.emit('stateChange', oldState, this._state);
 		if (oldState.status !== newState.status || didChangeResources) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			this.emit(newState.status, oldState, this._state as any);
 		}
 
@@ -600,7 +599,6 @@ export class AudioPlayer extends EventEmitter {
 		 */
 		const packet: Buffer | null = state.resource.read();
 
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (state.status === AudioPlayerStatus.Playing) {
 			if (packet) {
 				this._preparePacket(packet, playable, state);

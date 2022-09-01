@@ -85,7 +85,7 @@ describe('Text Input Components', () => {
 
 			expect(() => {
 				// Issue #8107
-				// @ts-expect-error: shapeshift maps the enum key to the value when parsing
+				// @ts-expect-error: Shapeshift maps the enum key to the value when parsing
 				textInputComponent().setCustomId('Custom').setLabel('Guess').setStyle('Short').toJSON();
 			}).not.toThrowError();
 		});

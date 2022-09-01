@@ -58,7 +58,6 @@ const sublimit = { body: { name: 'newname' } };
 const noSublimit = { body: { bitrate: 40_000 } };
 
 function startSublimitIntervals() {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!sublimitIntervals.reset) {
 		sublimitResetAfter = Date.now() + 250;
 		sublimitIntervals.reset = setInterval(() => {
@@ -67,7 +66,6 @@ function startSublimitIntervals() {
 		}, 250);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!sublimitIntervals.retry) {
 		retryAfter = Date.now() + 1_000;
 		sublimitIntervals.retry = setInterval(() => {

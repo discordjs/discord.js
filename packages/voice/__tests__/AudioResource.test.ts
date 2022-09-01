@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { PassThrough, Readable } from 'node:stream';
@@ -26,7 +25,7 @@ async function started(resource: AudioResource) {
 const findPipeline = _findPipeline as unknown as jest.MockedFunction<typeof _findPipeline>;
 
 beforeAll(() => {
-	// @ts-expect-error no type
+	// @ts-expect-error: No type
 	findPipeline.mockImplementation((from: StreamType, constraint: (path: Edge[]) => boolean) => {
 		const base = [
 			{
@@ -38,7 +37,6 @@ beforeAll(() => {
 		if (constraint === VOLUME_CONSTRAINT) {
 			base.push({
 				cost: 1,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				transformer: () => new VolumeTransformer({} as any),
 				type: TransformerType.InlineVolume,
 			});
@@ -98,7 +96,6 @@ describe('createAudioResource', () => {
 	});
 
 	test('Infers from VolumeTransformer', () => {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		const stream = new VolumeTransformer({} as any);
 		const resource = createAudioResource(stream, { inlineVolume: true });
 		expect(findPipeline).toHaveBeenCalledWith(StreamType.Raw, NO_CONSTRAINT);
