@@ -1,7 +1,7 @@
 import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+import type { Constructor } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 import { DocumentedParam } from './param.js';
-import type { Constructor } from '../interfaces/index.js';
 
 export class DocumentedConstructor extends DocumentedItem<Constructor | DeclarationReflection> {
 	public override serializer() {
@@ -10,26 +10,28 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 			const signature = (data.signatures ?? [])[0] ?? data;
 
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			const see = signature.comment?.blockTags?.filter((t) => t.tag === '@see').length
+			const see = signature.comment?.blockTags?.filter((block) => block.tag === '@see').length
 				? signature.comment.blockTags
-						.filter((t) => t.tag === '@see')
-						.map((t) => t.content.find((c) => c.kind === 'text')?.text.trim())
+						.filter((block) => block.tag === '@see')
+						.map((block) => block.content.find((textContent) => textContent.kind === 'text')?.text.trim())
 				: undefined;
 
 			return {
 				name: signature.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: signature.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
 				see,
 				access:
 					data.flags.isPrivate ||
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					signature.comment?.blockTags?.some((t) => t.tag === '@private' || t.tag === '@internal')
+					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// @ts-expect-error
+				// @ts-expect-error no type for params
 				params: signature.parameters
-					? (signature as SignatureReflection).parameters?.map((p) => new DocumentedParam(p, this.config).serialize())
+					? (signature as SignatureReflection).parameters?.map((param) =>
+							new DocumentedParam(param, this.config).serialize(),
+					  )
 					: undefined,
 			};
 		}
@@ -40,7 +42,9 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 			description: data.description,
 			see: data.see,
 			access: data.access,
-			params: data.params?.length ? data.params.map((p) => new DocumentedParam(p, this.config).serialize()) : undefined,
+			params: data.params?.length
+				? data.params.map((param) => new DocumentedParam(param, this.config).serialize())
+				: undefined,
 		};
 	}
 }
