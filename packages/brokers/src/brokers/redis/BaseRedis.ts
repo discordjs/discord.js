@@ -15,12 +15,12 @@ export interface RedisBrokerOptions extends BaseBrokerOptions {
 	redisClient: Redis;
 }
 
-export const STREAM_DATA_KEY = 'data' as const;
-
 export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	extends AsyncEventEmitter<ToEventMap<TEvents>>
 	implements IBaseBroker<TEvents>
 {
+	public static readonly STREAM_DATA_KEY = 'data';
+
 	protected readonly options: Required<RedisBrokerOptions>;
 	protected readonly subscribedEvents = new Set<string>();
 	protected readonly streamReadClient: Redis;

@@ -1,4 +1,4 @@
-import { BaseRedisBroker, RedisBrokerOptions, STREAM_DATA_KEY } from './BaseRedis';
+import { BaseRedisBroker, RedisBrokerOptions } from './BaseRedis';
 import { DefaultBrokerOptions, IRPCBroker } from '../Broker.interface';
 
 interface InternalPromise {
@@ -42,7 +42,12 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		data: TEvents[T],
 		timeoutDuration: number = this.options.timeout,
 	): Promise<TResponses[T]> {
-		const id = await this.options.redisClient.xadd(event as string, '*', STREAM_DATA_KEY, this.options.encode(data));
+		const id = await this.options.redisClient.xadd(
+			event as string,
+			'*',
+			BaseRedisBroker.STREAM_DATA_KEY,
+			this.options.encode(data),
+		);
 		// This id! assertion is valid. From redis docs:
 		// "The command returns a Null reply when used with the NOMKSTREAM option and the key doesn't exist."
 		// See: https://redis.io/commands/xadd/
