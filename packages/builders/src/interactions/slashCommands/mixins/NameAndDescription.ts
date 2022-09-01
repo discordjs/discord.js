@@ -78,6 +78,7 @@ export class SharedNameAndDescription {
 		for (const args of Object.entries(localizedNames)) {
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
 		}
+
 		return this;
 	}
 
@@ -120,6 +121,7 @@ export class SharedNameAndDescription {
 		for (const args of Object.entries(localizedDescriptions)) {
 			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
 		}
+
 		return this;
 	}
 }
