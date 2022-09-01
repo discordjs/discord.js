@@ -38,7 +38,6 @@ function isErrorResponse(error: DiscordError): error is DiscordErrorFieldInforma
 /**
  * Represents an API error returned by Discord
  *
- * @extends Error
  */
 export class DiscordAPIError extends Error {
 	public requestBody: RequestBody;
@@ -92,14 +91,14 @@ export class DiscordAPIError extends Error {
 			return yield `${key.length ? `${key}[${obj.code}]` : `${obj.code}`}: ${obj.message}`.trim();
 		}
 
-		for (const [key, val] of Object.entries(obj)) {
-			const nextKey = key.startsWith('_')
+		for (const [otherKey, val] of Object.entries(obj)) {
+			const nextKey = otherKey.startsWith('_')
 				? key
 				: key
-				? Number.isNaN(Number(key))
-					? `${key}.${key}`
-					: `${key}[${key}]`
-				: key;
+				? Number.isNaN(Number(otherKey))
+					? `${key}.${otherKey}`
+					: `${key}[${otherKey}]`
+				: otherKey;
 
 			if (typeof val === 'string') {
 				yield val;
