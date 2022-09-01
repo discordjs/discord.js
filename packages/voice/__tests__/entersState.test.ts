@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import EventEmitter from 'node:events';
-import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
-import { entersState } from '../src/util/entersState';
+import process from 'node:process';
+import type { VoiceConnection } from '../src/VoiceConnection';
+import { VoiceConnectionStatus } from '../src/VoiceConnection.js';
+import { entersState } from '../src/util/entersState.js';
 
 function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 	const vc = new EventEmitter() as any;
@@ -20,13 +22,13 @@ describe('entersState', () => {
 		const vc = createFakeVoiceConnection();
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		process.nextTick(() => vc.emit(VoiceConnectionStatus.Ready, null as any, null as any));
-		const result = await entersState(vc, VoiceConnectionStatus.Ready, 1000);
+		const result = await entersState(vc, VoiceConnectionStatus.Ready, 1_000);
 		expect(result).toEqual(vc);
 	});
 
 	test('Rejects once the timeout is exceeded', async () => {
 		const vc = createFakeVoiceConnection();
-		const promise = entersState(vc, VoiceConnectionStatus.Ready, 1000);
+		const promise = entersState(vc, VoiceConnectionStatus.Ready, 1_000);
 		jest.runAllTimers();
 		await expect(promise).rejects.toThrowError();
 	});
@@ -51,6 +53,6 @@ describe('entersState', () => {
 
 	test('Resolves immediately when target already in desired state', async () => {
 		const vc = createFakeVoiceConnection();
-		await expect(entersState(vc, VoiceConnectionStatus.Signalling, 1000)).resolves.toEqual(vc);
+		await expect(entersState(vc, VoiceConnectionStatus.Signalling, 1_000)).resolves.toEqual(vc);
 	});
 });

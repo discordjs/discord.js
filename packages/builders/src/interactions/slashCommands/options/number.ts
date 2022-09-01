@@ -1,9 +1,10 @@
 import { s } from '@sapphire/shapeshift';
-import { APIApplicationCommandNumberOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import type { APIApplicationCommandNumberOption } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
+import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
+import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
 
 const numberValidator = s.number;
 

@@ -1,11 +1,14 @@
+/* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/dot-notation */
+import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
+import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
-import { VoiceReceiver } from '../src/receive/VoiceReceiver';
-import { methods } from '../src/util/Secretbox';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp.js';
+import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection.js';
+import { VoiceReceiver } from '../src/receive/VoiceReceiver.js';
+import { methods } from '../src/util/Secretbox.js';
 
 jest.mock('../src/VoiceConnection');
 jest.mock('../src/receive/SSRCMap');
@@ -16,7 +19,8 @@ openSpy.mockImplementation((buffer) => buffer);
 
 const VoiceConnection = _VoiceConnection as unknown as jest.Mocked<typeof _VoiceConnection>;
 
-function nextTick() {
+async function nextTick() {
+	// eslint-disable-next-line no-promise-executor-return
 	return new Promise((resolve) => process.nextTick(resolve));
 }
 
@@ -178,7 +182,7 @@ describe('VoiceReceiver', () => {
 
 			// Assert
 			expect(nonce.equals(range(29, 32))).toEqual(true);
-			expect(decrypted.equals(range(13, 28))).toEqual(true);
+			expect(decrypted!.equals(range(13, 28))).toEqual(true);
 		});
 
 		test('decrypt: xsalsa20_poly1305_suffix', () => {
@@ -191,7 +195,7 @@ describe('VoiceReceiver', () => {
 
 			// Assert
 			expect(nonce.equals(range(41, 64))).toEqual(true);
-			expect(decrypted.equals(range(13, 40))).toEqual(true);
+			expect(decrypted!.equals(range(13, 40))).toEqual(true);
 		});
 
 		test('decrypt: xsalsa20_poly1305', () => {
@@ -204,7 +208,7 @@ describe('VoiceReceiver', () => {
 
 			// Assert
 			expect(nonce.equals(range(1, 12))).toEqual(true);
-			expect(decrypted.equals(range(13, 64))).toEqual(true);
+			expect(decrypted!.equals(range(13, 64))).toEqual(true);
 		});
 	});
 });

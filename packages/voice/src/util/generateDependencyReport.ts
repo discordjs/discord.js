@@ -24,7 +24,7 @@ function findPackageJSON(
 		if (pkg.name !== packageName) throw new Error('package.json does not match');
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return pkg;
-	} catch (err) {
+	} catch {
 		return findPackageJSON(resolve(dir, '..'), packageName, depth - 1);
 	}
 }
@@ -43,7 +43,7 @@ function version(name: string): string {
 				: findPackageJSON(dirname(require.resolve(name)), name, 3);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
 		return pkg?.version ?? 'not found';
-	} catch (err) {
+	} catch {
 		return 'not found';
 	}
 }
@@ -81,7 +81,7 @@ export function generateDependencyReport() {
 		const info = prism.FFmpeg.getInfo();
 		report.push(`- version: ${info.version}`);
 		report.push(`- libopus: ${info.output.includes('--enable-libopus') ? 'yes' : 'no'}`);
-	} catch (err) {
+	} catch {
 		report.push('- not found');
 	}
 

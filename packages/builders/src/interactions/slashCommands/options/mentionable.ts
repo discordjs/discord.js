@@ -1,5 +1,6 @@
-import { APIApplicationCommandMentionableOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
+import type { APIApplicationCommandMentionableOption } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 
 export class SlashCommandMentionableOption extends ApplicationCommandOptionBase {
 	public readonly type = ApplicationCommandOptionType.Mentionable as const;

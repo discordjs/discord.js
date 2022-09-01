@@ -1,7 +1,9 @@
+import { Buffer } from 'node:buffer';
+
 interface Methods {
-	open: (buffer: Buffer, nonce: Buffer, secretKey: Uint8Array) => Buffer | null;
-	close: (opusPacket: Buffer, nonce: Buffer, secretKey: Uint8Array) => Buffer;
-	random: (bytes: number, nonce: Buffer) => Buffer;
+	close(opusPacket: Buffer, nonce: Buffer, secretKey: Uint8Array): Buffer;
+	open(buffer: Buffer, nonce: Buffer, secretKey: Uint8Array): Buffer | null;
+	random(bytes: number, nonce: Buffer): Buffer;
 }
 
 const libs = {
@@ -14,6 +16,7 @@ const libs = {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 				if (sodium.crypto_secretbox_open_easy(output, buffer, nonce, secretKey)) return output;
 			}
+
 			return null;
 		},
 		close: (opusPacket: Buffer, nonce: Buffer, secretKey: Uint8Array) => {
@@ -24,7 +27,7 @@ const libs = {
 			return output;
 		},
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		random: (n: number, buffer: Buffer = Buffer.allocUnsafe(n)) => {
+		random: (num: number, buffer: Buffer = Buffer.allocUnsafe(num)) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.randombytes_buf(buffer);
 			return buffer;
@@ -36,7 +39,7 @@ const libs = {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 		close: sodium.api.crypto_secretbox_easy,
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		random: (n: number, buffer: Buffer = Buffer.allocUnsafe(n)) => {
+		random: (num: number, buffer: Buffer = Buffer.allocUnsafe(num)) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			sodium.api.randombytes_buf(buffer);
 			return buffer;
@@ -77,7 +80,7 @@ const methods: Methods = {
 void (async () => {
 	for (const libName of Object.keys(libs) as (keyof typeof libs)[]) {
 		try {
-			// eslint-disable-next-line
+			// eslint-disable-next-line unicorn/no-abusive-eslint-disable, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 			const lib = require(libName);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready;

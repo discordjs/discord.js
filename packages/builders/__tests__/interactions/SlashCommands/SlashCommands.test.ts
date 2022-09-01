@@ -1,4 +1,6 @@
-import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
+import { ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
@@ -14,7 +16,7 @@ import {
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const largeArray = Array.from({ length: 26 }, () => 1 as unknown as APIApplicationCommandOptionChoice);
 
@@ -33,9 +35,7 @@ const getSubcommandGroup = () => new SlashCommandSubcommandGroupBuilder().setNam
 const getSubcommand = () => new SlashCommandSubcommandBuilder().setName('owo').setDescription('Testing 123');
 
 class Collection {
-	public get [Symbol.toStringTag]() {
-		return 'Map';
-	}
+	public readonly [Symbol.toStringTag] = 'Map';
 }
 
 describe('Slash Commands', () => {

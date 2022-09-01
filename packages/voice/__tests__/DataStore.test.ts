@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/dot-notation */
+import { setImmediate } from 'node:timers';
 import { GatewayOpcodes } from 'discord-api-types/v10';
-import * as DataStore from '../src/DataStore';
-import { VoiceConnection } from '../src/VoiceConnection';
-import * as _AudioPlayer from '../src/audio/AudioPlayer';
+import * as DataStore from '../src/DataStore.js';
+import type { VoiceConnection } from '../src/VoiceConnection.js';
+import * as _AudioPlayer from '../src/audio/AudioPlayer.js';
+
 jest.mock('../src/VoiceConnection');
 jest.mock('../src/audio/AudioPlayer');
 
@@ -15,8 +17,9 @@ function createVoiceConnection(joinConfig: Pick<DataStore.JoinConfig, 'group' | 
 	} as any;
 }
 
-function waitForEventLoop() {
-	return new Promise((res) => setImmediate(res));
+async function waitForEventLoop() {
+	// eslint-disable-next-line no-promise-executor-return
+	return new Promise((resolve) => setImmediate(resolve));
 }
 
 beforeEach(() => {
@@ -24,6 +27,7 @@ beforeEach(() => {
 	for (const groupKey of groups.keys()) {
 		groups.delete(groupKey);
 	}
+
 	groups.set('default', new Map());
 });
 
@@ -41,6 +45,7 @@ describe('DataStore', () => {
 		};
 		expect(DataStore.createJoinVoiceChannelPayload(joinConfig)).toStrictEqual({
 			op: GatewayOpcodes.VoiceStateUpdate,
+			// eslint-disable-next-line id-length
 			d: {
 				guild_id: joinConfig.guildId,
 				channel_id: joinConfig.channelId,
@@ -60,7 +65,7 @@ describe('DataStore', () => {
 
 		expect([...DataStore.getVoiceConnections().values()]).toEqual([voiceConnectionDefault]);
 		expect([...DataStore.getVoiceConnections('default').values()]).toEqual([voiceConnectionDefault]);
-		expect([...DataStore.getVoiceConnections('abc').values()]).toEqual([voiceConnectionAbc]);
+		expect([...DataStore.getVoiceConnections('abc')!.values()]).toEqual([voiceConnectionAbc]);
 
 		DataStore.untrackVoiceConnection(voiceConnectionDefault);
 		expect(DataStore.getVoiceConnection('123')).toBeUndefined();
@@ -73,6 +78,7 @@ describe('DataStore', () => {
 		expect(DataStore.hasAudioPlayer(player)).toEqual(true);
 		expect(DataStore.addAudioPlayer(player)).toEqual(player);
 		DataStore.deleteAudioPlayer(player);
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(DataStore.deleteAudioPlayer(player)).toBeUndefined();
 		expect(DataStore.hasAudioPlayer(player)).toEqual(false);
 		// Tests audio cycle with nextTime === -1

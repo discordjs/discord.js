@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { describe, test, expect } from 'vitest';
-import { EmbedBuilder, embedLength } from '../../src';
+import { EmbedBuilder, embedLength } from '../../src/index.js';
 
 const alpha = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -74,7 +75,7 @@ describe('Embed', () => {
 		test('GIVEN an embed with an invalid description THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
-			expect(() => embed.setDescription('a'.repeat(4097))).toThrowError();
+			expect(() => embed.setDescription('a'.repeat(4_097))).toThrowError();
 		});
 	});
 
@@ -134,7 +135,7 @@ describe('Embed', () => {
 			expect(() => embed.setColor('RED')).toThrowError();
 			// @ts-expect-error
 			expect(() => embed.setColor([42, 36])).toThrowError();
-			expect(() => embed.setColor([42, 36, 1000])).toThrowError();
+			expect(() => embed.setColor([42, 36, 1_000])).toThrowError();
 		});
 	});
 
@@ -307,7 +308,7 @@ describe('Embed', () => {
 		test('GIVEN an embed with invalid footer text THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
-			expect(() => embed.setFooter({ text: 'a'.repeat(2049) })).toThrowError();
+			expect(() => embed.setFooter({ text: 'a'.repeat(2_049) })).toThrowError();
 		});
 	});
 
@@ -411,7 +412,7 @@ describe('Embed', () => {
 			test('4', () => {
 				const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: '', value: 'a'.repeat(1025) })).toThrowError();
+				expect(() => embed.addFields({ name: '', value: 'a'.repeat(1_025) })).toThrowError();
 			});
 		});
 	});

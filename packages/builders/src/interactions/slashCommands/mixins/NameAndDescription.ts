@@ -1,10 +1,13 @@
 import type { LocaleString, LocalizationMap } from 'discord-api-types/v10';
-import { validateDescription, validateLocale, validateName } from '../Assertions';
+import { validateDescription, validateLocale, validateName } from '../Assertions.js';
 
 export class SharedNameAndDescription {
 	public readonly name!: string;
+
 	public readonly name_localizations?: LocalizationMap;
+
 	public readonly description!: string;
+
 	public readonly description_localizations?: LocalizationMap;
 
 	/**
@@ -72,9 +75,8 @@ export class SharedNameAndDescription {
 
 		Reflect.set(this, 'name_localizations', {});
 
-		Object.entries(localizedNames).forEach((args) =>
-			this.setNameLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedNames))
+			this.setNameLocalization(...(args as [LocaleString, string | null]));
 		return this;
 	}
 
@@ -114,9 +116,8 @@ export class SharedNameAndDescription {
 		}
 
 		Reflect.set(this, 'description_localizations', {});
-		Object.entries(localizedDescriptions).forEach((args) =>
-			this.setDescriptionLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedDescriptions))
+			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
 		return this;
 	}
 }

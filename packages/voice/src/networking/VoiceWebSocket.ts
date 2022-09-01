@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
+import { clearInterval, setInterval } from 'node:timers';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import WebSocket, { MessageEvent } from 'ws';
+import type { MessageEvent } from 'ws';
+import WebSocket from 'ws';
 
 export interface VoiceWebSocket extends EventEmitter {
 	on(event: 'error', listener: (error: Error) => void): this;
@@ -56,7 +58,7 @@ export class VoiceWebSocket extends EventEmitter {
 	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
-	private readonly debug: null | ((message: string) => void);
+	private readonly debug: ((message: string) => void) | null;
 
 	/**
 	 * The underlying WebSocket of this wrapper.
@@ -71,11 +73,11 @@ export class VoiceWebSocket extends EventEmitter {
 	public constructor(address: string, debug: boolean) {
 		super();
 		this.ws = new WebSocket(address);
-		this.ws.onmessage = (e) => this.onMessage(e);
-		this.ws.onopen = (e) => this.emit('open', e);
+		this.ws.onmessage = (err) => this.onMessage(err);
+		this.ws.onopen = (err) => this.emit('open', err);
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-		this.ws.onerror = (e: Error | WebSocket.ErrorEvent) => this.emit('error', e instanceof Error ? e : e.error);
-		this.ws.onclose = (e) => this.emit('close', e);
+		this.ws.onerror = (err: Error | WebSocket.ErrorEvent) => this.emit('error', err instanceof Error ? err : err.error);
+		this.ws.onclose = (err) => this.emit('close', err);
 
 		this.lastHeartbeatAck = 0;
 		this.lastHeartbeatSend = 0;
@@ -90,10 +92,10 @@ export class VoiceWebSocket extends EventEmitter {
 		try {
 			this.debug?.('destroyed');
 			this.setHeartbeatInterval(-1);
-			this.ws.close(1000);
+			this.ws.close(1_000);
 		} catch (error) {
-			const e = error as Error;
-			this.emit('error', e);
+			const err = error as Error;
+			this.emit('error', err);
 		}
 	}
 
@@ -113,8 +115,8 @@ export class VoiceWebSocket extends EventEmitter {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			packet = JSON.parse(event.data);
 		} catch (error) {
-			const e = error as Error;
-			this.emit('error', e);
+			const err = error as Error;
+			this.emit('error', err);
 			return;
 		}
 
@@ -137,10 +139,11 @@ export class VoiceWebSocket extends EventEmitter {
 		try {
 			const stringified = JSON.stringify(packet);
 			this.debug?.(`>> ${stringified}`);
-			return this.ws.send(stringified);
+			this.ws.send(stringified);
+			return;
 		} catch (error) {
-			const e = error as Error;
-			this.emit('error', e);
+			const err = error as Error;
+			this.emit('error', err);
 		}
 	}
 
@@ -151,8 +154,9 @@ export class VoiceWebSocket extends EventEmitter {
 		this.lastHeartbeatSend = Date.now();
 		this.missedHeartbeats++;
 		const nonce = this.lastHeartbeatSend;
-		return this.sendPacket({
+		this.sendPacket({
 			op: VoiceOpcodes.Heartbeat,
+			// eslint-disable-next-line id-length
 			d: nonce,
 		});
 	}
@@ -171,6 +175,7 @@ export class VoiceWebSocket extends EventEmitter {
 					this.ws.close();
 					this.setHeartbeatInterval(-1);
 				}
+
 				this.sendHeartbeat();
 			}, ms);
 		}

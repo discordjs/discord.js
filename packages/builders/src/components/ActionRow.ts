@@ -1,21 +1,20 @@
-import {
-	type APIActionRowComponent,
-	ComponentType,
+import type {
 	APIMessageActionRowComponent,
 	APIModalActionRowComponent,
 	APIActionRowComponentTypes,
 } from 'discord-api-types/v10';
-import { ComponentBuilder } from './Component';
-import { createComponentBuilder } from './Components';
+import { type APIActionRowComponent, ComponentType } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
+import { ComponentBuilder } from './Component.js';
+import { createComponentBuilder } from './Components.js';
 import type { ButtonBuilder } from './button/Button';
 import type { SelectMenuBuilder } from './selectMenu/SelectMenu';
 import type { TextInputBuilder } from './textInput/TextInput';
-import { normalizeArray, type RestOrArray } from '../util/normalizeArray';
 
 export type MessageComponentBuilder =
-	| MessageActionRowComponentBuilder
-	| ActionRowBuilder<MessageActionRowComponentBuilder>;
-export type ModalComponentBuilder = ModalActionRowComponentBuilder | ActionRowBuilder<ModalActionRowComponentBuilder>;
+	| ActionRowBuilder<MessageActionRowComponentBuilder>
+	| MessageActionRowComponentBuilder;
+export type ModalComponentBuilder = ActionRowBuilder<ModalActionRowComponentBuilder> | ModalActionRowComponentBuilder;
 export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
 export type ModalActionRowComponentBuilder = TextInputBuilder;
 export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
@@ -35,7 +34,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 
 	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
-		this.components = (components?.map((c) => createComponentBuilder(c)) ?? []) as T[];
+		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as T[];
 	}
 
 	/**

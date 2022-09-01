@@ -1,6 +1,8 @@
-import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v10';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { APISelectMenuComponent, APISelectMenuOption } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index';
+import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
 
 const selectMenu = () => new SelectMenuBuilder();
 const selectMenuOption = () => new SelectMenuOptionBuilder();
@@ -74,21 +76,27 @@ describe('Select Menu Components', () => {
 					]),
 			).not.toThrowError();
 
-			const options = new Array<APISelectMenuOption>(25).fill({ label: 'test', value: 'test' });
+			const options = Array.from({ length: 25 }).fill({ label: 'test', value: 'test' });
+			// @ts-expect-error
 			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
+			// @ts-expect-error
 			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
+			// @ts-expect-error
 			expect(() => selectMenu().addOptions(options)).not.toThrowError();
+			// @ts-expect-error
 			expect(() => selectMenu().setOptions(options)).not.toThrowError();
 
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
-					.addOptions(...new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+					// @ts-expect-error
+					.addOptions(...Array.from({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
-					.addOptions(new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+					// @ts-expect-error
+					.addOptions(Array.from({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 		});
 
@@ -122,18 +130,22 @@ describe('Select Menu Components', () => {
 			// @ts-expect-error
 			expect(() => selectMenu().addOptions([{ default: true }])).toThrowError();
 
-			const tooManyOptions = new Array<APISelectMenuOption>(26).fill({ label: 'test', value: 'test' });
+			const tooManyOptions = Array.from({ length: 26 }).fill({ label: 'test', value: 'test' });
+			// @ts-expect-error
 			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
+			// @ts-expect-error
 			expect(() => selectMenu().setOptions(tooManyOptions)).toThrowError();
 
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
+					// @ts-expect-error
 					.addOptions(...tooManyOptions),
 			).toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
+					// @ts-expect-error
 					.addOptions(tooManyOptions),
 			).toThrowError();
 

@@ -1,12 +1,11 @@
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-import type { JSONEncodable } from '../../util/jsonEncodable';
-
+import type { JSONEncodable } from '../../util/jsonEncodable.js';
 import {
 	defaultValidator,
 	emojiValidator,
 	labelValueDescriptionValidator,
 	validateRequiredSelectMenuOptionParameters,
-} from '../Assertions';
+} from '../Assertions.js';
 
 /**
  * Represents a option within a select menu component

@@ -1,22 +1,14 @@
-import {
-	APIModalInteractionResponseCallbackData,
-	APITextInputComponent,
-	ComponentType,
-	TextInputStyle,
-} from 'discord-api-types/v10';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import type { APIModalInteractionResponseCallbackData, APITextInputComponent } from 'discord-api-types/v10';
+import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import {
-	ActionRowBuilder,
-	ButtonBuilder,
-	ModalBuilder,
-	ModalActionRowComponentBuilder,
-	TextInputBuilder,
-} from '../../src';
+import type { ModalActionRowComponentBuilder } from '../../src';
+import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from '../../src/index.js';
 import {
 	componentsValidator,
 	titleValidator,
 	validateRequiredParameters,
-} from '../../src/interactions/modals/Assertions';
+} from '../../src/interactions/modals/Assertions.js';
 
 const modal = () => new ModalBuilder();
 

@@ -1,30 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { Buffer } from 'node:buffer';
 import EventEmitter, { once } from 'node:events';
+import process from 'node:process';
 import { Readable } from 'node:stream';
 import { opus as _opus } from 'prism-media';
-import { StreamType } from '../src/audio';
-import { demuxProbe } from '../src/util/demuxProbe';
+import { StreamType } from '../src/audio/index.js';
+import { demuxProbe } from '../src/util/demuxProbe.js';
 
 jest.mock('prism-media');
 
 const WebmDemuxer = _opus.WebmDemuxer as unknown as jest.Mock<_opus.WebmDemuxer>;
 const OggDemuxer = _opus.OggDemuxer as unknown as jest.Mock<_opus.OggDemuxer>;
 
-function nextTick() {
+async function nextTick() {
+	// eslint-disable-next-line no-promise-executor-return
 	return new Promise((resolve) => process.nextTick(resolve));
 }
 
-async function* gen(n: number) {
-	for (let i = 0; i < n; i++) {
-		yield Buffer.from([i]);
+async function* gen(num: number) {
+	for (let index = 0; index < num; index++) {
+		yield Buffer.from([index]);
 		await nextTick();
 	}
 }
 
-function range(n: number) {
-	return Buffer.from(Array.from(Array(n).keys()));
+function range(num: number) {
+	// eslint-disable-next-line unicorn/no-new-array
+	return Buffer.from(Array.from(new Array(num).keys()));
 }
 
 const validHead = Buffer.from([
@@ -41,6 +45,7 @@ async function collectStream(stream: Readable): Promise<Buffer> {
 	for await (const data of stream) {
 		output = Buffer.concat([output, data]);
 	}
+
 	return output;
 }
 
@@ -107,10 +112,10 @@ describe('demuxProbe', () => {
 	});
 
 	test('Gives up on larger streams', async () => {
-		const stream = Readable.from(gen(8192), { objectMode: false });
+		const stream = Readable.from(gen(8_192), { objectMode: false });
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.Arbitrary);
-		await expect(collectStream(probe.stream)).resolves.toEqual(range(8192));
+		await expect(collectStream(probe.stream)).resolves.toEqual(range(8_192));
 	});
 
 	test('Propagates errors', async () => {

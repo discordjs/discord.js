@@ -1,5 +1,6 @@
-import { APIApplicationCommandAttachmentOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
+import type { APIApplicationCommandAttachmentOption } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 
 export class SlashCommandAttachmentOption extends ApplicationCommandOptionBase {
 	public override readonly type = ApplicationCommandOptionType.Attachment as const;

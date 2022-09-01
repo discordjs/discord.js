@@ -1,4 +1,4 @@
-import {
+import type {
 	APIApplicationCommandAttachmentOption,
 	APIApplicationCommandBooleanOption,
 	APIApplicationCommandChannelOption,
@@ -8,9 +8,8 @@ import {
 	APIApplicationCommandRoleOption,
 	APIApplicationCommandStringOption,
 	APIApplicationCommandUserOption,
-	ApplicationCommandOptionType,
-	ChannelType,
 } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, ChannelType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAttachmentOption,
@@ -22,7 +21,7 @@ import {
 	SlashCommandRoleOption,
 	SlashCommandStringOption,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const getBooleanOption = () =>
 	new SlashCommandBooleanOption().setName('owo').setDescription('Testing 123').setRequired(true);

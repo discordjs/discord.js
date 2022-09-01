@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { PermissionFlagsBits } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index';
+import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index.js';
 
 const getBuilder = () => new ContextMenuCommandBuilder();
 

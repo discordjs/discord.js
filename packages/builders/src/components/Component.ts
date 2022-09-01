@@ -6,7 +6,7 @@ import type {
 } from 'discord-api-types/v10';
 import type { JSONEncodable } from '../util/jsonEncodable';
 
-export type AnyAPIActionRowComponent = APIActionRowComponentTypes | APIActionRowComponent<APIActionRowComponentTypes>;
+export type AnyAPIActionRowComponent = APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes;
 
 /**
  * Represents a discord component

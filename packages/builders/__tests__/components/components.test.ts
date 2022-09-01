@@ -1,13 +1,11 @@
-import {
+import type {
 	APIActionRowComponent,
 	APIButtonComponent,
 	APIMessageActionRowComponent,
 	APISelectMenuComponent,
 	APITextInputComponent,
-	ButtonStyle,
-	ComponentType,
-	TextInputStyle,
 } from 'discord-api-types/v10';
+import { ButtonStyle, ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
@@ -15,7 +13,7 @@ import {
 	createComponentBuilder,
 	SelectMenuBuilder,
 	TextInputBuilder,
-} from '../../src/index';
+} from '../../src/index.js';
 
 describe('createComponentBuilder', () => {
 	test.each([ButtonBuilder, SelectMenuBuilder, TextInputBuilder])(
@@ -67,6 +65,7 @@ describe('createComponentBuilder', () => {
 	});
 
 	test('GIVEN an unknown component type THEN throws error', () => {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-expect-error
 		expect(() => createComponentBuilder({ type: 'invalid' })).toThrowError();
 	});

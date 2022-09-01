@@ -1,7 +1,8 @@
 import { s } from '@sapphire/shapeshift';
-import { APIMessageComponentEmoji, ButtonStyle } from 'discord-api-types/v10';
-import { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption';
-import { isValidationEnabled } from '../util/validation';
+import type { APIMessageComponentEmoji } from 'discord-api-types/v10';
+import { ButtonStyle } from 'discord-api-types/v10';
+import { isValidationEnabled } from '../util/validation.js';
+import { SelectMenuOptionBuilder } from './selectMenu/SelectMenuOption.js';
 
 export const customIdValidator = s.string
 	.lengthGreaterThanOrEqual(1)
