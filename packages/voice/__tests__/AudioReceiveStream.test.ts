@@ -1,6 +1,5 @@
 /* eslint-disable no-promise-executor-return */
 import { Buffer } from 'node:buffer';
-import { setTimeout } from 'node:timers';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioReceiveStream, EndBehaviorType } from '../src/receive/AudioReceiveStream';
 

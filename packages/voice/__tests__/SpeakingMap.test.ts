@@ -1,4 +1,3 @@
-import { setTimeout } from 'node:timers';
 import { SpeakingMap } from '../src/receive/SpeakingMap';
 import { noop } from '../src/util/util';
 

@@ -4,7 +4,6 @@ import type { Socket } from 'node:dgram';
 import { createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';
-import { setInterval, setImmediate, clearInterval } from 'node:timers';
 
 /**
  * Stores an IP address and port. Used to store socket details for the local client as well as

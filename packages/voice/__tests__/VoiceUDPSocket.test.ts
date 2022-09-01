@@ -5,7 +5,6 @@
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import EventEmitter, { once } from 'node:events';
-import { setImmediate } from 'node:timers';
 import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
 jest.mock('node:dgram');

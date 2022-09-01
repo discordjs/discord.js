@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/method-signature-style, @typescript-eslint/unified-signatures */
 import { EventEmitter } from 'node:events';
-import { clearTimeout, setTimeout } from 'node:timers';
 
 export interface SpeakingMap extends EventEmitter {
 	/**

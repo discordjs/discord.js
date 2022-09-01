@@ -3,7 +3,8 @@
 	"plugins": ["eslint-plugin-tsdoc"],
 	"rules": {
 		"tsdoc/syntax": "warn",
-		"import/extensions": "off"
+		"import/extensions": "off",
+		"no-restricted-globals": "off"
 	},
 	"parserOptions": {
 		"project": "./tsconfig.eslint.json",

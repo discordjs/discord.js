@@ -1,5 +1,3 @@
-import { setTimeout, clearTimeout } from 'node:timers';
-
 /**
  * Creates an abort controller that aborts after the given time.
  *

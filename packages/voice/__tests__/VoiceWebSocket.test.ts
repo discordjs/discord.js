@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type EventEmitter from 'node:events';
 import { once } from 'node:events';
-import { setTimeout } from 'node:timers';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import WS from 'jest-websocket-mock';
 import { VoiceWebSocket } from '../src/networking/VoiceWebSocket';

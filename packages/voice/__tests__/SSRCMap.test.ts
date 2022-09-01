@@ -2,7 +2,6 @@
 import type EventEmitter from 'node:events';
 import { once } from 'node:events';
 import process from 'node:process';
-import { setTimeout } from 'node:timers';
 import type { VoiceUserData } from '../src/receive/SSRCMap';
 import { SSRCMap } from '../src/receive/SSRCMap';
 

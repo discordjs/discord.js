@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
-import { clearInterval, setInterval } from 'node:timers';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { MessageEvent } from 'ws';
 import WebSocket from 'ws';
