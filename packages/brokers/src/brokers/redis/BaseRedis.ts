@@ -84,7 +84,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 					'COUNT',
 					String(this.options.maxChunk),
 					'BLOCK',
-					String(this.options.blockInterval),
+					String(this.options.blockTimeout),
 					'STREAMS',
 					...this.subscribedEvents,
 					...Array<string>(this.subscribedEvents.size).fill('>'),
