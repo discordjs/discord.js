@@ -651,7 +651,8 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	public setSpeaking(enabled: boolean) {
 		if (this.state.status !== VoiceConnectionStatus.Ready) return false;
-		this.state.networking.setSpeaking(enabled);
+		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
+		return this.state.networking.setSpeaking(enabled);
 	}
 
 	/**
