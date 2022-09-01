@@ -1,4 +1,4 @@
-import type { InternalRequest, RawFile } from '../RequestManager';
+import type { InternalRequest, RawFile } from '../RequestManager.js';
 
 interface DiscordErrorFieldInformation {
 	code: string;
@@ -9,12 +9,12 @@ interface DiscordErrorGroupWrapper {
 	_errors: DiscordError[];
 }
 
-type DiscordError = DiscordErrorGroupWrapper | DiscordErrorFieldInformation | { [k: string]: DiscordError } | string;
+type DiscordError = DiscordErrorFieldInformation | DiscordErrorGroupWrapper | string | { [k: string]: DiscordError };
 
 export interface DiscordErrorData {
 	code: number;
-	message: string;
 	errors?: DiscordError;
+	message: string;
 }
 
 export interface OAuthErrorData {
@@ -37,6 +37,7 @@ function isErrorResponse(error: DiscordError): error is DiscordErrorFieldInforma
 
 /**
  * Represents an API error returned by Discord
+ *
  * @extends Error
  */
 export class DiscordAPIError extends Error {
@@ -56,7 +57,7 @@ export class DiscordAPIError extends Error {
 		public status: number,
 		public method: string,
 		public url: string,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		bodyData: Pick<InternalRequest, 'body' | 'files'>,
 	) {
 		super(DiscordAPIError.getMessage(rawError));
 
@@ -76,31 +77,40 @@ export class DiscordAPIError extends Error {
 			if (error.errors) {
 				flattened = [...this.flattenDiscordError(error.errors)].join('\n');
 			}
+
 			return error.message && flattened
 				? `${error.message}\n${flattened}`
 				: error.message || flattened || 'Unknown Error';
 		}
+
 		return error.error_description ?? 'No Description';
 	}
 
+	// eslint-disable-next-line consistent-return
 	private static *flattenDiscordError(obj: DiscordError, key = ''): IterableIterator<string> {
 		if (isErrorResponse(obj)) {
 			return yield `${key.length ? `${key}[${obj.code}]` : `${obj.code}`}: ${obj.message}`.trim();
 		}
 
-		for (const [k, v] of Object.entries(obj)) {
-			const nextKey = k.startsWith('_') ? key : key ? (Number.isNaN(Number(k)) ? `${key}.${k}` : `${key}[${k}]`) : k;
+		for (const [key, val] of Object.entries(obj)) {
+			const nextKey = key.startsWith('_')
+				? key
+				: key
+				? Number.isNaN(Number(key))
+					? `${key}.${key}`
+					: `${key}[${key}]`
+				: key;
 
-			if (typeof v === 'string') {
-				yield v;
+			if (typeof val === 'string') {
+				yield val;
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			} else if (isErrorGroupWrapper(v)) {
-				for (const error of v._errors) {
+			} else if (isErrorGroupWrapper(val)) {
+				for (const error of val._errors) {
 					yield* this.flattenDiscordError(error, nextKey);
 				}
 			} else {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-				yield* this.flattenDiscordError(v, nextKey);
+				yield* this.flattenDiscordError(val, nextKey);
 			}
 		}
 	}

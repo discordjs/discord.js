@@ -1,5 +1,5 @@
-import type { RequestBody } from './DiscordAPIError';
 import type { InternalRequest } from '../RequestManager';
+import type { RequestBody } from './DiscordAPIError';
 
 /**
  * Represents a HTTP error
@@ -19,7 +19,7 @@ export class HTTPError extends Error {
 		public status: number,
 		public method: string,
 		public url: string,
-		bodyData: Pick<InternalRequest, 'files' | 'body'>,
+		bodyData: Pick<InternalRequest, 'body' | 'files'>,
 	) {
 		super();
 

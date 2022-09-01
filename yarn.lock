@@ -1733,6 +1733,7 @@ __metadata:
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1831,6 +1832,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.36.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1858,6 +1860,7 @@ __metadata:
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1890,6 +1893,7 @@ __metadata:
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1950,6 +1954,7 @@ __metadata:
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -8025,6 +8030,32 @@ __metadata:
   dependencies:
     eslint-config-aqua: ^9.2.0
   checksum: 380969b39b9a5c43fcb8cfc283cee83ef046084e854c59e53dfc6eb08578e92914be12b992eb3cd6231610c008657ac4c03ecd96f8983efaa146c41f0f07cc09
+  languageName: node
+  linkType: hard
+
+"eslint-config-neon@npm:^0.1.13":
+  version: 0.1.13
+  resolution: "eslint-config-neon@npm:0.1.13"
+  dependencies:
+    "@next/eslint-plugin-next": ^12.2.5
+    "@rushstack/eslint-patch": ^1.1.4
+    "@typescript-eslint/eslint-plugin": ^5.36.1
+    "@typescript-eslint/parser": ^5.36.1
+    eslint-config-prettier: ^8.5.0
+    eslint-plugin-cypress: ^2.12.1
+    eslint-plugin-import: "npm:eslint-plugin-i@latest"
+    eslint-plugin-jest: ^27.0.1
+    eslint-plugin-jsdoc: ^39.3.6
+    eslint-plugin-jsx-a11y: ^6.6.1
+    eslint-plugin-lodash: ^7.4.0
+    eslint-plugin-n: ^15.2.5
+    eslint-plugin-promise: ^6.0.1
+    eslint-plugin-react: ^7.31.1
+    eslint-plugin-react-hooks: ^4.6.0
+    eslint-plugin-tsdoc: ^0.2.16
+    eslint-plugin-typescript-sort-keys: ^2.1.0
+    eslint-plugin-unicorn: ^43.0.2
+  checksum: 22a1dd540a599a943c7d22336fa513606245be46aadab5db4d3b36740f28231e0128e8d39dcec7d21b95b494b8ccf161e67ea7c7cf65e84a1a1f4f36278618c8
   languageName: node
   linkType: hard
 

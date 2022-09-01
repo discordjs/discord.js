@@ -4,6 +4,15 @@ import type { HandlerRequestData, RouteData } from '../RequestManager';
 
 export interface IHandler {
 	/**
+	 * The unique id of the handler
+	 */
+	readonly id: string;
+	/**
+	 * If the bucket is currently inactive (no pending requests)
+	 */
+	// eslint-disable-next-line @typescript-eslint/method-signature-style -- This is meant to be a getter returning a bool
+	get inactive(): boolean;
+	/**
 	 * Queues a request to be sent
 	 *
 	 * @param routeId - The generalized api route with literal ids for major parameters
@@ -11,19 +20,10 @@ export interface IHandler {
 	 * @param options - All the information needed to make a request
 	 * @param requestData - Extra data from the user's request needed for errors and additional processing
 	 */
-	queueRequest: (
+	queueRequest(
 		routeId: RouteData,
 		url: string,
 		options: RequestOptions,
 		requestData: HandlerRequestData,
-	) => Promise<Dispatcher.ResponseData>;
-	/**
-	 * If the bucket is currently inactive (no pending requests)
-	 */
-	// eslint-disable-next-line @typescript-eslint/method-signature-style -- This is meant to be a getter returning a bool
-	get inactive(): boolean;
-	/**
-	 * The unique id of the handler
-	 */
-	readonly id: string;
+	): Promise<Dispatcher.ResponseData>;
 }

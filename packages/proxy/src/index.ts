@@ -1,3 +1,3 @@
-export * from './handlers/proxyRequests';
-export * from './util/responseHelpers';
-export type { RequestHandler } from './util/util';
+export * from './handlers/proxyRequests.js';
+export * from './util/responseHelpers.js';
+export type { RequestHandler } from './util/util.js';
