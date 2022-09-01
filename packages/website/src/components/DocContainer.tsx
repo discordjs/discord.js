@@ -32,11 +32,11 @@ import {
 } from 'react-icons/vsc';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { HyperlinkedText } from './HyperlinkedText.jsx';
-import { Section } from './Section.jsx';
-import { TableOfContentItems } from './TableOfContentItems.jsx';
-import { TypeParamTable } from './TypeParamTable.jsx';
-import { TSDoc } from './tsdoc/TSDoc.jsx';
+import { HyperlinkedText } from './HyperlinkedText';
+import { Section } from './Section';
+import { TableOfContentItems } from './TableOfContentItems';
+import { TypeParamTable } from './TypeParamTable';
+import { TSDoc } from './tsdoc/TSDoc';
 
 type DocContainerProps = PropsWithChildren<{
 	excerpt: string;

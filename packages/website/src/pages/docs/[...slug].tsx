@@ -26,17 +26,17 @@ import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout.jsx';
-import { Class } from '~/components/model/Class.jsx';
-import { Enum } from '~/components/model/Enum.jsx';
-import { Function } from '~/components/model/Function.jsx';
-import { Interface } from '~/components/model/Interface.jsx';
-import { TypeAlias } from '~/components/model/TypeAlias.jsx';
-import { Variable } from '~/components/model/Variable.jsx';
-import { MemberProvider } from '~/contexts/member.jsx';
+import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
+import { Class } from '~/components/model/Class';
+import { Enum } from '~/components/model/Enum';
+import { Function } from '~/components/model/Function';
+import { Interface } from '~/components/model/Interface';
+import { TypeAlias } from '~/components/model/TypeAlias';
+import { Variable } from '~/components/model/Variable';
+import { MemberProvider } from '~/contexts/member';
 import { createApiModel } from '~/util/api-model.server';
 import { findMember, findMemberByKey } from '~/util/model.server';
-import { PACKAGES } from '~/util/packages.js';
+import { PACKAGES } from '~/util/packages';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (

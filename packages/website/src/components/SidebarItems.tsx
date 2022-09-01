@@ -10,7 +10,7 @@ import {
 	VscSymbolVariable,
 	VscSymbolMethod,
 } from 'react-icons/vsc';
-import { Section } from './Section.jsx';
+import { Section } from './Section';
 import type { GroupedMembers, Members } from './SidebarLayout';
 
 function groupMembers(members: Members): GroupedMembers {

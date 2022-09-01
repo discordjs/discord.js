@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import { BlockComment } from './BlockComment.jsx';
+import { BlockComment } from './BlockComment';
 
 export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 	const { colorScheme } = useMantineColorScheme();

@@ -7,11 +7,11 @@ import type {
 import { Stack, Group, Badge, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
-import { MethodList } from './MethodList.jsx';
-import { ParameterTable } from './ParameterTable.jsx';
-import { PropertyList } from './PropertyList.jsx';
-import { Section } from './Section.jsx';
-import { TSDoc } from './tsdoc/TSDoc.jsx';
+import { MethodList } from './MethodList';
+import { ParameterTable } from './ParameterTable';
+import { PropertyList } from './PropertyList';
+import { Section } from './Section';
+import { TSDoc } from './tsdoc/TSDoc';
 
 export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
 	const matches = useMediaQuery('(max-width: 768px)');

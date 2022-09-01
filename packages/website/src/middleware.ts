@@ -1,4 +1,3 @@
-import { URL } from 'node:url';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export default function middleware(request: NextRequest) {

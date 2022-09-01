@@ -3,9 +3,9 @@ import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title }
 import { useMediaQuery } from '@mantine/hooks';
 import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
-import { HyperlinkedText } from './HyperlinkedText.jsx';
-import { InheritanceText } from './InheritanceText.jsx';
-import { TSDoc } from './tsdoc/TSDoc.jsx';
+import { HyperlinkedText } from './HyperlinkedText';
+import { InheritanceText } from './InheritanceText';
+import { TSDoc } from './tsdoc/TSDoc';
 
 export enum CodeListingSeparatorType {
 	Type = ':',

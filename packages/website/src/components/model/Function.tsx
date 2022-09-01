@@ -1,8 +1,8 @@
 import type { ApiFunctionJSON } from '@discordjs/api-extractor-utils';
 import { Skeleton } from '@mantine/core';
 import { useRouter } from 'next/router';
-import { DocContainer } from '../DocContainer.jsx';
-import { ParametersSection } from '../Sections.jsx';
+import { DocContainer } from '../DocContainer';
+import { ParametersSection } from '../Sections';
 
 export function Function({ data }: { data: ApiFunctionJSON }) {
 	const router = useRouter();

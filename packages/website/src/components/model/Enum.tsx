@@ -3,9 +3,9 @@ import { Skeleton, Stack } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { VscSymbolEnumMember } from 'react-icons/vsc';
-import { CodeListing, CodeListingSeparatorType } from '../CodeListing.jsx';
-import { DocContainer } from '../DocContainer.jsx';
-import { Section } from '../Section.jsx';
+import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
+import { DocContainer } from '../DocContainer';
+import { Section } from '../Section';
 
 export function Enum({ data }: { data: ApiEnumJSON }) {
 	const router = useRouter();

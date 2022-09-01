@@ -33,9 +33,9 @@ import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
-import { SidebarItems } from './SidebarItems.jsx';
+import { SidebarItems } from './SidebarItems';
 import type { findMember } from '~/util/model.server';
-import { PACKAGES } from '~/util/packages.js';
+import { PACKAGES } from '~/util/packages';
 
 const fetcher = async (url: string) => {
 	const res = await fetch(url);

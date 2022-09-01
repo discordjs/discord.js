@@ -5,7 +5,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { type NextRouter, useRouter } from 'next/router';
 import { VscPackage } from 'react-icons/vsc';
-import { RouterTransition } from '~/components/RouterTransition.js';
+import { RouterTransition } from '../components/RouterTransition';
 import '../styles/unocss.css';
 import '../styles/main.css';
 

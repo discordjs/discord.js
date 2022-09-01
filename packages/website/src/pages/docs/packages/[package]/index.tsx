@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
-import { PACKAGES } from '~/util/packages.js';
+import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
 	data: {
