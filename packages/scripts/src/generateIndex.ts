@@ -1,18 +1,19 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import { ApiDeclaredItem, ApiItem, ApiItemContainerMixin, ApiModel } from '@microsoft/api-extractor-model';
-import { DocCodeSpan, DocNode, DocNodeKind, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import { ApiDeclaredItem, ApiItemContainerMixin, type ApiItem, type ApiModel } from '@microsoft/api-extractor-model';
+import { DocNodeKind, type DocCodeSpan, type DocNode, type DocParagraph, type DocPlainText } from '@microsoft/tsdoc';
 
 export interface MemberJSON {
-	name: string;
 	kind: string;
-	summary: string | null;
+	name: string;
 	path: string;
+	summary: string | null;
 }
 
 /**
  * Attempts to resolve the summary text for the given item.
+ *
  * @param item - The API item to resolve the summary text for.
  */
 function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
@@ -34,8 +35,14 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				retVal += (node as DocPlainText).text;
 				break;
 			case DocNodeKind.Section:
-			case DocNodeKind.Paragraph:
-				return (node as DocParagraph).nodes.forEach(visitTSDocNode);
+			case DocNodeKind.Paragraph: {
+				for (const child of (node as DocParagraph).nodes) {
+					visitTSDocNode(child);
+				}
+
+				break;
+			}
+
 			default: // We'll ignore all other nodes.
 				break;
 		}

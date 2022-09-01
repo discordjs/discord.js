@@ -4,12 +4,14 @@ import { EventEmitter } from 'node:events';
 export interface SpeakingMap extends EventEmitter {
 	/**
 	 * Emitted when a user starts speaking.
+	 *
 	 * @eventProperty
 	 */
 	on(event: 'start', listener: (userId: string) => void): this;
 
 	/**
 	 * Emitted when a user ends speaking.
+	 *
 	 * @eventProperty
 	 */
 	on(event: 'end', listener: (userId: string) => void): this;
@@ -45,6 +47,7 @@ export class SpeakingMap extends EventEmitter {
 			this.users.set(userId, Date.now());
 			this.emit('start', userId);
 		}
+
 		this.startTimeout(userId);
 	}
 

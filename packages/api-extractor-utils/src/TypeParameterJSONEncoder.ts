@@ -1,13 +1,13 @@
 import type { TypeParameter, ApiModel, ApiItem } from '@microsoft/api-extractor-model';
-import { type TokenDocumentation, genToken } from './parse';
-import { type DocBlockJSON, block } from './tsdoc/CommentBlock';
+import { type TokenDocumentation, genToken } from './parse.js';
+import { type DocBlockJSON, block } from './tsdoc/CommentBlock.js';
 
 export interface TypeParameterData {
-	name: string;
+	commentBlock: DocBlockJSON | null;
 	constraintTokens: TokenDocumentation[];
 	defaultTokens: TokenDocumentation[];
+	name: string;
 	optional: boolean;
-	commentBlock: DocBlockJSON | null;
 }
 
 export function generateTypeParamData(

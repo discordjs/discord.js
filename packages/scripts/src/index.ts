@@ -1,1 +1,1 @@
-export * from './generateIndex';
+export * from './generateIndex.js';

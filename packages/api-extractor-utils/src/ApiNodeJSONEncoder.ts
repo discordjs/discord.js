@@ -18,12 +18,12 @@ import {
 	type ApiConstructor,
 	type ApiItemContainerMixin,
 } from '@microsoft/api-extractor-model';
-import { generateTypeParamData } from './TypeParameterJSONEncoder';
-import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse';
-import { createCommentNode } from './tsdoc';
-import type { DocBlockJSON } from './tsdoc/CommentBlock';
-import type { AnyDocNodeJSON } from './tsdoc/CommentNode';
-import { type DocNodeContainerJSON, nodeContainer } from './tsdoc/CommentNodeContainer';
+import { generateTypeParamData } from './TypeParameterJSONEncoder.js';
+import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse.js';
+import type { DocBlockJSON } from './tsdoc/CommentBlock.js';
+import type { AnyDocNodeJSON } from './tsdoc/CommentNode.js';
+import { type DocNodeContainerJSON, nodeContainer } from './tsdoc/CommentNodeContainer.js';
+import { createCommentNode } from './tsdoc/index.js';
 
 export interface ReferenceData {
 	name: string;
@@ -31,9 +31,9 @@ export interface ReferenceData {
 }
 
 export interface InheritanceData {
+	parentKey: string;
 	parentName: string;
 	path: string;
-	parentKey: string;
 }
 
 export interface ApiInheritableJSON {
@@ -41,23 +41,23 @@ export interface ApiInheritableJSON {
 }
 
 export interface ApiItemJSON {
-	kind: string;
-	name: string;
-	referenceData: ReferenceData;
-	excerpt: string;
-	excerptTokens: TokenDocumentation[];
-	remarks: DocNodeContainerJSON | null;
-	summary: DocNodeContainerJSON | null;
-	deprecated: DocNodeContainerJSON | null;
 	comment: AnyDocNodeJSON | null;
 	containerKey: string;
+	deprecated: DocNodeContainerJSON | null;
+	excerpt: string;
+	excerptTokens: TokenDocumentation[];
+	kind: string;
+	name: string;
 	path: string[];
+	referenceData: ReferenceData;
+	remarks: DocNodeContainerJSON | null;
+	summary: DocNodeContainerJSON | null;
 }
 
 export interface ApiPropertyItemJSON extends ApiItemJSON, ApiInheritableJSON {
+	optional: boolean;
 	propertyTypeTokens: TokenDocumentation[];
 	readonly: boolean;
-	optional: boolean;
 }
 
 export interface ApiTypeParameterListJSON {
@@ -65,11 +65,11 @@ export interface ApiTypeParameterListJSON {
 }
 
 export interface ApiTypeParameterJSON {
-	name: string;
+	commentBlock: DocBlockJSON | null;
 	constraintTokens: TokenDocumentation[];
 	defaultTokens: TokenDocumentation[];
+	name: string;
 	optional: boolean;
-	commentBlock: DocBlockJSON | null;
 }
 
 export interface ApiParameterListJSON {
@@ -81,29 +81,29 @@ export interface ApiMethodSignatureJSON
 		ApiTypeParameterListJSON,
 		ApiParameterListJSON,
 		ApiInheritableJSON {
-	returnTypeTokens: TokenDocumentation[];
 	optional: boolean;
 	overloadIndex: number;
+	returnTypeTokens: TokenDocumentation[];
 }
 
 export interface ApiMethodJSON extends ApiMethodSignatureJSON {
-	static: boolean;
 	protected: boolean;
+	static: boolean;
 }
 
 export interface ApiParameterJSON {
-	name: string;
 	isOptional: boolean;
-	tokens: TokenDocumentation[];
+	name: string;
 	paramCommentBlock: DocBlockJSON | null;
+	tokens: TokenDocumentation[];
 }
 
 export interface ApiClassJSON extends ApiItemJSON, ApiTypeParameterListJSON {
 	constructor: ApiConstructorJSON | null;
-	properties: ApiPropertyItemJSON[];
-	methods: ApiMethodJSON[];
 	extendsTokens: TokenDocumentation[];
 	implementsTokens: TokenDocumentation[][];
+	methods: ApiMethodJSON[];
+	properties: ApiPropertyItemJSON[];
 }
 
 export interface ApiTypeAliasJSON extends ApiItemJSON, ApiTypeParameterListJSON {
@@ -111,8 +111,8 @@ export interface ApiTypeAliasJSON extends ApiItemJSON, ApiTypeParameterListJSON 
 }
 
 export interface EnumMemberData {
-	name: string;
 	initializerTokens: TokenDocumentation[];
+	name: string;
 	summary: DocNodeContainerJSON | null;
 }
 
@@ -121,26 +121,25 @@ export interface ApiEnumJSON extends ApiItemJSON {
 }
 
 export interface ApiInterfaceJSON extends ApiItemJSON, ApiTypeParameterListJSON {
-	properties: ApiPropertyItemJSON[];
-	methods: ApiMethodSignatureJSON[];
 	extendsTokens: TokenDocumentation[][] | null;
+	methods: ApiMethodSignatureJSON[];
+	properties: ApiPropertyItemJSON[];
 }
 
 export interface ApiVariableJSON extends ApiItemJSON {
-	typeTokens: TokenDocumentation[];
 	readonly: boolean;
+	typeTokens: TokenDocumentation[];
 }
 
 export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
-	returnTypeTokens: TokenDocumentation[];
 	overloadIndex: number;
+	returnTypeTokens: TokenDocumentation[];
 }
 
 export interface ApiConstructorJSON extends ApiItemJSON, ApiParameterListJSON {
 	protected: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ApiNodeJSONEncoder {
 	public static encode(model: ApiModel, node: ApiItem, version: string) {
 		if (!(node instanceof ApiDeclaredItem)) {
@@ -203,7 +202,7 @@ export class ApiNodeJSONEncoder {
 
 	public static encodeParameterList(
 		model: ApiModel,
-		item: ApiParameterListMixin & ApiDeclaredItem,
+		item: ApiDeclaredItem & ApiParameterListMixin,
 		version: string,
 	): { parameters: ApiParameterJSON[] } {
 		return {
@@ -213,7 +212,7 @@ export class ApiNodeJSONEncoder {
 
 	public static encodeTypeParameterList(
 		model: ApiModel,
-		item: ApiTypeParameterListMixin & ApiDeclaredItem,
+		item: ApiDeclaredItem & ApiTypeParameterListMixin,
 		version: string,
 	): ApiTypeParameterListJSON {
 		return {

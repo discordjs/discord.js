@@ -1,6 +1,6 @@
+import type { External } from '../interfaces/index.js';
 import { DocumentedItemMeta } from './item-meta.js';
 import { DocumentedItem } from './item.js';
-import type { External } from '../interfaces/index.js';
 
 export class DocumentedExternal extends DocumentedItem<External> {
 	public override serializer() {

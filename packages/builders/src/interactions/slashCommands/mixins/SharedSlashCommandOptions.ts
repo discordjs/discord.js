@@ -1,15 +1,15 @@
-import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase';
-import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions';
+import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions.js';
 import type { ToAPIApplicationCommandOptions } from '../SlashCommandBuilder';
-import { SlashCommandAttachmentOption } from '../options/attachment';
-import { SlashCommandBooleanOption } from '../options/boolean';
-import { SlashCommandChannelOption } from '../options/channel';
-import { SlashCommandIntegerOption } from '../options/integer';
-import { SlashCommandMentionableOption } from '../options/mentionable';
-import { SlashCommandNumberOption } from '../options/number';
-import { SlashCommandRoleOption } from '../options/role';
-import { SlashCommandStringOption } from '../options/string';
-import { SlashCommandUserOption } from '../options/user';
+import { SlashCommandAttachmentOption } from '../options/attachment.js';
+import { SlashCommandBooleanOption } from '../options/boolean.js';
+import { SlashCommandChannelOption } from '../options/channel.js';
+import { SlashCommandIntegerOption } from '../options/integer.js';
+import { SlashCommandMentionableOption } from '../options/mentionable.js';
+import { SlashCommandNumberOption } from '../options/number.js';
+import { SlashCommandRoleOption } from '../options/role.js';
+import { SlashCommandStringOption } from '../options/string.js';
+import { SlashCommandUserOption } from '../options/user.js';
+import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';
 
 export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	public readonly options!: ToAPIApplicationCommandOptions[];
@@ -83,15 +83,15 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 */
 	public addStringOption(
 		input:
-			| SlashCommandStringOption
-			| Omit<SlashCommandStringOption, 'setAutocomplete'>
 			| Omit<SlashCommandStringOption, 'addChoices'>
+			| Omit<SlashCommandStringOption, 'setAutocomplete'>
+			| SlashCommandStringOption
 			| ((
 					builder: SlashCommandStringOption,
 			  ) =>
-					| SlashCommandStringOption
+					| Omit<SlashCommandStringOption, 'addChoices'>
 					| Omit<SlashCommandStringOption, 'setAutocomplete'>
-					| Omit<SlashCommandStringOption, 'addChoices'>),
+					| SlashCommandStringOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandStringOption);
 	}
@@ -103,15 +103,15 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 */
 	public addIntegerOption(
 		input:
-			| SlashCommandIntegerOption
-			| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
 			| Omit<SlashCommandIntegerOption, 'addChoices'>
+			| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
+			| SlashCommandIntegerOption
 			| ((
 					builder: SlashCommandIntegerOption,
 			  ) =>
-					| SlashCommandIntegerOption
+					| Omit<SlashCommandIntegerOption, 'addChoices'>
 					| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
-					| Omit<SlashCommandIntegerOption, 'addChoices'>),
+					| SlashCommandIntegerOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandIntegerOption);
 	}
@@ -123,25 +123,25 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 */
 	public addNumberOption(
 		input:
-			| SlashCommandNumberOption
-			| Omit<SlashCommandNumberOption, 'setAutocomplete'>
 			| Omit<SlashCommandNumberOption, 'addChoices'>
+			| Omit<SlashCommandNumberOption, 'setAutocomplete'>
+			| SlashCommandNumberOption
 			| ((
 					builder: SlashCommandNumberOption,
 			  ) =>
-					| SlashCommandNumberOption
+					| Omit<SlashCommandNumberOption, 'addChoices'>
 					| Omit<SlashCommandNumberOption, 'setAutocomplete'>
-					| Omit<SlashCommandNumberOption, 'addChoices'>),
+					| SlashCommandNumberOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandNumberOption);
 	}
 
 	private _sharedAddOptionMethod<T extends ApplicationCommandOptionBase>(
 		input:
-			| T
-			| Omit<T, 'setAutocomplete'>
 			| Omit<T, 'addChoices'>
-			| ((builder: T) => T | Omit<T, 'setAutocomplete'> | Omit<T, 'addChoices'>),
+			| Omit<T, 'setAutocomplete'>
+			| T
+			| ((builder: T) => Omit<T, 'addChoices'> | Omit<T, 'setAutocomplete'> | T),
 		Instance: new () => T,
 	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
 		const { options } = this;

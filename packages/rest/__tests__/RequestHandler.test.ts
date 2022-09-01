@@ -1,15 +1,18 @@
+/* eslint-disable id-length */
+/* eslint-disable promise/prefer-await-to-then */
 import { performance } from 'node:perf_hooks';
+import { setInterval, clearInterval } from 'node:timers';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import { genPath } from './util';
-import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src';
+import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
+import { genPath } from './util.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
 
-const api = new REST({ timeout: 2000, offset: 5 }).setToken('A-Very-Fake-Token');
-const invalidAuthApi = new REST({ timeout: 2000 }).setToken('Definitely-Not-A-Fake-Token');
+const api = new REST({ timeout: 2_000, offset: 5 }).setToken('A-Very-Fake-Token');
+const invalidAuthApi = new REST({ timeout: 2_000 }).setToken('Definitely-Not-A-Fake-Token');
 const rateLimitErrorApi = new REST({ rejectOnRateLimit: ['/channels'] }).setToken('Obviously-Not-A-Fake-Token');
 
 beforeEach(() => {
@@ -52,10 +55,9 @@ const sublimitIntervals: {
 };
 
 const sublimit = { body: { name: 'newname' } };
-const noSublimit = { body: { bitrate: 40000 } };
+const noSublimit = { body: { bitrate: 40_000 } };
 
 function startSublimitIntervals() {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!sublimitIntervals.reset) {
 		sublimitResetAfter = Date.now() + 250;
 		sublimitIntervals.reset = setInterval(() => {
@@ -63,13 +65,13 @@ function startSublimitIntervals() {
 			sublimitResetAfter = Date.now() + 250;
 		}, 250);
 	}
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 	if (!sublimitIntervals.retry) {
-		retryAfter = Date.now() + 1000;
+		retryAfter = Date.now() + 1_000;
 		sublimitIntervals.retry = setInterval(() => {
 			sublimitHits = 0;
-			retryAfter = Date.now() + 1000;
-		}, 1000);
+			retryAfter = Date.now() + 1_000;
+		}, 1_000);
 	}
 }
 
@@ -80,7 +82,7 @@ test('Significant Invalid Requests', async () => {
 			path: genPath('/badRequest'),
 			method: 'GET',
 		})
-		.reply(403, { message: 'Missing Permissions', code: 50013 }, responseOptions)
+		.reply(403, { message: 'Missing Permissions', code: 50_013 }, responseOptions)
 		.times(10);
 
 	const invalidListener = vitest.fn();
@@ -89,6 +91,7 @@ test('Significant Invalid Requests', async () => {
 	// Ensure listeners on REST do not get double added
 	api.on(RESTEvents.InvalidRequestWarning, invalidListener2);
 	api.off(RESTEvents.InvalidRequestWarning, invalidListener2);
+
 	const [a, b, c, d, e] = [
 		api.get('/badRequest'),
 		api.get('/badRequest'),
@@ -102,7 +105,9 @@ test('Significant Invalid Requests', async () => {
 	await expect(d).rejects.toThrowError('Missing Permissions');
 	await expect(e).rejects.toThrowError('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(0);
+	// eslint-disable-next-line require-atomic-updates
 	api.requestManager.options.invalidRequestWarningInterval = 2;
+
 	const [f, g, h, i, j] = [
 		api.get('/badRequest'),
 		api.get('/badRequest'),
@@ -137,7 +142,7 @@ test('Handle standard rate limits', async () => {
 						headers: {
 							'x-ratelimit-limit': '1',
 							'x-ratelimit-remaining': '0',
-							'x-ratelimit-reset-after': ((resetAfter - Date.now()) / 1000).toString(),
+							'x-ratelimit-reset-after': ((resetAfter - Date.now()) / 1_000).toString(),
 							'x-ratelimit-bucket': '80c17d2f203122d936070c88c8d10f33',
 							via: '1.1 google',
 						},
@@ -150,7 +155,7 @@ test('Handle standard rate limits', async () => {
 				data: {
 					limit: '1',
 					remaining: '0',
-					resetAfter: (resetAfter / 1000).toString(),
+					resetAfter: (resetAfter / 1_000).toString(),
 					bucket: '80c17d2f203122d936070c88c8d10f33',
 					retryAfter: (resetAfter - Date.now()).toString(),
 				},
@@ -158,7 +163,7 @@ test('Handle standard rate limits', async () => {
 					headers: {
 						'x-ratelimit-limit': '1',
 						'x-ratelimit-remaining': '0',
-						'x-ratelimit-reset-after': ((resetAfter - Date.now()) / 1000).toString(),
+						'x-ratelimit-reset-after': ((resetAfter - Date.now()) / 1_000).toString(),
 						'x-ratelimit-bucket': '80c17d2f203122d936070c88c8d10f33',
 						'retry-after': (resetAfter - Date.now()).toString(),
 						via: '1.1 google',
@@ -187,8 +192,8 @@ test('Handle sublimits', async () => {
 			path: genPath('/channels/:id'),
 			method: 'PATCH',
 		})
-		.reply((t) => {
-			const body = JSON.parse(t.body as string) as Record<string, unknown>;
+		.reply((from) => {
+			const body = JSON.parse(from.body as string) as Record<string, unknown>;
 
 			if ('name' in body || 'topic' in body) {
 				sublimitHits += 1;
@@ -204,7 +209,7 @@ test('Handle sublimits', async () => {
 							headers: {
 								'x-ratelimit-limit': '10',
 								'x-ratelimit-remaining': `${10 - sublimitRequests}`,
-								'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
+								'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1_000).toString(),
 								via: '1.1 google',
 							},
 						},
@@ -216,15 +221,15 @@ test('Handle sublimits', async () => {
 					data: {
 						limit: '10',
 						remaining: `${10 - sublimitRequests}`,
-						resetAfter: (sublimitResetAfter / 1000).toString(),
-						retryAfter: ((retryAfter - Date.now()) / 1000).toString(),
+						resetAfter: (sublimitResetAfter / 1_000).toString(),
+						retryAfter: ((retryAfter - Date.now()) / 1_000).toString(),
 					},
 					responseOptions: {
 						headers: {
 							'x-ratelimit-limit': '10',
 							'x-ratelimit-remaining': `${10 - sublimitRequests}`,
-							'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
-							'retry-after': ((retryAfter - Date.now()) / 1000).toString(),
+							'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1_000).toString(),
+							'retry-after': ((retryAfter - Date.now()) / 1_000).toString(),
 							via: '1.1 google',
 							...responseOptions.headers,
 						},
@@ -243,7 +248,7 @@ test('Handle sublimits', async () => {
 							headers: {
 								'x-ratelimit-limit': '10',
 								'x-ratelimit-remaining': `${10 - sublimitRequests}`,
-								'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
+								'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1_000).toString(),
 								via: '1.1 google',
 							},
 						},
@@ -255,15 +260,15 @@ test('Handle sublimits', async () => {
 					data: {
 						limit: '10',
 						remaining: `${10 - sublimitRequests}`,
-						resetAfter: (sublimitResetAfter / 1000).toString(),
-						retryAfter: ((sublimitResetAfter - Date.now()) / 1000).toString(),
+						resetAfter: (sublimitResetAfter / 1_000).toString(),
+						retryAfter: ((sublimitResetAfter - Date.now()) / 1_000).toString(),
 					},
 					responseOptions: {
 						headers: {
 							'x-ratelimit-limit': '10',
 							'x-ratelimit-remaining': `${10 - sublimitRequests}`,
-							'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
-							'retry-after': ((sublimitResetAfter - Date.now()) / 1000).toString(),
+							'x-ratelimit-reset-after': ((sublimitResetAfter - Date.now()) / 1_000).toString(),
+							'retry-after': ((sublimitResetAfter - Date.now()) / 1_000).toString(),
 							via: '1.1 google',
 							...responseOptions.headers,
 						},
@@ -294,6 +299,7 @@ test('Handle sublimits', async () => {
 		api.patch('/channels/:id', sublimit).then(() => Date.now()),
 		api.patch('/channels/:id', noSublimit).then(() => Date.now()),
 	]); // For additional sublimited checks
+
 	const e = await eP;
 
 	expect(a).toBeLessThanOrEqual(b);
@@ -314,6 +320,7 @@ test('Handle sublimits', async () => {
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 		rateLimitErrorApi.patch('/channels/:id', sublimit),
 	];
+	// eslint-disable-next-line @typescript-eslint/await-thenable
 	await expect(aP2).resolves;
 	await expect(bP2).rejects.toThrowError();
 	await expect(bP2).rejects.toBeInstanceOf(RateLimitError);
@@ -364,8 +371,8 @@ test('Handle unexpected 429', async () => {
 
 	expect(await unexepectedSublimit).toStrictEqual({ test: true });
 	expect(await queuedSublimit).toStrictEqual({ test: true });
-	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1000);
-	// @ts-expect-error
+	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
+	// @ts-expect-error: This is intentional
 	expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
 });
 
@@ -400,7 +407,7 @@ test('Handle unexpected 429 cloudflare', async () => {
 
 	const previous = Date.now();
 	expect(await api.get('/unexpected-cf')).toStrictEqual({ test: true });
-	expect(Date.now()).toBeGreaterThanOrEqual(previous + 1000);
+	expect(Date.now()).toBeGreaterThanOrEqual(previous + 1_000);
 });
 
 test('Handle global rate limits', async () => {
@@ -486,7 +493,7 @@ test('server responding too slow', async () => {
 	const promise = api2.get('/slow');
 
 	await expect(promise).rejects.toThrowError('Request aborted');
-}, 1000);
+}, 1_000);
 
 test('Unauthorized', async () => {
 	mockPool
@@ -518,7 +525,7 @@ test('Bad Request', async () => {
 			path: genPath('/badRequest'),
 			method: 'GET',
 		})
-		.reply(403, { message: 'Missing Permissions', code: 50013 }, responseOptions);
+		.reply(403, { message: 'Missing Permissions', code: 50_013 }, responseOptions);
 
 	const promise = api.get('/badRequest');
 	await expect(promise).rejects.toThrowError('Missing Permissions');

@@ -11,16 +11,15 @@ import {
 	type DocCodeSpan,
 	type DocParamBlock,
 } from '@microsoft/tsdoc';
-import { block } from './CommentBlock';
-import { codeSpan } from './CommentCodeSpan';
-import type { AnyDocNodeJSON } from './CommentNode';
-import { node as _node } from './CommentNode';
-import { nodeContainer } from './CommentNodeContainer';
-import { fencedCode } from './FencedCodeCommentNode';
-import { linkTagNode } from './LinkTagCommentNode';
-import { paramBlock } from './ParamBlock';
-import { plainTextNode } from './PlainTextCommentNode';
-import { comment } from './RootComment';
+import { block } from './CommentBlock.js';
+import { codeSpan } from './CommentCodeSpan.js';
+import { node as _node, type AnyDocNodeJSON } from './CommentNode.js';
+import { nodeContainer } from './CommentNodeContainer.js';
+import { fencedCode } from './FencedCodeCommentNode.js';
+import { linkTagNode } from './LinkTagCommentNode.js';
+import { paramBlock } from './ParamBlock.js';
+import { plainTextNode } from './PlainTextCommentNode.js';
+import { comment } from './RootComment.js';
 
 export function createCommentNode(
 	node: DocNode,
@@ -51,13 +50,13 @@ export function createCommentNode(
 	}
 }
 
-export * from './CommentNode';
-export * from './CommentNodeContainer';
-export * from './CommentBlock';
-export * from './CommentBlockTag';
-export * from './CommentCodeSpan';
-export * from './FencedCodeCommentNode';
-export * from './LinkTagCommentNode';
-export * from './ParamBlock';
-export * from './PlainTextCommentNode';
-export * from './RootComment';
+export * from './CommentNode.js';
+export * from './CommentNodeContainer.js';
+export * from './CommentBlock.js';
+export * from './CommentBlockTag.js';
+export * from './CommentCodeSpan.js';
+export * from './FencedCodeCommentNode.js';
+export * from './LinkTagCommentNode.js';
+export * from './ParamBlock.js';
+export * from './PlainTextCommentNode.js';
+export * from './RootComment.js';

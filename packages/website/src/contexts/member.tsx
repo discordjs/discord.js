@@ -3,7 +3,7 @@ import { createContext, useContext, type ReactNode } from 'react';
 
 export const MemberContext = createContext<ApiItemJSON | undefined>(undefined);
 
-export const MemberProvider = ({ member, children }: { member: ApiItemJSON | undefined; children: ReactNode }) => (
+export const MemberProvider = ({ member, children }: { children: ReactNode; member: ApiItemJSON | undefined }) => (
 	<MemberContext.Provider value={member}>{children}</MemberContext.Provider>
 );
 

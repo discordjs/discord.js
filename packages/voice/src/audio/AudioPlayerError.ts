@@ -9,6 +9,7 @@ export class AudioPlayerError extends Error {
 	 * The resource associated with the audio player at the time the error was thrown.
 	 */
 	public readonly resource: AudioResource;
+
 	public constructor(error: Error, resource: AudioResource) {
 		super(error.message);
 		this.resource = resource;
