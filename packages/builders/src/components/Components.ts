@@ -44,7 +44,7 @@ export function createComponentBuilder(
 		case ComponentType.TextInput:
 			return new TextInputBuilder(data);
 		default:
-			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// @ts-expect-error: This case can still occur if we get a newer unsupported component type
 			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}

@@ -3,7 +3,7 @@ import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
 import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
 import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import type { RequestOptions } from '../REST';
+import type { RequestOptions } from '../REST.js';
 import { RequestMethod } from '../RequestManager.js';
 
 export function parseHeader(header: string[] | string | undefined): string | undefined {

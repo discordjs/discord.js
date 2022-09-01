@@ -57,7 +57,7 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 
 			this.construct = item;
 		} else if (item instanceof DocumentedMethod) {
-			// @ts-expect-error no type for methods
+			// @ts-expect-error: No type for methods
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			const prefix = item.data.scope === 'static' || item.data.flags?.isStatic ? 's-' : '';
 			if (this.methods.has(prefix + item.data.name)) {
@@ -99,7 +99,7 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 				: undefined;
 
 			return {
-				// @ts-expect-error type cannot be inferred
+				// @ts-expect-error: Type cannot be inferred
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				name: signature.name === 'default' ? parse(meta?.file ?? 'default').name : signature.name,
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign

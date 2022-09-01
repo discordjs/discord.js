@@ -129,7 +129,7 @@ describe('createVoiceConnection', () => {
 
 		const stateSetter = jest.spyOn(existingVoiceConnection, 'state', 'set');
 
-		// @ts-expect-error we're testing
+		// @ts-expect-error: We're testing
 		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
 			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);
@@ -168,7 +168,7 @@ describe('createVoiceConnection', () => {
 
 		const rejoinSpy = jest.spyOn(existingVoiceConnection, 'rejoin');
 
-		// @ts-expect-error we're testing
+		// @ts-expect-error: We're testing
 		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
 			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);
@@ -200,7 +200,7 @@ describe('createVoiceConnection', () => {
 			adapterCreator: existingAdapter.creator,
 		});
 
-		// @ts-expect-error we're testing
+		// @ts-expect-error: We're testing
 		DataStore.getVoiceConnection.mockImplementation((guildId, group = 'default') =>
 			guildId === existingJoinConfig.guildId && group === existingJoinConfig.group ? existingVoiceConnection : null,
 		);

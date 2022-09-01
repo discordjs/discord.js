@@ -23,7 +23,7 @@ import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants.js';
 import { lazy } from '../utils/utils.js';
-import type { SessionInfo } from './WebSocketManager';
+import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
 const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));

@@ -120,7 +120,9 @@ function audioCycleStep() {
 	const available = audioPlayers.filter((player) => player.checkPlayable());
 
 	// eslint-disable-next-line @typescript-eslint/dot-notation
-	for (const player of available) player['_stepDispatch']();
+	for (const player of available) {
+		player['_stepDispatch']();
+	}
 
 	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	prepareNextAudioFrame(available);

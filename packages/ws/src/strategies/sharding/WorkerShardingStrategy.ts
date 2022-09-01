@@ -7,7 +7,7 @@ import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
-import type { IShardingStrategy } from './IShardingStrategy';
+import type { IShardingStrategy } from './IShardingStrategy.js';
 
 export interface WorkerData extends FetchingStrategyOptions {
 	shardIds: number[];

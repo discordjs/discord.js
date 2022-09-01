@@ -1,5 +1,5 @@
-import type { InternalRequest } from '../RequestManager';
-import type { RequestBody } from './DiscordAPIError';
+import type { InternalRequest } from '../RequestManager.js';
+import type { RequestBody } from './DiscordAPIError.js';
 
 /**
  * Represents a HTTP error

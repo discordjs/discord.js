@@ -19,7 +19,7 @@ import { Networking, NetworkingStatusCode, type NetworkingState } from './networ
 import { VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
 import { noop } from './util/util';
-import type { CreateVoiceConnectionOptions } from '.';
+import type { CreateVoiceConnectionOptions } from './index';
 
 /**
  * The various status codes a voice connection can hold at any one time.

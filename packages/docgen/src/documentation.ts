@@ -211,7 +211,7 @@ export class Documentation {
 					}
 
 					default: {
-						// @ts-expect-error this is a valid case
+						// @ts-expect-error: This is a valid case
 						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 						console.warn(`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`);
 					}
@@ -232,7 +232,7 @@ export class Documentation {
 
 				const info = [];
 				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
-				// @ts-expect-error typescript can't infer this
+				// @ts-expect-error: Typescript can't infer this
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-condition
 				const memberof = member.memberof ?? item?.data?.memberof;
 				const meta =

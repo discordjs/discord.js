@@ -1,7 +1,7 @@
 import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
 import { getGlobalDispatcher } from 'undici';
-import type { RESTOptions } from '../REST';
+import type { RESTOptions } from '../REST.js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
 const Package = require('../../../package.json');
 

@@ -75,8 +75,9 @@ export class SharedNameAndDescription {
 
 		Reflect.set(this, 'name_localizations', {});
 
-		for (const args of Object.entries(localizedNames))
+		for (const args of Object.entries(localizedNames)) {
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
+		}
 		return this;
 	}
 
@@ -116,8 +117,9 @@ export class SharedNameAndDescription {
 		}
 
 		Reflect.set(this, 'description_localizations', {});
-		for (const args of Object.entries(localizedDescriptions))
+		for (const args of Object.entries(localizedDescriptions)) {
 			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
+		}
 		return this;
 	}
 }

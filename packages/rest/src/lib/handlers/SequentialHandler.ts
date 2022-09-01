@@ -9,7 +9,7 @@ import { HTTPError } from '../errors/HTTPError.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { RESTEvents } from '../utils/constants.js';
 import { hasSublimit, parseHeader, parseResponse } from '../utils/utils.js';
-import type { IHandler } from './IHandler';
+import type { IHandler } from './IHandler.js';
 
 /**
  * Invalid request limiting is done on a per-IP basis, not a per-token basis.

@@ -172,7 +172,7 @@ export function genReference(item: ApiItem, version: string) {
 
 export function genToken(model: ApiModel, token: ExcerptToken, version: string) {
 	if (token.canonicalReference) {
-		// @ts-expect-error Symbol is not publicly accessible
+		// @ts-expect-error: Symbol is not publicly accessible
 		token.canonicalReference._navigation = '.';
 	}
 

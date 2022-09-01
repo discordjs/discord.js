@@ -38,7 +38,7 @@ async function destroy(shardId: number, options?: WebSocketShardDestroyOptions) 
 for (const shardId of data.shardIds) {
 	const shard = new WebSocketShard(new WorkerContextFetchingStrategy(data), shardId);
 	for (const event of Object.values(WebSocketShardEvents)) {
-		// @ts-expect-error event types incompatible
+		// @ts-expect-error: Event types incompatible
 		shard.on(event, (data) => {
 			const payload: WorkerRecievePayload = {
 				op: WorkerRecievePayloadOp.Event,

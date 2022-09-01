@@ -37,7 +37,6 @@ function isErrorResponse(error: DiscordError): error is DiscordErrorFieldInforma
 
 /**
  * Represents an API error returned by Discord
- *
  */
 export class DiscordAPIError extends Error {
 	public requestBody: RequestBody;

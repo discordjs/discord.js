@@ -26,7 +26,7 @@ export function build({ input, custom: customDocs, root, output, typescript }: C
 		app.bootstrap({ entryPoints: input });
 		const project = app.convert();
 		if (project) {
-			// @ts-expect-error types are lost with this method
+			// @ts-expect-error: Types are lost with this method
 			data = app.serializer.toObject(project).children!;
 			console.log(`${data.length} items parsed.`);
 		}

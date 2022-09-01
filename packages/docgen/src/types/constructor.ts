@@ -27,7 +27,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// @ts-expect-error no type for params
+				// @ts-expect-error: No type for params
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((param) =>
 							new DocumentedParam(param, this.config).serialize(),

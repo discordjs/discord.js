@@ -535,7 +535,9 @@ export class AudioPlayer extends EventEmitter {
 		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) return;
 
 		// Dispatch any audio packets that were prepared in the previous cycle
-		for (const connection of this.playable) connection.dispatchAudio();
+		for (const connection of this.playable) {
+			connection.dispatchAudio();
+		}
 	}
 
 	/**
@@ -618,7 +620,9 @@ export class AudioPlayer extends EventEmitter {
 	 * they are no longer speaking. Called once playback of a resource ends.
 	 */
 	private _signalStopSpeaking() {
-		for (const { connection } of this.subscribers) connection.setSpeaking(false);
+		for (const { connection } of this.subscribers) {
+			connection.setSpeaking(false);
+		}
 	}
 
 	/**
@@ -634,7 +638,9 @@ export class AudioPlayer extends EventEmitter {
 		state: AudioPlayerPausedState | AudioPlayerPlayingState,
 	) {
 		state.playbackDuration += 20;
-		for (const connection of receivers) connection.prepareAudioPacket(packet);
+		for (const connection of receivers) {
+			connection.prepareAudioPacket(packet);
+		}
 	}
 }
 

@@ -376,7 +376,7 @@ test('Handle unexpected 429', async () => {
 	expect(await unexepectedSublimit).toStrictEqual({ test: true });
 	expect(await queuedSublimit).toStrictEqual({ test: true });
 	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
-	// @ts-expect-error this is intentional
+	// @ts-expect-error: This is intentional
 	expect(secondResolvedTime).toBeGreaterThan(firstResolvedTime);
 });
 

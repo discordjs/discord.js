@@ -5,7 +5,7 @@ import type { WebSocketManager } from '../../ws/WebSocketManager';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';
-import type { IShardingStrategy } from './IShardingStrategy';
+import type { IShardingStrategy } from './IShardingStrategy.js';
 
 /**
  * Simple strategy that just spawns shards in the current process
@@ -31,7 +31,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
 			for (const event of Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error intentional
+				// @ts-expect-error: Intentional
 				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
 			}
 

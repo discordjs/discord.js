@@ -58,7 +58,7 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 					: undefined,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
-				// @ts-expect-error typescript doesn't know that this is a SignatureReflection
+				// @ts-expect-error: Typescript doesn't know that this is a SignatureReflection
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((param) =>
 							new DocumentedParam(param, this.config).serialize(),

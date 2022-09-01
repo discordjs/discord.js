@@ -13,7 +13,7 @@ import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
 import { range, type Awaitable } from '../utils/utils.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
+import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 
 /**
  * Represents a range of shard ids

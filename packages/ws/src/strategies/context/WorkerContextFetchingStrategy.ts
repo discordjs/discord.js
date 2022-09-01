@@ -1,13 +1,13 @@
 import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
-import type { SessionInfo } from '../../ws/WebSocketManager';
+import type { SessionInfo } from '../../ws/WebSocketManager.js';
 import {
 	WorkerRecievePayloadOp,
 	WorkerSendPayloadOp,
 	type WorkerRecievePayload,
 	type WorkerSendPayload,
 } from '../sharding/WorkerShardingStrategy.js';
-import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
+import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';
 
 export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	private readonly sessionPromises = new Collection<number, (session: SessionInfo | null) => void>();

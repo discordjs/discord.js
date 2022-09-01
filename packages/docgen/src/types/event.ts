@@ -34,7 +34,7 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 				: undefined;
 
 			return {
-				// @ts-expect-error no type for params
+				// @ts-expect-error: No type for params
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				name: signature.parameters?.[0]?.type?.value,
 				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
@@ -55,7 +55,7 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
 							.trim() ?? true
 					: undefined,
-				// @ts-expect-error parameters type is not available
+				// @ts-expect-error: Parameters type is not available
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters
 							?.slice(1)
