@@ -1683,6 +1683,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.22.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1706,6 +1707,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.36.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1763,6 +1765,7 @@ __metadata:
     downlevel-dts: ^0.10.1
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
@@ -1923,6 +1926,7 @@ __metadata:
     commander: ^9.4.0
     eslint: ^8.23.0
     eslint-config-marine: ^9.4.1
+    eslint-config-neon: ^0.1.13
     eslint-config-prettier: ^8.5.0
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0

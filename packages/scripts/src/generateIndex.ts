@@ -38,7 +38,11 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				break;
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph: {
-				(node as DocParagraph).nodes.forEach(visitTSDocNode);
+				for (const child of (node as DocParagraph).nodes) {
+					visitTSDocNode(child);
+				}
+
+				break;
 			}
 
 			default: // We'll ignore all other nodes.

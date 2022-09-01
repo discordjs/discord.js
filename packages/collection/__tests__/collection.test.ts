@@ -1,5 +1,8 @@
+/* eslint-disable unicorn/no-array-method-this-argument */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable id-length */
 import { describe, test, expect } from 'vitest';
-import { Collection } from '../src';
+import { Collection } from '../src/index.js';
 
 type TestCollection = Collection<string, number>;
 
@@ -737,10 +740,6 @@ describe('some() tests', () => {
 
 	test('returns false if no items pass the predicate', () => {
 		expect(coll.some((v) => v > 3)).toBeFalsy();
-	});
-
-	test('returns true if at least one item passes the predicate', () => {
-		expect(coll.some((x) => x === 2)).toBeTruthy();
 	});
 });
 

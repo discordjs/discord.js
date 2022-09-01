@@ -1,6 +1,6 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocParamBlock } from '@microsoft/tsdoc';
-import { block, type DocBlockJSON } from './CommentBlock';
+import { block, type DocBlockJSON } from './CommentBlock.js';
 
 interface DocParamBlockJSON extends DocBlockJSON {
 	name: string;
