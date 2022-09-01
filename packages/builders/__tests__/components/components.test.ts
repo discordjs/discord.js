@@ -67,8 +67,7 @@ describe('createComponentBuilder', () => {
 	});
 
 	test('GIVEN an unknown component type THEN throws error', () => {
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-expect-error
+		// @ts-expect-error unknown component type
 		expect(() => createComponentBuilder({ type: 'invalid' })).toThrowError();
 	});
 });

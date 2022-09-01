@@ -67,7 +67,7 @@
     "@types/node": "^16.11.56",
     "dtslint": "^4.2.1",
     "eslint": "^8.23.0",
-    "eslint-config-neon": "^0.1.22",
+    "eslint-config-neon": "^0.1.23",
     "jest": "^29.0.1",
     "prettier": "^2.7.1",
     "tsd": "^0.23.0",
