@@ -40,6 +40,7 @@ class Intents extends BitField {}
  * * `DIRECT_MESSAGES`
  * * `DIRECT_MESSAGE_REACTIONS`
  * * `DIRECT_MESSAGE_TYPING`
+ * * `MESSAGE_CONTENT`
  * * `GUILD_SCHEDULED_EVENTS`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/topics/gateway#list-of-intents}
@@ -60,6 +61,7 @@ Intents.FLAGS = {
   DIRECT_MESSAGES: 1 << 12,
   DIRECT_MESSAGE_REACTIONS: 1 << 13,
   DIRECT_MESSAGE_TYPING: 1 << 14,
+  MESSAGE_CONTENT: 1 << 15,
   GUILD_SCHEDULED_EVENTS: 1 << 16,
 };
 
