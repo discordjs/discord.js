@@ -1,22 +1,19 @@
+/* eslint-disable id-length */
+import { setImmediate } from 'node:timers';
 import { REST } from '@discordjs/rest';
-import {
-	GatewayDispatchEvents,
-	GatewayDispatchPayload,
-	GatewayOpcodes,
-	GatewaySendPayload,
-} from 'discord-api-types/v10';
-import { MockAgent, Interceptable } from 'undici';
+import type { GatewayDispatchPayload, GatewaySendPayload } from 'discord-api-types/v10';
+import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
+import type { Interceptable } from 'undici';
+import { MockAgent } from 'undici';
 import { beforeEach, test, vi, expect, afterEach } from 'vitest';
+import type { WorkerRecievePayload, WorkerSendPayload, SessionInfo } from '../../src';
 import {
-	WorkerRecievePayload,
-	WorkerSendPayload,
 	WebSocketManager,
 	WorkerSendPayloadOp,
 	WorkerRecievePayloadOp,
 	WorkerShardingStrategy,
 	WebSocketShardEvents,
-	SessionInfo,
-} from '../../src';
+} from '../../src/index.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
@@ -43,6 +40,7 @@ const sessionInfo: SessionInfo = {
 };
 
 vi.mock('node:worker_threads', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const { EventEmitter }: typeof import('node:events') = await vi.importActual('node:events');
 	class MockWorker extends EventEmitter {
 		public constructor(...args: any[]) {
@@ -54,6 +52,7 @@ vi.mock('node:worker_threads', async () => {
 		}
 
 		public postMessage(message: WorkerSendPayload) {
+			// eslint-disable-next-line default-case
 			switch (message.op) {
 				case WorkerSendPayloadOp.Connect: {
 					const response: WorkerRecievePayload = {

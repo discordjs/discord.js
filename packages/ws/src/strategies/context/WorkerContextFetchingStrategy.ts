@@ -1,13 +1,9 @@
 import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
-import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
 import type { SessionInfo } from '../../ws/WebSocketManager';
-import {
-	WorkerRecievePayload,
-	WorkerRecievePayloadOp,
-	WorkerSendPayload,
-	WorkerSendPayloadOp,
-} from '../sharding/WorkerShardingStrategy';
+import type { WorkerRecievePayload, WorkerSendPayload } from '../sharding/WorkerShardingStrategy';
+import { WorkerRecievePayloadOp, WorkerSendPayloadOp } from '../sharding/WorkerShardingStrategy.js';
+import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
 
 export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	private readonly sessionPromises = new Collection<number, (session: SessionInfo | null) => void>();
@@ -33,7 +29,9 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 			shardId,
 			nonce,
 		};
+		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
+		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		parentPort!.postMessage(payload);
 		return promise;
 	}
@@ -44,6 +42,7 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 			shardId,
 			session: sessionInfo,
 		};
+		// eslint-disable-next-line unicorn/require-post-message-target-origin
 		parentPort!.postMessage(payload);
 	}
 }

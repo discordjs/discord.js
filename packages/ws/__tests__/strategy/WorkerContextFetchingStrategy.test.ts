@@ -1,15 +1,16 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { REST } from '@discordjs/rest';
-import { MockAgent, Interceptable } from 'undici';
+import type { Interceptable } from 'undici';
+import { MockAgent } from 'undici';
 import { beforeEach, test, vi, expect } from 'vitest';
+import type { WorkerRecievePayload, WorkerSendPayload } from '../../src';
 import {
 	managerToFetchingStrategyOptions,
 	WorkerContextFetchingStrategy,
-	WorkerRecievePayload,
-	WorkerSendPayload,
 	WebSocketManager,
 	WorkerSendPayloadOp,
 	WorkerRecievePayloadOp,
-} from '../../src';
+} from '../../src/index.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;

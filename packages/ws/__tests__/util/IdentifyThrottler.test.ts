@@ -1,6 +1,8 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import { expect, Mock, test, vi } from 'vitest';
-import { IdentifyThrottler, WebSocketManager } from '../../src';
+import type { Mock } from 'vitest';
+import { expect, test, vi } from 'vitest';
+import type { WebSocketManager } from '../../src';
+import { IdentifyThrottler } from '../../src/index.js';
 
 vi.mock('node:timers/promises', () => ({
 	setTimeout: vi.fn(),

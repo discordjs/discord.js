@@ -1,8 +1,11 @@
 import { REST } from '@discordjs/rest';
-import { APIGatewayBotInfo, GatewayOpcodes, GatewaySendPayload } from 'discord-api-types/v10';
-import { MockAgent, Interceptable } from 'undici';
+import type { APIGatewayBotInfo, GatewaySendPayload } from 'discord-api-types/v10';
+import { GatewayOpcodes } from 'discord-api-types/v10';
+import type { Interceptable } from 'undici';
+import { MockAgent } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { IShardingStrategy, WebSocketManager } from '../../src';
+import type { IShardingStrategy } from '../../src';
+import { WebSocketManager } from '../../src/index.js';
 
 vi.useFakeTimers();
 
@@ -80,7 +83,7 @@ test('fetch gateway information', async () => {
 		})
 		.reply(fetch);
 
-	NOW.mockReturnValue(Infinity);
+	NOW.mockReturnValue(Number.POSITIVE_INFINITY);
 	const cacheExpired = await manager.fetchGatewayInformation();
 	expect(cacheExpired).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
@@ -171,8 +174,11 @@ test('it handles passing in both shardIds and shardCount', async () => {
 test('strategies', async () => {
 	class MockStrategy implements IShardingStrategy {
 		public spawn = vi.fn();
+
 		public connect = vi.fn();
+
 		public destroy = vi.fn();
+
 		public send = vi.fn();
 	}
 
@@ -219,6 +225,7 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
+	// eslint-disable-next-line id-length
 	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);
