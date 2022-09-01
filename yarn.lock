@@ -2228,7 +2228,6 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.29.3
     "@msgpack/msgpack": ^2.7.2
-    "@types/ioredis-mock": ^5.6.0
     "@types/node": ^16.11.52
     "@typescript-eslint/eslint-plugin": ^5.34.0
     "@typescript-eslint/parser": ^5.34.0
@@ -2241,7 +2240,6 @@ __metadata:
     eslint-import-resolver-typescript: ^3.5.0
     eslint-plugin-import: ^2.26.0
     ioredis: ^5.2.3
-    ioredis-mock: ^8.2.2
     prettier: ^2.7.1
     rollup-plugin-typescript2: ^0.33.0
     tslib: ^2.4.0
@@ -2886,13 +2884,6 @@ __metadata:
     kolorist: ^1.5.1
     local-pkg: ^0.4.2
   checksum: eeff65b99a45b5ed5920c7a471ab3ab55a1d42e25ebc67635a1307439efd10daa6a76b5b4712446280fbfb8a12411ea846fea921e96f862a5b166479c496629b
-  languageName: node
-  linkType: hard
-
-"@ioredis/as-callback@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@ioredis/as-callback@npm:3.0.0"
-  checksum: 2835e39631497fe4f8b07d95576abea165c9f7efef81e9e55c733588051ff4edcb31eeb59f36127923dae0cb1a8e21b4e27ee3ab79a065a0baeecf861c3bc0b1
   languageName: node
   linkType: hard
 
@@ -13288,20 +13279,6 @@ __metadata:
   dependencies:
     loose-envify: ^1.0.0
   checksum: cc3182d793aad82a8d1f0af697b462939cb46066ec48bbf1707c150ad5fad6406137e91a262022c269702e01621f35ef60269f6c0d7fd178487959809acdfb14
-  languageName: node
-  linkType: hard
-
-"ioredis-mock@npm:^8.2.2":
-  version: 8.2.2
-  resolution: "ioredis-mock@npm:8.2.2"
-  dependencies:
-    "@ioredis/as-callback": ^3.0.0
-    "@ioredis/commands": ^1.1.1
-    fengari: ^0.1.4
-    fengari-interop: ^0.1.3
-  peerDependencies:
-    ioredis: 5.x
-  checksum: b233d9762ff99468340e0bd8bac83cdf281df2e7243fdc2557587c7ff5762920c09a53cc21de894af5235132299b2be567d8891a2f3f27aa0b10952002a7bda1
   languageName: node
   linkType: hard
 
