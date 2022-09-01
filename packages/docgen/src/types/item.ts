@@ -6,8 +6,7 @@ export class DocumentedItem<T = DeclarationReflection | Item> {
 
 	public serialize(): unknown {
 		try {
-			this.serializer();
-			return;
+			return this.serializer();
 		} catch (error_) {
 			const error = error_ as Error;
 			error.message = `Error while serializing ${this.detailedName()}: ${error.message}`;
@@ -15,7 +14,7 @@ export class DocumentedItem<T = DeclarationReflection | Item> {
 		}
 	}
 
-	protected serializer() {
+	protected serializer(): unknown {
 		throw new Error("Method 'serializer()' must be implemented.");
 	}
 
