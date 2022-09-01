@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
 	ButtonStyle,
 	ComponentType,
@@ -72,7 +71,7 @@ describe('Button Components', () => {
 			}).toThrowError();
 
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error: invalid emoji
 				const button = buttonComponent().setEmoji('test');
 				button.toJSON();
 			}).toThrowError();
@@ -104,9 +103,9 @@ describe('Button Components', () => {
 
 			expect(() => buttonComponent().setStyle(24)).toThrowError();
 			expect(() => buttonComponent().setLabel(longStr)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: invalid parameter for disabled
 			expect(() => buttonComponent().setDisabled(0)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: invalid emoji
 			expect(() => buttonComponent().setEmoji('foo')).toThrowError();
 
 			expect(() => buttonComponent().setURL('foobar')).toThrowError();

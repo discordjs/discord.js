@@ -1,3 +1,4 @@
+/* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
 import { performance } from 'node:perf_hooks';
 import { setInterval, clearInterval } from 'node:timers';
@@ -92,7 +93,7 @@ test('Significant Invalid Requests', async () => {
 	// Ensure listeners on REST do not get double added
 	api.on(RESTEvents.InvalidRequestWarning, invalidListener2);
 	api.off(RESTEvents.InvalidRequestWarning, invalidListener2);
-	// eslint-disable-next-line id-length
+
 	const [a, b, c, d, e] = [
 		api.get('/badRequest'),
 		api.get('/badRequest'),
@@ -108,7 +109,7 @@ test('Significant Invalid Requests', async () => {
 	expect(invalidListener).toHaveBeenCalledTimes(0);
 	// eslint-disable-next-line require-atomic-updates
 	api.requestManager.options.invalidRequestWarningInterval = 2;
-	// eslint-disable-next-line id-length
+
 	const [f, g, h, i, j] = [
 		api.get('/badRequest'),
 		api.get('/badRequest'),
@@ -174,7 +175,6 @@ test('Handle standard rate limits', async () => {
 		})
 		.times(3);
 
-	// eslint-disable-next-line id-length
 	const [a, b, c] = [api.get('/standard'), api.get('/standard'), api.get('/standard')];
 	const uint8 = new Uint8Array();
 
@@ -295,15 +295,13 @@ test('Handle sublimits', async () => {
 		api.patch('/channels/:id', sublimit).then(() => Date.now()), // For retroactive check
 	];
 
-	// eslint-disable-next-line id-length
 	const [a, b, c, d] = await Promise.all([aP, bP, cP, dP]);
 
-	// eslint-disable-next-line id-length
 	const [f, g] = await Promise.all([
 		api.patch('/channels/:id', sublimit).then(() => Date.now()),
 		api.patch('/channels/:id', noSublimit).then(() => Date.now()),
 	]); // For additional sublimited checks
-	// eslint-disable-next-line id-length
+
 	const e = await eP;
 
 	expect(a).toBeLessThanOrEqual(b);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { describe, test, expect } from 'vitest';
 import { EmbedBuilder, embedLength } from '../../src/index.js';
 
@@ -131,9 +130,9 @@ describe('Embed', () => {
 		test('GIVEN an embed with an invalid color THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
-			// @ts-expect-error
+			// @ts-expect-error: invalid color
 			expect(() => embed.setColor('RED')).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: invalid color
 			expect(() => embed.setColor([42, 36])).toThrowError();
 			expect(() => embed.setColor([42, 36, 1_000])).toThrowError();
 		});

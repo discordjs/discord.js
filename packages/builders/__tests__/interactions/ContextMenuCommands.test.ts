@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { PermissionFlagsBits } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index.js';
@@ -106,9 +105,9 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 

@@ -48,7 +48,8 @@ export function TableOfContentItems({
 					</Group>
 				</Box>
 			)),
-		[properties, classes.link],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[properties, colorScheme],
 	);
 
 	const methodItems = useMemo(

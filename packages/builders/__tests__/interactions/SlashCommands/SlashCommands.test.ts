@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ChannelType, PermissionFlagsBits, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -247,16 +246,16 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: invalid max value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: invalid max value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: invalid min value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMinValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: invalid min value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue('test'))).toThrowError();
 
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue(1.5))).toThrowError();
@@ -443,9 +442,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 
@@ -466,9 +465,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid description localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization description
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: invalid localization description
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 

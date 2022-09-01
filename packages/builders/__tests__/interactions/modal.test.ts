@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
 	ComponentType,
 	TextInputStyle,
@@ -47,7 +46,7 @@ describe('Modals', () => {
 
 		test('GIVEN invalid required parameters THEN validator does throw', () => {
 			expect(() =>
-				// @ts-expect-error
+				// @ts-expect-error: missing required parameter
 				validateRequiredParameters('123', undefined, [new ActionRowBuilder(), new ButtonBuilder()]),
 			).toThrowError();
 		});
@@ -67,7 +66,7 @@ describe('Modals', () => {
 	test('GIVEN invalid fields THEN builder does throw', () => {
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
 
-		// @ts-expect-error
+		// @ts-expect-error: customId is invalid
 		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
 	});
 

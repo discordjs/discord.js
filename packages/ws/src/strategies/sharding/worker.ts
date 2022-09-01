@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/require-post-message-target-origin */
 import { isMainThread, workerData, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
@@ -46,7 +47,6 @@ for (const shardId of data.shardIds) {
 				data,
 				shardId,
 			};
-			// eslint-disable-next-line unicorn/require-post-message-target-origin
 			parentPort!.postMessage(payload);
 		});
 	}
@@ -68,7 +68,6 @@ parentPort!
 					op: WorkerRecievePayloadOp.Connected,
 					shardId: payload.shardId,
 				};
-				// eslint-disable-next-line unicorn/require-post-message-target-origin
 				parentPort!.postMessage(response);
 				break;
 			}
@@ -79,7 +78,7 @@ parentPort!
 					op: WorkerRecievePayloadOp.Destroyed,
 					shardId: payload.shardId,
 				};
-				// eslint-disable-next-line unicorn/require-post-message-target-origin
+
 				parentPort!.postMessage(response);
 				break;
 			}
