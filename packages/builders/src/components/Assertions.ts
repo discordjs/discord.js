@@ -14,7 +14,7 @@ export const emojiValidator = s
 		name: s.string,
 		animated: s.boolean,
 	})
-	.partial.strict.nullish.setValidationEnabled(isValidationEnabled);
+	.partial.strict.setValidationEnabled(isValidationEnabled);
 
 export const disabledValidator = s.boolean;
 
