@@ -5216,6 +5216,7 @@ export type IntentsString =
   | 'DIRECT_MESSAGES'
   | 'DIRECT_MESSAGE_REACTIONS'
   | 'DIRECT_MESSAGE_TYPING'
+  | 'MESSAGE_CONTENT'
   | 'GUILD_SCHEDULED_EVENTS';
 
 export interface InviteGenerationOptions {
