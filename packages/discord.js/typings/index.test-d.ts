@@ -137,6 +137,7 @@ import {
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
+  GuildForumChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1360,7 +1361,7 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
 
 declare const guildChannelManager: GuildChannelManager;
 {
-  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StageChannel;
+  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StageChannel | GuildForumChannel;
 
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));

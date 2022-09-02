@@ -2054,6 +2054,7 @@ export interface DefaultReaction {
 }
 
 export class GuildForumChannel extends GuildChannel {
+  public type: ChannelType.GuildForum;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
   public defaultReactionEmoji: DefaultReaction | null;
@@ -2518,7 +2519,7 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
-export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
+export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel | GuildForumChannel;
 
 export interface PublicThreadChannel extends ThreadChannel {
   type: ChannelType.PublicThread | ChannelType.AnnouncementThread;
@@ -5577,7 +5578,10 @@ export type Channel =
   | VoiceChannel
   | GuildForumChannel;
 
-export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, PartialGroupDMChannel>;
+export type TextBasedChannel = Exclude<
+  Extract<Channel, { type: TextChannelType }>,
+  PartialGroupDMChannel | GuildForumChannel
+>;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
@@ -5589,7 +5593,7 @@ export type CategoryChildChannel = Exclude<Extract<Channel, { parent: CategoryCh
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
-export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
+export type GuildTextBasedChannel = Exclude<Extract<GuildBasedChannel, TextBasedChannel>, GuildForumChannel>;
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 
