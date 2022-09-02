@@ -4034,7 +4034,9 @@ export interface AwaitReactionsOptions extends ReactionCollectorOptions {
 }
 
 export interface BanOptions {
+  /** @deprecated Use {@link deleteMessageSeconds} instead. */
   days?: number;
+  deleteMessageSeconds?: number;
   reason?: string;
 }
 
