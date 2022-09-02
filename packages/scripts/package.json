@@ -4,17 +4,17 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"build": "unbuild",
+		"build": "tsup",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.cjs",
+		"require": "./dist/index.js",
 		"types": "./dist/index.d.ts"
 	},
 	"directories": {
@@ -55,9 +55,8 @@
 		"eslint": "^8.23.0",
 		"eslint-config-neon": "^0.1.23",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "^0.33.0",
+		"tsup": "^6.2.3",
 		"typescript": "^4.8.2",
-		"unbuild": "^0.8.9",
 		"vitest": "^0.22.1"
 	},
 	"engines": {
