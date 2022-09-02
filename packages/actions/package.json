@@ -46,7 +46,7 @@
 		"@types/node": "^16.11.56",
 		"@vitest/coverage-c8": "^0.22.1",
 		"eslint": "^8.23.0",
-		"eslint-config-neon": "^0.1.23",
+		"eslint-config-neon": "^0.1.31",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.2",
