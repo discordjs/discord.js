@@ -40,7 +40,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
-		"@emotion/react": "^11.10.0",
+		"@emotion/react": "^11.10.4",
 		"@emotion/server": "^11.10.0",
 		"@mantine/core": "^5.2.4",
 		"@mantine/hooks": "^5.2.4",
@@ -72,9 +72,9 @@
 		"@types/node": "^16.11.56",
 		"@types/react-dom": "^18.0.6",
 		"@types/react-syntax-highlighter": "^15.5.5",
-		"@unocss/cli": "^0.45.13",
-		"@unocss/preset-web-fonts": "^0.45.13",
-		"@unocss/reset": "^0.45.13",
+		"@unocss/cli": "^0.45.14",
+		"@unocss/preset-web-fonts": "^0.45.14",
+		"@unocss/reset": "^0.45.14",
 		"@vitejs/plugin-react": "^2.0.1",
 		"@vitest/coverage-c8": "^0.22.1",
 		"concurrently": "^7.3.0",
@@ -83,8 +83,8 @@
 		"happy-dom": "^6.0.4",
 		"prettier": "^2.7.1",
 		"typescript": "^4.8.2",
-		"unocss": "^0.45.13",
-		"vercel": "^28.2.0",
+		"unocss": "^0.45.14",
+		"vercel": "^28.2.2",
 		"vitest": "^0.22.1"
 	},
 	"engines": {
