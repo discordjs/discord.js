@@ -1,3 +1,4 @@
+import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
 import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import type { PropsWithChildren } from 'react';
@@ -5,9 +6,6 @@ import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiItemJSON, InheritanceData } from '~/DocModel/ApiNodeJSONEncoder';
-import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
 	Type = ':',
@@ -39,15 +37,15 @@ export function CodeListing({
 	deprecation,
 	inheritanceData,
 }: PropsWithChildren<{
-	name: string;
-	separator?: CodeListingSeparatorType;
-	typeTokens: TokenDocumentation[];
-	readonly?: boolean;
-	optional?: boolean;
-	summary?: ApiItemJSON['summary'];
 	comment?: AnyDocNodeJSON | null;
 	deprecation?: AnyDocNodeJSON | null;
 	inheritanceData?: InheritanceData | null;
+	name: string;
+	optional?: boolean;
+	readonly?: boolean;
+	separator?: CodeListingSeparatorType;
+	summary?: ApiItemJSON['summary'];
+	typeTokens: TokenDocumentation[];
 }>) {
 	const { classes } = useStyles();
 	const matches = useMediaQuery('(max-width: 768px)');

@@ -1,3 +1,10 @@
+import type {
+	ApiItemJSON,
+	TokenDocumentation,
+	TypeParameterData,
+	ApiClassJSON,
+	ApiInterfaceJSON,
+} from '@discordjs/api-extractor-utils';
 import {
 	Group,
 	Stack,
@@ -30,22 +37,17 @@ import { Section } from './Section';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiClassJSON, ApiInterfaceJSON, ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
-import type { TypeParameterData } from '~/DocModel/TypeParameterMixin';
-import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import type { TokenDocumentation } from '~/util/parse.server';
 
 type DocContainerProps = PropsWithChildren<{
-	name: string;
-	kind: string;
 	excerpt: string;
-	summary?: ApiItemJSON['summary'];
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
-	typeParams?: TypeParameterData[];
-	comment?: AnyDocNodeJSON | null;
+	kind: string;
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
+	name: string;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	summary?: ApiItemJSON['summary'];
+	typeParams?: TypeParameterData[];
 }>;
 
 function generateIcon(kind: string) {
@@ -157,7 +159,7 @@ export function DocContainer({
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
 						<ScrollArea p="sm" offsetScrollbars>
-							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
+							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
 						</ScrollArea>
 					</Aside>
 				</MediaQuery>

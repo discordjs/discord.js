@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/method-signature-style */
-import { createSocket, Socket } from 'node:dgram';
+import { Buffer } from 'node:buffer';
+import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';
 
@@ -13,8 +14,8 @@ export interface SocketConfig {
 }
 
 interface KeepAlive {
-	value: number;
 	timestamp: number;
+	value: number;
 }
 
 /**
@@ -25,7 +26,7 @@ interface KeepAlive {
 export function parseLocalPacket(message: Buffer): SocketConfig {
 	const packet = Buffer.from(message);
 
-	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf-8');
+	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf8');
 
 	if (!isIPv4(ip)) {
 		throw new Error('Malformed IP address');
@@ -100,7 +101,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
-	private readonly debug: null | ((message: string) => void);
+	private readonly debug: ((message: string) => void) | null;
 
 	/**
 	 * Creates a new VoiceUDPSocket.
@@ -137,6 +138,7 @@ export class VoiceUDPSocket extends EventEmitter {
 			// Delete all keep alives up to and including the received one
 			this.keepAlives.splice(0, index);
 		}
+
 		// Propagate the message
 		this.emit('message', buffer);
 	}
@@ -169,7 +171,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	 * @param buffer - The buffer to send
 	 */
 	public send(buffer: Buffer) {
-		return this.socket.send(buffer, this.remote.port, this.remote.ip);
+		this.socket.send(buffer, this.remote.port, this.remote.ip);
 	}
 
 	/**
@@ -179,6 +181,7 @@ export class VoiceUDPSocket extends EventEmitter {
 		try {
 			this.socket.close();
 		} catch {}
+
 		clearInterval(this.keepAliveInterval);
 	}
 
@@ -187,7 +190,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	 *
 	 * @param ssrc - The SSRC received from Discord
 	 */
-	public performIPDiscovery(ssrc: number): Promise<SocketConfig> {
+	public async performIPDiscovery(ssrc: number): Promise<SocketConfig> {
 		return new Promise((resolve, reject) => {
 			const listener = (message: Buffer) => {
 				try {

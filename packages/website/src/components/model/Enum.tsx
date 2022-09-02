@@ -1,3 +1,4 @@
+import type { ApiEnumJSON } from '@discordjs/api-extractor-utils';
 import { Skeleton, Stack } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
@@ -5,7 +6,6 @@ import { VscSymbolEnumMember } from 'react-icons/vsc';
 import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';
 import { Section } from '../Section';
-import type { ApiEnumJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export function Enum({ data }: { data: ApiEnumJSON }) {
 	const router = useRouter();

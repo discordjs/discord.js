@@ -43,7 +43,7 @@ export default function PackagesRoute() {
 					Select a package:
 				</Title>
 				{PACKAGES.map((pkg) => (
-					<Link key={pkg} href={`/docs/packages/${pkg}`} passHref>
+					<Link key={pkg} href={`/docs/packages/${pkg}`} passHref prefetch={false}>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>

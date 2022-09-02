@@ -1,10 +1,12 @@
+/* eslint-disable id-length */
+/* eslint-disable no-param-reassign */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /**
  * @internal
  */
 export interface CollectionConstructor {
 	new (): Collection<unknown, unknown>;
-	new <K, V>(entries?: ReadonlyArray<readonly [K, V]> | null): Collection<K, V>;
+	new <K, V>(entries?: readonly (readonly [K, V])[] | null): Collection<K, V>;
 	new <K, V>(iterable: Iterable<readonly [K, V]>): Collection<K, V>;
 	readonly prototype: Collection<unknown, unknown>;
 	readonly [Symbol.species]: CollectionConstructor;
@@ -13,8 +15,11 @@ export interface CollectionConstructor {
 /**
  * Represents an immutable version of a collection
  */
-export type ReadonlyCollection<K, V> = ReadonlyMap<K, V> &
-	Omit<Collection<K, V>, 'forEach' | 'ensure' | 'reverse' | 'sweep' | 'sort' | 'get' | 'set' | 'delete'>;
+export type ReadonlyCollection<K, V> = Omit<
+	Collection<K, V>,
+	'delete' | 'ensure' | 'forEach' | 'get' | 'reverse' | 'set' | 'sort' | 'sweep'
+> &
+	ReadonlyMap<K, V>;
 
 /**
  * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
@@ -38,7 +43,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param key - The key to get if it exists, or set otherwise
 	 * @param defaultValueGenerator - A function that generates the default value
-	 *
 	 * @example
 	 * ```ts
 	 * collection.ensure(guildId, () => defaultGuildConfig);
@@ -56,7 +60,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Checks if all of the elements exist in the collection.
 	 *
 	 * @param keys - The keys of the elements to check for
-	 *
 	 * @returns `true` if all of the elements exist, `false` if at least one does not exist.
 	 */
 	public hasAll(...keys: K[]) {
@@ -67,7 +70,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Checks if any of the elements exist in the collection.
 	 *
 	 * @param keys - The keys of the elements to check for
-	 *
 	 * @returns `true` if any of the elements exist, `false` if none exist.
 	 */
 	public hasAny(...keys: K[]) {
@@ -78,18 +80,15 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains the first value(s) in this collection.
 	 *
 	 * @param amount - Amount of values to obtain from the beginning
-	 *
 	 * @returns A single value if no amount is provided or an array of values, starting from the end if amount is negative
 	 */
 	public first(): V | undefined;
 	public first(amount: number): V[];
 	public first(amount?: number): V | V[] | undefined {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		if (typeof amount === 'undefined') return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.values();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return Array.from({ length: amount }, (): V => iter.next().value);
 	}
 
@@ -97,19 +96,16 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains the first key(s) in this collection.
 	 *
 	 * @param amount - Amount of keys to obtain from the beginning
-	 *
 	 * @returns A single key if no amount is provided or an array of keys, starting from the end if
 	 * amount is negative
 	 */
 	public firstKey(): K | undefined;
 	public firstKey(amount: number): K[];
 	public firstKey(amount?: number): K | K[] | undefined {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		if (typeof amount === 'undefined') return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.keys();
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		return Array.from({ length: amount }, (): K => iter.next().value);
 	}
 
@@ -117,7 +113,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains the last value(s) in this collection.
 	 *
 	 * @param amount - Amount of values to obtain from the end
-	 *
 	 * @returns A single value if no amount is provided or an array of values, starting from the start if
 	 * amount is negative
 	 */
@@ -135,7 +130,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains the last key(s) in this collection.
 	 *
 	 * @param amount - Amount of keys to obtain from the end
-	 *
 	 * @returns A single key if no amount is provided or an array of keys, starting from the start if
 	 * amount is negative
 	 */
@@ -179,7 +173,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains unique random value(s) from this collection.
 	 *
 	 * @param amount - Amount of values to obtain randomly
-	 *
 	 * @returns A single value if no amount is provided or an array of values
 	 */
 	public random(): V | undefined;
@@ -198,7 +191,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Obtains unique random key(s) from this collection.
 	 *
 	 * @param amount - Amount of keys to obtain randomly
-	 *
 	 * @returns A single key if no amount is provided or an array
 	 */
 	public randomKey(): K | undefined;
@@ -227,13 +219,12 @@ export class Collection<K, V> extends Map<K, V> {
 	/**
 	 * Searches for a single item where the given function returns a truthy value. This behaves like
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
-	 * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
+	 * All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
 	 * should use the `get` method. See
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.</warn>
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
 	 * @param fn - The function to test with (should return boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.find(user => user.username === 'Bob');
@@ -252,6 +243,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (fn(val, key, this)) return val;
 		}
+
 		return undefined;
 	}
 
@@ -262,7 +254,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - The function to test with (should return boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.findKey(user => user.username === 'Bob');
@@ -281,6 +272,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (fn(val, key, this)) return key;
 		}
+
 		return undefined;
 	}
 
@@ -289,7 +281,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @returns The number of removed entries
 	 */
 	public sweep(fn: (value: V, key: K, collection: this) => boolean): number;
@@ -301,6 +292,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (fn(val, key, this)) this.delete(key);
 		}
+
 		return previousSize - this.size;
 	}
 
@@ -311,7 +303,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - The function to test with (should return boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.filter(user => user.username === 'Bob');
@@ -336,6 +327,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (fn(val, key, this)) results.set(key, val);
 		}
+
 		return results;
 	}
 
@@ -345,7 +337,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
@@ -387,6 +378,7 @@ export class Collection<K, V> extends Map<K, V> {
 				results[1].set(key, val);
 			}
 		}
+
 		return results;
 	}
 
@@ -396,7 +388,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function that produces a new Collection
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.flatMap(guild => guild.members.cache);
@@ -408,6 +399,7 @@ export class Collection<K, V> extends Map<K, V> {
 		thisArg: This,
 	): Collection<K, T>;
 	public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T> {
+		// eslint-disable-next-line unicorn/no-array-method-this-argument
 		const collections = this.map(fn, thisArg);
 		return new this.constructor[Symbol.species]<K, T>().concat(...collections);
 	}
@@ -418,7 +410,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function that produces an element of the new array, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.map(user => user.tag);
@@ -431,9 +422,7 @@ export class Collection<K, V> extends Map<K, V> {
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		const iter = this.entries();
 		return Array.from({ length: this.size }, (): T => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			const [key, value] = iter.next().value;
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			return fn(value, key, this);
 		});
 	}
@@ -444,7 +433,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function that produces an element of the new collection, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.mapValues(user => user.tag);
@@ -466,7 +454,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.some(user => user.discriminator === '0000');
@@ -480,6 +467,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (fn(val, key, this)) return true;
 		}
+
 		return false;
 	}
 
@@ -489,7 +477,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection.every(user => !user.bot);
@@ -513,6 +500,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [key, val] of this) {
 			if (!fn(val, key, this)) return false;
 		}
+
 		return true;
 	}
 
@@ -523,7 +511,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
 	 * and `collection`
 	 * @param initialValue - Starting value for the accumulator
-	 *
 	 * @example
 	 * ```ts
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
@@ -538,6 +525,7 @@ export class Collection<K, V> extends Map<K, V> {
 			for (const [key, val] of this) accumulator = fn(accumulator, val, key, this);
 			return accumulator;
 		}
+
 		let first = true;
 		for (const [key, val] of this) {
 			if (first) {
@@ -545,6 +533,7 @@ export class Collection<K, V> extends Map<K, V> {
 				first = false;
 				continue;
 			}
+
 			accumulator = fn(accumulator, val, key, this);
 		}
 
@@ -563,7 +552,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function to execute for each element
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection
@@ -576,6 +564,7 @@ export class Collection<K, V> extends Map<K, V> {
 	public each<T>(fn: (this: T, value: V, key: K, collection: this) => void, thisArg: T): this;
 	public each(fn: (value: V, key: K, collection: this) => void, thisArg?: unknown): this {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		// eslint-disable-next-line unicorn/no-array-method-this-argument
 		this.forEach(fn as (value: V, key: K, map: Map<K, V>) => void, thisArg);
 		return this;
 	}
@@ -585,7 +574,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param fn - Function to execute
 	 * @param thisArg - Value to use as `this` when executing function
-	 *
 	 * @example
 	 * ```ts
 	 * collection
@@ -619,7 +607,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Combines this collection with others into a new collection. None of the source collections are modified.
 	 *
 	 * @param collections - Collections to merge
-	 *
 	 * @example
 	 * ```ts
 	 * const newColl = someColl.concat(someOtherColl, anotherColl, ohBoyAColl);
@@ -630,6 +617,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const coll of collections) {
 			for (const [key, val] of coll) newColl.set(key, val);
 		}
+
 		return newColl;
 	}
 
@@ -639,11 +627,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * the collections may be different objects, but contain the same data.
 	 *
 	 * @param collection - Collection to compare with
-	 *
 	 * @returns Whether the collections have identical contents
 	 */
 	public equals(collection: ReadonlyCollection<K, V>) {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (!collection) return false; // runtime check
 		if (this === collection) return true;
 		if (this.size !== collection.size) return false;
@@ -652,6 +638,7 @@ export class Collection<K, V> extends Map<K, V> {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -662,7 +649,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param compareFunction - Specifies a function that defines the sort order.
 	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
-	 *
 	 * @example
 	 * ```ts
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
@@ -679,6 +665,7 @@ export class Collection<K, V> extends Map<K, V> {
 		for (const [k, v] of entries) {
 			super.set(k, v);
 		}
+
 		return this;
 	}
 
@@ -694,6 +681,7 @@ export class Collection<K, V> extends Map<K, V> {
 				coll.set(k, v);
 			}
 		}
+
 		return coll;
 	}
 
@@ -702,24 +690,26 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param other - The other Collection to filter against
 	 */
-	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, V | T> {
-		const coll = new this.constructor[Symbol.species]<K, V | T>();
+	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+		const coll = new this.constructor[Symbol.species]<K, T | V>();
 		for (const [k, v] of other) {
 			if (!this.has(k)) coll.set(k, v);
 		}
+
 		for (const [k, v] of this) {
 			if (!other.has(k)) coll.set(k, v);
 		}
+
 		return coll;
 	}
 
 	/**
 	 * Merges two Collections together into a new Collection.
+	 *
 	 * @param other - The other Collection to merge with
 	 * @param whenInSelf - Function getting the result if the entry only exists in this Collection
 	 * @param whenInOther - Function getting the result if the entry only exists in the other Collection
 	 * @param whenInBoth - Function getting the result if the entry exists in both Collections
-	 *
 	 * @example
 	 * ```ts
 	 * // Sums up the entries in two collections.
@@ -730,7 +720,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *  (x, y) => ({ keep: true, value: x + y }),
 	 * );
 	 * ```
-	 *
 	 * @example
 	 * ```ts
 	 * // Intersects two collections in a left-biased manner.
@@ -765,6 +754,7 @@ export class Collection<K, V> extends Map<K, V> {
 				if (r.keep) coll.set(k, r.value);
 			}
 		}
+
 		return coll;
 	}
 
@@ -776,7 +766,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param compareFunction - Specifies a function that defines the sort order.
 	 * If omitted, the collection is sorted according to each character's Unicode code point value,
 	 * according to the string conversion of each element.
-	 *
 	 * @example
 	 * ```ts
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
@@ -800,7 +789,6 @@ export class Collection<K, V> extends Map<K, V> {
 	 *
 	 * @param entries - The list of entries
 	 * @param combine - Function to combine an existing entry with a new one
-	 *
 	 * @example
 	 * ```ts
 	 * Collection.combineEntries([["a", 1], ["b", 2], ["a", 2]], (x, y) => x + y);
@@ -819,6 +807,7 @@ export class Collection<K, V> extends Map<K, V> {
 				coll.set(k, v);
 			}
 		}
+
 		return coll;
 	}
 }
@@ -826,7 +815,7 @@ export class Collection<K, V> extends Map<K, V> {
 /**
  * @internal
  */
-export type Keep<V> = { keep: true; value: V } | { keep: false };
+export type Keep<V> = { keep: false } | { keep: true; value: V };
 
 /**
  * @internal

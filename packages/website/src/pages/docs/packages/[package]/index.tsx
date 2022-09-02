@@ -18,10 +18,10 @@ import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
-	packageName: string;
 	data: {
 		versions: string[];
 	};
+	packageName: string;
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
@@ -38,12 +38,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 	try {
 		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`);
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const data: string[] = await res.json();
 
 		if (!data.length) {
+			console.error('No tags');
+
 			return {
-				notFound: true,
+				props: {
+					error: 'No tags',
+				},
+				revalidate: 3_600,
 			};
 		}
 
@@ -54,11 +58,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 					versions: data,
 				},
 			},
-			revalidate: 3600,
+			revalidate: 3_600,
 		};
-	} catch {
+	} catch (error_) {
+		const error = error_ as Error;
+		console.error(error);
+
 		return {
-			notFound: true,
+			props: {
+				error: error_,
+			},
+			revalidate: 3_600,
 		};
 	}
 };
@@ -96,7 +106,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 					Select a version:
 				</Title>
 				{props.data?.versions.map((version) => (
-					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref>
+					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref prefetch={false}>
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>

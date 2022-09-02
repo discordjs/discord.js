@@ -4,7 +4,7 @@ import type { WebSocketManager } from '../ws/WebSocketManager';
 export class IdentifyThrottler {
 	private identifyState = {
 		remaining: 0,
-		resetsAt: Infinity,
+		resetsAt: Number.POSITIVE_INFINITY,
 	};
 
 	public constructor(private readonly manager: WebSocketManager) {}

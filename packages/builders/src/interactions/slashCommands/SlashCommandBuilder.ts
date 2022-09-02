@@ -2,7 +2,7 @@ import type {
 	APIApplicationCommandOption,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
@@ -13,10 +13,10 @@ import {
 	validateDMPermission,
 	validateMaxOptionsLength,
 	validateRequiredParameters,
-} from './Assertions';
-import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
-import { SharedNameAndDescription } from './mixins/NameAndDescription';
-import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
+} from './Assertions.js';
+import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
+import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
+import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
 
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
@@ -69,7 +69,7 @@ export class SlashCommandBuilder {
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
 
 		validateLocalizationMap(this.name_localizations);
@@ -87,7 +87,6 @@ export class SlashCommandBuilder {
 	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
 	 *
 	 * @param value - Whether or not to enable this command by default
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
 	 */
@@ -106,7 +105,6 @@ export class SlashCommandBuilder {
 	 * **Note:** You can set this to `'0'` to disable the command by default.
 	 *
 	 * @param permissions - The permissions bit field to set
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
@@ -123,7 +121,6 @@ export class SlashCommandBuilder {
 	 * By default, commands are visible.
 	 *
 	 * @param enabled - If the command should be enabled in DMs
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
@@ -192,7 +189,7 @@ export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSla
 
 export interface SlashCommandSubcommandsOnlyBuilder
 	extends SharedNameAndDescription,
-		Pick<SlashCommandBuilder, 'toJSON' | 'addSubcommand' | 'addSubcommandGroup'> {}
+		Pick<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup' | 'toJSON'> {}
 
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
@@ -200,5 +197,5 @@ export interface SlashCommandOptionsOnlyBuilder
 		Pick<SlashCommandBuilder, 'toJSON'> {}
 
 export interface ToAPIApplicationCommandOptions {
-	toJSON: () => APIApplicationCommandOption;
+	toJSON(): APIApplicationCommandOption;
 }

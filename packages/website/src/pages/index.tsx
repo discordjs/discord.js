@@ -76,12 +76,12 @@ export default function IndexRoute() {
 					</Text>
 
 					<Group mt={30}>
-						<Link href="/docs" passHref>
+						<Link href="/docs" passHref prefetch={false}>
 							<Button component="a" radius="sm" size="md">
 								Docs
 							</Button>
 						</Link>
-						<Link href="https://discordjs.guide" passHref>
+						<Link href="https://discordjs.guide" passHref prefetch={false}>
 							<Button component="a" variant="default" radius="sm" size="md" rightIcon={<FiExternalLink />}>
 								Guide
 							</Button>
@@ -116,7 +116,7 @@ await client.login('token');`}
 				</Box>
 			</Box>
 			<Center>
-				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss">
+				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" prefetch={false}>
 					<a title="Vercel">
 						<Image
 							src="/powered-by-vercel.svg"

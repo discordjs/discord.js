@@ -1,3 +1,4 @@
+import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
 import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { FiLink } from 'react-icons/fi';
@@ -5,8 +6,6 @@ import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { ApiMethodJSON, ApiMethodSignatureJSON } from '~/DocModel/ApiNodeJSONEncoder';
-import { Visibility } from '~/DocModel/Visibility';
 
 const useStyles = createStyles((theme) => ({
 	outer: {
@@ -48,7 +47,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 							</ActionIcon>
 						</MediaQuery>
 						{data.deprecated ||
-						(data.kind === 'Method' && method.visibility === Visibility.Protected) ||
+						(data.kind === 'Method' && method.protected) ||
 						(data.kind === 'Method' && method.static) ? (
 							<Group spacing={10} noWrap>
 								{data.deprecated ? (
@@ -56,9 +55,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 										Deprecated
 									</Badge>
 								) : null}
-								{data.kind === 'Method' && method.visibility === Visibility.Protected ? (
-									<Badge variant="filled">Protected</Badge>
-								) : null}
+								{data.kind === 'Method' && method.protected ? <Badge variant="filled">Protected</Badge> : null}
 								{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
 							</Group>
 						) : null}

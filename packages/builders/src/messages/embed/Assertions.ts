@@ -1,6 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import type { APIEmbedField } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation';
+import { isValidationEnabled } from '../../util/validation.js';
 
 export const fieldNamePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
@@ -9,7 +9,7 @@ export const fieldNamePredicate = s.string
 
 export const fieldValuePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(1024)
+	.lengthLessThanOrEqual(1_024)
 	.setValidationEnabled(isValidationEnabled);
 
 export const fieldInlinePredicate = s.boolean.optional;
@@ -64,12 +64,12 @@ export const colorPredicate = s.number.int
 
 export const descriptionPredicate = s.string
 	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(4096)
+	.lengthLessThanOrEqual(4_096)
 	.nullable.setValidationEnabled(isValidationEnabled);
 
 export const footerTextPredicate = s.string
 	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(2048)
+	.lengthLessThanOrEqual(2_048)
 	.nullable.setValidationEnabled(isValidationEnabled);
 
 export const embedFooterPredicate = s

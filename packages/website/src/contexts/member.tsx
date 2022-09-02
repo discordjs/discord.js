@@ -1,9 +1,9 @@
+import type { ApiItemJSON } from '@discordjs/api-extractor-utils';
 import { createContext, useContext, type ReactNode } from 'react';
-import type { ApiItemJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 export const MemberContext = createContext<ApiItemJSON | undefined>(undefined);
 
-export const MemberProvider = ({ member, children }: { member: ApiItemJSON | undefined; children: ReactNode }) => (
+export const MemberProvider = ({ member, children }: { children: ReactNode; member: ApiItemJSON | undefined }) => (
 	<MemberContext.Provider value={member}>{children}</MemberContext.Provider>
 );
 

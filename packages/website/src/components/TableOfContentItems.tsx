@@ -1,10 +1,9 @@
+import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
 import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
-import type { ApiClassJSON, ApiInterfaceJSON } from '~/DocModel/ApiNodeJSONEncoder';
 
 const useStyles = createStyles((theme) => ({
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	link: {
 		...theme.fn.focusStyles(),
 		fontWeight: 500,
@@ -48,6 +47,7 @@ export function TableOfContentItems({
 					</Group>
 				</Box>
 			)),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[properties, colorScheme],
 	);
 
@@ -73,7 +73,7 @@ export function TableOfContentItems({
 					</Box>
 				);
 			}),
-		[methods, colorScheme],
+		[methods, classes.link],
 	);
 
 	return (

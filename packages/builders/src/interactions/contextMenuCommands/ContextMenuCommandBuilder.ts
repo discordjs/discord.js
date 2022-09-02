@@ -3,8 +3,9 @@ import type {
 	LocaleString,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
+import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions.js';
 import {
 	validateRequiredParameters,
 	validateName,
@@ -12,8 +13,7 @@ import {
 	validateDefaultPermission,
 	validateDefaultMemberPermissions,
 	validateDMPermission,
-} from './Assertions';
-import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions';
+} from './Assertions.js';
 
 export class ContextMenuCommandBuilder {
 	/**
@@ -84,7 +84,6 @@ export class ContextMenuCommandBuilder {
 	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
 	 *
 	 * @param value - Whether or not to enable this command by default
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
@@ -103,7 +102,6 @@ export class ContextMenuCommandBuilder {
 	 * **Note:** You can set this to `'0'` to disable the command by default.
 	 *
 	 * @param permissions - The permissions bit field to set
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
@@ -120,7 +118,6 @@ export class ContextMenuCommandBuilder {
 	 * By default, commands are visible.
 	 *
 	 * @param enabled - If the command should be enabled in DMs
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
@@ -169,9 +166,8 @@ export class ContextMenuCommandBuilder {
 
 		Reflect.set(this, 'name_localizations', {});
 
-		Object.entries(localizedNames).forEach((args) =>
-			this.setNameLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedNames))
+			this.setNameLocalization(...(args as [LocaleString, string | null]));
 		return this;
 	}
 
@@ -180,7 +176,7 @@ export class ContextMenuCommandBuilder {
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIContextMenuApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.type);
 
 		validateLocalizationMap(this.name_localizations);
@@ -189,4 +185,4 @@ export class ContextMenuCommandBuilder {
 	}
 }
 
-export type ContextMenuCommandType = ApplicationCommandType.User | ApplicationCommandType.Message;
+export type ContextMenuCommandType = ApplicationCommandType.Message | ApplicationCommandType.User;

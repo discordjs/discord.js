@@ -1,6 +1,9 @@
+/* eslint-disable id-length */
+import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import { setTimeout } from 'node:timers';
+import { setTimeout, clearInterval, clearTimeout, setInterval } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
+import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
@@ -9,27 +12,28 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayCloseCodes,
 	GatewayDispatchEvents,
-	GatewayDispatchPayload,
-	GatewayIdentifyData,
 	GatewayOpcodes,
-	GatewayReceivePayload,
-	GatewaySendPayload,
+	type GatewayDispatchPayload,
+	type GatewayIdentifyData,
+	type GatewayReceivePayload,
+	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { RawData, WebSocket } from 'ws';
+import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
-import type { SessionInfo } from './WebSocketManager';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
-import { ImportantGatewayOpcodes } from '../utils/constants';
-import { lazy } from '../utils/utils';
+import { ImportantGatewayOpcodes } from '../utils/constants.js';
+import { lazy } from '../utils/utils.js';
+import type { SessionInfo } from './WebSocketManager.js';
 
-const getZlibSync = lazy(() => import('zlib-sync').then((mod) => mod.default).catch(() => null));
+// eslint-disable-next-line promise/prefer-await-to-then
+const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
 
 export enum WebSocketShardEvents {
 	Debug = 'debug',
+	Dispatch = 'dispatch',
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
-	Dispatch = 'dispatch',
 }
 
 export enum WebSocketShardStatus {
@@ -54,14 +58,14 @@ export type WebSocketShardEventsMap = {
 };
 
 export interface WebSocketShardDestroyOptions {
-	reason?: string;
 	code?: number;
+	reason?: string;
 	recover?: WebSocketShardDestroyRecovery;
 }
 
 export enum CloseCodes {
-	Normal = 1000,
-	Resuming = 4200,
+	Normal = 1_000,
+	Resuming = 4_200,
 }
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
@@ -72,6 +76,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private useIdentifyCompress = false;
 
 	private inflate: Inflate | null = null;
+
 	private readonly textDecoder = new TextDecoder();
 
 	private status: WebSocketShardStatus = WebSocketShardStatus.Idle;
@@ -86,6 +91,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	};
 
 	private heartbeatInterval: NodeJS.Timer | null = null;
+
 	private lastHeartbeatAt = -1;
 
 	private session: SessionInfo | null = null;
@@ -114,7 +120,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			if (zlib) {
 				params.append('compress', compression);
 				this.inflate = new zlib.Inflate({
-					chunkSize: 65535,
+					chunkSize: 65_535,
 					to: 'string',
 				});
 			} else if (!this.useIdentifyCompress) {
@@ -173,6 +179,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (this.heartbeatInterval) {
 			clearInterval(this.heartbeatInterval);
 		}
+
 		this.lastHeartbeatAt = -1;
 
 		// Clear session state if applicable
@@ -202,6 +209,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
+			// eslint-disable-next-line consistent-return
 			return this.connect();
 		}
 	}
@@ -213,6 +221,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (timeout) {
 			this.timeouts.set(event, timeout);
 		}
+
 		await once(this, event, { signal: controller.signal });
 		if (timeout) {
 			clearTimeout(timeout);
@@ -279,7 +288,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.status = WebSocketShardStatus.Ready;
 	}
 
-	private resume(session: SessionInfo) {
+	private async resume(session: SessionInfo) {
 		this.debug(['Resuming session']);
 		this.status = WebSocketShardStatus.Resuming;
 		this.replayedEvents = 0;
@@ -293,6 +302,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		});
 	}
 
+	// eslint-disable-next-line consistent-return
 	private async heartbeat(requested = false) {
 		if (!this.isAck && !requested) {
 			return this.destroy({ reason: 'Zombie connection', recover: WebSocketShardDestroyRecovery.Resume });
@@ -307,7 +317,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = false;
 	}
 
-	private async unpackMessage(data: Buffer | ArrayBuffer, isBinary: boolean): Promise<GatewayReceivePayload | null> {
+	private async unpackMessage(data: ArrayBuffer | Buffer, isBinary: boolean): Promise<GatewayReceivePayload | null> {
 		const decompressable = new Uint8Array(data);
 
 		// Deal with no compression
@@ -318,9 +328,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		// Deal with identify compress
 		if (this.useIdentifyCompress) {
 			return new Promise((resolve, reject) => {
-				inflate(decompressable, { chunkSize: 65535 }, (err, result) => {
+				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
-						return reject(err);
+						reject(err);
+						return;
 					}
 
 					resolve(JSON.parse(this.textDecoder.decode(result)) as GatewayReceivePayload);
@@ -368,7 +379,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async onMessage(data: RawData, isBinary: boolean) {
-		const payload = await this.unpackMessage(data as Buffer | ArrayBuffer, isBinary);
+		const payload = await this.unpackMessage(data as ArrayBuffer | Buffer, isBinary);
 		if (!payload) {
 			return;
 		}
@@ -411,11 +422,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					}
 				}
 
-				if (this.session) {
-					if (payload.s > this.session.sequence) {
-						this.session.sequence = payload.s;
-						await this.strategy.updateSessionInfo(this.id, this.session);
-					}
+				if (this.session && payload.s > this.session.sequence) {
+					this.session.sequence = payload.s;
+					await this.strategy.updateSessionInfo(this.id, this.session);
 				}
 
 				break;
@@ -447,6 +456,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						recover: WebSocketShardDestroyRecovery.Reconnect,
 					});
 				}
+
 				break;
 			}
 
@@ -469,6 +479,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.emit('error', err);
 	}
 
+	// eslint-disable-next-line consistent-return
 	private async onClose(code: number) {
 		switch (code) {
 			case CloseCodes.Normal: {

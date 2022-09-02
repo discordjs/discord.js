@@ -1,9 +1,9 @@
 export interface Item {
+	description: string;
 	id: string;
+	ignore?: boolean;
+	kind: string;
 	longname: string;
 	name: string;
-	kind: string;
-	description: string;
 	order: number;
-	ignore?: boolean;
 }

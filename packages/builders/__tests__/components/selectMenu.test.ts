@@ -1,6 +1,6 @@
-import { APISelectMenuComponent, APISelectMenuOption, ComponentType } from 'discord-api-types/v10';
+import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index';
+import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
 
 const selectMenu = () => new SelectMenuBuilder();
 const selectMenuOption = () => new SelectMenuOptionBuilder();
@@ -74,7 +74,8 @@ describe('Select Menu Components', () => {
 					]),
 			).not.toThrowError();
 
-			const options = new Array<APISelectMenuOption>(25).fill({ label: 'test', value: 'test' });
+			const options = Array.from<APISelectMenuOption>({ length: 25 }).fill({ label: 'test', value: 'test' });
+
 			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
 			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
 			expect(() => selectMenu().addOptions(options)).not.toThrowError();
@@ -83,12 +84,13 @@ describe('Select Menu Components', () => {
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
-					.addOptions(...new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+
+					.addOptions(...Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
-					.addOptions(new Array<APISelectMenuOption>(24).fill({ label: 'test', value: 'test' })),
+					.addOptions(Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
 			).not.toThrowError();
 		});
 
@@ -96,33 +98,34 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setCustomId(longStr)).toThrowError();
 			expect(() => selectMenu().setMaxValues(30)).toThrowError();
 			expect(() => selectMenu().setMinValues(-20)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid disabled value
 			expect(() => selectMenu().setDisabled(0)).toThrowError();
 			expect(() => selectMenu().setPlaceholder(longStr)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions({ label: 'test' })).toThrowError();
 			expect(() => selectMenu().addOptions({ label: longStr, value: 'test' })).toThrowError();
 			expect(() => selectMenu().addOptions({ value: longStr, label: 'test' })).toThrowError();
 			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', description: longStr })).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', default: 100 })).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions({ value: 'test' })).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions({ default: true })).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions([{ label: 'test' }])).toThrowError();
 			expect(() => selectMenu().addOptions([{ label: longStr, value: 'test' }])).toThrowError();
 			expect(() => selectMenu().addOptions([{ value: longStr, label: 'test' }])).toThrowError();
 			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', description: longStr }])).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', default: 100 }])).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions([{ value: 'test' }])).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid option
 			expect(() => selectMenu().addOptions([{ default: true }])).toThrowError();
 
-			const tooManyOptions = new Array<APISelectMenuOption>(26).fill({ label: 'test', value: 'test' });
+			const tooManyOptions = Array.from<APISelectMenuOption>({ length: 26 }).fill({ label: 'test', value: 'test' });
+
 			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
 			expect(() => selectMenu().setOptions(tooManyOptions)).toThrowError();
 
@@ -141,9 +144,9 @@ describe('Select Menu Components', () => {
 				selectMenuOption()
 					.setLabel(longStr)
 					.setValue(longStr)
-					// @ts-expect-error
+					// @ts-expect-error: Invalid default value
 					.setDefault(-1)
-					// @ts-expect-error
+					// @ts-expect-error: Invalid emoji
 					.setEmoji({ name: 1 })
 					.setDescription(longStr);
 			}).toThrowError();

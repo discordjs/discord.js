@@ -1,7 +1,7 @@
-import { DocumentedItem } from './item.js';
 import type { VarType } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { splitVarName } from '../util/splitVarName.js';
+import { DocumentedItem } from './item.js';
 
 export class DocumentedVarType extends DocumentedItem<VarType> {
 	public override serializer() {

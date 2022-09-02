@@ -1,13 +1,15 @@
 #!/usr/bin/env node
+/* eslint-disable n/shebang */
+import process from 'node:process';
 import { createCommand } from 'commander';
-import { build } from './index.js';
 import packageFile from '../package.json';
+import { build } from './index.js';
 
 export interface CLIOptions {
-	input: string[];
 	custom: string;
-	root: string;
+	input: string[];
 	output: string;
+	root: string;
 	typescript: boolean;
 }
 

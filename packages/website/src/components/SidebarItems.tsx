@@ -61,13 +61,12 @@ function resolveIcon(item: keyof GroupedMembers) {
 			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
-		case 'Functions':
+		default:
 			return <VscSymbolMethod size={20} />;
 	}
 }
 
 const useStyles = createStyles((theme) => ({
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 	link: {
 		...theme.fn.focusStyles(),
 		fontWeight: 500,
@@ -115,12 +114,12 @@ export function SidebarItems({
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
-						{groupItems[group].map((member, i) => (
-							<Link key={i} href={member.path} passHref>
+						{groupItems[group].map((member, index) => (
+							<Link key={index} href={member.path} passHref prefetch={false}>
 								<NavLink
 									className={classes.link}
 									component="a"
-									onClick={() => setOpened((o) => !o)}
+									onClick={() => setOpened((isOpened) => !isOpened)}
 									label={
 										<Group>
 											<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
@@ -135,7 +134,7 @@ export function SidebarItems({
 									}
 									active={asPathWithoutQueryAndAnchor === member.path}
 									variant="filled"
-								></NavLink>
+								/>
 							</Link>
 						))}
 					</Section>
