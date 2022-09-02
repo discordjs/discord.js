@@ -51,6 +51,7 @@
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"@vscode/codicons": "^0.0.32",
+		"minisearch": "^5.0.0",
 		"next": "^12.2.5",
 		"next-mdx-remote": "^4.1.0",
 		"react": "^18.2.0",
