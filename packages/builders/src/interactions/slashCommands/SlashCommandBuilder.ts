@@ -2,7 +2,7 @@ import type {
 	APIApplicationCommandOption,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
@@ -69,7 +69,7 @@ export class SlashCommandBuilder {
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
 
 		validateLocalizationMap(this.name_localizations);

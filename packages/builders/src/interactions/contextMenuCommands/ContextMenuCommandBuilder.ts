@@ -3,7 +3,7 @@ import type {
 	LocaleString,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions.js';
 import {
@@ -176,7 +176,7 @@ export class ContextMenuCommandBuilder {
 	 *
 	 * **Note:** Calling this function will validate required properties based on their conditions.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIContextMenuApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.type);
 
 		validateLocalizationMap(this.name_localizations);
