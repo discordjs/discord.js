@@ -2811,7 +2811,7 @@ export class VoiceState extends Base {
 
 export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
-  public avatar: string;
+  public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
   public readonly client: Client;
