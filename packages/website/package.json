@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:local": "yarn run --top-level docs --force && yarn build:prod",
+		"build:local": "NEXT_PUBLIC_LOCAL_DEV=true yarn run --top-level docs --force && yarn build:prod",
 		"build:prod": "yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
@@ -47,7 +47,7 @@
 		"@mantine/next": "^5.2.4",
 		"@mantine/nprogress": "^5.2.4",
 		"@mantine/spotlight": "^5.2.4",
-		"@microsoft/api-extractor-model": "^7.23.3",
+		"@microsoft/api-extractor-model": "7.23.3",
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"@vscode/codicons": "^0.0.32",

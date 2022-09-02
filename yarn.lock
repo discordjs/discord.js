@@ -1968,7 +1968,7 @@ __metadata:
     "@mantine/next": ^5.2.4
     "@mantine/nprogress": ^5.2.4
     "@mantine/spotlight": ^5.2.4
-    "@microsoft/api-extractor-model": ^7.23.3
+    "@microsoft/api-extractor-model": 7.23.3
     "@microsoft/tsdoc": 0.14.1
     "@microsoft/tsdoc-config": 0.16.1
     "@testing-library/react": ^13.3.0
@@ -2896,7 +2896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor-model@npm:7.24.0, @microsoft/api-extractor-model@npm:^7.23.3":
+"@microsoft/api-extractor-model@npm:7.24.0":
   version: 7.24.0
   resolution: "@microsoft/api-extractor-model@npm:7.24.0"
   dependencies:
