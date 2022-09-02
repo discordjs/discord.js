@@ -48,7 +48,7 @@
 		"@mantine/next": "^5.2.4",
 		"@mantine/nprogress": "^5.2.4",
 		"@mantine/spotlight": "^5.2.4",
-		"@microsoft/api-extractor-model": "7.23.3",
+		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@vscode/codicons": "^0.0.32",
 		"minisearch": "^5.0.0",
