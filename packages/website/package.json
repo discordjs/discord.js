@@ -40,6 +40,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
 		"@emotion/react": "^11.10.4",
 		"@emotion/server": "^11.10.0",
 		"@mantine/core": "^5.2.4",
@@ -49,7 +50,6 @@
 		"@mantine/spotlight": "^5.2.4",
 		"@microsoft/api-extractor-model": "7.23.3",
 		"@microsoft/tsdoc": "0.14.1",
-		"@microsoft/tsdoc-config": "0.16.1",
 		"@vscode/codicons": "^0.0.32",
 		"minisearch": "^5.0.0",
 		"next": "^12.2.5",

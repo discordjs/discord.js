@@ -12,6 +12,7 @@ import {
 	type ApiVariableJSON,
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
+import { createApiModel } from '@discordjs/scripts';
 import { ActionIcon, Affix, Box, LoadingOverlay, Transition } from '@mantine/core';
 import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
 import { registerSpotlightActions } from '@mantine/spotlight';
@@ -36,7 +37,6 @@ import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { MemberProvider } from '~/contexts/member';
-import { createApiModel } from '~/util/api-model.server';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { PACKAGES } from '~/util/packages';
 import { miniSearch } from '~/util/search';
