@@ -188,8 +188,7 @@ export class SlashCommandBuilder {
 export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions {}
 
 export interface SlashCommandSubcommandsOnlyBuilder
-	extends SharedNameAndDescription,
-		Pick<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup' | 'toJSON'> {}
+	extends Omit<SlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {}
 
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
