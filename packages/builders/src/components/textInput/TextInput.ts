@@ -59,7 +59,7 @@ export class TextInputBuilder
 	 * @param minLength - The minimum length of text for this text input
 	 */
 	public setMinLength(minLength: number | null) {
-		this.data.min_length = minLengthValidator.parse(minLength) || undefined;
+		this.data.min_length = minLengthValidator.parse(minLength) ?? undefined;
 		return this;
 	}
 
@@ -69,7 +69,7 @@ export class TextInputBuilder
 	 * @param maxLength - The maximum length of text for this text input
 	 */
 	public setMaxLength(maxLength: number | null) {
-		this.data.max_length = maxLengthValidator.parse(maxLength) || undefined;
+		this.data.max_length = maxLengthValidator.parse(maxLength) ?? undefined;
 		return this;
 	}
 
@@ -79,7 +79,7 @@ export class TextInputBuilder
 	 * @param placeholder - The placeholder of this text input
 	 */
 	public setPlaceholder(placeholder: string | null) {
-		this.data.placeholder = placeholderValidator.parse(placeholder) || undefined;
+		this.data.placeholder = placeholderValidator.parse(placeholder) ?? undefined;
 		return this;
 	}
 
@@ -89,7 +89,7 @@ export class TextInputBuilder
 	 * @param value - The value for this text input
 	 */
 	public setValue(value: string | null) {
-		this.data.value = valueValidator.parse(value) || undefined;
+		this.data.value = valueValidator.parse(value) ?? undefined;
 		return this;
 	}
 

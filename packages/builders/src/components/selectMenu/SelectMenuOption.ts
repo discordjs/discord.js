@@ -39,7 +39,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param description - The description of this option
 	 */
 	public setDescription(description: string | null) {
-		this.data.description = labelValueDescriptionValidator.nullable.parse(description) || undefined;
+		this.data.description = labelValueDescriptionValidator.nullable.parse(description) ?? undefined;
 		return this;
 	}
 
@@ -59,7 +59,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param emoji - The emoji to display on this option
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji | null) {
-		this.data.emoji = emojiValidator.nullish.parse(emoji) || undefined;
+		this.data.emoji = emojiValidator.nullish.parse(emoji) ?? undefined;
 		return this;
 	}
 

@@ -94,7 +94,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param emoji - The emoji to display on this button
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji | null) {
-		this.data.emoji = emojiValidator.nullish.parse(emoji) || undefined;
+		this.data.emoji = emojiValidator.nullish.parse(emoji) ?? undefined;
 		return this;
 	}
 
@@ -114,7 +114,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param label - The label to display on this button
 	 */
 	public setLabel(label: string | null) {
-		this.data.label = buttonLabelValidator.parse(label) || undefined;
+		this.data.label = buttonLabelValidator.parse(label) ?? undefined;
 		return this;
 	}
 
