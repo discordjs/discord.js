@@ -1,22 +1,24 @@
+/* eslint-disable id-length */
+import { setImmediate } from 'node:timers';
 import { REST } from '@discordjs/rest';
 import {
 	GatewayDispatchEvents,
-	GatewayDispatchPayload,
 	GatewayOpcodes,
-	GatewaySendPayload,
+	type GatewayDispatchPayload,
+	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { MockAgent, Interceptable } from 'undici';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, test, vi, expect, afterEach } from 'vitest';
 import {
-	WorkerRecievePayload,
-	WorkerSendPayload,
 	WebSocketManager,
 	WorkerSendPayloadOp,
 	WorkerRecievePayloadOp,
 	WorkerShardingStrategy,
 	WebSocketShardEvents,
-	SessionInfo,
-} from '../../src';
+	type WorkerRecievePayload,
+	type WorkerSendPayload,
+	type SessionInfo,
+} from '../../src/index.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
@@ -43,11 +45,11 @@ const sessionInfo: SessionInfo = {
 };
 
 vi.mock('node:worker_threads', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const { EventEmitter }: typeof import('node:events') = await vi.importActual('node:events');
 	class MockWorker extends EventEmitter {
 		public constructor(...args: any[]) {
 			super();
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			mockConstructor(...args);
 			// need to delay this by an event loop cycle to allow the strategy to attach a listener
 			setImmediate(() => this.emit('online'));
@@ -176,7 +178,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(
 		expect.stringContaining('worker.cjs'),
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 

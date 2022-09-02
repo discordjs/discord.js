@@ -6,8 +6,8 @@ export function Table({
 	columns,
 	columnStyles,
 }: {
-	columns: string[];
 	columnStyles?: Record<string, string>;
+	columns: string[];
 	rows: Record<string, ReactNode>[];
 }) {
 	return (

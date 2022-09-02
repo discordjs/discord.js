@@ -1,5 +1,9 @@
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
 import isEqual from 'fast-deep-equal';
+import type { Equatable } from '../../util/equatable';
+import { isJSONEncodable, type JSONEncodable } from '../../util/jsonEncodable.js';
+import { customIdValidator } from '../Assertions.js';
+import { ComponentBuilder } from '../Component.js';
 import {
 	maxLengthValidator,
 	minLengthValidator,
@@ -9,15 +13,11 @@ import {
 	validateRequiredParameters,
 	labelValidator,
 	textInputStyleValidator,
-} from './Assertions';
-import type { Equatable } from '../../util/equatable';
-import { isJSONEncodable, type JSONEncodable } from '../../util/jsonEncodable';
-import { customIdValidator } from '../Assertions';
-import { ComponentBuilder } from '../Component';
+} from './Assertions.js';
 
 export class TextInputBuilder
 	extends ComponentBuilder<APITextInputComponent>
-	implements Equatable<JSONEncodable<APITextInputComponent> | APITextInputComponent>
+	implements Equatable<APITextInputComponent | JSONEncodable<APITextInputComponent>>
 {
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
@@ -108,7 +108,7 @@ export class TextInputBuilder
 	 */
 	public toJSON(): APITextInputComponent {
 		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APITextInputComponent;
@@ -117,7 +117,7 @@ export class TextInputBuilder
 	/**
 	 * {@inheritDoc Equatable.equals}
 	 */
-	public equals(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): boolean {
+	public equals(other: APITextInputComponent | JSONEncodable<APITextInputComponent>): boolean {
 		if (isJSONEncodable(other)) {
 			return isEqual(other.toJSON(), this.data);
 		}

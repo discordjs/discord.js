@@ -1,10 +1,14 @@
+import { Buffer } from 'node:buffer';
+import { URLSearchParams } from 'node:url';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { Routes, Snowflake } from 'discord-api-types/v10';
-import { File, FormData, MockAgent, setGlobalDispatcher } from 'undici';
+import type { Snowflake } from 'discord-api-types/v10';
+import { Routes } from 'discord-api-types/v10';
+import type { FormData } from 'undici';
+import { File, MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect } from 'vitest';
-import { genPath } from './util';
-import { REST } from '../src';
+import { REST } from '../src/index.js';
+import { genPath } from './util.js';
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 
@@ -142,7 +146,7 @@ test('getQuery', async () => {
 
 	expect(
 		await api.get('/getQuery', {
-			query: query,
+			query,
 		}),
 	).toStrictEqual({ test: true });
 });
@@ -153,8 +157,8 @@ test('getAuth', async () => {
 			path: genPath('/getAuth'),
 			method: 'GET',
 		})
-		.reply((t) => ({
-			data: { auth: (t.headers as unknown as Record<string, string | undefined>)['Authorization'] ?? null },
+		.reply((from) => ({
+			data: { auth: (from.headers as unknown as Record<string, string | undefined>).Authorization ?? null },
 			statusCode: 200,
 			responseOptions,
 		}))
@@ -184,8 +188,8 @@ test('getReason', async () => {
 			path: genPath('/getReason'),
 			method: 'GET',
 		})
-		.reply((t) => ({
-			data: { reason: (t.headers as unknown as Record<string, string | undefined>)['X-Audit-Log-Reason'] ?? null },
+		.reply((from) => ({
+			data: { reason: (from.headers as unknown as Record<string, string | undefined>)['X-Audit-Log-Reason'] ?? null },
 			statusCode: 200,
 			responseOptions,
 		}))
@@ -215,8 +219,8 @@ test('urlEncoded', async () => {
 			path: genPath('/urlEncoded'),
 			method: 'POST',
 		})
-		.reply((t) => ({
-			data: t.body!,
+		.reply((from) => ({
+			data: from.body!,
 			statusCode: 200,
 		}));
 
@@ -245,8 +249,8 @@ test('postEcho', async () => {
 			path: genPath('/postEcho'),
 			method: 'POST',
 		})
-		.reply((t) => ({
-			data: t.body!,
+		.reply((from) => ({
+			data: from.body!,
 			statusCode: 200,
 			responseOptions,
 		}));
@@ -260,8 +264,8 @@ test('201 status code', async () => {
 			path: genPath('/postNon200StatusCode'),
 			method: 'POST',
 		})
-		.reply((t) => ({
-			data: t.body!,
+		.reply((from) => ({
+			data: from.body!,
 			statusCode: 201,
 			responseOptions,
 		}));

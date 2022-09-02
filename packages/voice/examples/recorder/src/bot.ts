@@ -4,7 +4,6 @@ import Discord, { Interaction, Constants } from 'discord.js';
 import { deploy } from './deploy';
 import { interactionHandlers } from './interactions';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const { token } = require('../auth.json') as { token: string };
 
 const client = new Discord.Client({

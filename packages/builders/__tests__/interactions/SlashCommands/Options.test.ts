@@ -1,15 +1,15 @@
 import {
-	APIApplicationCommandAttachmentOption,
-	APIApplicationCommandBooleanOption,
-	APIApplicationCommandChannelOption,
-	APIApplicationCommandIntegerOption,
-	APIApplicationCommandMentionableOption,
-	APIApplicationCommandNumberOption,
-	APIApplicationCommandRoleOption,
-	APIApplicationCommandStringOption,
-	APIApplicationCommandUserOption,
 	ApplicationCommandOptionType,
 	ChannelType,
+	type APIApplicationCommandAttachmentOption,
+	type APIApplicationCommandBooleanOption,
+	type APIApplicationCommandChannelOption,
+	type APIApplicationCommandIntegerOption,
+	type APIApplicationCommandMentionableOption,
+	type APIApplicationCommandNumberOption,
+	type APIApplicationCommandRoleOption,
+	type APIApplicationCommandStringOption,
+	type APIApplicationCommandUserOption,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -22,7 +22,7 @@ import {
 	SlashCommandRoleOption,
 	SlashCommandStringOption,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const getBooleanOption = () =>
 	new SlashCommandBooleanOption().setName('owo').setDescription('Testing 123').setRequired(true);
@@ -101,7 +101,8 @@ describe('Application Command toJSON() results', () => {
 			max_value: 10,
 			min_value: -1,
 			autocomplete: true,
-			// @ts-expect-error TODO: you *can* send an empty array with autocomplete: true, should correct that in types
+			// TODO
+			// @ts-expect-error You *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 
@@ -145,7 +146,8 @@ describe('Application Command toJSON() results', () => {
 			max_value: 10,
 			min_value: -1.23,
 			autocomplete: true,
-			// @ts-expect-error TODO: you *can* send an empty array with autocomplete: true, should correct that in types
+			// TODO
+			// @ts-expect-error You *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 
@@ -187,7 +189,8 @@ describe('Application Command toJSON() results', () => {
 			type: ApplicationCommandOptionType.String,
 			required: true,
 			autocomplete: true,
-			// @ts-expect-error TODO: you *can* send an empty array with autocomplete: true, should correct that in types
+			// TODO
+			// @ts-expect-error you *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 

@@ -25,10 +25,10 @@ import {
 	Title,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
@@ -37,16 +37,19 @@ import { SidebarItems } from './SidebarItems';
 import type { findMember } from '~/util/model.server';
 import { PACKAGES } from '~/util/packages';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+	const res = await fetch(url);
+	return res.json();
+};
 
 export interface SidebarLayoutProps {
-	packageName: string;
 	branchName: string;
 	data: {
-		members: ReturnType<typeof getMembers>;
 		member: ReturnType<typeof findMember>;
+		members: ReturnType<typeof getMembers>;
 		source: MDXRemoteSerializeResult;
 	};
+	packageName: string;
 
 	selectedMember?: ApiItemJSON | undefined;
 }
@@ -55,8 +58,8 @@ export type Members = SidebarLayoutProps['data']['members'];
 
 export interface GroupedMembers {
 	Classes: Members;
-	Functions: Members;
 	Enums: Members;
+	Functions: Members;
 	Interfaces: Members;
 	Types: Members;
 	Variables: Members;
@@ -158,6 +161,7 @@ export function SidebarLayout({
 		fetcher,
 	);
 	const theme = useMantineTheme();
+	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
 	const [opened, setOpened] = useState(false);
@@ -188,7 +192,7 @@ export function SidebarLayout({
 					{item}
 				</Menu.Item>
 			)) ?? [],
-		[versions],
+		[versions, packageName],
 	);
 
 	const breadcrumbs = useMemo(
@@ -302,7 +306,7 @@ export function SidebarLayout({
 							<MediaQuery largerThan="md" styles={{ display: 'none' }}>
 								<Burger
 									opened={opened}
-									onClick={() => (router.isFallback ? null : setOpened((o) => !o))}
+									onClick={() => (router.isFallback ? null : setOpened((isOpened) => !isOpened))}
 									size="sm"
 									color={theme.colors.gray![6]}
 									mr="xl"
@@ -346,7 +350,7 @@ export function SidebarLayout({
 				<Box className={classes.content} p="lg" pb={80}>
 					{children}
 				</Box>
-				<Box sx={(theme) => ({ height: 200, [theme.fn.smallerThan('sm')]: { height: 300 } })}></Box>
+				<Box sx={(theme) => ({ height: 200, [theme.fn.smallerThan('sm')]: { height: 300 } })} />
 				<Box
 					component="footer"
 					sx={{ paddingRight: data?.member?.kind !== 'Class' && data?.member?.kind !== 'Interface' ? 54 : 324 }}

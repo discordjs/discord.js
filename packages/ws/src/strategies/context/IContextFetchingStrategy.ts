@@ -5,7 +5,7 @@ import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../
 export interface FetchingStrategyOptions
 	extends Omit<
 		WebSocketManagerOptions,
-		'retrieveSessionInfo' | 'updateSessionInfo' | 'shardCount' | 'shardIds' | 'rest'
+		'rest' | 'retrieveSessionInfo' | 'shardCount' | 'shardIds' | 'updateSessionInfo'
 	> {
 	readonly gatewayInformation: APIGatewayBotInfo;
 	readonly shardCount: number;
@@ -16,11 +16,12 @@ export interface FetchingStrategyOptions
  */
 export interface IContextFetchingStrategy {
 	readonly options: FetchingStrategyOptions;
-	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
-	updateSessionInfo: (shardId: number, sessionInfo: SessionInfo | null) => Awaitable<void>;
+	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
+	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
 }
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
+	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { retrieveSessionInfo, updateSessionInfo, shardCount, shardIds, rest, ...managerOptions } = manager.options;
 
 	return {

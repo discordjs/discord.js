@@ -1,4 +1,4 @@
-import { Edge, findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
+import { findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
 const noConstraint = () => true;
 
@@ -12,6 +12,7 @@ function reducePath(pipeline: Edge[]) {
 	for (const edge of pipeline.slice(1)) {
 		streams.push(edge.from.type);
 	}
+
 	streams.push(pipeline[pipeline.length - 1].to.type);
 	return streams;
 }

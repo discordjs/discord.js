@@ -1,14 +1,14 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocComment } from '@microsoft/tsdoc';
+import { block, type DocBlockJSON } from './CommentBlock.js';
+import { type DocNodeJSON, node } from './CommentNode.js';
 import { createCommentNode } from '.';
-import { block, type DocBlockJSON } from './CommentBlock';
-import { type DocNodeJSON, node } from './CommentNode';
 
 export interface DocCommentJSON extends DocNodeJSON {
-	summary: DocNodeJSON[];
-	remarks: DocNodeJSON[];
-	deprecated: DocNodeJSON[];
 	customBlocks: DocBlockJSON[];
+	deprecated: DocNodeJSON[];
+	remarks: DocNodeJSON[];
+	summary: DocNodeJSON[];
 }
 
 export function comment(comment: DocComment, model: ApiModel, version: string, parentItem?: ApiItem): DocCommentJSON {

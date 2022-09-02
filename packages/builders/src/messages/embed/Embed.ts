@@ -1,4 +1,5 @@
 import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, APIEmbedImage } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import {
 	colorPredicate,
 	descriptionPredicate,
@@ -10,8 +11,7 @@ import {
 	titlePredicate,
 	urlPredicate,
 	validateFieldLength,
-} from './Assertions';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
+} from './Assertions.js';
 
 export type RGBTuple = [red: number, green: number, blue: number];
 
@@ -26,11 +26,11 @@ export interface IconData {
 	proxyIconURL?: string;
 }
 
-export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> & IconData;
+export type EmbedAuthorData = IconData & Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>;
 
 export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
 
-export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
+export type EmbedFooterData = IconData & Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>;
 
 export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
 
@@ -57,7 +57,6 @@ export class EmbedBuilder {
 	 * @remarks
 	 * This method accepts either an array of fields or a variable number of field parameters.
 	 * The maximum amount of fields that can be added is 25.
-	 *
 	 * @example
 	 * Using an array
 	 * ```ts
@@ -65,7 +64,6 @@ export class EmbedBuilder {
 	 * const embed = new EmbedBuilder()
 	 * 	.addFields(fields);
 	 * ```
-	 *
 	 * @example
 	 * Using rest parameters (variadic)
 	 * ```ts
@@ -75,10 +73,10 @@ export class EmbedBuilder {
 	 * 		{ name: 'Field 2', value: 'Value 2' },
 	 * 	);
 	 * ```
-	 *
 	 * @param fields - The fields to add
 	 */
 	public addFields(...fields: RestOrArray<APIEmbedField>): this {
+		// eslint-disable-next-line no-param-reassign
 		fields = normalizeArray(fields);
 		// Ensure adding these fields won't exceed the 25 field limit
 		validateFieldLength(fields.length, this.data.fields);
@@ -100,26 +98,22 @@ export class EmbedBuilder {
 	 * The maximum amount of fields that can be added is 25.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing fields of an embed.
-	 *
 	 * @example
 	 * Remove the first field
 	 * ```ts
 	 * embed.spliceFields(0, 1);
 	 * ```
-	 *
 	 * @example
 	 * Remove the first n fields
 	 * ```ts
 	 * const n = 4
 	 * embed.spliceFields(0, n);
 	 * ```
-	 *
 	 * @example
 	 * Remove the last field
 	 * ```ts
 	 * embed.spliceFields(-1, 1);
 	 * ```
-	 *
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of fields to remove
 	 * @param fields - The replacing field objects
@@ -143,7 +137,6 @@ export class EmbedBuilder {
 	 * it splices the entire array of fields, replacing them with the provided fields.
 	 *
 	 * You can set a maximum of 25 fields.
-	 *
 	 * @param fields - The fields to set
 	 */
 	public setFields(...fields: RestOrArray<APIEmbedField>) {
@@ -175,7 +168,7 @@ export class EmbedBuilder {
 	 *
 	 * @param color - The color of the embed
 	 */
-	public setColor(color: number | RGBTuple | null): this {
+	public setColor(color: RGBTuple | number | null): this {
 		// Data assertions
 		colorPredicate.parse(color);
 
@@ -184,6 +177,7 @@ export class EmbedBuilder {
 			this.data.color = (red << 16) + (green << 8) + blue;
 			return this;
 		}
+
 		this.data.color = color ?? undefined;
 		return this;
 	}
@@ -250,7 +244,7 @@ export class EmbedBuilder {
 	 *
 	 * @param timestamp - The timestamp or date
 	 */
-	public setTimestamp(timestamp: number | Date | null = Date.now()): this {
+	public setTimestamp(timestamp: Date | number | null = Date.now()): this {
 		// Data assertions
 		timestampPredicate.parse(timestamp);
 

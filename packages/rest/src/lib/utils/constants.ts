@@ -1,10 +1,10 @@
+import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
 import { getGlobalDispatcher } from 'undici';
-import type { RESTOptions } from '../REST';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
+import type { RESTOptions } from '../REST.js';
+// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const Package = require('../../../package.json');
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
 export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {
@@ -33,16 +33,16 @@ export const DefaultRestOptions: Required<RESTOptions> = {
  */
 export const enum RESTEvents {
 	Debug = 'restDebug',
+	HandlerSweep = 'handlerSweep',
+	HashSweep = 'hashSweep',
 	InvalidRequestWarning = 'invalidRequestWarning',
 	RateLimited = 'rateLimited',
 	Response = 'response',
-	HashSweep = 'hashSweep',
-	HandlerSweep = 'handlerSweep',
 }
 
 export const ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif'] as const;
 export const ALLOWED_STICKER_EXTENSIONS = ['png', 'json'] as const;
-export const ALLOWED_SIZES = [16, 32, 64, 128, 256, 512, 1024, 2048, 4096] as const;
+export const ALLOWED_SIZES = [16, 32, 64, 128, 256, 512, 1_024, 2_048, 4_096] as const;
 
 export type ImageExtension = typeof ALLOWED_EXTENSIONS[number];
 export type StickerExtension = typeof ALLOWED_STICKER_EXTENSIONS[number];

@@ -40,8 +40,8 @@ export function BlockComment({
 	tagName,
 	index,
 }: PropsWithChildren<{
-	tagName: string;
 	index?: number | undefined;
+	tagName: string;
 }>): JSX.Element {
 	switch (tagName.toUpperCase()) {
 		case StandardTags.example.tagNameWithUpperCase:

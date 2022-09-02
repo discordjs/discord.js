@@ -1,4 +1,4 @@
-import type { URL } from 'url';
+import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
@@ -95,8 +95,7 @@ export function hideLinkEmbed<C extends string>(url: C): `<${C}>`;
  * @param url - The URL to wrap
  */
 export function hideLinkEmbed(url: URL): `<${string}>`;
-export function hideLinkEmbed(url: string | URL) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+export function hideLinkEmbed(url: URL | string) {
 	return `<${url}>`;
 }
 
@@ -141,8 +140,7 @@ export function hyperlink<C extends string, U extends string, T extends string>(
 	url: U,
 	title: T,
 ): `[${C}](${U} "${T}")`;
-export function hyperlink(content: string, url: string | URL, title?: string) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+export function hyperlink(content: string, url: URL | string, title?: string) {
 	return title ? `[${content}](${url} "${title}")` : `[${content}](${url})`;
 }
 
@@ -203,7 +201,7 @@ export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: true): `
  * @param emojiId - The emoji ID to format
  * @param animated - Whether the emoji is animated or not. Defaults to `false`
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<a:_:${C}>` | `<:_:${C}>` {
+export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<:_:${C}>` | `<a:_:${C}>` {
 	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
 }
 
@@ -293,9 +291,10 @@ export function time<C extends number>(seconds: C): `<t:${C}>`;
  * @param style - The style to use
  */
 export function time<C extends number, S extends TimestampStylesString>(seconds: C, style: S): `<t:${C}:${S}>`;
-export function time(timeOrSeconds?: number | Date, style?: TimestampStylesString): string {
+export function time(timeOrSeconds?: Date | number, style?: TimestampStylesString): string {
 	if (typeof timeOrSeconds !== 'number') {
-		timeOrSeconds = Math.floor((timeOrSeconds?.getTime() ?? Date.now()) / 1000);
+		// eslint-disable-next-line no-param-reassign
+		timeOrSeconds = Math.floor((timeOrSeconds?.getTime() ?? Date.now()) / 1_000);
 	}
 
 	return typeof style === 'string' ? `<t:${timeOrSeconds}:${style}>` : `<t:${timeOrSeconds}>`;

@@ -63,6 +63,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 					return null;
 				}
+
 				case DocNodeKind.CodeSpan: {
 					const { code } = node as DocFencedCodeJSON;
 					return (
@@ -71,6 +72,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 						</Code>
 					);
 				}
+
 				case DocNodeKind.FencedCode: {
 					const { language, code } = node as DocFencedCodeJSON;
 					return (
@@ -86,6 +88,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 						</SyntaxHighlighter>
 					);
 				}
+
 				case DocNodeKind.ParamBlock:
 				case DocNodeKind.Block: {
 					const { tag } = node as DocBlockJSON;
@@ -102,6 +105,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 						</BlockComment>
 					);
 				}
+
 				case DocNodeKind.Comment: {
 					const comment = node as DocCommentJSON;
 					// Cheat a bit by finding out how many comments we have beforehand...
@@ -111,6 +115,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 					return <Box key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</Box>;
 				}
+
 				default:
 					console.log(`Captured unknown node kind: ${node.kind}`);
 					break;

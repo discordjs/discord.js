@@ -1,12 +1,14 @@
+/* eslint-disable jsdoc/check-param-names */
+import { URL } from 'node:url';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,
 	ALLOWED_STICKER_EXTENSIONS,
 	DefaultRestOptions,
-	ImageExtension,
-	ImageSize,
-	StickerExtension,
-} from './utils/constants';
+	type ImageExtension,
+	type ImageSize,
+	type StickerExtension,
+} from './utils/constants.js';
 
 /**
  * The options used for image URLs
@@ -39,6 +41,10 @@ export interface ImageURLOptions extends BaseImageURLOptions {
  */
 export interface MakeURLOptions {
 	/**
+	 * The allowed extensions that can be used
+	 */
+	allowedExtensions?: readonly string[];
+	/**
 	 * The extension to use for the image URL
 	 *
 	 * @defaultValue `'webp'`
@@ -48,10 +54,6 @@ export interface MakeURLOptions {
 	 * The size specified in the image URL
 	 */
 	size?: ImageSize;
-	/**
-	 * The allowed extensions that can be used
-	 */
-	allowedExtensions?: ReadonlyArray<string>;
 }
 
 /**
@@ -192,6 +194,7 @@ export class CDN {
 
 	/**
 	 * Generates a URL for the icon of a role
+	 *
 	 * @param roleId - The id of the role that has the icon
 	 * @param roleIconHash - The hash provided by Discord for this role icon
 	 * @param options - Optional options for the role icon
@@ -285,6 +288,7 @@ export class CDN {
 		route: string,
 		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
 	): string {
+		// eslint-disable-next-line no-param-reassign
 		extension = String(extension).toLowerCase();
 
 		if (!allowedExtensions.includes(extension)) {

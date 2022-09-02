@@ -2,7 +2,6 @@ import type {
 	ApiItemJSON,
 	TokenDocumentation,
 	TypeParameterData,
-	AnyDocNodeJSON,
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
@@ -40,16 +39,15 @@ import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
 
 type DocContainerProps = PropsWithChildren<{
-	name: string;
-	kind: string;
 	excerpt: string;
-	summary?: ApiItemJSON['summary'];
 	extendsTokens?: TokenDocumentation[] | null;
 	implementsTokens?: TokenDocumentation[][];
-	typeParams?: TypeParameterData[];
-	comment?: AnyDocNodeJSON | null;
+	kind: string;
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
+	name: string;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	summary?: ApiItemJSON['summary'];
+	typeParams?: TypeParameterData[];
 }>;
 
 function generateIcon(kind: string) {
@@ -161,7 +159,7 @@ export function DocContainer({
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
 						<ScrollArea p="sm" offsetScrollbars>
-							<TableOfContentItems properties={properties ?? []} methods={methods ?? []}></TableOfContentItems>
+							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
 						</ScrollArea>
 					</Aside>
 				</MediaQuery>

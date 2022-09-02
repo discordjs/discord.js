@@ -1,7 +1,7 @@
-import EventEmitter, { once } from 'node:events';
-import { abortAfter } from './abortAfter';
+import { type EventEmitter, once } from 'node:events';
 import type { VoiceConnection, VoiceConnectionStatus } from '../VoiceConnection';
 import type { AudioPlayer, AudioPlayerStatus } from '../audio/AudioPlayer';
+import { abortAfter } from './abortAfter';
 
 /**
  * Allows a voice connection a specified amount of time to enter a given state, otherwise rejects with an error.
@@ -13,7 +13,7 @@ import type { AudioPlayer, AudioPlayerStatus } from '../audio/AudioPlayer';
 export function entersState(
 	target: VoiceConnection,
 	status: VoiceConnectionStatus,
-	timeoutOrSignal: number | AbortSignal,
+	timeoutOrSignal: AbortSignal | number,
 ): Promise<VoiceConnection>;
 
 /**
@@ -26,7 +26,7 @@ export function entersState(
 export function entersState(
 	target: AudioPlayer,
 	status: AudioPlayerStatus,
-	timeoutOrSignal: number | AbortSignal,
+	timeoutOrSignal: AbortSignal | number,
 ): Promise<AudioPlayer>;
 
 /**
@@ -36,10 +36,10 @@ export function entersState(
  * @param status - The status that the target should be in
  * @param timeoutOrSignal - The maximum time we are allowing for this to occur, or a signal that will abort the operation
  */
-export async function entersState<T extends VoiceConnection | AudioPlayer>(
+export async function entersState<T extends AudioPlayer | VoiceConnection>(
 	target: T,
-	status: VoiceConnectionStatus | AudioPlayerStatus,
-	timeoutOrSignal: number | AbortSignal,
+	status: AudioPlayerStatus | VoiceConnectionStatus,
+	timeoutOrSignal: AbortSignal | number,
 ) {
 	if (target.state.status !== status) {
 		const [ac, signal] =
@@ -50,5 +50,6 @@ export async function entersState<T extends VoiceConnection | AudioPlayer>(
 			ac?.abort();
 		}
 	}
+
 	return target;
 }

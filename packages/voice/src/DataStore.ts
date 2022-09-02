@@ -1,13 +1,13 @@
 import { GatewayOpcodes } from 'discord-api-types/v10';
 import type { VoiceConnection } from './VoiceConnection';
-import type { AudioPlayer } from './audio';
+import type { AudioPlayer } from './audio/index';
 
 export interface JoinConfig {
-	guildId: string;
 	channelId: string | null;
+	group: string;
+	guildId: string;
 	selfDeaf: boolean;
 	selfMute: boolean;
-	group: string;
 }
 
 /**
@@ -19,6 +19,7 @@ export interface JoinConfig {
 export function createJoinVoiceChannelPayload(config: JoinConfig) {
 	return {
 		op: GatewayOpcodes.VoiceStateUpdate,
+		// eslint-disable-next-line id-length
 		d: {
 			guild_id: config.guildId,
 			channel_id: config.channelId,
@@ -54,7 +55,6 @@ export function getGroups() {
  * Retrieves all the voice connections under the 'default' group.
  *
  * @param group - The group to look up
- *
  * @returns The map of voice connections
  */
 export function getVoiceConnections(group?: 'default'): Map<string, VoiceConnection>;
@@ -63,7 +63,6 @@ export function getVoiceConnections(group?: 'default'): Map<string, VoiceConnect
  * Retrieves all the voice connections under the given group name.
  *
  * @param group - The group to look up
- *
  * @returns The map of voice connections
  */
 export function getVoiceConnections(group: string): Map<string, VoiceConnection> | undefined;
@@ -72,7 +71,6 @@ export function getVoiceConnections(group: string): Map<string, VoiceConnection>
  * Retrieves all the voice connections under the given group name. Defaults to the 'default' group.
  *
  * @param group - The group to look up
- *
  * @returns The map of voice connections
  */
 export function getVoiceConnections(group = 'default') {
@@ -84,7 +82,6 @@ export function getVoiceConnections(group = 'default') {
  *
  * @param guildId - The guild id of the voice connection
  * @param group - the group that the voice connection was registered with
- *
  * @returns The voice connection, if it exists
  */
 export function getVoiceConnection(guildId: string, group = 'default') {
@@ -122,8 +119,10 @@ function audioCycleStep() {
 	nextTime += FRAME_LENGTH;
 	const available = audioPlayers.filter((player) => player.checkPlayable());
 
-	// eslint-disable-next-line @typescript-eslint/dot-notation
-	available.forEach((player) => player['_stepDispatch']());
+	for (const player of available) {
+		// eslint-disable-next-line @typescript-eslint/dot-notation
+		player['_stepDispatch']();
+	}
 
 	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	prepareNextAudioFrame(available);
@@ -140,6 +139,7 @@ function prepareNextAudioFrame(players: AudioPlayer[]) {
 		if (nextTime !== -1) {
 			audioCycleInterval = setTimeout(() => audioCycleStep(), nextTime - Date.now());
 		}
+
 		return;
 	}
 
@@ -154,7 +154,6 @@ function prepareNextAudioFrame(players: AudioPlayer[]) {
  * Checks whether or not the given audio player is being driven by the data store clock.
  *
  * @param target - The target to test for
- *
  * @returns `true` if it is being tracked, `false` otherwise
  */
 export function hasAudioPlayer(target: AudioPlayer) {
@@ -173,6 +172,7 @@ export function addAudioPlayer(player: AudioPlayer) {
 		nextTime = Date.now();
 		setImmediate(() => audioCycleStep());
 	}
+
 	return player;
 }
 
