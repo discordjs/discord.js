@@ -645,15 +645,6 @@ class Message extends Base {
   }
 
   /**
-   * Options that can be passed into {@link Message#edit}.
-   * @typedef {BaseMessageOptions} MessageEditOptions
-   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] An array of attachments to keep,
-   * all attachments will be kept if omitted
-   * @property {MessageFlags} [flags] Which flags to set for the message
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
-   */
-
-  /**
    * Edits the content of the message.
    * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
