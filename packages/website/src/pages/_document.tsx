@@ -2,6 +2,7 @@
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { getCssText } from '../../stitches.config';
+import { DESCRIPTION } from '~/util/meta';
 
 const getInitialProps = createGetInitialProps();
 
@@ -22,16 +23,10 @@ export default class _Document extends Document {
 					<meta name="application-name" content="discord.js" />
 					<meta name="msapplication-TileColor" content="#090a16" />
 					<meta name="theme-color" content="#1a1b1e" />
-					<meta
-						name="description"
-						content="discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend."
-					/>
+					<meta key="description" name="description" content={DESCRIPTION} />
 					<meta property="og:site_name" content="discord.js" />
-					<meta property="og:title" content="discord.js" />
-					<meta
-						name="og:description"
-						content="discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend."
-					/>
+					<meta key="og_title" property="og:title" content="discord.js" />
+					<meta key="og_description" name="og:description" content={DESCRIPTION} />
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
 					<meta name="twitter:card" content="summary_large_image" />
 

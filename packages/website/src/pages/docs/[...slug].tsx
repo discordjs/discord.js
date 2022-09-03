@@ -232,6 +232,9 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	// }, []);
 
 	const name = `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`;
+	const ogTitle = `${props.packageName ?? 'discord.js'}${
+		props.data?.member?.name ? ` | ${props.data.member.name}` : ''
+	}`;
 
 	if (router.isFallback) {
 		return (
@@ -253,6 +256,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 					<>
 						<Head>
 							<title key="title">{name}</title>
+							<meta key="og_title" property="og:title" content={ogTitle} />
 						</Head>
 						{member(props.data.member)}
 					</>
