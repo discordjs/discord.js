@@ -1,14 +1,49 @@
-import { stat, mkdir, writeFile } from 'node:fs/promises';
+import { stat, mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { cwd } from 'node:process';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import { ApiDeclaredItem, ApiItemContainerMixin, type ApiItem, type ApiModel } from '@microsoft/api-extractor-model';
-import { DocNodeKind, type DocCodeSpan, type DocNode, type DocParagraph, type DocPlainText } from '@microsoft/tsdoc';
+import {
+	ApiDeclaredItem,
+	ApiItemContainerMixin,
+	ApiItem,
+	ApiModel,
+	type ApiPackage,
+} from '@microsoft/api-extractor-model';
+import {
+	DocNodeKind,
+	type DocCodeSpan,
+	type DocNode,
+	type DocParagraph,
+	type DocPlainText,
+	TSDocConfiguration,
+} from '@microsoft/tsdoc';
+import { TSDocConfigFile } from '@microsoft/tsdoc-config';
+// import { request } from 'undici';
 
 export interface MemberJSON {
 	kind: string;
 	name: string;
 	path: string;
 	summary: string | null;
+}
+
+export const PACKAGES = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
+
+export function createApiModel(data: any) {
+	const model = new ApiModel();
+	const tsdocConfiguration = new TSDocConfiguration();
+	const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
+	tsdocConfigFile.configureParser(tsdocConfiguration);
+
+	const apiPackage = ApiItem.deserialize(data, {
+		apiJsonFilename: '',
+		toolPackage: data.metadata.toolPackage,
+		toolVersion: data.metadata.toolVersion,
+		versionToDeserialize: data.metadata.schemaVersion,
+		tsdocConfiguration,
+	}) as ApiPackage;
+	model.addMember(apiPackage);
+	return model;
 }
 
 /**
@@ -82,14 +117,38 @@ export function visitNodes(item: ApiItem, tag: string) {
 	return members;
 }
 
-export async function generateIndex(model: ApiModel, packageName: string, tag: string) {
-	const members = visitNodes(model, tag);
+export async function generateIndex(model: ApiModel, packageName: string, tag = 'main') {
+	const members = visitNodes(model.tryGetPackageByName(packageName)!.entryPoints[0]!, tag);
 
 	const dir = 'searchIndex';
 
-	if (!(await stat(dir)).isDirectory()) {
-		await mkdir(dir);
+	try {
+		(await stat(join(cwd(), dir))).isDirectory();
+	} catch {
+		await mkdir(join(cwd(), dir));
 	}
 
-	await writeFile(join('searchIndex', `${packageName}-${tag}-doc-index.json`), JSON.stringify(members, undefined, 2));
+	await writeFile(
+		join(cwd(), 'searchIndex', `${packageName}-${tag}-index.json`),
+		JSON.stringify(members, undefined, 2),
+	);
+}
+
+export async function generateAllIndicies() {
+	for (const pkg of PACKAGES) {
+		const res = await readFile(join(cwd(), '..', pkg, 'docs', 'docs.api.json'), 'utf8');
+		const data = JSON.parse(res);
+
+		// TODO: finish picking versions to generate
+		// const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+		// const versions = await response.body.json();
+
+		// for (const version of versions) {
+		// 	const model = createApiModel(data);
+		// 	await generateIndex(model, pkg, version);
+		// }
+
+		const model = createApiModel(data);
+		await generateIndex(model, pkg);
+	}
 }

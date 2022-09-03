@@ -2530,7 +2530,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
-  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message | null>;
+  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message<true> | null>;
   public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
@@ -2790,7 +2790,7 @@ export class VoiceState extends Base {
 
 export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
-  public avatar: string;
+  public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
   public readonly client: Client;
