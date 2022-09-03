@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, APIVersion } = require('discord-api-types/v10');
 const Base = require('./Base');
 const WidgetMember = require('./WidgetMember');
 
@@ -76,12 +76,23 @@ class Widget extends Base {
 
   /**
    * Update the Widget.
-   * @returns {Promise<Widget>}
+   * @returns {Promise<WIdget>}
    */
   async fetch() {
     const data = await this.client.rest.get(Routes.guildWidgetJSON(this.id));
     this._patch(data);
     return this;
+  }
+  /**
+   * Get Guild Widget Image
+   * @param {?WidgetStyleOptions} style Style of widget
+   * @returns {Promise<Widget>}
+   */
+  fetchImage(style) {
+    const styles = ['banner1', 'banner2', 'banner3', 'banner4', 'shield'];
+    if (!styles.includes(style)) style = 'shield';
+    const data = `https://discord.com/api/v${APIVersion}${Routes.guildWidgetImage(this.id)}?style=${style}`;
+    return data;
   }
 }
 
