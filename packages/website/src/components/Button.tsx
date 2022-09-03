@@ -1,21 +1,24 @@
 import { darkTheme, styled } from '../../stitches.config';
 
-export const AnchorButton = styled('a', {
+export const Button = styled('button', {
 	display: 'flex',
 	placeItems: 'center',
-	backgroundColor: '$blue9',
+	background: '$blue9',
 	appearance: 'none',
 	textDecoration: 'none',
 	userSelect: 'none',
+	cursor: 'pointer',
 	height: 42,
 	padding: '0 22px',
 	borderRadius: 4,
 	color: 'white',
 	lineHeight: 1,
+	fontSize: 16,
 	fontWeight: 600,
+	border: 0,
 
 	'&:hover': {
-		backgroundColor: '$blue10',
+		background: '$blue10',
 	},
 
 	'&:active': {
@@ -30,14 +33,14 @@ export const AnchorButton = styled('a', {
 		color: {
 			secondary: {
 				color: 'black',
-				backgroundColor: '$gray4',
+				background: '$gray4',
 
 				'&:hover': {
-					backgroundColor: '$gray5',
+					background: '$gray5',
 				},
 
 				'&:active': {
-					backgroundColor: '$gray6',
+					background: '$gray6',
 				},
 
 				[`.${darkTheme} &`]: {
@@ -51,6 +54,37 @@ export const AnchorButton = styled('a', {
 				height: 24,
 				padding: '0 8px',
 				fontSize: 12,
+			},
+		},
+
+		icon: {
+			xs: {
+				padding: 0,
+				fontSize: 12,
+				height: 16,
+				width: 16,
+			},
+
+			sm: {
+				padding: 0,
+				fontSize: 14,
+				height: 24,
+				width: 24,
+			},
+		},
+
+		transparent: {
+			true: {
+				color: '$gray12',
+				background: 'transparent',
+
+				'&:hover': {
+					background: 'transparent',
+				},
+
+				'& svg': {
+					margin: 0,
+				},
 			},
 		},
 	},

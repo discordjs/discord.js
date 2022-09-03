@@ -1,28 +1,5 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import {
-	useMantineTheme,
-	AppShell,
-	Navbar,
-	MediaQuery,
-	Header,
-	Burger,
-	Anchor,
-	Breadcrumbs,
-	ScrollArea,
-	Group,
-	Text,
-	ThemeIcon,
-	Box,
-	UnstyledButton,
-	createStyles,
-	Menu,
-	ActionIcon,
-	Stack,
-	Skeleton,
-	LoadingOverlay,
-	Container,
-	Title,
-} from '@mantine/core';
+import { Anchor, createStyles, Menu, Title } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import Image from 'next/future/image';
 import Link from 'next/link';
@@ -30,10 +7,13 @@ import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
-import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
-import { WiDaySunny, WiNightClear } from 'react-icons/wi';
+import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
 import useSWR from 'swr';
+import { styled } from '../../stitches.config';
 import vercelLogo from '../assets/powered-by-vercel.svg';
+import { Box } from './Box';
+import { Button } from './Button';
+import { Container } from './Container';
 import { SidebarItems } from './SidebarItems';
 import { PACKAGES } from '~/util/constants';
 import type { findMember } from '~/util/model.server';
@@ -101,29 +81,6 @@ const useStyles = createStyles(
 			boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
 		},
 
-		footer: {
-			position: 'fixed',
-			bottom: 0,
-			left: 0,
-			right: 0,
-			height: 200,
-			background: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
-			paddingLeft: 324,
-
-			[theme.fn.smallerThan('lg')]: {
-				paddingRight: 54,
-			},
-
-			[theme.fn.smallerThan('md')]: {
-				paddingLeft: 24,
-			},
-
-			[theme.fn.smallerThan('sm')]: {
-				paddingRight: 24,
-				height: 300,
-			},
-		},
-
 		links: {
 			display: 'flex',
 			justifyContent: 'space-between',
@@ -134,10 +91,78 @@ const useStyles = createStyles(
 				gap: 50,
 			},
 		},
-
-		link: { color: theme.colorScheme === 'dark' ? theme.white : theme.black },
 	}),
 );
+
+const StickyHeader = styled('header', {
+	position: 'fixed',
+	top: 0,
+	left: 0,
+	width: '100%',
+	zIndex: 2,
+	background: '$gray1',
+	boxShadow: '0 0 0 1px $colors$gray6',
+});
+
+const Navbar = styled('nav', {
+	position: 'fixed',
+	top: 70,
+	left: 0,
+	bottom: 0,
+	width: '100%',
+	background: '$gray1',
+	zIndex: 2,
+	height: 'calc(100vh - 70px)',
+
+	'@md': {
+		width: 300,
+	},
+});
+
+const ArticleContent = styled('div', {
+	position: 'relative',
+	minHeight: 'calc(100vh - 50px)',
+	paddingTop: 32,
+	paddingLeft: 32,
+	paddingRight: 32,
+	paddingBottom: 80,
+	zIndex: 1,
+	background: '$gray1',
+	boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+});
+
+const LinkList = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center',
+	gap: 50,
+	justifyContent: 'space-between',
+	width: '100%',
+
+	'@sm': {
+		flexDirection: 'row',
+		gap: 0,
+	},
+});
+
+const Footer = styled('footer', {
+	position: 'fixed',
+	bottom: 0,
+	left: 0,
+	right: 0,
+	background: '$gray1',
+	height: 300,
+
+	'@sm': {
+		height: 200,
+		paddingLeft: 12,
+		paddingRight: 64,
+	},
+
+	'@md': {
+		paddingLeft: 342,
+	},
+});
 
 const packageMenuItems = PACKAGES.map((pkg) => (
 	<Menu.Item
@@ -162,9 +187,8 @@ export function SidebarLayout({
 		`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
 		fetcher,
 	);
-	const mantineTheme = useMantineTheme();
-	const { theme, setTheme } = useTheme();
-	const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+	const { resolvedTheme, setTheme } = useTheme();
+	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 
 	const [opened, setOpened] = useState(false);
 	const [openedLibPicker, setOpenedLibPicker] = useState(false);
@@ -179,8 +203,6 @@ export function SidebarLayout({
 	useEffect(() => {
 		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
 	}, [router.asPath]);
-
-	const { classes } = useStyles({ openedLib: openedLibPicker, openedVersion: openedVersionPicker });
 
 	const versionMenuItems = useMemo(
 		() =>
@@ -210,7 +232,100 @@ export function SidebarLayout({
 	);
 
 	return (
-		<AppShell
+		<>
+			<StickyHeader>
+				<Box css={{ height: '70px', padding: '0 32px' }}>
+					<Box css={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
+						<Button icon="sm" transparent>
+							<VscMenu size={24} />
+						</Button>
+						<Box css={{ display: 'flex', gap: 20 }}>
+							<Button
+								as="a"
+								href="https://github.com/discordjs/discord.js"
+								target="_blank"
+								rel="noopener noreferrer"
+								icon="sm"
+								transparent
+							>
+								<VscGithubInverted size={24} />
+							</Button>
+							<Button onClick={() => toggleTheme()} icon="sm" transparent>
+								{<VscColorMode size={24} />}
+							</Button>
+						</Box>
+					</Box>
+				</Box>
+			</StickyHeader>
+			<Navbar css={{ overflowY: 'scroll' }}>
+				<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
+			</Navbar>
+			<Box as="main" css={{ paddingTop: '70px', '@md': { paddingLeft: 300 } }}>
+				<article>
+					<ArticleContent>{children}</ArticleContent>
+					<Box css={{ height: 300, '@sm': { height: 200 } }} />
+					<Footer>
+						<Container css={{ height: 'unset', padding: 0, paddingTop: 50 }}>
+							<LinkList>
+								<a
+									href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+									target="_blank"
+									rel="noopener noreferrer"
+									title="Vercel"
+								>
+									<Image src={vercelLogo} alt="Vercel" />
+								</a>
+								<Box css={{ display: 'flex', gap: 24, '@sm': { gap: 50 } }}>
+									<Box css={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+										<Title order={4}>Community</Title>
+										<Box
+											css={{
+												display: 'flex',
+												flexDirection: 'column',
+												gap: 4,
+												a: { color: '$gray12', textDecoration: 'none' },
+											}}
+										>
+											<a href="https://discord.gg/djs" target="_blank" rel="noopener noreferrer">
+												Discord
+											</a>
+											<a
+												href="https://github.com/discordjs/discord.js/discussions"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												GitHub discussions
+											</a>
+										</Box>
+									</Box>
+									<Box css={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+										<Title order={4}>Project</Title>
+										<Box
+											css={{
+												display: 'flex',
+												flexDirection: 'column',
+												gap: 4,
+												a: { color: '$gray12', textDecoration: 'none' },
+											}}
+										>
+											<a href="https://github.com/discordjs/discord.js" target="_blank" rel="noopener noreferrer">
+												discord.js
+											</a>
+											<a href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
+												discord.js guide
+											</a>
+											<a href="https://discord-api-types.dev" target="_blank" rel="noopener noreferrer">
+												discord-api-types
+											</a>
+										</Box>
+									</Box>
+								</Box>
+							</LinkList>
+						</Container>
+					</Footer>
+				</article>
+			</Box>
+			{/* <AppShell
 			sx={() => ({
 				main: {
 					overflowX: 'auto',
@@ -409,6 +524,7 @@ export function SidebarLayout({
 					</Container>
 				</Box>
 			</article>
-		</AppShell>
+		</AppShell> */}
+		</>
 	);
 }

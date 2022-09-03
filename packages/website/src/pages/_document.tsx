@@ -23,7 +23,6 @@ export default class _Document extends Document {
 					<meta name="apple-mobile-web-app-title" content="discord.js" />
 					<meta name="application-name" content="discord.js" />
 					<meta name="msapplication-TileColor" content="#090a16" />
-					<meta name="theme-color" content="#161616" />
 					<meta key="description" name="description" content={DESCRIPTION} />
 					<meta property="og:site_name" content="discord.js" />
 					<meta key="og_title" property="og:title" content="discord.js" />
@@ -34,7 +33,7 @@ export default class _Document extends Document {
 					<style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
 
 					<link rel="preconnect" href="https://fonts.bunny.net" />
-					<link href="https://fonts.bunny.net/css?family=inter:400,500,600,900|jetbrains-mono:400" rel="stylesheet" />
+					<link href="https://fonts.bunny.net/css?family=jetbrains-mono:400" rel="stylesheet" />
 				</Head>
 				<body>
 					<Main />

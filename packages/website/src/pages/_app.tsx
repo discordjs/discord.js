@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 // import { type NextRouter, useRouter } from 'next/router';
 import NextProgress from 'next-progress';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider, useTheme } from 'next-themes';
 // import { VscPackage } from 'react-icons/vsc';
 import { darkTheme, globalStyles } from '../../stitches.config';
 import '../styles/unocss.css';
@@ -71,12 +71,14 @@ import '../styles/main.css';
 export default function MyApp({ Component, pageProps }: AppProps) {
 	// const router = useRouter();
 	globalStyles();
+	const { resolvedTheme } = useTheme();
 
 	return (
 		<>
 			<Head>
 				<title key="title">discord.js</title>
 				<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+				<meta name="theme-color" content={resolvedTheme === 'dark' ? '#161616' : '#ffffff'} />
 			</Head>
 			<ThemeProvider
 				attribute="class"

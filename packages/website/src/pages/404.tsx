@@ -1,10 +1,10 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import { styled } from '../../stitches.config';
-import { AnchorButton } from '~/components/AnchorButton';
+import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 
-const Heading = styled('h1', {
+const FourOhFour = styled('h1', {
 	fontSize: 140,
 	fontWeight: 900,
 	margin: 0,
@@ -31,10 +31,10 @@ export default function FourOhFourPage() {
 				<meta key="og_title" property="og:title" content="discord.js | 404" />
 			</Head>
 			<Container xs css={{ gap: 30 }}>
-				<Heading>404</Heading>
+				<FourOhFour>404</FourOhFour>
 				<SubHeading>Not found.</SubHeading>
 				<Link href="/docs/packages" passHref prefetch={false}>
-					<AnchorButton>Take me back</AnchorButton>
+					<Button as="a">Take me back</Button>
 				</Link>
 			</Container>
 		</>

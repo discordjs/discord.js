@@ -13,8 +13,7 @@ import {
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
-import { ActionIcon, Affix, Box, LoadingOverlay, Transition } from '@mantine/core';
-import { useMediaQuery, useWindowScroll } from '@mantine/hooks';
+import { LoadingOverlay } from '@mantine/core';
 // import { registerSpotlightActions } from '@mantine/spotlight';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import Head from 'next/head';
@@ -23,7 +22,6 @@ import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 // import { useEffect } from 'react';
-import { VscChevronUp } from 'react-icons/vsc';
 import rehypeIgnore from 'rehype-ignore';
 import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
@@ -34,6 +32,7 @@ import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
 import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
 import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
 import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
+import { Box } from '~/components/Box';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -240,8 +239,6 @@ const member = (props?: ApiItemJSON | undefined) => {
 
 export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
 	const router = useRouter();
-	const [scroll, scrollTo] = useWindowScroll();
-	const matches = useMediaQuery('(max-width: 1200px)');
 
 	// useEffect(() => {
 	// 	if (props.data?.searchIndex) {
@@ -276,7 +273,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
 	return props.error ? (
-		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
+		<Box css={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
 	) : (
 		<MemberProvider member={props.data?.member}>
 			<SidebarLayout {...props}>
@@ -290,10 +287,10 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 					</>
 				) : props.data?.source ? (
 					<Box
-						sx={(theme) => ({
+						css={{
 							a: {
 								backgroundColor: 'transparent',
-								color: theme.colors.blurple![0],
+								color: '$blue11',
 								textDecoration: 'none',
 							},
 							img: {
@@ -301,33 +298,11 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 								maxWidth: '100%',
 								boxSizing: 'content-box',
 							},
-						})}
-						px="xl"
+						}}
 					>
 						<MDXRemote {...props.data.source} />
 					</Box>
 				) : null}
-				<Affix
-					position={{
-						bottom: 20,
-						right:
-							matches || (props.data?.member?.kind !== 'Class' && props.data?.member?.kind !== 'Interface') ? 20 : 268,
-					}}
-				>
-					<Transition transition="slide-up" mounted={scroll.y > 200}>
-						{(transitionStyles) => (
-							<ActionIcon
-								variant="filled"
-								color="blurple"
-								size={30}
-								style={transitionStyles}
-								onClick={() => scrollTo({ y: 0 })}
-							>
-								<VscChevronUp size={20} />
-							</ActionIcon>
-						)}
-					</Transition>
-				</Affix>
 			</SidebarLayout>
 		</MemberProvider>
 	);

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import type { MouseEvent } from 'react';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { styled } from '../../../../stitches.config';
-import { AnchorButton } from '~/components/AnchorButton';
+import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import { SelectionButton } from '~/components/SelectionButton';
 import { SplitContainer } from '~/components/SplitContainer';
@@ -49,9 +49,9 @@ export default function PackagesRoute() {
 									<Title>{pkg}</Title>
 								</SplitContainer>
 								<Link href={`/docs/packages/${pkg}`} passHref prefetch={false}>
-									<AnchorButton dense onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}>
+									<Button as="a" dense onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}>
 										Select version
-									</AnchorButton>
+									</Button>
 								</Link>
 							</SplitContainer>
 							<VscArrowRight size={20} />

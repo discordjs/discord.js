@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { FiExternalLink } from 'react-icons/fi';
 import { styled } from '../../stitches.config';
 import vercelLogo from '../assets/powered-by-vercel.svg';
-import { AnchorButton } from '~/components/AnchorButton';
+import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import { SplitContainer } from '~/components/SplitContainer';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
@@ -63,11 +63,11 @@ export default function IndexRoute() {
 					</PromotionalText>
 					<Group>
 						<Link href="/docs" passHref prefetch={false}>
-							<AnchorButton>Docs</AnchorButton>
+							<Button>Docs</Button>
 						</Link>
-						<AnchorButton color="secondary" href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
+						<Button as="a" color="secondary" href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
 							Guide <FiExternalLink />
-						</AnchorButton>
+						</Button>
 					</Group>
 				</ContentContainer>
 				<SyntaxHighlighter code={CODE_EXAMPLE} />

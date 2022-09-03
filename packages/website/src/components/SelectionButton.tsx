@@ -5,6 +5,8 @@ export const SelectionButton = styled('div', {
 	backgroundColor: '$gray3',
 	padding: 10,
 	borderRadius: 4,
+	userSelect: 'none',
+	cursor: 'pointer',
 
 	'&:hover': {
 		backgroundColor: '$gray4',

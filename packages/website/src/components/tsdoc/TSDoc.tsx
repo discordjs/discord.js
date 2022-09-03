@@ -102,7 +102,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			}
 
 			default:
-				console.log(`Captured unknown node kind: ${node.kind}`);
+				// console.log(`Captured unknown node kind: ${node.kind}`);
 				break;
 		}
 
