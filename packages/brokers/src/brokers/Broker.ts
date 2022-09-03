@@ -1,4 +1,5 @@
-import { randomBytes } from 'crypto';
+import { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
 import { encode, decode } from '@msgpack/msgpack';
 import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 
@@ -7,25 +8,27 @@ import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
  */
 export interface BaseBrokerOptions {
 	/**
-	 * Unique consumer name. See: https://redis.io/commands/xreadgroup/
+	 * How long to block for messages when polling
 	 */
-	name?: string;
+	blockTimeout?: number;
+	/**
+	 * Function to use for decoding messages
+	 */
+	// eslint-disable-next-line @typescript-eslint/method-signature-style
+	decode?: (data: Buffer) => unknown;
+	/**
+	 * Function to use for encoding messages
+	 */
+	// eslint-disable-next-line @typescript-eslint/method-signature-style
+	encode?: (data: unknown) => Buffer;
 	/**
 	 * Max number of messages to poll at once
 	 */
 	maxChunk?: number;
 	/**
-	 * How long to block for messages when polling
+	 * Unique consumer name. See: https://redis.io/commands/xreadgroup/
 	 */
-	blockTimeout?: number;
-	/**
-	 * Function to use for encoding messages
-	 */
-	encode?: (data: unknown) => Buffer;
-	/**
-	 * Function to use for decoding messages
-	 */
-	decode?: (data: Buffer) => unknown;
+	name?: string;
 }
 
 export const DefaultBrokerOptions: Required<BaseBrokerOptions> = {
@@ -44,9 +47,9 @@ export type ToEventMap<
 	TResponses extends Record<keyof TRecord, any> | undefined = undefined,
 > = {
 	[TKey in keyof TRecord]: [
-		event: { data: TRecord[TKey] } & (TResponses extends Record<keyof TRecord, any>
-			? { ack: () => Promise<void>; reply: (data: TResponses[TKey]) => Promise<void> }
-			: { ack: () => Promise<void> }),
+		event: TResponses extends Record<keyof TRecord, any>
+			? { ack(): Promise<void>; reply(data: TResponses[TKey]): Promise<void> }
+			: { ack(): Promise<void> } & { data: TRecord[TKey] },
 	];
 } & { [K: string]: any };
 
@@ -54,11 +57,11 @@ export interface IBaseBroker<TEvents extends Record<string, any>> {
 	/**
 	 * Subscribes to the given events, grouping them by the given group name
 	 */
-	subscribe: (group: string, events: (keyof TEvents)[]) => Promise<void>;
+	subscribe(group: string, events: (keyof TEvents)[]): Promise<void>;
 	/**
 	 * Unsubscribes from the given events - it's required to pass the same group name as when subscribing for proper cleanup
 	 */
-	unsubscribe: (group: string, events: (keyof TEvents)[]) => Promise<void>;
+	unsubscribe(group: string, events: (keyof TEvents)[]): Promise<void>;
 }
 
 export interface IPubSubBroker<TEvents extends Record<string, any>>
@@ -67,7 +70,7 @@ export interface IPubSubBroker<TEvents extends Record<string, any>>
 	/**
 	 * Publishes an event
 	 */
-	publish: <T extends keyof TEvents>(event: T, data: TEvents[T]) => Promise<void>;
+	publish<T extends keyof TEvents>(event: T, data: TEvents[T]): Promise<void>;
 }
 
 export interface IRPCBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
@@ -76,5 +79,5 @@ export interface IRPCBroker<TEvents extends Record<string, any>, TResponses exte
 	/**
 	 * Makes an RPC call
 	 */
-	call: <T extends keyof TEvents>(event: T, data: TEvents[T], timeoutDuration?: number) => Promise<TResponses[T]>;
+	call<T extends keyof TEvents>(event: T, data: TEvents[T], timeoutDuration?: number): Promise<TResponses[T]>;
 }

@@ -1,5 +1,5 @@
-export * from './brokers/redis/BaseRedis';
-export * from './brokers/redis/PubSubRedis';
-export * from './brokers/redis/RPCRedis';
+export * from './brokers/redis/BaseRedis.js';
+export * from './brokers/redis/PubSubRedis.js';
+export * from './brokers/redis/RPCRedis.js';
 
-export * from './brokers/Broker.interface';
+export * from './brokers/Broker.js';

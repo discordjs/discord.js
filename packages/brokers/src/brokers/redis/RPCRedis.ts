@@ -1,9 +1,13 @@
-import { BaseRedisBroker, RedisBrokerOptions } from './BaseRedis';
-import { DefaultBrokerOptions, IRPCBroker } from '../Broker.interface';
+import type { Buffer } from 'node:buffer';
+import { clearTimeout, setTimeout } from 'node:timers';
+import type { IRPCBroker } from '../Broker.js';
+import { DefaultBrokerOptions } from '../Broker.js';
+import type { RedisBrokerOptions } from './BaseRedis.js';
+import { BaseRedisBroker } from './BaseRedis.js';
 
 interface InternalPromise {
-	resolve: (data: any) => void;
-	reject: (error: any) => void;
+	reject(error: any): void;
+	resolve(data: any): void;
 	timeout: NodeJS.Timeout;
 }
 
@@ -21,6 +25,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 	implements IRPCBroker<TEvents, TResponses>
 {
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
+
 	protected readonly promises = new Map<string, InternalPromise>();
 
 	public constructor(options: RPCRedisBrokerOptions) {
@@ -30,6 +35,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
 			const [, id] = channel.toString().split(':');
 			if (id && this.promises.has(id)) {
+				// eslint-disable-next-line @typescript-eslint/unbound-method
 				const { resolve, timeout } = this.promises.get(id)!;
 				resolve(this.options.decode(message));
 				clearTimeout(timeout);
@@ -61,11 +67,15 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });
-		}).finally(() => void this.streamReadClient.unsubscribe(rpcChannel));
+			// eslint-disable-next-line promise/prefer-await-to-then
+		}).finally(() => {
+			void this.streamReadClient.unsubscribe(rpcChannel);
+			this.promises.delete(id!);
+		});
 	}
 
 	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
-		const payload: { data: unknown; ack: () => Promise<void>; reply: (data: unknown) => Promise<void> } = {
+		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
 				await this.options.redisClient.xack(event, group, id);

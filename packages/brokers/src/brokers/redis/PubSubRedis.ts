@@ -1,5 +1,6 @@
-import { BaseRedisBroker } from './BaseRedis';
-import type { IPubSubBroker } from '../Broker.interface';
+import type { Buffer } from 'node:buffer';
+import type { IPubSubBroker } from '../Broker.js';
+import { BaseRedisBroker } from './BaseRedis.js';
 
 export class PubSubRedisBroker<TEvents extends Record<string, any>>
 	extends BaseRedisBroker<TEvents>
@@ -15,7 +16,7 @@ export class PubSubRedisBroker<TEvents extends Record<string, any>>
 	}
 
 	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
-		const payload: { data: unknown; ack: () => Promise<void> } = {
+		const payload: { ack(): Promise<void>; data: unknown } = {
 			data,
 			ack: async () => {
 				await this.options.redisClient.xack(event, group, id);
