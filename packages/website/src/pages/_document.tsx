@@ -22,10 +22,16 @@ export default class _Document extends Document {
 					<meta name="theme-color" content="#1a1b1e" />
 					<meta
 						name="description"
-						content="discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend."
+						content="discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend."
 					/>
+					<meta property="og:site_name" content="discord.js" />
 					<meta property="og:title" content="discord.js" />
+					<meta
+						name="og:description"
+						content="discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend."
+					/>
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
+					<meta name="twitter:card" content="summary_large_image" />
 				</Head>
 				<body>
 					<Main />
