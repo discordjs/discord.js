@@ -1,17 +1,20 @@
 import Image from 'next/future/image';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
 import { FiExternalLink } from 'react-icons/fi';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { styled } from '../../stitches.config';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { AnchorButton } from '~/components/AnchorButton';
 import { Container } from '~/components/Container';
 import { SplitContainer } from '~/components/SplitContainer';
+import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
+import { TextHighlight } from '~/components/TextHighlight';
+import { CODE_EXAMPLE } from '~/util/constants';
 
 const ContentContainer = styled('div', {
 	maxWidth: 480,
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 10,
 
 	'@md': {
 		marginRight: 32,
@@ -29,14 +32,7 @@ const Heading = styled('h1', {
 	},
 });
 
-const Highlight = styled('span', {
-	position: 'relative',
-	backgroundColor: '$blue9',
-	borderRadius: 4,
-	padding: '4px 12px',
-});
-
-const Text = styled('p', {
+const PromotionalText = styled('p', {
 	color: '$gray11',
 	lineHeight: 1.55,
 	marginBottom: 26,
@@ -53,20 +49,18 @@ const Center = styled('div', {
 });
 
 export default function IndexRoute() {
-	const { resolvedTheme } = useTheme();
-
 	return (
 		<Container>
-			<SplitContainer vertical css={{ '@md': { flexDirection: 'row' } }}>
+			<SplitContainer vertical css={{ gap: 50, '@md': { flexDirection: 'row', gap: 20 } }}>
 				<ContentContainer>
 					<Heading>
-						The <Highlight>most popular</Highlight> way to build Discord <br /> bots.
+						The <TextHighlight>most popular</TextHighlight> way to build Discord <br /> bots.
 					</Heading>
-					<Text>
+					<PromotionalText>
 						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
 						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
 						significantly tidier and easier to comprehend.
-					</Text>
+					</PromotionalText>
 					<Group>
 						<Link href="/docs" passHref prefetch={false}>
 							<AnchorButton>Docs</AnchorButton>
@@ -76,32 +70,7 @@ export default function IndexRoute() {
 						</AnchorButton>
 					</Group>
 				</ContentContainer>
-				<div>
-					<SyntaxHighlighter
-						wrapLongLines
-						language="typescript"
-						style={resolvedTheme === 'dark' ? vscDarkPlus : ghcolors}
-						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					>
-						{`import { Client, GatewayIntentBits } from 'discord.js';
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on('ready', () => {
-	console.log(\`Logged in as \${client.user.tag}!\`);
-});
-
-client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isChatInputCommand()) return;
-
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-});
-
-await client.login('token');`}
-					</SyntaxHighlighter>
-				</div>
+				<SyntaxHighlighter code={CODE_EXAMPLE} />
 			</SplitContainer>
 			<Center>
 				<a

@@ -42,8 +42,8 @@ import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { MemberProvider } from '~/contexts/member';
+import { PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
-import { PACKAGES } from '~/util/packages';
 // import { miniSearch } from '~/util/search';
 
 export const getStaticPaths: GetStaticPaths = async () => {

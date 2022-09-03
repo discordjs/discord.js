@@ -2,7 +2,7 @@
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { getCssText } from '../../stitches.config';
-import { DESCRIPTION } from '~/util/meta';
+import { DESCRIPTION } from '~/util/constants';
 
 const getInitialProps = createGetInitialProps();
 
@@ -19,10 +19,11 @@ export default class _Document extends Document {
 					<link rel="manifest" href="/site.webmanifest" />
 					<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#090a16" />
 
+					<meta name="color-scheme" content="dark light" />
 					<meta name="apple-mobile-web-app-title" content="discord.js" />
 					<meta name="application-name" content="discord.js" />
 					<meta name="msapplication-TileColor" content="#090a16" />
-					<meta name="theme-color" content="#1a1b1e" />
+					<meta name="theme-color" content="#161616" />
 					<meta key="description" name="description" content={DESCRIPTION} />
 					<meta property="og:site_name" content="discord.js" />
 					<meta key="og_title" property="og:title" content="discord.js" />
@@ -31,6 +32,9 @@ export default class _Document extends Document {
 					<meta name="twitter:card" content="summary_large_image" />
 
 					<style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
+
+					<link rel="preconnect" href="https://fonts.bunny.net" />
+					<link href="https://fonts.bunny.net/css?family=inter:400,500,600,900|jetbrains-mono:400" rel="stylesheet" />
 				</Head>
 				<body>
 					<Main />

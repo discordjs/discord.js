@@ -3,8 +3,9 @@ import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { styled } from '../../../../../stitches.config';
 import { Container } from '~/components/Container';
+import { SelectionButton } from '~/components/SelectionButton';
 import { SplitContainer } from '~/components/SplitContainer';
-import { PACKAGES } from '~/util/packages';
+import { PACKAGES } from '~/util/constants';
 
 interface VersionProps {
 	data: {
@@ -68,24 +69,7 @@ const Heading = styled('h1', {
 	marginLeft: 8,
 });
 
-const PackageSelection = styled('div', {
-	color: 'white',
-	backgroundColor: '$gray3',
-	padding: 10,
-	borderRadius: 4,
-
-	'&:hover': {
-		backgroundColor: '$gray4',
-	},
-
-	'&:active': {
-		backgroundColor: '$gray5',
-		transform: 'translate3d(0, 1px, 0)',
-	},
-});
-
 const Title = styled('span', {
-	color: '$gray12',
 	fontWeight: 600,
 });
 
@@ -93,12 +77,12 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<Container xs>
-			<SplitContainer vertical grow center>
+		<Container xs css={{ height: '100%', flexDirection: 'unset', padding: '0 32px' }}>
+			<SplitContainer vertical grow center css={{ placeItems: 'unset' }}>
 				<Heading>Select a version:</Heading>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<PackageSelection>
+						<SelectionButton>
 							<SplitContainer>
 								<SplitContainer>
 									<VscVersions size={25} />
@@ -106,7 +90,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 								</SplitContainer>
 								<VscArrowRight size={20} />
 							</SplitContainer>
-						</PackageSelection>
+						</SelectionButton>
 					</Link>
 				)) ?? null}
 			</SplitContainer>

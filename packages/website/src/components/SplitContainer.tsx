@@ -4,14 +4,13 @@ export const SplitContainer = styled('div', {
 	display: 'flex',
 	placeContent: 'space-between',
 	placeItems: 'center',
-	gap: 16,
+	gap: 20,
 
 	variants: {
 		vertical: {
 			true: {
 				flexDirection: 'column',
 				placeContent: 'unset',
-				placeItems: 'unset',
 			},
 		},
 

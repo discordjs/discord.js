@@ -8,7 +8,6 @@ import type {
 import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton, Divider } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
 import { Fragment, type PropsWithChildren } from 'react';
 import {
 	VscSymbolClass,
@@ -19,10 +18,9 @@ import {
 	VscListSelection,
 	VscSymbolParameter,
 } from 'react-icons/vsc';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -66,7 +64,6 @@ export function DocContainer({
 }: DocContainerProps) {
 	const router = useRouter();
 	const matches = useMediaQuery('(max-width: 768px)');
-	const { theme } = useTheme();
 
 	return (
 		<Group>
@@ -89,14 +86,7 @@ export function DocContainer({
 
 				<Skeleton visible={router.isFallback} radius="sm">
 					<Box pb="xs">
-						<SyntaxHighlighter
-							wrapLongLines
-							language="typescript"
-							style={theme === 'dark' ? vscDarkPlus : ghcolors}
-							codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-						>
-							{excerpt}
-						</SyntaxHighlighter>
+						<SyntaxHighlighter code={excerpt} />
 					</Box>
 				</Skeleton>
 

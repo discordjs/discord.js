@@ -5,8 +5,9 @@ import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { styled } from '../../../../stitches.config';
 import { AnchorButton } from '~/components/AnchorButton';
 import { Container } from '~/components/Container';
+import { SelectionButton } from '~/components/SelectionButton';
 import { SplitContainer } from '~/components/SplitContainer';
-import { PACKAGES } from '~/util/packages';
+import { PACKAGES } from '~/util/constants';
 
 const Heading = styled('h1', {
 	fontSize: 28,
@@ -14,24 +15,7 @@ const Heading = styled('h1', {
 	marginLeft: 8,
 });
 
-const PackageSelection = styled('div', {
-	color: 'white',
-	backgroundColor: '$gray3',
-	padding: 10,
-	borderRadius: 4,
-
-	'&:hover': {
-		backgroundColor: '$gray4',
-	},
-
-	'&:active': {
-		backgroundColor: '$gray5',
-		transform: 'translate3d(0, 1px, 0)',
-	},
-});
-
 const Title = styled('span', {
-	color: '$gray12',
 	fontWeight: 600,
 });
 
@@ -49,11 +33,11 @@ export default function PackagesRoute() {
 	};
 
 	return (
-		<Container xs>
-			<SplitContainer vertical grow center>
+		<Container xs css={{ height: '100%', flexDirection: 'unset', padding: '0 32px' }}>
+			<SplitContainer vertical grow center css={{ placeItems: 'unset' }}>
 				<Heading>Select a package:</Heading>
 				{PACKAGES.map((pkg) => (
-					<PackageSelection
+					<SelectionButton
 						key={pkg}
 						role="link"
 						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
@@ -65,14 +49,14 @@ export default function PackagesRoute() {
 									<Title>{pkg}</Title>
 								</SplitContainer>
 								<Link href={`/docs/packages/${pkg}`} passHref prefetch={false}>
-									<AnchorButton onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}>
+									<AnchorButton dense onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}>
 										Select version
 									</AnchorButton>
 								</Link>
 							</SplitContainer>
 							<VscArrowRight size={20} />
 						</SplitContainer>
-					</PackageSelection>
+					</SelectionButton>
 				))}
 			</SplitContainer>
 		</Container>

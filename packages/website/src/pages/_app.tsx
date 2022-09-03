@@ -3,9 +3,9 @@ import { MantineProvider } from '@mantine/core';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 // import { type NextRouter, useRouter } from 'next/router';
+import NextProgress from 'next-progress';
 import { ThemeProvider } from 'next-themes';
 // import { VscPackage } from 'react-icons/vsc';
-import NextNProgress from 'nextjs-progressbar';
 import { darkTheme, globalStyles } from '../../stitches.config';
 import '../styles/unocss.css';
 import '../styles/main.css';
@@ -88,10 +88,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 			>
 				<MantineProvider
 					theme={{
-						fontFamily: 'Inter var',
+						fontFamily: 'Inter',
 						fontFamilyMonospace: 'JetBrains Mono',
 						headings: {
-							fontFamily: 'Inter var',
+							fontFamily: 'Inter',
 						},
 						colors: {
 							blurple: [
@@ -111,7 +111,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					}}
 					withCSSVariables
 				>
-					<NextNProgress height={1} />
+					<NextProgress color="#0091ff" options={{ showSpinner: false }} />
 					<Component {...pageProps} />
 				</MantineProvider>
 			</ThemeProvider>

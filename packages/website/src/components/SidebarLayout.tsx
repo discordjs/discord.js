@@ -35,8 +35,8 @@ import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
+import { PACKAGES } from '~/util/constants';
 import type { findMember } from '~/util/model.server';
-import { PACKAGES } from '~/util/packages';
 
 const fetcher = async (url: string) => {
 	const res = await fetch(url);
@@ -211,9 +211,8 @@ export function SidebarLayout({
 
 	return (
 		<AppShell
-			sx={(theme) => ({
+			sx={() => ({
 				main: {
-					background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
 					overflowX: 'auto',
 				},
 			})}

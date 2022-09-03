@@ -1,4 +1,4 @@
-import { styled } from '../../stitches.config';
+import { darkTheme, styled } from '../../stitches.config';
 
 export const AnchorButton = styled('a', {
 	display: 'flex',
@@ -29,6 +29,7 @@ export const AnchorButton = styled('a', {
 	variants: {
 		color: {
 			secondary: {
+				color: 'black',
 				backgroundColor: '$gray4',
 
 				'&:hover': {
@@ -36,8 +37,20 @@ export const AnchorButton = styled('a', {
 				},
 
 				'&:active': {
-					backgroundColor: '$gray7',
+					backgroundColor: '$gray6',
 				},
+
+				[`.${darkTheme} &`]: {
+					color: 'white',
+				},
+			},
+		},
+
+		dense: {
+			true: {
+				height: 24,
+				padding: '0 8px',
+				fontSize: 12,
 			},
 		},
 	},

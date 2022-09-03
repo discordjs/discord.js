@@ -1991,8 +1991,8 @@ __metadata:
     minisearch: ^5.0.0
     next: ^12.2.5
     next-mdx-remote: ^4.1.0
+    next-progress: ^2.2.0
     next-themes: ^0.2.0
-    nextjs-progressbar: ^0.0.14
     prettier: ^2.7.1
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -13160,6 +13160,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-progress@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "next-progress@npm:2.2.0"
+  dependencies:
+    nprogress: ^0.2.0
+  peerDependencies:
+    next: ">=6.0.0"
+    react: ">=16.0.0"
+  checksum: ef0e2c66c6990a6d0cf20c28896461ab32a3322972d52f3cb3ee2d2d58bdc2b620a402b1d7df9e0340b230d9ec9a9457584871ea0b8b890b1fc334d1886d2b97
+  languageName: node
+  linkType: hard
+
 "next-themes@npm:^0.2.0":
   version: 0.2.0
   resolution: "next-themes@npm:0.2.0"
@@ -13237,19 +13249,6 @@ __metadata:
   bin:
     next: dist/bin/next
   checksum: e8fcbd93d74fda81640fd174a9d380f22db404d3ce0893730db3db806317ae18c86d1dbb502e63e47c92fb21a93812de62639c2f1204330cb569fdac4d3d0573
-  languageName: node
-  linkType: hard
-
-"nextjs-progressbar@npm:^0.0.14":
-  version: 0.0.14
-  resolution: "nextjs-progressbar@npm:0.0.14"
-  dependencies:
-    nprogress: ^0.2.0
-    prop-types: ^15.7.2
-  peerDependencies:
-    next: ">= 6.0.0"
-    react: ">= 16.0.0"
-  checksum: d8a193c5fc5e1b3dd1a54b4340f8c83dc7ed8a0715ea3b7e2ca08a88fc9b3fe498987f6ae43ccd64914d5abdb790d79b658d86c11d61a9103ff3393271a7d6a9
   languageName: node
   linkType: hard
 
@@ -14296,7 +14295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
