@@ -6,12 +6,12 @@ import { URL, fileURLToPath } from 'node:url';
  */
 export default {
 	reactStrictMode: true,
+	swcMinify: true,
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
 	cleanDistDir: true,
 	experimental: {
-		swcMinify: true,
 		images: {
 			allowFutureImage: true,
 		},

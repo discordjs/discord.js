@@ -3,20 +3,10 @@ import { useRouter } from 'next/router';
 import type { MouseEvent } from 'react';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { styled } from '../../../../stitches.config';
+import { AnchorButton } from '~/components/AnchorButton';
+import { Container } from '~/components/Container';
+import { SplitContainer } from '~/components/SplitContainer';
 import { PACKAGES } from '~/util/packages';
-
-const Container = styled('div', {
-	display: 'flex',
-	placeItems: 'center',
-	padding: 32,
-	maxWidth: 540,
-	margin: 'auto',
-
-	'@md': {
-		height: '100%',
-		padding: '0 32px',
-	},
-});
 
 const Heading = styled('h1', {
 	fontSize: 28,
@@ -40,50 +30,9 @@ const PackageSelection = styled('div', {
 	},
 });
 
-const SplitContainer = styled('div', {
-	display: 'flex',
-	placeContent: 'space-between',
-	placeItems: 'center',
-	gap: 16,
-
-	variants: {
-		vertical: {
-			true: {
-				flexDirection: 'column',
-				placeContent: 'unset',
-				placeItems: 'unset',
-			},
-		},
-	},
-});
-
 const Title = styled('span', {
 	color: '$gray12',
 	fontWeight: 600,
-});
-
-const AnchorButton = styled('a', {
-	display: 'flex',
-	placeItems: 'center',
-	backgroundColor: '$blue9',
-	appearance: 'none',
-	textDecoration: 'none',
-	userSelect: 'none',
-	height: 26,
-	padding: '0 8px',
-	borderRadius: 4,
-	color: 'white',
-	lineHeight: 1,
-	fontWeight: 600,
-	fontSize: 14,
-
-	'&:hover': {
-		backgroundColor: '$blue10',
-	},
-
-	'&:active': {
-		transform: 'translate3d(0, 1px, 0)',
-	},
 });
 
 export default function PackagesRoute() {
@@ -100,8 +49,8 @@ export default function PackagesRoute() {
 	};
 
 	return (
-		<Container>
-			<SplitContainer vertical css={{ flexGrow: 1 }}>
+		<Container xs>
+			<SplitContainer vertical grow center>
 				<Heading>Select a package:</Heading>
 				{PACKAGES.map((pkg) => (
 					<PackageSelection
@@ -110,7 +59,7 @@ export default function PackagesRoute() {
 						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
 					>
 						<SplitContainer>
-							<SplitContainer css={{ flexGrow: 1 }}>
+							<SplitContainer grow>
 								<SplitContainer>
 									<VscPackage size={25} />
 									<Title>{pkg}</Title>

@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { styled } from '../../../../../stitches.config';
+import { Container } from '~/components/Container';
+import { SplitContainer } from '~/components/SplitContainer';
 import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
@@ -60,19 +62,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 };
 
-const Container = styled('div', {
-	display: 'flex',
-	placeItems: 'center',
-	padding: 32,
-	maxWidth: 540,
-	margin: 'auto',
-
-	'@md': {
-		height: '100%',
-		padding: '0 32px',
-	},
-});
-
 const Heading = styled('h1', {
 	fontSize: 28,
 	margin: 0,
@@ -95,23 +84,6 @@ const PackageSelection = styled('div', {
 	},
 });
 
-const SplitContainer = styled('div', {
-	display: 'flex',
-	placeContent: 'space-between',
-	placeItems: 'center',
-	gap: 16,
-
-	variants: {
-		vertical: {
-			true: {
-				flexDirection: 'column',
-				placeContent: 'unset',
-				placeItems: 'unset',
-			},
-		},
-	},
-});
-
 const Title = styled('span', {
 	color: '$gray12',
 	fontWeight: 600,
@@ -121,8 +93,8 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<Container>
-			<SplitContainer vertical css={{ flexGrow: 1 }}>
+		<Container xs>
+			<SplitContainer vertical grow center>
 				<Heading>Select a version:</Heading>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>

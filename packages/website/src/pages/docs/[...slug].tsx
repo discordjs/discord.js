@@ -308,6 +308,6 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 export const config = {
 	unstable_includeFiles: [
 		'../{builders,collection,proxy,rest,voice,ws}/README.md',
-		'node_modules/shiki/themes/dark-plus.json',
+		'../../node_modules/shiki/themes/dark-plus.json',
 	],
 };
