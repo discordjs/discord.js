@@ -1,27 +1,26 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import { Anchor, createStyles, Menu, Title } from '@mantine/core';
-import { NextLink } from '@mantine/next';
+import { Title } from '@mantine/core';
 import Image from 'next/future/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+// import Link from 'next/link';
+// import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
-import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
+import { type PropsWithChildren, useState } from 'react';
 import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
-import useSWR from 'swr';
+// import useSWR from 'swr';
 import { styled } from '../../stitches.config';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { Box } from './Box';
 import { Button } from './Button';
 import { Container } from './Container';
 import { SidebarItems } from './SidebarItems';
-import { PACKAGES } from '~/util/constants';
+// import { PACKAGES } from '~/util/constants';
 import type { findMember } from '~/util/model.server';
 
-const fetcher = async (url: string) => {
-	const res = await fetch(url);
-	return res.json();
-};
+// const fetcher = async (url: string) => {
+// 	const res = await fetch(url);
+// 	return res.json();
+// };
 
 export interface SidebarLayoutProps {
 	branchName: string;
@@ -47,52 +46,52 @@ export interface GroupedMembers {
 	Variables: Members;
 }
 
-const useStyles = createStyles(
-	(theme, { openedLib, openedVersion }: { openedLib: boolean; openedVersion: boolean }) => ({
-		control: {
-			display: 'block',
-			width: '100%',
-			padding: theme.spacing.xs,
-			color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![1],
-			borderRadius: theme.radius.xs,
+// const useStyles = createStyles(
+// 	(theme, { openedLib, openedVersion }: { openedLib: boolean; openedVersion: boolean }) => ({
+// 		control: {
+// 			display: 'block',
+// 			width: '100%',
+// 			padding: theme.spacing.xs,
+// 			color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
+// 			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![1],
+// 			borderRadius: theme.radius.xs,
 
-			'&:hover': {
-				backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![5] : theme.colors.gray![2],
-				color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-			},
-		},
+// 			'&:hover': {
+// 				backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![5] : theme.colors.gray![2],
+// 				color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+// 			},
+// 		},
 
-		iconLib: {
-			transition: 'transform 150ms ease',
-			transform: openedLib ? 'rotate(180deg)' : 'rotate(0deg)',
-		},
+// 		iconLib: {
+// 			transition: 'transform 150ms ease',
+// 			transform: openedLib ? 'rotate(180deg)' : 'rotate(0deg)',
+// 		},
 
-		iconVersion: {
-			transition: 'transform 150ms ease',
-			transform: openedVersion ? 'rotate(180deg)' : 'rotate(0deg)',
-		},
+// 		iconVersion: {
+// 			transition: 'transform 150ms ease',
+// 			transform: openedVersion ? 'rotate(180deg)' : 'rotate(0deg)',
+// 		},
 
-		content: {
-			position: 'relative',
-			minHeight: 'calc(100vh - 50px)',
-			zIndex: 1,
-			background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
-			boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-		},
+// 		content: {
+// 			position: 'relative',
+// 			minHeight: 'calc(100vh - 50px)',
+// 			zIndex: 1,
+// 			background: theme.colorScheme === 'dark' ? theme.colors.dark![8] : theme.colors.gray![0],
+// 			boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+// 		},
 
-		links: {
-			display: 'flex',
-			justifyContent: 'space-between',
+// 		links: {
+// 			display: 'flex',
+// 			justifyContent: 'space-between',
 
-			[theme.fn.smallerThan('sm')]: {
-				flexDirection: 'column',
-				alignItems: 'center',
-				gap: 50,
-			},
-		},
-	}),
-);
+// 			[theme.fn.smallerThan('sm')]: {
+// 				flexDirection: 'column',
+// 				alignItems: 'center',
+// 				gap: 50,
+// 			},
+// 		},
+// 	}),
+// );
 
 const StickyHeader = styled('header', {
 	position: 'fixed',
@@ -164,72 +163,68 @@ const Footer = styled('footer', {
 	},
 });
 
-const packageMenuItems = PACKAGES.map((pkg) => (
-	<Menu.Item
-		key={pkg}
-		component={NextLink}
-		href={`/docs/packages/${pkg}/main`}
-		sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
-	>
-		{pkg}
-	</Menu.Item>
-));
+// const packageMenuItems = PACKAGES.map((pkg) => (
+// 	<Menu.Item
+// 		key={pkg}
+// 		component={NextLink}
+// 		href={`/docs/packages/${pkg}/main`}
+// 		sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
+// 	>
+// 		{pkg}
+// 	</Menu.Item>
+// ));
 
-export function SidebarLayout({
-	packageName,
-	branchName,
-	data,
-	children,
-}: PropsWithChildren<Partial<SidebarLayoutProps>>) {
-	const router = useRouter();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
-	const { data: versions } = useSWR<string[]>(
-		`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
-		fetcher,
-	);
+export function SidebarLayout({ data, children }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
+	// const router = useRouter();
+	// const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	// const { data: versions } = useSWR<string[]>(
+	// 	`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
+	// 	fetcher,
+	// );
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 
-	const [opened, setOpened] = useState(false);
-	const [openedLibPicker, setOpenedLibPicker] = useState(false);
-	const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
+	// eslint-disable-next-line react/hook-use-state
+	const [, setOpened] = useState(false);
+	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
+	// const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
 
-	useEffect(() => {
-		setOpened(false);
-		setOpenedLibPicker(false);
-		setOpenedVersionPicker(false);
-	}, []);
+	// useEffect(() => {
+	// 	setOpened(false);
+	// 	setOpenedLibPicker(false);
+	// 	setOpenedVersionPicker(false);
+	// }, []);
 
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
-	}, [router.asPath]);
+	// useEffect(() => {
+	// 	setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
+	// }, [router.asPath]);
 
-	const versionMenuItems = useMemo(
-		() =>
-			versions?.map((item) => (
-				<Menu.Item
-					key={item}
-					component={NextLink}
-					href={`/docs/packages/${packageName ?? 'builders'}/${item}`}
-					sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
-				>
-					{item}
-				</Menu.Item>
-			)) ?? [],
-		[versions, packageName],
-	);
+	// const versionMenuItems = useMemo(
+	// 	() =>
+	// 		versions?.map((item) => (
+	// 			<Menu.Item
+	// 				key={item}
+	// 				component={NextLink}
+	// 				href={`/docs/packages/${packageName ?? 'builders'}/${item}`}
+	// 				sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
+	// 			>
+	// 				{item}
+	// 			</Menu.Item>
+	// 		)) ?? [],
+	// 	[versions, packageName],
+	// );
 
-	const breadcrumbs = useMemo(
-		() =>
-			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
-				<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref prefetch={false}>
-					<Anchor component="a" sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}>
-						{path}
-					</Anchor>
-				</Link>
-			)),
-		[asPathWithoutQueryAndAnchor],
-	);
+	// const breadcrumbs = useMemo(
+	// 	() =>
+	// 		asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
+	// 			<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref prefetch={false}>
+	// 				<Anchor component="a" sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}>
+	// 					{path}
+	// 				</Anchor>
+	// 			</Link>
+	// 		)),
+	// 	[asPathWithoutQueryAndAnchor],
+	// );
 
 	return (
 		<>
