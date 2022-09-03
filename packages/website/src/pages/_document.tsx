@@ -34,6 +34,7 @@ export default class _Document extends Document {
 					/>
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
 					<meta name="twitter:card" content="summary_large_image" />
+
 					<style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
 				</Head>
 				<body>

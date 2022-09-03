@@ -5,8 +5,8 @@ import Head from 'next/head';
 // import { type NextRouter, useRouter } from 'next/router';
 import { ThemeProvider } from 'next-themes';
 // import { VscPackage } from 'react-icons/vsc';
+import NextNProgress from 'nextjs-progressbar';
 import { darkTheme, globalStyles } from '../../stitches.config';
-import { RouterTransition } from '../components/RouterTransition';
 import '../styles/unocss.css';
 import '../styles/main.css';
 // import { miniSearch } from '~/util/search';
@@ -111,7 +111,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					}}
 					withCSSVariables
 				>
-					<RouterTransition />
+					<NextNProgress height={1} />
 					<Component {...pageProps} />
 				</MantineProvider>
 			</ThemeProvider>

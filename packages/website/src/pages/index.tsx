@@ -5,6 +5,7 @@ import { FiExternalLink } from 'react-icons/fi';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { styled } from '../../stitches.config';
+import vercelLogo from '../assets/powered-by-vercel.svg';
 
 const Container = styled('div', {
 	display: 'flex',
@@ -81,7 +82,7 @@ const AnchorButton = styled('a', {
 	height: 42,
 	padding: '0 22px',
 	borderRadius: 4,
-	color: 'white',
+	color: 'black',
 	lineHeight: 1,
 	fontWeight: 600,
 
@@ -101,6 +102,7 @@ const AnchorButton = styled('a', {
 		color: {
 			secondary: {
 				backgroundColor: '$gray4',
+				color: 'white',
 
 				'&:hover': {
 					backgroundColor: '$gray5',
@@ -177,13 +179,7 @@ await client.login('token');`}
 					rel="noopener noreferrer"
 					title="Vercel"
 				>
-					<Image
-						src="/powered-by-vercel.svg"
-						alt="Vercel"
-						width={0}
-						height={0}
-						style={{ height: '100%', width: '100%', maxWidth: 250 }}
-					/>
+					<Image src={vercelLogo} alt="Vercel" />
 				</a>
 			</Center>
 		</Container>
