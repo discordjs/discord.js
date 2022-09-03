@@ -1,20 +1,7 @@
-import {
-	Container,
-	UnstyledButton,
-	createStyles,
-	Group,
-	ThemeIcon,
-	Text,
-	Stack,
-	Box,
-	Title,
-	Affix,
-} from '@mantine/core';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import { useTheme } from 'next-themes';
-import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
+import { VscArrowRight, VscVersions } from 'react-icons/vsc';
+import { styled } from '../../../../../stitches.config';
 import { PACKAGES } from '~/util/packages';
 
 interface VersionProps {
@@ -73,61 +60,84 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 };
 
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
+const Container = styled('div', {
+	display: 'flex',
+	placeItems: 'center',
+	padding: 32,
+	maxWidth: 540,
+	margin: 'auto',
+
+	'@md': {
 		height: '100%',
-		alignItems: 'center',
+		padding: '0 32px',
+	},
+});
+
+const Heading = styled('h1', {
+	fontSize: 28,
+	margin: 0,
+	marginLeft: 8,
+});
+
+const PackageSelection = styled('div', {
+	color: 'white',
+	backgroundColor: '$gray3',
+	padding: 10,
+	borderRadius: 4,
+
+	'&:hover': {
+		backgroundColor: '$gray4',
 	},
 
-	control: {
-		padding: theme.spacing.xs,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-		borderRadius: theme.radius.xs,
+	'&:active': {
+		backgroundColor: '$gray5',
+		transform: 'translate3d(0, 1px, 0)',
+	},
+});
 
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+const SplitContainer = styled('div', {
+	display: 'flex',
+	placeContent: 'space-between',
+	placeItems: 'center',
+	gap: 16,
+
+	variants: {
+		vertical: {
+			true: {
+				flexDirection: 'column',
+				placeContent: 'unset',
+				placeItems: 'unset',
+			},
 		},
 	},
-}));
+});
+
+const Title = styled('span', {
+	color: '$gray12',
+	fontWeight: 600,
+});
 
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
-	const router = useRouter();
-	const { classes } = useStyles();
-	const { theme } = useTheme();
-
 	return props.error ? (
-		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
+		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<Container className={classes.outer} size="xs">
-			<Stack sx={{ flexGrow: 1 }}>
-				<Title order={2} ml="xs">
-					Select a version:
-				</Title>
+		<Container>
+			<SplitContainer vertical css={{ flexGrow: 1 }}>
+				<Heading>Select a version:</Heading>
 				{props.data?.versions.map((version) => (
-					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref prefetch={false}>
-						<UnstyledButton className={classes.control} component="a">
-							<Group position="apart">
-								<Group>
-									<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-										<VscVersions size={20} />
-									</ThemeIcon>
-									<Text weight={600} size="md">
-										{version}
-									</Text>
-								</Group>
+					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
+						<PackageSelection>
+							<SplitContainer>
+								<SplitContainer>
+									<VscVersions size={25} />
+									<Title>{version}</Title>
+								</SplitContainer>
 								<VscArrowRight size={20} />
-							</Group>
-						</UnstyledButton>
+							</SplitContainer>
+						</PackageSelection>
 					</Link>
 				)) ?? null}
-			</Stack>
-			<Affix position={{ top: 20, left: 20 }}>
-				<UnstyledButton onClick={() => void router.push('/docs/packages')}>
-					<VscArrowLeft size={25} />
-				</UnstyledButton>
-			</Affix>
+			</SplitContainer>
 		</Container>
 	);
 }

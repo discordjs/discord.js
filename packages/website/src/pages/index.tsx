@@ -25,7 +25,6 @@ const Container = styled('div', {
 const SplitContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
-	gap: 50,
 	placeContent: 'space-between',
 	placeItems: 'center',
 
@@ -82,7 +81,7 @@ const AnchorButton = styled('a', {
 	height: 42,
 	padding: '0 22px',
 	borderRadius: 4,
-	color: 'black',
+	color: 'white',
 	lineHeight: 1,
 	fontWeight: 600,
 
@@ -102,7 +101,6 @@ const AnchorButton = styled('a', {
 		color: {
 			secondary: {
 				backgroundColor: '$gray4',
-				color: 'white',
 
 				'&:hover': {
 					backgroundColor: '$gray5',

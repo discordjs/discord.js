@@ -1,33 +1,92 @@
-import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Title, Button } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTheme } from 'next-themes';
 import type { MouseEvent } from 'react';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { styled } from '../../../../stitches.config';
 import { PACKAGES } from '~/util/packages';
 
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
+const Container = styled('div', {
+	display: 'flex',
+	placeItems: 'center',
+	padding: 32,
+	maxWidth: 540,
+	margin: 'auto',
+
+	'@md': {
 		height: '100%',
-		alignItems: 'center',
+		padding: '0 32px',
+	},
+});
+
+const Heading = styled('h1', {
+	fontSize: 28,
+	margin: 0,
+	marginLeft: 8,
+});
+
+const PackageSelection = styled('div', {
+	color: 'white',
+	backgroundColor: '$gray3',
+	padding: 10,
+	borderRadius: 4,
+
+	'&:hover': {
+		backgroundColor: '$gray4',
 	},
 
-	control: {
-		padding: theme.spacing.xs,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-		borderRadius: theme.radius.xs,
+	'&:active': {
+		backgroundColor: '$gray5',
+		transform: 'translate3d(0, 1px, 0)',
+	},
+});
 
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+const SplitContainer = styled('div', {
+	display: 'flex',
+	placeContent: 'space-between',
+	placeItems: 'center',
+	gap: 16,
+
+	variants: {
+		vertical: {
+			true: {
+				flexDirection: 'column',
+				placeContent: 'unset',
+				placeItems: 'unset',
+			},
 		},
 	},
-}));
+});
+
+const Title = styled('span', {
+	color: '$gray12',
+	fontWeight: 600,
+});
+
+const AnchorButton = styled('a', {
+	display: 'flex',
+	placeItems: 'center',
+	backgroundColor: '$blue9',
+	appearance: 'none',
+	textDecoration: 'none',
+	userSelect: 'none',
+	height: 26,
+	padding: '0 8px',
+	borderRadius: 4,
+	color: 'white',
+	lineHeight: 1,
+	fontWeight: 600,
+	fontSize: 14,
+
+	'&:hover': {
+		backgroundColor: '$blue10',
+	},
+
+	'&:active': {
+		transform: 'translate3d(0, 1px, 0)',
+	},
+});
 
 export default function PackagesRoute() {
-	const { classes } = useStyles();
-	const { theme } = useTheme();
 	const router = useRouter();
 
 	const handleClick = async (ev: MouseEvent<HTMLDivElement>, packageName: string) => {
@@ -41,45 +100,32 @@ export default function PackagesRoute() {
 	};
 
 	return (
-		<Container className={classes.outer} size="xs">
-			<Stack sx={{ flexGrow: 1 }}>
-				<Title order={2} ml="xs">
-					Select a package:
-				</Title>
+		<Container>
+			<SplitContainer vertical css={{ flexGrow: 1 }}>
+				<Heading>Select a package:</Heading>
 				{PACKAGES.map((pkg) => (
-					<UnstyledButton
-						component="div"
+					<PackageSelection
 						key={pkg}
 						role="link"
-						className={classes.control}
 						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
 					>
-						<Group position="apart">
-							<Group sx={{ flexGrow: 1 }} position="apart">
-								<Group>
-									<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-										<VscPackage size={20} />
-									</ThemeIcon>
-									<Text weight={600} size="md">
-										{pkg}
-									</Text>
-								</Group>
+						<SplitContainer>
+							<SplitContainer css={{ flexGrow: 1 }}>
+								<SplitContainer>
+									<VscPackage size={25} />
+									<Title>{pkg}</Title>
+								</SplitContainer>
 								<Link href={`/docs/packages/${pkg}`} passHref prefetch={false}>
-									<Button
-										component="a"
-										size="xs"
-										compact
-										onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}
-									>
+									<AnchorButton onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}>
 										Select version
-									</Button>
+									</AnchorButton>
 								</Link>
-							</Group>
+							</SplitContainer>
 							<VscArrowRight size={20} />
-						</Group>
-					</UnstyledButton>
+						</SplitContainer>
+					</PackageSelection>
 				))}
-			</Stack>
+			</SplitContainer>
 		</Container>
 	);
 }

@@ -33,6 +33,7 @@ import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
 import useSWR from 'swr';
+import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
 import type { findMember } from '~/util/model.server';
 import { PACKAGES } from '~/util/packages';
@@ -360,17 +361,14 @@ export function SidebarLayout({
 				>
 					<Container>
 						<Box className={classes.links}>
-							<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" prefetch={false}>
-								<a title="Vercel">
-									<Image
-										src="/powered-by-vercel.svg"
-										alt="Vercel"
-										width={0}
-										height={0}
-										style={{ height: '100%', width: '100%', maxWidth: 200 }}
-									/>
-								</a>
-							</Link>
+							<a
+								href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+								target="_blank"
+								rel="noopener noreferrer"
+								title="Vercel"
+							>
+								<Image src={vercelLogo} alt="Vercel" />
+							</a>
 							<Group sx={(theme) => ({ gap: 50, [theme.fn.smallerThan('sm')]: { gap: 25 } })} align="flex-start">
 								<Stack spacing={8}>
 									<Title order={4}>Community</Title>
