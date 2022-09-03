@@ -5,21 +5,10 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
-import {
-	Group,
-	Stack,
-	Title,
-	Text,
-	Box,
-	MediaQuery,
-	Aside,
-	ScrollArea,
-	Skeleton,
-	Divider,
-	useMantineColorScheme,
-} from '@mantine/core';
+import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton, Divider } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
 import { Fragment, type PropsWithChildren } from 'react';
 import {
 	VscSymbolClass,
@@ -77,7 +66,7 @@ export function DocContainer({
 }: DocContainerProps) {
 	const router = useRouter();
 	const matches = useMediaQuery('(max-width: 768px)');
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 
 	return (
 		<Group>
@@ -103,7 +92,7 @@ export function DocContainer({
 						<SyntaxHighlighter
 							wrapLongLines
 							language="typescript"
-							style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
+							style={theme === 'dark' ? vscDarkPlus : ghcolors}
 							codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 						>
 							{excerpt}

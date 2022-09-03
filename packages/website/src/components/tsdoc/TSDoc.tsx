@@ -7,16 +7,17 @@ import type {
 	DocBlockJSON,
 	DocCommentJSON,
 } from '@discordjs/api-extractor-utils';
-import { Anchor, Box, Code, Text, useMantineColorScheme } from '@mantine/core';
+import { Anchor, Box, Code, Text } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { BlockComment } from './BlockComment';
 
 export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 
 	const createNode = useCallback(
 		(node: AnyDocNodeJSON, idx?: number): ReactNode => {
@@ -81,7 +82,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 							wrapLines
 							wrapLongLines
 							language={language}
-							style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
+							style={theme === 'dark' ? vscDarkPlus : ghcolors}
 							codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 						>
 							{code}
@@ -123,7 +124,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 			return null;
 		},
-		[colorScheme],
+		[theme],
 	);
 
 	return (

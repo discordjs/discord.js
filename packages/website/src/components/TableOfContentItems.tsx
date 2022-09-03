@@ -1,5 +1,6 @@
 import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
-import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
+import { createStyles, Group, Text, Box, Stack, ThemeIcon } from '@mantine/core';
+import { useTheme } from 'next-themes';
 import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 
@@ -33,7 +34,7 @@ export function TableOfContentItems({
 	methods: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'];
 	properties: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'];
 }) {
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 	const { classes } = useStyles();
 
 	const propertyItems = useMemo(
@@ -48,7 +49,7 @@ export function TableOfContentItems({
 				</Box>
 			)),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[properties, colorScheme],
+		[properties, theme],
 	);
 
 	const methodItems = useMemo(
@@ -86,7 +87,7 @@ export function TableOfContentItems({
 				{propertyItems.length ? (
 					<Box>
 						<Group spacing="xs">
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+							<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								<VscSymbolProperty size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>
@@ -101,7 +102,7 @@ export function TableOfContentItems({
 				{methodItems.length ? (
 					<Box>
 						<Group spacing="xs">
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+							<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								<VscSymbolMethod size={20} />
 							</ThemeIcon>
 							<Box p="sm" pl={0}>

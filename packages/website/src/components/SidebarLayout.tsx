@@ -17,7 +17,6 @@ import {
 	createStyles,
 	Menu,
 	ActionIcon,
-	useMantineColorScheme,
 	Stack,
 	Skeleton,
 	LoadingOverlay,
@@ -29,6 +28,7 @@ import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo } from 'react';
 import { VscChevronDown, VscGithubInverted, VscPackage, VscVersions } from 'react-icons/vsc';
 import { WiDaySunny, WiNightClear } from 'react-icons/wi';
@@ -161,9 +161,9 @@ export function SidebarLayout({
 		`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
 		fetcher,
 	);
-	const theme = useMantineTheme();
-	// eslint-disable-next-line @typescript-eslint/unbound-method
-	const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+	const mantineTheme = useMantineTheme();
+	const { theme, setTheme } = useTheme();
+	const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
 
 	const [opened, setOpened] = useState(false);
 	const [openedLibPicker, setOpenedLibPicker] = useState(false);
@@ -243,7 +243,7 @@ export function SidebarLayout({
 												<UnstyledButton className={classes.control}>
 													<Group position="apart">
 														<Group>
-															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+															<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 																<VscPackage size={20} />
 															</ThemeIcon>
 															<Text weight="600" size="md">
@@ -267,7 +267,7 @@ export function SidebarLayout({
 												<UnstyledButton className={classes.control}>
 													<Group position="apart">
 														<Group>
-															<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+															<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 																<VscVersions size={20} />
 															</ThemeIcon>
 															<Text weight="600" size="md">
@@ -309,7 +309,7 @@ export function SidebarLayout({
 									opened={opened}
 									onClick={() => (router.isFallback ? null : setOpened((isOpened) => !isOpened))}
 									size="sm"
-									color={theme.colors.gray![6]}
+									color={mantineTheme.colors.gray![6]}
 									mr="xl"
 								/>
 							</MediaQuery>
@@ -335,12 +335,12 @@ export function SidebarLayout({
 							</Link>
 							<ActionIcon
 								variant="subtle"
-								color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-								onClick={() => toggleColorScheme()}
+								color={theme === 'dark' ? 'yellow' : 'blue'}
+								onClick={() => toggleTheme()}
 								title="Toggle color scheme"
 								radius="sm"
 							>
-								{colorScheme === 'dark' ? <WiDaySunny size={30} /> : <WiNightClear size={30} />}
+								{theme === 'dark' ? <WiDaySunny size={30} /> : <WiNightClear size={30} />}
 							</ActionIcon>
 						</Group>
 					</Box>

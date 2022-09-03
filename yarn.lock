@@ -1973,6 +1973,8 @@ __metadata:
     "@mantine/spotlight": ^5.2.5
     "@microsoft/api-extractor-model": 7.24.0
     "@microsoft/tsdoc": 0.14.1
+    "@radix-ui/colors": ^0.1.8
+    "@stitches/react": ^1.2.8
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
     "@types/node": ^16.11.56
@@ -1991,6 +1993,7 @@ __metadata:
     minisearch: ^5.0.0
     next: ^12.2.5
     next-mdx-remote: ^4.1.0
+    next-themes: ^0.2.0
     prettier: ^2.7.1
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -3159,6 +3162,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/colors@npm:^0.1.8":
+  version: 0.1.8
+  resolution: "@radix-ui/colors@npm:0.1.8"
+  checksum: 35fb8e48b1333e0a800ee55ce554d29016c10d2cb23aa161c6476c32b8231ec78f0ae57535ad482aa35adf0b64c957d92da88ef7f3a3f4a2f8c06870208c7ed1
+  languageName: node
+  linkType: hard
+
 "@radix-ui/number@npm:1.0.0":
   version: 1.0.0
   resolution: "@radix-ui/number@npm:1.0.0"
@@ -3423,6 +3433,15 @@ __metadata:
   dependencies:
     "@sinonjs/commons": ^1.7.0
   checksum: 7d3aef54e17c1073101cb64d953157c19d62a40e261a30923fa1ee337b049c5f29cc47b1f0c477880f42b5659848ba9ab897607ac8ea4acd5c30ddcfac57fca6
+  languageName: node
+  linkType: hard
+
+"@stitches/react@npm:^1.2.8":
+  version: 1.2.8
+  resolution: "@stitches/react@npm:1.2.8"
+  peerDependencies:
+    react: ">= 16.3.0"
+  checksum: 029795323cdedb5599ec0636526fc233b2cf41fa9c1f4a704b1f7f457c6170053384a7430afed45e25f73e348d7c391cf1379bc079943cd9cad44302234a5244
   languageName: node
   linkType: hard
 
@@ -13139,6 +13158,17 @@ __metadata:
     react: ">=16.x <=18.x"
     react-dom: ">=16.x <=18.x"
   checksum: 17a5b41ee47d90bf48cdc13850e635ea419cd281231f84cf0d66ed149ce416f82a5999d7e6eab59a8ceb1559aaf76e4c1d90ccb28a03645f3e52a2e717d7e678
+  languageName: node
+  linkType: hard
+
+"next-themes@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "next-themes@npm:0.2.0"
+  peerDependencies:
+    next: "*"
+    react: "*"
+    react-dom: "*"
+  checksum: cee02db16bee471856557db9572ffa041b1d77254798e345fad09e1bd8b878e937cdacc73bb73c598eb3b042f20fff0201bd73d2de42e2061fa818585415e857
   languageName: node
   linkType: hard
 

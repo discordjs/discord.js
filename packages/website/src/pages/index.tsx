@@ -1,98 +1,153 @@
-import { createStyles, Container, Title, Button, Group, Text, Center, Box, useMantineColorScheme } from '@mantine/core';
 import Image from 'next/future/image';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 import { FiExternalLink } from 'react-icons/fi';
 import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { styled } from '../../stitches.config';
 
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
-		flexDirection: 'column',
+const Container = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 50,
+	placeContent: 'center',
+	padding: 32,
+	maxWidth: 1_200,
+	margin: 'auto',
+
+	'@md': {
 		height: '100%',
-		justifyContent: 'center',
-		gap: 50,
-		padding: 32,
-
-		[theme.fn.smallerThan('md')]: {
-			height: 'unset',
-		},
+		padding: '0 32px',
 	},
+});
 
-	inner: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
+const SplitContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 50,
+	placeContent: 'space-between',
+	placeItems: 'center',
 
-		[theme.fn.smallerThan('md')]: {
-			flexDirection: 'column',
-			gap: 50,
-		},
+	'@md': {
+		flexDirection: 'unset',
+		gap: 'unset',
 	},
+});
 
-	content: {
-		maxWidth: 480,
-		marginRight: theme.spacing.xl,
+const ContentContainer = styled('div', {
+	maxWidth: 480,
 
-		[theme.fn.smallerThan('md')]: {
-			marginRight: 0,
-		},
+	'@md': {
+		marginRight: 32,
 	},
+});
 
-	title: {
-		color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+const Heading = styled('h1', {
+	fontSize: 28,
+	lineHeight: 1.2,
+	fontWeight: 900,
+	margin: 0,
+
+	'@xs': {
 		fontSize: 44,
-		lineHeight: 1.2,
-		fontWeight: 900,
+	},
+});
 
-		[theme.fn.smallerThan('xs')]: {
-			fontSize: 28,
+const Highlight = styled('span', {
+	position: 'relative',
+	backgroundColor: '$blue9',
+	borderRadius: 4,
+	padding: '4px 12px',
+});
+
+const Text = styled('p', {
+	color: '$gray11',
+	lineHeight: 1.55,
+	marginBottom: 26,
+});
+
+const Group = styled('div', {
+	display: 'flex',
+	gap: 15,
+});
+
+const AnchorButton = styled('a', {
+	display: 'flex',
+	placeItems: 'center',
+	backgroundColor: '$blue9',
+	appearance: 'none',
+	textDecoration: 'none',
+	userSelect: 'none',
+	height: 42,
+	padding: '0 22px',
+	borderRadius: 4,
+	color: 'white',
+	lineHeight: 1,
+	fontWeight: 600,
+
+	'&:hover': {
+		backgroundColor: '$blue10',
+	},
+
+	'&:active': {
+		transform: 'translate3d(0, 1px, 0)',
+	},
+
+	'& svg': {
+		marginLeft: 10,
+	},
+
+	variants: {
+		color: {
+			secondary: {
+				backgroundColor: '$gray4',
+
+				'&:hover': {
+					backgroundColor: '$gray5',
+				},
+
+				'&:active': {
+					backgroundColor: '$gray7',
+				},
+			},
 		},
 	},
+});
 
-	highlight: {
-		position: 'relative',
-		backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background!,
-		borderRadius: theme.radius.sm,
-		padding: '4px 12px',
-	},
-}));
+const Center = styled('div', {
+	display: 'flex',
+	placeContent: 'center',
+});
 
 export default function IndexRoute() {
-	const { classes } = useStyles();
-	const { colorScheme } = useMantineColorScheme();
+	const { resolvedTheme } = useTheme();
 
 	return (
-		<Container className={classes.outer} size="lg">
-			<Box className={classes.inner}>
-				<Box className={classes.content}>
-					<Title className={classes.title}>
-						The <span className={classes.highlight}>most popular</span> way to build Discord <br /> bots.
-					</Title>
-					<Text color="dimmed" mt="md">
+		<Container>
+			<SplitContainer>
+				<ContentContainer>
+					<Heading>
+						The <Highlight>most popular</Highlight> way to build Discord <br /> bots.
+					</Heading>
+					<Text>
 						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
 						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
 						significantly tidier and easier to comprehend.
 					</Text>
-
-					<Group mt={30}>
+					<Group>
 						<Link href="/docs" passHref prefetch={false}>
-							<Button component="a" radius="sm" size="md">
-								Docs
-							</Button>
+							<AnchorButton>Docs</AnchorButton>
 						</Link>
-						<Link href="https://discordjs.guide" passHref prefetch={false}>
-							<Button component="a" variant="default" radius="sm" size="md" rightIcon={<FiExternalLink />}>
-								Guide
-							</Button>
-						</Link>
+						<AnchorButton color="secondary" href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
+							Guide <FiExternalLink />
+						</AnchorButton>
 					</Group>
-				</Box>
-				<Box pb="xs">
+				</ContentContainer>
+				<div>
 					<SyntaxHighlighter
 						wrapLongLines
 						language="typescript"
-						style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
+						style={resolvedTheme === 'dark' ? vscDarkPlus : ghcolors}
 						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 					>
 						{`import { Client, GatewayIntentBits } from 'discord.js';
@@ -113,20 +168,23 @@ client.on('interactionCreate', async (interaction) => {
 
 await client.login('token');`}
 					</SyntaxHighlighter>
-				</Box>
-			</Box>
+				</div>
+			</SplitContainer>
 			<Center>
-				<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" prefetch={false}>
-					<a title="Vercel">
-						<Image
-							src="/powered-by-vercel.svg"
-							alt="Vercel"
-							width={0}
-							height={0}
-							style={{ height: '100%', width: '100%', maxWidth: 250 }}
-						/>
-					</a>
-				</Link>
+				<a
+					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+					target="_blank"
+					rel="noopener noreferrer"
+					title="Vercel"
+				>
+					<Image
+						src="/powered-by-vercel.svg"
+						alt="Vercel"
+						width={0}
+						height={0}
+						style={{ height: '100%', width: '100%', maxWidth: 250 }}
+					/>
+				</a>
 			</Center>
 		</Container>
 	);

@@ -1,13 +1,5 @@
-import {
-	createStyles,
-	UnstyledButton,
-	Group,
-	ThemeIcon,
-	Collapse,
-	Box,
-	Text,
-	useMantineColorScheme,
-} from '@mantine/core';
+import { createStyles, UnstyledButton, Group, ThemeIcon, Collapse, Box, Text } from '@mantine/core';
+import { useTheme } from 'next-themes';
 import { useState, useEffect, type PropsWithChildren } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 
@@ -47,7 +39,7 @@ export function Section({
 	title: string;
 }>) {
 	const [opened, setOpened] = useState(!defaultClosed);
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 	const { classes } = useStyles({ opened });
 
 	useEffect(() => {
@@ -61,7 +53,7 @@ export function Section({
 				<Group position="apart">
 					<Group>
 						{icon ? (
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+							<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 								{icon}
 							</ThemeIcon>
 						) : null}

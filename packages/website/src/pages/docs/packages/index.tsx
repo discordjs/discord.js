@@ -1,17 +1,7 @@
-import {
-	Container,
-	UnstyledButton,
-	createStyles,
-	Group,
-	ThemeIcon,
-	Text,
-	Stack,
-	Title,
-	useMantineColorScheme,
-	Button,
-} from '@mantine/core';
+import { Container, UnstyledButton, createStyles, Group, ThemeIcon, Text, Stack, Title, Button } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTheme } from 'next-themes';
 import type { MouseEvent } from 'react';
 import { VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
@@ -37,7 +27,7 @@ const useStyles = createStyles((theme) => ({
 
 export default function PackagesRoute() {
 	const { classes } = useStyles();
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 	const router = useRouter();
 
 	const handleClick = async (ev: MouseEvent<HTMLDivElement>, packageName: string) => {
@@ -67,7 +57,7 @@ export default function PackagesRoute() {
 						<Group position="apart">
 							<Group sx={{ flexGrow: 1 }} position="apart">
 								<Group>
-									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+									<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 										<VscPackage size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">

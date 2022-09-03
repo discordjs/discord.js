@@ -8,12 +8,12 @@ import {
 	Stack,
 	Box,
 	Title,
-	useMantineColorScheme,
 	Affix,
 } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
+import { useTheme } from 'next-themes';
 import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/packages';
 
@@ -95,7 +95,7 @@ const useStyles = createStyles((theme) => ({
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
 	const router = useRouter();
 	const { classes } = useStyles();
-	const { colorScheme } = useMantineColorScheme();
+	const { theme } = useTheme();
 
 	return props.error ? (
 		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
@@ -110,7 +110,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 						<UnstyledButton className={classes.control} component="a">
 							<Group position="apart">
 								<Group>
-									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
+									<ThemeIcon variant={theme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
 										<VscVersions size={20} />
 									</ThemeIcon>
 									<Text weight={600} size="md">
