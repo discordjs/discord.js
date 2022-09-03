@@ -185,7 +185,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 
 	// eslint-disable-next-line react/hook-use-state
-	const [, setOpened] = useState(false);
+	const [opened, setOpened] = useState(false);
 	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
 	// const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
 
@@ -231,7 +231,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 			<StickyHeader>
 				<Box css={{ height: '70px', padding: '0 32px' }}>
 					<Box css={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-						<Button icon="sm" transparent>
+						<Button icon="sm" transparent onClick={() => setOpened((open) => !open)}>
 							<VscMenu size={24} />
 						</Button>
 						<Box css={{ display: 'flex', gap: 20 }}>
@@ -252,7 +252,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 					</Box>
 				</Box>
 			</StickyHeader>
-			<Navbar css={{ overflowY: 'scroll' }}>
+			<Navbar css={{ overflowY: 'scroll', display: opened ? 'block' : 'none', '@md': { display: 'block' } }}>
 				<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
 			</Navbar>
 			<Box as="main" css={{ paddingTop: '70px', '@md': { paddingLeft: 300 } }}>
