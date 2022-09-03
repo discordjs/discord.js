@@ -304,3 +304,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 		</MemberProvider>
 	);
 }
+
+export const config = {
+	unstable_includeFiles: ['../{builders,collection,proxy,rest,voice,ws}/README.md'],
+};

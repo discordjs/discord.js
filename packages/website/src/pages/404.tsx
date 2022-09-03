@@ -24,6 +24,7 @@ export default function FourOhFourPage() {
 		<>
 			<Head>
 				<title key="title">discord.js | 404</title>
+				<meta key="og_title" property="og:title" content="discord.js | 404" />
 			</Head>
 			<Container pt={96} pb={96}>
 				<Box className={classes.label}>404</Box>
