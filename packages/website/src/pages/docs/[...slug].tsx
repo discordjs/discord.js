@@ -25,10 +25,15 @@ import { serialize } from 'next-mdx-remote/serialize';
 // import { useEffect } from 'react';
 import { VscChevronUp } from 'react-icons/vsc';
 import rehypeIgnore from 'rehype-ignore';
-import rehypePrettyCode from 'rehype-pretty-code';
+import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import { getHighlighter } from 'shiki';
+import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
+import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
+import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
+import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -134,7 +139,30 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			mdxOptions: {
 				remarkPlugins: [remarkGfm],
 				remarkRehypeOptions: { allowDangerousHtml: true },
-				rehypePlugins: [rehypeRaw, rehypeIgnore, rehypeSlug, [rehypePrettyCode, { theme: 'dark-plus' }]],
+				rehypePlugins: [
+					rehypeRaw,
+					rehypeIgnore,
+					rehypeSlug,
+					[
+						rehypePrettyCode,
+						{
+							theme: {
+								dark: shikiThemeDarkPlus,
+								light: shikiThemeLightPlus,
+							},
+							getHighlighter: async (options?: Partial<Options>) =>
+								getHighlighter({
+									...options,
+									langs: [
+										// @ts-expect-error: Working as intended
+										{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
+										// @ts-expect-error: Working as intended
+										{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
+									],
+								}),
+						},
+					],
+				],
 				format: 'md',
 			},
 		});
@@ -306,8 +334,5 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 }
 
 export const config = {
-	unstable_includeFiles: [
-		'../{builders,collection,proxy,rest,voice,ws}/README.md',
-		'../../node_modules/shiki/themes/dark-plus.json',
-	],
+	unstable_includeFiles: ['../{builders,collection,proxy,rest,voice,ws}/README.md'],
 };
