@@ -7,9 +7,7 @@ import type { RequestOptions } from '../REST.js';
 import { RequestMethod } from '../RequestManager.js';
 
 export function parseHeader(header: string[] | string | undefined): string | undefined {
-	if (header === undefined) {
-		return header;
-	} else if (typeof header === 'string') {
+	if (header === undefined || typeof header === 'string') {
 		return header;
 	}
 

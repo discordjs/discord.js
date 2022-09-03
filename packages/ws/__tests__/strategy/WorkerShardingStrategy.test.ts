@@ -177,7 +177,7 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(
-		expect.stringContaining('worker.cjs'),
+		expect.stringContaining('worker.js'),
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 

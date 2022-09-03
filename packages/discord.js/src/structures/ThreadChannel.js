@@ -283,7 +283,7 @@ class ThreadChannel extends BaseChannel {
    * <info>This only works when the thread started from a message in the parent channel, otherwise the promise will
    * reject. If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<Message|null>}
+   * @returns {Promise<Message<true>|null>}
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {

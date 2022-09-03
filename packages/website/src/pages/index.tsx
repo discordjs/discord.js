@@ -70,7 +70,7 @@ export default function IndexRoute() {
 						The <span className={classes.highlight}>most popular</span> way to build Discord <br /> bots.
 					</Title>
 					<Text color="dimmed" mt="md">
-						discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It
+						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
 						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
 						significantly tidier and easier to comprehend.
 					</Text>

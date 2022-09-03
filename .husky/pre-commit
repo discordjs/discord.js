@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn build && yarn lint-staged
+yarn build && yarn workspace @discordjs/website run build:local && yarn lint-staged
