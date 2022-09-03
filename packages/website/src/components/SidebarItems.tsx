@@ -109,7 +109,13 @@ export function SidebarItems({
 	}, [router.asPath]);
 
 	return (
-		<Box sx={(theme) => ({ paddingBottom: 48, [theme.fn.smallerThan('md')]: { paddingBottom: 128 } })}>
+		<Box
+			sx={(theme) => ({
+				padding: 12,
+				paddingBottom: 48,
+				[theme.fn.smallerThan('md')]: { paddingBottom: 128 },
+			})}
+		>
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
@@ -119,7 +125,7 @@ export function SidebarItems({
 								<NavLink
 									className={classes.link}
 									component="a"
-									onClick={() => setOpened((isOpened) => !isOpened)}
+									onClick={() => setOpened(false)}
 									label={
 										<Group>
 											<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">

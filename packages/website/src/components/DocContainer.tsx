@@ -66,7 +66,7 @@ export function DocContainer({
 	const matches = useMediaQuery('(max-width: 768px)');
 
 	return (
-		<Group>
+		<Group align="flex-start" noWrap>
 			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
 				<Skeleton visible={router.isFallback} radius="sm">
 					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
@@ -136,7 +136,12 @@ export function DocContainer({
 			</Stack>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
+					<Aside
+						sx={{ position: 'fixed', top: 70, height: 'calc(100vh - 70px)' }}
+						hiddenBreakpoint="lg"
+						width={{ lg: 250 }}
+						withBorder
+					>
 						<ScrollArea p="sm" offsetScrollbars>
 							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
 						</ScrollArea>
