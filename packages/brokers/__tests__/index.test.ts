@@ -1,6 +1,6 @@
 import type Redis from 'ioredis';
 import { test, expect, vi } from 'vitest';
-import { PubSubRedisBroker } from '../src';
+import { PubSubRedisBroker } from '../src/index.js';
 
 const mockRedisClient = {
 	defineCommand: vi.fn(),
