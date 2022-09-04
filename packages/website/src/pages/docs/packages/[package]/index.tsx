@@ -63,7 +63,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg  gap-8 h-full place-content-center lg:py-0 lg:px-6">
+		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg w-lg mx-auto gap-8 h-full place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-content-center grow gap-4">
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (

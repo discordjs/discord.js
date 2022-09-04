@@ -298,6 +298,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 								boxSizing: 'content-box',
 							},
 						}}
+						className="prose max-w-none"
 					>
 						<MDXRemote {...props.data.source} />
 					</Box>

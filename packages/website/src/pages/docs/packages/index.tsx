@@ -18,7 +18,7 @@ export default function PackagesRoute() {
 	};
 
 	return (
-		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg  gap-8 h-full place-content-center lg:py-0 lg:px-6">
+		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg w-lg mx-auto gap-8 h-full place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-content-center grow gap-4">
 				<h1 className="text-2xl font-semibold">Select a package:</h1>
 				{PACKAGES.map((pkg) => (
