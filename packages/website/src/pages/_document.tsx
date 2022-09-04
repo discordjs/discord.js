@@ -28,7 +28,7 @@ export default class _Document extends Document {
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
 					<meta name="twitter:card" content="summary_large_image" />
 				</Head>
-				<body>
+				<body className="bg-white dark:bg-dark-8">
 					<Main />
 					<NextScript />
 				</body>

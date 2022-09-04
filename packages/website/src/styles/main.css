@@ -12,14 +12,20 @@
 	}
 }
 
+html {
+	scrollbar-gutter: auto;
+}
+
 html,
 body {
 	height: 100%;
-	margin: 0;
+}
+
+::-webkit-scrollbar {
+	visibility: hidden;
 }
 
 #__next {
-	position: relative;
 	height: 100%;
 }
 

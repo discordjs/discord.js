@@ -9,6 +9,7 @@ import { ThemeProvider, useTheme } from 'next-themes';
 import '@unocss/reset/antfu.css';
 import '../styles/unocss.css';
 import '../styles/main.css';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 // import { miniSearch } from '~/util/search';
 
 // const actions: (router: NextRouter) => SpotlightAction[] = (router: NextRouter) => [
@@ -113,7 +114,17 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					withCSSVariables
 				>
 					<NextProgress color="#0091ff" options={{ showSpinner: false }} />
-					<Component {...pageProps} />
+					<Scrollbars
+						className="!h-screen"
+						universal
+						autoHide
+						renderTrackVertical={(props) => (
+							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 w-1.5 rounded z-3" />
+						)}
+						renderThumbVertical={(props) => <div {...props} className="bg-neutral-4 dark:bg-dark-1 rounded z-3" />}
+					>
+						<Component {...pageProps} />
+					</Scrollbars>
 				</MantineProvider>
 			</ThemeProvider>
 		</>

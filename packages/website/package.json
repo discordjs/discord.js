@@ -55,6 +55,7 @@
 		"next-progress": "^2.2.0",
 		"next-themes": "^0.2.0",
 		"react": "^18.2.0",
+		"react-custom-scrollbars-2": "^4.5.0",
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.4.0",
 		"react-syntax-highlighter": "^15.5.0",

@@ -68,7 +68,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<div className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded text-black leading-none text-base font-semibold border border-gray-3 transform-gpu hover:bg-gray-1 active:bg-gray-2 active:translate-y-px">
+						<div className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded select-none cursor-pointer dark:bg-dark-4 text-black dark:text-white leading-none text-base font-semibold border border-neutral-3 dark:border-dark-1 transform-gpu hover:bg-neutral-1 dark:hover:bg-dark-3 active:bg-neutral-2 dark:active:bg-dark-2 active:translate-y-px">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />

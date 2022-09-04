@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
 // import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
@@ -118,7 +119,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 		() =>
 			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
 				<Link key={idx} href={original.slice(0, idx + 1).join('/')} prefetch={false}>
-					<a className="text-black no-underline hover:underline">{path}</a>
+					<a className="hover:underline">{path}</a>
 				</Link>
 			)),
 		[asPathWithoutQueryAndAnchor],
@@ -143,11 +144,11 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 
 	return (
 		<>
-			<header className="fixed top-0 left-0 w-full z-2 bg-gray-1 border-b-1 border-gray-2">
+			<header className="fixed top-0 left-0 w-full z-2 bg-neutral-1 dark:bg-dark-6 border-b-1 border-neutral-2 dark:border-dark-1">
 				<div className="block h-18 px-6">
 					<div className="flex flex-row h-full place-items-center place-content-between">
 						<div
-							className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px lg:hidden"
+							className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px lg:hidden"
 							role="button"
 							onClick={() => setOpened((open) => !open)}
 						>
@@ -156,7 +157,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
 						<div className="flex flex-row gap-4">
 							<a
-								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
+								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
 								href="https://github.com/discordjs/discord.js"
 								target="_blank"
 								rel="noopener noreferrer"
@@ -164,7 +165,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 								<VscGithubInverted size={24} />
 							</a>
 							<div
-								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
+								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
 								role="button"
 								onClick={() => toggleTheme()}
 							>
@@ -175,22 +176,33 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 				</div>
 			</header>
 			<nav
-				className={`fixed top-[73px] left-0 bottom-0 w-full bg-white z-1 h-[calc(100vh - 73px)] border-r-1 border-gray-2 overflow-y-auto ${
+				className={`fixed top-[73px] left-0 bottom-0 w-full h-[calc(100vh - 73px)] bg-white dark:bg-dark-6 z-1 border-r-1 border-neutral-2 dark:border-dark-1 ${
 					opened ? 'block' : 'hidden'
 				} z-2 lg:block lg:w-76 lg:max-w-76`}
 			>
-				<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
+				<Scrollbars
+					universal
+					autoHide
+					renderTrackVertical={(props) => (
+						<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 w-1.5 rounded z-3" />
+					)}
+					renderThumbVertical={(props) => <div {...props} className="bg-neutral-4/75 dark:bg-dark-1 rounded z-3" />}
+				>
+					<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
+				</Scrollbars>
 			</nav>
 			<main
-				className={`pt-18 lg:pl-76 ${
+				className={` pt-18 lg:pl-76 ${
 					data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'lg:pr-64' : 'lg:pr-0'
 				}`}
 			>
 				<article>
-					<div className="relative min-h-[calc(100vh - 50px)] p-6 pb-20 z-1 bg-white shadow">{children}</div>
+					<div className="relative min-h-[calc(100vh - 50px)] p-6 pb-20 z-1 bg-white dark:bg-dark-8 shadow">
+						{children}
+					</div>
 					<div className="h-76 md:h-52" />
 					<footer
-						className={`fixed bottom-0 left-0 right-0 bg-gray-1 h-76 md:h-52 md:pl-4 md:pr-16 lg:pl-84 ${
+						className={`fixed bottom-0 left-0 right-0 bg-neutral-1 dark:bg-dark-6 h-76 md:h-52 md:pl-4 md:pr-16 lg:pl-84 ${
 							data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'xl:pr-76' : 'xl:pr-16'
 						}`}
 					>
@@ -208,16 +220,10 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 									<div className="flex flex-col gap-2">
 										<h4 className="text-lg font-semibold">Community</h4>
 										<div className="flex flex-col gap-1">
-											<a
-												className="text-black no-underline"
-												href="https://discord.gg/djs"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
+											<a href="https://discord.gg/djs" target="_blank" rel="noopener noreferrer">
 												Discord
 											</a>
 											<a
-												className="text-black no-underline"
 												href="https://github.com/discordjs/discord.js/discussions"
 												target="_blank"
 												rel="noopener noreferrer"
@@ -229,28 +235,13 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 									<div className="flex flex-col gap-2">
 										<h4 className="text-lg font-semibold">Project</h4>
 										<div className="flex flex-col gap-1">
-											<a
-												className="text-black no-underline"
-												href="https://github.com/discordjs/discord.js"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
+											<a href="https://github.com/discordjs/discord.js" target="_blank" rel="noopener noreferrer">
 												discord.js
 											</a>
-											<a
-												className="text-black no-underline"
-												href="https://discordjs.guide"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
+											<a href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
 												discord.js guide
 											</a>
-											<a
-												className="text-black no-underline"
-												href="https://discord-api-types.dev"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
+											<a href="https://discord-api-types.dev" target="_blank" rel="noopener noreferrer">
 												discord-api-types
 											</a>
 										</div>

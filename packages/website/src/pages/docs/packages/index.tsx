@@ -24,7 +24,7 @@ export default function PackagesRoute() {
 				{PACKAGES.map((pkg) => (
 					<div
 						key={pkg}
-						className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded text-black leading-none text-base font-semibold border border-gray-3 transform-gpu hover:bg-gray-1 active:bg-gray-2 active:translate-y-px"
+						className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded select-none cursor-pointer dark:bg-dark-4 text-black dark:text-white leading-none text-base font-semibold border border-neutral-3 dark:border-dark-1 transform-gpu hover:bg-neutral-1 dark:hover:bg-dark-3 active:bg-neutral-2 dark:active:bg-dark-2 active:translate-y-px"
 						role="link"
 						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
 					>
