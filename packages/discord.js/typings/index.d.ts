@@ -1428,6 +1428,7 @@ export class Integration extends Base {
   public role: Role | null;
   public enableEmoticons: boolean | null;
   public get roles(): Collection<Snowflake, Role>;
+  public scopes: OAuth2Scopes[];
   public get syncedAt(): Date | null;
   public syncedTimestamp: number | null;
   public syncing: boolean | null;
