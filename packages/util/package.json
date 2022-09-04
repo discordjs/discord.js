@@ -5,6 +5,7 @@
 	"private": true,
 	"scripts": {
 		"build": "tsup",
+		"test": "vitest run",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format"
@@ -24,7 +25,11 @@
 		"dist"
 	],
 	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Antonio Roman <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
 	"keywords": [

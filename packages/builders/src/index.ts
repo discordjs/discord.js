@@ -39,3 +39,4 @@ export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';
+export * from '@discordjs/util';
