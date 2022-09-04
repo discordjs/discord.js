@@ -2,12 +2,13 @@
 
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
+const { lazy } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { RangeError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, verifyString, lazy } = require('../util/Util');
+const { basename, verifyString } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 

@@ -36,8 +36,6 @@ export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js'
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
 
-export * from './util/jsonEncodable.js';
-export * from './util/equatable.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';

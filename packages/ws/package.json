@@ -54,6 +54,7 @@
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/rest": "workspace:^",
+		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.3",
 		"@vladfrangu/async_event_emitter": "^2.1.2",

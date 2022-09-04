@@ -1972,6 +1972,7 @@ __metadata:
   resolution: "@discordjs/builders@workspace:packages/builders"
   dependencies:
     "@discordjs/docgen": "workspace:^"
+    "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.31.2
     "@sapphire/shapeshift": ^3.6.0
@@ -2075,6 +2076,7 @@ __metadata:
   dependencies:
     "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": ^1.0.0
+    "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.31.2
     "@types/node": ^16.11.60
@@ -2141,6 +2143,21 @@ __metadata:
     typescript: ^4.8.3
     undici: ^5.10.0
     vitest: ^0.23.4
+  languageName: unknown
+  linkType: soft
+
+"@discordjs/util@workspace:^, @discordjs/util@workspace:packages/util":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/util@workspace:packages/util"
+  dependencies:
+    "@types/node": ^16.11.56
+    "@vitest/coverage-c8": ^0.22.1
+    eslint: ^8.23.0
+    eslint-config-neon: ^0.1.31
+    prettier: ^2.7.1
+    tsup: ^6.2.3
+    typescript: ^4.8.2
+    vitest: ^0.22.1
   languageName: unknown
   linkType: soft
 
@@ -2235,6 +2252,7 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": "workspace:^"
+    "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@microsoft/api-extractor": ^7.31.2
     "@sapphire/async-queue": ^1.5.0
@@ -7079,6 +7097,7 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@discordjs/rest": "workspace:^"
+    "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.7
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.60
