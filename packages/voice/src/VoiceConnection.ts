@@ -1,7 +1,4 @@
-/* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable jsdoc/check-param-names */
-/* eslint-disable @typescript-eslint/method-signature-style */
 import type { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
@@ -244,10 +241,10 @@ export class VoiceConnection extends EventEmitter {
 	 * @param joinConfig - The data required to establish the voice connection
 	 * @param options - The options used to create this voice connection
 	 */
-	public constructor(joinConfig: JoinConfig, { debug, adapterCreator }: CreateVoiceConnectionOptions) {
+	public constructor(joinConfig: JoinConfig, options: CreateVoiceConnectionOptions) {
 		super();
 
-		this.debug = debug ? (message: string) => this.emit('debug', message) : null;
+		this.debug = options.debug ? (message: string) => this.emit('debug', message) : null;
 		this.rejoinAttempts = 0;
 
 		this.receiver = new VoiceReceiver(this);
@@ -257,7 +254,7 @@ export class VoiceConnection extends EventEmitter {
 		this.onNetworkingError = this.onNetworkingError.bind(this);
 		this.onNetworkingDebug = this.onNetworkingDebug.bind(this);
 
-		const adapter = adapterCreator({
+		const adapter = options.adapterCreator({
 			onVoiceServerUpdate: (data) => this.addServerPacket(data),
 			onVoiceStateUpdate: (data) => this.addStatePacket(data),
 			destroy: () => this.destroy(false),
