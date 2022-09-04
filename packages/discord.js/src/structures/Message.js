@@ -357,6 +357,15 @@ class Message extends Base {
     } else {
       this.interaction ??= null;
     }
+    if (data.position) {
+      /**
+       * The position of the message
+       * @type {?number}
+       */
+      this.position = data.position;
+    } else {
+      this.position ??= null;
+    }
   }
 
   /**
