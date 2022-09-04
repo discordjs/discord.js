@@ -85,10 +85,10 @@ class Widget extends Base {
   }
   /**
    * Get Guild Widget Image
-   * @param {?WidgetStyleOptions} style Style of widget
-   * @returns {Promise<Widget>}
+   * @param {?GuildWidgetStyle} style Style of widget
+   * @returns {string}
    */
-  fetchImage(style) {
+  getImageURL(style) {
     const styles = ['banner1', 'banner2', 'banner3', 'banner4', 'shield'];
     if (!styles.includes(style)) style = 'shield';
     const data = `https://discord.com/api/v${APIVersion}${Routes.guildWidgetImage(this.id)}?style=${style}`;
