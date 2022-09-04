@@ -23,5 +23,3 @@ docs/**/*
 # Miscellaneous
 .tmp/
 coverage/
-
-searchIndex/
