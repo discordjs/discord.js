@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/util",
-	"version": "0.1.0",
+	"version": "0.1.0-dev",
 	"description": "Utilities shared across Discord.js packages",
 	"private": true,
 	"scripts": {
@@ -54,5 +54,8 @@
 	},
 	"engines": {
 		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
