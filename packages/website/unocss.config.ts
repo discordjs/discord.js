@@ -1,5 +1,4 @@
-import presetWebFonts from '@unocss/preset-web-fonts';
-import { defineConfig, presetUno } from 'unocss';
+import { defineConfig, presetUno, presetWebFonts } from 'unocss';
 
 export default defineConfig({
 	theme: {

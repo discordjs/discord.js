@@ -13,7 +13,7 @@ import {
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
-import { LoadingOverlay } from '@mantine/core';
+import { Box, LoadingOverlay } from '@mantine/core';
 // import { registerSpotlightActions } from '@mantine/spotlight';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import Head from 'next/head';
@@ -32,7 +32,6 @@ import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
 import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
 import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
 import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
-import { Box } from '~/components/Box';
 import { SidebarLayout, type SidebarLayoutProps } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -233,7 +232,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 		case 'Enum':
 			return <Enum data={props as ApiEnumJSON} />;
 		default:
-			return <Box>Cannot render that item type</Box>;
+			return <div>Cannot render that item type</div>;
 	}
 };
 
@@ -273,7 +272,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
 	return props.error ? (
-		<Box css={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
+		<div className="flex flex-row h-full w-full max-h-full max-w-full">{props.error}</div>
 	) : (
 		<MemberProvider member={props.data?.member}>
 			<SidebarLayout {...props}>
@@ -287,7 +286,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 					</>
 				) : props.data?.source ? (
 					<Box
-						css={{
+						sx={{
 							a: {
 								backgroundColor: 'transparent',
 								color: '$blue11',

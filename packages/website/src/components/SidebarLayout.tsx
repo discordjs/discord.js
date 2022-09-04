@@ -1,5 +1,4 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import { Title } from '@mantine/core';
 import { useScrollLock, useMediaQuery } from '@mantine/hooks';
 import Image from 'next/future/image';
 import Link from 'next/link';
@@ -9,11 +8,7 @@ import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
 import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
 // import useSWR from 'swr';
-import { styled } from '../../stitches.config';
 import vercelLogo from '../assets/powered-by-vercel.svg';
-import { Box } from './Box';
-import { Button } from './Button';
-import { Container } from './Container';
 import { SidebarItems } from './SidebarItems';
 // import { PACKAGES } from '~/util/constants';
 import type { findMember } from '~/util/model.server';
@@ -46,78 +41,6 @@ export interface GroupedMembers {
 	Types: Members;
 	Variables: Members;
 }
-
-const StickyHeader = styled('header', {
-	position: 'fixed',
-	top: 0,
-	left: 0,
-	width: '100%',
-	zIndex: 2,
-	background: '$gray1',
-	boxShadow: '0 0 0 1px $colors$gray6',
-});
-
-const Navbar = styled('nav', {
-	position: 'fixed',
-	top: 71,
-	left: 0,
-	bottom: 0,
-	width: '100%',
-	background: '$gray1',
-	zIndex: 2,
-	height: 'calc(100vh - 71px)',
-	borderRight: '1px solid $colors$gray6',
-
-	'@md': {
-		width: 300,
-		maxWidth: 300,
-	},
-});
-
-const ArticleContent = styled('div', {
-	position: 'relative',
-	minHeight: 'calc(100vh - 50px)',
-	paddingTop: 24,
-	paddingLeft: 24,
-	paddingRight: 24,
-	paddingBottom: 80,
-	zIndex: 1,
-	background: '$gray1',
-	boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-});
-
-const LinkList = styled('div', {
-	display: 'flex',
-	flexDirection: 'column',
-	alignItems: 'center',
-	gap: 50,
-	justifyContent: 'space-between',
-	width: '100%',
-
-	'@sm': {
-		flexDirection: 'row',
-		gap: 0,
-	},
-});
-
-const Footer = styled('footer', {
-	position: 'fixed',
-	bottom: 0,
-	left: 0,
-	right: 0,
-	background: '$gray1',
-	height: 300,
-
-	'@sm': {
-		height: 200,
-		paddingLeft: 12,
-		paddingRight: 64,
-	},
-
-	'@md': {
-		paddingLeft: 342,
-	},
-});
 
 // const packageMenuItems = PACKAGES.map((pkg) => (
 // 	<Menu.Item
@@ -194,10 +117,8 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 	const pathElements = useMemo(
 		() =>
 			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
-				<Link key={idx} href={original.slice(0, idx + 1).join('/')} passHref prefetch={false}>
-					<Box as="a" css={{ color: '$gray12', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
-						{path}
-					</Box>
+				<Link key={idx} href={original.slice(0, idx + 1).join('/')} prefetch={false}>
+					<a className="text-black no-underline hover:underline">{path}</a>
 				</Link>
 			)),
 		[asPathWithoutQueryAndAnchor],
@@ -210,7 +131,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 					return (
 						<Fragment key={idx}>
 							{el}
-							<Box css={{ marginLeft: 10, marginRight: 10 }}>/</Box>
+							<div className="mx-2">/</div>
 						</Fragment>
 					);
 				}
@@ -222,65 +143,59 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 
 	return (
 		<>
-			<StickyHeader>
-				<Box css={{ height: '70px', padding: '0 24px' }}>
-					<Box css={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
-						<Button
-							css={{ '@md': { display: 'none' } }}
-							icon="sm"
-							transparent
+			<header className="fixed top-0 left-0 w-full z-2 bg-gray-1 border-b-1 border-gray-2">
+				<div className="block h-18 px-6">
+					<div className="flex flex-row h-full place-items-center place-content-between">
+						<div
+							className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px lg:hidden"
+							role="button"
 							onClick={() => setOpened((open) => !open)}
 						>
 							<VscMenu size={24} />
-						</Button>
-						<Box css={{ display: 'none', '@md': { display: 'flex' } }}>{breadcrumbs}</Box>
-						<Box css={{ display: 'flex', gap: 20 }}>
-							<Button
-								as="a"
+						</div>
+						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
+						<div className="flex flex-row gap-4">
+							<a
+								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
 								href="https://github.com/discordjs/discord.js"
 								target="_blank"
 								rel="noopener noreferrer"
-								icon="sm"
-								transparent
 							>
 								<VscGithubInverted size={24} />
-							</Button>
-							<Button onClick={() => toggleTheme()} icon="sm" transparent>
-								{<VscColorMode size={24} />}
-							</Button>
-						</Box>
-					</Box>
-				</Box>
-			</StickyHeader>
-			<Navbar
-				css={{
-					overflowY: 'auto',
-					display: opened ? 'block' : 'none',
-					'@md': { display: 'block' },
-				}}
+							</a>
+							<div
+								className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-6 w-6 p-0 rounded text-black leading-none text-sm font-semibold border-0 transform-gpu active:translate-y-px"
+								role="button"
+								onClick={() => toggleTheme()}
+							>
+								<VscColorMode size={24} />
+							</div>
+						</div>
+					</div>
+				</div>
+			</header>
+			<nav
+				className={`fixed top-[73px] left-0 bottom-0 w-full bg-white z-1 h-[calc(100vh - 73px)] border-r-1 border-gray-2 overflow-y-auto ${
+					opened ? 'block' : 'hidden'
+				} z-2 lg:block lg:w-76 lg:max-w-76`}
 			>
 				<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
-			</Navbar>
-			<Box
-				as="main"
-				css={{
-					paddingTop: '70px',
-					'@md': { paddingLeft: 300 },
-					'@lg': { paddingRight: data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 250 : 0 },
-				}}
+			</nav>
+			<main
+				className={`pt-18 lg:pl-76 ${
+					data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'lg:pr-64' : 'lg:pr-0'
+				}`}
 			>
 				<article>
-					<ArticleContent>{children}</ArticleContent>
-					<Box css={{ height: 300, '@sm': { height: 200 } }} />
-					<Footer
-						css={{
-							'@lg': {
-								paddingRight: data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 300 : 64,
-							},
-						}}
+					<div className="relative min-h-[calc(100vh - 50px)] p-6 pb-20 z-1 bg-white shadow">{children}</div>
+					<div className="h-76 md:h-52" />
+					<footer
+						className={`fixed bottom-0 left-0 right-0 bg-gray-1 h-76 md:h-52 md:pl-4 md:pr-16 lg:pl-84 ${
+							data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'xl:pr-76' : 'xl:pr-16'
+						}`}
 					>
-						<Container css={{ height: 'unset', padding: 0, paddingTop: 50 }}>
-							<LinkList>
+						<div className="flex flex-col place-items-center max-w-6xl mx-auto gap-12 pt-12 lg:place-content-center">
+							<div className="flex flex-col gap-12 place-items-center place-content-between w-full md:flex-row md:gap-0">
 								<a
 									href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 									target="_blank"
@@ -289,56 +204,63 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 								>
 									<Image src={vercelLogo} alt="Vercel" />
 								</a>
-								<Box css={{ display: 'flex', gap: 24, '@sm': { gap: 50 } }}>
-									<Box css={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-										<Title order={4}>Community</Title>
-										<Box
-											css={{
-												display: 'flex',
-												flexDirection: 'column',
-												gap: 4,
-												a: { color: '$gray12', textDecoration: 'none' },
-											}}
-										>
-											<a href="https://discord.gg/djs" target="_blank" rel="noopener noreferrer">
+								<div className="flex flex-row gap-6 md:gap-12">
+									<div className="flex flex-col gap-2">
+										<h4 className="text-lg font-semibold">Community</h4>
+										<div className="flex flex-col gap-1">
+											<a
+												className="text-black no-underline"
+												href="https://discord.gg/djs"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												Discord
 											</a>
 											<a
+												className="text-black no-underline"
 												href="https://github.com/discordjs/discord.js/discussions"
 												target="_blank"
 												rel="noopener noreferrer"
 											>
 												GitHub discussions
 											</a>
-										</Box>
-									</Box>
-									<Box css={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-										<Title order={4}>Project</Title>
-										<Box
-											css={{
-												display: 'flex',
-												flexDirection: 'column',
-												gap: 4,
-												a: { color: '$gray12', textDecoration: 'none' },
-											}}
-										>
-											<a href="https://github.com/discordjs/discord.js" target="_blank" rel="noopener noreferrer">
+										</div>
+									</div>
+									<div className="flex flex-col gap-2">
+										<h4 className="text-lg font-semibold">Project</h4>
+										<div className="flex flex-col gap-1">
+											<a
+												className="text-black no-underline"
+												href="https://github.com/discordjs/discord.js"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord.js
 											</a>
-											<a href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
+											<a
+												className="text-black no-underline"
+												href="https://discordjs.guide"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord.js guide
 											</a>
-											<a href="https://discord-api-types.dev" target="_blank" rel="noopener noreferrer">
+											<a
+												className="text-black no-underline"
+												href="https://discord-api-types.dev"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord-api-types
 											</a>
-										</Box>
-									</Box>
-								</Box>
-							</LinkList>
-						</Container>
-					</Footer>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</footer>
 				</article>
-			</Box>
+			</main>
 		</>
 	);
 }

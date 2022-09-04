@@ -137,9 +137,9 @@ export function DocContainer({
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
 					<Aside
-						sx={{ position: 'fixed', top: 70, height: 'calc(100vh - 70px)' }}
+						sx={{ position: 'fixed', top: 70, height: 'calc(100vh - 72px)' }}
 						hiddenBreakpoint="lg"
-						width={{ lg: 250 }}
+						width={{ lg: 256 }}
 						withBorder
 					>
 						<ScrollArea p="sm" offsetScrollbars>

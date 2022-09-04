@@ -1,7 +1,5 @@
-/* eslint-disable react/no-danger */
 import { createGetInitialProps } from '@mantine/next';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { getCssText } from '../../stitches.config';
 import { DESCRIPTION } from '~/util/constants';
 
 const getInitialProps = createGetInitialProps();
@@ -29,11 +27,6 @@ export default class _Document extends Document {
 					<meta key="og_description" name="og:description" content={DESCRIPTION} />
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
 					<meta name="twitter:card" content="summary_large_image" />
-
-					<style id="stitches" dangerouslySetInnerHTML={{ __html: getCssText() }} />
-
-					<link rel="preconnect" href="https://fonts.bunny.net" />
-					<link href="https://fonts.bunny.net/css?family=jetbrains-mono:400" rel="stylesheet" />
 				</Head>
 				<body>
 					<Main />

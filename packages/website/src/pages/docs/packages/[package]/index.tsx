@@ -1,10 +1,6 @@
 import Link from 'next/link';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowRight, VscVersions } from 'react-icons/vsc';
-import { styled } from '../../../../../stitches.config';
-import { Container } from '~/components/Container';
-import { SelectionButton } from '~/components/SelectionButton';
-import { SplitContainer } from '~/components/SplitContainer';
 import { PACKAGES } from '~/util/constants';
 
 interface VersionProps {
@@ -63,37 +59,27 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 };
 
-const Heading = styled('h1', {
-	fontSize: 28,
-	margin: 0,
-	marginLeft: 8,
-});
-
-const Title = styled('span', {
-	fontWeight: 600,
-});
-
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
 	return props.error ? (
 		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<Container xs css={{ height: '100%', flexDirection: 'unset', padding: '0 32px' }}>
-			<SplitContainer vertical grow center css={{ placeItems: 'unset' }}>
-				<Heading>Select a version:</Heading>
+		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg  gap-8 h-full place-content-center lg:py-0 lg:px-6">
+			<div className="flex flex-col place-content-center grow gap-4">
+				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<SelectionButton>
-							<SplitContainer>
-								<SplitContainer>
+						<div className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded text-black leading-none text-base font-semibold border border-gray-3 transform-gpu hover:bg-gray-1 active:bg-gray-2 active:translate-y-px">
+							<div className="flex flex-row place-content-between place-items-center gap-4">
+								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />
-									<Title>{version}</Title>
-								</SplitContainer>
+									<h2 className="font-semibold">{version}</h2>
+								</div>
 								<VscArrowRight size={20} />
-							</SplitContainer>
-						</SelectionButton>
+							</div>
+						</div>
 					</Link>
 				)) ?? null}
-			</SplitContainer>
-		</Container>
+			</div>
+		</div>
 	);
 }

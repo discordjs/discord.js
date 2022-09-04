@@ -6,7 +6,7 @@ import Head from 'next/head';
 import NextProgress from 'next-progress';
 import { ThemeProvider, useTheme } from 'next-themes';
 // import { VscPackage } from 'react-icons/vsc';
-import { darkTheme, globalStyles } from '../../stitches.config';
+import '@unocss/reset/antfu.css';
 import '../styles/unocss.css';
 import '../styles/main.css';
 // import { miniSearch } from '~/util/search';
@@ -70,7 +70,6 @@ import '../styles/main.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	// const router = useRouter();
-	globalStyles();
 	const { resolvedTheme } = useTheme();
 
 	return (
@@ -85,7 +84,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 				defaultTheme="system"
 				value={{
 					light: 'light',
-					dark: darkTheme.className,
+					dark: 'dark',
 				}}
 			>
 				<MantineProvider
