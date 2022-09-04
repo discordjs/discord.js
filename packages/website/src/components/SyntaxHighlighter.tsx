@@ -1,5 +1,5 @@
 import { PrismAsyncLight } from 'react-syntax-highlighter';
-import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 export function SyntaxHighlighter({ language = 'typescript', code }: { code: string; language?: string }) {
 	return (
@@ -20,7 +20,7 @@ export function SyntaxHighlighter({ language = 'typescript', code }: { code: str
 					wrapLines
 					wrapLongLines
 					language={language}
-					style={ghcolors}
+					style={prism}
 					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 				>
 					{code}
