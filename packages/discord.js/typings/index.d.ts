@@ -2968,18 +2968,11 @@ export class WebSocketShard extends EventEmitter {
   ): this;
 }
 
-export type WidgetStyleOptions =
-  | GuildWidgetStyle.Banner1
-  | GuildWidgetStyle.Banner2
-  | GuildWidgetStyle.Banner3
-  | GuildWidgetStyle.Banner4
-  | GuildWidgetStyle.Shield;
-
 export class Widget extends Base {
   private constructor(client: Client, data: RawWidgetData);
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
-  public fetchImage(style?: WidgetStyleOptions): Promise<Widget>;
+  public fetchImage(style?: GuildWidgetStyle): Promise<Widget>;
   public id: Snowflake;
   public instantInvite?: string;
   public channels: Collection<Snowflake, WidgetChannel>;
