@@ -63,12 +63,12 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 	return props.error ? (
 		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
 	) : (
-		<div className="flex flex-row place-items-center py-0 px-4 max-w-lg w-lg mx-auto gap-8 h-full place-content-center lg:py-0 lg:px-6">
-			<div className="flex flex-col place-content-center grow gap-4">
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<div className="flex place-content-center bg-transparent appearance-none h-11 p-4 rounded select-none cursor-pointer dark:bg-dark-4 text-black dark:text-white leading-none text-base font-semibold border border-neutral-3 dark:border-dark-1 transform-gpu hover:bg-neutral-1 dark:hover:bg-dark-3 active:bg-neutral-2 dark:active:bg-dark-2 active:translate-y-px">
+						<div className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />

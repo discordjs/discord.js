@@ -113,15 +113,15 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					}}
 					withCSSVariables
 				>
-					<NextProgress color="#0091ff" options={{ showSpinner: false }} />
+					<NextProgress color="#5865f2" options={{ showSpinner: false }} />
 					<Scrollbars
 						className="!h-screen"
 						universal
 						autoHide
 						renderTrackVertical={(props) => (
-							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 w-1.5 rounded z-3" />
+							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
 						)}
-						renderThumbVertical={(props) => <div {...props} className="bg-neutral-4 dark:bg-dark-1 rounded z-3" />}
+						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 z-30 rounded bg-neutral-400" />}
 					>
 						<Component {...pageProps} />
 					</Scrollbars>

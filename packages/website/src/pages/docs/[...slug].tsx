@@ -272,7 +272,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
 	return props.error ? (
-		<div className="flex flex-row h-full w-full max-h-full max-w-full">{props.error}</div>
+		<div className="flex h-full max-h-full w-full max-w-full flex-row">{props.error}</div>
 	) : (
 		<MemberProvider member={props.data?.member}>
 			<SidebarLayout {...props}>

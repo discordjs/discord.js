@@ -7,26 +7,26 @@ import { CODE_EXAMPLE } from '~/util/constants';
 
 export default function IndexRoute() {
 	return (
-		<div className="flex flex-col place-items-center py-16 px-8 max-w-6xl mx-auto gap-12 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
+		<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
-				<div className="flex flex-col gap-3 max-w-lg lg:mr-8">
+				<div className="flex max-w-lg flex-col gap-3 lg:mr-8">
 					<h1 className="text-3xl font-black leading-tight sm:text-5xl sm:leading-tight">
-						The <span className="relative bg-blurple text-white rounded py-1 px-3">most popular</span> way to build
+						The <span className="bg-blurple relative rounded py-1 px-3 text-white">most popular</span> way to build
 						Discord <br /> bots.
 					</h1>
-					<p className="text-gray-6 leading-normal my-6">
+					<p className="my-6 leading-normal text-neutral-600 dark:text-neutral-400">
 						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
 						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
 						significantly tidier and easier to comprehend.
 					</p>
 					<div className="flex flex-row gap-4">
 						<Link href="/docs" prefetch={false}>
-							<a className="flex place-items-center bg-blurple appearance-none no-underline select-none cursor-pointer h-11 px-6 rounded text-white leading-none text-base font-semibold border-0 transform-gpu active:translate-y-px">
+							<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
 								Docs
 							</a>
 						</Link>
 						<a
-							className="flex place-items-center bg-transparent appearance-none no-underline select-none cursor-pointer h-11 px-4 rounded dark:bg-dark-4 text-black dark:text-white leading-none text-base font-semibold border border-neutral-3 dark:border-dark-1 transform-gpu hover:bg-neutral-1 dark:hover:bg-dark-3 active:bg-neutral-2 dark:active:bg-dark-2 active:translate-y-px"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border border-neutral-300 bg-transparent px-4 text-base font-semibold leading-none text-black no-underline hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 							href="https://discordjs.guide"
 							target="_blank"
 							rel="noopener noreferrer"

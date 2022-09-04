@@ -83,6 +83,7 @@
 		"eslint-config-neon": "^0.1.33",
 		"happy-dom": "^6.0.4",
 		"prettier": "^2.7.1",
+		"prettier-plugin-tailwindcss": "^0.1.13",
 		"typescript": "^4.8.2",
 		"unocss": "^0.45.15",
 		"vercel": "^28.2.2",
