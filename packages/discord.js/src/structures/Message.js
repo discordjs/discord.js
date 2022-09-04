@@ -357,7 +357,8 @@ class Message extends Base {
     } else {
       this.interaction ??= null;
     }
-    if (data.position) {
+
+    if (typeof data.position !== 'undefined') {
       /**
        * The position of the message
        * @type {?number}
