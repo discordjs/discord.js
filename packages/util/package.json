@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"build": "tsup",
-		"test": "vitest run",
+		"test": "vitest run && tsd",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format"
@@ -53,6 +53,7 @@
 		"eslint": "^8.23.0",
 		"eslint-config-neon": "^0.1.31",
 		"prettier": "^2.7.1",
+		"tsd": "^0.23.0",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.2",
 		"vitest": "^0.22.1"
@@ -62,5 +63,8 @@
 	},
 	"publishConfig": {
 		"access": "public"
+	},
+	"tsd": {
+		"directory": "__tests__/types"
 	}
 }
