@@ -1187,10 +1187,10 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildNews }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
 
-  expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
-  expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
+  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch());
+  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch(undefined, {}));
   expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
-
+  
   const channel = guildChannelManager.cache.first()!;
 
   if (channel.isTextBased()) {
