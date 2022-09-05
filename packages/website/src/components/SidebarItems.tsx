@@ -1,4 +1,3 @@
-import { createStyles, Group, Text, NavLink, Box } from '@mantine/core';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type Dispatch, type SetStateAction, useEffect, useState, useMemo } from 'react';
@@ -66,32 +65,6 @@ function resolveIcon(item: keyof GroupedMembers) {
 	}
 }
 
-const useStyles = createStyles((theme) => ({
-	link: {
-		...theme.fn.focusStyles(),
-		fontWeight: 500,
-		display: 'block',
-		width: 'unset',
-		padding: 5,
-		paddingLeft: 31,
-		marginLeft: 25,
-		fontSize: theme.fontSizes.sm,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
-		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
-
-		'&[data-active]': {
-			'&:hover': {
-				color: theme.white,
-			},
-		},
-
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		},
-	},
-}));
-
 export function SidebarItems({
 	members,
 	setOpened,
@@ -101,7 +74,6 @@ export function SidebarItems({
 }) {
 	const router = useRouter();
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
-	const { classes } = useStyles();
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
 	useEffect(() => {
@@ -109,42 +81,32 @@ export function SidebarItems({
 	}, [router.asPath]);
 
 	return (
-		<Box
-			sx={(theme) => ({
-				padding: 12,
-				paddingBottom: 48,
-				[theme.fn.smallerThan('md')]: { paddingBottom: 128 },
-			})}
-		>
+		<div className="flex flex-col gap-3 p-3 pb-32 lg:pb-12">
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
 						{groupItems[group].map((member, index) => (
 							<Link key={index} href={member.path} passHref prefetch={false}>
-								<NavLink
-									className={classes.link}
-									component="a"
+								<a
+									className={`dark:border-dark-100 hover: border-light-800 ml-[25px] border-l p-[5px] pl-[31px] ${
+										asPathWithoutQueryAndAnchor === member.path
+											? 'bg-blurple text-white'
+											: 'hover:bg-light-700 active:bg-light-800'
+									}`}
 									onClick={() => setOpened(false)}
-									label={
-										<Group>
-											<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-												{member.name}
-											</Text>
-											{member.overloadIndex && member.overloadIndex > 1 ? (
-												<Text size="xs" color="dimmed">
-													{member.overloadIndex}
-												</Text>
-											) : null}
-										</Group>
-									}
-									active={asPathWithoutQueryAndAnchor === member.path}
-									variant="filled"
-								/>
+								>
+									<div className="flex flex-row place-items-center gap-2">
+										<span className="truncate">{member.name}</span>
+										{member.overloadIndex && member.overloadIndex > 1 ? (
+											<span className="text-xs">{member.overloadIndex}</span>
+										) : null}
+									</div>
+								</a>
 							</Link>
 						))}
 					</Section>
 				))}
-		</Box>
+		</div>
 	);
 }

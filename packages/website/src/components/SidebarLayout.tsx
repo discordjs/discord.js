@@ -1,5 +1,6 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
 import { useScrollLock, useMediaQuery } from '@mantine/hooks';
+import { Button } from 'ariakit/button';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -144,39 +145,39 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 
 	return (
 		<>
-			<header className="dark:bg-dark-600 dark:border-dark-100 fixed top-0 left-0 z-20 w-full border-b border-neutral-200 bg-neutral-100">
+			<header className="dark:bg-dark-600 dark:border-dark-100 bg-light-600 border-light-800 fixed top-0 left-0 z-20 w-full border-b">
 				<div className="h-18 block px-6">
 					<div className="flex h-full flex-row place-content-between place-items-center">
-						<div
+						<Button
 							className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px lg:hidden"
-							role="button"
 							onClick={() => setOpened((open) => !open)}
 						>
 							<VscMenu size={24} />
-						</div>
+						</Button>
 						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
 						<div className="flex flex-row gap-4">
-							<a
+							<Button
+								as="a"
 								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
 								href="https://github.com/discordjs/discord.js"
 								target="_blank"
 								rel="noopener noreferrer"
 							>
 								<VscGithubInverted size={24} />
-							</a>
-							<div
+							</Button>
+							<Button
 								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
 								role="button"
 								onClick={() => toggleTheme()}
 							>
 								<VscColorMode size={24} />
-							</div>
+							</Button>
 						</div>
 					</div>
 				</div>
 			</header>
 			<nav
-				className={`h-[calc(100vh - 73px)] dark:bg-dark-600 dark:border-dark-100 fixed top-[73px] left-0 bottom-0 z-20 w-full border-r border-neutral-200 bg-white ${
+				className={`h-[calc(100vh - 73px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 w-full border-r bg-white ${
 					opened ? 'block' : 'hidden'
 				} lg:w-76 lg:max-w-76 lg:block`}
 			>
@@ -186,25 +187,23 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 					renderTrackVertical={(props) => (
 						<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
 					)}
-					renderThumbVertical={(props) => (
-						<div {...props} className="dark:bg-dark-100 z-30 rounded bg-neutral-400/75" />
-					)}
+					renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 				>
 					<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
 				</Scrollbars>
 			</nav>
 			<main
-				className={` pt-18 lg:pl-76 ${
-					data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'lg:pr-64' : 'lg:pr-0'
+				className={`pt-18 lg:pl-76 ${
+					data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'xl:pr-64' : ''
 				}`}
 			>
-				<article>
+				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="min-h-[calc(100vh - 50px)] dark:bg-dark-800 relative z-10 bg-white p-6 pb-20 shadow">
 						{children}
 					</div>
 					<div className="h-76 md:h-52" />
 					<footer
-						className={`dark:bg-dark-600 h-76 lg:pl-84 fixed bottom-0 left-0 right-0 bg-neutral-100 md:h-52 md:pl-4 md:pr-16 ${
+						className={`dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 ${
 							data?.member?.kind === 'Class' || data?.member?.kind === 'Interface' ? 'xl:pr-76' : 'xl:pr-16'
 						}`}
 					>

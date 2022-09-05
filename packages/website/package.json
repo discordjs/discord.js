@@ -49,6 +49,7 @@
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@vscode/codicons": "^0.0.32",
+		"ariakit": "^2.0.0-next.40",
 		"minisearch": "^5.0.0",
 		"next": "^12.2.5",
 		"next-mdx-remote": "^4.1.0",

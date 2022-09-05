@@ -1,3 +1,4 @@
+import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { MouseEvent } from 'react';
@@ -22,8 +23,9 @@ export default function PackagesRoute() {
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a package:</h1>
 				{PACKAGES.map((pkg) => (
-					<div
+					<Button
 						key={pkg}
+						as="div"
 						className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 						role="link"
 						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
@@ -36,7 +38,7 @@ export default function PackagesRoute() {
 								</div>
 								<Link href={`/docs/packages/${pkg}`} prefetch={false}>
 									<a
-										className="bg-blurple flex h-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white no-underline active:translate-y-px"
+										className="bg-blurple flex h-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white active:translate-y-px"
 										onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}
 									>
 										Select version
@@ -45,7 +47,7 @@ export default function PackagesRoute() {
 							</div>
 							<VscArrowRight size={20} />
 						</div>
-					</div>
+					</Button>
 				))}
 			</div>
 		</div>

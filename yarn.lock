@@ -1981,6 +1981,7 @@ __metadata:
     "@vitejs/plugin-react": ^2.0.1
     "@vitest/coverage-c8": ^0.23.0
     "@vscode/codicons": ^0.0.32
+    ariakit: ^2.0.0-next.40
     concurrently: ^7.3.0
     eslint: ^8.23.0
     eslint-config-neon: ^0.1.33
@@ -2302,12 +2303,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@floating-ui/core@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@floating-ui/core@npm:1.0.1"
+  checksum: c8a5f1a491788e5bebfe747e9372df2c7cbee0d8790ddf95e25149ac91ccf1a2cca8f768029826cfd3d687617c1d0f3241b97f1648bdf2a28d421f39e79c2eee
+  languageName: node
+  linkType: hard
+
 "@floating-ui/dom@npm:^0.5.3":
   version: 0.5.4
   resolution: "@floating-ui/dom@npm:0.5.4"
   dependencies:
     "@floating-ui/core": ^0.7.3
   checksum: 9f9d8a51a828c6be5f187204aa6d293c6c9ef70d51dcc5891a4d85683745fceebf79ff8826d0f75ae41b45c3b138367d339756f27f41be87a8770742ebc0de42
+  languageName: node
+  linkType: hard
+
+"@floating-ui/dom@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@floating-ui/dom@npm:1.0.1"
+  dependencies:
+    "@floating-ui/core": ^1.0.1
+  checksum: 617d5b45d6454e9f2b5bba26d0181d1c5863c92960b8e867b9539763291dee0506077d338df805c116ea73330900e657da65af411df85b8ba99e8d4e5fc4e745
   languageName: node
   linkType: hard
 
@@ -4872,6 +4889,28 @@ __metadata:
   version: 5.0.2
   resolution: "aria-query@npm:5.0.2"
   checksum: 2ecb77a64b9bbb030f5267b8672042b9559bdc507348d7c5efc14a6c180b06704c63481b162913f0466391837569b6d84f93ab18d73629e7bfa34c4f927c1fbc
+  languageName: node
+  linkType: hard
+
+"ariakit-utils@npm:0.17.0-next.26":
+  version: 0.17.0-next.26
+  resolution: "ariakit-utils@npm:0.17.0-next.26"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+  checksum: dc41a324c74561dfc6afa6037ac4227b06f73a16336d670285392d630bab42d259269ca1afe1c05cc3d5b2bdbc941a518053ba7427edec60080bd8bb3dffd226
+  languageName: node
+  linkType: hard
+
+"ariakit@npm:^2.0.0-next.40":
+  version: 2.0.0-next.40
+  resolution: "ariakit@npm:2.0.0-next.40"
+  dependencies:
+    "@floating-ui/dom": ^1.0.0
+    ariakit-utils: 0.17.0-next.26
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: 94e574e57c9d67e150f116c19b283a60c8753ddae8055d7f2c893be914884de6f4438e97e6595a460ab8c119d1bad658228fe20dac045716b0f5020bd48fe518
   languageName: node
   linkType: hard
 

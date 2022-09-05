@@ -14,7 +14,7 @@ export default function IndexRoute() {
 						The <span className="bg-blurple relative rounded py-1 px-3 text-white">most popular</span> way to build
 						Discord <br /> bots.
 					</h1>
-					<p className="my-6 leading-normal text-neutral-600 dark:text-neutral-400">
+					<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">
 						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
 						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
 						significantly tidier and easier to comprehend.
@@ -26,7 +26,7 @@ export default function IndexRoute() {
 							</a>
 						</Link>
 						<a
-							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border border-neutral-300 bg-transparent px-4 text-base font-semibold leading-none text-black no-underline hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline active:translate-y-px dark:text-white"
 							href="https://discordjs.guide"
 							target="_blank"
 							rel="noopener noreferrer"

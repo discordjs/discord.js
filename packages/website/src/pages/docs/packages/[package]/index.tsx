@@ -1,3 +1,4 @@
+import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowRight, VscVersions } from 'react-icons/vsc';
@@ -68,7 +69,10 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
 					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<div className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white">
+						<Button
+							as="div"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+						>
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />
@@ -76,7 +80,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 								</div>
 								<VscArrowRight size={20} />
 							</div>
-						</div>
+						</Button>
 					</Link>
 				)) ?? null}
 			</div>
