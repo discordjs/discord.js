@@ -128,7 +128,6 @@ class MessagePayload {
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
       nonce = this.options.nonce;
-      // eslint-disable-next-line max-len
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
         throw new RangeError(ErrorCodes.MessageNonceType);
       }
