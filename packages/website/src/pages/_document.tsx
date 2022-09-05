@@ -17,7 +17,7 @@ export default class _Document extends Document {
 					<link rel="manifest" href="/site.webmanifest" />
 					<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#090a16" />
 
-					<meta name="color-scheme" content="dark light" />
+					<meta name="color-scheme" content="light dark" />
 					<meta name="apple-mobile-web-app-title" content="discord.js" />
 					<meta name="application-name" content="discord.js" />
 					<meta name="msapplication-TileColor" content="#090a16" />

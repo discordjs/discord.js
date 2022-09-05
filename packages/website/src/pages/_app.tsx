@@ -87,6 +87,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 					light: 'light',
 					dark: 'dark',
 				}}
+				disableTransitionOnChange
 			>
 				<MantineProvider
 					theme={{
