@@ -67,7 +67,9 @@ export class SlashCommandBuilder {
 	/**
 	 * Returns the final data that should be sent to Discord.
 	 *
-	 * **Note:** Calling this function will validate required properties based on their conditions.
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
 	 */
 	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
@@ -84,8 +86,8 @@ export class SlashCommandBuilder {
 	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.
 	 *
-	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
-	 *
+	 * @remarks
+	 * If set to `false`, you will have to later `PUT` the permissions for this command.
 	 * @param value - Whether or not to enable this command by default
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
@@ -102,8 +104,8 @@ export class SlashCommandBuilder {
 	/**
 	 * Sets the default permissions a member should have in order to run the command.
 	 *
-	 * **Note:** You can set this to `'0'` to disable the command by default.
-	 *
+	 * @remarks
+	 * You can set this to `'0'` to disable the command by default.
 	 * @param permissions - The permissions bit field to set
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
