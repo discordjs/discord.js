@@ -20,7 +20,6 @@ describe('Button Components', () => {
 		});
 
 		test('GIVEN invalid label THEN validator does throw', () => {
-			expect(() => buttonLabelValidator.parse(null)).toThrowError();
 			expect(() => buttonLabelValidator.parse('')).toThrowError();
 
 			expect(() => buttonLabelValidator.parse(longStr)).toThrowError();
