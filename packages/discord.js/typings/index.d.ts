@@ -616,7 +616,7 @@ export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 export class ButtonBuilder extends BuilderButtonComponent {
   public constructor(data?: Partial<ButtonComponentData> | Partial<APIButtonComponent>);
   public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
-  public override setEmoji(emoji: ComponentEmojiResolvable): this;
+  public override setEmoji(emoji: ComponentEmojiResolvable | null): this;
 }
 
 export class SelectMenuBuilder extends BuilderSelectMenuComponent {
@@ -635,7 +635,7 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
-  public override setEmoji(emoji: ComponentEmojiResolvable): this;
+  public override setEmoji(emoji: ComponentEmojiResolvable | null): this;
   public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): SelectMenuOptionBuilder;
 }
 
