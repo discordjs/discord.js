@@ -3233,7 +3233,10 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   ): Promise<Webhook>;
   public edit(channel: GuildChannelResolvable, data: ChannelData, reason?: string): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildBasedChannel | null>;
-  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>;
+  public fetch(
+    id?: undefined,
+    options?: BaseFetchOptions,
+  ): Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>;
   public fetchWebhooks(channel: GuildChannelResolvable): Promise<Collection<Snowflake, Webhook>>;
   public setPosition(
     channel: GuildChannelResolvable,
