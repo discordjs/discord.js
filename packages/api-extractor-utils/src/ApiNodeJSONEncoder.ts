@@ -1,3 +1,4 @@
+import type { ApiReturnTypeMixin } from '@microsoft/api-extractor-model';
 import {
 	type ApiModel,
 	ApiDeclaredItem,
@@ -140,6 +141,8 @@ export interface ApiConstructorJSON extends ApiItemJSON, ApiParameterListJSON {
 	protected: boolean;
 }
 
+export type FunctionLike = ApiDeclaredItem & ApiParameterListMixin & ApiReturnTypeMixin & ApiTypeParameterListMixin;
+
 export class ApiNodeJSONEncoder {
 	public static encode(model: ApiModel, node: ApiItem, version: string) {
 		if (!(node instanceof ApiDeclaredItem)) {
@@ -252,7 +255,7 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeFunction(model: ApiModel, item: ApiFunction, version: string): ApiFunctionJSON {
+	public static encodeFunction(model: ApiModel, item: FunctionLike, version: string): ApiFunctionJSON {
 		return {
 			...this.encodeItem(model, item, version),
 			...this.encodeParameterList(model, item, version),

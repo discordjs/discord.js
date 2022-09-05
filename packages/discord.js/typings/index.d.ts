@@ -1450,6 +1450,7 @@ export class Integration extends Base {
   public role: Role | null;
   public enableEmoticons: boolean | null;
   public get roles(): Collection<Snowflake, Role>;
+  public scopes: OAuth2Scopes[];
   public get syncedAt(): Date | null;
   public syncedTimestamp: number | null;
   public syncing: boolean | null;
@@ -2551,7 +2552,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
-  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message | null>;
+  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message<true> | null>;
   public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,

@@ -1,7 +1,3 @@
 {
-	"extends": "../../.eslintrc.json",
-	"plugins": ["eslint-plugin-tsdoc"],
-	"rules": {
-		"tsdoc/syntax": "warn"
-	}
+	"extends": "../../.eslintrc.json"
 }

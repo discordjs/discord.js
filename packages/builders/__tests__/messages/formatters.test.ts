@@ -2,6 +2,7 @@
 import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
+	chatInputApplicationCommandMention,
 	blockQuote,
 	bold,
 	channelLink,
@@ -135,6 +136,26 @@ describe('Message formatters', () => {
 		describe('roleMention', () => {
 			test('GIVEN roleId THEN returns "<&[roleId]>"', () => {
 				expect(roleMention('815434166602170409')).toEqual('<@&815434166602170409>');
+			});
+		});
+
+		describe('chatInputApplicationCommandMention', () => {
+			test('GIVEN commandName and commandId THEN returns "</[commandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', '815434166602170409')).toEqual(
+					'</airhorn:815434166602170409>',
+				);
+			});
+
+			test('GIVEN commandName, subcommandName, and commandId THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', 'sub', '815434166602170409')).toEqual(
+					'</airhorn sub:815434166602170409>',
+				);
+			});
+
+			test('GIVEN commandName, subcommandGroupName, subcommandName, and commandId THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', 'group', 'sub', '815434166602170409')).toEqual(
+					'</airhorn group sub:815434166602170409>',
+				);
 			});
 		});
 	});
