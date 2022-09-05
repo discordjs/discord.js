@@ -16,11 +16,11 @@ const longStr =
 describe('Button Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid label THEN validator does not throw', () => {
+			expect(() => buttonLabelValidator.parse(null)).not.toThrowError();
 			expect(() => buttonLabelValidator.parse('foobar')).not.toThrowError();
 		});
 
 		test('GIVEN invalid label THEN validator does throw', () => {
-			expect(() => buttonLabelValidator.parse(null)).not.toThrowError();
 			expect(() => buttonLabelValidator.parse('')).toThrowError();
 
 			expect(() => buttonLabelValidator.parse(longStr)).toThrowError();
