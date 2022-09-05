@@ -32,7 +32,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					{data.deprecated ||
 					(data.kind === 'Method' && method.protected) ||
 					(data.kind === 'Method' && method.static) ? (
-						<div className="flex flex-row gap-2">
+						<div className="flex flex-row flex-wrap gap-1">
 							{data.deprecated ? (
 								<Badge variant="filled" color="red">
 									Deprecated
@@ -42,7 +42,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 							{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
 						</div>
 					) : null}
-					<div className="flex flex-row gap-2">
+					<div className="flex flex-row flex-wrap gap-1">
 						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">{`${getShorthandName(data)}`}</Title>
 						<Title order={4}>:</Title>
 						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
@@ -51,8 +51,8 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					</div>
 				</div>
 			</div>
-			<div className={`mb-4 ${data.summary || data.parameters.length ? 'block' : 'hidden'}`}>
-				<div className="flex flex-col gap-4">
+			{data.summary || data.parameters.length ? (
+				<div className={`mb-4 flex flex-col gap-4`}>
 					{data.deprecated ? <TSDoc node={data.deprecated} /> : null}
 					{data.summary ? <TSDoc node={data.summary} /> : null}
 					{data.remarks ? <TSDoc node={data.remarks} /> : null}
@@ -60,7 +60,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
 					{data.inheritanceData ? <InheritanceText data={data.inheritanceData} /> : null}
 				</div>
-			</div>
+			) : null}
 		</div>
 	);
 }

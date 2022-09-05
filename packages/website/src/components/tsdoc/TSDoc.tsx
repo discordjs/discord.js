@@ -7,7 +7,7 @@ import type {
 	DocBlockJSON,
 	DocCommentJSON,
 } from '@discordjs/api-extractor-utils';
-import { Anchor, Box, Code } from '@mantine/core';
+import { Anchor, Code } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
@@ -93,29 +93,32 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 			case DocNodeKind.Comment: {
 				const comment = node as DocCommentJSON;
+
+				if (!comment.customBlocks.length) {
+					return null;
+				}
+
 				// Cheat a bit by finding out how many comments we have beforehand...
 				numberOfExamples = comment.customBlocks.filter(
 					(block) => block.tag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
 				).length;
 
-				return <Box key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</Box>;
+				return <div key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
 			}
 
 			default:
 				// console.log(`Captured unknown node kind: ${node.kind}`);
-				break;
+				return null;
 		}
-
-		return null;
 	}, []);
 
 	return (
-		<Box>
+		<>
 			{node.kind === 'Paragraph' || node.kind === 'Section' ? (
 				<>{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}</>
 			) : (
 				createNode(node)
 			)}
-		</Box>
+		</>
 	);
 }

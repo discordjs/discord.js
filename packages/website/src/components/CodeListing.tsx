@@ -35,14 +35,14 @@ export function CodeListing({
 }>) {
 	return (
 		<div id={name} className="scroll-mt-30 flex flex-col gap-2">
-			<div className={`md:-ml-8.5 flex flex-col place-items-center gap-2 md:flex-row`}>
+			<div className={`md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2`}>
 				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 					<ActionIcon component="a" href={`#${name}`} variant="transparent">
 						<FiLink size={20} />
 					</ActionIcon>
 				</MediaQuery>
 				{deprecation || readonly || optional ? (
-					<div className="flex flex-row gap-2">
+					<div className="flex flex-row flex-wrap gap-1">
 						{deprecation ? (
 							<Badge variant="filled" color="red">
 								Deprecated
@@ -52,7 +52,7 @@ export function CodeListing({
 						{optional ? <Badge variant="filled">Optional</Badge> : null}
 					</div>
 				) : null}
-				<div className="flex flex-row gap-2">
+				<div className="flex flex-row flex-wrap gap-1">
 					<Title order={4} className="font-mono">
 						{name}
 						{optional ? '?' : ''}
@@ -63,15 +63,15 @@ export function CodeListing({
 					</Title>
 				</div>
 			</div>
-			<div>
-				<div>
+			{summary || inheritanceData ? (
+				<div className="flex flex-col gap-4">
 					{deprecation ? <TSDoc node={deprecation} /> : null}
-					{summary && <TSDoc node={summary} />}
-					{comment && <TSDoc node={comment} />}
+					{summary ? <TSDoc node={summary} /> : null}
+					{comment ? <TSDoc node={comment} /> : null}
 					{inheritanceData ? <InheritanceText data={inheritanceData} /> : null}
 					{children}
 				</div>
-			</div>
+			) : null}
 		</div>
 	);
 }
