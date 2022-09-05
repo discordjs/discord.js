@@ -7,7 +7,7 @@ import type {
 	DocBlockJSON,
 	DocCommentJSON,
 } from '@discordjs/api-extractor-utils';
-import { Anchor, Box, Code, Text } from '@mantine/core';
+import { Anchor, Box, Code } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
@@ -22,15 +22,15 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return (
-					<Text key={idx} span style={{ wordBreak: 'break-word' }}>
+					<span key={idx} className="break-words">
 						{(node as DocPlainTextJSON).text}
-					</Text>
+					</span>
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<Text key={idx} inline style={{ wordBreak: 'break-word' }}>
+					<span key={idx} className="break-words leading-none">
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
-					</Text>
+					</span>
 				);
 			case DocNodeKind.SoftBreak:
 				return <Fragment key={idx} />;
@@ -63,7 +63,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<Code key={idx} sx={{ display: 'inline' }} className="text-sm font-mono">
+					<Code key={idx} sx={{ display: 'inline' }} className="font-mono text-sm">
 						{code}
 					</Code>
 				);

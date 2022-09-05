@@ -36,7 +36,7 @@ export function Section({
 				</div>
 			</Disclosure>
 			<DisclosureContent state={disclosure}>
-				{padded ? <div className={`py-5 ${dense ? 'mx-2 px-0' : 'px-4.5 mx-6'}`}>{children}</div> : children}
+				{padded ? <div className={`py-5 ${dense ? 'mx-2 px-0' : 'px-4.5 mx-6.5'}`}>{children}</div> : children}
 			</DisclosureContent>
 		</div>
 	);

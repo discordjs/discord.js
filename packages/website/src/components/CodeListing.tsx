@@ -1,6 +1,5 @@
 import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
-import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { ActionIcon, Badge, MediaQuery, Title } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -11,19 +10,6 @@ export enum CodeListingSeparatorType {
 	Type = ':',
 	Value = '=',
 }
-
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
-		alignItems: 'center',
-		gap: 16,
-
-		[theme.fn.smallerThan('sm')]: {
-			flexDirection: 'column',
-			alignItems: 'unset',
-		},
-	},
-}));
 
 export function CodeListing({
 	name,
@@ -47,19 +33,16 @@ export function CodeListing({
 	summary?: ApiItemJSON['summary'];
 	typeTokens: TokenDocumentation[];
 }>) {
-	const { classes } = useStyles();
-	const matches = useMediaQuery('(max-width: 768px)');
-
 	return (
-		<Stack id={name} className="scroll-mt-30" spacing="xs">
-			<Box className={classes.outer} ml={matches ? 0 : -45}>
+		<div id={name} className="scroll-mt-30 flex flex-col gap-2">
+			<div className={`md:-ml-8.5 flex flex-col place-items-center gap-2 md:flex-row`}>
 				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
 					<ActionIcon component="a" href={`#${name}`} variant="transparent">
 						<FiLink size={20} />
 					</ActionIcon>
 				</MediaQuery>
 				{deprecation || readonly || optional ? (
-					<Group spacing={10} noWrap>
+					<div className="flex flex-row gap-2">
 						{deprecation ? (
 							<Badge variant="filled" color="red">
 								Deprecated
@@ -67,9 +50,9 @@ export function CodeListing({
 						) : null}
 						{readonly ? <Badge variant="filled">Readonly</Badge> : null}
 						{optional ? <Badge variant="filled">Optional</Badge> : null}
-					</Group>
+					</div>
 				) : null}
-				<Group spacing={10}>
+				<div className="flex flex-row gap-2">
 					<Title order={4} className="font-mono">
 						{name}
 						{optional ? '?' : ''}
@@ -78,17 +61,17 @@ export function CodeListing({
 					<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
 						<HyperlinkedText tokens={typeTokens} />
 					</Title>
-				</Group>
-			</Box>
-			<Group>
-				<Stack>
+				</div>
+			</div>
+			<div>
+				<div>
 					{deprecation ? <TSDoc node={deprecation} /> : null}
 					{summary && <TSDoc node={summary} />}
 					{comment && <TSDoc node={comment} />}
 					{inheritanceData ? <InheritanceText data={inheritanceData} /> : null}
 					{children}
-				</Stack>
-			</Group>
-		</Stack>
+				</div>
+			</div>
+		</div>
 	);
 }
