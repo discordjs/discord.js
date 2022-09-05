@@ -489,7 +489,6 @@ export class Networking extends EventEmitter {
 		const state = this.state;
 		if (state.code !== NetworkingStatusCode.Ready) return;
 		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData);
-		// eslint-disable-next-line consistent-return
 		return state.preparedPacket;
 	}
 

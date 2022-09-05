@@ -101,7 +101,6 @@ export class VoiceReceiver {
 		// Open packet
 		const decrypted = methods.open(buffer.slice(12, end), nonce, secretKey);
 		if (!decrypted) return;
-		// eslint-disable-next-line consistent-return
 		return Buffer.from(decrypted);
 	}
 
@@ -124,7 +123,6 @@ export class VoiceReceiver {
 			packet = packet.subarray(4 + 4 * headerExtensionLength);
 		}
 
-		// eslint-disable-next-line consistent-return
 		return packet;
 	}
 

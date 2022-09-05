@@ -84,7 +84,6 @@ export class DiscordAPIError extends Error {
 		return error.error_description ?? 'No Description';
 	}
 
-	// eslint-disable-next-line consistent-return
 	private static *flattenDiscordError(obj: DiscordError, key = ''): IterableIterator<string> {
 		if (isErrorResponse(obj)) {
 			return yield `${key.length ? `${key}[${obj.code}]` : `${obj.code}`}: ${obj.message}`.trim();
