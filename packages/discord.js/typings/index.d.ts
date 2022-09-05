@@ -483,7 +483,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
 }
 
 export class InteractionResponse<Cached extends boolean = boolean> {
-  private constructor(interaction: Interaction, id?: Snowflake);
+  private constructor(interaction: Exclude<Interaction, AutocompleteInteraction>, id?: Snowflake);
   public interaction: Interaction<WrapBooleanCache<Cached>>;
   public client: Client;
   public id: Snowflake;
