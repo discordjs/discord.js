@@ -57,8 +57,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					} else {
 						const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 						versions = await response.json();
+						versions = versions.slice(-2);
 
-						for (const version of versions.slice(-2)) {
+						for (const version of versions) {
 							const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
 							data = [...data, await res.json()];
 						}
