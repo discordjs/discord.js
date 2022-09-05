@@ -47,7 +47,7 @@ export function TableOfContentItems({
 	);
 
 	return (
-		<div className="flex flex-col break-all pb-8">
+		<div className="flex flex-col break-all p-3 pb-8">
 			<div className="mt-4 ml-2 flex flex-row gap-2">
 				<VscListSelection size={25} />
 				<span className="font-semibold">Contents</span>

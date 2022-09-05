@@ -60,6 +60,7 @@
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.4.0",
 		"react-syntax-highlighter": "^15.5.0",
+		"react-use": "^17.4.0",
 		"rehype-ignore": "^1.0.1",
 		"rehype-pretty-code": "^0.3.2",
 		"rehype-raw": "^6.1.1",

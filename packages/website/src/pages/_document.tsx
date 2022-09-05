@@ -23,10 +23,12 @@ export default class _Document extends Document {
 					<meta name="msapplication-TileColor" content="#090a16" />
 					<meta key="description" name="description" content={DESCRIPTION} />
 					<meta property="og:site_name" content="discord.js" />
+					<meta property="og:type" content="website" />
 					<meta key="og_title" property="og:title" content="discord.js" />
 					<meta key="og_description" name="og:description" content={DESCRIPTION} />
 					<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
 					<meta name="twitter:card" content="summary_large_image" />
+					<meta name="twitter:creator" content="@iCrawlToGo" />
 				</Head>
 				<body className="dark:bg-dark-800 bg-white">
 					<Main />

@@ -13,7 +13,7 @@
 }
 
 html {
-	scrollbar-gutter: auto;
+	scrollbar-gutter: auto !important;
 }
 
 html,

@@ -1,5 +1,5 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import { useScrollLock, useMediaQuery } from '@mantine/hooks';
+import { useMediaQuery } from '@mantine/hooks';
 import { Button } from 'ariakit/button';
 import Image from 'next/future/image';
 import Link from 'next/link';
@@ -64,7 +64,6 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 	// );
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
-	const [, setScrollLocked] = useScrollLock();
 	const matches = useMediaQuery('(min-width: 992px)', true, { getInitialValueInEffect: true });
 	const [opened, setOpened] = useState(false);
 	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
@@ -77,17 +76,6 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 
 		return () => setOpened(false);
 	}, [matches]);
-
-	useEffect(() => {
-		if (opened) {
-			setScrollLocked(true);
-		} else {
-			setScrollLocked(false);
-		}
-
-		return () => setScrollLocked(false);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [opened]);
 
 	useEffect(() => {
 		setOpened(false);
@@ -184,6 +172,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 				<Scrollbars
 					universal
 					autoHide
+					hideTracksWhenNotNeeded
 					renderTrackVertical={(props) => (
 						<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
 					)}

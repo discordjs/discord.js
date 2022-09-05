@@ -5,10 +5,11 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
-import { Group, Stack, Title, Text, Box, MediaQuery, Aside, ScrollArea, Skeleton, Divider } from '@mantine/core';
+import { Title, Text, MediaQuery, Skeleton, Divider } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { Fragment, type PropsWithChildren } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import {
 	VscSymbolClass,
 	VscSymbolMethod,
@@ -66,14 +67,14 @@ export function DocContainer({
 	const matches = useMediaQuery('(max-width: 768px)');
 
 	return (
-		<Group align="flex-start" noWrap>
-			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
+		<>
+			<div className="flex flex-col gap-4">
 				<Skeleton visible={router.isFallback} radius="sm">
 					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
-						<Group>
+						<div className="flex flex-row place-items-center gap-2">
 							{generateIcon(kind)}
 							{name}
-						</Group>
+						</div>
 					</Title>
 				</Skeleton>
 
@@ -85,40 +86,38 @@ export function DocContainer({
 				</Skeleton>
 
 				<Skeleton visible={router.isFallback} radius="sm">
-					<Box pb="xs">
-						<SyntaxHighlighter code={excerpt} />
-					</Box>
+					<SyntaxHighlighter code={excerpt} />
 				</Skeleton>
 
 				{extendsTokens?.length ? (
-					<Group pb="xs" noWrap>
+					<div className="flex flex-row place-items-center gap-4">
 						<Title order={3} ml="xs">
 							Extends
 						</Title>
-						<Text sx={{ wordBreak: 'break-all' }} className="font-mono">
+						<span className="break-all font-mono">
 							<HyperlinkedText tokens={extendsTokens} />
-						</Text>
-					</Group>
+						</span>
+					</div>
 				) : null}
 
 				{implementsTokens?.length ? (
-					<Group pb="xs" noWrap>
+					<div className="flex flex-row place-items-center gap-4">
 						<Title order={3} ml="xs">
 							Implements
 						</Title>
-						<Text sx={{ wordBreak: 'break-all' }} className="font-mono">
+						<span className="break-all font-mono">
 							{implementsTokens.map((token, idx) => (
 								<Fragment key={idx}>
 									<HyperlinkedText tokens={token} />
 									{idx < implementsTokens.length - 1 ? ', ' : ''}
 								</Fragment>
 							))}
-						</Text>
-					</Group>
+						</span>
+					</div>
 				) : null}
 
 				<Skeleton visible={router.isFallback} radius="sm">
-					<Stack>
+					<div className="flex flex-col gap-4">
 						{typeParams?.length ? (
 							<Section
 								title="Type Parameters"
@@ -130,24 +129,27 @@ export function DocContainer({
 								<TypeParamTable data={typeParams} />
 							</Section>
 						) : null}
-						<Stack>{children}</Stack>
-					</Stack>
+						{children}
+					</div>
 				</Skeleton>
-			</Stack>
+			</div>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
 				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-					<Aside
-						className="h-[calc(100vh - 70px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[70px] right-0 bottom-0 z-20 border bg-white"
-						sx={{ position: 'fixed', top: 70, height: 'calc(100vh - 72px)' }}
-						hiddenBreakpoint="lg"
-						width={{ lg: 256 }}
-					>
-						<ScrollArea p="sm" offsetScrollbars>
+					<aside className="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 lg:block">
+						<Scrollbars
+							universal
+							autoHide
+							hideTracksWhenNotNeeded
+							renderTrackVertical={(props) => (
+								<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+							)}
+							renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+						>
 							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
-						</ScrollArea>
-					</Aside>
+						</Scrollbars>
+					</aside>
 				</MediaQuery>
 			) : null}
-		</Group>
+		</>
 	);
 }

@@ -119,10 +119,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 						className="!h-screen"
 						universal
 						autoHide
+						hideTracksWhenNotNeeded
 						renderTrackVertical={(props) => (
 							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
 						)}
-						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 z-30 rounded bg-neutral-400" />}
+						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 z-30 rounded bg-neutral-300" />}
 					>
 						<Component {...pageProps} />
 					</Scrollbars>
