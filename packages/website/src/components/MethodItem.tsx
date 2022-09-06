@@ -1,53 +1,64 @@
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
-import { ActionIcon, Badge, MediaQuery, Title } from '@mantine/core';
+import { useCallback, useMemo } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
 import { TSDoc } from './tsdoc/TSDoc';
 
-function getShorthandName(data: ApiMethodJSON | ApiMethodSignatureJSON) {
-	return `${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
-		if (index === 0) {
-			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
-		}
-
-		return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
-	}, '')})`;
-}
-
 export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
 	const method = data as ApiMethodJSON;
-	const key = `${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`;
+	const key = useMemo(
+		() => `${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`,
+		[data.name, data.overloadIndex],
+	);
+
+	const getShorthandName = useCallback(
+		(data: ApiMethodJSON | ApiMethodSignatureJSON) =>
+			`${data.name}${data.optional ? '?' : ''}(${data.parameters.reduce((prev, cur, index) => {
+				if (index === 0) {
+					return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
+				}
+
+				return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
+			}, '')})`,
+		[],
+	);
 
 	return (
 		<div id={key} className="scroll-mt-30 flex flex-col gap-2">
 			<div className="flex-flex-col">
 				<div className={`flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center`}>
-					<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-						<ActionIcon component="a" href={`#${key}`} variant="transparent" color="dark">
-							<FiLink size={20} />
-						</ActionIcon>
-					</MediaQuery>
+					<a className="hidden md:inline-block" href={`#${key}`}>
+						<FiLink size={20} />
+					</a>
 					{data.deprecated ||
 					(data.kind === 'Method' && method.protected) ||
 					(data.kind === 'Method' && method.static) ? (
 						<div className="flex flex-row flex-wrap gap-1">
 							{data.deprecated ? (
-								<Badge variant="filled" color="red">
+								<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 									Deprecated
-								</Badge>
+								</div>
 							) : null}
-							{data.kind === 'Method' && method.protected ? <Badge variant="filled">Protected</Badge> : null}
-							{data.kind === 'Method' && method.static ? <Badge variant="filled">Static</Badge> : null}
+							{data.kind === 'Method' && method.protected ? (
+								<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+									Protected
+								</div>
+							) : null}
+							{data.kind === 'Method' && method.static ? (
+								<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+									Static
+								</div>
+							) : null}
 						</div>
 					) : null}
 					<div className="flex flex-row flex-wrap gap-1">
-						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">{`${getShorthandName(data)}`}</Title>
-						<Title order={4}>:</Title>
-						<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
+						<h4 className="break-all font-mono text-lg font-bold">{`${getShorthandName(data)}`}</h4>
+						<h4 className="font-mono text-lg font-bold">:</h4>
+						<h4 className="break-all font-mono text-lg font-bold">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
-						</Title>
+						</h4>
 					</div>
 				</div>
 			</div>

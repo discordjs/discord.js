@@ -1,5 +1,6 @@
 import type { TypeParameterData } from '@discordjs/api-extractor-utils';
 import { ScrollArea } from '@mantine/core';
+import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -11,13 +12,17 @@ const rowElements = {
 };
 
 export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
-	const rows = data.map((typeParam) => ({
-		Name: typeParam.name,
-		Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
-		Optional: typeParam.optional ? 'Yes' : 'No',
-		Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
-		Description: typeParam.commentBlock ? <TSDoc node={typeParam.commentBlock} /> : 'None',
-	}));
+	const rows = useMemo(
+		() =>
+			data.map((typeParam) => ({
+				Name: typeParam.name,
+				Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
+				Optional: typeParam.optional ? 'Yes' : 'No',
+				Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
+				Description: typeParam.commentBlock ? <TSDoc node={typeParam.commentBlock} /> : 'None',
+			})),
+		[data],
+	);
 
 	return (
 		<ScrollArea pb="xs" offsetScrollbars>

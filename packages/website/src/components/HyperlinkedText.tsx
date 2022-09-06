@@ -1,5 +1,4 @@
 import type { TokenDocumentation } from '@discordjs/api-extractor-utils';
-import { Anchor, Text } from '@mantine/core';
 import Link from 'next/link';
 
 export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
@@ -8,19 +7,13 @@ export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
 			{tokens.map((token, idx) => {
 				if (token.path) {
 					return (
-						<Link key={idx} href={token.path} passHref prefetch={false}>
-							<Anchor component="a" inherit>
-								{token.text}
-							</Anchor>
+						<Link key={idx} href={token.path} prefetch={false}>
+							<a className="text-blurple">{token.text}</a>
 						</Link>
 					);
 				}
 
-				return (
-					<Text key={idx} span unstyled>
-						{token.text}
-					</Text>
-				);
+				return <span key={idx}>{token.text}</span>;
 			})}
 		</>
 	);

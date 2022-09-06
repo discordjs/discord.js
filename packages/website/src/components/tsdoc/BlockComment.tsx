@@ -1,14 +1,14 @@
-import { Alert, Box, Title, Text } from '@mantine/core';
+import { Alert } from '@mantine/core';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { PropsWithChildren } from 'react';
 import { VscWarning } from 'react-icons/vsc';
 
 export function Block({ children, title }: PropsWithChildren<{ title: string }>) {
 	return (
-		<Box>
-			<Title order={5}>{title}</Title>
+		<div className="flex flex-col gap-2">
+			<h5 className="font-bold">{title}</h5>
 			{children}
-		</Box>
+		</div>
 	);
 }
 
@@ -54,7 +54,7 @@ export function BlockComment({
 			return <DefaultValueBlock>{children}</DefaultValueBlock>;
 		case StandardTags.typeParam.tagNameWithUpperCase:
 		case StandardTags.param.tagNameWithUpperCase:
-			return <Text>{children}</Text>;
+			return <span>{children}</span>;
 		default: // TODO: Support more blocks in the future.
 			return <>{children}</>;
 	}

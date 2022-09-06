@@ -54,7 +54,7 @@ export function TableOfContentItems({
 			</div>
 			<div className="mt-5.5 ml-2 flex flex-col gap-2">
 				{propertyItems.length ? (
-					<div>
+					<div className="flex flex-col">
 						<div className="flex flex-row place-items-center gap-4">
 							<VscSymbolProperty size={20} />
 							<div className="p-3 pl-0">
@@ -65,7 +65,7 @@ export function TableOfContentItems({
 					</div>
 				) : null}
 				{methodItems.length ? (
-					<div>
+					<div className="flex flex-col">
 						<div className="flex flex-row place-items-center gap-4">
 							<VscSymbolMethod size={20} />
 							<div className="p-3 pl-0">

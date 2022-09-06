@@ -1,12 +1,11 @@
 import type { ApiPropertyItemJSON } from '@discordjs/api-extractor-utils';
-import { Divider, Stack } from '@mantine/core';
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { CodeListing } from './CodeListing';
 
 export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
-	return (
-		<Stack>
-			{data.map((prop) => (
+	const propertyItems = useMemo(
+		() =>
+			data.map((prop) => (
 				<Fragment key={prop.name}>
 					<CodeListing
 						name={prop.name}
@@ -18,9 +17,11 @@ export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
 						deprecation={prop.deprecated}
 						inheritanceData={prop.inheritanceData}
 					/>
-					<Divider size="md" />
+					<div className="border-light-900 -mx-10 border-t-2" />
 				</Fragment>
-			))}
-		</Stack>
+			)),
+		[data],
 	);
+
+	return <div className="flex flex-col gap-4">{propertyItems}</div>;
 }

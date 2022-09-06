@@ -1,5 +1,4 @@
 import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
-import { ActionIcon, Badge, MediaQuery, Title } from '@mantine/core';
 import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -36,31 +35,37 @@ export function CodeListing({
 	return (
 		<div id={name} className="scroll-mt-30 flex flex-col gap-2">
 			<div className={`md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2`}>
-				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-					<ActionIcon component="a" href={`#${name}`} variant="transparent">
-						<FiLink size={20} />
-					</ActionIcon>
-				</MediaQuery>
+				<a className="hidden md:inline-block" href={`#${name}`}>
+					<FiLink size={20} />
+				</a>
 				{deprecation || readonly || optional ? (
 					<div className="flex flex-row flex-wrap gap-1">
 						{deprecation ? (
-							<Badge variant="filled" color="red">
+							<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated
-							</Badge>
+							</div>
 						) : null}
-						{readonly ? <Badge variant="filled">Readonly</Badge> : null}
-						{optional ? <Badge variant="filled">Optional</Badge> : null}
+						{readonly ? (
+							<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Readonly
+							</div>
+						) : null}
+						{optional ? (
+							<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Optional
+							</div>
+						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap gap-1">
-					<Title order={4} className="font-mono">
+				<div className="flex flex-row flex-wrap place-items-center gap-1">
+					<h4 className="break-all font-mono text-lg font-bold">
 						{name}
 						{optional ? '?' : ''}
-					</Title>
-					<Title order={4}>{separator}</Title>
-					<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
+					</h4>
+					<h4 className="font-mono text-lg font-bold">{separator}</h4>
+					<h4 className="break-all font-mono text-lg font-bold">
 						<HyperlinkedText tokens={typeTokens} />
-					</Title>
+					</h4>
 				</div>
 			</div>
 			{summary || inheritanceData ? (

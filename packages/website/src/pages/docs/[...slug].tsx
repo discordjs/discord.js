@@ -13,15 +13,12 @@ import {
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
-import { Box, LoadingOverlay } from '@mantine/core';
-// import { registerSpotlightActions } from '@mantine/spotlight';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-// import { useEffect } from 'react';
+import { useMemo } from 'react';
 import rehypeIgnore from 'rehype-ignore';
 import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
@@ -238,36 +235,14 @@ const member = (props?: ApiItemJSON | undefined) => {
 };
 
 export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
-	const router = useRouter();
-
-	// useEffect(() => {
-	// 	if (props.data?.searchIndex) {
-	// 		const searchIndex = props.data?.searchIndex.map((idx, index) => ({ id: index, ...idx })) ?? [];
-	// 		miniSearch.addAll(searchIndex);
-
-	// 		registerSpotlightActions(
-	// 			searchIndex.map((idx) => ({
-	// 				title: idx.name,
-	// 				description: idx.summary ?? '',
-	// 				onTrigger: () => void router.push(idx.path),
-	// 			})),
-	// 		);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
-
-	const name = `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`;
-	const ogTitle = `${props.packageName ?? 'discord.js'}${
-		props.data?.member?.name ? ` | ${props.data.member.name}` : ''
-	}`;
-
-	if (router.isFallback) {
-		return (
-			<SidebarLayout>
-				<LoadingOverlay visible overlayBlur={2} />
-			</SidebarLayout>
-		);
-	}
+	const name = useMemo(
+		() => `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
+		[props.data?.member?.name],
+	);
+	const ogTitle = useMemo(
+		() => `${props.packageName ?? 'discord.js'}${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
+		[props.packageName, props.data?.member?.name],
+	);
 
 	// Just in case
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
@@ -286,23 +261,9 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 						{member(props.data.member)}
 					</>
 				) : props.data?.source ? (
-					<Box
-						sx={{
-							a: {
-								backgroundColor: 'transparent',
-								color: '$blue11',
-								textDecoration: 'none',
-							},
-							img: {
-								borderStyle: 'none',
-								maxWidth: '100%',
-								boxSizing: 'content-box',
-							},
-						}}
-						className="prose max-w-none"
-					>
+					<div className="prose max-w-none">
 						<MDXRemote {...props.data.source} />
-					</Box>
+					</div>
 				) : null}
 			</SidebarLayout>
 		</MemberProvider>

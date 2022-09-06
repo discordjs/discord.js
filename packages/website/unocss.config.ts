@@ -22,7 +22,7 @@ export default defineConfig({
 		presetWebFonts({
 			provider: 'google',
 			fonts: {
-				mono: ['JetBrains Mono', 'JetBrains Mono:400,600'],
+				mono: ['JetBrains Mono', 'JetBrains Mono:400,600,700'],
 			},
 		}),
 		presetTypography({
@@ -44,6 +44,7 @@ export default defineConfig({
 				},
 				a: {
 					color: '#5865F2',
+					'text-decoration': 'none',
 				},
 				'a > img': {
 					display: 'inline-block',

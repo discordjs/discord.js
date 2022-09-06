@@ -12,17 +12,9 @@
 	}
 }
 
-html {
-	scrollbar-gutter: auto !important;
-}
-
 html,
 body {
 	height: 100%;
-}
-
-::-webkit-scrollbar {
-	visibility: hidden;
 }
 
 #__next {

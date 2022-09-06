@@ -6,6 +6,7 @@ import type {
 } from '@discordjs/api-extractor-utils';
 import { Stack, Group, Badge, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import { useCallback } from 'react';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
@@ -46,14 +47,17 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 	const matches = useMediaQuery('(max-width: 768px)');
 
-	const getShorthandName = () =>
-		`constructor(${data.parameters.reduce((prev, cur, index) => {
-			if (index === 0) {
-				return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
-			}
+	const getShorthandName = useCallback(
+		() =>
+			`constructor(${data.parameters.reduce((prev, cur, index) => {
+				if (index === 0) {
+					return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
+				}
 
-			return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
-		}, '')})`;
+				return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
+			}, '')})`,
+		[data.parameters],
+	);
 
 	return data.parameters.length ? (
 		<Section title="Constructor" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
