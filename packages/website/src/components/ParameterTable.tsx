@@ -1,6 +1,5 @@
 import type { ParameterDocumentation } from '@discordjs/api-extractor-utils';
 import { useMemo } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars-2';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -23,16 +22,8 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 	);
 
 	return (
-		<Scrollbars
-			universal
-			autoHide
-			hideTracksWhenNotNeeded
-			renderTrackHorizontal={(props) => (
-				<div {...props} className="absolute left-0.5 right-0.5 bottom-0.5 z-30 h-1.5 rounded" />
-			)}
-			renderThumbHorizontal={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
-		>
+		<div className="overflow-x-auto">
 			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
-		</Scrollbars>
+		</div>
 	);
 }
