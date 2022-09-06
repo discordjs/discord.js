@@ -1,95 +1,98 @@
-import {
-	Container,
-	UnstyledButton,
-	createStyles,
-	Group,
-	ThemeIcon,
-	Text,
-	Stack,
-	Title,
-	useMantineColorScheme,
-	Button,
-} from '@mantine/core';
+import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import type { MouseEvent } from 'react';
-import { VscArrowRight, VscPackage } from 'react-icons/vsc';
-import { PACKAGES } from '~/util/packages';
+import type { GetStaticProps } from 'next/types';
+import { useCallback, type MouseEvent } from 'react';
+import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { PACKAGES } from '~/util/constants';
 
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
-		height: '100%',
-		alignItems: 'center',
-	},
+interface PackageProps {
+	data: {
+		versions: { packageName: string; version: string }[];
+	};
+}
 
-	control: {
-		padding: theme.spacing.xs,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-		borderRadius: theme.radius.xs,
+export const getStaticProps: GetStaticProps = async () => {
+	try {
+		const versions = await Promise.all(
+			PACKAGES.map(async (pkg) => {
+				const response = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+				const versions = await response.json();
+				const latestVersion = versions.at(-2);
+				return { packageName: pkg, version: latestVersion };
+			}),
+		);
 
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		},
-	},
-}));
+		return {
+			props: {
+				versions,
+			},
+			revalidate: 3_600,
+		};
+	} catch (error_) {
+		const error = error_ as Error;
+		console.error(error);
 
-export default function PackagesRoute() {
-	const { classes } = useStyles();
-	const { colorScheme } = useMantineColorScheme();
+		return {
+			props: {
+				error: error_,
+			},
+			revalidate: 1,
+		};
+	}
+};
+
+export default function PackagesRoute(props: Partial<PackageProps> & { error?: string }) {
 	const router = useRouter();
+	const findLatestVersion = useCallback(
+		(pkg: string) => props.data?.versions.find((version) => version.packageName === pkg),
+		[props.data?.versions],
+	);
 
 	const handleClick = async (ev: MouseEvent<HTMLDivElement>, packageName: string) => {
 		ev.stopPropagation();
-
-		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`);
-		const data: string[] = await res.json();
-
-		const latestVersion = data.at(-2);
-		void router.push(`/docs/packages/${packageName}/${latestVersion}`);
+		void router.push(`/docs/packages/${packageName}`);
 	};
 
-	return (
-		<Container className={classes.outer} size="xs">
-			<Stack sx={{ flexGrow: 1 }}>
-				<Title order={2} ml="xs">
-					Select a package:
-				</Title>
+	return props.error ? (
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			{props.error}
+		</div>
+	) : (
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			<div className="flex grow flex-col place-content-center gap-4">
+				<h1 className="text-2xl font-semibold">Select a package:</h1>
 				{PACKAGES.map((pkg) => (
-					<UnstyledButton
-						component="div"
-						key={pkg}
-						role="link"
-						className={classes.control}
-						onClick={(ev: MouseEvent<HTMLDivElement>) => void handleClick(ev, pkg)}
-					>
-						<Group position="apart">
-							<Group sx={{ flexGrow: 1 }} position="apart">
-								<Group>
-									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-										<VscPackage size={20} />
-									</ThemeIcon>
-									<Text weight={600} size="md">
-										{pkg}
-									</Text>
-								</Group>
-								<Link href={`/docs/packages/${pkg}`} passHref prefetch={false}>
-									<Button
-										component="a"
-										size="xs"
-										compact
-										onClick={(ev: MouseEvent<HTMLAnchorElement>) => ev.stopPropagation()}
-									>
-										Select version
-									</Button>
-								</Link>
-							</Group>
-							<VscArrowRight size={20} />
-						</Group>
-					</UnstyledButton>
+					<Link key={pkg} href={`/docs/packages/${pkg}/${findLatestVersion(pkg)?.version ?? 'main'}`} prefetch={false}>
+						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white">
+							<div className="flex grow flex-row place-content-between place-items-center gap-4">
+								<div className="flex grow flex-row place-content-between place-items-center gap-4">
+									<div className="flex flex-row place-content-between place-items-center gap-4">
+										<VscPackage size={25} />
+										<h2 className="font-semibold">{pkg}</h2>
+									</div>
+									<Link href={`/docs/packages/${pkg}`} prefetch={false}>
+										<Button
+											as="div"
+											role="link"
+											className="bg-blurple flex h-6 transform-gpu cursor-pointer select-none appearance-none place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white active:translate-y-px"
+											onClick={async (ev: MouseEvent<HTMLDivElement>) => handleClick(ev, pkg)}
+										>
+											Select version
+										</Button>
+									</Link>
+								</div>
+								<VscArrowRight size={20} />
+							</div>
+						</a>
+					</Link>
 				))}
-			</Stack>
-		</Container>
+				<Link href="/" prefetch={false}>
+					<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
+						<VscArrowLeft size={20} /> Go back
+					</a>
+				</Link>
+			</div>
+		</div>
 	);
 }

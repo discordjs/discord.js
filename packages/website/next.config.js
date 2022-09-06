@@ -1,3 +1,6 @@
+/* eslint-disable tsdoc/syntax */
+import { URL, fileURLToPath } from 'node:url';
+
 /**
  * @type {import('next').NextConfig}
  */
@@ -12,6 +15,7 @@ export default {
 		images: {
 			allowFutureImage: true,
 		},
+		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
 	},
 	images: {
 		dangerouslyAllowSVG: true,

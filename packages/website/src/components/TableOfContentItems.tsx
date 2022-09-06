@@ -1,30 +1,6 @@
 import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
-import { createStyles, Group, Text, Box, Stack, ThemeIcon, useMantineColorScheme } from '@mantine/core';
 import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
-
-const useStyles = createStyles((theme) => ({
-	link: {
-		...theme.fn.focusStyles(),
-		fontWeight: 500,
-		display: 'block',
-		textDecoration: 'none',
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
-		lineHeight: 1.2,
-		fontSize: theme.fontSizes.sm,
-		padding: 5,
-		paddingLeft: theme.spacing.md,
-		marginLeft: 14,
-		borderTopRightRadius: theme.radius.sm,
-		borderBottomRightRadius: theme.radius.sm,
-		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
-
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		},
-	},
-}));
 
 export function TableOfContentItems({
 	methods,
@@ -33,22 +9,19 @@ export function TableOfContentItems({
 	methods: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'];
 	properties: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'];
 }) {
-	const { colorScheme } = useMantineColorScheme();
-	const { classes } = useStyles();
-
 	const propertyItems = useMemo(
 		() =>
 			properties.map((prop) => (
-				<Box<'a'> key={prop.name} href={`#${prop.name}`} component="a" className={classes.link}>
-					<Group>
-						<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-							{prop.name}
-						</Text>
-					</Group>
-				</Box>
+				<a
+					key={prop.name}
+					href={`#${prop.name}`}
+					title={prop.name}
+					className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] border-l p-[5px] text-sm"
+				>
+					<span className="line-clamp-1">{prop.name}</span>
+				</a>
 			)),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[properties, colorScheme],
+		[properties],
 	);
 
 	const methodItems = useMemo(
@@ -59,61 +32,52 @@ export function TableOfContentItems({
 				}`;
 
 				return (
-					<Box<'a'> key={key} component="a" href={`#${key}`} className={classes.link}>
-						<Group>
-							<Text sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }} className="line-clamp-1">
-								{member.name}
-							</Text>
-							{member.overloadIndex && member.overloadIndex > 1 ? (
-								<Text size="xs" color="dimmed">
-									{member.overloadIndex}
-								</Text>
-							) : null}
-						</Group>
-					</Box>
+					<a
+						key={key}
+						href={`#${key}`}
+						title={member.name}
+						className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] flex flex-row place-items-center gap-2 border-l p-[5px] text-sm"
+					>
+						<span className="line-clamp-1">{member.name}</span>
+						{member.overloadIndex && member.overloadIndex > 1 ? (
+							<span className="text-xs">{member.overloadIndex}</span>
+						) : null}
+					</a>
 				);
 			}),
-		[methods, classes.link],
+		[methods],
 	);
 
 	return (
-		<Box sx={{ wordBreak: 'break-all' }} pb="xl">
-			<Group spacing="xs" mt={6} mb="sm" ml={6}>
+		<div className="flex flex-col break-all p-3 pb-8">
+			<div className="mt-4 ml-2 flex flex-row gap-2">
 				<VscListSelection size={25} />
-				<Text weight={600}>Table of contents</Text>
-			</Group>
-			<Stack spacing={0} mt={26} ml={4}>
+				<span className="font-semibold">Contents</span>
+			</div>
+			<div className="mt-5.5 ml-2 flex flex-col gap-2">
 				{propertyItems.length ? (
-					<Box>
-						<Group spacing="xs">
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-								<VscSymbolProperty size={20} />
-							</ThemeIcon>
-							<Box p="sm" pl={0}>
-								<Text weight={600} size="md">
-									Properties
-								</Text>
-							</Box>
-						</Group>
+					<div className="flex flex-col">
+						<div className="flex flex-row place-items-center gap-4">
+							<VscSymbolProperty size={20} />
+							<div className="p-3 pl-0">
+								<span className="font-semibold">Properties</span>
+							</div>
+						</div>
 						{propertyItems}
-					</Box>
+					</div>
 				) : null}
 				{methodItems.length ? (
-					<Box>
-						<Group spacing="xs">
-							<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-								<VscSymbolMethod size={20} />
-							</ThemeIcon>
-							<Box p="sm" pl={0}>
-								<Text weight={600} size="md">
-									Methods
-								</Text>
-							</Box>
-						</Group>
+					<div className="flex flex-col">
+						<div className="flex flex-row place-items-center gap-4">
+							<VscSymbolMethod size={20} />
+							<div className="p-3 pl-0">
+								<span className="font-semibold">Methods</span>
+							</div>
+						</div>
 						{methodItems}
-					</Box>
+					</div>
 				) : null}
-			</Stack>
-		</Box>
+			</div>
+		</div>
 	);
 }
