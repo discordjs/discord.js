@@ -7,7 +7,6 @@ import type {
 	DocBlockJSON,
 	DocCommentJSON,
 } from '@discordjs/api-extractor-utils';
-import { Anchor, Code } from '@mantine/core';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
@@ -28,7 +27,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<span key={idx} className="break-words leading-none">
+					<span key={idx} className="break-words leading-relaxed">
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
 					</span>
 				);
@@ -40,9 +39,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				if (codeDestination) {
 					return (
 						<Link key={idx} href={codeDestination.path} passHref prefetch={false}>
-							<Anchor component="a" className="font-mono">
-								{text ?? codeDestination.name}
-							</Anchor>
+							<a className="text-blurple font-mono">{text ?? codeDestination.name}</a>
 						</Link>
 					);
 				}
@@ -50,9 +47,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				if (urlDestination) {
 					return (
 						<Link key={idx} href={urlDestination} passHref prefetch={false}>
-							<Anchor component="a" className="font-mono">
-								{text ?? urlDestination}
-							</Anchor>
+							<a className="text-blurple font-mono">{text ?? urlDestination}</a>
 						</Link>
 					);
 				}
@@ -63,9 +58,9 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<Code key={idx} sx={{ display: 'inline' }} className="font-mono text-sm">
+					<code key={idx} className="font-mono text-sm">
 						{code}
-					</Code>
+					</code>
 				);
 			}
 

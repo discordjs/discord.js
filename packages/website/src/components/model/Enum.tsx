@@ -1,12 +1,12 @@
 import type { ApiEnumJSON } from '@discordjs/api-extractor-utils';
-import { useMediaQuery } from '@mantine/hooks';
 import { VscSymbolEnumMember } from 'react-icons/vsc';
+import { useMedia } from 'react-use';
 import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';
 import { Section } from '../Section';
 
 export function Enum({ data }: { data: ApiEnumJSON }) {
-	const matches = useMediaQuery('(max-width: 768px)');
+	const matches = useMedia('(max-width: 768px)', true);
 
 	return (
 		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>

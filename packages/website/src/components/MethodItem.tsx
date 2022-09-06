@@ -26,9 +26,9 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 	);
 
 	return (
-		<div id={key} className="scroll-mt-30 flex flex-col gap-2">
-			<div className="flex-flex-col">
-				<div className={`flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center`}>
+		<div id={key} className="scroll-mt-30 flex flex-col gap-4">
+			<div className="flex flex-col">
+				<div className="flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center">
 					<a className="hidden md:inline-block" href={`#${key}`}>
 						<FiLink size={20} />
 					</a>
@@ -63,7 +63,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 				</div>
 			</div>
 			{data.summary || data.parameters.length ? (
-				<div className={`mb-4 flex flex-col gap-4`}>
+				<div className="mb-4 flex flex-col gap-4">
 					{data.deprecated ? <TSDoc node={data.deprecated} /> : null}
 					{data.summary ? <TSDoc node={data.summary} /> : null}
 					{data.remarks ? <TSDoc node={data.remarks} /> : null}

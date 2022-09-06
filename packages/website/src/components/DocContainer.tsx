@@ -5,7 +5,6 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
-import { useMediaQuery } from '@mantine/hooks';
 import { Fragment, type PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import {
@@ -17,6 +16,7 @@ import {
 	VscListSelection,
 	VscSymbolParameter,
 } from 'react-icons/vsc';
+import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
@@ -61,7 +61,7 @@ export function DocContainer({
 	methods,
 	properties,
 }: DocContainerProps) {
-	const matches = useMediaQuery('(max-width: 768px)');
+	const matches = useMedia('(max-width: 768px)', true);
 
 	return (
 		<>

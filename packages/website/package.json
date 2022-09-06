@@ -41,11 +41,6 @@
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@emotion/react": "^11.10.4",
-		"@emotion/server": "^11.10.0",
-		"@mantine/core": "^5.2.5",
-		"@mantine/hooks": "^5.2.5",
-		"@mantine/next": "^5.2.5",
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@vscode/codicons": "^0.0.32",

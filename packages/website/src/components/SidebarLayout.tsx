@@ -1,5 +1,4 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import { useMediaQuery } from '@mantine/hooks';
 import { Button } from 'ariakit/button';
 import Image from 'next/future/image';
 import Link from 'next/link';
@@ -10,7 +9,7 @@ import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from '
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
 // import useSWR from 'swr';
-import { useLockBodyScroll } from 'react-use';
+import { useMedia, useLockBodyScroll } from 'react-use';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
 // import { PACKAGES } from '~/util/constants';
@@ -65,7 +64,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 	// );
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
-	const matches = useMediaQuery('(min-width: 992px)', true, { getInitialValueInEffect: true });
+	const matches = useMedia('(min-width: 992px)', false);
 	const [opened, setOpened] = useState(false);
 	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
 	// const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
