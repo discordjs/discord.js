@@ -15,6 +15,7 @@ import {
 import { createApiModel } from '@discordjs/scripts';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
@@ -124,7 +125,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const [, packageName = 'builders', branchName = 'main', member] = params!.slug as string[];
+	const [path, packageName = 'builders', branchName = 'main', member] = params!.slug as string[];
+
+	if (path !== 'packages' || !PACKAGES.includes(packageName)) {
+		return {
+			notFound: true,
+		};
+	}
 
 	const [memberName, overloadIndex] = member?.split(':') ?? [];
 
@@ -235,6 +242,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 };
 
 export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
+	const router = useRouter();
 	const name = useMemo(
 		() => `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
 		[props.data?.member?.name],
@@ -243,6 +251,10 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 		() => `${props.packageName ?? 'discord.js'}${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
 		[props.packageName, props.data?.member?.name],
 	);
+
+	if (router.isFallback) {
+		return null;
+	}
 
 	// Just in case
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;

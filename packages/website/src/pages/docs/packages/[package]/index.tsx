@@ -21,20 +21,21 @@ export const getStaticPaths: GetStaticPaths = () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const packageName = params!.package as string | undefined;
+	const packageName = params!.package as string;
+
+	if (!PACKAGES.includes(packageName)) {
+		return {
+			notFound: true,
+		};
+	}
 
 	try {
-		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`);
+		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 		const data: string[] = await res.json();
 
 		if (!data.length) {
-			console.error('No tags');
-
 			return {
-				props: {
-					error: 'No tags',
-				},
-				revalidate: 3_600,
+				notFound: true,
 			};
 		}
 
