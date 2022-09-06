@@ -26,12 +26,12 @@ export default function IndexRoute() {
 							</a>
 						</Link>
 						<a
-							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline active:translate-y-px dark:text-white"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline active:translate-y-px dark:text-white"
 							href="https://discordjs.guide"
 							target="_blank"
 							rel="noopener noreferrer"
 						>
-							Guide <FiExternalLink className="ml-2" />
+							Guide <FiExternalLink />
 						</a>
 					</div>
 				</div>

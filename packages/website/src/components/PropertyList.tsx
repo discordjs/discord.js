@@ -17,7 +17,7 @@ export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
 						deprecation={prop.deprecated}
 						inheritanceData={prop.inheritanceData}
 					/>
-					<div className="border-light-900 -mx-10 border-t-2" />
+					<div className="border-light-900 -mx-8 border-t-2" />
 				</Fragment>
 			)),
 		[data],

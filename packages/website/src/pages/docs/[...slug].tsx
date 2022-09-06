@@ -217,7 +217,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			props: {
 				error: error_,
 			},
-			revalidate: 3_600,
+			revalidate: 1,
 		};
 	}
 };

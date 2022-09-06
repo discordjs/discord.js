@@ -66,14 +66,14 @@ export function DocContainer({
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<h2 className="flex flex-row place-items-center gap-2 text-2xl font-bold">
-					{generateIcon(kind)}
+				<h2 className="flex flex-row place-items-center gap-2 break-all text-2xl font-bold">
+					<span>{generateIcon(kind)}</span>
 					{name}
 				</h2>
 
 				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
-					<div className="border-light-900 -mx-10 mt-6 border-t-2" />
+					<div className="border-light-900 -mx-8 mt-6 border-t-2" />
 				</Section>
 
 				<SyntaxHighlighter code={excerpt} />

@@ -87,7 +87,7 @@ export function SidebarItems({
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
 						{groupItems[group].map((member, index) => (
-							<Link key={index} href={member.path} passHref prefetch={false}>
+							<Link key={index} href={member.path} prefetch={false}>
 								<a
 									className={`dark:border-dark-100 border-light-800 ml-5 border-l p-[5px] pl-6 ${
 										asPathWithoutQueryAndAnchor === member.path

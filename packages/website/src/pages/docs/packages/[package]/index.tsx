@@ -1,7 +1,6 @@
-import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
-import { VscArrowRight, VscVersions } from 'react-icons/vsc';
+import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
 
 interface VersionProps {
@@ -43,7 +42,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			props: {
 				packageName,
 				data: {
-					versions: data,
+					versions: data.reverse(),
 				},
 			},
 			revalidate: 3_600,
@@ -56,24 +55,23 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			props: {
 				error: error_,
 			},
-			revalidate: 3_600,
+			revalidate: 1,
 		};
 	}
 };
 
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
 	return props.error ? (
-		<div style={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</div>
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			{props.error}
+		</div>
 	) : (
 		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
-					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} prefetch={false}>
-						<Button
-							as="div"
-							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
-						>
+					<Link key={version} href={`/docs/packages/${props.packageName}/${version}`} prefetch={false}>
+						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />
@@ -81,9 +79,14 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 								</div>
 								<VscArrowRight size={20} />
 							</div>
-						</Button>
+						</a>
 					</Link>
 				)) ?? null}
+				<Link href="/docs/packages" prefetch={false}>
+					<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
+						<VscArrowLeft size={20} /> Go back
+					</a>
+				</Link>
 			</div>
 		</div>
 	);

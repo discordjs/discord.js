@@ -3,8 +3,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import type { GetStaticProps } from 'next/types';
 import { useCallback, type MouseEvent } from 'react';
-import { VscArrowRight, VscPackage } from 'react-icons/vsc';
+import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
+
+interface PackageProps {
+	data: {
+		versions: { packageName: string; version: string }[];
+	};
+}
 
 export const getStaticProps: GetStaticProps = async () => {
 	try {
@@ -31,16 +37,16 @@ export const getStaticProps: GetStaticProps = async () => {
 			props: {
 				error: error_,
 			},
-			revalidate: 3_600,
+			revalidate: 1,
 		};
 	}
 };
 
-export default function PackagesRoute(props: { versions: { packageName: string; version: string }[] }) {
+export default function PackagesRoute(props: Partial<PackageProps> & { error?: string }) {
 	const router = useRouter();
 	const findLatestVersion = useCallback(
-		(pkg: string) => props.versions.find((version) => version.packageName === pkg),
-		[props.versions],
+		(pkg: string) => props.data?.versions.find((version) => version.packageName === pkg),
+		[props.data?.versions],
 	);
 
 	const handleClick = async (ev: MouseEvent<HTMLDivElement>, packageName: string) => {
@@ -48,7 +54,11 @@ export default function PackagesRoute(props: { versions: { packageName: string; 
 		void router.push(`/docs/packages/${packageName}`);
 	};
 
-	return (
+	return props.error ? (
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			{props.error}
+		</div>
+	) : (
 		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a package:</h1>
@@ -77,6 +87,11 @@ export default function PackagesRoute(props: { versions: { packageName: string; 
 						</a>
 					</Link>
 				))}
+				<Link href="/" prefetch={false}>
+					<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
+						<VscArrowLeft size={20} /> Go back
+					</a>
+				</Link>
 			</div>
 		</div>
 	);

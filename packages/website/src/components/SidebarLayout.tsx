@@ -1,5 +1,6 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
 import { Button } from 'ariakit/button';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Image from 'next/future/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -7,18 +8,18 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
-// import useSWR from 'swr';
+import { VscChevronDown, VscColorMode, VscGithubInverted, VscMenu, VscPackage, VscVersions } from 'react-icons/vsc';
 import { useMedia, useLockBodyScroll } from 'react-use';
+import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
-// import { PACKAGES } from '~/util/constants';
+import { PACKAGES } from '~/util/constants';
 import type { findMember } from '~/util/model.server';
 
-// const fetcher = async (url: string) => {
-// 	const res = await fetch(url);
-// 	return res.json();
-// };
+const fetcher = async (url: string) => {
+	const res = await fetch(url);
+	return res.json();
+};
 
 export interface SidebarLayoutProps {
 	branchName: string;
@@ -44,66 +45,63 @@ export interface GroupedMembers {
 	Variables: Members;
 }
 
-// const packageMenuItems = PACKAGES.map((pkg) => (
-// 	<Menu.Item
-// 		key={pkg}
-// 		component={NextLink}
-// 		href={`/docs/packages/${pkg}/main`}
-// 		sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
-// 	>
-// 		{pkg}
-// 	</Menu.Item>
-// ));
-
-export function SidebarLayout({ data, children }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
+export function SidebarLayout({
+	packageName,
+	branchName,
+	data,
+	children,
+}: PropsWithChildren<Partial<SidebarLayoutProps>>) {
 	const router = useRouter();
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
-	// const { data: versions } = useSWR<string[]>(
-	// 	`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`,
-	// 	fetcher,
-	// );
+	const { data: versions } = useSWR<string[]>(`https://docs.discordjs.dev/api/info?package=${packageName}`, fetcher);
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 	const matches = useMedia('(min-width: 992px)', false);
 	const [opened, setOpened] = useState(false);
-	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
-	// const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
+	const packageMenu = useMenuState({ gutter: 8, sameWidth: true });
+	const versionMenu = useMenuState({ gutter: 8, sameWidth: true });
 	useLockBodyScroll(opened);
 
 	useEffect(() => {
 		if (matches) {
 			setOpened(false);
 		}
-
-		return () => setOpened(false);
 	}, [matches]);
-
-	useEffect(() => {
-		setOpened(false);
-		// setOpenedLibPicker(false);
-		// setOpenedVersionPicker(false);
-
-		return () => setOpened(false);
-	}, []);
 
 	useEffect(() => {
 		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
 	}, [router.asPath]);
 
-	// const versionMenuItems = useMemo(
-	// 	() =>
-	// 		versions?.map((item) => (
-	// 			<Menu.Item
-	// 				key={item}
-	// 				component={NextLink}
-	// 				href={`/docs/packages/${packageName ?? 'builders'}/${item}`}
-	// 				sx={(theme) => ({ color: theme.colorScheme === 'dark' ? theme.white : theme.black })}
-	// 			>
-	// 				{item}
-	// 			</Menu.Item>
-	// 		)) ?? [],
-	// 	[versions, packageName],
-	// );
+	const packageMenuItems = PACKAGES.map((pkg) => (
+		<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref prefetch={false}>
+			<MenuItem
+				className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+				as="a"
+				state={packageMenu}
+			>
+				{pkg}
+			</MenuItem>
+		</Link>
+	));
+
+	const versionMenuItems = useMemo(
+		() =>
+			versions
+				?.map((item) => (
+					<Link key={item} href={`/docs/packages/${packageName}/${item}`} passHref prefetch={false}>
+						<MenuItem
+							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+							as="a"
+							state={versionMenu}
+						>
+							{item}
+						</MenuItem>
+					</Link>
+				))
+				.reverse() ?? [],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[versions, packageName],
+	);
 
 	const pathElements = useMemo(
 		() =>
@@ -179,6 +177,56 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 					)}
 					renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 				>
+					<div className="flex flex-col gap-3 px-3 pt-3">
+						<MenuButton
+							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
+							state={packageMenu}
+						>
+							<div className="flex flex-row place-content-between place-items-center">
+								<div className="flex flex-row place-items-center gap-3">
+									<VscPackage size={20} />
+									<span className="font-semibold">{packageName}</span>
+								</div>
+								<VscChevronDown
+									className={`transform transition duration-150 ease-in-out ${
+										packageMenu.open ? 'rotate-180' : 'rotate-0'
+									}`}
+									size={20}
+								/>
+							</div>
+						</MenuButton>
+						<Menu
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
+							state={packageMenu}
+						>
+							{packageMenuItems}
+						</Menu>
+
+						<MenuButton
+							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
+							state={versionMenu}
+						>
+							<div className="flex flex-row place-content-between place-items-center">
+								<div className="flex flex-row place-items-center gap-3">
+									<VscVersions size={20} />
+									<span className="font-semibold">{branchName}</span>
+								</div>
+								<VscChevronDown
+									className={`transform transition duration-150 ease-in-out ${
+										versionMenu.open ? 'rotate-180' : 'rotate-0'
+									}`}
+									size={20}
+								/>
+							</div>
+						</MenuButton>
+						<Menu
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
+							state={versionMenu}
+						>
+							{versionMenuItems}
+						</Menu>
+					</div>
+
 					<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
 				</Scrollbars>
 			</nav>
