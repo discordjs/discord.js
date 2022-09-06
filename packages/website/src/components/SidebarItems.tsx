@@ -94,6 +94,7 @@ export function SidebarItems({
 											? 'bg-blurple text-white'
 											: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 									}`}
+									title={member.name}
 									onClick={() => setOpened(false)}
 								>
 									<div className="flex flex-row place-items-center gap-2 text-sm">

@@ -15,6 +15,7 @@ export function TableOfContentItems({
 				<a
 					key={prop.name}
 					href={`#${prop.name}`}
+					title={prop.name}
 					className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] border-l p-[5px] text-sm"
 				>
 					<span className="line-clamp-1">{prop.name}</span>
@@ -34,6 +35,7 @@ export function TableOfContentItems({
 					<a
 						key={key}
 						href={`#${key}`}
+						title={member.name}
 						className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] flex flex-row place-items-center gap-2 border-l p-[5px] text-sm"
 					>
 						<span className="line-clamp-1">{member.name}</span>
