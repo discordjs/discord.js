@@ -43,7 +43,6 @@
 		"@discordjs/scripts": "workspace:^",
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
-		"@radix-ui/react-scroll-area": "^1.0.0",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.41",
 		"minisearch": "^5.0.0",

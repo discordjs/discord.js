@@ -1,5 +1,4 @@
 import type { getMembers, ApiItemJSON } from '@discordjs/api-extractor-utils';
-import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { Button } from 'ariakit/button';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Image from 'next/future/image';
@@ -8,9 +7,9 @@ import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
-// import { Scrollbars } from 'react-custom-scrollbars-2';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import { VscChevronDown, VscColorMode, VscGithubInverted, VscMenu, VscPackage, VscVersions } from 'react-icons/vsc';
-import { useMedia, useLockBodyScroll } from 'react-use';
+import { useMedia /* useLockBodyScroll */ } from 'react-use';
 import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
@@ -61,7 +60,7 @@ export function SidebarLayout({
 	const [opened, setOpened] = useState(false);
 	const packageMenu = useMenuState({ gutter: 8, sameWidth: true });
 	const versionMenu = useMenuState({ gutter: 8, sameWidth: true });
-	useLockBodyScroll(opened);
+	// useLockBodyScroll(opened);
 
 	useEffect(() => {
 		if (matches) {
@@ -169,7 +168,7 @@ export function SidebarLayout({
 					opened ? 'block' : 'hidden'
 				} lg:w-76 lg:max-w-76 lg:block`}
 			>
-				{/* <Scrollbars
+				<Scrollbars
 					universal
 					autoHide
 					hideTracksWhenNotNeeded
@@ -229,65 +228,7 @@ export function SidebarLayout({
 					</div>
 
 					<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
-				</Scrollbars> */}
-				<ScrollArea.Root className="h-full">
-					<ScrollArea.Viewport className="![&>div]:flex">
-						<div className="flex flex-col gap-3 px-3 pt-3">
-							<MenuButton
-								className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
-								state={packageMenu}
-							>
-								<div className="flex flex-row place-content-between place-items-center">
-									<div className="flex flex-row place-items-center gap-3">
-										<VscPackage size={20} />
-										<span className="font-semibold">{packageName}</span>
-									</div>
-									<VscChevronDown
-										className={`transform transition duration-150 ease-in-out ${
-											packageMenu.open ? 'rotate-180' : 'rotate-0'
-										}`}
-										size={20}
-									/>
-								</div>
-							</MenuButton>
-							<Menu
-								className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
-								state={packageMenu}
-							>
-								{packageMenuItems}
-							</Menu>
-
-							<MenuButton
-								className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
-								state={versionMenu}
-							>
-								<div className="flex flex-row place-content-between place-items-center">
-									<div className="flex flex-row place-items-center gap-3">
-										<VscVersions size={20} />
-										<span className="font-semibold">{branchName}</span>
-									</div>
-									<VscChevronDown
-										className={`transform transition duration-150 ease-in-out ${
-											versionMenu.open ? 'rotate-180' : 'rotate-0'
-										}`}
-										size={20}
-									/>
-								</div>
-							</MenuButton>
-							<Menu
-								className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
-								state={versionMenu}
-							>
-								{versionMenuItems}
-							</Menu>
-						</div>
-
-						<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
-					</ScrollArea.Viewport>
-					<ScrollArea.Scrollbar orientation="vertical">
-						<ScrollArea.Thumb />
-					</ScrollArea.Scrollbar>
-				</ScrollArea.Root>
+				</Scrollbars>
 			</nav>
 			<main
 				className={`pt-18 lg:pl-76 ${
