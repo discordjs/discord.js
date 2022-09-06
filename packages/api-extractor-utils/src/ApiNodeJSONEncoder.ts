@@ -164,7 +164,7 @@ export class ApiNodeJSONEncoder {
 			case ApiItemKind.Variable:
 				return this.encodeVariable(model, node as ApiVariable, version);
 			default:
-				console.log(`Unknown API item kind: ${node.kind}`);
+				// console.log(`Unknown API item kind: ${node.kind}`);
 				return undefined;
 		}
 	}

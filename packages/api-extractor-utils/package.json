@@ -35,7 +35,7 @@
 		"@microsoft/tsdoc": "^0.14.1"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.56",
+		"@types/node": "^16.11.57",
 		"eslint": "^8.23.0",
 		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
