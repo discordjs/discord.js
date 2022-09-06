@@ -10,6 +10,7 @@ import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from '
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { VscColorMode, VscGithubInverted, VscMenu } from 'react-icons/vsc';
 // import useSWR from 'swr';
+import { useLockBodyScroll } from 'react-use';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SidebarItems } from './SidebarItems';
 // import { PACKAGES } from '~/util/constants';
@@ -68,6 +69,7 @@ export function SidebarLayout({ data, children }: PropsWithChildren<Partial<Side
 	const [opened, setOpened] = useState(false);
 	// const [openedLibPicker, setOpenedLibPicker] = useState(false);
 	// const [openedVersionPicker, setOpenedVersionPicker] = useState(false);
+	useLockBodyScroll(opened);
 
 	useEffect(() => {
 		if (matches) {
