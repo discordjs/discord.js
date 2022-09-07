@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import NextProgress from 'next-progress';
 import { ThemeProvider } from 'next-themes';
-import '@unocss/reset/antfu.css';
+import '@unocss/reset/tailwind.css';
 import '../styles/unocss.css';
 import '../styles/main.css';
 

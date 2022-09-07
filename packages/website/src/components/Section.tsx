@@ -19,7 +19,7 @@ export function Section({
 	const disclosure = useDisclosureState({ defaultOpen: !defaultClosed });
 
 	return (
-		<div>
+		<div className="flex flex-col">
 			<Disclosure
 				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
 				state={disclosure}
