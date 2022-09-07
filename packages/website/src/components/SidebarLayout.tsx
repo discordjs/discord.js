@@ -58,8 +58,8 @@ export function SidebarLayout({
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 	const matches = useMedia('(min-width: 992px)', false);
 	const [opened, setOpened] = useState(false);
-	const packageMenu = useMenuState({ gutter: 8, sameWidth: true });
-	const versionMenu = useMenuState({ gutter: 8, sameWidth: true });
+	const packageMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
+	const versionMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
 	// useLockBodyScroll(opened);
 
 	useEffect(() => {
@@ -78,6 +78,7 @@ export function SidebarLayout({
 				className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
 				as="a"
 				state={packageMenu}
+				onClick={() => packageMenu.setOpen(false)}
 			>
 				{pkg}
 			</MenuItem>
@@ -93,6 +94,7 @@ export function SidebarLayout({
 							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
 							as="a"
 							state={versionMenu}
+							onClick={() => versionMenu.setOpen(false)}
 						>
 							{item}
 						</MenuItem>
@@ -198,7 +200,7 @@ export function SidebarLayout({
 							</div>
 						</MenuButton>
 						<Menu
-							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 flex flex-col rounded border bg-white p-1"
 							state={packageMenu}
 						>
 							{packageMenuItems}
@@ -222,7 +224,7 @@ export function SidebarLayout({
 							</div>
 						</MenuButton>
 						<Menu
-							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 rounded border bg-white p-1"
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 flex flex-col rounded border bg-white p-1"
 							state={versionMenu}
 						>
 							{versionMenuItems}
