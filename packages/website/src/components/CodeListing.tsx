@@ -41,17 +41,17 @@ export function CodeListing({
 				{deprecation || readonly || optional ? (
 					<div className="flex flex-row gap-1">
 						{deprecation ? (
-							<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="flex h-5 place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated
 							</div>
 						) : null}
 						{readonly ? (
-							<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
 								Readonly
 							</div>
 						) : null}
 						{optional ? (
-							<div className="bg-blurple h-5 place-content-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
 								Optional
 							</div>
 						) : null}
