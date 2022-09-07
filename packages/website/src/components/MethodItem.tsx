@@ -29,13 +29,13 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 		<div id={key} className="scroll-mt-30 flex flex-col gap-4">
 			<div className="flex flex-col">
 				<div className="flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center">
-					<a className="hidden md:inline-block" href={`#${key}`}>
+					<a className="hidden md:inline-block" aria-label="Anchor" href={`#${key}`}>
 						<FiLink size={20} />
 					</a>
 					{data.deprecated ||
 					(data.kind === 'Method' && method.protected) ||
 					(data.kind === 'Method' && method.static) ? (
-						<div className="flex flex-row flex-wrap gap-1">
+						<div className="flex flex-row gap-1">
 							{data.deprecated ? (
 								<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 									Deprecated
@@ -54,7 +54,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 						</div>
 					) : null}
 					<div className="flex flex-row flex-wrap gap-1">
-						<h4 className="break-all font-mono text-lg font-bold">{`${getShorthandName(data)}`}</h4>
+						<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(data)}</h4>
 						<h4 className="font-mono text-lg font-bold">:</h4>
 						<h4 className="break-all font-mono text-lg font-bold">
 							<HyperlinkedText tokens={data.returnTypeTokens} />

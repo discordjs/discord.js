@@ -97,7 +97,7 @@ export function SidebarItems({
 									title={member.name}
 									onClick={() => setOpened(false)}
 								>
-									<div className="flex flex-row place-items-center gap-2 text-sm">
+									<div className="flex flex-row place-items-center gap-2 lg:text-sm">
 										<span className="truncate">{member.name}</span>
 										{member.overloadIndex && member.overloadIndex > 1 ? (
 											<span className="text-xs">{member.overloadIndex}</span>

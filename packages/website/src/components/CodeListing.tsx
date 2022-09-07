@@ -35,11 +35,11 @@ export function CodeListing({
 	return (
 		<div id={name} className="scroll-mt-30 flex flex-col gap-4">
 			<div className={`md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2`}>
-				<a className="hidden md:inline-block" href={`#${name}`}>
+				<a className="hidden md:inline-block" aria-label="Anchor" href={`#${name}`}>
 					<FiLink size={20} />
 				</a>
 				{deprecation || readonly || optional ? (
-					<div className="flex flex-row flex-wrap gap-1">
+					<div className="flex flex-row gap-1">
 						{deprecation ? (
 							<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated

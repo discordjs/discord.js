@@ -137,6 +137,7 @@ export function SidebarLayout({
 					<div className="flex h-full flex-row place-content-between place-items-center">
 						<Button
 							className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px lg:hidden"
+							aria-label="Menu"
 							onClick={() => setOpened((open) => !open)}
 						>
 							<VscMenu size={24} />
@@ -146,6 +147,7 @@ export function SidebarLayout({
 							<Button
 								as="a"
 								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
+								aria-label="GitHub"
 								href="https://github.com/discordjs/discord.js"
 								target="_blank"
 								rel="noopener noreferrer"
@@ -154,7 +156,7 @@ export function SidebarLayout({
 							</Button>
 							<Button
 								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
-								role="button"
+								aria-label="Toggle theme"
 								onClick={() => toggleTheme()}
 							>
 								<VscColorMode size={24} />
@@ -257,7 +259,7 @@ export function SidebarLayout({
 								</a>
 								<div className="flex flex-row gap-6 md:gap-12">
 									<div className="flex flex-col gap-2">
-										<h4 className="text-lg font-semibold">Community</h4>
+										<div className="text-lg font-semibold">Community</div>
 										<div className="flex flex-col gap-1">
 											<a href="https://discord.gg/djs" target="_blank" rel="noopener noreferrer">
 												Discord
@@ -272,7 +274,7 @@ export function SidebarLayout({
 										</div>
 									</div>
 									<div className="flex flex-col gap-2">
-										<h4 className="text-lg font-semibold">Project</h4>
+										<div className="text-lg font-semibold">Project</div>
 										<div className="flex flex-col gap-1">
 											<a href="https://github.com/discordjs/discord.js" target="_blank" rel="noopener noreferrer">
 												discord.js

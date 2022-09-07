@@ -64,7 +64,7 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 				<div className="flex flex-col">
 					<div className="flex flex-col gap-2 md:flex-row md:place-items-center">
 						{data.deprecated || data.protected ? (
-							<div className="flex flex-row flex-wrap gap-1">
+							<div className="flex flex-row gap-1">
 								{data.deprecated ? (
 									<div className="h-5 place-content-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 										Deprecated
