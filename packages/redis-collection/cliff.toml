@@ -1,0 +1,63 @@
+[changelog]
+header = """
+# Changelog
+
+All notable changes to this project will be documented in this file.\n
+"""
+body = """
+{% if version %}\
+	# [{{ version | trim_start_matches(pat="v") }}]\
+	{% if previous %}\
+		{% if previous.version %}\
+			(https://github.com/discordjs/discord.js/compare/{{ previous.version }}...{{ version }})\
+		{% else %}\
+			(https://github.com/discordjs/discord.js/tree/{{ version }})\
+		{% endif %}\
+	{% endif %} \
+	- ({{ timestamp | date(format="%Y-%m-%d") }})
+{% else %}\
+	# [unreleased]
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+	## {{ group | upper_first }}
+	{% for commit in commits %}
+		- {% if commit.scope %}\
+			**{{commit.scope}}:** \
+		  {% endif %}\
+			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/discordjs/discord.js/commit/{{ commit.id }}))\
+		{% if commit.breaking %}\
+			{% for breakingChange in commit.footers %}\
+				\n{% raw %}  {% endraw %}- **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
+			{% endfor %}\
+		{% endif %}\
+	{% endfor %}
+{% endfor %}\n
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+commit_parsers = [
+	{ message = "^feat", group = "Features" },
+	{ message = "^fix", group = "Bug Fixes" },
+	{ message = "^docs", group = "Documentation" },
+	{ message = "^perf", group = "Performance" },
+	{ message = "^refactor", group = "Refactor" },
+	{ message = "^typings", group = "Typings" },
+	{ message = "^types", group = "Typings" },
+	{ message = ".*deprecated", body = ".*deprecated", group = "Deprecation" },
+	{ message = "^revert", skip = true },
+	{ message = "^style", group = "Styling" },
+	{ message = "^test", group = "Testing" },
+	{ message = "^chore", skip = true },
+	{ message = "^ci", skip = true },
+	{ message = "^build", skip = true },
+	{ body = ".*security", group = "Security" },
+]
+filter_commits = true
+tag_pattern = "@discordjs/redis-collection@[0-9]*"
+ignore_tags = ""
+date_order = true
+sort_commits = "newest"

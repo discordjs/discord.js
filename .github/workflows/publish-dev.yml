@@ -18,6 +18,8 @@ jobs:
             folder: 'discord.js'
           - package: '@discordjs/proxy'
             folder: 'proxy'
+          - package: '@discordjs/redis-collection'
+            folder: 'redis-collection'
           - package: '@discordjs/rest'
             folder: 'rest'
           - package: '@discordjs/voice'

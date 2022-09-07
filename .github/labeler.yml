@@ -22,6 +22,10 @@
   - packages/proxy-container/*
   - packages/proxy-container/**/*
 
+'packages:redis-collection':
+  - packages/redis-collection/*
+  - packages/redis-collection/**/*
+
 'packages:rest':
   - packages/rest/*
   - packages/rest/**/*

@@ -17,6 +17,7 @@ body:
         - rest
         - proxy
         - proxy-container
+        - redis-collection
         - voice
         - ws
     validations:

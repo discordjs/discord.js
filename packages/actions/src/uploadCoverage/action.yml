@@ -27,6 +27,12 @@ runs:
         files: ./packages/proxy/coverage/cobertura-coverage.xml
         flags: proxy
 
+    - name: Upload Redis Collection Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./packages/redis-collection/coverage/cobertura-coverage.xml
+        flags: redis-collection
+
     - name: Upload Rest Coverage
       uses: codecov/codecov-action@v3
       with:

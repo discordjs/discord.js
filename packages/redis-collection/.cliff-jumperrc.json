@@ -1,0 +1,5 @@
+{
+	"name": "redis-collection",
+	"org": "discordjs",
+	"packagePath": "packages/redis-collection"
+}

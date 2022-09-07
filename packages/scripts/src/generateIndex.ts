@@ -28,7 +28,7 @@ export interface MemberJSON {
 	summary: string | null;
 }
 
-export const PACKAGES = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
+export const PACKAGES = ['builders', 'collection', 'proxy', 'redis-collection', 'rest', 'voice', 'ws'];
 let idx = 0;
 
 export function createApiModel(data: any) {
