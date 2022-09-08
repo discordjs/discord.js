@@ -1627,7 +1627,7 @@ export class MessageActionRow<
     ? APIActionRowComponent<APIModalActionRowComponent>
     : APIActionRowComponent<APIMessageActionRowComponent>,
 > extends BaseMessageComponent {
-  // @ts-expect-error (TS:2344, Caused by TypeScript 4.8)
+  // @ts-ignore (TS:2344, Caused by TypeScript 4.8)
   // Fixed in DiscordJS >= 14.x / DiscordApiTypes >= 0.37.x, ignoring the type error here.
   public constructor(data?: MessageActionRow<T> | MessageActionRowOptions<U> | V);
   public type: 'ACTION_ROW';
