@@ -72,18 +72,33 @@ export function SidebarLayout({
 		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
 	}, [router.asPath]);
 
-	const packageMenuItems = PACKAGES.map((pkg) => (
-		<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref prefetch={false}>
-			<MenuItem
-				className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
-				as="a"
-				state={packageMenu}
-				onClick={() => packageMenu.setOpen(false)}
-			>
-				{pkg}
-			</MenuItem>
-		</Link>
-	));
+	const packageMenuItems = useMemo(
+		() => [
+			<a key="discord.js" href="https://discord.js.org/#/docs/discord.js">
+				<MenuItem
+					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+					state={packageMenu}
+					onClick={() => packageMenu.setOpen(false)}
+				>
+					discord.js
+				</MenuItem>
+			</a>,
+			...PACKAGES.map((pkg) => (
+				<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref prefetch={false}>
+					<MenuItem
+						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+						as="a"
+						state={packageMenu}
+						onClick={() => packageMenu.setOpen(false)}
+					>
+						{pkg}
+					</MenuItem>
+				</Link>
+			)),
+		],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[],
+	);
 
 	const versionMenuItems = useMemo(
 		() =>

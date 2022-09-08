@@ -62,6 +62,20 @@ export default function PackagesRoute(props: Partial<PackageProps> & { error?: s
 		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a package:</h1>
+				<a
+					className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					href="https://discord.js.org/#/docs/discord.js"
+				>
+					<div className="flex grow flex-row place-content-between place-items-center gap-4">
+						<div className="flex grow flex-row place-content-between place-items-center gap-4">
+							<div className="flex flex-row place-content-between place-items-center gap-4">
+								<VscPackage size={25} />
+								<h2 className="font-semibold">discord.js</h2>
+							</div>
+						</div>
+						<VscArrowRight size={20} />
+					</div>
+				</a>
 				{PACKAGES.map((pkg) => (
 					<Link key={pkg} href={`/docs/packages/${pkg}/${findLatestVersion(pkg)?.version ?? 'main'}`} prefetch={false}>
 						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white">
