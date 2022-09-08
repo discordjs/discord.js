@@ -155,9 +155,8 @@ class GuildBanManager extends CachedManager {
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
       body: {
         delete_message_seconds:
-          typeof options.deleteMessageSeconds !== 'undefined'
-            ? options.deleteMessageSeconds
-            : (options.deleteMessageDays ?? 0) * 24 * 60 * 60,
+          options.deleteMessageSeconds ??
+          (options.deleteMessageDays ? options.deleteMessageDays * 24 * 60 * 60 : undefined),
       },
       reason: options.reason,
     });
