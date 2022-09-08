@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"build:local": "NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
-		"build:prod": "yarn run --top-level docs --force && yarn build:css && yarn build:next && yarn node scripts/generateAllIndicies.js",
+		"build:prod": "yarn run --top-level build && yarn run --top-level docs --force && yarn build:css && yarn build:next && yarn node scripts/generateAllIndicies.js",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
