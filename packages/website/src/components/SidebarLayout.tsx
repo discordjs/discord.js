@@ -12,14 +12,11 @@ import { VscChevronDown, VscColorMode, VscGithubInverted, VscMenu, VscPackage, V
 import { useMedia /* useLockBodyScroll */ } from 'react-use';
 import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
+import { CmdkDialog } from './Cmdk';
 import { SidebarItems } from './SidebarItems';
 import { PACKAGES } from '~/util/constants';
+import { fetcher } from '~/util/fetcher';
 import type { findMember } from '~/util/model.server';
-
-const fetcher = async (url: string) => {
-	const res = await fetch(url);
-	return res.json();
-};
 
 export interface SidebarLayoutProps {
 	branchName: string;
@@ -310,6 +307,7 @@ export function SidebarLayout({
 					</footer>
 				</article>
 			</main>
+			<CmdkDialog />
 		</>
 	);
 }

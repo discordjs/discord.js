@@ -47,7 +47,7 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 			case ApiItemKind.MethodSignature:
 			case ApiItemKind.PropertySignature:
 				// TODO: Take overloads into account
-				path += `#${item.displayName}:${item.kind}`;
+				path += `#${item.displayName}`;
 				break;
 			default:
 				path += `/${item.displayName}:${item.kind}`;

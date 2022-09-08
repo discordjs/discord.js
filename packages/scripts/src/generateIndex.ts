@@ -8,6 +8,7 @@ import {
 	ApiItem,
 	ApiModel,
 	type ApiPackage,
+	ApiItemKind,
 } from '@microsoft/api-extractor-model';
 import {
 	DocNodeKind,
@@ -102,6 +103,10 @@ export function visitNodes(item: ApiItem, tag: string) {
 			continue;
 		}
 
+		if (member.kind === ApiItemKind.Constructor) {
+			continue;
+		}
+
 		if (ApiItemContainerMixin.isBaseClassOf(member)) {
 			members.push(...visitNodes(member, tag));
 		}
@@ -109,7 +114,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 		members.push({
 			name: member.displayName,
 			kind: member.kind,
-			summary: tryResolveSummaryText(member),
+			summary: tryResolveSummaryText(member) ?? '',
 			path: generatePath(member.getHierarchy(), tag),
 		});
 	}
@@ -123,13 +128,13 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	const dir = 'searchIndex';
 
 	try {
-		(await stat(join(cwd(), dir))).isDirectory();
+		(await stat(join(cwd(), 'public', dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), dir));
+		await mkdir(join(cwd(), 'public', dir));
 	}
 
 	await writeFile(
-		join(cwd(), 'searchIndex', `${packageName}-${tag}-index.json`),
+		join(cwd(), 'public', dir, `${packageName}-${tag}-index.json`),
 		JSON.stringify(members, undefined, 2),
 	);
 }

@@ -171,16 +171,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 		});
 
 		let data;
-		let searchIndex = [];
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
-
-			const response = await readFile(
-				join(cwd(), '..', 'scripts', 'searchIndex', `${packageName}-main-index.json`),
-				'utf8',
-			);
-			searchIndex = JSON.parse(response);
 		} else {
 			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
 			data = await res.json();
@@ -204,7 +197,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 					member:
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
-					searchIndex,
 				},
 			},
 			revalidate: 3_600,
@@ -215,7 +207,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		return {
 			props: {
-				error: error_,
+				error: error.message,
 			},
 			revalidate: 1,
 		};

@@ -4,6 +4,7 @@ import NextProgress from 'next-progress';
 import { ThemeProvider } from 'next-themes';
 import '@unocss/reset/tailwind.css';
 import '../styles/unocss.css';
+import '../styles/cmdk.css';
 import '../styles/main.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {

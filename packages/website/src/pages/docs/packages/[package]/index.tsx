@@ -53,7 +53,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		return {
 			props: {
-				error: error_,
+				error: error.message,
 			},
 			revalidate: 1,
 		};

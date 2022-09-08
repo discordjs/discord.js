@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 		return {
 			props: {
-				error: error_,
+				error: error.message,
 			},
 			revalidate: 1,
 		};
@@ -44,6 +44,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 export default function PackagesRoute(props: Partial<PackageProps> & { error?: string }) {
 	const router = useRouter();
+
 	const findLatestVersion = useCallback(
 		(pkg: string) => props.data?.versions.find((version) => version.packageName === pkg),
 		[props.data?.versions],
