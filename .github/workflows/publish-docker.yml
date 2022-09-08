@@ -1,4 +1,4 @@
-name: Publish dev docker images
+name: Publish docker images
 on:
   workflow_dispatch:
 jobs:

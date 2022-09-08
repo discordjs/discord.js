@@ -1,19 +1,20 @@
+import { Buffer } from 'node:buffer';
+import process from 'node:process';
 import { Readable } from 'node:stream';
 import prism from 'prism-media';
-import { noop } from './util';
 import { StreamType } from '..';
+import { noop } from './util';
 
 /**
  * Takes an Opus Head, and verifies whether the associated Opus audio is suitable to play in a Discord voice channel.
  *
  * @param opusHead - The Opus Head to validate
- *
  * @returns `true` if suitable to play in a Discord voice channel, otherwise `false`
  */
 export function validateDiscordOpusHead(opusHead: Buffer): boolean {
 	const channels = opusHead.readUInt8(9);
 	const sampleRate = opusHead.readUInt32LE(12);
-	return channels === 2 && sampleRate === 48000;
+	return channels === 2 && sampleRate === 48_000;
 }
 
 /**
@@ -38,22 +39,28 @@ export interface ProbeInfo {
  * @param stream - The readable stream to probe
  * @param probeSize - The number of bytes to attempt to read before giving up on the probe
  * @param validator - The Opus Head validator function
- *
  * @experimental
  */
-export function demuxProbe(
+export async function demuxProbe(
 	stream: Readable,
-	probeSize = 1024,
+	probeSize = 1_024,
 	validator = validateDiscordOpusHead,
 ): Promise<ProbeInfo> {
 	return new Promise((resolve, reject) => {
 		// Preconditions
-		if (stream.readableObjectMode) return reject(new Error('Cannot probe a readable stream in object mode'));
-		if (stream.readableEnded) return reject(new Error('Cannot probe a stream that has ended'));
+		if (stream.readableObjectMode) {
+			reject(new Error('Cannot probe a readable stream in object mode'));
+			return;
+		}
+
+		if (stream.readableEnded) {
+			reject(new Error('Cannot probe a stream that has ended'));
+			return;
+		}
 
 		let readBuffer = Buffer.alloc(0);
 
-		let resolved: StreamType | undefined = undefined;
+		let resolved: StreamType | undefined;
 
 		const finish = (type: StreamType) => {
 			// eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -73,6 +80,7 @@ export function demuxProbe(
 				if (readBuffer.length > 0) {
 					stream.push(readBuffer);
 				}
+
 				resolve({
 					stream,
 					type,

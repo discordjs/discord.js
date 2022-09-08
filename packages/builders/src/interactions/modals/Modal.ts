@@ -3,20 +3,21 @@ import type {
 	APIModalActionRowComponent,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
-import { titleValidator, validateRequiredParameters } from './Assertions';
-import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow';
-import { customIdValidator } from '../../components/Assertions';
-import { createComponentBuilder } from '../../components/Components';
+import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
+import { customIdValidator } from '../../components/Assertions.js';
+import { createComponentBuilder } from '../../components/Components.js';
 import type { JSONEncodable } from '../../util/jsonEncodable';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { titleValidator, validateRequiredParameters } from './Assertions.js';
 
 export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
 	public readonly data: Partial<APIModalInteractionResponseCallbackData>;
+
 	public readonly components: ActionRowBuilder<ModalActionRowComponentBuilder>[] = [];
 
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
 		this.data = { ...data };
-		this.components = (components?.map((c) => createComponentBuilder(c)) ??
+		this.components = (components?.map((component) => createComponentBuilder(component)) ??
 			[]) as ActionRowBuilder<ModalActionRowComponentBuilder>[];
 	}
 
@@ -70,9 +71,12 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APIModalInteractionResponseCallbackData {
 		validateRequiredParameters(this.data.custom_id, this.data.title, this.components);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),

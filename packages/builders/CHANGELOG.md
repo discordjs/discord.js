@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.1.0...@discordjs/builders@1.2.0) - (2022-08-22)
+
+## Features
+
+- **website:** Show `constructor` information (#8540) ([e42fd16](https://github.com/discordjs/discord.js/commit/e42fd1636973b10dd7ed6fb4280ee1a4a8f82007))
+- **website:** Show descriptions for `@typeParam` blocks (#8523) ([e475b63](https://github.com/discordjs/discord.js/commit/e475b63f257f6261d73cb89fee9ecbcdd84e2a6b))
+- **website:** Show parameter descriptions (#8519) ([7f415a2](https://github.com/discordjs/discord.js/commit/7f415a2502bf7ce2025dbcfed9017b0635a19966))
+- **WebSocketShard:** Support new resume url (#8480) ([bc06cc6](https://github.com/discordjs/discord.js/commit/bc06cc638d2f57ab5c600e8cdb6afc8eb2180166))
+
+## Refactor
+
+- Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
+
+# [@discordjs/builders@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.0.0...@discordjs/builders@1.1.0) - (2022-07-29)
+
+## Bug Fixes
+
+- Use proper format for `@link` text (#8384) ([2655639](https://github.com/discordjs/discord.js/commit/26556390a3800e954974a00c1328ff47d3e67e9a))
+- **Formatters:** Add newline in `codeBlock` (#8369) ([5d8bd03](https://github.com/discordjs/discord.js/commit/5d8bd030d60ef364de3ef5f9963da8bda5c4efd4))
+- **selectMenu:** Allow json to be used for select menu options (#8322) ([6a2d0d8](https://github.com/discordjs/discord.js/commit/6a2d0d8e96d157d5b85cee7f17bffdfff4240074))
+
+## Documentation
+
+- Use link tags (#8382) ([5494791](https://github.com/discordjs/discord.js/commit/549479131318c659f86f0eb18578d597e22522d3))
+
+## Features
+
+- Add channel & message URL formatters (#8371) ([a7deb8f](https://github.com/discordjs/discord.js/commit/a7deb8f89830ead6185c5fb46a49688b6d209ed1))
+
 # [@discordjs/builders@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.16.0...@discordjs/builders@1.0.0) - (2022-07-17)
 
 ## Info

@@ -3,13 +3,16 @@
 	"compilerOptions": {
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"isolatedModules": true,
-		"jsx": "react-jsx",
+		"jsx": "preserve",
 		"baseUrl": ".",
 		"noEmit": true,
 		"allowJs": false,
+		"incremental": true,
+		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "remix.env.d.ts", "types.d.ts"]
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts"],
+	"exclude": ["node_modules"]
 }

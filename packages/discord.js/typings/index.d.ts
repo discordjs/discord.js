@@ -122,6 +122,8 @@ import {
   ThreadAutoArchiveDuration,
   FormattingPatterns,
   APIEmbedProvider,
+  AuditLogOptionsType,
+  TextChannelType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -191,7 +193,10 @@ declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
     public static once<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): Promise<ClientEvents[K]>;
-    public static on<K extends keyof ClientEvents>(eventEmitter: Client, eventName: K): AsyncIterator<ClientEvents[K]>;
+    public static on<K extends keyof ClientEvents>(
+      eventEmitter: Client,
+      eventName: K,
+    ): AsyncIterableIterator<ClientEvents[K]>;
   }
 }
 
@@ -393,28 +398,6 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Message | APIMessage
 >;
 
-export interface InteractionResponseFields<Cached extends CacheType = CacheType> {
-  deferred: boolean;
-  ephemeral: boolean | null;
-  replied: boolean;
-  webhook: InteractionWebhook;
-  reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message>;
-  reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  deleteReply(): Promise<void>;
-  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<Message>;
-  deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<Message>;
-  deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  fetchReply(): Promise<Message>;
-  followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
-  showModal(
-    modal:
-      | JSONEncodable<APIModalInteractionResponseCallbackData>
-      | ModalComponentData
-      | APIModalInteractionResponseCallbackData,
-  ): Promise<void>;
-  awaitModalSubmit(options: AwaitModalSubmitOptions<ModalSubmitInteraction>): Promise<ModalSubmitInteraction<Cached>>;
-}
-
 export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
@@ -517,7 +500,7 @@ export class BaseGuildEmoji extends Emoji {
   public requiresColons: boolean | null;
 }
 
-export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
+export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, true) {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public rateLimitPerUser: number | null;
@@ -1045,7 +1028,7 @@ export class DataResolver extends null {
   public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }
 
-export class DMChannel extends TextBasedChannelMixin(BaseChannel, [
+export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
   'bulkDelete',
   'fetchWebhooks',
   'createWebhook',
@@ -1082,6 +1065,7 @@ export class Guild extends AnonymousGuild {
   public afkChannelId: Snowflake | null;
   public afkTimeout: number;
   public applicationId: Snowflake | null;
+  public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
   public available: boolean;
@@ -1122,7 +1106,7 @@ export class Guild extends AnonymousGuild {
   public vanityURLUses: number | null;
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-  public get widgetChannel(): TextChannel | null;
+  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -1176,35 +1160,37 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsResolvable = null> {
+export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
-  public static Entry: typeof GuildAuditLogsEntry;
   public toJSON(): unknown;
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = null,
+  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : 'All',
+    : GuildAuditLogsActionType,
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : 'Unknown',
+    : GuildAuditLogsTargetType,
+  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
 > {
   private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
   public static Targets: GuildAuditLogsTargets;
-  public action: TAction;
+  public action: TResolvedType;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executor: User | null;
-  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
+  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
+    ? GuildAuditLogsEntryExtraField[TResolvedType]
+    : null;
   public id: Snowflake;
   public reason: string | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
@@ -1282,6 +1268,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   private constructor(client: Client, data: RawGuildMemberData, guild: Guild);
   public avatar: string | null;
   public get bannable(): boolean;
+  public get dmChannel(): DMChannel | null;
   public get displayColor(): number;
   public get displayHexColor(): HexColorString;
   public get displayName(): string;
@@ -1441,6 +1428,7 @@ export class Integration extends Base {
   public role: Role | null;
   public enableEmoticons: boolean | null;
   public get roles(): Collection<Snowflake, Role>;
+  public scopes: OAuth2Scopes[];
   public get syncedAt(): Date | null;
   public syncedTimestamp: number | null;
   public syncing: boolean | null;
@@ -1494,6 +1482,7 @@ export type Interaction<Cached extends CacheType = CacheType> =
   | AutocompleteInteraction<Cached>
   | ModalSubmitInteraction<Cached>;
 
+export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude<Interaction, AutocompleteInteraction>;
 export class BaseInteraction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
@@ -1525,12 +1514,16 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public inCachedGuild(): this is BaseInteraction<'cached'>;
   public inRawGuild(): this is BaseInteraction<'raw'>;
   public isButton(): this is ButtonInteraction<Cached>;
+  public isAutocomplete(): this is AutocompleteInteraction<Cached>;
   public isChatInputCommand(): this is ChatInputCommandInteraction<Cached>;
+  public isCommand(): this is CommandInteraction<Cached>;
   public isContextMenuCommand(): this is ContextMenuCommandInteraction<Cached>;
+  public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
+  public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
-  public isRepliable(): this is this & InteractionResponseFields<Cached>;
+  public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
 export class InteractionCollector<T extends CollectedInteraction> extends Collector<
@@ -1663,8 +1656,8 @@ export interface MappedInteractionTypes<Cached extends boolean = boolean> {
   [ComponentType.SelectMenu]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
 }
 
-export class Message<Cached extends boolean = boolean> extends Base {
-  private readonly _cacheType: Cached;
+export class Message<InGuild extends boolean = boolean> extends Base {
+  private readonly _cacheType: InGuild;
   private constructor(client: Client, data: RawMessageData);
   private _patch(data: RawPartialMessageData | RawMessageData): void;
 
@@ -1672,7 +1665,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, Attachment>;
   public author: User;
-  public get channel(): If<Cached, GuildTextBasedChannel, TextBasedChannel>;
+  public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
   public components: ActionRow<MessageActionRowComponent>[];
@@ -1686,8 +1679,8 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public editedTimestamp: number | null;
   public embeds: Embed[];
   public groupActivityApplication: ClientApplication | null;
-  public guildId: If<Cached, Snowflake>;
-  public get guild(): If<Cached, Guild>;
+  public guildId: If<InGuild, Snowflake>;
+  public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
   public interaction: MessageInteraction | null;
@@ -1708,30 +1701,30 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
   public awaitMessageComponent<T extends MessageComponentType>(
-    options?: AwaitMessageCollectorOptionsParams<T, Cached>,
-  ): Promise<MappedInteractionTypes<Cached>[T]>;
+    options?: AwaitMessageCollectorOptionsParams<T, InGuild>,
+  ): Promise<MappedInteractionTypes<InGuild>[T]>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
   public createMessageComponentCollector<T extends MessageComponentType>(
-    options?: MessageCollectorOptionsParams<T, Cached>,
-  ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
-  public delete(): Promise<Message>;
-  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message>;
+    options?: MessageCollectorOptionsParams<T, InGuild>,
+  ): InteractionCollector<MappedInteractionTypes<InGuild>[T]>;
+  public delete(): Promise<Message<InGuild>>;
+  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message<InGuild>>;
   public equals(message: Message, rawData: unknown): boolean;
-  public fetchReference(): Promise<Message>;
+  public fetchReference(): Promise<Message<InGuild>>;
   public fetchWebhook(): Promise<Webhook>;
-  public crosspost(): Promise<Message>;
-  public fetch(force?: boolean): Promise<Message>;
-  public pin(reason?: string): Promise<Message>;
+  public crosspost(): Promise<Message<InGuild>>;
+  public fetch(force?: boolean): Promise<Message<InGuild>>;
+  public pin(reason?: string): Promise<Message<InGuild>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-  public removeAttachments(): Promise<Message>;
-  public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message>;
+  public removeAttachments(): Promise<Message<InGuild>>;
+  public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message<InGuild>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
-  public suppressEmbeds(suppress?: boolean): Promise<Message>;
+  public suppressEmbeds(suppress?: boolean): Promise<Message<InGuild>>;
   public toJSON(): unknown;
   public toString(): string;
-  public unpin(reason?: string): Promise<Message>;
+  public unpin(reason?: string): Promise<Message<InGuild>>;
   public inGuild(): this is Message<true> & this;
 }
 
@@ -1859,6 +1852,7 @@ export class MessageMentions {
   private _channels: Collection<Snowflake, Channel> | null;
   private readonly _content: string;
   private _members: Collection<Snowflake, GuildMember> | null;
+  private _parsedUsers: Collection<Snowflake, User> | null;
 
   public get channels(): Collection<Snowflake, Channel>;
   public readonly client: Client;
@@ -1866,14 +1860,16 @@ export class MessageMentions {
   public readonly guild: Guild;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
   public get members(): Collection<Snowflake, GuildMember> | null;
+  public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
   public roles: Collection<Snowflake, Role>;
   public users: Collection<Snowflake, User>;
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
-  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   private static GlobalChannelsPattern: RegExp;
+  private static GlobalUsersPattern: RegExp;
+  public static ChannelsPattern: typeof FormattingPatterns.Channel;
   public static EveryonePattern: RegExp;
   public static RolesPattern: typeof FormattingPatterns.Role;
   public static UsersPattern: typeof FormattingPatterns.User;
@@ -1960,12 +1956,11 @@ export class ModalSubmitFields {
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
   extends ModalSubmitInteraction<Cached> {
   message: Message<BooleanCache<Cached>>;
+  channelId: Snowflake;
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
   update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message>;
-  deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
@@ -1996,6 +1991,8 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<Message>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
@@ -2490,7 +2487,11 @@ export interface PrivateThreadChannel extends ThreadChannel {
   type: ChannelType.GuildPrivateThread;
 }
 
-export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, ['fetchWebhooks', 'createWebhook', 'setNSFW']) {
+export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
+  'fetchWebhooks',
+  'createWebhook',
+  'setNSFW',
+]) {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
@@ -2530,7 +2531,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, ['fetchWeb
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
-  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message>;
+  public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message<true> | null>;
   public setArchived(archived?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setAutoArchiveDuration(
     autoArchiveDuration: ThreadAutoArchiveDuration,
@@ -2693,24 +2694,41 @@ export function createComponentBuilder<T extends keyof MappedComponentBuilderTyp
 export function createComponentBuilder<C extends ComponentBuilder>(data: C): C;
 export function createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
 
+/** @deprecated This class is redundant as all methods of the class can be imported from discord.js directly. */
 export class Formatters extends null {
+  /** @deprecated Import this method directly from discord.js instead. */
   public static blockQuote: typeof blockQuote;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static bold: typeof bold;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static channelMention: typeof channelMention;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static codeBlock: typeof codeBlock;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static formatEmoji: typeof formatEmoji;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static hideLinkEmbed: typeof hideLinkEmbed;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static hyperlink: typeof hyperlink;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static inlineCode: typeof inlineCode;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static italic: typeof italic;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static quote: typeof quote;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static roleMention: typeof roleMention;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static spoiler: typeof spoiler;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static strikethrough: typeof strikethrough;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static time: typeof time;
+  /** @deprecated Import this property directly from discord.js instead. */
   public static TimestampStyles: typeof TimestampStyles;
-  public static TimestampStylesString: TimestampStylesString;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static underscore: typeof underscore;
+  /** @deprecated Import this method directly from discord.js instead. */
   public static userMention: typeof userMention;
 }
 
@@ -2719,7 +2737,10 @@ export type ComponentData =
   | ModalActionRowComponentData
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
-export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, ['lastPinTimestamp', 'lastPinAt']) {
+export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, true, [
+  'lastPinTimestamp',
+  'lastPinAt',
+]) {
   public videoQualityMode: VideoQualityMode | null;
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
@@ -2770,7 +2791,7 @@ export class VoiceState extends Base {
 
 export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
-  public avatar: string;
+  public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
   public readonly client: Client;
@@ -2996,152 +3017,152 @@ export const version: string;
 
 //#region Errors
 export enum DiscordjsErrorCodes {
-  ClientInvalidOption,
-  ClientInvalidProvidedShards,
-  ClientMissingIntents,
-  ClientNotReady,
+  ClientInvalidOption = 'ClientInvalidOption',
+  ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
+  ClientMissingIntents = 'ClientMissingIntents',
+  ClientNotReady = 'ClientNotReady',
 
-  TokenInvalid,
-  TokenMissing,
-  ApplicationCommandPermissionsTokenMissing,
+  TokenInvalid = 'TokenInvalid',
+  TokenMissing = 'TokenMissing',
+  ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
-  WSCloseRequested,
-  WSConnectionExists,
-  WSNotOpen,
-  ManagerDestroyed,
+  WSCloseRequested = 'WSCloseRequested',
+  WSConnectionExists = 'WSConnectionExists',
+  WSNotOpen = 'WSNotOpen',
+  ManagerDestroyed = 'ManagerDestroyed',
 
-  BitFieldInvalid,
+  BitFieldInvalid = 'BitFieldInvalid',
 
-  ShardingInvalid,
-  ShardingRequired,
-  InvalidIntents,
-  DisallowedIntents,
-  ShardingNoShards,
-  ShardingInProcess,
-  ShardingInvalidEvalBroadcast,
-  ShardingShardNotFound,
-  ShardingAlreadySpawned,
-  ShardingProcessExists,
-  ShardingWorkerExists,
-  ShardingReadyTimeout,
-  ShardingReadyDisconnected,
-  ShardingReadyDied,
-  ShardingNoChildExists,
-  ShardingShardMiscalculation,
+  ShardingInvalid = 'ShardingInvalid',
+  ShardingRequired = 'ShardingRequired',
+  InvalidIntents = 'InvalidIntents',
+  DisallowedIntents = 'DisallowedIntents',
+  ShardingNoShards = 'ShardingNoShards',
+  ShardingInProcess = 'ShardingInProcess',
+  ShardingInvalidEvalBroadcast = 'ShardingInvalidEvalBroadcast',
+  ShardingShardNotFound = 'ShardingShardNotFound',
+  ShardingAlreadySpawned = 'ShardingAlreadySpawned',
+  ShardingProcessExists = 'ShardingProcessExists',
+  ShardingWorkerExists = 'ShardingWorkerExists',
+  ShardingReadyTimeout = 'ShardingReadyTimeout',
+  ShardingReadyDisconnected = 'ShardingReadyDisconnected',
+  ShardingReadyDied = 'ShardingReadyDied',
+  ShardingNoChildExists = 'ShardingNoChildExists',
+  ShardingShardMiscalculation = 'ShardingShardMiscalculation',
 
-  ColorRange,
-  ColorConvert,
+  ColorRange = 'ColorRange',
+  ColorConvert = 'ColorConvert',
 
-  InviteOptionsMissingChannel,
+  InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
-  ButtonLabel,
-  ButtonURL,
-  ButtonCustomId,
+  ButtonLabel = 'ButtonLabel',
+  ButtonURL = 'ButtonURL',
+  ButtonCustomId = 'ButtonCustomId',
 
-  SelectMenuCustomId,
-  SelectMenuPlaceholder,
-  SelectOptionLabel,
-  SelectOptionValue,
-  SelectOptionDescription,
+  SelectMenuCustomId = 'SelectMenuCustomId',
+  SelectMenuPlaceholder = 'SelectMenuPlaceholder',
+  SelectOptionLabel = 'SelectOptionLabel',
+  SelectOptionValue = 'SelectOptionValue',
+  SelectOptionDescription = 'SelectOptionDescription',
 
-  InteractionCollectorError,
+  InteractionCollectorError = 'InteractionCollectorError',
 
-  FileNotFound,
+  FileNotFound = 'FileNotFound',
 
-  UserBannerNotFetched,
-  UserNoDMChannel,
+  UserBannerNotFetched = 'UserBannerNotFetched',
+  UserNoDMChannel = 'UserNoDMChannel',
 
-  VoiceNotStageChannel,
+  VoiceNotStageChannel = 'VoiceNotStageChannel',
 
-  VoiceStateNotOwn,
-  VoiceStateInvalidType,
+  VoiceStateNotOwn = 'VoiceStateNotOwn',
+  VoiceStateInvalidType = 'VoiceStateInvalidType',
 
-  ReqResourceType,
+  ReqResourceType = 'ReqResourceType',
 
-  ImageFormat,
-  ImageSize,
+  ImageFormat = 'ImageFormat',
+  ImageSize = 'ImageSize',
 
-  MessageBulkDeleteType,
-  MessageNonceType,
-  MessageContentType,
+  MessageBulkDeleteType = 'MessageBulkDeleteType',
+  MessageNonceType = 'MessageNonceType',
+  MessageContentType = 'MessageContentType',
 
-  SplitMaxLen,
+  SplitMaxLen = 'SplitMaxLen',
 
-  BanResolveId,
-  FetchBanResolveId,
+  BanResolveId = 'BanResolveId',
+  FetchBanResolveId = 'FetchBanResolveId',
 
-  PruneDaysType,
+  PruneDaysType = 'PruneDaysType',
 
-  GuildChannelResolve,
-  GuildVoiceChannelResolve,
-  GuildChannelOrphan,
-  GuildChannelUnowned,
-  GuildOwned,
-  GuildMembersTimeout,
-  GuildUncachedMe,
-  ChannelNotCached,
-  StageChannelResolve,
-  GuildScheduledEventResolve,
-  FetchOwnerId,
+  GuildChannelResolve = 'GuildChannelResolve',
+  GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
+  GuildChannelOrphan = 'GuildChannelOrphan',
+  GuildChannelUnowned = 'GuildChannelUnowned',
+  GuildOwned = 'GuildOwned',
+  GuildMembersTimeout = 'GuildMembersTimeout',
+  GuildUncachedMe = 'GuildUncachedMe',
+  ChannelNotCached = 'ChannelNotCached',
+  StageChannelResolve = 'StageChannelResolve',
+  GuildScheduledEventResolve = 'GuildScheduledEventResolve',
+  FetchOwnerId = 'FetchOwnerId',
 
-  InvalidType,
-  InvalidElement,
+  InvalidType = 'InvalidType',
+  InvalidElement = 'InvalidElement',
 
-  MessageThreadParent,
-  MessageExistingThread,
-  ThreadInvitableType,
+  MessageThreadParent = 'MessageThreadParent',
+  MessageExistingThread = 'MessageExistingThread',
+  ThreadInvitableType = 'ThreadInvitableType',
 
-  WebhookMessage,
-  WebhookTokenUnavailable,
-  WebhookURLInvalid,
-  WebhookApplication,
-  MessageReferenceMissing,
+  WebhookMessage = 'WebhookMessage',
+  WebhookTokenUnavailable = 'WebhookTokenUnavailable',
+  WebhookURLInvalid = 'WebhookURLInvalid',
+  WebhookApplication = 'WebhookApplication',
+  MessageReferenceMissing = 'MessageReferenceMissing',
 
-  EmojiType,
-  EmojiManaged,
-  MissingManageEmojisAndStickersPermission,
-  NotGuildSticker,
+  EmojiType = 'EmojiType',
+  EmojiManaged = 'EmojiManaged',
+  MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
+  NotGuildSticker = 'NotGuildSticker',
 
-  ReactionResolveUser,
+  ReactionResolveUser = 'ReactionResolveUser',
 
-  VanityURL,
+  VanityURL = 'VanityURL',
 
-  InviteResolveCode,
+  InviteResolveCode = 'InviteResolveCode',
 
-  InviteNotFound,
+  InviteNotFound = 'InviteNotFound',
 
-  DeleteGroupDMChannel,
-  FetchGroupDMChannel,
+  DeleteGroupDMChannel = 'DeleteGroupDMChannel',
+  FetchGroupDMChannel = 'FetchGroupDMChannel',
 
-  MemberFetchNonceLength,
+  MemberFetchNonceLength = 'MemberFetchNonceLength',
 
-  GlobalCommandPermissions,
-  GuildUncachedEntityResolve,
+  GlobalCommandPermissions = 'GlobalCommandPermissions',
+  GuildUncachedEntityResolve = 'GuildUncachedEntityResolve',
 
-  InteractionAlreadyReplied,
-  InteractionNotReplied,
-  InteractionEphemeralReplied,
+  InteractionAlreadyReplied = 'InteractionAlreadyReplied',
+  InteractionNotReplied = 'InteractionNotReplied',
+  InteractionEphemeralReplied = 'InteractionEphemeralReplied',
 
-  CommandInteractionOptionNotFound,
-  CommandInteractionOptionType,
-  CommandInteractionOptionEmpty,
-  CommandInteractionOptionNoSubcommand,
-  CommandInteractionOptionNoSubcommandGroup,
-  AutocompleteInteractionOptionNoFocusedOption,
+  CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
+  CommandInteractionOptionType = 'CommandInteractionOptionType',
+  CommandInteractionOptionEmpty = 'CommandInteractionOptionEmpty',
+  CommandInteractionOptionNoSubcommand = 'CommandInteractionOptionNoSubcommand',
+  CommandInteractionOptionNoSubcommandGroup = 'CommandInteractionOptionNoSubcommandGroup',
+  AutocompleteInteractionOptionNoFocusedOption = 'AutocompleteInteractionOptionNoFocusedOption',
 
-  ModalSubmitInteractionFieldNotFound,
-  ModalSubmitInteractionFieldType,
+  ModalSubmitInteractionFieldNotFound = 'ModalSubmitInteractionFieldNotFound',
+  ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
 
-  InvalidMissingScopes,
+  InvalidMissingScopes = 'InvalidMissingScopes',
 
-  NotImplemented,
+  NotImplemented = 'NotImplemented',
 
-  SweepFilterReturn,
+  SweepFilterReturn = 'SweepFilterReturn',
 }
 
 export interface DiscordjsErrorFields<Name extends string> {
-  readonly name: `${Name} [${keyof typeof DiscordjsErrorCodes}]`;
-  get code(): keyof typeof DiscordjsErrorCodes;
+  readonly name: `${Name} [${DiscordjsErrorCodes}]`;
+  get code(): DiscordjsErrorCodes;
 }
 
 export function DiscordjsErrorMixin<T, N extends string>(
@@ -3379,6 +3400,12 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
 }
 
+export interface AddOrRemoveGuildMemberRoleOptions {
+  user: GuildMemberResolvable;
+  role: RoleResolvable;
+  reason?: string;
+}
+
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
@@ -3401,6 +3428,8 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User | null>;
+  public addRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
+  public removeRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
@@ -3477,15 +3506,22 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
   ): Promise<GuildMember>;
 }
 
-export class MessageManager extends CachedManager<Snowflake, Message, MessageResolvable> {
+export class MessageManager<InGuild extends boolean = boolean> extends CachedManager<
+  Snowflake,
+  Message<InGuild>,
+  MessageResolvable
+> {
   private constructor(channel: TextBasedChannel, iterable?: Iterable<RawMessageData>);
-  public channel: TextBasedChannel;
-  public crosspost(message: MessageResolvable): Promise<Message>;
+  public channel: If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
+  public crosspost(message: MessageResolvable): Promise<Message<InGuild>>;
   public delete(message: MessageResolvable): Promise<void>;
-  public edit(message: MessageResolvable, options: string | MessagePayload | MessageEditOptions): Promise<Message>;
-  public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message>;
-  public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
-  public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
+  public edit(
+    message: MessageResolvable,
+    options: string | MessagePayload | MessageEditOptions,
+  ): Promise<Message<InGuild>>;
+  public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message<InGuild>>;
+  public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
+  public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<InGuild>>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -3608,22 +3644,31 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 // to each of those classes
 
 export type Constructable<T> = abstract new (...args: any[]) => T;
-export function PartialTextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & PartialTextBasedChannelFields>;
-export function TextBasedChannelMixin<T, I extends keyof TextBasedChannelFields = never>(
+export function PartialTextBasedChannel<T>(
   Base?: Constructable<T>,
-  ignore?: I[],
-): Constructable<T & Omit<TextBasedChannelFields, I>>;
+): Constructable<T & PartialTextBasedChannelFields<false>>;
 
-export interface PartialTextBasedChannelFields {
-  send(options: string | MessagePayload | MessageOptions): Promise<Message>;
+export function TextBasedChannelMixin<
+  T,
+  InGuild extends boolean = boolean,
+  I extends keyof TextBasedChannelFields<InGuild> = never,
+>(
+  Base?: Constructable<T>,
+  inGuild?: InGuild,
+  ignore?: I[],
+): Constructable<T & Omit<TextBasedChannelFields<InGuild>, I>>;
+
+export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
+  send(options: string | MessagePayload | MessageOptions): Promise<Message<InGuild>>;
 }
 
-export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
+export interface TextBasedChannelFields<InGuild extends boolean = boolean>
+  extends PartialTextBasedChannelFields<InGuild> {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
   get lastPinAt(): Date | null;
-  messages: MessageManager;
+  messages: MessageManager<InGuild>;
   awaitMessageComponent<T extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
@@ -3631,7 +3676,7 @@ export interface TextBasedChannelFields extends PartialTextBasedChannelFields {
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
-  ): Promise<Collection<Snowflake, Message>>;
+  ): Promise<Collection<Snowflake, Message | PartialMessage | undefined>>;
   createMessageComponentCollector<T extends MessageComponentType>(
     options?: MessageChannelCollectorOptionsParams<T, true>,
   ): InteractionCollector<MappedInteractionTypes[T]>;
@@ -3768,31 +3813,85 @@ export interface ApplicationCommandChannelOption extends BaseApplicationCommandO
   channelTypes?: ChannelType[];
 }
 
+export interface ApplicationCommandRoleOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Role;
+}
+
+export interface ApplicationCommandRoleOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Role;
+}
+
+export interface ApplicationCommandUserOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.User;
+}
+
+export interface ApplicationCommandUserOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.User;
+}
+
+export interface ApplicationCommandMentionableOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Mentionable;
+}
+
+export interface ApplicationCommandMentionableOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Mentionable;
+}
+
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Attachment;
 }
 
-export interface ApplicationCommandAutocompleteOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
-  type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Number
-    | ApplicationCommandOptionType.Integer;
+export interface ApplicationCommandAutocompleteNumericOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  maxValue?: number;
   autocomplete: true;
 }
 
-export interface ApplicationCommandChoicesData extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandAutocompleteStringOption
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  maxLength?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteNumericOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: CommandOptionNumericResolvableType;
+  minValue?: number;
+  min_value?: number;
+  maxValue?: number;
+  max_value?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandAutocompleteStringOptionData
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+  type: ApplicationCommandOptionType.String;
+  minLength?: number;
+  min_length?: number;
+  maxLength?: number;
+  max_length?: number;
+  autocomplete: true;
+}
+
+export interface ApplicationCommandChoicesData<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandChoicesOption extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
+export interface ApplicationCommandChoicesOption<Type extends string | number = string | number>
+  extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData[];
+  choices?: ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
-export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandNumericOptionData extends ApplicationCommandChoicesData<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   min_value?: number;
@@ -3800,7 +3899,7 @@ export interface ApplicationCommandNumericOptionData extends ApplicationCommandC
   max_value?: number;
 }
 
-export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData {
+export interface ApplicationCommandStringOptionData extends ApplicationCommandChoicesData<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   min_length?: number;
@@ -3808,16 +3907,24 @@ export interface ApplicationCommandStringOptionData extends ApplicationCommandCh
   max_length?: number;
 }
 
-export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandBooleanOptionData extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
+}
+
+export interface ApplicationCommandNumericOption extends ApplicationCommandChoicesOption<number> {
   type: CommandOptionNumericResolvableType;
   minValue?: number;
   maxValue?: number;
 }
 
-export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption {
+export interface ApplicationCommandStringOption extends ApplicationCommandChoicesOption<string> {
   type: ApplicationCommandOptionType.String;
   minLength?: number;
   maxLength?: number;
+}
+
+export interface ApplicationCommandBooleanOption extends BaseApplicationCommandOptionsData {
+  type: ApplicationCommandOptionType.Boolean;
 }
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -3832,19 +3939,12 @@ export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandO
 
 export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (
-    | ApplicationCommandChoicesData
-    | ApplicationCommandNonOptionsData
-    | ApplicationCommandChannelOptionData
-    | ApplicationCommandAutocompleteOption
-    | ApplicationCommandNumericOptionData
-    | ApplicationCommandStringOptionData
-  )[];
+  options?: Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>[];
 }
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: (ApplicationCommandChoicesOption | ApplicationCommandNonOptions | ApplicationCommandChannelOption)[];
+  options?: Exclude<ApplicationCommandOption, ApplicationCommandSubGroup | ApplicationCommandSubCommand>[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
@@ -3859,26 +3959,35 @@ export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
-  | ApplicationCommandChoicesData
-  | ApplicationCommandAutocompleteOption
+  | ApplicationCommandAutocompleteNumericOptionData
+  | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandNumericOptionData
   | ApplicationCommandStringOptionData
+  | ApplicationCommandRoleOptionData
+  | ApplicationCommandUserOptionData
+  | ApplicationCommandMentionableOptionData
+  | ApplicationCommandBooleanOptionData
   | ApplicationCommandSubCommandData;
 
 export type ApplicationCommandOption =
   | ApplicationCommandSubGroup
+  | ApplicationCommandAutocompleteNumericOption
+  | ApplicationCommandAutocompleteStringOption
   | ApplicationCommandNonOptions
   | ApplicationCommandChannelOption
-  | ApplicationCommandChoicesOption
   | ApplicationCommandNumericOption
   | ApplicationCommandStringOption
+  | ApplicationCommandRoleOption
+  | ApplicationCommandUserOption
+  | ApplicationCommandMentionableOption
+  | ApplicationCommandBooleanOption
   | ApplicationCommandAttachmentOption
   | ApplicationCommandSubCommand;
 
-export interface ApplicationCommandOptionChoiceData {
+export interface ApplicationCommandOptionChoiceData<Value extends string | number = string | number> {
   name: string;
   nameLocalizations?: LocalizationMap;
-  value: string | number;
+  value: Value;
 }
 
 export interface ApplicationCommandPermissions {
@@ -4054,7 +4163,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: GuildChannelResolvable;
+  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -4098,7 +4207,7 @@ export interface ClientEvents {
     reactions: Collection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
-  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: TextBasedChannel];
+  messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: GuildTextBasedChannel];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
@@ -4620,22 +4729,22 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.ChannelOverwriteCreate]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: 'Role' }
-    | { id: Snowflake; type: 'Member' };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteUpdate]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: 'Role' }
-    | { id: Snowflake; type: 'Member' };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteDelete]:
     | Role
     | GuildMember
-    | { id: Snowflake; name: string; type: OverwriteType.Role }
-    | { id: Snowflake; type: OverwriteType.Member };
+    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+    | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
-  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake; guild: Guild | { id: Snowflake } };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
@@ -4708,7 +4817,7 @@ export interface GuildChannelEditOptions {
 
 export interface GuildChannelOverwriteOptions {
   reason?: string;
-  type?: number;
+  type?: OverwriteType;
 }
 
 export interface GuildCreateOptions {
@@ -4727,7 +4836,7 @@ export interface GuildCreateOptions {
 
 export interface GuildWidgetSettings {
   enabled: boolean;
-  channel: NonThreadGuildBasedChannel | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | null;
 }
 
 export interface GuildEditData {
@@ -4805,7 +4914,7 @@ export interface GuildPruneMembersOptions {
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
-  channel: GuildChannelResolvable | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | Snowflake | null;
 }
 
 export interface GuildSearchMembersOptions {
@@ -5418,7 +5527,7 @@ export type Channel =
   | AnyThreadChannel
   | VoiceChannel;
 
-export type TextBasedChannel = Extract<Channel, { messages: MessageManager }>;
+export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, PartialGroupDMChannel>;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
@@ -5599,4 +5708,4 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export * from 'discord-api-types/v10';
 export * from '@discordjs/builders';
-export { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
+export * from '@discordjs/rest';

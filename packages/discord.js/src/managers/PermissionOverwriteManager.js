@@ -72,11 +72,11 @@ class PermissionOverwriteManager extends CachedManager {
   }
 
   /**
-   * Extra information about the overwrite
+   * Extra information about the overwrite.
    * @typedef {Object} GuildChannelOverwriteOptions
-   * @property {string} [reason] Reason for creating/editing this overwrite
-   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
-   * automatic resolution of type that results in an error for uncached structure
+   * @property {string} [reason] The reason for creating/editing this overwrite
+   * @property {OverwriteType} [type] The type of overwrite. Use this to bypass automatic resolution of `type`
+   * that results in an error for an uncached structure
    */
 
   /**
@@ -115,7 +115,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @example
    * // Create or Replace permission overwrites for a message author
    * message.channel.permissionOverwrites.create(message.author, {
-   *   SEND_MESSAGES: false
+   *   SendMessages: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);
@@ -133,7 +133,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @example
    * // Edit or Create permission overwrites for a message author
    * message.channel.permissionOverwrites.edit(message.author, {
-   *   SEND_MESSAGES: false
+   *   SendMessages: false
    * })
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);

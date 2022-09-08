@@ -1,47 +1,47 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 
-export interface RowData {
-	monospace?: boolean;
-	content: string;
-}
-
-export interface TableProps {
-	columns: string[];
+export function Table({
+	rows,
+	columns,
+	columnStyles,
+}: {
 	columnStyles?: Record<string, string>;
+	columns: string[];
 	rows: Record<string, ReactNode>[];
-	className?: string | undefined;
-}
+}) {
+	const cols = useMemo(
+		() =>
+			columns.map((column) => (
+				<th key={column} className="border-light-900 break-normal border-b px-3 py-2 text-left text-sm">
+					{column}
+				</th>
+			)),
+		[columns],
+	);
 
-export function Table({ rows, columns, columnStyles, className }: TableProps) {
-	return (
-		<div className={className}>
-			<table className="table-fixed w-full pb-10 border-collapse">
-				<thead>
-					<tr>
-						{columns.map((column) => (
-							<th key={column} className="border-b z-10 text-left text-sm pl-2 border-slate-400">
-								{column}
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{rows.map((row, i) => (
-						<tr key={i}>
-							{Object.entries(row).map(([colName, val]) => (
-								<td
-									key={colName}
-									className={`p-2 text-sm border-b text-left border-slate-300 break-all ${
-										columnStyles?.[colName] ?? ''
-									}`}
-								>
-									{val}
-								</td>
-							))}
-						</tr>
+	const data = useMemo(
+		() =>
+			rows.map((row, idx) => (
+				<tr key={idx} className="[&>td]:last-of-type:border-0">
+					{Object.entries(row).map(([colName, val]) => (
+						<td
+							key={colName}
+							className={`border-light-900 border-b px-3 py-2 text-left text-sm ${columnStyles?.[colName] ?? ''}`}
+						>
+							{val}
+						</td>
 					))}
-				</tbody>
-			</table>
-		</div>
+				</tr>
+			)),
+		[columnStyles, rows],
+	);
+
+	return (
+		<table className="w-full border-collapse">
+			<thead>
+				<tr>{cols}</tr>
+			</thead>
+			<tbody>{data}</tbody>
+		</table>
 	);
 }

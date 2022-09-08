@@ -1,9 +1,9 @@
+const isASymbol = (char: string) => '-!$%^&*()_+|~=`{}[]:;<>?,. '.includes(char);
+
 export function splitVarName(str: string) {
 	const res: string[][] = [];
 	let currGroup: string[] = [];
 	let currStr = '';
-
-	const isASymbol = (char: string) => '-!$%^&*()_+|~=`{}[]:;<>?,. '.includes(char);
 
 	for (const char of str) {
 		const currentlyInASymbolSection = isASymbol(currStr[0]!);
@@ -13,6 +13,7 @@ export function splitVarName(str: string) {
 			if (char === '.') {
 				continue;
 			}
+
 			currGroup.push(currStr);
 			currStr = char;
 
@@ -24,6 +25,7 @@ export function splitVarName(str: string) {
 			currStr += char;
 		}
 	}
+
 	currGroup.push(currStr);
 	res.push(currGroup);
 

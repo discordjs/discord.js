@@ -2,7 +2,7 @@ import type {
 	APIApplicationCommandOption,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import {
@@ -13,10 +13,10 @@ import {
 	validateDMPermission,
 	validateMaxOptionsLength,
 	validateRequiredParameters,
-} from './Assertions';
-import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
-import { SharedNameAndDescription } from './mixins/NameAndDescription';
-import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
+} from './Assertions.js';
+import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
+import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
+import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
 
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
@@ -49,7 +49,7 @@ export class SlashCommandBuilder {
 	 * Whether the command is enabled by default when the app is added to a guild
 	 *
 	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * You should use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
@@ -67,9 +67,11 @@ export class SlashCommandBuilder {
 	/**
 	 * Returns the final data that should be sent to Discord.
 	 *
-	 * **Note:** Calling this function will validate required properties based on their conditions.
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
 
 		validateLocalizationMap(this.name_localizations);
@@ -84,12 +86,11 @@ export class SlashCommandBuilder {
 	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.
 	 *
-	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
-	 *
+	 * @remarks
+	 * If set to `false`, you will have to later `PUT` the permissions for this command.
 	 * @param value - Whether or not to enable this command by default
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
@@ -103,10 +104,9 @@ export class SlashCommandBuilder {
 	/**
 	 * Sets the default permissions a member should have in order to run the command.
 	 *
-	 * **Note:** You can set this to `'0'` to disable the command by default.
-	 *
+	 * @remarks
+	 * You can set this to `'0'` to disable the command by default.
 	 * @param permissions - The permissions bit field to set
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
@@ -123,7 +123,6 @@ export class SlashCommandBuilder {
 	 * By default, commands are visible.
 	 *
 	 * @param enabled - If the command should be enabled in DMs
-	 *
 	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
@@ -192,7 +191,7 @@ export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSla
 
 export interface SlashCommandSubcommandsOnlyBuilder
 	extends SharedNameAndDescription,
-		Pick<SlashCommandBuilder, 'toJSON' | 'addSubcommand' | 'addSubcommandGroup'> {}
+		Pick<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup' | 'toJSON'> {}
 
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
@@ -200,5 +199,5 @@ export interface SlashCommandOptionsOnlyBuilder
 		Pick<SlashCommandBuilder, 'toJSON'> {}
 
 export interface ToAPIApplicationCommandOptions {
-	toJSON: () => APIApplicationCommandOption;
+	toJSON(): APIApplicationCommandOption;
 }

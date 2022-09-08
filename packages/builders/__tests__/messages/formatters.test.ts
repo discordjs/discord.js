@@ -1,8 +1,11 @@
+/* eslint-disable no-template-curly-in-string */
 import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
+	chatInputApplicationCommandMention,
 	blockQuote,
 	bold,
+	channelLink,
 	channelMention,
 	codeBlock,
 	Faces,
@@ -11,6 +14,7 @@ import {
 	hyperlink,
 	inlineCode,
 	italic,
+	messageLink,
 	quote,
 	roleMention,
 	spoiler,
@@ -19,16 +23,16 @@ import {
 	TimestampStyles,
 	underscore,
 	userMention,
-} from '../../src';
+} from '../../src/index.js';
 
 describe('Message formatters', () => {
 	describe('codeBlock', () => {
 		test('GIVEN "discord.js" with no language THEN returns "```\\ndiscord.js```"', () => {
-			expect<'```\ndiscord.js```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js```');
+			expect<'```\ndiscord.js\n```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js\n```');
 		});
 
 		test('GIVEN "discord.js" with "js" as language THEN returns "```js\\ndiscord.js```"', () => {
-			expect<'```js\ndiscord.js```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js```');
+			expect<'```js\ndiscord.js\n```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js\n```');
 		});
 	});
 
@@ -134,6 +138,26 @@ describe('Message formatters', () => {
 				expect(roleMention('815434166602170409')).toEqual('<@&815434166602170409>');
 			});
 		});
+
+		describe('chatInputApplicationCommandMention', () => {
+			test('GIVEN commandName and commandId THEN returns "</[commandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', '815434166602170409')).toEqual(
+					'</airhorn:815434166602170409>',
+				);
+			});
+
+			test('GIVEN commandName, subcommandName, and commandId THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', 'sub', '815434166602170409')).toEqual(
+					'</airhorn sub:815434166602170409>',
+				);
+			});
+
+			test('GIVEN commandName, subcommandGroupName, subcommandName, and commandId THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('airhorn', 'group', 'sub', '815434166602170409')).toEqual(
+					'</airhorn group sub:815434166602170409>',
+				);
+			});
+		});
 	});
 
 	describe('formatEmoji', () => {
@@ -150,10 +174,38 @@ describe('Message formatters', () => {
 		});
 	});
 
+	describe('channelLink', () => {
+		test('GIVEN channelId THEN returns "https://discord.com/channels/@me/${channelId}"', () => {
+			expect<'https://discord.com/channels/@me/123456789012345678'>(channelLink('123456789012345678')).toEqual(
+				'https://discord.com/channels/@me/123456789012345678',
+			);
+		});
+
+		test('GIVEN channelId WITH guildId THEN returns "https://discord.com/channels/${guildId}/${channelId}"', () => {
+			expect<'https://discord.com/channels/987654321987654/123456789012345678'>(
+				channelLink('123456789012345678', '987654321987654'),
+			).toEqual('https://discord.com/channels/987654321987654/123456789012345678');
+		});
+	});
+
+	describe('messageLink', () => {
+		test('GIVEN channelId AND messageId THEN returns "https://discord.com/channels/@me/${channelId}/${messageId}"', () => {
+			expect<'https://discord.com/channels/@me/123456789012345678/102938475657483'>(
+				messageLink('123456789012345678', '102938475657483'),
+			).toEqual('https://discord.com/channels/@me/123456789012345678/102938475657483');
+		});
+
+		test('GIVEN channelId AND messageId WITH guildId THEN returns "https://discord.com/channels/${guildId}/${channelId}/${messageId}"', () => {
+			expect<'https://discord.com/channels/987654321987654/123456789012345678/102938475657483'>(
+				messageLink('123456789012345678', '102938475657483', '987654321987654'),
+			).toEqual('https://discord.com/channels/987654321987654/123456789012345678/102938475657483');
+		});
+	});
+
 	describe('time', () => {
 		test('GIVEN no arguments THEN returns "<t:${bigint}>"', () => {
 			vitest.useFakeTimers();
-			vitest.setSystemTime(1566424897579);
+			vitest.setSystemTime(1_566_424_897_579);
 
 			expect<`<t:${bigint}>`>(time()).toEqual('<t:1566424897>');
 
@@ -161,29 +213,29 @@ describe('Message formatters', () => {
 		});
 
 		test('GIVEN a date THEN returns "<t:${bigint}>"', () => {
-			expect<`<t:${bigint}>`>(time(new Date(1867424897579))).toEqual('<t:1867424897>');
+			expect<`<t:${bigint}>`>(time(new Date(1_867_424_897_579))).toEqual('<t:1867424897>');
 		});
 
 		test('GIVEN a date and a style from string THEN returns "<t:${bigint}:${style}>"', () => {
-			expect<`<t:${bigint}:d>`>(time(new Date(1867424897579), 'd')).toEqual('<t:1867424897:d>');
+			expect<`<t:${bigint}:d>`>(time(new Date(1_867_424_897_579), 'd')).toEqual('<t:1867424897:d>');
 		});
 
 		test('GIVEN a date and a format from enum THEN returns "<t:${bigint}:${style}>"', () => {
-			expect<`<t:${bigint}:R>`>(time(new Date(1867424897579), TimestampStyles.RelativeTime)).toEqual(
+			expect<`<t:${bigint}:R>`>(time(new Date(1_867_424_897_579), TimestampStyles.RelativeTime)).toEqual(
 				'<t:1867424897:R>',
 			);
 		});
 
 		test('GIVEN a date THEN returns "<t:${time}>"', () => {
-			expect<'<t:1867424897>'>(time(1867424897)).toEqual('<t:1867424897>');
+			expect<'<t:1867424897>'>(time(1_867_424_897)).toEqual('<t:1867424897>');
 		});
 
 		test('GIVEN a date and a style from string THEN returns "<t:${time}:${style}>"', () => {
-			expect<'<t:1867424897:d>'>(time(1867424897, 'd')).toEqual('<t:1867424897:d>');
+			expect<'<t:1867424897:d>'>(time(1_867_424_897, 'd')).toEqual('<t:1867424897:d>');
 		});
 
 		test('GIVEN a date and a format from enum THEN returns "<t:${time}:${style}>"', () => {
-			expect<'<t:1867424897:R>'>(time(1867424897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
+			expect<'<t:1867424897:R>'>(time(1_867_424_897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
 		});
 	});
 

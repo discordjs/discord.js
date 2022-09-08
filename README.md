@@ -12,7 +12,7 @@
 		<a href="https://codecov.io/gh/discordjs/discord.js" ><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2" alt="Code coverage" /></a>
 	</p>
 	<p>
-		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://github.com/discordjs/discord.js/blob/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
 	</p>
 </div>
 
@@ -46,19 +46,18 @@ pnpm add discord.js
 
 ## Example usage
 
-Install all required dependencies:
+Install discord.js:
 
 ```sh-session
-npm install discord.js @discordjs/rest
-yarn add discord.js @discordjs/rest
-pnpm add discord.js @discordjs/rest
+npm install discord.js
+yarn add discord.js
+pnpm add discord.js
 ```
 
 Register a slash command against the Discord API:
 
 ```js
-const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord.js');
+const { REST, Routes } = require('discord.js');
 
 const commands = [
 	{
@@ -73,7 +72,7 @@ const rest = new REST({ version: '10' }).setToken('token');
 	try {
 		console.log('Started refreshing application (/) commands.');
 
-		await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
+		await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
 
 		console.log('Successfully reloaded application (/) commands.');
 	} catch (error) {
@@ -108,7 +107,7 @@ client.login('token');
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
 - [Documentation](https://discord.js.org/#/docs)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
+  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)

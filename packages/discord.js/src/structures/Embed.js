@@ -73,8 +73,8 @@ class Embed {
    * @typedef {Object} EmbedAssetData
    * @property {?string} url The URL of the image
    * @property {?string} proxyURL The proxy URL of the image
-   * @property {?string} height The height of the image
-   * @property {?string} width The width of the image
+   * @property {?number} height The height of the image
+   * @property {?number} width The width of the image
    */
 
   /**
@@ -115,10 +115,10 @@ class Embed {
   get video() {
     if (!this.data.video) return null;
     return {
-      url: this.data.image.url,
-      proxyURL: this.data.image.proxy_url,
-      height: this.data.image.height,
-      width: this.data.image.width,
+      url: this.data.video.url,
+      proxyURL: this.data.video.proxy_url,
+      height: this.data.video.height,
+      width: this.data.video.width,
     };
   }
 

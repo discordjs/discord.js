@@ -1,4 +1,4 @@
-import type { URL } from 'url';
+import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
@@ -6,7 +6,7 @@ import type { Snowflake } from 'discord-api-types/globals';
  *
  * @param content - The content to wrap
  */
-export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\`\`\``;
+export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
 
 /**
  * Wraps the content inside a codeblock with the specified language
@@ -14,9 +14,9 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\`\`\``;
  * @param language - The language for the codeblock
  * @param content - The content to wrap
  */
-export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\`\`\``;
+export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
 export function codeBlock(language: string, content?: string): string {
-	return typeof content === 'undefined' ? `\`\`\`\n${language}\`\`\`` : `\`\`\`${language}\n${content}\`\`\``;
+	return typeof content === 'undefined' ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 
 /**
@@ -95,8 +95,7 @@ export function hideLinkEmbed<C extends string>(url: C): `<${C}>`;
  * @param url - The URL to wrap
  */
 export function hideLinkEmbed(url: URL): `<${string}>`;
-export function hideLinkEmbed(url: string | URL) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+export function hideLinkEmbed(url: URL | string) {
 	return `<${url}>`;
 }
 
@@ -141,8 +140,7 @@ export function hyperlink<C extends string, U extends string, T extends string>(
 	url: U,
 	title: T,
 ): `[${C}](${U} "${T}")`;
-export function hyperlink(content: string, url: string | URL, title?: string) {
-	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+export function hyperlink(content: string, url: URL | string, title?: string) {
 	return title ? `[${content}](${url} "${title}")` : `[${content}](${url})`;
 }
 
@@ -183,6 +181,75 @@ export function roleMention<C extends Snowflake>(roleId: C): `<@&${C}>` {
 }
 
 /**
+ * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandGroupName - The subcommand group name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<
+	N extends string,
+	G extends string,
+	S extends string,
+	I extends Snowflake,
+>(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
+
+/**
+ * Formats an application command name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(
+	commandName: N,
+	subcommandName: S,
+	commandId: I,
+): `</${N} ${S}:${I}>`;
+
+/**
+ * Formats an application command name and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<N extends string, I extends Snowflake>(
+	commandName: N,
+	commandId: I,
+): `</${N}:${I}>`;
+
+/**
+ * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandGroupName - The subcommand group name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<
+	N extends string,
+	G extends Snowflake | string,
+	S extends Snowflake | string,
+	I extends Snowflake,
+>(
+	commandName: N,
+	subcommandGroupName: G,
+	subcommandName?: S,
+	commandId?: I,
+): `</${N} ${G} ${S}:${I}>` | `</${N} ${G}:${S}>` | `</${N}:${G}>` {
+	if (typeof commandId !== 'undefined') {
+		return `</${commandName} ${subcommandGroupName} ${subcommandName!}:${commandId}>`;
+	}
+
+	if (typeof subcommandName !== 'undefined') {
+		return `</${commandName} ${subcommandGroupName}:${subcommandName}>`;
+	}
+
+	return `</${commandName}:${subcommandGroupName}>`;
+}
+
+/**
  * Formats an emoji ID into a fully qualified emoji identifier
  *
  * @param emojiId - The emoji ID to format
@@ -203,8 +270,65 @@ export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: true): `
  * @param emojiId - The emoji ID to format
  * @param animated - Whether the emoji is animated or not. Defaults to `false`
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<a:_:${C}>` | `<:_:${C}>` {
+export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<:_:${C}>` | `<a:_:${C}>` {
 	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
+}
+
+/**
+ * Formats a channel link for a direct message channel.
+ *
+ * @param channelId - The channel's id
+ */
+export function channelLink<C extends Snowflake>(channelId: C): `https://discord.com/channels/@me/${C}`;
+
+/**
+ * Formats a channel link for a guild channel.
+ *
+ * @param channelId - The channel's id
+ * @param guildId - The guild's id
+ */
+export function channelLink<C extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	guildId: G,
+): `https://discord.com/channels/${G}/${C}`;
+
+export function channelLink<C extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	guildId?: G,
+): `https://discord.com/channels/@me/${C}` | `https://discord.com/channels/${G}/${C}` {
+	return `https://discord.com/channels/${guildId ?? '@me'}/${channelId}`;
+}
+
+/**
+ * Formats a message link for a direct message channel.
+ *
+ * @param channelId - The channel's id
+ * @param messageId - The message's id
+ */
+export function messageLink<C extends Snowflake, M extends Snowflake>(
+	channelId: C,
+	messageId: M,
+): `https://discord.com/channels/@me/${C}/${M}`;
+
+/**
+ * Formats a message link for a guild channel.
+ *
+ * @param channelId - The channel's id
+ * @param messageId - The message's id
+ * @param guildId - The guild's id
+ */
+export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	messageId: M,
+	guildId: G,
+): `https://discord.com/channels/${G}/${C}/${M}`;
+
+export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
+	channelId: C,
+	messageId: M,
+	guildId?: G,
+): `https://discord.com/channels/@me/${C}/${M}` | `https://discord.com/channels/${G}/${C}/${M}` {
+	return `${typeof guildId === 'undefined' ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
 /**
@@ -236,16 +360,17 @@ export function time<C extends number>(seconds: C): `<t:${C}>`;
  * @param style - The style to use
  */
 export function time<C extends number, S extends TimestampStylesString>(seconds: C, style: S): `<t:${C}:${S}>`;
-export function time(timeOrSeconds?: number | Date, style?: TimestampStylesString): string {
+export function time(timeOrSeconds?: Date | number, style?: TimestampStylesString): string {
 	if (typeof timeOrSeconds !== 'number') {
-		timeOrSeconds = Math.floor((timeOrSeconds?.getTime() ?? Date.now()) / 1000);
+		// eslint-disable-next-line no-param-reassign
+		timeOrSeconds = Math.floor((timeOrSeconds?.getTime() ?? Date.now()) / 1_000);
 	}
 
 	return typeof style === 'string' ? `<t:${timeOrSeconds}:${style}>` : `<t:${timeOrSeconds}>`;
 }
 
 /**
- * The [message formatting timestamp styles](https://discord.com/developers/docs/reference#message-formatting-timestamp-styles) supported by Discord
+ * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles} supported by Discord
  */
 export const TimestampStyles = {
 	/**

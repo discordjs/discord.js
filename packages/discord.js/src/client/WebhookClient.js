@@ -12,16 +12,33 @@ const { parseWebhookURL } = require('../util/Util');
  */
 class WebhookClient extends BaseClient {
   /**
-   * The data for the webhook client containing either an id and token or just a URL
-   * @typedef {Object} WebhookClientData
-   * @property {Snowflake} [id] The id of the webhook
-   * @property {string} [token] The token of the webhook
-   * @property {string} [url] The full URL for the webhook client
+   * Represents the credentials used for a webhook in the form of its id and token.
+   * @typedef {Object} WebhookClientDataIdWithToken
+   * @property {Snowflake} id The webhook's id
+   * @property {string} token The webhook's token
+   */
+
+  /**
+   * Represents the credentials used for a webhook in the form of a URL.
+   * @typedef {Object} WebhookClientDataURL
+   * @property {string} url The full URL for the webhook
+   */
+
+  /**
+   * Represents the credentials used for a webhook.
+   * @typedef {WebhookClientDataIdWithToken|WebhookClientDataURL} WebhookClientData
+   */
+
+  /**
+   * Options for a webhook client.
+   * @typedef {Object} WebhookClientOptions
+   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link WebhookMessageOptions#allowedMentions}
+   * @property {RESTOptions} [rest] Options for the REST manager
    */
 
   /**
    * @param {WebhookClientData} data The data of the webhook
-   * @param {ClientOptions} [options] Options for the client
+   * @param {WebhookClientOptions} [options] Options for the webhook client
    */
   constructor(data, options) {
     super(options);
@@ -40,6 +57,12 @@ class WebhookClient extends BaseClient {
     this.id = id;
     Object.defineProperty(this, 'token', { value: token, writable: true, configurable: true });
   }
+
+  /**
+   * The options the webhook client was instantiated with.
+   * @type {WebhookClientOptions}
+   * @name WebhookClient#options
+   */
 
   // These are here only for documentation purposes - they are implemented by Webhook
   /* eslint-disable no-empty-function, valid-jsdoc */

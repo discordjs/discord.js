@@ -1,18 +1,14 @@
+import type { ApiTypeAliasJSON } from '@discordjs/api-extractor-utils';
 import { DocContainer } from '../DocContainer';
-import type { DocTypeAlias } from '~/DocModel/DocTypeAlias';
 
-export interface TypeAliasProps {
-	data: ReturnType<DocTypeAlias['toJSON']>;
-}
-
-export function TypeAlias({ data }: TypeAliasProps) {
+export function TypeAlias({ data }: { data: ApiTypeAliasJSON }) {
 	return (
 		<DocContainer
 			name={data.name}
 			kind={data.kind}
 			excerpt={data.excerpt}
 			summary={data.summary}
-			typeParams={data.typeParameterData}
+			typeParams={data.typeParameters}
 		/>
 	);
 }

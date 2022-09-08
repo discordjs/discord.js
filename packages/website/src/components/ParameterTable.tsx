@@ -1,31 +1,29 @@
+import type { ParameterDocumentation } from '@discordjs/api-extractor-utils';
+import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
-import type { ParameterDocumentation } from '~/util/parse.server';
+import { TSDoc } from './tsdoc/TSDoc';
 
-interface ParameterDetailProps {
-	data: ParameterDocumentation[];
-	className?: string | undefined;
-}
+const columnStyles = {
+	Name: 'font-mono whitespace-nowrap',
+	Type: 'font-mono whitespace-pre-wrap break-normal',
+};
 
-export function ParameterTable({ data, className }: ParameterDetailProps) {
-	const rows = data.map((param) => ({
-		Name: param.name,
-		Type: <HyperlinkedText tokens={param.tokens} />,
-		Optional: param.isOptional ? 'Yes' : 'No',
-		Description: 'None',
-	}));
-
-	const columnStyles = {
-		Name: 'font-mono',
-		Type: 'font-mono',
-	};
+export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
+	const rows = useMemo(
+		() =>
+			data.map((param) => ({
+				Name: param.name,
+				Type: <HyperlinkedText tokens={param.tokens} />,
+				Optional: param.isOptional ? 'Yes' : 'No',
+				Description: param.paramCommentBlock ? <TSDoc node={param.paramCommentBlock} /> : 'None',
+			})),
+		[data],
+	);
 
 	return (
-		<Table
-			className={className}
-			columns={['Name', 'Type', 'Optional', 'Description']}
-			rows={rows}
-			columnStyles={columnStyles}
-		/>
+		<div className="overflow-x-auto">
+			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+		</div>
 	);
 }

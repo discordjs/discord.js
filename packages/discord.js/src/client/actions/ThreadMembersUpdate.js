@@ -31,7 +31,8 @@ class ThreadMembersUpdateAction extends Action {
       }
 
       /**
-       * Emitted whenever members are added or removed from a thread. Requires `GUILD_MEMBERS` privileged intent
+       * Emitted whenever members are added or removed from a thread.
+       * <info>This event requires the {@link GatewayIntentBits.GuildMembers} privileged gateway intent.</info>
        * @event Client#threadMembersUpdate
        * @param {Collection<Snowflake, ThreadMember>} addedMembers The members that were added
        * @param {Collection<Snowflake, ThreadMember>} removedMembers The members that were removed

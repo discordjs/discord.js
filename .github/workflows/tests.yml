@@ -1,9 +1,18 @@
 name: Tests
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      NEXT_PUBLIC_LOCAL_DEV: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -13,10 +22,9 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn install --immutable
 
       - name: Build dependencies
         run: yarn build
@@ -28,5 +36,5 @@ jobs:
         run: yarn test
 
       - name: Upload Coverage
-        uses: ./packages/actions/src/uploadCoverage
         if: github.repository_owner == 'discordjs'
+        uses: ./packages/actions/src/uploadCoverage

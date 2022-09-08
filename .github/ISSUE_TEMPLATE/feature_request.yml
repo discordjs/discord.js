@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        We can only implement features that Discord publishes, documents and merges into the Discord API documentation.
+        We can only implement features that Discord publishes, documents, and merges into the Discord API documentation.
         We do not implement unreleased features.
         Use Discord for questions: https://discord.gg/djs
   - type: dropdown
@@ -20,6 +20,7 @@ body:
         - proxy
         - proxy-container
         - voice
+        - ws
     validations:
       required: true
   - type: textarea

@@ -1,14 +1,16 @@
+/* eslint-disable jsdoc/check-param-names */
+import { Buffer } from 'node:buffer';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import {
-	AudioReceiveStream,
-	AudioReceiveStreamOptions,
-	createDefaultAudioReceiveStreamOptions,
-} from './AudioReceiveStream';
-import { SSRCMap } from './SSRCMap';
-import { SpeakingMap } from './SpeakingMap';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
+import {
+	AudioReceiveStream,
+	createDefaultAudioReceiveStreamOptions,
+	type AudioReceiveStreamOptions,
+} from './AudioReceiveStream';
+import { SSRCMap } from './SSRCMap';
+import { SpeakingMap } from './SpeakingMap';
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -59,38 +61,25 @@ export class VoiceReceiver {
 	 * Called when a packet is received on the attached connection's WebSocket.
 	 *
 	 * @param packet - The received packet
-	 *
 	 * @internal
 	 */
 	public onWsPacket(packet: any) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		if (packet.op === VoiceOpcodes.ClientDisconnect && typeof packet.d?.user_id === 'string') {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
 			this.ssrcMap.delete(packet.d.user_id);
 		} else if (
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.Speaking &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.user_id === 'string' &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.ssrc === 'number'
 		) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
 		} else if (
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			packet.op === VoiceOpcodes.ClientConnect &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.user_id === 'string' &&
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			typeof packet.d?.audio_ssrc === 'number'
 		) {
 			this.ssrcMap.update({
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				userId: packet.d.user_id,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				audioSSRC: packet.d.audio_ssrc,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
 				videoSSRC: packet.d.video_ssrc === 0 ? undefined : packet.d.video_ssrc,
 			});
 		}
@@ -122,7 +111,6 @@ export class VoiceReceiver {
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
-	 *
 	 * @returns The parsed Opus packet
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
@@ -142,7 +130,6 @@ export class VoiceReceiver {
 	 * Called when the UDP socket of the attached connection receives a message.
 	 *
 	 * @param msg - The received message
-	 *
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
@@ -176,7 +163,6 @@ export class VoiceReceiver {
 	 * Creates a subscription for the given user id.
 	 *
 	 * @param target - The id of the user to subscribe to
-	 *
 	 * @returns A readable stream of Opus packets received from the target
 	 */
 	public subscribe(userId: string, options?: Partial<AudioReceiveStreamOptions>) {

@@ -1,20 +1,24 @@
 {
 	"$schema": "https://turborepo.org/schema.json",
-	"baseBranch": "origin/main",
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**"]
 		},
+		"@discordjs/website#build:prod": {
+			"dependsOn": ["^build"],
+			"outputs": [".next/**"]
+		},
 		"test": {
 			"dependsOn": ["^build"],
-			"outputs": ["coverage/**"]
+			"outputs": []
 		},
 		"lint": {
 			"dependsOn": ["^build"],
 			"outputs": []
 		},
 		"format": {
+			"dependsOn": ["^build"],
 			"outputs": []
 		},
 		"docs": {

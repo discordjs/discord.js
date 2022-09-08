@@ -164,7 +164,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {GuildChannelResolvable} channel The channel to create the webhook for
+   * @property {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
    */
 
   /**
@@ -267,7 +267,7 @@ class GuildChannelManager extends CachedManager {
         nsfw: data.nsfw,
         bitrate: data.bitrate ?? channel.bitrate,
         user_limit: data.userLimit ?? channel.userLimit,
-        rtc_region: data.rtcRegion ?? channel.rtcRegion,
+        rtc_region: 'rtcRegion' in data ? data.rtcRegion : channel.rtcRegion,
         video_quality_mode: data.videoQualityMode,
         parent_id: parent,
         lock_permissions: data.lockPermissions,

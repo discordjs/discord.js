@@ -53,13 +53,19 @@ exports.NonSystemMessageTypes = [
 ];
 
 /**
- * The channels that are text-based.
- * * DMChannel
+ * The guild channels that are text-based.
  * * TextChannel
  * * NewsChannel
  * * ThreadChannel
  * * VoiceChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
+ * @typedef {TextChannel|NewsChannel|ThreadChannel|VoiceChannel} GuildTextBasedChannel
+ */
+
+/**
+ * The channels that are text-based.
+ * * DMChannel
+ * * GuildTextBasedChannel
+ * @typedef {DMChannel|GuildTextBasedChannel} TextBasedChannels
  */
 
 /**

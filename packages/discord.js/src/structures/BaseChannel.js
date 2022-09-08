@@ -1,5 +1,6 @@
 'use strict';
 
+const { channelLink } = require('@discordjs/builders');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -55,7 +56,7 @@ class BaseChannel extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.isDMBased() ? '@me' : this.guildId}/${this.id}`;
+    return this.isDMBased() ? channelLink(this.id) : channelLink(this.id, this.guildId);
   }
 
   /**

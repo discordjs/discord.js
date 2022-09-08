@@ -520,16 +520,9 @@ function lazy(cb) {
 }
 
 /**
- * Represents the credentials used for a given webhook
- * @typedef {Object} WebhookCredentials
- * @property {string} id The webhook's id
- * @property {string} token The webhook's token
- */
-
-/**
- * Parses a webhook URL for the id and token
+ * Parses a webhook URL for the id and token.
  * @param {string} url The URL to parse
- * @returns {?WebhookCredentials} Null if the URL is invalid, otherwise the id and the token
+ * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
 function parseWebhookURL(url) {
   const matches = url.match(

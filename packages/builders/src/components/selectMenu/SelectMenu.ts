@@ -1,16 +1,16 @@
-import { APISelectMenuOption, ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
-import { SelectMenuOptionBuilder } from './SelectMenuOption';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
+import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import {
 	customIdValidator,
 	disabledValidator,
+	jsonOptionValidator,
 	minMaxValidator,
 	optionsLengthValidator,
-	optionValidator,
 	placeholderValidator,
 	validateRequiredSelectMenuParameters,
-} from '../Assertions';
-import { ComponentBuilder } from '../Component';
+} from '../Assertions.js';
+import { ComponentBuilder } from '../Component.js';
+import { SelectMenuOptionBuilder } from './SelectMenuOption.js';
 
 /**
  * Represents a select menu component
@@ -24,7 +24,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		const { options, ...initData } = data ?? {};
 		super({ type: ComponentType.SelectMenu, ...initData });
-		this.options = options?.map((o) => new SelectMenuOptionBuilder(o)) ?? [];
+		this.options = options?.map((option) => new SelectMenuOptionBuilder(option)) ?? [];
 	}
 
 	/**
@@ -83,14 +83,15 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 * @param options - The options to add to this select menu
 	 * @returns
 	 */
-	public addOptions(...options: RestOrArray<SelectMenuOptionBuilder | APISelectMenuOption>) {
+	public addOptions(...options: RestOrArray<APISelectMenuOption | SelectMenuOptionBuilder>) {
+		// eslint-disable-next-line no-param-reassign
 		options = normalizeArray(options);
 		optionsLengthValidator.parse(this.options.length + options.length);
 		this.options.push(
 			...options.map((option) =>
 				option instanceof SelectMenuOptionBuilder
 					? option
-					: new SelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
+					: new SelectMenuOptionBuilder(jsonOptionValidator.parse(option)),
 			),
 		);
 		return this;
@@ -101,7 +102,8 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 *
 	 * @param options - The options to set on this select menu
 	 */
-	public setOptions(...options: RestOrArray<SelectMenuOptionBuilder | APISelectMenuOption>) {
+	public setOptions(...options: RestOrArray<APISelectMenuOption | SelectMenuOptionBuilder>) {
+		// eslint-disable-next-line no-param-reassign
 		options = normalizeArray(options);
 		optionsLengthValidator.parse(options.length);
 		this.options.splice(
@@ -110,18 +112,21 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 			...options.map((option) =>
 				option instanceof SelectMenuOptionBuilder
 					? option
-					: new SelectMenuOptionBuilder(optionValidator.parse<APISelectMenuOption>(option)),
+					: new SelectMenuOptionBuilder(jsonOptionValidator.parse(option)),
 			),
 		);
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APISelectMenuComponent {
 		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
-			options: this.options.map((o) => o.toJSON()),
+			options: this.options.map((option) => option.toJSON()),
 		} as APISelectMenuComponent;
 	}
 }

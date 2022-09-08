@@ -60,5 +60,5 @@ filter_commits = true
 tag_pattern = "@discordjs\\/proxy@.*"
 skip_tags = "v[0-9]*|11|12"
 ignore_tags = ""
-topo_order = false
+date_order = true
 sort_commits = "newest"

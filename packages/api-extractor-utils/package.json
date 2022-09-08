@@ -1,0 +1,51 @@
+{
+	"name": "@discordjs/api-extractor-utils",
+	"version": "1.0.0",
+	"description": "Utilities for api-extractor",
+	"private": true,
+	"scripts": {
+		"build": "tsup",
+		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"fmt": "yarn format"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
+	],
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@microsoft/api-extractor-model": "7.24.0",
+		"@microsoft/tsdoc": "^0.14.1"
+	},
+	"devDependencies": {
+		"@types/node": "^16.11.57",
+		"eslint": "^8.23.0",
+		"eslint-config-neon": "^0.1.33",
+		"prettier": "^2.7.1",
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.2"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

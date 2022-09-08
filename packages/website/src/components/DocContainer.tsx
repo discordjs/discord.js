@@ -1,62 +1,136 @@
-import type { ReactNode } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import type {
+	ApiItemJSON,
+	TokenDocumentation,
+	TypeParameterData,
+	ApiClassJSON,
+	ApiInterfaceJSON,
+} from '@discordjs/api-extractor-utils';
+import { Fragment, type PropsWithChildren } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars-2';
+import {
+	VscSymbolClass,
+	VscSymbolMethod,
+	VscSymbolEnum,
+	VscSymbolInterface,
+	VscSymbolVariable,
+	VscListSelection,
+	VscSymbolParameter,
+} from 'react-icons/vsc';
+import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
+import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
-import { generateIcon } from '~/util/icon';
-import type { TokenDocumentation, TypeParameterData } from '~/util/parse.server';
+import { TSDoc } from './tsdoc/TSDoc';
 
-export interface DocContainerProps {
-	name: string;
-	kind: string;
+type DocContainerProps = PropsWithChildren<{
 	excerpt: string;
-	summary?: string | null;
-	children?: ReactNode;
 	extendsTokens?: TokenDocumentation[] | null;
+	implementsTokens?: TokenDocumentation[][];
+	kind: string;
+	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
+	name: string;
+	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	summary?: ApiItemJSON['summary'];
 	typeParams?: TypeParameterData[];
+}>;
+
+function generateIcon(kind: string) {
+	const icons = {
+		Class: <VscSymbolClass />,
+		Method: <VscSymbolMethod />,
+		Function: <VscSymbolMethod />,
+		Enum: <VscSymbolEnum />,
+		Interface: <VscSymbolInterface />,
+		TypeAlias: <VscSymbolVariable />,
+	};
+
+	return icons[kind as keyof typeof icons];
 }
 
-export function DocContainer({ name, kind, excerpt, summary, typeParams, children, extendsTokens }: DocContainerProps) {
+export function DocContainer({
+	name,
+	kind,
+	excerpt,
+	summary,
+	typeParams,
+	children,
+	extendsTokens,
+	implementsTokens,
+	methods,
+	properties,
+}: DocContainerProps) {
+	const matches = useMedia('(max-width: 768px)', true);
+
 	return (
 		<>
-			<div className="bg-white dark:bg-dark border-b-solid border-gray border-width-0.5 sticky top-0 px-10 py-2">
-				<h2 className="flex items-center font-mono break-all m-0 dark:text-white">
-					{generateIcon(kind, 'mr-2')}
+			<div className="flex flex-col gap-4">
+				<h2 className="flex flex-row place-items-center gap-2 break-all text-2xl font-bold">
+					<span>{generateIcon(kind)}</span>
 					{name}
 				</h2>
-			</div>
 
-			<div className="px-10 pt-5 pb-10">
-				<div>
-					<SyntaxHighlighter
-						wrapLines
-						wrapLongLines
-						language="typescript"
-						style={vscDarkPlus}
-						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					>
-						{excerpt}
-					</SyntaxHighlighter>
-				</div>
+				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
+					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
+					<div className="border-light-900 -mx-8 mt-6 border-t-2" />
+				</Section>
+
+				<SyntaxHighlighter code={excerpt} />
+
 				{extendsTokens?.length ? (
-					<div className="flex flex-row items-center dark:text-white">
-						<h2 className="mr-5">Extends</h2>
-						<p className="font-mono">
+					<div className="flex flex-row place-items-center gap-4">
+						<h3 className="text-xl font-bold">Extends</h3>
+						<span className="break-all font-mono">
 							<HyperlinkedText tokens={extendsTokens} />
-						</p>
+						</span>
 					</div>
 				) : null}
-				<Section title="Summary" className="dark:text-white">
-					<p className="text-dark-100 dark:text-gray-400">{summary ?? 'No summary provided.'}</p>
-				</Section>
-				{typeParams?.length ? (
-					<Section title="Type Parameters" className="dark:text-white">
-						<TypeParamTable data={typeParams} className="mb-5 p-3" />
-					</Section>
+
+				{implementsTokens?.length ? (
+					<div className="flex flex-row place-items-center gap-4">
+						<h3 className="text-xl font-bold">Implements</h3>
+						<span className="break-all font-mono">
+							{implementsTokens.map((token, idx) => (
+								<Fragment key={idx}>
+									<HyperlinkedText tokens={token} />
+									{idx < implementsTokens.length - 1 ? ', ' : ''}
+								</Fragment>
+							))}
+						</span>
+					</div>
 				) : null}
-				<div>{children}</div>
+
+				<div className="flex flex-col gap-4">
+					{typeParams?.length ? (
+						<Section
+							title="Type Parameters"
+							icon={<VscSymbolParameter size={20} />}
+							padded
+							dense={matches}
+							defaultClosed
+						>
+							<TypeParamTable data={typeParams} />
+						</Section>
+					) : null}
+					{children}
+				</div>
 			</div>
+			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
+				<aside className="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block">
+					<Scrollbars
+						universal
+						autoHide
+						hideTracksWhenNotNeeded
+						renderTrackVertical={(props) => (
+							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+						)}
+						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+					>
+						<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
+					</Scrollbars>
+				</aside>
+			) : null}
 		</>
 	);
 }

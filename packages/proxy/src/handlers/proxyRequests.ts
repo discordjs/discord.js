@@ -1,11 +1,18 @@
 import { URL } from 'node:url';
-import { DiscordAPIError, HTTPError, RateLimitError, RequestMethod, REST, RouteLike } from '@discordjs/rest';
+import {
+	DiscordAPIError,
+	HTTPError,
+	RateLimitError,
+	type RequestMethod,
+	type REST,
+	type RouteLike,
+} from '@discordjs/rest';
 import {
 	populateAbortErrorResponse,
 	populateGeneralErrorResponse,
 	populateSuccessfulResponse,
 	populateRatelimitErrorResponse,
-} from '../util/responseHelpers';
+} from '../util/responseHelpers.js';
 import type { RequestHandler } from '../util/util';
 
 /**
@@ -19,12 +26,13 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 		if (!method || !url) {
 			throw new TypeError(
-				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMesage',
+				'Invalid request. Missing method and/or url, implying that this is not a Server IncomingMessage',
 			);
 		}
 
 		// The 2nd parameter is here so the URL constructor doesn't complain about an "invalid url" when the origin is missing
 		// we don't actually care about the origin and the value passed is irrelevant
+		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
 		const fullRoute = new URL(url, 'http://noop').pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {

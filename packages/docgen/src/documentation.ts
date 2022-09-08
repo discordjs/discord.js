@@ -1,6 +1,6 @@
 import { dirname, join, relative } from 'node:path';
-import { Collection } from '@discordjs/collection';
 import type { DeclarationReflection } from 'typedoc';
+import packageFile from '../package.json';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
 import { DocumentedConstructor } from './types/constructor.js';
@@ -10,21 +10,20 @@ import { DocumentedInterface } from './types/interface.js';
 import { DocumentedMember } from './types/member.js';
 import { DocumentedMethod } from './types/method.js';
 import { DocumentedTypeDef } from './types/typedef.js';
-import packageFile from '../package.json';
 
 export class Documentation {
-	public readonly classes = new Collection<string, DocumentedClass>();
+	public readonly classes = new Map<string, DocumentedClass>();
 
-	public readonly functions = new Collection<string, DocumentedMethod>();
+	public readonly functions = new Map<string, DocumentedMethod>();
 
-	public readonly interfaces = new Collection<string, DocumentedInterface>();
+	public readonly interfaces = new Map<string, DocumentedInterface>();
 
-	public readonly typedefs = new Collection<string, DocumentedTypeDef>();
+	public readonly typedefs = new Map<string, DocumentedTypeDef>();
 
-	public readonly externals = new Collection<string, DocumentedExternal>();
+	public readonly externals = new Map<string, DocumentedExternal>();
 
 	public constructor(
-		data: RootTypes[] | DeclarationReflection[],
+		data: DeclarationReflection[] | RootTypes[],
 		private readonly config: Config,
 		private readonly custom?: Record<string, CustomDocs>,
 	) {
@@ -38,6 +37,7 @@ export class Documentation {
 						if (item.children) {
 							this.parse(item.children, item);
 						}
+
 						break;
 					}
 
@@ -53,6 +53,7 @@ export class Documentation {
 						if (item.children) {
 							this.parse(item.children, item);
 						}
+
 						break;
 
 					default:
@@ -61,37 +62,43 @@ export class Documentation {
 			}
 		} else {
 			let items = data as RootTypes[];
-			items = items.filter((i) => !i.ignore);
+			items = items.filter((item) => !item.ignore);
 
 			for (const item of items) {
 				switch (item.kind) {
 					case 'class': {
 						this.classes.set(item.name, new DocumentedClass(item, config));
-						items = items.filter((i) => i.longname !== item.longname || i.kind !== item.kind);
+						items = items.filter((otherItem) => otherItem.longname !== item.longname || otherItem.kind !== item.kind);
 						break;
 					}
+
 					case 'function': {
 						if (item.scope === 'global' || !item.memberof) {
 							this.functions.set(item.name, new DocumentedMethod(item, config));
-							items = items.filter((i) => i.longname !== item.longname);
+							items = items.filter((otherItem) => otherItem.longname !== item.longname);
 						}
+
 						break;
 					}
+
 					case 'interface': {
 						this.interfaces.set(item.name, new DocumentedInterface(item as unknown as Class, config));
-						items = items.filter((i) => i.longname !== item.longname);
+						items = items.filter((otherItem) => otherItem.longname !== item.longname);
 						break;
 					}
+
 					case 'typedef': {
 						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
-						items = items.filter((i) => i.longname !== item.longname);
+						items = items.filter((otherItem) => otherItem.longname !== item.longname);
 						break;
 					}
+
 					case 'external': {
 						this.externals.set(item.name, new DocumentedExternal(item, config));
-						items = items.filter((i) => i.longname !== item.longname);
+						items = items.filter((otherItem) => otherItem.longname !== item.longname);
 						break;
 					}
+
 					default:
 						break;
 				}
@@ -101,39 +108,41 @@ export class Documentation {
 		}
 	}
 
-	public parse(items: ChildTypes[] | DeclarationReflection[], p?: DeclarationReflection) {
+	public parse(items: ChildTypes[] | DeclarationReflection[], prop?: DeclarationReflection) {
 		if (this.config.typescript) {
 			const it = items as DeclarationReflection[];
 
 			for (const member of it) {
-				let item: DocumentedMethod | DocumentedConstructor | DocumentedMember | DocumentedEvent | null = null;
+				let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
 
 				switch (member.kindString) {
 					case 'Constructor': {
 						item = new DocumentedConstructor(member, this.config);
 						break;
 					}
+
 					case 'Method': {
-						const event = p?.groups?.find((group) => group.title === 'Events');
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+						const event = prop?.groups?.find((group) => group.title === 'Events');
 						if ((event?.children as unknown as number[])?.includes(member.id)) {
 							item = new DocumentedEvent(member, this.config);
 							break;
 						}
+
 						item = new DocumentedMethod(member, this.config);
 						break;
 					}
+
 					case 'Property': {
 						item = new DocumentedMember(member, this.config);
 						break;
 					}
+
 					default: {
-						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 						console.warn(`- Unknown documentation kind "${member.kindString}" - \n${JSON.stringify(member)}\n`);
 					}
 				}
 
-				const parent = this.classes.get(p!.name) ?? this.interfaces.get(p!.name);
+				const parent = this.classes.get(prop!.name) ?? this.interfaces.get(prop!.name);
 				if (parent) {
 					if (item) {
 						parent.add(item);
@@ -142,6 +151,7 @@ export class Documentation {
 							`- Documentation item could not be constructed for "${member.name}" - \n${JSON.stringify(member)}\n`,
 						);
 					}
+
 					continue;
 				}
 
@@ -156,9 +166,10 @@ export class Documentation {
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
 						  };
 
-				if (p!.name) {
-					info.push(`member of "${p!.name}"`);
+				if (prop!.name) {
+					info.push(`member of "${prop!.name}"`);
 				}
+
 				if (meta) {
 					info.push(
 						`${relative(this.config.root, join(meta.path, meta.file ?? ''))}${meta.line ? `:${meta.line}` : ''}`,
@@ -174,28 +185,31 @@ export class Documentation {
 			const it = items as ChildTypes[];
 
 			for (const member of it) {
-				let item: DocumentedMethod | DocumentedConstructor | DocumentedMember | DocumentedEvent | null = null;
+				let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
 
 				switch (member.kind) {
 					case 'constructor': {
 						item = new DocumentedConstructor(member, this.config);
 						break;
 					}
+
 					case 'function': {
 						item = new DocumentedMethod(member, this.config);
 						break;
 					}
+
 					case 'member': {
 						item = new DocumentedMember(member, this.config);
 						break;
 					}
+
 					case 'event': {
 						item = new DocumentedEvent(member, this.config);
 						break;
 					}
+
 					default: {
-						// @ts-expect-error
-						// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+						// @ts-expect-error: This is a valid case
 						console.warn(`- Unknown documentation kind "${member.kind}" - \n${JSON.stringify(member)}\n`);
 					}
 				}
@@ -209,13 +223,13 @@ export class Documentation {
 							`- Documentation item could not be constructed for "${member.name}" - \n${JSON.stringify(member)}\n`,
 						);
 					}
+
 					continue;
 				}
 
 				const info = [];
 				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
-				// @ts-expect-error
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-condition
+				// @ts-expect-error: Typescript can't infer this
 				const memberof = member.memberof ?? item?.data?.memberof;
 				const meta =
 					member.kind === 'constructor'
@@ -225,6 +239,7 @@ export class Documentation {
 				if (memberof) {
 					info.push(`member of "${memberof as string}"`);
 				}
+
 				if (meta) {
 					info.push(`${relative(this.config.root, join(meta.path, meta.file))}${meta.line ? `:${meta.line}` : ''}`);
 				}
@@ -244,16 +259,14 @@ export class Documentation {
 				format: Documentation.FORMAT_VERSION,
 				date: Date.now(),
 			},
-			classes: this.classes.map((c) => c.serialize()),
-			functions: this.functions.map((f) => f.serialize()),
-			interfaces: this.interfaces.map((i) => i.serialize()),
-			typedefs: this.typedefs.map((t) => t.serialize()),
-			externals: this.externals.map((e) => e.serialize()),
+			classes: [...this.classes.values()].map((_class) => _class.serialize()),
+			functions: [...this.functions.values()].map((_function) => _function.serialize()),
+			interfaces: [...this.interfaces.values()].map((_interface) => _interface.serialize()),
+			typedefs: [...this.typedefs.values()].map((_typedef) => _typedef.serialize()),
+			externals: [...this.externals.values()].map((_external) => _external.serialize()),
 			custom: this.custom,
 		};
 	}
 
-	public static get FORMAT_VERSION() {
-		return 30;
-	}
+	public static readonly FORMAT_VERSION = 30;
 }

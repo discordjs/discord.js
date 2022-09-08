@@ -180,9 +180,6 @@ exports.WelcomeScreen = require('./structures/WelcomeScreen');
 exports.WebSocket = require('./WebSocket');
 
 // External
-exports.DiscordAPIError = require('@discordjs/rest').DiscordAPIError;
-exports.HTTPError = require('@discordjs/rest').HTTPError;
-exports.RateLimitError = require('@discordjs/rest').RateLimitError;
-
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);
+__exportStar(require('@discordjs/rest'), exports);

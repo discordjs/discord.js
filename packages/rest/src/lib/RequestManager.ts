@@ -1,16 +1,20 @@
-import { Blob } from 'node:buffer';
+import { Blob, Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
+import { setInterval, clearInterval } from 'node:timers';
+import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { FormData, type RequestInit, type BodyInit, type Dispatcher, Agent } from 'undici';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST';
-import type { IHandler } from './handlers/IHandler';
-import { SequentialHandler } from './handlers/SequentialHandler';
-import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants';
-import { resolveBody } from './utils/utils';
+import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
+import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import type { IHandler } from './handlers/IHandler.js';
+import { SequentialHandler } from './handlers/SequentialHandler.js';
+import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants.js';
+import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
-const getFileType = (): Promise<typeof import('file-type')> => {
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+const getFileType = async (): Promise<typeof import('file-type')> => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	let cached: Promise<typeof import('file-type')>;
 	return (cached ??= import('file-type'));
 };
@@ -20,9 +24,13 @@ const getFileType = (): Promise<typeof import('file-type')> => {
  */
 export interface RawFile {
 	/**
-	 * The name of the file
+	 * Content-Type of the file
 	 */
-	name: string;
+	contentType?: string;
+	/**
+	 * The actual data for the file
+	 */
+	data: Buffer | boolean | number | string;
 	/**
 	 * An explicit key to use for key of the formdata field for this file.
 	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
@@ -30,13 +38,9 @@ export interface RawFile {
 	 */
 	key?: string;
 	/**
-	 * The actual data for the file
+	 * The name of the file
 	 */
-	data: string | number | boolean | Buffer;
-	/**
-	 * Content-Type of the file
-	 */
-	contentType?: string;
+	name: string;
 }
 
 /**
@@ -50,22 +54,22 @@ export interface RequestData {
 	/**
 	 * If this request needs the `Authorization` header
 	 *
-	 * @default true
+	 * @defaultValue `true`
 	 */
 	auth?: boolean;
 	/**
 	 * The authorization prefix to use for this request, useful if you use this with bearer tokens
 	 *
-	 * @default 'Bot'
+	 * @defaultValue `'Bot'`
 	 */
-	authPrefix?: 'Bot' | 'Bearer';
+	authPrefix?: 'Bearer' | 'Bot';
 	/**
 	 * The body to send to this request.
 	 * If providing as BodyInit, set `passThroughBody: true`
 	 */
 	body?: BodyInit | unknown;
 	/**
-	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} to use for the request.
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} to use for the request.
 	 */
 	dispatcher?: Agent;
 	/**
@@ -92,7 +96,7 @@ export interface RequestData {
 	/**
 	 * If this request should be versioned
 	 *
-	 * @default true
+	 * @defaultValue `true`
 	 */
 	versioned?: boolean;
 }
@@ -125,11 +129,11 @@ export type RouteLike = `/${string}`;
  * @internal
  */
 export interface InternalRequest extends RequestData {
-	method: RequestMethod;
 	fullRoute: RouteLike;
+	method: RequestMethod;
 }
 
-export type HandlerRequestData = Pick<InternalRequest, 'files' | 'body' | 'auth'>;
+export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files'>;
 
 /**
  * Parsed route data for an endpoint
@@ -137,8 +141,8 @@ export type HandlerRequestData = Pick<InternalRequest, 'files' | 'body' | 'auth'
  * @internal
  */
 export interface RouteData {
-	majorParameter: string;
 	bucketRoute: string;
+	majorParameter: string;
 	original: RouteLike;
 }
 
@@ -148,21 +152,21 @@ export interface RouteData {
  * @internal
  */
 export interface HashData {
-	value: string;
 	lastAccess: number;
+	value: string;
 }
 
 export interface RequestManager {
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
 	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
 		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
 
 	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
+
+	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
+
+	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
 		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
 
 	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
@@ -174,10 +178,11 @@ export interface RequestManager {
  */
 export class RequestManager extends EventEmitter {
 	/**
-	 * The {@link https://undici.nodejs.org/#/docs/api/Agent Agent} for all requests
+	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
 	 */
 	public agent: Dispatcher | null = null;
+
 	/**
 	 * The number of requests remaining in the global bucket
 	 */
@@ -203,10 +208,10 @@ export class RequestManager extends EventEmitter {
 	 */
 	public readonly handlers = new Collection<string, IHandler>();
 
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#token: string | null = null;
 
 	private hashTimer!: NodeJS.Timer;
+
 	private handlerTimer!: NodeJS.Timer;
 
 	public readonly options: RESTOptions;
@@ -223,34 +228,35 @@ export class RequestManager extends EventEmitter {
 	}
 
 	private setupSweepers() {
+		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const validateMaxInterval = (interval: number) => {
 			if (interval > 14_400_000) {
 				throw new Error('Cannot set an interval greater than 4 hours');
 			}
 		};
 
-		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Infinity) {
+		if (this.options.hashSweepInterval !== 0 && this.options.hashSweepInterval !== Number.POSITIVE_INFINITY) {
 			validateMaxInterval(this.options.hashSweepInterval);
 			this.hashTimer = setInterval(() => {
 				const sweptHashes = new Collection<string, HashData>();
 				const currentDate = Date.now();
 
 				// Begin sweeping hash based on lifetimes
-				this.hashes.sweep((v, k) => {
+				this.hashes.sweep((val, key) => {
 					// `-1` indicates a global hash
-					if (v.lastAccess === -1) return false;
+					if (val.lastAccess === -1) return false;
 
 					// Check if lifetime has been exceeded
-					const shouldSweep = Math.floor(currentDate - v.lastAccess) > this.options.hashLifetime;
+					const shouldSweep = Math.floor(currentDate - val.lastAccess) > this.options.hashLifetime;
 
 					// Add hash to collection of swept hashes
 					if (shouldSweep) {
 						// Add to swept hashes
-						sweptHashes.set(k, v);
+						sweptHashes.set(key, val);
 					}
 
 					// Emit debug information
-					this.emit(RESTEvents.Debug, `Hash ${v.value} for ${k} swept due to lifetime being exceeded`);
+					this.emit(RESTEvents.Debug, `Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
 
 					return shouldSweep;
 				});
@@ -260,21 +266,21 @@ export class RequestManager extends EventEmitter {
 			}, this.options.hashSweepInterval).unref();
 		}
 
-		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Infinity) {
+		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Number.POSITIVE_INFINITY) {
 			validateMaxInterval(this.options.handlerSweepInterval);
 			this.handlerTimer = setInterval(() => {
 				const sweptHandlers = new Collection<string, IHandler>();
 
 				// Begin sweeping handlers based on activity
-				this.handlers.sweep((v, k) => {
-					const { inactive } = v;
+				this.handlers.sweep((val, key) => {
+					const { inactive } = val;
 
 					// Collect inactive handlers
 					if (inactive) {
-						sweptHandlers.set(k, v);
+						sweptHandlers.set(key, val);
 					}
 
-					this.emit(RESTEvents.Debug, `Handler ${v.id} for ${k} swept due to being inactive`);
+					this.emit(RESTEvents.Debug, `Handler ${val.id} for ${key} swept due to being inactive`);
 					return inactive;
 				});
 
@@ -308,7 +314,6 @@ export class RequestManager extends EventEmitter {
 	 * Queues a request to be sent
 	 *
 	 * @param request - All the information needed to make a request
-	 *
 	 * @returns The response from the api request
 	 */
 	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
@@ -341,8 +346,7 @@ export class RequestManager extends EventEmitter {
 	 *
 	 * @param hash - The hash for the route
 	 * @param majorParameter - The major parameter for this handler
-	 *
-	 * @private
+	 * @internal
 	 */
 	private createHandler(hash: string, majorParameter: string) {
 		// Create the async request queue to handle requests
@@ -358,7 +362,7 @@ export class RequestManager extends EventEmitter {
 	 *
 	 * @param request - The request data
 	 */
-	private async resolveRequest(request: InternalRequest): Promise<{ url: string; fetchOptions: RequestOptions }> {
+	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestOptions; url: string }> {
 		const { options } = this;
 
 		let query = '';
@@ -417,13 +421,12 @@ export class RequestManager extends EventEmitter {
 					const contentType = file.contentType ?? (await fileTypeFromBuffer(file.data))?.mime;
 					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
 				} else {
-					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
 				}
 			}
 
 			// If a JSON body was added as well, attach it to the form data, using payload_json unless otherwise specified
-			// eslint-disable-next-line no-eq-null
+			// eslint-disable-next-line no-eq-null, eqeqeq
 			if (request.body != null) {
 				if (request.appendToFormData) {
 					for (const [key, value] of Object.entries(request.body as Record<string, unknown>)) {
@@ -437,7 +440,7 @@ export class RequestManager extends EventEmitter {
 			// Set the final body to the form data
 			finalBody = formData;
 
-			// eslint-disable-next-line no-eq-null
+			// eslint-disable-next-line no-eq-null, eqeqeq
 		} else if (request.body != null) {
 			if (request.passThroughBody) {
 				finalBody = request.body as BodyInit;
@@ -452,8 +455,7 @@ export class RequestManager extends EventEmitter {
 		finalBody = await resolveBody(finalBody);
 
 		const fetchOptions: RequestOptions = {
-			// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-			headers: { ...(request.headers ?? {}), ...additionalHeaders, ...headers } as Record<string, string>,
+			headers: { ...request.headers, ...additionalHeaders, ...headers } as Record<string, string>,
 			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
 		};
 
@@ -486,8 +488,7 @@ export class RequestManager extends EventEmitter {
 	 *
 	 * @param endpoint - The raw endpoint to generalize
 	 * @param method - The HTTP method this endpoint is called without
-	 *
-	 * @private
+	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
 		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{16,19})/.exec(endpoint);
@@ -508,7 +509,7 @@ export class RequestManager extends EventEmitter {
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
 			const id = /\d{16,19}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
-			if (Date.now() - timestamp > 1000 * 60 * 60 * 24 * 14) {
+			if (Date.now() - timestamp > 1_000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';
 			}
 		}

@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'stable'
-      - '!docs'
     tags:
       - '**'
   workflow_dispatch:
@@ -12,15 +10,28 @@ on:
       ref:
         description: 'The branch, tag or SHA to checkout'
         required: true
+      ref_type:
+        type: choice
+        description: 'Branch or tag'
+        options:
+          - branch
+          - tag
+        required: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build documentation
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'discordjs'
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     outputs:
       BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
       SHA: ${{ steps.env.outputs.SHA }}
+    if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,7 +43,6 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable
@@ -69,11 +79,13 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice']
+        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
+      BRANCH_OR_TAG: ${{ github.event.inputs.ref_type || needs.build.outputs.BRANCH_OR_TAG }}
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout repository
@@ -84,13 +96,12 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable
 
       - name: Build actions
-        run: yarn build
+        run: yarn workspace @discordjs/actions build
 
       - name: Download docgen artifacts
         uses: actions/download-artifact@v3
@@ -112,14 +123,14 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ env.BRANCH_OR_TAG == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
           tag: ${{ env.BRANCH_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ (github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ env.BRANCH_OR_TAG == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
@@ -131,7 +142,7 @@ jobs:
           fi
 
       - name: Move docs to correct directory
-        if: ${{ !github.event.inputs.ref && env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ env.BRANCH_OR_TAG == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |

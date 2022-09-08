@@ -1,9 +1,9 @@
 import type { Access, Item, Param } from './index.js';
 
 export interface Constructor extends Item {
+	access?: Access;
 	kind: 'constructor';
 	memberof: string;
-	see?: string[];
-	access?: Access;
 	params?: Param[];
+	see?: string[];
 }

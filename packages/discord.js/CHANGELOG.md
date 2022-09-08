@@ -2,6 +2,115 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.3.0](https://github.com/discordjs/discord.js/compare/14.2.0...14.3.0) - (2022-08-22)
+
+## Bug Fixes
+
+- **GuildMemberManager:** `add()` method throws an error (#8539) ([3bef901](https://github.com/discordjs/discord.js/commit/3bef9018c0be3c5dc51d03b796d08b925dc4e1b9))
+- **Guild:** Widget channel types and fixes (#8530) ([23a0b6c](https://github.com/discordjs/discord.js/commit/23a0b6ccf27410963bd4f5c53d9ee2ce019e90a8))
+- **Embed:** Reference video in video (#8473) ([c97977a](https://github.com/discordjs/discord.js/commit/c97977a3e806bd5d8682bc7fb22ebec1a8ceecdc))
+
+## Documentation
+
+- **GuildAuditLogsEntry:** Correct `action` wording (#8499) ([7d25072](https://github.com/discordjs/discord.js/commit/7d2507279cc9d1397c7d61e7c7b856ff4bc17c86))
+
+## Features
+
+- **GuildMemberManager:** AddRole and removeRole (#8510) ([cda3f00](https://github.com/discordjs/discord.js/commit/cda3f005b1546fdb8410e9550526956f840857fc))
+- Deprecate `ActionRow.from()` (#8504) ([f9c25dd](https://github.com/discordjs/discord.js/commit/f9c25ddcfe68f089e13f1090c3df4bd7cd74d2b7))
+- **WebSocketShard:** Support new resume url (#8480) ([bc06cc6](https://github.com/discordjs/discord.js/commit/bc06cc638d2f57ab5c600e8cdb6afc8eb2180166))
+
+## Refactor
+
+- **GuildAuditLogsEntry:** Remove `guild` from application command permission update extra (#8520) ([2b8074d](https://github.com/discordjs/discord.js/commit/2b8074dd12f2f1e957caffb57e5fd4d7be88dc25))
+
+## Typings
+
+- Inference of guild in `MessageManager` (#8538) ([6bb1474](https://github.com/discordjs/discord.js/commit/6bb1474d2001b76773954c959b2c2687e1df0136))
+- Allow choice's value type to be strictly inferred (#8529) ([b3f7c32](https://github.com/discordjs/discord.js/commit/b3f7c32f7f91f12766178f5e17585856e81d9a87))
+- **GuildAuditLogs:** Allow fetching to return all possible values (#8522) ([0dba8ad](https://github.com/discordjs/discord.js/commit/0dba8adbd2e6efd634bd3eb31df09467ba8a8a0d))
+- Correct `EventEmitter.on (static)` return type (#8524) ([16bbc8a](https://github.com/discordjs/discord.js/commit/16bbc8aa208a8a16c22be24696f57d5f7a5faf2b))
+- **GuildAuditLogs:** Remove static `Entry` (#8521) ([7a3d18d](https://github.com/discordjs/discord.js/commit/7a3d18dd6d1fe27393d00019b9ecd35c98b95ee7))
+- Disallow some channel types from webhook creation (#8531) ([4882b17](https://github.com/discordjs/discord.js/commit/4882b17a77484f801faa19fb971f2e6abd88e59f))
+- Implement max/min values for autocomplete (#8498) ([812f7f1](https://github.com/discordjs/discord.js/commit/812f7f1ea86fc953aa796875cbc7ccc434203d77))
+- **ModalMessageModalSubmitInteraction:** ChannelId is not nullable (#8496) ([c31a5cf](https://github.com/discordjs/discord.js/commit/c31a5cfcc82706667768eac77b5f99ba69cf3c91))
+- Change type of ApplicationCommandSubCommand.options (#8476) ([ebaf158](https://github.com/discordjs/discord.js/commit/ebaf158006d3c7db3b8c695e7c027b8af11999ba))
+
+# [14.2.0](https://github.com/discordjs/discord.js/compare/14.1.2...14.2.0) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (#8466) ([afa27b1](https://github.com/discordjs/discord.js/commit/afa27b15c5b92bc8d55b8285834d8e03f6692d06))
+- Remove DM channels from `Client#messageDeleteBulk`'s types (#8460) ([6c6fe74](https://github.com/discordjs/discord.js/commit/6c6fe74dd84859c5319efa999404e8168f189710))
+- **Transformers:** Do not transform `Date` objects (#8463) ([0e2a095](https://github.com/discordjs/discord.js/commit/0e2a09571c8e5ee61153b04e45334a226a1b4534))
+- **ModalSubmitInteraction:** Allow deferUpdate (#8455) ([0fab869](https://github.com/discordjs/discord.js/commit/0fab869e5179dca7ddec75b5519615278e51ad82))
+- **Guild:** Unable to fetch templates (#8420) ([aac8acc](https://github.com/discordjs/discord.js/commit/aac8acc22be7d7af99933ef099eca7deda43cb40))
+- **MessageMentions:** Infinite loop in `parsedUsers` getter (#8430) ([b8a3136](https://github.com/discordjs/discord.js/commit/b8a31360a220e3d796f5381bd215d30a379ecb7c))
+- **DataResolver:** Make `Buffer` from string (#8416) ([e72b986](https://github.com/discordjs/discord.js/commit/e72b986939e2958547c0e54d6d27472c8d111609))
+
+## Documentation
+
+- Change registration example to use global commands (#8454) ([64a4041](https://github.com/discordjs/discord.js/commit/64a4041a05e9514334a9f9e1f38a1ea18bb676d5))
+- **Colors:** Provide enum descriptions (#8437) ([6ef4754](https://github.com/discordjs/discord.js/commit/6ef4754d40c5ec65715fc1e00e643c52fe0a6209))
+- **AttachmentBuilder:** Fix #8407 (#8421) ([5b053cf](https://github.com/discordjs/discord.js/commit/5b053cf82ec2f2b717a490485af052dc956fe3c9))
+
+## Features
+
+- **Guild:** Add `max_video_channel_users` (#8423) ([3a96ce7](https://github.com/discordjs/discord.js/commit/3a96ce7970947f6268c21a1323d986aac8cb736d))
+
+## Typings
+
+- **Message:** Correct `bulkDelete` return type (#8465) ([c5b96a1](https://github.com/discordjs/discord.js/commit/c5b96a185cb8ba836b7cd10526c14059866f218f))
+- Fix missing types for mentionable options (#8443) ([452e94f](https://github.com/discordjs/discord.js/commit/452e94fd3ecc12de9e3408982c5c7fd931bae634))
+- **ApplicationCommandOption:** Add `ApplicationCommandBooleanOption` (#8434) ([38275fc](https://github.com/discordjs/discord.js/commit/38275fc53d633ce77ed2b142aff788dcbd4fad8c))
+
+# [14.1.2](https://github.com/discordjs/discord.js/compare/14.1.1...14.1.2) - (2022-07-30)
+
+## Bug Fixes
+
+- **errors:** Error codes (#8398) ([480c85c](https://github.com/discordjs/discord.js/commit/480c85c9c3d129204b3399ed726a4e570e0b2852))
+
+## Documentation
+
+- **Embed:** Ensure height and width are numbers (#8396) ([fca3dad](https://github.com/discordjs/discord.js/commit/fca3dada2a565eecfc7e5275cc9317df1d261871))
+
+# [14.1.0](https://github.com/discordjs/discord.js/compare/14.0.3...14.1.0) - (2022-07-29)
+
+## Bug Fixes
+
+- **MessageMentions:** `ignoreRepliedUser` option in `has()` (#8202) ([b4e2c0c](https://github.com/discordjs/discord.js/commit/b4e2c0c4d5538b945f9d597c6410a6f84b315084))
+- **GuildChannelManager:** Allow unsetting rtcRegion (#8359) ([a7d49e5](https://github.com/discordjs/discord.js/commit/a7d49e56fc7c34d2e4548d9e5bf0aec45273506e))
+- **ThreadChannel:** Omit webhook fetching (#8351) ([3839958](https://github.com/discordjs/discord.js/commit/3839958e3f682c715f1017da05436d2fe34900fd))
+- **GuildAuditLogsEntry:** Replace OverwriteType with AuditLogOptionsType (#8345) ([58c1b51](https://github.com/discordjs/discord.js/commit/58c1b51c5ceab137ad9851919b338419eeeab69e))
+- **ShardClientUtil#\_respond:** Construct global error (#8348) ([8e520f9](https://github.com/discordjs/discord.js/commit/8e520f946a5b9f93a939290facf4ccca2c05ff21))
+- **Presence:** Do not return NaN for activity timestamp (#8340) ([df42fdf](https://github.com/discordjs/discord.js/commit/df42fdfc421f1190f0a2267a66efd3c921ec2348))
+- **Client:** Omit private properties from toJSON (#8337) ([830c670](https://github.com/discordjs/discord.js/commit/830c670c61dcb17d8ab2a894a3203c68917d27e0))
+- **ApplicationCommandManager:** Allow passing 0n to defaultMemberPermissions (#8311) ([1fb7b30](https://github.com/discordjs/discord.js/commit/1fb7b30963cfe7ea4c05b1f3b42171c879c46a1d))
+
+## Documentation
+
+- **InteractionResponses:** Add `showModal()` return type (#8376) ([0b61dbf](https://github.com/discordjs/discord.js/commit/0b61dbf720e844322b066e30080c3537ab3d8174))
+- **WebhookClient:** Document working options (#8375) ([ba6797e](https://github.com/discordjs/discord.js/commit/ba6797e74209161b64c412de1b6f307cb28736b8))
+- **Message:** Document gateway intent for content (#8364) ([2130aae](https://github.com/discordjs/discord.js/commit/2130aae3210a8eaf91c5ccae5463940d49052c7d))
+- Use info blocks for requirements (#8361) ([80b9738](https://github.com/discordjs/discord.js/commit/80b9738957ebf5b6eb7c9858cec0fb1c897d0a1f))
+- **WebhookClient:** Make constructor a union (#8370) ([e9920a9](https://github.com/discordjs/discord.js/commit/e9920a9c98ffb78bd7d0ae00d486476367296646))
+- Update docs and examples to PascalCase links (#8305) ([34ba9d1](https://github.com/discordjs/discord.js/commit/34ba9d1c4c80eff7e6ac199a40232d07491432cc))
+
+## Features
+
+- Add channel & message URL formatters (#8371) ([a7deb8f](https://github.com/discordjs/discord.js/commit/a7deb8f89830ead6185c5fb46a49688b6d209ed1))
+- Restore missing typeguards (#8328) ([77ed407](https://github.com/discordjs/discord.js/commit/77ed407f6aadb68e729470c5269e9b526cb1b3f0))
+- **GuildMember:** Add dmChannel getter (#8281) ([4fc2c60](https://github.com/discordjs/discord.js/commit/4fc2c60a3bb43671b4b0202ae75eab42aba163ff))
+
+## Refactor
+
+- Deprecate `Formatter` class (#8373) ([7fd9ed8](https://github.com/discordjs/discord.js/commit/7fd9ed8f13d17ce7e98e34f7454d9047054d8467))
+- **PermissionOverwriteManager:** Use `OverwriteType` (#8374) ([6d24805](https://github.com/discordjs/discord.js/commit/6d248051cfd431e9cb1c65cb98f56aa0a6556407))
+
+## Typings
+
+- **GuildAuditLogsEntryExtraField:** Use `AuditLogOptionsType` (#8349) ([200ab91](https://github.com/discordjs/discord.js/commit/200ab91f527d8a5706d277b89a975096f75d141a))
+
 # [14.0.3](https://github.com/discordjs/discord.js/compare/14.0.2...14.0.3) - (2022-07-18)
 
 ## Bug Fixes
@@ -20,7 +129,7 @@ All notable changes to this project will be documented in this file.
 
 - 14.0.1 release bump, no new features.
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.9.0...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.10.2...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
@@ -425,6 +534,43 @@ All notable changes to this project will be documented in this file.
 - **interaction:** Remove renamed typeguards (#7220) ([68b9564](https://github.com/discordjs/discord.js/commit/68b9564f1821726377a1e929a3ca1fc65b4ad598))
 - AssertType -> expectType ([3f36746](https://github.com/discordjs/discord.js/commit/3f36746561a40cd61a7cd2e054b7ef80d58fc707))
 - Fix cache types resolving to `never` (#7164) ([c978dbb](https://github.com/discordjs/discord.js/commit/c978dbb6233bcd85408caf0bca7619c9c5d508f0))
+
+# [13.10.2](https://github.com/discordjs/discord.js/compare/13.10.1...13.10.2) - (2022-08-10)
+
+## Typings
+
+- **Message:** Correct `bulkDelete` return type (v13) (#8469) ([03c59e3](https://github.com/discordjs/discord.js/commit/03c59e3a837edcaa428549c8387ef4d29e3ef6e4))
+
+# [13.10.1](https://github.com/discordjs/discord.js/compare/13.10.0...13.10.1) - (2022-08-10)
+
+## Bug Fixes
+
+- **ThreadChannel:** Handle possibly `null` parent (v13) (#8467) ([2a46d9f](https://github.com/discordjs/discord.js/commit/2a46d9f58e4714c8580218a3459992bbfec2bcf7))
+
+# [13.10.0](https://github.com/discordjs/discord.js/compare/13.9.2...13.10.0) - (2022-08-08)
+
+## Features
+
+- **Guild:** Add `max_video_channel_users` (v13) (#8424) ([ae43bca](https://github.com/discordjs/discord.js/commit/ae43bca8b0afd8b90db7a1d99f67205b29338c2d))
+
+# [13.9.2](https://github.com/discordjs/discord.js/compare/13.9.1...13.9.2) - (2022-07-29)
+
+## Bug Fixes
+
+- **MessageMentions:** `ignoreRepliedUser` option in `has()` (v13) (#8365) ([d0a4199](https://github.com/discordjs/discord.js/commit/d0a4199760b4c7fe64f558d8d4d2302873f78b0e))
+- **GuildChannelManager:** Allow unsetting rtcRegion (v13) (#8362) ([9612507](https://github.com/discordjs/discord.js/commit/96125079a23c87fe0fb3ee01a0de5a9889fc1057))
+- **ThreadChannel:** Omit webhook fetching (v13) (#8352) ([4f7c1e3](https://github.com/discordjs/discord.js/commit/4f7c1e35c38bb9f1d524406c008ffceb2cfde3db))
+
+# [13.9.1](https://github.com/discordjs/discord.js/compare/13.9.0...13.9.1) - (2022-07-23)
+
+## Bug Fixes
+
+- **ApplicationCommandManager:** Allow passing 0n to defaultMemberPermissions (v13) (#8312) ([4cf0555](https://github.com/discordjs/discord.js/commit/4cf05559a2cc6c4dfc409f8aab60256e5b030bca))
+
+## Refactor
+
+- **embed:** Deprecate addField (#8318) ([be35db2](https://github.com/discordjs/discord.js/commit/be35db2410c24fcca8b28ddfb3c1c580e7e2a22f))
+- **Presence:** Remove redundant date parsing (v13) (#8341) ([e95caa7](https://github.com/discordjs/discord.js/commit/e95caa7e4515beab627b5394d011a6b6a8ae6a18))
 
 # [13.9.0](https://github.com/discordjs/discord.js/compare/13.8.1...13.9.0) - (2022-07-17)
 

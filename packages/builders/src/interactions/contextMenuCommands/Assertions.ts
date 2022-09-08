@@ -1,11 +1,12 @@
 import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandType } from 'discord-api-types/v10';
-import type { ContextMenuCommandType } from './ContextMenuCommandBuilder';
-import { isValidationEnabled } from '../../util/validation';
+import { isValidationEnabled } from '../../util/validation.js';
+import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
+	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
 	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u)
 	.setValidationEnabled(isValidationEnabled);
 const typePredicate = s

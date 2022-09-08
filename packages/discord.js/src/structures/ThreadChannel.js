@@ -75,8 +75,9 @@ class ThreadChannel extends BaseChannel {
       this.locked = data.thread_metadata.locked ?? false;
 
       /**
-       * Whether members without `MANAGE_THREADS` can invite other members without `MANAGE_THREADS`
-       * <info>Always `null` in public threads</info>
+       * Whether members without the {@link PermissionFlagsBits.ManageThreads} permission
+       * can invite other members to this thread.
+       * <info>This property is always `null` in public threads.</info>
        * @type {?boolean}
        */
       this.invitable = this.type === ChannelType.GuildPrivateThread ? data.thread_metadata.invitable ?? false : null;
@@ -252,7 +253,8 @@ class ThreadChannel extends BaseChannel {
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
-   * @param {boolean} [checkAdmin=true] Whether having `ADMINISTRATOR` will return all permissions
+   * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
+   * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
    */
   permissionsFor(memberOrRole, checkAdmin) {
@@ -281,10 +283,11 @@ class ThreadChannel extends BaseChannel {
    * <info>This only works when the thread started from a message in the parent channel, otherwise the promise will
    * reject. If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message<true>|null>}
    */
-  fetchStarterMessage(options) {
-    return this.parent.messages.fetch({ message: this.id, ...options });
+  // eslint-disable-next-line require-await
+  async fetchStarterMessage(options) {
+    return this.parent?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 
   /**
@@ -361,8 +364,8 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether members without the `MANAGE_THREADS` permission can invite other members without the
-   * `MANAGE_THREADS` permission to this thread.
+   * Sets whether members without the {@link PermissionFlagsBits.ManageThreads} permission
+   * can invite other members to this thread.
    * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
@@ -375,8 +378,9 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether the thread can be **unarchived** by anyone with `SEND_MESSAGES` permission.
-   * When a thread is locked only members with `MANAGE_THREADS` can unarchive it.
+   * Sets whether the thread can be **unarchived** by anyone with the
+   * {@link PermissionFlagsBits.SendMessages} permission. When a thread is locked, only members with the
+   * {@link PermissionFlagsBits.ManageThreads} permission can unarchive it.
    * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}
@@ -541,6 +545,6 @@ class ThreadChannel extends BaseChannel {
   // Doesn't work on Thread channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(ThreadChannel, true, ['setRateLimitPerUser', 'setNSFW']);
+TextBasedChannel.applyToClass(ThreadChannel, true, ['fetchWebhooks', 'setRateLimitPerUser', 'setNSFW']);
 
 module.exports = ThreadChannel;
