@@ -181,7 +181,7 @@ class Collector extends EventEmitter {
 
       const onEnd = () => {
         cleanup();
-        reject(this.collected); // eslint-disable-line prefer-promise-reject-errors
+        reject(this.collected);
       };
 
       this.on('collect', onCollect);

@@ -1,7 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/method-signature-style */
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';

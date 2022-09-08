@@ -64,7 +64,7 @@ const methods: Methods = {
 void (async () => {
 	for (const libName of Object.keys(libs) as (keyof typeof libs)[]) {
 		try {
-			// eslint-disable-next-line unicorn/no-abusive-eslint-disable, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+			// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 			const lib = require(libName);
 			if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready;
 			Object.assign(methods, libs[libName](lib));

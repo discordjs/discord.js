@@ -136,11 +136,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
 		this.debug([`Connecting to ${url}`]);
 		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
-			/* eslint-disable @typescript-eslint/no-misused-promises */
 			.on('message', this.onMessage.bind(this))
 			.on('error', this.onError.bind(this))
 			.on('close', this.onClose.bind(this));
-		/* eslint-enable @typescript-eslint/no-misused-promises */
 
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;

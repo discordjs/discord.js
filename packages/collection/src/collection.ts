@@ -1,6 +1,5 @@
 /* eslint-disable id-length */
 /* eslint-disable no-param-reassign */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /**
  * @internal
  */

@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/require-post-message-target-origin */
 import { isMainThread, workerData, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
