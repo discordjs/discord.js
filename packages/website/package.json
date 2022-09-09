@@ -5,10 +5,11 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:local": "NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
-		"build:prod": "yarn run --top-level build && yarn run --top-level docs --force && yarn build:css && yarn build:next && yarn node scripts/generateAllIndicies.js",
+		"build:local": "NEXT_PUBLIC_LOCAL_DEV=true yarn run --top-level docs --force && yarn build:prod",
+		"build:prod": "yarn workspace @discordjs/api-extractor-utils run build && yarn workspace @discordjs/scripts run build && yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
+		"build:search_indicies": "yarn node scripts/generateAllIndicies.js",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",

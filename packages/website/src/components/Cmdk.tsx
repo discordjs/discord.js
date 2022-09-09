@@ -178,7 +178,7 @@ export function CmdkDialog() {
 
 	return (
 		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog}>
-			<Command label="Command Menu" className="bg-dark-300 w-lg rounded">
+			<Command label="Command Menu" className="bg-dark-300 min-w-xs sm:min-w-lg rounded">
 				<Command.Input
 					className="bg-dark-300 caret-blurple mt-4 w-full border-0 p-4 pt-0 text-lg outline-0"
 					placeholder="Type to search..."
