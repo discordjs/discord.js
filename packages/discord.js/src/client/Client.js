@@ -479,7 +479,7 @@ class Client extends BaseClient {
     if (typeof options.intents === 'undefined') {
       throw new TypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = IntentsBitField.resolve(options.intents);
+      options.intents = new IntentsBitField(options.intents).freeze();
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
