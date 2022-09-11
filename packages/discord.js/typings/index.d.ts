@@ -1718,7 +1718,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public pin(reason?: string): Promise<Message<InGuild>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
   public removeAttachments(): Promise<Message<InGuild>>;
-  public reply(options: string | MessagePayload | ReplyMessageOptions): Promise<Message<InGuild>>;
+  public reply(options: string | MessagePayload | MessageReplyOptions): Promise<Message<InGuild>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
   public suppressEmbeds(suppress?: boolean): Promise<Message<InGuild>>;
@@ -1875,8 +1875,16 @@ export class MessageMentions {
   public static UsersPattern: typeof FormattingPatterns.User;
 }
 
+export type MessagePayloadOption =
+  | MessageCreateOptions
+  | MessageEditOptions
+  | WebhookCreateMessageOptions
+  | WebhookEditMessageOptions
+  | InteractionReplyOptions
+  | InteractionUpdateOptions;
+
 export class MessagePayload {
-  public constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+  public constructor(target: MessageTarget, options: MessagePayloadOption);
   public body: RawMessagePayloadData | null;
   public get isUser(): boolean;
   public get isWebhook(): boolean;
@@ -1884,13 +1892,13 @@ export class MessagePayload {
   public get isMessageManager(): boolean;
   public get isInteraction(): boolean;
   public files: RawFile[] | null;
-  public options: MessageOptions | WebhookMessageOptions;
+  public options: MessagePayloadOption;
   public target: MessageTarget;
 
   public static create(
     target: MessageTarget,
-    options: string | MessageOptions | WebhookMessageOptions,
-    extra?: MessageOptions | WebhookMessageOptions,
+    options: string | MessagePayloadOption,
+    extra?: MessagePayloadOption,
   ): MessagePayload;
   public static resolveFile(
     fileLike: BufferResolvable | Stream | AttachmentPayload | JSONEncodable<AttachmentPayload>,
@@ -2831,7 +2839,7 @@ export class Webhook extends WebhookMixin() {
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<Message>;
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<Message>;
+  public send(options: string | MessagePayload | WebhookCreateMessageOptions): Promise<Message>;
 }
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -2844,7 +2852,7 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage>;
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
-  public send(options: string | MessagePayload | WebhookMessageOptions): Promise<APIMessage>;
+  public send(options: string | MessagePayload | WebhookCreateMessageOptions): Promise<APIMessage>;
 }
 
 export class WebSocketManager extends EventEmitter {
@@ -3627,7 +3635,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
   public deleteDM(user: UserResolvable): Promise<DMChannel>;
   public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
   public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlagsBitField>;
-  public send(user: UserResolvable, options: string | MessagePayload | MessageOptions): Promise<Message>;
+  public send(user: UserResolvable, options: string | MessagePayload | MessageCreateOptions): Promise<Message>;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
@@ -3659,7 +3667,7 @@ export function TextBasedChannelMixin<
 ): Constructable<T & Omit<TextBasedChannelFields<InGuild>, I>>;
 
 export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
-  send(options: string | MessagePayload | MessageOptions): Promise<Message<InGuild>>;
+  send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
 }
 
 export interface TextBasedChannelFields<InGuild extends boolean = boolean>
@@ -3700,7 +3708,9 @@ export interface PartialWebhookFields {
     options: string | MessagePayload | WebhookEditMessageOptions,
   ): Promise<APIMessage | Message>;
   fetchMessage(message: Snowflake | '@original', options?: WebhookFetchMessageOptions): Promise<APIMessage | Message>;
-  send(options: string | MessagePayload | Omit<WebhookMessageOptions, 'flags'>): Promise<APIMessage | Message>;
+  send(
+    options: string | MessagePayload | InteractionReplyOptions | WebhookCreateMessageOptions,
+  ): Promise<APIMessage | Message>;
 }
 
 export interface WebhookFields extends PartialWebhookFields {
@@ -5023,10 +5033,14 @@ export interface InteractionDeferReplyOptions {
 
 export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
 
-export interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL' | 'flags'> {
+export interface InteractionReplyOptions extends BaseMessageOptions {
+  tts?: boolean;
   ephemeral?: boolean;
   fetchReply?: boolean;
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds' | 'Ephemeral'>, number>;
+  flags?: BitFieldResolvable<
+    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds'>,
+    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds
+  >;
 }
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
@@ -5121,28 +5135,6 @@ export type MessageChannelComponentCollectorOptions<T extends CollectedMessageIn
   'channel' | 'guild' | 'interactionType'
 >;
 
-export interface MessageEditOptions {
-  attachments?: JSONEncodable<AttachmentPayload>[];
-  content?: string | null;
-  embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[] | null;
-  files?: (
-    | BufferResolvable
-    | Stream
-    | JSONEncodable<APIAttachment>
-    | Attachment
-    | AttachmentBuilder
-    | AttachmentPayload
-  )[];
-  flags?: BitFieldResolvable<MessageFlagsString, number>;
-  allowedMentions?: MessageMentionOptions;
-  components?: (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRow<MessageActionRowComponent>
-    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
-  )[];
-}
-
 export interface MessageEvent {
   data: WebSocket.Data;
   type: string;
@@ -5172,16 +5164,9 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
-export interface MessageOptions {
-  tts?: boolean;
-  nonce?: string | number;
-  content?: string | null;
+export interface BaseMessageOptions {
+  content?: string;
   embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
-  components?: (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
-  )[];
   allowedMentions?: MessageMentionOptions;
   files?: (
     | BufferResolvable
@@ -5191,10 +5176,25 @@ export interface MessageOptions {
     | AttachmentBuilder
     | AttachmentPayload
   )[];
+  components?: (
+    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
+    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
+    | APIActionRowComponent<APIMessageActionRowComponent>
+  )[];
+}
+
+export interface MessageCreateOptions extends BaseMessageOptions {
+  tts?: boolean;
+  nonce?: string | number;
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
+}
+
+export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
+  content?: string | null;
   attachments?: JSONEncodable<AttachmentPayload>[];
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, number>;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
 export type MessageReactionResolvable =
@@ -5387,7 +5387,7 @@ export interface ReplyOptions {
   failIfNotExists?: boolean;
 }
 
-export interface ReplyMessageOptions extends Omit<MessageOptions, 'reply'> {
+export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply'> {
   failIfNotExists?: boolean;
 }
 
@@ -5608,16 +5608,15 @@ export interface WebhookEditData {
   reason?: string;
 }
 
-export type WebhookEditMessageOptions = Pick<
-  WebhookMessageOptions,
-  'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
->;
+export interface WebhookEditMessageOptions extends Omit<MessageEditOptions, 'flags'> {
+  threadId?: Snowflake;
+}
 
 export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 'stickers'> {
+export interface WebhookCreateMessageOptions extends Omit<MessageCreateOptions, 'nonce' | 'reply' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;

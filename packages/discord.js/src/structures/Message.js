@@ -645,22 +645,6 @@ class Message extends Base {
   }
 
   /**
-   * Options that can be passed into {@link Message#edit}.
-   * @typedef {Object} MessageEditOptions
-   * @property {?string} [content] Content to be edited
-   * @property {Embed[]|APIEmbed[]} [embeds] Embeds to be added/edited
-   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {MessageFlags} [flags] Which flags to set for the message
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
-   * @property {Attachment[]} [attachments] An array of attachments to keep,
-   * all attachments will be kept if omitted
-   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
-   * Files to add to the message
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
-   * Action rows containing interactive components for the message (buttons, select menus)
-   */
-
-  /**
    * Edits the content of the message.
    * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
@@ -770,7 +754,8 @@ class Message extends Base {
 
   /**
    * Options provided when sending a message as an inline reply.
-   * @typedef {BaseMessageOptions} ReplyMessageOptions
+   * @typedef {BaseMessageCreateOptions} MessageReplyOptions
+   * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
    * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
@@ -778,7 +763,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
-   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|MessageReplyOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Reply to a message

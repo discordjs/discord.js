@@ -32,7 +32,7 @@ class WebhookClient extends BaseClient {
   /**
    * Options for a webhook client.
    * @typedef {Object} WebhookClientOptions
-   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link WebhookMessageOptions#allowedMentions}
+   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link BaseMessageOptions#allowedMentions}
    * @property {RESTOptions} [rest] Options for the REST manager
    */
 
@@ -68,7 +68,7 @@ class WebhookClient extends BaseClient {
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookMessageOptions} options The content for the reply
+   * @param {string|MessagePayload|WebhookCreateMessageOptions} options The content for the reply
    * @returns {Promise<APIMessage>}
    */
   send() {}
