@@ -512,7 +512,7 @@ class WebSocketShard extends EventEmitter {
       this.emit(WebSocketShardEvents.AllReady);
       return;
     }
-    const hasGuildsIntent = new IntentsBitField(this.manager.client.options.intents).has(GatewayIntentBits.Guilds);
+    const hasGuildsIntent = this.manager.client.options.intents.has(GatewayIntentBits.Guilds);
     // Step 2. Create a timeout that will mark the shard as ready if there are still unavailable guilds
     // * The timeout is 15 seconds by default
     // * This can be optionally changed in the client options via the `waitGuildTimeout` option
@@ -687,7 +687,7 @@ class WebSocketShard extends EventEmitter {
     // Clone the identify payload and assign the token and shard info
     const d = {
       ...client.options.ws,
-      intents: IntentsBitField.resolve(client.options.intents),
+      intents: client.options.intents.bitfield,
       token: client.token,
       shard: [this.id, Number(client.options.shardCount)],
     };
