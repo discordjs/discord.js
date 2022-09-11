@@ -1,19 +1,20 @@
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
-import { Divider, Stack } from '@mantine/core';
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import { MethodItem } from './MethodItem';
 
 export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignatureJSON)[] }) {
-	return (
-		<Stack>
-			{data.map((method) => (
+	const methodItems = useMemo(
+		() =>
+			data.map((method) => (
 				<Fragment
 					key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
 				>
 					<MethodItem data={method} />
-					<Divider size="md" />
+					<div className="border-light-900 -mx-8 border-t-2" />
 				</Fragment>
-			))}
-		</Stack>
+			)),
+		[data],
 	);
+
+	return <div className="flex flex-col gap-4">{methodItems}</div>;
 }

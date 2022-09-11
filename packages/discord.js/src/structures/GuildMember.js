@@ -355,8 +355,8 @@ class GuildMember extends Base {
    * @param {BanOptions} [options] Options for the ban
    * @returns {Promise<GuildMember>}
    * @example
-   * // ban a guild member
-   * guildMember.ban({ deleteMessageDays: 7, reason: 'They deserved it' })
+   * // Ban a guild member, deleting a week's worth of messages
+   * guildMember.ban({ deleteMessageSeconds: 60 * 60 * 24 * 7, reason: 'They deserved it' })
    *   .then(console.log)
    *   .catch(console.error);
    */

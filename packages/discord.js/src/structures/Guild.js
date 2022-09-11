@@ -727,7 +727,6 @@ class Guild extends AnonymousGuild {
     return new GuildAuditLogs(this, data);
   }
 
-  /* eslint-disable max-len */
   /**
    * The data for editing a guild.
    * @typedef {Object} GuildEditData

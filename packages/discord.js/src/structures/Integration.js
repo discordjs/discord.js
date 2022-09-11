@@ -185,6 +185,16 @@ class Integration extends Base {
     } else {
       this.application ??= null;
     }
+
+    if ('scopes' in data) {
+      /**
+       * The scopes this application has been authorized for
+       * @type {OAuth2Scopes[]}
+       */
+      this.scopes = data.scopes;
+    } else {
+      this.scopes ??= [];
+    }
   }
 
   /**

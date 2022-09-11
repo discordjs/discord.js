@@ -1,41 +1,22 @@
-import { Container, Title, Group, Button, Box, createStyles } from '@mantine/core';
 import Head from 'next/head';
 import Link from 'next/link';
 
-const useStyles = createStyles((theme) => ({
-	label: {
-		textAlign: 'center',
-		fontWeight: 900,
-		fontSize: 220,
-		lineHeight: 1,
-		marginBottom: theme.spacing.xl * 1.5,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![2],
-
-		[theme.fn.smallerThan('sm')]: {
-			fontSize: 120,
-		},
-	},
-}));
-
 export default function FourOhFourPage() {
-	const { classes } = useStyles();
-
 	return (
 		<>
 			<Head>
 				<title key="title">discord.js | 404</title>
+				<meta key="og_title" property="og:title" content="discord.js | 404" />
 			</Head>
-			<Container pt={96} pb={96}>
-				<Box className={classes.label}>404</Box>
-				<Title align="center">Not found.</Title>
-				<Group position="center">
-					<Link href="/docs/packages" passHref prefetch={false}>
-						<Button component="a" variant="filled" size="md" mt="xl">
-							Take me back
-						</Button>
-					</Link>
-				</Group>
-			</Container>
+			<div className="mx-auto flex h-full max-w-lg flex-col place-content-center place-items-center gap-8 py-16 px-8 lg:py-0 lg:px-6">
+				<h1 className="text-[9rem] font-black leading-none md:text-[12rem]">404</h1>
+				<h2 className="text-[2rem] md:text-[3rem]">Not found.</h2>
+				<Link href="/docs/packages" prefetch={false}>
+					<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
+						Take me back
+					</a>
+				</Link>
+			</div>
 		</>
 	);
 }

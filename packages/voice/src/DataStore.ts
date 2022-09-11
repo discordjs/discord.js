@@ -124,7 +124,6 @@ function audioCycleStep() {
 		player['_stepDispatch']();
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	prepareNextAudioFrame(available);
 }
 

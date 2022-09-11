@@ -181,6 +181,75 @@ export function roleMention<C extends Snowflake>(roleId: C): `<@&${C}>` {
 }
 
 /**
+ * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandGroupName - The subcommand group name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<
+	N extends string,
+	G extends string,
+	S extends string,
+	I extends Snowflake,
+>(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
+
+/**
+ * Formats an application command name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(
+	commandName: N,
+	subcommandName: S,
+	commandId: I,
+): `</${N} ${S}:${I}>`;
+
+/**
+ * Formats an application command name and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<N extends string, I extends Snowflake>(
+	commandName: N,
+	commandId: I,
+): `</${N}:${I}>`;
+
+/**
+ * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
+ *
+ * @param commandName - The application command name to format
+ * @param subcommandGroupName - The subcommand group name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command ID to format
+ */
+export function chatInputApplicationCommandMention<
+	N extends string,
+	G extends Snowflake | string,
+	S extends Snowflake | string,
+	I extends Snowflake,
+>(
+	commandName: N,
+	subcommandGroupName: G,
+	subcommandName?: S,
+	commandId?: I,
+): `</${N} ${G} ${S}:${I}>` | `</${N} ${G}:${S}>` | `</${N}:${G}>` {
+	if (typeof commandId !== 'undefined') {
+		return `</${commandName} ${subcommandGroupName} ${subcommandName!}:${commandId}>`;
+	}
+
+	if (typeof subcommandName !== 'undefined') {
+		return `</${commandName} ${subcommandGroupName}:${subcommandName}>`;
+	}
+
+	return `</${commandName}:${subcommandGroupName}>`;
+}
+
+/**
  * Formats an emoji ID into a fully qualified emoji identifier
  *
  * @param emojiId - The emoji ID to format
