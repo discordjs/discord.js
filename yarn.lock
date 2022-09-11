@@ -2132,8 +2132,8 @@ __metadata:
     "@types/node": ^16.11.58
     "@types/react-dom": ^18.0.6
     "@types/react-syntax-highlighter": ^15.5.5
-    "@unocss/cli": ^0.45.18
     "@unocss/reset": ^0.45.18
+    "@unocss/webpack": ^0.45.18
     "@vitejs/plugin-react": ^2.1.0
     "@vitest/coverage-c8": ^0.23.1
     "@vscode/codicons": ^0.0.32
@@ -4170,7 +4170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@unocss/cli@npm:0.45.18, @unocss/cli@npm:^0.45.18":
+"@unocss/cli@npm:0.45.18":
   version: 0.45.18
   resolution: "@unocss/cli@npm:0.45.18"
   dependencies:
@@ -4361,6 +4361,23 @@ __metadata:
   peerDependencies:
     vite: ^2.9.0 || ^3.0.0-0
   checksum: b412ae5394b63d539383e8b9c39f1381b610cc5abb68208e5836596a09347489888bef99ca0f17867d2223cc3cb6eab7dfb483270ac6e0d4269c2e897452ee73
+  languageName: node
+  linkType: hard
+
+"@unocss/webpack@npm:^0.45.18":
+  version: 0.45.18
+  resolution: "@unocss/webpack@npm:0.45.18"
+  dependencies:
+    "@ampproject/remapping": ^2.2.0
+    "@rollup/pluginutils": ^4.2.1
+    "@unocss/config": 0.45.18
+    "@unocss/core": 0.45.18
+    magic-string: ^0.26.2
+    unplugin: ^0.9.4
+    webpack-sources: ^3.2.3
+  peerDependencies:
+    webpack: ^4 || ^5
+  checksum: 011f75e9cb4986ef781035f607f577affdfb76a946fc24e0a3caeefe2002d7b6a513a6973dcf850b30ac96b716e52e37690d6e9080fbcba581674cef40b63edd
   languageName: node
   linkType: hard
 
@@ -17429,6 +17446,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unplugin@npm:^0.9.4":
+  version: 0.9.5
+  resolution: "unplugin@npm:0.9.5"
+  dependencies:
+    acorn: ^8.8.0
+    chokidar: ^3.5.3
+    webpack-sources: ^3.2.3
+    webpack-virtual-modules: ^0.4.4
+  peerDependencies:
+    esbuild: ">=0.13"
+    rollup: ^2.50.0
+    vite: ^2.3.0 || ^3.0.0-0
+    webpack: 4 || 5
+  peerDependenciesMeta:
+    esbuild:
+      optional: true
+    rollup:
+      optional: true
+    vite:
+      optional: true
+    webpack:
+      optional: true
+  checksum: 4020ab5b3aad9c378abbcccd245d5320e7db9929012cea15961d1426a26e7c94abf8cee647fde4aba4fe5f8f2bd22aa349473902930aa2b1144d9ebb17405163
+  languageName: node
+  linkType: hard
+
 "update-browserslist-db@npm:^1.0.5":
   version: 1.0.7
   resolution: "update-browserslist-db@npm:1.0.7"
@@ -17840,6 +17883,20 @@ __metadata:
   version: 7.0.0
   resolution: "webidl-conversions@npm:7.0.0"
   checksum: f05588567a2a76428515333eff87200fae6c83c3948a7482ebb109562971e77ef6dc49749afa58abb993391227c5697b3ecca52018793e0cb4620a48f10bd21b
+  languageName: node
+  linkType: hard
+
+"webpack-sources@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "webpack-sources@npm:3.2.3"
+  checksum: 989e401b9fe3536529e2a99dac8c1bdc50e3a0a2c8669cbafad31271eadd994bc9405f88a3039cd2e29db5e6d9d0926ceb7a1a4e7409ece021fe79c37d9c4607
+  languageName: node
+  linkType: hard
+
+"webpack-virtual-modules@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "webpack-virtual-modules@npm:0.4.4"
+  checksum: 6720b4c47d76dc9cbaff557562506c192da7560a90395e9918a418e257a0c0cda9f5e3ac92107ec0789f8f23ad942313bd8cdebc95031d0adef1032bf6142bc7
   languageName: node
   linkType: hard
 
