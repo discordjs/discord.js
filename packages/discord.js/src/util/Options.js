@@ -154,9 +154,6 @@ class Options extends null {
    * The default settings passed to {@link Options.cacheWithLimits}.
    * The caches that this changes are:
    * * `MessageManager` - Limit to 200 messages
-   * * `ChannelManager` - Sweep archived threads
-   * * `GuildChannelManager` - Sweep archived threads
-   * * `ThreadManager` - Sweep archived threads
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
    * @type {Object<string, LimitedCollectionOptions|number>}
