@@ -17,7 +17,7 @@ const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 class MessagePayload {
   /**
    * @param {MessageTarget} target The target for this message to be sent to
-   * @param {MessageOptions|WebhookMessageOptions} options Options passed in from send
+   * @param {MessagePayloadOption} options The payload of this message
    */
   constructor(target, options) {
     /**
@@ -27,8 +27,8 @@ class MessagePayload {
     this.target = target;
 
     /**
-     * Options passed in from send
-     * @type {MessageOptions|WebhookMessageOptions}
+     * The payload of this message.
+     * @type {MessagePayloadOption}
      */
     this.options = options;
 
@@ -261,8 +261,8 @@ class MessagePayload {
   /**
    * Creates a {@link MessagePayload} from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {string|MessageOptions|WebhookMessageOptions} options Options or content to use
-   * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto specified options
+   * @param {string|MessagePayloadOption} options Options or content to use
+   * @param {MessagePayloadOption} [extra={}] Extra options to add onto specified options
    * @returns {MessagePayload}
    */
   static create(target, options, extra = {}) {
@@ -279,6 +279,12 @@ module.exports = MessagePayload;
  * A target for a message.
  * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
+ */
+
+/**
+ * A possible payload option.
+ * @typedef {MessageCreateOptions|MessageEditOptions|WebhookCreateMessageOptions|WebhookEditMessageOptions|
+ * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
  */
 
 /**
