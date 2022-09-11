@@ -754,7 +754,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public channels: ChannelManager;
   public get emojis(): BaseGuildEmojiManager;
   public guilds: GuildManager;
-  public options: ClientOptions;
+  public options: Omit<ClientOptions, "intents"> & { intents: IntentsBitField };
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
   public sweepers: Sweepers;
