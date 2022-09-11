@@ -11,7 +11,6 @@ export default {
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
-	cleanDistDir: true,
 	experimental: {
 		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
 	},
