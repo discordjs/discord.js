@@ -18,7 +18,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Antonio Roman <kyradiscord@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"keywords": [
 		"discord",
@@ -46,8 +46,8 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",
 		"tsup": "^6.2.3",
-		"turbo": "^1.4.4",
-		"typescript": "^4.8.2"
+		"turbo": "^1.4.6",
+		"typescript": "^4.8.3"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"

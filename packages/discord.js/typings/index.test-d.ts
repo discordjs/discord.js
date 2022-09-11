@@ -100,7 +100,7 @@ import {
   ActionRowBuilder,
   ButtonComponent,
   SelectMenuComponent,
-  InteractionResponseFields,
+  RepliableInteraction,
   ThreadChannelType,
   Events,
   WebSocketShardEvents,
@@ -1519,7 +1519,7 @@ client.on('interactionCreate', async interaction => {
   }
 
   if (interaction.isRepliable()) {
-    expectAssignable<InteractionResponseFields>(interaction);
+    expectAssignable<RepliableInteraction>(interaction);
     interaction.reply('test');
   }
 
@@ -1529,7 +1529,7 @@ client.on('interactionCreate', async interaction => {
     interaction.isRepliable()
   ) {
     expectAssignable<CommandInteraction>(interaction);
-    expectAssignable<InteractionResponseFields>(interaction);
+    expectAssignable<RepliableInteraction>(interaction);
   }
 });
 

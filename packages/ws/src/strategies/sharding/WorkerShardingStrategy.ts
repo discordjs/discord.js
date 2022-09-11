@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/require-post-message-target-origin */
 import { once } from 'node:events';
 import { join } from 'node:path';
 import { Worker } from 'node:worker_threads';

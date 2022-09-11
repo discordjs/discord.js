@@ -33,7 +33,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
 	"keywords": [
@@ -55,7 +55,7 @@
 		"@discordjs/collection": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.37.5",
+		"discord-api-types": "^0.37.8",
 		"file-type": "^18.0.0",
 		"tslib": "^2.4.0",
 		"undici": "^5.10.0"
@@ -63,16 +63,16 @@
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.7",
-		"@microsoft/api-extractor": "^7.29.5",
-		"@types/node": "^16.11.56",
-		"@vitest/coverage-c8": "^0.22.1",
+		"@microsoft/api-extractor": "^7.30.0",
+		"@types/node": "^16.11.58",
+		"@vitest/coverage-c8": "^0.23.1",
 		"downlevel-dts": "^0.10.1",
 		"eslint": "^8.23.0",
-		"eslint-config-neon": "^0.1.23",
+		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
-		"typescript": "^4.8.2",
-		"vitest": "^0.22.1"
+		"typescript": "^4.8.3",
+		"vitest": "^0.23.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

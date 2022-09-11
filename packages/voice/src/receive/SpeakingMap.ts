@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/method-signature-style, @typescript-eslint/unified-signatures */
+/* eslint-disable @typescript-eslint/unified-signatures */
 import { EventEmitter } from 'node:events';
 
 export interface SpeakingMap extends EventEmitter {

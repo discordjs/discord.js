@@ -5,22 +5,8 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
-import {
-	Group,
-	Stack,
-	Title,
-	Text,
-	Box,
-	MediaQuery,
-	Aside,
-	ScrollArea,
-	Skeleton,
-	Divider,
-	useMantineColorScheme,
-} from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { useRouter } from 'next/router';
 import { Fragment, type PropsWithChildren } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars-2';
 import {
 	VscSymbolClass,
 	VscSymbolMethod,
@@ -30,10 +16,10 @@ import {
 	VscListSelection,
 	VscSymbolParameter,
 } from 'react-icons/vsc';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus, ghcolors } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Section } from './Section';
+import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -75,95 +61,76 @@ export function DocContainer({
 	methods,
 	properties,
 }: DocContainerProps) {
-	const router = useRouter();
-	const matches = useMediaQuery('(max-width: 768px)');
-	const { colorScheme } = useMantineColorScheme();
+	const matches = useMedia('(max-width: 768px)', true);
 
 	return (
-		<Group>
-			<Stack sx={{ flexGrow: 1, maxWidth: '100%' }}>
-				<Skeleton visible={router.isFallback} radius="sm">
-					<Title sx={{ wordBreak: 'break-all' }} order={2} ml="xs">
-						<Group>
-							{generateIcon(kind)}
-							{name}
-						</Group>
-					</Title>
-				</Skeleton>
+		<>
+			<div className="flex flex-col gap-4">
+				<h2 className="flex flex-row place-items-center gap-2 break-all text-2xl font-bold">
+					<span>{generateIcon(kind)}</span>
+					{name}
+				</h2>
 
-				<Skeleton visible={router.isFallback} radius="sm">
-					<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
-						{summary ? <TSDoc node={summary} /> : <Text>No summary provided.</Text>}
-						<Divider size="md" mt={20} />
-					</Section>
-				</Skeleton>
+				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
+					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
+					<div className="border-light-900 -mx-8 mt-6 border-t-2" />
+				</Section>
 
-				<Skeleton visible={router.isFallback} radius="sm">
-					<Box pb="xs">
-						<SyntaxHighlighter
-							wrapLongLines
-							language="typescript"
-							style={colorScheme === 'dark' ? vscDarkPlus : ghcolors}
-							codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-						>
-							{excerpt}
-						</SyntaxHighlighter>
-					</Box>
-				</Skeleton>
+				<SyntaxHighlighter code={excerpt} />
 
 				{extendsTokens?.length ? (
-					<Group pb="xs" noWrap>
-						<Title order={3} ml="xs">
-							Extends
-						</Title>
-						<Text sx={{ wordBreak: 'break-all' }} className="font-mono">
+					<div className="flex flex-row place-items-center gap-4">
+						<h3 className="text-xl font-bold">Extends</h3>
+						<span className="break-all font-mono">
 							<HyperlinkedText tokens={extendsTokens} />
-						</Text>
-					</Group>
+						</span>
+					</div>
 				) : null}
 
 				{implementsTokens?.length ? (
-					<Group pb="xs" noWrap>
-						<Title order={3} ml="xs">
-							Implements
-						</Title>
-						<Text sx={{ wordBreak: 'break-all' }} className="font-mono">
+					<div className="flex flex-row place-items-center gap-4">
+						<h3 className="text-xl font-bold">Implements</h3>
+						<span className="break-all font-mono">
 							{implementsTokens.map((token, idx) => (
 								<Fragment key={idx}>
 									<HyperlinkedText tokens={token} />
 									{idx < implementsTokens.length - 1 ? ', ' : ''}
 								</Fragment>
 							))}
-						</Text>
-					</Group>
+						</span>
+					</div>
 				) : null}
 
-				<Skeleton visible={router.isFallback} radius="sm">
-					<Stack>
-						{typeParams?.length ? (
-							<Section
-								title="Type Parameters"
-								icon={<VscSymbolParameter size={20} />}
-								padded
-								dense={matches}
-								defaultClosed
-							>
-								<TypeParamTable data={typeParams} />
-							</Section>
-						) : null}
-						<Stack>{children}</Stack>
-					</Stack>
-				</Skeleton>
-			</Stack>
+				<div className="flex flex-col gap-4">
+					{typeParams?.length ? (
+						<Section
+							title="Type Parameters"
+							icon={<VscSymbolParameter size={20} />}
+							padded
+							dense={matches}
+							defaultClosed
+						>
+							<TypeParamTable data={typeParams} />
+						</Section>
+					) : null}
+					{children}
+				</div>
+			</div>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
-				<MediaQuery smallerThan="lg" styles={{ display: 'none' }}>
-					<Aside hiddenBreakpoint="lg" width={{ lg: 250 }} withBorder>
-						<ScrollArea p="sm" offsetScrollbars>
-							<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
-						</ScrollArea>
-					</Aside>
-				</MediaQuery>
+				<aside className="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block">
+					<Scrollbars
+						universal
+						autoHide
+						hideTracksWhenNotNeeded
+						renderTrackVertical={(props) => (
+							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+						)}
+						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+					>
+						<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
+					</Scrollbars>
+				</aside>
 			) : null}
-		</Group>
+		</>
 	);
 }

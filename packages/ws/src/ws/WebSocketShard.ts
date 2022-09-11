@@ -136,11 +136,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
 		this.debug([`Connecting to ${url}`]);
 		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
-			/* eslint-disable @typescript-eslint/no-misused-promises */
 			.on('message', this.onMessage.bind(this))
 			.on('error', this.onError.bind(this))
 			.on('close', this.onClose.bind(this));
-		/* eslint-enable @typescript-eslint/no-misused-promises */
 
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
@@ -209,7 +207,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
-			// eslint-disable-next-line consistent-return
 			return this.connect();
 		}
 	}
@@ -302,7 +299,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		});
 	}
 
-	// eslint-disable-next-line consistent-return
 	private async heartbeat(requested = false) {
 		if (!this.isAck && !requested) {
 			return this.destroy({ reason: 'Zombie connection', recover: WebSocketShardDestroyRecovery.Resume });
@@ -394,6 +390,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.replayedEvents++;
 				}
 
+				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
 						this.emit(WebSocketShardEvents.Ready);
@@ -479,7 +476,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.emit('error', err);
 	}
 
-	// eslint-disable-next-line consistent-return
 	private async onClose(code: number) {
 		switch (code) {
 			case CloseCodes.Normal: {
