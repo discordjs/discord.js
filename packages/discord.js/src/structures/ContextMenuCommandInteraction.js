@@ -2,7 +2,7 @@
 
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const CommandInteraction = require('./CommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
+const ContextMenuCommandInteractionOptionResolver = require('./ContextMenuCommandInteractionOptionResolver');
 const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
@@ -18,7 +18,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
      * The target of the interaction, parsed into options
      * @type {CommandInteractionOptionResolver}
      */
-    this.options = new CommandInteractionOptionResolver(
+    this.options = new ContextMenuCommandInteractionOptionResolver(
       this.client,
       this.resolveContextMenuOptions(data.data),
       this.transformResolved(data.data.resolved),

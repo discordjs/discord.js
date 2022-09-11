@@ -1,21 +1,16 @@
 'use strict';
 
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const InteractionOptionResolver = require('./InteractionOptionResolver');
 const { TypeError, ErrorCodes } = require('../errors');
 
 /**
- * A resolver for command interaction options.
+ * A resolver for chat input interaction options.
+ * @extends {InteractionOptionResolver}
  */
-class CommandInteractionOptionResolver {
+class ChatInputCommandInteractionOptionResolver extends InteractionOptionResolver {
   constructor(client, options, resolved) {
-    /**
-     * The client that instantiated this.
-     * @name CommandInteractionOptionResolver#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
+    super(client, options, resolved);
     /**
      * The name of the subcommand group.
      * @type {?string}
@@ -30,14 +25,6 @@ class CommandInteractionOptionResolver {
      */
     this._subcommand = null;
 
-    /**
-     * The bottom-level options for the interaction.
-     * If there is a subcommand (or subcommand and group), this is the options for the subcommand.
-     * @type {CommandInteractionOption[]}
-     * @private
-     */
-    this._hoistedOptions = options;
-
     // Hoist subcommand group if present
     if (this._hoistedOptions[0]?.type === ApplicationCommandOptionType.SubcommandGroup) {
       this._group = this._hoistedOptions[0].name;
@@ -48,59 +35,6 @@ class CommandInteractionOptionResolver {
       this._subcommand = this._hoistedOptions[0].name;
       this._hoistedOptions = this._hoistedOptions[0].options ?? [];
     }
-
-    /**
-     * The interaction options array.
-     * @name CommandInteractionOptionResolver#data
-     * @type {ReadonlyArray<CommandInteractionOption>}
-     * @readonly
-     */
-    Object.defineProperty(this, 'data', { value: Object.freeze([...options]) });
-
-    /**
-     * The interaction resolved data
-     * @name CommandInteractionOptionResolver#resolved
-     * @type {?Readonly<CommandInteractionResolvedData>}
-     */
-    Object.defineProperty(this, 'resolved', { value: resolved ? Object.freeze(resolved) : null });
-  }
-
-  /**
-   * Gets an option by its name.
-   * @param {string} name The name of the option.
-   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?CommandInteractionOption} The option, if found.
-   */
-  get(name, required = false) {
-    const option = this._hoistedOptions.find(opt => opt.name === name);
-    if (!option) {
-      if (required) {
-        throw new TypeError(ErrorCodes.CommandInteractionOptionNotFound, name);
-      }
-      return null;
-    }
-    return option;
-  }
-
-  /**
-   * Gets an option by name and property and checks its type.
-   * @param {string} name The name of the option.
-   * @param {ApplicationCommandOptionType} type The type of the option.
-   * @param {string[]} properties The properties to check for for `required`.
-   * @param {boolean} required Whether to throw an error if the option is not found.
-   * @returns {?CommandInteractionOption} The option, if found.
-   * @private
-   */
-  _getTypedOption(name, type, properties, required) {
-    const option = this.get(name, required);
-    if (!option) {
-      return null;
-    } else if (option.type !== type) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
-    } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
-    }
-    return option;
   }
 
   /**
@@ -243,39 +177,6 @@ class CommandInteractionOptionResolver {
     );
     return option?.member ?? option?.user ?? option?.role ?? null;
   }
-
-  /**
-   * Gets a message option.
-   * @param {string} name The name of the option.
-   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?Message}
-   * The value of the option, or null if not set and not required.
-   */
-  getMessage(name, required = false) {
-    const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
-    return option?.message ?? null;
-  }
-
-  /**
-   * The full autocomplete option object.
-   * @typedef {Object} AutocompleteFocusedOption
-   * @property {string} name The name of the option
-   * @property {ApplicationCommandOptionType} type The type of the application command option
-   * @property {string} value The value of the option
-   * @property {boolean} focused Whether this option is currently in focus for autocomplete
-   */
-
-  /**
-   * Gets the focused option.
-   * @param {boolean} [getFull=false] Whether to get the full option object
-   * @returns {string|AutocompleteFocusedOption}
-   * The value of the option, or the whole option if getFull is true
-   */
-  getFocused(getFull = false) {
-    const focusedOption = this._hoistedOptions.find(option => option.focused);
-    if (!focusedOption) throw new TypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
-    return getFull ? focusedOption : focusedOption.value;
-  }
 }
 
-module.exports = CommandInteractionOptionResolver;
+module.exports = ChatInputCommandInteractionOptionResolver;
