@@ -214,7 +214,7 @@ class Client extends BaseClient {
     if (!token || typeof token !== 'string') throw new Error(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
-    this.emit(Events.Debug, `Provided token: ${token.replace(/(?<=\.)[^.]+/g, match => '*'.repeat(match.length))}`);
+    this.emit(Events.Debug, `Provided token: ${token.replace(/[^.]+$/g, match => '*'.repeat(match.length))}`);
 
     if (this.options.presence) {
       this.options.ws.presence = this.presence._parse(this.options.presence);
