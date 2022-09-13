@@ -183,7 +183,7 @@ class ThreadChannel extends BaseChannel {
 
     if ('total_message_sent' in data) {
       /**
-       * The number of messages ever sent in a thread, similar to `ThreadChannel#messageCount` except it
+       * The number of messages ever sent in a thread, similar to {@link ThreadChannel#messageCount} except it
        * will not decrement whenever a message is deleted
        * @type {?number}
        */

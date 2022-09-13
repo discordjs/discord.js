@@ -95,7 +95,7 @@ class GuildForumChannel extends GuildChannel {
   }
 
   /**
-   * Sets the default rate_limit_per_user for new threads in this channel
+   * Sets the default rate limit per user (slowmode) for new threads in this channel
    * @param {number} defaultThreadRateLimitPerUser The rate limit to set on newly created threads in this channel
    * @param {string} [reason] Reason for changing the default rate limit
    * @returns {Promise<GuildForumChannel>}

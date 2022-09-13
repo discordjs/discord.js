@@ -8,7 +8,7 @@ const { TypeError, ErrorCodes } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
 
 /**
- * Manages API methods for thread based channels and stores their cache.
+ * Manages API methods for thread-based channels and stores their cache.
  * @extends {CachedManager}
  */
 class ThreadManager extends CachedManager {

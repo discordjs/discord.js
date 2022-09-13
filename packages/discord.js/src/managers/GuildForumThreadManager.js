@@ -25,24 +25,16 @@ class GuildForumThreadManager extends ThreadManager {
    * @param {GuildForumThreadCreateOptions} [options] Options to create a new thread
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Create a new public thread
-   * channel.threads
+   * // Create a new forum post
+   * forum.threads
    *   .create({
-   *     name: 'food-talk',
+   *     name: 'Food Talk',
    *     autoArchiveDuration: 60,
+   *     message: {
+   *      content: 'Discuss your favorite food!',
+   *     }}
    *     reason: 'Needed a separate thread for food',
    *   })
-   *   .then(threadChannel => console.log(threadChannel))
-   *   .catch(console.error);
-   * @example
-   * // Create a new private thread
-   * channel.threads
-   *   .create({
-   *      name: 'mod-talk',
-   *      autoArchiveDuration: 60,
-   *      type: ChannelType.GuildPrivateThread,
-   *      reason: 'Needed a separate thread for moderation',
-   *    })
    *   .then(threadChannel => console.log(threadChannel))
    *   .catch(console.error);
    */
