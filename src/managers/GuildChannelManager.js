@@ -324,7 +324,7 @@ class GuildChannelManager extends CachedManager {
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
    * @param {Snowflake} [id] The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
+   * @returns {Promise<?GuildChannel|ThreadChannel|Collection<Snowflake, ?GuildChannel>>}
    * @example
    * // Fetch all channels from the guild (excluding threads)
    * message.guild.channels.fetch()

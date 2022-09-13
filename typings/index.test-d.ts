@@ -908,9 +908,9 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<StoreChannel>>(guildChannelManager.create('name', { type: 'GUILD_STORE' }));
   expectType<Promise<StageChannel>>(guildChannelManager.create('name', { type: 'GUILD_STAGE_VOICE' }));
 
-  expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch());
-  expectType<Promise<Collection<Snowflake, AnyChannel>>>(guildChannelManager.fetch(undefined, {}));
-  expectType<Promise<AnyChannel | null>>(guildChannelManager.fetch('0'));
+  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch());
+  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch(undefined, {}));
+  expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
 }
 
 declare const roleManager: RoleManager;
