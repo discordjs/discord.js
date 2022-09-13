@@ -54,9 +54,11 @@ class GuildForumChannel extends GuildChannel {
        * The emoji to show in the add reaction button on a thread in a guild forum channel
        * @type {DefaultReaction}
        */
-      this.defaultReaction = transformGuildDefaultReaction(data.default_reaction_emoji);
+      this.defaultReactionEmoji = data.default_reaction_emoji
+        ? transformGuildDefaultReaction(data.default_reaction_emoji)
+        : null;
     } else {
-      this.defaultReaction ??= null;
+      this.defaultReactionEmoji ??= null;
     }
 
     if ('default_thread_rate_limit_per_user' in data) {
@@ -73,30 +75,33 @@ class GuildForumChannel extends GuildChannel {
   /**
    * Sets the available tags for this forum channel
    * @param {GuildForumTag[]} availableTags The tags to set as available in this channel
+   * @param {string} [reason] Reason for changing the available tags
    * @returns {Promise<GuildForumChannel>}
    */
-  async setAvailableTags(availableTags) {
-    await this.edit({ availableTags });
+  async setAvailableTags(availableTags, reason) {
+    await this.edit({ availableTags, reason });
     return this;
   }
 
   /**
    * Sets the default reaction emoji for this channel
    * @param {DefaultReaction} defaultReactionEmoji The emoji to set as the default reaction emoji
+   * @param {string} [reason] Reason for changing the default reaction emoji
    * @returns {Promise<GuildForumChannel>}
    */
-  async setDefaultReactionEmoji(defaultReactionEmoji) {
-    await this.edit({ defaultReactionEmoji });
+  async setDefaultReactionEmoji(defaultReactionEmoji, reason) {
+    await this.edit({ defaultReactionEmoji, reason });
     return this;
   }
 
   /**
    * Sets the default rate_limit_per_user for new threads in this channel
    * @param {number} defaultThreadRateLimitPerUser The rate limit to set on newly created threads in this channel
+   * @param {string} [reason] Reason for changing the default rate limit
    * @returns {Promise<GuildForumChannel>}
    */
-  async setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser) {
-    await this.edit({ defaultThreadRateLimitPerUser });
+  async setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
+    await this.edit({ defaultThreadRateLimitPerUser, reason });
     return this;
   }
 }

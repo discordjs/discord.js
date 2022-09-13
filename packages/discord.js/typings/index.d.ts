@@ -2060,9 +2060,9 @@ export class GuildForumChannel extends GuildChannel {
   public defaultReactionEmoji: DefaultReaction | null;
   public defaultThreadRateLimitPerUser: number | null;
 
-  public setAvailableTags(tags: GuildForumTag[]): Promise<this>;
-  public setDefaultReaction(emojiId: DefaultReaction): Promise<this>;
-  public setDefaultThreadRateLimitPerUser(rateLimit: number): Promise<this>;
+  public setAvailableTags(tags: GuildForumTag[], reason?: string): Promise<this>;
+  public setDefaultReaction(emojiId: DefaultReaction, reason?: string): Promise<this>;
+  public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
 }
 
 export class PermissionOverwrites extends Base {
@@ -2519,7 +2519,7 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
-export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel | GuildForumChannel;
+export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
 
 export interface PublicThreadChannel extends ThreadChannel {
   type: ChannelType.PublicThread | ChannelType.AnnouncementThread;
@@ -2585,7 +2585,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
-  public setAppliedTags(appliedTags: GuildForumTag[]): Promise<AnyThreadChannel>;
+  public setAppliedTags(appliedTags: GuildForumTag[], reason?: string): Promise<AnyThreadChannel>;
   public toString(): ChannelMention;
 }
 

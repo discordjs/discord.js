@@ -53,10 +53,12 @@ class GuildForumThreadManager extends ThreadManager {
     }
 
     const messagePayload =
-      message instanceof MessagePayload ? message.resolveBody() : MessagePayload.create(this, message);
+      message instanceof MessagePayload ? message.resolveBody() : MessagePayload.create(this, message).resolveBody();
 
-    const { body, files } = messagePayload.resolveFiles();
+    console.log(messagePayload);
+    const { body, files } = await messagePayload.resolveFiles();
 
+    console.log(body);
     if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id), {
@@ -65,7 +67,7 @@ class GuildForumThreadManager extends ThreadManager {
         auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: rateLimitPerUser,
         applied_tags: appliedTags,
-        ...body,
+        message: body,
       },
       files,
       reason,

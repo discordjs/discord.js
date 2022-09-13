@@ -1847,7 +1847,9 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | GuildForumChannel>(
+  NonThreadGuildBasedChannel,
+);
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({

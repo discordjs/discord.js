@@ -117,6 +117,7 @@ exports.GuildAuditLogsEntry = require('./structures/GuildAuditLogsEntry');
 exports.GuildBan = require('./structures/GuildBan');
 exports.GuildChannel = require('./structures/GuildChannel');
 exports.GuildEmoji = require('./structures/GuildEmoji');
+exports.GuildForumChannel = require('./structures/GuildForumChannel');
 exports.GuildMember = require('./structures/GuildMember').GuildMember;
 exports.GuildPreview = require('./structures/GuildPreview');
 exports.GuildPreviewEmoji = require('./structures/GuildPreviewEmoji');

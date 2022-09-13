@@ -443,10 +443,11 @@ class ThreadChannel extends BaseChannel {
   /**
    * Set the applied tags for this channel (only applicable to forum threads)
    * @param {GuildForumTag[]} appliedTags The tags to set for this channel
+   * @param {string} [reason] Reason for changing the thread's applied tags
    * @returns {Promise<GuildForumThreadChannel>}
    */
-  async setAppliedTags(appliedTags) {
-    await this.edit({ appliedTags });
+  async setAppliedTags(appliedTags, reason) {
+    await this.edit({ appliedTags, reason });
     return this;
   }
 
