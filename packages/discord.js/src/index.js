@@ -58,6 +58,7 @@ exports.GuildBanManager = require('./managers/GuildBanManager');
 exports.GuildChannelManager = require('./managers/GuildChannelManager');
 exports.GuildEmojiManager = require('./managers/GuildEmojiManager');
 exports.GuildEmojiRoleManager = require('./managers/GuildEmojiRoleManager');
+exports.GuildForumThreadManager = require('./managers/GuildForumThreadManager');
 exports.GuildInviteManager = require('./managers/GuildInviteManager');
 exports.GuildManager = require('./managers/GuildManager');
 exports.GuildMemberManager = require('./managers/GuildMemberManager');

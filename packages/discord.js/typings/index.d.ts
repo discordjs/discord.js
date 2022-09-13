@@ -5610,7 +5610,7 @@ export interface GuildTextThreadCreateOptions<AllowedThreadType> extends StartTh
 }
 
 export interface GuildForumThreadCreateOptions extends StartThreadOptions {
-  message: MessageOptions | MessagePayload;
+  message: BaseMessageOptions | MessagePayload;
   appliedTags?: GuildForumTag[];
 }
 

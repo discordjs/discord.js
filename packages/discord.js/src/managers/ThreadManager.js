@@ -43,13 +43,6 @@ class ThreadManager extends CachedManager {
   }
 
   /**
-   * Data that can be resolved to a Thread Channel object. This can be:
-   * * A ThreadChannel object
-   * * A Snowflake
-   * @typedef {ThreadChannel|Snowflake} ThreadChannelResolvable
-   */
-
-  /**
    * Resolves a {@link ThreadChannelResolvable} to a {@link ThreadChannel} object.
    * @method resolve
    * @memberof ThreadManager

@@ -1373,7 +1373,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
     guildChannelManager.fetch(undefined, {}),
   );
-  expectType<Promise<NonThreadGuildBasedChannel | null>>(guildChannelManager.fetch('0'));
+  expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
 
   const channel = guildChannelManager.cache.first()!;
 
