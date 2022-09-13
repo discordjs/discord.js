@@ -8,6 +8,12 @@ const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 class GuildForumThreadManager extends ThreadManager {
   /**
+   * @typedef {BaseMessageOptions} GuildForumThreadCreateOptions
+   * @property {stickers} [stickers] The stickers to send with the message
+   * @property {BitFieldResolvable} [flags] The flags to send with the message
+   */
+
+  /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
    * @property {MessageOptions|MessagePayload} message The message associated with the thread post

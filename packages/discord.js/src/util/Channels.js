@@ -77,7 +77,7 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
 }
 
 /**
- * Transforms an api guild forum tag to camelcased guild forum tag.
+ * Transforms an API guild forum tag to camel-cased guild forum tag.
  * @param {GuildForumTag} tag The tag to transform
  * @returns {GuildForumTag}
  */
@@ -92,8 +92,8 @@ function transformGuildForumTag(tag) {
 }
 
 /**
- * Transforms an api guild forum default reaction object to a
- * camelcased guild forum default reaction object.
+ * Transforms an API guild forum default reaction object to a
+ * camel-cased guild forum default reaction object.
  * @param {APIDefaultReaction} defaultReaction The default reaction to transform
  * @returns {DefaultReaction}
  */
