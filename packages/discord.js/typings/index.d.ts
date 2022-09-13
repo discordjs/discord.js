@@ -5241,6 +5241,8 @@ export interface MessageCreateOptions extends BaseMessageOptions {
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
+export type GuildForumThreadMessageCreateOptions = Omit<MessageCreateOptions, 'tts' | 'nonce' | 'reply'>;
+
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
   attachments?: JSONEncodable<AttachmentPayload>[];
@@ -5610,7 +5612,7 @@ export interface GuildTextThreadCreateOptions<AllowedThreadType> extends StartTh
 }
 
 export interface GuildForumThreadCreateOptions extends StartThreadOptions {
-  message: BaseMessageOptions | MessagePayload;
+  message: GuildForumThreadMessageCreateOptions | MessagePayload;
   appliedTags?: GuildForumTag[];
 }
 
