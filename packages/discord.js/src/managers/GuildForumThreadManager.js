@@ -6,6 +6,10 @@ const { TypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
+/**
+ * Manages API methods for thread in forum channels and stores their cache.
+ * @extends {ThreadManager}
+ */
 class GuildForumThreadManager extends ThreadManager {
   /**
    * @typedef {BaseMessageOptions} GuildForumThreadCreateOptions
@@ -32,7 +36,7 @@ class GuildForumThreadManager extends ThreadManager {
    *     autoArchiveDuration: 60,
    *     message: {
    *      content: 'Discuss your favorite food!',
-   *     }}
+   *     },
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(threadChannel => console.log(threadChannel))
