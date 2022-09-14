@@ -7,7 +7,7 @@ const MessagePayload = require('../structures/MessagePayload');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
- * Manages API methods for thread in forum channels and stores their cache.
+ * Manages API methods for threads in forum channels and stores their cache.
  * @extends {ThreadManager}
  */
 class GuildForumThreadManager extends ThreadManager {
