@@ -20,7 +20,7 @@ class GuildForumThreadManager extends ThreadManager {
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
-   * @property {MessageOptions|MessagePayload} message The message associated with the thread post
+   * @property {GuildForumThreadCreateOptions|MessagePayload} message The message associated with the thread post
    * @property {GuildForumTag[]} [appliedTags] The tags to apply to the thread
    */
 

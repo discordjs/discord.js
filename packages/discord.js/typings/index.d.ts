@@ -2044,24 +2044,24 @@ export interface GuildForumTag {
   id: Snowflake;
   name: string;
   moderated: boolean;
-  emojiId?: Snowflake | null;
-  emoji?: GuildEmoji | null;
+  emojiId: Snowflake | null;
+  emojiName: string | null;
 }
 
-export interface DefaultReaction {
-  emojiId: Snowflake;
-  emojiName?: string;
+export interface DefaultReactionEmoji {
+  emojiId: Snowflake | null;
+  emojiName: string | null;
 }
 
 export class GuildForumChannel extends GuildChannel {
   public type: ChannelType.GuildForum;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
-  public defaultReactionEmoji: DefaultReaction | null;
+  public defaultReactionEmoji: DefaultReactionEmoji | null;
   public defaultThreadRateLimitPerUser: number | null;
 
   public setAvailableTags(tags: GuildForumTag[], reason?: string): Promise<this>;
-  public setDefaultReaction(emojiId: DefaultReaction, reason?: string): Promise<this>;
+  public setDefaultReaction(emojiId: DefaultReactionEmoji, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
 }
 

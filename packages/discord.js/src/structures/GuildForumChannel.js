@@ -10,14 +10,14 @@ const { transformGuildForumTag, transformGuildDefaultReaction } = require('../ut
  * @property {string} name The name of the tag
  * @property {boolean} moderated Whether this tag can only be added to or removed from threads
  *  by a member with the `ManageThreads` permission
- * @property {Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
- * @property {string} [emojiName] The unicode character of the emoji
+ * @property {?Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
+ * @property {?string} emojiName The unicode character of the emoji
  */
 
 /**
  * @typedef {Object} DefaultReaction
- * @property {Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
- * @property {string} [emojiName] The unicode character of the emoji
+ * @property {?Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
+ * @property {?string} emojiName The unicode character of the emoji
  */
 
 /**
