@@ -198,9 +198,11 @@ class ThreadChannel extends BaseChannel {
     if ('applied_tags' in data) {
       /**
        * The tags applied to this thread
-       * @type {?GuildForumTag[]}
+       * @type {GuildForumTag[]}
        */
       this.appliedTags = data.applied_tags.map(tag => transformGuildForumTag(tag));
+    } else {
+      this.appliedTags ??= [];
     }
   }
 
@@ -446,9 +448,8 @@ class ThreadChannel extends BaseChannel {
    * @param {string} [reason] Reason for changing the thread's applied tags
    * @returns {Promise<GuildForumThreadChannel>}
    */
-  async setAppliedTags(appliedTags, reason) {
-    await this.edit({ appliedTags, reason });
-    return this;
+  setAppliedTags(appliedTags, reason) {
+    return this.edit({ appliedTags, reason });
   }
 
   /**

@@ -52,7 +52,7 @@ class GuildForumChannel extends GuildChannel {
     if ('default_reaction_emoji' in data) {
       /**
        * The emoji to show in the add reaction button on a thread in a guild forum channel
-       * @type {DefaultReaction}
+       * @type {?DefaultReaction}
        */
       this.defaultReactionEmoji = data.default_reaction_emoji
         ? transformGuildDefaultReaction(data.default_reaction_emoji)
@@ -64,7 +64,7 @@ class GuildForumChannel extends GuildChannel {
     if ('default_thread_rate_limit_per_user' in data) {
       /**
        * The initial rate_limit_per_user to set on newly created threads in a channel.
-       * @type {number}
+       * @type {?number}
        */
       this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
     } else {
@@ -78,9 +78,8 @@ class GuildForumChannel extends GuildChannel {
    * @param {string} [reason] Reason for changing the available tags
    * @returns {Promise<GuildForumChannel>}
    */
-  async setAvailableTags(availableTags, reason) {
-    await this.edit({ availableTags, reason });
-    return this;
+  setAvailableTags(availableTags, reason) {
+    return this.edit({ availableTags, reason });
   }
 
   /**

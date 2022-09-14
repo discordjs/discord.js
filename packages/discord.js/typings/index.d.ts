@@ -125,7 +125,7 @@ import {
   AuditLogOptionsType,
   TextChannelType,
 } from 'discord-api-types/v10';
-import { ChildProcess, MessageOptions } from 'node:child_process';
+import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
