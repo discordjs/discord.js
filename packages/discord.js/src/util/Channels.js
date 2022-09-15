@@ -96,6 +96,7 @@ function transformGuildForumTag(tag) {
  * camel-cased guild forum default reaction object.
  * @param {APIDefaultReaction} defaultReaction The default reaction to transform
  * @returns {DefaultReaction}
+ * @ignore
  */
 function transformGuildDefaultReaction(defaultReaction) {
   return {
