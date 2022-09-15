@@ -4,6 +4,7 @@ const { channelLink } = require('@discordjs/builders');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
 const { ThreadChannelTypes } = require('../util/Constants');
 
 /**
@@ -25,6 +26,16 @@ class BaseChannel extends Base {
   }
 
   _patch(data) {
+    if ('flags' in data) {
+      /**
+       * The flags that are applied to the channel.
+       * @type {Readonly<ChannelFlagsBitField>}
+       */
+      this.flags = new ChannelFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags = new ChannelFlagsBitField(this.flags).freeze();
+    }
+
     /**
      * The channel's id
      * @type {Snowflake}

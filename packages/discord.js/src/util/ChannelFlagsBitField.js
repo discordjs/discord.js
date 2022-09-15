@@ -4,29 +4,29 @@ const { ChannelFlags } = require('discord-api-types/v10');
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with a {@link GuildChannel#flags} bitfield.
+ * Data structure that makes it easy to interact with a {@link BaseChannel#flags} bitfield.
  * @extends {BitField}
  */
-class GuildChannelFlagsBitField extends BitField {
+class ChannelFlagsBitField extends BitField {
   /**
    * Numeric guild channel flags.
    * @type {ChannelFlags}
-   * @memberof GuildChannelFlagsBitField
+   * @memberof ChannelFlagsBitField
    */
   static Flags = ChannelFlags;
 }
 
 /**
- * @name GuildChannelFlagsBitField
+ * @name ChannelFlagsBitField
  * @kind constructor
- * @memberof GuildChannelFlagsBitField
+ * @memberof ChannelFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
 /**
  * Bitfield of the packed bits
  * @type {number}
- * @name GuildChannelFlagsBitField#bitfield
+ * @name ChannelFlagsBitField#bitfield
  */
 
-module.exports = GuildChannelFlagsBitField;
+module.exports = ChannelFlagsBitField;
