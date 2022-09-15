@@ -136,6 +136,7 @@ import {
   InteractionWebhook,
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
+  ModalSubmitInteraction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1488,19 +1489,37 @@ client.on('interactionCreate', async interaction => {
       expectType<MessageActionRowComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
-      expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<true>>>(interaction.fetchReply());
+      expectType<Promise<Message<true>>>(interaction.update({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inRawGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<APIButtonComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message<false>>(interaction.message);
       expectType<null>(interaction.guild);
-      expectType<Promise<Message<false>>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<false>>>(interaction.fetchReply());
+      expectType<Promise<Message<false>>>(interaction.update({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
       expectType<Message>(interaction.message);
       expectType<Guild | null>(interaction.guild);
-      expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message>>(interaction.fetchReply());
+      expectType<Promise<Message>>(interaction.update({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
 
@@ -1531,12 +1550,27 @@ client.on('interactionCreate', async interaction => {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
       expectAssignable<CommandInteraction<'cached'>>(interaction);
+      expectType<Promise<Message<true>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<true>>>(interaction.fetchReply());
+      expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inRawGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<null>(interaction.guild);
+      expectType<Promise<Message<false>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<false>>>(interaction.fetchReply());
+      expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectType<Guild | null>(interaction.guild);
+      expectType<Promise<Message>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message>>(interaction.fetchReply());
+      expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
 
@@ -1563,7 +1597,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ButtonComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
-      expectAssignable<Promise<Message>>(interaction.reply({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
       expectAssignable<ButtonInteraction>(interaction);
       expectType<APIButtonComponent>(interaction.component);
@@ -1677,6 +1711,38 @@ client.on('interactionCreate', async interaction => {
   ) {
     expectAssignable<CommandInteraction>(interaction);
     expectAssignable<RepliableInteraction>(interaction);
+  }
+
+  if (interaction.type === InteractionType.ModalSubmit && interaction.isRepliable()) {
+    expectType<ModalSubmitInteraction>(interaction);
+    if (interaction.inCachedGuild()) {
+      expectAssignable<ModalSubmitInteraction>(interaction);
+      expectType<Guild>(interaction.guild);
+      expectType<Promise<Message<true>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<true>>>(interaction.fetchReply());
+      expectType<Promise<Message<true>>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
+    } else if (interaction.inRawGuild()) {
+      expectAssignable<ModalSubmitInteraction>(interaction);
+      expectType<null>(interaction.guild);
+      expectType<Promise<Message<false>>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message<false>>>(interaction.fetchReply());
+      expectType<Promise<Message<false>>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
+    } else if (interaction.inGuild()) {
+      expectAssignable<ModalSubmitInteraction>(interaction);
+      expectType<Guild | null>(interaction.guild);
+      expectType<Promise<Message>>(interaction.reply({ content: 'a', fetchReply: true }));
+      expectType<Promise<Message>>(interaction.deferReply({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.editReply({ content: 'a' }));
+      expectType<Promise<Message>>(interaction.fetchReply());
+      expectType<Promise<Message>>(interaction.deferUpdate({ fetchReply: true }));
+      expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
+    }
   }
 });
 
