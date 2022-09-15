@@ -4888,6 +4888,7 @@ export interface GuildChannelEditOptions {
   videoQualityMode?: VideoQualityMode | null;
   availableTags?: GuildForumTag[];
   defaultReactionEmoji?: DefaultReactionEmoji;
+  defaultThreadRateLimitPerUser?: number;
   reason?: string;
 }
 
