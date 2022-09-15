@@ -1,6 +1,8 @@
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
-import { useCallback, useMemo } from 'react';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
+import { useCallback, useMemo, useState } from 'react';
 import { FiLink } from 'react-icons/fi';
+import { VscChevronDown } from 'react-icons/vsc';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
@@ -8,6 +10,11 @@ import { TSDoc } from './tsdoc/TSDoc';
 
 export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
 	const method = data as ApiMethodJSON;
+
+	const [overloadIndex, setOverloadIndex] = useState(1);
+	const overloadedData = method.mergedSiblings[overloadIndex - 1]!;
+	const menuState = useMenuState({ gutter: 8 });
+
 	const key = useMemo(
 		() => `${data.name}${data.overloadIndex && data.overloadIndex > 1 ? `:${data.overloadIndex}` : ''}`,
 		[data.name, data.overloadIndex],
@@ -62,13 +69,35 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					</div>
 				</div>
 			</div>
+			{data.mergedSiblings.length > 1 ? (
+				<div className="flex flex-shrink">
+					<MenuButton
+						state={menuState}
+						className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 flex flex-col rounded border bg-white p-1"
+					>
+						<div className="space-x-sm flex items-center">
+							{`Overload ${overloadIndex} of ${data.mergedSiblings.length}`}
+							<VscChevronDown />
+						</div>
+					</MenuButton>
+					<Menu state={menuState} className="dark:border-dark-100 rounded border">
+						{data.mergedSiblings.map((_, idx) => (
+							<MenuItem
+								className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+								key={idx}
+								onClick={() => setOverloadIndex(idx + 1)}
+							>{`Overload ${idx + 1}`}</MenuItem>
+						))}
+					</Menu>
+				</div>
+			) : null}
 			{data.summary || data.parameters.length ? (
 				<div className="mb-4 flex flex-col gap-4">
-					{data.deprecated ? <TSDoc node={data.deprecated} /> : null}
-					{data.summary ? <TSDoc node={data.summary} /> : null}
-					{data.remarks ? <TSDoc node={data.remarks} /> : null}
-					{data.comment ? <TSDoc node={data.comment} /> : null}
-					{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
+					{overloadedData.deprecated ? <TSDoc node={overloadedData.deprecated} /> : null}
+					{overloadedData.summary ?? data.summary ? <TSDoc node={overloadedData.summary ?? data.summary!} /> : null}
+					{overloadedData.remarks ? <TSDoc node={overloadedData.remarks} /> : null}
+					{overloadedData.comment ? <TSDoc node={overloadedData.comment} /> : null}
+					{overloadedData.parameters.length ? <ParameterTable data={overloadedData.parameters} /> : null}
 					{data.inheritanceData ? <InheritanceText data={data.inheritanceData} /> : null}
 				</div>
 			) : null}

@@ -82,6 +82,7 @@ export interface ApiMethodSignatureJSON
 		ApiTypeParameterListJSON,
 		ApiParameterListJSON,
 		ApiInheritableJSON {
+	mergedSiblings: ApiFunctionJSON[];
 	optional: boolean;
 	overloadIndex: number;
 	returnTypeTokens: TokenDocumentation[];
@@ -133,6 +134,7 @@ export interface ApiVariableJSON extends ApiItemJSON {
 }
 
 export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
+	mergedSiblings: ApiFunctionJSON[];
 	overloadIndex: number;
 	returnTypeTokens: TokenDocumentation[];
 }
@@ -255,12 +257,15 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeFunction(model: ApiModel, item: FunctionLike, version: string): ApiFunctionJSON {
+	public static encodeFunction(model: ApiModel, item: FunctionLike, version: string, nested = false): ApiFunctionJSON {
 		return {
 			...this.encodeItem(model, item, version),
 			...this.encodeParameterList(model, item, version),
 			...this.encodeTypeParameterList(model, item, version),
 			returnTypeTokens: item.returnTypeExcerpt.spannedTokens.map((token) => genToken(model, token, version)),
+			mergedSiblings: nested
+				? []
+				: item.getMergedSiblings().map((item) => this.encodeFunction(model, item as ApiFunction, version, true)),
 			overloadIndex: item.overloadIndex,
 		};
 	}
