@@ -160,8 +160,8 @@ class ThreadChannel extends BaseChannel {
     if ('message_count' in data) {
       /**
        * The approximate count of messages in this thread
-       * <info>This stops counting at 50. If you need an approximate value higher than that, use
-       * `ThreadChannel#messages.cache.size`</info>
+       * <info>Threads created before July 1, 2022 may have an inaccurate count.
+       * If you need an approximate value higher than that, use `ThreadChannel#messages.cache.size`</info>
        * @type {?number}
        */
       this.messageCount = data.message_count;
