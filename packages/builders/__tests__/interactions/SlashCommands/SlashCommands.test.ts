@@ -371,6 +371,18 @@ describe('Slash Commands', () => {
 				).not.toThrowError();
 			});
 
+			test('GIVEN builder with subcommand THEN has regular slash command fields', () => {
+				expect(() =>
+					getBuilder()
+						.setName('name')
+						.setDescription('description')
+						.addSubcommand((option) => option.setName('ye').setDescription('ye'))
+						.addSubcommand((option) => option.setName('no').setDescription('no'))
+						.setDMPermission(false)
+						.setDefaultMemberPermissions(1n),
+				).not.toThrowError();
+			});
+
 			test('GIVEN builder with already built subcommand group THEN does not throw error', () => {
 				expect(() => getNamedBuilder().addSubcommandGroup(getSubcommandGroup())).not.toThrowError();
 			});
