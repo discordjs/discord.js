@@ -3,7 +3,6 @@
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
 const { ErrorCodes, TypeError } = require('../errors');
-const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
@@ -32,7 +31,7 @@ class GuildTextThreadManager extends ThreadManager {
    * channel.threads
    *   .create({
    *     name: 'food-talk',
-   *     autoArchiveDuration: 60,
+   *     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
    *     reason: 'Needed a separate thread for food',
    *   })
    *   .then(threadChannel => console.log(threadChannel))
@@ -42,7 +41,7 @@ class GuildTextThreadManager extends ThreadManager {
    * channel.threads
    *   .create({
    *      name: 'mod-talk',
-   *      autoArchiveDuration: 60,
+   *      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
    *      type: ChannelType.GuildPrivateThread,
    *      reason: 'Needed a separate thread for moderation',
    *    })
@@ -70,8 +69,6 @@ class GuildTextThreadManager extends ThreadManager {
     } else if (this.channel.type !== ChannelType.GuildNews) {
       resolvedType = type ?? resolvedType;
     }
-
-    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id, startMessageId), {
       body: {

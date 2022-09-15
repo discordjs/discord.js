@@ -4,7 +4,6 @@ const { Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
 const { TypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
-const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
  * Manages API methods for threads in forum channels and stores their cache.
@@ -33,7 +32,7 @@ class GuildForumThreadManager extends ThreadManager {
    * forum.threads
    *   .create({
    *     name: 'Food Talk',
-   *     autoArchiveDuration: 60,
+   *     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
    *     message: {
    *      content: 'Discuss your favorite food!',
    *     },
@@ -58,7 +57,6 @@ class GuildForumThreadManager extends ThreadManager {
       message instanceof MessagePayload ? message.resolveBody() : MessagePayload.create(this, message).resolveBody();
 
     const { body, files } = await messagePayload.resolveFiles();
-    if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id), {
       body: {
