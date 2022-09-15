@@ -20,7 +20,7 @@ export default defineConfig({
 	presets: [
 		presetUno({ dark: 'class' }),
 		presetWebFonts({
-			provider: 'google',
+			provider: 'bunny',
 			fonts: {
 				mono: ['JetBrains Mono', 'JetBrains Mono:400,600,700'],
 			},
