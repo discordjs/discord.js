@@ -5,6 +5,7 @@ const { BaseChannel } = require('./BaseChannel');
 const { Error, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
+const GuildChannelFlagsBitField = require('../util/GuildChannelFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -46,6 +47,16 @@ class GuildChannel extends BaseChannel {
 
   _patch(data) {
     super._patch(data);
+
+    if ('flags' in data) {
+      /**
+       * The flags that are applied to the channel.
+       * @type {Readonly<GuildChannelFlagsBitField>}
+       */
+      this.flags = new GuildChannelFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags = new GuildChannelFlagsBitField(this.flags).freeze();
+    }
 
     if ('name' in data) {
       /**

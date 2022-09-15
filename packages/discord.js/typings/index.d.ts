@@ -124,6 +124,7 @@ import {
   APIEmbedProvider,
   AuditLogOptionsType,
   TextChannelType,
+  ChannelFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1224,6 +1225,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get deletable(): boolean;
+  public flags: Readonly<GuildChannelFlagsBitField>;
   public guild: Guild;
   public guildId: Snowflake;
   public get manageable(): boolean;
@@ -1252,6 +1254,13 @@ export abstract class GuildChannel extends BaseChannel {
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
   public isTextBased(): this is GuildBasedChannel & TextBasedChannel;
   public toString(): ChannelMention;
+}
+
+export type GuildChannelFlagsString = keyof typeof ChannelFlags;
+
+export class GuildChannelFlagsBitField extends BitField<GuildChannelFlagsString> {
+  public static Flags: typeof ChannelFlags;
+  public static resolve(bit?: BitFieldResolvable<GuildChannelFlagsString, ChannelFlags>): number;
 }
 
 export class GuildEmoji extends BaseGuildEmoji {
