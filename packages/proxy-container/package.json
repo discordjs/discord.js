@@ -3,15 +3,15 @@
 	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
-		"build": "unbuild",
+		"build": "tsup",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy-container/*'"
 	},
-	"main": "./dist/index.mjs",
 	"type": "module",
+	"module": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},
@@ -23,7 +23,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -44,23 +44,17 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/proxy": "^1.0.0",
-		"@discordjs/rest": "^1.0.0",
+		"@discordjs/proxy": "^1.1.0",
+		"@discordjs/rest": "^1.1.0",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.48",
-		"@typescript-eslint/eslint-plugin": "^5.33.0",
-		"@typescript-eslint/parser": "^5.33.0",
-		"eslint": "^8.22.0",
-		"eslint-config-marine": "^9.4.1",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-import-resolver-typescript": "^3.4.1",
-		"eslint-plugin-import": "^2.26.0",
+		"@types/node": "^16.11.58",
+		"eslint": "^8.23.0",
+		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.8.8"
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

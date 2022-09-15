@@ -27,3 +27,4 @@ src/styles/unocss.css
 .tmp/
 coverage/
 .vercel
+public/searchIndex

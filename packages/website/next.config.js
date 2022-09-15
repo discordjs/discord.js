@@ -1,7 +1,10 @@
+/* eslint-disable tsdoc/syntax */
+import { URL, fileURLToPath } from 'node:url';
+
 /**
  * @type {import('next').NextConfig}
  */
-module.exports = {
+export default {
 	reactStrictMode: true,
 	swcMinify: true,
 	eslint: {
@@ -9,9 +12,8 @@ module.exports = {
 	},
 	cleanDistDir: true,
 	experimental: {
-		images: {
-			allowFutureImage: true,
-		},
+		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
+		fallbackNodePolyfills: true,
 	},
 	images: {
 		dangerouslyAllowSVG: true,

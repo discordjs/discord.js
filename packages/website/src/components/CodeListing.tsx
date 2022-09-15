@@ -1,10 +1,9 @@
-import { Group, Stack, Title } from '@mantine/core';
-import type { ReactNode } from 'react';
+import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
+import type { PropsWithChildren } from 'react';
+import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
+import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
-import type { DocItem } from '~/DocModel/DocItem';
-import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import type { TokenDocumentation } from '~/util/parse.server';
 
 export enum CodeListingSeparatorType {
 	Type = ':',
@@ -14,35 +13,70 @@ export enum CodeListingSeparatorType {
 export function CodeListing({
 	name,
 	separator = CodeListingSeparatorType.Type,
-	summary,
 	typeTokens,
+	readonly = false,
+	optional = false,
+	summary,
 	children,
 	comment,
-}: {
-	name: string;
-	summary?: ReturnType<DocItem['toJSON']>['summary'];
-	typeTokens: TokenDocumentation[];
-	separator?: CodeListingSeparatorType;
-	children?: ReactNode;
-	className?: string | undefined;
+	deprecation,
+	inheritanceData,
+}: PropsWithChildren<{
 	comment?: AnyDocNodeJSON | null;
-}) {
+	deprecation?: AnyDocNodeJSON | null;
+	inheritanceData?: InheritanceData | null;
+	name: string;
+	optional?: boolean;
+	readonly?: boolean;
+	separator?: CodeListingSeparatorType;
+	summary?: ApiItemJSON['summary'];
+	typeTokens: TokenDocumentation[];
+}>) {
 	return (
-		<Stack spacing="xs" key={name}>
-			<Group>
-				<Title order={4} className="font-mono">
-					{name}
-				</Title>
-				<Title order={4}>{separator}</Title>
-				<Title order={4} className="font-mono break-all">
-					<HyperlinkedText tokens={typeTokens} />
-				</Title>
-			</Group>
-			<Group>
-				{summary && <TSDoc node={summary} />}
-				{comment && <TSDoc node={comment} />}
-				{children}
-			</Group>
-		</Stack>
+		<div id={name} className="scroll-mt-30 flex flex-col gap-4">
+			<div className={`md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2`}>
+				<a className="hidden md:inline-block" aria-label="Anchor" href={`#${name}`}>
+					<FiLink size={20} />
+				</a>
+				{deprecation || readonly || optional ? (
+					<div className="flex flex-row gap-1">
+						{deprecation ? (
+							<div className="flex h-5 place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
+								Deprecated
+							</div>
+						) : null}
+						{readonly ? (
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Readonly
+							</div>
+						) : null}
+						{optional ? (
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Optional
+							</div>
+						) : null}
+					</div>
+				) : null}
+				<div className="flex flex-row flex-wrap place-items-center gap-1">
+					<h4 className="break-all font-mono text-lg font-bold">
+						{name}
+						{optional ? '?' : ''}
+					</h4>
+					<h4 className="font-mono text-lg font-bold">{separator}</h4>
+					<h4 className="break-all font-mono text-lg font-bold">
+						<HyperlinkedText tokens={typeTokens} />
+					</h4>
+				</div>
+			</div>
+			{summary || inheritanceData ? (
+				<div className="flex flex-col gap-4">
+					{deprecation ? <TSDoc node={deprecation} /> : null}
+					{summary ? <TSDoc node={summary} /> : null}
+					{comment ? <TSDoc node={comment} /> : null}
+					{inheritanceData ? <InheritanceText data={inheritanceData} /> : null}
+					{children}
+				</div>
+			) : null}
+		</div>
 	);
 }

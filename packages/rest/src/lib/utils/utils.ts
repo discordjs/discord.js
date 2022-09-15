@@ -1,15 +1,13 @@
-import { Blob } from 'node:buffer';
+import { Blob, Buffer } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
 import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
 import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import type { RequestOptions } from '../REST';
-import { RequestMethod } from '../RequestManager';
+import type { RequestOptions } from '../REST.js';
+import { RequestMethod } from '../RequestManager.js';
 
-export function parseHeader(header: string | string[] | undefined): string | undefined {
-	if (header === undefined) {
-		return header;
-	} else if (typeof header === 'string') {
+export function parseHeader(header: string[] | string | undefined): string | undefined {
+	if (header === undefined || typeof header === 'string') {
 		return header;
 	}
 
@@ -29,6 +27,7 @@ function serializeSearchParam(value: unknown): string | null {
 			if (value instanceof Date) {
 				return Number.isNaN(value.getTime()) ? null : value.toISOString();
 			}
+
 			// eslint-disable-next-line @typescript-eslint/no-base-to-string
 			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) return value.toString();
 			return null;
@@ -42,7 +41,6 @@ function serializeSearchParam(value: unknown): string | null {
  * out null and undefined values, while also coercing non-strings to strings.
  *
  * @param options - The options to use
- *
  * @returns A populated URLSearchParams instance
  */
 export function makeURLSearchParams(options?: Record<string, unknown>) {
@@ -62,7 +60,7 @@ export function makeURLSearchParams(options?: Record<string, unknown>) {
  *
  * @param res - The fetch response
  */
-export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
+export async function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
 	const header = parseHeader(res.headers['content-type']);
 	if (header?.startsWith('application/json')) {
 		return res.body.json();
@@ -77,7 +75,6 @@ export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
  * @param bucketRoute - The buckets route identifier
  * @param body - The options provided as JSON data
  * @param method - The HTTP method that will be used to make the request
- *
  * @returns Whether the request falls under a sublimit
  */
 export function hasSublimit(bucketRoute: string, body?: unknown, method?: string): boolean {
@@ -97,7 +94,7 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 }
 
 export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body']> {
-	// eslint-disable-next-line no-eq-null
+	// eslint-disable-next-line no-eq-null, eqeqeq
 	if (body == null) {
 		return null;
 	} else if (typeof body === 'string') {
@@ -114,7 +111,6 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 		return new Uint8Array(await body.arrayBuffer());
 	} else if (body instanceof FormData) {
 		return body;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
 		const chunks = [...(body as Iterable<Uint8Array>)];
 		const length = chunks.reduce((a, b) => a + b.length, 0);
@@ -127,7 +123,6 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 			lengthUsed += b.length;
 			return a;
 		}, uint8);
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if ((body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator]) {
 		const chunks: Uint8Array[] = [];
 

@@ -33,12 +33,13 @@ class InteractionResponses {
    */
 
   /**
-   * Options for a reply to an {@link BaseInteraction}.
+   * Options for a reply to a {@link BaseInteraction}.
    * @typedef {BaseMessageOptions} InteractionReplyOptions
+   * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.
+   * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.</info>
    */
 
   /**

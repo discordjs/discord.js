@@ -1,16 +1,16 @@
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-
+import type { JSONEncodable } from '../../util/jsonEncodable.js';
 import {
 	defaultValidator,
 	emojiValidator,
 	labelValueDescriptionValidator,
 	validateRequiredSelectMenuOptionParameters,
-} from '../Assertions';
+} from '../Assertions.js';
 
 /**
  * Represents a option within a select menu component
  */
-export class SelectMenuOptionBuilder {
+export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
 	public constructor(public data: Partial<APISelectMenuOption> = {}) {}
 
 	/**
@@ -63,9 +63,12 @@ export class SelectMenuOptionBuilder {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APISelectMenuOption;

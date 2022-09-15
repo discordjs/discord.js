@@ -1,30 +1,35 @@
-import { Box } from '@mantine/core';
+import type { TypeParameterData } from '@discordjs/api-extractor-utils';
+import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
-import type { TypeParameterData } from '~/util/parse.server';
+import { TSDoc } from './tsdoc/TSDoc';
+
+const rowElements = {
+	Name: 'font-mono whitespace-nowrap',
+	Constraints: 'font-mono whitespace-pre break-normal',
+	Default: 'font-mono whitespace-pre break-normal',
+};
 
 export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
-	const rows = data.map((typeParam) => ({
-		Name: typeParam.name,
-		Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
-		Optional: typeParam.optional ? 'Yes' : 'No',
-		Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
-		Description: 'None',
-	}));
-
-	const rowElements = {
-		Name: 'font-mono',
-		Constraints: 'font-mono',
-		Default: 'font-mono',
-	};
+	const rows = useMemo(
+		() =>
+			data.map((typeParam) => ({
+				Name: typeParam.name,
+				Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
+				Optional: typeParam.optional ? 'Yes' : 'No',
+				Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
+				Description: typeParam.commentBlock ? <TSDoc node={typeParam.commentBlock} /> : 'None',
+			})),
+		[data],
+	);
 
 	return (
-		<Box className="overflow-x-auto">
+		<div className="overflow-x-auto">
 			<Table
 				columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
 				rows={rows}
 				columnStyles={rowElements}
 			/>
-		</Box>
+		</div>
 	);
 }

@@ -1,6 +1,6 @@
-import { createStyles, UnstyledButton, Group, Text } from '@mantine/core';
 import Link from 'next/link';
-import type { Dispatch, SetStateAction } from 'react';
+import { useRouter } from 'next/router';
+import { type Dispatch, type SetStateAction, useEffect, useState, useMemo } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolEnum,
@@ -51,37 +51,19 @@ function groupMembers(members: Members): GroupedMembers {
 function resolveIcon(item: keyof GroupedMembers) {
 	switch (item) {
 		case 'Classes':
-			return <VscSymbolClass />;
+			return <VscSymbolClass size={20} />;
 		case 'Enums':
-			return <VscSymbolEnum />;
+			return <VscSymbolEnum size={20} />;
 		case 'Interfaces':
-			return <VscSymbolInterface />;
+			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField />;
+			return <VscSymbolField size={20} />;
 		case 'Variables':
-			return <VscSymbolVariable />;
-		case 'Functions':
-			return <VscSymbolMethod />;
+			return <VscSymbolVariable size={20} />;
+		default:
+			return <VscSymbolMethod size={20} />;
 	}
 }
-
-const useStyles = createStyles((theme) => ({
-	link: {
-		fontWeight: 500,
-		display: 'block',
-		padding: 5,
-		paddingLeft: 31,
-		marginLeft: 25,
-		fontSize: theme.fontSizes.sm,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.colors.gray![7],
-		borderLeft: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark![4] : theme.colors.gray![3]}`,
-
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![7] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		},
-	},
-}));
 
 export function SidebarItems({
 	members,
@@ -90,31 +72,42 @@ export function SidebarItems({
 	members: Members;
 	setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-	const { classes } = useStyles();
-	const groupItems = groupMembers(members);
+	const router = useRouter();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	const groupItems = useMemo(() => groupMembers(members), [members]);
+
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
+	}, [router.asPath]);
 
 	return (
-		<>
+		<div className="flex flex-col gap-3 p-3 pb-32 lg:pb-12">
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section key={idx} title={group} icon={resolveIcon(group)}>
-						{groupItems[group].map((member, i) => (
-							<Link key={i} href={member.path} passHref>
-								<UnstyledButton className={classes.link} component="a" onClick={() => setOpened((o) => !o)}>
-									<Group>
-										<Text className="line-clamp-1 text-ellipsis overflow-hidden">{member.name}</Text>
+						{groupItems[group].map((member, index) => (
+							<Link key={index} href={member.path} prefetch={false}>
+								<a
+									className={`dark:border-dark-100 border-light-800 ml-5 flex flex-col border-l p-[5px] pl-6 ${
+										asPathWithoutQueryAndAnchor === member.path
+											? 'bg-blurple text-white'
+											: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
+									}`}
+									title={member.name}
+									onClick={() => setOpened(false)}
+								>
+									<div className="flex flex-row place-items-center gap-2 lg:text-sm">
+										<span className="truncate">{member.name}</span>
 										{member.overloadIndex && member.overloadIndex > 1 ? (
-											<Text size="xs" color="dimmed">
-												{member.overloadIndex}
-											</Text>
+											<span className="text-xs">{member.overloadIndex}</span>
 										) : null}
-									</Group>
-								</UnstyledButton>
+									</div>
+								</a>
 							</Link>
 						))}
 					</Section>
 				))}
-		</>
+		</div>
 	);
 }

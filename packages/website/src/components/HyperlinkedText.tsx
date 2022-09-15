@@ -1,33 +1,19 @@
-import { Anchor, Text } from '@mantine/core';
+import type { TokenDocumentation } from '@discordjs/api-extractor-utils';
 import Link from 'next/link';
-import type { TokenDocumentation } from '~/util/parse.server';
 
-/**
- * Constructs a hyperlinked html node based on token type references
- *
- * @param tokens An array of documentation tokens to construct the HTML
- *
- * @returns An array of JSX elements and string comprising the hyperlinked text
- */
 export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
 	return (
 		<>
 			{tokens.map((token, idx) => {
 				if (token.path) {
 					return (
-						<Link key={idx} href={token.path} passHref>
-							<Anchor component="a" inherit>
-								{token.text}
-							</Anchor>
+						<Link key={idx} href={token.path} prefetch={false}>
+							<a className="text-blurple">{token.text}</a>
 						</Link>
 					);
 				}
 
-				return (
-					<Text key={idx} span unstyled>
-						{token.text}
-					</Text>
-				);
+				return <span key={idx}>{token.text}</span>;
 			})}
 		</>
 	);

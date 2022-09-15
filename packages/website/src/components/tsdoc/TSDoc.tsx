@@ -1,86 +1,75 @@
-import { Anchor, Box, Text } from '@mantine/core';
+import type {
+	AnyDocNodeJSON,
+	DocPlainTextJSON,
+	DocNodeContainerJSON,
+	DocLinkTagJSON,
+	DocFencedCodeJSON,
+	DocBlockJSON,
+	DocCommentJSON,
+} from '@discordjs/api-extractor-utils';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
-import { PrismAsyncLight as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { Fragment, useCallback, type ReactNode } from 'react';
+import { SyntaxHighlighter } from '../SyntaxHighlighter';
 import { BlockComment } from './BlockComment';
-import type { DocBlockJSON } from '~/DocModel/comment/CommentBlock';
-import type { AnyDocNodeJSON } from '~/DocModel/comment/CommentNode';
-import type { DocNodeContainerJSON } from '~/DocModel/comment/CommentNodeContainer';
-import type { DocFencedCodeJSON } from '~/DocModel/comment/FencedCodeCommentNode';
-import type { DocLinkTagJSON } from '~/DocModel/comment/LinkTagCommentNode';
-import type { DocPlainTextJSON } from '~/DocModel/comment/PlainTextCommentNode';
-import type { DocCommentJSON } from '~/DocModel/comment/RootComment';
 
 export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
-	let numberOfExamples = 0;
-	let exampleIndex = 0;
+	const createNode = useCallback((node: AnyDocNodeJSON, idx?: number): ReactNode => {
+		let numberOfExamples = 0;
+		let exampleIndex = 0;
 
-	const createNode = (node: AnyDocNodeJSON, idx?: number): ReactNode => {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return (
-					<Text key={idx} span style={{ wordBreak: 'break-word' }}>
+					<span key={idx} className="break-words">
 						{(node as DocPlainTextJSON).text}
-					</Text>
+					</span>
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<Text key={idx} inline style={{ wordBreak: 'break-word' }}>
+					<span key={idx} className="break-words leading-relaxed">
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
-					</Text>
+					</span>
 				);
 			case DocNodeKind.SoftBreak:
-				return <br key={idx} />;
+				return <Fragment key={idx} />;
 			case DocNodeKind.LinkTag: {
 				const { codeDestination, urlDestination, text } = node as DocLinkTagJSON;
 
 				if (codeDestination) {
 					return (
-						<Link key={idx} href={codeDestination.path} passHref>
-							<Anchor component="a" className="font-mono">
-								{text ?? codeDestination.name}
-							</Anchor>
+						<Link key={idx} href={codeDestination.path} prefetch={false}>
+							<a className="text-blurple font-mono">{text ?? codeDestination.name}</a>
 						</Link>
 					);
 				}
 
 				if (urlDestination) {
 					return (
-						<Link key={idx} href={urlDestination} passHref>
-							<Anchor component="a" className="font-mono">
-								{text ?? urlDestination}
-							</Anchor>
+						<Link key={idx} href={urlDestination} prefetch={false}>
+							<a className="text-blurple font-mono">{text ?? urlDestination}</a>
 						</Link>
 					);
 				}
 
 				return null;
 			}
+
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<pre key={idx} className="inline">
+					<code key={idx} className="font-mono text-sm">
 						{code}
-					</pre>
+					</code>
 				);
 			}
+
 			case DocNodeKind.FencedCode: {
 				const { language, code } = node as DocFencedCodeJSON;
-				return (
-					<SyntaxHighlighter
-						key={idx}
-						wrapLines
-						wrapLongLines
-						language={language}
-						style={vscDarkPlus}
-						codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					>
-						{code}
-					</SyntaxHighlighter>
-				);
+				return <SyntaxHighlighter key={idx} language={language} code={code} />;
 			}
+
+			case DocNodeKind.ParamBlock:
 			case DocNodeKind.Block: {
 				const { tag } = node as DocBlockJSON;
 
@@ -96,29 +85,35 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 					</BlockComment>
 				);
 			}
+
 			case DocNodeKind.Comment: {
 				const comment = node as DocCommentJSON;
+
+				if (!comment.customBlocks.length) {
+					return null;
+				}
+
 				// Cheat a bit by finding out how many comments we have beforehand...
 				numberOfExamples = comment.customBlocks.filter(
 					(block) => block.tag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
 				).length;
 
-				return <div>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
+				return <div key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
 			}
-			default:
-				break;
-		}
 
-		return null;
-	};
+			default:
+				// console.log(`Captured unknown node kind: ${node.kind}`);
+				return null;
+		}
+	}, []);
 
 	return (
-		<Box>
+		<>
 			{node.kind === 'Paragraph' || node.kind === 'Section' ? (
 				<>{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}</>
 			) : (
 				createNode(node)
 			)}
-		</Box>
+		</>
 	);
 }

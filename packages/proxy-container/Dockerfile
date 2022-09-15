@@ -15,4 +15,4 @@ RUN yarn workspaces focus
 COPY ./packages/proxy-container ./
 RUN yarn build && yarn workspaces focus --production
 
-CMD ["node", "--enable-source-maps", "./dist/index.mjs"]
+CMD ["node", "--enable-source-maps", "./dist/index.js"]

@@ -1,57 +1,32 @@
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
-import { useColorScheme } from '@mantine/hooks';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import { RouterTransition } from '~/components/RouterTransition';
+import NextProgress from 'next-progress';
+import { ThemeProvider } from 'next-themes';
+import '@unocss/reset/tailwind.css';
 import '../styles/unocss.css';
+import '../styles/cmdk.css';
 import '../styles/main.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
-	const preferredColorScheme = useColorScheme('dark', { getInitialValueInEffect: true });
-	const [colorScheme, setColorScheme] = useState<ColorScheme>(preferredColorScheme);
-	const toggleColorScheme = (value?: ColorScheme) =>
-		setColorScheme(value ?? (colorScheme === 'dark' ? 'light' : 'dark'));
-
-	useEffect(() => {
-		setColorScheme(preferredColorScheme);
-	}, [preferredColorScheme]);
-
 	return (
 		<>
 			<Head>
+				<title key="title">discord.js</title>
 				<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+				<meta name="theme-color" content="#5865f2" />
 			</Head>
-
-			<ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-				<MantineProvider
-					theme={{
-						fontFamily: 'Inter',
-						colorScheme,
-						colors: {
-							blurple: [
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-								'#5865F2',
-							],
-						},
-						primaryColor: 'blurple',
-					}}
-					withCSSVariables
-					withNormalizeCSS
-					withGlobalStyles
-				>
-					<RouterTransition />
-					<Component {...pageProps} />
-				</MantineProvider>
-			</ColorSchemeProvider>
+			<ThemeProvider
+				attribute="class"
+				defaultTheme="system"
+				value={{
+					light: 'light',
+					dark: 'dark',
+				}}
+				disableTransitionOnChange
+			>
+				<NextProgress color="#5865f2" options={{ showSpinner: false }} />
+				<Component {...pageProps} />
+			</ThemeProvider>
 		</>
 	);
 }

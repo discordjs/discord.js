@@ -1,117 +1,52 @@
-import { createStyles, Container, Title, Button, Group, Text, Center } from '@mantine/core';
 import Image from 'next/future/image';
 import Link from 'next/link';
-import codeSample from '../assets/code-sample.png';
+import { FiExternalLink } from 'react-icons/fi';
 import vercelLogo from '../assets/powered-by-vercel.svg';
-
-const useStyles = createStyles((theme) => ({
-	inner: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingTop: theme.spacing.xl * 4,
-		paddingBottom: theme.spacing.xl * 4,
-
-		[theme.fn.smallerThan('md')]: {
-			flexDirection: 'column',
-			gap: 50,
-		},
-	},
-
-	content: {
-		maxWidth: 480,
-		marginRight: theme.spacing.xl * 3,
-
-		[theme.fn.smallerThan('md')]: {
-			marginRight: 0,
-		},
-	},
-
-	title: {
-		color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		fontSize: 44,
-		lineHeight: 1.2,
-		fontWeight: 900,
-
-		[theme.fn.smallerThan('xs')]: {
-			fontSize: 28,
-		},
-	},
-
-	highlight: {
-		position: 'relative',
-		backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
-		borderRadius: theme.radius.sm,
-		padding: '4px 12px',
-	},
-
-	control: {
-		[theme.fn.smallerThan('xs')]: {
-			flex: 1,
-		},
-	},
-
-	image: {
-		flex: 1,
-		height: '100%',
-		maxWidth: 550,
-
-		[theme.fn.smallerThan('xs')]: {
-			maxWidth: 350,
-		},
-	},
-
-	vercel: {
-		height: '100%',
-		maxWidth: 250,
-		paddingBottom: theme.spacing.xl * 4,
-	},
-}));
+import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
+import { CODE_EXAMPLE } from '~/util/constants';
 
 export default function IndexRoute() {
-	const { classes } = useStyles();
 	return (
-		<div>
-			<Container size="lg">
-				<div className={classes.inner}>
-					<div className={classes.content}>
-						<Title className={classes.title}>
-							The <span className={classes.highlight}>most popular</span> way to build Discord <br /> bots.
-						</Title>
-						<Text color="dimmed" mt="md">
-							discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It
-							takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s
-							code significantly tidier and easier to comprehend.
-						</Text>
-
-						<Group mt={30}>
-							<Link href="/docs" passHref>
-								<Button component="a" radius="xl" size="md" className={classes.control}>
-									Docs
-								</Button>
-							</Link>
-							<Link href="https://discordjs.guide" passHref>
-								<Button component="a" variant="default" radius="xl" size="md" className={classes.control}>
-									Guide
-								</Button>
-							</Link>
-						</Group>
-					</div>
-					<Image src={codeSample} className={classes.image} />
-				</div>
-				<Center>
-					<Link href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss" passHref>
-						<a title="Vercel">
-							<Image
-								// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-								src={vercelLogo}
-								alt="Vercel"
-								className={classes.vercel}
-							/>
+		<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
+			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
+				<div className="flex max-w-lg flex-col gap-3 lg:mr-8">
+					<h1 className="text-3xl font-black leading-tight sm:text-5xl sm:leading-tight">
+						The <span className="bg-blurple relative rounded py-1 px-3 text-white">most popular</span> way to build
+						Discord <br /> bots.
+					</h1>
+					<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">
+						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
+						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
+						significantly tidier and easier to comprehend.
+					</p>
+					<div className="flex flex-row gap-4">
+						<Link href="/docs" prefetch={false}>
+							<a className="bg-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline active:translate-y-px">
+								Docs
+							</a>
+						</Link>
+						<a
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline active:translate-y-px dark:text-white"
+							href="https://discordjs.guide"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							Guide <FiExternalLink />
 						</a>
-					</Link>
-				</Center>
-			</Container>
+					</div>
+				</div>
+				<SyntaxHighlighter code={CODE_EXAMPLE} />
+			</div>
+			<div className="flex place-content-center">
+				<a
+					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+					target="_blank"
+					rel="noopener noreferrer"
+					title="Vercel"
+				>
+					<Image src={vercelLogo} alt="Vercel" />
+				</a>
+			</div>
 		</div>
 	);
 }

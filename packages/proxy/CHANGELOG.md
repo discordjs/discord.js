@@ -2,7 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-# [@discordjs/proxy@1.0.0](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.1.0) - (2022-07-17)
+# [@discordjs/proxy@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.0.1...@discordjs/proxy@1.1.0) - (2022-08-22)
+
+## Bug Fixes
+
+- **proxyRequests:** Typo in error message (#8537) ([dd44e8b](https://github.com/discordjs/discord.js/commit/dd44e8b6ec141e630af4543bd3babcce39aa2887))
+
+## Features
+
+- **website:** Show `constructor` information (#8540) ([e42fd16](https://github.com/discordjs/discord.js/commit/e42fd1636973b10dd7ed6fb4280ee1a4a8f82007))
+
+## Refactor
+
+- Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
+
+# [@discordjs/proxy@1.0.0](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.0.0) - (2022-07-17)
 
 ## Bug Fixes
 

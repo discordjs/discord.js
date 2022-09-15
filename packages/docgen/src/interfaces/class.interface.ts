@@ -1,13 +1,13 @@
 import type { Access, Item, Meta, Scope } from './index.js';
 
 export interface Class extends Item {
-	kind: 'class';
-	scope: Scope;
-	implements?: string[];
-	augments?: string[];
-	see?: string[];
 	access?: Access;
-	virtual?: boolean;
+	augments?: string[];
 	deprecated?: boolean | string;
+	implements?: string[];
+	kind: 'class';
 	meta: Meta;
+	scope: Scope;
+	see?: string[];
+	virtual?: boolean;
 }

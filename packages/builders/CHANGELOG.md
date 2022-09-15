@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.1.0...@discordjs/builders@1.2.0) - (2022-08-22)
+
+## Features
+
+- **website:** Show `constructor` information (#8540) ([e42fd16](https://github.com/discordjs/discord.js/commit/e42fd1636973b10dd7ed6fb4280ee1a4a8f82007))
+- **website:** Show descriptions for `@typeParam` blocks (#8523) ([e475b63](https://github.com/discordjs/discord.js/commit/e475b63f257f6261d73cb89fee9ecbcdd84e2a6b))
+- **website:** Show parameter descriptions (#8519) ([7f415a2](https://github.com/discordjs/discord.js/commit/7f415a2502bf7ce2025dbcfed9017b0635a19966))
+- **WebSocketShard:** Support new resume url (#8480) ([bc06cc6](https://github.com/discordjs/discord.js/commit/bc06cc638d2f57ab5c600e8cdb6afc8eb2180166))
+
+## Refactor
+
+- Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
+
 # [@discordjs/builders@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.0.0...@discordjs/builders@1.1.0) - (2022-07-29)
 
 ## Bug Fixes
