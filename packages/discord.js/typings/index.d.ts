@@ -2050,12 +2050,16 @@ export class PartialGroupDMChannel extends BaseChannel {
   public toString(): ChannelMention;
 }
 
+export interface GuildForumTagEmoji {
+  id: Snowflake | null;
+  name: string | null;
+}
+
 export interface GuildForumTag {
   id: Snowflake;
   name: string;
   moderated: boolean;
-  emojiId: Snowflake | null;
-  emojiName: string | null;
+  emoji: GuildForumTagEmoji
 }
 
 export interface DefaultReactionEmoji {
@@ -4882,6 +4886,7 @@ export interface GuildChannelEditOptions {
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
+  availableTags?: GuildForumTag[];
   reason?: string;
 }
 

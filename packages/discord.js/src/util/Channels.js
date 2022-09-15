@@ -80,14 +80,33 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
  * Transforms an API guild forum tag to camel-cased guild forum tag.
  * @param {APIGuildForumTag} tag The tag to transform
  * @returns {GuildForumTag}
+ * @ignore
+ */
+function transformAPIGuildForumTag(tag) {
+  return {
+    id: tag.id,
+    name: tag.name,
+    moderated: tag.moderated,
+    emoji: {
+      id: tag.emoji_id,
+      name: tag.emoji_name,
+    },
+  };
+}
+
+/**
+ * Transforms a camel-cased guild forum tag to an API guild forum tag.
+ * @param {GuildForumTag} tag The tag to transform
+ * @returns {APIGuildForumTag}
+ * @ignore
  */
 function transformGuildForumTag(tag) {
   return {
     id: tag.id,
     name: tag.name,
     moderated: tag.moderated,
-    emojiId: tag.emoji_id,
-    emojiName: tag.emoji_name,
+    emoji_id: tag.emoji.id,
+    emoji_name: tag.emoji.name,
   };
 }
 
@@ -107,6 +126,7 @@ function transformGuildDefaultReaction(defaultReaction) {
 
 module.exports = {
   transformGuildDefaultReaction,
+  transformAPIGuildForumTag,
   transformGuildForumTag,
   createChannel,
 };

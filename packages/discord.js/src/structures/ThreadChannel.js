@@ -6,7 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
-const { transformGuildForumTag } = require('../util/Channels');
+const { transformAPIGuildForumTag } = require('../util/Channels');
 
 /**
  * Represents a thread channel on Discord.
@@ -200,7 +200,7 @@ class ThreadChannel extends BaseChannel {
        * The tags applied to this thread
        * @type {GuildForumTag[]}
        */
-      this.appliedTags = data.applied_tags.map(tag => transformGuildForumTag(tag));
+      this.appliedTags = data.applied_tags.map(tag => transformAPIGuildForumTag(tag));
     } else {
       this.appliedTags ??= [];
     }

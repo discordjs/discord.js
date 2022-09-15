@@ -10,6 +10,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const { transformGuildForumTag } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
@@ -218,6 +219,7 @@ class GuildChannelManager extends CachedManager {
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
+   * @property {GuildForumTag[]} [availableTags] The tags to set as available in a forum channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -274,7 +276,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
-        available_tags: data.availableTags,
+        available_tags: data.availableTags ? transformGuildForumTag(data.availableTags) : undefined,
         default_reaction_emoji: data.defaultReactionEmoji,
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
       },

@@ -2,16 +2,21 @@
 
 const GuildChannel = require('./GuildChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
-const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
+const { transformAPIGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
+
+/**
+ * @typedef {Object} GuildForumTagEmoji
+ * @property {?Snowflake} id The id of a guild's custom emoji
+ * @property {?string} name The unicode character of the emoji
+ */
 
 /**
  * @typedef {Object} GuildForumTag
  * @property {Snowflake} id The id of the tag
  * @property {string} name The name of the tag
  * @property {boolean} moderated Whether this tag can only be added to or removed from threads
- *  by a member with the `ManageThreads` permission
- * @property {?Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
- * @property {?string} emojiName The unicode character of the emoji
+ * by a member with the `ManageThreads` permission
+ * @property {GuildForumTagEmoji} emoji The emoji of this tag
  */
 
 /**
@@ -44,7 +49,7 @@ class ForumChannel extends GuildChannel {
        * The set of tags that can be used in this channel.
        * @type {GuildForumTag[]}
        */
-      this.availableTags = data.available_tags.map(tag => transformGuildForumTag(tag));
+      this.availableTags = data.available_tags.map(tag => transformAPIGuildForumTag(tag));
     } else {
       this.availableTags ??= [];
     }
