@@ -2,7 +2,7 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
-const { TypeError } = require('../errors');
+const { ErrorCodes, TypeError } = require('../errors');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
 /**
