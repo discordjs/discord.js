@@ -78,7 +78,7 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
 
 /**
  * Transforms an API guild forum tag to camel-cased guild forum tag.
- * @param {GuildForumTag} tag The tag to transform
+ * @param {APIGuildForumTag} tag The tag to transform
  * @returns {GuildForumTag}
  */
 function transformGuildForumTag(tag) {
