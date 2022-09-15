@@ -297,6 +297,16 @@ class Guild extends AnonymousGuild {
       this.maxVideoChannelUsers ??= null;
     }
 
+    if ('max_stage_video_channel_users' in data) {
+      /**
+       * The maximum amount of users allowed in a stage video channel.
+       * @type {?number}
+       */
+      this.maxStageVideoChannelUsers = data.max_stage_video_channel_users;
+    } else {
+      this.maxStageVideoChannelUsers ??= null;
+    }
+
     if ('approximate_member_count' in data) {
       /**
        * The approximate amount of members the guild has
