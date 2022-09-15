@@ -24,7 +24,7 @@ const { transformGuildForumTag, transformGuildDefaultReaction } = require('../ut
  * Represents a channel that only contains threads
  * @extends {GuildChannel}
  */
-class GuildForumChannel extends GuildChannel {
+class ForumChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -76,7 +76,7 @@ class GuildForumChannel extends GuildChannel {
    * Sets the available tags for this forum channel
    * @param {GuildForumTag[]} availableTags The tags to set as available in this channel
    * @param {string} [reason] Reason for changing the available tags
-   * @returns {Promise<GuildForumChannel>}
+   * @returns {Promise<ForumChannel>}
    */
   setAvailableTags(availableTags, reason) {
     return this.edit({ availableTags, reason });
@@ -86,7 +86,7 @@ class GuildForumChannel extends GuildChannel {
    * Sets the default reaction emoji for this channel
    * @param {DefaultReaction} defaultReactionEmoji The emoji to set as the default reaction emoji
    * @param {string} [reason] Reason for changing the default reaction emoji
-   * @returns {Promise<GuildForumChannel>}
+   * @returns {Promise<ForumChannel>}
    */
   async setDefaultReactionEmoji(defaultReactionEmoji, reason) {
     await this.edit({ defaultReactionEmoji, reason });
@@ -97,7 +97,7 @@ class GuildForumChannel extends GuildChannel {
    * Sets the default rate limit per user (slowmode) for new threads in this channel
    * @param {number} defaultThreadRateLimitPerUser The rate limit to set on newly created threads in this channel
    * @param {string} [reason] Reason for changing the default rate limit
-   * @returns {Promise<GuildForumChannel>}
+   * @returns {Promise<ForumChannel>}
    */
   async setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
     await this.edit({ defaultThreadRateLimitPerUser, reason });
@@ -105,4 +105,4 @@ class GuildForumChannel extends GuildChannel {
   }
 }
 
-module.exports = GuildForumChannel;
+module.exports = ForumChannel;

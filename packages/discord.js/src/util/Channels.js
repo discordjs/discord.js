@@ -12,7 +12,7 @@ const getThreadChannel = lazy(() => require('../structures/ThreadChannel'));
 const getVoiceChannel = lazy(() => require('../structures/VoiceChannel'));
 const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel'));
 const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel'));
-const getForumChannel = lazy(() => require('../structures/GuildForumChannel'));
+const getForumChannel = lazy(() => require('../structures/ForumChannel'));
 
 /**
  * Creates a discord.js channel from data received from the API.

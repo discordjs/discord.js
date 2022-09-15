@@ -2053,7 +2053,7 @@ export interface DefaultReactionEmoji {
   emojiName: string | null;
 }
 
-export class GuildForumChannel extends GuildChannel {
+export class ForumChannel extends GuildChannel {
   public type: ChannelType.GuildForum;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
@@ -5579,11 +5579,11 @@ export type Channel =
   | TextChannel
   | AnyThreadChannel
   | VoiceChannel
-  | GuildForumChannel;
+  | ForumChannel;
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | GuildForumChannel
+  PartialGroupDMChannel | ForumChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
@@ -5596,7 +5596,7 @@ export type CategoryChildChannel = Exclude<Extract<Channel, { parent: CategoryCh
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
-export type GuildTextBasedChannel = Exclude<Extract<GuildBasedChannel, TextBasedChannel>, GuildForumChannel>;
+export type GuildTextBasedChannel = Exclude<Extract<GuildBasedChannel, TextBasedChannel>, ForumChannel>;
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 
