@@ -20,8 +20,8 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  */
 
 /**
- * @typedef {Object} DefaultReaction
- * @property {?Snowflake} emojiId The id of a guild's custom emoji, or 0 if unset
+ * @typedef {Object} DefaultReactionEmoji
+ * @property {?Snowflake} emojiId The id of a guild's custom emoji
  * @property {?string} emojiName The unicode character of the emoji
  */
 
@@ -57,7 +57,7 @@ class ForumChannel extends GuildChannel {
     if ('default_reaction_emoji' in data) {
       /**
        * The emoji to show in the add reaction button on a thread in a guild forum channel
-       * @type {?DefaultReaction}
+       * @type {?DefaultReactionEmoji}
        */
       this.defaultReactionEmoji = data.default_reaction_emoji
         ? transformAPIGuildDefaultReaction(data.default_reaction_emoji)
@@ -89,7 +89,7 @@ class ForumChannel extends GuildChannel {
 
   /**
    * Sets the default reaction emoji for this channel
-   * @param {DefaultReaction} defaultReactionEmoji The emoji to set as the default reaction emoji
+   * @param {DefaultReactionEmoji} defaultReactionEmoji The emoji to set as the default reaction emoji
    * @param {string} [reason] Reason for changing the default reaction emoji
    * @returns {Promise<ForumChannel>}
    */

@@ -114,7 +114,7 @@ function transformGuildForumTag(tag) {
  * Transforms an API guild forum default reaction object to a
  * camel-cased guild forum default reaction object.
  * @param {APIDefaultReaction} defaultReaction The default reaction to transform
- * @returns {DefaultReaction}
+ * @returns {DefaultReactionEmoji}
  * @ignore
  */
 function transformAPIGuildDefaultReaction(defaultReaction) {

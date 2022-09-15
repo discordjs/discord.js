@@ -4887,6 +4887,7 @@ export interface GuildChannelEditOptions {
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
   availableTags?: GuildForumTag[];
+  defaultReactionEmoji?: DefaultReactionEmoji;
   reason?: string;
 }
 
