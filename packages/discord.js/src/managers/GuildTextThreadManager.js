@@ -13,8 +13,8 @@ class GuildTextThreadManager extends ThreadManager {
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} ThreadCreateOptions
-   * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
-   * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
+   * @property {MessageResolvable} [startMessage] The message to start a thread from.
+   * <warn>If this is defined, then the `type` of thread gets inferred automatically and cannot be changed.</warn>
    * @property {ThreadChannelTypes|number} [type] The type of thread to create.
    * Defaults to {@link ChannelType.GuildPublicThread} if created in a {@link TextChannel}
    * <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
@@ -59,14 +59,14 @@ class GuildTextThreadManager extends ThreadManager {
     rateLimitPerUser,
   } = {}) {
     if (type && typeof type !== 'string' && typeof type !== 'number') {
-      throw new TypeError('INVALID_TYPE', 'type', 'ThreadChannelType or Number');
+      throw new TypeError(ErrorCodes.InvalidType, 'type', 'ThreadChannelType or Number');
     }
     let resolvedType =
       this.channel.type === ChannelType.GuildNews ? ChannelType.GuildNewsThread : ChannelType.GuildPublicThread;
     let startMessageId;
     if (startMessage) {
       startMessageId = this.channel.messages.resolveId(startMessage);
-      if (!startMessageId) throw new TypeError('INVALID_TYPE', 'startMessage', 'MessageResolvable');
+      if (!startMessageId) throw new TypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
     } else if (this.channel.type !== ChannelType.GuildNews) {
       resolvedType = type ?? resolvedType;
     }

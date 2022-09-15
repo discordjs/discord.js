@@ -63,7 +63,7 @@ class GuildForumChannel extends GuildChannel {
 
     if ('default_thread_rate_limit_per_user' in data) {
       /**
-       * The initial rate_limit_per_user to set on newly created threads in a channel.
+       * The initial rate limit per user (slowmode) to set on newly created threads in a channel.
        * @type {?number}
        */
       this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
