@@ -2128,7 +2128,6 @@ __metadata:
     "@microsoft/tsdoc": 0.14.1
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
-    "@types/flexsearch": ^0.7.3
     "@types/node": ^16.11.58
     "@types/react-dom": ^18.0.6
     "@types/react-syntax-highlighter": ^15.5.5
@@ -2142,9 +2141,7 @@ __metadata:
     concurrently: ^7.4.0
     eslint: ^8.23.0
     eslint-config-neon: ^0.1.33
-    flexsearch: ^0.7.21
     happy-dom: ^6.0.4
-    minisearch: ^5.0.0
     next: ^12.3.0
     next-mdx-remote: ^4.1.0
     next-progress: ^2.2.0
@@ -3612,13 +3609,6 @@ __metadata:
   version: 1.0.0
   resolution: "@types/estree@npm:1.0.0"
   checksum: 910d97fb7092c6738d30a7430ae4786a38542023c6302b95d46f49420b797f21619cdde11fa92b338366268795884111c2eb10356e4bd2c8ad5b92941e9e6443
-  languageName: node
-  linkType: hard
-
-"@types/flexsearch@npm:^0.7.3":
-  version: 0.7.3
-  resolution: "@types/flexsearch@npm:0.7.3"
-  checksum: fac365e6d6f7f251c49b22530635a7042523b00a45dcb5591372782125f5e5e97b0508c71e08c8d1b3fbef0e01c504027271df5d60698b1e26caf7d067cc2ef0
   languageName: node
   linkType: hard
 
@@ -8882,13 +8872,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flexsearch@npm:^0.7.21":
-  version: 0.7.21
-  resolution: "flexsearch@npm:0.7.21"
-  checksum: ae77c6ebba6f02660bf28a36b56427ec2d737dcb9bd03564db27801484be2dd943fc7350e60a6f0aed47ab1b85af7fd5b33e27e84fd2fcbb241d9c5d21c8d068
-  languageName: node
-  linkType: hard
-
 "foreground-child@npm:^2.0.0":
   version: 2.0.0
   resolution: "foreground-child@npm:2.0.0"
@@ -12856,13 +12839,6 @@ __metadata:
   dependencies:
     yallist: ^4.0.0
   checksum: f89f02bcaa0e0e4bb4c44ec796008e69fbca62db0aba6ead1bc57d25bdaefdf42102130f4f9ecb7d9c6b6cd35ff7b0c7b97d001d3435da8e629fb68af3aea57e
-  languageName: node
-  linkType: hard
-
-"minisearch@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "minisearch@npm:5.0.0"
-  checksum: e716c877706be6b4977b1e4fe70baa006c392857bdd7cf13f483483fcc7c8cbb34f852616449da9de41bed4b0b2e034dde80305ee3ed7c10f8c4845a813a91ec
   languageName: node
   linkType: hard
 
