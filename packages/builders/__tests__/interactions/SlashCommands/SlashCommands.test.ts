@@ -234,7 +234,7 @@ describe('Slash Commands', () => {
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
+						getChannelOption().addChannelTypes(ChannelType.GuildAnnouncement, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});

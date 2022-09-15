@@ -515,7 +515,7 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, tr
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setType(type: ChannelType.GuildText, reason?: string): Promise<TextChannel>;
-  public setType(type: ChannelType.GuildNews, reason?: string): Promise<NewsChannel>;
+  public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
 }
 
 export class BaseGuildVoiceChannel extends GuildChannel {
@@ -699,7 +699,7 @@ export class Embed {
 }
 
 export interface MappedChannelCategoryTypes {
-  [ChannelType.GuildNews]: NewsChannel;
+  [ChannelType.GuildAnnouncement]: NewsChannel;
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
@@ -710,9 +710,9 @@ export type CategoryChannelType = Exclude<
   ChannelType,
   | ChannelType.DM
   | ChannelType.GroupDM
-  | ChannelType.GuildPublicThread
-  | ChannelType.GuildNewsThread
-  | ChannelType.GuildPrivateThread
+  | ChannelType.PublicThread
+  | ChannelType.AnnouncementThread
+  | ChannelType.PrivateThread
   | ChannelType.GuildCategory
   | ChannelType.GuildDirectory
 >;
@@ -2013,7 +2013,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
 
 export class NewsChannel extends BaseGuildTextChannel {
   public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
-  public type: ChannelType.GuildNews;
+  public type: ChannelType.GuildAnnouncement;
   public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
 
@@ -2490,13 +2490,13 @@ export class TextChannel extends BaseGuildTextChannel {
 export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
 
 export interface PublicThreadChannel extends ThreadChannel {
-  type: ChannelType.GuildPublicThread | ChannelType.GuildNewsThread;
+  type: ChannelType.PublicThread | ChannelType.AnnouncementThread;
 }
 
 export interface PrivateThreadChannel extends ThreadChannel {
   get createdTimestamp(): number;
   get createdAt(): Date;
-  type: ChannelType.GuildPrivateThread;
+  type: ChannelType.PrivateThread;
 }
 
 export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
@@ -3753,9 +3753,9 @@ export interface AddGuildMemberOptions {
 
 export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction | ThreadMember;
 
-export type AllowedThreadTypeForNewsChannel = ChannelType.GuildNewsThread;
+export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
-export type AllowedThreadTypeForTextChannel = ChannelType.GuildPublicThread | ChannelType.GuildPrivateThread;
+export type AllowedThreadTypeForTextChannel = ChannelType.PublicThread | ChannelType.PrivateThread;
 
 export interface BaseApplicationCommandData {
   name: string;
@@ -4804,9 +4804,9 @@ export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOpt
     ChannelType,
     | ChannelType.DM
     | ChannelType.GroupDM
-    | ChannelType.GuildPublicThread
-    | ChannelType.GuildNewsThread
-    | ChannelType.GuildPrivateThread
+    | ChannelType.PublicThread
+    | ChannelType.AnnouncementThread
+    | ChannelType.PrivateThread
   >;
 }
 
@@ -4816,7 +4816,7 @@ export interface GuildChannelCloneOptions extends Omit<GuildChannelCreateOptions
 
 export interface GuildChannelEditOptions {
   name?: string;
-  type?: ChannelType.GuildText | ChannelType.GuildNews;
+  type?: ChannelType.GuildText | ChannelType.GuildAnnouncement;
   position?: number;
   topic?: string | null;
   nsfw?: boolean;
@@ -5554,15 +5554,12 @@ export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
 export type ThreadChannelResolvable = AnyThreadChannel | Snowflake;
 
-export type ThreadChannelType =
-  | ChannelType.GuildNewsThread
-  | ChannelType.GuildPublicThread
-  | ChannelType.GuildPrivateThread;
+export type ThreadChannelType = ChannelType.AnnouncementThread | ChannelType.PublicThread | ChannelType.PrivateThread;
 
 export interface ThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
   type?: AllowedThreadType;
-  invitable?: AllowedThreadType extends ChannelType.GuildPrivateThread ? boolean : never;
+  invitable?: AllowedThreadType extends ChannelType.PrivateThread ? boolean : never;
 }
 
 export interface ThreadEditData {

@@ -636,7 +636,7 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
-      channel?.type === ChannelType.GuildNews &&
+      channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
         channel.viewable &&
@@ -664,7 +664,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === ChannelType.GuildNews) {
+   * if (message.channel.type === ChannelType.GuildAnnouncement) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -806,7 +806,7 @@ class Message extends Base {
    */
   startThread(options = {}) {
     if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
-    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
+    if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
       return Promise.reject(new Error(ErrorCodes.MessageThreadParent));
     }
     if (this.hasThread) return Promise.reject(new Error(ErrorCodes.MessageExistingThread));
