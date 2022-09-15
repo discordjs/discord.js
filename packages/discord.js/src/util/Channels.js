@@ -117,7 +117,7 @@ function transformGuildForumTag(tag) {
  * @returns {DefaultReaction}
  * @ignore
  */
-function transformGuildDefaultReaction(defaultReaction) {
+function transformAPIGuildDefaultReaction(defaultReaction) {
   return {
     emojiId: defaultReaction.emoji_id,
     emojiName: defaultReaction.emoji_name,
@@ -125,7 +125,7 @@ function transformGuildDefaultReaction(defaultReaction) {
 }
 
 module.exports = {
-  transformGuildDefaultReaction,
+  transformAPIGuildDefaultReaction,
   transformAPIGuildForumTag,
   transformGuildForumTag,
   createChannel,

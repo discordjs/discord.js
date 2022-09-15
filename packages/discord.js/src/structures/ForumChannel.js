@@ -2,7 +2,7 @@
 
 const GuildChannel = require('./GuildChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
-const { transformAPIGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
+const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels');
 
 /**
  * @typedef {Object} GuildForumTagEmoji
@@ -60,7 +60,7 @@ class ForumChannel extends GuildChannel {
        * @type {?DefaultReaction}
        */
       this.defaultReactionEmoji = data.default_reaction_emoji
-        ? transformGuildDefaultReaction(data.default_reaction_emoji)
+        ? transformAPIGuildDefaultReaction(data.default_reaction_emoji)
         : null;
     } else {
       this.defaultReactionEmoji ??= null;
