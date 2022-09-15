@@ -5,7 +5,6 @@ const { setTimeout, setInterval, clearTimeout, clearInterval } = require('node:t
 const { GatewayDispatchEvents, GatewayIntentBits, GatewayOpcodes } = require('discord-api-types/v10');
 const WebSocket = require('../../WebSocket');
 const Events = require('../../util/Events');
-const IntentsBitField = require('../../util/IntentsBitField');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
 
