@@ -2059,7 +2059,7 @@ export interface GuildForumTag {
   id: Snowflake;
   name: string;
   moderated: boolean;
-  emoji: GuildForumTagEmoji
+  emoji: GuildForumTagEmoji;
 }
 
 export interface DefaultReactionEmoji {
