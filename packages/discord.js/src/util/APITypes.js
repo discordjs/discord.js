@@ -179,6 +179,11 @@
  */
 
 /**
+ * @external ChannelFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelFlags}
+ */
+
+/**
  * @external ChannelType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType}
  */
