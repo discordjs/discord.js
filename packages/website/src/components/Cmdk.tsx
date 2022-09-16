@@ -24,19 +24,19 @@ import { client } from '~/util/search';
 function resolveIcon(item: keyof ApiItemKind) {
 	switch (item) {
 		case 'Class':
-			return <VscSymbolClass size={25} />;
+			return <VscSymbolClass className="shrink-0" size={25} />;
 		case 'Enum':
-			return <VscSymbolEnum size={25} />;
+			return <VscSymbolEnum className="shrink-0" size={25} />;
 		case 'Interface':
-			return <VscSymbolInterface size={25} />;
+			return <VscSymbolInterface className="shrink-0" size={25} />;
 		case 'Property':
-			return <VscSymbolProperty size={25} />;
+			return <VscSymbolProperty className="shrink-0" size={25} />;
 		case 'TypeAlias':
-			return <VscSymbolField size={25} />;
+			return <VscSymbolField className="shrink-0" size={25} />;
 		case 'Variables':
-			return <VscSymbolVariable size={25} />;
+			return <VscSymbolVariable className="shrink-0" size={25} />;
 		default:
-			return <VscSymbolMethod size={25} />;
+			return <VscSymbolMethod className="shrink-0" size={25} />;
 	}
 }
 
@@ -58,21 +58,19 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 			PACKAGES.map((pkg) => (
 				<Command.Item
 					key={pkg}
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					onSelect={() => {
 						setPackageName(pkg);
 						setPage('version');
 						setSearch('');
 					}}
 				>
-					<div className="flex w-full grow flex-row place-content-between place-items-center gap-4">
-						<div className="flex grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex flex-row place-content-between place-items-center gap-4">
-								<VscPackage size={25} />
-								<h2 className="font-semibold">{pkg}</h2>
-							</div>
+					<div className="flex grow flex-row place-content-between place-items-center gap-4">
+						<div className="flex flex-row place-items-center gap-4">
+							<VscPackage className="shrink-0" size={25} />
+							<h2 className="font-semibold">{pkg}</h2>
 						</div>
-						<VscArrowRight size={20} />
+						<VscArrowRight className="shrink-0" size={20} />
 					</div>
 				</Command.Item>
 			)),
@@ -85,20 +83,18 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 				?.map((version) => (
 					<Command.Item
 						key={version}
-						className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+						className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 						onSelect={() => {
 							void router.push(`/docs/packages/${packageName}/${version}`);
 							dialog.setOpen(false);
 						}}
 					>
-						<div className="flex w-full grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex grow flex-row place-content-between place-items-center gap-4">
-								<div className="flex flex-row place-content-between place-items-center gap-4">
-									<VscVersions size={25} />
-									<h2 className="font-semibold">{version}</h2>
-								</div>
+						<div className="flex grow flex-row place-content-between place-items-center gap-4">
+							<div className="flex flex-row place-items-center gap-4">
+								<VscVersions className="shrink-0" size={25} />
+								<h2 className="font-semibold">{version}</h2>
 							</div>
-							<VscArrowRight size={20} />
+							<VscArrowRight className="shrink-0" size={20} />
 						</div>
 					</Command.Item>
 				))
@@ -112,24 +108,24 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 			searchResults?.map((item) => (
 				<Command.Item
 					key={item.id}
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					onSelect={() => {
 						void router.push(item.path);
 						dialog.setOpen(false);
 					}}
 				>
-					<div className="flex w-full grow flex-row place-content-between place-items-center gap-4">
-						<div className="flex grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex flex-row place-content-between place-items-center gap-4">
-								{resolveIcon(item.kind)}
-								<div className="flex flex-col">
-									<h2 className="font-semibold">{item.name}</h2>
-									<span className="line-clamp-1 text-sm font-normal">{item.summary}</span>
-									<span className="line-clamp-1 text-xs font-light opacity-75 dark:opacity-50">{item.path}</span>
+					<div className="flex grow flex-row place-content-between place-items-center gap-4">
+						<div className="flex flex-row place-items-center gap-4">
+							{resolveIcon(item.kind)}
+							<div className="w-50 flex flex-col sm:w-full">
+								<h2 className="font-semibold">{item.name}</h2>
+								<div className="line-clamp-1 text-sm font-normal">{item.summary}</div>
+								<div className="line-clamp-1 hidden text-xs font-light opacity-75 dark:opacity-50 sm:block">
+									{item.path}
 								</div>
 							</div>
 						</div>
-						<VscArrowRight size={20} />
+						<VscArrowRight className="shrink-0" size={20} />
 					</div>
 				</Command.Item>
 			)) ?? [],
@@ -186,7 +182,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 				shouldFilter={false}
 			>
 				<Command.Input
-					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 mt-4 w-full border-0 bg-white p-4 pt-0 text-lg outline-0 dark:placeholder:text-white/75"
+					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 mt-4 border-0 bg-white p-4 pt-0 text-lg outline-0 dark:placeholder:text-white/75"
 					placeholder="Type to search..."
 					value={search}
 					onValueChange={setSearch}
