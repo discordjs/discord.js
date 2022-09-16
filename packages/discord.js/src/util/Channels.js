@@ -87,10 +87,13 @@ function transformAPIGuildForumTag(tag) {
     id: tag.id,
     name: tag.name,
     moderated: tag.moderated,
-    emoji: {
-      id: tag.emoji_id,
-      name: tag.emoji_name,
-    },
+    emoji:
+      tag.emoji_id ?? tag.emoji_name
+        ? {
+            id: tag.emoji_id,
+            name: tag.emoji_name,
+          }
+        : null,
   };
 }
 
@@ -105,8 +108,8 @@ function transformGuildForumTag(tag) {
     id: tag.id,
     name: tag.name,
     moderated: tag.moderated,
-    emoji_id: tag.emoji.id,
-    emoji_name: tag.emoji.name,
+    emoji_id: tag.emoji?.id ?? null,
+    emoji_name: tag.emoji?.name ?? null,
   };
 }
 

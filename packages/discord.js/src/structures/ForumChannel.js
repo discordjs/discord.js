@@ -16,7 +16,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  * @property {string} name The name of the tag
  * @property {boolean} moderated Whether this tag can only be added to or removed from threads
  * by a member with the `ManageThreads` permission
- * @property {GuildForumTagEmoji} emoji The emoji of this tag
+ * @property {?GuildForumTagEmoji} emoji The emoji of this tag
  */
 
 /**
