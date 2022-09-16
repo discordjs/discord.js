@@ -93,9 +93,8 @@ class ForumChannel extends GuildChannel {
    * @param {string} [reason] Reason for changing the default reaction emoji
    * @returns {Promise<ForumChannel>}
    */
-  async setDefaultReactionEmoji(defaultReactionEmoji, reason) {
-    await this.edit({ defaultReactionEmoji, reason });
-    return this;
+  setDefaultReactionEmoji(defaultReactionEmoji, reason) {
+    return this.edit({ defaultReactionEmoji, reason });
   }
 
   /**
@@ -104,9 +103,8 @@ class ForumChannel extends GuildChannel {
    * @param {string} [reason] Reason for changing the default rate limit
    * @returns {Promise<ForumChannel>}
    */
-  async setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
-    await this.edit({ defaultThreadRateLimitPerUser, reason });
-    return this;
+  setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
+    return this.edit({ defaultThreadRateLimitPerUser, reason });
   }
 }
 
