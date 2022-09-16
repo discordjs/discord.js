@@ -727,11 +727,19 @@ export class CategoryChannel extends GuildChannel {
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
+export type ChannelFlagsString = keyof typeof ChannelFlags;
+
+export class ChannelFlagsBitField extends BitField<ChannelFlagsString> {
+  public static Flags: typeof ChannelFlags;
+  public static resolve(bit?: BitFieldResolvable<ChannelFlagsString, ChannelFlags>): number;
+}
+
 export abstract class BaseChannel extends Base {
   public constructor(client: Client<true>, data?: RawChannelData, immediatePatch?: boolean);
   public get createdAt(): Date | null;
   public get createdTimestamp(): number | null;
   public id: Snowflake;
+  public flags: Readonly<ChannelFlagsBitField> | null;
   public get partial(): false;
   public type: ChannelType;
   public get url(): string;
@@ -1225,7 +1233,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get deletable(): boolean;
-  public flags: Readonly<GuildChannelFlagsBitField>;
+  public flags: Readonly<ChannelFlagsBitField>;
   public guild: Guild;
   public guildId: Snowflake;
   public get manageable(): boolean;
@@ -1254,13 +1262,6 @@ export abstract class GuildChannel extends BaseChannel {
   public setPosition(position: number, options?: SetChannelPositionOptions): Promise<this>;
   public isTextBased(): this is GuildBasedChannel & TextBasedChannel;
   public toString(): ChannelMention;
-}
-
-export type GuildChannelFlagsString = keyof typeof ChannelFlags;
-
-export class GuildChannelFlagsBitField extends BitField<GuildChannelFlagsString> {
-  public static Flags: typeof ChannelFlags;
-  public static resolve(bit?: BitFieldResolvable<GuildChannelFlagsString, ChannelFlags>): number;
 }
 
 export class GuildEmoji extends BaseGuildEmoji {
@@ -2042,7 +2043,7 @@ export class OAuth2Guild extends BaseGuild {
 export class PartialGroupDMChannel extends BaseChannel {
   private constructor(client: Client<true>, data: RawPartialGroupDMChannelData);
   public type: ChannelType.GroupDM;
-  public flags: never;
+  public flags: null;
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
@@ -2365,6 +2366,7 @@ export class StageChannel extends BaseGuildVoiceChannel {
 }
 
 export class DirectoryChannel extends BaseChannel {
+  public flags: Readonly<ChannelFlagsBitField>;
   public guild: InviteGuild;
   public guildId: Snowflake;
   public name: string;
