@@ -140,8 +140,8 @@ function transformGuildDefaultReaction(defaultReaction) {
 
 module.exports = {
   createChannel,
-  transformGuildForumTag,
   transformAPIGuildForumTag,
-  transformGuildDefaultReaction,
+  transformGuildForumTag,
   transformAPIGuildDefaultReaction,
+  transformGuildDefaultReaction,
 };
