@@ -10,7 +10,7 @@ export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignature
 					key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
 				>
 					<MethodItem data={method} />
-					<div className="border-light-900 -mx-8 border-t-2" />
+					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
 				</Fragment>
 			)),
 		[data],

@@ -73,7 +73,7 @@ export function DocContainer({
 
 				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
-					<div className="border-light-900 -mx-8 mt-6 border-t-2" />
+					<div className="border-light-900 dark:border-dark-100 -mx-8 mt-6 border-t-2" />
 				</Section>
 
 				<SyntaxHighlighter code={excerpt} />

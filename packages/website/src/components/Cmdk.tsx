@@ -124,8 +124,8 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 								{resolveIcon(item.kind)}
 								<div className="flex flex-col">
 									<h2 className="font-semibold">{item.name}</h2>
-									<span className="text-sm font-normal">{item.summary}</span>
-									<span className="text-xs font-light opacity-50">{item.path}</span>
+									<span className="line-clamp-1 text-sm font-normal">{item.summary}</span>
+									<span className="line-clamp-1 text-xs font-light opacity-75 dark:opacity-50">{item.path}</span>
 								</div>
 							</div>
 						</div>
@@ -180,9 +180,13 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 
 	return (
 		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog}>
-			<Command label="Command Menu" className="bg-dark-300 min-w-xs sm:min-w-lg rounded" shouldFilter={false}>
+			<Command
+				label="Command Menu"
+				className="dark:bg-dark-300 min-w-xs sm:min-w-lg max-w-xs rounded bg-white sm:max-w-lg"
+				shouldFilter={false}
+			>
 				<Command.Input
-					className="bg-dark-300 caret-blurple mt-4 w-full border-0 p-4 pt-0 text-lg outline-0"
+					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 mt-4 w-full border-0 bg-white p-4 pt-0 text-lg outline-0 dark:placeholder:text-white/75"
 					placeholder="Type to search..."
 					value={search}
 					onValueChange={setSearch}
