@@ -10,7 +10,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
-const { transformGuildForumTag } = require('../util/Channels');
+const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
@@ -279,7 +279,9 @@ class GuildChannelManager extends CachedManager {
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
         available_tags: data.availableTags ? transformGuildForumTag(data.availableTags) : undefined,
-        default_reaction_emoji: data.defaultReactionEmoji,
+        default_reaction_emoji: data.defaultReactionEmoji
+          ? transformGuildDefaultReaction(data.defaultReactionEmoji)
+          : undefined,
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
       },
       reason: data.reason,

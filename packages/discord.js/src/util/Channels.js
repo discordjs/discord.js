@@ -113,20 +113,35 @@ function transformGuildForumTag(tag) {
 /**
  * Transforms an API guild forum default reaction object to a
  * camel-cased guild forum default reaction object.
- * @param {APIDefaultReaction} defaultReaction The default reaction to transform
+ * @param {APIGuildForumDefaultReactionEmoji} defaultReaction The default reaction to transform
  * @returns {DefaultReactionEmoji}
  * @ignore
  */
 function transformAPIGuildDefaultReaction(defaultReaction) {
   return {
-    emojiId: defaultReaction.emoji_id,
-    emojiName: defaultReaction.emoji_name,
+    id: defaultReaction.emoji_id,
+    name: defaultReaction.emoji_name,
+  };
+}
+
+/**
+ * Transforms a camel-cased guild forum default reaction object to an
+ * API guild forum default reaction object.
+ * @param {DefaultReactionEmoji} defaultReaction The default reaction to transform
+ * @returns {APIGuildForumDefaultReactionEmoji}
+ * @ignore
+ */
+function transformGuildDefaultReaction(defaultReaction) {
+  return {
+    emoji_id: defaultReaction.id,
+    emoji_name: defaultReaction.name,
   };
 }
 
 module.exports = {
-  transformAPIGuildDefaultReaction,
-  transformAPIGuildForumTag,
-  transformGuildForumTag,
   createChannel,
+  transformGuildForumTag,
+  transformAPIGuildForumTag,
+  transformGuildDefaultReaction,
+  transformAPIGuildDefaultReaction,
 };

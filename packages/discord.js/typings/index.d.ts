@@ -2063,8 +2063,8 @@ export interface GuildForumTag {
 }
 
 export interface DefaultReactionEmoji {
-  emojiId: Snowflake | null;
-  emojiName: string | null;
+  id: Snowflake | null;
+  name: string | null;
 }
 
 export class ForumChannel extends GuildChannel {

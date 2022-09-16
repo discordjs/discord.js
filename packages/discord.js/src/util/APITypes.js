@@ -64,6 +64,11 @@
  */
 
 /**
+ * @external APIGuildForumDefaultReactionEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildForumDefaultReactionEmoji}
+ */
+
+/**
  * @external APIGuildForumTag
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildForumTag}
  */
