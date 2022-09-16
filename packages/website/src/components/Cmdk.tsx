@@ -139,7 +139,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 
 	useKey(
 		(event) => {
-			if (event.key === 'k' && event.metaKey) {
+			if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
 				event.preventDefault();
 				return true;
 			}
