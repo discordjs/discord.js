@@ -12,7 +12,7 @@ class PartialGroupDMChannel extends BaseChannel {
     super(client, data);
 
     // No flags are present when fetching partial group DM channels.
-    delete this.flags;
+    this.flags = null;
 
     /**
      * The name of this Group DM Channel
