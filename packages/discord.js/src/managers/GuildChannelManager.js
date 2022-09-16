@@ -278,7 +278,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
-        available_tags: data.availableTags ? transformGuildForumTag(data.availableTags) : undefined,
+        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: data.defaultReactionEmoji
           ? transformGuildDefaultReaction(data.defaultReactionEmoji)
           : undefined,

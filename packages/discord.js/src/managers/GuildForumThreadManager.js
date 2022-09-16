@@ -64,7 +64,7 @@ class GuildForumThreadManager extends ThreadManager {
         name,
         auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: rateLimitPerUser,
-        applied_tags: appliedTags ? transformGuildForumTag(appliedTags) : undefined,
+        applied_tags: appliedTags?.map(appliedTag => transformGuildForumTag(appliedTag)),
         message: body,
       },
       files,
