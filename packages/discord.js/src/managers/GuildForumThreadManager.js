@@ -4,7 +4,6 @@ const { Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
 const { TypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
-const { transformGuildForumTag } = require('../util/Channels');
 
 /**
  * Manages API methods for threads in forum channels and stores their cache.
@@ -21,7 +20,7 @@ class GuildForumThreadManager extends ThreadManager {
    * Options for creating a thread.
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
    * @property {GuildForumThreadCreateOptions|MessagePayload} message The message associated with the thread post
-   * @property {GuildForumTag[]} [appliedTags] The tags to apply to the thread
+   * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    */
 
   /**
@@ -64,7 +63,7 @@ class GuildForumThreadManager extends ThreadManager {
         name,
         auto_archive_duration: autoArchiveDuration,
         rate_limit_per_user: rateLimitPerUser,
-        applied_tags: appliedTags?.map(appliedTag => transformGuildForumTag(appliedTag)),
+        applied_tags: appliedTags,
         message: body,
       },
       files,
