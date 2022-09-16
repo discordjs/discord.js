@@ -1,5 +1,4 @@
-// import { insertBatch, search as searchDb } from '@lyrasearch/lyra';
-// import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Dialog, useDialogState } from 'ariakit/dialog';
 import { Command } from 'cmdk';
 import { useRouter } from 'next/router';
@@ -7,65 +6,59 @@ import { useEffect, useMemo, useState } from 'react';
 import {
 	VscArrowRight,
 	VscPackage,
-	// VscSymbolClass,
-	// VscSymbolEnum,
-	// VscSymbolField,
-	// VscSymbolInterface,
-	// VscSymbolMethod,
-	// VscSymbolProperty,
-	// VscSymbolVariable,
+	VscSymbolClass,
+	VscSymbolEnum,
+	VscSymbolField,
+	VscSymbolInterface,
+	VscSymbolMethod,
+	VscSymbolProperty,
+	VscSymbolVariable,
 	VscVersions,
 } from 'react-icons/vsc';
 import { useKey } from 'react-use';
 import useSWR from 'swr';
 import { PACKAGES } from '~/util/constants';
 import { fetcher } from '~/util/fetcher';
+import { client } from '~/util/search';
 
-// function resolveIcon(item: keyof ApiItemKind) {
-// 	switch (item) {
-// 		case 'Class':
-// 			return <VscSymbolClass size={25} />;
-// 		case 'Enum':
-// 			return <VscSymbolEnum size={25} />;
-// 		case 'Interface':
-// 			return <VscSymbolInterface size={25} />;
-// 		case 'Property':
-// 			return <VscSymbolProperty size={25} />;
-// 		case 'TypeAlias':
-// 			return <VscSymbolField size={25} />;
-// 		case 'Variables':
-// 			return <VscSymbolVariable size={25} />;
-// 		default:
-// 			return <VscSymbolMethod size={25} />;
-// 	}
-// }
+function resolveIcon(item: keyof ApiItemKind) {
+	switch (item) {
+		case 'Class':
+			return <VscSymbolClass size={25} />;
+		case 'Enum':
+			return <VscSymbolEnum size={25} />;
+		case 'Interface':
+			return <VscSymbolInterface size={25} />;
+		case 'Property':
+			return <VscSymbolProperty size={25} />;
+		case 'TypeAlias':
+			return <VscSymbolField size={25} />;
+		case 'Variables':
+			return <VscSymbolVariable size={25} />;
+		default:
+			return <VscSymbolMethod size={25} />;
+	}
+}
 
-// const searchIndex: any[] = [];
-
-export function CmdkDialog() {
+export function CmdkDialog({ currentPackageName }: { currentPackageName?: string | undefined }) {
 	const router = useRouter();
 	const dialog = useDialogState();
 	const [search, setSearch] = useState('');
 	const [page, setPage] = useState('');
 	const [packageName, setPackageName] = useState('');
-	// const [searchResults, setSearchResults] = useState<any[]>([]);
+	const [searchResults, setSearchResults] = useState<any[]>([]);
 
 	const { data: versions, isValidating } = useSWR<string[]>(
 		packageName ? `https://docs.discordjs.dev/api/info?package=${packageName}` : null,
 		fetcher,
 	);
 
-	// const { data: searchIndex } = useSWR<any[]>(
-	// 	packageName ? `http://localhost:3000/searchIndex/${packageName}-main-index.json` : null,
-	// 	fetcher,
-	// );
-
 	const packageCommandItems = useMemo(
 		() =>
 			PACKAGES.map((pkg) => (
 				<Command.Item
 					key={pkg}
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex h-11 w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					onSelect={() => {
 						setPackageName(pkg);
 						setPage('version');
@@ -92,7 +85,7 @@ export function CmdkDialog() {
 				?.map((version) => (
 					<Command.Item
 						key={version}
-						className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex h-11 w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+						className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 						onSelect={() => {
 							void router.push(`/docs/packages/${packageName}/${version}`);
 							dialog.setOpen(false);
@@ -114,34 +107,35 @@ export function CmdkDialog() {
 		[packageName],
 	);
 
-	// const searchResultItems = useMemo(
-	// 	() =>
-	// 		searchResults?.map((item) => (
-	// 			<Command.Item
-	// 				key={item.id}
-	// 				className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex h-11 w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
-	// 				onSelect={() => {
-	// 					void router.push(item.path);
-	// 					dialog.setOpen(false);
-	// 				}}
-	// 			>
-	// 				<div className="flex w-full grow flex-row place-content-between place-items-center gap-4">
-	// 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
-	// 						<div className="flex flex-row place-content-between place-items-center gap-4">
-	// 							{resolveIcon(item.kind)}
-	// 							<div className="flex flex-col">
-	// 								<h2 className="font-semibold">{item.name}</h2>
-	// 								<span className="text-sm font-normal">{item.summary}</span>
-	// 							</div>
-	// 						</div>
-	// 					</div>
-	// 					<VscArrowRight size={20} />
-	// 				</div>
-	// 			</Command.Item>
-	// 		)) ?? [],
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// 	[searchResults],
-	// );
+	const searchResultItems = useMemo(
+		() =>
+			searchResults?.map((item) => (
+				<Command.Item
+					key={item.id}
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex w-full transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					onSelect={() => {
+						void router.push(item.path);
+						dialog.setOpen(false);
+					}}
+				>
+					<div className="flex w-full grow flex-row place-content-between place-items-center gap-4">
+						<div className="flex grow flex-row place-content-between place-items-center gap-4">
+							<div className="flex flex-row place-content-between place-items-center gap-4">
+								{resolveIcon(item.kind)}
+								<div className="flex flex-col">
+									<h2 className="font-semibold">{item.name}</h2>
+									<span className="text-sm font-normal">{item.summary}</span>
+									<span className="text-xs font-light opacity-50">{item.path}</span>
+								</div>
+							</div>
+						</div>
+						<VscArrowRight size={20} />
+					</div>
+				</Command.Item>
+			)) ?? [],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[searchResults],
+	);
 
 	useKey((event) => event.key === 'k' && event.metaKey, dialog.toggle, { event: 'keydown' }, []);
 	useKey(
@@ -158,27 +152,23 @@ export function CmdkDialog() {
 		}
 	}, [dialog.open]);
 
-	// useEffect(() => {
-	// 	if (searchIndex?.length) {
-	// 		void insertBatch(db, searchIndex);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [searchIndex]);
+	useEffect(() => {
+		const searchDoc = async (searchString: string) => {
+			const res = await client.index(`${currentPackageName}-main`).search(searchString, { limit: 5 });
+			setSearchResults(res.hits);
+		};
 
-	// useEffect(() => {
-	// 	if (search) {
-	// 		const results = searchDb(db, {
-	// 			term: search,
-	// 			properties: ['name', 'kind', 'summary'],
-	// 		});
-	// 		setSearchResults(results.hits);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [search]);
+		if (search && currentPackageName) {
+			void searchDoc(search);
+		} else {
+			setSearchResults([]);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [search]);
 
 	return (
 		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog}>
-			<Command label="Command Menu" className="bg-dark-300 min-w-xs sm:min-w-lg rounded">
+			<Command label="Command Menu" className="bg-dark-300 min-w-xs sm:min-w-lg rounded" shouldFilter={false}>
 				<Command.Input
 					className="bg-dark-300 caret-blurple mt-4 w-full border-0 p-4 pt-0 text-lg outline-0"
 					placeholder="Type to search..."
@@ -213,11 +203,11 @@ export function CmdkDialog() {
 						</Command.Loading>
 					) : null}
 
-					{page /* || search */ ? null : packageCommandItems}
+					{page || search ? null : packageCommandItems}
 
-					{page === 'version' /* && !search */ ? versionCommandItems : null}
+					{page === 'version' && !search ? versionCommandItems : null}
 
-					{/* {search && !page ? searchResultItems : null} */}
+					{search ? searchResultItems : null}
 				</Command.List>
 			</Command>
 		</Dialog>

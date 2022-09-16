@@ -307,7 +307,7 @@ export function SidebarLayout({
 					</footer>
 				</article>
 			</main>
-			<CmdkDialog />
+			<CmdkDialog currentPackageName={packageName} />
 		</>
 	);
 }
