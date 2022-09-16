@@ -2573,6 +2573,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public get sendable(): boolean;
   public memberCount: number | null;
   public messageCount: number | null;
+  public appliedTags: Snowflake[];
   public totalMessageSent: number | null;
   public members: ThreadMemberManager;
   public name: string;
