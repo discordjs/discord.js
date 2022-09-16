@@ -137,7 +137,19 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 		[searchResults],
 	);
 
-	useKey((event) => event.key === 'k' && event.metaKey, dialog.toggle, { event: 'keydown' }, []);
+	useKey(
+		(event) => {
+			if (event.key === 'k' && event.metaKey) {
+				event.preventDefault();
+				return true;
+			}
+
+			return false;
+		},
+		dialog.toggle,
+		{ event: 'keydown', options: {} },
+		[],
+	);
 	useKey(
 		(event) => event.key === 'Backspace' && !search,
 		() => setPage(''),
