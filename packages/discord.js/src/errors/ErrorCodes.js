@@ -143,6 +143,8 @@
 
  * @property {'NotImplemented'} NotImplemented
 
+ * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
+
  * @property {'SweepFilterReturn'} SweepFilterReturn
  */
 
