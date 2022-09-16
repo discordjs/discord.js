@@ -252,7 +252,7 @@ export function SidebarLayout({
 				}`}
 			>
 				<article className="dark:bg-dark-600 bg-light-600">
-					<div className="min-h-[calc(100vh - 50px)] dark:bg-dark-800 relative z-10 bg-white p-6 pb-20 shadow">
+					<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
 						{children}
 					</div>
 					<div className="h-76 md:h-52" />
