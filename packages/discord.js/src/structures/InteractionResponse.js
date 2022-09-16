@@ -10,7 +10,7 @@ class InteractionResponse {
   constructor(interaction, id) {
     /**
      * The interaction associated with the interaction response
-     * @type {CommandInteraction|MessageComponentInteraction|ModalSubmitInteraction}
+     * @type {BaseInteraction}
      */
     this.interaction = interaction;
     /**
