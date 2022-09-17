@@ -220,7 +220,7 @@ class GuildChannelManager extends CachedManager {
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
    * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
-   * @property {DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
+   * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {string} [reason] Reason for editing this channel
    */
@@ -279,9 +279,7 @@ class GuildChannelManager extends CachedManager {
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
         available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
-        default_reaction_emoji: data.defaultReactionEmoji
-          ? transformGuildDefaultReaction(data.defaultReactionEmoji)
-          : undefined,
+        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
       },
       reason: data.reason,

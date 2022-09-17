@@ -2079,7 +2079,7 @@ export class ForumChannel extends GuildChannel {
   public defaultThreadRateLimitPerUser: number | null;
 
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
-  public setDefaultReaction(emojiId: DefaultReactionEmoji, reason?: string): Promise<this>;
+  public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
 }
 
@@ -4894,7 +4894,7 @@ export interface GuildChannelEditOptions {
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
   availableTags?: GuildForumTagData[];
-  defaultReactionEmoji?: DefaultReactionEmoji;
+  defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
   reason?: string;
 }

@@ -98,7 +98,7 @@ class ForumChannel extends GuildChannel {
 
   /**
    * Sets the default reaction emoji for this channel
-   * @param {DefaultReactionEmoji} defaultReactionEmoji The emoji to set as the default reaction emoji
+   * @param {?DefaultReactionEmoji} defaultReactionEmoji The emoji to set as the default reaction emoji
    * @param {string} [reason] Reason for changing the default reaction emoji
    * @returns {Promise<ForumChannel>}
    */
