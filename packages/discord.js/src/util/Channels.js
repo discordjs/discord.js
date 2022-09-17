@@ -47,7 +47,7 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
           channel = new (getCategoryChannel())(guild, data, client);
           break;
         }
-        case ChannelType.GuildNews: {
+        case ChannelType.GuildAnnouncement: {
           channel = new (getNewsChannel())(guild, data, client);
           break;
         }
@@ -55,9 +55,9 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
           channel = new (getStageChannel())(guild, data, client);
           break;
         }
-        case ChannelType.GuildNewsThread:
-        case ChannelType.GuildPublicThread:
-        case ChannelType.GuildPrivateThread: {
+        case ChannelType.AnnouncementThread:
+        case ChannelType.PublicThread:
+        case ChannelType.PrivateThread: {
           channel = new (getThreadChannel())(guild, data, client, fromInteraction);
           if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
           break;

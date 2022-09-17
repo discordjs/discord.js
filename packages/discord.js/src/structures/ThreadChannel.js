@@ -80,7 +80,7 @@ class ThreadChannel extends BaseChannel {
        * <info>This property is always `null` in public threads.</info>
        * @type {?boolean}
        */
-      this.invitable = this.type === ChannelType.GuildPrivateThread ? data.thread_metadata.invitable ?? false : null;
+      this.invitable = this.type === ChannelType.PrivateThread ? data.thread_metadata.invitable ?? false : null;
 
       /**
        * Whether the thread is archived
@@ -114,7 +114,7 @@ class ThreadChannel extends BaseChannel {
       this.invitable ??= null;
     }
 
-    this._createdTimestamp ??= this.type === ChannelType.GuildPrivateThread ? super.createdTimestamp : null;
+    this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
 
     if ('owner_id' in data) {
       /**
@@ -301,7 +301,7 @@ class ThreadChannel extends BaseChannel {
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * @property {string} [reason] Reason for editing the thread
-   * <info>Can only be edited on {@link ChannelType.GuildPrivateThread}</info>
+   * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
 
   /**
@@ -322,7 +322,7 @@ class ThreadChannel extends BaseChannel {
         auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
-        invitable: this.type === ChannelType.GuildPrivateThread ? data.invitable : undefined,
+        invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
       },
       reason: data.reason,
     });
@@ -371,7 +371,7 @@ class ThreadChannel extends BaseChannel {
    * @returns {Promise<ThreadChannel>}
    */
   setInvitable(invitable = true, reason) {
-    if (this.type !== ChannelType.GuildPrivateThread) {
+    if (this.type !== ChannelType.PrivateThread) {
       return Promise.reject(new RangeError(ErrorCodes.ThreadInvitableType, this.type));
     }
     return this.edit({ invitable, reason });
@@ -435,7 +435,7 @@ class ThreadChannel extends BaseChannel {
    */
   get editable() {
     return (
-      (this.ownerId === this.client.user.id && (this.type !== ChannelType.GuildPrivateThread || this.joined)) ||
+      (this.ownerId === this.client.user.id && (this.type !== ChannelType.PrivateThread || this.joined)) ||
       this.manageable
     );
   }
@@ -450,9 +450,7 @@ class ThreadChannel extends BaseChannel {
       !this.archived &&
       !this.joined &&
       this.permissionsFor(this.client.user)?.has(
-        this.type === ChannelType.GuildPrivateThread
-          ? PermissionFlagsBits.ManageThreads
-          : PermissionFlagsBits.ViewChannel,
+        this.type === ChannelType.PrivateThread ? PermissionFlagsBits.ManageThreads : PermissionFlagsBits.ViewChannel,
         false,
       )
     );
@@ -500,7 +498,7 @@ class ThreadChannel extends BaseChannel {
 
     return (
       !(this.archived && this.locked && !this.manageable) &&
-      (this.type !== ChannelType.GuildPrivateThread || this.joined || this.manageable) &&
+      (this.type !== ChannelType.PrivateThread || this.joined || this.manageable) &&
       permissions.has(PermissionFlagsBits.SendMessagesInThreads, false) &&
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );

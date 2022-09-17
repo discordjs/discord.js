@@ -65,13 +65,13 @@ class ThreadManager extends CachedManager {
    * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
    * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
-   * @property {ChannelType.GuildNewsThread|ChannelType.GuildPublicThread|ChannelType.GuildPrivateThread} [type]
+   * @property {ChannelType.AnnouncementThread|ChannelType.PublicThread|ChannelType.PrivateThread} [type]
    * The type of thread to create.
-   * Defaults to {@link ChannelType.GuildPublicThread} if created in a {@link TextChannel}
+   * Defaults to {@link ChannelType.PublicThread} if created in a {@link TextChannel}
    * <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
-   * {@link ChannelType.GuildNewsThread}</warn>
+   * {@link ChannelType.AnnouncementThread}</warn>
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
-   * <info>Can only be set when type will be {@link ChannelType.GuildPrivateThread}</info>
+   * <info>Can only be set when type will be {@link ChannelType.PrivateThread}</info>
    */
 
   /**
@@ -94,7 +94,7 @@ class ThreadManager extends CachedManager {
    *   .create({
    *      name: 'mod-talk',
    *      autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
-   *      type: ChannelType.GuildPrivateThread,
+   *      type: ChannelType.PrivateThread,
    *      reason: 'Needed a separate thread for moderation',
    *    })
    *   .then(threadChannel => console.log(threadChannel))
@@ -113,12 +113,12 @@ class ThreadManager extends CachedManager {
       throw new TypeError(ErrorCodes.InvalidType, 'type', 'ThreadChannelType or Number');
     }
     let resolvedType =
-      this.channel.type === ChannelType.GuildNews ? ChannelType.GuildNewsThread : ChannelType.GuildPublicThread;
+      this.channel.type === ChannelType.GuildAnnouncement ? ChannelType.AnnouncementThread : ChannelType.PublicThread;
     let startMessageId;
     if (startMessage) {
       startMessageId = this.channel.messages.resolveId(startMessage);
       if (!startMessageId) throw new TypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
-    } else if (this.channel.type !== ChannelType.GuildNews) {
+    } else if (this.channel.type !== ChannelType.GuildAnnouncement) {
       resolvedType = type ?? resolvedType;
     }
 
@@ -127,7 +127,7 @@ class ThreadManager extends CachedManager {
         name,
         auto_archive_duration: autoArchiveDuration,
         type: resolvedType,
-        invitable: resolvedType === ChannelType.GuildPrivateThread ? invitable : undefined,
+        invitable: resolvedType === ChannelType.PrivateThread ? invitable : undefined,
         rate_limit_per_user: rateLimitPerUser,
       },
       reason,

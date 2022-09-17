@@ -1042,7 +1042,7 @@ client.on('stickerUpdate', ({ client: oldClient }, { client: newClient }) => {
 client.on('threadCreate', thread => {
   expectType<Client<true>>(thread.client);
 
-  if (thread.type === ChannelType.GuildPrivateThread) {
+  if (thread.type === ChannelType.PrivateThread) {
     expectType<number>(thread.createdTimestamp);
     expectType<Date>(thread.createdAt);
   } else {
@@ -1238,7 +1238,7 @@ expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
-expectType<Promise<NewsChannel>>(textChannel.setType(ChannelType.GuildNews));
+expectType<Promise<NewsChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(newsChannel.setType(ChannelType.GuildText));
 
 expectType<Message | null>(dmChannel.lastMessage);
@@ -1348,7 +1348,9 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
   expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice }));
   expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildNews }));
+  expectType<Promise<NewsChannel>>(
+    categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
+  );
   expectType<Promise<StageChannel>>(
     categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildStageVoice }),
   );
@@ -1365,7 +1367,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
   expectType<Promise<CategoryChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory }));
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildNews }));
+  expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
 
   expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch());
@@ -1839,9 +1841,9 @@ declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
 expectType<TextBasedChannel>(TextBasedChannel);
-expectType<ChannelType.GuildText | ChannelType.DM | ChannelType.GuildNews | ChannelType.GuildVoice | ThreadChannelType>(
-  TextBasedChannelTypes,
-);
+expectType<
+  ChannelType.GuildText | ChannelType.DM | ChannelType.GuildAnnouncement | ChannelType.GuildVoice | ThreadChannelType
+>(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
