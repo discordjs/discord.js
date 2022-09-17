@@ -2077,10 +2077,12 @@ export class ForumChannel extends GuildChannel {
   public availableTags: GuildForumTag[];
   public defaultReactionEmoji: DefaultReactionEmoji | null;
   public defaultThreadRateLimitPerUser: number | null;
+  public rateLimitPerUser: number | null;
 
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
+  public setRateLimitPerUser(rateLimitPerUser: number | null, reason?: string): Promise<this>;
 }
 
 export class PermissionOverwrites extends Base {

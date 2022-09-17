@@ -84,6 +84,16 @@ class ForumChannel extends GuildChannel {
     } else {
       this.defaultThreadRateLimitPerUser ??= null;
     }
+
+    if ('rate_limit_per_user' in data) {
+      /**
+       * The rate limit per user (slowmode) for this channel.
+       * @type {?number}
+       */
+      this.rateLimitPerUser = data.rate_limit_per_user;
+    } else {
+      this.rateLimitPerUser ??= null;
+    }
   }
 
   /**
@@ -114,6 +124,16 @@ class ForumChannel extends GuildChannel {
    */
   setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
     return this.edit({ defaultThreadRateLimitPerUser, reason });
+  }
+
+  /**
+   * Sets the rate limit per user (slowmode) for this channel
+   * @param {?number} rateLimitPerUser The rate limit to set on this channel
+   * @param {string} [reason] Reason for changing the rate limit
+   * @returns {Promise<ForumChannel>}
+   */
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser, reason });
   }
 }
 
