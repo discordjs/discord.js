@@ -29,7 +29,7 @@ class BaseChannel extends Base {
     if ('flags' in data) {
       /**
        * The flags that are applied to the channel.
-       * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.
+       * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.</info>
        * @type {?Readonly<ChannelFlagsBitField>}
        */
       this.flags = new ChannelFlagsBitField(data.flags).freeze();
