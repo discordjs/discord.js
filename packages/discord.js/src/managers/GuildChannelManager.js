@@ -219,7 +219,7 @@ class GuildChannelManager extends CachedManager {
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
-   * @property {GuildForumTag[]} [availableTags] The tags to set as available in a forum channel
+   * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
    * @property {DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {string} [reason] Reason for editing this channel

@@ -2063,6 +2063,8 @@ export interface GuildForumTag {
   emoji: GuildForumTagEmoji | null;
 }
 
+type GuildForumTagData = Partial<GuildForumTag> & { name: string };
+
 export interface DefaultReactionEmoji {
   id: Snowflake | null;
   name: string | null;
@@ -2075,7 +2077,7 @@ export class ForumChannel extends GuildChannel {
   public defaultReactionEmoji: DefaultReactionEmoji | null;
   public defaultThreadRateLimitPerUser: number | null;
 
-  public setAvailableTags(tags: GuildForumTag[], reason?: string): Promise<this>;
+  public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReaction(emojiId: DefaultReactionEmoji, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
 }
@@ -4889,7 +4891,7 @@ export interface GuildChannelEditOptions {
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
-  availableTags?: GuildForumTag[];
+  availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultThreadRateLimitPerUser?: number;
   reason?: string;

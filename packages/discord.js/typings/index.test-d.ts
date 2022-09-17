@@ -1979,3 +1979,12 @@ expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
+
+declare const forumChannel: ForumChannel;
+
+await forumChannel.edit({
+  availableTags: [...forumChannel.availableTags, { name: 'tag' }],
+});
+
+await forumChannel.setAvailableTags([{ ...forumChannel.availableTags, name: 'tag' }]);
+await forumChannel.setAvailableTags([{ name: 'tag' }]);

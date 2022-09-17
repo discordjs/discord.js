@@ -20,6 +20,15 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  */
 
 /**
+ * @typedef {Object} GuildForumTagData
+ * @property {Snowflake} [id] The id of the tag
+ * @property {string} name The name of the tag
+ * @property {boolean} [moderated] Whether this tag can only be added to or removed from threads
+ * by a member with the `ManageThreads` permission
+ * @property {?GuildForumTagEmoji} [emoji] The emoji of this tag
+ */
+
+/**
  * @typedef {Object} DefaultReactionEmoji
  * @property {?Snowflake} id The id of a guild's custom emoji
  * @property {?string} name The unicode character of the emoji
@@ -79,7 +88,7 @@ class ForumChannel extends GuildChannel {
 
   /**
    * Sets the available tags for this forum channel
-   * @param {GuildForumTag[]} availableTags The tags to set as available in this channel
+   * @param {GuildForumTagData[]} availableTags The tags to set as available in this channel
    * @param {string} [reason] Reason for changing the available tags
    * @returns {Promise<ForumChannel>}
    */
