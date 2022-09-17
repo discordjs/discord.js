@@ -2020,7 +2020,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
 export class NewsChannel extends BaseGuildTextChannel {
   public threads: ThreadManager<AllowedThreadTypeForNewsChannel>;
   public type: ChannelType.GuildNews;
-  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
+  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<Snowflake>;
 }
 
 export class OAuth2Guild extends BaseGuild {
