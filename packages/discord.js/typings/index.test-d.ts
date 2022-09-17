@@ -138,6 +138,7 @@ import {
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
   ForumChannel,
+  ChannelFlagsBitField,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1980,6 +1981,7 @@ expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
 
+declare const categoryChannel: CategoryChannel;
 declare const forumChannel: ForumChannel;
 
 await forumChannel.edit({
@@ -1988,3 +1990,15 @@ await forumChannel.edit({
 
 await forumChannel.setAvailableTags([{ ...forumChannel.availableTags, name: 'tag' }]);
 await forumChannel.setAvailableTags([{ name: 'tag' }]);
+
+expectType<Readonly<ChannelFlagsBitField>>(textChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(voiceChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(stageChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(forumChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(dmChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(newsChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(threadChannel.flags);
+
+expectType<null>(partialGroupDMChannel.flags);

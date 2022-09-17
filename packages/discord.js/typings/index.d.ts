@@ -1051,6 +1051,7 @@ export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
   'setNSFW',
 ]) {
   private constructor(client: Client<true>, data?: RawDMChannelData);
+  public flags: Readonly<ChannelFlagsBitField>;
   public recipientId: Snowflake;
   public get recipient(): User | null;
   public type: ChannelType.DM;
@@ -2063,7 +2064,7 @@ export interface GuildForumTag {
   emoji: GuildForumTagEmoji | null;
 }
 
-type GuildForumTagData = Partial<GuildForumTag> & { name: string };
+export type GuildForumTagData = Partial<GuildForumTag> & { name: string };
 
 export interface DefaultReactionEmoji {
   id: Snowflake | null;
@@ -2563,6 +2564,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public get createdTimestamp(): number | null;
   public autoArchiveDuration: ThreadAutoArchiveDuration | null;
   public get editable(): boolean;
+  public flags: Readonly<ChannelFlagsBitField>;
   public guild: Guild;
   public guildId: Snowflake;
   public get guildMembers(): Collection<Snowflake, GuildMember>;
