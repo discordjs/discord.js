@@ -138,6 +138,8 @@ class GuildChannelManager extends CachedManager {
     rateLimitPerUser,
     rtcRegion,
     videoQualityMode,
+    availableTags,
+    defaultReactionEmoji,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -157,6 +159,8 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
+        available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
       },
       reason,
     });

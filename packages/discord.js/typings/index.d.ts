@@ -4218,6 +4218,8 @@ export interface CategoryCreateChannelOptions {
   position?: number;
   rtcRegion?: string;
   videoQualityMode?: VideoQualityMode;
+  availableTags?: GuildForumTagData[];
+  defaultReactionEmoji?: DefaultReactionEmoji;
   reason?: string;
 }
 
