@@ -5,6 +5,7 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
+import type { ReactNode } from 'react';
 import { Fragment, type PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import {
@@ -32,6 +33,7 @@ type DocContainerProps = PropsWithChildren<{
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
 	name: string;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	subHeading?: ReactNode;
 	summary?: ApiItemJSON['summary'];
 	typeParams?: TypeParameterData[];
 }>;
@@ -60,6 +62,7 @@ export function DocContainer({
 	implementsTokens,
 	methods,
 	properties,
+	subHeading,
 }: DocContainerProps) {
 	const matches = useMedia('(max-width: 768px)', true);
 
@@ -70,6 +73,8 @@ export function DocContainer({
 					<span>{generateIcon(kind)}</span>
 					{name}
 				</h2>
+
+				{subHeading}
 
 				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
 					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
