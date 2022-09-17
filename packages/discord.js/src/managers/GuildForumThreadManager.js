@@ -53,10 +53,9 @@ class GuildForumThreadManager extends ThreadManager {
       throw new TypeError(ErrorCodes.GuildForumMessageRequired);
     }
 
-    const messagePayload =
-      message instanceof MessagePayload ? message.resolveBody() : MessagePayload.create(this, message).resolveBody();
-
-    const { body, files } = await messagePayload.resolveFiles();
+    const { body, files } = await (message instanceof MessagePayload ? message : MessagePayload.create(this, message))
+      .resolveBody()
+      .resolveFiles();
 
     const data = await this.client.rest.post(Routes.threads(this.channel.id), {
       body: {
