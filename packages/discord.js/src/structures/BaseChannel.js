@@ -34,7 +34,7 @@ class BaseChannel extends Base {
        */
       this.flags = new ChannelFlagsBitField(data.flags).freeze();
     } else {
-      this.flags = new ChannelFlagsBitField(this.flags).freeze();
+      this.flags ??= new ChannelFlagsBitField().freeze();
     }
 
     /**
