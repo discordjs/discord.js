@@ -21,8 +21,8 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
 
 /**
  * @typedef {Object} DefaultReactionEmoji
- * @property {?Snowflake} emojiId The id of a guild's custom emoji
- * @property {?string} emojiName The unicode character of the emoji
+ * @property {?Snowflake} id The id of a guild's custom emoji
+ * @property {?string} name The unicode character of the emoji
  */
 
 /**
