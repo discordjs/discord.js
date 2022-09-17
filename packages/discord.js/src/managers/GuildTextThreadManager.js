@@ -14,7 +14,7 @@ class GuildTextThreadManager extends ThreadManager {
    * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from.
    * <warn>If this is defined, then the `type` of thread gets inferred automatically and cannot be changed.</warn>
-   * @property {ThreadChannelTypes|number} [type] The type of thread to create.
+   * @property {ThreadChannelTypes} [type] The type of thread to create.
    * Defaults to {@link ChannelType.PublicThread} if created in a {@link TextChannel}
    * <warn>When creating threads in a {@link NewsChannel}, this is ignored and is always
    * {@link ChannelType.AnnouncementThread}</warn>
@@ -57,9 +57,6 @@ class GuildTextThreadManager extends ThreadManager {
     reason,
     rateLimitPerUser,
   } = {}) {
-    if (type && typeof type !== 'string' && typeof type !== 'number') {
-      throw new TypeError(ErrorCodes.InvalidType, 'type', 'ThreadChannelType or Number');
-    }
     let resolvedType =
       this.channel.type === ChannelType.GuildAnnouncement ? ChannelType.AnnouncementThread : ChannelType.PublicThread;
     let startMessageId;
