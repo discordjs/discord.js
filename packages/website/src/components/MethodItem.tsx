@@ -61,7 +61,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 						</div>
 					) : null}
 					<div className="flex flex-row flex-wrap gap-1">
-						<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(data)}</h4>
+						<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(overloadedData)}</h4>
 						<h4 className="font-mono text-lg font-bold">:</h4>
 						<h4 className="break-all font-mono text-lg font-bold">
 							<HyperlinkedText tokens={data.returnTypeTokens} />
@@ -83,7 +83,7 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					<Menu state={menuState} className="dark:border-dark-100 rounded border">
 						{data.mergedSiblings.map((_, idx) => (
 							<MenuItem
-								className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+								className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 cursor-pointer rounded bg-white p-3 text-sm"
 								key={idx}
 								onClick={() => setOverloadIndex(idx + 1)}
 							>{`Overload ${idx + 1}`}</MenuItem>

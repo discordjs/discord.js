@@ -34,7 +34,7 @@ export function Function({ data }: { data: ApiFunctionJSON }) {
 						<Menu state={menuState} className="dark:border-dark-100 rounded border">
 							{data.mergedSiblings.map((_, idx) => (
 								<MenuItem
-									className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+									className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 cursor-pointer rounded bg-white p-3 text-sm"
 									key={idx}
 									onClick={() => setOverloadIndex(idx + 1)}
 								>{`Overload ${idx + 1}`}</MenuItem>
