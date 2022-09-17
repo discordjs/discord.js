@@ -3668,7 +3668,7 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 }
 
 export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
-  public constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
+  protected constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: TextChannel | NewsChannel;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
