@@ -4,12 +4,13 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const ThreadManager = require('./ThreadManager');
+const GuildTextThreadManager = require('./GuildTextThreadManager');
 const { Error, TypeError, ErrorCodes } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
@@ -137,6 +138,8 @@ class GuildChannelManager extends CachedManager {
     rateLimitPerUser,
     rtcRegion,
     videoQualityMode,
+    availableTags,
+    defaultReactionEmoji,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -156,6 +159,8 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
+        available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
       },
       reason,
     });
@@ -218,6 +223,9 @@ class GuildChannelManager extends CachedManager {
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
+   * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
+   * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
+   * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -274,6 +282,9 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
+        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
       },
       reason: data.reason,
     });
@@ -418,7 +429,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetchActiveThreads(cache = true) {
     const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
-    return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    return GuildTextThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
 
   /**

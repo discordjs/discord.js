@@ -137,6 +137,8 @@ import {
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
+  ForumChannel,
+  ChannelFlagsBitField,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1360,8 +1362,6 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
 
 declare const guildChannelManager: GuildChannelManager;
 {
-  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StageChannel;
-
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
   expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
@@ -1370,8 +1370,10 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
 
-  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch());
-  expectType<Promise<Collection<Snowflake, AnyChannel | null>>>(guildChannelManager.fetch(undefined, {}));
+  expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
+  expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
+    guildChannelManager.fetch(undefined, {}),
+  );
   expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
 
   const channel = guildChannelManager.cache.first()!;
@@ -1846,7 +1848,9 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel>(NonThreadGuildBasedChannel);
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel>(
+  NonThreadGuildBasedChannel,
+);
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({
@@ -1976,3 +1980,25 @@ expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
+
+declare const categoryChannel: CategoryChannel;
+declare const forumChannel: ForumChannel;
+
+await forumChannel.edit({
+  availableTags: [...forumChannel.availableTags, { name: 'tag' }],
+});
+
+await forumChannel.setAvailableTags([{ ...forumChannel.availableTags, name: 'tag' }]);
+await forumChannel.setAvailableTags([{ name: 'tag' }]);
+
+expectType<Readonly<ChannelFlagsBitField>>(textChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(voiceChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(stageChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(forumChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(dmChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(newsChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(threadChannel.flags);
+
+expectType<null>(partialGroupDMChannel.flags);

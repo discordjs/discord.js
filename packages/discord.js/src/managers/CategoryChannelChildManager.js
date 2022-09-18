@@ -50,6 +50,9 @@ class CategoryChannelChildManager extends DataManager {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
    * @property {string} [rtcRegion] The specific region of the new channel.
    * @property {VideoQualityMode} [videoQualityMode] The camera video quality mode of the voice channel
+   * @property {GuildForumTagData[]} [availableTags] The tags that can be used in this channel (forum only).
+   * @property {DefaultReactionEmoji} [defaultReactionEmoji]
+   * The emoji to show in the add reaction button on a thread in a guild forum channel.
    * @property {string} [reason] Reason for creating the new channel
    */
 
