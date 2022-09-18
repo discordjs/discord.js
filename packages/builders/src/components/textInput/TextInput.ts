@@ -19,6 +19,29 @@ export class TextInputBuilder
 	extends ComponentBuilder<APITextInputComponent>
 	implements Equatable<APITextInputComponent | JSONEncodable<APITextInputComponent>>
 {
+	/**
+	 * Creates a new text input from API data
+	 *
+	 * @param data - The API data to create this text input with
+	 * @example
+	 * Creating a select menu option from an API data object
+	 * ```ts
+	 * const textInput = new TextInputBuilder({
+	 * 	custom_id: 'a cool select menu',
+	 * 	label: 'Type something',
+	 * 	style: TextInputStyle.Short,
+	 * });
+	 * ```
+	 * @example
+	 * Creating a select menu option using setters and API data
+	 * ```ts
+	 * const textInput = new TextInputBuilder({
+	 * 	label: 'Type something else',
+	 * })
+	 * 	.setCustomId('woah')
+	 * 	.setStyle(TextInputStyle.Paragraph);
+	 * ```
+	 */
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
 	}

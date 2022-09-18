@@ -21,6 +21,37 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 */
 	public readonly options: SelectMenuOptionBuilder[];
 
+	/**
+	 * Creates a new select menu from API data
+	 *
+	 * @param data - The API data to create this select menu with
+	 * @example
+	 * Creating a select menu from an API data object
+	 * ```ts
+	 * const selectMenu = new SelectMenuBuilder({
+	 * 	custom_id: 'a cool select menu',
+	 * 	placeholder: 'select an option',
+	 * 	max_values: 2,
+	 * 	options: [
+	 * 		{ label: 'option 1', value: '1' },
+	 * 		{ label: 'option 2', value: '2' },
+	 * 		{ label: 'option 3', value: '3' },
+	 * 	],
+	 * });
+	 * ```
+	 * @example
+	 * Creating a select menu using setters and API data
+	 * ```ts
+	 * const selectMenu = new SelectMenuBuilder({
+	 * 	custom_id: 'a cool select menu',
+	 * })
+	 * 	.setMinValues(1)
+	 * 	.addOptions({
+	 * 		label: 'Catchy',
+	 * 		value: 'catch',
+	 * 	});
+	 * ```
+	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		const { options, ...initData } = data ?? {};
 		super({ type: ComponentType.SelectMenu, ...initData });
