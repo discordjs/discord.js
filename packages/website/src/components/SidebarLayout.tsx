@@ -8,12 +8,22 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { VscChevronDown, VscColorMode, VscGithubInverted, VscMenu, VscPackage, VscVersions } from 'react-icons/vsc';
+import { FiCommand } from 'react-icons/fi';
+import {
+	VscChevronDown,
+	VscColorMode,
+	VscGithubInverted,
+	VscMenu,
+	VscPackage,
+	VscSearch,
+	VscVersions,
+} from 'react-icons/vsc';
 import { useMedia /* useLockBodyScroll */ } from 'react-use';
 import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
-import { CmdkDialog } from './Cmdk';
+import { CmdKDialog } from './CmdK';
 import { SidebarItems } from './SidebarItems';
+import { useCmdK } from '~/contexts/cmdK';
 import { PACKAGES } from '~/util/constants';
 import { fetcher } from '~/util/fetcher';
 import type { findMember } from '~/util/model.server';
@@ -49,6 +59,7 @@ export function SidebarLayout({
 	children,
 }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
 	const router = useRouter();
+	const dialog = useCmdK();
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { data: versions } = useSWR<string[]>(`https://docs.discordjs.dev/api/info?package=${packageName}`, fetcher);
 	const { resolvedTheme, setTheme } = useTheme();
@@ -157,7 +168,20 @@ export function SidebarLayout({
 							<VscMenu size={24} />
 						</Button>
 						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-row place-items-center gap-4">
+							<Button
+								as="div"
+								className="dark:bg-dark-800 rounded bg-white px-4 py-2.5"
+								onClick={() => dialog?.toggle()}
+							>
+								<div className="flex flex-row place-items-center gap-4">
+									<VscSearch size={18} />
+									<span className="opacity-65">Search...</span>
+									<div className="opacity-65 flex flex-row place-items-center gap-2">
+										<FiCommand size={18} /> K
+									</div>
+								</div>
+							</Button>
 							<Button
 								as="a"
 								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
@@ -315,7 +339,7 @@ export function SidebarLayout({
 					</footer>
 				</article>
 			</main>
-			<CmdkDialog currentPackageName={packageName} />
+			<CmdKDialog currentPackageName={packageName} />
 		</>
 	);
 }

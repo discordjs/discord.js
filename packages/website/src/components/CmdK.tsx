@@ -1,5 +1,5 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
-import { Dialog, useDialogState } from 'ariakit/dialog';
+import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -17,6 +17,7 @@ import {
 } from 'react-icons/vsc';
 import { useKey } from 'react-use';
 import useSWR from 'swr';
+import { useCmdK } from '~/contexts/cmdK';
 import { PACKAGES } from '~/util/constants';
 import { fetcher } from '~/util/fetcher';
 import { client } from '~/util/search';
@@ -40,9 +41,9 @@ function resolveIcon(item: keyof ApiItemKind) {
 	}
 }
 
-export function CmdkDialog({ currentPackageName }: { currentPackageName?: string | undefined }) {
+export function CmdKDialog({ currentPackageName }: { currentPackageName?: string | undefined }) {
 	const router = useRouter();
-	const dialog = useDialogState();
+	const dialog = useCmdK();
 	const [search, setSearch] = useState('');
 	const [page, setPage] = useState('');
 	const [packageName, setPackageName] = useState('');
@@ -86,7 +87,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 						className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 						onSelect={() => {
 							void router.push(`/docs/packages/${packageName}/${version}`);
-							dialog.setOpen(false);
+							dialog!.setOpen(false);
 						}}
 					>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -111,13 +112,13 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					onSelect={() => {
 						void router.push(item.path);
-						dialog.setOpen(false);
+						dialog!.setOpen(false);
 					}}
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-items-center gap-4">
 							{resolveIcon(item.kind)}
-							<div className="w-50 flex flex-col sm:w-full">
+							<div className="w-50 sm:w-100 flex flex-col">
 								<h2 className="font-semibold">{item.name}</h2>
 								<div className="line-clamp-1 text-sm font-normal">{item.summary}</div>
 								<div className="line-clamp-1 hidden text-xs font-light opacity-75 dark:opacity-50 sm:block">
@@ -142,7 +143,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 
 			return false;
 		},
-		dialog.toggle,
+		dialog!.toggle,
 		{ event: 'keydown', options: {} },
 		[],
 	);
@@ -154,11 +155,12 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 	);
 
 	useEffect(() => {
-		if (!dialog.open) {
+		if (!dialog!.open) {
 			setSearch('');
 			setPage('');
 		}
-	}, [dialog.open]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dialog!.open]);
 
 	useEffect(() => {
 		const searchDoc = async (searchString: string) => {
@@ -175,7 +177,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 	}, [search]);
 
 	return (
-		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog}>
+		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog!}>
 			<Command
 				label="Command Menu"
 				className="dark:bg-dark-300 min-w-xs sm:min-w-lg max-w-xs rounded bg-white sm:max-w-lg"
@@ -183,7 +185,7 @@ export function CmdkDialog({ currentPackageName }: { currentPackageName?: string
 			>
 				<Command.Input
 					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 mt-4 border-0 bg-white p-4 pt-0 text-lg outline-0 dark:placeholder:text-white/75"
-					placeholder="Type to search..."
+					placeholder="Quick search..."
 					value={search}
 					onValueChange={setSearch}
 				/>
