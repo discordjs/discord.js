@@ -187,6 +187,17 @@ class Message extends Base {
       this.stickers = new Collection(this.stickers);
     }
 
+    if ('position' in data) {
+      /**
+       * A generally increasing integer (there may be gaps or duplicates) that represents
+       * the approximate position of the message in a thread.
+       * @type {?number}
+       */
+      this.position = data.position;
+    } else {
+      this.position ??= null;
+    }
+
     // Discord sends null if the message has not been edited
     if (data.edited_timestamp) {
       /**
@@ -636,7 +647,7 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
-      channel?.type === ChannelType.GuildNews &&
+      channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
         channel.viewable &&
@@ -664,7 +675,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === ChannelType.GuildNews) {
+   * if (message.channel.type === ChannelType.GuildAnnouncement) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
@@ -800,13 +811,13 @@ class Message extends Base {
 
   /**
    * Create a new public thread from this message
-   * @see ThreadManager#create
+   * @see GuildTextThreadManager#create
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
     if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
-    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
+    if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
       return Promise.reject(new Error(ErrorCodes.MessageThreadParent));
     }
     if (this.hasThread) return Promise.reject(new Error(ErrorCodes.MessageExistingThread));

@@ -2123,7 +2123,6 @@ __metadata:
   dependencies:
     "@discordjs/api-extractor-utils": "workspace:^"
     "@discordjs/scripts": "workspace:^"
-    "@lyrasearch/lyra": ^0.2.3
     "@microsoft/api-extractor-model": 7.24.0
     "@microsoft/tsdoc": 0.14.1
     "@testing-library/react": ^13.4.0
@@ -2142,6 +2141,7 @@ __metadata:
     eslint: ^8.23.0
     eslint-config-neon: ^0.1.33
     happy-dom: ^6.0.4
+    meilisearch: ^0.27.0
     next: ^12.3.0
     next-mdx-remote: ^4.1.0
     next-progress: ^2.2.0
@@ -2705,13 +2705,6 @@ __metadata:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
   checksum: 38917e9c2b014d469a9f51c016ed506acbe44dd16ec2f6f99b553ebf3764d22abadbf992f2367b6d2b3511f3eae8ed3a8963f6c1030093fda23efd35ecab2bae
-  languageName: node
-  linkType: hard
-
-"@lyrasearch/lyra@npm:^0.2.3":
-  version: 0.2.3
-  resolution: "@lyrasearch/lyra@npm:0.2.3"
-  checksum: 5fde21ef623222657255fb9f592c16fcfc1f5e81fc0bf48a7c196aee9fcdc857c3cedb9ffbc55654778d6822c4c48c1ea76701a117719007d83d7e9017a24933
   languageName: node
   linkType: hard
 
@@ -12168,6 +12161,15 @@ __metadata:
   version: 1.0.1
   resolution: "mdurl@npm:1.0.1"
   checksum: 71731ecba943926bfbf9f9b51e28b5945f9411c4eda80894221b47cc105afa43ba2da820732b436f0798fd3edbbffcd1fc1415843c41a87fea08a41cc1e3d02b
+  languageName: node
+  linkType: hard
+
+"meilisearch@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "meilisearch@npm:0.27.0"
+  dependencies:
+    cross-fetch: ^3.1.5
+  checksum: 78c1a667f4dc95f2a77f1a2d929d8ad25e090544abfb3d8ad44ace19e9c16f4b5a18bd74ebd0f1c33f72381732f7d31531090130fd0844460b0380bd2c875358
   languageName: node
   linkType: hard
 

@@ -27,6 +27,10 @@ export function TableOfContentItems({
 	const methodItems = useMemo(
 		() =>
 			methods.map((member) => {
+				if (member.overloadIndex && member.overloadIndex > 1) {
+					return null;
+				}
+
 				const key = `${member.name}${
 					member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''
 				}`;
