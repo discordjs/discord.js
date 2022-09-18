@@ -29,7 +29,9 @@ export function Table({
 					{Object.entries(row).map(([colName, val]) => (
 						<td
 							key={colName}
-							className={`border-light-900 border-b px-3 py-2 text-left text-sm ${columnStyles?.[colName] ?? ''}`}
+							className={`border-light-900 dark:border-dark-100 border-b px-3 py-2 text-left text-sm ${
+								columnStyles?.[colName] ?? ''
+							}`}
 						>
 							{val}
 						</td>
