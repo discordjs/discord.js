@@ -29,6 +29,7 @@ export interface MemberJSON {
 }
 
 export const PACKAGES = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
+let idx = 0;
 
 export function createApiModel(data: any) {
 	const model = new ApiModel();
@@ -96,7 +97,7 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 }
 
 export function visitNodes(item: ApiItem, tag: string) {
-	const members: MemberJSON[] = [];
+	const members: (MemberJSON & { id: number })[] = [];
 
 	for (const member of item.members) {
 		if (!(member instanceof ApiDeclaredItem)) {
@@ -112,6 +113,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 		}
 
 		members.push({
+			id: idx++,
 			name: member.displayName,
 			kind: member.kind,
 			summary: tryResolveSummaryText(member) ?? '',
@@ -153,6 +155,7 @@ export async function generateAllIndicies() {
 		// 	await generateIndex(model, pkg, version);
 		// }
 
+		idx = 0;
 		const model = createApiModel(data);
 		await generateIndex(model, pkg);
 	}

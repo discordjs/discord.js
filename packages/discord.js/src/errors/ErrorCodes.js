@@ -143,6 +143,8 @@
 
  * @property {'NotImplemented'} NotImplemented
 
+ * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
+
  * @property {'SweepFilterReturn'} SweepFilterReturn
  */
 
@@ -288,6 +290,8 @@ const keys = [
   'NotImplemented',
 
   'SweepFilterReturn',
+
+  'GuildForumMessageRequired',
 ];
 
 // JSDoc for IntelliSense purposes

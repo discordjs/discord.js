@@ -2,8 +2,8 @@
 
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const GuildTextThreadManager = require('../managers/GuildTextThreadManager');
 const MessageManager = require('../managers/MessageManager');
-const ThreadManager = require('../managers/ThreadManager');
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -22,9 +22,9 @@ class BaseGuildTextChannel extends GuildChannel {
 
     /**
      * A manager of the threads belonging to this channel
-     * @type {ThreadManager}
+     * @type {GuildTextThreadManager}
      */
-    this.threads = new ThreadManager(this);
+    this.threads = new GuildTextThreadManager(this);
 
     /**
      * If the guild considers this channel NSFW
@@ -92,7 +92,7 @@ class BaseGuildTextChannel extends GuildChannel {
   /**
    * Sets the type of this channel.
    * <info>Only conversion between {@link TextChannel} and {@link NewsChannel} is supported.</info>
-   * @param {ChannelType.GuildText|ChannelType.GuildNews} type The new channel type
+   * @param {ChannelType.GuildText|ChannelType.GuildAnnouncement} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}
    */

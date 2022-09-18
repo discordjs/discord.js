@@ -193,7 +193,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				packageName,
 				branchName,
 				data: {
-					members: pkg ? getMembers(pkg, branchName) : [],
+					members: pkg
+						? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
+						: [],
 					member:
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
@@ -219,7 +221,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 		case 'Class':
 			return <Class data={props as ApiClassJSON} />;
 		case 'Function':
-			return <Function data={props as ApiFunctionJSON} />;
+			return <Function key={props.containerKey} data={props as ApiFunctionJSON} />;
 		case 'Interface':
 			return <Interface data={props as ApiInterfaceJSON} />;
 		case 'TypeAlias':
