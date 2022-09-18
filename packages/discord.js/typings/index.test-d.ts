@@ -177,25 +177,17 @@ const testUserId = '987654321098765432'; // example id
 const globalCommandId = '123456789012345678'; // example id
 const guildCommandId = '234567890123456789'; // example id
 
-client.on(Events.AutoModerationActionExecution, autoModerationActionExecution => {
-  expectType<AutoModerationActionExecution>(autoModerationActionExecution);
-});
+client.on('autoModerationActionExecution', autoModerationActionExecution =>
+  expectType<AutoModerationActionExecution>(autoModerationActionExecution),
+);
 
-client.on(Events.AutoModerationRuleCreate, autoModerationRule => {
-  expectType<AutoModerationRule>(autoModerationRule);
-});
+client.on('autoModerationRuleCreate', ({ client }) => expectType<Client<true>>(client));
+client.on('autoModerationRuleDelete', ({ client }) => expectType<Client<true>>(client));
 
-client.on(Events.AutoModerationRuleDelete, autoModerationRule => {
-  expectType<AutoModerationRule>(autoModerationRule);
+client.on('autoModerationRuleUpdate', (oldAutoModerationRule, { client: newClient }) => {
+  expectType<Client<true>>(oldAutoModerationRule!.client);
+  expectType<Client<true>>(newClient);
 });
-
-client.on(Events.AutoModerationRuleUpdate, (oldAutoModerationRule, newAutoModerationRule) => {
-  expectType<AutoModerationRule | null>(oldAutoModerationRule);
-  expectType<AutoModerationRule>(newAutoModerationRule);
-});
-
-declare const slashCommandBuilder: SlashCommandBuilder;
-declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
 client.on('channelCreate', ({ client }) => expectType<Client<true>>(client));
 client.on('channelDelete', ({ client }) => expectType<Client<true>>(client));
@@ -575,6 +567,9 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
   expectType<Client<true>>(oldPresence!.client);
   expectType<Client<true>>(client);
 });
+
+declare const slashCommandBuilder: SlashCommandBuilder;
+declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
 client.on('ready', async client => {
   expectType<Client<true>>(client);

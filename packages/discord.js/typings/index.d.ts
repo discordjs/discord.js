@@ -340,7 +340,7 @@ export class AutoModerationActionExecution {
 
 export class AutoModerationRule extends Base {
   // TODO: discord-api-types type
-  private constructor(client: Client, data: unknown, guild: Guild);
+  private constructor(client: Client<true>, data: unknown, guild: Guild);
   public id: Snowflake;
   public guildId: Snowflake;
   public guild: Guild;
