@@ -3674,8 +3674,8 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 }
 
 export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
-  protected constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
-  public channel: TextChannel | NewsChannel;
+  protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
+  public channel: TextChannel | NewsChannel | ForumChannel;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
   public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
@@ -3683,10 +3683,12 @@ export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, Threa
 }
 
 export class GuildTextThreadManager<AllowedThreadType> extends ThreadManager {
+  public channel: TextChannel | NewsChannel;
   public create(options: GuildTextThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
 }
 
 export class GuildForumThreadManager extends ThreadManager {
+  public channel: ForumChannel;
   public create(options: GuildForumThreadCreateOptions): Promise<ThreadChannel>;
 }
 
