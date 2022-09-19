@@ -281,7 +281,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 
 export const config = {
 	unstable_includeFiles: [
-		'../../../node_modules/@microsoft/tsdoc/schemas/tsdoc.schema.json',
+		'node_modules/@microsoft/tsdoc/schemas/tsdoc.schema.json',
 		'../{builders,collection,proxy,rest,voice,ws}/README.md',
 	],
 };
