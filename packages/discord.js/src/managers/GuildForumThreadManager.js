@@ -11,6 +11,12 @@ const MessagePayload = require('../structures/MessagePayload');
  */
 class GuildForumThreadManager extends ThreadManager {
   /**
+   * The channel this Manager belongs to
+   * @name GuildForumThreadManager#channel
+   * @type {ForumChannel}
+   */
+
+  /**
    * @typedef {BaseMessageOptions} GuildForumThreadCreateOptions
    * @property {stickers} [stickers] The stickers to send with the message
    * @property {BitFieldResolvable} [flags] The flags to send with the message
