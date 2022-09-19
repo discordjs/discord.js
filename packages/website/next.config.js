@@ -13,7 +13,7 @@ export default {
 	cleanDistDir: true,
 	experimental: {
 		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
-		fallbackNodePolyfills: true,
+		fallbackNodePolyfills: false,
 	},
 	images: {
 		dangerouslyAllowSVG: true,
