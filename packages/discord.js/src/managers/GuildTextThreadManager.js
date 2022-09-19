@@ -6,7 +6,7 @@ const { ErrorCodes, TypeError } = require('../errors');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
- * @extends {CachedManager}
+ * @extends {ThreadManager}
  */
 class GuildTextThreadManager extends ThreadManager {
   /**

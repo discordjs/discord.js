@@ -50,7 +50,7 @@
 		"typescript": "^4.8.3"
 	},
 	"resolutions": {
-		"@microsoft/tsdoc-config@0.16.1": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
+		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"
