@@ -10,6 +10,12 @@ const { ErrorCodes, TypeError } = require('../errors');
  */
 class GuildTextThreadManager extends ThreadManager {
   /**
+   * The channel this Manager belongs to
+   * @name GuildTextThreadManager#channel
+   * @type {TextChannel|NewsChannel}
+   */
+
+  /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} ThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from.
