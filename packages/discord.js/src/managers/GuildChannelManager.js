@@ -169,7 +169,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
+   * @property {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel
+   * The channel to create the webhook for
    */
 
   /**
