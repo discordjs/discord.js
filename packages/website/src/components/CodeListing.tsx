@@ -34,8 +34,12 @@ export function CodeListing({
 }>) {
 	return (
 		<div id={name} className="scroll-mt-30 flex flex-col gap-4">
-			<div className={`md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2`}>
-				<a className="hidden md:inline-block" aria-label="Anchor" href={`#${name}`}>
+			<div className="md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2">
+				<a
+					className="focus:ring-width-2 focus:ring-blurple hidden rounded outline-0 focus:ring md:inline-block"
+					aria-label="Anchor"
+					href={`#${name}`}
+				>
 					<FiLink size={20} />
 				</a>
 				{deprecation || readonly || optional ? (
