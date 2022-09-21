@@ -39,7 +39,9 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				if (codeDestination) {
 					return (
 						<Link key={idx} href={codeDestination.path} prefetch={false}>
-							<a className="text-blurple font-mono">{text ?? codeDestination.name}</a>
+							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
+								{text ?? codeDestination.name}
+							</a>
 						</Link>
 					);
 				}
@@ -47,7 +49,9 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				if (urlDestination) {
 					return (
 						<Link key={idx} href={urlDestination} prefetch={false}>
-							<a className="text-blurple font-mono">{text ?? urlDestination}</a>
+							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
+								{text ?? urlDestination}
+							</a>
 						</Link>
 					);
 				}

@@ -45,13 +45,13 @@
 		"commander": "^9.4.0",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.14"
+		"typedoc": "^0.23.15"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.7",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^16.11.58",
-		"eslint": "^8.23.0",
+		"@types/node": "^16.11.59",
+		"eslint": "^8.23.1",
 		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",

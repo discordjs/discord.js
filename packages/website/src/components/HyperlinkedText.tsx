@@ -8,7 +8,9 @@ export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
 				if (token.path) {
 					return (
 						<Link key={idx} href={token.path} prefetch={false}>
-							<a className="text-blurple">{token.text}</a>
+							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring">
+								{token.text}
+							</a>
 						</Link>
 					);
 				}

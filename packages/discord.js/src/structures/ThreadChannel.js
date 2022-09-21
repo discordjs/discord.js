@@ -301,14 +301,16 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Fetches the message that started this thread, if any.
-   * <info>This only works when the thread started from a message in the parent channel, otherwise the promise will
-   * reject. If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
+   * <info>The `Promise` will reject if the original message in a forum post is deleted
+   * or when the original message in the parent channel is deleted.
+   * If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Message<true>|null>}
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
-    return this.parent?.messages.fetch({ message: this.id, ...options }) ?? null;
+    const channel = this.parent?.type === ChannelType.GuildForum ? this : this.parent;
+    return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 
   /**
@@ -321,6 +323,7 @@ class ThreadChannel extends BaseChannel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    * @property {string} [reason] Reason for editing the thread
    * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
@@ -443,9 +446,9 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Set the applied tags for this channel (only applicable to forum threads)
-   * @param {GuildForumTag[]} appliedTags The tags to set for this channel
+   * @param {Snowflake[]} appliedTags The tags to set for this channel
    * @param {string} [reason] Reason for changing the thread's applied tags
-   * @returns {Promise<GuildForumThreadChannel>}
+   * @returns {Promise<ThreadChannel>}
    */
   setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags, reason });
