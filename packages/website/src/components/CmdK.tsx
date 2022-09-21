@@ -47,7 +47,7 @@ export function CmdKDialog({ currentPackageName }: { currentPackageName?: string
 			searchResults?.map((item) => (
 				<Command.Item
 					key={item.id}
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-offset-0 [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring my-1 flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					onSelect={() => {
 						void router.push(item.path);
 						dialog!.setOpen(false);
@@ -115,7 +115,7 @@ export function CmdKDialog({ currentPackageName }: { currentPackageName?: string
 				shouldFilter={false}
 			>
 				<Command.Input
-					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 mt-4 border-0 bg-white p-4 pt-0 text-lg outline-0 dark:placeholder:text-white/75"
+					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 focus:ring-width-2 focus:ring-blurple w-full rounded border-0 bg-white p-4 text-lg outline-0 outline-0 focus:ring dark:placeholder:text-white/75"
 					placeholder="Quick search..."
 					value={search}
 					onValueChange={setSearch}

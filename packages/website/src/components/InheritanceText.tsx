@@ -6,7 +6,9 @@ export function InheritanceText({ data }: { data: InheritanceData }) {
 		<span className="font-semibold">
 			Inherited from{' '}
 			<Link href={data.path} prefetch={false}>
-				<a className="text-blurple font-mono">{data.parentName}</a>
+				<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
+					{data.parentName}
+				</a>
 			</Link>
 		</span>
 	);
