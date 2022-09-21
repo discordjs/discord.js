@@ -3050,7 +3050,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | null;
+  public get channel(): TextChannel | NewsChannel | ForumChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -5738,7 +5738,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: GuildTextChannelResolvable;
+  channel: TextChannel | NewsChannel | ForumChannel | Snowflake;
   emoji?: EmojiIdentifierResolvable;
 }
 
