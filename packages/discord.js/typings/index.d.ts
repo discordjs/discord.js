@@ -2584,7 +2584,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public members: ThreadMemberManager;
   public name: string;
   public ownerId: Snowflake | null;
-  public get parent(): TextChannel | NewsChannel | null;
+  public get parent(): TextChannel | NewsChannel | ForumChannel| null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
