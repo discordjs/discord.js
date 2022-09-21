@@ -158,9 +158,8 @@ class ThreadChannel extends Channel {
 
     if ('message_count' in data) {
       /**
-       * The approximate count of messages in this thread
-       * <info>This stops counting at 50. If you need an approximate value higher than that, use
-       * `ThreadChannel#messages.cache.size`</info>
+       * <info>Threads created before July 1, 2022 may have an inaccurate count.
+       * If you need an approximate value higher than that, use `ThreadChannel#messages.cache.size`</info>
        * @type {?number}
        */
       this.messageCount = data.message_count;
@@ -178,6 +177,27 @@ class ThreadChannel extends Channel {
       this.memberCount = data.member_count;
     } else {
       this.memberCount ??= null;
+    }
+
+    if ('total_message_sent' in data) {
+      /**
+       * The number of messages ever sent in a thread, similar to {@link ThreadChannel#messageCount} except it
+       * will not decrement whenever a message is deleted
+       * @type {?number}
+       */
+      this.totalMessageSent = data.total_message_sent;
+    } else {
+      this.totalMessageSent ??= null;
+    }
+
+    if ('applied_tags' in data) {
+      /**
+       * The tags applied to this thread
+       * @type {Snowflake[]}
+       */
+      this.appliedTags = data.applied_tags;
+    } else {
+      this.appliedTags ??= [];
     }
 
     if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
@@ -326,6 +346,7 @@ class ThreadChannel extends Channel {
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
         invitable: this.type === 'GUILD_PRIVATE_THREAD' ? data.invitable : undefined,
+        applied_tags: data.appliedTags,
       },
       reason,
     });
@@ -417,6 +438,16 @@ class ThreadChannel extends Channel {
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
     return this.edit({ rateLimitPerUser }, reason);
+  }
+
+  /**
+   * Set the applied tags for this channel (only applicable to forum threads)
+   * @param {GuildForumTag[]} appliedTags The tags to set for this channel
+   * @param {string} [reason] Reason for changing the thread's applied tags
+   * @returns {Promise<GuildForumThreadChannel>}
+   */
+  setAppliedTags(appliedTags, reason) {
+    return this.edit({ appliedTags, reason });
   }
 
   /**

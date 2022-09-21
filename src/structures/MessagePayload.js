@@ -142,9 +142,11 @@ class MessagePayload {
 
     let username;
     let avatarURL;
+    let threadName;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
+      if (this.options.threadName) threadName = this.options.threadName;
     }
 
     let flags;
@@ -208,6 +210,7 @@ class MessagePayload {
       message_reference,
       attachments: this.options.attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
+      thread_name: threadName,
     };
     return this;
   }
