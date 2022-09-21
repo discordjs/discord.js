@@ -38,7 +38,7 @@ class GuildForumThreadManager extends ThreadManager {
    * forum.threads
    *   .create({
    *     name: 'Food Talk',
-   *     autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+   *     autoArchiveDuration: 60,
    *     message: {
    *      content: 'Discuss your favorite food!',
    *     },
