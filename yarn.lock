@@ -3594,7 +3594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:~4.8.3":
+"@tsd/typescript@npm:^4.8.2, @tsd/typescript@npm:~4.8.3":
   version: 4.8.3
   resolution: "@tsd/typescript@npm:4.8.3"
   checksum: 79a4d53f24b4a1d4a368223722565a729af6383533c520d5c2d6c2f4afa07ce4691ef29185d075f3362005e107ca7e2648150fddd504ab95d5ff318ffe7d167e
@@ -16954,6 +16954,22 @@ __metadata:
   version: 6.15.5
   resolution: "ts-toolbelt@npm:6.15.5"
   checksum: 24ad00cfd9ce735c76c873a9b1347eac475b94e39ebbdf100c9019dce88dd5f4babed52884cf82bb456a38c28edd0099ab6f704b84b2e5e034852b618472c1f3
+  languageName: node
+  linkType: hard
+
+"tsd@npm:^0.23.0":
+  version: 0.23.0
+  resolution: "tsd@npm:0.23.0"
+  dependencies:
+    "@tsd/typescript": ^4.8.2
+    eslint-formatter-pretty: ^4.1.0
+    globby: ^11.0.1
+    meow: ^9.0.0
+    path-exists: ^4.0.0
+    read-pkg-up: ^7.0.0
+  bin:
+    tsd: dist/cli.js
+  checksum: b9b268c375dec8da8aeb5c87f0c0b3af44927a997c62c1d378efd470d10d6cc11707062e48ebf7ebdc794aa31fa9969918e6af9e17591679e2c1c6bd05e68cbc
   languageName: node
   linkType: hard
 
