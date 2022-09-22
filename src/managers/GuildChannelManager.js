@@ -9,6 +9,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const ChannelFlags = require('../util/ChannelFlags');
 const { ThreadChannelTypes, ChannelTypes, VideoQualityModes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
@@ -220,6 +221,7 @@ class GuildChannelManager extends CachedManager {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the channel in seconds
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
@@ -282,6 +284,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: defaultAutoArchiveDuration,
         permission_overwrites,
+        tags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
       },
       reason,
     });

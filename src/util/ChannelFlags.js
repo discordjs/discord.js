@@ -33,4 +33,13 @@ ChannelFlags.FLAGS = {
  * @name ChannelFlags#bitfield
  */
 
+/**
+ * Data that can be resolved to give a channel flag bitfield. This can be:
+ * * A string (see {@link ChannelFlags.FLAGS})
+ * * A channel flag
+ * * An instance of ChannelFlags
+ * * An Array of ChannelFlags
+ * @typedef {string|number|ChannelFlags|ChannelFlagsResolvable[]} ChannelFlagsResolvable
+ */
+
 module.exports = ChannelFlags;

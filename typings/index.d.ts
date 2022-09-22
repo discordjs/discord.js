@@ -4229,6 +4229,7 @@ export interface ChannelData {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultThreadRateLimitPerUser?: number;
+  tags?: ChannelFlagsResolvable;
 }
 
 export interface ChannelLogsQueryOptions {
@@ -5939,6 +5940,8 @@ export type SystemChannelFlagsString =
   | 'SUPPRESS_JOIN_NOTIFICATION_REPLIES';
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
+
+export type ChannelFlagsResolvable = BitFieldResolvable<ChannelFlagsString, number>;
 
 export type SystemMessageType = Exclude<
   MessageType,
