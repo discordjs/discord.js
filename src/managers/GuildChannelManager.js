@@ -175,7 +175,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a webhook for the channel.
-   * @param {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
+   * @param {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel The channel to create the webhook for
    * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
