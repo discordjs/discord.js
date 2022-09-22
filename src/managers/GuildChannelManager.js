@@ -284,7 +284,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: defaultAutoArchiveDuration,
         permission_overwrites,
-        tags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
+        flags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
       },
       reason,
     });
