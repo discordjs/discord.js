@@ -175,7 +175,7 @@ class ForumChannel extends GuildChannel {
    * @param {boolean} [cache=true] Whether or not to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
-  fetchInvites(cache = true) {
+  fetchInvites(cache) {
     return this.guild.invites.fetch({ channelId: this.id, cache });
   }
 
