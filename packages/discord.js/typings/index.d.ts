@@ -4904,7 +4904,7 @@ export interface GuildChannelEditOptions {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
-  fags?: ChannelFlagsResolvable;
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
