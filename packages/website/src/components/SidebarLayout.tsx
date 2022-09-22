@@ -8,12 +8,22 @@ import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { VscChevronDown, VscColorMode, VscGithubInverted, VscMenu, VscPackage, VscVersions } from 'react-icons/vsc';
+import { FiCommand } from 'react-icons/fi';
+import {
+	VscChevronDown,
+	VscColorMode,
+	VscGithubInverted,
+	VscMenu,
+	VscPackage,
+	VscSearch,
+	VscVersions,
+} from 'react-icons/vsc';
 import { useMedia /* useLockBodyScroll */ } from 'react-use';
 import useSWR from 'swr';
 import vercelLogo from '../assets/powered-by-vercel.svg';
-import { CmdkDialog } from './Cmdk';
+import { CmdKDialog } from './CmdK';
 import { SidebarItems } from './SidebarItems';
+import { useCmdK } from '~/contexts/cmdK';
 import { PACKAGES } from '~/util/constants';
 import { fetcher } from '~/util/fetcher';
 import type { findMember } from '~/util/model.server';
@@ -49,6 +59,7 @@ export function SidebarLayout({
 	children,
 }: PropsWithChildren<Partial<SidebarLayoutProps>>) {
 	const router = useRouter();
+	const dialog = useCmdK();
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { data: versions } = useSWR<string[]>(`https://docs.discordjs.dev/api/info?package=${packageName}`, fetcher);
 	const { resolvedTheme, setTheme } = useTheme();
@@ -73,7 +84,7 @@ export function SidebarLayout({
 		() => [
 			<a key="discord.js" href="https://discord.js.org/#/docs/discord.js">
 				<MenuItem
-					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 					state={packageMenu}
 					onClick={() => packageMenu.setOpen(false)}
 				>
@@ -83,7 +94,7 @@ export function SidebarLayout({
 			...PACKAGES.map((pkg) => (
 				<Link key={pkg} href={`/docs/packages/${pkg}/main`} passHref prefetch={false}>
 					<MenuItem
-						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 						as="a"
 						state={packageMenu}
 						onClick={() => packageMenu.setOpen(false)}
@@ -103,7 +114,7 @@ export function SidebarLayout({
 				?.map((item) => (
 					<Link key={item} href={`/docs/packages/${packageName}/${item}`} passHref prefetch={false}>
 						<MenuItem
-							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded bg-white p-3 text-sm"
+							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 							as="a"
 							state={versionMenu}
 							onClick={() => versionMenu.setOpen(false)}
@@ -119,17 +130,30 @@ export function SidebarLayout({
 
 	const pathElements = useMemo(
 		() =>
-			asPathWithoutQueryAndAnchor.split('/').map((path, idx, original) => (
-				<Link key={idx} href={original.slice(0, idx + 1).join('/')} prefetch={false}>
-					<a className="hover:underline">{path}</a>
-				</Link>
-			)),
+			asPathWithoutQueryAndAnchor
+				.split('/')
+				.slice(1)
+				.map((path, idx, original) => (
+					<Link key={idx} href={`/${original.slice(0, idx + 1).join('/')}`} prefetch={false}>
+						<a className="focus:ring-width-2 focus:ring-blurple rounded outline-0 hover:underline focus:ring">{path}</a>
+					</Link>
+				)),
 		[asPathWithoutQueryAndAnchor],
 	);
 
 	const breadcrumbs = useMemo(
 		() =>
 			pathElements.flatMap((el, idx, array) => {
+				if (idx === 0) {
+					return (
+						<Fragment key={idx}>
+							<div className="mx-2">/</div>
+							{el}
+							<div className="mx-2">/</div>
+						</Fragment>
+					);
+				}
+
 				if (idx !== array.length - 1) {
 					return (
 						<Fragment key={idx}>
@@ -150,17 +174,30 @@ export function SidebarLayout({
 				<div className="h-18 block px-6">
 					<div className="flex h-full flex-row place-content-between place-items-center">
 						<Button
-							className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px lg:hidden"
+							className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px lg:hidden"
 							aria-label="Menu"
 							onClick={() => setOpened((open) => !open)}
 						>
 							<VscMenu size={24} />
 						</Button>
 						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
-						<div className="flex flex-row gap-4">
+						<div className="flex flex-row place-items-center gap-4">
+							<Button
+								as="div"
+								className="dark:bg-dark-800 focus:ring-width-2 focus:ring-blurple rounded bg-white px-4 py-2.5 outline-0 focus:ring"
+								onClick={() => dialog?.toggle()}
+							>
+								<div className="flex flex-row place-items-center gap-4">
+									<VscSearch size={18} />
+									<span className="opacity-65">Search...</span>
+									<div className="opacity-65 flex flex-row place-items-center gap-2">
+										<FiCommand size={18} /> K
+									</div>
+								</div>
+							</Button>
 							<Button
 								as="a"
-								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
+								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded rounded-full border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 								aria-label="GitHub"
 								href="https://github.com/discordjs/discord.js"
 								target="_blank"
@@ -169,7 +206,7 @@ export function SidebarLayout({
 								<VscGithubInverted size={24} />
 							</Button>
 							<Button
-								className="flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline active:translate-y-px"
+								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded-full rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 								aria-label="Toggle theme"
 								onClick={() => toggleTheme()}
 							>
@@ -195,7 +232,7 @@ export function SidebarLayout({
 				>
 					<div className="flex flex-col gap-3 px-3 pt-3">
 						<MenuButton
-							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
+							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 							state={packageMenu}
 						>
 							<div className="flex flex-row place-content-between place-items-center">
@@ -212,14 +249,14 @@ export function SidebarLayout({
 							</div>
 						</MenuButton>
 						<Menu
-							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 flex flex-col rounded border bg-white p-1"
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 focus:ring-width-2 focus:ring-blurple z-20 flex flex-col rounded border bg-white p-1 outline-0 focus:ring"
 							state={packageMenu}
 						>
 							{packageMenuItems}
 						</Menu>
 
 						<MenuButton
-							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 rounded p-3"
+							className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 							state={versionMenu}
 						>
 							<div className="flex flex-row place-content-between place-items-center">
@@ -236,7 +273,7 @@ export function SidebarLayout({
 							</div>
 						</MenuButton>
 						<Menu
-							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 z-20 flex flex-col rounded border bg-white p-1"
+							className="dark:bg-dark-600 border-light-800 dark:border-dark-100 focus:ring-width-2 focus:ring-blurple z-20 flex flex-col rounded border bg-white p-1 outline-0 focus:ring"
 							state={versionMenu}
 						>
 							{versionMenuItems}
@@ -273,6 +310,7 @@ export function SidebarLayout({
 							<div className="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
 								<a
 									href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+									className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
 									target="_blank"
 									rel="noopener noreferrer"
 									title="Vercel"
@@ -283,11 +321,17 @@ export function SidebarLayout({
 									<div className="flex flex-col gap-2">
 										<div className="text-lg font-semibold">Community</div>
 										<div className="flex flex-col gap-1">
-											<a href="https://discord.gg/djs" target="_blank" rel="noopener noreferrer">
+											<a
+												href="https://discord.gg/djs"
+												className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												Discord
 											</a>
 											<a
 												href="https://github.com/discordjs/discord.js/discussions"
+												className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
 												target="_blank"
 												rel="noopener noreferrer"
 											>
@@ -298,13 +342,28 @@ export function SidebarLayout({
 									<div className="flex flex-col gap-2">
 										<div className="text-lg font-semibold">Project</div>
 										<div className="flex flex-col gap-1">
-											<a href="https://github.com/discordjs/discord.js" target="_blank" rel="noopener noreferrer">
+											<a
+												href="https://github.com/discordjs/discord.js"
+												className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord.js
 											</a>
-											<a href="https://discordjs.guide" target="_blank" rel="noopener noreferrer">
+											<a
+												href="https://discordjs.guide"
+												className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord.js guide
 											</a>
-											<a href="https://discord-api-types.dev" target="_blank" rel="noopener noreferrer">
+											<a
+												href="https://discord-api-types.dev"
+												className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
 												discord-api-types
 											</a>
 										</div>
@@ -315,7 +374,7 @@ export function SidebarLayout({
 					</footer>
 				</article>
 			</main>
-			<CmdkDialog currentPackageName={packageName} />
+			<CmdKDialog currentPackageName={packageName} />
 		</>
 	);
 }

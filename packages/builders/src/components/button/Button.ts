@@ -29,24 +29,24 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * Creating a button from an API data object
 	 * ```ts
 	 * const button = new ButtonBuilder({
-	 * 	style: 'primary',
+	 * 	custom_id: 'a cool button',
+	 * 	style: ButtonStyle.Primary,
 	 * 	label: 'Click Me',
 	 * 	emoji: {
-	 * 		name: ':smile:',
-	 * 		id: '12345678901234567890123456789012',
+	 * 		name: 'smile',
+	 * 		id: '123456789012345678',
 	 * 	},
-	 *  custom_id: '12345678901234567890123456789012',
 	 * });
 	 * ```
 	 * @example
 	 * Creating a button using setters and API data
 	 * ```ts
 	 * const button = new ButtonBuilder({
-	 * 	style: 'primary',
+	 * 	style: ButtonStyle.Secondary,
 	 * 	label: 'Click Me',
 	 * })
-	 * .setEmoji({ name: ':smile:', id: '12345678901234567890123456789012' })
-	 * .setCustomId('12345678901234567890123456789012');
+	 * 	.setEmoji({ name: '🙂' })
+	 * 	.setCustomId('another cool button');
 	 * ```
 	 */
 	public constructor(data?: Partial<APIButtonComponent>) {

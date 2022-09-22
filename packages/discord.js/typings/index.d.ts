@@ -729,6 +729,8 @@ export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
 export type ChannelFlagsString = keyof typeof ChannelFlags;
 
+export type ChannelFlagsResolvable = BitFieldResolvable<ChannelFlagsString, number>;
+
 export class ChannelFlagsBitField extends BitField<ChannelFlagsString> {
   public static Flags: typeof ChannelFlags;
   public static resolve(bit?: BitFieldResolvable<ChannelFlagsString, ChannelFlags>): number;
@@ -1122,7 +1124,7 @@ export class Guild extends AnonymousGuild {
   public vanityURLUses: number | null;
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | null;
+  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -2608,7 +2610,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
-  public setAppliedTags(appliedTags: GuildForumTag[], reason?: string): Promise<AnyThreadChannel>;
+  public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel>;
   public toString(): ChannelMention;
 }
 
@@ -3050,7 +3052,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | null;
+  public get channel(): TextChannel | NewsChannel | ForumChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -3674,8 +3676,8 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
 }
 
 export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
-  protected constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<RawThreadChannelData>);
-  public channel: TextChannel | NewsChannel;
+  protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
+  public channel: TextChannel | NewsChannel | ForumChannel;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
   public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
@@ -3683,10 +3685,12 @@ export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, Threa
 }
 
 export class GuildTextThreadManager<AllowedThreadType> extends ThreadManager {
+  public channel: TextChannel | NewsChannel;
   public create(options: GuildTextThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
 }
 
 export class GuildForumThreadManager extends ThreadManager {
+  public channel: ForumChannel;
   public create(options: GuildForumThreadCreateOptions): Promise<ThreadChannel>;
 }
 
@@ -4315,7 +4319,7 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel];
+  webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
@@ -4900,6 +4904,7 @@ export interface GuildChannelEditOptions {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
+  tags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
@@ -4924,7 +4929,7 @@ export interface GuildCreateOptions {
 
 export interface GuildWidgetSettings {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | null;
 }
 
 export interface GuildEditData {
@@ -5002,7 +5007,7 @@ export interface GuildPruneMembersOptions {
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | Snowflake | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | Snowflake | null;
 }
 
 export interface GuildSearchMembersOptions {
@@ -5652,6 +5657,7 @@ export interface ThreadEditData {
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
+  appliedTags?: Snowflake[];
   reason?: string;
 }
 
@@ -5735,7 +5741,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: GuildTextChannelResolvable;
+  channel: TextChannel | NewsChannel | ForumChannel | Snowflake;
   emoji?: EmojiIdentifierResolvable;
 }
 

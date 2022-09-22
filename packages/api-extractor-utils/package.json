@@ -32,11 +32,11 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@microsoft/api-extractor-model": "7.24.0",
-		"@microsoft/tsdoc": "^0.14.1"
+		"@microsoft/tsdoc": "0.14.1"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.58",
-		"eslint": "^8.23.0",
+		"@types/node": "^16.11.59",
+		"eslint": "^8.23.1",
 		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
