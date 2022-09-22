@@ -4229,7 +4229,7 @@ export interface ChannelData {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultThreadRateLimitPerUser?: number;
-  tags?: ChannelFlagsResolvable;
+  flags?: ChannelFlagsResolvable;
 }
 
 export interface ChannelLogsQueryOptions {
