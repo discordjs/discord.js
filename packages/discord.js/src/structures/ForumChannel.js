@@ -172,7 +172,7 @@ class ForumChannel extends GuildChannel {
   /**
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
-   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
+   * @param {boolean} [cache=true] Whether to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites(cache) {
