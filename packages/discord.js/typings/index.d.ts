@@ -1505,6 +1505,7 @@ export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude
   Interaction<Cached>,
   AutocompleteInteraction<Cached>
 >;
+
 export class BaseInteraction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
