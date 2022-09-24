@@ -246,7 +246,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel)}
+   * @type {?(NewsChannel|TextChannel|ForumChannel)}
    * @readonly
    */
   get parent() {

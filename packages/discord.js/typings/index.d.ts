@@ -2565,19 +2565,19 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
-export type AnyThreadChannel = PublicThreadChannel | PrivateThreadChannel;
+export type AnyThreadChannel<Forum extends boolean = boolean> = PublicThreadChannel<Forum> | PrivateThreadChannel;
 
-export interface PublicThreadChannel extends ThreadChannel {
+export interface PublicThreadChannel<Forum extends boolean = boolean> extends ThreadChannel<Forum> {
   type: ChannelType.PublicThread | ChannelType.AnnouncementThread;
 }
 
-export interface PrivateThreadChannel extends ThreadChannel {
+export interface PrivateThreadChannel extends ThreadChannel<false> {
   get createdTimestamp(): number;
   get createdAt(): Date;
   type: ChannelType.PrivateThread;
 }
 
-export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
+export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedChannelMixin(BaseChannel, true, [
   'fetchWebhooks',
   'createWebhook',
   'setNSFW',
@@ -2609,7 +2609,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public members: ThreadMemberManager;
   public name: string;
   public ownerId: Snowflake | null;
-  public get parent(): TextChannel | NewsChannel | null;
+  public get parent(): If<Forum, ForumChannel, TextChannel | NewsChannel> | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
@@ -2633,7 +2633,7 @@ export class ThreadChannel extends TextBasedChannelMixin(BaseChannel, true, [
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
-  public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel>;
+  public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
   public toString(): ChannelMention;
 }
 
@@ -3698,22 +3698,24 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
   public delete(channel: StageChannelResolvable): Promise<void>;
 }
 
-export class ThreadManager extends CachedManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
+export class ThreadManager<Forum extends boolean = boolean> extends CachedManager<
+  Snowflake,
+  ThreadChannel<Forum>,
+  ThreadChannelResolvable
+> {
   protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
-  public channel: TextChannel | NewsChannel | ForumChannel;
+  public channel: If<Forum, ForumChannel, TextChannel | NewsChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
   public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
 }
 
-export class GuildTextThreadManager<AllowedThreadType> extends ThreadManager {
-  public channel: TextChannel | NewsChannel;
+export class GuildTextThreadManager<AllowedThreadType> extends ThreadManager<false> {
   public create(options: GuildTextThreadCreateOptions<AllowedThreadType>): Promise<ThreadChannel>;
 }
 
-export class GuildForumThreadManager extends ThreadManager {
-  public channel: ForumChannel;
+export class GuildForumThreadManager extends ThreadManager<true> {
   public create(options: GuildForumThreadCreateOptions): Promise<ThreadChannel>;
 }
 
