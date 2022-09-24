@@ -11,6 +11,7 @@ const allowedChannelTypes = [
 	ChannelType.PublicThread,
 	ChannelType.PrivateThread,
 	ChannelType.GuildStageVoice,
+	ChannelType.GuildForum,
 ] as const;
 
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
