@@ -571,7 +571,8 @@ test.skip('abort', async () => {
 	await expect(aP2).resolves.toStrictEqual({ message: 'Hello World' });
 	expect(controller.signal.aborted).toBe(false);
 
+	// bP2 will abort because it'll take 200ms since the timeout (150ms) started
 	await expect(bP2).rejects.toThrowError('Request aborted');
-	await expect(cP2).rejects.toThrowError('Request aborted');
 	expect(controller.signal.aborted).toBe(true);
+	await expect(cP2).rejects.toThrowError('Request aborted');
 });
