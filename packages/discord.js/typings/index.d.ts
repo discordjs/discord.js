@@ -2093,6 +2093,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   public availableTags: GuildForumTag[];
   public defaultReactionEmoji: DefaultReactionEmoji | null;
   public defaultThreadRateLimitPerUser: number | null;
+  public defaultSortOrder: number | null;
   public rateLimitPerUser: number | null;
   public defaultAutoArchiveDuration: ThreadAutoArchiveDuration | null;
   public nsfw: boolean;
