@@ -96,7 +96,7 @@ export interface RequestData {
 	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
-	signal?: AbortSignal;
+	signal?: AbortSignal | undefined;
 	/**
 	 * If this request should be versioned
 	 *
@@ -342,6 +342,7 @@ export class RequestManager extends EventEmitter {
 			body: request.body,
 			files: request.files,
 			auth: request.auth !== false,
+			signal: request.signal,
 		});
 	}
 

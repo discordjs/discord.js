@@ -549,7 +549,7 @@ test('malformedRequest', async () => {
 	await expect(api.get('/malformedRequest')).rejects.toBeInstanceOf(DiscordAPIError);
 });
 
-test.skip('abort', async () => {
+test('abort', async () => {
 	mockPool
 		.intercept({
 			path: genPath('/abort'),
@@ -560,8 +560,6 @@ test.skip('abort', async () => {
 		.times(3);
 
 	const controller = new AbortController();
-	setTimeout(() => controller.abort(), 150);
-
 	const [aP2, bP2, cP2] = [
 		api.get('/abort', { signal: controller.signal }),
 		api.get('/abort', { signal: controller.signal }),
@@ -569,10 +567,11 @@ test.skip('abort', async () => {
 	];
 
 	await expect(aP2).resolves.toStrictEqual({ message: 'Hello World' });
-	expect(controller.signal.aborted).toBe(false);
+	controller.abort();
 
-	// bP2 will abort because it'll take 200ms since the timeout (150ms) started
+	// Abort mid-execution:
 	await expect(bP2).rejects.toThrowError('Request aborted');
-	expect(controller.signal.aborted).toBe(true);
+
+	// Abort scheduled:
 	await expect(cP2).rejects.toThrowError('Request aborted');
 });
