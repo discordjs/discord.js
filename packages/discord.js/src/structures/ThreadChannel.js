@@ -6,6 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 
 /**
  * Represents a thread channel on Discord.
@@ -324,6 +325,7 @@ class ThreadChannel extends BaseChannel {
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing the thread
    * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
@@ -348,6 +350,7 @@ class ThreadChannel extends BaseChannel {
         locked: data.locked,
         invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
         applied_tags: data.appliedTags,
+        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
       },
       reason: data.reason,
     });
