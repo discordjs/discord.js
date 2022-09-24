@@ -729,6 +729,8 @@ export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
 export type ChannelFlagsString = keyof typeof ChannelFlags;
 
+export type ChannelFlagsResolvable = BitFieldResolvable<ChannelFlagsString, number>;
+
 export class ChannelFlagsBitField extends BitField<ChannelFlagsString> {
   public static Flags: typeof ChannelFlags;
   public static resolve(bit?: BitFieldResolvable<ChannelFlagsString, ChannelFlags>): number;
@@ -4902,6 +4904,7 @@ export interface GuildChannelEditOptions {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
