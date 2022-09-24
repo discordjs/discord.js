@@ -10,6 +10,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -226,6 +227,7 @@ class GuildChannelManager extends CachedManager {
    * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
    * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -285,6 +287,7 @@ class GuildChannelManager extends CachedManager {
         available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
+        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
       },
       reason: data.reason,
     });

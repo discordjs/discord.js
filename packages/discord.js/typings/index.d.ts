@@ -729,6 +729,8 @@ export type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
 export type ChannelFlagsString = keyof typeof ChannelFlags;
 
+export type ChannelFlagsResolvable = BitFieldResolvable<ChannelFlagsString, number>;
+
 export class ChannelFlagsBitField extends BitField<ChannelFlagsString> {
   public static Flags: typeof ChannelFlags;
   public static resolve(bit?: BitFieldResolvable<ChannelFlagsString, ChannelFlags>): number;
@@ -1499,7 +1501,11 @@ export type Interaction<Cached extends CacheType = CacheType> =
   | AutocompleteInteraction<Cached>
   | ModalSubmitInteraction<Cached>;
 
-export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude<Interaction, AutocompleteInteraction>;
+export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude<
+  Interaction<Cached>,
+  AutocompleteInteraction<Cached>
+>;
+
 export class BaseInteraction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
@@ -4177,9 +4183,11 @@ export interface Caches {
   // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
   GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
   GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
+  GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: typeof ThreadChannel];
   GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
   GuildScheduledEventManager: [manager: typeof GuildScheduledEventManager, holds: typeof GuildScheduledEvent];
   GuildStickerManager: [manager: typeof GuildStickerManager, holds: typeof Sticker];
+  GuildTextThreadManager: [manager: typeof GuildTextThreadManager, holds: typeof ThreadChannel];
   MessageManager: [manager: typeof MessageManager, holds: typeof Message];
   // TODO: PermissionOverwriteManager: [manager: typeof PermissionOverwriteManager, holds: typeof PermissionOverwrites];
   PresenceManager: [manager: typeof PresenceManager, holds: typeof Presence];
@@ -4904,6 +4912,7 @@ export interface GuildChannelEditOptions {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
@@ -5657,6 +5666,7 @@ export interface ThreadEditData {
   locked?: boolean;
   invitable?: boolean;
   appliedTags?: Snowflake[];
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
