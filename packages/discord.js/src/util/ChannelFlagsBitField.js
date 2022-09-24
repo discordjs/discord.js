@@ -29,4 +29,13 @@ class ChannelFlagsBitField extends BitField {
  * @name ChannelFlagsBitField#bitfield
  */
 
+/**
+ * Data that can be resolved to give a channel flag bitfield. This can be:
+ * * A string (see {@link ChannelFlagsBitField.Flags})
+ * * A channel flag
+ * * An instance of ChannelFlagsBitField
+ * * An Array of ChannelFlagsResolvable
+ * @typedef {string|number|ChannelFlagsBitField|ChannelFlagsResolvable[]} ChannelFlagsResolvable
+ */
+
 module.exports = ChannelFlagsBitField;
