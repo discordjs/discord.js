@@ -4908,7 +4908,7 @@ export interface GuildChannelEditOptions {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
-  tags?: ChannelFlagsResolvable;
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
@@ -5662,6 +5662,7 @@ export interface ThreadEditData {
   locked?: boolean;
   invitable?: boolean;
   appliedTags?: Snowflake[];
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 

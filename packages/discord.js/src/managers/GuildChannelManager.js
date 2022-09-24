@@ -287,7 +287,7 @@ class GuildChannelManager extends CachedManager {
         available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
-        tags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
+        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
       },
       reason: data.reason,
     });
