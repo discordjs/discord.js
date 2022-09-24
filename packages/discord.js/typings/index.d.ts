@@ -706,7 +706,7 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
-  [ChannelType.GuildForum]: never; // TODO: Fix when guild forums come out
+  [ChannelType.GuildForum]: ForumChannel;
 }
 
 export type CategoryChannelType = Exclude<
