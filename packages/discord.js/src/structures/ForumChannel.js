@@ -95,6 +95,15 @@ class ForumChannel extends GuildChannel {
     } else {
       this.rateLimitPerUser ??= null;
     }
+    if ('default_sort_order' in data) {
+      /**
+       * The default sort order type used to order posts in `GUILD_FORUM` channels
+       * @type {?number}
+       */
+      this.defaultSortOrder = data.default_sort_order;
+    } else {
+      this.defaultSortOrder ??= null;
+    }
 
     if ('default_auto_archive_duration' in data) {
       /**
