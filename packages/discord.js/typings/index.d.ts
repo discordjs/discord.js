@@ -4277,7 +4277,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: TextChannel | NewsChannel | VoiceChannel | Snowflake;
+  channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | Snowflake;
 }
 
 export interface ClientEvents {
