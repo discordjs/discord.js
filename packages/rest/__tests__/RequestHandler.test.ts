@@ -1,7 +1,7 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
 import { performance } from 'node:perf_hooks';
-import { setInterval, clearInterval } from 'node:timers';
+import { setInterval, clearInterval, setTimeout } from 'node:timers';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
@@ -547,4 +547,31 @@ test('malformedRequest', async () => {
 		}));
 
 	await expect(api.get('/malformedRequest')).rejects.toBeInstanceOf(DiscordAPIError);
+});
+
+test.skip('abort', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/abort'),
+			method: 'GET',
+		})
+		.reply(200, { message: 'Hello World' }, responseOptions)
+		.delay(100)
+		.times(3);
+
+	const controller = new AbortController();
+	setTimeout(() => controller.abort(), 150);
+
+	const [aP2, bP2, cP2] = [
+		api.get('/abort', { signal: controller.signal }),
+		api.get('/abort', { signal: controller.signal }),
+		api.get('/abort', { signal: controller.signal }),
+	];
+
+	await expect(aP2).resolves.toStrictEqual({ message: 'Hello World' });
+	expect(controller.signal.aborted).toBe(false);
+
+	await expect(bP2).rejects.toThrowError('Request aborted');
+	await expect(cP2).rejects.toThrowError('Request aborted');
+	expect(controller.signal.aborted).toBe(true);
 });
