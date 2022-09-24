@@ -5658,6 +5658,7 @@ export interface ThreadEditData {
   locked?: boolean;
   invitable?: boolean;
   appliedTags?: Snowflake[];
+  flags?: ChannelFlagsResolvable;
   reason?: string;
 }
 
