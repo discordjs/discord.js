@@ -38,6 +38,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
 /**
  * Represents a channel that only contains threads
  * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
  */
 class ForumChannel extends GuildChannel {
   constructor(guild, data, client) {
