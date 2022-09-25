@@ -344,7 +344,7 @@ class ThreadChannel extends BaseChannel {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),
-        archived: data.archived,
+        archived: data.locked ? true : data.archived,
         auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
@@ -568,15 +568,15 @@ class ThreadChannel extends BaseChannel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
-  get lastMessage() {}
-  get lastPinAt() {}
-  send() {}
-  sendTyping() {}
-  createMessageCollector() {}
-  awaitMessages() {}
-  createMessageComponentCollector() {}
-  awaitMessageComponent() {}
-  bulkDelete() {}
+  get lastMessage() { }
+  get lastPinAt() { }
+  send() { }
+  sendTyping() { }
+  createMessageCollector() { }
+  awaitMessages() { }
+  createMessageComponentCollector() { }
+  awaitMessageComponent() { }
+  bulkDelete() { }
   // Doesn't work on Thread channels; setRateLimitPerUser() {}
   // Doesn't work on Thread channels; setNSFW() {}
 }
