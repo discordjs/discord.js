@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
-import { getGlobalDispatcher } from 'undici';
+import { Agent } from 'undici';
 import type { RESTOptions } from '../REST.js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 const Package = require('../../../package.json');
@@ -9,7 +9,11 @@ export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.vers
 
 export const DefaultRestOptions: Required<RESTOptions> = {
 	get agent() {
-		return getGlobalDispatcher();
+		return new Agent({
+			connect: {
+				timeout: 30_000,
+			},
+		});
 	},
 	api: 'https://discord.com/api',
 	authPrefix: 'Bot',
