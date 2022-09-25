@@ -10,8 +10,8 @@ export const DefaultRestOptions: Required<RESTOptions> = {
 	get agent() {
 		return new Agent({
 			connect: {
-				timeout: 30_000
-			}
+				timeout: 30_000,
+			},
 		});
 	},
 	api: 'https://discord.com/api',
