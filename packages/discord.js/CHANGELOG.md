@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.5.0](https://github.com/discordjs/discord.js/compare/14.4.0...14.5.0) - (2022-09-25)
+
+## Bug Fixes
+
+- **ThreadChannel:** Add forum channel to parent (#8664) ([0126d9b](https://github.com/discordjs/discord.js/commit/0126d9b810a156c4bf1b8b93f2121f3319855bac))
+- **GuildChannelManager:** Allow creating webhooks on forums (#8661) ([16fcdc3](https://github.com/discordjs/discord.js/commit/16fcdc36877d1a65ce9995c9fe3502aa268c9388))
+- **ForumChannel:** Implement missing properties and methods (#8662) ([8622939](https://github.com/discordjs/discord.js/commit/862293922924f453f69b0b0f8efe87ddebbd387d))
+- RepliableInteraction respect cached generic (#8667) ([578bc95](https://github.com/discordjs/discord.js/commit/578bc951bdcdc21ec5aee86e7a47a17e8c867dfc))
+- **ThreadChannel:** Allow editing flags (#8671) ([1244854](https://github.com/discordjs/discord.js/commit/1244854e1365d7e4a8d01703a7ec13610ed100c7))
+- **GuildChannelManager:** Typo in `flags` property name when editing (#8669) ([fc8ed81](https://github.com/discordjs/discord.js/commit/fc8ed816e643754a938211a17b41a2cec95df265))
+
+## Documentation
+
+- Fix duplicate typedefs (#8677) ([d79aa2d](https://github.com/discordjs/discord.js/commit/d79aa2d0d0b186bd28cbfc82f3d6ecf3deb41c50))
+- **ForumChannel:** Add `@implements` (#8678) ([8ca407e](https://github.com/discordjs/discord.js/commit/8ca407e089c3050b61a51a52b9100e4613ad1666))
+
+## Features
+
+- **GuildChannelManager:** Allow editing `flags` (#8637) ([abb7226](https://github.com/discordjs/discord.js/commit/abb7226af3445f5b724815bb2f7a121a52a563b5))
+
+## Refactor
+
+- **GuildBanManager:** Add deprecation warning for `deleteMessageDays` (#8659) ([e993122](https://github.com/discordjs/discord.js/commit/e9931229ae62a120ae0761ee2a2c10ea0cb1a6fb))
+
+## Typings
+
+- **GuildChannelManager:** Handle forum channel overload (#8660) ([1486bc9](https://github.com/discordjs/discord.js/commit/1486bc9336369d229972df5e28b9428365b92bff))
+- **Caches:** Allow `GuildForumThreadManager` and `GuildTextThreadManager` (#8665) ([2487e3b](https://github.com/discordjs/discord.js/commit/2487e3bf76260a4a2fbf375e0b01a43f347922a3))
+
 # [14.4.0](https://github.com/discordjs/discord.js/compare/14.3.0...14.4.0) - (2022-09-21)
 
 ## Bug Fixes

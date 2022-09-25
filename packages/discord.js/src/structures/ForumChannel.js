@@ -1,6 +1,7 @@
 'use strict';
 
 const GuildChannel = require('./GuildChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
 const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels');
 
@@ -37,6 +38,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
 /**
  * Represents a channel that only contains threads
  * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
  */
 class ForumChannel extends GuildChannel {
   constructor(guild, data, client) {
@@ -94,6 +96,34 @@ class ForumChannel extends GuildChannel {
     } else {
       this.rateLimitPerUser ??= null;
     }
+
+    if ('default_auto_archive_duration' in data) {
+      /**
+       * The default auto archive duration for newly created threads in this channel.
+       * @type {?ThreadAutoArchiveDuration}
+       */
+      this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
+    } else {
+      this.defaultAutoArchiveDuration ??= null;
+    }
+
+    if ('nsfw' in data) {
+      /**
+       * If this channel is considered NSFW.
+       * @type {boolean}
+       */
+      this.nsfw = data.nsfw;
+    } else {
+      this.nsfw ??= false;
+    }
+
+    if ('topic' in data) {
+      /**
+       * The topic of this channel.
+       * @type {?string}
+       */
+      this.topic = data.topic;
+    }
   }
 
   /**
@@ -127,14 +157,72 @@ class ForumChannel extends GuildChannel {
   }
 
   /**
-   * Sets the rate limit per user (slowmode) for this channel
-   * @param {?number} rateLimitPerUser The rate limit to set on this channel
-   * @param {string} [reason] Reason for changing the rate limit
+   * Creates an invite to this guild channel.
+   * @param {CreateInviteOptions} [options={}] The options for creating the invite
+   * @returns {Promise<Invite>}
+   * @example
+   * // Create an invite to a channel
+   * channel.createInvite()
+   *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
+   *   .catch(console.error);
+   */
+  createInvite(options) {
+    return this.guild.invites.create(this.id, options);
+  }
+
+  /**
+   * Fetches a collection of invites to this guild channel.
+   * Resolves with a collection mapping invites by their codes.
+   * @param {boolean} [cache=true] Whether to cache the fetched invites
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  fetchInvites(cache) {
+    return this.guild.invites.fetch({ channelId: this.id, cache });
+  }
+
+  /**
+   * Sets the default auto archive duration for all newly created threads in this channel.
+   * @param {ThreadAutoArchiveDuration} defaultAutoArchiveDuration The new default auto archive duration
+   * @param {string} [reason] Reason for changing the channel's default auto archive duration
    * @returns {Promise<ForumChannel>}
    */
-  setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser, reason });
+  setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
+    return this.edit({ defaultAutoArchiveDuration, reason });
   }
+
+  /**
+   * Sets a new topic for the guild channel.
+   * @param {?string} topic The new topic for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's topic
+   * @returns {Promise<ForumChannel>}
+   * @example
+   * // Set a new channel topic
+   * channel.setTopic('needs more rate limiting')
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
+   */
+  setTopic(topic, reason) {
+    return this.edit({ topic, reason });
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  createWebhook() {}
+  fetchWebhooks() {}
+  setNSFW() {}
+  setRateLimitPerUser() {}
 }
+
+TextBasedChannel.applyToClass(ForumChannel, true, [
+  'send',
+  'lastMessage',
+  'lastPinAt',
+  'bulkDelete',
+  'sendTyping',
+  'createMessageCollector',
+  'awaitMessages',
+  'createMessageComponentCollector',
+  'awaitMessageComponent',
+]);
 
 module.exports = ForumChannel;

@@ -17,7 +17,7 @@ class GuildForumThreadManager extends ThreadManager {
    */
 
   /**
-   * @typedef {BaseMessageOptions} GuildForumThreadCreateOptions
+   * @typedef {BaseMessageOptions} GuildForumThreadMessageCreateOptions
    * @property {stickers} [stickers] The stickers to send with the message
    * @property {BitFieldResolvable} [flags] The flags to send with the message
    */
@@ -25,7 +25,7 @@ class GuildForumThreadManager extends ThreadManager {
   /**
    * Options for creating a thread.
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
-   * @property {GuildForumThreadCreateOptions|MessagePayload} message The message associated with the thread post
+   * @property {GuildForumThreadMessageCreateOptions|MessagePayload} message The message associated with the thread post
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    */
 

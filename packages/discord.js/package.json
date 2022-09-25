@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "14.4.0",
+  "version": "14.5.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "yarn docs:test && yarn test:typescript",
@@ -59,14 +59,14 @@
     "lodash.snakecase": "^4.1.1",
     "tslib": "^2.4.0",
     "undici": "^5.10.0",
-    "ws": "^8.8.1"
+    "ws": "^8.9.0"
   },
   "devDependencies": {
     "@discordjs/docgen": "workspace:^",
     "@favware/cliff-jumper": "^1.8.7",
-    "@types/node": "^16.11.59",
+    "@types/node": "^16.11.60",
     "dtslint": "^4.2.1",
-    "eslint": "^8.23.1",
+    "eslint": "^8.24.0",
     "jest": "^29.0.3",
     "prettier": "^2.7.1",
     "tsd": "^0.24.1",
