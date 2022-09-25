@@ -5,8 +5,8 @@
 	"private": true,
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format"
 	},
 	"main": "./dist/index.js",
@@ -52,9 +52,10 @@
 		"undici": "^5.10.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.59",
+		"@types/node": "^16.11.60",
 		"@vitest/coverage-c8": "^0.23.4",
-		"eslint": "^8.23.1",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.24.0",
 		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
