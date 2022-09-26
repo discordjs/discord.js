@@ -423,13 +423,13 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Sets whether the thread can be **unarchived** by anyone with the
+   * Sets archived and whether the thread can be **unarchived** by anyone with the
    * {@link PermissionFlagsBits.SendMessages} permission. When a thread is locked, only members with the
    * {@link PermissionFlagsBits.ManageThreads} permission can unarchive it.
    * @param {string} reason Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}
    * @example
-   * // Set the thread to locked
+   * // Set the thread to locked and archived
    * thread.closeAndLock()
    *   .then(() => console.log(`Thread is now locked and archived.`))
    *   .catch(console.error);
