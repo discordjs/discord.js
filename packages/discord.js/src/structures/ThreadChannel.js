@@ -344,7 +344,7 @@ class ThreadChannel extends BaseChannel {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
         name: (data.name ?? this.name).trim(),
-        archived: data.locked ? true : data.archived,
+        archived: data.archived,
         auto_archive_duration: data.autoArchiveDuration,
         rate_limit_per_user: data.rateLimitPerUser,
         locked: data.locked,
@@ -420,6 +420,22 @@ class ThreadChannel extends BaseChannel {
    */
   setLocked(locked = true, reason) {
     return this.edit({ locked, reason });
+  }
+
+  /**
+   * Sets whether the thread can be **unarchived** by anyone with the
+   * {@link PermissionFlagsBits.SendMessages} permission. When a thread is locked, only members with the
+   * {@link PermissionFlagsBits.ManageThreads} permission can unarchive it.
+   * @param {string} reason Reason for locking or unlocking the thread
+   * @returns {Promise<ThreadChannel>}
+   * @example
+   * // Set the thread to locked
+   * thread.closeAndLock()
+   *   .then(() => console.log(`Thread is now locked and archived.`))
+   *   .catch(console.error);
+   */
+  closeAndLock(reason) {
+    return this.edit({ locked: true, archived: true, reason });
   }
 
   /**
