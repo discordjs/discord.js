@@ -15,5 +15,11 @@ describe('isJSONEncodable', () => {
 
 	test('returns false if the object is not JSON encodable', () => {
 		expect(isJSONEncodable({})).toBeFalsy();
+		expect(isJSONEncodable(null)).toBeFalsy();
+		expect(isJSONEncodable(undefined)).toBeFalsy();
+		expect(isJSONEncodable(1)).toBeFalsy();
+		expect(isJSONEncodable('')).toBeFalsy();
+		expect(isJSONEncodable([])).toBeFalsy();
+		expect(isJSONEncodable(() => {})).toBeFalsy();
 	});
 });
