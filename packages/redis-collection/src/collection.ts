@@ -458,17 +458,17 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	public async find<V2 extends ReturnType>(
 		fn: (value: ReturnType, key: string, collection: this) => value is V2,
 	): Promise<V2 | undefined>;
-	public async find(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<ReturnType | undefined>;
+	public async find(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<ReturnType | undefined>;
 	public async find<This, V2 extends ReturnType>(
 		fn: (this: This, value: ReturnType, key: string, collection: this) => value is V2,
 		thisArg: This,
 	): Promise<V2 | undefined>;
 	public async find<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<ReturnType | undefined>;
 	public async find(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<ReturnType | undefined> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -495,17 +495,17 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	public async findKey<K2 extends string>(
 		fn: (value: ReturnType, key: string, collection: this) => key is K2,
 	): Promise<K2 | undefined>;
-	public async findKey(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<string | undefined>;
+	public async findKey(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<string | undefined>;
 	public async findKey<This, K2 extends string>(
 		fn: (this: This, value: ReturnType, key: string, collection: this) => key is K2,
 		thisArg: This,
 	): Promise<K2 | undefined>;
 	public async findKey<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<string | undefined>;
 	public async findKey(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<string | undefined> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -524,13 +524,13 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 * @returns The number of removed entries
 	 */
-	public async sweep(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<number>;
+	public async sweep(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<number>;
 	public async sweep<T>(
-		fn: (this: T, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: T, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: T,
 	): Promise<number>;
 	public async sweep(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<number> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -556,16 +556,16 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	 * ```
 	 */
 	public async filter(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 	): Promise<Collection<string, ReturnType>>;
 	public async filter<V2 extends ReturnType>(
 		fn: (value: ReturnType, key: string, collection: this) => value is V2,
 	): Promise<Collection<string, V2>>;
 	public async filter(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 	): Promise<Collection<string, ReturnType>>;
 	public async filter<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<Collection<string, ReturnType>>;
 	public async filter<This, V2 extends ReturnType>(
@@ -573,11 +573,11 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 		thisArg: This,
 	): Promise<Collection<string, V2>>;
 	public async filter<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<Collection<string, ReturnType>>;
 	public async filter(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<Collection<string, ReturnType>> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -602,16 +602,16 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	 * ```
 	 */
 	public async partition(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 	): Promise<[Collection<string, ReturnType>, Collection<string, ReturnType>]>;
 	public async partition<V2 extends ReturnType>(
 		fn: (value: ReturnType, key: string, collection: this) => value is V2,
 	): Promise<[Collection<string, V2>, Collection<string, Exclude<V, V2>>]>;
 	public async partition(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 	): Promise<[Collection<string, ReturnType>, Collection<string, ReturnType>]>;
 	public async partition<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<[Collection<string, ReturnType>, Collection<string, ReturnType>]>;
 	public async partition<This, V2 extends ReturnType>(
@@ -619,11 +619,11 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 		thisArg: This,
 	): Promise<[Collection<string, V2>, Collection<string, Exclude<V, V2>>]>;
 	public async partition<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<[Collection<string, ReturnType>, Collection<string, ReturnType>]>;
 	public async partition(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<[Collection<string, ReturnType>, Collection<string, ReturnType>]> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -741,13 +741,13 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	 * await collection.some(user => user.discriminator === '0000');
 	 * ```
 	 */
-	public async some(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<boolean>;
+	public async some(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<boolean>;
 	public async some<T>(
-		fn: (this: T, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: T, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: T,
 	): Promise<boolean>;
 	public async some(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<boolean> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -770,11 +770,11 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 	 * await collection.every(user => !user.bot);
 	 * ```
 	 */
-	public async every(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<boolean>;
+	public async every(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<boolean>;
 	public async every<V2 extends ReturnType>(
 		fn: (value: ReturnType, key: string, collection: this) => value is V2,
 	): Promise<boolean>;
-	public async every(fn: (value: ReturnType, key: string, collection: this) => boolean): Promise<boolean>;
+	public async every(fn: (value: ReturnType, key: string, collection: this) => unknown): Promise<boolean>;
 	public async every<This, K2 extends string>(
 		fn: (this: This, value: ReturnType, key: string, collection: this) => key is K2,
 		thisArg: This,
@@ -784,11 +784,11 @@ export class RedisCollection<V, ReturnType = Serialized<V>> {
 		thisArg: This,
 	): Promise<boolean>;
 	public async every<This>(
-		fn: (this: This, value: ReturnType, key: string, collection: this) => boolean,
+		fn: (this: This, value: ReturnType, key: string, collection: this) => unknown,
 		thisArg: This,
 	): Promise<boolean>;
 	public async every(
-		fn: (value: ReturnType, key: string, collection: this) => boolean,
+		fn: (value: ReturnType, key: string, collection: this) => unknown,
 		thisArg?: unknown,
 	): Promise<boolean> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
