@@ -1,21 +1,7 @@
-import {
-	Container,
-	UnstyledButton,
-	createStyles,
-	Group,
-	ThemeIcon,
-	Text,
-	Stack,
-	Box,
-	Title,
-	useMantineColorScheme,
-	Affix,
-} from '@mantine/core';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
-import { PACKAGES } from '~/util/packages';
+import { PACKAGES } from '~/util/constants';
 
 interface VersionProps {
 	data: {
@@ -34,20 +20,21 @@ export const getStaticPaths: GetStaticPaths = () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const packageName = params!.package as string | undefined;
+	const packageName = params!.package as string;
+
+	if (!PACKAGES.includes(packageName)) {
+		return {
+			notFound: true,
+		};
+	}
 
 	try {
-		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName ?? 'builders'}`);
+		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 		const data: string[] = await res.json();
 
 		if (!data.length) {
-			console.error('No tags');
-
 			return {
-				props: {
-					error: 'No tags',
-				},
-				revalidate: 3_600,
+				notFound: true,
 			};
 		}
 
@@ -55,7 +42,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			props: {
 				packageName,
 				data: {
-					versions: data,
+					versions: data.reverse(),
 				},
 			},
 			revalidate: 3_600,
@@ -66,68 +53,41 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		return {
 			props: {
-				error: error_,
+				error: error.message,
 			},
-			revalidate: 3_600,
+			revalidate: 1,
 		};
 	}
 };
 
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
-		height: '100%',
-		alignItems: 'center',
-	},
-
-	control: {
-		padding: theme.spacing.xs,
-		color: theme.colorScheme === 'dark' ? theme.colors.dark![0] : theme.black,
-		borderRadius: theme.radius.xs,
-
-		'&:hover': {
-			backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark![6] : theme.colors.gray![0],
-			color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-		},
-	},
-}));
-
 export default function VersionsRoute(props: Partial<VersionProps> & { error?: string }) {
-	const router = useRouter();
-	const { classes } = useStyles();
-	const { colorScheme } = useMantineColorScheme();
-
 	return props.error ? (
-		<Box sx={{ display: 'flex', maxWidth: '100%', height: '100%' }}>{props.error}</Box>
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			{props.error}
+		</div>
 	) : (
-		<Container className={classes.outer} size="xs">
-			<Stack sx={{ flexGrow: 1 }}>
-				<Title order={2} ml="xs">
-					Select a version:
-				</Title>
+		<div className="min-w-xs sm:w-md mx-auto flex h-full flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+			<div className="flex grow flex-col place-content-center gap-4">
+				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
-					<Link key={version} href={`/docs/packages/${props.packageName!}/${version}`} passHref prefetch={false}>
-						<UnstyledButton className={classes.control} component="a">
-							<Group position="apart">
-								<Group>
-									<ThemeIcon variant={colorScheme === 'dark' ? 'filled' : 'outline'} radius="sm" size={30}>
-										<VscVersions size={20} />
-									</ThemeIcon>
-									<Text weight={600} size="md">
-										{version}
-									</Text>
-								</Group>
+					<Link key={version} href={`/docs/packages/${props.packageName}/${version}`} prefetch={false}>
+						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white">
+							<div className="flex flex-row place-content-between place-items-center gap-4">
+								<div className="flex flex-row place-content-between place-items-center gap-4">
+									<VscVersions size={25} />
+									<h2 className="font-semibold">{version}</h2>
+								</div>
 								<VscArrowRight size={20} />
-							</Group>
-						</UnstyledButton>
+							</div>
+						</a>
 					</Link>
 				)) ?? null}
-			</Stack>
-			<Affix position={{ top: 20, left: 20 }}>
-				<UnstyledButton onClick={() => void router.push('/docs/packages')}>
-					<VscArrowLeft size={25} />
-				</UnstyledButton>
-			</Affix>
-		</Container>
+				<Link href="/docs/packages" prefetch={false}>
+					<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
+						<VscArrowLeft size={20} /> Go back
+					</a>
+				</Link>
+			</div>
+		</div>
 	);
 }

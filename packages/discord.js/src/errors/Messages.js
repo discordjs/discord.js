@@ -157,6 +157,8 @@ const Messages = {
   [DjsErrorCodes.NotImplemented]: (what, name) => `Method ${what} not implemented on ${name}.`,
 
   [DjsErrorCodes.SweepFilterReturn]: 'The return value of the sweepFilter function was not false or a Function',
+
+  [DjsErrorCodes.GuildForumMessageRequired]: 'You must provide a message to create a guild forum thread',
 };
 
 module.exports = Messages;

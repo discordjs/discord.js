@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import {
 	type APIActionRowComponent,
 	ComponentType,
@@ -33,6 +35,40 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 */
 	public readonly components: T[];
 
+	/**
+	 * Creates a new action row from API data
+	 *
+	 * @param data - The API data to create this action row with
+	 * @example
+	 * Creating an action row from an API data object
+	 * ```ts
+	 * const actionRow = new ActionRowBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			custom_id: "custom id",
+	 * 			label: "Type something",
+	 * 			style: TextInputStyle.Short,
+	 * 			type: ComponentType.TextInput,
+	 * 		},
+	 * 	],
+	 * });
+	 * ```
+	 * @example
+	 * Creating an action row using setters and API data
+	 * ```ts
+	 * const actionRow = new ActionRowBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			custom_id: "custom id",
+	 * 			label: "Click me",
+	 * 			style: ButtonStyle.Primary,
+	 * 			type: ComponentType.Button,
+	 * 		},
+	 * 	],
+	 * })
+	 * 	.addComponents(button2, button3);
+	 * ```
+	 */
 	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as T[];

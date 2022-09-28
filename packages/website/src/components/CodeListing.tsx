@@ -1,6 +1,4 @@
 import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
-import { ActionIcon, Badge, Box, createStyles, Group, MediaQuery, Stack, Title } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import type { PropsWithChildren } from 'react';
 import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
@@ -11,19 +9,6 @@ export enum CodeListingSeparatorType {
 	Type = ':',
 	Value = '=',
 }
-
-const useStyles = createStyles((theme) => ({
-	outer: {
-		display: 'flex',
-		alignItems: 'center',
-		gap: 16,
-
-		[theme.fn.smallerThan('sm')]: {
-			flexDirection: 'column',
-			alignItems: 'unset',
-		},
-	},
-}));
 
 export function CodeListing({
 	name,
@@ -47,48 +32,55 @@ export function CodeListing({
 	summary?: ApiItemJSON['summary'];
 	typeTokens: TokenDocumentation[];
 }>) {
-	const { classes } = useStyles();
-	const matches = useMediaQuery('(max-width: 768px)');
-
 	return (
-		<Stack id={name} className="scroll-mt-30" spacing="xs">
-			<Box className={classes.outer} ml={matches ? 0 : -45}>
-				<MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-					<ActionIcon component="a" href={`#${name}`} variant="transparent">
-						<FiLink size={20} />
-					</ActionIcon>
-				</MediaQuery>
+		<div id={name} className="scroll-mt-30 flex flex-col gap-4">
+			<div className="md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2">
+				<a
+					className="focus:ring-width-2 focus:ring-blurple hidden rounded outline-0 focus:ring md:inline-block"
+					aria-label="Anchor"
+					href={`#${name}`}
+				>
+					<FiLink size={20} />
+				</a>
 				{deprecation || readonly || optional ? (
-					<Group spacing={10} noWrap>
+					<div className="flex flex-row gap-1">
 						{deprecation ? (
-							<Badge variant="filled" color="red">
+							<div className="flex h-5 place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated
-							</Badge>
+							</div>
 						) : null}
-						{readonly ? <Badge variant="filled">Readonly</Badge> : null}
-						{optional ? <Badge variant="filled">Optional</Badge> : null}
-					</Group>
+						{readonly ? (
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Readonly
+							</div>
+						) : null}
+						{optional ? (
+							<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+								Optional
+							</div>
+						) : null}
+					</div>
 				) : null}
-				<Group spacing={10}>
-					<Title order={4} className="font-mono">
+				<div className="flex flex-row flex-wrap place-items-center gap-1">
+					<h4 className="break-all font-mono text-lg font-bold">
 						{name}
 						{optional ? '?' : ''}
-					</Title>
-					<Title order={4}>{separator}</Title>
-					<Title sx={{ wordBreak: 'break-all' }} order={4} className="font-mono">
+					</h4>
+					<h4 className="font-mono text-lg font-bold">{separator}</h4>
+					<h4 className="break-all font-mono text-lg font-bold">
 						<HyperlinkedText tokens={typeTokens} />
-					</Title>
-				</Group>
-			</Box>
-			<Group>
-				<Stack>
+					</h4>
+				</div>
+			</div>
+			{summary || inheritanceData ? (
+				<div className="flex flex-col gap-4">
 					{deprecation ? <TSDoc node={deprecation} /> : null}
-					{summary && <TSDoc node={summary} />}
-					{comment && <TSDoc node={comment} />}
+					{summary ? <TSDoc node={summary} /> : null}
+					{comment ? <TSDoc node={comment} /> : null}
 					{inheritanceData ? <InheritanceText data={inheritanceData} /> : null}
 					{children}
-				</Stack>
-			</Group>
-		</Stack>
+				</div>
+			) : null}
+		</div>
 	);
 }

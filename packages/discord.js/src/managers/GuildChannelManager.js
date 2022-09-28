@@ -4,12 +4,14 @@ const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const ThreadManager = require('./ThreadManager');
+const GuildTextThreadManager = require('./GuildTextThreadManager');
 const { Error, TypeError, ErrorCodes } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
+const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
@@ -137,6 +139,8 @@ class GuildChannelManager extends CachedManager {
     rateLimitPerUser,
     rtcRegion,
     videoQualityMode,
+    availableTags,
+    defaultReactionEmoji,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -156,6 +160,8 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
+        available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
       },
       reason,
     });
@@ -164,7 +170,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
+   * @property {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel
+   * The channel to create the webhook for
    */
 
   /**
@@ -218,6 +225,10 @@ class GuildChannelManager extends CachedManager {
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
+   * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
+   * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
+   * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -274,6 +285,10 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: data.defaultAutoArchiveDuration,
         permission_overwrites,
+        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
+        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
       },
       reason: data.reason,
     });
@@ -317,7 +332,7 @@ class GuildChannelManager extends CachedManager {
    * Obtains one or more guild channels from Discord, or the channel cache if they're already available.
    * @param {Snowflake} [id] The channel's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<?GuildChannel|Collection<Snowflake, GuildChannel>>}
+   * @returns {Promise<?GuildChannel|ThreadChannel|Collection<Snowflake, ?GuildChannel>>}
    * @example
    * // Fetch all channels from the guild (excluding threads)
    * message.guild.channels.fetch()
@@ -418,7 +433,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetchActiveThreads(cache = true) {
     const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
-    return ThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    return GuildTextThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
   }
 
   /**

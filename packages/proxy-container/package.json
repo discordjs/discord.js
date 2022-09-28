@@ -4,8 +4,8 @@
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy-container/*'"
@@ -23,7 +23,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -49,12 +49,13 @@
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.56",
-		"eslint": "^8.23.0",
+		"@types/node": "^16.11.60",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.24.0",
 		"eslint-config-neon": "^0.1.33",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
-		"typescript": "^4.8.2"
+		"typescript": "^4.8.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

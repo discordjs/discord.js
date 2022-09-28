@@ -94,6 +94,10 @@ export interface RequestData {
 	 */
 	reason?: string;
 	/**
+	 * The signal to abort the queue entry or the REST call, where applicable
+	 */
+	signal?: AbortSignal | undefined;
+	/**
 	 * If this request should be versioned
 	 *
 	 * @defaultValue `true`
@@ -133,7 +137,7 @@ export interface InternalRequest extends RequestData {
 	method: RequestMethod;
 }
 
-export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files'>;
+export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files' | 'signal'>;
 
 /**
  * Parsed route data for an endpoint
@@ -338,6 +342,7 @@ export class RequestManager extends EventEmitter {
 			body: request.body,
 			files: request.files,
 			auth: request.auth !== false,
+			signal: request.signal,
 		});
 	}
 
