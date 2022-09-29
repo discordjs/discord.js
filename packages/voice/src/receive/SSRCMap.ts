@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
 
 /**

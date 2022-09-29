@@ -6,11 +6,12 @@ const allowedChannelTypes = [
 	ChannelType.GuildText,
 	ChannelType.GuildVoice,
 	ChannelType.GuildCategory,
-	ChannelType.GuildNews,
-	ChannelType.GuildNewsThread,
-	ChannelType.GuildPublicThread,
-	ChannelType.GuildPrivateThread,
+	ChannelType.GuildAnnouncement,
+	ChannelType.AnnouncementThread,
+	ChannelType.PublicThread,
+	ChannelType.PrivateThread,
 	ChannelType.GuildStageVoice,
+	ChannelType.GuildForum,
 ] as const;
 
 export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];

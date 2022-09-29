@@ -122,33 +122,28 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookMessageOptions
+   * @typedef {BaseMessageOptions} WebhookCreateMessageOptions
+   * @property {boolean} [tts=false] Whether the message should be spoken aloud
+   * @property {MessageFlags} [flags] Which flags to set for the message.
+   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
+   * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
    */
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {Object} WebhookEditMessageOptions
-   * @property {Embed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
-   * @property {string} [content] See {@link BaseMessageOptions#content}
-   * @property {JSONEncodable<AttachmentPayload>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
-   * See {@link BaseMessageOptions#files}
-   * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
+   * @typedef {BaseMessageOptions} WebhookEditMessageOptions
    * @property {Attachment[]} [attachments] Attachments to send with the message
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
-   * Action rows containing interactive components for the message (buttons, select menus)
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
    */
 
   /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookCreateMessageOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message

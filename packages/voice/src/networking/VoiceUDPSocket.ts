@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/method-signature-style */
 import { Buffer } from 'node:buffer';
 import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';

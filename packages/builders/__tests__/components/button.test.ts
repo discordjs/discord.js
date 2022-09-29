@@ -31,7 +31,7 @@ describe('Button Components', () => {
 			expect(() => buttonStyleValidator.parse(ButtonStyle.Secondary)).not.toThrowError();
 		});
 
-		test('GIVEN invalid style THEN validator does not throw', () => {
+		test('GIVEN invalid style THEN validator does throw', () => {
 			expect(() => buttonStyleValidator.parse(7)).toThrowError();
 		});
 

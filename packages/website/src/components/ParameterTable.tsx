@@ -1,5 +1,5 @@
 import type { ParameterDocumentation } from '@discordjs/api-extractor-utils';
-import { Box, ScrollArea } from '@mantine/core';
+import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -10,18 +10,20 @@ const columnStyles = {
 };
 
 export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
-	const rows = data.map((param) => ({
-		Name: param.name,
-		Type: <HyperlinkedText tokens={param.tokens} />,
-		Optional: param.isOptional ? 'Yes' : 'No',
-		Description: param.paramCommentBlock ? <TSDoc node={param.paramCommentBlock} /> : 'None',
-	}));
+	const rows = useMemo(
+		() =>
+			data.map((param) => ({
+				Name: param.name,
+				Type: <HyperlinkedText tokens={param.tokens} />,
+				Optional: param.isOptional ? 'Yes' : 'No',
+				Description: param.paramCommentBlock ? <TSDoc node={param.paramCommentBlock} /> : 'None',
+			})),
+		[data],
+	);
 
 	return (
-		<Box>
-			<ScrollArea pb="xs" offsetScrollbars>
-				<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
-			</ScrollArea>
-		</Box>
+		<div className="overflow-x-auto">
+			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+		</div>
 	);
 }

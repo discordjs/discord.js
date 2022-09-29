@@ -14,6 +14,7 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * - {@link CategoryChannel}
  * - {@link NewsChannel}
  * - {@link StageChannel}
+ * - {@link ForumChannel}
  * @extends {BaseChannel}
  * @abstract
  */

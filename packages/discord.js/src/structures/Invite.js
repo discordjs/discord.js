@@ -13,7 +13,7 @@ const { Error, ErrorCodes } = require('../errors');
  */
 class Invite extends Base {
   /**
-   * A regular expression that globally matches Discord invite links.
+   * A regular expression that matches Discord invite links.
    * The `code` group property is present on the `exec()` result of this expression.
    * @type {RegExp}
    * @memberof Invite

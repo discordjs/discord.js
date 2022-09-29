@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.1.0...@discordjs/rest@1.2.0) - (2022-09-25)
+
+## Bug Fixes
+
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+
+## Features
+
+- **rest:** Use Agent with higher connect timeout (#8679) ([64cd53c](https://github.com/discordjs/discord.js/commit/64cd53c4c23dd9c9503fd0887ac5c542137c57e8))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
 # [@discordjs/rest@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.0.1...@discordjs/rest@1.1.0) - (2022-08-22)
 
 ## Features

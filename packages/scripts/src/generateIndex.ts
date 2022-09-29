@@ -8,6 +8,7 @@ import {
 	ApiItem,
 	ApiModel,
 	type ApiPackage,
+	ApiItemKind,
 } from '@microsoft/api-extractor-model';
 import {
 	DocNodeKind,
@@ -28,6 +29,7 @@ export interface MemberJSON {
 }
 
 export const PACKAGES = ['builders', 'collection', 'proxy', 'rest', 'voice', 'ws'];
+let idx = 0;
 
 export function createApiModel(data: any) {
 	const model = new ApiModel();
@@ -95,10 +97,14 @@ function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 }
 
 export function visitNodes(item: ApiItem, tag: string) {
-	const members: MemberJSON[] = [];
+	const members: (MemberJSON & { id: number })[] = [];
 
 	for (const member of item.members) {
 		if (!(member instanceof ApiDeclaredItem)) {
+			continue;
+		}
+
+		if (member.kind === ApiItemKind.Constructor) {
 			continue;
 		}
 
@@ -107,9 +113,10 @@ export function visitNodes(item: ApiItem, tag: string) {
 		}
 
 		members.push({
+			id: idx++,
 			name: member.displayName,
 			kind: member.kind,
-			summary: tryResolveSummaryText(member),
+			summary: tryResolveSummaryText(member) ?? '',
 			path: generatePath(member.getHierarchy(), tag),
 		});
 	}
@@ -123,13 +130,13 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	const dir = 'searchIndex';
 
 	try {
-		(await stat(join(cwd(), dir))).isDirectory();
+		(await stat(join(cwd(), 'public', dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), dir));
+		await mkdir(join(cwd(), 'public', dir));
 	}
 
 	await writeFile(
-		join(cwd(), 'searchIndex', `${packageName}-${tag}-index.json`),
+		join(cwd(), 'public', dir, `${packageName}-${tag}-index.json`),
 		JSON.stringify(members, undefined, 2),
 	);
 }
@@ -148,6 +155,7 @@ export async function generateAllIndicies() {
 		// 	await generateIndex(model, pkg, version);
 		// }
 
+		idx = 0;
 		const model = createApiModel(data);
 		await generateIndex(model, pkg);
 	}
