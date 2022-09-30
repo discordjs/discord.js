@@ -34,8 +34,18 @@ import { ProxyAgent } from 'undici';
 const client = new Client({
 	// other options,
 	rest: {
-		agent: new ProxyAgent('https://localhost:8080'),
+		api: 'http://localhost:8080/api',
 	},
+});
+```
+
+Or with just `@discordjs/rest`:
+
+```ts
+import { REST } from '@discordjs/rest';
+
+const rest = new REST({
+	api: 'http://localhost:8080/api',
 });
 ```
 
