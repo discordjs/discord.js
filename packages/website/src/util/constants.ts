@@ -19,4 +19,4 @@ client.on('interactionCreate', async (interaction) => {
 	}
 });
 
-await client.login('token');`;
+await client.login(TOKEN);`;
