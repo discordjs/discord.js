@@ -29,7 +29,6 @@ Use it:
 
 ```ts
 import { Client } from 'discord.js';
-import { ProxyAgent } from 'undici';
 
 const client = new Client({
 	// other options,
