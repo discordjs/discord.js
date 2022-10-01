@@ -125,6 +125,7 @@ import {
   AuditLogOptionsType,
   TextChannelType,
   ChannelFlags,
+  SortOrderType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -621,7 +622,7 @@ export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
 }
 
 export class ModalBuilder extends BuildersModal {
-  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalComponent>);
+  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalInteractionResponseCallbackData>);
   public static from(other: JSONEncodable<APIModalComponent> | APIModalComponent): ModalBuilder;
 }
 
@@ -2097,6 +2098,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   public defaultAutoArchiveDuration: ThreadAutoArchiveDuration | null;
   public nsfw: boolean;
   public topic: string | null;
+  public defaultSortOrder: SortOrderType | null;
 
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
@@ -2108,6 +2110,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
     reason?: string,
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
+  public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
 }
 
 export class PermissionOverwrites extends Base {
@@ -4251,6 +4254,7 @@ export interface CategoryCreateChannelOptions {
   videoQualityMode?: VideoQualityMode;
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
+  defaultSortOrder?: SortOrderType;
   reason?: string;
 }
 
@@ -4932,6 +4936,7 @@ export interface GuildChannelEditOptions {
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
   flags?: ChannelFlagsResolvable;
+  defaultSortOrder?: SortOrderType | null;
   reason?: string;
 }
 
