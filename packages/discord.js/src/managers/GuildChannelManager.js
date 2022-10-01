@@ -141,6 +141,7 @@ class GuildChannelManager extends CachedManager {
     videoQualityMode,
     availableTags,
     defaultReactionEmoji,
+    defaultSortOrder,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -162,6 +163,7 @@ class GuildChannelManager extends CachedManager {
         video_quality_mode: videoQualityMode,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
+        default_sort_order: defaultSortOrder,
       },
       reason,
     });
@@ -229,6 +231,7 @@ class GuildChannelManager extends CachedManager {
    * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
+   * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -289,6 +292,7 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
         flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
+        default_sort_order: data.defaultSortOrder,
       },
       reason: data.reason,
     });
