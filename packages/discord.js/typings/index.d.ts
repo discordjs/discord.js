@@ -621,7 +621,7 @@ export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
 }
 
 export class ModalBuilder extends BuildersModal {
-  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalComponent>);
+  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalInteractionResponseCallbackData>);
   public static from(other: JSONEncodable<APIModalComponent> | APIModalComponent): ModalBuilder;
 }
 
