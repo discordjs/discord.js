@@ -53,6 +53,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
+		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.2.2",
 		"discord-api-types": "^0.37.11",

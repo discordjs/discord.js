@@ -3,6 +3,7 @@ import { EventEmitter } from 'node:events';
 import { setInterval, clearInterval } from 'node:timers';
 import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
@@ -12,12 +13,7 @@ import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/consta
 import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-const getFileType = async (): Promise<typeof import('file-type')> => {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	let cached: Promise<typeof import('file-type')>;
-	return (cached ??= import('file-type'));
-};
+const getFileType = lazy(async () => import('file-type'));
 
 /**
  * Represents a file to be added to the request

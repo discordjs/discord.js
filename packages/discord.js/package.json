@@ -52,6 +52,7 @@
     "@discordjs/builders": "workspace:^",
     "@discordjs/collection": "workspace:^",
     "@discordjs/rest": "workspace:^",
+    "@discordjs/util": "workspace:^",
     "@sapphire/snowflake": "^3.2.2",
     "@types/ws": "^8.5.3",
     "discord-api-types": "^0.37.11",

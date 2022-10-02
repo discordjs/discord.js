@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIModalActionRowComponent,
@@ -6,7 +7,6 @@ import type {
 import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
 import { customIdValidator } from '../../components/Assertions.js';
 import { createComponentBuilder } from '../../components/Components.js';
-import type { JSONEncodable } from '../../util/jsonEncodable';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { titleValidator, validateRequiredParameters } from './Assertions.js';
 

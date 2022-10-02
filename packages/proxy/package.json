@@ -55,6 +55,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/rest": "^1.0.0",
+		"@discordjs/util": "workspace:^",
 		"tslib": "^2.4.0",
 		"undici": "^5.10.0"
 	},
