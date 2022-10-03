@@ -1,7 +1,7 @@
 'use strict';
 
 const { InteractionType } = require('discord-api-types/v10');
-const { ErrorCodes } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 
 /**
  * Represents an interaction's response

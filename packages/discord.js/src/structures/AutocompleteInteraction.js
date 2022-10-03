@@ -3,7 +3,7 @@
 const { InteractionResponseType, Routes } = require('discord-api-types/v10');
 const BaseInteraction = require('./BaseInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { ErrorCodes } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 
 /**
  * Represents an autocomplete interaction.
