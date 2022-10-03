@@ -36,7 +36,13 @@ function resolveIcon(item: keyof ApiItemKind) {
 	}
 }
 
-export function CmdKDialog({ currentPackageName }: { currentPackageName?: string | undefined }) {
+export function CmdKDialog({
+	currentPackageName,
+	currentVersion,
+}: {
+	currentPackageName?: string | undefined;
+	currentVersion?: string | undefined;
+}) {
 	const router = useRouter();
 	const dialog = useCmdK();
 	const [search, setSearch] = useState('');
@@ -94,13 +100,13 @@ export function CmdKDialog({ currentPackageName }: { currentPackageName?: string
 	}, [dialog!.open]);
 
 	useEffect(() => {
-		const searchDoc = async (searchString: string) => {
-			const res = await client.index(`${currentPackageName}-main`).search(searchString, { limit: 5 });
+		const searchDoc = async (searchString: string, version: string) => {
+			const res = await client.index(`${currentPackageName}-${version}`).search(searchString, { limit: 5 });
 			setSearchResults(res.hits);
 		};
 
 		if (search && currentPackageName) {
-			void searchDoc(search);
+			void searchDoc(search, currentVersion?.replaceAll('.', '-') ?? 'main');
 		} else {
 			setSearchResults([]);
 		}
