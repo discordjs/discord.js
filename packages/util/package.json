@@ -2,7 +2,6 @@
 	"name": "@discordjs/util",
 	"version": "0.1.0",
 	"description": "Utilities shared across Discord.js packages",
-	"private": true,
 	"scripts": {
 		"build": "tsup",
 		"test": "vitest run && tsd",

@@ -136,7 +136,9 @@ jobs:
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
           fi
@@ -147,7 +149,9 @@ jobs:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
           fi
