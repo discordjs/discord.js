@@ -305,7 +305,8 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
         flags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
-        default_sort_order: data.defaultSortOrder,
+        default_sort_order:
+          typeof data.defaultSortOrder === 'string' ? SortOrderTypes[data.defaultSortOrder] : data.defaultSortOrder,
       },
       reason,
     });
