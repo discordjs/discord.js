@@ -4252,6 +4252,7 @@ export interface CategoryCreateChannelOptions {
   videoQualityMode?: VideoQualityMode;
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
+  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   defaultSortOrder?: SortOrderType;
   reason?: string;
 }
