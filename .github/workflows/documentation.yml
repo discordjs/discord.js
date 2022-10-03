@@ -79,7 +79,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
+        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'util', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -136,7 +136,9 @@ jobs:
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
           fi
@@ -147,7 +149,9 @@ jobs:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
           fi

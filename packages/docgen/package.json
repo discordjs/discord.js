@@ -7,9 +7,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"fmt": "yarn format",
-		"prepack": "yarn format && yarn build",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
-		"release": "cliff-jumper"
+		"prepack": "yarn format && yarn build"
 	},
 	"bin": "./dist/cli.js",
 	"directories": {

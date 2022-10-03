@@ -1,12 +1,12 @@
 'use strict';
 
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { Error, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
-const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 

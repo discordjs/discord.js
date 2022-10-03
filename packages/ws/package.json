@@ -7,7 +7,7 @@
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
 		"release": "cliff-jumper"
@@ -54,15 +54,15 @@
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/rest": "workspace:^",
+		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.3",
 		"@vladfrangu/async_event_emitter": "^2.1.2",
-		"discord-api-types": "^0.37.10",
+		"discord-api-types": "^0.37.11",
 		"tslib": "^2.4.0",
 		"ws": "^8.9.0"
 	},
 	"devDependencies": {
-		"@discordjs/docgen": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.7",
 		"@microsoft/api-extractor": "^7.31.2",
 		"@types/node": "^16.11.60",
