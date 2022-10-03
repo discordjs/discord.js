@@ -1,7 +1,6 @@
+import { isJSONEncodable, type Equatable, type JSONEncodable } from '@discordjs/util';
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
 import isEqual from 'fast-deep-equal';
-import type { Equatable } from '../../util/equatable';
-import { isJSONEncodable, type JSONEncodable } from '../../util/jsonEncodable.js';
 import { customIdValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 import {

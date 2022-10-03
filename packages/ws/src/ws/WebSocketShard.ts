@@ -7,6 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -22,7 +23,6 @@ import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants.js';
-import { lazy } from '../utils/utils.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then

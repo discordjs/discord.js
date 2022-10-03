@@ -124,6 +124,16 @@ class ForumChannel extends GuildChannel {
        */
       this.topic = data.topic;
     }
+
+    if ('default_sort_order' in data) {
+      /**
+       * The default sort order mode used to order posts
+       * @type {?SortOrderType}
+       */
+      this.defaultSortOrder = data.default_sort_order;
+    } else {
+      this.defaultSortOrder ??= null;
+    }
   }
 
   /**
@@ -203,6 +213,16 @@ class ForumChannel extends GuildChannel {
    */
   setTopic(topic, reason) {
     return this.edit({ topic, reason });
+  }
+
+  /**
+   * Sets the default sort order mode used to order posts
+   * @param {?SortOrderType} defaultSortOrder The default sort order mode to set on this channel
+   * @param {string} [reason] Reason for changing the default sort order
+   * @returns {Promise<ForumChannel>}
+   */
+  setDefaultSortOrder(defaultSortOrder, reason) {
+    return this.edit({ defaultSortOrder, reason });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
