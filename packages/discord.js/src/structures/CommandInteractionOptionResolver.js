@@ -1,7 +1,7 @@
 'use strict';
 
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * A resolver for command interaction options.
@@ -75,7 +75,7 @@ class CommandInteractionOptionResolver {
     const option = this._hoistedOptions.find(opt => opt.name === name);
     if (!option) {
       if (required) {
-        throw new TypeError(ErrorCodes.CommandInteractionOptionNotFound, name);
+        throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNotFound, name);
       }
       return null;
     }
@@ -96,9 +96,9 @@ class CommandInteractionOptionResolver {
     if (!option) {
       return null;
     } else if (option.type !== type) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
+      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
     } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
+      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
     }
     return option;
   }
@@ -110,7 +110,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommand(required = true) {
     if (required && !this._subcommand) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubcommand);
+      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNoSubcommand);
     }
     return this._subcommand;
   }
@@ -122,7 +122,7 @@ class CommandInteractionOptionResolver {
    */
   getSubcommandGroup(required = false) {
     if (required && !this._group) {
-      throw new TypeError(ErrorCodes.CommandInteractionOptionNoSubcommandGroup);
+      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionNoSubcommandGroup);
     }
     return this._group;
   }
@@ -273,7 +273,7 @@ class CommandInteractionOptionResolver {
    */
   getFocused(getFull = false) {
     const focusedOption = this._hoistedOptions.find(option => option.focused);
-    if (!focusedOption) throw new TypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
+    if (!focusedOption) throw new DiscordjsTypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
     return getFull ? focusedOption : focusedOption.value;
   }
 }

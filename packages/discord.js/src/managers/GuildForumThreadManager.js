@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 
 /**
@@ -56,7 +56,7 @@ class GuildForumThreadManager extends ThreadManager {
     appliedTags,
   } = {}) {
     if (!message) {
-      throw new TypeError(ErrorCodes.GuildForumMessageRequired);
+      throw new DiscordjsTypeError(ErrorCodes.GuildForumMessageRequired);
     }
 
     const { body, files } = await (message instanceof MessagePayload ? message : MessagePayload.create(this, message))

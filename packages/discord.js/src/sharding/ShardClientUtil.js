@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Events = require('../util/Events');
 const { makeError, makePlainError } = require('../util/Util');
 
@@ -141,7 +141,7 @@ class ShardClientUtil {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort ?? process;
       if (typeof script !== 'function') {
-        reject(new TypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
+        reject(new DiscordjsTypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
         return;
       }
       script = `(${script})(this, ${JSON.stringify(options.context)})`;
@@ -246,7 +246,7 @@ class ShardClientUtil {
    */
   static shardIdForGuildId(guildId, shardCount) {
     const shard = Number(BigInt(guildId) >> 22n) % shardCount;
-    if (shard < 0) throw new Error(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
+    if (shard < 0) throw new DiscordjsError(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
     return shard;
   }
 
