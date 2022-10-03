@@ -3,6 +3,8 @@
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
+const { SortOrderTypes } = require('../util/Constants');
+const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Util');
 
 /**
  * @typedef {Object} GuildForumTagEmoji
@@ -59,18 +61,7 @@ class ForumChannel extends GuildChannel {
        * The set of tags that can be used in this channel.
        * @type {GuildForumTag[]}
        */
-      this.availableTags = data.available_tags.map(tag => ({
-        id: tag.id,
-        name: tag.name,
-        moderated: tag.moderated,
-        emoji:
-          tag.emoji_id ?? tag.emoji_name
-            ? {
-                id: tag.emoji_id,
-                name: tag.emoji_name,
-              }
-            : null,
-      }));
+      this.availableTags = data.available_tags.map(tag => transformAPIGuildForumTag(tag));
     } else {
       this.availableTags ??= [];
     }
@@ -81,10 +72,7 @@ class ForumChannel extends GuildChannel {
        * @type {?DefaultReactionEmoji}
        */
       this.defaultReactionEmoji = data.default_reaction_emoji
-        ? {
-            id: data.default_reaction_emoji.emoji_id,
-            name: data.default_reaction_emoji.emoji_name,
-          }
+        ? transformAPIGuildDefaultReaction(data.default_reaction_emoji)
         : null;
     } else {
       this.defaultReactionEmoji ??= null;
@@ -137,6 +125,16 @@ class ForumChannel extends GuildChannel {
        */
       this.topic = data.topic;
     }
+
+    if ('default_sort_order' in data) {
+      /**
+       * The default sort order mode used to order posts
+       * @type {?SortOrderType}
+       */
+      this.defaultSortOrder = SortOrderTypes[data.default_sort_order];
+    } else {
+      this.defaultSortOrder ??= null;
+    }
   }
 
   /**
@@ -167,6 +165,16 @@ class ForumChannel extends GuildChannel {
    */
   setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
     return this.edit({ defaultThreadRateLimitPerUser, reason });
+  }
+
+  /**
+   * Sets the default sort order mode used to order posts
+   * @param {?SortOrderType} defaultSortOrder The default sort order mode to set on this channel
+   * @param {string} [reason] Reason for changing the default sort order
+   * @returns {Promise<ForumChannel>}
+   */
+  setDefaultSortOrder(defaultSortOrder, reason) {
+    return this.edit({ defaultSortOrder, reason });
   }
 
   /**

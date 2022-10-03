@@ -593,6 +593,71 @@ class Util extends null {
     if (features.includes('THREE_DAY_THREAD_ARCHIVE')) return 4320;
     return 1440;
   }
+
+  /**
+   * Transforms an API guild forum tag to camel-cased guild forum tag.
+   * @param {APIGuildForumTag} tag The tag to transform
+   * @returns {GuildForumTag}
+   * @ignore
+   */
+  static transformAPIGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji:
+        tag.emoji_id ?? tag.emoji_name
+          ? {
+              id: tag.emoji_id,
+              name: tag.emoji_name,
+            }
+          : null,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum tag to an API guild forum tag.
+   * @param {GuildForumTag} tag The tag to transform
+   * @returns {APIGuildForumTag}
+   * @ignore
+   */
+  static transformGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji_id: tag.emoji?.id ?? null,
+      emoji_name: tag.emoji?.name ?? null,
+    };
+  }
+
+  /**
+   * Transforms an API guild forum default reaction object to a
+   * camel-cased guild forum default reaction object.
+   * @param {APIGuildForumDefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {DefaultReactionEmoji}
+   * @ignore
+   */
+  static transformAPIGuildDefaultReaction(defaultReaction) {
+    return {
+      id: defaultReaction.emoji_id,
+      name: defaultReaction.emoji_name,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum default reaction object to an
+   * API guild forum default reaction object.
+   * @param {DefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {APIGuildForumDefaultReactionEmoji}
+   * @ignore
+   */
+  static transformGuildDefaultReaction(defaultReaction) {
+    return {
+      emoji_id: defaultReaction.id,
+      emoji_name: defaultReaction.name,
+    };
+  }
 }
 
 module.exports = Util;

@@ -1379,6 +1379,15 @@ exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VO
  */
 exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
 
+/**
+ * Sort {@link ForumChannel} posts by ?
+ * * LATEST_ACTIVITY
+ * * CREATION_DATE
+ * @typedef {string} SortOrderType
+ * @see {@link https://discord.com/developers/docs/resources/channel/#channel-object-sort-order-types}
+ */
+exports.SortOrderTypes = createEnum([null, 'LATEST_ACTIVITY', 'CREATION_DATE']);
+
 exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {

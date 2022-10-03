@@ -52,6 +52,7 @@ import {
   Snowflake,
   LocalizationMap,
   LocaleString,
+  SortOrderType,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2505,6 +2506,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, [
   public defaultAutoArchiveDuration: ThreadAutoArchiveDuration | null;
   public nsfw: boolean;
   public topic: string | null;
+  public defaultSortOrder: SortOrderType | null;
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
@@ -2515,6 +2517,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, [
     reason?: string,
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
+  public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
 }
 
 export class TextInputComponent extends BaseMessageComponent {
@@ -4182,7 +4185,6 @@ export type CacheWithLimitsOptions = {
     ? LimitedCollectionOptions<K, V> | number
     : never;
 };
-
 export interface CategoryCreateChannelOptions {
   permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   topic?: string;
@@ -4202,6 +4204,10 @@ export interface CategoryCreateChannelOptions {
   rateLimitPerUser?: number;
   position?: number;
   rtcRegion?: string;
+  videoQualityMode?: VideoQualityMode;
+  availableTags?: GuildForumTagData[];
+  defaultReactionEmoji?: DefaultReactionEmoji;
+  defaultSortOrder?: SortOrderType;
   reason?: string;
 }
 
@@ -4229,6 +4235,7 @@ export interface ChannelData {
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultThreadRateLimitPerUser?: number;
+  defaultSortOrder?: SortOrderType | null;
   flags?: ChannelFlagsResolvable;
 }
 
