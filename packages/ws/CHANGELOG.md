@@ -27,16 +27,11 @@ All notable changes to this project will be documented in this file.
 - **website:** Adjust typography (#8503) ([0f83402](https://github.com/discordjs/discord.js/commit/0f834029850d2448981596cf082ff59917018d66))
 - Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
 
-# [@discordjs/ws@0.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.1.0...@discordjs/ws@0.2.0) - (2022-07-30)
+# [@discordjs/ws@0.2.0](https://github.com/discordjs/discord.js/tree/@discordjs/ws@0.2.0) - (2022-07-30)
 
 ## Bug Fixes
 
 - **WebSocketShard:** Account code 1000 with no prior indication (#8399) ([5137bfc](https://github.com/discordjs/discord.js/commit/5137bfc17d763488083b76ee9008611df333272a))
-
-# [@discordjs/ws@0.1.0](https://github.com/discordjs/discord.js/tree/@discordjs/ws@0.1.0) - (2022-07-27)
-
-## Bug Fixes
-
 - **WebSocketShard:** Use correct import (#8357) ([78d4295](https://github.com/discordjs/discord.js/commit/78d4295a40b83ea4f7cc830ff81927cba2d1d3f0))
 
 ## Features

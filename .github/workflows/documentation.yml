@@ -79,7 +79,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
+        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'util', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}

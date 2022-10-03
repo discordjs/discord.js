@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/util",
-	"version": "0.1.0-dev",
+	"version": "0.1.0",
 	"description": "Utilities shared across Discord.js packages",
 	"private": true,
 	"scripts": {
@@ -8,7 +8,11 @@
 		"test": "vitest run && tsd",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
 		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
-		"fmt": "yarn format"
+		"fmt": "yarn format",
+		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
+		"prepack": "yarn lint && yarn test && yarn build",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/util/*'",
+		"release": "cliff-jumper"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -48,8 +52,12 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
+		"@favware/cliff-jumper": "^1.8.8",
+		"@microsoft/api-extractor": "^7.32.0",
 		"@types/node": "^16.11.56",
 		"@vitest/coverage-c8": "^0.22.1",
+		"cross-env": "^7.0.3",
+		"downlevel-dts": "^0.10.1",
 		"eslint": "^8.23.0",
 		"eslint-config-neon": "^0.1.31",
 		"prettier": "^2.7.1",
