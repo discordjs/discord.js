@@ -39,15 +39,15 @@
 	"devDependencies": {
 		"@commitlint/cli": "^17.1.2",
 		"@commitlint/config-angular": "^17.1.0",
-		"@favware/cliff-jumper": "^1.8.7",
+		"@favware/cliff-jumper": "^1.8.8",
 		"@favware/npm-deprecate": "^1.0.5",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^8.0.1",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",
 		"tsup": "^6.2.3",
-		"turbo": "^1.5.3",
-		"typescript": "^4.8.3"
+		"turbo": "^1.5.5",
+		"typescript": "^4.8.4"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
