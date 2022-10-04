@@ -65,6 +65,11 @@ function flatten(obj, ...props) {
  * @property {boolean} [spoiler=true] Whether to escape spoilers or not
  * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
  * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
+ * @property {boolean} [escape=true] Whether to escape escape characters or not
+ * @property {boolean} [heading=false] Whether to escape headings or not
+ * @property {boolean} [bulletedList=false] Whether to escape bulleted lists or not
+ * @property {boolean} [numberedList=false] Whether to escape numbered lists or not
+ * @property {boolean} [maskedLink=false] Whether to escape masked links or not
  */
 
 /**
@@ -85,6 +90,11 @@ function escapeMarkdown(
     spoiler = true,
     codeBlockContent = true,
     inlineCodeContent = true,
+    escape = true,
+    heading = false,
+    bulletedList = false,
+    numberedList = false,
+    maskedLink = false,
   } = {},
 ) {
   if (!codeBlockContent) {
@@ -100,6 +110,11 @@ function escapeMarkdown(
           strikethrough,
           spoiler,
           inlineCodeContent,
+          escape,
+          heading,
+          bulletedList,
+          numberedList,
+          maskedLink,
         });
       })
       .join(codeBlock ? '\\`\\`\\`' : '```');
@@ -116,6 +131,11 @@ function escapeMarkdown(
           underline,
           strikethrough,
           spoiler,
+          escape,
+          heading,
+          bulletedList,
+          numberedList,
+          maskedLink,
         });
       })
       .join(inlineCode ? '\\`' : '`');
@@ -127,6 +147,11 @@ function escapeMarkdown(
   if (underline) text = escapeUnderline(text);
   if (strikethrough) text = escapeStrikethrough(text);
   if (spoiler) text = escapeSpoiler(text);
+  if (escape) text = escapeEscape(text);
+  if (heading) text = escapeHeading(text);
+  if (bulletedList) text = escapeBulletedList(text);
+  if (numberedList) text = escapeNumberedList(text);
+  if (maskedLink) text = escapeMaskedLink(text);
   return text;
 }
 
@@ -208,6 +233,51 @@ function escapeStrikethrough(text) {
  */
 function escapeSpoiler(text) {
   return text.replaceAll('||', '\\|\\|');
+}
+
+/**
+ * Escapes escape characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeEscape(text) {
+  return text.replaceAll('\\', '\\\\');
+}
+
+/**
+ * Escapes heading characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeHeading(text) {
+  return text.replaceAll(/^( {0,2}- +)?(#{1,3} )/gm, '$1\\$2');
+}
+
+/**
+ * Escapes bulleted list characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeBulletedList(text) {
+  return text.replaceAll(/^( *)-( +)/gm, '$1\\-$2');
+}
+
+/**
+ * Escapes numbered list characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeNumberedList(text) {
+  return text.replaceAll(/^( *\d+)\./gm, '$1\\.');
+}
+
+/**
+ * Escapes masked link characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeMaskedLink(text) {
+  return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$0');
 }
 
 /**
