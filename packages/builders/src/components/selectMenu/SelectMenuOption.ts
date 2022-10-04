@@ -1,5 +1,5 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-import type { JSONEncodable } from '../../util/jsonEncodable.js';
 import {
 	defaultValidator,
 	emojiValidator,

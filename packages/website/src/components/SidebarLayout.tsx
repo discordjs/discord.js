@@ -374,7 +374,7 @@ export function SidebarLayout({
 					</footer>
 				</article>
 			</main>
-			<CmdKDialog currentPackageName={packageName} />
+			<CmdKDialog currentPackageName={packageName} currentVersion={branchName} />
 		</>
 	);
 }

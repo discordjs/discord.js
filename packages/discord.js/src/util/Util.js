@@ -510,16 +510,6 @@ function cleanCodeBlockContent(text) {
 }
 
 /**
- * Lazily evaluates a callback function
- * @param {Function} cb The callback to lazily evaluate
- * @returns {Function}
- */
-function lazy(cb) {
-  let defaultValue;
-  return () => (defaultValue ??= cb());
-}
-
-/**
  * Parses a webhook URL for the id and token.
  * @param {string} url The URL to parse
  * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
@@ -562,7 +552,6 @@ module.exports = {
   basename,
   cleanContent,
   cleanCodeBlockContent,
-  lazy,
   parseWebhookURL,
 };
 

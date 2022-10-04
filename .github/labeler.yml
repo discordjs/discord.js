@@ -37,3 +37,7 @@
 'packages:ws':
   - packages/ws/*
   - packages/ws/**/*
+
+'packages:util':
+  - packages/util/*
+  - packages/util/**/*
