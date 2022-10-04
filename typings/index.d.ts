@@ -2625,6 +2625,11 @@ export class Util extends null {
   public static escapeUnderline(text: string): string;
   public static escapeStrikethrough(text: string): string;
   public static escapeSpoiler(text: string): string;
+  public static escapeEscape(text: string): string;
+  public static escapeHeading(text: string): string;
+  public static escapeBulletedList(text: string): string;
+  public static escapeNumberedList(text: string): string;
+  public static escapeMaskedLink(text: string): string;
   public static cleanCodeBlockContent(text: string): string;
   public static fetchRecommendedShards(token: string, options?: FetchRecommendedShardsOptions): Promise<number>;
   public static flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
@@ -4650,8 +4655,13 @@ export interface EscapeMarkdownOptions {
   underline?: boolean;
   strikethrough?: boolean;
   spoiler?: boolean;
-  inlineCodeContent?: boolean;
   codeBlockContent?: boolean;
+  inlineCodeContent?: boolean;
+  escape?: boolean;
+  heading?: boolean;
+  bulletedList?: boolean;
+  numberedList?: boolean;
+  maskedLink?: boolean;
 }
 
 export type ExplicitContentFilterLevel = keyof typeof ExplicitContentFilterLevels;

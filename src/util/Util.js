@@ -124,6 +124,11 @@ class Util extends null {
    * @property {boolean} [spoiler=true] Whether to escape spoilers or not
    * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
    * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
+   * @property {boolean} [escape=true] Whether to escape escape characters or not
+   * @property {boolean} [heading=false] Whether to escape headings or not
+   * @property {boolean} [bulletedList=false] Whether to escape bulleted lists or not
+   * @property {boolean} [numberedList=false] Whether to escape numbered lists or not
+   * @property {boolean} [maskedLink=false] Whether to escape masked links or not
    */
 
   /**
@@ -144,6 +149,11 @@ class Util extends null {
       spoiler = true,
       codeBlockContent = true,
       inlineCodeContent = true,
+      escape = true,
+      heading = false,
+      bulletedList = false,
+      numberedList = false,
+      maskedLink = false,
     } = {},
   ) {
     if (!codeBlockContent) {
@@ -159,6 +169,11 @@ class Util extends null {
             strikethrough,
             spoiler,
             inlineCodeContent,
+            escape,
+            heading,
+            bulletedList,
+            numberedList,
+            maskedLink,
           });
         })
         .join(codeBlock ? '\\`\\`\\`' : '```');
@@ -175,6 +190,11 @@ class Util extends null {
             underline,
             strikethrough,
             spoiler,
+            escape,
+            heading,
+            bulletedList,
+            numberedList,
+            maskedLink,
           });
         })
         .join(inlineCode ? '\\`' : '`');
@@ -186,6 +206,11 @@ class Util extends null {
     if (underline) text = Util.escapeUnderline(text);
     if (strikethrough) text = Util.escapeStrikethrough(text);
     if (spoiler) text = Util.escapeSpoiler(text);
+    if (escape) text = Util.escapeEscape(text);
+    if (heading) text = Util.escapeHeading(text);
+    if (bulletedList) text = Util.escapeBulletedList(text);
+    if (numberedList) text = Util.escapeNumberedList(text);
+    if (maskedLink) text = Util.escapeMaskedLink(text);
     return text;
   }
 
@@ -204,7 +229,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+    return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
   }
 
   /**
@@ -267,6 +292,51 @@ class Util extends null {
    */
   static escapeSpoiler(text) {
     return text.replaceAll('||', '\\|\\|');
+  }
+
+  /**
+   * Escapes escape characters in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeEscape(text) {
+    return text.replaceAll('\\', '\\\\');
+  }
+
+  /**
+   * Escapes heading characters in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeHeading(text) {
+    return text.replaceAll(/^( {0,2}- +)?(#{1,3} )/gm, '$1\\$2');
+  }
+
+  /**
+   * Escapes bulleted list characters in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeBulletedList(text) {
+    return text.replaceAll(/^( *)-( +)/gm, '$1\\-$2');
+  }
+
+  /**
+   * Escapes numbered list characters in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeNumberedList(text) {
+    return text.replaceAll(/^( *\d+)\./gm, '$1\\.');
+  }
+
+  /**
+   * Escapes masked link characters in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeMaskedLink(text) {
+    return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$0');
   }
 
   /**
