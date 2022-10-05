@@ -1,0 +1,33 @@
+{
+	"extends": ["../../.eslintrc.json", "neon/react", "neon/prettier"],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"overrides": [
+		{
+			"files": ["*.astro"],
+			"plugins": ["astro"],
+			"env": {
+				"astro/astro": true
+			},
+			"parser": "astro-eslint-parser",
+			"parserOptions": {
+				"parser": "@typescript-eslint/parser",
+				"extraFileExtensions": [".astro"]
+			},
+			"rules": {
+				"react/no-unknown-property": 0
+			}
+		},
+		{
+			"files": ["**/*.astro/*.js", "*.astro/*.js"],
+			"rules": {}
+		}
+	],
+	"rules": {
+		"react/react-in-jsx-scope": 0,
+		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".astro"] }]
+	}
+}

@@ -1,0 +1,30 @@
+# Packages
+node_modules/
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Env
+.env
+
+# Dist
+dist/
+typings/
+.cache/
+build/
+api/
+src/styles/unocss.css
+.next/
+
+# Miscellaneous
+.tmp/
+coverage/
+.vercel
+public/searchIndex
