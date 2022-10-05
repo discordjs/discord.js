@@ -206,7 +206,7 @@ class ShardClientUtil {
    */
   _respond(type, message) {
     this.send(message).catch(err => {
-      const error = new globalThis.Error(`Error when sending ${type} response to master process: ${err.message}`);
+      const error = new Error(`Error when sending ${type} response to master process: ${err.message}`);
       error.stack = err.stack;
       /**
        * Emitted when the client encounters an error.
