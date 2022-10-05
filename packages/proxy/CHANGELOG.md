@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 
 - Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
 
-# [@discordjs/proxy@1.0.0](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.0.0) - (2022-07-17)
+# [@discordjs/proxy@1.0.1](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.0.1) - (2022-07-27)
 
 ## Bug Fixes
 
