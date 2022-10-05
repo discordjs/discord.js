@@ -6,7 +6,7 @@ export default function FourOhFourPage() {
 		<>
 			<Head>
 				<title key="title">discord.js | 404</title>
-				<meta key="og_title" property="og:title" content="discord.js | 404" />
+				<meta content="discord.js | 404" key="og_title" property="og:title" />
 			</Head>
 			<div className="mx-auto flex h-full max-w-lg flex-col place-content-center place-items-center gap-8 py-16 px-8 lg:py-0 lg:px-6">
 				<h1 className="text-[9rem] font-black leading-none md:text-[12rem]">404</h1>

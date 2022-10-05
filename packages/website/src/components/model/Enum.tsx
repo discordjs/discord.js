@@ -9,16 +9,16 @@ export function Enum({ data }: { data: ApiEnumJSON }) {
 	const matches = useMedia('(max-width: 768px)', true);
 
 	return (
-		<DocContainer name={data.name} kind={data.kind} excerpt={data.excerpt} summary={data.summary}>
-			<Section title="Members" icon={<VscSymbolEnumMember size={20} />} padded dense={matches}>
+		<DocContainer excerpt={data.excerpt} kind={data.kind} name={data.name} summary={data.summary}>
+			<Section dense={matches} icon={<VscSymbolEnumMember size={20} />} padded title="Members">
 				<div className="flex flex-col gap-4">
 					{data.members.map((member) => (
 						<CodeListing
 							key={member.name}
 							name={member.name}
 							separator={CodeListingSeparatorType.Value}
-							typeTokens={member.initializerTokens}
 							summary={member.summary}
+							typeTokens={member.initializerTokens}
 						/>
 					))}
 				</div>

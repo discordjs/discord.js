@@ -23,7 +23,7 @@ export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
 
 	return (
 		<div className="overflow-x-auto">
-			<Table columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} columnStyles={columnStyles} />
+			<Table columnStyles={columnStyles} columns={['Name', 'Type', 'Optional', 'Description']} rows={rows} />
 		</div>
 	);
 }
