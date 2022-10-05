@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, StickerFormatType } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { ErrorCodes } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 
 /**
  * Represents a Sticker.
