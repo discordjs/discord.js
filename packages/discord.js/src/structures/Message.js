@@ -541,6 +541,9 @@ class Message extends Base {
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
+   * @property {number} [idle] Time to wait without another message component interaction before ending the collector
+   * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
+   * @property {InteractionResponse} [InteractionResponse] The interaction response to collect interactions from
    */
 
   /**
