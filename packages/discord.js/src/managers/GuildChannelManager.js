@@ -141,6 +141,7 @@ class GuildChannelManager extends CachedManager {
     videoQualityMode,
     availableTags,
     defaultReactionEmoji,
+    defaultAutoArchiveDuration,
     defaultSortOrder,
     reason,
   }) {
@@ -163,6 +164,7 @@ class GuildChannelManager extends CachedManager {
         video_quality_mode: videoQualityMode,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
+        default_auto_archive_duration: defaultAutoArchiveDuration,
         default_sort_order: defaultSortOrder,
       },
       reason,
