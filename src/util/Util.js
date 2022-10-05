@@ -309,7 +309,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeHeading(text) {
-    return text.replaceAll(/^( {0,2}- +)?(#{1,3} )/gm, '$1\\$2');
+    return text.replaceAll(/^( {0,2}[*-] +)?(#{1,3} )/gm, '$1\\$2');
   }
 
   /**
@@ -318,7 +318,7 @@ class Util extends null {
    * @returns {string}
    */
   static escapeBulletedList(text) {
-    return text.replaceAll(/^( *)-( +)/gm, '$1\\-$2');
+    return text.replaceAll(/^( *)[*-]( +)/gm, '$1\\-$2');
   }
 
   /**
