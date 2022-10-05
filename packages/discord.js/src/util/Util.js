@@ -250,7 +250,7 @@ function escapeEscape(text) {
  * @returns {string}
  */
 function escapeHeading(text) {
-  return text.replaceAll(/^( {0,2}- +)?(#{1,3} )/gm, '$1\\$2');
+  return text.replaceAll(/^( {0,2}[*-] +)?(#{1,3} )/gm, '$1\\$2');
 }
 
 /**
@@ -259,7 +259,7 @@ function escapeHeading(text) {
  * @returns {string}
  */
 function escapeBulletedList(text) {
-  return text.replaceAll(/^( *)-( +)/gm, '$1\\-$2');
+  return text.replaceAll(/^( *)[*-]( +)/gm, '$1\\-$2');
 }
 
 /**
