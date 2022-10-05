@@ -2,7 +2,7 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { ErrorCodes } = require('../errors');
+const { Error, ErrorCodes } = require('../errors');
 const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
