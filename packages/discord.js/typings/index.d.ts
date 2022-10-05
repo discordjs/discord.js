@@ -1750,7 +1750,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public unpin(reason?: string): Promise<Message<InGuild>>;
-  public inGuild(): this is Message<true> & this;
+  public inGuild(): this is Message<true>;
 }
 
 export class AttachmentBuilder {
