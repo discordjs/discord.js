@@ -4,46 +4,31 @@ title: Test
 
 import { DiscordMessages } from '~/components/discord/Messages';
 import { DiscordMessage } from '~/components/discord/Message';
-import { DiscordMessageAuthor } from '~/components/discord/MessageAuthor';
-import { DiscordMessageAuthorReply } from '~/components/discord/MessageAuthorReply';
-import { DiscordMessageInteraction } from '~/components/discord/MessageInteraction';
-import { DiscordMessageReply } from '~/components/discord/MessageReply';
 import { DiscordMessageEmbed } from '~/components/discord/MessageEmbed';
-import { DiscordMessageEmbedAuthor } from '~/components/discord/MessageEmbedAuthor';
-import { DiscordMessageEmbedTitle } from '~/components/discord/MessageEmbedTitle';
-import { DiscordMessageEmbedFooter } from '~/components/discord/MessageEmbedFooter';
 
 <DiscordMessages>
 	<DiscordMessage
-		reply={
-			<DiscordMessageReply
-				author={
-					<DiscordMessageAuthorReply
-						avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-						username="Crawl"
-					/>
-				}
-				content="Test"
-			/>
-		}
-		author={
-			<DiscordMessageAuthor
-				avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-				username="Crawl"
-				time="Today at 21:00"
-			/>
-		}
+		reply={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
 	>
 		1234
 	</DiscordMessage>
 	<DiscordMessage
-		author={
-			<DiscordMessageAuthor
-				avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-				username="Crawl"
-				time="Today at 21:00"
-			/>
-		}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
 		followUp
 		time="21:02"
 	>
@@ -53,25 +38,18 @@ import { DiscordMessageEmbedFooter } from '~/components/discord/MessageEmbedFoot
 
 <DiscordMessages>
 	<DiscordMessage
-		reply={
-			<DiscordMessageInteraction
-				author={
-					<DiscordMessageAuthorReply
-						avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-						username="Crawl"
-					/>
-				}
-				command="Test"
-			/>
-		}
-		author={
-			<DiscordMessageAuthor
-				avatar="https://cdn.discordapp.com/avatars/474807795183648809/7f239a0776ff928b2182906a2b3743c9.webp?size=160"
-				bot
-				username="Crawl"
-				time="Today at 21:00"
-			/>
-		}
+		reply={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
 	>
 		1234
 	</DiscordMessage>
@@ -79,45 +57,35 @@ import { DiscordMessageEmbedFooter } from '~/components/discord/MessageEmbedFoot
 
 <DiscordMessages>
 	<DiscordMessage
-		reply={
-			<DiscordMessageReply
-				author={
-					<DiscordMessageAuthorReply
-						avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-						username="Crawl"
-					/>
-				}
-				content="Test"
-			/>
-		}
-		author={
-			<DiscordMessageAuthor
-				avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-				username="Crawl"
-				time="Today at 21:00"
-			/>
-		}
+		reply={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
 	>
 		<>
 			<DiscordMessageEmbed
-				author={
-					<DiscordMessageEmbedAuthor
-						avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-						username="Crawl"
-					/>
-				}
+				author={{
+					avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+					username: 'Crawl',
+				}}
 			/>
-			<DiscordMessageEmbed title={<DiscordMessageEmbedTitle title="Title" />} />
-			<DiscordMessageEmbed footer={<DiscordMessageEmbedFooter content="Footer" />} />
+			<DiscordMessageEmbed title={{ title: 'Title' }} />
+			<DiscordMessageEmbed footer={{ content: 'Footer' }} />
 			<DiscordMessageEmbed
-				author={
-					<DiscordMessageEmbedAuthor
-						avatar="https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160"
-						username="Crawl"
-					/>
-				}
-				title={<DiscordMessageEmbedTitle title="Title" />}
-				footer={<DiscordMessageEmbedFooter content="Footer" />}
+				author={{
+					avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+					username: 'Crawl',
+				}}
+				title={{ title: 'Title' }}
+				footer={{ content: 'Footer' }}
 			>
 				Test
 			</DiscordMessageEmbed>
