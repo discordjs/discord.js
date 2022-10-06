@@ -313,7 +313,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token));
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
     return new Webhook(this, { token, ...data });
   }
 
