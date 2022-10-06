@@ -48,7 +48,11 @@ export async function createPackage(packageName: string, packageDescription?: st
 
 	await writeFile('.lintstagedrc.js', await readFile('../scripts/src/template/template.lintstagedrc.js', 'utf8'));
 
-	const packageJSON = { ...templateJSON, name: packageName, description: packageDescription ?? '' };
+	const packageJSON = {
+		...templateJSON,
+		name: templateJSON.name.replace('{name}', packageName),
+		description: packageDescription ?? '',
+	};
 
 	// Edit changelog script
 	packageJSON.scripts.changelog = packageJSON.scripts.changelog.replace('{name}', packageName);
