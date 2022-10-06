@@ -29,7 +29,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discord.js.org",
+	"homepage": "https://discordjs.dev",
 	"dependencies": {
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1"

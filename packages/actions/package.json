@@ -37,7 +37,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discord.js.org",
+	"homepage": "https://discordjs.dev",
 	"dependencies": {
 		"@actions/core": "^1.10.0",
 		"tslib": "^2.4.0"

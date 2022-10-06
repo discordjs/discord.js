@@ -1,7 +1,7 @@
 <div align="center">
 	<br />
 	<p>
-		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
+		<a href="https://discordjs.dev"><img src="https://discordjs.dev/static/logo.svg" width="546" alt="discord.js" /></a>
 	</p>
 	<br />
 	<p>
@@ -50,7 +50,7 @@ const rest = new REST({
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
+- [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/website))
 - [discord.js Discord server](https://discord.gg/djs)
 - [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
 - [Docker Hub](https://hub.docker.com/r/discordjs/proxy)

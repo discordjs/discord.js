@@ -41,7 +41,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discord.js.org",
+	"homepage": "https://discordjs.dev",
 	"dependencies": {
 		"@discordjs/proxy": "^1.1.0",
 		"@discordjs/rest": "^1.1.0",
