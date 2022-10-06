@@ -24,23 +24,15 @@
 		"lib": "src",
 		"test": "__tests__"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Aura Román <kyradiscord@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"api",
-		"gateway",
-		"discordapp",
-		"discordjs"
-	],
+	"keywords": ["discord", "api", "gateway", "discordapp", "discordjs"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/discordjs/discord.js.git"

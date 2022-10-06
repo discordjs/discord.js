@@ -1,7 +1,9 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
-import process from 'node:process';
+import { join } from 'node:path';
+import { chdir } from 'node:process';
 import type { JsonMap } from '@iarna/toml';
 import { parse as parseTOML, stringify as stringifyTOML } from '@iarna/toml';
+import { copy } from 'fs-extra';
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 import cliffJumperJSON from './template/.cliff-jumperrc.json';
 import templateJSON from './template/template.package.json';
@@ -29,39 +31,53 @@ interface LabelerData {
 	name: string;
 }
 
-const packageName = process.argv[2];
+export async function createPackage(packageName: string) {
+	// Make directory for package
+	await mkdir(`packages/${packageName}`);
 
-// Make directory for package
-await mkdir(`packages/${packageName}`);
+	// Change to subdirectory
+	chdir(`packages/${packageName}`);
 
-// Change to subdirectory
-process.chdir(`packages/${packageName}`);
+	// Create folder structure
+	await Promise.all([mkdir('src'), mkdir('__tests__')]);
 
-const packageJSON = { ...templateJSON, name: packageName };
+	// Create files
+	await writeFile('src/index.ts', `console.log('Hello, from @discord.js/${packageName}');`);
 
-// Create package.json
-await writeFile(`packages/${packageName}/package.json`, JSON.stringify(packageJSON, null, 2));
+	const packageJSON = { ...templateJSON, name: packageName };
 
-// Update cliff.toml
-const cliffTOML = parseTOML(await readFile('../packages/scripts/template/cliff.toml', 'utf8')) as unknown as CliffTOML;
-cliffTOML.git.tag_pattern = `@discordjs/${packageName}@[0-9]*`;
+	// Create package.json
+	await writeFile(`package.json`, JSON.stringify(packageJSON, null, 2));
 
-await writeFile('cliff.toml', stringifyTOML(cliffTOML as unknown as JsonMap));
+	// Update cliff.toml
+	const cliffTOML = parseTOML(
+		await readFile(join('..', 'scripts/src/template/cliff.toml'), 'utf8'),
+	) as unknown as CliffTOML;
+	cliffTOML.git.tag_pattern = `@discordjs/${packageName}@[0-9]*`;
 
-// Update .cliff-jumperrc.json
-const newCliffJumperJSON = { ...cliffJumperJSON, name: packageName, packagePath: `packages/${packageName}` };
+	await writeFile('cliff.toml', stringifyTOML(cliffTOML as unknown as JsonMap));
 
-await writeFile('.cliff-jumperrc.json', JSON.stringify(newCliffJumperJSON, null, 2));
+	// Update .cliff-jumperrc.json
+	const newCliffJumperJSON = { ...cliffJumperJSON, name: packageName, packagePath: `packages/${packageName}` };
 
-// Move to github directory
-process.chdir('../../.github');
+	await writeFile('.cliff-jumperrc.json', JSON.stringify(newCliffJumperJSON, null, 2));
 
-const labelsYAML = parseYAML(await readFile('labels.yml', 'utf8')) as LabelerData[];
-labelsYAML.push({ color: 'fbca04', name: `packages:${packageName}` });
+	// Move to github directory
+	chdir('../../.github');
 
-await writeFile('labels.yml', stringifyYAML(labelsYAML));
+	const labelsYAML = parseYAML(await readFile('labels.yml', 'utf8')) as LabelerData[];
+	labelsYAML.push({ name: `packages:${packageName}`, color: 'fbca04' });
 
-const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
-labelerYAML[`packages/${packageName}`] = [`packages:${packageName}/*`, `packages:${packageName}/**/*`];
+	await writeFile('labels.yml', stringifyYAML(labelsYAML));
 
-await writeFile('labeler.yml', stringifyYAML(labelerYAML));
+	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
+	labelerYAML[`packages/${packageName}`] = [`packages:${packageName}/*`, `packages:${packageName}/**/*`];
+
+	await writeFile('labeler.yml', stringifyYAML(labelerYAML));
+
+	// Move back to root
+	chdir('..');
+
+	// Copy default files over
+	await copy('packages/scripts/src/template/default', `packages/${packageName}`);
+}

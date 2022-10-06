@@ -2115,6 +2115,7 @@ __metadata:
     "@commitlint/config-angular": ^17.1.0
     "@favware/cliff-jumper": ^1.8.8
     "@favware/npm-deprecate": ^1.0.5
+    "@types/fs-extra": ^9.0.13
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.1
     is-ci: ^3.0.1
@@ -2281,6 +2282,7 @@ __metadata:
     cross-env: ^7.0.3
     eslint: ^8.24.0
     eslint-config-neon: ^0.1.34
+    fs-extra: ^10.1.0
     prettier: ^2.7.1
     toml: ^3.0.0
     tslib: ^2.4.0
@@ -4015,6 +4017,15 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: f0c283fdef2dd7191168a37b9cb2625af3cfbd7f72b5a514f938bea0a135669f79d736186d434b9e81150b47ef1bf20d97b188014a00583556fad6ce59fb9bbf
+  languageName: node
+  linkType: hard
+
+"@types/fs-extra@npm:^9.0.13":
+  version: 9.0.13
+  resolution: "@types/fs-extra@npm:9.0.13"
+  dependencies:
+    "@types/node": "*"
+  checksum: add79e212acd5ac76b97b9045834e03a7996aef60a814185e0459088fd290519a3c1620865d588fa36c4498bf614210d2a703af5cf80aa1dbc125db78f6edac3
   languageName: node
   linkType: hard
 
@@ -9898,7 +9909,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^10.0.0":
+"fs-extra@npm:^10.0.0, fs-extra@npm:^10.1.0":
   version: 10.1.0
   resolution: "fs-extra@npm:10.1.0"
   dependencies:

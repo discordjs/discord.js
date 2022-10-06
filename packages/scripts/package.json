@@ -49,6 +49,7 @@
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"commander": "^9.4.1",
+		"fs-extra": "^10.1.0",
 		"toml": "^3.0.0",
 		"tslib": "^2.4.0",
 		"undici": "^5.11.0",
