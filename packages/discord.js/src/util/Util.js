@@ -56,20 +56,20 @@ function flatten(obj, ...props) {
 /**
  * Options used to escape markdown.
  * @typedef {Object} EscapeMarkdownOptions
- * @property {boolean} [codeBlock=true] Whether to escape code blocks or not
- * @property {boolean} [inlineCode=true] Whether to escape inline code or not
- * @property {boolean} [bold=true] Whether to escape bolds or not
- * @property {boolean} [italic=true] Whether to escape italics or not
- * @property {boolean} [underline=true] Whether to escape underlines or not
- * @property {boolean} [strikethrough=true] Whether to escape strikethroughs or not
- * @property {boolean} [spoiler=true] Whether to escape spoilers or not
- * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
- * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
- * @property {boolean} [escape=true] Whether to escape escape characters or not
- * @property {boolean} [heading=false] Whether to escape headings or not
- * @property {boolean} [bulletedList=false] Whether to escape bulleted lists or not
- * @property {boolean} [numberedList=false] Whether to escape numbered lists or not
- * @property {boolean} [maskedLink=false] Whether to escape masked links or not
+ * @property {boolean} [codeBlock=true] Whether to escape code blocks
+ * @property {boolean} [inlineCode=true] Whether to escape inline code
+ * @property {boolean} [bold=true] Whether to escape bolds
+ * @property {boolean} [italic=true] Whether to escape italics
+ * @property {boolean} [underline=true] Whether to escape underlines
+ * @property {boolean} [strikethrough=true] Whether to escape strikethroughs
+ * @property {boolean} [spoiler=true] Whether to escape spoilers
+ * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks
+ * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code
+ * @property {boolean} [escape=true] Whether to escape escape characters
+ * @property {boolean} [heading=false] Whether to escape headings
+ * @property {boolean} [bulletedList=false] Whether to escape bulleted lists
+ * @property {boolean} [numberedList=false] Whether to escape numbered lists
+ * @property {boolean} [maskedLink=false] Whether to escape masked links
  */
 
 /**
@@ -277,7 +277,7 @@ function escapeNumberedList(text) {
  * @returns {string}
  */
 function escapeMaskedLink(text) {
-  return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$0');
+  return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$&');
 }
 
 /**
