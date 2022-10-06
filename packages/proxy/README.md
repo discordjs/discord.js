@@ -32,8 +32,8 @@ pnpm add @discordjs/proxy
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discord.js.org/#/docs/proxy)
+- [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
+- [Documentation](https://discordjs.dev/docs/proxy)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
@@ -45,7 +45,7 @@ pnpm add @discordjs/proxy
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/proxy).  
+[documentation](https://discordjs.dev/docs/proxy).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help

@@ -50,7 +50,7 @@ const rest = new REST({
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
+- [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/website))
 - [discord.js Discord server](https://discord.gg/djs)
 - [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
 - [Docker Hub](https://hub.docker.com/r/discordjs/proxy)

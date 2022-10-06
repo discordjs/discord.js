@@ -1,1 +1,1 @@
-## [View the documentation here.](https://discord.js.org/#/docs/ws)
+## [View the documentation here.](https://discordjs.dev/docs/ws)

@@ -35,7 +35,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discord.js.org",
+	"homepage": "https://discordjs.dev",
 	"devDependencies": {
 		"@commitlint/cli": "^17.1.2",
 		"@commitlint/config-angular": "^17.1.0",

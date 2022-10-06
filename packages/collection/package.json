@@ -48,7 +48,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discord.js.org",
+	"homepage": "https://discordjs.dev",
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.0",
