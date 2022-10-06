@@ -44,6 +44,10 @@ export async function createPackage(packageName: string) {
 	// Create files
 	await writeFile('src/index.ts', `console.log('Hello, from @discord.js/${packageName}');`);
 
+	await writeFile('.eslintrc.json', await readFile('../scripts/src/template/template.eslintrc.json', 'utf8'));
+
+	await writeFile('.lintstagedrc.js', await readFile('../scripts/src/template/template.lintstagedrc.js', 'utf8'));
+
 	const packageJSON = { ...templateJSON, name: packageName };
 
 	// Create package.json
