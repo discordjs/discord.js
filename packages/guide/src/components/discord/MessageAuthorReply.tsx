@@ -13,7 +13,7 @@ export function DiscordMessageAuthorReply({ avatar, bot, username }: IDiscordMes
 					BOT
 				</div>
 			) : null}
-			<span className="mr-1 cursor-pointer select-none text-sm font-medium leading-snug hover:underline">
+			<span className="mr-1 cursor-pointer select-none text-sm font-medium leading-snug text-white hover:underline">
 				{username}
 			</span>
 		</>

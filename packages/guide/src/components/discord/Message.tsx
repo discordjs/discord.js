@@ -50,7 +50,7 @@ export function DiscordMessage({
 					) : (
 						authorNode
 					)}
-					<div className="[&>p]:m-0 [&>p]:leading-snug" id="message-content">
+					<div className="[&>p]:m-0 [&>p]:leading-snug text-white" id="message-content">
 						{children}
 					</div>
 				</div>
