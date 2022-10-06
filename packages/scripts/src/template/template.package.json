@@ -40,7 +40,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discordjs.dev",
+	"homepage": "https://discord.js.org",
 	"dependencies": {},
 	"devDependencies": {
 		"@discordjs/docgen": "workspace:^",

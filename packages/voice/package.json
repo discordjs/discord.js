@@ -50,7 +50,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discordjs.dev",
+	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@types/ws": "^8.5.3",
 		"discord-api-types": "^0.37.11",

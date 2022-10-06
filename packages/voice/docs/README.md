@@ -1,1 +1,1 @@
-## [View the documentation here.](https://discordjs.dev/#/docs/voice)
+## [View the documentation here.](https://discord.js.org/#/docs/voice)

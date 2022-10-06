@@ -1,7 +1,7 @@
 <div align="center">
 	<br />
 	<p>
-		<a href="https://discordjs.dev"><img src="https://discordjs.dev/static/logo.svg" width="546" alt="discord.js" /></a>
+		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
 	</p>
 	<br />
 	<p>
@@ -105,8 +105,8 @@ manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all'
 
 ## Links
 
-- [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discordjs.dev/#/docs/ws)
+- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
+- [Documentation](https://discord.js.org/#/docs/ws)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
@@ -118,7 +118,7 @@ manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all'
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discordjs.dev/#/docs/ws).  
+[documentation](https://discord.js.org/#/docs/ws).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help

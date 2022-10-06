@@ -41,7 +41,7 @@
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"homepage": "https://discordjs.dev",
+	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@iarna/toml": "^2.2.5",
