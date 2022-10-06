@@ -5,13 +5,9 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:prod": "yarn build:css && yarn build:astro",
-		"build:astro": "astro build",
-		"build:css": "yarn generate:css",
-		"dev": "concurrently 'yarn dev:css' 'yarn dev:astro'",
-		"dev:astro": "astro dev",
-		"dev:css": "yarn generate:css --watch",
-		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
+		"build:prod": "astro build",
+		"dev": "astro dev",
+		"preview": "astro preview",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx,astro",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx,astro --fix"
 	},

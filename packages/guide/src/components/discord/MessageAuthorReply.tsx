@@ -7,7 +7,7 @@ export interface IDiscordMessageAuthorReply {
 export function DiscordMessageAuthorReply({ avatar, bot, username }: IDiscordMessageAuthorReply) {
 	return (
 		<>
-			<img className="mr-1 h-4 w-4 select-none rounded-full" src={avatar} />
+			<img alt={`${username}'s avatar`} className="mr-1 h-4 w-4 select-none rounded-full" src={avatar} />
 			{bot ? (
 				<div className="bg-blurple vertical-top mr-1 rounded px-1 text-xs" id="bot">
 					BOT

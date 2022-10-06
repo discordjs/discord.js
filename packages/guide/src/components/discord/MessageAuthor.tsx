@@ -8,7 +8,11 @@ export interface IDiscordMessageAuthor {
 export function DiscordMessageAuthor({ avatar, username, bot, time }: IDiscordMessageAuthor) {
 	return (
 		<>
-			<img className="absolute left-[16px] mt-0.5 h-10 w-10 cursor-pointer select-none rounded-full" src={avatar} />
+			<img
+				alt={`${username}'s avatar`}
+				className="absolute left-[16px] mt-0.5 h-10 w-10 cursor-pointer select-none rounded-full"
+				src={avatar}
+			/>
 			<h2 className="text-size-inherit m-0 font-medium leading-snug" id="user-info">
 				<span className="mr-1" id="username">
 					<span className="cursor-pointer text-base font-medium text-white hover:underline">{username}</span>
