@@ -5,15 +5,15 @@ import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sectio
 export function Class({ data }: { data: ApiClassJSON }) {
 	return (
 		<DocContainer
-			name={data.name}
-			kind={data.kind}
 			excerpt={data.excerpt}
-			summary={data.summary}
-			typeParams={data.typeParameters}
 			extendsTokens={data.extendsTokens}
 			implementsTokens={data.implementsTokens}
+			kind={data.kind}
 			methods={data.methods}
+			name={data.name}
 			properties={data.properties}
+			summary={data.summary}
+			typeParams={data.typeParameters}
 		>
 			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
 			<PropertiesSection data={data.properties} />

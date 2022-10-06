@@ -1,7 +1,7 @@
 'use strict';
 
 const { InteractionType } = require('discord-api-types/v10');
-const { ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents an interaction's response
@@ -34,7 +34,7 @@ class InteractionResponse {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }

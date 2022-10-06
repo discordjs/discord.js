@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 const { Sticker } = require('../structures/Sticker');
 
@@ -59,7 +59,7 @@ class GuildStickerManager extends CachedManager {
    */
   async create({ file, name, tags, description, reason } = {}) {
     const resolvedFile = await MessagePayload.resolveFile(file);
-    if (!resolvedFile) throw new TypeError(ErrorCodes.ReqResourceType);
+    if (!resolvedFile) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
     file = { ...resolvedFile, key: 'file' };
 
     const body = { name, tags, description: description ?? '' };
@@ -106,7 +106,7 @@ class GuildStickerManager extends CachedManager {
    */
   async edit(sticker, data = {}) {
     const stickerId = this.resolveId(sticker);
-    if (!stickerId) throw new TypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!stickerId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
 
     const d = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
       body: data,
@@ -130,7 +130,7 @@ class GuildStickerManager extends CachedManager {
    */
   async delete(sticker, reason) {
     sticker = this.resolveId(sticker);
-    if (!sticker) throw new TypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!sticker) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
 
     await this.client.rest.delete(Routes.guildSticker(this.guild.id, sticker), { reason });
   }
@@ -172,7 +172,7 @@ class GuildStickerManager extends CachedManager {
    */
   async fetchUser(sticker) {
     sticker = this.resolve(sticker);
-    if (!sticker) throw new TypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!sticker) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
     const data = await this.client.rest.get(Routes.guildSticker(this.guild.id, sticker.id));
     sticker._patch(data);
     return sticker.user;

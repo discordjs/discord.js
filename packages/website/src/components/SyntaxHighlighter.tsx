@@ -6,22 +6,22 @@ export function SyntaxHighlighter({ language = 'typescript', code }: { code: str
 		<>
 			<div data-theme="dark">
 				<PrismAsyncLight
-					wrapLines
-					wrapLongLines
+					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 					language={language}
 					style={vscDarkPlus}
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+					wrapLines
+					wrapLongLines
 				>
 					{code}
 				</PrismAsyncLight>
 			</div>
 			<div data-theme="light">
 				<PrismAsyncLight
-					wrapLines
-					wrapLongLines
+					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
 					language={language}
 					style={prism}
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
+					wrapLines
+					wrapLongLines
 				>
 					{code}
 				</PrismAsyncLight>
