@@ -8,7 +8,6 @@ import {
 	VscColorMode,
 	VscGithubInverted,
 	VscMenu,
-	// VscPackage,
 	VscSearch,
 	// VscVersions,
 } from 'react-icons/vsc';
@@ -18,7 +17,7 @@ import { useMedia /* useLockBodyScroll */ } from 'react-use';
 // import { SidebarItems } from './SidebarItems';
 // import { useCmdK } from '~/contexts/cmdK';
 
-export function SidebarLayout({ children }: PropsWithChildren) {
+export function SidebarLayout({ pages, children }: PropsWithChildren<{ pages?: any }>) {
 	// const dialog = useCmdK();
 	const matches = useMedia('(min-width: 992px)', false);
 	const [opened, setOpened] = useState(false);
@@ -92,14 +91,13 @@ export function SidebarLayout({ children }: PropsWithChildren) {
 					)}
 					universal
 				>
-					<div className="flex flex-col gap-3 px-3 pt-3" />
-					{/* <SidebarItems members={[]} setOpened={setOpened} /> */}
+					{pages ?? null}
 				</Scrollbars>
 			</nav>
 			<main className="pt-18 lg:pl-76 xl:pr-64">
 				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
-						{children}
+						<div className="prose max-w-none">{children}</div>
 					</div>
 					<div className="h-76 md:h-52" />
 					<footer className="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 xl:pr-76 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">

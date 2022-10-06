@@ -1,5 +1,5 @@
 ---
-import { SidebarLayout } from '../components/SidebarLayout.js';
+import SidebarLayout from '../components/SidebarLayout.astro';
 ---
 
 <html>
@@ -37,9 +37,7 @@ import { SidebarLayout } from '../components/SidebarLayout.js';
 			})();
 		</script>
 		<SidebarLayout>
-			<div class="prose max-w-none">
-				<slot />
-			</div>
+			<slot />
 		</SidebarLayout>
 	</body>
 </html>

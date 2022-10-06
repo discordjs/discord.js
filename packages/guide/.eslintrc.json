@@ -18,6 +18,7 @@
 				"extraFileExtensions": [".astro"]
 			},
 			"rules": {
+				"react/jsx-key": 0,
 				"react/no-unknown-property": 0
 			}
 		},

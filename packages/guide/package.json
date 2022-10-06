@@ -41,7 +41,6 @@
 		"@astrojs/image": "^0.9.1",
 		"@astrojs/mdx": "^0.11.4",
 		"@astrojs/react": "^1.1.4",
-		"@code-hike/mdx": "^0.7.4",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.41",
 		"astro": "^1.4.4",

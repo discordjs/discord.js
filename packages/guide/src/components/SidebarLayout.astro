@@ -1,0 +1,28 @@
+---
+import { SidebarLayout } from './SidebarLayout.jsx';
+
+const pages = await Astro.glob('../pages/*.mdx');
+---
+
+<SidebarLayout>
+	<div class="flex flex-col gap-3 p-3 pb-32 lg:pb-12" slot="pages">
+		{
+			pages.map((member) => (
+				<a
+					class={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
+						false
+							? 'bg-blurple text-white'
+							: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
+					}`}
+					href={member.url}
+					title={member.url}
+				>
+					<div class="flex flex-row place-items-center gap-2 lg:text-sm">
+						<span class="truncate">{member.url}</span>
+					</div>
+				</a>
+			))
+		}
+	</div>
+	<slot />
+</SidebarLayout>
