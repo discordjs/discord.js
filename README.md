@@ -104,7 +104,7 @@ client.login('token');
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
+- [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
 - [Documentation](https://discord.js.org/#/docs)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
