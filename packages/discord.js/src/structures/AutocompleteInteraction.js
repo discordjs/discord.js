@@ -3,7 +3,7 @@
 const { InteractionResponseType, Routes } = require('discord-api-types/v10');
 const BaseInteraction = require('./BaseInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents an autocomplete interaction.
@@ -81,7 +81,7 @@ class AutocompleteInteraction extends BaseInteraction {
    *  .catch(console.error);
    */
   async respond(options) {
-    if (this.responded) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.responded) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {

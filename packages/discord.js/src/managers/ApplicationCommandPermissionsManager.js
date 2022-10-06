@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
 const BaseManager = require('./BaseManager');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * Manages API methods for permissions of Application Commands.
@@ -153,12 +153,17 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
   async set({ guild, command, permissions, token } = {}) {
     if (!token) {
-      throw new Error(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
+      throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
     let { guildId, commandId } = this._validateOptions(guild, command);
 
     if (!Array.isArray(permissions)) {
-      throw new TypeError(ErrorCodes.InvalidType, 'permissions', 'Array of ApplicationCommandPermissions', true);
+      throw new DiscordjsTypeError(
+        ErrorCodes.InvalidType,
+        'permissions',
+        'Array of ApplicationCommandPermissions',
+        true,
+      );
     }
 
     if (!commandId) {
@@ -190,14 +195,19 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
   async add({ guild, command, permissions, token } = {}) {
     if (!token) {
-      throw new Error(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
+      throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
     let { guildId, commandId } = this._validateOptions(guild, command);
     if (!commandId) {
       commandId = this.client.user.id;
     }
     if (!Array.isArray(permissions)) {
-      throw new TypeError(ErrorCodes.InvalidType, 'permissions', 'Array of ApplicationCommandPermissions', true);
+      throw new DiscordjsTypeError(
+        ErrorCodes.InvalidType,
+        'permissions',
+        'Array of ApplicationCommandPermissions',
+        true,
+      );
     }
 
     let existing = [];
@@ -262,7 +272,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
   async remove({ guild, command, users, roles, channels, token } = {}) {
     if (!token) {
-      throw new Error(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
+      throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
     let { guildId, commandId } = this._validateOptions(guild, command);
     if (!commandId) {
@@ -270,14 +280,14 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     }
 
     if (!users && !roles && !channels) {
-      throw new TypeError(ErrorCodes.InvalidType, 'users OR roles OR channels', 'Array or Resolvable', true);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'users OR roles OR channels', 'Array or Resolvable', true);
     }
 
     let resolvedUserIds = [];
     if (Array.isArray(users)) {
       for (const user of users) {
         const userId = this.client.users.resolveId(user);
-        if (!userId) throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'users', user);
+        if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'users', user);
         resolvedUserIds.push(userId);
       }
     }
@@ -289,9 +299,9 @@ class ApplicationCommandPermissionsManager extends BaseManager {
           resolvedRoleIds.push(role);
           continue;
         }
-        if (!this.guild) throw new Error(ErrorCodes.GuildUncachedEntityResolve, 'roles');
+        if (!this.guild) throw new DiscordjsError(ErrorCodes.GuildUncachedEntityResolve, 'roles');
         const roleId = this.guild.roles.resolveId(role);
-        if (!roleId) throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'users', role);
+        if (!roleId) throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'users', role);
         resolvedRoleIds.push(roleId);
       }
     }
@@ -303,9 +313,9 @@ class ApplicationCommandPermissionsManager extends BaseManager {
           resolvedChannelIds.push(channel);
           continue;
         }
-        if (!this.guild) throw new Error(ErrorCodes.GuildUncachedEntityResolve, 'channels');
+        if (!this.guild) throw new DiscordjsError(ErrorCodes.GuildUncachedEntityResolve, 'channels');
         const channelId = this.guild.channels.resolveId(channel);
-        if (!channelId) throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'channels', channel);
+        if (!channelId) throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'channels', channel);
         resolvedChannelIds.push(channelId);
       }
     }
@@ -353,10 +363,10 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    */
   async has({ guild, command, permissionId, permissionType }) {
     const { guildId, commandId } = this._validateOptions(guild, command);
-    if (!commandId) throw new TypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    if (!commandId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
 
     if (!permissionId) {
-      throw new TypeError(
+      throw new DiscordjsTypeError(
         ErrorCodes.InvalidType,
         'permissionId',
         'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
@@ -366,14 +376,14 @@ class ApplicationCommandPermissionsManager extends BaseManager {
     if (typeof permissionId !== 'string') {
       resolvedId = this.client.users.resolveId(permissionId);
       if (!resolvedId) {
-        if (!this.guild) throw new Error(ErrorCodes.GuildUncachedEntityResolve, 'roles');
+        if (!this.guild) throw new DiscordjsError(ErrorCodes.GuildUncachedEntityResolve, 'roles');
         resolvedId = this.guild.roles.resolveId(permissionId);
       }
       if (!resolvedId) {
         resolvedId = this.guild.channels.resolveId(permissionId);
       }
       if (!resolvedId) {
-        throw new TypeError(
+        throw new DiscordjsTypeError(
           ErrorCodes.InvalidType,
           'permissionId',
           'UserResolvable, RoleResolvable, ChannelResolvable, or Permission Constant',
@@ -394,7 +404,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
   _validateOptions(guild, command) {
     const guildId = this.guildId ?? this.client.guilds.resolveId(guild);
-    if (!guildId) throw new Error(ErrorCodes.GlobalCommandPermissions);
+    if (!guildId) throw new DiscordjsError(ErrorCodes.GlobalCommandPermissions);
     let commandId = this.commandId;
     if (command && !commandId) {
       commandId = this.manager.resolveId?.(command);
@@ -403,7 +413,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       }
       commandId ??= this.client.application?.commands.resolveId(command);
       if (!commandId) {
-        throw new TypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable', true);
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable', true);
       }
     }
     return { guildId, commandId };
