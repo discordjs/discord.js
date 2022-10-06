@@ -29,13 +29,25 @@ import SidebarLayout from '../components/SidebarLayout.astro';
 		<meta content="#5865f2" name="theme-color" />
 	</head>
 	<body class="dark:bg-dark-800 bg-white">
-		<script>
+		<script is:inline>
+			function setTheme(prefersDarkMode, persistedColorPreference) {
+				if (persistedColorPreference === 'dark' || (prefersDarkMode && persistedColorPreference !== 'light')) {
+					document.documentElement.classList.toggle('dark', true);
+				} else {
+					document.documentElement.classList.toggle('dark', false);
+				}
+			}
+
 			(() => {
 				const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 				const persistedColorPreference = localStorage.getItem('theme') || 'auto';
-				if (persistedColorPreference === 'dark' || (prefersDarkMode && persistedColorPreference !== 'light')) {
-					document.documentElement.classList.toggle('dark', true);
-				}
+				setTheme(prefersDarkMode, persistedColorPreference);
+
+				const listener =
+					window.matchMedia &&
+					window
+						.matchMedia('(prefers-color-scheme: dark)')
+						.addEventListener('change', (ev) => setTheme(ev.matches, persistedColorPreference));
 			})();
 		</script>
 		<SidebarLayout>
