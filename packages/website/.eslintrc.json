@@ -1,5 +1,5 @@
 {
-	"extends": ["../../.eslintrc.json", "neon/react", "neon/next", "neon/edge"],
+	"extends": ["../../.eslintrc.json", "neon/react", "neon/next", "neon/edge", "neon/prettier"],
 	"settings": {
 		"react": {
 			"version": "detect"

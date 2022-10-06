@@ -1,0 +1,58 @@
+---
+import '@code-hike/mdx/styles.css';
+import '../styles/ch.css';
+import SidebarLayout from '../components/SidebarLayout.astro';
+import { DESCRIPTION } from '../util/constants.js';
+---
+
+<html lang="en">
+	<head>
+		<link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+		<link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+		<link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+		<link href="/site.webmanifest" rel="manifest" />
+		<link color="#090a16" href="/safari-pinned-tab.svg" rel="mask-icon" />
+		<meta content="light dark" name="color-scheme" />
+		<meta content="discord.js" name="apple-mobile-web-app-title" />
+		<meta content="discord.js" name="application-name" />
+		<meta content="#090a16" name="msapplication-TileColor" />
+		<meta content={DESCRIPTION} name="description" />
+		<meta content="discord.js" property="og:site_name" />
+		<meta content="website" property="og:type" />
+		<meta content="discord.js guide" property="og:title" />
+		<meta content={DESCRIPTION} name="og:description" />
+		<meta content="https://discordjs.dev/open-graph.png" property="og:image" />
+		<meta content="summary_large_image" name="twitter:card" />
+		<meta content="@iCrawlToGo" name="twitter:creator" />
+
+		<title>discord.js</title>
+		<meta content="minimum-scale=1, initial-scale=1, width=device-width" name="viewport" />
+		<meta content="#5865f2" name="theme-color" />
+	</head>
+	<body class="dark:bg-dark-800 bg-white">
+		<script is:inline>
+			function setTheme(prefersDarkMode, persistedColorPreference) {
+				if (persistedColorPreference === 'dark' || (prefersDarkMode && persistedColorPreference !== 'light')) {
+					document.documentElement.classList.toggle('dark', true);
+				} else {
+					document.documentElement.classList.toggle('dark', false);
+				}
+			}
+
+			(() => {
+				const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+				const persistedColorPreference = localStorage.getItem('theme') || 'auto';
+				setTheme(prefersDarkMode, persistedColorPreference);
+
+				const listener =
+					window.matchMedia &&
+					window
+						.matchMedia('(prefers-color-scheme: dark)')
+						.addEventListener('change', (ev) => setTheme(ev.matches, persistedColorPreference));
+			})();
+		</script>
+		<SidebarLayout>
+			<slot />
+		</SidebarLayout>
+	</body>
+</html>

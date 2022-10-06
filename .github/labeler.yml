@@ -14,6 +14,10 @@
   - packages/docgen/*
   - packages/docgen/**/*
 
+'packages:guide':
+  - packages/guide/*
+  - packages/guide/**/*
+
 'packages:proxy':
   - packages/proxy/*
   - packages/proxy/**/*
@@ -26,6 +30,10 @@
   - packages/rest/*
   - packages/rest/**/*
 
+'packages:util':
+  - packages/util/*
+  - packages/util/**/*
+
 'packages:voice':
   - packages/voice/*
   - packages/voice/**/*
@@ -37,7 +45,3 @@
 'packages:ws':
   - packages/ws/*
   - packages/ws/**/*
-
-'packages:util':
-  - packages/util/*
-  - packages/util/**/*

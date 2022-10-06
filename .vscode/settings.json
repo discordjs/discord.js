@@ -1,10 +1,15 @@
 {
 	"eslint.workingDirectories": [{ "pattern": "./packages/*" }],
+	"eslint.validate": ["javascript", "javascriptreact", "astro", "typescript", "typescriptreact"],
+	"prettier.documentSelectors": ["**/*.astro"],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true,
 		"source.organizeImports": false
+	},
+	"files.associations": {
+		"*.mdx": "markdown"
 	},
 	"unocss.root": "./packages/website",
 	"typescript.tsdk": "node_modules/typescript/lib"

@@ -5,6 +5,10 @@
 			"dependsOn": ["^build"],
 			"outputs": ["dist/**"]
 		},
+		"@discordjs/guide#build:prod": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**"]
+		},
 		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build"],
 			"outputs": [".next/**"]

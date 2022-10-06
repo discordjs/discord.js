@@ -1,0 +1,244 @@
+---
+layout: '../../layouts/SidebarLayout.astro'
+title: Creating commands
+category: Creating your bot
+---
+
+import { Tip } from '../../components/Tip.jsx';
+import { DiscordMessages } from '../../components/discord/Messages.jsx';
+import { DiscordMessage } from '../../components/discord/Message.jsx';
+import { DocsLink } from '../../components/DocsLink.jsx';
+import { ResultingCode } from '../../components/ResultingCode.jsx';
+import { CH } from '@code-hike/mdx/components';
+
+# Creating commands
+
+<Tip>This page is a follow-up and bases its code on [the previous page](/creating-your-bot/).</Tip>
+
+<DiscordMessages rounded>
+	<DiscordMessage
+		interaction={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			command: 'ping',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		Pong!
+	</DiscordMessage>
+</DiscordMessages>
+
+Discord allows developers to register [slash commands](https://discord.com/developers/docs/interactions/application-commands), which provide users a first-class way of interacting directly with your application. Before being able to reply to a command, you must first register it.
+
+## Registering commands
+
+This section will cover only the bare minimum to get you started, but you can refer to our [in-depth page on registering slash commands](/interactions/slash-commands.md#registering-slash-commands) for further details. It covers guild commands, global commands, options, option types, and choices.
+
+### Command deployment script
+
+Create a `deploy-commands.js` file in your project directory. This file will be used to register and update the slash commands for your bot application.
+
+Since commands only need to be registered once, and updated when the definition (description, options etc) is changed, it's not necessary to connect a whole client to the gateway or do this on every `ready` event. As such, a standalone script using the lighter REST manager is preferred.
+
+Below is a deployment script you can use. Focus on these variables:
+
+- `clientId`: Your application's client id
+- `guildId`: Your development server's id
+- `commands`: An array of commands to register. The [slash command builder](/popular-topics/builders.md#slash-command-builders) from `discord.js` is used to build the data for your commands
+
+<Tip>
+	In order to get your application's client id, go to [Discord Developer
+	Portal](https://discord.com/developers/applications) and choose your application. Find the id under "Application ID"
+	in General Information subpage. To get guild id, open Discord and go to your settings. On the "Advanced" page, turn on
+	"Developer Mode". This will enable a "Copy ID" button in the context menu when you right-click on a server icon, a
+	user's profile, etc.
+</Tip>
+
+<CH.Code client:load>
+
+```js deploy-commands.js mark=4,6:10
+const { REST, SlashCommandBuilder, Routes } = require('discord.js');
+const { clientId, guildId, token } = require('./config.json');
+
+const commands = [
+	new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
+	new SlashCommandBuilder().setName('server').setDescription('Replies with server info!'),
+	new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
+].map((command) => command.toJSON());
+
+const rest = new REST({ version: '10' }).setToken(token);
+
+rest
+	.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+	.then((data) => console.log(`Successfully registered ${data.length} application commands.`))
+	.catch(console.error);
+```
+
+---
+
+```json config.json mark=2:3
+{
+	"clientId": "123456789012345678",
+	"guildId": "876543210987654321",
+	"token": "your-token-goes-here"
+}
+```
+
+</CH.Code>
+
+Once you fill in these values, run `node deploy-commands.js` in your project directory to register your commands to a single guild. It's also possible to [register commands globally](/interactions/slash-commands.md#global-commands).
+
+<Tip>
+	You only need to run `node deploy-commands.js` once. You should only run it again if you add or edit existing
+	commands.
+</Tip>
+
+## Replying to commands
+
+Once you've registered your commands, you can listen for interactions via <DocsLink path="class/Client?scrollTo=e-interactionCreate" /> in your `index.js` file.
+
+You should first check if an interaction is a chat input command via <DocsLink path="class/Interaction?scrollTo=isChatInputCommand" type="method">`.isChatInputCommand()`</DocsLink>, and then check the <DocsLink path="class/CommandInteraction?scrollTo=commandName">`.commandName`</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink path="class/CommandInteraction?scrollTo=reply">`.reply()`</DocsLink>.
+
+<CH.Code client:load>
+
+```js mark=5:16
+client.once('ready', () => {
+	console.log('Ready!');
+});
+
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	const { commandName } = interaction;
+	if (commandName === 'ping') {
+		await interaction.reply('Pong!');
+	} else if (commandName === 'server') {
+		await interaction.reply('Server info.');
+	} else if (commandName === 'user') {
+		await interaction.reply('User info.');
+	}
+});
+client.login(token);
+```
+
+</CH.Code>
+
+### Server info command
+
+Note that servers are referred to as "guilds" in the Discord API and discord.js library. `interaction.guild` refers to the guild the interaction was sent in (a <DocsLink path="class/Guild" /> instance), which exposes properties such as `.name` or `.memberCount`.
+
+<CH.Code client:load>
+
+```js focus=7
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	const { commandName } = interaction;
+	if (commandName === 'ping') {
+		await interaction.reply('Pong!');
+	} else if (commandName === 'server') {
+		await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+	} else if (commandName === 'user') {
+		await interaction.reply('User info.');
+	}
+});
+```
+
+</CH.Code>
+
+<DiscordMessages rounded>
+	<DiscordMessage
+		interaction={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			command: 'server',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		<p>Server name: discord.js Guide</p>
+		<p>Total members: 2</p>
+	</DiscordMessage>
+</DiscordMessages>
+
+You could also display the date the server was created, or the server's verification level. You would do those in the same manner – use `interaction.guild.createdAt` or `interaction.guild.verificationLevel`, respectively.
+
+<Tip>
+	Refer to the <DocsLink path="class/Guild" /> documentation for a list of all the available properties and methods!
+</Tip>
+
+### User info command
+
+A "user" refers to a Discord user. `interaction.user` refers to the user the interaction was sent by (a <DocsLink path="class/User" /> instance), which exposes properties such as `.tag` or `.id`.
+
+<CH.Code client:load>
+
+```js focus=9
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	const { commandName } = interaction;
+	if (commandName === 'ping') {
+		await interaction.reply('Pong!');
+	} else if (commandName === 'server') {
+		await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+	} else if (commandName === 'user') {
+		await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
+	}
+});
+```
+
+</CH.Code>
+
+<DiscordMessages rounded>
+	<DiscordMessage
+		interaction={{
+			author: {
+				avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+				username: 'Crawl',
+			},
+			command: 'user',
+		}}
+		author={{
+			avatar: 'https://cdn.discordapp.com/avatars/81440962496172032/81c0df2befe565b05018da6b026babb0.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		<p>Your tag: User#0001</p>
+		<p>Your id: 123456789012345678</p>
+	</DiscordMessage>
+</DiscordMessages>
+
+<Tip>
+	Refer to the <DocsLink path="class/User" /> documentation for a list of all the available properties and methods!
+</Tip>
+
+And there you have it!
+
+## The problem with `if`/`else if`
+
+If you don't plan on making more than a couple commands, then using an `if`/`else if` chain is fine; however, this isn't always the case. Using a giant `if`/`else if` chain will only hinder your development process in the long run.
+
+Here's a small list of reasons why you shouldn't do so:
+
+- Takes longer to find a piece of code you want;
+- Easier to fall victim to [spaghetti code](https://en.wikipedia.org/wiki/Spaghetti_code);
+- Difficult to maintain as it grows;
+- Difficult to debug;
+- Difficult to organize;
+- General bad practice.
+
+Next, we'll be diving into something called a "command handler" – code that makes handling commands easier and much more efficient. This allows you to move your commands into individual files.
+
+## Resulting code
+
+<ResultingCode />

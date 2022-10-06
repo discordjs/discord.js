@@ -1,0 +1,89 @@
+---
+import { Navbar } from './Navbar.jsx';
+import { SidebarItems } from './SidebarItems.jsx';
+
+const pages = await Astro.glob<{ category: string; title: string }>('../pages/**/*.mdx');
+---
+
+<Navbar client:load>
+	<div class="flex flex-col gap-3 p-3 pb-32 lg:pb-12" slot="pages">
+		<SidebarItems client:load pages={pages} />
+	</div>
+</Navbar>
+<main class="pt-18 lg:pl-76">
+	<article class="dark:bg-dark-600 bg-light-600">
+		<div class="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
+			<div class="prose max-w-none">
+				<slot />
+			</div>
+		</div>
+		<div class="h-76 md:h-52"></div>
+		<footer class="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">
+			<div class="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
+				<div class="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
+					<a
+						class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+						href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+						rel="noopener noreferrer"
+						target="_blank"
+						title="Vercel"
+					>
+						<img alt="Vercel" src="/powered-by-vercel.svg" />
+					</a>
+					<div class="flex flex-row gap-6 md:gap-12">
+						<div class="flex flex-col gap-2">
+							<div class="text-lg font-semibold">Community</div>
+							<div class="flex flex-col gap-1">
+								<a
+									class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+									href="https://discord.gg/djs"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									Discord
+								</a>
+								<a
+									class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+									href="https://github.com/discordjs/discord.js/discussions"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									GitHub discussions
+								</a>
+							</div>
+						</div>
+						<div class="flex flex-col gap-2">
+							<div class="text-lg font-semibold">Project</div>
+							<div class="flex flex-col gap-1">
+								<a
+									class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+									href="https://github.com/discordjs/discord.js"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									discord.js
+								</a>
+								<a
+									class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+									href="https://discordjs.guide"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									discord.js guide
+								</a>
+								<a
+									class="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+									href="https://discord-api-types.dev"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+									discord-api-types
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</article>
+</main>
