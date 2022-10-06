@@ -1,9 +1,9 @@
 'use strict';
 
+const { lazy } = require('@discordjs/util');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 

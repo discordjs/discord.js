@@ -17,7 +17,7 @@ export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] |
 	const matches = useMedia('(max-width: 768px)', true);
 
 	return data.length ? (
-		<Section title="Properties" icon={<VscSymbolProperty size={20} />} padded dense={matches}>
+		<Section dense={matches} icon={<VscSymbolProperty size={20} />} padded title="Properties">
 			<PropertyList data={data} />
 		</Section>
 	) : null;
@@ -27,7 +27,7 @@ export function MethodsSection({ data }: { data: ApiClassJSON['methods'] | ApiIn
 	const matches = useMedia('(max-width: 768px)', true);
 
 	return data.length ? (
-		<Section title="Methods" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
+		<Section dense={matches} icon={<VscSymbolMethod size={20} />} padded title="Methods">
 			<MethodList data={data} />
 		</Section>
 	) : null;
@@ -37,7 +37,7 @@ export function ParametersSection({ data }: { data: ParameterDocumentation[] }) 
 	const matches = useMedia('(max-width: 768px)', true);
 
 	return data.length ? (
-		<Section title="Parameters" icon={<VscSymbolConstant size={20} />} padded dense={matches}>
+		<Section dense={matches} icon={<VscSymbolConstant size={20} />} padded title="Parameters">
 			<ParameterTable data={data} />
 		</Section>
 	) : null;
@@ -59,8 +59,8 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 	);
 
 	return data.parameters.length ? (
-		<Section title="Constructor" icon={<VscSymbolMethod size={20} />} padded dense={matches}>
-			<div id={data.name} className="scroll-mt-30 flex flex-col gap-4">
+		<Section dense={matches} icon={<VscSymbolMethod size={20} />} padded title="Constructor">
+			<div className="scroll-mt-30 flex flex-col gap-4" id={data.name}>
 				<div className="flex flex-col">
 					<div className="flex flex-col gap-2 md:flex-row md:place-items-center">
 						{data.deprecated || data.protected ? (

@@ -13,8 +13,8 @@ export function Table({
 		() =>
 			columns.map((column) => (
 				<th
-					key={column}
 					className="border-light-900 dark:border-dark-100 break-normal border-b px-3 py-2 text-left text-sm"
+					key={column}
 				>
 					{column}
 				</th>
@@ -25,13 +25,13 @@ export function Table({
 	const data = useMemo(
 		() =>
 			rows.map((row, idx) => (
-				<tr key={idx} className="[&>td]:last-of-type:border-0">
+				<tr className="[&>td]:last-of-type:border-0" key={idx}>
 					{Object.entries(row).map(([colName, val]) => (
 						<td
-							key={colName}
 							className={`border-light-900 dark:border-dark-100 border-b px-3 py-2 text-left text-sm ${
 								columnStyles?.[colName] ?? ''
 							}`}
+							key={colName}
 						>
 							{val}
 						</td>

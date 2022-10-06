@@ -5,7 +5,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const GuildTextThreadManager = require('./GuildTextThreadManager');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
@@ -141,6 +141,8 @@ class GuildChannelManager extends CachedManager {
     videoQualityMode,
     availableTags,
     defaultReactionEmoji,
+    defaultAutoArchiveDuration,
+    defaultSortOrder,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -162,6 +164,8 @@ class GuildChannelManager extends CachedManager {
         video_quality_mode: videoQualityMode,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
+        default_auto_archive_duration: defaultAutoArchiveDuration,
+        default_sort_order: defaultSortOrder,
       },
       reason,
     });
@@ -191,7 +195,7 @@ class GuildChannelManager extends CachedManager {
    */
   async createWebhook({ channel, name, avatar, reason }) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
@@ -229,6 +233,7 @@ class GuildChannelManager extends CachedManager {
    * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
+   * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -245,7 +250,7 @@ class GuildChannelManager extends CachedManager {
    */
   async edit(channel, data) {
     channel = this.resolve(channel);
-    if (!channel) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
     const parent = data.parent && this.client.channels.resolveId(data.parent);
 
@@ -289,6 +294,7 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
         default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
         flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
+        default_sort_order: data.defaultSortOrder,
       },
       reason: data.reason,
     });
@@ -310,7 +316,7 @@ class GuildChannelManager extends CachedManager {
    */
   async setPosition(channel, position, { relative, reason } = {}) {
     channel = this.resolve(channel);
-    if (!channel) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     const updatedChannels = await setPosition(
       channel,
       position,
@@ -353,7 +359,7 @@ class GuildChannelManager extends CachedManager {
     if (id) {
       const data = await this.client.rest.get(Routes.channel(id));
       // Since this is the guild manager, throw if on a different guild
-      if (this.guild.id !== data.guild_id) throw new Error(ErrorCodes.GuildChannelUnowned);
+      if (this.guild.id !== data.guild_id) throw new DiscordjsError(ErrorCodes.GuildChannelUnowned);
       return this.client.channels._add(data, this.guild, { cache });
     }
 
@@ -375,7 +381,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetchWebhooks(channel) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     const data = await this.client.rest.get(Routes.channelWebhooks(id));
     return data.reduce((hooks, hook) => hooks.set(hook.id, new Webhook(this.client, hook)), new Collection());
   }
@@ -449,7 +455,7 @@ class GuildChannelManager extends CachedManager {
    */
   async delete(channel, reason) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     await this.client.rest.delete(Routes.channel(id), { reason });
     this.client.actions.ChannelDelete.handle({ id });
   }

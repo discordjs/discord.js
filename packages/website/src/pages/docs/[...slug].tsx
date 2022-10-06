@@ -222,7 +222,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 		case 'Class':
 			return <Class data={props as ApiClassJSON} />;
 		case 'Function':
-			return <Function key={props.containerKey} data={props as ApiFunctionJSON} />;
+			return <Function data={props as ApiFunctionJSON} key={props.containerKey} />;
 		case 'Interface':
 			return <Interface data={props as ApiInterfaceJSON} />;
 		case 'TypeAlias':
@@ -264,7 +264,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 						<>
 							<Head>
 								<title key="title">{name}</title>
-								<meta key="og_title" property="og:title" content={ogTitle} />
+								<meta content={ogTitle} key="og_title" property="og:title" />
 							</Head>
 							{member(props.data.member)}
 						</>
@@ -280,5 +280,5 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 }
 
 export const config = {
-	unstable_includeFiles: ['../{builders,collection,proxy,rest,voice,ws}/README.md'],
+	unstable_includeFiles: ['../{builders,collection,proxy,rest,util,voice,ws}/README.md'],
 };

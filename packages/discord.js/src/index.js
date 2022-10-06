@@ -11,10 +11,9 @@ exports.ShardingManager = require('./sharding/ShardingManager');
 exports.WebhookClient = require('./client/WebhookClient');
 
 // Errors
-const { Error, TypeError, RangeError } = require('./errors/DJSError');
-exports.DiscordjsError = Error;
-exports.DiscordjsTypeError = TypeError;
-exports.DiscordjsRangeError = RangeError;
+exports.DiscordjsError = require('./errors/DJSError').DiscordjsError;
+exports.DiscordjsTypeError = require('./errors/DJSError').DiscordjsTypeError;
+exports.DiscordjsRangeError = require('./errors/DJSError').DiscordjsRangeError;
 exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
 
 // Utilities
@@ -187,3 +186,4 @@ exports.WebSocket = require('./WebSocket');
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);
 __exportStar(require('@discordjs/rest'), exports);
+__exportStar(require('@discordjs/util'), exports);

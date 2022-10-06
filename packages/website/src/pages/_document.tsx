@@ -5,24 +5,23 @@ export default function Document() {
 	return (
 		<Html lang="en">
 			<Head>
-				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-				<link rel="manifest" href="/site.webmanifest" />
-				<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#090a16" />
-
-				<meta name="color-scheme" content="light dark" />
-				<meta name="apple-mobile-web-app-title" content="discord.js" />
-				<meta name="application-name" content="discord.js" />
-				<meta name="msapplication-TileColor" content="#090a16" />
-				<meta key="description" name="description" content={DESCRIPTION} />
-				<meta property="og:site_name" content="discord.js" />
-				<meta property="og:type" content="website" />
-				<meta key="og_title" property="og:title" content="discord.js" />
-				<meta key="og_description" name="og:description" content={DESCRIPTION} />
-				<meta property="og:image" content="https://discordjs.dev/open-graph.png" />
-				<meta name="twitter:card" content="summary_large_image" />
-				<meta name="twitter:creator" content="@iCrawlToGo" />
+				<link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
+				<link href="/favicon-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+				<link href="/favicon-16x16.png" rel="icon" sizes="16x16" type="image/png" />
+				<link href="/site.webmanifest" rel="manifest" />
+				<link color="#090a16" href="/safari-pinned-tab.svg" rel="mask-icon" />
+				<meta content="light dark" name="color-scheme" />
+				<meta content="discord.js" name="apple-mobile-web-app-title" />
+				<meta content="discord.js" name="application-name" />
+				<meta content="#090a16" name="msapplication-TileColor" />
+				<meta content={DESCRIPTION} key="description" name="description" />
+				<meta content="discord.js" property="og:site_name" />
+				<meta content="website" property="og:type" />
+				<meta content="discord.js" key="og_title" property="og:title" />
+				<meta content={DESCRIPTION} key="og_description" name="og:description" />
+				<meta content="https://discordjs.dev/open-graph.png" property="og:image" />
+				<meta content="summary_large_image" name="twitter:card" />
+				<meta content="@iCrawlToGo" name="twitter:creator" />
 			</Head>
 			<body className="dark:bg-dark-800 bg-white">
 				<Main />

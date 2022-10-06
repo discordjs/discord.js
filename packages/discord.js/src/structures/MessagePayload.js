@@ -2,12 +2,13 @@
 
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/builders');
+const { lazy } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
-const { RangeError, ErrorCodes } = require('../errors');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, verifyString, lazy } = require('../util/Util');
+const { basename, verifyString } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
@@ -107,7 +108,7 @@ class MessagePayload {
     if (this.options.content === null) {
       content = '';
     } else if (typeof this.options.content !== 'undefined') {
-      content = verifyString(this.options.content, RangeError, ErrorCodes.MessageContentType, true);
+      content = verifyString(this.options.content, DiscordjsRangeError, ErrorCodes.MessageContentType, true);
     }
 
     return content;
@@ -129,7 +130,7 @@ class MessagePayload {
     if (typeof this.options.nonce !== 'undefined') {
       nonce = this.options.nonce;
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
-        throw new RangeError(ErrorCodes.MessageNonceType);
+        throw new DiscordjsRangeError(ErrorCodes.MessageNonceType);
       }
     }
 
