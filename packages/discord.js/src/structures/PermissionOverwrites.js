@@ -3,7 +3,7 @@
 const { OverwriteType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Role } = require('./Role');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -181,7 +181,7 @@ class PermissionOverwrites extends Base {
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) ?? guild.client.users.resolve(overwrite.id);
-    if (!userOrRole) throw new TypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+    if (!userOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
 
     return {

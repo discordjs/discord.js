@@ -6,7 +6,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
@@ -193,7 +193,7 @@ class ApplicationCommandManager extends CachedManager {
    */
   async edit(command, data, guildId) {
     const id = this.resolveId(command);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
 
     const patched = await this.client.rest.patch(this.commandPath({ id, guildId }), {
       body: this.constructor.transformCommand(data),
@@ -215,7 +215,7 @@ class ApplicationCommandManager extends CachedManager {
    */
   async delete(command, guildId) {
     const id = this.resolveId(command);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
 
     await this.client.rest.delete(this.commandPath({ id, guildId }));
 

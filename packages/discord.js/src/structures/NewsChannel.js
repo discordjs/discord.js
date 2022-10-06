@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const BaseGuildTextChannel = require('./BaseGuildTextChannel');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents a guild news channel on Discord.
@@ -23,7 +23,7 @@ class NewsChannel extends BaseGuildTextChannel {
    */
   async addFollower(channel, reason) {
     const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channelId) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     await this.client.rest.post(Routes.channelFollowers(this.id), { body: { webhook_channel_id: channelId }, reason });
     return this;
   }

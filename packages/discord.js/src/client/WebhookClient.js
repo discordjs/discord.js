@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseClient = require('./BaseClient');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const Webhook = require('../structures/Webhook');
 const { parseWebhookURL } = require('../util/Util');
 
@@ -48,7 +48,7 @@ class WebhookClient extends BaseClient {
     if ('url' in data) {
       const parsed = parseWebhookURL(data.url);
       if (!parsed) {
-        throw new Error(ErrorCodes.WebhookURLInvalid);
+        throw new DiscordjsError(ErrorCodes.WebhookURLInvalid);
       }
 
       ({ id, token } = parsed);

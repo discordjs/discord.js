@@ -19,7 +19,7 @@ const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
@@ -541,6 +541,9 @@ class Message extends Base {
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
+   * @property {number} [idle] Time to wait without another message component interaction before ending the collector
+   * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
+   * @property {InteractionResponse} [InteractionResponse] The interaction response to collect interactions from
    */
 
   /**
@@ -562,7 +565,7 @@ class Message extends Base {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -628,10 +631,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async fetchReference() {
-    if (!this.reference) throw new Error(ErrorCodes.MessageReferenceMissing);
+    if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
     const channel = this.client.channels.resolve(channelId);
-    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
     return message;
   }
@@ -666,7 +669,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.edit(this, options);
   }
 
@@ -682,7 +685,7 @@ class Message extends Base {
    * }
    */
   crosspost() {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -697,7 +700,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.pin(this.id, reason);
     return this;
   }
@@ -713,7 +716,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.unpin(this.id, reason);
     return this;
   }
@@ -734,7 +737,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.react(this.id, emoji);
 
     return this.client.actions.MessageReactionAdd.handle(
@@ -758,7 +761,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.delete(this.id);
     return this;
   }
@@ -783,7 +786,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -816,11 +819,11 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
-      return Promise.reject(new Error(ErrorCodes.MessageThreadParent));
+      return Promise.reject(new DiscordjsError(ErrorCodes.MessageThreadParent));
     }
-    if (this.hasThread) return Promise.reject(new Error(ErrorCodes.MessageExistingThread));
+    if (this.hasThread) return Promise.reject(new DiscordjsError(ErrorCodes.MessageExistingThread));
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
@@ -830,7 +833,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.fetch({ message: this.id, force });
   }
 
@@ -839,8 +842,8 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookId) return Promise.reject(new Error(ErrorCodes.WebhookMessage));
-    if (this.webhookId === this.applicationId) return Promise.reject(new Error(ErrorCodes.WebhookApplication));
+    if (!this.webhookId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookMessage));
+    if (this.webhookId === this.applicationId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookApplication));
     return this.client.fetchWebhook(this.webhookId);
   }
 

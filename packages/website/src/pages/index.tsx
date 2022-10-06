@@ -28,16 +28,16 @@ export default function IndexRoute() {
 						<a
 							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
 							href="https://discordjs.guide"
-							target="_blank"
 							rel="noopener noreferrer"
+							target="_blank"
 						>
 							Guide <FiExternalLink />
 						</a>
 						<a
 							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
 							href="https://github.com/discordjs/discord.js"
-							target="_blank"
 							rel="noopener noreferrer"
+							target="_blank"
 						>
 							GitHub <FiExternalLink />
 						</a>
@@ -47,13 +47,13 @@ export default function IndexRoute() {
 			</div>
 			<div className="flex place-content-center">
 				<a
-					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 					className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
-					target="_blank"
+					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 					rel="noopener noreferrer"
+					target="_blank"
 					title="Vercel"
 				>
-					<Image src={vercelLogo} alt="Vercel" />
+					<Image alt="Vercel" src={vercelLogo} />
 				</a>
 			</div>
 		</div>

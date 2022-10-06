@@ -1,7 +1,7 @@
 'use strict';
 
 const { BaseChannel } = require('./BaseChannel');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
@@ -49,11 +49,11 @@ class PartialGroupDMChannel extends BaseChannel {
   }
 
   delete() {
-    return Promise.reject(new Error(ErrorCodes.DeleteGroupDMChannel));
+    return Promise.reject(new DiscordjsError(ErrorCodes.DeleteGroupDMChannel));
   }
 
   fetch() {
-    return Promise.reject(new Error(ErrorCodes.FetchGroupDMChannel));
+    return Promise.reject(new DiscordjsError(ErrorCodes.FetchGroupDMChannel));
   }
 }
 
