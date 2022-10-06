@@ -35,7 +35,7 @@ Here are some examples for the builders and utilities you can find in this packa
 ## Links
 
 - [Website](https://discordjs.dev/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discordjs.dev/docs/builders)
+- [Documentation](https://discordjs.dev/docs/packages/builders)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
   See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
@@ -47,7 +47,7 @@ Here are some examples for the builders and utilities you can find in this packa
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discordjs.dev/docs/builders).  
+[documentation](https://discordjs.dev/docs/packages/builders).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
