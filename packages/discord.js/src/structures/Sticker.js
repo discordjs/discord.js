@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, StickerFormatType } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents a Sticker.
@@ -191,7 +191,7 @@ class Sticker extends Base {
    */
   async fetchUser() {
     if (this.partial) await this.fetch();
-    if (!this.guildId) throw new Error(ErrorCodes.NotGuildSticker);
+    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSticker);
     return this.guild.stickers.fetchUser(this);
   }
 
