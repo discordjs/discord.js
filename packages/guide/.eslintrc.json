@@ -5,6 +5,10 @@
 			"version": "detect"
 		}
 	},
+	"parserOptions": {
+		"parser": "@typescript-eslint/parser",
+		"extraFileExtensions": [".astro"]
+	},
 	"overrides": [
 		{
 			"files": ["*.astro"],
@@ -13,10 +17,6 @@
 				"astro/astro": true
 			},
 			"parser": "astro-eslint-parser",
-			"parserOptions": {
-				"parser": "@typescript-eslint/parser",
-				"extraFileExtensions": [".astro"]
-			},
 			"rules": {
 				"deprecation/deprecation": 0,
 				"react/jsx-key": 0,

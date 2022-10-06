@@ -65,6 +65,7 @@
 		"@unocss/reset": "^0.45.26",
 		"@vitejs/plugin-react": "^2.1.0",
 		"@vitest/coverage-c8": "^0.23.4",
+		"astro-eslint-parser": "^0.6.3",
 		"concurrently": "^7.4.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.24.0",
