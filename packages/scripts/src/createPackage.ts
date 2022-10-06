@@ -31,7 +31,7 @@ interface LabelerData {
 	name: string;
 }
 
-export async function createPackage(packageName: string) {
+export async function createPackage(packageName: string, packageDescription?: string) {
 	// Make directory for package
 	await mkdir(`packages/${packageName}`);
 
@@ -48,7 +48,10 @@ export async function createPackage(packageName: string) {
 
 	await writeFile('.lintstagedrc.js', await readFile('../scripts/src/template/template.lintstagedrc.js', 'utf8'));
 
-	const packageJSON = { ...templateJSON, name: packageName };
+	const packageJSON = { ...templateJSON, name: packageName, description: packageDescription ?? '' };
+
+	// Edit changelog script
+	packageJSON.scripts.changelog = packageJSON.scripts.changelog.replace('{name}', packageName);
 
 	// Create package.json
 	await writeFile(`package.json`, JSON.stringify(packageJSON, null, 2));

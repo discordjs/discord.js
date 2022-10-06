@@ -1,13 +1,14 @@
-import { argv, exit } from 'node:process';
+import { program } from 'commander';
 import { createPackage } from '../dist/index.mjs';
 
-const packageName = argv[2];
+program
+	.description('A script for creating discord.js packages.')
+	.argument('<name>', 'The name of the new package.')
+	.argument('[description]', 'The description of the new package.');
+program.parse();
 
-if (!packageName) {
-	console.error('Expected package name as first argument');
-	exit(1);
-}
+const [packageName, description] = program.args;
 
 console.log(`Creating package @discordjs/${packageName}...`);
-await createPackage(packageName);
+await createPackage(packageName, description);
 console.log('Done!');

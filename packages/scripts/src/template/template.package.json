@@ -1,5 +1,5 @@
 {
-	"name": "@",
+	"name": "{name}",
 	"version": "0.1.0",
 	"description": "",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
 		"docs": "downlevel-dts dist docs/dist --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{name}/*'",
 		"release": "cliff-jumper"
 	},
 	"main": "./dist/index.js",
@@ -54,7 +54,8 @@
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.3",
-		"vitest": "^0.23.4"
+		"vitest": "^0.23.4",
+		"cross-env": "^7.0.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"
