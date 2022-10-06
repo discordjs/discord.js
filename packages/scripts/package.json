@@ -44,12 +44,15 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
+		"@iarna/toml": "^2.2.5",
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@microsoft/tsdoc-config": "0.16.1",
 		"commander": "^9.4.1",
+		"toml": "^3.0.0",
 		"tslib": "^2.4.0",
-		"undici": "^5.11.0"
+		"undici": "^5.11.0",
+		"yaml": "^2.1.3"
 	},
 	"devDependencies": {
 		"@types/node": "^16.11.64",
