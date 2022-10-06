@@ -1,11 +1,14 @@
+import type { MDXInstance } from 'astro';
 import { Section } from './Section.jsx';
 
-export function SidebarItems({ members }: { members: any }) {
-	const categories = members.reduce((acc, member) => {
-		if (acc[member.frontmatter.category]) {
-			acc[member.frontmatter.category].push(member);
+export type MDXPage = MDXInstance<{ category: string; title: string }>;
+
+export function SidebarItems({ pages }: { pages: MDXPage[] }) {
+	const categories = pages.reduce<Record<string, MDXPage[]>>((acc, page) => {
+		if (acc[page.frontmatter.category]) {
+			acc[page.frontmatter.category]?.push(page);
 		} else {
-			acc[member.frontmatter.category] = [member];
+			acc[page.frontmatter.category] = [page];
 		}
 
 		return acc;
@@ -13,7 +16,7 @@ export function SidebarItems({ members }: { members: any }) {
 
 	return Object.keys(categories).map((category, idx) => (
 		<Section key={idx} title={category}>
-			{categories[category].map((member, index) => (
+			{categories[category]?.map((member, index) => (
 				<a
 					className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
 						false
@@ -22,13 +25,13 @@ export function SidebarItems({ members }: { members: any }) {
 					}`}
 					href={member.url}
 					key={index}
-					title={member.url}
+					title={member.frontmatter.title}
 				>
 					<div className="flex flex-row place-items-center gap-2 lg:text-sm">
-						<span className="truncate">{member.url}</span>
+						<span className="truncate">{member.frontmatter.title}</span>
 					</div>
 				</a>
-			))}
+			)) ?? null}
 		</Section>
 	));
 }

@@ -1,6 +1,7 @@
 import { Scrollbars } from 'react-custom-scrollbars-2';
+import type { MDXPage } from './SidebarItems';
 
-export function Sidebar({ pages, opened }: { opened: boolean; pages?: any }) {
+export function Sidebar({ pages, opened }: { opened: boolean; pages?: MDXPage[] | undefined }) {
 	return (
 		<nav
 			className={`h-[calc(100vh - 73px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 w-full border-r bg-white ${

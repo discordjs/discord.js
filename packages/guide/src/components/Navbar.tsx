@@ -4,8 +4,9 @@ import { FiCommand } from 'react-icons/fi';
 import { VscColorMode, VscGithubInverted, VscMenu, VscSearch } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { Sidebar } from './Sidebar.jsx';
+import type { MDXPage } from './SidebarItems.jsx';
 
-export function Navbar({ pages }: { pages?: any }) {
+export function Navbar({ pages }: { pages?: MDXPage[] | undefined }) {
 	const matches = useMedia('(min-width: 992px)', false);
 	const [opened, setOpened] = useState(false);
 

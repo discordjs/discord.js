@@ -2,12 +2,12 @@
 import { Navbar } from './Navbar.jsx';
 import { SidebarItems } from './SidebarItems.jsx';
 
-const pages = await Astro.glob('../pages/**/*.mdx');
+const pages = await Astro.glob<{ category: string; title: string }>('../pages/**/*.mdx');
 ---
 
 <Navbar client:load>
 	<div class="flex flex-col gap-3 p-3 pb-32 lg:pb-12" slot="pages">
-		<SidebarItems client:load members={pages} />
+		<SidebarItems client:load pages={pages} />
 	</div>
 </Navbar>
 <main class="pt-18 lg:pl-76">
