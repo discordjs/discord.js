@@ -12,17 +12,17 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 		<>
 			<Head>
 				<title key="title">discord.js</title>
-				<meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-				<meta name="theme-color" content="#5865f2" />
+				<meta content="minimum-scale=1, initial-scale=1, width=device-width" name="viewport" />
+				<meta content="#5865f2" name="theme-color" />
 			</Head>
 			<ThemeProvider
 				attribute="class"
 				defaultTheme="system"
+				disableTransitionOnChange
 				value={{
 					light: 'light',
 					dark: 'dark',
 				}}
-				disableTransitionOnChange
 			>
 				<NextProgress color="#5865f2" options={{ showSpinner: false }} />
 				<Component {...pageProps} />

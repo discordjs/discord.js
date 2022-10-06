@@ -309,6 +309,11 @@ declare const assertIsMessage: (m: Promise<Message>) => void;
 
 client.on('messageCreate', async message => {
   const { client, channel } = message;
+
+  if (!message.inGuild() && message.partial) {
+    expectNotType<never>(message);
+  }
+
   expectType<Client<true>>(client);
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));

@@ -26,9 +26,9 @@ export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
 	return (
 		<div className="overflow-x-auto">
 			<Table
+				columnStyles={rowElements}
 				columns={['Name', 'Constraints', 'Optional', 'Default', 'Description']}
 				rows={rows}
-				columnStyles={rowElements}
 			/>
 		</div>
 	);
