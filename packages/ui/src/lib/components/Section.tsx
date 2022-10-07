@@ -2,20 +2,26 @@ import { Disclosure, DisclosureContent, useDisclosureState } from 'ariakit/discl
 import type { PropsWithChildren } from 'react';
 import { VscChevronDown } from 'react-icons/vsc';
 
+export interface SectionOptions {
+	background?: boolean | undefined;
+	defaultClosed?: boolean | undefined;
+	dense?: boolean | undefined;
+	gutter?: boolean | undefined;
+	icon?: JSX.Element | undefined;
+	padded?: boolean | undefined;
+	title: string;
+}
+
 export function Section({
 	title,
 	icon,
 	padded = false,
 	dense = false,
 	defaultClosed = false,
+	background = false,
+	gutter = false,
 	children,
-}: PropsWithChildren<{
-	defaultClosed?: boolean;
-	dense?: boolean;
-	icon?: JSX.Element;
-	padded?: boolean;
-	title: string;
-}>) {
+}: PropsWithChildren<SectionOptions>) {
 	const disclosure = useDisclosureState({ defaultOpen: !defaultClosed });
 
 	return (
@@ -35,7 +41,10 @@ export function Section({
 					/>
 				</div>
 			</Disclosure>
-			<DisclosureContent state={disclosure}>
+			<DisclosureContent
+				className={`${background ? 'bg-light-700 dark:bg-dark-500 rounded' : ''} ${gutter ? 'mt-2' : ''}`}
+				state={disclosure}
+			>
 				{padded ? <div className={`py-5 ${dense ? 'mx-2 px-0' : 'px-4.5 mx-6.5'}`}>{children}</div> : children}
 			</DisclosureContent>
 		</div>

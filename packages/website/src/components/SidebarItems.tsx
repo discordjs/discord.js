@@ -1,3 +1,4 @@
+import { Section } from '@discordjs/ui';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { type Dispatch, type SetStateAction, useEffect, useState, useMemo } from 'react';
@@ -9,7 +10,6 @@ import {
 	VscSymbolVariable,
 	VscSymbolMethod,
 } from 'react-icons/vsc';
-import { Section } from './Section';
 import type { GroupedMembers, Members } from './SidebarLayout';
 
 function groupMembers(members: Members): GroupedMembers {

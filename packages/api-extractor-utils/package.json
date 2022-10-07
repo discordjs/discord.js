@@ -5,8 +5,8 @@
 	"private": true,
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix",
 		"fmt": "yarn format"
 	},
 	"main": "./dist/index.js",

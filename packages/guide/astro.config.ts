@@ -14,7 +14,9 @@ export default defineConfig({
 		image({
 			serviceEntryPoint: '@astrojs/image/sharp',
 		}),
-		Unocss(),
+		Unocss({
+			configFile: fileURLToPath(new URL('../ui/unocss.config.ts', import.meta.url)),
+		}),
 	],
 	markdown: {
 		remarkPlugins: [[remarkCodeHike, { autoImport: false, theme: shikiThemeDarkPlus, lineNumbers: true }]],

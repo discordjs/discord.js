@@ -1,0 +1,18 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"noEmit": true,
+		"allowJs": false,
+		"incremental": true,
+		"skipLibCheck": true,
+		"paths": {
+			"~/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", ".ladle/**/*.tsx", "types.d.ts"],
+	"exclude": ["node_modules"]
+}
