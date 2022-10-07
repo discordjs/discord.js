@@ -2318,7 +2318,6 @@ __metadata:
   resolution: "@discordjs/scripts@workspace:packages/scripts"
   dependencies:
     "@discordjs/api-extractor-utils": "workspace:^"
-    "@iarna/toml": ^2.2.5
     "@microsoft/api-extractor-model": 7.24.0
     "@microsoft/tsdoc": 0.14.1
     "@microsoft/tsdoc-config": 0.16.1
@@ -2711,13 +2710,6 @@ __metadata:
   version: 3.0.2
   resolution: "@hutson/parse-repository-url@npm:3.0.2"
   checksum: 39992c5f183c5ca3d761d6ed9dfabcb79b5f3750bf1b7f3532e1dc439ca370138bbd426ee250fdaba460bc948e6761fbefd484b8f4f36885d71ded96138340d1
-  languageName: node
-  linkType: hard
-
-"@iarna/toml@npm:^2.2.5":
-  version: 2.2.5
-  resolution: "@iarna/toml@npm:2.2.5"
-  checksum: b63b2b2c4fd67969a6291543ada0303d45593801ee744b60f5390f183c03d9192bc67a217abb24be945158f1935f02840d9ffff40c0142aa171b5d3b6b6a3ea5
   languageName: node
   linkType: hard
 
