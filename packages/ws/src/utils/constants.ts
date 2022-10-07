@@ -20,7 +20,7 @@ export enum CompressionMethod {
 	ZlibStream = 'zlib-stream',
 }
 
-const packageJson = readFileSync(join(__dirname, '..', '..', 'package.json'), 'utf8');
+const packageJson = readFileSync(join(__dirname, '..', 'package.json'), 'utf8');
 const Package = JSON.parse(packageJson);
 
 export const DefaultDeviceProperty = `@discordjs/ws ${Package.version}`;
