@@ -19,6 +19,7 @@
 		"import": "./dist/ui.js",
 		"types": "./dist/index.d.ts"
 	},
+	"sideEffects": false,
 	"directories": {
 		"lib": "src"
 	},
@@ -51,6 +52,7 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@ladle/react": "^2.4.3",
 		"@types/node": "^16.11.64",
+		"@types/react": "^18.0.21",
 		"@types/react-dom": "^18.0.6",
 		"@unocss/reset": "^0.45.26",
 		"@vitejs/plugin-react": "^2.1.0",
