@@ -1,5 +1,5 @@
+import { Section } from '@discordjs/ui';
 import type { MDXInstance } from 'astro';
-import { Section } from './Section.jsx';
 
 export type MDXPage = MDXInstance<{ category: string; title: string }>;
 

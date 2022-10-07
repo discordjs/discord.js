@@ -4,13 +4,13 @@ import type {
 	ParameterDocumentation,
 	ApiConstructorJSON,
 } from '@discordjs/api-extractor-utils';
+import { Section } from '@discordjs/ui';
 import { useMemo } from 'react';
 import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
-import { Section } from './Section';
 import { TSDoc } from './tsdoc/TSDoc';
 
 export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {

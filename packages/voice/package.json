@@ -5,8 +5,8 @@
 	"scripts": {
 		"build": "tsup",
 		"test": "jest --coverage",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix",
 		"fmt": "yarn format",
 		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",

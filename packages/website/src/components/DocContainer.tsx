@@ -5,6 +5,7 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
+import { Section } from '@discordjs/ui';
 import type { ReactNode } from 'react';
 import { Fragment, type PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
@@ -19,7 +20,6 @@ import {
 } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
-import { Section } from './Section';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';

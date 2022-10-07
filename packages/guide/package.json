@@ -1,15 +1,15 @@
 {
 	"name": "@discordjs/guide",
 	"version": "0.1.0",
-	"description": "",
+	"description": "Imagine a guide... that explores the many possibilities for your discord.js bot",
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:prod": "astro build",
+		"build:prod": "yarn workspace @discordjs/ui run build && astro build",
 		"dev": "astro dev",
 		"preview": "astro preview",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx,astro",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx,astro --fix"
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix"
 	},
 	"type": "module",
 	"contributors": [
@@ -38,6 +38,7 @@
 		"@astrojs/mdx": "^0.11.4",
 		"@astrojs/react": "^1.1.4",
 		"@code-hike/mdx": "^0.7.4",
+		"@discordjs/ui": "workspace:^",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.41",
 		"astro": "^1.4.5",

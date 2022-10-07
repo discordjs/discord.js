@@ -62,4 +62,18 @@ export default defineConfig({
 			},
 		}),
 	],
+	include: [
+		/.vue$/,
+		/.vue?vue/,
+		/.svelte$/,
+		/.[jt]sx$/,
+		/.mdx?$/,
+		/.astro$/,
+		/.elm$/,
+		/.html$/,
+		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+		/.*\/ui\.js(.*)?$/,
+		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+		/.*\/ui\.mjs(.*)?$/,
+	],
 });

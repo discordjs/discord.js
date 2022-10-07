@@ -1,21 +1,21 @@
 {
 	"name": "@discordjs/website",
 	"version": "0.1.0",
-	"description": "A set of builders that you can use when creating your bot",
+	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
 		"build:local": "yarn run --top-level docs --force && cross-env NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
-		"build:prod": "yarn workspace @discordjs/api-extractor-utils run build && yarn workspace @discordjs/scripts run build && yarn build:css && yarn build:next",
+		"build:prod": "yarn workspace @discordjs/api-extractor-utils run build && yarn workspace @discordjs/scripts run build && yarn workspace @discordjs/ui run build && yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
 		"build:search_indicies": "yarn node scripts/generateAllIndicies.js",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
-		"generate:css": "unocss 'src/**/*.tsx' --out-file ./src/styles/unocss.css",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts,tsx --fix"
+		"generate:css": "unocss 'src/**/*.tsx' '../ui/src/**/*.tsx' --out-file ./src/styles/unocss.css --config ../ui/unocss.config.ts",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix"
 	},
 	"type": "module",
 	"contributors": [
@@ -42,6 +42,7 @@
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
+		"@discordjs/ui": "workspace:^",
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
 		"@vscode/codicons": "^0.0.32",

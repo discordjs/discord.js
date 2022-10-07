@@ -11,6 +11,6 @@
 	"files.associations": {
 		"*.mdx": "markdown"
 	},
-	"unocss.root": "./packages/website",
+	"unocss.root": "./packages/web-components",
 	"typescript.tsdk": "node_modules/typescript/lib"
 }
