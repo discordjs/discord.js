@@ -1,5 +1,5 @@
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import type { MDXPage } from './SidebarItems';
+import type { MDXPage } from './SidebarItems.jsx';
 
 export function Sidebar({ pages, opened }: { opened: boolean; pages?: MDXPage[] | undefined }) {
 	return (
