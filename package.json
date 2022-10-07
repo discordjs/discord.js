@@ -43,6 +43,7 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@favware/npm-deprecate": "^1.0.5",
 		"conventional-changelog-cli": "^2.2.2",
+		"esbuild-plugin-version-injector": "^1.0.0",
 		"husky": "^8.0.1",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",

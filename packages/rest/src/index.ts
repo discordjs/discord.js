@@ -6,3 +6,12 @@ export * from './lib/RequestManager.js';
 export * from './lib/REST.js';
 export * from './lib/utils/constants.js';
 export { makeURLSearchParams, parseResponse } from './lib/utils/utils.js';
+
+/**
+ * The [\@discordjs/rest](https://github.com/discordjs/discord.js/blob/main/packages/rest/#readme) version
+ * that you are currently using.
+ *
+ * Note to developers: This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
+ */
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const version: string = '[VI]{{inject}}[/VI]';
