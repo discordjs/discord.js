@@ -12,7 +12,7 @@
 		"postinstall": "is-ci || husky install",
 		"docs": "turbo run docs --parallel",
 		"update": "yarn upgrade-interactive",
-		"createPackage": "node packages/scripts/src/packageScript.mjs"
+		"create-package": "node packages/scripts/src/packageScript.mjs"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",

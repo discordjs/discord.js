@@ -22,7 +22,7 @@ To get ready to work on the codebase, please do the following:
 If you'd like to create another package under the `@discordjs` organization run the following command:
 
 ```bash
-yarn createPackage <package-name> [package-description]
+yarn create-package <package-name> [package-description]
 ```
 
 This will create new package directory under `packages/` with the required configuration files. You can
