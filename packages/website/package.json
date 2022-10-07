@@ -81,12 +81,12 @@
 		"cross-env": "^7.0.3",
 		"eslint": "^8.24.0",
 		"eslint-config-neon": "^0.1.34",
-		"happy-dom": "^7.0.0",
+		"happy-dom": "^7.1.1",
 		"prettier": "^2.7.1",
 		"prettier-plugin-tailwindcss": "^0.1.13",
 		"typescript": "^4.8.4",
 		"unocss": "^0.45.26",
-		"vercel": "^28.4.6",
+		"vercel": "^28.4.8",
 		"vitest": "^0.23.4"
 	},
 	"engines": {
