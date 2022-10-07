@@ -120,17 +120,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/compiler@npm:0.18 - 0.26 || ^0.26.0, @astrojs/compiler@npm:^0.26.0":
+"@astrojs/compiler@npm:^0.23.4":
+  version: 0.23.5
+  resolution: "@astrojs/compiler@npm:0.23.5"
+  checksum: 9779b8a7fab2b467ea8637fca8129110fe3b6dbee4fc2e9fe4ec162c3f91ffd77fd447abab01a926b7440749e03c269dda65c4ca1d8759d9662f9198e56eeb01
+  languageName: node
+  linkType: hard
+
+"@astrojs/compiler@npm:^0.26.0":
   version: 0.26.1
   resolution: "@astrojs/compiler@npm:0.26.1"
   checksum: c4751efd93103f727e9b371e0d0a6e3e382fdc6fb737bc7a32de202d7040a75640c3fca50d4d60e3ba46a2445e2c45fa72f64ba74677d87f80d6f3e640097391
   languageName: node
   linkType: hard
 
-"@astrojs/compiler@npm:^0.23.4":
-  version: 0.23.5
-  resolution: "@astrojs/compiler@npm:0.23.5"
-  checksum: 9779b8a7fab2b467ea8637fca8129110fe3b6dbee4fc2e9fe4ec162c3f91ffd77fd447abab01a926b7440749e03c269dda65c4ca1d8759d9662f9198e56eeb01
+"@astrojs/compiler@npm:^0.27.0":
+  version: 0.27.0
+  resolution: "@astrojs/compiler@npm:0.27.0"
+  checksum: 89eae11f0ce598413755efd23f7d4fcc7af4bcd0cbd03d43911017a6b1ce37e8513e7c24fd39da9b143882a09063a2c8b3534fbd8e6c0935c7108d0eb6484062
   languageName: node
   linkType: hard
 
@@ -1981,15 +1988,15 @@ __metadata:
   dependencies:
     "@actions/core": ^1.10.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2002,7 +2009,7 @@ __metadata:
     "@types/node": ^16.11.64
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     tsup: ^6.2.3
     typescript: ^4.8.4
@@ -2018,19 +2025,19 @@ __metadata:
     "@microsoft/api-extractor": ^7.32.0
     "@sapphire/shapeshift": ^3.7.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     fast-deep-equal: ^3.1.3
     prettier: ^2.7.1
     ts-mixer: ^6.0.1
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2041,15 +2048,15 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2081,7 +2088,7 @@ __metadata:
     commander: ^9.4.1
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     jsdoc-to-markdown: ^7.1.1
     prettier: ^2.7.1
     tslib: ^2.4.0
@@ -2105,24 +2112,22 @@ __metadata:
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
     "@types/node": ^16.11.64
-    "@types/react": ^17.0.39
+    "@types/react": ^17.0.50
     "@types/react-dom": ^17.0.17
     "@types/react-syntax-highlighter": ^15.5.5
     "@unocss/cli": ^0.45.26
     "@unocss/reset": ^0.45.26
     "@vitejs/plugin-react": ^2.1.0
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.41
-    astro: ^1.4.5
-    astro-eslint-parser: ^0.6.3
+    astro: ^1.4.6
     cmdk: ^0.1.20
     concurrently: ^7.4.0
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
-    eslint-plugin-astro: ^0.19.0
-    happy-dom: ^7.1.1
+    eslint-config-neon: ^0.1.35
+    happy-dom: ^7.4.0
     meilisearch: ^0.28.0
     prettier: ^2.7.1
     prettier-plugin-astro: ^0.5.5
@@ -2141,7 +2146,7 @@ __metadata:
     typescript: ^4.8.4
     unocss: ^0.45.26
     vercel: ^28.4.8
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2154,7 +2159,7 @@ __metadata:
     "@types/node": ^16.11.64
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     tslib: ^2.4.0
     tsup: ^6.2.3
@@ -2172,18 +2177,18 @@ __metadata:
     "@microsoft/api-extractor": ^7.32.0
     "@types/node": ^16.11.64
     "@types/supertest": ^2.0.12
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     supertest: ^6.3.0
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
     undici: ^5.11.0
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2198,19 +2203,19 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.2.2
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     file-type: ^18.0.0
     prettier: ^2.7.1
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
     undici: ^5.11.0
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2224,18 +2229,18 @@ __metadata:
     "@microsoft/tsdoc-config": 0.16.1
     "@types/fs-extra": ^9.0.13
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     commander: ^9.4.1
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     fs-extra: ^10.1.0
     prettier: ^2.7.1
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
     undici: ^5.11.0
-    vitest: ^0.23.4
+    vitest: ^0.24.0
     yaml: ^2.1.3
   languageName: unknown
   linkType: soft
@@ -2251,11 +2256,11 @@ __metadata:
     "@types/react-dom": ^18.0.6
     "@unocss/reset": ^0.45.26
     "@vitejs/plugin-react": ^2.1.0
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     ariakit: ^2.0.0-next.41
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -2264,7 +2269,7 @@ __metadata:
     unocss: ^0.45.26
     vite: ^3.1.6
     vite-plugin-dts: ^1.6.5
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2275,16 +2280,16 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     cross-env: ^7.0.3
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     prettier: ^2.7.1
     tsd: ^0.24.1
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2304,7 +2309,7 @@ __metadata:
     discord-api-types: ^0.37.12
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     jest: ^29.1.2
     jest-websocket-mock: ^2.4.0
     mock-socket: ^9.1.5
@@ -2336,15 +2341,15 @@ __metadata:
     "@unocss/cli": ^0.45.26
     "@unocss/reset": ^0.45.26
     "@vitejs/plugin-react": ^2.1.0
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.41
     cmdk: ^0.1.20
     concurrently: ^7.4.0
     cross-env: ^7.0.3
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
-    happy-dom: ^7.1.1
+    eslint-config-neon: ^0.1.35
+    happy-dom: ^7.4.0
     meilisearch: ^0.28.0
     next: ^12.3.1
     next-mdx-remote: ^4.1.0
@@ -2369,7 +2374,7 @@ __metadata:
     typescript: ^4.8.4
     unocss: ^0.45.26
     vercel: ^28.4.8
-    vitest: ^0.23.4
+    vitest: ^0.24.0
   languageName: unknown
   linkType: soft
 
@@ -2385,20 +2390,20 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@types/node": ^16.11.64
     "@types/ws": ^8.5.3
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.0
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
     downlevel-dts: ^0.10.1
     eslint: ^8.24.0
-    eslint-config-neon: ^0.1.34
+    eslint-config-neon: ^0.1.35
     mock-socket: ^9.1.5
     prettier: ^2.7.1
     tslib: ^2.4.0
     tsup: ^6.2.3
     typescript: ^4.8.4
     undici: ^5.11.0
-    vitest: ^0.23.4
+    vitest: ^0.24.0
     ws: ^8.9.0
     zlib-sync: ^0.1.7
   languageName: unknown
@@ -4325,7 +4330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^17, @types/react@npm:^17.0.39":
+"@types/react@npm:^17, @types/react@npm:^17.0.50":
   version: 17.0.50
   resolution: "@types/react@npm:17.0.50"
   dependencies:
@@ -5049,13 +5054,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-c8@npm:^0.23.4":
-  version: 0.23.4
-  resolution: "@vitest/coverage-c8@npm:0.23.4"
+"@vitest/coverage-c8@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "@vitest/coverage-c8@npm:0.24.0"
   dependencies:
     c8: ^7.12.0
-    vitest: 0.23.4
-  checksum: ce0e4928074145db50d6600da19965c80af6859e901f5e759202c4ea326dde0fcca0d54a79c0872859c4d8b9630d7328d0cbb90150a625d447c761a6fbf0d6e0
+    vitest: 0.24.0
+  checksum: 520351890ac44b4928d2b3cb7f0e104bb8add7e254d557a2a9d446bcb178f20b2ffdc3e85e5f27e617c3efd917bcca812afaca4802e0fef5f5b60b7fe0ca3fc4
   languageName: node
   linkType: hard
 
@@ -5646,23 +5651,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro-eslint-parser@npm:^0.6.0, astro-eslint-parser@npm:^0.6.3":
-  version: 0.6.3
-  resolution: "astro-eslint-parser@npm:0.6.3"
+"astro-eslint-parser@npm:^0.7.0, astro-eslint-parser@npm:^0.7.2":
+  version: 0.7.2
+  resolution: "astro-eslint-parser@npm:0.7.2"
   dependencies:
-    "@astrojs/compiler": 0.18 - 0.26 || ^0.26.0
+    "@astrojs/compiler": ^0.27.0
     "@typescript-eslint/types": ^5.25.0
-    astrojs-compiler-sync: ^0.2.0
+    astrojs-compiler-sync: ^0.3.0
     debug: ^4.3.4
     eslint-visitor-keys: ^3.0.0
     espree: ^9.0.0
-  checksum: 846337a11246221c1f29d7cdea687f331539ec4341a517be5b0c9e54e0eee2a778d535add9f3a1dfe03dd998ededef3f8587126f1749b25d3b3251ace34607dc
+  checksum: 9d9ff321c6d9e0863335c833e0f15be098c000d16ca794ae9ce6b32b79c83b7be779be54a24b0be43bc427c419d0527dc5f466426643a74eb5d55476e9bc77ac
   languageName: node
   linkType: hard
 
-"astro@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "astro@npm:1.4.5"
+"astro@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "astro@npm:1.4.6"
   dependencies:
     "@astrojs/compiler": ^0.26.0
     "@astrojs/language-server": ^0.26.2
@@ -5725,18 +5730,18 @@ __metadata:
     zod: ^3.17.3
   bin:
     astro: astro.js
-  checksum: 578862c0ab3099bc81d2c1709b79a18d81041efb96818784ba884d16e8a0c709ef87f23623b69be1669d597b805e8953c57a832b9d19aacf902f94ab0de3c56b
+  checksum: e50ffc392d8efb3c837bfb389caf3eaa115159a50b8d338bb84456f81316e85e303cbbb8fa8b93f0630ae977736a657ecb478735af697ba21e938e1150d3dbbf
   languageName: node
   linkType: hard
 
-"astrojs-compiler-sync@npm:^0.2.0":
-  version: 0.2.3
-  resolution: "astrojs-compiler-sync@npm:0.2.3"
+"astrojs-compiler-sync@npm:^0.3.0":
+  version: 0.3.1
+  resolution: "astrojs-compiler-sync@npm:0.3.1"
   dependencies:
     synckit: ^0.8.0
   peerDependencies:
-    "@astrojs/compiler": ">=0.18.0"
-  checksum: 9588a12c9cb69d5a4ac6925e2b26d2be021a8b36d7f97b5c41f3ca36705dc293f6e8007dcc9327126f7adf9c37973faf50a46a78d63c36fb1a5c2838a51d3f83
+    "@astrojs/compiler": ">=0.27.0"
+  checksum: 5a518030d389d03e64037475b129cbfffd2d99ee1408eae0ff74e6eb1b52efbe830079b604ab135a2f8db2a5cbb15e2bc4e9949f9954aa41ed44493c6d8c2243
   languageName: node
   linkType: hard
 
@@ -9004,9 +9009,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-neon@npm:^0.1.34":
-  version: 0.1.34
-  resolution: "eslint-config-neon@npm:0.1.34"
+"eslint-config-neon@npm:^0.1.35":
+  version: 0.1.35
+  resolution: "eslint-config-neon@npm:0.1.35"
   dependencies:
     "@angular-eslint/eslint-plugin": ^14.1.2
     "@angular-eslint/eslint-plugin-template": ^14.1.2
@@ -9015,7 +9020,9 @@ __metadata:
     "@rushstack/eslint-patch": ^1.2.0
     "@typescript-eslint/eslint-plugin": ^5.39.0
     "@typescript-eslint/parser": ^5.39.0
+    astro-eslint-parser: ^0.7.2
     eslint-config-prettier: ^8.5.0
+    eslint-plugin-astro: ^0.20.0
     eslint-plugin-cypress: ^2.12.1
     eslint-plugin-deprecation: ^1.3.2
     eslint-plugin-import: "npm:eslint-plugin-i@latest"
@@ -9033,10 +9040,10 @@ __metadata:
     eslint-plugin-svelte3: ^4.0.0
     eslint-plugin-tsdoc: ^0.2.17
     eslint-plugin-typescript-sort-keys: ^2.1.0
-    eslint-plugin-unicorn: ^44.0.1
+    eslint-plugin-unicorn: ^44.0.2
     eslint-plugin-vue: ^9.6.0
     vue-eslint-parser: ^9.1.0
-  checksum: effc2817df1ed7f106a150a9e669197d4cd9a8ca8afabc7b8d8a7f9c421b5fc2b841a26acf467e6c50be714f4d9bc54d5ffeb9075f68ff1e6e7dd4e99974c4bc
+  checksum: afb926a0e228ad61b59489169d20dc27e1a512c8e46887cee3e410a3a590fe48dbe9e3d0114a3dffb2aabdbcde7694562dcec5a358802409217c5f50bf7f13ae
   languageName: node
   linkType: hard
 
@@ -9103,19 +9110,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-astro@npm:^0.19.0":
-  version: 0.19.0
-  resolution: "eslint-plugin-astro@npm:0.19.0"
+"eslint-plugin-astro@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "eslint-plugin-astro@npm:0.20.0"
   dependencies:
     "@typescript-eslint/types": ^5.25.0
-    astro-eslint-parser: ^0.6.0
+    astro-eslint-parser: ^0.7.0
     eslint-utils: ^3.0.0
     postcss: ^8.4.14
     postcss-selector-parser: ^6.0.10
     sourcemap-codec: ^1.4.8
   peerDependencies:
     eslint: ">=7.0.0"
-  checksum: 57188b533f2994da118cfcf287b02bba85c199e0b3846829f81e0c0554aec1bb29547182fc75a35bf1ab8e8f2b4f16a88a74037e7f781a97e6b612f2779cc324
+  checksum: eb046fd5644c788c32a1c6f553b945c2c2511c3d6b67a8ed9377b30bd9500cac068fa38b59b3a8efda087ab06aadf3b23ba8593279fc225ad795d8d358cd29d7
   languageName: node
   linkType: hard
 
@@ -9389,9 +9396,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unicorn@npm:^44.0.1":
-  version: 44.0.1
-  resolution: "eslint-plugin-unicorn@npm:44.0.1"
+"eslint-plugin-unicorn@npm:^44.0.2":
+  version: 44.0.2
+  resolution: "eslint-plugin-unicorn@npm:44.0.2"
   dependencies:
     "@babel/helper-validator-identifier": ^7.19.1
     ci-info: ^3.4.0
@@ -9409,7 +9416,7 @@ __metadata:
     strip-indent: ^3.0.0
   peerDependencies:
     eslint: ">=8.23.1"
-  checksum: 5a237aa257195984e4d9dff89e5966ce86c2012694b725bff305b40949b02fc3777984ca9a9f707c561b8c1d32406eab94cd377903f969c804903bb455cf931c
+  checksum: b0ed6b3a60e36efab5b19a0e2a1ea4e4faba79ef315aa1eff9bdebaf28b70ada059837a0a4cdf20e0b678d8eee6155afc2c6300d0ff7d51b68eced4f0bcb56e0
   languageName: node
   linkType: hard
 
@@ -10802,9 +10809,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "happy-dom@npm:7.1.1"
+"happy-dom@npm:^7.4.0":
+  version: 7.4.0
+  resolution: "happy-dom@npm:7.4.0"
   dependencies:
     css.escape: ^1.5.1
     he: ^1.2.0
@@ -10813,7 +10820,7 @@ __metadata:
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: 813e4ddbf6ad377e3dd8dbbfb3f50169bfd9e2323a5cc8ccb6d6960d3a3357a46adf2901905e4624af86775ab463c781a4da38f5f9ae537f1ca2ea88a0416f19
+  checksum: 4a043b1ec927227bc9e3f76f56815e1b691a1441e7af354e99e102fc7f2cee58acdf0d01de979387e67207917a3e8da1d0d4075d1ad58bd8d81b5abc6423a31d
   languageName: node
   linkType: hard
 
@@ -18205,7 +18212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-literal@npm:^0.4.1":
+"strip-literal@npm:^0.4.2":
   version: 0.4.2
   resolution: "strip-literal@npm:0.4.2"
   dependencies:
@@ -18655,10 +18662,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinybench@npm:^2.1.5":
-  version: 2.1.5
-  resolution: "tinybench@npm:2.1.5"
-  checksum: 5a6d378271a00ace6fa6970404eb1efd539d3e9b9908a9cb6d66ad78acfd873762734f3fc69fe10d86217318871367997d2a8b9566039fd224c518493466aa96
+"tinybench@npm:^2.2.1":
+  version: 2.3.0
+  resolution: "tinybench@npm:2.3.0"
+  checksum: 6556e42b3b7700795caca07f5bbc2c78e33261ffe5db4c434d54bcfa1cd5c64863357c5b7fff53e031ee236d098313dac78938e12f8f1a9b47f1d7ad55417ce8
   languageName: node
   linkType: hard
 
@@ -20134,7 +20141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^2.9.12 || ^3.0.0-0, vite@npm:^3.0.9, vite@npm:^3.1.6, vite@npm:~3.1.3":
+"vite@npm:^3.0.0, vite@npm:^3.0.9, vite@npm:^3.1.6, vite@npm:~3.1.3":
   version: 3.1.6
   resolution: "vite@npm:3.1.6"
   dependencies:
@@ -20166,9 +20173,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:0.23.4, vitest@npm:^0.23.4":
-  version: 0.23.4
-  resolution: "vitest@npm:0.23.4"
+"vitest@npm:0.24.0, vitest@npm:^0.24.0":
+  version: 0.24.0
+  resolution: "vitest@npm:0.24.0"
   dependencies:
     "@types/chai": ^4.3.3
     "@types/chai-subset": ^1.3.3
@@ -20176,11 +20183,11 @@ __metadata:
     chai: ^4.3.6
     debug: ^4.3.4
     local-pkg: ^0.4.2
-    strip-literal: ^0.4.1
-    tinybench: ^2.1.5
+    strip-literal: ^0.4.2
+    tinybench: ^2.2.1
     tinypool: ^0.3.0
     tinyspy: ^1.0.2
-    vite: ^2.9.12 || ^3.0.0-0
+    vite: ^3.0.0
   peerDependencies:
     "@edge-runtime/vm": "*"
     "@vitest/browser": "*"
@@ -20200,7 +20207,7 @@ __metadata:
       optional: true
   bin:
     vitest: vitest.mjs
-  checksum: c0356ff585d6f85678abe4e4f61362ea55af87b15f9b1fc478f5fed511627efa5f849a1530709fa2ca09a3f5e93dd16dfaf6570c9cd84ca6fd6ef387aa8ee512
+  checksum: 869b9342e00824eaf446227c2b1bb5ccbe0b38894c93765d16cee135c755c05aa9a8b9fe714628ec0f0847fc9da510e7cfd53346c649c4b9c75526ae66199fc5
   languageName: node
   linkType: hard
 
