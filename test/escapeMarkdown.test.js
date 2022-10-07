@@ -90,6 +90,7 @@ describe('escapeSpoiler', () => {
       "`_Behold!_`\n\\|\\|___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___\\|\\|",
     );
   });
+
   test('basic', () => {
     expect(Util.escapeSpoiler('||test||')).toBe('\\|\\|test\\|\\|');
   });
