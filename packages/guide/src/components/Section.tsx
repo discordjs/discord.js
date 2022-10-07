@@ -8,10 +8,14 @@ export function Section({
 	padded = false,
 	dense = false,
 	defaultClosed = false,
+	background = false,
+	gutter = false,
 	children,
 }: PropsWithChildren<{
+	background?: boolean;
 	defaultClosed?: boolean;
 	dense?: boolean;
+	gutter?: boolean;
 	icon?: JSX.Element;
 	padded?: boolean;
 	title: string;
@@ -35,7 +39,10 @@ export function Section({
 					/>
 				</div>
 			</Disclosure>
-			<DisclosureContent state={disclosure}>
+			<DisclosureContent
+				className={`${background ? 'bg-light-700 dark:bg-dark-500 rounded' : ''} ${gutter ? 'mt-2' : ''}`}
+				state={disclosure}
+			>
 				{padded ? <div className={`py-5 ${dense ? 'mx-2 px-0' : 'px-4.5 mx-6.5'}`}>{children}</div> : children}
 			</DisclosureContent>
 		</div>
