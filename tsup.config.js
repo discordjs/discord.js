@@ -31,5 +31,6 @@ export function createTsupConfig({
 		keepNames,
 		dts,
 		sourcemap,
+		treeshake: true,
 	});
 }
