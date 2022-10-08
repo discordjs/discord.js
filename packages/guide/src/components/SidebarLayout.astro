@@ -13,7 +13,7 @@ const { headings } = Astro.props;
 <script is:inline>
 	window.addEventListener('load', () => {
 		const headings = document.querySelectorAll(
-			'div.prose > h1, div.prose > h2, div.prose > h3, div.prose > h4, div.prose > h5',
+			'div.level-h1 > h1, div.level-h2 > h2, div.level-h3 > h3, div.level-h4 > h4',
 		);
 
 		const headingsObserver = new IntersectionObserver(
@@ -27,7 +27,7 @@ const { headings } = Astro.props;
 			},
 			{
 				root: null,
-				rootMargin: '0px 0px -450px 0px',
+				rootMargin: '-100px 0% -66%',
 				threshold: 1.0,
 			},
 		);

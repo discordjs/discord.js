@@ -52,13 +52,29 @@ export default defineConfig({
 				h1: {
 					'scroll-margin-top': '6.5rem',
 				},
+				'.level-h1': {
+					margin: '1rem 0',
+				},
 				h2: {
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
 				},
+				'.level-h2': {
+					margin: '1.25em 0',
+				},
 				h3: {
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
+				},
+				'.level-h3': {
+					margin: '1.25em 0',
+				},
+				h4: {
+					'margin-top': '1.25em',
+					'scroll-margin-top': '6.5rem',
+				},
+				'.level-h4': {
+					margin: '1.25em 0',
 				},
 				// eslint-disable-next-line id-length
 				p: {

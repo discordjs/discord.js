@@ -2130,6 +2130,9 @@ __metadata:
     eslint: ^8.24.0
     eslint-config-neon: ^0.1.35
     happy-dom: ^7.4.0
+    hast-util-to-string: ^2.0.0
+    hastscript: ^7.0.2
+    html-escaper: ^3.0.3
     meilisearch: ^0.28.0
     prettier: ^2.7.1
     prettier-plugin-astro: ^0.5.5
@@ -2140,9 +2143,11 @@ __metadata:
     react-icons: ^4.4.0
     react-syntax-highlighter: ^15.5.0
     react-use: ^17.4.0
+    rehype-autolink-headings: ^6.1.1
     rehype-ignore: ^1.0.1
     rehype-pretty-code: ^0.3.2
     rehype-raw: ^6.1.1
+    rehype-slug: ^5.0.1
     sharp: ^0.31.1
     shiki: ^0.11.1
     typescript: ^4.8.4
@@ -11173,7 +11178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hastscript@npm:^7.0.0":
+"hastscript@npm:^7.0.0, hastscript@npm:^7.0.2":
   version: 7.0.2
   resolution: "hastscript@npm:7.0.2"
   dependencies:
@@ -16703,6 +16708,21 @@ __metadata:
   bin:
     regjsparser: bin/parser
   checksum: 5e1b76afe8f1d03c3beaf9e0d935dd467589c3625f6d65fb8ffa14f224d783a0fed4bf49c2c1b8211043ef92b6117313419edf055a098ed8342e340586741afc
+  languageName: node
+  linkType: hard
+
+"rehype-autolink-headings@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "rehype-autolink-headings@npm:6.1.1"
+  dependencies:
+    "@types/hast": ^2.0.0
+    extend: ^3.0.0
+    hast-util-has-property: ^2.0.0
+    hast-util-heading-rank: ^2.0.0
+    hast-util-is-element: ^2.0.0
+    unified: ^10.0.0
+    unist-util-visit: ^4.0.0
+  checksum: 60782fb2e505e70f75b59a3ac43cb5abfeb328485da07b604fcc73d6bc3626e9c3657d536a77c6c6c435b7b3086bae5c7f93d5ded510d74e553fd80fd91c8f97
   languageName: node
   linkType: hard
 
