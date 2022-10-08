@@ -2111,6 +2111,7 @@ __metadata:
     "@astrojs/react": ^1.1.4
     "@code-hike/mdx": ^0.7.4
     "@discordjs/ui": "workspace:^"
+    "@hotwired/turbo": ^7.2.0
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
     "@types/node": ^16.11.64
@@ -2121,11 +2122,9 @@ __metadata:
     "@unocss/reset": ^0.45.28
     "@vitejs/plugin-react": ^2.1.0
     "@vitest/coverage-c8": ^0.24.0
-    "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.41
     astro: ^1.4.6
     cmdk: ^0.1.20
-    concurrently: ^7.4.0
     cross-env: ^7.0.3
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.35
@@ -2141,12 +2140,8 @@ __metadata:
     react-custom-scrollbars-2: ^4.5.0
     react-dom: ^17.0.2
     react-icons: ^4.4.0
-    react-syntax-highlighter: ^15.5.0
     react-use: ^17.4.0
     rehype-autolink-headings: ^6.1.1
-    rehype-ignore: ^1.0.1
-    rehype-pretty-code: ^0.3.2
-    rehype-raw: ^6.1.1
     rehype-slug: ^5.0.1
     sharp: ^0.31.1
     shiki: ^0.11.1
@@ -2575,6 +2570,13 @@ __metadata:
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
   checksum: 4059f790e2d07bf3c3ff3e0fec0daa8144fe35c1f6e0111c9921bd32106adaa97a4ab096ad7dab1e28ee6a9060083c4d1a4ada42a7f5f3f7a96b8812e2b757c1
+  languageName: node
+  linkType: hard
+
+"@hotwired/turbo@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@hotwired/turbo@npm:7.2.0"
+  checksum: cea846f44190e24897b5b142838ca6fef1dcab623832a4af35a3da9e094fb908f44c73c4abc7ba75ca80cac0358c2009fcb17659ae3c97dd955bfb5aa45d8b4b
   languageName: node
   linkType: hard
 
