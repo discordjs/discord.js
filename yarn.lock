@@ -255,6 +255,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@astrojs/prefetch@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "@astrojs/prefetch@npm:0.0.8"
+  dependencies:
+    throttles: ^1.0.1
+  checksum: 2e68855b570b498bd7431a0be24d8c45975ff7b2b79ad6d853d0539ee03351d24ff281fcc7902ea93da32bcfe6d887187495e412a04b0679cb65da7341f63c92
+  languageName: node
+  linkType: hard
+
 "@astrojs/prism@npm:^1.0.0, @astrojs/prism@npm:^1.0.1":
   version: 1.0.1
   resolution: "@astrojs/prism@npm:1.0.1"
@@ -2108,6 +2117,7 @@ __metadata:
   dependencies:
     "@astrojs/image": ^0.9.2
     "@astrojs/mdx": ^0.11.4
+    "@astrojs/prefetch": ^0.0.8
     "@astrojs/react": ^1.1.4
     "@code-hike/mdx": ^0.7.4
     "@discordjs/ui": "workspace:^"
@@ -18945,6 +18955,13 @@ __metadata:
   version: 3.0.1
   resolution: "throttle-debounce@npm:3.0.1"
   checksum: e34ef638e8df3a9154249101b68afcbf2652a139c803415ef8a2f6a8bc577bcd4d79e4bb914ad3cd206523ac78b9fb7e80885bfa049f64fbb1927f99d98b5736
+  languageName: node
+  linkType: hard
+
+"throttles@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "throttles@npm:1.0.1"
+  checksum: 0f3b36b8fcba720df7ab283f40f4e4d6b1b31939dba7fafac6e4e8bc1743eeaff546916a66344be7af1d7a2d014d799e7924009a15118887aef0cfc5292559a1
   languageName: node
   linkType: hard
 

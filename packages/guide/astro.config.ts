@@ -1,6 +1,7 @@
 import { fileURLToPath, URL } from 'node:url';
 import image from '@astrojs/image';
 import mdx from '@astrojs/mdx';
+import prefetch from '@astrojs/prefetch';
 import react from '@astrojs/react';
 import { remarkCodeHike } from '@code-hike/mdx';
 import { defineConfig } from 'astro/config';
@@ -48,6 +49,9 @@ export default defineConfig({
 		mdx(),
 		image({
 			serviceEntryPoint: '@astrojs/image/sharp',
+		}),
+		prefetch({
+			throttle: 3,
 		}),
 		Unocss({
 			configFile: fileURLToPath(new URL('../ui/unocss.config.ts', import.meta.url)),
