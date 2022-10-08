@@ -46,7 +46,7 @@
 		"@types/node": "^16.11.64",
 		"@vitest/coverage-c8": "^0.24.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.24.0",
+		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.35",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
