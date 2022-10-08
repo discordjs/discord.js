@@ -109,7 +109,7 @@ function createComponentBuilder(data) {
     case ComponentType.SelectMenu:
       return new SelectMenuBuilder(data);
     case ComponentType.TextInput:
-      return new TextInputComponent(data);
+      return new TextInputBuilder(data);
     default:
       return new ComponentBuilder(data);
   }
@@ -124,6 +124,7 @@ const ButtonComponent = require('../structures/ButtonComponent');
 const Component = require('../structures/Component');
 const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
+const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');
 
 /**
