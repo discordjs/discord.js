@@ -10,18 +10,18 @@ type Props = MarkdownLayoutProps<{}>;
 const { headings } = Astro.props;
 ---
 
-<script is:inline>
+<script>
 	window.addEventListener('load', () => {
 		const headings = document.querySelectorAll(
 			'div.level-h1 > h1, div.level-h2 > h2, div.level-h3 > h3, div.level-h4 > h4',
 		);
 
 		const headingsObserver = new IntersectionObserver(
-			(entries, observer) => {
+			(entries) => {
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						const location = window.location.toString().split('#')[0];
-						history.replaceState(null, null, location + '#' + entry.target.id);
+						history.replaceState(null, '', location + '#' + entry.target.id);
 					}
 				});
 			},

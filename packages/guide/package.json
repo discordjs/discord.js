@@ -39,7 +39,6 @@
 		"@astrojs/react": "^1.1.4",
 		"@code-hike/mdx": "^0.7.4",
 		"@discordjs/ui": "workspace:^",
-		"@hotwired/turbo": "^7.2.0",
 		"ariakit": "^2.0.0-next.41",
 		"astro": "^1.4.6",
 		"cmdk": "^0.1.20",
