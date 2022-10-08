@@ -1,6 +1,6 @@
 'use strict';
 
-const { ActionRowBuilder: BuildersActionRow, ComponentBuilder, isJSONEncodable } = require('@discordjs/builders');
+const { ActionRowBuilder: BuildersActionRow, isJSONEncodable } = require('@discordjs/builders');
 const { createComponentBuilder } = require('../util/Components');
 const { toSnakeCase } = require('../util/Transformers');
 
@@ -12,7 +12,7 @@ class ActionRowBuilder extends BuildersActionRow {
   constructor({ components, ...data } = {}) {
     super({
       ...toSnakeCase(data),
-      components: components?.map(c => (c instanceof ComponentBuilder ? c : createComponentBuilder(c))),
+      components: components?.map(c => createComponentBuilder(c)),
     });
   }
 
