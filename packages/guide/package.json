@@ -63,6 +63,8 @@
 		"@unocss/reset": "^0.45.28",
 		"@vitejs/plugin-react": "^2.1.0",
 		"@vitest/coverage-c8": "^0.24.0",
+		"astro-compress": "^1.0.11",
+		"astro-critters": "^1.0.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.35",

@@ -4,6 +4,8 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import { remarkCodeHike } from '@code-hike/mdx';
 import { defineConfig } from 'astro/config';
+import compress from 'astro-compress';
+import critters from 'astro-critters';
 import { toString } from 'hast-util-to-string';
 import { h } from 'hastscript';
 import { escape } from 'html-escaper';
@@ -50,6 +52,8 @@ export default defineConfig({
 		Unocss({
 			configFile: fileURLToPath(new URL('../ui/unocss.config.ts', import.meta.url)),
 		}),
+		critters(),
+		compress(),
 	],
 	markdown: {
 		remarkPlugins: [[remarkCodeHike, { autoImport: false, theme: shikiThemeDarkPlus, lineNumbers: true }]],
