@@ -93,6 +93,7 @@ export default defineConfig({
 			alias: {
 				'ariakit/button': fileURLToPath(new URL('node_modules/ariakit/esm/button/index.js', import.meta.url)),
 				'ariakit/disclosure': fileURLToPath(new URL('node_modules/ariakit/esm/disclosure/index.js', import.meta.url)),
+				'ariakit/seperator': fileURLToPath(new URL('node_modules/ariakit/esm/seperator/index.js', import.meta.url)),
 				'ariakit-utils/dom': fileURLToPath(new URL('node_modules/ariakit-utils/esm/dom.js', import.meta.url)),
 				'ariakit-utils/events': fileURLToPath(new URL('node_modules/ariakit-utils/esm/events.js', import.meta.url)),
 				'ariakit-utils/focus': fileURLToPath(new URL('node_modules/ariakit-utils/esm/focus.js', import.meta.url)),
