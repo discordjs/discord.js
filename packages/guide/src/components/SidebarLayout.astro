@@ -1,13 +1,16 @@
 ---
+import { Separator } from 'ariakit/separator';
 import type { MarkdownLayoutProps } from 'astro';
+import { ExternalLink } from './ExternalLink.jsx';
 import { Navbar } from './Navbar.jsx';
 import { Outline } from './Outline.jsx';
 import { SidebarItems } from './SidebarItems.jsx';
+import { generateGithubURL } from '~/util/url.js';
 
 const pages = await Astro.glob<{ category: string; title: string }>('../pages/**/*.mdx');
 
 type Props = MarkdownLayoutProps<{}>;
-const { headings } = Astro.props;
+const { headings, url } = Astro.props;
 ---
 
 <script>
@@ -47,10 +50,15 @@ const { headings } = Astro.props;
 			<div class="prose max-w-full">
 				<slot />
 			</div>
+
 			<div
 				class="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block"
 			>
 				<Outline client:load headings={headings} />
+			</div>
+			<Separator className="my-5" />
+			<div class="flex place-content-end">
+				<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
 			</div>
 		</div>
 
