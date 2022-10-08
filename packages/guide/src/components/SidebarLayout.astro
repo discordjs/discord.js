@@ -56,7 +56,7 @@ const { headings, url } = Astro.props;
 			>
 				<Outline client:load headings={headings} />
 			</div>
-			<Separator className="m-y-5" />
+			<Separator className="my-5" />
 			<div class="inline-block">
 				<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
 			</div>
