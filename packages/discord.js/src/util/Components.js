@@ -87,7 +87,7 @@ function createComponent(data) {
     case ComponentType.TextInput:
       return new TextInputComponent(data);
     default:
-      throw new Error(`Found unknown component type: ${data.type}`);
+      return new Component(data);
   }
 }
 
@@ -111,7 +111,7 @@ function createComponentBuilder(data) {
     case ComponentType.TextInput:
       return new TextInputComponent(data);
     default:
-      throw new Error(`Found unknown component type: ${data.type}`);
+      return new ComponentBuilder(data);
   }
 }
 
