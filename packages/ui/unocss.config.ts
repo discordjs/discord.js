@@ -49,11 +49,16 @@ export default defineConfig({
 				'a > img': {
 					display: 'inline-block',
 				},
+				h1: {
+					'scroll-margin-top': '6.5rem',
+				},
 				h2: {
 					'margin-top': '1.25em',
+					'scroll-margin-top': '6.5rem',
 				},
 				h3: {
-					'margin-top': '0.75em',
+					'margin-top': '1.25em',
+					'scroll-margin-top': '6.5rem',
 				},
 				// eslint-disable-next-line id-length
 				p: {

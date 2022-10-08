@@ -24,7 +24,7 @@ const { headings } = Astro.props;
 			<div
 				class="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block"
 			>
-				<Outline headings={headings} />
+				<Outline client:load headings={headings} />
 			</div>
 		</div>
 
