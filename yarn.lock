@@ -2210,6 +2210,7 @@ __metadata:
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
     downlevel-dts: ^0.10.1
+    esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.24.0
     eslint-config-neon: ^0.1.35
     file-type: ^18.0.0
