@@ -10,6 +10,32 @@ type Props = MarkdownLayoutProps<{}>;
 const { headings } = Astro.props;
 ---
 
+<script is:inline>
+	window.addEventListener('load', () => {
+		const headings = document.querySelectorAll(
+			'div.prose > h1, div.prose > h2, div.prose > h3, div.prose > h4, div.prose > h5',
+		);
+
+		const headingsObserver = new IntersectionObserver(
+			(entries, observer) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const location = window.location.toString().split('#')[0];
+						history.replaceState(null, null, location + '#' + entry.target.id);
+					}
+				});
+			},
+			{
+				root: null,
+				rootMargin: '0px 0px -300px 0px',
+				threshold: 1.0,
+			},
+		);
+
+		headings.forEach((heading) => headingsObserver.observe(heading));
+	});
+</script>
+
 <Navbar client:load>
 	<div class="flex flex-col gap-3 p-3 pb-32 lg:pb-12" slot="pages">
 		<SidebarItems client:load pages={pages} />
