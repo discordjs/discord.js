@@ -1,7 +1,7 @@
 ---
 import { Separator } from 'ariakit/separator';
 import type { MarkdownLayoutProps } from 'astro';
-import { DocsLink } from './DocsLink.jsx';
+import { ExternalLink } from './ExternalLink.jsx';
 import { Navbar } from './Navbar.jsx';
 import { Outline } from './Outline.jsx';
 import { SidebarItems } from './SidebarItems.jsx';
@@ -58,7 +58,7 @@ const { headings, url } = Astro.props;
 			</div>
 			<Separator className="m-y-5" />
 			<div class="inline-block">
-				<DocsLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
+				<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
 			</div>
 		</div>
 
