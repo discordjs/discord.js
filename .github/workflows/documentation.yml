@@ -27,10 +27,6 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-    outputs:
-      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
-      SHA: ${{ steps.env.outputs.SHA }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
@@ -65,13 +61,6 @@ jobs:
           name: api-extractor
           path: packages/*/docs/docs.api.json
 
-      - name: Set outputs for upload job
-        id: env
-        run: |
-          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
-          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
-          echo "::set-output name=SHA::${GITHUB_SHA}"
-
   upload:
     name: Upload Documentation
     needs: build
@@ -86,7 +75,6 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
       BRANCH_OR_TAG: ${{ github.event.inputs.ref_type || needs.build.outputs.BRANCH_OR_TAG }}
-      SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -123,14 +111,14 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ env.GITHUB_REF_TYPE == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
-          tag: ${{ env.BRANCH_NAME }}
+          tag: ${{ env.GITHUB_REF_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ env.BRANCH_OR_TAG == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ env.GITHUB_REF_TYPE == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
@@ -144,16 +132,16 @@ jobs:
           fi
 
       - name: Move docs to correct directory
-        if: ${{ env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ env.GITHUB_REF_TYPE == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
           if [[ $PACKAGE == "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${GITHUB_REF_NAME}.json
           fi
           if [[ $PACKAGE != "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
+            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${GITHUB_REF_NAME}.api.json
           fi
 
       - name: Commit and push
@@ -162,5 +150,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
-          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
           git push
