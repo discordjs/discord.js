@@ -19,7 +19,7 @@ const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes } = require('../util/Constants');
@@ -185,6 +185,17 @@ class Message extends Base {
       );
     } else {
       this.stickers = new Collection(this.stickers);
+    }
+
+    if ('position' in data) {
+      /**
+       * A generally increasing integer (there may be gaps or duplicates) that represents
+       * the approximate position of the message in a thread.
+       * @type {?number}
+       */
+      this.position = data.position;
+    } else {
+      this.position ??= null;
     }
 
     // Discord sends null if the message has not been edited
@@ -530,6 +541,9 @@ class Message extends Base {
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
+   * @property {number} [idle] Time to wait without another message component interaction before ending the collector
+   * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
+   * @property {InteractionResponse} [InteractionResponse] The interaction response to collect interactions from
    */
 
   /**
@@ -551,7 +565,7 @@ class Message extends Base {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -617,10 +631,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async fetchReference() {
-    if (!this.reference) throw new Error(ErrorCodes.MessageReferenceMissing);
+    if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
     const channel = this.client.channels.resolve(channelId);
-    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
     return message;
   }
@@ -636,7 +650,7 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
-      channel?.type === ChannelType.GuildNews &&
+      channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
         channel.viewable &&
@@ -655,7 +669,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.edit(this, options);
   }
 
@@ -664,14 +678,14 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === ChannelType.GuildNews) {
+   * if (message.channel.type === ChannelType.GuildAnnouncement) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
    * }
    */
   crosspost() {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -686,7 +700,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.pin(this.id, reason);
     return this;
   }
@@ -702,7 +716,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.unpin(this.id, reason);
     return this;
   }
@@ -723,7 +737,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.react(this.id, emoji);
 
     return this.client.actions.MessageReactionAdd.handle(
@@ -747,7 +761,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.delete(this.id);
     return this;
   }
@@ -772,7 +786,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -800,16 +814,16 @@ class Message extends Base {
 
   /**
    * Create a new public thread from this message
-   * @see ThreadManager#create
+   * @see GuildTextThreadManager#create
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
-    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
-      return Promise.reject(new Error(ErrorCodes.MessageThreadParent));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+    if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
+      return Promise.reject(new DiscordjsError(ErrorCodes.MessageThreadParent));
     }
-    if (this.hasThread) return Promise.reject(new Error(ErrorCodes.MessageExistingThread));
+    if (this.hasThread) return Promise.reject(new DiscordjsError(ErrorCodes.MessageExistingThread));
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
@@ -819,7 +833,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.fetch({ message: this.id, force });
   }
 
@@ -828,8 +842,8 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookId) return Promise.reject(new Error(ErrorCodes.WebhookMessage));
-    if (this.webhookId === this.applicationId) return Promise.reject(new Error(ErrorCodes.WebhookApplication));
+    if (!this.webhookId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookMessage));
+    if (this.webhookId === this.applicationId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookApplication));
     return this.client.fetchWebhook(this.webhookId);
   }
 

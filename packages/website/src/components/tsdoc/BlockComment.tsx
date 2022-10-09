@@ -1,6 +1,6 @@
+import { Alert } from '@discordjs/ui';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { PropsWithChildren } from 'react';
-import { VscWarning } from 'react-icons/vsc';
 
 export function Block({ children, title }: PropsWithChildren<{ title: string }>) {
 	return (
@@ -16,22 +16,6 @@ export function ExampleBlock({
 	exampleIndex,
 }: PropsWithChildren<{ exampleIndex?: number | undefined }>): JSX.Element {
 	return <Block title={`Example ${exampleIndex ? exampleIndex : ''}`}>{children}</Block>;
-}
-
-export function DeprecatedBlock({ children }: PropsWithChildren): JSX.Element {
-	return (
-		<div className="rounded border border-red-500 p-4">
-			<div className="flex flex-row place-items-center gap-4">
-				<span className="text-red-500">
-					<VscWarning size={20} />
-				</span>
-				<div className="flex flex-col gap-2 text-sm">
-					<span className="font-semibold text-red-500">Deprecated</span>
-					{children}
-				</div>
-			</div>
-		</div>
-	);
 }
 
 export function DefaultValueBlock({ children }: PropsWithChildren): JSX.Element {
@@ -54,7 +38,11 @@ export function BlockComment({
 		case StandardTags.example.tagNameWithUpperCase:
 			return <ExampleBlock exampleIndex={index}>{children}</ExampleBlock>;
 		case StandardTags.deprecated.tagNameWithUpperCase:
-			return <DeprecatedBlock>{children}</DeprecatedBlock>;
+			return (
+				<Alert title="Deprecated" type="danger">
+					{children}
+				</Alert>
+			);
 		case StandardTags.remarks.tagNameWithUpperCase:
 			return <RemarksBlock>{children}</RemarksBlock>;
 		case StandardTags.defaultValue.tagNameWithUpperCase:

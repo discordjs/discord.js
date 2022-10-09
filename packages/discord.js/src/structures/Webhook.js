@@ -1,12 +1,12 @@
 'use strict';
 
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const DataResolver = require('../util/DataResolver');
-const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -130,6 +130,7 @@ class Webhook {
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
+   * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
    */
 
   /**
@@ -189,7 +190,7 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(options) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     let messagePayload;
 
@@ -230,7 +231,7 @@ class Webhook {
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
   async sendSlackMessage(body) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     const data = await this.client.rest.post(Routes.webhookPlatform(this.id, this.token, 'slack'), {
       query: makeURLSearchParams({ wait: true }),
@@ -286,7 +287,7 @@ class Webhook {
    * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { threadId } = {}) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
       query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
@@ -307,7 +308,7 @@ class Webhook {
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     let messagePayload;
 
@@ -358,7 +359,7 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async deleteMessage(message, threadId) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     await this.client.rest.delete(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),

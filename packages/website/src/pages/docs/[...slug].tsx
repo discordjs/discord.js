@@ -37,6 +37,7 @@ import { Function } from '~/components/model/Function';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
+import { CmdKProvider } from '~/contexts/cmdK';
 import { MemberProvider } from '~/contexts/member';
 import { PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
@@ -193,7 +194,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				packageName,
 				branchName,
 				data: {
-					members: pkg ? getMembers(pkg, branchName) : [],
+					members: pkg
+						? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
+						: [],
 					member:
 						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
 					source: mdxSource,
@@ -219,7 +222,7 @@ const member = (props?: ApiItemJSON | undefined) => {
 		case 'Class':
 			return <Class data={props as ApiClassJSON} />;
 		case 'Function':
-			return <Function data={props as ApiFunctionJSON} />;
+			return <Function data={props as ApiFunctionJSON} key={props.containerKey} />;
 		case 'Interface':
 			return <Interface data={props as ApiInterfaceJSON} />;
 		case 'TypeAlias':
@@ -254,26 +257,28 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	return props.error ? (
 		<div className="flex h-full max-h-full w-full max-w-full flex-row">{props.error}</div>
 	) : (
-		<MemberProvider member={props.data?.member}>
-			<SidebarLayout {...props}>
-				{props.data?.member ? (
-					<>
-						<Head>
-							<title key="title">{name}</title>
-							<meta key="og_title" property="og:title" content={ogTitle} />
-						</Head>
-						{member(props.data.member)}
-					</>
-				) : props.data?.source ? (
-					<div className="prose max-w-none">
-						<MDXRemote {...props.data.source} />
-					</div>
-				) : null}
-			</SidebarLayout>
-		</MemberProvider>
+		<CmdKProvider>
+			<MemberProvider member={props.data?.member}>
+				<SidebarLayout {...props}>
+					{props.data?.member ? (
+						<>
+							<Head>
+								<title key="title">{name}</title>
+								<meta content={ogTitle} key="og_title" property="og:title" />
+							</Head>
+							{member(props.data.member)}
+						</>
+					) : props.data?.source ? (
+						<div className="prose max-w-none">
+							<MDXRemote {...props.data.source} />
+						</div>
+					) : null}
+				</SidebarLayout>
+			</MemberProvider>
+		</CmdKProvider>
 	);
 }
 
 export const config = {
-	unstable_includeFiles: ['../{builders,collection,proxy,rest,voice,ws}/README.md'],
+	unstable_includeFiles: ['../{builders,collection,proxy,rest,util,voice,ws}/README.md'],
 };

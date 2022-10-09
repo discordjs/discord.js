@@ -7,6 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -17,12 +18,12 @@ import {
 	type GatewayIdentifyData,
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
+	type GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants.js';
-import { lazy } from '../utils/utils.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -52,7 +53,7 @@ export enum WebSocketShardDestroyRecovery {
 export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Hello]: [];
-	[WebSocketShardEvents.Ready]: [];
+	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
 	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
 };
@@ -393,7 +394,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready);
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 
 						this.session ??= {
 							sequence: payload.s,

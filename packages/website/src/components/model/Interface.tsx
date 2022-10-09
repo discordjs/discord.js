@@ -5,13 +5,13 @@ import { MethodsSection, PropertiesSection } from '../Sections';
 export function Interface({ data }: { data: ApiInterfaceJSON }) {
 	return (
 		<DocContainer
-			name={data.name}
-			kind={data.kind}
 			excerpt={data.excerpt}
+			kind={data.kind}
+			methods={data.methods}
+			name={data.name}
+			properties={data.properties}
 			summary={data.summary}
 			typeParams={data.typeParameters}
-			methods={data.methods}
-			properties={data.properties}
 		>
 			<PropertiesSection data={data.properties} />
 			<MethodsSection data={data.methods} />

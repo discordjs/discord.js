@@ -42,7 +42,7 @@ function message(code, args) {
 }
 
 module.exports = {
-  Error: makeDiscordjsError(Error),
-  TypeError: makeDiscordjsError(TypeError),
-  RangeError: makeDiscordjsError(RangeError),
+  DiscordjsError: makeDiscordjsError(Error),
+  DiscordjsTypeError: makeDiscordjsError(TypeError),
+  DiscordjsRangeError: makeDiscordjsError(RangeError),
 };

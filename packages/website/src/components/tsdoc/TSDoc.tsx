@@ -21,13 +21,13 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
 				return (
-					<span key={idx} className="break-words">
+					<span className="break-words" key={idx}>
 						{(node as DocPlainTextJSON).text}
 					</span>
 				);
 			case DocNodeKind.Paragraph:
 				return (
-					<span key={idx} className="break-words leading-relaxed">
+					<span className="break-words leading-relaxed" key={idx}>
 						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
 					</span>
 				);
@@ -38,16 +38,20 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 				if (codeDestination) {
 					return (
-						<Link key={idx} href={codeDestination.path} prefetch={false}>
-							<a className="text-blurple font-mono">{text ?? codeDestination.name}</a>
+						<Link href={codeDestination.path} key={idx} prefetch={false}>
+							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
+								{text ?? codeDestination.name}
+							</a>
 						</Link>
 					);
 				}
 
 				if (urlDestination) {
 					return (
-						<Link key={idx} href={urlDestination} prefetch={false}>
-							<a className="text-blurple font-mono">{text ?? urlDestination}</a>
+						<Link href={urlDestination} key={idx} prefetch={false}>
+							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
+								{text ?? urlDestination}
+							</a>
 						</Link>
 					);
 				}
@@ -58,7 +62,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			case DocNodeKind.CodeSpan: {
 				const { code } = node as DocFencedCodeJSON;
 				return (
-					<code key={idx} className="font-mono text-sm">
+					<code className="font-mono text-sm" key={idx}>
 						{code}
 					</code>
 				);
@@ -66,7 +70,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 			case DocNodeKind.FencedCode: {
 				const { language, code } = node as DocFencedCodeJSON;
-				return <SyntaxHighlighter key={idx} language={language} code={code} />;
+				return <SyntaxHighlighter code={code} key={idx} language={language} />;
 			}
 
 			case DocNodeKind.ParamBlock:
@@ -80,7 +84,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 				const index = numberOfExamples > 1 ? exampleIndex : undefined;
 
 				return (
-					<BlockComment tagName={tag.tagName} key={idx} index={index}>
+					<BlockComment index={index} key={idx} tagName={tag.tagName}>
 						{(node as DocBlockJSON).content.map((node, idx) => createNode(node, idx))}
 					</BlockComment>
 				);

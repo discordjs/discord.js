@@ -13,10 +13,10 @@ export function TableOfContentItems({
 		() =>
 			properties.map((prop) => (
 				<a
-					key={prop.name}
+					className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] border-l p-[5px] text-sm outline-0 focus:rounded focus:border-0 focus:ring"
 					href={`#${prop.name}`}
+					key={prop.name}
 					title={prop.name}
-					className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] border-l p-[5px] text-sm"
 				>
 					<span className="line-clamp-1">{prop.name}</span>
 				</a>
@@ -27,16 +27,20 @@ export function TableOfContentItems({
 	const methodItems = useMemo(
 		() =>
 			methods.map((member) => {
+				if (member.overloadIndex && member.overloadIndex > 1) {
+					return null;
+				}
+
 				const key = `${member.name}${
 					member.overloadIndex && member.overloadIndex > 1 ? `:${member.overloadIndex}` : ''
 				}`;
 
 				return (
 					<a
-						key={key}
+						className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] flex flex-row place-items-center gap-2 border-l p-[5px] text-sm outline-0 focus:rounded focus:border-0 focus:ring"
 						href={`#${key}`}
+						key={key}
 						title={member.name}
-						className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 ml-[10px] flex flex-row place-items-center gap-2 border-l p-[5px] text-sm"
 					>
 						<span className="line-clamp-1">{member.name}</span>
 						{member.overloadIndex && member.overloadIndex > 1 ? (

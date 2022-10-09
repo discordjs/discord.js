@@ -8,16 +8,16 @@ export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
 			data.map((prop) => (
 				<Fragment key={prop.name}>
 					<CodeListing
-						name={prop.name}
-						typeTokens={prop.propertyTypeTokens}
-						readonly={prop.readonly}
-						optional={prop.optional}
-						summary={prop.summary}
 						comment={prop.comment}
 						deprecation={prop.deprecated}
 						inheritanceData={prop.inheritanceData}
+						name={prop.name}
+						optional={prop.optional}
+						readonly={prop.readonly}
+						summary={prop.summary}
+						typeTokens={prop.propertyTypeTokens}
 					/>
-					<div className="border-light-900 -mx-8 border-t-2" />
+					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
 				</Fragment>
 			)),
 		[data],

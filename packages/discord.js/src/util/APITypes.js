@@ -64,6 +64,16 @@
  */
 
 /**
+ * @external APIGuildForumDefaultReactionEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildForumDefaultReactionEmoji}
+ */
+
+/**
+ * @external APIGuildForumTag
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildForumTag}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
  */
@@ -166,6 +176,11 @@
 /**
  * @external ButtonStyle
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ButtonStyle}
+ */
+
+/**
+ * @external ChannelFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelFlags}
  */
 
 /**
@@ -316,6 +331,11 @@
 /**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ */
+
+/**
+ * @external SortOrderType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SortOrderType}
  */
 
 /**

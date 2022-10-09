@@ -5,6 +5,8 @@ import type {
 	ApiClassJSON,
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
+import { Section } from '@discordjs/ui';
+import type { ReactNode } from 'react';
 import { Fragment, type PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import {
@@ -18,7 +20,6 @@ import {
 } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
-import { Section } from './Section';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TableOfContentItems } from './TableOfContentItems';
 import { TypeParamTable } from './TypeParamTable';
@@ -32,6 +33,7 @@ type DocContainerProps = PropsWithChildren<{
 	methods?: ApiClassJSON['methods'] | ApiInterfaceJSON['methods'] | null;
 	name: string;
 	properties?: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] | null;
+	subHeading?: ReactNode;
 	summary?: ApiItemJSON['summary'];
 	typeParams?: TypeParameterData[];
 }>;
@@ -60,6 +62,7 @@ export function DocContainer({
 	implementsTokens,
 	methods,
 	properties,
+	subHeading,
 }: DocContainerProps) {
 	const matches = useMedia('(max-width: 768px)', true);
 
@@ -70,14 +73,12 @@ export function DocContainer({
 					<span>{generateIcon(kind)}</span>
 					{name}
 				</h2>
-
-				<Section title="Summary" icon={<VscListSelection size={20} />} padded dense={matches}>
+				{subHeading}
+				<Section dense={matches} icon={<VscListSelection size={20} />} padded title="Summary">
 					{summary ? <TSDoc node={summary} /> : <span>No summary provided.</span>}
-					<div className="border-light-900 -mx-8 mt-6 border-t-2" />
+					<div className="border-light-900 dark:border-dark-100 -mx-8 mt-6 border-t-2" />
 				</Section>
-
 				<SyntaxHighlighter code={excerpt} />
-
 				{extendsTokens?.length ? (
 					<div className="flex flex-row place-items-center gap-4">
 						<h3 className="text-xl font-bold">Extends</h3>
@@ -86,7 +87,6 @@ export function DocContainer({
 						</span>
 					</div>
 				) : null}
-
 				{implementsTokens?.length ? (
 					<div className="flex flex-row place-items-center gap-4">
 						<h3 className="text-xl font-bold">Implements</h3>
@@ -100,15 +100,14 @@ export function DocContainer({
 						</span>
 					</div>
 				) : null}
-
 				<div className="flex flex-col gap-4">
 					{typeParams?.length ? (
 						<Section
-							title="Type Parameters"
+							defaultClosed
+							dense={matches}
 							icon={<VscSymbolParameter size={20} />}
 							padded
-							dense={matches}
-							defaultClosed
+							title="Type Parameters"
 						>
 							<TypeParamTable data={typeParams} />
 						</Section>
@@ -117,17 +116,17 @@ export function DocContainer({
 				</div>
 			</div>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
-				<aside className="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block">
+				<aside className="dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden h-[calc(100vh_-_72px)] w-64 border-l bg-white pr-2 xl:block">
 					<Scrollbars
-						universal
 						autoHide
 						hideTracksWhenNotNeeded
+						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 						renderTrackVertical={(props) => (
 							<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
 						)}
-						renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+						universal
 					>
-						<TableOfContentItems properties={properties ?? []} methods={methods ?? []} />
+						<TableOfContentItems methods={methods ?? []} properties={properties ?? []} />
 					</Scrollbars>
 				</aside>
 			) : null}
