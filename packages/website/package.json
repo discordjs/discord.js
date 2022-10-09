@@ -13,7 +13,7 @@
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
-		"generate:css": "unocss 'src/**/*.tsx' '../ui/src/**/*.tsx' --out-file ./src/styles/unocss.css --config ../ui/unocss.config.ts",
+		"generate:css": "unocss 'src/**/*.tsx' '../ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../ui/unocss.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix"
 	},
