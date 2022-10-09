@@ -42,7 +42,7 @@ Send a basic message:
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 
-const rest = new REST({ version: '10' }).setToken('token');
+const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 try {
 	await rest.post(Routes.channelMessages(CHANNEL_ID), {
@@ -61,7 +61,7 @@ Create a thread from an existing message to be archived after 60 minutes of inac
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 
-const rest = new REST({ version: '10' }).setToken('token');
+const rest = new REST({ version: '10' }).setToken(TOKEN);
 
 try {
 	await rest.post(Routes.threads(CHANNEL_ID, MESSAGE_ID), {
