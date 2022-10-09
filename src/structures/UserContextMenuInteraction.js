@@ -8,7 +8,7 @@ const ContextMenuInteraction = require('./ContextMenuInteraction');
  */
 class UserContextMenuInteraction extends ContextMenuInteraction {
   /**
-   * The user of the target for this interaction
+   * The target user from this interaction
    * @type {User}
    * @readonly
    */
@@ -17,7 +17,7 @@ class UserContextMenuInteraction extends ContextMenuInteraction {
   }
 
   /**
-   * The member of the target for this interaction
+   * The target member from this interaction
    * @type {?(GuildMember|APIGuildMember)}
    * @readonly
    */
