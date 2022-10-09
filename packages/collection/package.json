@@ -58,7 +58,7 @@
 		"downlevel-dts": "^0.10.1",
 		"esbuild-plugin-version-injector": "^1.0.0",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.35",
+		"eslint-config-neon": "^0.1.37",
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.4",

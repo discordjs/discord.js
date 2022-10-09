@@ -68,7 +68,7 @@
 		"cross-env": "^7.0.3",
 		"downlevel-dts": "^0.10.1",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.35",
+		"eslint-config-neon": "^0.1.37",
 		"prettier": "^2.7.1",
 		"supertest": "^6.3.0",
 		"tsup": "^6.2.3",

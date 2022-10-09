@@ -2,6 +2,10 @@
   color: '5663e9'
 - name: api support
   color: '5663e9'
+- name: apps:guide
+  color: fbca04
+- name: apps:website
+  color: fbca04
 - name: backlog
   color: 7ef7ef
 - name: blocked
@@ -54,21 +58,17 @@
   color: fbca04
 - name: packages:docgen
   color: fbca04
-- name: packages:guide
-  color: fbca04
 - name: packages:proxy
   color: fbca04
 - name: packages:proxy-container
   color: fbca04
 - name: packages:rest
   color: fbca04
+- name: packages:ui
+  color: fbca04
 - name: packages:util
   color: fbca04
 - name: packages:voice
-  color: fbca04
-- name: packages:website
-  color: fbca04
-- name: packages:web-components
   color: fbca04
 - name: packages:ws
   color: fbca04

@@ -34,7 +34,7 @@ If you don't understand something in the documentation, you are experiencing pro
 nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
 [website]: https://discord.js.org/
-[website-source]: https://github.com/discordjs/discord.js/tree/main/packages/website
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/#/docs
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide

@@ -57,7 +57,7 @@ nudge in the right direction, please don't hesitate to join our official [discor
 
 [example]: https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md
 [website]: https://discord.js.org/
-[website-source]: https://github.com/discordjs/discord.js/tree/main/packages/website
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/#/docs/builders
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide

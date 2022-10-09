@@ -1,3 +1,10 @@
+apps:guide:
+  - apps/guide/*
+  - apps/guide/**/*
+apps:website:
+  - apps/website/*
+  - apps/website/**/*
+
 packages:builders:
   - packages/builders/*
   - packages/builders/**/*
@@ -10,9 +17,6 @@ packages:discord.js:
 packages:docgen:
   - packages/docgen/*
   - packages/docgen/**/*
-packages:guide:
-  - packages/guide/*
-  - packages/guide/**/*
 packages:proxy:
   - packages/proxy/*
   - packages/proxy/**/*
@@ -22,18 +26,15 @@ packages:proxy-container:
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*
+packages/ui:
+  - packages:ui/*
+  - packages:ui/**/*
 packages:util:
   - packages/util/*
   - packages/util/**/*
 packages:voice:
   - packages/voice/*
   - packages/voice/**/*
-packages:website:
-  - packages/website/*
-  - packages/website/**/*
-packages/web-components:
-  - packages:web-components/*
-  - packages:web-components/**/*
 packages:ws:
   - packages/ws/*
   - packages/ws/**/*

@@ -1,5 +1,5 @@
 {
-	"eslint.workingDirectories": [{ "pattern": "./packages/*" }],
+	"eslint.workingDirectories": [{ "pattern": "./apps/*" }, { "pattern": "./packages/*" }],
 	"eslint.validate": ["javascript", "javascriptreact", "astro", "typescript", "typescriptreact"],
 	"prettier.documentSelectors": ["**/*.astro"],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -11,6 +11,6 @@
 	"files.associations": {
 		"*.mdx": "markdown"
 	},
-	"unocss.root": "./packages/web-components",
+	"unocss.root": "./packages/ui",
 	"typescript.tsdk": "node_modules/typescript/lib"
 }
