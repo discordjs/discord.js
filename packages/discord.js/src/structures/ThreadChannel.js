@@ -3,9 +3,10 @@
 const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { RangeError, ErrorCodes } = require('../errors');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 
 /**
  * Represents a thread channel on Discord.
@@ -245,7 +246,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel)}
+   * @type {?(NewsChannel|TextChannel|ForumChannel)}
    * @readonly
    */
   get parent() {
@@ -324,6 +325,7 @@ class ThreadChannel extends BaseChannel {
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing the thread
    * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
@@ -348,6 +350,7 @@ class ThreadChannel extends BaseChannel {
         locked: data.locked,
         invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
         applied_tags: data.appliedTags,
+        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
       },
       reason: data.reason,
     });
@@ -397,7 +400,7 @@ class ThreadChannel extends BaseChannel {
    */
   setInvitable(invitable = true, reason) {
     if (this.type !== ChannelType.PrivateThread) {
-      return Promise.reject(new RangeError(ErrorCodes.ThreadInvitableType, this.type));
+      return Promise.reject(new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type));
     }
     return this.edit({ invitable, reason });
   }

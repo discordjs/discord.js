@@ -36,8 +36,16 @@ export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js'
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
 
-export * from './util/jsonEncodable.js';
-export * from './util/equatable.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';
+export * from '@discordjs/util';
+
+/**
+ * The [\@discordjs/builders](https://github.com/discordjs/discord.js/blob/main/packages/builders/#readme) version
+ * that you are currently using.
+ *
+ * Note to developers: This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
+ */
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const version: string = '[VI]{{inject}}[/VI]';

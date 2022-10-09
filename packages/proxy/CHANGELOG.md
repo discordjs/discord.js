@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.1.0...@discordjs/proxy@1.2.0) - (2022-10-07)
+
+## Bug Fixes
+
+- **proxyRequests:** Forward query parameters (#8691) ([f063625](https://github.com/discordjs/discord.js/commit/f063625836915b0fa3b0f0b89d073e877465dfd4))
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+- Add `@discordjs/util` (#8591) ([b2ec865](https://github.com/discordjs/discord.js/commit/b2ec865765bf94181473864a627fb63ea8173fd3))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
 # [@discordjs/proxy@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.0.1...@discordjs/proxy@1.1.0) - (2022-08-22)
 
 ## Bug Fixes
@@ -16,7 +37,7 @@ All notable changes to this project will be documented in this file.
 
 - Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
 
-# [@discordjs/proxy@1.0.0](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.0.0) - (2022-07-17)
+# [@discordjs/proxy@1.0.1](https://github.com/discordjs/discord.js/tree/@discordjs/proxy@1.0.1) - (2022-07-27)
 
 ## Bug Fixes
 

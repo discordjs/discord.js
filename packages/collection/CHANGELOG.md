@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.1.0...@discordjs/collection@1.2.0) - (2022-10-08)
+
+## Bug Fixes
+
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+- Remove xml tag from collection#find (#8550) ([4032457](https://github.com/discordjs/discord.js/commit/40324574ebea9894cadcc967e0db0e4e21d62768))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
+## Typings
+
+- **Collection:** Make fn return type unknown (#8676) ([822b7f2](https://github.com/discordjs/discord.js/commit/822b7f234af053c8f917b0a998b82abfccd33801))
+
 # [@discordjs/collection@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.0.1...@discordjs/collection@1.1.0) - (2022-08-22)
 
 ## Bug Fixes
@@ -78,36 +102,3 @@ All notable changes to this project will be documented in this file.
 
 - Add `ReadonlyCollection` (#7245) ([db25f52](https://github.com/discordjs/discord.js/commit/db25f529b26d7c819c1c42ad3e26c2263ea2da0e))
 - **Collection:** Union types on `intersect` and `difference` (#7196) ([1f9b922](https://github.com/discordjs/discord.js/commit/1f9b9225f2066e9cc66c3355417139fd25cc403c))
-
-# [0.4.0](https://github.com/discordjs/collection/compare/v0.3.2...v0.4.0) (2021-12-24)
-
-## Features
-
-- add #reverse ([#48](https://github.com/discordjs/collection/issues/48)) ([8bcb5e2](https://github.com/discordjs/collection/commit/8bcb5e21bcc15f5b77612d8ff03dec6c37f4d449))
-- add Collection#ensure ([#52](https://github.com/discordjs/collection/issues/52)) ([3809eb4](https://github.com/discordjs/collection/commit/3809eb4d18e70459355d310919a3f57747eee3dd))
-
-# [0.3.2](https://github.com/discordjs/collection/compare/v0.3.1...v0.3.2) (2021-10-29)
-
-## Bug Fixes
-
-- update doc engine ([4c0e24f](https://github.com/discordjs/collection/commit/4c0e24fae0323db9de1991db9cfacc093d529abc))
-
-# [0.3.0](https://github.com/discordjs/collection/compare/v0.2.4...v0.3.0) (2021-10-29)
-
-## Features
-
-- add Collection#at() and Collection#keyAt() ([#46](https://github.com/discordjs/collection/issues/46)) ([66b30b9](https://github.com/discordjs/collection/commit/66b30b91069502493383c059cc38e27c152bf541))
-- improve documentation and resolve [#49](https://github.com/discordjs/collection/issues/49) ([aec01c6](https://github.com/discordjs/collection/commit/aec01c6ae3ff50b0b5f7c070bff10f01bf98d803))
-- ts-docgen ([463b131](https://github.com/discordjs/collection/commit/463b1314e60f2debc526454a6ccd7ce8a9a4ae8a))
-
-# [0.2.4](https://github.com/discordjs/collection/compare/v0.2.3...v0.2.4) (2021-10-27)
-
-## Bug Fixes
-
-- minification of names ([bd2fe2a](https://github.com/discordjs/collection/commit/bd2fe2a47c38f634b0334fe6e89f30f6f6a0b1f5))
-
-# [0.2.3](https://github.com/discordjs/collection/compare/v0.2.2...v0.2.3) (2021-10-27)
-
-### Bug Fixes
-
-- building with useDefineForClassFields false ([2a571d5](https://github.com/discordjs/collection/commit/2a571d5a2c90ed8b708c3c5c017e2f225cd494e9))

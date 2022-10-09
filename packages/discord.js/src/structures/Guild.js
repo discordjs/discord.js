@@ -11,7 +11,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -467,7 +467,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchOwner(options) {
     if (!this.ownerId) {
-      throw new Error(ErrorCodes.FetchOwnerId);
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId);
     }
     const member = await this.members.fetch({ ...options, user: this.ownerId });
     return member;
@@ -618,7 +618,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchVanityData() {
     if (!this.features.includes(GuildFeature.VanityURL)) {
-      throw new Error(ErrorCodes.VanityURL);
+      throw new DiscordjsError(ErrorCodes.VanityURL);
     }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
     this.vanityURLCode = data.code;
@@ -720,7 +720,7 @@ class Guild extends AnonymousGuild {
 
     if (options.user) {
       const id = this.client.users.resolveId(options.user);
-      if (!id) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
       query.set('user_id', id);
     }
 
@@ -1178,7 +1178,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async leave() {
-    if (this.ownerId === this.client.user.id) throw new Error(ErrorCodes.GuildOwned);
+    if (this.ownerId === this.client.user.id) throw new DiscordjsError(ErrorCodes.GuildOwned);
     await this.client.rest.delete(Routes.userGuild(this.id));
     return this;
   }

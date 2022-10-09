@@ -139,6 +139,8 @@ import {
   ModalSubmitInteraction,
   ForumChannel,
   ChannelFlagsBitField,
+  GuildForumThreadManager,
+  GuildTextThreadManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -307,6 +309,11 @@ declare const assertIsMessage: (m: Promise<Message>) => void;
 
 client.on('messageCreate', async message => {
   const { client, channel } = message;
+
+  if (!message.inGuild() && message.partial) {
+    expectNotType<never>(message);
+  }
+
   expectType<Client<true>>(client);
   assertIsMessage(channel.send('string'));
   assertIsMessage(channel.send({}));
@@ -1224,12 +1231,19 @@ expectType<Promise<number[]>>(shardClientUtil.broadcastEval(async () => 1));
 
 declare const dmChannel: DMChannel;
 declare const threadChannel: ThreadChannel;
+declare const threadChannelFromForum: ThreadChannel<true>;
+declare const threadChannelNotFromForum: ThreadChannel<false>;
 declare const newsChannel: NewsChannel;
 declare const textChannel: TextChannel;
 declare const voiceChannel: VoiceChannel;
 declare const guild: Guild;
 declare const user: User;
 declare const guildMember: GuildMember;
+
+// Test thread channels' parent inference
+expectType<TextChannel | NewsChannel | ForumChannel | null>(threadChannel.parent);
+expectType<ForumChannel | null>(threadChannelFromForum.parent);
+expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
 expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
@@ -1369,6 +1383,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
+  expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
@@ -1404,6 +1419,14 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<null>(message.guildId);
   expectType<TextBasedChannel>(message.channel.messages.channel);
 }
+
+declare const guildForumThreadManager: GuildForumThreadManager;
+expectType<ForumChannel>(guildForumThreadManager.channel);
+
+declare const guildTextThreadManager: GuildTextThreadManager<
+  ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
+>;
+expectType<TextChannel | NewsChannel>(guildTextThreadManager.channel);
 
 declare const messageManager: MessageManager;
 {
