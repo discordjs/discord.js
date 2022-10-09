@@ -52,8 +52,8 @@ export function CmdKDialog({
 		() =>
 			searchResults?.map((item) => (
 				<Command.Item
-					key={item.id}
 					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring my-1 flex flex transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					key={item.id}
 					onSelect={() => {
 						void router.push(item.path);
 						dialog!.setOpen(false);
@@ -116,19 +116,18 @@ export function CmdKDialog({
 	return (
 		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog!}>
 			<Command
-				label="Command Menu"
 				className="dark:bg-dark-300 min-w-xs sm:min-w-lg max-w-xs rounded bg-white sm:max-w-lg"
+				label="Command Menu"
 				shouldFilter={false}
 			>
 				<Command.Input
 					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 focus:ring-width-2 focus:ring-blurple w-full rounded border-0 bg-white p-4 text-lg outline-0 outline-0 focus:ring dark:placeholder:text-white/75"
+					onValueChange={setSearch}
 					placeholder="Quick search..."
 					value={search}
-					onValueChange={setSearch}
 				/>
 				<Command.List className="pt-0">
 					<Command.Empty className="p-4 text-center">No results found</Command.Empty>
-
 					{search ? searchResultItems : null}
 				</Command.List>
 			</Command>
