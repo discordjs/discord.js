@@ -5,9 +5,7 @@ category: Creating your bot
 ---
 
 import { CH } from '@code-hike/mdx/components';
-import { Section } from '@discordjs/ui';
-import { Tip } from '../../components/Tip.jsx';
-import { Caution } from '../../components/Caution.jsx';
+import { Alert, Section } from '@discordjs/ui';
 import { DocsLink } from '../../components/DocsLink.jsx';
 import { ResultingCode } from '../../components/ResultingCode.jsx';
 
@@ -43,10 +41,10 @@ console.log(token);
 
 </CH.Code>
 
-<Caution>
+<Alert title="Caution" type="danger">
 	If you're using Git, you should not commit this file and should [ignore it via
 	`.gitignore`](/creating-your-bot/#git-and-gitignore).
-</Caution>
+</Alert>
 
 ### Using environment variables
 
@@ -114,10 +112,10 @@ console.log(process.env.DISCORD_TOKEN);
 
 </CH.Code>
 
-<Caution>
+<Alert title="Caution" type="danger">
 	If you're using Git, you should not commit this file and should [ignore it via
 	`.gitignore`](/creating-your-bot/#git-and-gitignore).
-</Caution>
+</Alert>
 
 <Section client:load title="Online editors (Glitch, Heroku, Replit, etc.)" defaultClosed padded background gutter>
 While we generally do not recommend using online editors as hosting solutions, but rather invest in a proper virtual private server, these services do offer ways to keep your credentials safe as well! Please see the respective service's documentation and help articles for more information on how to keep sensitive values safe:
@@ -144,12 +142,12 @@ config.json
 
 </CH.Code>
 
-<Tip>
+<Alert title="Tip" type="success">
 	Aside from keeping credentials safe, `node_modules` should be included here. Since this directory can be restored
 	based on the entries in your `package.json` and `package-lock.json` files by running `npm install`, it does not need
 	to be included in Git. You can specify quite intricate patterns in `.gitignore` files, check out the [Git
 	documentation on `.gitignore`](https://git-scm.com/docs/gitignore) for more information!
-</Tip>
+</Alert>
 
 ## Creating the main file
 
@@ -184,12 +182,12 @@ Intents also define which events Discord should send to your bot, and you may wi
 
 Open your terminal and run `node index.js` to start the process. If you see "Ready!" after a few seconds, you're good to go!
 
-<Tip>
+<Alert title="Tip" type="success">
 	You can open your `package.json` file and edit the `"main": "index.js"` field to point to your main file. You can then
 	run `node .` in your terminal to start the process! After closing the process with `Ctrl + C`, you can press the up
 	arrow on your keyboard to bring up the latest commands you've run. Pressing up and then enter after closing the
 	process is a quick way to start it up again.
-</Tip>
+</Alert>
 
 ## Resulting code
 

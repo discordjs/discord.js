@@ -1,30 +1,10 @@
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { chdir } from 'node:process';
-import type { JsonMap } from '@iarna/toml';
-import { parse as parseTOML, stringify as stringifyTOML } from '@iarna/toml';
 import { copy } from 'fs-extra';
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 import cliffJumperJSON from './template/.cliff-jumperrc.json';
 import templateJSON from './template/template.package.json';
-
-interface CliffTOML {
-	changelog: {
-		body: string;
-		header: string;
-		trim: boolean;
-	};
-	git: {
-		commit_parsers: { group?: string; message: string; skip?: boolean }[];
-		conventional_commits: boolean;
-		date_order: boolean;
-		filter_commits: boolean;
-		filter_unconventional: boolean;
-		ignore_tags: string;
-		sort_commits: string;
-		tag_pattern: string;
-	};
-}
 
 interface LabelerData {
 	color: string;
@@ -61,12 +41,12 @@ export async function createPackage(packageName: string, packageDescription?: st
 	await writeFile(`package.json`, JSON.stringify(packageJSON, null, 2));
 
 	// Update cliff.toml
-	const cliffTOML = parseTOML(
-		await readFile(join('..', 'scripts/src/template/cliff.toml'), 'utf8'),
-	) as unknown as CliffTOML;
-	cliffTOML.git.tag_pattern = `@discordjs/${packageName}@[0-9]*`;
+	const cliffTOML = (await readFile(join('..', 'scripts/src/template/cliff.toml'), 'utf8')).replace(
+		'{name}',
+		packageName,
+	);
 
-	await writeFile('cliff.toml', stringifyTOML(cliffTOML as unknown as JsonMap));
+	await writeFile('cliff.toml', cliffTOML);
 
 	// Update .cliff-jumperrc.json
 	const newCliffJumperJSON = { ...cliffJumperJSON, name: packageName, packagePath: `packages/${packageName}` };

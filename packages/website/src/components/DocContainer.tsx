@@ -116,7 +116,7 @@ export function DocContainer({
 				</div>
 			</div>
 			{(kind === 'Class' || kind === 'Interface') && (methods?.length || properties?.length) ? (
-				<aside className="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block">
+				<aside className="dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden h-[calc(100vh_-_72px)] w-64 border-l bg-white pr-2 xl:block">
 					<Scrollbars
 						autoHide
 						hideTracksWhenNotNeeded

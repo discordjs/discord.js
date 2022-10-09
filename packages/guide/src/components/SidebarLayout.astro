@@ -1,24 +1,71 @@
 ---
+import { Separator } from 'ariakit/separator';
+import type { MarkdownLayoutProps } from 'astro';
+import { ExternalLink } from './ExternalLink.jsx';
 import { Navbar } from './Navbar.jsx';
+import { Outline } from './Outline.jsx';
 import { SidebarItems } from './SidebarItems.jsx';
+import { generateGithubURL } from '~/util/url.js';
 
 const pages = await Astro.glob<{ category: string; title: string }>('../pages/**/*.mdx');
+
+type Props = MarkdownLayoutProps<{}>;
+const { headings, url } = Astro.props;
 ---
+
+<script>
+	window.addEventListener('load', () => {
+		const headings = document.querySelectorAll(
+			'div.level-h1 > h1, div.level-h2 > h2, div.level-h3 > h3, div.level-h4 > h4',
+		);
+
+		const headingsObserver = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						const location = window.location.toString().split('#')[0];
+						history.replaceState(null, '', location + '#' + entry.target.id);
+					}
+				});
+			},
+			{
+				root: null,
+				rootMargin: '-100px 0% -66%',
+				threshold: 1.0,
+			},
+		);
+
+		headings.forEach((heading) => headingsObserver.observe(heading));
+	});
+</script>
 
 <Navbar client:load>
 	<div class="flex flex-col gap-3 p-3 pb-32 lg:pb-12" slot="pages">
 		<SidebarItems client:load pages={pages} />
 	</div>
 </Navbar>
-<main class="pt-18 lg:pl-76">
+<main class="pt-18 lg:pl-76 xl:pr-64">
 	<article class="dark:bg-dark-600 bg-light-600">
 		<div class="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
-			<div class="prose max-w-none">
+			<div class="prose max-w-full">
 				<slot />
 			</div>
+
+			<div
+				class="h-[calc(100vh - 72px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden w-64 border-l bg-white pr-2 xl:block"
+			>
+				<Outline client:load headings={headings} />
+			</div>
+			<Separator className="my-5" />
+			<div class="flex place-content-end">
+				<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
+			</div>
 		</div>
+
 		<div class="h-76 md:h-52"></div>
-		<footer class="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">
+		<footer
+			class="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 xl:pr-76"
+		>
 			<div class="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
 				<div class="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
 					<a
@@ -86,4 +133,5 @@ const pages = await Astro.glob<{ category: string; title: string }>('../pages/**
 			</div>
 		</footer>
 	</article>
+	<div>Test</div>
 </main>

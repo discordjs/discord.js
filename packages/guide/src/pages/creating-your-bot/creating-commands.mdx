@@ -4,16 +4,16 @@ title: Creating commands
 category: Creating your bot
 ---
 
-import { Tip } from '../../components/Tip.jsx';
-import { DiscordMessages } from '../../components/discord/Messages.jsx';
-import { DiscordMessage } from '../../components/discord/Message.jsx';
+import { CH } from '@code-hike/mdx/components';
+import { Alert, DiscordMessages, DiscordMessage } from '@discordjs/ui';
 import { DocsLink } from '../../components/DocsLink.jsx';
 import { ResultingCode } from '../../components/ResultingCode.jsx';
-import { CH } from '@code-hike/mdx/components';
 
 # Creating commands
 
-<Tip>This page is a follow-up and bases its code on [the previous page](/creating-your-bot/).</Tip>
+<Alert title="Tip" type="success">
+	This page is a follow-up and bases its code on [the previous page](/creating-your-bot/).
+</Alert>
 
 <DiscordMessages rounded>
 	<DiscordMessage
@@ -52,13 +52,13 @@ Below is a deployment script you can use. Focus on these variables:
 - `guildId`: Your development server's id
 - `commands`: An array of commands to register. The [slash command builder](/popular-topics/builders.md#slash-command-builders) from `discord.js` is used to build the data for your commands
 
-<Tip>
+<Alert title="Tip" type="success">
 	In order to get your application's client id, go to [Discord Developer
 	Portal](https://discord.com/developers/applications) and choose your application. Find the id under "Application ID"
 	in General Information subpage. To get guild id, open Discord and go to your settings. On the "Advanced" page, turn on
 	"Developer Mode". This will enable a "Copy ID" button in the context menu when you right-click on a server icon, a
 	user's profile, etc.
-</Tip>
+</Alert>
 
 <CH.Code client:load>
 
@@ -94,10 +94,10 @@ rest
 
 Once you fill in these values, run `node deploy-commands.js` in your project directory to register your commands to a single guild. It's also possible to [register commands globally](/interactions/slash-commands.md#global-commands).
 
-<Tip>
+<Alert title="Tip" type="success">
 	You only need to run `node deploy-commands.js` once. You should only run it again if you add or edit existing
 	commands.
-</Tip>
+</Alert>
 
 ## Replying to commands
 
@@ -172,9 +172,9 @@ client.on('interactionCreate', async (interaction) => {
 
 You could also display the date the server was created, or the server's verification level. You would do those in the same manner – use `interaction.guild.createdAt` or `interaction.guild.verificationLevel`, respectively.
 
-<Tip>
+<Alert title="Tip" type="success">
 	Refer to the <DocsLink path="class/Guild" /> documentation for a list of all the available properties and methods!
-</Tip>
+</Alert>
 
 ### User info command
 
@@ -218,9 +218,9 @@ client.on('interactionCreate', async (interaction) => {
 	</DiscordMessage>
 </DiscordMessages>
 
-<Tip>
+<Alert title="Tip" type="success">
 	Refer to the <DocsLink path="class/User" /> documentation for a list of all the available properties and methods!
-</Tip>
+</Alert>
 
 And there you have it!
 

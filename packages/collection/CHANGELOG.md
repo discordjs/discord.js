@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.1.0...@discordjs/collection@1.2.0) - (2022-10-08)
+
+## Bug Fixes
+
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+- Remove xml tag from collection#find (#8550) ([4032457](https://github.com/discordjs/discord.js/commit/40324574ebea9894cadcc967e0db0e4e21d62768))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
+## Typings
+
+- **Collection:** Make fn return type unknown (#8676) ([822b7f2](https://github.com/discordjs/discord.js/commit/822b7f234af053c8f917b0a998b82abfccd33801))
+
 # [@discordjs/collection@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.0.1...@discordjs/collection@1.1.0) - (2022-08-22)
 
 ## Bug Fixes
