@@ -243,7 +243,6 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
  * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
- * @private
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
