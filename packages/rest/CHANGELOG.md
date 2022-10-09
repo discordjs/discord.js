@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.2.0...@discordjs/rest@1.3.0) - (2022-10-08)
+
+## Bug Fixes
+
+- **SequentialHandler:** Throw http error with proper name and more useful message (#8694) ([3f86561](https://github.com/discordjs/discord.js/commit/3f8656115bf9df0dbf8391de68a3401535325895))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+- Add `@discordjs/util` (#8591) ([b2ec865](https://github.com/discordjs/discord.js/commit/b2ec865765bf94181473864a627fb63ea8173fd3))
+- Add `AbortSignal` support (#8672) ([3c231ae](https://github.com/discordjs/discord.js/commit/3c231ae81a52b66940ba495f35fd59a76c65e306))
+
 # [@discordjs/rest@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.1.0...@discordjs/rest@1.2.0) - (2022-09-25)
 
 ## Bug Fixes

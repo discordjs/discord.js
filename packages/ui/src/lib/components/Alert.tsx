@@ -38,13 +38,13 @@ export function Alert({ title, type, children }: PropsWithChildren<IAlert>) {
 	const { text, border, icon } = resolveType(type);
 
 	return (
-		<div className="my-4">
+		<div className="mt-6 mb-4">
 			<div className="relative flex">
 				<div className="p-4">{children}</div>
-				<div className="absolute flex h-full w-full">
+				<div className="pointer-events-none absolute flex h-full w-full">
 					<div className={`rounded-tl-1.5 rounded-bl-1.5 w-4 shrink-0 border-t-2 border-b-2 border-l-2 ${border}`} />
 					<div className={`relative border-b-2 ${border}`}>
-						<div className={`-translate-y-50% flex place-items-center gap-2 px-2 ${text}`}>
+						<div className={`-translate-y-50% pointer-events-auto flex place-items-center gap-2 px-2 ${text}`}>
 							{icon}
 							<span className={`font-semibold ${text}`}>{title}</span>
 						</div>

@@ -1,8 +1,13 @@
 ---
+import '../styles/main.css';
 import '@code-hike/mdx/styles.css';
 import '../styles/ch.css';
+import type { MarkdownLayoutProps } from 'astro';
 import SidebarLayout from '../components/SidebarLayout.astro';
 import { DESCRIPTION } from '../util/constants.js';
+
+type Props = MarkdownLayoutProps<{}>;
+const props = Astro.props;
 ---
 
 <html lang="en">
@@ -51,7 +56,7 @@ import { DESCRIPTION } from '../util/constants.js';
 						.addEventListener('change', (ev) => setTheme(ev.matches, persistedColorPreference));
 			})();
 		</script>
-		<SidebarLayout>
+		<SidebarLayout {...props}>
 			<slot />
 		</SidebarLayout>
 	</body>

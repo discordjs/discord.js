@@ -217,7 +217,7 @@ export function SidebarLayout({
 				</div>
 			</header>
 			<nav
-				className={`h-[calc(100vh - 73px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 w-full border-r bg-white ${
+				className={`dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 h-[calc(100vh_-_73px)] w-full border-r bg-white ${
 					opened ? 'block' : 'hidden'
 				} lg:w-76 lg:max-w-76 lg:block`}
 			>
