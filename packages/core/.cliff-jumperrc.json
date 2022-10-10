@@ -1,5 +1,5 @@
 {
-  "name": "core",
-  "org": "discordjs",
-  "packagePath": "packages/core"
+	"name": "core",
+	"org": "discordjs",
+	"packagePath": "packages/core"
 }
