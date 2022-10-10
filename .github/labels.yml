@@ -1,104 +1,108 @@
-- name: 'api changes'
+- name: api changes
   color: '5663e9'
-- name: 'api support'
+- name: api support
   color: '5663e9'
-- name: 'backlog'
-  color: '7ef7ef'
-- name: 'blocked'
-  color: 'fc1423'
-- name: 'bug'
-  color: 'd73a4a'
-- name: 'caching'
-  color: '80c042'
-- name: 'chore'
-  color: 'ffffff'
-- name: 'ci'
-  color: '0075ca'
-- name: 'dependencies'
-  color: '276bd1'
-- name: 'discussion'
-  color: 'b6b1f9'
-- name: 'discord'
+- name: apps:guide
+  color: fbca04
+- name: apps:website
+  color: fbca04
+- name: backlog
+  color: 7ef7ef
+- name: blocked
+  color: fc1423
+- name: bug
+  color: d73a4a
+- name: caching
+  color: 80c042
+- name: chore
+  color: ffffff
+- name: ci
+  color: 0075ca
+- name: dependencies
+  color: 276bd1
+- name: discussion
+  color: b6b1f9
+- name: discord
   color: '5663e9'
-- name: 'documentation'
-  color: '0075ca'
-- name: 'duplicate'
-  color: 'cfd3d7'
-- name: 'error handling'
-  color: '80c042'
-- name: 'feature request'
-  color: 'fcf95a'
-- name: 'gateway'
-  color: '80c042'
-- name: 'good first issue'
-  color: '7057ff'
-- name: 'has PR'
-  color: '4b1f8e'
-- name: 'help wanted'
+- name: documentation
+  color: 0075ca
+- name: duplicate
+  color: cfd3d7
+- name: error handling
+  color: 80c042
+- name: feature request
+  color: fcf95a
+- name: gateway
+  color: 80c042
+- name: good first issue
+  color: 7057ff
+- name: has PR
+  color: 4b1f8e
+- name: help wanted
   color: '008672'
-- name: 'interactions'
-  color: '80c042'
-- name: 'in progress'
-  color: 'ffccd7'
-- name: 'in review'
-  color: 'aed5fc'
-- name: 'invalid'
-  color: 'e4e669'
-- name: 'need repro'
-  color: 'c66037'
-- name: 'packages:builders'
-  color: 'fbca04'
-- name: 'packages:collection'
-  color: 'fbca04'
-- name: 'packages:discord.js'
-  color: 'fbca04'
-- name: 'packages:docgen'
-  color: 'fbca04'
-- name: 'packages:proxy'
-  color: 'fbca04'
-- name: 'packages:proxy-container'
-  color: 'fbca04'
-- name: 'packages:rest'
-  color: 'fbca04'
-- name: 'packages:voice'
-  color: 'fbca04'
-- name: 'packages:website'
-  color: 'fbca04'
-- name: 'packages:ws'
-  color: 'fbca04'
-- name: 'packages:util'
-  color: 'fbca04'
-- name: 'performance'
-  color: '80c042'
-- name: 'permissions'
-  color: '80c042'
-- name: 'priority:high'
-  color: 'fc1423'
-- name: 'question (please use Discord instead)'
-  color: 'd876e3'
-- name: 'ratelimits'
-  color: '80c042'
-- name: 'refactor'
-  color: '1d637f'
-- name: 'regression'
-  color: 'ea8785'
-- name: 'REST'
-  color: '80c042'
-- name: 'semver:major'
-  color: 'c10f47'
-- name: 'semver:minor'
-  color: 'e4f486'
-- name: 'semver:patch'
-  color: 'e8be8b'
-- name: 'sharding'
-  color: '80c042'
-- name: 'tests'
-  color: 'f06dff'
-- name: 'threads'
-  color: '80c042'
-- name: 'typings'
-  color: '80c042'
-- name: 'utility'
-  color: '80c042'
-- name: 'wontfix'
-  color: 'ffffff'
+- name: interactions
+  color: 80c042
+- name: in progress
+  color: ffccd7
+- name: in review
+  color: aed5fc
+- name: invalid
+  color: e4e669
+- name: need repro
+  color: c66037
+- name: packages:builders
+  color: fbca04
+- name: packages:collection
+  color: fbca04
+- name: packages:discord.js
+  color: fbca04
+- name: packages:docgen
+  color: fbca04
+- name: packages:proxy
+  color: fbca04
+- name: packages:proxy-container
+  color: fbca04
+- name: packages:rest
+  color: fbca04
+- name: packages:ui
+  color: fbca04
+- name: packages:util
+  color: fbca04
+- name: packages:voice
+  color: fbca04
+- name: packages:ws
+  color: fbca04
+- name: performance
+  color: 80c042
+- name: permissions
+  color: 80c042
+- name: priority:high
+  color: fc1423
+- name: question (please use Discord instead)
+  color: d876e3
+- name: ratelimits
+  color: 80c042
+- name: refactor
+  color: 1d637f
+- name: regression
+  color: ea8785
+- name: REST
+  color: 80c042
+- name: semver:major
+  color: c10f47
+- name: semver:minor
+  color: e4f486
+- name: semver:patch
+  color: e8be8b
+- name: sharding
+  color: 80c042
+- name: tests
+  color: f06dff
+- name: threads
+  color: 80c042
+- name: typings
+  color: 80c042
+- name: utility
+  color: 80c042
+- name: wontfix
+  color: ffffff

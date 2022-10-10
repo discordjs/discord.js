@@ -5,8 +5,8 @@
 	"scripts": {
 		"build": "tsup",
 		"test": "vitest run && tsd",
-		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && TIMING=1 eslint src --ext .mjs,.js,.ts",
+		"format": "prettier --write . && TIMING=1 eslint src --ext .mjs,.js,.ts --fix",
 		"fmt": "yarn format",
 		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
@@ -54,16 +54,16 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.0",
 		"@types/node": "^16.11.64",
-		"@vitest/coverage-c8": "^0.23.4",
+		"@vitest/coverage-c8": "^0.24.0",
 		"cross-env": "^7.0.3",
 		"downlevel-dts": "^0.10.1",
-		"eslint": "^8.24.0",
-		"eslint-config-neon": "^0.1.34",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.37",
 		"prettier": "^2.7.1",
 		"tsd": "^0.24.1",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.4",
-		"vitest": "^0.23.4"
+		"vitest": "^0.24.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

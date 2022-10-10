@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.11.0...@discordjs/voice@0.13.0) - (2022-10-08)
+
+## Bug Fixes
+
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+- **website:** Show `constructor` information (#8540) ([e42fd16](https://github.com/discordjs/discord.js/commit/e42fd1636973b10dd7ed6fb4280ee1a4a8f82007))
+- **WebSocketShard:** Support new resume url (#8480) ([bc06cc6](https://github.com/discordjs/discord.js/commit/bc06cc638d2f57ab5c600e8cdb6afc8eb2180166))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+- Docs design (#8487) ([4ab1d09](https://github.com/discordjs/discord.js/commit/4ab1d09997a18879a9eb9bda39df6f15aa22557e))
+
 # [@discordjs/voice@0.11.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.10.0...@discordjs/voice@0.11.0) - (2022-07-17)
 
 ## Bug Fixes
