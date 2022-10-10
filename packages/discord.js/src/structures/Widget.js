@@ -89,7 +89,7 @@ class Widget extends Base {
    * @param {GuildWidgetStyle} [style=GuildWidgetStyle.Shield] The style for the widget image
    * @returns {string}
    */
-  getImageURL(style = GuildWidgetStyle.Shield) {
+  imageURL(style = GuildWidgetStyle.Shield) {
     const data = `https://discord.com/api/v${APIVersion}${Routes.guildWidgetImage(this.id)}?style=${style}`;
     return data;
   }
