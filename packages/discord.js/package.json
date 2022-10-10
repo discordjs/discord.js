@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "14.5.0",
+  "version": "14.6.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "yarn docs:test && yarn test:typescript",
@@ -12,7 +12,7 @@
     "docs:test": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../",
     "prepack": "yarn lint && yarn test",
     "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'",
-    "release": "cliff-jumper --skip-tag"
+    "release": "cliff-jumper"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
