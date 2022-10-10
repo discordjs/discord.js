@@ -2737,6 +2737,11 @@ export function escapeItalic(text: string): string;
 export function escapeUnderline(text: string): string;
 export function escapeStrikethrough(text: string): string;
 export function escapeSpoiler(text: string): string;
+export function escapeEscape(text: string): string;
+export function escapeHeading(text: string): string;
+export function escapeBulletedList(text: string): string;
+export function escapeNumberedList(text: string): string;
+export function escapeMaskedLink(text: string): string;
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
@@ -4660,8 +4665,13 @@ export interface EscapeMarkdownOptions {
   underline?: boolean;
   strikethrough?: boolean;
   spoiler?: boolean;
-  inlineCodeContent?: boolean;
   codeBlockContent?: boolean;
+  inlineCodeContent?: boolean;
+  escape?: boolean;
+  heading?: boolean;
+  bulletedList?: boolean;
+  numberedList?: boolean;
+  maskedLink?: boolean;
 }
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
