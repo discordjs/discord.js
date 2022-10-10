@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.0...@discordjs/ws@0.4.1) - (2022-10-10)
+
+## Bug Fixes
+
+- **WebSocketShard:** Dispatch race condition (#8731) ([c2b6777](https://github.com/discordjs/discord.js/commit/c2b677759b905d6eb3ebcefcec2cb04eb38436bb))
+
 # [@discordjs/ws@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.3.0...@discordjs/ws@0.4.0) - (2022-10-08)
 
 ## Bug Fixes
