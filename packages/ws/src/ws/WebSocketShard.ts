@@ -7,6 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -17,12 +18,12 @@ import {
 	type GatewayIdentifyData,
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
+	type GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes } from '../utils/constants.js';
-import { lazy } from '../utils/utils.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -52,7 +53,7 @@ export enum WebSocketShardDestroyRecovery {
 export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Hello]: [];
-	[WebSocketShardEvents.Ready]: [];
+	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
 	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
 };
@@ -136,11 +137,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
 		this.debug([`Connecting to ${url}`]);
 		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
-			/* eslint-disable @typescript-eslint/no-misused-promises */
 			.on('message', this.onMessage.bind(this))
 			.on('error', this.onError.bind(this))
 			.on('close', this.onClose.bind(this));
-		/* eslint-enable @typescript-eslint/no-misused-promises */
 
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
@@ -209,7 +208,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
-			// eslint-disable-next-line consistent-return
 			return this.connect();
 		}
 	}
@@ -302,7 +300,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		});
 	}
 
-	// eslint-disable-next-line consistent-return
 	private async heartbeat(requested = false) {
 		if (!this.isAck && !requested) {
 			return this.destroy({ reason: 'Zombie connection', recover: WebSocketShardDestroyRecovery.Resume });
@@ -397,7 +394,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready);
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 
 						this.session ??= {
 							sequence: payload.s,
@@ -480,7 +477,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.emit('error', err);
 	}
 
-	// eslint-disable-next-line consistent-return
 	private async onClose(code: number) {
 		switch (code) {
 			case CloseCodes.Normal: {

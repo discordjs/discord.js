@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const User = require('../structures/User');
 
 /**
@@ -63,7 +63,7 @@ class ReactionUserManager extends CachedManager {
    */
   async remove(user = this.client.user) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) throw new Error(ErrorCodes.ReactionResolveUser);
+    if (!userId) throw new DiscordjsError(ErrorCodes.ReactionResolveUser);
     const message = this.reaction.message;
     const route =
       userId === this.client.user.id

@@ -234,7 +234,7 @@ describe('Slash Commands', () => {
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
+						getChannelOption().addChannelTypes(ChannelType.GuildAnnouncement, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
@@ -368,6 +368,18 @@ describe('Slash Commands', () => {
 					getNamedBuilder().addSubcommand((subcommand) =>
 						subcommand.setName('boop').setDescription('Boops a fellow nerd (you)'),
 					),
+				).not.toThrowError();
+			});
+
+			test('GIVEN builder with subcommand THEN has regular slash command fields', () => {
+				expect(() =>
+					getBuilder()
+						.setName('name')
+						.setDescription('description')
+						.addSubcommand((option) => option.setName('ye').setDescription('ye'))
+						.addSubcommand((option) => option.setName('no').setDescription('no'))
+						.setDMPermission(false)
+						.setDefaultMemberPermissions(1n),
 				).not.toThrowError();
 			});
 

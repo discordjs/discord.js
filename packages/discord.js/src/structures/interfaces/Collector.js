@@ -3,7 +3,7 @@
 const EventEmitter = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { TypeError, ErrorCodes } = require('../../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../../errors');
 const { flatten } = require('../../util/Util');
 
 /**
@@ -87,7 +87,7 @@ class Collector extends EventEmitter {
     this._endReason = null;
 
     if (typeof this.filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);
@@ -181,7 +181,7 @@ class Collector extends EventEmitter {
 
       const onEnd = () => {
         cleanup();
-        reject(this.collected); // eslint-disable-line prefer-promise-reject-errors
+        reject(this.collected);
       };
 
       this.on('collect', onCollect);

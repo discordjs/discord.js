@@ -22,6 +22,6 @@ jobs:
         run: yarn --immutable
 
       - name: Deprecate versions
-        run: 'yarn npm-deprecate --name "*dev*" --package @discordjs/builders @discordjs/collection discord.js @discordjs/proxy @discordjs/rest @discordjs/voice'
+        run: 'yarn npm-deprecate --name "*dev*" --package @discordjs/builders @discordjs/collection discord.js @discordjs/proxy @discordjs/rest @discordjs/util @discordjs/voice @discordjs/ws'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

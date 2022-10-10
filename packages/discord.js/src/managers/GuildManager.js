@@ -137,7 +137,6 @@ class GuildManager extends CachedManager {
     return super.resolveId(guild);
   }
 
-  /* eslint-disable max-len */
   /**
    * Options used to create a guild.
    * @typedef {Object} GuildCreateOptions

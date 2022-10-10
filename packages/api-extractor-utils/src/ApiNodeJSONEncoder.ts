@@ -82,12 +82,14 @@ export interface ApiMethodSignatureJSON
 		ApiTypeParameterListJSON,
 		ApiParameterListJSON,
 		ApiInheritableJSON {
+	mergedSiblings: ApiMethodSignatureJSON[];
 	optional: boolean;
 	overloadIndex: number;
 	returnTypeTokens: TokenDocumentation[];
 }
 
 export interface ApiMethodJSON extends ApiMethodSignatureJSON {
+	mergedSiblings: ApiMethodJSON[];
 	protected: boolean;
 	static: boolean;
 }
@@ -133,6 +135,7 @@ export interface ApiVariableJSON extends ApiItemJSON {
 }
 
 export interface ApiFunctionJSON extends ApiItemJSON, ApiTypeParameterListJSON, ApiParameterListJSON {
+	mergedSiblings: ApiFunctionJSON[];
 	overloadIndex: number;
 	returnTypeTokens: TokenDocumentation[];
 }
@@ -164,7 +167,7 @@ export class ApiNodeJSONEncoder {
 			case ApiItemKind.Variable:
 				return this.encodeVariable(model, node as ApiVariable, version);
 			default:
-				console.log(`Unknown API item kind: ${node.kind}`);
+				// console.log(`Unknown API item kind: ${node.kind}`);
 				return undefined;
 		}
 	}
@@ -255,7 +258,7 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
-	public static encodeFunction(model: ApiModel, item: FunctionLike, version: string): ApiFunctionJSON {
+	public static encodeFunctionLike(model: ApiModel, item: FunctionLike, version: string) {
 		return {
 			...this.encodeItem(model, item, version),
 			...this.encodeParameterList(model, item, version),
@@ -265,16 +268,31 @@ export class ApiNodeJSONEncoder {
 		};
 	}
 
+	public static encodeFunction(model: ApiModel, item: FunctionLike, version: string, nested = false): ApiFunctionJSON {
+		return {
+			...this.encodeFunctionLike(model, item, version),
+			mergedSiblings: nested
+				? []
+				: item.getMergedSiblings().map((item) => this.encodeFunction(model, item as ApiFunction, version, true)),
+		};
+	}
+
 	public static encodeMethodSignature(
 		model: ApiModel,
 		item: ApiMethodSignature,
 		parent: ApiItemContainerMixin,
 		version: string,
+		nested = false,
 	): ApiMethodSignatureJSON {
 		return {
-			...this.encodeFunction(model, item, version),
+			...this.encodeFunctionLike(model, item, version),
 			...this.encodeInheritanceData(item, parent, version),
 			optional: item.isOptional,
+			mergedSiblings: nested
+				? []
+				: item
+						.getMergedSiblings()
+						.map((item) => this.encodeMethodSignature(model, item as ApiMethodSignature, parent, version, true)),
 		};
 	}
 
@@ -283,11 +301,15 @@ export class ApiNodeJSONEncoder {
 		item: ApiMethod,
 		parent: ApiItemContainerMixin,
 		version: string,
+		nested = false,
 	): ApiMethodJSON {
 		return {
 			...this.encodeMethodSignature(model, item, parent, version),
 			static: item.isStatic,
 			protected: item.isProtected,
+			mergedSiblings: nested
+				? []
+				: item.getMergedSiblings().map((item) => this.encodeMethod(model, item as ApiMethod, parent, version, true)),
 		};
 	}
 

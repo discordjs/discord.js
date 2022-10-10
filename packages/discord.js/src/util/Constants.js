@@ -79,35 +79,31 @@ exports.NonSystemMessageTypes = [
  * The types of channels that are text-based. The available types are:
  * * {@link ChannelType.DM}
  * * {@link ChannelType.GuildText}
- * * {@link ChannelType.GuildNews}
- * * {@link ChannelType.GuildNewsThread}
- * * {@link ChannelType.GuildPublicThread}
- * * {@link ChannelType.GuildPrivateThread}
+ * * {@link ChannelType.GuildAnnouncement}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
   ChannelType.DM,
   ChannelType.GuildText,
-  ChannelType.GuildNews,
-  ChannelType.GuildNewsThread,
-  ChannelType.GuildPublicThread,
-  ChannelType.GuildPrivateThread,
+  ChannelType.GuildAnnouncement,
+  ChannelType.AnnouncementThread,
+  ChannelType.PublicThread,
+  ChannelType.PrivateThread,
   ChannelType.GuildVoice,
 ];
 
 /**
  * The types of channels that are threads. The available types are:
- * * {@link ChannelType.GuildNewsThread}
- * * {@link ChannelType.GuildPublicThread}
- * * {@link ChannelType.GuildPrivateThread}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = [
-  ChannelType.GuildNewsThread,
-  ChannelType.GuildPublicThread,
-  ChannelType.GuildPrivateThread,
-];
+exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
 
 /**
  * The types of channels that are voice-based. The available types are:
