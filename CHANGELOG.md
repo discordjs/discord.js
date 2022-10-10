@@ -4,23 +4,13 @@ All notable changes to this project will be documented in this file.
 
 # [13.12.0](https://github.com/discordjs/discord.js/compare/13.11.0...13.12.0) - (2022-10-10)
 
-## Bug Fixes
-
-- Fixed TS 4.8 compatibility (#8601) ([e6ee7d8](https://github.com/discordjs/discord.js/commit/e6ee7d8374ddc157037c258b63225384c154a2e6))
-
 ## Documentation
 
 - Update UserContextMenu documentation v13 (#8721) ([ea117bf](https://github.com/discordjs/discord.js/commit/ea117bfb7e04e1103eaf24208c06979ce8493129))
-- Update misleading `Client#guildMemberAvailable` event description (v13) (#8627) ([fcd52d7](https://github.com/discordjs/discord.js/commit/fcd52d7fc6b195b50bf6e5eb6e670fbd1ba5fd59))
 
 ## Features
 
 - **Util:** Backport `escapeMarkdown` PRs to v13 (#8703) ([8a6588a](https://github.com/discordjs/discord.js/commit/8a6588a13203120b0d185732cd7db7ecdb9f00f7))
-- **GuildBanManager:** Add `deleteMessageSeconds` (#8575) ([ca68fc3](https://github.com/discordjs/discord.js/commit/ca68fc3f6b5dbe8708d065ffea5a89b23d4db757))
-
-## Typings
-
-- **GuildChannelManager:** Correct fetch return type (v13) (#8551) ([f4e8133](https://github.com/discordjs/discord.js/commit/f4e81330bf35bac0d8317dbb170312422df432fa))
 
 # [13.11.0](https://github.com/discordjs/discord.js/compare/13.10.3...13.11.0) - (2022-09-15)
 
