@@ -3054,7 +3054,7 @@ export class Widget extends Base {
   private constructor(client: Client<true>, data: RawWidgetData);
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
-  public getImageURL(style?: GuildWidgetStyle): string;
+  public imageURL(style?: GuildWidgetStyle): string;
   public id: Snowflake;
   public instantInvite?: string;
   public channels: Collection<Snowflake, WidgetChannel>;
