@@ -51,7 +51,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 					let data: any[] = [];
 					let versions: string[] = [];
 					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-						const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
+						const res = await readFile(
+							join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),
+							'utf8',
+						);
 						data = JSON.parse(res);
 					} else {
 						const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
@@ -137,7 +140,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	const [memberName, overloadIndex] = member?.split(':') ?? [];
 
 	try {
-		const readme = await readFile(join(cwd(), '..', packageName, 'README.md'), 'utf8');
+		const readme = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'README.md'), 'utf8');
 
 		const mdxSource = await serialize(readme, {
 			mdxOptions: {
@@ -173,7 +176,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 		let data;
 		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', packageName, 'docs', 'docs.api.json'), 'utf8');
+			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
 		} else {
 			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
@@ -280,5 +283,5 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 }
 
 export const config = {
-	unstable_includeFiles: ['../{builders,collection,proxy,rest,util,voice,ws}/README.md'],
+	unstable_includeFiles: [`../../packages/{${PACKAGES.join(',')}}/README.md`],
 };
