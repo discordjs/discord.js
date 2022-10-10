@@ -56,7 +56,7 @@
     "@sapphire/async-queue": "^1.5.0",
     "@types/node-fetch": "^2.6.2",
     "@types/ws": "^8.5.3",
-    "discord-api-types": "^0.37.11",
+    "discord-api-types": "^0.33.5",
     "form-data": "^4.0.0",
     "node-fetch": "^2.6.7",
     "ws": "^8.8.1"

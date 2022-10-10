@@ -52,7 +52,6 @@ import {
   Snowflake,
   LocalizationMap,
   LocaleString,
-  SortOrderType,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -91,6 +90,7 @@ import {
   GuildScheduledEventStatuses,
   GuildScheduledEventPrivacyLevels,
   VideoQualityModes,
+  SortOrderType,
 } from './enums';
 import {
   RawActivityData,

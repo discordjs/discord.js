@@ -52,6 +52,11 @@ export const enum ChannelTypes {
   GUILD_FORUM = 15,
 }
 
+export const enum SortOrderType {
+  LATEST_ACTIVITY = 1,
+  CREATION_DATE = 2,
+}
+
 export const enum MessageTypes {
   DEFAULT,
   RECIPIENT_ADD,
