@@ -39,12 +39,6 @@ runs:
         files: ./packages/voice/coverage/cobertura-coverage.xml
         flags: voice
 
-    - name: Upload Website Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./packages/website/coverage/cobertura-coverage.xml
-        flags: website
-
     - name: Upload WS Coverage
       uses: codecov/codecov-action@v3
       with:
@@ -62,3 +56,15 @@ runs:
       with:
         files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
         flags: utilities
+
+    - name: Upload Guide Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./apps/guide/coverage/cobertura-coverage.xml
+        flags: guide
+
+    - name: Upload Website Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./apps/website/coverage/cobertura-coverage.xml
+        flags: website
