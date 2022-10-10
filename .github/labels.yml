@@ -108,3 +108,5 @@
   color: 80c042
 - name: wontfix
   color: ffffff
+- name: packages:core
+  color: fbca04

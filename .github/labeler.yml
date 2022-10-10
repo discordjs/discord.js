@@ -41,3 +41,6 @@ packages:voice:
 packages:ws:
   - packages/ws/*
   - packages/ws/**/*
+packages/core:
+  - packages:core/*
+  - packages:core/**/*
