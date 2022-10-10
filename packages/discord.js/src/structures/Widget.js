@@ -83,6 +83,7 @@ class Widget extends Base {
     this._patch(data);
     return this;
   }
+
   /**
    * Get Guild Widget Image
    * @param {?GuildWidgetStyle} [style=GuildWidgetStyle.Shield] The style for the widget image
