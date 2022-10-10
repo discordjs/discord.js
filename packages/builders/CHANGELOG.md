@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.2.0...@discordjs/builders@1.3.0) - (2022-10-08)
+
+## Bug Fixes
+
+- Allow adding forums to `channelTypes` (#8658) ([b1e190c](https://github.com/discordjs/discord.js/commit/b1e190c4f0773a1a739625f5b41026f593515370))
+- **SlashCommandBuilder:** Missing methods in subcommand builder (#8583) ([1c5b78f](https://github.com/discordjs/discord.js/commit/1c5b78fd2130f09c951459cf4c2d637f46c3c2c9))
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- **builders/components:** Document constructors (#8636) ([8444576](https://github.com/discordjs/discord.js/commit/8444576f45da5fdddbf8ba2d91b4cb31a3b51c04))
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+- Use remarks instead of `Note` in descriptions (#8597) ([f3ce4a7](https://github.com/discordjs/discord.js/commit/f3ce4a75d0c4eafc89a1f0ce9f4964bcbcdae6da))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+- Add `@discordjs/util` (#8591) ([b2ec865](https://github.com/discordjs/discord.js/commit/b2ec865765bf94181473864a627fb63ea8173fd3))
+- Add `chatInputApplicationCommandMention` formatter (#8546) ([d08a57c](https://github.com/discordjs/discord.js/commit/d08a57cadd9d69a734077cc1902d931ab10336db))
+
+## Refactor
+
+- Replace usage of deprecated `ChannelType`s (#8625) ([669c3cd](https://github.com/discordjs/discord.js/commit/669c3cd2566eac68ef38ab522dd6378ba761e8b3))
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
+## Testing
+
+- Rename incorrect test (#8596) ([ce991dd](https://github.com/discordjs/discord.js/commit/ce991dd1d883f6785b5f4b4b3ac80ef21cb304e7))
+
+## Typings
+
+- **interactions:** Fix `{Slash,ContextMenu}CommandBuilder#toJSON` (#8568) ([b7eb96d](https://github.com/discordjs/discord.js/commit/b7eb96d45670616521fbcca28a657793d91605c7))
+
 # [@discordjs/builders@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.1.0...@discordjs/builders@1.2.0) - (2022-08-22)
 
 ## Features

@@ -12,7 +12,6 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      NEXT_PUBLIC_LOCAL_DEV: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,6 +33,9 @@ jobs:
 
       - name: Tests
         run: yarn test
+
+      - name: Docs
+        run: yarn docs
 
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'

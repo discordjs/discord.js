@@ -32,23 +32,36 @@ pnpm add @discordjs/proxy
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discord.js.org/#/docs/proxy)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
-- [discord.js Discord server](https://discord.gg/djs)
-- [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy)
-- [npm](https://www.npmjs.com/package/@discordjs/proxy)
-- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
+- [Website][website] ([source][website-source])
+- [Documentation][documentation]
+- [Guide][guide] ([source][guide-source])
+  See also the [Update Guide][guide-update], including updated and removed items in the library.
+- [discord.js Discord server][discord]
+- [Discord API Discord server][discord-api]
+- [GitHub][source]
+- [npm][npm]
+- [Related libraries][related-libs]
 
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/proxy).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+[documentation][documentation].  
+See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+
+[website]: https://discord.js.org/
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[documentation]: https://discord.js.org/#/docs/proxy
+[guide]: https://discordjs.guide/
+[guide-source]: https://github.com/discordjs/guide
+[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[discord]: https://discord.gg/djs
+[discord-api]: https://discord.gg/discord-api
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
+[npm]: https://www.npmjs.com/package/@discordjs/proxy
+[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
