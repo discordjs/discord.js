@@ -383,10 +383,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
-				if (this.status === WebSocketShardStatus.Ready || this.status === WebSocketShardStatus.Resuming) {
-					this.emit(WebSocketShardEvents.Dispatch, { data: payload });
-				}
-
 				if (this.status === WebSocketShardStatus.Resuming) {
 					this.replayedEvents++;
 				}
@@ -424,6 +420,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.session.sequence = payload.s;
 					await this.strategy.updateSessionInfo(this.id, this.session);
 				}
+
+				this.emit(WebSocketShardEvents.Dispatch, { data: payload });
 
 				break;
 			}
