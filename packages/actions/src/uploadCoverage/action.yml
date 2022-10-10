@@ -3,6 +3,18 @@ description: 'Uploads code coverage reports to codecov with separate flags for s
 runs:
   using: 'composite'
   steps:
+    - name: Upload Guide Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./apps/guide/coverage/cobertura-coverage.xml
+        flags: guide
+
+    - name: Upload Website Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./apps/website/coverage/cobertura-coverage.xml
+        flags: website
+
     - name: Upload Builders Coverage
       uses: codecov/codecov-action@v3
       with:
@@ -56,15 +68,3 @@ runs:
       with:
         files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
         flags: utilities
-
-    - name: Upload Guide Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./apps/guide/coverage/cobertura-coverage.xml
-        flags: guide
-
-    - name: Upload Website Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        files: ./apps/website/coverage/cobertura-coverage.xml
-        flags: website
