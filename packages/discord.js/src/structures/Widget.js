@@ -84,6 +84,7 @@ class Widget extends Base {
     return this;
   }
 
+
   /**
    * Get Guild Widget Image
    * @param {GuildWidgetStyle} [style=GuildWidgetStyle.Shield] The style for the widget image
