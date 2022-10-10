@@ -8,7 +8,7 @@ export * from './lib/utils/constants.js';
 export { makeURLSearchParams, parseResponse } from './lib/utils/utils.js';
 
 /**
- * The [\@discordjs/rest](https://github.com/discordjs/discord.js/blob/main/packages/rest/#readme) version
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/rest/#readme | @discordjs/rest} version
  * that you are currently using.
  */
 // This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild

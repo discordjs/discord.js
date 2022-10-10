@@ -42,7 +42,7 @@ export * from './util/validation.js';
 export * from '@discordjs/util';
 
 /**
- * The [\@discordjs/builders](https://github.com/discordjs/discord.js/blob/main/packages/builders/#readme) version
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders/#readme | @discordjs/builders} version
  * that you are currently using.
  */
 // This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
