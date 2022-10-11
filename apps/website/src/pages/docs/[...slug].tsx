@@ -42,7 +42,6 @@ import { CmdKProvider } from '~/contexts/cmdK';
 import { MemberProvider } from '~/contexts/member';
 import { PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
-// import { miniSearch } from '~/util/search';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (
@@ -193,16 +192,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 		}
 
+		const members = pkg
+			? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
+			: [];
+		const member =
+			memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
+
 		return {
 			props: {
 				packageName,
 				branchName,
 				data: {
-					members: pkg
-						? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
-						: [],
-					member:
-						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
+					members,
+					member,
 					source: mdxSource,
 				},
 			},

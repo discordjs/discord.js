@@ -33,7 +33,6 @@ export interface SidebarLayoutProps {
 	data: {
 		member: ReturnType<typeof findMember>;
 		members: ReturnType<typeof getMembers>;
-		searchIndex: any[];
 		source: MDXRemoteSerializeResult;
 	};
 	packageName: string;
