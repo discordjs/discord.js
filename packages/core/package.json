@@ -5,8 +5,8 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
 		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
@@ -31,7 +31,8 @@
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Aura Román <kyradiscord@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>",
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
 	],
 	"license": "Apache-2.0",
 	"keywords": [],

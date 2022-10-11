@@ -11,14 +11,14 @@ import type {
 } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
 
-interface GetChannelMessagesOptions {
+export interface GetChannelMessagesOptions {
 	after?: string;
 	around?: string;
 	before?: string;
 	limit?: number;
 }
 
-interface FetchThreadsOptions {
+export interface FetchThreadsOptions {
 	before?: string;
 	limit?: number;
 }
