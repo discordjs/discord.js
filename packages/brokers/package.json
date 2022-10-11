@@ -5,17 +5,17 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy/*'",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
 		"release": "cliff-jumper"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
+	"typings": "./dist/index.d.ts",
 	"exports": {
 		"import": "./dist/index.mjs",
 		"require": "./dist/index.js",
@@ -33,7 +33,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>",
+		"Aura Roman <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
 	"license": "Apache-2.0",
