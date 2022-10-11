@@ -17,7 +17,7 @@ import { useKey } from 'react-use';
 import { useCmdK } from '~/contexts/cmdK';
 import { client } from '~/util/search';
 
-function resolveIcon(item: keyof ApiItemKind) {
+function resolveIcon(item: keyof typeof ApiItemKind) {
 	switch (item) {
 		case 'Class':
 			return <VscSymbolClass className="shrink-0" size={25} />;
@@ -29,7 +29,7 @@ function resolveIcon(item: keyof ApiItemKind) {
 			return <VscSymbolProperty className="shrink-0" size={25} />;
 		case 'TypeAlias':
 			return <VscSymbolField className="shrink-0" size={25} />;
-		case 'Variables':
+		case 'Variable':
 			return <VscSymbolVariable className="shrink-0" size={25} />;
 		default:
 			return <VscSymbolMethod className="shrink-0" size={25} />;
