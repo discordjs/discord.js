@@ -48,7 +48,9 @@
 		"lint-staged": "^13.0.3",
 		"tsup": "^6.2.3",
 		"turbo": "^1.5.5",
-		"typescript": "^4.8.4"
+		"typescript": "^4.8.4",
+		"unocss": "^0.45.29",
+		"vitest": "^0.24.1"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"

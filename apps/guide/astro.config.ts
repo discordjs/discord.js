@@ -54,7 +54,7 @@ export default defineConfig({
 			throttle: 3,
 		}),
 		Unocss({
-			configFile: fileURLToPath(new URL('../../packages/ui/unocss.config.ts', import.meta.url)),
+			configFile: fileURLToPath(new URL('../../unocss.config.ts', import.meta.url)),
 		}),
 		critters(),
 		compress(),

@@ -283,5 +283,5 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 }
 
 export const config = {
-	unstable_includeFiles: [`../../packages/{${PACKAGES.join(',')}}/README.md`],
+	unstable_includeFiles: [`../../packages/{builders,collection,proxy,rest,util,voice,ws}/README.md`],
 };

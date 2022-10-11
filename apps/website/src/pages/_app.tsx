@@ -3,6 +3,7 @@ import Head from 'next/head';
 import NextProgress from 'next-progress';
 import { ThemeProvider } from 'next-themes';
 import '@unocss/reset/tailwind.css';
+import '../styles/inter.css';
 import '../styles/unocss.css';
 import '../styles/cmdk.css';
 import '../styles/main.css';

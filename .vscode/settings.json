@@ -8,9 +8,12 @@
 		"source.fixAll": true,
 		"source.organizeImports": false
 	},
+	"editor.trimAutoWhitespace": false,
 	"files.associations": {
 		"*.mdx": "markdown"
 	},
-	"unocss.root": "./packages/ui",
+	"files.insertFinalNewline": true,
+	"files.eol": "\n",
+	"npm.packageManager": "yarn",
 	"typescript.tsdk": "node_modules/typescript/lib"
 }
