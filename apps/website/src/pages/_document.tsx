@@ -18,7 +18,7 @@ export default function Document() {
 				<meta content="discord.js" property="og:site_name" />
 				<meta content="website" property="og:type" />
 				<meta content="discord.js" key="og_title" property="og:title" />
-				<meta content={DESCRIPTION} key="og_description" name="og:description" />
+				<meta content={DESCRIPTION} key="og_description" property="og:description" />
 				<meta content="https://discordjs.dev/api/og" key="og_image" property="og:image" />
 				<meta content="summary_large_image" name="twitter:card" />
 				<meta content="@iCrawlToGo" name="twitter:creator" />

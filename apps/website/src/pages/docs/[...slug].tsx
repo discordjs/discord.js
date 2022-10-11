@@ -40,8 +40,9 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { CmdKProvider } from '~/contexts/cmdK';
 import { MemberProvider } from '~/contexts/member';
-import { PACKAGES } from '~/util/constants';
+import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
+import { tryResolveDescription } from '~/util/summary';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (
@@ -197,6 +198,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			: [];
 		const member =
 			memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
+		const description = member ? tryResolveDescription(member) ?? DESCRIPTION : DESCRIPTION;
 
 		return {
 			props: {
@@ -205,6 +207,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 				data: {
 					members,
 					member,
+					description,
 					source: mdxSource,
 				},
 			},
@@ -318,7 +321,9 @@ export default function SlugPage(props: SidebarLayoutProps & { error?: string })
 						<>
 							<Head>
 								<title key="title">{name}</title>
+								<meta content={props.data.description} key="description" name="description" />
 								<meta content={ogTitle} key="og_title" property="og:title" />
+								<meta content={props.data.description} key="og_description" property="og:description" />
 								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head>
 							{member(props.data.member)}

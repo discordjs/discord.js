@@ -31,6 +31,7 @@ export interface SidebarLayoutProps {
 	asPath: string;
 	branchName: string;
 	data: {
+		description: string;
 		member?: ReturnType<typeof findMember>;
 		members: ReturnType<typeof getMembers>;
 		source: MDXRemoteSerializeResult;

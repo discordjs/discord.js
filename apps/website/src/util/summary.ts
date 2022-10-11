@@ -10,7 +10,7 @@ export function tryResolveDescription(member: ApiItemJSON) {
 	const { summary } = member!;
 
 	if (!summary) {
-		return undefined;
+		return null;
 	}
 
 	let retVal = '';
