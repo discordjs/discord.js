@@ -2,11 +2,11 @@
 import { ImageResponse } from '@vercel/og';
 
 const fonts = Promise.all([
-	fetch(new URL('../../assets/fonts/Inter-Light.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
-	fetch(new URL('../../assets/fonts/Inter-Regular.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
-	fetch(new URL('../../assets/fonts/Inter-Medium.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
-	fetch(new URL('../../assets/fonts/Inter-SemiBold.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
-	fetch(new URL('../../assets/fonts/Inter-Bold.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
+	// fetch(new URL('../../assets/fonts/Inter-Light.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
+	// fetch(new URL('../../assets/fonts/Inter-Regular.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
+	// fetch(new URL('../../assets/fonts/Inter-Medium.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
+	// fetch(new URL('../../assets/fonts/Inter-SemiBold.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
+	// fetch(new URL('../../assets/fonts/Inter-Bold.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
 	fetch(new URL('../../assets/fonts/Inter-Black.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),
 ]);
 
@@ -40,12 +40,12 @@ export default async function handler() {
 			width: 1_200,
 			height: 630,
 			fonts: [
-				{ name: 'Inter', data: fontData[0], weight: 300, style: 'normal' },
-				{ name: 'Inter', data: fontData[1], weight: 400, style: 'normal' },
-				{ name: 'Inter', data: fontData[2], weight: 500, style: 'normal' },
-				{ name: 'Inter', data: fontData[3], weight: 600, style: 'normal' },
-				{ name: 'Inter', data: fontData[4], weight: 700, style: 'normal' },
-				{ name: 'Inter', data: fontData[5], weight: 900, style: 'normal' },
+				// { name: 'Inter', data: fontData[0], weight: 300, style: 'normal' },
+				// { name: 'Inter', data: fontData[1], weight: 400, style: 'normal' },
+				// { name: 'Inter', data: fontData[2], weight: 500, style: 'normal' },
+				// { name: 'Inter', data: fontData[3], weight: 600, style: 'normal' },
+				// { name: 'Inter', data: fontData[4], weight: 700, style: 'normal' },
+				{ name: 'Inter', data: fontData[0], weight: 900, style: 'normal' },
 			],
 		},
 	);
