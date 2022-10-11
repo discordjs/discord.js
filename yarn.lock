@@ -2033,22 +2033,24 @@ __metadata:
   resolution: "@discordjs/brokers@workspace:packages/brokers"
   dependencies:
     "@discordjs/docgen": "workspace:^"
-    "@favware/cliff-jumper": ^1.8.7
-    "@microsoft/api-extractor": ^7.29.3
-    "@msgpack/msgpack": ^2.7.2
+    "@favware/cliff-jumper": ^1.8.8
+    "@microsoft/api-extractor": ^7.32.1
+    "@msgpack/msgpack": ^2.8.0
     "@types/node": ^16.11.52
-    "@typescript-eslint/eslint-plugin": ^5.34.0
-    "@typescript-eslint/parser": ^5.34.0
+    "@typescript-eslint/eslint-plugin": ^5.40.0
+    "@typescript-eslint/parser": ^5.40.0
     "@vitest/coverage-c8": ^0.22.1
-    "@vladfrangu/async_event_emitter": ^2.0.1
-    downlevel-dts: ^0.10.0
-    eslint: ^8.23.0
-    eslint-config-neon: ^0.1.31
+    "@vladfrangu/async_event_emitter": ^2.1.2
+    cross-env: ^7.0.3
+    downlevel-dts: ^0.10.1
+    eslint: ^8.25.0
+    eslint-config-neon: ^0.1.38
+    eslint-formatter-pretty: ^4.1.0
     ioredis: ^5.2.3
     prettier: ^2.7.1
     rollup-plugin-typescript2: ^0.33.0
     tsup: ^6.2.3
-    typescript: ^4.7.4
+    typescript: ^4.8.4
     vitest: ^0.22.1
   languageName: unknown
   linkType: soft
@@ -2559,7 +2561,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/cliff-jumper@npm:^1.8.7, @favware/cliff-jumper@npm:^1.8.8":
+"@favware/cliff-jumper@npm:^1.8.8":
   version: 1.8.8
   resolution: "@favware/cliff-jumper@npm:1.8.8"
   dependencies:
@@ -3170,7 +3172,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.29.3, @microsoft/api-extractor@npm:^7.32.0":
+"@microsoft/api-extractor@npm:^7.32.0, @microsoft/api-extractor@npm:^7.32.1":
   version: 7.32.1
   resolution: "@microsoft/api-extractor@npm:7.32.1"
   dependencies:
@@ -3230,7 +3232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@msgpack/msgpack@npm:^2.7.2":
+"@msgpack/msgpack@npm:^2.8.0":
   version: 2.8.0
   resolution: "@msgpack/msgpack@npm:2.8.0"
   checksum: bead9393f57239007a2fe455df5277cbc03b125f14f310162a652b81471dcf3ab6780eaa24b36e20aa742998910a6840147d08b7267063b8e2de5d40c624360e
@@ -4532,7 +4534,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.34.0, @typescript-eslint/eslint-plugin@npm:^5.39.0":
+"@typescript-eslint/eslint-plugin@npm:^5.39.0, @typescript-eslint/eslint-plugin@npm:^5.40.0":
   version: 5.40.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.40.0"
   dependencies:
@@ -4565,7 +4567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.34.0, @typescript-eslint/parser@npm:^5.39.0":
+"@typescript-eslint/parser@npm:^5.39.0, @typescript-eslint/parser@npm:^5.40.0":
   version: 5.40.0
   resolution: "@typescript-eslint/parser@npm:5.40.0"
   dependencies:
@@ -5135,7 +5137,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vladfrangu/async_event_emitter@npm:^2.0.1, @vladfrangu/async_event_emitter@npm:^2.1.2":
+"@vladfrangu/async_event_emitter@npm:^2.1.2":
   version: 2.1.2
   resolution: "@vladfrangu/async_event_emitter@npm:2.1.2"
   checksum: 31ffabd6b20c11db7ae9856daccb52371a00fb94d7ea6829286ab0bdb5f54bea8f987cd84c7b651d003a0761593ad56133956c0764be6492c840a1dd618b1ed7
@@ -8321,7 +8323,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"downlevel-dts@npm:^0.10.0":
+"downlevel-dts@npm:^0.10.1":
   version: 0.10.1
   resolution: "downlevel-dts@npm:0.10.1"
   dependencies:
@@ -9332,7 +9334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-neon@npm:^0.1.31, eslint-config-neon@npm:^0.1.38":
+"eslint-config-neon@npm:^0.1.38":
   version: 0.1.38
   resolution: "eslint-config-neon@npm:0.1.38"
   dependencies:
@@ -9813,7 +9815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.23.0, eslint@npm:^8.25.0":
+"eslint@npm:^8.25.0":
   version: 8.25.0
   resolution: "eslint@npm:8.25.0"
   dependencies:
@@ -19924,7 +19926,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:*, typescript@npm:^4.6.4, typescript@npm:^4.7.4, typescript@npm:^4.8.4, typescript@npm:~4.8.4":
+"typescript@npm:*, typescript@npm:^4.6.4, typescript@npm:^4.8.4, typescript@npm:~4.8.4":
   version: 4.8.4
   resolution: "typescript@npm:4.8.4"
   bin:
@@ -19954,7 +19956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:
