@@ -342,6 +342,12 @@
 			"default": {
 				"logLevel": "warning"
 				// "addToApiReportFile": false
+			},
+
+			// Disable the following warning:
+			// (ae-missing-release-tag) "x" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+			"ae-missing-release-tag": {
+				"logLevel": "none"
 			}
 
 			// "ae-extra-release-tag": {
