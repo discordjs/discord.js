@@ -81,7 +81,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param emoji - The emoji to display on this option
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji | null) {
-		this.data.emoji = emojiValidator.nullish.parse(emoji) ?? undefined;
+		this.data.emoji = emojiValidator.parse(emoji) ?? undefined;
 		return this;
 	}
 

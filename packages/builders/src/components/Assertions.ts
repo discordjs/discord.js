@@ -8,13 +8,15 @@ export const customIdValidator = s.string
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
 
-export const emojiValidator = s
+const jsonEmojiValidator = s
 	.object({
 		id: s.string,
 		name: s.string,
 		animated: s.boolean,
 	})
 	.partial.strict.setValidationEnabled(isValidationEnabled);
+
+export const emojiValidator = jsonEmojiValidator.nullish;
 
 export const disabledValidator = s.boolean;
 
@@ -43,7 +45,7 @@ export const jsonOptionValidator = s
 		label: labelValueDescriptionValidator,
 		value: labelValueDescriptionValidator,
 		description: labelValueDescriptionValidator.optional,
-		emoji: emojiValidator.optional,
+		emoji: jsonEmojiValidator.optional,
 		default: s.boolean.optional,
 	})
 	.setValidationEnabled(isValidationEnabled);
