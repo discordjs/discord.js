@@ -3,7 +3,6 @@ import {
 	type ApiPackage,
 	type ApiItem,
 	ApiItemKind,
-	ApiDocumentedItem,
 	type Excerpt,
 	ExcerptTokenKind,
 	ApiNameMixin,
@@ -11,6 +10,7 @@ import {
 	type ExcerptToken,
 	type Parameter,
 	type ApiFunction,
+	ApiDeclaredItem,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
@@ -58,8 +58,8 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
 }
 
-export function resolveDocComment(item: ApiDocumentedItem) {
-	if (!(item instanceof ApiDocumentedItem)) {
+export function resolveDocComment(item: ApiDeclaredItem) {
+	if (!(item instanceof ApiDeclaredItem)) {
 		return null;
 	}
 

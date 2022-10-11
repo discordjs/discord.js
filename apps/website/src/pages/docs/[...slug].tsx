@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process, { cwd } from 'node:process';
@@ -19,7 +20,7 @@ import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import rehypeIgnore from 'rehype-ignore';
 import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
@@ -41,7 +42,6 @@ import { CmdKProvider } from '~/contexts/cmdK';
 import { MemberProvider } from '~/contexts/member';
 import { PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
-// import { miniSearch } from '~/util/search';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const pkgs = (
@@ -192,16 +192,19 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 			containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 		}
 
+		const members = pkg
+			? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
+			: [];
+		const member =
+			memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
+
 		return {
 			props: {
 				packageName,
 				branchName,
 				data: {
-					members: pkg
-						? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
-						: [],
-					member:
-						memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null,
+					members,
+					member,
 					source: mdxSource,
 				},
 			},
@@ -220,7 +223,45 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 };
 
-const member = (props?: ApiItemJSON | undefined) => {
+function resolveMember(packageName?: string | undefined, member?: SidebarLayoutProps['data']['member']) {
+	switch (member?.kind) {
+		case 'Class': {
+			const typedMember = member as ApiClassJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&methods=${typedMember.methods.length}&props=${typedMember.properties.length}`;
+		}
+
+		case 'Function': {
+			const typedMember = member as ApiFunctionJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
+		}
+
+		case 'Interface': {
+			const typedMember = member as ApiInterfaceJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&methods=${typedMember.methods.length}&props=${typedMember.properties.length}`;
+		}
+
+		case 'TypeAlias': {
+			const typedMember = member as ApiTypeAliasJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
+		}
+
+		case 'Variable': {
+			const typedMember = member as ApiVariableJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
+		}
+
+		case 'Enum': {
+			const typedMember = member as ApiEnumJSON;
+			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&members=${typedMember.members.length}`;
+		}
+
+		default: {
+			return `?pkg=${packageName}&kind=${member?.kind}&name=${member?.name}`;
+		}
+	}
+}
+
+function member(props?: ApiItemJSON | undefined) {
 	switch (props?.kind) {
 		case 'Class':
 			return <Class data={props as ApiClassJSON} />;
@@ -237,10 +278,12 @@ const member = (props?: ApiItemJSON | undefined) => {
 		default:
 			return <div>Cannot render that item type</div>;
 	}
-};
+}
 
-export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
+export default function SlugPage(props: SidebarLayoutProps & { error?: string }) {
 	const router = useRouter();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+
 	const name = useMemo(
 		() => `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
 		[props.data?.member?.name],
@@ -249,6 +292,14 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 		() => `${props.packageName ?? 'discord.js'}${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
 		[props.packageName, props.data?.member?.name],
 	);
+	const ogImage = useMemo(
+		() => resolveMember(props.packageName, props.data?.member),
+		[props.packageName, props.data?.member],
+	);
+
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
+	}, [router.asPath]);
 
 	if (router.isFallback) {
 		return null;
@@ -262,12 +313,13 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	) : (
 		<CmdKProvider>
 			<MemberProvider member={props.data?.member}>
-				<SidebarLayout {...props}>
+				<SidebarLayout {...props} asPath={asPathWithoutQueryAndAnchor}>
 					{props.data?.member ? (
 						<>
 							<Head>
 								<title key="title">{name}</title>
 								<meta content={ogTitle} key="og_title" property="og:title" />
+								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head>
 							{member(props.data.member)}
 						</>
@@ -283,5 +335,5 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 }
 
 export const config = {
-	unstable_includeFiles: [`../../packages/{${PACKAGES.join(',')}}/README.md`],
+	unstable_includeFiles: [`../../packages/{builders,collection,proxy,rest,util,voice,ws}/README.md`],
 };

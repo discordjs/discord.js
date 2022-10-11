@@ -43,12 +43,12 @@
 		"commander": "^9.4.1",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.15"
+		"typedoc": "^0.23.16"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.8",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^16.11.64",
+		"@types/node": "16.11.64",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.37",

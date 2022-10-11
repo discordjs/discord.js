@@ -7,7 +7,7 @@ import { remarkCodeHike } from '@code-hike/mdx';
 import { defineConfig } from 'astro/config';
 import compress from 'astro-compress';
 import critters from 'astro-critters';
-import { toString } from 'hast-util-to-string';
+import { type Node, toString } from 'hast-util-to-string';
 import { h } from 'hastscript';
 import { escape } from 'html-escaper';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -54,7 +54,7 @@ export default defineConfig({
 			throttle: 3,
 		}),
 		Unocss({
-			configFile: fileURLToPath(new URL('../../packages/ui/unocss.config.ts', import.meta.url)),
+			configFile: fileURLToPath(new URL('../../unocss.config.ts', import.meta.url)),
 		}),
 		critters(),
 		compress(),
@@ -71,12 +71,12 @@ export default defineConfig({
 							'relative inline-flex w-6 h-6 place-items-center place-content-center outline-0 text-black dark:text-white ml-2',
 					},
 					behavior: 'after',
-					group: ({ tagName }) =>
+					group: ({ tagName }: { tagName: string }) =>
 						h('div', {
 							class: `[&>*]:inline-block [&>h1]:m-0 [&>h2]:m-0 [&>h3]:m-0 [&>h4]:m-0 level-${tagName}`,
 							tabIndex: -1,
 						}),
-					content: (heading) => [
+					content: (heading: Node) => [
 						h(
 							`span.anchor-icon`,
 							{

@@ -9,6 +9,7 @@
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
 		"antfu.unocss",
-		"astro-build.astro-vscode"
+		"astro-build.astro-vscode",
+		"unifiedjs.vscode-mdx"
 	]
 }
