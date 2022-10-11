@@ -55,8 +55,6 @@ class GuildForumThreadManager extends ThreadManager {
     rateLimitPerUser,
     appliedTags,
   } = {}) {
-    let path = this.client.api.channels(this.channel.id);
-
     if (!message) {
       throw new TypeError('GUILD_FORUM_MESSAGE_REQUIRED');
     }
@@ -73,7 +71,7 @@ class GuildForumThreadManager extends ThreadManager {
 
     if (autoArchiveDuration === 'MAX') autoArchiveDuration = resolveAutoArchiveMaxLimit(this.channel.guild);
 
-    const data = await path.threads.post({
+    const data = await this.client.api.channels(this.channel.id).threads.post({
       data: {
         name,
         auto_archive_duration: autoArchiveDuration,
