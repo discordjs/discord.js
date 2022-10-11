@@ -65,7 +65,7 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.0",
 		"@types/jest": "^29.1.2",
-		"@types/node": "^16.11.65",
+		"@types/node": "16.11.64",
 		"cross-env": "^7.0.3",
 		"downlevel-dts": "^0.10.1",
 		"esbuild-plugin-version-injector": "^1.0.0",

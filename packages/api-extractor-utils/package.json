@@ -35,7 +35,7 @@
 		"@microsoft/tsdoc": "0.14.1"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.65",
+		"@types/node": "16.11.64",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.37",

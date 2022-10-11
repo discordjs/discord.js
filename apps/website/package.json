@@ -72,7 +72,7 @@
 	"devDependencies": {
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^14.4.3",
-		"@types/node": "^16.11.65",
+		"@types/node": "16.11.64",
 		"@types/react": "^18.0.21",
 		"@types/react-dom": "^18.0.6",
 		"@types/react-syntax-highlighter": "^15.5.5",
@@ -84,7 +84,7 @@
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.37",
-		"happy-dom": "^7.5.5",
+		"happy-dom": "^7.5.6",
 		"prettier": "^2.7.1",
 		"prettier-plugin-tailwindcss": "^0.1.13",
 		"typescript": "^4.8.4",

@@ -43,7 +43,7 @@
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.65",
+		"@types/node": "16.11.64",
 		"@vitest/coverage-c8": "^0.24.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",

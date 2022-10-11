@@ -1997,7 +1997,7 @@ __metadata:
   resolution: "@discordjs/actions@workspace:packages/actions"
   dependencies:
     "@actions/core": ^1.10.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     eslint: ^8.25.0
@@ -2016,7 +2016,7 @@ __metadata:
   dependencies:
     "@microsoft/api-extractor-model": 7.24.0
     "@microsoft/tsdoc": 0.14.1
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     cross-env: ^7.0.3
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.37
@@ -2034,7 +2034,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@sapphire/shapeshift": ^3.7.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
@@ -2058,7 +2058,7 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     downlevel-dts: ^0.10.1
@@ -2098,7 +2098,7 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.8.8
     "@types/jsdoc-to-markdown": ^7.0.3
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     commander: ^9.4.1
     cross-env: ^7.0.3
     eslint: ^8.25.0
@@ -2126,7 +2126,7 @@ __metadata:
     "@discordjs/ui": "workspace:^"
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/react": ^17.0.50
     "@types/react-dom": ^17.0.17
     "@types/react-syntax-highlighter": ^15.5.5
@@ -2142,7 +2142,7 @@ __metadata:
     cross-env: ^7.0.3
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.37
-    happy-dom: ^7.5.5
+    happy-dom: ^7.5.6
     hast-util-to-string: ^2.0.0
     hastscript: ^7.1.0
     html-escaper: ^3.0.3
@@ -2172,7 +2172,7 @@ __metadata:
   dependencies:
     "@discordjs/proxy": ^1.2.0
     "@discordjs/rest": ^1.3.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     cross-env: ^7.0.3
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.37
@@ -2191,7 +2191,7 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/supertest": ^2.0.12
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
@@ -2218,7 +2218,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.32.0
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
@@ -2245,7 +2245,7 @@ __metadata:
     "@microsoft/tsdoc": 0.14.1
     "@microsoft/tsdoc-config": 0.16.1
     "@types/fs-extra": ^9.0.13
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     commander: ^9.4.1
     cross-env: ^7.0.3
@@ -2268,7 +2268,7 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.8.8
     "@ladle/react": ^2.4.3
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/react": ^18.0.21
     "@types/react-dom": ^18.0.6
     "@unocss/reset": ^0.45.29
@@ -2296,7 +2296,7 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     downlevel-dts: ^0.10.1
@@ -2320,7 +2320,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@types/jest": ^29.1.2
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/ws": ^8.5.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
@@ -2352,7 +2352,7 @@ __metadata:
     "@microsoft/tsdoc": 0.14.1
     "@testing-library/react": ^13.4.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/react": ^18.0.21
     "@types/react-dom": ^18.0.6
     "@types/react-syntax-highlighter": ^15.5.5
@@ -2368,7 +2368,7 @@ __metadata:
     cross-env: ^7.0.3
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.37
-    happy-dom: ^7.5.5
+    happy-dom: ^7.5.6
     meilisearch: ^0.28.0
     next: ^12.3.1
     next-mdx-remote: ^4.1.0
@@ -2407,7 +2407,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@sapphire/async-queue": ^1.5.0
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/ws": ^8.5.3
     "@vitest/coverage-c8": ^0.24.1
     "@vladfrangu/async_event_emitter": ^2.1.2
@@ -4264,6 +4264,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:16.11.64":
+  version: 16.11.64
+  resolution: "@types/node@npm:16.11.64"
+  checksum: 3634477efbeb586f8cdc1baf7670d8ea89c1eba1beac0354fa9123ca193d794da84ec40d4f8a54f694587ba5469e4124ebbba37542ed88eca95a3980ec45551a
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^10.0.3":
   version: 10.17.60
   resolution: "@types/node@npm:10.17.60"
@@ -4275,13 +4282,6 @@ __metadata:
   version: 14.18.32
   resolution: "@types/node@npm:14.18.32"
   checksum: 45463114bf85d06dc12925d876dd90b7fff43d9ee10a40e48fd16aece3d0201c76426c128e41230b2818d386422be06c5be33b3d94d90ee924b6fa4d54574035
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^16.11.65":
-  version: 16.11.65
-  resolution: "@types/node@npm:16.11.65"
-  checksum: 81d84cb1e7aa305574cd35acf1a5e47f4a7f52783ba096f4bc511314540dee33a27cbd4fddc8bddd4535f1c87a96a76907157bcde093a25c89e8851d6dd63022
   languageName: node
   linkType: hard
 
@@ -8097,7 +8097,7 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.8.8
     "@sapphire/snowflake": ^3.2.2
-    "@types/node": ^16.11.65
+    "@types/node": 16.11.64
     "@types/ws": ^8.5.3
     discord-api-types: ^0.37.12
     dtslint: ^4.2.1
@@ -11037,9 +11037,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"happy-dom@npm:^7.5.5":
-  version: 7.5.5
-  resolution: "happy-dom@npm:7.5.5"
+"happy-dom@npm:^7.5.6":
+  version: 7.5.6
+  resolution: "happy-dom@npm:7.5.6"
   dependencies:
     css.escape: ^1.5.1
     he: ^1.2.0
@@ -11048,7 +11048,7 @@ __metadata:
     webidl-conversions: ^7.0.0
     whatwg-encoding: ^2.0.0
     whatwg-mimetype: ^3.0.0
-  checksum: 189e3b2320255a06b7d2d0ae35e806fca9825c8141a9475fa61082a976b3de05395baf90a95f9f80091760b57c7f2bca7382096c10251ebcfdbc9529758b4422
+  checksum: 2cce96d52e96e4093ee6d97525a8dc8b6917b6aef875bad7a5b7242061a0323a3452c8d62e808b6cc1f3474878daadbaedcfcf42a247b584dce2dfb0c4011772
   languageName: node
   linkType: hard
 
