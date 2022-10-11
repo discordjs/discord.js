@@ -5,8 +5,8 @@
   "scripts": {
     "test": "yarn docs:test && yarn test:typescript",
     "test:typescript": "tsc --noEmit && tsd",
-    "lint": "prettier --check . && eslint src && tslint typings/index.d.ts",
-    "format": "prettier --write . && eslint src --fix",
+    "lint": "prettier --check . && tslint typings/index.d.ts && eslint src --format=pretty",
+    "format": "prettier --write . && eslint src --fix --format=pretty",
     "fmt": "yarn format",
     "docs": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../ -o ./docs/docs.json",
     "docs:test": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../",
@@ -68,6 +68,7 @@
     "@types/node": "16.11.64",
     "dtslint": "^4.2.1",
     "eslint": "^8.25.0",
+    "eslint-formatter-pretty": "^4.1.0",
     "jest": "^29.1.2",
     "prettier": "^2.7.1",
     "tsd": "^0.24.1",

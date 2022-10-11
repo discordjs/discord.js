@@ -14,8 +14,8 @@
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix"
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix --format=pretty"
 	},
 	"type": "module",
 	"contributors": [
@@ -83,7 +83,8 @@
 		"concurrently": "^7.4.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.37",
+		"eslint-config-neon": "^0.1.38",
+		"eslint-formatter-pretty": "^4.1.0",
 		"happy-dom": "^7.5.6",
 		"prettier": "^2.7.1",
 		"prettier-plugin-tailwindcss": "^0.1.13",

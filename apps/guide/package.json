@@ -8,8 +8,8 @@
 		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
 		"dev": "yarn workspaces foreach -ptR run build && astro dev",
 		"preview": "astro preview",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix"
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix --format=pretty"
 	},
 	"type": "module",
 	"contributors": [
@@ -67,7 +67,8 @@
 		"astro-critters": "^1.0.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.37",
+		"eslint-config-neon": "^0.1.38",
+		"eslint-formatter-pretty": "^4.1.0",
 		"happy-dom": "^7.5.6",
 		"hast-util-to-string": "^2.0.0",
 		"hastscript": "^7.1.0",

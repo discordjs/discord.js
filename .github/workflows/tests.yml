@@ -29,7 +29,7 @@ jobs:
         run: yarn build
 
       - name: ESLint
-        run: yarn lint
+        run: yarn lint -- --format=compact
 
       - name: Tests
         run: yarn test
