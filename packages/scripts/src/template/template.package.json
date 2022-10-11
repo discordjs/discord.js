@@ -7,7 +7,7 @@
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
+		"docs": "api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{name}/*'",
 		"release": "cliff-jumper"
