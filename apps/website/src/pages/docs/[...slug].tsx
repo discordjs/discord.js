@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import type { GetStaticPaths, GetStaticProps } from 'next/types';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import rehypeIgnore from 'rehype-ignore';
 import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
@@ -280,8 +280,10 @@ function member(props?: ApiItemJSON | undefined) {
 	}
 }
 
-export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: string }>) {
+export default function SlugPage(props: SidebarLayoutProps & { error?: string }) {
 	const router = useRouter();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+
 	const name = useMemo(
 		() => `discord.js${props.data?.member?.name ? ` | ${props.data.member.name}` : ''}`,
 		[props.data?.member?.name],
@@ -295,6 +297,10 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 		[props.packageName, props.data?.member],
 	);
 
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
+	}, [router.asPath]);
+
 	if (router.isFallback) {
 		return null;
 	}
@@ -307,7 +313,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 	) : (
 		<CmdKProvider>
 			<MemberProvider member={props.data?.member}>
-				<SidebarLayout {...props}>
+				<SidebarLayout {...props} asPath={asPathWithoutQueryAndAnchor}>
 					{props.data?.member ? (
 						<>
 							<Head>

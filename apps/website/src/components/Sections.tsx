@@ -66,12 +66,12 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 						{data.deprecated || data.protected ? (
 							<div className="flex flex-row gap-1">
 								{data.deprecated ? (
-									<div className="flex h-5 place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
+									<div className="flex h-5 flex-row place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 										Deprecated
 									</div>
 								) : null}
 								{data.protected ? (
-									<div className="bg-blurple flex h-5 place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+									<div className="bg-blurple flex h-5 flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
 										Protected
 									</div>
 								) : null}

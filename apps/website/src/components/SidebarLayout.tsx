@@ -1,9 +1,8 @@
-import type { getMembers, ApiItemJSON, ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
+import type { getMembers, ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { Button } from 'ariakit/button';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Image from 'next/future/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
@@ -29,15 +28,14 @@ import { fetcher } from '~/util/fetcher';
 import type { findMember } from '~/util/model.server';
 
 export interface SidebarLayoutProps {
+	asPath: string;
 	branchName: string;
 	data: {
-		member: ReturnType<typeof findMember>;
+		member?: ReturnType<typeof findMember>;
 		members: ReturnType<typeof getMembers>;
 		source: MDXRemoteSerializeResult;
 	};
 	packageName: string;
-
-	selectedMember?: ApiItemJSON | undefined;
 }
 
 export type Members = SidebarLayoutProps['data']['members'];
@@ -55,11 +53,10 @@ export function SidebarLayout({
 	packageName,
 	branchName,
 	data,
+	asPath,
 	children,
-}: PropsWithChildren<Partial<SidebarLayoutProps>>) {
-	const router = useRouter();
+}: PropsWithChildren<SidebarLayoutProps>) {
 	const dialog = useCmdK();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const { data: versions } = useSWR<string[]>(`https://docs.discordjs.dev/api/info?package=${packageName}`, fetcher);
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
@@ -75,9 +72,7 @@ export function SidebarLayout({
 		}
 	}, [matches]);
 
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0]?.split(':')[0] ?? '');
-	}, [router.asPath]);
+	const asPathWithoutContainerKey = useMemo(() => asPath?.split(':')[0] ?? '', [asPath]);
 
 	const packageMenuItems = useMemo(
 		() => [
@@ -129,7 +124,7 @@ export function SidebarLayout({
 
 	const pathElements = useMemo(
 		() =>
-			asPathWithoutQueryAndAnchor
+			asPathWithoutContainerKey
 				.split('/')
 				.slice(1)
 				.map((path, idx, original) => (
@@ -137,7 +132,7 @@ export function SidebarLayout({
 						<a className="focus:ring-width-2 focus:ring-blurple rounded outline-0 hover:underline focus:ring">{path}</a>
 					</Link>
 				)),
-		[asPathWithoutQueryAndAnchor],
+		[asPathWithoutContainerKey],
 	);
 
 	const breadcrumbs = useMemo(
@@ -174,12 +169,12 @@ export function SidebarLayout({
 					<div className="flex h-full flex-row place-content-between place-items-center">
 						<Button
 							aria-label="Menu"
-							className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px lg:hidden"
+							className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px lg:hidden"
 							onClick={() => setOpened((open) => !open)}
 						>
 							<VscMenu size={24} />
 						</Button>
-						<div className="hidden md:flex md:flex-row">{breadcrumbs}</div>
+						<div className="hidden md:flex md:flex-row md:overflow-hidden">{breadcrumbs}</div>
 						<div className="flex flex-row place-items-center gap-4">
 							<Button
 								as="div"
@@ -189,7 +184,7 @@ export function SidebarLayout({
 								<div className="flex flex-row place-items-center gap-4">
 									<VscSearch size={18} />
 									<span className="opacity-65">Search...</span>
-									<div className="opacity-65 flex flex-row place-items-center gap-2">
+									<div className="md:opacity-65 hidden md:flex md:flex-row md:place-items-center md:gap-2">
 										<FiCommand size={18} /> K
 									</div>
 								</div>
@@ -197,7 +192,7 @@ export function SidebarLayout({
 							<Button
 								aria-label="GitHub"
 								as="a"
-								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded rounded-full border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
+								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded rounded-full border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 								href="https://github.com/discordjs/discord.js"
 								rel="noopener noreferrer"
 								target="_blank"
@@ -206,7 +201,7 @@ export function SidebarLayout({
 							</Button>
 							<Button
 								aria-label="Toggle theme"
-								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded-full rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
+								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded-full rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 								onClick={() => toggleTheme()}
 							>
 								<VscColorMode size={24} />
@@ -277,7 +272,7 @@ export function SidebarLayout({
 							{versionMenuItems}
 						</Menu>
 					</div>
-					<SidebarItems members={data?.members ?? []} setOpened={setOpened} />
+					<SidebarItems asPath={asPath} members={data?.members ?? []} setOpened={setOpened} />
 				</Scrollbars>
 			</nav>
 			<main

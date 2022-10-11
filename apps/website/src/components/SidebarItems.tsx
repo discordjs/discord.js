@@ -1,7 +1,6 @@
 import { Section } from '@discordjs/ui';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { type Dispatch, type SetStateAction, useEffect, useState, useMemo } from 'react';
+import { type Dispatch, type SetStateAction, useMemo } from 'react';
 import {
 	VscSymbolClass,
 	VscSymbolEnum,
@@ -68,17 +67,13 @@ function resolveIcon(item: keyof GroupedMembers) {
 export function SidebarItems({
 	members,
 	setOpened,
+	asPath,
 }: {
+	asPath: string;
 	members: Members;
 	setOpened: Dispatch<SetStateAction<boolean>>;
 }) {
-	const router = useRouter();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 	const groupItems = useMemo(() => groupMembers(members), [members]);
-
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(router.asPath.split('?')[0]?.split('#')[0] ?? '');
-	}, [router.asPath]);
 
 	return (
 		<div className="flex flex-col gap-3 p-3 pb-32 lg:pb-12">
@@ -90,7 +85,7 @@ export function SidebarItems({
 							<Link href={member.path} key={index} prefetch={false}>
 								<a
 									className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-										asPathWithoutQueryAndAnchor === member.path
+										asPath === member.path
 											? 'bg-blurple text-white'
 											: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 									}`}

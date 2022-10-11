@@ -21,12 +21,12 @@ export default function IndexRoute() {
 					</p>
 					<div className="flex flex-row gap-4">
 						<Link href="/docs" prefetch={false}>
-							<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
+							<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
 								Docs
 							</a>
 						</Link>
 						<a
-							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
 							href="https://discordjs.guide"
 							rel="noopener noreferrer"
 							target="_blank"
@@ -34,7 +34,7 @@ export default function IndexRoute() {
 							Guide <FiExternalLink />
 						</a>
 						<a
-							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none appearance-none place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
+							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none appearance-none flex-row place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"
 							href="https://github.com/discordjs/discord.js"
 							rel="noopener noreferrer"
 							target="_blank"
@@ -45,7 +45,7 @@ export default function IndexRoute() {
 				</div>
 				<SyntaxHighlighter code={CODE_EXAMPLE} />
 			</div>
-			<div className="flex place-content-center">
+			<div className="flex flex-row place-content-center">
 				<a
 					className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
 					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"

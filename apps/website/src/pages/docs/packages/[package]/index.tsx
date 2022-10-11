@@ -71,7 +71,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{props.data?.versions.map((version) => (
 					<Link href={`/docs/packages/${props.packageName}/${version}`} key={version} prefetch={false}>
-						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white">
+						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-col place-content-center rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
 									<VscVersions size={25} />
@@ -83,7 +83,7 @@ export default function VersionsRoute(props: Partial<VersionProps> & { error?: s
 					</Link>
 				)) ?? null}
 				<Link href="/docs/packages" prefetch={false}>
-					<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
+					<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
 						<VscArrowLeft size={20} /> Go back
 					</a>
 				</Link>
