@@ -13,9 +13,7 @@ export const messages = (rest: REST) => ({
 		const messageOptions = typeof options === 'string' ? { content: options } : options;
 
 		return (await rest.post(Routes.channelMessages(channelId), {
-			body: {
-				...messageOptions,
-			},
+			body: messageOptions,
 		})) as APIMessage;
 	},
 
@@ -23,9 +21,7 @@ export const messages = (rest: REST) => ({
 		const messageOptions = typeof options === 'string' ? { content: options } : options;
 
 		return (await rest.patch(Routes.channelMessage(channelId, messageId), {
-			body: {
-				...messageOptions,
-			},
+			body: messageOptions,
 		})) as APIMessage;
 	},
 

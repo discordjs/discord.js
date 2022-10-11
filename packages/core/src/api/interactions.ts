@@ -14,9 +14,7 @@ export const interactions = (api: REST) => ({
 		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
-				data: {
-					...interactionResponse,
-				},
+				data: interactionResponse,
 			},
 		});
 	},
@@ -29,21 +27,17 @@ export const interactions = (api: REST) => ({
 		});
 	},
 
-	async followUp(interaction: APIInteraction, content: APIInteractionResponseCallbackData | string) {
-		const interactionResponse = typeof content === 'string' ? { content } : content;
+	async followUp(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+		const interactionResponse = typeof options === 'string' ? { content: options } : options;
 		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
-			body: {
-				...interactionResponse,
-			},
+			body: interactionResponse,
 		});
 	},
 
 	async edit(interaction: APIInteraction, content: APIInteractionResponseCallbackData | string) {
 		const interactionResponse = typeof content === 'string' ? { content } : content;
 		await api.patch(Routes.webhookMessage(interaction.application_id, interaction.token, '@original'), {
-			body: {
-				...interactionResponse,
-			},
+			body: interactionResponse,
 		});
 	},
 
@@ -62,9 +56,7 @@ export const interactions = (api: REST) => ({
 		await api.patch(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.UpdateMessage,
-				data: {
-					...interactionResponse,
-				},
+				data: interactionResponse,
 			},
 		});
 	},
@@ -73,9 +65,7 @@ export const interactions = (api: REST) => ({
 		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.Modal,
-				data: {
-					...modal,
-				},
+				data: modal,
 			},
 		});
 	},

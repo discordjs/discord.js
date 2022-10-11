@@ -39,11 +39,9 @@ export const channels = (api: REST) => ({
 	},
 
 	async messages(channelId: string, options?: GetChannelMessagesOptions) {
-		return (await api.get(
-			`${Routes.channelMessages(channelId)}${
-				options ? makeURLSearchParams(options as Record<string, unknown>).toString() : ''
-			}`,
-		)) as APIMessage[];
+		return (await api.get(Routes.channelMessages(channelId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as APIMessage[];
 	},
 
 	async showTyping(channelId: string) {
@@ -81,14 +79,14 @@ export const channels = (api: REST) => ({
 	},
 
 	async fetchArchivedThreads(channelId: string, archivedStatus: 'private' | 'public', options?: FetchThreadsOptions) {
-		return (await api.get(
-			`${Routes.channelThreads(channelId, archivedStatus)}?${makeURLSearchParams(options as Record<string, unknown>)}`,
-		)) as RESTGetAPIChannelUsersThreadsArchivedResult;
+		return (await api.get(Routes.channelThreads(channelId, archivedStatus), {
+			query: makeURLSearchParams({ ...options }),
+		})) as RESTGetAPIChannelUsersThreadsArchivedResult;
 	},
 
-	async fetchJoinedPrivateArchivedThreads(channelId: string, options?: FetchThreadsOptions) {
-		return (await api.get(
-			`${Routes.channelJoinedArchivedThreads(channelId)}?${makeURLSearchParams(options as Record<string, unknown>)}`,
-		)) as RESTGetAPIChannelUsersThreadsArchivedResult;
+	async fetchJoinedPrivateArchivedThreads(channelId: string, options: FetchThreadsOptions = {}) {
+		return (await api.get(Routes.channelJoinedArchivedThreads(channelId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as RESTGetAPIChannelUsersThreadsArchivedResult;
 	},
 });

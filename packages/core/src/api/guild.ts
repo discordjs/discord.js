@@ -58,20 +58,16 @@ export const guilds = (api: REST) => ({
 		return (await api.get(Routes.guildPreview(guildId))) as APIGuildPreview;
 	},
 
-	async create(options: RESTPostAPIGuildsJSONBody) {
+	async create(guild: RESTPostAPIGuildsJSONBody) {
 		return (await api.post(Routes.guilds(), {
-			body: {
-				...options,
-			},
+			body: guild,
 		})) as APIGuild;
 	},
 
-	async edit(guildId: string, options: RESTPatchAPIGuildJSONBody, reason?: string) {
+	async edit(guildId: string, guild: RESTPatchAPIGuildJSONBody, reason?: string) {
 		return (await api.patch(Routes.guild(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: guild,
 		})) as APIGuild;
 	},
 
@@ -83,11 +79,11 @@ export const guilds = (api: REST) => ({
 		return (await api.get(Routes.guildChannels(guildId))) as APIChannel[];
 	},
 
-	async createChannel(guildId: string, options: RESTPostAPIGuildChannelJSONBody, reason?: string) {
+	async createChannel(guildId: string, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
 		return (await api.post(Routes.guildChannels(guildId), {
 			reason,
 			body: {
-				...options,
+				...channel,
 			},
 		})) as APIChannel;
 	},
@@ -95,9 +91,7 @@ export const guilds = (api: REST) => ({
 	async setChannelPosition(guildId: string, options: RESTPatchAPIGuildChannelPositionsJSONBody, reason?: string) {
 		return api.patch(Routes.guildChannels(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		});
 	},
 
@@ -112,9 +106,7 @@ export const guilds = (api: REST) => ({
 	async ban(guildId: string, userId: string, options?: RESTPutAPIGuildBanJSONBody, reason?: string) {
 		return api.put(Routes.guildBan(guildId, userId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		});
 	},
 
@@ -126,30 +118,24 @@ export const guilds = (api: REST) => ({
 		return (await api.get(Routes.guildRoles(guildId))) as APIRole[];
 	},
 
-	async createRole(guildId: string, options: RESTPostAPIGuildRoleJSONBody, reason?: string) {
+	async createRole(guildId: string, role: RESTPostAPIGuildRoleJSONBody, reason?: string) {
 		return (await api.post(Routes.guildRoles(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: role,
 		})) as APIRole;
 	},
 
 	async setRolePosition(guildId: string, options: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
 		return api.patch(Routes.guildRoles(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		});
 	},
 
 	async editRole(guildId: string, roleId: string, options: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
 		return api.patch(Routes.guildRole(guildId, roleId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		});
 	},
 
@@ -174,7 +160,7 @@ export const guilds = (api: REST) => ({
 
 	async beginPrune(guildId: string, options?: RESTPostAPIGuildPruneJSONBody, reason?: string) {
 		return (await api.post(Routes.guildPrune(guildId), {
-			body: { ...options },
+			body: options,
 			reason,
 		})) as RESTGetAPIGuildPruneCountResult;
 	},
@@ -199,12 +185,10 @@ export const guilds = (api: REST) => ({
 		return (await api.get(Routes.guildWidgetSettings(guildId))) as APIGuildWidgetSettings;
 	},
 
-	async editWidgetSettings(guildId: string, options: RESTPatchAPIGuildWidgetSettingsJSONBody, reason?: string) {
+	async editWidgetSettings(guildId: string, widget: RESTPatchAPIGuildWidgetSettingsJSONBody, reason?: string) {
 		return (await api.patch(Routes.guildWidgetSettings(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: widget,
 		})) as APIGuildWidget;
 	},
 
@@ -226,12 +210,10 @@ export const guilds = (api: REST) => ({
 		return (await api.get(Routes.guildWelcomeScreen(guildId))) as APIGuildWelcomeScreen;
 	},
 
-	async editWelcomeScreen(guildId: string, options?: RESTPatchAPIGuildWelcomeScreenJSONBody, reason?: string) {
+	async editWelcomeScreen(guildId: string, welcomeScreen?: RESTPatchAPIGuildWelcomeScreenJSONBody, reason?: string) {
 		return (await api.patch(Routes.guildWelcomeScreen(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: welcomeScreen,
 		})) as APIGuildWelcomeScreen;
 	},
 
@@ -243,9 +225,7 @@ export const guilds = (api: REST) => ({
 	) {
 		return api.patch(Routes.guildVoiceState(guildId, userId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		});
 	},
 
@@ -260,18 +240,14 @@ export const guilds = (api: REST) => ({
 	async createEmoji(guildId: string, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
 		return (await api.post(Routes.guildEmojis(guildId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		})) as APIEmoji;
 	},
 
 	async editEmoji(guildId: string, emojiId: string, options: RESTPatchAPIGuildEmojiJSONBody, reason?: string) {
 		return (await api.patch(Routes.guildEmoji(guildId, emojiId), {
 			reason,
-			body: {
-				...options,
-			},
+			body: options,
 		})) as APIEmoji;
 	},
 
