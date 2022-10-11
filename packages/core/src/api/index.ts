@@ -6,3 +6,7 @@ export * from './thread.js';
 export * from './webhook.js';
 export * from './channel.js';
 export * from './interactions.js';
+export * from './guildTemplate.js';
+export * from './invite.js';
+export * from './voice.js';
+export * from './sticker.js';

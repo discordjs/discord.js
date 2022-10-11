@@ -2,43 +2,59 @@ import type { Buffer } from 'node:buffer';
 import type { REST } from '@discordjs/rest';
 import { makeURLSearchParams } from '@discordjs/rest';
 import type {
+	APIAuditLog,
 	APIBan,
 	APIChannel,
+	APIEmoji,
 	APIGuild,
 	APIGuildIntegration,
 	APIGuildPreview,
+	APIGuildScheduledEvent,
 	APIGuildWelcomeScreen,
 	APIGuildWidget,
 	APIGuildWidgetSettings,
 	APIInvite,
 	APIRole,
+	APISticker,
+	APITemplate,
 	APIThreadChannel,
 	APIVoiceRegion,
 	GuildMFALevel,
 	GuildWidgetStyle,
+	RESTGetAPIAuditLogQuery,
 	RESTGetAPIGuildPruneCountResult,
+	RESTGetAPIGuildScheduledEventQuery,
+	RESTGetAPIGuildScheduledEventsQuery,
+	RESTGetAPIGuildScheduledEventUsersQuery,
 	RESTGetAPIGuildVanityUrlResult,
 	RESTPatchAPIGuildChannelPositionsJSONBody,
+	RESTPatchAPIGuildEmojiJSONBody,
 	RESTPatchAPIGuildJSONBody,
 	RESTPatchAPIGuildRoleJSONBody,
 	RESTPatchAPIGuildRolePositionsJSONBody,
+	RESTPatchAPIGuildScheduledEventJSONBody,
+	RESTPatchAPIGuildStickerJSONBody,
+	RESTPatchAPIGuildTemplateJSONBody,
 	RESTPatchAPIGuildVoiceStateUserJSONBody,
 	RESTPatchAPIGuildWelcomeScreenJSONBody,
 	RESTPatchAPIGuildWidgetSettingsJSONBody,
 	RESTPostAPIGuildChannelJSONBody,
+	RESTPostAPIGuildEmojiJSONBody,
 	RESTPostAPIGuildPruneJSONBody,
 	RESTPostAPIGuildRoleJSONBody,
+	RESTPostAPIGuildScheduledEventJSONBody,
 	RESTPostAPIGuildsJSONBody,
+	RESTPostAPIGuildTemplatesJSONBody,
 	RESTPutAPIGuildBanJSONBody,
 } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
 
 export const guilds = (api: REST) => ({
-	async fetch(guildId: string) {
+	async get(guildId: string) {
 		return (await api.get(Routes.guild(guildId))) as APIGuild;
 	},
 
-	async fetchPreview(guildId: string) {
+	async getPreview(guildId: string) {
 		return (await api.get(Routes.guildPreview(guildId))) as APIGuildPreview;
 	},
 
@@ -63,7 +79,7 @@ export const guilds = (api: REST) => ({
 		return (await api.delete(Routes.guild(guildId), { reason })) as APIGuild;
 	},
 
-	async fetchChannels(guildId: string) {
+	async getChannels(guildId: string) {
 		return (await api.get(Routes.guildChannels(guildId))) as APIChannel[];
 	},
 
@@ -231,5 +247,120 @@ export const guilds = (api: REST) => ({
 				...options,
 			},
 		});
+	},
+
+	async listEmojis(guildId: string) {
+		return (await api.get(Routes.guildEmojis(guildId))) as APIEmoji[];
+	},
+
+	async getEmoji(guildId: string, emojiId: string) {
+		return (await api.get(Routes.guildEmoji(guildId, emojiId))) as APIEmoji;
+	},
+
+	async createEmoji(guildId: string, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
+		return (await api.post(Routes.guildEmojis(guildId), {
+			reason,
+			body: {
+				...options,
+			},
+		})) as APIEmoji;
+	},
+
+	async editEmoji(guildId: string, emojiId: string, options: RESTPatchAPIGuildEmojiJSONBody, reason?: string) {
+		return (await api.patch(Routes.guildEmoji(guildId, emojiId), {
+			reason,
+			body: {
+				...options,
+			},
+		})) as APIEmoji;
+	},
+
+	async deleteEmoji(guildId: string, emojiId: string, reason?: string) {
+		return api.delete(Routes.guildEmoji(guildId, emojiId), { reason });
+	},
+
+	async getAllEvents(guildId: string, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
+		return (await api.get(Routes.guildScheduledEvents(guildId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as APIGuildScheduledEvent[];
+	},
+
+	async createEvent(guildId: string, event: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
+		return (await api.post(Routes.guildScheduledEvents(guildId), {
+			reason,
+			body: event,
+		})) as APIGuildScheduledEvent;
+	},
+
+	async getEvent(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventQuery = {}) {
+		return (await api.get(Routes.guildScheduledEvent(guildId, eventId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as APIGuildScheduledEvent;
+	},
+
+	async editEvent(guildId: string, eventId: string, event: RESTPatchAPIGuildScheduledEventJSONBody, reason?: string) {
+		return (await api.patch(Routes.guildScheduledEvent(guildId, eventId), {
+			reason,
+			body: event,
+		})) as APIGuildScheduledEvent;
+	},
+
+	async deleteEvent(guildId: string, eventId: string, reason?: string) {
+		await api.delete(Routes.guildScheduledEvent(guildId, eventId), { reason });
+	},
+
+	async getEventUsers(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventUsersQuery = {}) {
+		return (await api.get(Routes.guildScheduledEventUsers(guildId, eventId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as APIGuildScheduledEvent[];
+	},
+
+	async getTemplates(guildId: string) {
+		return (await api.get(Routes.guildTemplates(guildId))) as APITemplate[];
+	},
+
+	async createTemplate(guildId: string, options: RESTPostAPIGuildTemplatesJSONBody) {
+		return (await api.post(Routes.guildTemplates(guildId), {
+			body: options,
+		})) as APITemplate;
+	},
+
+	async syncTemplate(guildId: string, templateCode: string) {
+		return (await api.put(Routes.guildTemplate(guildId, templateCode))) as APITemplate;
+	},
+
+	async editTemplate(guildId: string, templateCode: string, options: RESTPatchAPIGuildTemplateJSONBody) {
+		return (await api.patch(Routes.guildTemplate(guildId, templateCode), {
+			body: options,
+		})) as APITemplate;
+	},
+
+	async deleteTemplate(guildId: string, templateCode: string) {
+		await api.delete(Routes.guildTemplate(guildId, templateCode));
+	},
+
+	async getStickers(guildId: string) {
+		return (await api.get(Routes.guildStickers(guildId))) as APISticker[];
+	},
+
+	async getSticker(guildId: string, stickerId: string) {
+		return (await api.get(Routes.guildSticker(guildId, stickerId))) as APISticker;
+	},
+
+	async editSticker(guildId: string, stickerId: string, options: RESTPatchAPIGuildStickerJSONBody, reason?: string) {
+		return (await api.patch(Routes.guildSticker(guildId, stickerId), {
+			reason,
+			body: options,
+		})) as APISticker;
+	},
+
+	async deleteSticker(guildId: string, stickerId: string, reason?: string) {
+		await api.delete(Routes.guildSticker(guildId, stickerId), { reason });
+	},
+
+	async getAuditLogs(guildId: string, options: RESTGetAPIAuditLogQuery = {}) {
+		return (await api.get(Routes.guildAuditLog(guildId), {
+			query: makeURLSearchParams({ ...options }),
+		})) as APIAuditLog[];
 	},
 });
