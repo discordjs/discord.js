@@ -2,8 +2,9 @@ import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
 import {
 	defaultValidator,
+	descriptionValidator,
 	emojiValidator,
-	labelValueDescriptionValidator,
+	labelValueValidator,
 	validateRequiredSelectMenuOptionParameters,
 } from '../Assertions.js';
 
@@ -41,7 +42,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param label - The label to show on this option
 	 */
 	public setLabel(label: string) {
-		this.data.label = labelValueDescriptionValidator.parse(label);
+		this.data.label = labelValueValidator.parse(label);
 		return this;
 	}
 
@@ -51,7 +52,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param value - The value of this option
 	 */
 	public setValue(value: string) {
-		this.data.value = labelValueDescriptionValidator.parse(value);
+		this.data.value = labelValueValidator.parse(value);
 		return this;
 	}
 
@@ -61,7 +62,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * @param description - The description of this option
 	 */
 	public setDescription(description: string | null) {
-		this.data.description = labelValueDescriptionValidator.nullable.parse(description) ?? undefined;
+		this.data.description = descriptionValidator.parse(description) ?? undefined;
 		return this;
 	}
 

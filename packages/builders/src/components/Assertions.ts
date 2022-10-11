@@ -16,35 +16,37 @@ const jsonEmojiValidator = s
 	})
 	.partial.strict.setValidationEnabled(isValidationEnabled);
 
-export const emojiValidator = jsonEmojiValidator.nullish;
+export const emojiValidator = jsonEmojiValidator.nullable;
 
 export const disabledValidator = s.boolean;
 
 export const buttonLabelValidator = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(80)
-	.nullish.setValidationEnabled(isValidationEnabled);
+	.nullable.setValidationEnabled(isValidationEnabled);
 
 export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
 
 export const placeholderValidator = s.string
 	.lengthLessThanOrEqual(150)
-	.nullish.setValidationEnabled(isValidationEnabled);
+	.nullable.setValidationEnabled(isValidationEnabled);
 export const minMaxValidator = s.number.int
 	.greaterThanOrEqual(0)
 	.lessThanOrEqual(25)
-	.nullish.setValidationEnabled(isValidationEnabled);
+	.nullable.setValidationEnabled(isValidationEnabled);
 
-export const labelValueDescriptionValidator = s.string
+export const labelValueValidator = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
 
+export const descriptionValidator = labelValueValidator.nullable;
+
 export const jsonOptionValidator = s
 	.object({
-		label: labelValueDescriptionValidator,
-		value: labelValueDescriptionValidator,
-		description: labelValueDescriptionValidator.optional,
+		label: labelValueValidator,
+		value: labelValueValidator,
+		description: labelValueValidator.optional,
 		emoji: jsonEmojiValidator.optional,
 		default: s.boolean.optional,
 	})
@@ -68,8 +70,8 @@ export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBu
 export const defaultValidator = s.boolean;
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
-	labelValueDescriptionValidator.parse(label);
-	labelValueDescriptionValidator.parse(value);
+	labelValueValidator.parse(label);
+	labelValueValidator.parse(value);
 }
 
 export const urlValidator = s.string
