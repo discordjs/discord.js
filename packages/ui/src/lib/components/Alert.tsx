@@ -3,7 +3,7 @@ import { VscFlame, VscInfo, VscWarning } from 'react-icons/vsc';
 
 export interface IAlert {
 	title?: string | undefined;
-	type: 'danger' | 'info' | 'success';
+	type: 'danger' | 'info' | 'success' | 'warning';
 }
 
 function resolveType(type: IAlert['type']) {
@@ -29,6 +29,14 @@ function resolveType(type: IAlert['type']) {
 				text: 'text-green-500',
 				border: 'border-green-500',
 				icon: <VscFlame size={20} />,
+			};
+		}
+
+		case 'warning': {
+			return {
+				text: 'text-yellow-500',
+				border: 'border-yellow-500',
+				icon: <VscWarning size={20} />,
 			};
 		}
 	}

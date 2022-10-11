@@ -4,6 +4,7 @@ title: What's new
 category: Home
 ---
 
+import { CH } from '@code-hike/mdx/components';
 import { DiscordMessages, DiscordMessage } from '@discordjs/ui';
 
 # What's new
@@ -53,10 +54,10 @@ All content has been updated to use discord.js v14 syntax. The v13 version of th
 ### Updated
 
 - Commando: Replaced with [Sapphire](https://sapphirejs.dev/docs/Guide/getting-started/getting-started-with-sapphire)
-- [Voice](/voice/): Rewritten to use the [`@discordjs/voice`](https://github.com/discordjs/discord.js/tree/main/packages/voice) package
+- [Voice](/voice/): Rewritten to use the [_`@discordjs/voice`_](https://github.com/discordjs/discord.js/tree/main/packages/voice) package
 - [Command handling](/creating-your-bot/command-handling.md/): Updated to use slash commands
   - Obsolete sections removed
-- `client.on('message')` snippets updated to `client.on('interactionCreate')`
+- _`client.on('message')`_ snippets updated to _`client.on('interactionCreate')`_
   - [Message content will become a new privileged intent on August 31, 2022](https://support-dev.discord.com/hc/en-us/articles/4404772028055)
 
 <DiscordMessages rounded>

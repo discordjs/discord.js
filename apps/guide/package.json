@@ -5,8 +5,8 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:prod": "yarn workspace @discordjs/ui run build && astro build",
-		"dev": "astro dev",
+		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
+		"dev": "yarn workspaces foreach -ptR run build && astro dev",
 		"preview": "astro preview",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix"

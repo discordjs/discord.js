@@ -42,15 +42,15 @@ This section will cover only the bare minimum to get you started, but you can re
 
 ### Command deployment script
 
-Create a `deploy-commands.js` file in your project directory. This file will be used to register and update the slash commands for your bot application.
+Create a _`deploy-commands.js`_ file in your project directory. This file will be used to register and update the slash commands for your bot application.
 
-Since commands only need to be registered once, and updated when the definition (description, options etc) is changed, it's not necessary to connect a whole client to the gateway or do this on every `ready` event. As such, a standalone script using the lighter REST manager is preferred.
+Since commands only need to be registered once, and updated when the definition (description, options etc) is changed, it's not necessary to connect a whole client to the gateway or do this on every _`ready`_ event. As such, a standalone script using the lighter REST manager is preferred.
 
 Below is a deployment script you can use. Focus on these variables:
 
-- `clientId`: Your application's client id
-- `guildId`: Your development server's id
-- `commands`: An array of commands to register. The [slash command builder](/popular-topics/builders.md#slash-command-builders) from `discord.js` is used to build the data for your commands
+- _`clientId`_: Your application's client id
+- _`guildId`_: Your development server's id
+- _`commands`_: An array of commands to register. The [slash command builder](/popular-topics/builders.md#slash-command-builders) from _`discord.js`_ is used to build the data for your commands
 
 <Alert title="Tip" type="success">
 	In order to get your application's client id, go to [Discord Developer
@@ -92,7 +92,7 @@ rest
 
 </CH.Code>
 
-Once you fill in these values, run `node deploy-commands.js` in your project directory to register your commands to a single guild. It's also possible to [register commands globally](/interactions/slash-commands.md#global-commands).
+Once you fill in these values, run _`node deploy-commands.js`_ in your project directory to register your commands to a single guild. It's also possible to [register commands globally](/interactions/slash-commands.md#global-commands).
 
 <Alert title="Tip" type="success">
 	You only need to run `node deploy-commands.js` once. You should only run it again if you add or edit existing
@@ -101,9 +101,9 @@ Once you fill in these values, run `node deploy-commands.js` in your project dir
 
 ## Replying to commands
 
-Once you've registered your commands, you can listen for interactions via <DocsLink path="class/Client?scrollTo=e-interactionCreate" /> in your `index.js` file.
+Once you've registered your commands, you can listen for interactions via <DocsLink path="class/Client?scrollTo=e-interactionCreate" /> in your _`index.js`_ file.
 
-You should first check if an interaction is a chat input command via <DocsLink path="class/Interaction?scrollTo=isChatInputCommand" type="method">`.isChatInputCommand()`</DocsLink>, and then check the <DocsLink path="class/CommandInteraction?scrollTo=commandName">`.commandName`</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink path="class/CommandInteraction?scrollTo=reply">`.reply()`</DocsLink>.
+You should first check if an interaction is a chat input command via <DocsLink path="class/Interaction?scrollTo=isChatInputCommand" type="method">_`.isChatInputCommand()`_</DocsLink>, and then check the <DocsLink path="class/CommandInteraction?scrollTo=commandName">_`.commandName`_</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink path="class/CommandInteraction?scrollTo=reply">_`.reply()`_</DocsLink>.
 
 <CH.Code client:load>
 
@@ -130,7 +130,7 @@ client.login(token);
 
 ### Server info command
 
-Note that servers are referred to as "guilds" in the Discord API and discord.js library. `interaction.guild` refers to the guild the interaction was sent in (a <DocsLink path="class/Guild" /> instance), which exposes properties such as `.name` or `.memberCount`.
+Note that servers are referred to as "guilds" in the Discord API and discord.js library. _`interaction.guild`_ refers to the guild the interaction was sent in (a <DocsLink path="class/Guild" /> instance), which exposes properties such as _`.name`_ or _`.memberCount`_.
 
 <CH.Code client:load>
 
@@ -170,7 +170,7 @@ client.on('interactionCreate', async (interaction) => {
 	</DiscordMessage>
 </DiscordMessages>
 
-You could also display the date the server was created, or the server's verification level. You would do those in the same manner – use `interaction.guild.createdAt` or `interaction.guild.verificationLevel`, respectively.
+You could also display the date the server was created, or the server's verification level. You would do those in the same manner – use _`interaction.guild.createdAt`_ or _`interaction.guild.verificationLevel`_, respectively.
 
 <Alert title="Tip" type="success">
 	Refer to the <DocsLink path="class/Guild" /> documentation for a list of all the available properties and methods!
@@ -178,7 +178,7 @@ You could also display the date the server was created, or the server's verifica
 
 ### User info command
 
-A "user" refers to a Discord user. `interaction.user` refers to the user the interaction was sent by (a <DocsLink path="class/User" /> instance), which exposes properties such as `.tag` or `.id`.
+A "user" refers to a Discord user. _`interaction.user`_ refers to the user the interaction was sent by (a <DocsLink path="class/User" /> instance), which exposes properties such as _`.tag`_ or _`.id`_.
 
 <CH.Code client:load>
 
@@ -224,9 +224,9 @@ client.on('interactionCreate', async (interaction) => {
 
 And there you have it!
 
-## The problem with `if`/`else if`
+## The problem with if/else if
 
-If you don't plan on making more than a couple commands, then using an `if`/`else if` chain is fine; however, this isn't always the case. Using a giant `if`/`else if` chain will only hinder your development process in the long run.
+If you don't plan on making more than a couple commands, then using an _`if`_/_`else if`_ chain is fine; however, this isn't always the case. Using a giant _`if`_/_`else if`_ chain will only hinder your development process in the long run.
 
 Here's a small list of reasons why you shouldn't do so:
 
