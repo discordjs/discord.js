@@ -311,7 +311,7 @@ export default function SlugPage(props: Partial<SidebarLayoutProps & { error?: s
 							<Head>
 								<title key="title">{name}</title>
 								<meta content={ogTitle} key="og_title" property="og:title" />
-								<meta content={`http://localhost:3000/api/og_model${ogImage}`} key="og_image" property="og:image" />
+								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head>
 							{member(props.data.member)}
 						</>
