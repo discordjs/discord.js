@@ -60,7 +60,6 @@
 		"ioredis": "^5.2.3"
 	},
 	"devDependencies": {
-		"@discordjs/docgen": "workspace:^",
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.1",
 		"@types/node": "^16.11.52",

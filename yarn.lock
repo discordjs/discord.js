@@ -2032,7 +2032,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/brokers@workspace:packages/brokers"
   dependencies:
-    "@discordjs/docgen": "workspace:^"
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.1
     "@msgpack/msgpack": ^2.8.0
