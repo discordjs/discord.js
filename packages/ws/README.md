@@ -33,7 +33,7 @@ pnpm add @discordjs/ws
 ## Example usage
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketManager } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -88,7 +88,7 @@ const manager = new WebSocketManager({
 You can also have the shards spawn in worker threads:
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
+import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
 
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
