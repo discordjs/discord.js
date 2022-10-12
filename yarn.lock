@@ -2040,7 +2040,6 @@ __metadata:
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
-    downlevel-dts: ^0.10.1
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2064,7 +2063,6 @@ __metadata:
     "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
-    downlevel-dts: ^0.10.1
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2202,7 +2200,6 @@ __metadata:
     "@types/supertest": ^2.0.12
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
-    downlevel-dts: ^0.10.1
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
     eslint-formatter-pretty: ^4.1.0
@@ -2230,7 +2227,6 @@ __metadata:
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
-    downlevel-dts: ^0.10.1
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2310,7 +2306,6 @@ __metadata:
     "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
-    downlevel-dts: ^0.10.1
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
     eslint-formatter-pretty: ^4.1.0
@@ -2336,7 +2331,6 @@ __metadata:
     "@types/ws": ^8.5.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
-    downlevel-dts: ^0.10.1
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2427,7 +2421,6 @@ __metadata:
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
-    downlevel-dts: ^0.10.1
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -8251,19 +8244,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"downlevel-dts@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "downlevel-dts@npm:0.10.1"
-  dependencies:
-    semver: ^7.3.2
-    shelljs: ^0.8.3
-    typescript: next
-  bin:
-    downlevel-dts: index.js
-  checksum: d66fe88fdd6e2309fbec1fe57f2697bb3d925db2d1a9e5ed2c8d58adf1bc6f9ead44e8bd5d484179d3ee84f110b9bfed8abda63867d8418515a61daedccbbee4
-  languageName: node
-  linkType: hard
-
 "dset@npm:^3.1.2":
   version: 3.1.2
   resolution: "dset@npm:3.1.2"
@@ -10856,7 +10836,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:~7.2.0":
+"glob@npm:^7.1.1, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:~7.2.0":
   version: 7.2.3
   resolution: "glob@npm:7.2.3"
   dependencies:
@@ -11799,13 +11779,6 @@ __metadata:
     has: ^1.0.3
     side-channel: ^1.0.4
   checksum: 1944f92e981e47aebc98a88ff0db579fd90543d937806104d0b96557b10c1f170c51fb777b97740a8b6ddeec585fca8c39ae99fd08a8e058dfc8ab70937238bf
-  languageName: node
-  linkType: hard
-
-"interpret@npm:^1.0.0":
-  version: 1.4.0
-  resolution: "interpret@npm:1.4.0"
-  checksum: 2e5f51268b5941e4a17e4ef0575bc91ed0ab5f8515e3cf77486f7c14d13f3010df9c0959f37063dcc96e78d12dc6b0bb1b9e111cdfe69771f4656d2993d36155
   languageName: node
   linkType: hard
 
@@ -16818,15 +16791,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rechoir@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "rechoir@npm:0.6.2"
-  dependencies:
-    resolve: ^1.1.6
-  checksum: fe76bf9c21875ac16e235defedd7cbd34f333c02a92546142b7911a0f7c7059d2e16f441fe6fb9ae203f459c05a31b2bcf26202896d89e390eda7514d5d2702b
-  languageName: node
-  linkType: hard
-
 "recrawl-sync@npm:^2.0.3":
   version: 2.2.2
   resolution: "recrawl-sync@npm:2.2.2"
@@ -17301,7 +17265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.3.2":
+"resolve@npm:^1.10.0, resolve@npm:^1.14.2, resolve@npm:^1.17.0, resolve@npm:^1.20.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.3.2":
   version: 1.22.1
   resolution: "resolve@npm:1.22.1"
   dependencies:
@@ -17346,7 +17310,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@^1.3.2#~builtin<compat/resolve>":
   version: 1.22.1
   resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
@@ -17895,19 +17859,6 @@ __metadata:
   version: 1.7.3
   resolution: "shell-quote@npm:1.7.3"
   checksum: aca58e73a3a5d933d02e0bdddedc53ee14f7c2ec264f97ac915b9d4482d077a38e422aa664631d60a672cd3cdb4054eb2e6c0303f54882453dacb6483e482d34
-  languageName: node
-  linkType: hard
-
-"shelljs@npm:^0.8.3":
-  version: 0.8.5
-  resolution: "shelljs@npm:0.8.5"
-  dependencies:
-    glob: ^7.0.0
-    interpret: ^1.0.0
-    rechoir: ^0.6.2
-  bin:
-    shjs: bin/shjs
-  checksum: 7babc46f732a98f4c054ec1f048b55b9149b98aa2da32f6cf9844c434b43c6251efebd6eec120937bd0999e13811ebd45efe17410edb3ca938f82f9381302748
   languageName: node
   linkType: hard
 
@@ -19787,16 +19738,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:next":
-  version: 4.9.0-dev.20221007
-  resolution: "typescript@npm:4.9.0-dev.20221007"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: cc884ebc83dc0fc5ac41aae643aed845d5b92fefb675865535e4e747e8caeed8b05e63ea3af64d5642269d0538ef4a3465a19520e58e8f5ae98d144c07b046d4
-  languageName: node
-  linkType: hard
-
 "typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@~4.8.4#~builtin<compat/typescript>":
   version: 4.8.4
   resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=701156"
@@ -19814,16 +19755,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 6ccc2e1148e172da119ea4b72c66395a0c18a53884d21fb82bb4503a948a7169e9961defe24a359040a3d77bf5ff338945804296e0e27c87b5bd22ea1d25781b
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@next#~builtin<compat/typescript>":
-  version: 4.9.0-dev.20221007
-  resolution: "typescript@patch:typescript@npm%3A4.9.0-dev.20221007#~builtin<compat/typescript>::version=4.9.0-dev.20221007&hash=701156"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 203466ce1943a86bcaa46ce8db7acfcdc8898758e73bc6b083422de34d47dbb16bb6a783154e00fd56196002c6e33ef653b63a968c428b62ec2b17369e3f0fff
   languageName: node
   linkType: hard
 
