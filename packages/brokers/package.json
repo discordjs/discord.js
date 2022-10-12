@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/brokers",
-	"version": "0.1.0-dev",
+	"version": "0.1.0",
 	"description": "Powerful set of message brokers",
 	"scripts": {
 		"test": "vitest run",
@@ -8,7 +8,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
+		"docs": "api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
 		"release": "cliff-jumper"
@@ -64,16 +64,12 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.1",
 		"@types/node": "^16.11.52",
-		"@typescript-eslint/eslint-plugin": "^5.40.0",
-		"@typescript-eslint/parser": "^5.40.0",
 		"@vitest/coverage-c8": "^0.22.1",
 		"cross-env": "^7.0.3",
-		"downlevel-dts": "^0.10.1",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.38",
 		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "^0.33.0",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.4",
 		"vitest": "^0.22.1"
