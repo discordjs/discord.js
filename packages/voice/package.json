@@ -3,7 +3,7 @@
 	"version": "0.13.0",
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
-		"build": "tsup",
+		"build": "tsup && node scripts/postbuild.mjs",
 		"test": "jest --coverage",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
