@@ -64,6 +64,10 @@ try installing another.
 - [`FFmpeg`](https://ffmpeg.org/) (installed and added to environment)
 - `ffmpeg-static`: ^4.2.7 (npm install)
 
+## Examples
+
+The [voice-examples][voice-examples] repository contains examples on how to use this package. Feel free to check them out if you need a nudge in the right direction.
+
 ## Links
 
 - [Website][website] ([source][website-source])
@@ -99,3 +103,4 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [npm]: https://www.npmjs.com/package/@discordjs/voice
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
+[voice-examples]: https://github.com/discordjs/voice-examples
