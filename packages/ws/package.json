@@ -7,7 +7,7 @@
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
+		"docs": "api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
 		"release": "cliff-jumper"
@@ -68,7 +68,6 @@
 		"@types/node": "16.11.64",
 		"@vitest/coverage-c8": "^0.24.1",
 		"cross-env": "^7.0.3",
-		"downlevel-dts": "^0.10.1",
 		"esbuild-plugin-version-injector": "^1.0.0",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.38",
