@@ -92,23 +92,17 @@ class AutoModerationRuleManager extends CachedManager {
         name,
         event_type: eventType,
         trigger_type: triggerType,
-        trigger_metadata:
-          typeof triggerMetadata === 'undefined'
-            ? undefined
-            : {
-                keyword_filter: triggerMetadata.keywordFilter,
-                presets: triggerMetadata.presets,
-                allow_list: triggerMetadata.allowList,
-                mention_total_limit: triggerMetadata.mentionTotalLimit,
-              },
+        trigger_metadata: triggerMetadata && {
+          keyword_filter: triggerMetadata.keywordFilter,
+          presets: triggerMetadata.presets,
+          allow_list: triggerMetadata.allowList,
+          mention_total_limit: triggerMetadata.mentionTotalLimit,
+        },
         actions: actions.map(action => ({
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
-            channel_id:
-              typeof action.metadata?.channel === 'undefined'
-                ? undefined
-                : this.guild.channels.resolveId(action.metadata.channel),
+            channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
           },
         })),
         enabled,
@@ -157,23 +151,17 @@ class AutoModerationRuleManager extends CachedManager {
         body: {
           name,
           event_type: eventType,
-          trigger_metadata:
-            typeof triggerMetadata === 'undefined'
-              ? undefined
-              : {
-                  keyword_filter: triggerMetadata.keywordFilter,
-                  presets: triggerMetadata.presets,
-                  allow_list: triggerMetadata.allowList,
-                  mention_total_limit: triggerMetadata.mentionTotalLimit,
-                },
+          trigger_metadata: triggerMetadata && {
+            keyword_filter: triggerMetadata.keywordFilter,
+            presets: triggerMetadata.presets,
+            allow_list: triggerMetadata.allowList,
+            mention_total_limit: triggerMetadata.mentionTotalLimit,
+          },
           actions: actions?.map(action => ({
             type: action.type,
             metadata: {
               duration_seconds: action.metadata?.durationSeconds,
-              channel_id:
-                typeof action.metadata?.channel === 'undefined'
-                  ? undefined
-                  : this.guild.channels.resolveId(action.metadata.channel),
+              channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
             },
           })),
           enabled,
