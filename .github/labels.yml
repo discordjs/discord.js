@@ -50,6 +50,8 @@
   color: e4e669
 - name: need repro
   color: c66037
+- name: packages:brokers
+  color: fbca04
 - name: packages:builders
   color: fbca04
 - name: packages:collection
