@@ -48,7 +48,7 @@ import type {
 import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { API } from './api/index.js';
 
-export type WithIntrinsicProps<T> = T & { api: API };
+export type WithIntrinsicProps<T> = T & { api: API; shardId: number };
 
 export interface MappedEvents {
 	channelCreate: [WithIntrinsicProps<{ channel: APIChannel }>];
@@ -120,14 +120,15 @@ export function createClient({ rest, ws }: ClientOptions) {
 	const eventAPI = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
-	function wrapIntrinsicProps<T>(obj: T): WithIntrinsicProps<T> {
-		return {
-			api: eventAPI,
-			...obj,
-		};
-	}
+	ws.on(WebSocketShardEvents.Dispatch, ({ data, shardId }) => {
+		function wrapIntrinsicProps<T>(obj: T): WithIntrinsicProps<T> {
+			return {
+				api: eventAPI,
+				shardId,
+				...obj,
+			};
+		}
 
-	ws.on(WebSocketShardEvents.Dispatch, ({ data }) => {
 		emitter.emit('dispatch', wrapIntrinsicProps(data));
 		switch (data.t) {
 			case GatewayDispatchEvents.MessageCreate:
