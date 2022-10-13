@@ -1699,6 +1699,12 @@ declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
 
+declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
+
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
+
 declare const stageChannel: StageChannel;
 declare const partialGroupDMChannel: PartialGroupDMChannel;
 
