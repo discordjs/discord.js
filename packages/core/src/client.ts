@@ -64,9 +64,9 @@ export type WithIntrinsicProps<T> = IntrinsicProps & T;
 export interface MappedEvents {
 	channelCreate: [WithIntrinsicProps<{ channel: APIChannel }>];
 	channelDelete: [WithIntrinsicProps<{ channel: APIChannel }>];
-	channelPinsUpdate: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
+	channelPinsUpdate: [WithIntrinsicProps<{ data: GatewayChannelPinsUpdateDispatchData }>];
 	channelUpdate: [WithIntrinsicProps<{ channel: APIChannel }>];
-	dispatch: [WithIntrinsicProps<GatewayDispatchPayload>];
+	dispatch: [WithIntrinsicProps<{ data: GatewayDispatchPayload }>];
 	guildBanAdd: [WithIntrinsicProps<{ guild_id: string; user: APIUser }>];
 	guildBanRemove: [WithIntrinsicProps<{ guild_id: string; user: APIUser }>];
 	guildCreate: [WithIntrinsicProps<{ guild: GatewayGuildCreateDispatchData }>];
@@ -76,46 +76,46 @@ export interface MappedEvents {
 	guildMemberAdd: [WithIntrinsicProps<{ member: GatewayGuildMemberAddDispatchData }>];
 	guildMemberRemove: [WithIntrinsicProps<{ guild_id: string; user: APIUser }>];
 	guildMemberUpdate: [WithIntrinsicProps<{ member: GatewayGuildMemberUpdateDispatchData }>];
-	guildMembersChunk: [WithIntrinsicProps<GatewayGuildMembersChunkDispatchData>];
-	guildRoleCreate: [WithIntrinsicProps<GatewayGuildRoleModifyDispatchData>];
-	guildRoleDelete: [WithIntrinsicProps<GatewayGuildRoleDeleteDispatchData>];
-	guildRoleUpdate: [WithIntrinsicProps<GatewayGuildRoleModifyDispatchData>];
+	guildMembersChunk: [WithIntrinsicProps<{ data: GatewayGuildMembersChunkDispatchData }>];
+	guildRoleCreate: [WithIntrinsicProps<{ data: GatewayGuildRoleModifyDispatchData }>];
+	guildRoleDelete: [WithIntrinsicProps<{ data: GatewayGuildRoleDeleteDispatchData }>];
+	guildRoleUpdate: [WithIntrinsicProps<{ data: GatewayGuildRoleModifyDispatchData }>];
 	guildScheduledEventCreate: [WithIntrinsicProps<{ event: APIGuildScheduledEvent }>];
 	guildScheduledEventDelete: [WithIntrinsicProps<{ event: APIGuildScheduledEvent }>];
 	guildScheduledEventUpdate: [WithIntrinsicProps<{ event: APIGuildScheduledEvent }>];
-	guildScheduledEventUserAdd: [WithIntrinsicProps<GatewayGuildScheduledEventUserAddDispatchData>];
-	guildScheduledEventUserRemove: [WithIntrinsicProps<GatewayGuildScheduledEventUserRemoveDispatchData>];
-	guildStickersUpdate: [WithIntrinsicProps<GatewayGuildStickersUpdateDispatchData>];
+	guildScheduledEventUserAdd: [WithIntrinsicProps<{ data: GatewayGuildScheduledEventUserAddDispatchData }>];
+	guildScheduledEventUserRemove: [WithIntrinsicProps<{ data: GatewayGuildScheduledEventUserRemoveDispatchData }>];
+	guildStickersUpdate: [WithIntrinsicProps<{ data: GatewayGuildStickersUpdateDispatchData }>];
 	guildUpdate: [WithIntrinsicProps<{ guild: APIGuild }>];
 	integrationCreate: [WithIntrinsicProps<{ integration: GatewayIntegrationCreateDispatchData }>];
-	integrationDelete: [WithIntrinsicProps<GatewayIntegrationDeleteDispatchData>];
+	integrationDelete: [WithIntrinsicProps<{ data: GatewayIntegrationDeleteDispatchData }>];
 	integrationUpdate: [WithIntrinsicProps<{ integration: GatewayIntegrationUpdateDispatchData }>];
 	interactionCreate: [WithIntrinsicProps<{ interaction: APIInteraction }>];
 	inviteCreate: [WithIntrinsicProps<{ invite: GatewayInviteCreateDispatchData }>];
-	inviteDelete: [WithIntrinsicProps<GatewayInviteDeleteDispatchData>];
+	inviteDelete: [WithIntrinsicProps<{ data: GatewayInviteDeleteDispatchData }>];
 	messageCreate: [WithIntrinsicProps<{ message: APIMessage }>];
-	messageDelete: [WithIntrinsicProps<GatewayMessageDeleteDispatchData>];
-	messageDeleteBulk: [WithIntrinsicProps<GatewayMessageDeleteBulkDispatchData>];
-	messageReactionAdd: [WithIntrinsicProps<GatewayMessageReactionAddDispatchData>];
-	messageReactionRemove: [WithIntrinsicProps<GatewayMessageReactionRemoveDispatchData>];
-	messageReactionRemoveAll: [WithIntrinsicProps<GatewayMessageReactionRemoveAllDispatchData>];
-	messageReactionRemoveEmoji: [WithIntrinsicProps<GatewayMessageReactionRemoveEmojiDispatchData>];
+	messageDelete: [WithIntrinsicProps<{ data: GatewayMessageDeleteDispatchData }>];
+	messageDeleteBulk: [WithIntrinsicProps<{ data: GatewayMessageDeleteBulkDispatchData }>];
+	messageReactionAdd: [WithIntrinsicProps<{ data: GatewayMessageReactionAddDispatchData }>];
+	messageReactionRemove: [WithIntrinsicProps<{ data: GatewayMessageReactionRemoveDispatchData }>];
+	messageReactionRemoveAll: [WithIntrinsicProps<{ data: GatewayMessageReactionRemoveAllDispatchData }>];
+	messageReactionRemoveEmoji: [WithIntrinsicProps<{ data: GatewayMessageReactionRemoveEmojiDispatchData }>];
 	messageUpdate: [WithIntrinsicProps<{ message: GatewayMessageUpdateDispatchData }>];
-	presenceUpdate: [WithIntrinsicProps<GatewayPresenceUpdate>];
+	presenceUpdate: [WithIntrinsicProps<{ data: GatewayPresenceUpdate }>];
 	ready: [WithIntrinsicProps<{ data: GatewayReadyDispatchData }>];
 	stageInstanceCreate: [WithIntrinsicProps<{ stage_instance: APIStageInstance }>];
 	stageInstanceDelete: [WithIntrinsicProps<{ stage_instance: APIStageInstance }>];
 	stageInstanceUpdate: [WithIntrinsicProps<{ stage_instance: APIStageInstance }>];
 	threadCreate: [WithIntrinsicProps<{ thread: APIThreadChannel }>];
 	threadDelete: [WithIntrinsicProps<{ thread: APIThreadChannel }>];
-	threadListSync: [WithIntrinsicProps<GatewayThreadListSync>];
-	threadMemberUpdate: [WithIntrinsicProps<GatewayThreadMemberUpdateDispatchData>];
-	threadMembersUpdate: [WithIntrinsicProps<GatewayThreadMembersUpdateDispatchData>];
+	threadListSync: [WithIntrinsicProps<{ data: GatewayThreadListSync }>];
+	threadMemberUpdate: [WithIntrinsicProps<{ data: GatewayThreadMemberUpdateDispatchData }>];
+	threadMembersUpdate: [WithIntrinsicProps<{ data: GatewayThreadMembersUpdateDispatchData }>];
 	threadUpdate: [WithIntrinsicProps<{ thread: APIThreadChannel }>];
 	userUpdate: [WithIntrinsicProps<{ user: APIUser }>];
-	voiceServerUpdate: [WithIntrinsicProps<GatewayVoiceServerUpdateDispatchData>];
+	voiceServerUpdate: [WithIntrinsicProps<{ data: GatewayVoiceServerUpdateDispatchData }>];
 	voiceStateUpdate: [WithIntrinsicProps<{ state: GatewayVoiceState }>];
-	webhooksUpdate: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
+	webhooksUpdate: [WithIntrinsicProps<{ data: GatewayWebhooksUpdateDispatchData }>];
 }
 
 export type ManagerShardEventsMap = {
@@ -131,7 +131,7 @@ export function createClient({ rest, ws }: ClientOptions) {
 	const eventAPI = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
-	ws.on(WebSocketShardEvents.Dispatch, ({ data, shardId }) => {
+	ws.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 		function wrapIntrinsicProps<T>(obj: T): WithIntrinsicProps<T> {
 			return {
 				api: eventAPI,
@@ -140,167 +140,167 @@ export function createClient({ rest, ws }: ClientOptions) {
 			};
 		}
 
-		emitter.emit('dispatch', wrapIntrinsicProps(data));
-		switch (data.t) {
+		emitter.emit('dispatch', wrapIntrinsicProps({ data: dispatch }));
+		switch (dispatch.t) {
 			case GatewayDispatchEvents.MessageCreate:
-				emitter.emit('messageCreate', wrapIntrinsicProps({ message: data.d }));
+				emitter.emit('messageCreate', wrapIntrinsicProps({ message: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.InteractionCreate:
-				emitter.emit('interactionCreate', wrapIntrinsicProps({ interaction: data.d }));
+				emitter.emit('interactionCreate', wrapIntrinsicProps({ interaction: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.Ready:
-				emitter.emit('ready', wrapIntrinsicProps({ data: data.d }));
+				emitter.emit('ready', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ChannelCreate:
-				emitter.emit('channelCreate', wrapIntrinsicProps({ channel: data.d }));
+				emitter.emit('channelCreate', wrapIntrinsicProps({ channel: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ChannelUpdate:
-				emitter.emit('channelUpdate', wrapIntrinsicProps({ channel: data.d }));
+				emitter.emit('channelUpdate', wrapIntrinsicProps({ channel: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ChannelDelete:
-				emitter.emit('channelDelete', wrapIntrinsicProps({ channel: data.d }));
+				emitter.emit('channelDelete', wrapIntrinsicProps({ channel: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ChannelPinsUpdate:
-				emitter.emit('channelPinsUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('channelPinsUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildBanAdd:
-				emitter.emit('guildBanAdd', wrapIntrinsicProps(data.d));
+				emitter.emit('guildBanAdd', wrapIntrinsicProps(dispatch.d));
 				break;
 			case GatewayDispatchEvents.GuildBanRemove:
-				emitter.emit('guildBanRemove', wrapIntrinsicProps(data.d));
+				emitter.emit('guildBanRemove', wrapIntrinsicProps(dispatch.d));
 				break;
 			case GatewayDispatchEvents.GuildCreate:
-				emitter.emit('guildCreate', wrapIntrinsicProps({ guild: data.d }));
+				emitter.emit('guildCreate', wrapIntrinsicProps({ guild: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildUpdate:
-				emitter.emit('guildUpdate', wrapIntrinsicProps({ guild: data.d }));
+				emitter.emit('guildUpdate', wrapIntrinsicProps({ guild: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildDelete:
-				emitter.emit('guildDelete', wrapIntrinsicProps({ guild: data.d }));
+				emitter.emit('guildDelete', wrapIntrinsicProps({ guild: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildEmojisUpdate:
-				emitter.emit('guildEmojisUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('guildEmojisUpdate', wrapIntrinsicProps(dispatch.d));
 				break;
 			case GatewayDispatchEvents.GuildIntegrationsUpdate:
-				emitter.emit('guildIntegrationsUpdate', wrapIntrinsicProps({ guild_id: data.d.guild_id }));
+				emitter.emit('guildIntegrationsUpdate', wrapIntrinsicProps({ guild_id: dispatch.d.guild_id }));
 				break;
 			case GatewayDispatchEvents.GuildMemberAdd:
-				emitter.emit('guildMemberAdd', wrapIntrinsicProps({ member: data.d }));
+				emitter.emit('guildMemberAdd', wrapIntrinsicProps({ member: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildMemberRemove:
-				emitter.emit('guildMemberRemove', wrapIntrinsicProps(data.d));
+				emitter.emit('guildMemberRemove', wrapIntrinsicProps(dispatch.d));
 				break;
 			case GatewayDispatchEvents.GuildMemberUpdate:
-				emitter.emit('guildMemberUpdate', wrapIntrinsicProps({ member: data.d }));
+				emitter.emit('guildMemberUpdate', wrapIntrinsicProps({ member: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildMembersChunk:
-				emitter.emit('guildMembersChunk', wrapIntrinsicProps(data.d));
+				emitter.emit('guildMembersChunk', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildRoleCreate:
-				emitter.emit('guildRoleCreate', wrapIntrinsicProps(data.d));
+				emitter.emit('guildRoleCreate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildRoleUpdate:
-				emitter.emit('guildRoleUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('guildRoleUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildRoleDelete:
-				emitter.emit('guildRoleDelete', wrapIntrinsicProps(data.d));
+				emitter.emit('guildRoleDelete', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildScheduledEventCreate:
-				emitter.emit('guildScheduledEventCreate', wrapIntrinsicProps({ event: data.d }));
+				emitter.emit('guildScheduledEventCreate', wrapIntrinsicProps({ event: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildScheduledEventDelete:
-				emitter.emit('guildScheduledEventDelete', wrapIntrinsicProps({ event: data.d }));
+				emitter.emit('guildScheduledEventDelete', wrapIntrinsicProps({ event: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildScheduledEventUpdate:
-				emitter.emit('guildScheduledEventUpdate', wrapIntrinsicProps({ event: data.d }));
+				emitter.emit('guildScheduledEventUpdate', wrapIntrinsicProps({ event: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildScheduledEventUserAdd:
-				emitter.emit('guildScheduledEventUserAdd', wrapIntrinsicProps(data.d));
+				emitter.emit('guildScheduledEventUserAdd', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildScheduledEventUserRemove:
-				emitter.emit('guildScheduledEventUserRemove', wrapIntrinsicProps(data.d));
+				emitter.emit('guildScheduledEventUserRemove', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.GuildStickersUpdate:
-				emitter.emit('guildStickersUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('guildStickersUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.IntegrationCreate:
-				emitter.emit('integrationCreate', wrapIntrinsicProps({ integration: data.d }));
+				emitter.emit('integrationCreate', wrapIntrinsicProps({ integration: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.IntegrationUpdate:
-				emitter.emit('integrationUpdate', wrapIntrinsicProps({ integration: data.d }));
+				emitter.emit('integrationUpdate', wrapIntrinsicProps({ integration: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.IntegrationDelete:
-				emitter.emit('integrationDelete', wrapIntrinsicProps(data.d));
+				emitter.emit('integrationDelete', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.InviteCreate:
-				emitter.emit('inviteCreate', wrapIntrinsicProps({ invite: data.d }));
+				emitter.emit('inviteCreate', wrapIntrinsicProps({ invite: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.InviteDelete:
-				emitter.emit('inviteDelete', wrapIntrinsicProps(data.d));
+				emitter.emit('inviteDelete', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageDelete:
-				emitter.emit('messageDelete', wrapIntrinsicProps(data.d));
+				emitter.emit('messageDelete', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageDeleteBulk:
-				emitter.emit('messageDeleteBulk', wrapIntrinsicProps(data.d));
+				emitter.emit('messageDeleteBulk', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageReactionAdd:
-				emitter.emit('messageReactionAdd', wrapIntrinsicProps(data.d));
+				emitter.emit('messageReactionAdd', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageReactionRemove:
-				emitter.emit('messageReactionRemove', wrapIntrinsicProps(data.d));
+				emitter.emit('messageReactionRemove', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageReactionRemoveAll:
-				emitter.emit('messageReactionRemoveAll', wrapIntrinsicProps(data.d));
+				emitter.emit('messageReactionRemoveAll', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageReactionRemoveEmoji:
-				emitter.emit('messageReactionRemoveEmoji', wrapIntrinsicProps(data.d));
+				emitter.emit('messageReactionRemoveEmoji', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.MessageUpdate:
-				emitter.emit('messageUpdate', wrapIntrinsicProps({ message: data.d }));
+				emitter.emit('messageUpdate', wrapIntrinsicProps({ message: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.PresenceUpdate:
-				emitter.emit('presenceUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('presenceUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.StageInstanceCreate:
-				emitter.emit('stageInstanceCreate', wrapIntrinsicProps({ stage_instance: data.d }));
+				emitter.emit('stageInstanceCreate', wrapIntrinsicProps({ stage_instance: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.StageInstanceUpdate:
-				emitter.emit('stageInstanceUpdate', wrapIntrinsicProps({ stage_instance: data.d }));
+				emitter.emit('stageInstanceUpdate', wrapIntrinsicProps({ stage_instance: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.StageInstanceDelete:
-				emitter.emit('stageInstanceDelete', wrapIntrinsicProps({ stage_instance: data.d }));
+				emitter.emit('stageInstanceDelete', wrapIntrinsicProps({ stage_instance: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ThreadCreate:
-				emitter.emit('threadCreate', wrapIntrinsicProps({ thread: data.d as APIThreadChannel }));
+				emitter.emit('threadCreate', wrapIntrinsicProps({ thread: dispatch.d as APIThreadChannel }));
 				break;
 			case GatewayDispatchEvents.ThreadUpdate:
-				emitter.emit('threadUpdate', wrapIntrinsicProps({ thread: data.d as APIThreadChannel }));
+				emitter.emit('threadUpdate', wrapIntrinsicProps({ thread: dispatch.d as APIThreadChannel }));
 				break;
 			case GatewayDispatchEvents.ThreadDelete:
-				emitter.emit('threadDelete', wrapIntrinsicProps({ thread: data.d as APIThreadChannel }));
+				emitter.emit('threadDelete', wrapIntrinsicProps({ thread: dispatch.d as APIThreadChannel }));
 				break;
 			// eslint-disable-next-line n/no-sync
 			case GatewayDispatchEvents.ThreadListSync:
-				emitter.emit('threadListSync', wrapIntrinsicProps(data.d));
+				emitter.emit('threadListSync', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ThreadMemberUpdate:
-				emitter.emit('threadMemberUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('threadMemberUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.ThreadMembersUpdate:
-				emitter.emit('threadMembersUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('threadMembersUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.UserUpdate:
-				emitter.emit('userUpdate', wrapIntrinsicProps({ user: data.d }));
+				emitter.emit('userUpdate', wrapIntrinsicProps({ user: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.VoiceServerUpdate:
-				emitter.emit('voiceServerUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('voiceServerUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.VoiceStateUpdate:
-				emitter.emit('voiceStateUpdate', wrapIntrinsicProps({ state: data.d }));
+				emitter.emit('voiceStateUpdate', wrapIntrinsicProps({ state: dispatch.d }));
 				break;
 			case GatewayDispatchEvents.WebhooksUpdate:
-				emitter.emit('webhooksUpdate', wrapIntrinsicProps(data.d));
+				emitter.emit('webhooksUpdate', wrapIntrinsicProps({ data: dispatch.d }));
 				break;
 			default:
 				break;
