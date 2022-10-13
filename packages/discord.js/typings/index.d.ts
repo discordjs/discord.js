@@ -4446,8 +4446,6 @@ export interface AutoModerationTriggerMetadata {
   mentionTotalLimit: number | null;
 }
 
-export type Awaitable<T> = T | PromiseLike<T>;
-
 export type AwaitMessageComponentOptions<T extends CollectedMessageInteraction> = Omit<
   MessageComponentCollectorOptions<T>,
   'max' | 'maxComponents' | 'maxUsers'
