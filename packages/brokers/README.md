@@ -108,13 +108,13 @@ nudge in the right direction, please don't hesitate to join our official [discor
 
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs/ws
+[documentation]: https://discord.js.org/#/docs/brokers
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
 [discord-api]: https://discord.gg/discord-api
-[source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[npm]: https://www.npmjs.com/package/@discordjs/ws
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
+[npm]: https://www.npmjs.com/package/@discordjs/brokers
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
