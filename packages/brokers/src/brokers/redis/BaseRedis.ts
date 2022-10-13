@@ -14,22 +14,46 @@ declare module 'ioredis' {
 	}
 }
 
+/**
+ * Options specific for a Redis broker
+ */
 export interface RedisBrokerOptions extends BaseBrokerOptions {
+	/**
+	 * The Redis client to use
+	 */
 	redisClient: Redis;
 }
 
+/**
+ * Helper class with shared Redis logic
+ */
 export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	extends AsyncEventEmitter<ToEventMap<TEvents>>
 	implements IBaseBroker<TEvents>
 {
+	/**
+	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd }
+	 */
 	public static readonly STREAM_DATA_KEY = 'data';
 
+	/**
+	 * Options this broker is using
+	 */
 	protected readonly options: Required<RedisBrokerOptions>;
 
+	/**
+	 * Events this broker has subscribed to
+	 */
 	protected readonly subscribedEvents = new Set<string>();
 
+	/**
+	 * Internal copy of the Redis client being used to read incoming payloads
+	 */
 	protected readonly streamReadClient: Redis;
 
+	/**
+	 * Whether this broker is currently polling events
+	 */
 	protected listening = false;
 
 	public constructor(options: RedisBrokerOptions) {
@@ -42,6 +66,9 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		this.streamReadClient = options.redisClient.duplicate();
 	}
 
+	/**
+	 * {@inheritDoc IBaseBroker.subscribe}
+	 */
 	public async subscribe(group: string, events: (keyof TEvents)[]): Promise<void> {
 		await Promise.all(
 			// eslint-disable-next-line consistent-return
@@ -59,6 +86,9 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		void this.listen(group);
 	}
 
+	/**
+	 * {@inheritDoc IBaseBroker.unsubscribe}
+	 */
 	public async unsubscribe(group: string, events: (keyof TEvents)[]): Promise<void> {
 		const commands: unknown[][] = Array.from({ length: events.length * 2 });
 		for (let idx = 0; idx < commands.length; idx += 2) {
@@ -74,6 +104,9 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		}
 	}
 
+	/**
+	 * Begins polling for events, firing them to {@link BaseRedisBroker.listen}
+	 */
 	protected async listen(group: string): Promise<void> {
 		if (this.listening) {
 			return;
@@ -124,5 +157,16 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		this.listening = false;
 	}
 
+	/**
+	 * Destroys the broker, closing all connections
+	 */
+	public async destroy() {
+		this.streamReadClient.disconnect();
+		this.options.redisClient.disconnect();
+	}
+
+	/**
+	 * Handles an incoming Redis event
+	 */
 	protected abstract emitEvent(id: Buffer, group: string, event: string, data: unknown): unknown;
 }

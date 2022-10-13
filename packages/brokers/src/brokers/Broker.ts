@@ -31,6 +31,9 @@ export interface BaseBrokerOptions {
 	name?: string;
 }
 
+/**
+ * Default broker options
+ */
 export const DefaultBrokerOptions: Required<BaseBrokerOptions> = {
 	name: randomBytes(20).toString('hex'),
 	maxChunk: 10,

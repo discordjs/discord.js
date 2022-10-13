@@ -11,19 +11,56 @@ interface InternalPromise {
 	timeout: NodeJS.Timeout;
 }
 
+/**
+ * Options specific for an RPC Redis broker
+ */
 export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
 	timeout?: number;
 }
 
+/**
+ * Default values used for the {@link RPCRedisBrokerOptions}
+ */
 export const DefaultRPCRedisBrokerOptions: Required<Omit<RPCRedisBrokerOptions, 'redisClient'>> = {
 	...DefaultBrokerOptions,
 	timeout: 5_000,
 };
 
+/**
+ * RPC broker powered by Redis
+ *
+ * @example
+ * ```ts
+ * // caller.js
+ * import { RPCRedisBroker } from '@discordjs/brokers';
+ * import Redis from 'ioredis';
+ *
+ * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ *
+ * console.log(await broker.call('testcall', 'Hello World!'));
+ * await broker.destroy();
+ *
+ * // responder.js
+ * import { RPCRedisBroker } from '@discordjs/brokers';
+ * import Redis from 'ioredis';
+ *
+ * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ * broker.on('testcall', ({ data, ack, reply }) => {
+ * 	console.log('responder', data);
+ * 	void ack();
+ * 	void reply(`Echo: ${data}`);
+ * });
+ *
+ * await broker.subscribe('responders', ['testcall']);
+ * ```
+ */
 export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
 	extends BaseRedisBroker<TEvents>
 	implements IRPCBroker<TEvents, TResponses>
 {
+	/**
+	 * Options this broker is using
+	 */
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
 
 	protected readonly promises = new Map<string, InternalPromise>();
@@ -43,6 +80,9 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		});
 	}
 
+	/**
+	 * {@inheritDoc IRPCBroker.call}
+	 */
 	public async call<T extends keyof TEvents>(
 		event: T,
 		data: TEvents[T],

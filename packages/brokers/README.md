@@ -42,7 +42,7 @@ import Redis from 'ioredis';
 const broker = new PubSubRedisBroker({ redisClient: new Redis() });
 
 await broker.publish('test', 'Hello World!');
-process.exit(0);
+await broker.destroy();
 
 // subscriber.js
 import { PubSubRedisBroker } from '@discordjs/brokers';
@@ -67,7 +67,7 @@ import Redis from 'ioredis';
 const broker = new RPCRedisBroker({ redisClient: new Redis() });
 
 console.log(await broker.call('testcall', 'Hello World!'));
-process.exit(0);
+await broker.destroy();
 
 // responder.js
 import { RPCRedisBroker } from '@discordjs/brokers';
