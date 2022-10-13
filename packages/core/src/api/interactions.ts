@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer';
 import type { REST } from '@discordjs/rest';
 import type {
 	APIInteraction,
@@ -20,10 +21,15 @@ export class InteractionsAPI {
 	 * @param interaction - The interaction to reply to
 	 * @param options - The options to use when replying
 	 */
-	public async reply(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+	public async reply(
+		interaction: APIInteraction,
+		options: string | (APIInteractionResponseCallbackData & { files: { data: Buffer; name: string }[] }),
+	) {
 		const interactionResponse = typeof options === 'string' ? { content: options } : options;
 
 		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+			// eslint-disable-next-line no-negated-condition
+			files: typeof options !== 'string' ? options.files : undefined,
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data: interactionResponse,
