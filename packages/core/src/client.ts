@@ -48,7 +48,18 @@ import type {
 import { GatewayDispatchEvents } from 'discord-api-types/v10';
 import { API } from './api/index.js';
 
-export type WithIntrinsicProps<T> = T & { api: API; shardId: number };
+export interface IntrinsicProps {
+	/**
+	 * The rest API
+	 */
+	api: API;
+	/**
+	 * The id of the shard that emitted the event
+	 */
+	shardId: number;
+}
+
+export type WithIntrinsicProps<T> = IntrinsicProps & T;
 
 export interface MappedEvents {
 	channelCreate: [WithIntrinsicProps<{ channel: APIChannel }>];
