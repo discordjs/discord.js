@@ -1,15 +1,22 @@
-import { pipeline, Readable } from 'node:stream';
+import type { Buffer } from 'node:buffer';
+import { pipeline, type Readable } from 'node:stream';
 import prism from 'prism-media';
-import { AudioPlayer, SILENCE_FRAME } from './AudioPlayer';
-import { Edge, findPipeline, StreamType, TransformerType } from './TransformerGraph';
 import { noop } from '../util/util';
+import { SILENCE_FRAME, type AudioPlayer } from './AudioPlayer';
+import { findPipeline, StreamType, TransformerType, type Edge } from './TransformerGraph';
 
 /**
  * Options that are set when creating a new audio resource.
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export interface CreateAudioResourceOptions<T> {
+	/**
+	 * Whether or not inline volume should be enabled. If enabled, you will be able to change the volume
+	 * of the stream on-the-fly. However, this also increases the performance cost of playback. Defaults to `false`.
+	 */
+	inlineVolume?: boolean;
+
 	/**
 	 * The type of the input stream. Defaults to `StreamType.Arbitrary`.
 	 */
@@ -23,12 +30,6 @@ export interface CreateAudioResourceOptions<T> {
 	metadata?: T;
 
 	/**
-	 * Whether or not inline volume should be enabled. If enabled, you will be able to change the volume
-	 * of the stream on-the-fly. However, this also increases the performance cost of playback. Defaults to `false`.
-	 */
-	inlineVolume?: boolean;
-
-	/**
 	 * The number of silence frames to append to the end of the resource's audio stream, to prevent interpolation glitches.
 	 * Defaults to 5.
 	 */
@@ -38,7 +39,7 @@ export interface CreateAudioResourceOptions<T> {
 /**
  * Represents an audio resource that can be played by an audio player.
  *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export class AudioResource<T = unknown> {
 	/**
@@ -73,7 +74,7 @@ export class AudioResource<T = unknown> {
 	/**
 	 * The audio player that the resource is subscribed to, if any.
 	 */
-	public audioPlayer?: AudioPlayer;
+	public audioPlayer?: AudioPlayer | undefined;
 
 	/**
 	 * The playback duration of this audio resource, given in milliseconds.
@@ -123,6 +124,7 @@ export class AudioResource<T = unknown> {
 			if (this.silenceRemaining === -1) this.silenceRemaining = this.silencePaddingFrames;
 			return this.silenceRemaining !== 0;
 		}
+
 		return real;
 	}
 
@@ -141,7 +143,6 @@ export class AudioResource<T = unknown> {
 	 * It is advisable to check that the playStream is readable before calling this method. While no runtime
 	 * errors will be thrown, you should check that the resource is still available before attempting to
 	 * read from it.
-	 *
 	 * @internal
 	 */
 	public read(): Buffer | null {
@@ -151,10 +152,12 @@ export class AudioResource<T = unknown> {
 			this.silenceRemaining--;
 			return SILENCE_FRAME;
 		}
+
 		const packet = this.playStream.read() as Buffer | null;
 		if (packet) {
 			this.playbackDuration += 20;
 		}
+
 		return packet;
 	}
 }
@@ -174,8 +177,8 @@ export const NO_CONSTRAINT = () => true;
  * @param stream - The stream to infer the type of
  */
 export function inferStreamType(stream: Readable): {
-	streamType: StreamType;
 	hasVolume: boolean;
+	streamType: StreamType;
 } {
 	if (stream instanceof prism.opus.Encoder) {
 		return { streamType: StreamType.Opus, hasVolume: false };
@@ -188,6 +191,7 @@ export function inferStreamType(stream: Readable): {
 	} else if (stream instanceof prism.opus.WebmDemuxer) {
 		return { streamType: StreamType.Opus, hasVolume: false };
 	}
+
 	return { streamType: StreamType.Arbitrary, hasVolume: false };
 }
 
@@ -200,14 +204,12 @@ export function inferStreamType(stream: Readable): {
  * If the input is not in the correct format, then a pipeline of transcoders and transformers will be created
  * to ensure that the resultant stream is in the correct format for playback. This could involve using FFmpeg,
  * Opus transcoders, and Ogg/WebM demuxers.
- *
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T>(
-	input: string | Readable,
+	input: Readable | string,
 	options: CreateAudioResourceOptions<T> &
 		Pick<
 			T extends null | undefined ? CreateAudioResourceOptions<T> : Required<CreateAudioResourceOptions<T>>,
@@ -224,14 +226,12 @@ export function createAudioResource<T>(
  * If the input is not in the correct format, then a pipeline of transcoders and transformers will be created
  * to ensure that the resultant stream is in the correct format for playback. This could involve using FFmpeg,
  * Opus transcoders, and Ogg/WebM demuxers.
- *
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T extends null | undefined>(
-	input: string | Readable,
+	input: Readable | string,
 	options?: Omit<CreateAudioResourceOptions<T>, 'metadata'>,
 ): AudioResource<null>;
 
@@ -244,14 +244,12 @@ export function createAudioResource<T extends null | undefined>(
  * If the input is not in the correct format, then a pipeline of transcoders and transformers will be created
  * to ensure that the resultant stream is in the correct format for playback. This could involve using FFmpeg,
  * Opus transcoders, and Ogg/WebM demuxers.
- *
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- *
- * @template T - the type for the metadata (if any) of the audio resource
+ * @typeParam T - the type for the metadata (if any) of the audio resource
  */
 export function createAudioResource<T>(
-	input: string | Readable,
+	input: Readable | string,
 	options: CreateAudioResourceOptions<T> = {},
 ): AudioResource<T> {
 	let inputType = options.inputType;
@@ -273,6 +271,7 @@ export function createAudioResource<T>(
 		// No adjustments required
 		return new AudioResource<T>([], [input], (options.metadata ?? null) as T, options.silencePaddingFrames ?? 5);
 	}
+
 	const streams = transformerPipeline.map((edge) => edge.transformer(input));
 	if (typeof input !== 'string') streams.unshift(input);
 

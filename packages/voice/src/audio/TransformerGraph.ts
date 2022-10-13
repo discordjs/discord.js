@@ -34,33 +34,33 @@ const FFMPEG_OPUS_ARGUMENTS = [
  */
 export enum StreamType {
 	Arbitrary = 'arbitrary',
-	Raw = 'raw',
 	OggOpus = 'ogg/opus',
-	WebmOpus = 'webm/opus',
 	Opus = 'opus',
+	Raw = 'raw',
+	WebmOpus = 'webm/opus',
 }
 
 /**
  * The different types of transformers that can exist within the pipeline.
  */
 export enum TransformerType {
-	FFmpegPCM = 'ffmpeg pcm',
 	FFmpegOgg = 'ffmpeg ogg',
-	OpusEncoder = 'opus encoder',
-	OpusDecoder = 'opus decoder',
-	OggOpusDemuxer = 'ogg/opus demuxer',
-	WebmOpusDemuxer = 'webm/opus demuxer',
+	FFmpegPCM = 'ffmpeg pcm',
 	InlineVolume = 'volume transformer',
+	OggOpusDemuxer = 'ogg/opus demuxer',
+	OpusDecoder = 'opus decoder',
+	OpusEncoder = 'opus encoder',
+	WebmOpusDemuxer = 'webm/opus demuxer',
 }
 
 /**
  * Represents a pathway from one stream type to another using a transformer.
  */
 export interface Edge {
+	cost: number;
 	from: Node;
 	to: Node;
-	cost: number;
-	transformer: (input: string | Readable) => Readable;
+	transformer(input: Readable | string): Readable;
 	type: TransformerType;
 }
 
@@ -113,14 +113,14 @@ getNode(StreamType.Raw).addEdge({
 	type: TransformerType.OpusEncoder,
 	to: getNode(StreamType.Opus),
 	cost: 1.5,
-	transformer: () => new prism.opus.Encoder({ rate: 48000, channels: 2, frameSize: 960 }),
+	transformer: () => new prism.opus.Encoder({ rate: 48_000, channels: 2, frameSize: 960 }),
 });
 
 getNode(StreamType.Opus).addEdge({
 	type: TransformerType.OpusDecoder,
 	to: getNode(StreamType.Raw),
 	cost: 1.5,
-	transformer: () => new prism.opus.Decoder({ rate: 48000, channels: 2, frameSize: 960 }),
+	transformer: () => new prism.opus.Decoder({ rate: 48_000, channels: 2, frameSize: 960 }),
 });
 
 getNode(StreamType.OggOpus).addEdge({
@@ -163,6 +163,7 @@ function canEnableFFmpegOptimizations(): boolean {
 	try {
 		return prism.FFmpeg.getInfo().output.includes('--enable-libopus');
 	} catch {}
+
 	return false;
 }
 
@@ -189,11 +190,6 @@ if (canEnableFFmpegOptimizations()) {
  */
 interface Step {
 	/**
-	 * The next step.
-	 */
-	next?: Step;
-
-	/**
 	 * The cost of the steps after this step.
 	 */
 	cost: number;
@@ -202,6 +198,11 @@ interface Step {
 	 * The edge associated with this step.
 	 */
 	edge?: Edge;
+
+	/**
+	 * The next step.
+	 */
+	next?: Step;
 }
 
 /**
@@ -223,10 +224,10 @@ function findPath(
 	if (from === goal && constraints(path)) {
 		return { cost: 0 };
 	} else if (depth === 0) {
-		return { cost: Infinity };
+		return { cost: Number.POSITIVE_INFINITY };
 	}
 
-	let currentBest: Step | undefined = undefined;
+	let currentBest: Step | undefined;
 	for (const edge of from.edges) {
 		if (currentBest && edge.cost > currentBest.cost) continue;
 		const next = findPath(edge.to, constraints, goal, [...path, edge], depth - 1);
@@ -235,7 +236,8 @@ function findPath(
 			currentBest = { cost, edge, next };
 		}
 	}
-	return currentBest ?? { cost: Infinity };
+
+	return currentBest ?? { cost: Number.POSITIVE_INFINITY };
 }
 
 /**
@@ -250,6 +252,7 @@ function constructPipeline(step: Step) {
 		edges.push(current.edge);
 		current = current.next;
 	}
+
 	return edges;
 }
 

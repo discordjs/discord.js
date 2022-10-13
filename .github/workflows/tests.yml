@@ -1,9 +1,17 @@
 name: Tests
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -13,20 +21,22 @@ jobs:
         with:
           node-version: 16
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn --immutable
+        run: yarn install --immutable
 
       - name: Build dependencies
         run: yarn build
 
       - name: ESLint
-        run: yarn lint
+        run: yarn lint -- --format=compact
 
       - name: Tests
         run: yarn test
 
+      - name: Docs
+        run: yarn docs
+
       - name: Upload Coverage
-        uses: ./packages/actions/src/uploadCoverage
         if: github.repository_owner == 'discordjs'
+        uses: ./packages/actions/src/uploadCoverage

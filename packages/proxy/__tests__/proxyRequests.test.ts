@@ -1,10 +1,10 @@
 import { createServer } from 'node:http';
 import { REST } from '@discordjs/rest';
 import supertest from 'supertest';
-import { MockAgent, Interceptable, setGlobalDispatcher } from 'undici';
+import { MockAgent, setGlobalDispatcher, type Interceptable } from 'undici';
 import type { MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterAll, afterEach, test, expect } from 'vitest';
-import { proxyRequests } from '../src';
+import { proxyRequests } from '../src/index.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
@@ -16,7 +16,6 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 };
 
 const api = new REST().setToken('A-Very-Fake-Token');
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 const server = createServer(proxyRequests(api));
 
 beforeEach(() => {

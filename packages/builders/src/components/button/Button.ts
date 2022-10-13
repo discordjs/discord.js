@@ -1,10 +1,10 @@
 import {
 	ComponentType,
-	ButtonStyle,
 	type APIMessageComponentEmoji,
 	type APIButtonComponent,
 	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
+	type ButtonStyle,
 } from 'discord-api-types/v10';
 import {
 	buttonLabelValidator,
@@ -14,13 +14,41 @@ import {
 	emojiValidator,
 	urlValidator,
 	validateRequiredButtonParameters,
-} from '../Assertions';
-import { ComponentBuilder } from '../Component';
+} from '../Assertions.js';
+import { ComponentBuilder } from '../Component.js';
 
 /**
  * Represents a button component
  */
 export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
+	/**
+	 * Creates a new button from API data
+	 *
+	 * @param data - The API data to create this button with
+	 * @example
+	 * Creating a button from an API data object
+	 * ```ts
+	 * const button = new ButtonBuilder({
+	 * 	custom_id: 'a cool button',
+	 * 	style: ButtonStyle.Primary,
+	 * 	label: 'Click Me',
+	 * 	emoji: {
+	 * 		name: 'smile',
+	 * 		id: '123456789012345678',
+	 * 	},
+	 * });
+	 * ```
+	 * @example
+	 * Creating a button using setters and API data
+	 * ```ts
+	 * const button = new ButtonBuilder({
+	 * 	style: ButtonStyle.Secondary,
+	 * 	label: 'Click Me',
+	 * })
+	 * 	.setEmoji({ name: '🙂' })
+	 * 	.setCustomId('another cool button');
+	 * ```
+	 */
 	public constructor(data?: Partial<APIButtonComponent>) {
 		super({ type: ComponentType.Button, ...data });
 	}
@@ -38,6 +66,9 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	/**
 	 * Sets the URL for this button
 	 *
+	 * @remarks
+	 * This method is only available to buttons using the `Link` button style.
+	 * Only three types of URL schemes are currently supported: `https://`, `http://` and `discord://`
 	 * @param url - The URL to open when this button is clicked
 	 */
 	public setURL(url: string) {
@@ -48,6 +79,8 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	/**
 	 * Sets the custom id for this button
 	 *
+	 * @remarks
+	 * This method is only applicable to buttons that are not using the `Link` button style.
 	 * @param customId - The custom id to use for this button
 	 */
 	public setCustomId(customId: string) {
@@ -85,6 +118,9 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(
 			this.data.style,
@@ -93,7 +129,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 			(this.data as APIButtonComponentWithCustomId).custom_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APIButtonComponent;

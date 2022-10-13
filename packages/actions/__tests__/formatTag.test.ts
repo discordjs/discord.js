@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { formatTag } from '../src';
+import { formatTag } from '../src/index.js';
 
 describe('Format Tag', () => {
 	test('GIVEN tag with a prefix THEN format tag to not contain the prefix', () => {

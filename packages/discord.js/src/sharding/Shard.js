@@ -5,7 +5,7 @@ const path = require('node:path');
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const ShardEvents = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
 let childProcess = null;
@@ -107,8 +107,8 @@ class Shard extends EventEmitter {
    * @returns {Promise<ChildProcess>}
    */
   spawn(timeout = 30_000) {
-    if (this.process) throw new Error(ErrorCodes.ShardingProcessExists, this.id);
-    if (this.worker) throw new Error(ErrorCodes.ShardingWorkerExists, this.id);
+    if (this.process) throw new DiscordjsError(ErrorCodes.ShardingProcessExists, this.id);
+    if (this.worker) throw new DiscordjsError(ErrorCodes.ShardingWorkerExists, this.id);
 
     this._exitListener = this._handleExit.bind(this, undefined, timeout);
 
@@ -154,17 +154,17 @@ class Shard extends EventEmitter {
 
       const onDisconnect = () => {
         cleanup();
-        reject(new Error(ErrorCodes.ShardingReadyDisconnected, this.id));
+        reject(new DiscordjsError(ErrorCodes.ShardingReadyDisconnected, this.id));
       };
 
       const onDeath = () => {
         cleanup();
-        reject(new Error(ErrorCodes.ShardingReadyDied, this.id));
+        reject(new DiscordjsError(ErrorCodes.ShardingReadyDied, this.id));
       };
 
       const onTimeout = () => {
         cleanup();
-        reject(new Error(ErrorCodes.ShardingReadyTimeout, this.id));
+        reject(new DiscordjsError(ErrorCodes.ShardingReadyTimeout, this.id));
       };
 
       const spawnTimeoutTimer = setTimeout(onTimeout, timeout);
@@ -239,7 +239,9 @@ class Shard extends EventEmitter {
    */
   fetchClientValue(prop) {
     // Shard is dead (maybe respawning), don't cache anything and error immediately
-    if (!this.process && !this.worker) return Promise.reject(new Error(ErrorCodes.ShardingNoChildExists, this.id));
+    if (!this.process && !this.worker) {
+      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id));
+    }
 
     // Cached promise from previous call
     if (this._fetches.has(prop)) return this._fetches.get(prop);
@@ -282,7 +284,9 @@ class Shard extends EventEmitter {
     const _eval = typeof script === 'function' ? `(${script})(this, ${JSON.stringify(context)})` : script;
 
     // Shard is dead (maybe respawning), don't cache anything and error immediately
-    if (!this.process && !this.worker) return Promise.reject(new Error(ErrorCodes.ShardingNoChildExists, this.id));
+    if (!this.process && !this.worker) {
+      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id));
+    }
 
     // Cached promise from previous call
     if (this._evals.has(_eval)) return this._evals.get(_eval);

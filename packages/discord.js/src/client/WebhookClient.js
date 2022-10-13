@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseClient = require('./BaseClient');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const Webhook = require('../structures/Webhook');
 const { parseWebhookURL } = require('../util/Util');
 
@@ -32,7 +32,7 @@ class WebhookClient extends BaseClient {
   /**
    * Options for a webhook client.
    * @typedef {Object} WebhookClientOptions
-   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link WebhookMessageOptions#allowedMentions}
+   * @property {MessageMentionOptions} [allowedMentions] Default value for {@link BaseMessageOptions#allowedMentions}
    * @property {RESTOptions} [rest] Options for the REST manager
    */
 
@@ -48,7 +48,7 @@ class WebhookClient extends BaseClient {
     if ('url' in data) {
       const parsed = parseWebhookURL(data.url);
       if (!parsed) {
-        throw new Error(ErrorCodes.WebhookURLInvalid);
+        throw new DiscordjsError(ErrorCodes.WebhookURLInvalid);
       }
 
       ({ id, token } = parsed);
@@ -68,7 +68,7 @@ class WebhookClient extends BaseClient {
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookMessageOptions} options The content for the reply
+   * @param {string|MessagePayload|WebhookCreateMessageOptions} options The content for the reply
    * @returns {Promise<APIMessage>}
    */
   send() {}

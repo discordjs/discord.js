@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+import { ChannelType, PermissionFlagsBits, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
@@ -14,7 +14,7 @@ import {
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const largeArray = Array.from({ length: 26 }, () => 1 as unknown as APIApplicationCommandOptionChoice);
 
@@ -33,9 +33,7 @@ const getSubcommandGroup = () => new SlashCommandSubcommandGroupBuilder().setNam
 const getSubcommand = () => new SlashCommandSubcommandBuilder().setName('owo').setDescription('Testing 123');
 
 class Collection {
-	public get [Symbol.toStringTag]() {
-		return 'Map';
-	}
+	public readonly [Symbol.toStringTag] = 'Map';
 }
 
 describe('Slash Commands', () => {
@@ -178,7 +176,7 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN a builder with invalid autocomplete THEN does throw an error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addStringOption(getStringOption().setAutocomplete('not a boolean'))).toThrowError();
 			});
 
@@ -236,7 +234,7 @@ describe('Slash Commands', () => {
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
+						getChannelOption().addChannelTypes(ChannelType.GuildAnnouncement, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
@@ -248,16 +246,16 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid max value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid max value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid min value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMinValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid min value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue('test'))).toThrowError();
 
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue(1.5))).toThrowError();
@@ -294,10 +292,10 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN no valid return for an addOption method THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(getRoleOption())).toThrowError();
 			});
 
@@ -318,18 +316,18 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid returns for builder THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(true)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(null)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(undefined)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(() => SlashCommandStringOption)).toThrowError();
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(() => new Collection())).toThrowError();
 			});
 
@@ -373,6 +371,18 @@ describe('Slash Commands', () => {
 				).not.toThrowError();
 			});
 
+			test('GIVEN builder with subcommand THEN has regular slash command fields', () => {
+				expect(() =>
+					getBuilder()
+						.setName('name')
+						.setDescription('description')
+						.addSubcommand((option) => option.setName('ye').setDescription('ye'))
+						.addSubcommand((option) => option.setName('no').setDescription('no'))
+						.setDMPermission(false)
+						.setDefaultMemberPermissions(1n),
+				).not.toThrowError();
+			});
+
 			test('GIVEN builder with already built subcommand group THEN does not throw error', () => {
 				expect(() => getNamedBuilder().addSubcommandGroup(getSubcommandGroup())).not.toThrowError();
 			});
@@ -389,30 +399,29 @@ describe('Slash Commands', () => {
 
 			test('GIVEN builder with a subcommand that tries to add an invalid result THEN throw error', () => {
 				expect(() =>
-					// @ts-expect-error Checking if check works JS-side too
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+					// @ts-expect-error: Checking if check works JS-side too
 					getNamedBuilder().addSubcommand(getSubcommand()).addInteger(getInteger()),
 				).toThrowError();
 			});
 
 			test('GIVEN no valid return for an addSubcommand(Group) method THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommandGroup()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommand()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommand(getSubcommandGroup())).toThrowError();
 			});
 		});
 
 		describe('Subcommand group builder', () => {
 			test('GIVEN no valid subcommand THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getSubcommandGroup().addSubcommand()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getSubcommandGroup().addSubcommand(getSubcommandGroup())).toThrowError();
 			});
 
@@ -444,9 +453,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 
@@ -467,9 +476,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid description localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization description
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization description
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 

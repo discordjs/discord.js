@@ -1,16 +1,38 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-
 import {
 	defaultValidator,
 	emojiValidator,
 	labelValueDescriptionValidator,
 	validateRequiredSelectMenuOptionParameters,
-} from '../Assertions';
+} from '../Assertions.js';
 
 /**
  * Represents a option within a select menu component
  */
-export class SelectMenuOptionBuilder {
+export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
+	/**
+	 * Creates a new select menu option from API data
+	 *
+	 * @param data - The API data to create this select menu option with
+	 * @example
+	 * Creating a select menu option from an API data object
+	 * ```ts
+	 * const selectMenuOption = new SelectMenuOptionBuilder({
+	 * 	label: 'catchy label',
+	 * 	value: '1',
+	 * });
+	 * ```
+	 * @example
+	 * Creating a select menu option using setters and API data
+	 * ```ts
+	 * const selectMenuOption = new SelectMenuOptionBuilder({
+	 * 	default: true,
+	 * 	value: '1',
+	 * })
+	 * 	.setLabel('woah')
+	 * ```
+	 */
 	public constructor(public data: Partial<APISelectMenuOption> = {}) {}
 
 	/**
@@ -63,9 +85,12 @@ export class SelectMenuOptionBuilder {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APISelectMenuOption;

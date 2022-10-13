@@ -1,14 +1,15 @@
+import { setTimeout, clearTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { request, type Dispatcher } from 'undici';
-import type { IHandler } from './IHandler';
 import type { RateLimitData, RequestOptions } from '../REST';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
-import { DiscordAPIError, DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError';
-import { HTTPError } from '../errors/HTTPError';
-import { RateLimitError } from '../errors/RateLimitError';
-import { RESTEvents } from '../utils/constants';
-import { hasSublimit, parseHeader, parseResponse } from '../utils/utils';
+import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../errors/DiscordAPIError.js';
+import { HTTPError } from '../errors/HTTPError.js';
+import { RateLimitError } from '../errors/RateLimitError.js';
+import { RESTEvents } from '../utils/constants.js';
+import { hasSublimit, parseHeader, parseResponse } from '../utils/utils.js';
+import type { IHandler } from './IHandler.js';
 
 /**
  * Invalid request limiting is done on a per-IP basis, not a per-token basis.
@@ -30,7 +31,7 @@ const enum QueueType {
  */
 export class SequentialHandler implements IHandler {
 	/**
-	 * The unique id of the handler
+	 * {@inheritDoc IHandler.id}
 	 */
 	public readonly id: string;
 
@@ -47,30 +48,26 @@ export class SequentialHandler implements IHandler {
 	/**
 	 * The total number of requests that can be made before we are rate limited
 	 */
-	private limit = Infinity;
+	private limit = Number.POSITIVE_INFINITY;
 
 	/**
 	 * The interface used to sequence async requests sequentially
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#asyncQueue = new AsyncQueue();
 
 	/**
 	 * The interface used to sequence sublimited async requests sequentially
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#sublimitedQueue: AsyncQueue | null = null;
 
 	/**
 	 * A promise wrapper for when the sublimited queue is finished being processed or null when not being processed
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-	#sublimitPromise: { promise: Promise<void>; resolve: () => void } | null = null;
+	#sublimitPromise: { promise: Promise<void>; resolve(): void } | null = null;
 
 	/**
 	 * Whether the sublimit queue needs to be shifted in the finally block
 	 */
-	// eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
 	#shiftSublimit = false;
 
 	/**
@@ -87,7 +84,7 @@ export class SequentialHandler implements IHandler {
 	}
 
 	/**
-	 * If the bucket is currently inactive (no pending requests)
+	 * {@inheritDoc IHandler.inactive}
 	 */
 	public get inactive(): boolean {
 		return (
@@ -161,12 +158,7 @@ export class SequentialHandler implements IHandler {
 	}
 
 	/**
-	 * Queues a request to be sent
-	 *
-	 * @param routeId - The generalized api route with literal ids for major parameters
-	 * @param url - The url to do the request on
-	 * @param options - All the information needed to make a request
-	 * @param requestData - Extra data from the user's request needed for errors and additional processing
+	 * {@inheritDoc IHandler.queueRequest}
 	 */
 	public async queueRequest(
 		routeId: RouteData,
@@ -181,8 +173,9 @@ export class SequentialHandler implements IHandler {
 			queue = this.#sublimitedQueue!;
 			queueType = QueueType.Sublimit;
 		}
+
 		// Wait for any previous requests to be completed before this one is run
-		await queue.wait();
+		await queue.wait({ signal: requestData.signal });
 		// This set handles retroactively sublimiting requests
 		if (queueType === QueueType.Standard) {
 			if (this.#sublimitedQueue && hasSublimit(routeId.bucketRoute, requestData.body, options.method)) {
@@ -199,6 +192,7 @@ export class SequentialHandler implements IHandler {
 				await this.#sublimitPromise.promise;
 			}
 		}
+
 		try {
 			// Make the request, and return the results
 			return await this.runRequest(routeId, url, options, requestData);
@@ -209,6 +203,7 @@ export class SequentialHandler implements IHandler {
 				this.#shiftSublimit = false;
 				this.#sublimitedQueue?.shift();
 			}
+
 			// If this request is the last request in a sublimit
 			if (this.#sublimitedQueue?.remaining === 0) {
 				this.#sublimitPromise?.resolve();
@@ -252,6 +247,7 @@ export class SequentialHandler implements IHandler {
 					// The global delay function clears the global delay state when it is resolved
 					this.manager.globalDelay = this.globalDelayFor(timeout);
 				}
+
 				delay = this.manager.globalDelay;
 			} else {
 				// Set RateLimitData based on the route-specific limit
@@ -259,6 +255,7 @@ export class SequentialHandler implements IHandler {
 				timeout = this.timeToReset;
 				delay = sleep(timeout);
 			}
+
 			const rateLimitData: RateLimitData = {
 				timeToReset: timeout,
 				limit,
@@ -279,27 +276,40 @@ export class SequentialHandler implements IHandler {
 			} else {
 				this.debug(`Waiting ${timeout}ms for rate limit to pass`);
 			}
+
 			// Wait the remaining time left before the rate limit resets
 			await delay;
 		}
+
 		// As the request goes out, update the global usage information
 		if (!this.manager.globalReset || this.manager.globalReset < Date.now()) {
-			this.manager.globalReset = Date.now() + 1000;
+			this.manager.globalReset = Date.now() + 1_000;
 			this.manager.globalRemaining = this.manager.options.globalRequestsPerSecond;
 		}
+
 		this.manager.globalRemaining--;
 
 		const method = options.method ?? 'get';
 
 		const controller = new AbortController();
 		const timeout = setTimeout(() => controller.abort(), this.manager.options.timeout).unref();
-		let res: Dispatcher.ResponseData;
+		if (requestData.signal) {
+			// The type polyfill is required because Node.js's types are incomplete.
+			const signal = requestData.signal as PolyFillAbortSignal;
+			// If the user signal was aborted, abort the controller, else abort the local signal.
+			// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
+			// requests, and we do not want to cause unexpected side-effects.
+			if (signal.aborted) controller.abort();
+			else signal.addEventListener('abort', () => controller.abort());
+		}
 
+		let res: Dispatcher.ResponseData;
 		try {
 			res = await request(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
 			// Retry the specified number of times for possible timed out requests
 			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
+				// eslint-disable-next-line no-param-reassign
 				return await this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 
@@ -333,14 +343,14 @@ export class SequentialHandler implements IHandler {
 		const retry = parseHeader(res.headers['retry-after']);
 
 		// Update the total number of requests that can be made before the rate limit resets
-		this.limit = limit ? Number(limit) : Infinity;
+		this.limit = limit ? Number(limit) : Number.POSITIVE_INFINITY;
 		// Update the number of remaining requests that can be made before the rate limit resets
 		this.remaining = remaining ? Number(remaining) : 1;
 		// Update the time when this rate limit resets (reset-after is in seconds)
-		this.reset = reset ? Number(reset) * 1000 + Date.now() + this.manager.options.offset : Date.now();
+		this.reset = reset ? Number(reset) * 1_000 + Date.now() + this.manager.options.offset : Date.now();
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1000 + this.manager.options.offset;
+		if (retry) retryAfter = Number(retry) * 1_000 + this.manager.options.offset;
 
 		// Handle buckets via the hash header retroactively
 		if (hash && hash !== this.hash) {
@@ -378,9 +388,10 @@ export class SequentialHandler implements IHandler {
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {
 			if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
-				invalidCountResetTime = Date.now() + 1000 * 60 * 10;
+				invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
 				invalidCount = 0;
 			}
+
 			invalidCount++;
 
 			const emitInvalid =
@@ -412,6 +423,7 @@ export class SequentialHandler implements IHandler {
 				limit = this.limit;
 				timeout = this.timeToReset;
 			}
+
 			await this.onRateLimit({
 				timeToReset: timeout,
 				limit,
@@ -445,10 +457,12 @@ export class SequentialHandler implements IHandler {
 					void this.#sublimitedQueue.wait();
 					this.#asyncQueue.shift();
 				}
+
 				this.#sublimitPromise?.resolve();
 				this.#sublimitPromise = null;
 				await sleep(sublimitTimeout, undefined, { ref: false });
 				let resolve: () => void;
+				// eslint-disable-next-line promise/param-names, no-promise-executor-return
 				const promise = new Promise<void>((res) => (resolve = res));
 				this.#sublimitPromise = { promise, resolve: resolve! };
 				if (firstSublimit) {
@@ -457,15 +471,18 @@ export class SequentialHandler implements IHandler {
 					this.#shiftSublimit = true;
 				}
 			}
+
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
 		} else if (status >= 500 && status < 600) {
 			// Retry the specified number of times for possible server side issues
 			if (retries !== this.manager.options.retries) {
+				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);
 			}
+
 			// We are out of retries, throw an error
-			throw new HTTPError(res.constructor.name, status, method, url, requestData);
+			throw new HTTPError(status, method, url, requestData);
 		} else {
 			// Handle possible malformed requests
 			if (status >= 400 && status < 500) {
@@ -473,12 +490,20 @@ export class SequentialHandler implements IHandler {
 				if (status === 401 && requestData.auth) {
 					this.manager.setToken(null!);
 				}
+
 				// The request will not succeed for some reason, parse the error returned from the api
 				const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 				// throw the API error
 				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
 			}
+
 			return res;
 		}
 	}
+}
+
+interface PolyFillAbortSignal {
+	readonly aborted: boolean;
+	addEventListener(type: 'abort', listener: () => void): void;
+	removeEventListener(type: 'abort', listener: () => void): void;
 }

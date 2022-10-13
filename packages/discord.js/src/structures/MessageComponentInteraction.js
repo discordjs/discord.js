@@ -1,9 +1,9 @@
 'use strict';
 
+const { lazy } = require('@discordjs/util');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
-const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 

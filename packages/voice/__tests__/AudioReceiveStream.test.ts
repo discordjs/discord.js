@@ -1,9 +1,11 @@
+/* eslint-disable no-promise-executor-return */
+import { Buffer } from 'node:buffer';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioReceiveStream, EndBehaviorType } from '../src/receive/AudioReceiveStream';
 
 const DUMMY_BUFFER = Buffer.allocUnsafe(16);
 
-function wait(ms: number) {
+async function wait(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -52,13 +54,13 @@ describe('AudioReceiveStream', () => {
 		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterInactivity, duration: 100 } });
 		stream.resume();
 
-		for (let i = increment; i < duration / 2; i += increment) {
+		for (let index = increment; index < duration / 2; index += increment) {
 			await stepSilence(stream, increment);
 		}
 
 		stream.push(DUMMY_BUFFER);
 
-		for (let i = increment; i < duration; i += increment) {
+		for (let index = increment; index < duration; index += increment) {
 			await stepSilence(stream, increment);
 		}
 

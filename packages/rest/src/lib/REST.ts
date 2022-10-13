@@ -1,19 +1,19 @@
 import { EventEmitter } from 'node:events';
 import type { Collection } from '@discordjs/collection';
 import type { request, Dispatcher } from 'undici';
-import { CDN } from './CDN';
+import { CDN } from './CDN.js';
 import {
-	HandlerRequestData,
-	InternalRequest,
-	RequestData,
 	RequestManager,
 	RequestMethod,
-	RouteLike,
-} from './RequestManager';
-import type { HashData } from './RequestManager';
-import type { IHandler } from './handlers/IHandler';
-import { DefaultRestOptions, RESTEvents } from './utils/constants';
-import { parseResponse } from './utils/utils';
+	type HashData,
+	type HandlerRequestData,
+	type InternalRequest,
+	type RequestData,
+	type RouteLike,
+} from './RequestManager.js';
+import type { IHandler } from './handlers/IHandler.js';
+import { DefaultRestOptions, RESTEvents } from './utils/constants.js';
+import { parseResponse } from './utils/utils.js';
 
 /**
  * Options to be passed when creating the REST instance
@@ -25,45 +25,64 @@ export interface RESTOptions {
 	agent: Dispatcher;
 	/**
 	 * The base api path, without version
-	 * @default 'https://discord.com/api'
+	 *
+	 * @defaultValue `'https://discord.com/api'`
 	 */
 	api: string;
 	/**
 	 * The authorization prefix to use for requests, useful if you want to use
 	 * bearer tokens
 	 *
-	 * @default 'Bot'
+	 * @defaultValue `'Bot'`
 	 */
-	authPrefix: 'Bot' | 'Bearer';
+	authPrefix: 'Bearer' | 'Bot';
 	/**
 	 * The cdn path
 	 *
-	 * @default 'https://cdn.discordapp.com'
+	 * @defaultValue 'https://cdn.discordapp.com'
 	 */
 	cdn: string;
 	/**
+	 * How many requests to allow sending per second (Infinity for unlimited, 50 for the standard global limit used by Discord)
+	 *
+	 * @defaultValue `50`
+	 */
+	globalRequestsPerSecond: number;
+	/**
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 1h)
+	 *
+	 * @defaultValue `3_600_000`
+	 */
+	handlerSweepInterval: number;
+	/**
+	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request (defaults to 24h)
+	 *
+	 * @defaultValue `86_400_000`
+	 */
+	hashLifetime: number;
+	/**
+	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 4h)
+	 *
+	 * @defaultValue `14_400_000`
+	 */
+	hashSweepInterval: number;
+	/**
 	 * Additional headers to send for all API requests
 	 *
-	 * @default {}
+	 * @defaultValue `{}`
 	 */
 	headers: Record<string, string>;
 	/**
 	 * The number of invalid REST requests (those that return 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings).
 	 * That is, if set to 500, warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
 	 *
-	 * @default 0
+	 * @defaultValue `0`
 	 */
 	invalidRequestWarningInterval: number;
 	/**
-	 * How many requests to allow sending per second (Infinity for unlimited, 50 for the standard global limit used by Discord)
-	 *
-	 * @default 50
-	 */
-	globalRequestsPerSecond: number;
-	/**
 	 * The extra offset to add to rate limits in milliseconds
 	 *
-	 * @default 50
+	 * @defaultValue `50`
 	 */
 	offset: number;
 	/**
@@ -72,52 +91,34 @@ export interface RESTOptions {
 	 * (e.g. `/channels` to match any route starting with `/channels` such as `/channels/:id/messages`)
 	 * for which to throw {@link RateLimitError}s. All other request routes will be queued normally
 	 *
-	 * @default null
+	 * @defaultValue `null`
 	 */
-	rejectOnRateLimit: string[] | RateLimitQueueFilter | null;
+	rejectOnRateLimit: RateLimitQueueFilter | string[] | null;
 	/**
 	 * The number of retries for errors with the 500 code, or errors
 	 * that timeout
 	 *
-	 * @default 3
+	 * @defaultValue `3`
 	 */
 	retries: number;
 	/**
 	 * The time to wait in milliseconds before a request is aborted
 	 *
-	 * @default 15_000
+	 * @defaultValue `15_000`
 	 */
 	timeout: number;
 	/**
 	 * Extra information to add to the user agent
 	 *
-	 * @default `Node.js ${process.version}`
+	 * @defaultValue `Node.js ${process.version}`
 	 */
 	userAgentAppendix: string;
 	/**
 	 * The version of the API to use
 	 *
-	 * @default '10'
+	 * @defaultValue `'10'`
 	 */
 	version: string;
-	/**
-	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 4h)
-	 *
-	 * @default 14_400_000
-	 */
-	hashSweepInterval: number;
-	/**
-	 * The maximum amount of time a hash can exist in milliseconds without being hit with a request (defaults to 24h)
-	 *
-	 * @default 86_400_000
-	 */
-	hashLifetime: number;
-	/**
-	 * The amount of time in milliseconds that passes between each hash sweep. (defaults to 1h)
-	 *
-	 * @default 3_600_000
-	 */
-	handlerSweepInterval: number;
 }
 
 /**
@@ -125,29 +126,17 @@ export interface RESTOptions {
  */
 export interface RateLimitData {
 	/**
-	 * The time, in milliseconds, until the request-lock is reset
+	 * Whether the rate limit that was reached was the global limit
 	 */
-	timeToReset: number;
-	/**
-	 * The amount of requests we can perform before locking requests
-	 */
-	limit: number;
-	/**
-	 * The HTTP method being performed
-	 */
-	method: string;
+	global: boolean;
 	/**
 	 * The bucket hash for this request
 	 */
 	hash: string;
 	/**
-	 * The full URL for this request
+	 * The amount of requests we can perform before locking requests
 	 */
-	url: string;
-	/**
-	 * The route being hit in this request
-	 */
-	route: string;
+	limit: number;
 	/**
 	 * The major parameter of the route
 	 *
@@ -156,41 +145,53 @@ export interface RateLimitData {
 	 */
 	majorParameter: string;
 	/**
-	 * Whether the rate limit that was reached was the global limit
+	 * The HTTP method being performed
 	 */
-	global: boolean;
+	method: string;
+	/**
+	 * The route being hit in this request
+	 */
+	route: string;
+	/**
+	 * The time, in milliseconds, until the request-lock is reset
+	 */
+	timeToReset: number;
+	/**
+	 * The full URL for this request
+	 */
+	url: string;
 }
 
 /**
  * A function that determines whether the rate limit hit should throw an Error
  */
-export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => boolean | Promise<boolean>;
+export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Promise<boolean> | boolean;
 
 export interface APIRequest {
-	/**
-	 * The HTTP method used in this request
-	 */
-	method: string;
-	/**
-	 * The full path used to make the request
-	 */
-	path: RouteLike;
-	/**
-	 * The API route identifying the ratelimit for this request
-	 */
-	route: string;
-	/**
-	 * Additional HTTP options for this request
-	 */
-	options: RequestOptions;
 	/**
 	 * The data that was used to form the body of this request
 	 */
 	data: HandlerRequestData;
 	/**
+	 * The HTTP method used in this request
+	 */
+	method: string;
+	/**
+	 * Additional HTTP options for this request
+	 */
+	options: RequestOptions;
+	/**
+	 * The full path used to make the request
+	 */
+	path: RouteLike;
+	/**
 	 * The number of times this request has been attempted
 	 */
 	retries: number;
+	/**
+	 * The API route identifying the ratelimit for this request
+	 */
+	route: string;
 }
 
 export interface InvalidRequestWarningData {
@@ -205,27 +206,27 @@ export interface InvalidRequestWarningData {
 }
 
 export interface RestEvents {
-	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
-	restDebug: [info: string];
-	rateLimited: [rateLimitInfo: RateLimitData];
-	response: [request: APIRequest, response: Dispatcher.ResponseData];
-	newListener: [name: string, listener: (...args: any) => void];
-	removeListener: [name: string, listener: (...args: any) => void];
-	hashSweep: [sweptHashes: Collection<string, HashData>];
 	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
+	hashSweep: [sweptHashes: Collection<string, HashData>];
+	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
+	newListener: [name: string, listener: (...args: any) => void];
+	rateLimited: [rateLimitInfo: RateLimitData];
+	removeListener: [name: string, listener: (...args: any) => void];
+	response: [request: APIRequest, response: Dispatcher.ResponseData];
+	restDebug: [info: string];
 }
 
 export interface REST {
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
 	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
 		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
 
 	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
+
+	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
+		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
+
+	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
 		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
 
 	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
@@ -236,6 +237,7 @@ export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 export class REST extends EventEmitter {
 	public readonly cdn: CDN;
+
 	public readonly requestManager: RequestManager;
 
 	public constructor(options: Partial<RESTOptions> = {}) {
@@ -288,7 +290,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public get(fullRoute: RouteLike, options: RequestData = {}) {
+	public async get(fullRoute: RouteLike, options: RequestData = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Get });
 	}
 
@@ -298,7 +300,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public delete(fullRoute: RouteLike, options: RequestData = {}) {
+	public async delete(fullRoute: RouteLike, options: RequestData = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Delete });
 	}
 
@@ -308,7 +310,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public post(fullRoute: RouteLike, options: RequestData = {}) {
+	public async post(fullRoute: RouteLike, options: RequestData = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Post });
 	}
 
@@ -318,7 +320,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public put(fullRoute: RouteLike, options: RequestData = {}) {
+	public async put(fullRoute: RouteLike, options: RequestData = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Put });
 	}
 
@@ -328,7 +330,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public patch(fullRoute: RouteLike, options: RequestData = {}) {
+	public async patch(fullRoute: RouteLike, options: RequestData = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Patch });
 	}
 
@@ -347,7 +349,7 @@ export class REST extends EventEmitter {
 	 *
 	 * @param options - Request options
 	 */
-	public raw(options: InternalRequest) {
+	public async raw(options: InternalRequest) {
 		return this.requestManager.queueRequest(options);
 	}
 }

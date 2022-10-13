@@ -1,17 +1,15 @@
 {
 	"name": "@discordjs/docgen",
-	"version": "0.12.0",
+	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
-		"build": "unbuild",
-		"lint": "prettier --check . && eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src --ext mjs,js,ts --fix",
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn test && yarn build",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
-		"release": "cliff-jumper"
+		"prepack": "yarn format && yarn build"
 	},
-	"bin": "./dist/index.cjs",
+	"bin": "./dist/cli.js",
 	"directories": {
 		"lib": "src"
 	},
@@ -42,23 +40,27 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/collection": "workspace:^",
-		"commander": "^9.4.0",
+		"commander": "^9.4.1",
 		"jsdoc-to-markdown": "^7.1.1",
 		"tslib": "^2.4.0",
-		"typedoc": "^0.23.9"
+		"typedoc": "^0.23.16"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.8.5",
+		"@favware/cliff-jumper": "^1.8.8",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^16.11.46",
-		"eslint": "^8.20.0",
+		"@types/node": "16.11.64",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.38",
+		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.7.6"
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

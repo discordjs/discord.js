@@ -5,9 +5,9 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build": "unbuild",
-		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format"
 	},
 	"main": "./dist/index.mjs",
@@ -39,18 +39,20 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@actions/core": "^1.9.0",
+		"@actions/core": "^1.10.0",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.46",
-		"c8": "^7.12.0",
-		"eslint": "^8.20.0",
+		"@types/node": "16.11.64",
+		"@vitest/coverage-c8": "^0.24.1",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.38",
+		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.7.6",
-		"vitest": "^0.19.1"
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.4",
+		"vitest": "^0.24.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -3,7 +3,7 @@ FROM node:16-alpine
 WORKDIR /usr/proxy
 
 # First copy over dependencies separate from src for better caching
-COPY package.json yarn.lock tsconfig.json .yarnrc.yml build.config.ts ./
+COPY package.json yarn.lock tsconfig.json .yarnrc.yml tsup.config.js ./
 COPY .yarn ./.yarn
 COPY ./packages/proxy-container/package.json ./packages/proxy-container/
 
@@ -15,4 +15,4 @@ RUN yarn workspaces focus
 COPY ./packages/proxy-container ./
 RUN yarn build && yarn workspaces focus --production
 
-CMD ["node", "--enable-source-maps", "./dist/index.mjs"]
+CMD ["node", "--enable-source-maps", "./dist/index.js"]

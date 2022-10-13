@@ -52,7 +52,7 @@ body:
     id: djs-version
     attributes:
       label: Package version
-      description: Which version of are you using? Run `npm list <package>` in your project directory and paste the output.
+      description: Which version of the package are you using? Run `npm list <package>` in your project directory and paste the output.
       placeholder: We no longer support version 12 or earlier of discord.js
     validations:
       required: true

@@ -1,9 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-
-/**
- * Represents a potentially awaitable value
- */
-export type Awaitable<T> = T | PromiseLike<T>;
+import type { Awaitable } from '@discordjs/util';
 
 /**
  * Represents a simple HTTP request handler

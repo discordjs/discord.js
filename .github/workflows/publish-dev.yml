@@ -1,8 +1,8 @@
 name: Publish dev
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 */12 * * *'
+  workflow_dispatch:
 jobs:
   npm-publish:
     name: npm publish
@@ -20,11 +20,16 @@ jobs:
             folder: 'proxy'
           - package: '@discordjs/rest'
             folder: 'rest'
+          - package: '@discordjs/util'
+            folder: 'util'
           - package: '@discordjs/voice'
             folder: 'voice'
           - package: '@discordjs/ws'
             folder: 'ws'
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
@@ -36,7 +41,6 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
           cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
         run: yarn --immutable

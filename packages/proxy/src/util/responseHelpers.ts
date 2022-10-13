@@ -47,7 +47,7 @@ export function populateGeneralErrorResponse(res: ServerResponse, error: Discord
  */
 export function populateRatelimitErrorResponse(res: ServerResponse, error: RateLimitError): void {
 	res.statusCode = 429;
-	res.setHeader('Retry-After', error.timeToReset / 1000);
+	res.setHeader('Retry-After', error.timeToReset / 1_000);
 }
 
 /**

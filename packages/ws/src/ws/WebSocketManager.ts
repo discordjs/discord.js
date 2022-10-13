@@ -1,26 +1,26 @@
 import type { REST } from '@discordjs/rest';
+import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
-	APIGatewayBotInfo,
-	GatewayIdentifyProperties,
-	GatewayPresenceUpdateData,
-	RESTGetAPIGatewayBotResult,
-	GatewayIntentBits,
 	Routes,
-	GatewaySendPayload,
+	type APIGatewayBotInfo,
+	type GatewayIdentifyProperties,
+	type GatewayPresenceUpdateData,
+	type RESTGetAPIGatewayBotResult,
+	type GatewayIntentBits,
+	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
-import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy';
-import { CompressionMethod, DefaultWebSocketManagerOptions, Encoding } from '../utils/constants';
-import { Awaitable, range } from '../utils/utils';
+import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
+import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
+import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 
 /**
  * Represents a range of shard ids
  */
 export interface ShardRange {
-	start: number;
 	end: number;
+	start: number;
 }
 
 /**
@@ -28,31 +28,31 @@ export interface ShardRange {
  */
 export interface SessionInfo {
 	/**
-	 * Session id for this shard
+	 * URL to use when resuming
 	 */
-	sessionId: string;
+	resumeURL: string;
 	/**
 	 * The sequence number of the last message sent by the shard
 	 */
 	sequence: number;
 	/**
-	 * The id of the shard
+	 * Session id for this shard
 	 */
-	shardId: number;
+	sessionId: string;
 	/**
 	 * The total number of shards at the time of this shard identifying
 	 */
 	shardCount: number;
+	/**
+	 * The id of the shard
+	 */
+	shardId: number;
 }
 
 /**
  * Required options for the WebSocketManager
  */
 export interface RequiredWebSocketManagerOptions {
-	/**
-	 * The token to use for identifying with the gateway
-	 */
-	token: string;
 	/**
 	 * The intents to request
 	 */
@@ -61,6 +61,10 @@ export interface RequiredWebSocketManagerOptions {
 	 * The REST instance to use for fetching gateway information
 	 */
 	rest: REST;
+	/**
+	 * The token to use for identifying with the gateway
+	 */
+	token: string;
 }
 
 /**
@@ -68,69 +72,17 @@ export interface RequiredWebSocketManagerOptions {
  */
 export interface OptionalWebSocketManagerOptions {
 	/**
-	 * The total number of shards across all WebsocketManagers you intend to instantiate.
-	 * Use `null` to use Discord's recommended shard count
-	 */
-	shardCount: number | null;
-	/**
-	 * The ids of the shards this WebSocketManager should manage.
-	 * Use `null` to simply spawn 0 through `shardCount - 1`
-	 * @example
-	 * const manager = new WebSocketManager({
-	 *   shardIds: [1, 3, 7], // spawns shard 1, 3, and 7, nothing else
-	 * });
-	 * @example
-	 * const manager = new WebSocketManager({
-	 *   shardIds: {
-	 *     start: 3,
-	 *     end: 6,
-	 *   }, // spawns shards 3, 4, 5, and 6
-	 * });
-	 */
-	shardIds: number[] | ShardRange | null;
-	/**
-	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
-	 */
-	largeThreshold: number | null;
-	/**
-	 * Initial presence data to send to the gateway when identifying
-	 */
-	initialPresence: GatewayPresenceUpdateData | null;
-	/**
-	 * Properties to send to the gateway when identifying
-	 */
-	identifyProperties: GatewayIdentifyProperties;
-	/**
-	 * The gateway version to use
-	 * @default '10'
-	 */
-	version: string;
-	/**
-	 * The encoding to use
-	 * @default 'json'
-	 */
-	encoding: Encoding;
-	/**
 	 * The compression method to use
-	 * @default null (no compression)
+	 *
+	 * @defaultValue `null` (no compression)
 	 */
 	compression: CompressionMethod | null;
 	/**
-	 * Function used to retrieve session information (and attempt to resume) for a given shard
-	 * @example
-	 * const manager = new WebSocketManager({
-	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
-	 *     // Fetch this info from redis or similar
-	 *     return { sessionId: string, sequence: number };
-	 *     // Return null if no information is found
-	 *   },
-	 * });
+	 * The encoding to use
+	 *
+	 * @defaultValue `'json'`
 	 */
-	retrieveSessionInfo: (shardId: number) => Awaitable<SessionInfo | null>;
-	/**
-	 * Function used to store session information for a given shard
-	 */
-	updateSessionInfo: (shardId: number, sessionInfo: SessionInfo | null) => Awaitable<void>;
+	encoding: Encoding;
 	/**
 	 * How long to wait for a shard to connect before giving up
 	 */
@@ -140,12 +92,75 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	helloTimeout: number | null;
 	/**
+	 * Properties to send to the gateway when identifying
+	 */
+	identifyProperties: GatewayIdentifyProperties;
+	/**
+	 * Initial presence data to send to the gateway when identifying
+	 */
+	initialPresence: GatewayPresenceUpdateData | null;
+	/**
+	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
+	 */
+	largeThreshold: number | null;
+	/**
 	 * How long to wait for a shard's READY packet before giving up
 	 */
 	readyTimeout: number | null;
+	/**
+	 * Function used to retrieve session information (and attempt to resume) for a given shard
+	 *
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 *   async retrieveSessionInfo(shardId): Awaitable<SessionInfo | null> {
+	 *     // Fetch this info from redis or similar
+	 *     return { sessionId: string, sequence: number };
+	 *     // Return null if no information is found
+	 *   },
+	 * });
+	 * ```
+	 */
+	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
+	/**
+	 * The total number of shards across all WebsocketManagers you intend to instantiate.
+	 * Use `null` to use Discord's recommended shard count
+	 */
+	shardCount: number | null;
+	/**
+	 * The ids of the shards this WebSocketManager should manage.
+	 * Use `null` to simply spawn 0 through `shardCount - 1`
+	 *
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 *   shardIds: [1, 3, 7], // spawns shard 1, 3, and 7, nothing else
+	 * });
+	 * ```
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 *   shardIds: {
+	 *     start: 3,
+	 *     end: 6,
+	 *   }, // spawns shards 3, 4, 5, and 6
+	 * });
+	 * ```
+	 */
+	shardIds: number[] | ShardRange | null;
+	/**
+	 * Function used to store session information for a given shard
+	 */
+	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
+	/**
+	 * The gateway version to use
+	 *
+	 * @defaultValue `'10'`
+	 */
+	version: string;
 }
 
-export type WebSocketManagerOptions = RequiredWebSocketManagerOptions & OptionalWebSocketManagerOptions;
+export type WebSocketManagerOptions = OptionalWebSocketManagerOptions & RequiredWebSocketManagerOptions;
 
 export type ManagerShardEventsMap = {
 	[K in keyof WebSocketShardEventsMap]: [
@@ -174,11 +189,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Strategy used to manage shards
-	 * @default SimpleManagerToShardStrategy
+	 *
+	 * @defaultValue `SimpleManagerToShardStrategy`
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
-	public constructor(options: RequiredWebSocketManagerOptions & Partial<OptionalWebSocketManagerOptions>) {
+	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 	}
@@ -190,7 +206,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Fetches the gateway information from Discord - or returns it from cache if available
-	 * @param force Whether to ignore the cache and force a fresh fetch
+	 *
+	 * @param force - Whether to ignore the cache and force a fresh fetch
 	 */
 	public async fetchGatewayInformation(force = false) {
 		if (this.gatewayInformation) {
@@ -209,7 +226,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	/**
 	 * Updates your total shard count on-the-fly, spawning shards as needed
-	 * @param shardCount The new shard count to use
+	 *
+	 * @param shardCount - The new shard count to use
 	 */
 	public async updateShardCount(shardCount: number | null) {
 		await this.strategy.destroy({ reason: 'User is adjusting their shards' });
@@ -246,11 +264,11 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 			if (Array.isArray(this.options.shardIds)) {
 				shardIds = this.options.shardIds;
 			} else {
-				shardIds = range(this.options.shardIds);
+				shardIds = range(this.options.shardIds.start, this.options.shardIds.end);
 			}
 		} else {
 			const data = await this.fetchGatewayInformation();
-			shardIds = range({ start: 0, end: (this.options.shardCount ?? data.shards) - 1 });
+			shardIds = range(0, (this.options.shardCount ?? data.shards) - 1);
 		}
 
 		this.shardIds = shardIds;
@@ -259,6 +277,16 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public async connect() {
 		const shardCount = await this.getShardCount();
+
+		const data = await this.fetchGatewayInformation();
+		if (data.session_start_limit.remaining < shardCount) {
+			throw new Error(
+				`Not enough sessions remaining to spawn ${shardCount} shards; only ${
+					data.session_start_limit.remaining
+				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
+			);
+		}
+
 		// First, make sure all our shards are spawned
 		await this.updateShardCount(shardCount);
 		await this.strategy.connect();

@@ -8,7 +8,7 @@ const { basename, flatten } = require('../util/Util');
 class AttachmentBuilder {
   /**
    * @param {BufferResolvable|Stream} attachment The file
-   * @param {APIAttachment} [data] Extra data
+   * @param {AttachmentData} [data] Extra data
    */
   constructor(attachment, data = {}) {
     /**
@@ -107,4 +107,10 @@ module.exports = AttachmentBuilder;
 /**
  * @external APIAttachment
  * @see {@link https://discord.com/developers/docs/resources/channel#attachment-object}
+ */
+
+/**
+ * @typedef {Object} AttachmentData
+ * @property {string} [name] The name of the attachment
+ * @property {string} [description] The description of the attachment
  */
