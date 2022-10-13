@@ -7,66 +7,117 @@ import type {
 } from 'discord-api-types/v10';
 import { Routes, InteractionResponseType } from 'discord-api-types/v10';
 
-export const interactions = (api: REST) => ({
-	async reply(interaction: APIInteraction, content: APIInteractionResponseCallbackData | string) {
-		const interactionResponse = typeof content === 'string' ? { content } : content;
+export class InteractionsAPI {
+	private readonly rest: REST;
 
-		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	public constructor(rest: REST) {
+		this.rest = rest;
+	}
+
+	/**
+	 * Replies to an interaction
+	 *
+	 * @param interaction - The interaction to reply to
+	 * @param options - The options to use when replying
+	 */
+	public async reply(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+		const interactionResponse = typeof options === 'string' ? { content: options } : options;
+
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data: interactionResponse,
 			},
 		});
-	},
+	}
 
-	async defer(interaction: APIInteraction) {
-		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	/**
+	 * Defers the reply to an interaction
+	 *
+	 * @param interaction - The interaction to defer the reply to
+	 */
+	public async defer(interaction: APIInteraction) {
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 			},
 		});
-	},
+	}
 
-	async followUp(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+	/**
+	 * Reply to a deferred interaction
+	 *
+	 * @param interaction - The interaction to reply to
+	 * @param options - The options to use when replying
+	 */
+	public async followUp(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
 		const interactionResponse = typeof options === 'string' ? { content: options } : options;
-		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: interactionResponse,
 		});
-	},
+	}
 
-	async edit(interaction: APIInteraction, content: APIInteractionResponseCallbackData | string) {
-		const interactionResponse = typeof content === 'string' ? { content } : content;
-		await api.patch(Routes.webhookMessage(interaction.application_id, interaction.token, '@original'), {
+	/**
+	 * Edits the initial reply to an interaction
+	 *
+	 * @param interaction - The interaction to edit the reply to
+	 * @param options - The options to use when editing the reply
+	 */
+	public async edit(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+		const interactionResponse = typeof options === 'string' ? { content: options } : options;
+		await this.rest.patch(Routes.webhookMessage(interaction.application_id, interaction.token, '@original'), {
 			body: interactionResponse,
 		});
-	},
+	}
 
-	async fetchOriginalMessage(interaction: APIInteraction) {
-		return (await api.get(
+	/**
+	 * Fetches the initial reply to an interaction
+	 *
+	 * @param interaction - The interaction to fetch the reply from
+	 */
+	public async getOriginalMessage(interaction: APIInteraction) {
+		return (await this.rest.get(
 			Routes.webhookMessage(interaction.application_id, interaction.token, '@original'),
 		)) as APIMessage;
-	},
+	}
 
-	async deleteMessage(interaction: APIInteraction) {
-		await api.delete(Routes.webhookMessage(interaction.application_id, interaction.token, '@original'));
-	},
+	/**
+	 * Deletes the initial reply to an interaction
+	 *
+	 * @param interaction - The interaction to delete the reply from
+	 */
+	public async deleteMessage(interaction: APIInteraction) {
+		await this.rest.delete(Routes.webhookMessage(interaction.application_id, interaction.token, '@original'));
+	}
 
-	async update(interaction: APIInteraction, content: APIInteractionResponseCallbackData | string) {
-		const interactionResponse = typeof content === 'string' ? { content } : content;
-		await api.patch(Routes.interactionCallback(interaction.id, interaction.token), {
+	/**
+	 * Updates the initial reply to an interaction
+	 *
+	 * @param interaction - The interaction to update
+	 * @param options - The options to use when updating the interaction
+	 */
+	public async update(interaction: APIInteraction, options: APIInteractionResponseCallbackData | string) {
+		const interactionResponse = typeof options === 'string' ? { content: options } : options;
+		await this.rest.patch(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.UpdateMessage,
 				data: interactionResponse,
 			},
 		});
-	},
+	}
 
-	async sendModal(interaction: APIInteraction, modal: APIModalInteractionResponseCallbackData) {
-		await api.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	/**
+	 * Sends a modal response to an interaction
+	 *
+	 * @param interaction - The interaction to respond to
+	 * @param modal - The modal to send
+	 */
+	public async sendModal(interaction: APIInteraction, modal: APIModalInteractionResponseCallbackData) {
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.Modal,
 				data: modal,
 			},
 		});
-	},
-});
+	}
+}

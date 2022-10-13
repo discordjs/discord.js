@@ -11,45 +11,95 @@ import type {
 } from 'discord-api-types/v10';
 import { Routes, type APIGuildMember } from 'discord-api-types/v10';
 
-export const bots = (api: REST) => ({
-	async getUser() {
-		return (await api.get(Routes.user('@me'))) as APIUser;
-	},
+export class BotsAPI {
+	private readonly rest: REST;
 
-	async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
-		return (await api.get(Routes.userGuilds(), { query: makeURLSearchParams({ ...options }) })) as APIPartialGuild[];
-	},
+	public constructor(rest: REST) {
+		this.rest = rest;
+	}
 
-	async leaveGuild(guildId: string) {
-		await api.delete(Routes.userGuild(guildId));
-	},
+	/**
+	 * Returns the user object of the requester's account
+	 */
+	public async getUser() {
+		return (await this.rest.get(Routes.user('@me'))) as APIUser;
+	}
 
-	async edit(options: RESTPatchAPICurrentUserJSONBody) {
-		return (await api.patch(Routes.user('@me'), { body: options })) as APIUser;
-	},
+	/**
+	 * Returns a list of partial guild objects the current user is a member of
+	 *
+	 * @param options - The options to use when fetching the current user's guilds
+	 * @returns
+	 */
+	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
+		return (await this.rest.get(Routes.userGuilds(), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
+		})) as APIPartialGuild[];
+	}
 
-	async getMember(guildId: string) {
-		return (await api.get(Routes.userGuildMember(guildId))) as APIGuildMember;
-	},
+	/**
+	 * Leaves the guild with the given id
+	 *
+	 * @param guildId - The id of the guild
+	 */
+	public async leaveGuild(guildId: string) {
+		await this.rest.delete(Routes.userGuild(guildId));
+	}
 
-	async editMember(guildId: string, options: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
-		return (await api.patch(Routes.guildMember(guildId, '@me'), {
+	/**
+	 * Edits the current user
+	 *
+	 * @param user - The new data for the current user
+	 */
+	public async edit(user: RESTPatchAPICurrentUserJSONBody) {
+		return (await this.rest.patch(Routes.user('@me'), { body: user })) as APIUser;
+	}
+
+	/**
+	 * Fetches the guild member for the current user
+	 *
+	 * @param guildId - The id of the guild
+	 */
+	public async getMember(guildId: string) {
+		return (await this.rest.get(Routes.userGuildMember(guildId))) as APIGuildMember;
+	}
+
+	/**
+	 * Edits the guild member for the current user
+	 *
+	 * @param guildId - The id of the guild
+	 * @param member - The new data for the guild member
+	 * @param reason - The reason for editing this guild member
+	 */
+	public async editMember(guildId: string, member: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
+		return (await this.rest.patch(Routes.guildMember(guildId, '@me'), {
 			reason,
+			body: member,
+		})) as APIGuildMember;
+	}
+
+	/**
+	 * Sets the voice state for the current user
+	 *
+	 * @param guildId - The id of the guild
+	 * @param options - The options to use when setting the voice state
+	 */
+	public async setVoiceState(guildId: string, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
+		return (await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			body: options,
 		})) as APIGuildMember;
-	},
+	}
 
-	async setVoiceState(guildId: string, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return (await api.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body: options,
-		})) as APIGuildMember;
-	},
-
-	async createDM(userId: string) {
-		return (await api.post(Routes.userChannels(), {
+	/**
+	 * Opens a new DM channel with a user
+	 *
+	 * @param userId - The id of the user to open a DM channel with
+	 */
+	public async createDM(userId: string) {
+		return (await this.rest.post(Routes.userChannels(), {
 			body: {
 				recipient_id: userId,
 			},
 		})) as APIDMChannel;
-	},
-});
+	}
+}

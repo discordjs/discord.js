@@ -46,9 +46,9 @@ import type {
 	GatewayWebhooksUpdateDispatchData,
 } from 'discord-api-types/v10';
 import { GatewayDispatchEvents } from 'discord-api-types/v10';
-import { api } from './api/index.js';
+import { API } from './api/index.js';
 
-export type WithIntrinsicProps<T> = T & { api: ReturnType<typeof api> };
+export type WithIntrinsicProps<T> = T & { api: API };
 
 export interface MappedEvents {
 	channelCreate: [WithIntrinsicProps<{ channel: APIChannel }>];
@@ -117,7 +117,7 @@ export interface ClientOptions {
 }
 
 export function createClient({ rest, ws }: ClientOptions) {
-	const eventAPI = api(rest);
+	const eventAPI = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
 	function wrapIntrinsicProps<T>(obj: T): WithIntrinsicProps<T> {

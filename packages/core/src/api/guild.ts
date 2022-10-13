@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-param-names */
 import type { Buffer } from 'node:buffer';
 import type { REST } from '@discordjs/rest';
 import { makeURLSearchParams } from '@discordjs/rest';
@@ -8,6 +9,7 @@ import type {
 	APIEmoji,
 	APIGuild,
 	APIGuildIntegration,
+	APIGuildMember,
 	APIGuildPreview,
 	APIGuildScheduledEvent,
 	APIGuildWelcomeScreen,
@@ -22,6 +24,7 @@ import type {
 	GuildMFALevel,
 	GuildWidgetStyle,
 	RESTGetAPIAuditLogQuery,
+	RESTGetAPIGuildMembersQuery,
 	RESTGetAPIGuildPruneCountResult,
 	RESTGetAPIGuildScheduledEventQuery,
 	RESTGetAPIGuildScheduledEventsQuery,
@@ -49,294 +52,669 @@ import type {
 } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
 
-export const guilds = (api: REST) => ({
-	async get(guildId: string) {
-		return (await api.get(Routes.guild(guildId))) as APIGuild;
-	},
+export class GuildsAPI {
+	private readonly rest: REST;
 
-	async getPreview(guildId: string) {
-		return (await api.get(Routes.guildPreview(guildId))) as APIGuildPreview;
-	},
+	public constructor(rest: REST) {
+		this.rest = rest;
+	}
 
-	async create(guild: RESTPostAPIGuildsJSONBody) {
-		return (await api.post(Routes.guilds(), {
+	/**
+	 * Fetches a guild
+	 *
+	 * @param guildId - The id of the guild
+	 */
+	public async get(guildId: string) {
+		return (await this.rest.get(Routes.guild(guildId))) as APIGuild;
+	}
+
+	/**
+	 * Fetches a guild preview
+	 *
+	 * @param guildId - The id of the guild to fetch the preview for
+	 */
+	public async getPreview(guildId: string) {
+		return (await this.rest.get(Routes.guildPreview(guildId))) as APIGuildPreview;
+	}
+
+	/**
+	 * Creates a guild
+	 *
+	 * @param guild - The guild to create
+	 */
+	public async create(guild: RESTPostAPIGuildsJSONBody) {
+		return (await this.rest.post(Routes.guilds(), {
 			body: guild,
 		})) as APIGuild;
-	},
+	}
 
-	async edit(guildId: string, guild: RESTPatchAPIGuildJSONBody, reason?: string) {
-		return (await api.patch(Routes.guild(guildId), {
+	/**
+	 * Edits a guild
+	 *
+	 * @param guildId - The id of the guild to edit
+	 * @param guild - The new guild data
+	 * @param reason - The reason for editing this guild
+	 */
+	public async edit(guildId: string, guild: RESTPatchAPIGuildJSONBody, reason?: string) {
+		return (await this.rest.patch(Routes.guild(guildId), {
 			reason,
 			body: guild,
 		})) as APIGuild;
-	},
+	}
 
-	async delete(guildId: string, reason?: string) {
-		return (await api.delete(Routes.guild(guildId), { reason })) as APIGuild;
-	},
+	/**
+	 * Deletes a guild
+	 *
+	 * @param guildId - The id of the guild to delete
+	 * @param reason - The reason for deleting this guild
+	 */
+	public async delete(guildId: string, reason?: string) {
+		return (await this.rest.delete(Routes.guild(guildId), { reason })) as APIGuild;
+	}
 
-	async getChannels(guildId: string) {
-		return (await api.get(Routes.guildChannels(guildId))) as APIChannel[];
-	},
+	/**
+	 * Fetches all the members of a guild
+	 *
+	 * @param guildId - The id of the guild
+	 * @param options - The options to use when fetching the guild members
+	 */
+	public async getAll(guildId: string, options: RESTGetAPIGuildMembersQuery = {}) {
+		return (await this.rest.get(Routes.guildMembers(guildId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
+		})) as APIGuildMember[];
+	}
 
-	async createChannel(guildId: string, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
-		return (await api.post(Routes.guildChannels(guildId), {
+	/**
+	 * Fetches a guild's channels
+	 *
+	 * @param guildId - The id of the guild to fetch the channels for
+	 */
+	public async getChannels(guildId: string) {
+		return (await this.rest.get(Routes.guildChannels(guildId))) as APIChannel[];
+	}
+
+	/**
+	 * Creates a guild channel
+	 *
+	 * @param guildId - The id of the guild to create the channel in
+	 * @param channel - The data to create the new channel
+	 * @param reason - The reason for creating this channel
+	 * @returns
+	 */
+	public async createChannel(guildId: string, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
+		return (await this.rest.post(Routes.guildChannels(guildId), {
 			reason,
-			body: {
-				...channel,
-			},
+			body: channel,
 		})) as APIChannel;
-	},
+	}
 
-	async setChannelPosition(guildId: string, options: RESTPatchAPIGuildChannelPositionsJSONBody, reason?: string) {
-		return api.patch(Routes.guildChannels(guildId), {
+	/**
+	 * Edits a guild channel's positions
+	 *
+	 * @param guildId - The id of the guild to edit the channel positions for
+	 * @param options - The options to edit the channel positions with
+	 * @param reason - The reason for editing the channel positions
+	 */
+	public async setChannelPosition(
+		guildId: string,
+		options: RESTPatchAPIGuildChannelPositionsJSONBody,
+		reason?: string,
+	) {
+		return this.rest.patch(Routes.guildChannels(guildId), {
 			reason,
 			body: options,
 		});
-	},
+	}
 
-	async getActiveThreads(guildId: string) {
-		return (await api.get(Routes.guildActiveThreads(guildId))) as APIThreadChannel[];
-	},
+	/**
+	 * Fetches the active threads in a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the active threads for
+	 */
+	public async getActiveThreads(guildId: string) {
+		return (await this.rest.get(Routes.guildActiveThreads(guildId))) as APIThreadChannel[];
+	}
 
-	async getBans(guildId: string) {
-		return (await api.get(Routes.guildBans(guildId))) as APIBan[];
-	},
+	/**
+	 * Fetches a guild member ban
+	 *
+	 * @param guildId - The id of the guild to fetch the ban for
+	 */
+	public async getBans(guildId: string) {
+		return (await this.rest.get(Routes.guildBans(guildId))) as APIBan[];
+	}
 
-	async ban(guildId: string, userId: string, options?: RESTPutAPIGuildBanJSONBody, reason?: string) {
-		return api.put(Routes.guildBan(guildId, userId), {
+	/**
+	 * Bans a guild member
+	 *public
+	 *
+	 * @param guildId - The id of the guild to ban the member in
+	 * @param userId - The id of the user to ban
+	 * @param options - Options for banning the user
+	 * @param reason - The reason for banning the user
+	 * @returns
+	 */
+	public async ban(guildId: string, userId: string, options?: RESTPutAPIGuildBanJSONBody, reason?: string) {
+		return this.rest.put(Routes.guildBan(guildId, userId), {
 			reason,
 			body: options,
 		});
-	},
+	}
 
-	async unban(guildId: string, userId: string, reason?: string) {
-		return api.delete(Routes.guildBan(guildId, userId), { reason });
-	},
+	/**
+	 * Unbans a guild member
+	 *
+	 * @param guildId - The id of the guild to unban the member in
+	 * @param userId - The id of the user to unban
+	 * @param reason - The reason for unbanning the user
+	 */
+	public async unban(guildId: string, userId: string, reason?: string) {
+		return this.rest.delete(Routes.guildBan(guildId, userId), { reason });
+	}
 
-	async getRoles(guildId: string) {
-		return (await api.get(Routes.guildRoles(guildId))) as APIRole[];
-	},
+	/**
+	 * Gets all the roles in a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the roles fo
+	 */
+	public async getRoles(guildId: string) {
+		return (await this.rest.get(Routes.guildRoles(guildId))) as APIRole[];
+	}
 
-	async createRole(guildId: string, role: RESTPostAPIGuildRoleJSONBody, reason?: string) {
-		return (await api.post(Routes.guildRoles(guildId), {
+	/**
+	 * Creates a guild role
+	 *
+	 * @param guildId - The id of the guild to create the role in
+	 * @param role - The data to create the role with
+	 * @param reason - The reason for creating the role
+	 */
+	public async createRole(guildId: string, role: RESTPostAPIGuildRoleJSONBody, reason?: string) {
+		return (await this.rest.post(Routes.guildRoles(guildId), {
 			reason,
 			body: role,
 		})) as APIRole;
-	},
+	}
 
-	async setRolePosition(guildId: string, options: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
-		return api.patch(Routes.guildRoles(guildId), {
+	/**
+	 * Sets a role position in a guild
+	 *
+	 * @param guildId - The id of the guild to set role positions for
+	 * @param options - The options for setting a role position
+	 * @param reason - The reason for setting the role position
+	 */
+	public async setRolePosition(guildId: string, options: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
+		return this.rest.patch(Routes.guildRoles(guildId), {
 			reason,
 			body: options,
 		});
-	},
+	}
 
-	async editRole(guildId: string, roleId: string, options: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
-		return api.patch(Routes.guildRole(guildId, roleId), {
+	/**
+	 * Edits a guild role
+	 *
+	 * @param guildId - The id of the guild to edit the role in
+	 * @param roleId - The id of the role to edit
+	 * @param options - Options for editing the role
+	 * @param reason - The reason for editing the role
+	 */
+	public async editRole(guildId: string, roleId: string, options: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
+		return this.rest.patch(Routes.guildRole(guildId, roleId), {
 			reason,
 			body: options,
 		});
-	},
+	}
 
-	async deleteRole(guildId: string, roleId: string, reason?: string) {
-		return api.delete(Routes.guildRole(guildId, roleId), { reason });
-	},
+	/**
+	 * Deletes a guild role
+	 *
+	 * @param guildId - The id of the guild to delete the role in
+	 * @param roleId - The id of the role to delete
+	 * @param reason - The reason for deleting the role
+	 */
+	public async deleteRole(guildId: string, roleId: string, reason?: string) {
+		return this.rest.delete(Routes.guildRole(guildId, roleId), { reason });
+	}
 
-	async editMFALevel(guildId: string, level: number, reason?: string) {
-		return (await api.patch(Routes.guild(guildId), {
+	/**
+	 * Edits the multi-factor-authentication (MFA) level of a guild
+	 *
+	 * @param guildId - The id of the guild to edit the MFA level for
+	 * @param level - The new MFA level
+	 * @param reason - The reason for editing the MFA level
+	 */
+	public async editMFALevel(guildId: string, level: number, reason?: string) {
+		return (await this.rest.patch(Routes.guild(guildId), {
 			reason,
 			body: {
 				mfa_level: level,
 			},
 		})) as GuildMFALevel;
-	},
+	}
 
-	async getPruneCount(guildId: string, options: { days?: number; includeRoles?: string[] } = {}) {
-		return (await api.get(Routes.guildPrune(guildId), {
-			query: makeURLSearchParams({ ...options }),
+	/**
+	 * Fetch the number of pruned members in a guild
+	 *
+	 *
+	 * @param guildId - The id of the guild to fetch the number of pruned members for
+	 * @param options - The options for fetching the number of pruned members
+	 */
+	public async getPruneCount(guildId: string, options: { days?: number; includeRoles?: string[] } = {}) {
+		return (await this.rest.get(Routes.guildPrune(guildId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as RESTGetAPIGuildPruneCountResult;
-	},
+	}
 
-	async beginPrune(guildId: string, options?: RESTPostAPIGuildPruneJSONBody, reason?: string) {
-		return (await api.post(Routes.guildPrune(guildId), {
+	/**
+	 * Prunes members in a guild
+	 *
+	 * @param guildId - The id of the guild to prune members in
+	 * @param options - The options for pruning members
+	 * @param reason - The reason for pruning members
+	 */
+	public async beginPrune(guildId: string, options?: RESTPostAPIGuildPruneJSONBody, reason?: string) {
+		return (await this.rest.post(Routes.guildPrune(guildId), {
 			body: options,
 			reason,
 		})) as RESTGetAPIGuildPruneCountResult;
-	},
+	}
 
-	async getVoiceRegions(guildId: string) {
-		return (await api.get(Routes.guildVoiceRegions(guildId))) as APIVoiceRegion[];
-	},
+	/**
+	 * Fetches voice regions for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the voice regions for
+	 */
+	public async getVoiceRegions(guildId: string) {
+		return (await this.rest.get(Routes.guildVoiceRegions(guildId))) as APIVoiceRegion[];
+	}
 
-	async getInvites(guildId: string) {
-		return (await api.get(Routes.guildInvites(guildId))) as APIInvite[];
-	},
+	/**
+	 * Fetches the invites for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the invites for
+	 */
+	public async getInvites(guildId: string) {
+		return (await this.rest.get(Routes.guildInvites(guildId))) as APIInvite[];
+	}
 
-	async getIntegrations(guildId: string) {
-		return (await api.get(Routes.guildIntegrations(guildId))) as APIGuildIntegration[];
-	},
+	/**
+	 * Fetches the integrations for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the integrations for
+	 */
+	public async getIntegrations(guildId: string) {
+		return (await this.rest.get(Routes.guildIntegrations(guildId))) as APIGuildIntegration[];
+	}
 
-	async deleteIntegration(guildId: string, integrationId: string, reason?: string) {
-		return api.delete(Routes.guildIntegration(guildId, integrationId), { reason });
-	},
+	/**
+	 * Deletes an integration from a guild
+	 *
+	 * @param guildId - The id of the guild to delete the integration from
+	 * @param integrationId - The id of the integration to delete
+	 * @param reason - The reason for deleting the integration
+	 */
+	public async deleteIntegration(guildId: string, integrationId: string, reason?: string) {
+		return this.rest.delete(Routes.guildIntegration(guildId, integrationId), { reason });
+	}
 
-	async getWidgetSettings(guildId: string) {
-		return (await api.get(Routes.guildWidgetSettings(guildId))) as APIGuildWidgetSettings;
-	},
+	/**
+	 * Fetches the widget settings for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the widget settings for
+	 */
+	public async getWidgetSettings(guildId: string) {
+		return (await this.rest.get(Routes.guildWidgetSettings(guildId))) as APIGuildWidgetSettings;
+	}
 
-	async editWidgetSettings(guildId: string, widget: RESTPatchAPIGuildWidgetSettingsJSONBody, reason?: string) {
-		return (await api.patch(Routes.guildWidgetSettings(guildId), {
+	/**
+	 * Edits the widget settings for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the widget settings for
+	 * @param widgetSettings - The new widget settings
+	 * @param reason - The reason for editing the widget settings
+	 */
+	public async editWidgetSettings(
+		guildId: string,
+		widgetSettings: RESTPatchAPIGuildWidgetSettingsJSONBody,
+		reason?: string,
+	) {
+		return (await this.rest.patch(Routes.guildWidgetSettings(guildId), {
 			reason,
-			body: widget,
+			body: widgetSettings,
 		})) as APIGuildWidget;
-	},
+	}
 
-	async getWidget(guildId: string) {
-		return (await api.get(Routes.guildWidgetJSON(guildId))) as APIGuildWidget;
-	},
+	/**
+	 * Fetches the widget for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the widget for
+	 */
+	public async getWidget(guildId: string) {
+		return (await this.rest.get(Routes.guildWidgetJSON(guildId))) as APIGuildWidget;
+	}
 
-	async getVanityURL(guildId: string) {
-		return (await api.get(Routes.guildVanityUrl(guildId))) as RESTGetAPIGuildVanityUrlResult;
-	},
+	/**
+	 * Fetches the vanity url for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the vanity url for
+	 */
+	public async getVanityURL(guildId: string) {
+		return (await this.rest.get(Routes.guildVanityUrl(guildId))) as RESTGetAPIGuildVanityUrlResult;
+	}
 
-	async getWidgetImage(guildId: string, style?: GuildWidgetStyle) {
-		return (await api.get(Routes.guildWidgetImage(guildId), {
+	/**
+	 * Fetches the widget image for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the widget image for
+	 * @param style - The style of the widget image
+	 */
+	public async getWidgetImage(guildId: string, style?: GuildWidgetStyle) {
+		return (await this.rest.get(Routes.guildWidgetImage(guildId), {
 			query: makeURLSearchParams({ style }),
 		})) as Buffer;
-	},
+	}
 
-	async getWelcomeScreen(guildId: string) {
-		return (await api.get(Routes.guildWelcomeScreen(guildId))) as APIGuildWelcomeScreen;
-	},
+	/**
+	 * Fetches the welcome screen for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the welcome screen for
+	 */
+	public async getWelcomeScreen(guildId: string) {
+		return (await this.rest.get(Routes.guildWelcomeScreen(guildId))) as APIGuildWelcomeScreen;
+	}
 
-	async editWelcomeScreen(guildId: string, welcomeScreen?: RESTPatchAPIGuildWelcomeScreenJSONBody, reason?: string) {
-		return (await api.patch(Routes.guildWelcomeScreen(guildId), {
+	/**
+	 * Edits the welcome screen for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the welcome screen for
+	 * @param welcomeScreen - The new welcome screen
+	 * @param reason - The reason for editing the welcome screen
+	 */
+	public async editWelcomeScreen(
+		guildId: string,
+		welcomeScreen?: RESTPatchAPIGuildWelcomeScreenJSONBody,
+		reason?: string,
+	) {
+		return (await this.rest.patch(Routes.guildWelcomeScreen(guildId), {
 			reason,
 			body: welcomeScreen,
 		})) as APIGuildWelcomeScreen;
-	},
+	}
 
-	async modifyUserVoiceState(
+	/**
+	 * Edits a user's voice state in a guild
+	 *
+	 * @param guildId - The id of the guild to edit the current user's voice state in
+	 * @param userId - The id of the user to edit the voice state for
+	 * @param options - The options for editing the voice state
+	 * @param reason - The reason for editing the voice state
+	 */
+	public async editUserVoiceState(
 		guildId: string,
 		userId: string,
 		options: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		reason?: string,
 	) {
-		return api.patch(Routes.guildVoiceState(guildId, userId), {
+		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
 			reason,
 			body: options,
 		});
-	},
+	}
 
-	async listEmojis(guildId: string) {
-		return (await api.get(Routes.guildEmojis(guildId))) as APIEmoji[];
-	},
+	/**
+	 * Fetches all emojis for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the emojis for
+	 */
+	public async getEmojis(guildId: string) {
+		return (await this.rest.get(Routes.guildEmojis(guildId))) as APIEmoji[];
+	}
 
-	async getEmoji(guildId: string, emojiId: string) {
-		return (await api.get(Routes.guildEmoji(guildId, emojiId))) as APIEmoji;
-	},
+	/**
+	 * Fetches an emoji for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the emoji for
+	 * @param emojiId - The id of the emoji to fetch
+	 */
+	public async getEmoji(guildId: string, emojiId: string) {
+		return (await this.rest.get(Routes.guildEmoji(guildId, emojiId))) as APIEmoji;
+	}
 
-	async createEmoji(guildId: string, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
-		return (await api.post(Routes.guildEmojis(guildId), {
+	/**
+	 * Creates a new emoji for a guild
+	 *
+	 * @param guildId - The id of the guild to create the emoji for
+	 * @param options - The options for creating the emoji
+	 * @param reason - The reason for creating the emoji
+	 */
+	public async createEmoji(guildId: string, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
+		return (await this.rest.post(Routes.guildEmojis(guildId), {
 			reason,
 			body: options,
 		})) as APIEmoji;
-	},
+	}
 
-	async editEmoji(guildId: string, emojiId: string, options: RESTPatchAPIGuildEmojiJSONBody, reason?: string) {
-		return (await api.patch(Routes.guildEmoji(guildId, emojiId), {
+	/**
+	 * Edits an emoji for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the emoji for
+	 * @param emojiId - The id of the emoji to edit
+	 * @param options - The options for editing the emoji
+	 * @param reason - The reason for editing the emoji
+	 */
+	public async editEmoji(guildId: string, emojiId: string, options: RESTPatchAPIGuildEmojiJSONBody, reason?: string) {
+		return (await this.rest.patch(Routes.guildEmoji(guildId, emojiId), {
 			reason,
 			body: options,
 		})) as APIEmoji;
-	},
+	}
 
-	async deleteEmoji(guildId: string, emojiId: string, reason?: string) {
-		return api.delete(Routes.guildEmoji(guildId, emojiId), { reason });
-	},
+	/**
+	 * Deletes an emoji for a guild
+	 *
+	 * @param guildId - The id of the guild to delete the emoji for
+	 * @param emojiId - The id of the emoji to delete
+	 * @param reason - The reason for deleting the emoji
+	 */
+	public async deleteEmoji(guildId: string, emojiId: string, reason?: string) {
+		return this.rest.delete(Routes.guildEmoji(guildId, emojiId), { reason });
+	}
 
-	async getAllEvents(guildId: string, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
-		return (await api.get(Routes.guildScheduledEvents(guildId), {
-			query: makeURLSearchParams({ ...options }),
+	/**
+	 * Fetches all scheduled events for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the scheduled events for
+	 * @param options - The options for fetching the scheduled events
+	 */
+	public async getAllEvents(guildId: string, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
+		return (await this.rest.get(Routes.guildScheduledEvents(guildId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIGuildScheduledEvent[];
-	},
+	}
 
-	async createEvent(guildId: string, event: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
-		return (await api.post(Routes.guildScheduledEvents(guildId), {
+	/**
+	 * Creates a new scheduled event for a guild
+	 *
+	 * @param guildId - The id of the guild to create the scheduled event for
+	 * @param event - The event to create
+	 * @param reason - The reason for creating the scheduled event
+	 */
+	public async createEvent(guildId: string, event: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
+		return (await this.rest.post(Routes.guildScheduledEvents(guildId), {
 			reason,
 			body: event,
 		})) as APIGuildScheduledEvent;
-	},
+	}
 
-	async getEvent(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventQuery = {}) {
-		return (await api.get(Routes.guildScheduledEvent(guildId, eventId), {
-			query: makeURLSearchParams({ ...options }),
+	/**
+	 * Fetches a scheduled event for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the scheduled event for
+	 * @param eventId - The id of the scheduled event to fetch
+	 * @param options - The options for fetching the scheduled event
+	 */
+	public async getEvent(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventQuery = {}) {
+		return (await this.rest.get(Routes.guildScheduledEvent(guildId, eventId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIGuildScheduledEvent;
-	},
+	}
 
-	async editEvent(guildId: string, eventId: string, event: RESTPatchAPIGuildScheduledEventJSONBody, reason?: string) {
-		return (await api.patch(Routes.guildScheduledEvent(guildId, eventId), {
+	/**
+	 * Edits a scheduled event for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the scheduled event for
+	 * @param eventId - The id of the scheduled event to edit
+	 * @param event - The new event data
+	 * @param reason - The reason for editing the scheduled event
+	 */
+	public async editEvent(
+		guildId: string,
+		eventId: string,
+		event: RESTPatchAPIGuildScheduledEventJSONBody,
+		reason?: string,
+	) {
+		return (await this.rest.patch(Routes.guildScheduledEvent(guildId, eventId), {
 			reason,
 			body: event,
 		})) as APIGuildScheduledEvent;
-	},
+	}
 
-	async deleteEvent(guildId: string, eventId: string, reason?: string) {
-		await api.delete(Routes.guildScheduledEvent(guildId, eventId), { reason });
-	},
+	/**
+	 * Deletes a scheduled event for a guild
+	 *
+	 * @param guildId - The id of the guild to delete the scheduled event for
+	 * @param eventId - The id of the scheduled event to delete
+	 * @param reason - The reason for deleting the scheduled event
+	 */
+	public async deleteEvent(guildId: string, eventId: string, reason?: string) {
+		await this.rest.delete(Routes.guildScheduledEvent(guildId, eventId), { reason });
+	}
 
-	async getEventUsers(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventUsersQuery = {}) {
-		return (await api.get(Routes.guildScheduledEventUsers(guildId, eventId), {
-			query: makeURLSearchParams({ ...options }),
+	/**
+	 * Gets all users that are interested in a scheduled event
+	 *
+	 * @param guildId - The id of the guild to fetch the scheduled event users for
+	 * @param eventId - The id of the scheduled event to fetch the users for
+	 * @param options - The options for fetching the scheduled event users
+	 */
+	public async getEventUsers(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventUsersQuery = {}) {
+		return (await this.rest.get(Routes.guildScheduledEventUsers(guildId, eventId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIGuildScheduledEvent[];
-	},
+	}
 
-	async getTemplates(guildId: string) {
-		return (await api.get(Routes.guildTemplates(guildId))) as APITemplate[];
-	},
+	/**
+	 * Fetches all the templates for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the templates for
+	 */
+	public async getTemplates(guildId: string) {
+		return (await this.rest.get(Routes.guildTemplates(guildId))) as APITemplate[];
+	}
 
-	async createTemplate(guildId: string, options: RESTPostAPIGuildTemplatesJSONBody) {
-		return (await api.post(Routes.guildTemplates(guildId), {
+	/**
+	 * Creates a new template for a guild
+	 *
+	 * @param guildId - The id of the guild to create the template for
+	 * @param options - The options for creating the template
+	 */
+	public async createTemplate(guildId: string, options: RESTPostAPIGuildTemplatesJSONBody) {
+		return (await this.rest.post(Routes.guildTemplates(guildId), {
 			body: options,
 		})) as APITemplate;
-	},
+	}
 
-	async syncTemplate(guildId: string, templateCode: string) {
-		return (await api.put(Routes.guildTemplate(guildId, templateCode))) as APITemplate;
-	},
+	/**
+	 * Syncs a template for a guild
+	 *
+	 * @param guildId - The id of the guild to sync the template for
+	 * @param templateCode - The code of the template to sync
+	 */
+	public async syncTemplate(guildId: string, templateCode: string) {
+		return (await this.rest.put(Routes.guildTemplate(guildId, templateCode))) as APITemplate;
+	}
 
-	async editTemplate(guildId: string, templateCode: string, options: RESTPatchAPIGuildTemplateJSONBody) {
-		return (await api.patch(Routes.guildTemplate(guildId, templateCode), {
+	/**
+	 * Edits a template for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the template for
+	 * @param templateCode - The code of the template to edit
+	 * @param options - The options for editing the template
+	 */
+	public async editTemplate(guildId: string, templateCode: string, options: RESTPatchAPIGuildTemplateJSONBody) {
+		return (await this.rest.patch(Routes.guildTemplate(guildId, templateCode), {
 			body: options,
 		})) as APITemplate;
-	},
+	}
 
-	async deleteTemplate(guildId: string, templateCode: string) {
-		await api.delete(Routes.guildTemplate(guildId, templateCode));
-	},
+	/**
+	 * Deletes a template for a guild
+	 *
+	 * @param guildId - The id of the guild to delete the template for
+	 * @param templateCode - The code of the template to delete
+	 */
+	public async deleteTemplate(guildId: string, templateCode: string) {
+		await this.rest.delete(Routes.guildTemplate(guildId, templateCode));
+	}
 
-	async getStickers(guildId: string) {
-		return (await api.get(Routes.guildStickers(guildId))) as APISticker[];
-	},
+	/**
+	 * Fetches all the stickers for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the stickers for
+	 */
+	public async getStickers(guildId: string) {
+		return (await this.rest.get(Routes.guildStickers(guildId))) as APISticker[];
+	}
 
-	async getSticker(guildId: string, stickerId: string) {
-		return (await api.get(Routes.guildSticker(guildId, stickerId))) as APISticker;
-	},
+	/**
+	 * Fetches a sticker for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the sticker for
+	 * @param stickerId - The id of the sticker to fetch
+	 */
+	public async getSticker(guildId: string, stickerId: string) {
+		return (await this.rest.get(Routes.guildSticker(guildId, stickerId))) as APISticker;
+	}
 
-	async editSticker(guildId: string, stickerId: string, options: RESTPatchAPIGuildStickerJSONBody, reason?: string) {
-		return (await api.patch(Routes.guildSticker(guildId, stickerId), {
+	/**
+	 * Edits a sticker for a guild
+	 *
+	 * @param guildId - The id of the guild to edit the sticker for
+	 * @param stickerId - The id of the sticker to edit
+	 * @param options - The options for editing the sticker
+	 * @param reason - The reason for editing the sticker
+	 */
+	public async editSticker(
+		guildId: string,
+		stickerId: string,
+		options: RESTPatchAPIGuildStickerJSONBody,
+		reason?: string,
+	) {
+		return (await this.rest.patch(Routes.guildSticker(guildId, stickerId), {
 			reason,
 			body: options,
 		})) as APISticker;
-	},
+	}
 
-	async deleteSticker(guildId: string, stickerId: string, reason?: string) {
-		await api.delete(Routes.guildSticker(guildId, stickerId), { reason });
-	},
+	/**
+	 * Deletes a sticker for a guild
+	 *
+	 * @param guildId - The id of the guild to delete the sticker for
+	 * @param stickerId - The id of the sticker to delete
+	 * @param reason - The reason for deleting the sticker
+	 */
+	public async deleteSticker(guildId: string, stickerId: string, reason?: string) {
+		await this.rest.delete(Routes.guildSticker(guildId, stickerId), { reason });
+	}
 
-	async getAuditLogs(guildId: string, options: RESTGetAPIAuditLogQuery = {}) {
-		return (await api.get(Routes.guildAuditLog(guildId), {
-			query: makeURLSearchParams({ ...options }),
+	/**
+	 * Fetches the audit logs for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the audit logs for
+	 * @param options - The options for fetching the audit logs
+	 */
+	public async getAuditLogs(guildId: string, options: RESTGetAPIAuditLogQuery = {}) {
+		return (await this.rest.get(Routes.guildAuditLog(guildId), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIAuditLog[];
-	},
-});
+	}
+}
