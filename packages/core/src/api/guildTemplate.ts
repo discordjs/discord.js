@@ -1,13 +1,8 @@
 import type { REST } from '@discordjs/rest';
-import type { APITemplate, RESTPostAPITemplateCreateGuildJSONBody } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
+import { Routes, type APITemplate, type RESTPostAPITemplateCreateGuildJSONBody } from 'discord-api-types/v10';
 
 export class GuildTemplatesAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a guild template

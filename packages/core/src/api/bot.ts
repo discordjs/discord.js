@@ -1,22 +1,18 @@
-import type { REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type {
-	APIDMChannel,
-	APIPartialGuild,
-	APIUser,
-	RESTGetAPICurrentUserGuildsQuery,
-	RESTPatchAPICurrentUserJSONBody,
-	RESTPatchAPIGuildMemberJSONBody,
-	RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import {
+	Routes,
+	type APIGuildMember,
+	type APIDMChannel,
+	type APIPartialGuild,
+	type APIUser,
+	type RESTGetAPICurrentUserGuildsQuery,
+	type RESTPatchAPICurrentUserJSONBody,
+	type RESTPatchAPIGuildMemberJSONBody,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 } from 'discord-api-types/v10';
-import { Routes, type APIGuildMember } from 'discord-api-types/v10';
 
 export class BotsAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Returns the user object of the requester's account

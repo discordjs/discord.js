@@ -1,19 +1,14 @@
-import type { RawFile, REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type {
-	APIMessage,
-	APIUser,
-	RESTGetAPIChannelMessageReactionUsersQuery,
-	RESTPostAPIChannelMessageJSONBody,
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
+import {
+	Routes,
+	type APIMessage,
+	type APIUser,
+	type RESTGetAPIChannelMessageReactionUsersQuery,
+	type RESTPostAPIChannelMessageJSONBody,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
 
 export class MessagesAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Sends a message in a channel

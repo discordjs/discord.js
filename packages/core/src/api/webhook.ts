@@ -1,25 +1,20 @@
 /* eslint-disable jsdoc/check-param-names */
-import type { RawFile, REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type {
-	APIMessage,
-	APIWebhook,
-	RESTPatchAPIWebhookJSONBody,
-	RESTPatchAPIWebhookWithTokenMessageJSONBody,
-	RESTPostAPIChannelWebhookJSONBody,
-	RESTPostAPIWebhookWithTokenGitHubQuery,
-	RESTPostAPIWebhookWithTokenJSONBody,
-	RESTPostAPIWebhookWithTokenQuery,
-	RESTPostAPIWebhookWithTokenSlackQuery,
+import { makeURLSearchParams, type REST, type RawFile } from '@discordjs/rest';
+import {
+	Routes,
+	type APIMessage,
+	type APIWebhook,
+	type RESTPatchAPIWebhookJSONBody,
+	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
+	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIWebhookWithTokenGitHubQuery,
+	type RESTPostAPIWebhookWithTokenJSONBody,
+	type RESTPostAPIWebhookWithTokenQuery,
+	type RESTPostAPIWebhookWithTokenSlackQuery,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
 
 export class WebhooksAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a webhook

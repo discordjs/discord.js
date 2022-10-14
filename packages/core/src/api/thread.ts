@@ -1,11 +1,11 @@
 import type { RawFile, REST } from '@discordjs/rest';
-import type {
-	APIThreadChannel,
-	APIThreadMember,
-	RESTPostAPIChannelThreadsJSONBody,
-	RESTPostAPIGuildForumThreadsJSONBody,
+import {
+	Routes,
+	type APIThreadChannel,
+	type APIThreadMember,
+	type RESTPostAPIChannelThreadsJSONBody,
+	type RESTPostAPIGuildForumThreadsJSONBody,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
 
 export interface StartThreadOptions extends RESTPostAPIChannelThreadsJSONBody {
 	message_id?: string;
@@ -16,11 +16,7 @@ export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSO
 }
 
 export class ThreadsAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a thread

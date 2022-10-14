@@ -1,22 +1,16 @@
 import type { RawFile, REST } from '@discordjs/rest';
-import type {
-	APIInteraction,
-	APIInteractionResponseCallbackData,
-	APIMessage,
-	APIModalInteractionResponseCallbackData,
+import {
+	Routes,
+	InteractionResponseType,
+	type APIInteraction,
+	type APIInteractionResponseCallbackData,
+	type APIMessage,
+	type APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
-import { Routes, InteractionResponseType } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 
 export class InteractionsAPI {
-	private readonly rest: REST;
-
-	private readonly webhooks: WebhooksAPI;
-
-	public constructor(rest: REST, webhooks: WebhooksAPI) {
-		this.rest = rest;
-		this.webhooks = webhooks;
-	}
+	public constructor(private readonly rest: REST, private readonly webhooks: WebhooksAPI) {}
 
 	/**
 	 * Replies to an interaction

@@ -50,7 +50,7 @@ export class API {
 
 	public readonly webhooks: WebhooksAPI;
 
-	public constructor(rest: REST) {
+	public constructor(public readonly rest: REST) {
 		this.bots = new BotsAPI(rest);
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);

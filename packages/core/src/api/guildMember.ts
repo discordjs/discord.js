@@ -1,14 +1,8 @@
-import type { REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type { APIGuildMember, RESTPatchAPIGuildMemberJSONBody } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import { Routes, type APIGuildMember, type RESTPatchAPIGuildMemberJSONBody } from 'discord-api-types/v10';
 
 export class GuildMembersAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a guild member
@@ -41,7 +35,7 @@ export class GuildMembersAPI {
 	 * @param options - The options to use when editing the guild member
 	 * @param reason - The reason for editing this guild member
 	 */
-	public async edit(guildId: string, userId: string, options?: RESTPatchAPIGuildMemberJSONBody, reason?: string) {
+	public async edit(guildId: string, userId: string, options: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
 		return (await this.rest.patch(Routes.guildMember(guildId, userId), {
 			reason,
 			body: options,

@@ -1,63 +1,58 @@
 /* eslint-disable jsdoc/check-param-names */
 import type { Buffer } from 'node:buffer';
-import type { REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type {
-	APIAuditLog,
-	APIBan,
-	APIChannel,
-	APIEmoji,
-	APIGuild,
-	APIGuildIntegration,
-	APIGuildMember,
-	APIGuildPreview,
-	APIGuildScheduledEvent,
-	APIGuildWelcomeScreen,
-	APIGuildWidget,
-	APIGuildWidgetSettings,
-	APIInvite,
-	APIRole,
-	APISticker,
-	APITemplate,
-	APIThreadChannel,
-	APIVoiceRegion,
-	GuildMFALevel,
-	GuildWidgetStyle,
-	RESTGetAPIAuditLogQuery,
-	RESTGetAPIGuildMembersQuery,
-	RESTGetAPIGuildPruneCountResult,
-	RESTGetAPIGuildScheduledEventQuery,
-	RESTGetAPIGuildScheduledEventsQuery,
-	RESTGetAPIGuildScheduledEventUsersQuery,
-	RESTGetAPIGuildVanityUrlResult,
-	RESTPatchAPIGuildChannelPositionsJSONBody,
-	RESTPatchAPIGuildEmojiJSONBody,
-	RESTPatchAPIGuildJSONBody,
-	RESTPatchAPIGuildRoleJSONBody,
-	RESTPatchAPIGuildRolePositionsJSONBody,
-	RESTPatchAPIGuildScheduledEventJSONBody,
-	RESTPatchAPIGuildStickerJSONBody,
-	RESTPatchAPIGuildTemplateJSONBody,
-	RESTPatchAPIGuildVoiceStateUserJSONBody,
-	RESTPatchAPIGuildWelcomeScreenJSONBody,
-	RESTPatchAPIGuildWidgetSettingsJSONBody,
-	RESTPostAPIGuildChannelJSONBody,
-	RESTPostAPIGuildEmojiJSONBody,
-	RESTPostAPIGuildPruneJSONBody,
-	RESTPostAPIGuildRoleJSONBody,
-	RESTPostAPIGuildScheduledEventJSONBody,
-	RESTPostAPIGuildsJSONBody,
-	RESTPostAPIGuildTemplatesJSONBody,
-	RESTPutAPIGuildBanJSONBody,
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import {
+	Routes,
+	type APIAuditLog,
+	type APIBan,
+	type APIChannel,
+	type APIEmoji,
+	type APIGuild,
+	type APIGuildIntegration,
+	type APIGuildMember,
+	type APIGuildPreview,
+	type APIGuildScheduledEvent,
+	type APIGuildWelcomeScreen,
+	type APIGuildWidget,
+	type APIGuildWidgetSettings,
+	type APIInvite,
+	type APIRole,
+	type APISticker,
+	type APITemplate,
+	type APIThreadChannel,
+	type APIVoiceRegion,
+	type GuildMFALevel,
+	type GuildWidgetStyle,
+	type RESTGetAPIAuditLogQuery,
+	type RESTGetAPIGuildMembersQuery,
+	type RESTGetAPIGuildPruneCountResult,
+	type RESTGetAPIGuildScheduledEventQuery,
+	type RESTGetAPIGuildScheduledEventsQuery,
+	type RESTGetAPIGuildScheduledEventUsersQuery,
+	type RESTGetAPIGuildVanityUrlResult,
+	type RESTPatchAPIGuildChannelPositionsJSONBody,
+	type RESTPatchAPIGuildEmojiJSONBody,
+	type RESTPatchAPIGuildJSONBody,
+	type RESTPatchAPIGuildRoleJSONBody,
+	type RESTPatchAPIGuildRolePositionsJSONBody,
+	type RESTPatchAPIGuildScheduledEventJSONBody,
+	type RESTPatchAPIGuildStickerJSONBody,
+	type RESTPatchAPIGuildTemplateJSONBody,
+	type RESTPatchAPIGuildVoiceStateUserJSONBody,
+	type RESTPatchAPIGuildWelcomeScreenJSONBody,
+	type RESTPatchAPIGuildWidgetSettingsJSONBody,
+	type RESTPostAPIGuildChannelJSONBody,
+	type RESTPostAPIGuildEmojiJSONBody,
+	type RESTPostAPIGuildPruneJSONBody,
+	type RESTPostAPIGuildRoleJSONBody,
+	type RESTPostAPIGuildScheduledEventJSONBody,
+	type RESTPostAPIGuildsJSONBody,
+	type RESTPostAPIGuildTemplatesJSONBody,
+	type RESTPutAPIGuildBanJSONBody,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
 
 export class GuildsAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a guild
@@ -194,7 +189,7 @@ export class GuildsAPI {
 	 * @param reason - The reason for banning the user
 	 * @returns
 	 */
-	public async ban(guildId: string, userId: string, options?: RESTPutAPIGuildBanJSONBody, reason?: string) {
+	public async ban(guildId: string, userId: string, options: RESTPutAPIGuildBanJSONBody = {}, reason?: string) {
 		return this.rest.put(Routes.guildBan(guildId, userId), {
 			reason,
 			body: options,
@@ -311,7 +306,7 @@ export class GuildsAPI {
 	 * @param options - The options for pruning members
 	 * @param reason - The reason for pruning members
 	 */
-	public async beginPrune(guildId: string, options?: RESTPostAPIGuildPruneJSONBody, reason?: string) {
+	public async beginPrune(guildId: string, options: RESTPostAPIGuildPruneJSONBody = {}, reason?: string) {
 		return (await this.rest.post(Routes.guildPrune(guildId), {
 			body: options,
 			reason,

@@ -1,34 +1,19 @@
-import type { REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
-import type {
-	APIChannel,
-	APIFollowedChannel,
-	APIInvite,
-	APIMessage,
-	RESTGetAPIChannelUsersThreadsArchivedResult,
-	RESTPatchAPIChannelJSONBody,
-	RESTPostAPIChannelInviteJSONBody,
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import {
+	Routes,
+	type APIChannel,
+	type APIFollowedChannel,
+	type APIInvite,
+	type APIMessage,
+	type RESTGetAPIChannelUsersThreadsArchivedResult,
+	type RESTPatchAPIChannelJSONBody,
+	type RESTPostAPIChannelInviteJSONBody,
+	type RESTGetAPIChannelMessagesQuery,
+	type RESTGetAPIChannelThreadsArchivedQuery,
 } from 'discord-api-types/v10';
-import { Routes } from 'discord-api-types/v10';
-
-export interface GetChannelMessagesOptions {
-	after?: string;
-	around?: string;
-	before?: string;
-	limit?: number;
-}
-
-export interface FetchThreadsOptions {
-	before?: string;
-	limit?: number;
-}
 
 export class ChannelsAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches a channel
@@ -66,7 +51,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch messages from
 	 * @param options - The options to use when fetching messages
 	 */
-	public async messages(channelId: string, options?: GetChannelMessagesOptions) {
+	public async getMessages(channelId: string, options: RESTGetAPIChannelMessagesQuery = {}) {
 		return (await this.rest.get(Routes.channelMessages(channelId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIMessage[];
@@ -155,7 +140,7 @@ export class ChannelsAPI {
 	public async getArchivedThreads(
 		channelId: string,
 		archivedStatus: 'private' | 'public',
-		options?: FetchThreadsOptions,
+		options: RESTGetAPIChannelThreadsArchivedQuery = {},
 	) {
 		return (await this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
@@ -168,7 +153,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch joined archived threads from
 	 * @param options - The options to use when fetching joined archived threads
 	 */
-	public async getJoinedPrivateArchivedThreads(channelId: string, options: FetchThreadsOptions = {}) {
+	public async getJoinedPrivateArchivedThreads(channelId: string, options: RESTGetAPIChannelThreadsArchivedQuery = {}) {
 		return (await this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as RESTGetAPIChannelUsersThreadsArchivedResult;

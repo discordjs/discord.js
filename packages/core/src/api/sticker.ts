@@ -1,13 +1,8 @@
 import type { REST } from '@discordjs/rest';
-import type { RESTGetNitroStickerPacksResult } from 'discord-api-types/v10';
-import { Routes, type APISticker } from 'discord-api-types/v10';
+import { Routes, type APISticker, type RESTGetNitroStickerPacksResult } from 'discord-api-types/v10';
 
 export class StickersAPI {
-	private readonly rest: REST;
-
-	public constructor(rest: REST) {
-		this.rest = rest;
-	}
+	public constructor(private readonly rest: REST) {}
 
 	/**
 	 * Fetches all of the nitro sticker packs
