@@ -7,14 +7,22 @@ import {
 } from './ActionRow.js';
 import { ComponentBuilder } from './Component.js';
 import { ButtonBuilder } from './button/Button.js';
-import { SelectMenuBuilder } from './selectMenu/SelectMenu.js';
+import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
+import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
+import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
+import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
+import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
 
 export interface MappedComponentTypes {
 	[ComponentType.ActionRow]: ActionRowBuilder<AnyComponentBuilder>;
 	[ComponentType.Button]: ButtonBuilder;
-	[ComponentType.SelectMenu]: SelectMenuBuilder;
+	[ComponentType.StringSelect]: StringSelectMenuBuilder;
 	[ComponentType.TextInput]: TextInputBuilder;
+	[ComponentType.UserSelect]: UserSelectMenuBuilder;
+	[ComponentType.RoleSelect]: RoleSelectMenuBuilder;
+	[ComponentType.MentionableSelect]: MentionableSelectMenuBuilder;
+	[ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
 }
 
 /**
@@ -39,10 +47,18 @@ export function createComponentBuilder(
 			return new ActionRowBuilder(data);
 		case ComponentType.Button:
 			return new ButtonBuilder(data);
-		case ComponentType.SelectMenu:
-			return new SelectMenuBuilder(data);
+		case ComponentType.StringSelect:
+			return new StringSelectMenuBuilder(data);
 		case ComponentType.TextInput:
 			return new TextInputBuilder(data);
+		case ComponentType.UserSelect:
+			return new UserSelectMenuBuilder(data);
+		case ComponentType.RoleSelect:
+			return new RoleSelectMenuBuilder(data);
+		case ComponentType.MentionableSelect:
+			return new MentionableSelectMenuBuilder(data);
+		case ComponentType.ChannelSelect:
+			return new ChannelSelectMenuBuilder(data);
 		default:
 			// @ts-expect-error: This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);

@@ -1,15 +1,8 @@
-import type {  APISelectMenuComponent } from 'discord-api-types/v10';
-import {
-	customIdValidator,
-	disabledValidator,
-	minMaxValidator,
-	placeholderValidator,
-} from '../Assertions.js';
+import type { APISelectMenuComponent } from 'discord-api-types/v10';
+import { customIdValidator, disabledValidator, minMaxValidator, placeholderValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 
-
 export class BaseSelectMenu extends ComponentBuilder<APISelectMenuComponent> {
-    
 	/**
 	 * Sets the placeholder for this select menu
 	 *
@@ -59,9 +52,11 @@ export class BaseSelectMenu extends ComponentBuilder<APISelectMenuComponent> {
 		this.data.disabled = disabledValidator.parse(disabled);
 		return this;
 	}
+	
 	public toJSON(): APISelectMenuComponent {
 		customIdValidator.parse(this.data.custom_id);
 		return {
 			...this.data,
 		} as APISelectMenuComponent;
-	}}
+	}
+}

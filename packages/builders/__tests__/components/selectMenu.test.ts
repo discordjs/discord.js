@@ -1,8 +1,8 @@
 import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
+import { StringSelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
 
-const selectMenu = () => new SelectMenuBuilder();
+const selectMenu = () => new StringSelectMenuBuilder();
 const selectMenuOption = () => new SelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
@@ -165,12 +165,12 @@ describe('Select Menu Components', () => {
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
 			expect(
-				new SelectMenuBuilder(selectMenuDataWithoutOptions)
+				new StringSelectMenuBuilder(selectMenuDataWithoutOptions)
 					.addOptions(new SelectMenuOptionBuilder(selectMenuOptionData))
 					.toJSON(),
 			).toEqual(selectMenuData);
 			expect(
-				new SelectMenuBuilder(selectMenuDataWithoutOptions)
+				new StringSelectMenuBuilder(selectMenuDataWithoutOptions)
 					.addOptions([new SelectMenuOptionBuilder(selectMenuOptionData)])
 					.toJSON(),
 			).toEqual(selectMenuData);

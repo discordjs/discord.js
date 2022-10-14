@@ -9,7 +9,7 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	createComponentBuilder,
-	SelectMenuBuilder,
+	StringSelectMenuBuilder,
 	SelectMenuOptionBuilder,
 } from '../../src/index.js';
 
@@ -134,7 +134,7 @@ describe('Action Row Components', () => {
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
 			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
-			const selectMenu = new SelectMenuBuilder()
+			const selectMenu = new StringSelectMenuBuilder()
 				.setCustomId('1234')
 				.setMaxValues(10)
 				.setMinValues(12)

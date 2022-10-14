@@ -1,20 +1,7 @@
-import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import {
-	customIdValidator,
-	disabledValidator,
-	jsonOptionValidator,
-	minMaxValidator,
-	optionsLengthValidator,
-	placeholderValidator,
-	validateRequiredSelectMenuParameters,
-} from '../Assertions.js';
+import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
 import { BaseSelectMenu } from './BaseSelectMenu.js';
-import { SelectMenuOptionBuilder } from './SelectMenuOption.js';
-
 
 export class UserSelectMenuBuilder extends BaseSelectMenu {
-
 	/**
 	 * Creates a new select menu from API data
 	 *
@@ -41,4 +28,4 @@ export class UserSelectMenuBuilder extends BaseSelectMenu {
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		super({ type: ComponentType.UserSelect, ...data });
 	}
-
+}

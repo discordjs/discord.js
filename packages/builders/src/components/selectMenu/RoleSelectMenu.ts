@@ -1,12 +1,7 @@
-import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
-import {
-	validateRequiredSelectMenuParameters,
-} from '../Assertions.js';
+import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
 import { BaseSelectMenu } from './BaseSelectMenu.js';
 
-
 export class RoleSelectMenuBuilder extends BaseSelectMenu {
-
 	/**
 	 * Creates a new select menu from API data
 	 *
@@ -33,5 +28,4 @@ export class RoleSelectMenuBuilder extends BaseSelectMenu {
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		super({ type: ComponentType.RoleSelect, ...data });
 	}
-
 }

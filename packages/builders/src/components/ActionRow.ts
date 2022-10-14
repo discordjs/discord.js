@@ -11,14 +11,24 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { ComponentBuilder } from './Component.js';
 import { createComponentBuilder } from './Components.js';
 import type { ButtonBuilder } from './button/Button.js';
-import type { SelectMenuBuilder } from './selectMenu/SelectMenu.js';
+import type { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
+import type { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
+import type { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
+import type { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
+import type { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import type { TextInputBuilder } from './textInput/TextInput.js';
 
 export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>
 	| MessageActionRowComponentBuilder;
 export type ModalComponentBuilder = ActionRowBuilder<ModalActionRowComponentBuilder> | ModalActionRowComponentBuilder;
-export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
+export type MessageActionRowComponentBuilder =
+	| ButtonBuilder
+	| ChannelSelectMenuBuilder
+	| MentionableSelectMenuBuilder
+	| RoleSelectMenuBuilder
+	| StringSelectMenuBuilder
+	| UserSelectMenuBuilder;
 export type ModalActionRowComponentBuilder = TextInputBuilder;
 export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 

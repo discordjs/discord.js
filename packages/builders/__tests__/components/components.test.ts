@@ -13,12 +13,12 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	createComponentBuilder,
-	SelectMenuBuilder,
+	StringSelectMenuBuilder,
 	TextInputBuilder,
 } from '../../src/index.js';
 
 describe('createComponentBuilder', () => {
-	test.each([ButtonBuilder, SelectMenuBuilder, TextInputBuilder])(
+	test.each([ButtonBuilder, StringSelectMenuBuilder, TextInputBuilder])(
 		'passing an instance of %j should return itself',
 		(Builder) => {
 			const builder = new Builder();
@@ -45,14 +45,14 @@ describe('createComponentBuilder', () => {
 		expect(createComponentBuilder(button)).toBeInstanceOf(ButtonBuilder);
 	});
 
-	test('GIVEN a select menu component THEN returns a SelectMenuBuilder', () => {
+	test('GIVEN a select menu component THEN returns a StringSelectMenuBuilder', () => {
 		const selectMenu: APISelectMenuComponent = {
 			custom_id: 'abc',
 			options: [],
 			type: ComponentType.SelectMenu,
 		};
 
-		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(SelectMenuBuilder);
+		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(StringSelectMenuBuilder);
 	});
 
 	test('GIVEN a text input component THEN returns a TextInputBuilder', () => {
