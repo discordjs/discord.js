@@ -54,11 +54,20 @@ class SelectMenuComponent extends Component {
 
   /**
    * The options in this select menu
-   * @type {APISelectMenuOption[]}
+   * @type {?(APISelectMenuOption[])}
    * @readonly
    */
   get options() {
-    return this.data.options;
+    return this.data.options ?? null;
+  }
+
+  /**
+   * The options in this select menu
+   * @type {?(ChannelType[])}
+   * @readonly
+   */
+  get channelTypes() {
+    return this.data.options ?? null;
   }
 }
 
