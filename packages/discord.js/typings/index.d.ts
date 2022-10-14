@@ -130,6 +130,7 @@ import {
   TextChannelType,
   ChannelFlags,
   SortOrderType,
+  APIGuildMember,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -632,6 +633,9 @@ export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
 export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): MentionableSelectMenuBuilder;
+  public static from(
+    other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent,
+  ): MentionableSelectMenuBuilder;
 }
 export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
@@ -666,7 +670,8 @@ export class SelectMenuComponent extends Component<APISelectMenuComponent> {
   public get minValues(): number | null;
   public get customId(): string;
   public get disabled(): boolean | null;
-  public get options(): APISelectMenuOption[];
+  public get options(): APISelectMenuOption[] | null;
+  public get channelTypes(): ChannelType | null;
 }
 
 export interface EmbedData {
@@ -2293,6 +2298,11 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     | ComponentType.MentionableSelect
     | ComponentType.ChannelSelect;
   public values: string[];
+  public members: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
+  public users: Collection<Snowflake, CacheTypeReducer<Cached, User, APIUser>>;
+  public channels: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIChannel>>;
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
@@ -5386,6 +5396,7 @@ export interface SelectMenuComponentData extends BaseComponentData {
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
+  channelTypes?: ChannelType[];
   options?: SelectMenuComponentOptionData[];
   placeholder?: string;
 }
