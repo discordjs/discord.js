@@ -273,7 +273,16 @@ class BaseInteraction extends Base {
    * @returns {boolean}
    */
   isSelectMenu() {
-    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.SelectMenu;
+    return (
+      this.type === InteractionType.MessageComponent &&
+      [
+        ComponentType.StringSelect,
+        ComponentType.UserSelect,
+        ComponentType.RoleSelect,
+        ComponentType.MentionableSelect,
+        ComponentType.ChannelSelect,
+      ].includes(this.componentType)
+    );
   }
 
   /**

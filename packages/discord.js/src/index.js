@@ -153,7 +153,13 @@ exports.ReactionCollector = require('./structures/ReactionCollector');
 exports.ReactionEmoji = require('./structures/ReactionEmoji');
 exports.RichPresenceAssets = require('./structures/Presence').RichPresenceAssets;
 exports.Role = require('./structures/Role').Role;
-exports.SelectMenuBuilder = require('./structures/SelectMenuBuilder');
+exports.ChannelSelectMenuBuilder = require('./structures/ChannelSelectMenuBuilder');
+exports.MentionableSelectMenuBuilder = require('./structures/MentionableSelectMenuBuilder');
+exports.RoleSelectMenuBuilder = require('./structures/RoleSelectMenuBuilder');
+exports.StringSelectMenuBuilder = require('./structures/StringSelectMenuBuilder');
+/** @deprecated Use {@link StringSelectMenuBuilder} instead. */
+exports.SelectMenuBuilder = exports.StringSelectMenuBuilder;
+exports.UserSelectMenuBuilder = require('./structures/UserSelectMenuBuilder');
 exports.SelectMenuComponent = require('./structures/SelectMenuComponent');
 exports.SelectMenuInteraction = require('./structures/SelectMenuInteraction');
 exports.SelectMenuOptionBuilder = require('./structures/SelectMenuOptionBuilder');

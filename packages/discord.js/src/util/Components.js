@@ -82,7 +82,11 @@ function createComponent(data) {
       return new ActionRow(data);
     case ComponentType.Button:
       return new ButtonComponent(data);
-    case ComponentType.SelectMenu:
+    case ComponentType.StringSelect:
+    case ComponentType.UserSelect:
+    case ComponentType.RoleSelect:
+    case ComponentType.MentionableSelect:
+    case ComponentType.ChannelSelect:
       return new SelectMenuComponent(data);
     case ComponentType.TextInput:
       return new TextInputComponent(data);
@@ -106,10 +110,18 @@ function createComponentBuilder(data) {
       return new ActionRowBuilder(data);
     case ComponentType.Button:
       return new ButtonBuilder(data);
-    case ComponentType.SelectMenu:
-      return new SelectMenuBuilder(data);
+    case ComponentType.StringSelect:
+      return new StringSelectMenuBuilder(data);
     case ComponentType.TextInput:
       return new TextInputBuilder(data);
+    case ComponentType.UserSelect:
+      return new UserSelectMenuBuilder(data);
+    case ComponentType.RoleSelect:
+      return new RoleSelectMenuBuilder(data);
+    case ComponentType.MentionableSelect:
+      return new MentionableSelectMenuBuilder(data);
+    case ComponentType.ChannelSelect:
+      return new ChannelSelectMenuBuilder(data);
     default:
       return new ComponentBuilder(data);
   }
@@ -121,11 +133,15 @@ const ActionRow = require('../structures/ActionRow');
 const ActionRowBuilder = require('../structures/ActionRowBuilder');
 const ButtonBuilder = require('../structures/ButtonBuilder');
 const ButtonComponent = require('../structures/ButtonComponent');
+const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
 const Component = require('../structures/Component');
-const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
+const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
+const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
 const SelectMenuComponent = require('../structures/SelectMenuComponent');
+const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
 const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');
+const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
 
 /**
  * @external JSONEncodable

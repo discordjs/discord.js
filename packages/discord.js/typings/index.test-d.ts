@@ -113,7 +113,7 @@ import {
   ButtonBuilder,
   EmbedBuilder,
   MessageActionRowComponent,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
   TextInputBuilder,
   TextInputComponent,
   Embed,
@@ -361,12 +361,12 @@ client.on('messageCreate', async message => {
   expectAssignable<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.SelectMenu });
+  const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.StringSelect });
   expectAssignable<Promise<SelectMenuInteraction>>(
-    message.awaitMessageComponent({ componentType: ComponentType.SelectMenu }),
+    message.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
   expectAssignable<Promise<SelectMenuInteraction>>(
-    channel.awaitMessageComponent({ componentType: ComponentType.SelectMenu }),
+    channel.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
   expectAssignable<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
 
@@ -405,7 +405,7 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: ComponentType.SelectMenu,
+    componentType: ComponentType.StringSelect,
     filter: i => {
       expectType<SelectMenuInteraction>(i);
       return true;
@@ -428,7 +428,7 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: ComponentType.SelectMenu,
+    componentType: ComponentType.StringSelect,
     filter: i => {
       expectType<SelectMenuInteraction>(i);
       return true;
@@ -464,7 +464,7 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: ComponentType.SelectMenu,
+    componentType: ComponentType.StringSelect,
     filter: i => {
       expectType<SelectMenuInteraction<'cached'>>(i);
       return true;
@@ -489,9 +489,9 @@ client.on('messageCreate', async message => {
   const selectsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new SelectMenuBuilder(),
+      new StringSelectMenuBuilder(),
       {
-        type: ComponentType.SelectMenu,
+        type: ComponentType.StringSelect,
         label: 'select menu',
         options: [{ label: 'test', value: 'test' }],
         customId: 'test',
@@ -1122,8 +1122,8 @@ client.on('guildCreate', async g => {
         new ButtonBuilder(),
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.SelectMenu, customId: 'foo' },
-        new SelectMenuBuilder(),
+        { type: ComponentType.StringSelect, customId: 'foo' },
+        new StringSelectMenuBuilder(),
         // @ts-expect-error
         { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
         // @ts-expect-error
@@ -1136,7 +1136,7 @@ client.on('guildCreate', async g => {
       components: [
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.SelectMenu, customId: 'foo' },
+        { type: ComponentType.StringSelect, customId: 'foo' },
       ],
     });
 
@@ -1640,7 +1640,10 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.type === InteractionType.MessageComponent && interaction.componentType === ComponentType.SelectMenu) {
+  if (
+    interaction.type === InteractionType.MessageComponent &&
+    interaction.componentType === ComponentType.StringSelect
+  ) {
     expectType<SelectMenuInteraction>(interaction);
     expectType<SelectMenuComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
@@ -1882,7 +1885,7 @@ const button = new ButtonBuilder({
   customId: 'test',
 });
 
-const selectMenu = new SelectMenuBuilder({
+const selectMenu = new StringSelectMenuBuilder({
   maxValues: 10,
   minValues: 2,
   customId: 'test',
@@ -1892,7 +1895,7 @@ new ActionRowBuilder({
   components: [selectMenu.toJSON(), button.toJSON()],
 });
 
-new SelectMenuBuilder({
+new StringSelectMenuBuilder({
   customId: 'foo',
 });
 
@@ -1951,10 +1954,10 @@ chatInputInteraction.showModal({
 });
 
 declare const selectMenuData: APISelectMenuComponent;
-SelectMenuBuilder.from(selectMenuData);
+StringSelectMenuBuilder.from(selectMenuData);
 
 declare const selectMenuComp: SelectMenuComponent;
-SelectMenuBuilder.from(selectMenuComp);
+StringSelectMenuBuilder.from(selectMenuComp);
 
 declare const buttonData: APIButtonComponent;
 ButtonBuilder.from(buttonData);
