@@ -2,23 +2,14 @@
 
 const { MentionableSelectMenuBuilder: BuildersMentionableSelectMenu, isJSONEncodable } = require('@discordjs/builders');
 const { toSnakeCase } = require('../util/Transformers');
-const { resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Class used to build select menu components to be sent through the API
  * @extends {BuildersMentionableSelectMenu}
  */
 class MentionableSelectMenuBuilder extends BuildersMentionableSelectMenu {
-  constructor({ options, ...data } = {}) {
-    super(
-      toSnakeCase({
-        ...data,
-        options: options?.map(({ emoji, ...option }) => ({
-          ...option,
-          emoji: emoji && typeof emoji === 'string' ? resolvePartialEmoji(emoji) : emoji,
-        })),
-      }),
-    );
+  constructor(data = {}) {
+    super(toSnakeCase(data));
   }
 
   /**
