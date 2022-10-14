@@ -56,7 +56,7 @@ export const optionsLengthValidator = s.number.int
 	.lessThanOrEqual(25)
 	.setValidationEnabled(isValidationEnabled);
 
-export function validateRequiredSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
+export function validateRequiredStringSelectMenuParameters(options: SelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }

@@ -1,22 +1,15 @@
 import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import {
-	customIdValidator,
-	disabledValidator,
 	jsonOptionValidator,
-	minMaxValidator,
 	optionsLengthValidator,
-	placeholderValidator,
 	validateRequiredStringSelectMenuParameters,
 } from '../Assertions.js';
-import { ComponentBuilder } from '../Component.js';
+import { BaseSelectMenu } from './BaseSelectMenu.js';
 import { SelectMenuOptionBuilder } from './SelectMenuOption.js';
 
-/**
- * @deprecated This is the old class for {@link StringSelectMenuBuilder}
- * Represents a select menu component
- */
-export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> {
+
+export class StringSelectMenuBuilder extends BaseSelectMenu {
 	/**
 	 * The options within this select menu
 	 */
@@ -29,7 +22,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 * @example
 	 * Creating a select menu from an API data object
 	 * ```ts
-	 * const selectMenu = new SelectMenuBuilder({
+	 * const selectMenu = new StringSelectMenuBuilder({
 	 * 	custom_id: 'a cool select menu',
 	 * 	placeholder: 'select an option',
 	 * 	max_values: 2,
@@ -43,7 +36,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 * @example
 	 * Creating a select menu using setters and API data
 	 * ```ts
-	 * const selectMenu = new SelectMenuBuilder({
+	 * const selectMenu = new StringSelectMenuBuilder({
 	 * 	custom_id: 'a cool select menu',
 	 * })
 	 * 	.setMinValues(1)
@@ -55,58 +48,8 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		const { options, ...initData } = data ?? {};
-		super({ type: ComponentType.SelectMenu, ...initData });
-		this.options = options?.map((option) => new SelectMenuOptionBuilder(option)) ?? [];
-	}
-
-	/**
-	 * Sets the placeholder for this select menu
-	 *
-	 * @param placeholder - The placeholder to use for this select menu
-	 */
-	public setPlaceholder(placeholder: string) {
-		this.data.placeholder = placeholderValidator.parse(placeholder);
-		return this;
-	}
-
-	/**
-	 * Sets the minimum values that must be selected in the select menu
-	 *
-	 * @param minValues - The minimum values that must be selected
-	 */
-	public setMinValues(minValues: number) {
-		this.data.min_values = minMaxValidator.parse(minValues);
-		return this;
-	}
-
-	/**
-	 * Sets the maximum values that must be selected in the select menu
-	 *
-	 * @param maxValues - The maximum values that must be selected
-	 */
-	public setMaxValues(maxValues: number) {
-		this.data.max_values = minMaxValidator.parse(maxValues);
-		return this;
-	}
-
-	/**
-	 * Sets the custom id for this select menu
-	 *
-	 * @param customId - The custom id to use for this select menu
-	 */
-	public setCustomId(customId: string) {
-		this.data.custom_id = customIdValidator.parse(customId);
-		return this;
-	}
-
-	/**
-	 * Sets whether this select menu is disabled
-	 *
-	 * @param disabled - Whether this select menu is disabled
-	 */
-	public setDisabled(disabled = true) {
-		this.data.disabled = disabledValidator.parse(disabled);
-		return this;
+		super({ type: ComponentType.StringSelect, ...initData });
+		this.options = options?.map((option: APISelectMenuOption) => new SelectMenuOptionBuilder(option)) ?? [];
 	}
 
 	/**
@@ -153,7 +96,7 @@ export class SelectMenuBuilder extends ComponentBuilder<APISelectMenuComponent> 
 	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public toJSON(): APISelectMenuComponent {
+     public override toJSON(): APISelectMenuComponent {
 		validateRequiredStringSelectMenuParameters(this.options, this.data.custom_id);
 
 		return {
