@@ -2098,16 +2098,16 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.23.4
+    "@vitest/coverage-c8": ^0.24.1
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.12
-    eslint: ^8.24.0
+    eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
     prettier: ^2.7.1
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.23.4
+    vitest: ^0.24.1
   languageName: unknown
   linkType: soft
 
@@ -5142,13 +5142,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-c8@npm:^0.23.4":
-  version: 0.23.4
-  resolution: "@vitest/coverage-c8@npm:0.23.4"
+"@vitest/coverage-c8@npm:^0.24.1":
+  version: 0.24.5
+  resolution: "@vitest/coverage-c8@npm:0.24.5"
   dependencies:
     c8: ^7.12.0
-    vitest: 0.23.4
-  checksum: ce0e4928074145db50d6600da19965c80af6859e901f5e759202c4ea326dde0fcca0d54a79c0872859c4d8b9630d7328d0cbb90150a625d447c761a6fbf0d6e0
+    vitest: 0.24.5
+  checksum: 54ca01a281df13f6c312a9fd14cff31a214b5886549ebe8179b94423aad831e6c3d5438a45464596703f02c7a4117f1b1a7c31fb84c3779d20c47cbb0dc9a3fb
   languageName: node
   linkType: hard
 
@@ -9927,7 +9927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.24.0, eslint@npm:^8.28.0":
+"eslint@npm:^8.25.0, eslint@npm:^8.28.0":
   version: 8.28.0
   resolution: "eslint@npm:8.28.0"
   dependencies:
@@ -18901,7 +18901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-literal@npm:^0.4.1, strip-literal@npm:^0.4.2":
+"strip-literal@npm:^0.4.2":
   version: 0.4.2
   resolution: "strip-literal@npm:0.4.2"
   dependencies:
@@ -19383,7 +19383,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinybench@npm:^2.1.5, tinybench@npm:^2.3.1":
+"tinybench@npm:^2.3.1":
   version: 2.3.1
   resolution: "tinybench@npm:2.3.1"
   checksum: 74d45fa546d964a8123f98847fc59550945ed7f0d3e5a4ce0f9596d836b51c1d340c2ae0277a8023c15dc9ea3d7cb948a79173bfc46338c9b367c6323ea1eaf3
@@ -20103,13 +20103,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.3.4#~builtin<compat/typescript>":
-  version: 4.3.4
-  resolution: "typescript@patch:typescript@npm%3A4.3.4#~builtin<compat/typescript>::version=4.3.4&hash=701156"
+"typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
+  version: 4.9.3
+  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 6ccc2e1148e172da119ea4b72c66395a0c18a53884d21fb82bb4503a948a7169e9961defe24a359040a3d77bf5ff338945804296e0e27c87b5bd22ea1d25781b
+  checksum: ef65c22622d864497d0a0c5db693523329b3284c15fe632e93ad9aa059e8dc38ef3bd767d6f26b1e5ecf9446f49bd0f6c4e5714a2eeaf352805dc002479843d1
   languageName: node
   linkType: hard
 
