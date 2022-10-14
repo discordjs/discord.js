@@ -1,4 +1,6 @@
+/* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
+import type { APICommandAutocompleteInteractionResponseCallbackData } from 'discord-api-types/v10';
 import {
 	Routes,
 	InteractionResponseType,
@@ -37,6 +39,19 @@ export class InteractionsAPI {
 		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
+			},
+		});
+	}
+
+	/**
+	 * Defers an update from a message component interaction
+	 *
+	 * @param interaction - The component interaction to defer the update for
+	 */
+	public async deferMessageUpdate(interaction: APIInteraction) {
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+			body: {
+				type: InteractionResponseType.DeferredMessageUpdate,
 			},
 		});
 	}
@@ -91,16 +106,40 @@ export class InteractionsAPI {
 	}
 
 	/**
-	 * Updates the initial reply to an interaction
+	 * Updates the the message the component interaction was triggered on
 	 *
 	 * @param interaction - The interaction to update
 	 * @param options - The options to use when updating the interaction
 	 */
-	public async update(
+	public async updateMessage(
 		interaction: APIInteraction,
-		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		await this.webhooks.editMessage(interaction.application_id, interaction.token, '@original', options);
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+			files,
+			body: {
+				type: InteractionResponseType.UpdateMessage,
+				data,
+			},
+		});
+	}
+
+	/**
+	 * Sends an autocomplete response to an interaction
+	 *
+	 * @param interaction - The autocomplete interaction to respond to
+	 * @param options - Options for the autocomplete response
+	 */
+	public async sendAutocomplete(
+		interaction: APIInteraction,
+		options: APICommandAutocompleteInteractionResponseCallbackData,
+	) {
+		return this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+			body: {
+				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
+				data: options,
+			},
+		});
 	}
 
 	/**
