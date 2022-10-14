@@ -632,7 +632,6 @@ export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
 }
 export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
-  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): MentionableSelectMenuBuilder;
   public static from(
     other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent,
   ): MentionableSelectMenuBuilder;
@@ -2298,10 +2297,10 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     | ComponentType.MentionableSelect
     | ComponentType.ChannelSelect;
   public values: string[];
-  public members: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
-  public users: Collection<Snowflake, CacheTypeReducer<Cached, User, APIUser>>;
-  public channels: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIChannel>>;
-  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  public members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
+  public users?: Collection<Snowflake, CacheTypeReducer<Cached, User, APIUser>>;
+  public channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIChannel>>;
+  public roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
 
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
