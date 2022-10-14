@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const AutoModerationRule = require('../structures/AutoModerationRule');
 
@@ -23,26 +24,24 @@ class AutoModerationRuleManager extends CachedManager {
     return super._add(data, cache, { extras: [this.guild] });
   }
 
-  // TODO: discord-api-types enum
   /**
    * Options used to set the trigger metadata of an auto moderation rule.
    * @typedef {Object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
-   * @property {number[]} [presets] The internally pre-defined wordsets which will be searched for in the content
+   * @property {AutoModerationRuleKeywordPresetType[]} [presets]
+   * The internally pre-defined wordsets which will be searched for in the content
    * @property {string[]} [allowList] The substrings that will be exempt from triggering trigger type 4
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
    */
 
-  // TODO: discord-api-types enum
   /**
    * Options used to set the actions of an auto moderation rule.
    * @typedef {Object} AutoModerationActionOptions
-   * @property {number} type The type of this auto moderation rule action
+   * @property {AutoModerationActionType} type The type of this auto moderation rule action
    * @property {AutoModerationActionMetadataOptions} [metadata] Additional metadata needed during execution
-   * <info>This property is required if using a `type` of 2 or 3.</info>
+   * <info>This property is required if using a `type` of
+   * {@link AutoModerationActionType.SendAlertMessage} or {@link AutoModerationActionType.Timeout}.</info>
    */
-
-  // TODO: discord-api-types enum
 
   /**
    * Options used to set the metadata of an auto moderation rule action.
@@ -51,15 +50,16 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {number} [durationSeconds] The timeout duration in seconds
    */
 
-  // TODO: discord-api-types enum
   /**
    * Options used to create an auto moderation rule.
    * @typedef {Object} AutoModerationRuleCreateOptions
    * @property {string} name The name of the auto moderation rule
-   * @property {number} eventType The event type of the auto moderation rule
-   * @property {number} triggerType The trigger type of the auto moderation rule
+   * @property {AutoModerationRuleEventType} eventType The event type of the auto moderation rule
+   * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
-   * <info>This property is required if using a `triggerType` of 1, 4, or 5.</info>
+   * <info>This property is required if using a `triggerType` of
+   * {@link AutoModerationRuleTriggerType.Keyword}, {@link AutoModerationRuleTriggerType.KeywordPreset},
+   * or {@link AutoModerationRuleTriggerType.MentionSpam}.</info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
@@ -86,8 +86,7 @@ class AutoModerationRuleManager extends CachedManager {
     exemptChannels,
     reason,
   }) {
-    // TODO: discord-api-types route
-    const data = await this.client.rest.post(`/guilds/${this.guild.id}/auto-moderation/rules`, {
+    const data = await this.client.rest.post(Routes.guildAutoModerationRules(this.guild.id), {
       body: {
         name,
         event_type: eventType,
@@ -115,12 +114,11 @@ class AutoModerationRuleManager extends CachedManager {
     return this._add(data);
   }
 
-  // TODO: discord-api-types enum
   /**
    * Options used to edit an auto moderation rule.
    * @typedef {Object} AutoModerationRuleEditOptions
    * @property {string} [name] The name of the auto moderation rule
-   * @property {number} [eventType] The event type of the auto moderation rule
+   * @property {AutoModerationRuleEventType} [eventType] The event type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
    * @property {AutoModerationActionOptions[]} [actions]
    * The actions that will execute when the auto moderation rule is triggered
@@ -144,33 +142,29 @@ class AutoModerationRuleManager extends CachedManager {
   ) {
     const autoModerationRuleId = this.resolveId(autoModerationRule);
 
-    const data = await this.client.rest.patch(
-      // TODO: discord-api-types route
-      `/guilds/${this.guild.id}/auto-moderation/rules/${autoModerationRuleId}`,
-      {
-        body: {
-          name,
-          event_type: eventType,
-          trigger_metadata: triggerMetadata && {
-            keyword_filter: triggerMetadata.keywordFilter,
-            presets: triggerMetadata.presets,
-            allow_list: triggerMetadata.allowList,
-            mention_total_limit: triggerMetadata.mentionTotalLimit,
-          },
-          actions: actions?.map(action => ({
-            type: action.type,
-            metadata: {
-              duration_seconds: action.metadata?.durationSeconds,
-              channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
-            },
-          })),
-          enabled,
-          exempt_roles: exemptRoles?.map(exemptRole => this.guild.roles.resolveId(exemptRole)),
-          exempt_channels: exemptChannels?.map(exemptChannel => this.guild.channels.resolveId(exemptChannel)),
+    const data = await this.client.rest.patch(Routes.guildAutoModerationRule(this.guild.id, autoModerationRuleId), {
+      body: {
+        name,
+        event_type: eventType,
+        trigger_metadata: triggerMetadata && {
+          keyword_filter: triggerMetadata.keywordFilter,
+          presets: triggerMetadata.presets,
+          allow_list: triggerMetadata.allowList,
+          mention_total_limit: triggerMetadata.mentionTotalLimit,
         },
-        reason,
+        actions: actions?.map(action => ({
+          type: action.type,
+          metadata: {
+            duration_seconds: action.metadata?.durationSeconds,
+            channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+          },
+        })),
+        enabled,
+        exempt_roles: exemptRoles?.map(exemptRole => this.guild.roles.resolveId(exemptRole)),
+        exempt_channels: exemptChannels?.map(exemptChannel => this.guild.channels.resolveId(exemptChannel)),
       },
-    );
+      reason,
+    });
 
     return this._add(data);
   }
@@ -231,14 +225,12 @@ class AutoModerationRuleManager extends CachedManager {
       if (existing) return existing;
     }
 
-    // TODO: discord-api-types route
-    const data = await this.client.rest.get(`/guilds/${this.guild.id}/auto-moderation/rules/${autoModerationRule}`);
+    const data = await this.client.rest.get(Routes.guildAutoModerationRule(this.guild.id, autoModerationRule));
     return this._add(data, cache);
   }
 
   async _fetchMany(options = {}) {
-    // TODO: discord-api-types route
-    const data = await this.client.rest.get(`/guilds/${this.guild.id}/auto-moderation/rules`);
+    const data = await this.client.rest.get(Routes.guildAutoModerationRules(this.guild.id));
 
     return data.reduce(
       (col, autoModerationRule) => col.set(autoModerationRule.id, this._add(autoModerationRule, options.cache)),
@@ -254,8 +246,7 @@ class AutoModerationRuleManager extends CachedManager {
    */
   async delete(autoModerationRule, reason) {
     const autoModerationRuleId = this.resolveId(autoModerationRule);
-    // TODO: discord-api-types route
-    await this.client.rest.delete(`/guilds/${this.guild.id}/auto-moderation/rules/${autoModerationRuleId}`, { reason });
+    await this.client.rest.delete(Routes.guildAutoModerationRule(this.guild.id, autoModerationRuleId), { reason });
   }
 
   /**

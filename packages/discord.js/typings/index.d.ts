@@ -139,6 +139,13 @@ import {
   APIMessageRoleSelectInteractionData,
   APIMessageMentionableSelectInteractionData,
   APIMessageChannelSelectInteractionData,
+  AutoModerationRuleKeywordPresetType,
+  AutoModerationActionType,
+  AutoModerationRuleEventType,
+  AutoModerationRuleTriggerType,
+  AuditLogRuleTriggerType,
+  GatewayAutoModerationActionExecutionDispatchData,
+  APIAutoModerationRule,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -320,14 +327,12 @@ export abstract class AnonymousGuild extends BaseGuild {
 }
 
 export class AutoModerationActionExecution {
-  // TODO: discord-api-types type
-  private constructor(data: unknown, guild: Guild);
+  private constructor(data: GatewayAutoModerationActionExecutionDispatchData, guild: Guild);
   public guildId: Snowflake;
   public guild: Guild;
   public action: AutoModerationAction;
   public ruleId: Snowflake;
-  // TODO: discord-api-types enum
-  public ruleTriggerType: number;
+  public ruleTriggerType: AutoModerationRuleTriggerType;
   public userId: Snowflake;
   public channelId: Snowflake | null;
   public messageId: Snowflake | null;
@@ -339,17 +344,14 @@ export class AutoModerationActionExecution {
 }
 
 export class AutoModerationRule extends Base {
-  // TODO: discord-api-types type
-  private constructor(client: Client<true>, data: unknown, guild: Guild);
+  private constructor(client: Client<true>, data: APIAutoModerationRule, guild: Guild);
   public id: Snowflake;
   public guildId: Snowflake;
   public guild: Guild;
   public name: string;
   public creatorId: Snowflake;
-  // TODO: discord-api-types enum
-  public eventType: number;
-  // TODO: discord-api-types enum
-  public triggerType: number;
+  public eventType: AutoModerationRuleEventType;
+  public triggerType: AutoModerationRuleTriggerType;
   public triggerMetadata: AutoModerationTriggerMetadata;
   public actions: AutoModerationAction[];
   public enabled: boolean;
@@ -358,11 +360,9 @@ export class AutoModerationRule extends Base {
   public edit(options: AutoModerationRuleEditOptions): Promise<AutoModerationRule>;
   public delete(reason?: string): Promise<void>;
   public setName(name: string, reason?: string): Promise<AutoModerationRule>;
-  // TODO: discord-api-types enum
-  public setEventType(eventType: number, reason?: string): Promise<AutoModerationRule>;
+  public setEventType(eventType: AutoModerationRuleEventType, reason?: string): Promise<AutoModerationRule>;
   public setKeywordFilter(keywordFilter: string[], reason?: string): Promise<AutoModerationRule>;
-  // TODO: discord-api-types enum
-  public setPresets(presets: number[], reason?: string): Promise<AutoModerationRule>;
+  public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
@@ -4430,7 +4430,7 @@ export interface AuditLogChange {
 }
 
 export interface AutoModerationAction {
-  type: number;
+  type: AutoModerationActionType;
   metadata: AutoModerationActionMetadata;
 }
 
@@ -4441,7 +4441,7 @@ export interface AutoModerationActionMetadata {
 
 export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
-  presets: number[];
+  presets: AutoModerationRuleKeywordPresetType[];
   allowList: string[];
   mentionTotalLimit: number | null;
 }
@@ -5160,6 +5160,12 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
+  [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModerationRule', 'Update'];
+  [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModerationRule', 'Delete'];
+  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModerationRule', 'Create'];
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
@@ -5191,10 +5197,18 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
-  // TODO: discord-api-types enum
-  143: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
-  144: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
-  145: { autoModerationRuleName: string; autoModerationRuleTriggerType: string };
+  [AuditLogEvent.AutoModerationBlockMessage]: {
+    autoModerationRuleName: string;
+    autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+  };
+  [AuditLogEvent.AutoModerationFlagToChannel]: {
+    autoModerationRuleName: string;
+    autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+  };
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: {
+    autoModerationRuleName: string;
+    autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+  };
 }
 
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
@@ -5234,10 +5248,8 @@ export type GuildChannelResolvable = Snowflake | GuildBasedChannel;
 
 export interface AutoModerationRuleCreateOptions {
   name: string;
-  // TODO: discord-api-types enum
-  eventType: number;
-  // TODO: discord-api-types enum
-  triggerType: number;
+  eventType: AutoModerationRuleEventType;
+  triggerType: AutoModerationRuleTriggerType;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
   actions: AutoModerationActionOptions;
   enabled?: boolean;
@@ -5251,8 +5263,7 @@ export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerati
 export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
 
 export interface AutoModerationActionOptions {
-  // TODO: discord-api-types enum
-  type: number;
+  type: AutoModerationActionType;
   metadata?: AutoModerationActionMetadataOptions;
 }
 

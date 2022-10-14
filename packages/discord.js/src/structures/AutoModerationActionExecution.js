@@ -29,10 +29,9 @@ class AutoModerationActionExecution {
      */
     this.ruleId = data.rule_id;
 
-    // TODO: discord-api-types enum
     /**
      * The trigger type of the auto moderation rule which was triggered.
-     * @type {number}
+     * @type {AutoModerationRuleTriggerType}
      */
     this.ruleTriggerType = data.rule_trigger_type;
 

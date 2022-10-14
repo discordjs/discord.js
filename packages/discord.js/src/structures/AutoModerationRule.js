@@ -35,10 +35,9 @@ class AutoModerationRule extends Base {
      */
     this.creatorId = data.creator_id;
 
-    // TODO: discord-api-types enum
     /**
      * The trigger type of this auto moderation rule.
-     * @type {number}
+     * @type {AutoModerationRuleTriggerType}
      */
     this.triggerType = data.trigger_type;
 
@@ -55,22 +54,22 @@ class AutoModerationRule extends Base {
     }
 
     if ('event_type' in data) {
-      // TODO: discord-api-types enum
       /**
        * The event type of this auto moderation rule.
-       * @type {number}
+       * @type {AutoModerationRuleEventType}
        */
       this.eventType = data.event_type;
     }
 
     if ('trigger_metadata' in data) {
-      // TODO: discord-api-types enum
       /**
        * Additional data used to determine whether an auto moderation rule should be triggered.
        * @typedef {Object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
-       * @property {number[]} presets The internally pre-defined wordsets which will be searched for in the content
-       * @property {string[]} allowList The substrings that will be exempt from triggering trigger type 4
+       * @property {AutoModerationRuleKeywordPresetType[]} presets
+       * The internally pre-defined wordsets which will be searched for in the content
+       * @property {string[]} allowList The substrings that will be exempt from triggering
+       * trigger type {@link AutoModerationRuleTriggerType.KeywordPreset}
        * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
        */
 
@@ -87,11 +86,10 @@ class AutoModerationRule extends Base {
     }
 
     if ('actions' in data) {
-      // TODO: discord-api-types enum
       /**
        * An object containing information about an auto moderation rule action.
        * @typedef {Object} AutoModerationAction
-       * @property {number} type The type of this auto moderation rule action
+       * @property {AutoModerationActionType} type The type of this auto moderation rule action
        * @property {AutoModerationActionMetadata} metadata Additional metadata needed during execution
        */
 
@@ -172,10 +170,9 @@ class AutoModerationRule extends Base {
     return this.edit({ name, reason });
   }
 
-  // TODO: discord-api-types enum
   /**
    * Sets the event type for this auto moderation rule.
-   * @param {number} eventType The event type of this auto moderation rule
+   * @param {AutoModerationRuleEventType} eventType The event type of this auto moderation rule
    * @param {string} [reason] The reason for changing the event type of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -193,10 +190,9 @@ class AutoModerationRule extends Base {
     return this.edit({ triggerMetadata: { keywordFilter }, reason });
   }
 
-  // TODO: discord-api-types enum
   /**
    * Sets the presets for this auto moderation rule.
-   * @param {number[]} presets The presets of this auto moderation rule
+   * @param {AutoModerationRuleKeywordPresetType[]} presets The presets of this auto moderation rule
    * @param {string} [reason] The reason for changing the presets of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

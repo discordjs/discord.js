@@ -28,7 +28,6 @@ const Targets = {
   Sticker: 'Sticker',
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
-  // TODO: Needs typing
   AutoModeration: 'AutoModeration',
   Unknown: 'Unknown',
 };
@@ -227,10 +226,9 @@ class GuildAuditLogsEntry {
         };
         break;
 
-      // TODO: discord-api-types enum
-      case 143:
-      case 144:
-      case 145:
+      case AuditLogEvent.AutoModerationBlockMessage:
+      case AuditLogEvent.AutoModerationFlagToChannel:
+      case AuditLogEvent.AutoModerationUserCommunicationDisabled:
         this.extra = {
           autoModerationRuleName: data.options.auto_moderation_rule_name,
           autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
@@ -431,10 +429,8 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
-        // TODO: discord-api-types (AUTO_MODERATION_RULE_CREATE)
-        140,
-        // TODO: discord-api-types (AUTO_MODERATION_BLOCK_MESSAGE)
-        143,
+        AuditLogEvent.AutoModerationRuleCreate,
+        AuditLogEvent.AutoModerationBlockMessage,
       ].includes(action)
     ) {
       return 'Create';
@@ -460,8 +456,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
-        // TODO: discord-api-types (AUTO_MODERATION_RULE_DELETE)
-        142,
+        AuditLogEvent.AutoModerationRuleDelete,
       ].includes(action)
     ) {
       return 'Delete';
@@ -485,8 +480,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
-        // TODO: discord-api-types (AUTO_MODERATION_RULE_UPDATE)
-        141,
+        AuditLogEvent.AutoModerationRuleUpdate,
       ].includes(action)
     ) {
       return 'Update';
