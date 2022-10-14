@@ -64,11 +64,10 @@ class BitField {
   /**
    * Gets all given bits that are missing from the bitfield.
    * @param {BitFieldResolvable} bits Bit(s) to check for
-   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
-  missing(bits, ...hasParams) {
-    return new this.constructor(bits).remove(this).toArray(...hasParams);
+  missing(bits) {
+    return new this.constructor(bits).remove(this).toArray();
   }
 
   /**
@@ -110,24 +109,21 @@ class BitField {
   }
 
   /**
-   * Gets an object mapping field names to a {@link boolean} indicating whether the
-   * bit is available.
-   * @param {...*} hasParams Additional parameters for the has method, if any
+   * Gets an object mapping field names to a {@link boolean} indicating whether the bit is available.
    * @returns {Object}
    */
-  serialize(...hasParams) {
+  serialize() {
     const serialized = {};
-    for (const [flag, bit] of Object.entries(this.constructor.Flags)) serialized[flag] = this.has(bit, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.Flags)) serialized[flag] = this.has(bit);
     return serialized;
   }
 
   /**
    * Gets an {@link Array} of bitfield names based on the bits available.
-   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
-  toArray(...hasParams) {
-    return Object.keys(this.constructor.Flags).filter(bit => this.has(bit, ...hasParams));
+  toArray() {
+    return Object.keys(this.constructor.Flags).filter(bit => this.has(bit));
   }
 
   toJSON() {

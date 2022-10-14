@@ -548,10 +548,10 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public equals(bit: BitFieldResolvable<S, N>): boolean;
   public freeze(): Readonly<BitField<S, N>>;
   public has(bit: BitFieldResolvable<S, N>): boolean;
-  public missing(bits: BitFieldResolvable<S, N>, ...hasParams: readonly unknown[]): S[];
+  public missing(bits: BitFieldResolvable<S, N>): S[];
   public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
-  public serialize(...hasParams: readonly unknown[]): Record<S, boolean>;
-  public toArray(...hasParams: readonly unknown[]): S[];
+  public serialize(): Record<S, boolean>;
+  public toArray(): S[];
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
   public [Symbol.iterator](): IterableIterator<S>;
