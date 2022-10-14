@@ -1,4 +1,4 @@
-import type { REST } from '@discordjs/rest';
+import type { RawFile, REST } from '@discordjs/rest';
 import type {
 	APIThreadChannel,
 	APIThreadMember,
@@ -9,6 +9,10 @@ import { Routes } from 'discord-api-types/v10';
 
 export interface StartThreadOptions extends RESTPostAPIChannelThreadsJSONBody {
 	message_id?: string;
+}
+
+export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
+	message: RESTPostAPIGuildForumThreadsJSONBody['message'] & { files?: RawFile[] };
 }
 
 export class ThreadsAPI {
@@ -47,9 +51,18 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the forum channel to start the thread in
 	 * @param options - The options to use when starting the thread
 	 */
-	public async startForumThread(channelId: string, options: RESTPostAPIGuildForumThreadsJSONBody) {
+	public async startForumThread(channelId: string, options: StartForumThreadOptions) {
+		const { message, ...optionsBody } = options;
+		const { files, ...messageBody } = message;
+
+		const body = {
+			...optionsBody,
+			message: messageBody,
+		};
+
 		return (await this.rest.post(Routes.threads(channelId), {
-			body: options,
+			files,
+			body,
 		})) as APIThreadChannel;
 	}
 

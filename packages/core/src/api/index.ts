@@ -56,12 +56,12 @@ export class API {
 		this.guilds = new GuildsAPI(rest);
 		this.guildMembers = new GuildMembersAPI(rest);
 		this.guildTemplates = new GuildTemplatesAPI(rest);
-		this.interactions = new InteractionsAPI(rest);
 		this.invites = new InvitesAPI(rest);
 		this.messages = new MessagesAPI(rest);
 		this.stickers = new StickersAPI(rest);
 		this.threads = new ThreadsAPI(rest);
 		this.voice = new VoiceAPI(rest);
 		this.webhooks = new WebhooksAPI(rest);
+		this.interactions = new InteractionsAPI(rest, this.webhooks);
 	}
 }

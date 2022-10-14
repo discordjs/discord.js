@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
-import type { REST } from '@discordjs/rest';
+import type { RawFile, REST } from '@discordjs/rest';
 import { makeURLSearchParams } from '@discordjs/rest';
 import type {
 	APIMessage,
@@ -81,11 +81,12 @@ export class WebhooksAPI {
 	public async execute(
 		id: string,
 		token: string,
-		options: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery = {},
+		options: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] } = {},
 	) {
-		const { wait, thread_id, ...body } = options;
+		const { wait, thread_id, files, ...body } = options;
 		return this.rest.post(Routes.webhook(id, token), {
 			query: makeURLSearchParams({ wait, thread_id }),
+			files,
 			body,
 		});
 	}
@@ -164,7 +165,7 @@ export class WebhooksAPI {
 	 * @returns
 	 */
 	public async deleteMessage(id: string, token: string, messageId: string, options: { thread_id?: string } = {}) {
-		return this.rest.delete(Routes.webhookMessage(id, token, messageId), {
+		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		});
 	}

@@ -1,7 +1,7 @@
-import type { Channel } from 'node:diagnostics_channel';
 import type { REST } from '@discordjs/rest';
 import { makeURLSearchParams } from '@discordjs/rest';
 import type {
+	APIChannel,
 	APIFollowedChannel,
 	APIInvite,
 	APIMessage,
@@ -36,7 +36,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel
 	 */
 	public async get(channelId: string) {
-		return (await this.rest.get(Routes.channel(channelId))) as Channel;
+		return (await this.rest.get(Routes.channel(channelId))) as APIChannel;
 	}
 
 	/**
@@ -48,7 +48,7 @@ export class ChannelsAPI {
 	public async edit(channelId: string, channel: RESTPatchAPIChannelJSONBody) {
 		return (await this.rest.patch(Routes.channel(channelId), {
 			body: channel,
-		})) as Channel;
+		})) as APIChannel;
 	}
 
 	/**
@@ -57,7 +57,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 */
 	public async delete(channelId: string) {
-		return (await this.rest.delete(Routes.channel(channelId))) as Channel;
+		return (await this.rest.delete(Routes.channel(channelId))) as APIChannel;
 	}
 
 	/**

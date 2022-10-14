@@ -1,10 +1,8 @@
-import type { Buffer } from 'node:buffer';
+import type { RawFile } from '@discordjs/rest';
 import type { APIInteractionResponseCallbackData } from 'discord-api-types/v10';
 
-export interface FileData {
-	data: Buffer;
+export interface DescriptiveRawFile extends RawFile {
 	description?: string;
-	name?: string;
 }
 
 /**
@@ -13,7 +11,7 @@ export interface FileData {
  * @param files - The files to create a form data payload for
  * @param options - The additional options for the form data payload
  */
-export function withFiles(files: FileData[], options: APIInteractionResponseCallbackData) {
+export function withFiles(files: DescriptiveRawFile[], options: APIInteractionResponseCallbackData) {
 	const body = {
 		...options,
 		attachments: files.map((file, index) => ({

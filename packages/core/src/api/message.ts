@@ -1,4 +1,4 @@
-import type { REST } from '@discordjs/rest';
+import type { RawFile, REST } from '@discordjs/rest';
 import { makeURLSearchParams } from '@discordjs/rest';
 import type {
 	APIMessage,
@@ -21,10 +21,11 @@ export class MessagesAPI {
 	 * @param channelId - The id of the channel to send the message in
 	 * @param message - The options to use when sending the message
 	 */
-	public async send(channelId: string, message: RESTPostAPIChannelMessageJSONBody | string) {
+	public async send(channelId: string, message: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
 		const messageOptions = typeof message === 'string' ? { content: message } : message;
 
 		return (await this.rest.post(Routes.channelMessages(channelId), {
+			files: messageOptions.files,
 			body: messageOptions,
 		})) as APIMessage;
 	}
