@@ -340,5 +340,5 @@ export default function SlugPage(props: SidebarLayoutProps & { error?: string })
 }
 
 export const config = {
-	unstable_includeFiles: [`../../packages/{builders,collection,proxy,rest,util,voice,ws}/README.md`],
+	unstable_includeFiles: [`../../packages/{brokers,builders,collection,proxy,rest,util,voice,ws}/README.md`],
 };
