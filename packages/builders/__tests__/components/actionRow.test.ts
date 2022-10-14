@@ -29,7 +29,7 @@ const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent>
 	type: ComponentType.ActionRow,
 	components: [
 		{
-			type: ComponentType.SelectMenu,
+			type: ComponentType.StringSelect,
 			custom_id: '1234',
 			options: [
 				{
@@ -73,7 +73,7 @@ describe('Action Row Components', () => {
 						url: 'https://google.com',
 					},
 					{
-						type: ComponentType.SelectMenu,
+						type: ComponentType.StringSelect,
 						placeholder: 'test',
 						custom_id: 'test',
 						options: [
@@ -108,7 +108,7 @@ describe('Action Row Components', () => {
 				type: ComponentType.ActionRow,
 				components: [
 					{
-						type: ComponentType.SelectMenu,
+						type: ComponentType.StringSelect,
 						custom_id: '1234',
 						options: [
 							{

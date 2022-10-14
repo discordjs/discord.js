@@ -1,6 +1,6 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
+const { StringSelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
 const { toSnakeCase } = require('../util/Transformers');
 const { resolvePartialEmoji } = require('../util/Util');
 
@@ -8,7 +8,7 @@ const { resolvePartialEmoji } = require('../util/Util');
  * Class used to build select menu components to be sent through the API
  * @extends {BuildersSelectMenu}
  */
-class SelectMenuBuilder extends BuildersSelectMenu {
+class StringSelectMenuBuilder extends BuildersSelectMenu {
   constructor({ options, ...data } = {}) {
     super(
       toSnakeCase({
@@ -42,25 +42,25 @@ class SelectMenuBuilder extends BuildersSelectMenu {
   /**
    * Adds options to this select menu
    * @param {RestOrArray<APISelectMenuOption>} options The options to add to this select menu
-   * @returns {SelectMenuBuilder}
+   * @returns {StringSelectMenuBuilder}
    */
   addOptions(...options) {
-    return super.addOptions(normalizeArray(options).map(option => SelectMenuBuilder.normalizeEmoji(option)));
+    return super.addOptions(normalizeArray(options).map(option => StringSelectMenuBuilder.normalizeEmoji(option)));
   }
 
   /**
    * Sets the options on this select menu
    * @param {RestOrArray<APISelectMenuOption>} options The options to set on this select menu
-   * @returns {SelectMenuBuilder}
+   * @returns {StringSelectMenuBuilder}
    */
   setOptions(...options) {
-    return super.setOptions(normalizeArray(options).map(option => SelectMenuBuilder.normalizeEmoji(option)));
+    return super.setOptions(normalizeArray(options).map(option => StringSelectMenuBuilder.normalizeEmoji(option)));
   }
 
   /**
    * Creates a new select menu builder from json data
    * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
-   * @returns {SelectMenuBuilder}
+   * @returns {StringSelectMenuBuilder}
    */
   static from(other) {
     if (isJSONEncodable(other)) {
@@ -70,9 +70,9 @@ class SelectMenuBuilder extends BuildersSelectMenu {
   }
 }
 
-module.exports = SelectMenuBuilder;
+module.exports = StringSelectMenuBuilder;
 
 /**
  * @external BuildersSelectMenu
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuBuilder}
+ * @see {@link https://discord.js.org/#/docs/builders/main/class/StringSelectMenuBuilder}
  */

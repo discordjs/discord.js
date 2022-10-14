@@ -14,7 +14,11 @@ import {
   italic,
   quote,
   roleMention,
-  SelectMenuBuilder as BuilderSelectMenuComponent,
+  ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
+  MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
+  RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
+  StringSelectMenuBuilder as BuilderStringSelectMenuComponent,
+  UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
   SelectMenuOptionBuilder as BuildersSelectMenuOption,
   spoiler,
@@ -604,7 +608,7 @@ export class ButtonBuilder extends BuilderButtonComponent {
   public override setEmoji(emoji: ComponentEmojiResolvable): this;
 }
 
-export class SelectMenuBuilder extends BuilderSelectMenuComponent {
+export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
   private static normalizeEmoji(
     selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
@@ -615,7 +619,23 @@ export class SelectMenuBuilder extends BuilderSelectMenuComponent {
   public override setOptions(
     ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
   ): this;
-  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): SelectMenuBuilder;
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): StringSelectMenuBuilder;
+}
+export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
+  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): UserSelectMenuBuilder;
+}
+export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
+  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): RoleSelectMenuBuilder;
+}
+export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
+  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): MentionableSelectMenuBuilder;
+}
+export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
+  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): ChannelSelectMenuBuilder;
 }
 
 export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
@@ -1680,7 +1700,11 @@ export type WrapBooleanCache<T extends boolean> = If<T, 'cached', CacheType>;
 
 export interface MappedInteractionTypes<Cached extends boolean = boolean> {
   [ComponentType.Button]: ButtonInteraction<WrapBooleanCache<Cached>>;
-  [ComponentType.SelectMenu]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.StringSelect]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.UserSelect]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.RoleSelect]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.MentionableSelect]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+  [ComponentType.ChannelSelect]: SelectMenuInteraction<WrapBooleanCache<Cached>>;
 }
 
 export class Message<InGuild extends boolean = boolean> extends Base {
@@ -2262,7 +2286,12 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType: ComponentType.SelectMenu;
+  public componentType:
+    | ComponentType.StringSelect
+    | ComponentType.UserSelect
+    | ComponentType.RoleSelect
+    | ComponentType.MentionableSelect
+    | ComponentType.ChannelSelect;
   public values: string[];
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
@@ -2769,14 +2798,22 @@ export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | nul
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
-  [ComponentType.SelectMenu]: SelectMenuBuilder;
+  [ComponentType.StringSelect]: StringSelectMenuBuilder;
+  [ComponentType.UserSelect]: UserSelectMenuBuilder;
+  [ComponentType.RoleSelect]: RoleSelectMenuBuilder;
+  [ComponentType.MentionableSelect]: MentionableSelectMenuBuilder;
+  [ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
   [ComponentType.ActionRow]: ActionRowBuilder;
   [ComponentType.TextInput]: TextInputBuilder;
 }
 
 export interface MappedComponentTypes {
   [ComponentType.Button]: ButtonComponent;
-  [ComponentType.SelectMenu]: SelectMenuComponent;
+  [ComponentType.StringSelect]: SelectMenuComponent;
+  [ComponentType.UserSelect]: SelectMenuComponent;
+  [ComponentType.RoleSelect]: SelectMenuComponent;
+  [ComponentType.MentionableSelect]: SelectMenuComponent;
+  [ComponentType.ChannelSelect]: SelectMenuComponent;
   [ComponentType.ActionRow]: ActionRowComponent;
   [ComponentType.TextInput]: TextInputComponent;
 }
@@ -5344,7 +5381,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface SelectMenuComponentData extends BaseComponentData {
-  type: ComponentType.SelectMenu;
+  type: ComponentType.StringSelect;
   customId: string;
   disabled?: boolean;
   maxValues?: number;

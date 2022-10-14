@@ -49,7 +49,7 @@ class InteractionCreateAction extends Action {
           case ComponentType.Button:
             InteractionClass = ButtonInteraction;
             break;
-          case ComponentType.SelectMenu:
+          case ComponentType.StringSelect:
             InteractionClass = SelectMenuInteraction;
             break;
           default:

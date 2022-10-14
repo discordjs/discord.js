@@ -49,7 +49,7 @@ describe('createComponentBuilder', () => {
 		const selectMenu: APISelectMenuComponent = {
 			custom_id: 'abc',
 			options: [],
-			type: ComponentType.SelectMenu,
+			type: ComponentType.StringSelect,
 		};
 
 		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(StringSelectMenuBuilder);
