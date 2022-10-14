@@ -127,7 +127,7 @@ export interface ClientOptions {
 	ws: WebSocketManager;
 }
 
-export function createClient({ rest, ws }: ClientOptions) {
+export function createEmitter({ rest, ws }: ClientOptions) {
 	const eventAPI = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
