@@ -9,4 +9,8 @@ describe('range', () => {
 	test('GIVEN valid range with step THEN valid array is returned', () => {
 		expect(range(0, 10, 2)).toEqual([0, 2, 4, 6, 8, 10]);
 	});
+
+	test('GIVEN valid range with step greater than default THEN valid array is returned', () => {
+		expect(range(2, 10, 2)).toEqual([2, 4, 6, 8, 10]);
+	});
 });
