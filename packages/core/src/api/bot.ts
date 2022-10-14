@@ -25,7 +25,6 @@ export class BotsAPI {
 	 * Returns a list of partial guild objects the current user is a member of
 	 *
 	 * @param options - The options to use when fetching the current user's guilds
-	 * @returns
 	 */
 	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
 		return (await this.rest.get(Routes.userGuilds(), {

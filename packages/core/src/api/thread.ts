@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -34,8 +35,7 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the channel to start the thread in
 	 * @param options - The options to use when starting the thread
 	 */
-	public async start(channelId: string, options: StartThreadOptions) {
-		const { message_id, ...body } = options;
+	public async start(channelId: string, { message_id, ...body }: StartThreadOptions) {
 		return (await this.rest.post(Routes.threads(channelId, message_id), {
 			body,
 		})) as APIThreadChannel;
@@ -47,8 +47,7 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the forum channel to start the thread in
 	 * @param options - The options to use when starting the thread
 	 */
-	public async startForumThread(channelId: string, options: StartForumThreadOptions) {
-		const { message, ...optionsBody } = options;
+	public async startForumThread(channelId: string, { message, ...optionsBody }: StartForumThreadOptions) {
 		const { files, ...messageBody } = message;
 
 		const body = {

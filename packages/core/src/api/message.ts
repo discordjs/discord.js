@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-param-names */
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -16,12 +17,10 @@ export class MessagesAPI {
 	 * @param channelId - The id of the channel to send the message in
 	 * @param message - The options to use when sending the message
 	 */
-	public async send(channelId: string, message: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
-		const messageOptions = typeof message === 'string' ? { content: message } : message;
-
+	public async send(channelId: string, { files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
 		return (await this.rest.post(Routes.channelMessages(channelId), {
-			files: messageOptions.files,
-			body: messageOptions,
+			files,
+			body,
 		})) as APIMessage;
 	}
 
@@ -31,13 +30,15 @@ export class MessagesAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
 	 * @param options - The options to use when editing the message
-	 * @returns
 	 */
-	public async edit(channelId: string, messageId: string, options: RESTPostAPIChannelMessageJSONBody | string) {
-		const messageOptions = typeof options === 'string' ? { content: options } : options;
-
+	public async edit(
+		channelId: string,
+		messageId: string,
+		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+	) {
 		return (await this.rest.patch(Routes.channelMessage(channelId, messageId), {
-			body: messageOptions,
+			files,
+			body,
 		})) as APIMessage;
 	}
 
@@ -72,16 +73,19 @@ export class MessagesAPI {
 	 * @param messageRef - The message to reply to
 	 * @param options - The options to use when replying to the message
 	 */
-	public async reply(channelId: string, messageRef: APIMessage, options: RESTPostAPIChannelMessageJSONBody | string) {
-		const messageOptions = typeof options === 'string' ? { content: options } : options;
-
+	public async reply(
+		channelId: string,
+		messageRef: { channel_id: string; id: string },
+		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+	) {
 		return (await this.rest.post(Routes.channelMessages(channelId), {
+			files,
 			body: {
 				message_reference: {
 					message_id: messageRef.id,
 					channel_id: messageRef.channel_id,
 				},
-				...messageOptions,
+				...body,
 			},
 		})) as APIMessage;
 	}

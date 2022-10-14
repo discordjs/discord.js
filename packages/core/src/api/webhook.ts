@@ -76,9 +76,13 @@ export class WebhooksAPI {
 	public async execute(
 		id: string,
 		token: string,
-		options: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] } = {},
+		{
+			wait,
+			thread_id,
+			files,
+			...body
+		}: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] },
 	) {
-		const { wait, thread_id, files, ...body } = options;
 		return this.rest.post(Routes.webhook(id, token), {
 			query: makeURLSearchParams({ wait, thread_id }),
 			files,
@@ -106,7 +110,6 @@ export class WebhooksAPI {
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when executing the webhook
-	 * @returns
 	 */
 	public async executeGitHub(id: string, token: string, options: RESTPostAPIWebhookWithTokenGitHubQuery = {}) {
 		return this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
@@ -141,9 +144,8 @@ export class WebhooksAPI {
 		id: string,
 		token: string,
 		messageId: string,
-		options: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string } = {},
+		{ thread_id, ...body }: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string },
 	) {
-		const { thread_id, ...body } = options;
 		return (await this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),
 			body,
@@ -157,7 +159,6 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 * @param messageId - The id of the message to delete
 	 * @param options - The options to use when deleting the message
-	 * @returns
 	 */
 	public async deleteMessage(id: string, token: string, messageId: string, options: { thread_id?: string } = {}) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {

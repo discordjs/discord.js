@@ -77,7 +77,7 @@ export class InteractionsAPI {
 	 *
 	 * @param interaction - The interaction to fetch the reply from
 	 */
-	public async getOriginalMessage(interaction: APIInteraction) {
+	public async getOriginalReply(interaction: APIInteraction) {
 		return (await this.webhooks.getMessage(interaction.application_id, interaction.token, '@original')) as APIMessage;
 	}
 
@@ -86,7 +86,7 @@ export class InteractionsAPI {
 	 *
 	 * @param interaction - The interaction to delete the reply from
 	 */
-	public async deleteMessage(interaction: APIInteraction) {
+	public async deleteReply(interaction: APIInteraction) {
 		await this.webhooks.deleteMessage(interaction.application_id, interaction.token, '@original');
 	}
 

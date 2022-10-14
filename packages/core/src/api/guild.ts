@@ -134,7 +134,6 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to create the channel in
 	 * @param channel - The data to create the new channel
 	 * @param reason - The reason for creating this channel
-	 * @returns
 	 */
 	public async createChannel(guildId: string, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
 		return (await this.rest.post(Routes.guildChannels(guildId), {
@@ -187,7 +186,6 @@ export class GuildsAPI {
 	 * @param userId - The id of the user to ban
 	 * @param options - Options for banning the user
 	 * @param reason - The reason for banning the user
-	 * @returns
 	 */
 	public async ban(guildId: string, userId: string, options: RESTPutAPIGuildBanJSONBody = {}, reason?: string) {
 		return this.rest.put(Routes.guildBan(guildId, userId), {
