@@ -1,4 +1,5 @@
-import { makeURLSearchParams, type REST } from '@discordjs/rest';
+/* eslint-disable jsdoc/check-param-names */
+import { makeURLSearchParams, type REST, type RawFile } from '@discordjs/rest';
 import {
 	Routes,
 	type APIChannel,
@@ -10,10 +11,24 @@ import {
 	type RESTPostAPIChannelInviteJSONBody,
 	type RESTGetAPIChannelMessagesQuery,
 	type RESTGetAPIChannelThreadsArchivedQuery,
+	type RESTPostAPIChannelMessageJSONBody,
 } from 'discord-api-types/v10';
 
 export class ChannelsAPI {
 	public constructor(private readonly rest: REST) {}
+
+	/**
+	 * Sends a message in a channel
+	 *
+	 * @param channelId - The id of the channel to send the message in
+	 * @param message - The options to use when sending the message
+	 */
+	public async send(channelId: string, { files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
+		return (await this.rest.post(Routes.channelMessages(channelId), {
+			files,
+			body,
+		})) as APIMessage;
+	}
 
 	/**
 	 * Fetches a channel
@@ -81,8 +96,52 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to pin the message in
 	 * @param messageId - The id of the message to pin
 	 */
-	public async pin(channelId: string, messageId: string) {
+	public async pinMessage(channelId: string, messageId: string) {
 		await this.rest.put(Routes.channelPin(channelId, messageId));
+	}
+
+	/**
+	 * Deletes a message
+	 *
+	 * @param channelId - The id of the channel the message is in
+	 * @param messageId - The id of the message to delete
+	 */
+	public async deleteMessage(channelId: string, messageId: string) {
+		return (await this.rest.delete(Routes.channelMessage(channelId, messageId))) as APIMessage;
+	}
+
+	/**
+	 * Bulk deletes messages
+	 *
+	 * @param channelId - The id of the channel the messages are in
+	 * @param messageIds - The ids of the messages to delete
+	 */
+	public async bulkDeleteMessages(channelId: string, messageIds: string[]): Promise<void> {
+		await this.rest.post(Routes.channelBulkDelete(channelId), {
+			body: {
+				messages: messageIds,
+			},
+		});
+	}
+
+	/**
+	 * Fetches a message
+	 *
+	 * @param channelId - The id of the channel the message is in
+	 * @param messageId - The id of the message to fetch
+	 */
+	public async getMessage(channelId: string, messageId: string) {
+		return (await this.rest.get(Routes.channelMessage(channelId, messageId))) as APIMessage;
+	}
+
+	/**
+	 * Crossposts a message
+	 *
+	 * @param channelId - The id of the channel the message is in
+	 * @param messageId - The id of the message to crosspost
+	 */
+	public async crosspostMessage(channelId: string, messageId: string) {
+		return (await this.rest.post(Routes.channelMessageCrosspost(channelId, messageId))) as APIMessage;
 	}
 
 	/**
@@ -91,7 +150,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to unpin the message in
 	 * @param messageId - The id of the message to unpin
 	 */
-	public async unpin(channelId: string, messageId: string) {
+	public async unpinMessage(channelId: string, messageId: string) {
 		await this.rest.delete(Routes.channelPin(channelId, messageId));
 	}
 

@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
 import type { Buffer } from 'node:buffer';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import type { APIAutoModerationRule } from 'discord-api-types/v10';
 import {
 	Routes,
 	type APIAuditLog,
@@ -187,7 +188,7 @@ export class GuildsAPI {
 	 * @param options - Options for banning the user
 	 * @param reason - The reason for banning the user
 	 */
-	public async ban(guildId: string, userId: string, options: RESTPutAPIGuildBanJSONBody = {}, reason?: string) {
+	public async banMember(guildId: string, userId: string, options: RESTPutAPIGuildBanJSONBody = {}, reason?: string) {
 		return this.rest.put(Routes.guildBan(guildId, userId), {
 			reason,
 			body: options,
@@ -201,7 +202,7 @@ export class GuildsAPI {
 	 * @param userId - The id of the user to unban
 	 * @param reason - The reason for unbanning the user
 	 */
-	public async unban(guildId: string, userId: string, reason?: string) {
+	public async unbanMember(guildId: string, userId: string, reason?: string) {
 		return this.rest.delete(Routes.guildBan(guildId, userId), { reason });
 	}
 
@@ -709,5 +710,26 @@ export class GuildsAPI {
 		return (await this.rest.get(Routes.guildAuditLog(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		})) as APIAuditLog[];
+	}
+
+	/**
+	 * Fetches all auto moderation rules for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the auto moderation rules for
+	 */
+	public async getAutoModRules(guildId: string) {
+		return (await this.rest.get(Routes.guildAutoModerationRules(guildId) as `/${string}`)) as APIAutoModerationRule[];
+	}
+
+	/**
+	 * Fetches an auto moderation rule for a guild
+	 *
+	 * @param guildId - The id of the guild to fetch the auto moderation rule from
+	 * @param ruleId - The id of the auto moderation rule to fetch
+	 */
+	public async getAutoModRule(guildId: string, ruleId: string) {
+		return (await this.rest.get(
+			Routes.guildAutoModerationRule(guildId, ruleId) as `/${string}`,
+		)) as APIAutoModerationRule;
 	}
 }

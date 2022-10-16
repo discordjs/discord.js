@@ -12,19 +12,6 @@ export class MessagesAPI {
 	public constructor(private readonly rest: REST) {}
 
 	/**
-	 * Sends a message in a channel
-	 *
-	 * @param channelId - The id of the channel to send the message in
-	 * @param message - The options to use when sending the message
-	 */
-	public async send(channelId: string, { files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
-		return (await this.rest.post(Routes.channelMessages(channelId), {
-			files,
-			body,
-		})) as APIMessage;
-	}
-
-	/**
 	 * Edits a message
 	 *
 	 * @param channelId - The id of the channel the message is in
@@ -40,74 +27,6 @@ export class MessagesAPI {
 			files,
 			body,
 		})) as APIMessage;
-	}
-
-	/**
-	 * Deletes a message
-	 *
-	 * @param channelId - The id of the channel the message is in
-	 * @param messageId - The id of the message to delete
-	 */
-	public async delete(channelId: string, messageId: string) {
-		return (await this.rest.delete(Routes.channelMessage(channelId, messageId))) as APIMessage;
-	}
-
-	/**
-	 * Bulk deletes messages
-	 *
-	 * @param channelId - The id of the channel the messages are in
-	 * @param messageIds - The ids of the messages to delete
-	 */
-	public async bulkDelete(channelId: string, messageIds: string[]): Promise<void> {
-		await this.rest.post(Routes.channelBulkDelete(channelId), {
-			body: {
-				messages: messageIds,
-			},
-		});
-	}
-
-	/**
-	 * Replies to a message
-	 *
-	 * @param channelId - The id of the channel the message is in
-	 * @param messageRef - The message to reply to
-	 * @param options - The options to use when replying to the message
-	 */
-	public async reply(
-		channelId: string,
-		messageRef: { channel_id: string; id: string },
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
-	) {
-		return (await this.rest.post(Routes.channelMessages(channelId), {
-			files,
-			body: {
-				message_reference: {
-					message_id: messageRef.id,
-					channel_id: messageRef.channel_id,
-				},
-				...body,
-			},
-		})) as APIMessage;
-	}
-
-	/**
-	 * Fetches a message
-	 *
-	 * @param channelId - The id of the channel the message is in
-	 * @param messageId - The id of the message to fetch
-	 */
-	public async get(channelId: string, messageId: string) {
-		return (await this.rest.get(Routes.channelMessage(channelId, messageId))) as APIMessage;
-	}
-
-	/**
-	 * Crossposts a message
-	 *
-	 * @param channelId - The id of the channel the message is in
-	 * @param messageId - The id of the message to crosspost
-	 */
-	public async crosspost(channelId: string, messageId: string) {
-		return (await this.rest.post(Routes.channelMessageCrosspost(channelId, messageId))) as APIMessage;
 	}
 
 	/**
