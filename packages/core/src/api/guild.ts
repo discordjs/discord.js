@@ -677,7 +677,7 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the auto moderation rules for
 	 */
-	public async getAutoModRules(guildId: string) {
+	public async getAutoModerationRules(guildId: string) {
 		return this.rest.get(Routes.guildAutoModerationRules(guildId) as `/${string}`) as Promise<APIAutoModerationRule[]>;
 	}
 
@@ -687,7 +687,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to fetch
 	 */
-	public async getAutoModRule(guildId: string, ruleId: string) {
+	public async getAutoModerationRule(guildId: string, ruleId: string) {
 		return this.rest.get(
 			Routes.guildAutoModerationRule(guildId, ruleId) as `/${string}`,
 		) as Promise<APIAutoModerationRule>;
