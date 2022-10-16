@@ -633,8 +633,14 @@ class Message extends Base {
    * // Filter for bulk deletable messages
    * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
    */
-   get bulkDeletable() {
-    return this.deletable && this.inGuild() && Date.now() - this.createdTimestamp < 1_209_600_000;
+  get bulkDeletable() {
+    const permissions = this.channel.permissionsFor(this.client.user);
+    return (
+      this.deletable &&
+      this.inGuild() &&
+      permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
+      Date.now() - this.createdTimestamp < 1_209_600_000
+    );
   }
 
   /**
