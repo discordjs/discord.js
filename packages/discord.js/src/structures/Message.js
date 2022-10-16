@@ -620,7 +620,7 @@ class Message extends Base {
    * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
    */
   get bulkDeletable() {
-    const permissions = this.channel.permissionsFor(this.client.user);
+    const permissions = this.channel?.permissionsFor(this.client.user);
     return (
       this.deletable &&
       this.inGuild() &&
