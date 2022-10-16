@@ -4,10 +4,10 @@ import {
 	Routes,
 	type APIThreadChannel,
 	type APIThreadMember,
-	type RESTPostAPIChannelThreadsJSONBody,
-	type RESTPostAPIGuildForumThreadsJSONBody,
 	type RESTGetAPIChannelThreadMembersResult,
+	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
+	type RESTPostAPIGuildForumThreadsJSONBody,
 	type Snowflake,
 } from 'discord-api-types/v10';
 

@@ -1,8 +1,8 @@
 import type { REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTGetNitroStickerPacksResult,
 	type RESTGetAPIStickerResult,
+	type RESTGetNitroStickerPacksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 

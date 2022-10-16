@@ -1,13 +1,13 @@
 /* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
-import type { RESTGetAPIWebhookWithTokenMessageResult } from 'discord-api-types/v10';
 import {
-	Routes,
 	InteractionResponseType,
+	Routes,
 	type APICommandAutocompleteInteractionResponseCallbackData,
 	type APIInteraction,
 	type APIInteractionResponseCallbackData,
 	type APIModalInteractionResponseCallbackData,
+	type RESTGetAPIWebhookWithTokenMessageResult,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 

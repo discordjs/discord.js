@@ -2,11 +2,11 @@
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type Snowflake,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
-	type RESTPostAPIChannelMessageJSONBody,
-	type RESTPatchAPIChannelMessageResult,
 	type RESTGetAPIChannelMessageReactionUsersResult,
+	type RESTPatchAPIChannelMessageResult,
+	type RESTPostAPIChannelMessageJSONBody,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class MessagesAPI {

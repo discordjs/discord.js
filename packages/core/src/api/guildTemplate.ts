@@ -1,9 +1,9 @@
 import type { REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPostAPITemplateCreateGuildJSONBody,
 	type RESTGetAPITemplateResult,
 	type RESTPostAPIGuildTemplatesResult,
+	type RESTPostAPITemplateCreateGuildJSONBody,
 } from 'discord-api-types/v10';
 
 export class GuildTemplatesAPI {

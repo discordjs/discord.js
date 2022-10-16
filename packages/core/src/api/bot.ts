@@ -1,17 +1,17 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
-import type { RESTPostAPICurrentUserCreateDMChannelResult } from 'discord-api-types/v10';
 import {
 	Routes,
 	type RESTGetAPICurrentUserGuildsQuery,
-	type RESTPatchAPICurrentUserJSONBody,
-	type RESTPatchAPIGuildMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTGetAPICurrentUserResult,
 	type RESTGetAPICurrentUserGuildsResult,
-	type RESTPatchAPICurrentUserResult,
+	type RESTGetAPICurrentUserResult,
 	type RESTGetCurrentUserGuildMemberResult,
+	type RESTPatchAPICurrentUserJSONBody,
+	type RESTPatchAPICurrentUserResult,
+	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
+	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 

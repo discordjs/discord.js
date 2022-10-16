@@ -13,17 +13,17 @@ import { VoiceAPI } from './voice.js';
 import { WebhooksAPI } from './webhook.js';
 
 export * from './bot.js';
-export * from './guildMember.js';
-export * from './guild.js';
-export * from './message.js';
-export * from './thread.js';
-export * from './webhook.js';
 export * from './channel.js';
-export * from './interactions.js';
+export * from './guild.js';
+export * from './guildMember.js';
 export * from './guildTemplate.js';
+export * from './interactions.js';
 export * from './invite.js';
-export * from './voice.js';
+export * from './message.js';
 export * from './sticker.js';
+export * from './thread.js';
+export * from './voice.js';
+export * from './webhook.js';
 
 export class API {
 	public readonly bots: BotsAPI;

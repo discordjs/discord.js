@@ -1,9 +1,9 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTGetAPIGuildMemberResult,
 	type RESTGetAPIGuildMembersSearchResult,
+	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
 	type Snowflake,
 } from 'discord-api-types/v10';

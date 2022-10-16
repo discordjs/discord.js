@@ -1,19 +1,19 @@
 /* eslint-disable jsdoc/check-param-names */
-import { makeURLSearchParams, type REST, type RawFile } from '@discordjs/rest';
-import type { RESTPostAPIWebhookWithTokenResult } from 'discord-api-types/v10';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTGetAPIChannelMessageResult,
 	type RESTGetAPIWebhookResult,
 	type RESTPatchAPIWebhookJSONBody,
+	type RESTPatchAPIWebhookResult,
 	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
+	type RESTPatchAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIChannelWebhookJSONBody,
 	type RESTPostAPIWebhookWithTokenGitHubQuery,
 	type RESTPostAPIWebhookWithTokenJSONBody,
 	type RESTPostAPIWebhookWithTokenQuery,
+	type RESTPostAPIWebhookWithTokenResult,
 	type RESTPostAPIWebhookWithTokenSlackQuery,
-	type RESTGetAPIChannelMessageResult,
-	type RESTPatchAPIWebhookResult,
-	type RESTPatchAPIWebhookWithTokenMessageResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
