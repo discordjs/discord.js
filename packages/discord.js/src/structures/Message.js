@@ -615,9 +615,12 @@ class Message extends Base {
    * Whether the message is bulk deletable by the client user
    * @type {boolean}
    * @readonly
+   * @example
+   * // Filter for bulk deletable messages
+   * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
    */
   get bulkDeletable() {
-    return this.deletable && Date.now() - this.createdTimestamp < 1_209_600_000;
+    return this.deletable && this.inGuild() && Date.now() - this.createdTimestamp < 1_209_600_000;
   }
 
   /**
