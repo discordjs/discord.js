@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
-import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTDeleteAPIChannelResult,
@@ -17,29 +17,11 @@ import {
 	type RESTPostAPIChannelInviteJSONBody,
 	type RESTPostAPIChannelInviteResult,
 	type RESTPostAPIChannelMessageCrosspostResult,
-	type RESTPostAPIChannelMessageJSONBody,
-	type RESTPostAPIChannelMessageResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class ChannelsAPI {
 	public constructor(private readonly rest: REST) {}
-
-	/**
-	 * Sends a message in a channel
-	 *
-	 * @param channelId - The id of the channel to send the message in
-	 * @param message - The options to use when sending the message
-	 */
-	public async send(
-		channelId: Snowflake,
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
-	) {
-		return this.rest.post(Routes.channelMessages(channelId), {
-			files,
-			body,
-		}) as Promise<RESTPostAPIChannelMessageResult>;
-	}
 
 	/**
 	 * Fetches a channel

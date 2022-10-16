@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
+	type RESTPostAPIChannelMessageResult,
 	Routes,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
 	type RESTGetAPIChannelMessageReactionUsersResult,
@@ -11,6 +12,22 @@ import {
 
 export class MessagesAPI {
 	public constructor(private readonly rest: REST) {}
+
+	/**
+	 * Sends a message in a channel
+	 *
+	 * @param channelId - The id of the channel to send the message in
+	 * @param message - The options to use when sending the message
+	 */
+	public async create(
+		channelId: Snowflake,
+		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+	) {
+		return this.rest.post(Routes.channelMessages(channelId), {
+			files,
+			body,
+		}) as Promise<RESTPostAPIChannelMessageResult>;
+	}
 
 	/**
 	 * Edits a message

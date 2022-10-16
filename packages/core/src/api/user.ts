@@ -1,5 +1,6 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
+	type RESTGetAPIUserResult,
 	Routes,
 	type RESTGetAPICurrentUserGuildsQuery,
 	type RESTGetAPICurrentUserGuildsResult,
@@ -15,13 +16,17 @@ import {
 	type Snowflake,
 } from 'discord-api-types/v10';
 
-export class BotsAPI {
+export class UsersAPI {
 	public constructor(private readonly rest: REST) {}
+
+	public async get(userId: Snowflake) {
+		return this.rest.get(Routes.user(userId)) as Promise<RESTGetAPIUserResult>;
+	}
 
 	/**
 	 * Returns the user object of the requester's account
 	 */
-	public async getUser() {
+	public async getCurrentUser() {
 		return this.rest.get(Routes.user('@me')) as Promise<RESTGetAPICurrentUserResult>;
 	}
 
@@ -30,7 +35,7 @@ export class BotsAPI {
 	 *
 	 * @param options - The options to use when fetching the current user's guilds
 	 */
-	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
+	public async getCurrentUserGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
 		return this.rest.get(Routes.userGuilds(), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPICurrentUserGuildsResult>;
@@ -50,7 +55,7 @@ export class BotsAPI {
 	 *
 	 * @param user - The new data for the current user
 	 */
-	public async edit(user: RESTPatchAPICurrentUserJSONBody) {
+	public async editCurrentUser(user: RESTPatchAPICurrentUserJSONBody) {
 		return this.rest.patch(Routes.user('@me'), { body: user }) as Promise<RESTPatchAPICurrentUserResult>;
 	}
 
@@ -59,7 +64,7 @@ export class BotsAPI {
 	 *
 	 * @param guildId - The id of the guild
 	 */
-	public async getMember(guildId: Snowflake) {
+	public async getCurrentGuildMember(guildId: Snowflake) {
 		return this.rest.get(Routes.userGuildMember(guildId)) as Promise<RESTGetCurrentUserGuildMemberResult>;
 	}
 
@@ -70,7 +75,11 @@ export class BotsAPI {
 	 * @param member - The new data for the guild member
 	 * @param reason - The reason for editing this guild member
 	 */
-	public async editMember(guildId: Snowflake, member: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
+	public async editCurrentGuildMember(
+		guildId: Snowflake,
+		member: RESTPatchAPIGuildMemberJSONBody = {},
+		reason?: string,
+	) {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
 			reason,
 			body: member,
@@ -83,7 +92,10 @@ export class BotsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when setting the voice state
 	 */
-	public async setVoiceState(guildId: Snowflake, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
+	public async setCurrentUserVoiceState(
+		guildId: Snowflake,
+		options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
+	) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			body: options,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;

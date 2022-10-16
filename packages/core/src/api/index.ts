@@ -1,5 +1,4 @@
 import type { REST } from '@discordjs/rest';
-import { BotsAPI } from './bot.js';
 import { ChannelsAPI } from './channel.js';
 import { GuildsAPI } from './guild.js';
 import { GuildMembersAPI } from './guildMember.js';
@@ -9,10 +8,11 @@ import { InvitesAPI } from './invite.js';
 import { MessagesAPI } from './message.js';
 import { StickersAPI } from './sticker.js';
 import { ThreadsAPI } from './thread.js';
+import { UsersAPI } from './user.js';
 import { VoiceAPI } from './voice.js';
 import { WebhooksAPI } from './webhook.js';
 
-export * from './bot.js';
+export * from './user.js';
 export * from './channel.js';
 export * from './guild.js';
 export * from './guildMember.js';
@@ -26,7 +26,7 @@ export * from './voice.js';
 export * from './webhook.js';
 
 export class API {
-	public readonly bots: BotsAPI;
+	public readonly bots: UsersAPI;
 
 	public readonly channels: ChannelsAPI;
 
@@ -51,7 +51,7 @@ export class API {
 	public readonly webhooks: WebhooksAPI;
 
 	public constructor(public readonly rest: REST) {
-		this.bots = new BotsAPI(rest);
+		this.bots = new UsersAPI(rest);
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);
 		this.guildMembers = new GuildMembersAPI(rest);
