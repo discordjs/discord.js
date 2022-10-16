@@ -12,6 +12,7 @@ body:
       label: Which package is this bug report for?
       options:
         - discord.js
+        - brokers
         - builders
         - collection
         - rest

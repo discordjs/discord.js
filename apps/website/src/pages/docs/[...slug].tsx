@@ -75,14 +75,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 						return [
 							...versions.map((version) => ({ params: { slug: ['packages', packageName, version] } })),
 							...pkgs.flatMap((pkg, idx) =>
-								getMembers(pkg, versions[idx]!).map((member) => {
+								getMembers(pkg, versions[idx] ?? 'main').map((member) => {
 									if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 										return {
 											params: {
 												slug: [
 													'packages',
 													packageName,
-													versions[idx]!,
+													versions[idx] ?? 'main',
 													`${member.name}:${member.overloadIndex}:${member.kind}`,
 												],
 											},
@@ -91,7 +91,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 									return {
 										params: {
-											slug: ['packages', packageName, versions[idx]!, `${member.name}:${member.kind}`],
+											slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
 										},
 									};
 								}),
@@ -340,5 +340,5 @@ export default function SlugPage(props: SidebarLayoutProps & { error?: string })
 }
 
 export const config = {
-	unstable_includeFiles: [`../../packages/{builders,collection,proxy,rest,util,voice,ws}/README.md`],
+	unstable_includeFiles: [`../../packages/{brokers,builders,collection,proxy,rest,util,voice,ws}/README.md`],
 };

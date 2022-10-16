@@ -15,6 +15,12 @@ runs:
         files: ./apps/website/coverage/cobertura-coverage.xml
         flags: website
 
+    - name: Upload Brokers Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./packages/brokers/coverage/cobertura-coverage.xml
+        flags: brokers
+
     - name: Upload Builders Coverage
       uses: codecov/codecov-action@v3
       with:

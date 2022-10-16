@@ -2028,6 +2028,28 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/brokers@workspace:packages/brokers":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/brokers@workspace:packages/brokers"
+  dependencies:
+    "@favware/cliff-jumper": ^1.8.8
+    "@microsoft/api-extractor": ^7.32.1
+    "@msgpack/msgpack": ^2.8.0
+    "@types/node": ^16.11.52
+    "@vitest/coverage-c8": ^0.22.1
+    "@vladfrangu/async_event_emitter": ^2.1.2
+    cross-env: ^7.0.3
+    eslint: ^8.25.0
+    eslint-config-neon: ^0.1.38
+    eslint-formatter-pretty: ^4.1.0
+    ioredis: ^5.2.3
+    prettier: ^2.7.1
+    tsup: ^6.2.3
+    typescript: ^4.8.4
+    vitest: ^0.22.1
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/builders@workspace:^, @discordjs/builders@workspace:packages/builders":
   version: 0.0.0-use.local
   resolution: "@discordjs/builders@workspace:packages/builders"
@@ -2039,7 +2061,7 @@ __metadata:
     "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.12
+    discord-api-types: ^0.37.13
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2226,7 +2248,7 @@ __metadata:
     "@types/node": 16.11.64
     "@vitest/coverage-c8": ^0.24.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.12
+    discord-api-types: ^0.37.13
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2330,7 +2352,7 @@ __metadata:
     "@types/node": 16.11.64
     "@types/ws": ^8.5.3
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.12
+    discord-api-types: ^0.37.13
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2420,7 +2442,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.24.1
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.12
+    discord-api-types: ^0.37.13
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.38
@@ -2646,6 +2668,13 @@ __metadata:
     kolorist: ^1.5.1
     local-pkg: ^0.4.2
   checksum: eeff65b99a45b5ed5920c7a471ab3ab55a1d42e25ebc67635a1307439efd10daa6a76b5b4712446280fbfb8a12411ea846fea921e96f862a5b166479c496629b
+  languageName: node
+  linkType: hard
+
+"@ioredis/commands@npm:^1.1.1":
+  version: 1.2.0
+  resolution: "@ioredis/commands@npm:1.2.0"
+  checksum: 9b20225ba36ef3e5caf69b3c0720597c3016cc9b1e157f519ea388f621dd9037177f84cfe7e25c4c32dad7dd90c70ff9123cd411f747e053cf292193c9c461e2
   languageName: node
   linkType: hard
 
@@ -3138,7 +3167,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.32.0":
+"@microsoft/api-extractor@npm:^7.32.0, @microsoft/api-extractor@npm:^7.32.1":
   version: 7.32.1
   resolution: "@microsoft/api-extractor@npm:7.32.1"
   dependencies:
@@ -3195,6 +3224,13 @@ __metadata:
   version: 0.14.2
   resolution: "@microsoft/tsdoc@npm:0.14.2"
   checksum: b167c89e916ba73ee20b9c9d5dba6aa3a0de25ed3d50050e8a344dca7cd43cb2e1059bd515c820369b6e708901dd3fda476a42bc643ca74a35671ce77f724a3a
+  languageName: node
+  linkType: hard
+
+"@msgpack/msgpack@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "@msgpack/msgpack@npm:2.8.0"
+  checksum: bead9393f57239007a2fe455df5277cbc03b125f14f310162a652b81471dcf3ab6780eaa24b36e20aa742998910a6840147d08b7267063b8e2de5d40c624360e
   languageName: node
   linkType: hard
 
@@ -4293,6 +4329,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^16.11.52":
+  version: 16.11.65
+  resolution: "@types/node@npm:16.11.65"
+  checksum: 81d84cb1e7aa305574cd35acf1a5e47f4a7f52783ba096f4bc511314540dee33a27cbd4fddc8bddd4535f1c87a96a76907157bcde093a25c89e8851d6dd63022
+  languageName: node
+  linkType: hard
+
 "@types/node@npm:^8.0.0":
   version: 8.10.66
   resolution: "@types/node@npm:8.10.66"
@@ -5069,6 +5112,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vitest/coverage-c8@npm:^0.22.1":
+  version: 0.22.1
+  resolution: "@vitest/coverage-c8@npm:0.22.1"
+  dependencies:
+    c8: ^7.12.0
+    vitest: 0.22.1
+  checksum: 141c10127a556ff32e43c6d92a468d800d7c62c767feef1a4123e204a07b58456b410efdba720fa3035639903098dc12767602aa7dabadd40e2d60abc0b008f1
+  languageName: node
+  linkType: hard
+
 "@vitest/coverage-c8@npm:^0.24.1":
   version: 0.24.1
   resolution: "@vitest/coverage-c8@npm:0.24.1"
@@ -5329,9 +5382,9 @@ __metadata:
   linkType: hard
 
 "ansi-styles@npm:^6.0.0, ansi-styles@npm:^6.1.0":
-  version: 6.1.1
-  resolution: "ansi-styles@npm:6.1.1"
-  checksum: f2b1ed658ead23caf77effe7b875960cacd70d1ebe47c830e191358b242d688cf52a28d55ef9b19d102f792e8c1dec34bd865db264f1c7f4f63dd3a5fa84677e
+  version: 6.2.0
+  resolution: "ansi-styles@npm:6.2.0"
+  checksum: ce35204dc87f418440e8a95569c23e235715d7089e512f88254fb5fcedc18cdcfd6cd36852182388586eba21a9246b67a9ce4f1687864b06017407d8fda11a10
   languageName: node
   linkType: hard
 
@@ -6815,6 +6868,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cluster-key-slot@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "cluster-key-slot@npm:1.1.1"
+  checksum: 2fb7390e7950075acb09fc8aad3dc939abb64b139ba1b5f6341efdd0beda8cdc8b508e5f30d943370cf30ea0c13741c579e0846efd007b328bdc1a5a712264da
+  languageName: node
+  linkType: hard
+
 "cmdk@npm:^0.1.20":
   version: 0.1.20
   resolution: "cmdk@npm:0.1.20"
@@ -7961,6 +8021,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"denque@npm:^2.0.1":
+  version: 2.1.0
+  resolution: "denque@npm:2.1.0"
+  checksum: 1d4ae1d05e59ac3a3481e7b478293f4b4c813819342273f3d5b826c7ffa9753c520919ba264f377e09108d24ec6cf0ec0ac729a5686cbb8f32d797126c5dae74
+  languageName: node
+  linkType: hard
+
 "depd@npm:2.0.0":
   version: 2.0.0
   resolution: "depd@npm:2.0.0"
@@ -8087,10 +8154,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.37.12":
-  version: 0.37.12
-  resolution: "discord-api-types@npm:0.37.12"
-  checksum: 0dd6bd5ad9e80708e020904fd3fc0e538df89549ea398559e51fdb562428aaddd07b3b218c7aac574c18153fe5e3bed45860ba6af6c8ccc5f4e408ffc25e3d58
+"discord-api-types@npm:^0.37.13":
+  version: 0.37.13
+  resolution: "discord-api-types@npm:0.37.13"
+  checksum: ff3fe9cc1bdeee93b76f6ac4fd76a5e204298cbb1e71b72bb0e21039a970689d675a6a935e45265287ff756a0973e1e8635829d719d9a01d95ab5b0c772e5d47
   languageName: node
   linkType: hard
 
@@ -8107,7 +8174,7 @@ __metadata:
     "@sapphire/snowflake": ^3.2.2
     "@types/node": 16.11.64
     "@types/ws": ^8.5.3
-    discord-api-types: ^0.37.12
+    discord-api-types: ^0.37.13
     dtslint: ^4.2.1
     eslint: ^8.25.0
     eslint-formatter-pretty: ^4.1.0
@@ -8347,9 +8414,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.251":
-  version: 1.4.276
-  resolution: "electron-to-chromium@npm:1.4.276"
-  checksum: 9cd4448f68a37e598ad7ce193c982e8dd428c5e67e09cf780c0e13f23d689f7aec9b33718a61ea522b51ec2a8c835a0c25bbb0214ac62627fe7e4771a8650600
+  version: 1.4.277
+  resolution: "electron-to-chromium@npm:1.4.277"
+  checksum: 05002adf87dbaa6beb3895b7d64a1ee9442d46d5765582c71fc47c9aa8a4e710ada9939ce33bcd92da7c6fe61099462e036890b2edd21200c7f694309b31ea08
   languageName: node
   linkType: hard
 
@@ -11791,6 +11858,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ioredis@npm:^5.2.3":
+  version: 5.2.3
+  resolution: "ioredis@npm:5.2.3"
+  dependencies:
+    "@ioredis/commands": ^1.1.1
+    cluster-key-slot: ^1.1.0
+    debug: ^4.3.4
+    denque: ^2.0.1
+    lodash.defaults: ^4.2.0
+    lodash.isarguments: ^3.1.0
+    redis-errors: ^1.2.0
+    redis-parser: ^3.0.0
+    standard-as-callback: ^2.1.0
+  checksum: 2cb7f0f4217e6774accad3620af1b7114722721c1d1824be2c9f0c2a77ab9629f2e0848d18b1a7208bc37796ae1207cb3e0898fce61900cfe797da0382724ad1
+  languageName: node
+  linkType: hard
+
 "ip@npm:^2.0.0":
   version: 2.0.0
   resolution: "ip@npm:2.0.0"
@@ -13401,10 +13485,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.defaults@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "lodash.defaults@npm:4.2.0"
+  checksum: 84923258235592c8886e29de5491946ff8c2ae5c82a7ac5cddd2e3cb697e6fbdfbbb6efcca015795c86eec2bb953a5a2ee4016e3735a3f02720428a40efbb8f1
+  languageName: node
+  linkType: hard
+
 "lodash.get@npm:^4.4.2":
   version: 4.4.2
   resolution: "lodash.get@npm:4.4.2"
   checksum: e403047ddb03181c9d0e92df9556570e2b67e0f0a930fcbbbd779370972368f5568e914f913e93f3b08f6d492abc71e14d4e9b7a18916c31fa04bd2306efe545
+  languageName: node
+  linkType: hard
+
+"lodash.isarguments@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "lodash.isarguments@npm:3.1.0"
+  checksum: ae1526f3eb5c61c77944b101b1f655f846ecbedcb9e6b073526eba6890dc0f13f09f72e11ffbf6540b602caee319af9ac363d6cdd6be41f4ee453436f04f13b5
   languageName: node
   linkType: hard
 
@@ -15128,8 +15226,8 @@ __metadata:
   linkType: hard
 
 "node-gyp@npm:latest":
-  version: 9.2.0
-  resolution: "node-gyp@npm:9.2.0"
+  version: 9.3.0
+  resolution: "node-gyp@npm:9.3.0"
   dependencies:
     env-paths: ^2.2.0
     glob: ^7.1.4
@@ -15143,7 +15241,7 @@ __metadata:
     which: ^2.0.2
   bin:
     node-gyp: bin/node-gyp.js
-  checksum: 91f0589eabbd37f0d4e3fe9918f1f9e25afc707f6e107f0133be19c5aac62e731d92abdc2b106258665a4487b18cc2878d3fcd3dc2c6cffd68da1cb2a5ccf450
+  checksum: 589ddd3ed967724ef425f9624bfa47cf73022640ab3eba6d556e92cdc4ddef33b63fce3a467c93b995a3f61df92eafd3c3d1e8dbe4a2c00c383334487dea99c3
   languageName: node
   linkType: hard
 
@@ -16813,6 +16911,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redis-errors@npm:^1.0.0, redis-errors@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "redis-errors@npm:1.2.0"
+  checksum: f28ac2692113f6f9c222670735aa58aeae413464fd58ccf3fce3f700cae7262606300840c802c64f2b53f19f65993da24dc918afc277e9e33ac1ff09edb394f4
+  languageName: node
+  linkType: hard
+
+"redis-parser@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "redis-parser@npm:3.0.0"
+  dependencies:
+    redis-errors: ^1.0.0
+  checksum: 89290ae530332f2ae37577647fa18208d10308a1a6ba750b9d9a093e7398f5e5253f19855b64c98757f7129cccce958e4af2573fdc33bad41405f87f1943459a
+  languageName: node
+  linkType: hard
+
 "reduce-extract@npm:^1.0.0":
   version: 1.0.0
   resolution: "reduce-extract@npm:1.0.0"
@@ -18288,6 +18402,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"standard-as-callback@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "standard-as-callback@npm:2.1.0"
+  checksum: 88bec83ee220687c72d94fd86a98d5272c91d37ec64b66d830dbc0d79b62bfa6e47f53b71646011835fc9ce7fae62739545d13124262b53be4fbb3e2ebad551c
+  languageName: node
+  linkType: hard
+
 "statuses@npm:2.0.1":
   version: 2.0.1
   resolution: "statuses@npm:2.0.1"
@@ -19032,6 +19153,13 @@ __metadata:
   version: 2.3.0
   resolution: "tinybench@npm:2.3.0"
   checksum: 6556e42b3b7700795caca07f5bbc2c78e33261ffe5db4c434d54bcfa1cd5c64863357c5b7fff53e031ee236d098313dac78938e12f8f1a9b47f1d7ad55417ce8
+  languageName: node
+  linkType: hard
+
+"tinypool@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "tinypool@npm:0.2.4"
+  checksum: f050bd36c89529a2a0d3f9c1fdbba3f317114e3ee6eb5d5ba72c51e887d45ef3ef8d8533fb2ca2eba7189d19d2231712b81b3a75e099248532f5563369929c33
   languageName: node
   linkType: hard
 
@@ -20487,7 +20615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^3.0.0, vite@npm:^3.0.9, vite@npm:^3.1.7, vite@npm:~3.1.3":
+"vite@npm:^2.9.12 || ^3.0.0-0, vite@npm:^3.0.0, vite@npm:^3.0.9, vite@npm:^3.1.7, vite@npm:~3.1.3":
   version: 3.1.7
   resolution: "vite@npm:3.1.7"
   dependencies:
@@ -20516,6 +20644,42 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: cd0a0bb11777d9006f408a67ef1063c1771baaf091f9e4f102f0fdaec77559784b76788e80a398ac8fe2fc90027e83712ae860ed51510b81c4153d8c5ca5fb37
+  languageName: node
+  linkType: hard
+
+"vitest@npm:0.22.1, vitest@npm:^0.22.1":
+  version: 0.22.1
+  resolution: "vitest@npm:0.22.1"
+  dependencies:
+    "@types/chai": ^4.3.3
+    "@types/chai-subset": ^1.3.3
+    "@types/node": "*"
+    chai: ^4.3.6
+    debug: ^4.3.4
+    local-pkg: ^0.4.2
+    tinypool: ^0.2.4
+    tinyspy: ^1.0.2
+    vite: ^2.9.12 || ^3.0.0-0
+  peerDependencies:
+    "@edge-runtime/vm": "*"
+    "@vitest/browser": "*"
+    "@vitest/ui": "*"
+    happy-dom: "*"
+    jsdom: "*"
+  peerDependenciesMeta:
+    "@edge-runtime/vm":
+      optional: true
+    "@vitest/browser":
+      optional: true
+    "@vitest/ui":
+      optional: true
+    happy-dom:
+      optional: true
+    jsdom:
+      optional: true
+  bin:
+    vitest: vitest.mjs
+  checksum: 7abe50ceb51181e77cd62eb3a07c2da17f13078f09be34cc2e98f1f94a77eba33a56c644d48ae16bb474945ffc1cfc8664b1f4976c3de495c5e474057420c4ca
   languageName: node
   linkType: hard
 

@@ -18,7 +18,7 @@ export const getStaticProps: GetStaticProps = async () => {
 			PACKAGES.map(async (pkg) => {
 				const response = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`);
 				const versions = await response.json();
-				const latestVersion = versions.at(-2);
+				const latestVersion = versions.at(-2) ?? 'main';
 				return { packageName: pkg, version: latestVersion };
 			}),
 		);

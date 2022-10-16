@@ -58,7 +58,7 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.3",
 		"@vladfrangu/async_event_emitter": "^2.1.2",
-		"discord-api-types": "^0.37.12",
+		"discord-api-types": "^0.37.13",
 		"tslib": "^2.4.0",
 		"ws": "^8.9.0"
 	},
