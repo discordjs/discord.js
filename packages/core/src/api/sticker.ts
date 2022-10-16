@@ -1,5 +1,10 @@
 import type { REST } from '@discordjs/rest';
-import { Routes, type RESTGetNitroStickerPacksResult, type RESTGetAPIStickerResult } from 'discord-api-types/v10';
+import {
+	Routes,
+	type RESTGetNitroStickerPacksResult,
+	type RESTGetAPIStickerResult,
+	type Snowflake,
+} from 'discord-api-types/v10';
 
 export class StickersAPI {
 	public constructor(private readonly rest: REST) {}
@@ -16,7 +21,7 @@ export class StickersAPI {
 	 *
 	 * @param stickerId - The id of the sticker
 	 */
-	public async get(stickerId: string) {
+	public async get(stickerId: Snowflake) {
 		return this.rest.get(Routes.sticker(stickerId)) as Promise<RESTGetAPIStickerResult>;
 	}
 }

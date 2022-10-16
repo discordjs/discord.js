@@ -6,6 +6,9 @@ import {
 	type APIThreadMember,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIGuildForumThreadsJSONBody,
+	type RESTGetAPIChannelThreadMembersResult,
+	type RESTPostAPIChannelThreadsResult,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export interface StartThreadOptions extends RESTPostAPIChannelThreadsJSONBody {
@@ -25,7 +28,7 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the channel to fetch the thread from
 	 * @param threadId - The id of the thread
 	 */
-	public async get(channelId: string, threadId: string) {
+	public async get(channelId: Snowflake, threadId: Snowflake) {
 		return this.rest.get(Routes.threads(channelId, threadId)) as Promise<APIThreadChannel>;
 	}
 
@@ -35,8 +38,8 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the channel to start the thread in
 	 * @param options - The options to use when starting the thread
 	 */
-	public async start(channelId: string, { message_id, ...body }: StartThreadOptions) {
-		return this.rest.post(Routes.threads(channelId, message_id), { body }) as Promise<APIThreadChannel>;
+	public async start(channelId: Snowflake, { message_id, ...body }: StartThreadOptions) {
+		return this.rest.post(Routes.threads(channelId, message_id), { body }) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
 	/**
@@ -45,7 +48,7 @@ export class ThreadsAPI {
 	 * @param channelId - The id of the forum channel to start the thread in
 	 * @param options - The options to use when starting the thread
 	 */
-	public async startForumThread(channelId: string, { message, ...optionsBody }: StartForumThreadOptions) {
+	public async startForumThread(channelId: Snowflake, { message, ...optionsBody }: StartForumThreadOptions) {
 		const { files, ...messageBody } = message;
 
 		const body = {
@@ -61,7 +64,7 @@ export class ThreadsAPI {
 	 *
 	 * @param threadId - The id of the thread to join
 	 */
-	public async join(threadId: string) {
+	public async join(threadId: Snowflake) {
 		await this.rest.put(Routes.threadMembers(threadId, '@me'));
 	}
 
@@ -71,7 +74,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to add the member to
 	 * @param userId - The id of the user to add to the thread
 	 */
-	public async addMember(threadId: string, userId: string) {
+	public async addMember(threadId: Snowflake, userId: Snowflake) {
 		await this.rest.put(Routes.threadMembers(threadId, userId));
 	}
 
@@ -80,7 +83,7 @@ export class ThreadsAPI {
 	 *
 	 * @param threadId - The id of the thread to leave
 	 */
-	public async leave(threadId: string) {
+	public async leave(threadId: Snowflake) {
 		await this.rest.delete(Routes.threadMembers(threadId, '@me'));
 	}
 
@@ -90,7 +93,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to remove the member from
 	 * @param userId - The id of the user to remove from the thread
 	 */
-	public async removeMember(threadId: string, userId: string) {
+	public async removeMember(threadId: Snowflake, userId: Snowflake) {
 		await this.rest.delete(Routes.threadMembers(threadId, userId));
 	}
 
@@ -100,7 +103,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to fetch the member from
 	 * @param userId - The id of the user
 	 */
-	public async getMember(threadId: string, userId: string) {
+	public async getMember(threadId: Snowflake, userId: Snowflake) {
 		return this.rest.get(Routes.threadMembers(threadId, userId)) as Promise<APIThreadMember>;
 	}
 
@@ -109,7 +112,7 @@ export class ThreadsAPI {
 	 *
 	 * @param threadId - The id of the thread to fetch the members from
 	 */
-	public async getAllMembers(threadId: string) {
-		return this.rest.get(Routes.threadMembers(threadId)) as Promise<APIThreadMember[]>;
+	public async getAllMembers(threadId: Snowflake) {
+		return this.rest.get(Routes.threadMembers(threadId)) as Promise<RESTGetAPIChannelThreadMembersResult>;
 	}
 }

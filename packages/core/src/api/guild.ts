@@ -1,27 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
-import type { Buffer } from 'node:buffer';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type APIAuditLog,
-	type APIAutoModerationRule,
-	type APIBan,
-	type APIChannel,
-	type APIEmoji,
-	type APIGuild,
-	type APIGuildIntegration,
-	type APIGuildMember,
-	type APIGuildPreview,
-	type APIGuildScheduledEvent,
-	type APIGuildWelcomeScreen,
-	type APIGuildWidget,
-	type APIGuildWidgetSettings,
-	type APIInvite,
-	type APIRole,
-	type APISticker,
-	type APITemplate,
-	type APIThreadChannel,
-	type APIVoiceRegion,
 	type GuildWidgetStyle,
 	type RESTGetAPIAuditLogQuery,
 	type RESTGetAPIGuildMembersQuery,
@@ -50,6 +30,49 @@ import {
 	type RESTPostAPIGuildsJSONBody,
 	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTGetAPIAuditLogResult,
+	type RESTGetAPIAutoModerationRuleResult,
+	type RESTGetAPIAutoModerationRulesResult,
+	type RESTGetAPIGuildBansResult,
+	type RESTGetAPIGuildChannelsResult,
+	type RESTGetAPIGuildEmojiResult,
+	type RESTGetAPIGuildEmojisResult,
+	type RESTGetAPIGuildIntegrationsResult,
+	type RESTGetAPIGuildInvitesResult,
+	type RESTGetAPIGuildMemberResult,
+	type RESTGetAPIGuildPreviewResult,
+	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRolesResult,
+	type RESTGetAPIGuildScheduledEventResult,
+	type RESTGetAPIGuildScheduledEventsResult,
+	type RESTGetAPIGuildScheduledEventUsersResult,
+	type RESTGetAPIGuildStickerResult,
+	type RESTGetAPIGuildStickersResult,
+	type RESTGetAPIGuildTemplatesResult,
+	type RESTGetAPIGuildThreadsResult,
+	type RESTGetAPIGuildVoiceRegionsResult,
+	type RESTGetAPIGuildWelcomeScreenResult,
+	type RESTGetAPIGuildWidgetImageResult,
+	type RESTGetAPIGuildWidgetJSONResult,
+	type RESTPatchAPIAutoModerationRuleJSONBody,
+	type RESTPatchAPIGuildEmojiResult,
+	type RESTPatchAPIGuildResult,
+	type RESTPatchAPIGuildRolePositionsResult,
+	type RESTPatchAPIGuildRoleResult,
+	type RESTPatchAPIGuildScheduledEventResult,
+	type RESTPatchAPIGuildStickerResult,
+	type RESTPatchAPIGuildTemplateResult,
+	type RESTPatchAPIGuildWelcomeScreenResult,
+	type RESTPatchAPIGuildWidgetSettingsResult,
+	type RESTPostAPIAutoModerationRuleJSONBody,
+	type RESTPostAPIAutoModerationRuleResult,
+	type RESTPostAPIGuildChannelResult,
+	type RESTPostAPIGuildEmojiResult,
+	type RESTPostAPIGuildRoleResult,
+	type RESTPostAPIGuildScheduledEventResult,
+	type RESTPostAPIGuildsResult,
+	type RESTPutAPIGuildTemplateSyncResult,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class GuildsAPI {
@@ -61,7 +84,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild
 	 */
 	public async get(guildId: string) {
-		return this.rest.get(Routes.guild(guildId)) as Promise<APIGuild>;
+		return this.rest.get(Routes.guild(guildId)) as Promise<RESTGetAPIGuildResult>;
 	}
 
 	/**
@@ -69,8 +92,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the preview for
 	 */
-	public async getPreview(guildId: string) {
-		return this.rest.get(Routes.guildPreview(guildId)) as Promise<APIGuildPreview>;
+	public async getPreview(guildId: Snowflake) {
+		return this.rest.get(Routes.guildPreview(guildId)) as Promise<RESTGetAPIGuildPreviewResult>;
 	}
 
 	/**
@@ -79,7 +102,7 @@ export class GuildsAPI {
 	 * @param guild - The guild to create
 	 */
 	public async create(guild: RESTPostAPIGuildsJSONBody) {
-		return this.rest.post(Routes.guilds(), { body: guild }) as Promise<APIGuild>;
+		return this.rest.post(Routes.guilds(), { body: guild }) as Promise<RESTPostAPIGuildsResult>;
 	}
 
 	/**
@@ -89,8 +112,8 @@ export class GuildsAPI {
 	 * @param guild - The new guild data
 	 * @param reason - The reason for editing this guild
 	 */
-	public async edit(guildId: string, guild: RESTPatchAPIGuildJSONBody, reason?: string) {
-		return this.rest.patch(Routes.guild(guildId), { reason, body: guild }) as Promise<APIGuild>;
+	public async edit(guildId: Snowflake, guild: RESTPatchAPIGuildJSONBody, reason?: string) {
+		return this.rest.patch(Routes.guild(guildId), { reason, body: guild }) as Promise<RESTPatchAPIGuildResult>;
 	}
 
 	/**
@@ -99,8 +122,8 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to delete
 	 * @param reason - The reason for deleting this guild
 	 */
-	public async delete(guildId: string, reason?: string) {
-		return this.rest.delete(Routes.guild(guildId), { reason }) as Promise<APIGuild>;
+	public async delete(guildId: Snowflake, reason?: string) {
+		await this.rest.delete(Routes.guild(guildId), { reason });
 	}
 
 	/**
@@ -109,10 +132,10 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when fetching the guild members
 	 */
-	public async getAll(guildId: string, options: RESTGetAPIGuildMembersQuery = {}) {
+	public async getAllMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
 		return this.rest.get(Routes.guildMembers(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIGuildMember[]>;
+		}) as Promise<RESTGetAPIGuildMemberResult>;
 	}
 
 	/**
@@ -120,8 +143,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the channels for
 	 */
-	public async getChannels(guildId: string) {
-		return this.rest.get(Routes.guildChannels(guildId)) as Promise<APIChannel[]>;
+	public async getChannels(guildId: Snowflake) {
+		return this.rest.get(Routes.guildChannels(guildId)) as Promise<RESTGetAPIGuildChannelsResult>;
 	}
 
 	/**
@@ -131,8 +154,11 @@ export class GuildsAPI {
 	 * @param channel - The data to create the new channel
 	 * @param reason - The reason for creating this channel
 	 */
-	public async createChannel(guildId: string, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
-		return this.rest.post(Routes.guildChannels(guildId), { reason, body: channel }) as Promise<APIChannel>;
+	public async createChannel(guildId: Snowflake, channel: RESTPostAPIGuildChannelJSONBody, reason?: string) {
+		return this.rest.post(Routes.guildChannels(guildId), {
+			reason,
+			body: channel,
+		}) as Promise<RESTPostAPIGuildChannelResult>;
 	}
 
 	/**
@@ -143,7 +169,7 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the channel positions
 	 */
 	public async setChannelPosition(
-		guildId: string,
+		guildId: Snowflake,
 		options: RESTPatchAPIGuildChannelPositionsJSONBody,
 		reason?: string,
 	) {
@@ -155,8 +181,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the active threads for
 	 */
-	public async getActiveThreads(guildId: string) {
-		return this.rest.get(Routes.guildActiveThreads(guildId)) as Promise<APIThreadChannel[]>;
+	public async getActiveThreads(guildId: Snowflake) {
+		return this.rest.get(Routes.guildActiveThreads(guildId)) as Promise<RESTGetAPIGuildThreadsResult>;
 	}
 
 	/**
@@ -164,8 +190,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the ban for
 	 */
-	public async getBans(guildId: string) {
-		return this.rest.get(Routes.guildBans(guildId)) as Promise<APIBan[]>;
+	public async getMemberBans(guildId: Snowflake) {
+		return this.rest.get(Routes.guildBans(guildId)) as Promise<RESTGetAPIGuildBansResult>;
 	}
 
 	/**
@@ -177,7 +203,12 @@ export class GuildsAPI {
 	 * @param options - Options for banning the user
 	 * @param reason - The reason for banning the user
 	 */
-	public async banMember(guildId: string, userId: string, options: RESTPutAPIGuildBanJSONBody = {}, reason?: string) {
+	public async banMember(
+		guildId: Snowflake,
+		userId: Snowflake,
+		options: RESTPutAPIGuildBanJSONBody = {},
+		reason?: string,
+	) {
 		await this.rest.put(Routes.guildBan(guildId, userId), { reason, body: options });
 	}
 
@@ -188,7 +219,7 @@ export class GuildsAPI {
 	 * @param userId - The id of the user to unban
 	 * @param reason - The reason for unbanning the user
 	 */
-	public async unbanMember(guildId: string, userId: string, reason?: string) {
+	public async unbanMember(guildId: Snowflake, userId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildBan(guildId, userId), { reason });
 	}
 
@@ -197,8 +228,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the roles fo
 	 */
-	public async getRoles(guildId: string) {
-		return this.rest.get(Routes.guildRoles(guildId)) as Promise<APIRole[]>;
+	public async getRoles(guildId: Snowflake) {
+		return this.rest.get(Routes.guildRoles(guildId)) as Promise<RESTGetAPIGuildRolesResult>;
 	}
 
 	/**
@@ -208,8 +239,8 @@ export class GuildsAPI {
 	 * @param role - The data to create the role with
 	 * @param reason - The reason for creating the role
 	 */
-	public async createRole(guildId: string, role: RESTPostAPIGuildRoleJSONBody, reason?: string) {
-		return this.rest.post(Routes.guildRoles(guildId), { reason, body: role }) as Promise<APIRole>;
+	public async createRole(guildId: Snowflake, role: RESTPostAPIGuildRoleJSONBody, reason?: string) {
+		return this.rest.post(Routes.guildRoles(guildId), { reason, body: role }) as Promise<RESTPostAPIGuildRoleResult>;
 	}
 
 	/**
@@ -219,8 +250,11 @@ export class GuildsAPI {
 	 * @param options - The options for setting a role position
 	 * @param reason - The reason for setting the role position
 	 */
-	public async setRolePosition(guildId: string, options: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
-		return this.rest.patch(Routes.guildRoles(guildId), { reason, body: options }) as Promise<APIRole[]>;
+	public async setRolePosition(guildId: Snowflake, options: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
+		return this.rest.patch(Routes.guildRoles(guildId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIGuildRolePositionsResult>;
 	}
 
 	/**
@@ -231,8 +265,11 @@ export class GuildsAPI {
 	 * @param options - Options for editing the role
 	 * @param reason - The reason for editing the role
 	 */
-	public async editRole(guildId: string, roleId: string, options: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
-		return this.rest.patch(Routes.guildRole(guildId, roleId), { reason, body: options }) as Promise<APIRole>;
+	public async editRole(guildId: Snowflake, roleId: string, options: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
+		return this.rest.patch(Routes.guildRole(guildId, roleId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIGuildRoleResult>;
 	}
 
 	/**
@@ -242,7 +279,7 @@ export class GuildsAPI {
 	 * @param roleId - The id of the role to delete
 	 * @param reason - The reason for deleting the role
 	 */
-	public async deleteRole(guildId: string, roleId: string, reason?: string) {
+	public async deleteRole(guildId: Snowflake, roleId: string, reason?: string) {
 		await this.rest.delete(Routes.guildRole(guildId, roleId), { reason });
 	}
 
@@ -253,7 +290,7 @@ export class GuildsAPI {
 	 * @param level - The new MFA level
 	 * @param reason - The reason for editing the MFA level
 	 */
-	public async editMFALevel(guildId: string, level: number, reason?: string) {
+	public async editMFALevel(guildId: Snowflake, level: number, reason?: string) {
 		return this.rest.post(Routes.guild(guildId), {
 			reason,
 			body: { mfa_level: level },
@@ -263,11 +300,10 @@ export class GuildsAPI {
 	/**
 	 * Fetch the number of pruned members in a guild
 	 *
-	 *
 	 * @param guildId - The id of the guild to fetch the number of pruned members for
 	 * @param options - The options for fetching the number of pruned members
 	 */
-	public async getPruneCount(guildId: string, options: { days?: number; includeRoles?: string[] } = {}) {
+	public async getPruneCount(guildId: Snowflake, options: { days?: number; includeRoles?: string[] } = {}) {
 		return this.rest.get(Routes.guildPrune(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildPruneCountResult>;
@@ -280,7 +316,7 @@ export class GuildsAPI {
 	 * @param options - The options for pruning members
 	 * @param reason - The reason for pruning members
 	 */
-	public async beginPrune(guildId: string, options: RESTPostAPIGuildPruneJSONBody = {}, reason?: string) {
+	public async beginPrune(guildId: Snowflake, options: RESTPostAPIGuildPruneJSONBody = {}, reason?: string) {
 		return this.rest.post(Routes.guildPrune(guildId), {
 			body: options,
 			reason,
@@ -292,8 +328,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the voice regions for
 	 */
-	public async getVoiceRegions(guildId: string) {
-		return this.rest.get(Routes.guildVoiceRegions(guildId)) as Promise<APIVoiceRegion[]>;
+	public async getVoiceRegions(guildId: Snowflake) {
+		return this.rest.get(Routes.guildVoiceRegions(guildId)) as Promise<RESTGetAPIGuildVoiceRegionsResult>;
 	}
 
 	/**
@@ -301,8 +337,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the invites for
 	 */
-	public async getInvites(guildId: string) {
-		return this.rest.get(Routes.guildInvites(guildId)) as Promise<APIInvite[]>;
+	public async getInvites(guildId: Snowflake) {
+		return this.rest.get(Routes.guildInvites(guildId)) as Promise<RESTGetAPIGuildInvitesResult>;
 	}
 
 	/**
@@ -310,8 +346,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the integrations for
 	 */
-	public async getIntegrations(guildId: string) {
-		return this.rest.get(Routes.guildIntegrations(guildId)) as Promise<APIGuildIntegration[]>;
+	public async getIntegrations(guildId: Snowflake) {
+		return this.rest.get(Routes.guildIntegrations(guildId)) as Promise<RESTGetAPIGuildIntegrationsResult>;
 	}
 
 	/**
@@ -321,7 +357,7 @@ export class GuildsAPI {
 	 * @param integrationId - The id of the integration to delete
 	 * @param reason - The reason for deleting the integration
 	 */
-	public async deleteIntegration(guildId: string, integrationId: string, reason?: string) {
+	public async deleteIntegration(guildId: Snowflake, integrationId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildIntegration(guildId, integrationId), { reason });
 	}
 
@@ -330,8 +366,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the widget settings for
 	 */
-	public async getWidgetSettings(guildId: string) {
-		return this.rest.get(Routes.guildWidgetSettings(guildId)) as Promise<APIGuildWidgetSettings>;
+	public async getWidgetSettings(guildId: Snowflake) {
+		return this.rest.get(Routes.guildWidgetSettings(guildId)) as Promise<RESTGetAPIGuildWidgetImageResult>;
 	}
 
 	/**
@@ -342,14 +378,14 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the widget settings
 	 */
 	public async editWidgetSettings(
-		guildId: string,
+		guildId: Snowflake,
 		widgetSettings: RESTPatchAPIGuildWidgetSettingsJSONBody,
 		reason?: string,
 	) {
 		return this.rest.patch(Routes.guildWidgetSettings(guildId), {
 			reason,
 			body: widgetSettings,
-		}) as Promise<APIGuildWidget>;
+		}) as Promise<RESTPatchAPIGuildWidgetSettingsResult>;
 	}
 
 	/**
@@ -357,8 +393,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the widget for
 	 */
-	public async getWidget(guildId: string) {
-		return this.rest.get(Routes.guildWidgetJSON(guildId)) as Promise<APIGuildWidget>;
+	public async getWidget(guildId: Snowflake) {
+		return this.rest.get(Routes.guildWidgetJSON(guildId)) as Promise<RESTGetAPIGuildWidgetJSONResult>;
 	}
 
 	/**
@@ -366,7 +402,7 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the vanity url for
 	 */
-	public async getVanityURL(guildId: string) {
+	public async getVanityURL(guildId: Snowflake) {
 		return this.rest.get(Routes.guildVanityUrl(guildId)) as Promise<RESTGetAPIGuildVanityUrlResult>;
 	}
 
@@ -376,10 +412,10 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the widget image for
 	 * @param style - The style of the widget image
 	 */
-	public async getWidgetImage(guildId: string, style?: GuildWidgetStyle) {
+	public async getWidgetImage(guildId: Snowflake, style?: GuildWidgetStyle) {
 		return this.rest.get(Routes.guildWidgetImage(guildId), {
 			query: makeURLSearchParams({ style }),
-		}) as Promise<Buffer>;
+		}) as Promise<RESTGetAPIGuildWidgetImageResult>;
 	}
 
 	/**
@@ -387,8 +423,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the welcome screen for
 	 */
-	public async getWelcomeScreen(guildId: string) {
-		return this.rest.get(Routes.guildWelcomeScreen(guildId)) as Promise<APIGuildWelcomeScreen>;
+	public async getWelcomeScreen(guildId: Snowflake) {
+		return this.rest.get(Routes.guildWelcomeScreen(guildId)) as Promise<RESTGetAPIGuildWelcomeScreenResult>;
 	}
 
 	/**
@@ -399,14 +435,14 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the welcome screen
 	 */
 	public async editWelcomeScreen(
-		guildId: string,
+		guildId: Snowflake,
 		welcomeScreen?: RESTPatchAPIGuildWelcomeScreenJSONBody,
 		reason?: string,
 	) {
 		return this.rest.patch(Routes.guildWelcomeScreen(guildId), {
 			reason,
 			body: welcomeScreen,
-		}) as Promise<APIGuildWelcomeScreen>;
+		}) as Promise<RESTPatchAPIGuildWelcomeScreenResult>;
 	}
 
 	/**
@@ -418,8 +454,8 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the voice state
 	 */
 	public async editUserVoiceState(
-		guildId: string,
-		userId: string,
+		guildId: Snowflake,
+		userId: Snowflake,
 		options: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		reason?: string,
 	) {
@@ -432,8 +468,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the emojis for
 	 */
-	public async getEmojis(guildId: string) {
-		return this.rest.get(Routes.guildEmojis(guildId)) as Promise<APIEmoji[]>;
+	public async getEmojis(guildId: Snowflake) {
+		return this.rest.get(Routes.guildEmojis(guildId)) as Promise<RESTGetAPIGuildEmojisResult>;
 	}
 
 	/**
@@ -442,8 +478,8 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the emoji for
 	 * @param emojiId - The id of the emoji to fetch
 	 */
-	public async getEmoji(guildId: string, emojiId: string) {
-		return this.rest.get(Routes.guildEmoji(guildId, emojiId)) as Promise<APIEmoji>;
+	public async getEmoji(guildId: Snowflake, emojiId: Snowflake) {
+		return this.rest.get(Routes.guildEmoji(guildId, emojiId)) as Promise<RESTGetAPIGuildEmojiResult>;
 	}
 
 	/**
@@ -453,8 +489,11 @@ export class GuildsAPI {
 	 * @param options - The options for creating the emoji
 	 * @param reason - The reason for creating the emoji
 	 */
-	public async createEmoji(guildId: string, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
-		return this.rest.post(Routes.guildEmojis(guildId), { reason, body: options }) as Promise<APIEmoji>;
+	public async createEmoji(guildId: Snowflake, options: RESTPostAPIGuildEmojiJSONBody, reason?: string) {
+		return this.rest.post(Routes.guildEmojis(guildId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPostAPIGuildEmojiResult>;
 	}
 
 	/**
@@ -465,8 +504,16 @@ export class GuildsAPI {
 	 * @param options - The options for editing the emoji
 	 * @param reason - The reason for editing the emoji
 	 */
-	public async editEmoji(guildId: string, emojiId: string, options: RESTPatchAPIGuildEmojiJSONBody, reason?: string) {
-		return this.rest.patch(Routes.guildEmoji(guildId, emojiId), { reason, body: options }) as Promise<APIEmoji>;
+	public async editEmoji(
+		guildId: Snowflake,
+		emojiId: Snowflake,
+		options: RESTPatchAPIGuildEmojiJSONBody,
+		reason?: string,
+	) {
+		return this.rest.patch(Routes.guildEmoji(guildId, emojiId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIGuildEmojiResult>;
 	}
 
 	/**
@@ -476,7 +523,7 @@ export class GuildsAPI {
 	 * @param emojiId - The id of the emoji to delete
 	 * @param reason - The reason for deleting the emoji
 	 */
-	public async deleteEmoji(guildId: string, emojiId: string, reason?: string) {
+	public async deleteEmoji(guildId: Snowflake, emojiId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildEmoji(guildId, emojiId), { reason });
 	}
 
@@ -486,10 +533,10 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the scheduled events for
 	 * @param options - The options for fetching the scheduled events
 	 */
-	public async getAllEvents(guildId: string, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
+	public async getAllEvents(guildId: Snowflake, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
 		return this.rest.get(Routes.guildScheduledEvents(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIGuildScheduledEvent[]>;
+		}) as Promise<RESTGetAPIGuildScheduledEventsResult>;
 	}
 
 	/**
@@ -499,11 +546,11 @@ export class GuildsAPI {
 	 * @param event - The event to create
 	 * @param reason - The reason for creating the scheduled event
 	 */
-	public async createEvent(guildId: string, event: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
+	public async createEvent(guildId: Snowflake, event: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
 		return this.rest.post(Routes.guildScheduledEvents(guildId), {
 			reason,
 			body: event,
-		}) as Promise<APIGuildScheduledEvent>;
+		}) as Promise<RESTPostAPIGuildScheduledEventResult>;
 	}
 
 	/**
@@ -513,10 +560,10 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to fetch
 	 * @param options - The options for fetching the scheduled event
 	 */
-	public async getEvent(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventQuery = {}) {
+	public async getEvent(guildId: Snowflake, eventId: Snowflake, options: RESTGetAPIGuildScheduledEventQuery = {}) {
 		return this.rest.get(Routes.guildScheduledEvent(guildId, eventId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIGuildScheduledEvent>;
+		}) as Promise<RESTGetAPIGuildScheduledEventResult>;
 	}
 
 	/**
@@ -528,15 +575,15 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the scheduled event
 	 */
 	public async editEvent(
-		guildId: string,
-		eventId: string,
+		guildId: Snowflake,
+		eventId: Snowflake,
 		event: RESTPatchAPIGuildScheduledEventJSONBody,
 		reason?: string,
 	) {
 		return this.rest.patch(Routes.guildScheduledEvent(guildId, eventId), {
 			reason,
 			body: event,
-		}) as Promise<APIGuildScheduledEvent>;
+		}) as Promise<RESTPatchAPIGuildScheduledEventResult>;
 	}
 
 	/**
@@ -546,7 +593,7 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to delete
 	 * @param reason - The reason for deleting the scheduled event
 	 */
-	public async deleteEvent(guildId: string, eventId: string, reason?: string) {
+	public async deleteEvent(guildId: Snowflake, eventId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildScheduledEvent(guildId, eventId), { reason });
 	}
 
@@ -557,10 +604,14 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to fetch the users for
 	 * @param options - The options for fetching the scheduled event users
 	 */
-	public async getEventUsers(guildId: string, eventId: string, options: RESTGetAPIGuildScheduledEventUsersQuery = {}) {
+	public async getEventUsers(
+		guildId: Snowflake,
+		eventId: Snowflake,
+		options: RESTGetAPIGuildScheduledEventUsersQuery = {},
+	) {
 		return this.rest.get(Routes.guildScheduledEventUsers(guildId, eventId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIGuildScheduledEvent[]>;
+		}) as Promise<RESTGetAPIGuildScheduledEventUsersResult>;
 	}
 
 	/**
@@ -568,8 +619,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the templates for
 	 */
-	public async getTemplates(guildId: string) {
-		return this.rest.get(Routes.guildTemplates(guildId)) as Promise<APITemplate[]>;
+	public async getTemplates(guildId: Snowflake) {
+		return this.rest.get(Routes.guildTemplates(guildId)) as Promise<RESTGetAPIGuildTemplatesResult>;
 	}
 
 	/**
@@ -578,8 +629,10 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to create the template for
 	 * @param options - The options for creating the template
 	 */
-	public async createTemplate(guildId: string, options: RESTPostAPIGuildTemplatesJSONBody) {
-		return this.rest.post(Routes.guildTemplates(guildId), { body: options }) as Promise<APITemplate>;
+	public async createTemplate(guildId: Snowflake, options: RESTPostAPIGuildTemplatesJSONBody) {
+		return this.rest.post(Routes.guildTemplates(guildId), {
+			body: options,
+		}) as Promise<RESTPostAPIGuildScheduledEventResult>;
 	}
 
 	/**
@@ -588,8 +641,8 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to sync the template for
 	 * @param templateCode - The code of the template to sync
 	 */
-	public async syncTemplate(guildId: string, templateCode: string) {
-		return this.rest.put(Routes.guildTemplate(guildId, templateCode)) as Promise<APITemplate>;
+	public async syncTemplate(guildId: Snowflake, templateCode: string) {
+		return this.rest.put(Routes.guildTemplate(guildId, templateCode)) as Promise<RESTPutAPIGuildTemplateSyncResult>;
 	}
 
 	/**
@@ -599,8 +652,10 @@ export class GuildsAPI {
 	 * @param templateCode - The code of the template to edit
 	 * @param options - The options for editing the template
 	 */
-	public async editTemplate(guildId: string, templateCode: string, options: RESTPatchAPIGuildTemplateJSONBody) {
-		return this.rest.patch(Routes.guildTemplate(guildId, templateCode), { body: options }) as Promise<APITemplate>;
+	public async editTemplate(guildId: Snowflake, templateCode: string, options: RESTPatchAPIGuildTemplateJSONBody) {
+		return this.rest.patch(Routes.guildTemplate(guildId, templateCode), {
+			body: options,
+		}) as Promise<RESTPatchAPIGuildTemplateResult>;
 	}
 
 	/**
@@ -609,7 +664,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to delete the template for
 	 * @param templateCode - The code of the template to delete
 	 */
-	public async deleteTemplate(guildId: string, templateCode: string) {
+	public async deleteTemplate(guildId: Snowflake, templateCode: string) {
 		await this.rest.delete(Routes.guildTemplate(guildId, templateCode));
 	}
 
@@ -618,8 +673,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the stickers for
 	 */
-	public async getStickers(guildId: string) {
-		return this.rest.get(Routes.guildStickers(guildId)) as Promise<APISticker[]>;
+	public async getStickers(guildId: Snowflake) {
+		return this.rest.get(Routes.guildStickers(guildId)) as Promise<RESTGetAPIGuildStickersResult>;
 	}
 
 	/**
@@ -628,8 +683,8 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the sticker for
 	 * @param stickerId - The id of the sticker to fetch
 	 */
-	public async getSticker(guildId: string, stickerId: string) {
-		return this.rest.get(Routes.guildSticker(guildId, stickerId)) as Promise<APISticker>;
+	public async getSticker(guildId: Snowflake, stickerId: Snowflake) {
+		return this.rest.get(Routes.guildSticker(guildId, stickerId)) as Promise<RESTGetAPIGuildStickerResult>;
 	}
 
 	/**
@@ -641,12 +696,15 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the sticker
 	 */
 	public async editSticker(
-		guildId: string,
-		stickerId: string,
+		guildId: Snowflake,
+		stickerId: Snowflake,
 		options: RESTPatchAPIGuildStickerJSONBody,
 		reason?: string,
 	) {
-		return this.rest.patch(Routes.guildSticker(guildId, stickerId), { reason, body: options }) as Promise<APISticker>;
+		return this.rest.patch(Routes.guildSticker(guildId, stickerId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIGuildStickerResult>;
 	}
 
 	/**
@@ -656,7 +714,7 @@ export class GuildsAPI {
 	 * @param stickerId - The id of the sticker to delete
 	 * @param reason - The reason for deleting the sticker
 	 */
-	public async deleteSticker(guildId: string, stickerId: string, reason?: string) {
+	public async deleteSticker(guildId: Snowflake, stickerId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildSticker(guildId, stickerId), { reason });
 	}
 
@@ -666,10 +724,10 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the audit logs for
 	 * @param options - The options for fetching the audit logs
 	 */
-	public async getAuditLogs(guildId: string, options: RESTGetAPIAuditLogQuery = {}) {
+	public async getAuditLogs(guildId: Snowflake, options: RESTGetAPIAuditLogQuery = {}) {
 		return this.rest.get(Routes.guildAuditLog(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIAuditLog[]>;
+		}) as Promise<RESTGetAPIAuditLogResult>;
 	}
 
 	/**
@@ -677,8 +735,8 @@ export class GuildsAPI {
 	 *
 	 * @param guildId - The id of the guild to fetch the auto moderation rules for
 	 */
-	public async getAutoModerationRules(guildId: string) {
-		return this.rest.get(Routes.guildAutoModerationRules(guildId) as `/${string}`) as Promise<APIAutoModerationRule[]>;
+	public async getAutoModerationRules(guildId: Snowflake) {
+		return this.rest.get(Routes.guildAutoModerationRules(guildId)) as Promise<RESTGetAPIAutoModerationRulesResult>;
 	}
 
 	/**
@@ -687,9 +745,49 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to fetch
 	 */
-	public async getAutoModerationRule(guildId: string, ruleId: string) {
+	public async getAutoModerationRule(guildId: Snowflake, ruleId: Snowflake) {
 		return this.rest.get(
-			Routes.guildAutoModerationRule(guildId, ruleId) as `/${string}`,
-		) as Promise<APIAutoModerationRule>;
+			Routes.guildAutoModerationRule(guildId, ruleId),
+		) as Promise<RESTGetAPIAutoModerationRuleResult>;
+	}
+
+	/**
+	 * Creates a new auto moderation rule for a guild
+	 *
+	 * @param guildId - The id of the guild to create the auto moderation rule for
+	 * @param options - The options for creating the auto moderation rule
+	 */
+	public async createAutoModerationRule(
+		guildId: Snowflake,
+		options: RESTPostAPIAutoModerationRuleJSONBody,
+		reason?: string,
+	) {
+		return this.rest.post(Routes.guildAutoModerationRules(guildId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPostAPIAutoModerationRuleResult>;
+	}
+
+	public async editAutoModerationRule(
+		guildID: Snowflake,
+		ruleID: Snowflake,
+		options: RESTPatchAPIAutoModerationRuleJSONBody,
+		reason?: string,
+	) {
+		return this.rest.patch(Routes.guildAutoModerationRule(guildID, ruleID), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIAutoModerationRuleJSONBody>;
+	}
+
+	/**
+	 * Deletes an auto moderation rule for a guild
+	 *
+	 * @param guildID - The id of the guild to delete the auto moderation rule from
+	 * @param ruleID - The id of the auto moderation rule to delete
+	 * @param reason - The reason for deleting the auto moderation rule
+	 */
+	public async deleteAutoModerationRule(guildID: Snowflake, ruleID: Snowflake, reason?: string) {
+		await this.rest.delete(Routes.guildAutoModerationRule(guildID, ruleID), { reason });
 	}
 }

@@ -1,14 +1,18 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import type { RESTPostAPICurrentUserCreateDMChannelResult } from 'discord-api-types/v10';
 import {
 	Routes,
-	type APIGuildMember,
-	type APIDMChannel,
-	type APIPartialGuild,
-	type APIUser,
 	type RESTGetAPICurrentUserGuildsQuery,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+	type RESTGetAPICurrentUserResult,
+	type RESTGetAPICurrentUserGuildsResult,
+	type RESTPatchAPICurrentUserResult,
+	type RESTGetCurrentUserGuildMemberResult,
+	type RESTPatchAPIGuildMemberResult,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class BotsAPI {
@@ -18,7 +22,7 @@ export class BotsAPI {
 	 * Returns the user object of the requester's account
 	 */
 	public async getUser() {
-		return this.rest.get(Routes.user('@me')) as Promise<APIUser>;
+		return this.rest.get(Routes.user('@me')) as Promise<RESTGetAPICurrentUserResult>;
 	}
 
 	/**
@@ -29,7 +33,7 @@ export class BotsAPI {
 	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
 		return this.rest.get(Routes.userGuilds(), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIPartialGuild[]>;
+		}) as Promise<RESTGetAPICurrentUserGuildsResult>;
 	}
 
 	/**
@@ -37,7 +41,7 @@ export class BotsAPI {
 	 *
 	 * @param guildId - The id of the guild
 	 */
-	public async leaveGuild(guildId: string) {
+	public async leaveGuild(guildId: Snowflake) {
 		await this.rest.delete(Routes.userGuild(guildId));
 	}
 
@@ -47,7 +51,7 @@ export class BotsAPI {
 	 * @param user - The new data for the current user
 	 */
 	public async edit(user: RESTPatchAPICurrentUserJSONBody) {
-		return this.rest.patch(Routes.user('@me'), { body: user }) as Promise<APIUser>;
+		return this.rest.patch(Routes.user('@me'), { body: user }) as Promise<RESTPatchAPICurrentUserResult>;
 	}
 
 	/**
@@ -55,8 +59,8 @@ export class BotsAPI {
 	 *
 	 * @param guildId - The id of the guild
 	 */
-	public async getMember(guildId: string) {
-		return this.rest.get(Routes.userGuildMember(guildId)) as Promise<APIGuildMember>;
+	public async getMember(guildId: Snowflake) {
+		return this.rest.get(Routes.userGuildMember(guildId)) as Promise<RESTGetCurrentUserGuildMemberResult>;
 	}
 
 	/**
@@ -66,8 +70,11 @@ export class BotsAPI {
 	 * @param member - The new data for the guild member
 	 * @param reason - The reason for editing this guild member
 	 */
-	public async editMember(guildId: string, member: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
-		return this.rest.patch(Routes.guildMember(guildId, '@me'), { reason, body: member }) as Promise<APIGuildMember>;
+	public async editMember(guildId: Snowflake, member: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
+		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
+			reason,
+			body: member,
+		}) as Promise<RESTPatchAPIGuildMemberResult>;
 	}
 
 	/**
@@ -76,8 +83,10 @@ export class BotsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when setting the voice state
 	 */
-	public async setVoiceState(guildId: string, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), { body: options }) as Promise<APIGuildMember>;
+	public async setVoiceState(guildId: Snowflake, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
+		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
+			body: options,
+		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 
 	/**
@@ -85,7 +94,9 @@ export class BotsAPI {
 	 *
 	 * @param userId - The id of the user to open a DM channel with
 	 */
-	public async createDM(userId: string) {
-		return this.rest.post(Routes.userChannels(), { body: { recipient_id: userId } }) as Promise<APIDMChannel>;
+	public async createDM(userId: Snowflake) {
+		return this.rest.post(Routes.userChannels(), {
+			body: { recipient_id: userId },
+		}) as Promise<RESTPostAPICurrentUserCreateDMChannelResult>;
 	}
 }

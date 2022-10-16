@@ -2,10 +2,11 @@
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type APIMessage,
-	type APIUser,
+	type Snowflake,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
 	type RESTPostAPIChannelMessageJSONBody,
+	type RESTPatchAPIChannelMessageResult,
+	type RESTGetAPIChannelMessageReactionUsersResult,
 } from 'discord-api-types/v10';
 
 export class MessagesAPI {
@@ -19,11 +20,14 @@ export class MessagesAPI {
 	 * @param options - The options to use when editing the message
 	 */
 	public async edit(
-		channelId: string,
-		messageId: string,
+		channelId: Snowflake,
+		messageId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
 	) {
-		return this.rest.patch(Routes.channelMessage(channelId, messageId), { files, body }) as Promise<APIMessage>;
+		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
+			files,
+			body,
+		}) as Promise<RESTPatchAPIChannelMessageResult>;
 	}
 
 	/**
@@ -35,14 +39,14 @@ export class MessagesAPI {
 	 * @param options - The options to use when fetching the reactions
 	 */
 	public async getReactions(
-		channelId: string,
-		messageId: string,
+		channelId: Snowflake,
+		messageId: Snowflake,
 		emoji: string,
 		options: RESTGetAPIChannelMessageReactionUsersQuery = {},
 	) {
 		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, emoji), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		}) as Promise<APIUser[]>;
+		}) as Promise<RESTGetAPIChannelMessageReactionUsersResult>;
 	}
 
 	/**
@@ -52,7 +56,7 @@ export class MessagesAPI {
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
 	 */
-	public async deleteOwnReaction(channelId: string, messageId: string, emoji: string) {
+	public async deleteOwnReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
 		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, emoji));
 	}
 
@@ -64,7 +68,7 @@ export class MessagesAPI {
 	 * @param emoji - The emoji to delete the reaction for
 	 * @param userID - The id of the user to delete the reaction for
 	 */
-	public async deleteUserReaction(channelId: string, messageId: string, emoji: string, userID: string) {
+	public async deleteUserReaction(channelId: Snowflake, messageId: Snowflake, emoji: string, userID: Snowflake) {
 		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, emoji, userID));
 	}
 
@@ -74,7 +78,7 @@ export class MessagesAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
 	 */
-	public async deleteAllReactions(channelId: string, messageId: string) {
+	public async deleteAllReactions(channelId: Snowflake, messageId: Snowflake) {
 		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId));
 	}
 
@@ -85,7 +89,7 @@ export class MessagesAPI {
 	 * @param messageId - The id of the message to delete the reactions for
 	 * @param emoji - The emoji to delete the reactions for
 	 */
-	public async deleteAllReactionsForEmoji(channelId: string, messageId: string, emoji: string) {
+	public async deleteAllReactionsForEmoji(channelId: Snowflake, messageId: Snowflake, emoji: string) {
 		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, emoji));
 	}
 
@@ -96,7 +100,7 @@ export class MessagesAPI {
 	 * @param messageId - The id of the message to add the reaction to
 	 * @param emoji - The emoji to add the reaction with
 	 */
-	public async addReaction(channelId: string, messageId: string, emoji: string) {
+	public async addReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
 		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, emoji));
 	}
 }

@@ -1,12 +1,12 @@
 /* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
+import type { RESTGetAPIWebhookWithTokenMessageResult } from 'discord-api-types/v10';
 import {
 	Routes,
 	InteractionResponseType,
 	type APICommandAutocompleteInteractionResponseCallbackData,
 	type APIInteraction,
 	type APIInteractionResponseCallbackData,
-	type APIMessage,
 	type APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
@@ -88,7 +88,11 @@ export class InteractionsAPI {
 	 * @param interaction - The interaction to fetch the reply from
 	 */
 	public async getOriginalReply(interaction: APIInteraction) {
-		return this.webhooks.getMessage(interaction.application_id, interaction.token, '@original') as Promise<APIMessage>;
+		return this.webhooks.getMessage(
+			interaction.application_id,
+			interaction.token,
+			'@original',
+		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
 	/**
