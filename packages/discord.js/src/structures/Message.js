@@ -612,6 +612,15 @@ class Message extends Base {
   }
 
   /**
+   * Whether the message is bulk deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get bulkDeletable() {
+    return this.deletable && Date.now() - this.createdTimestamp < 1_209_600_000;
+  }
+
+  /**
    * Whether the message is pinnable by the client user
    * @type {boolean}
    * @readonly
