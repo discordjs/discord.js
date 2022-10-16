@@ -3003,7 +3003,7 @@ export class WebSocketShard extends EventEmitter {
     time: 60e3;
     timer: NodeJS.Timeout | null;
   };
-  private connection: WebSocket | null
+  private connection: WebSocket | null;
   private helloTimeout: NodeJS.Timeout | null;
   private resumedDispatchTimeout: NodeJS.Timeout | null;
   private eventsAttached: boolean;
