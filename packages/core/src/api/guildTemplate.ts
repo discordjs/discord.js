@@ -10,7 +10,7 @@ export class GuildTemplatesAPI {
 	 * @param templateCode - The code of the template
 	 */
 	public async get(templateCode: string) {
-		return (await this.rest.get(Routes.template(templateCode))) as APITemplate;
+		return this.rest.get(Routes.template(templateCode)) as Promise<APITemplate>;
 	}
 
 	/**
@@ -20,8 +20,6 @@ export class GuildTemplatesAPI {
 	 * @param options - The options to use when creating the template
 	 */
 	public async create(templateCode: string, options: RESTPostAPITemplateCreateGuildJSONBody) {
-		return (await this.rest.post(Routes.template(templateCode), {
-			body: options,
-		})) as APITemplate;
+		return this.rest.post(Routes.template(templateCode), { body: options }) as Promise<APITemplate>;
 	}
 }

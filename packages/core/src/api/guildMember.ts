@@ -11,7 +11,7 @@ export class GuildMembersAPI {
 	 * @param userId - The id of the user
 	 */
 	public async get(guildId: string, userId: string) {
-		return (await this.rest.get(Routes.guildMember(guildId, userId))) as APIGuildMember;
+		return this.rest.get(Routes.guildMember(guildId, userId)) as Promise<APIGuildMember>;
 	}
 
 	/**
@@ -22,9 +22,9 @@ export class GuildMembersAPI {
 	 * @param limit - The maximum number of members to return
 	 */
 	public async search(guildId: string, query: string, limit: number = 1) {
-		return (await this.rest.get(Routes.guildMembersSearch(guildId), {
+		return this.rest.get(Routes.guildMembersSearch(guildId), {
 			query: makeURLSearchParams({ query, limit }),
-		})) as APIGuildMember[];
+		}) as Promise<APIGuildMember[]>;
 	}
 
 	/**
@@ -36,10 +36,7 @@ export class GuildMembersAPI {
 	 * @param reason - The reason for editing this guild member
 	 */
 	public async edit(guildId: string, userId: string, options: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
-		return (await this.rest.patch(Routes.guildMember(guildId, userId), {
-			reason,
-			body: options,
-		})) as APIGuildMember;
+		return this.rest.patch(Routes.guildMember(guildId, userId), { reason, body: options }) as Promise<APIGuildMember>;
 	}
 
 	/**

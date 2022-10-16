@@ -1,9 +1,9 @@
 /* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
-import type { APICommandAutocompleteInteractionResponseCallbackData } from 'discord-api-types/v10';
 import {
 	Routes,
 	InteractionResponseType,
+	type APICommandAutocompleteInteractionResponseCallbackData,
 	type APIInteraction,
 	type APIInteractionResponseCallbackData,
 	type APIMessage,
@@ -79,12 +79,7 @@ export class InteractionsAPI {
 		interaction: APIInteraction,
 		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		return (await this.webhooks.editMessage(
-			interaction.application_id,
-			interaction.token,
-			'@original',
-			options,
-		)) as APIMessage;
+		return this.webhooks.editMessage(interaction.application_id, interaction.token, '@original', options);
 	}
 
 	/**
@@ -93,7 +88,7 @@ export class InteractionsAPI {
 	 * @param interaction - The interaction to fetch the reply from
 	 */
 	public async getOriginalReply(interaction: APIInteraction) {
-		return (await this.webhooks.getMessage(interaction.application_id, interaction.token, '@original')) as APIMessage;
+		return this.webhooks.getMessage(interaction.application_id, interaction.token, '@original') as Promise<APIMessage>;
 	}
 
 	/**

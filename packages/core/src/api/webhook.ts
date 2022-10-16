@@ -4,6 +4,7 @@ import {
 	Routes,
 	type APIMessage,
 	type APIWebhook,
+	type RESTGetAPIWebhookResult,
 	type RESTPatchAPIWebhookJSONBody,
 	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
 	type RESTPostAPIChannelWebhookJSONBody,
@@ -23,7 +24,7 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 */
 	public async get(id: string, token?: string) {
-		return this.rest.get(Routes.webhook(id, token));
+		return this.rest.get(Routes.webhook(id, token)) as Promise<RESTGetAPIWebhookResult>;
 	}
 
 	/**
@@ -34,10 +35,7 @@ export class WebhooksAPI {
 	 * @param reason - The reason for creating the webhook
 	 */
 	public async create(channelId: string, options: RESTPostAPIChannelWebhookJSONBody, reason?: string) {
-		return (await this.rest.post(Routes.channelWebhooks(channelId), {
-			reason,
-			body: options,
-		})) as APIWebhook;
+		return this.rest.post(Routes.channelWebhooks(channelId), { reason, body: options }) as Promise<APIWebhook>;
 	}
 
 	/**
@@ -49,10 +47,7 @@ export class WebhooksAPI {
 	 * @param reason - The reason for editing the webhook
 	 */
 	public async edit(id: string, webhook: RESTPatchAPIWebhookJSONBody, token?: string, reason?: string) {
-		return (await this.rest.patch(Routes.webhook(id, token), {
-			reason,
-			body: webhook,
-		})) as APIWebhook;
+		return this.rest.patch(Routes.webhook(id, token), { reason, body: webhook }) as Promise<APIWebhook>;
 	}
 
 	/**
@@ -63,7 +58,7 @@ export class WebhooksAPI {
 	 * @param reason - The reason for deleting the webhook
 	 */
 	public async delete(id: string, token?: string, reason?: string) {
-		return this.rest.delete(Routes.webhook(id, token), { reason });
+		await this.rest.delete(Routes.webhook(id, token), { reason });
 	}
 
 	/**
@@ -98,7 +93,7 @@ export class WebhooksAPI {
 	 * @param options - The options to use when executing the webhook
 	 */
 	public async executeSlack(id: string, token: string, options: RESTPostAPIWebhookWithTokenSlackQuery = {}) {
-		return this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
+		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 			body: options,
 		});
@@ -112,7 +107,7 @@ export class WebhooksAPI {
 	 * @param options - The options to use when executing the webhook
 	 */
 	public async executeGitHub(id: string, token: string, options: RESTPostAPIWebhookWithTokenGitHubQuery = {}) {
-		return this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
+		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 			body: options,
 		});
@@ -127,9 +122,9 @@ export class WebhooksAPI {
 	 * @param options - The options to use when fetching the message
 	 */
 	public async getMessage(id: string, token: string, messageId: string, options: { thread_id?: string } = {}) {
-		return (await this.rest.get(Routes.webhookMessage(id, token, messageId), {
+		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as APIMessage;
+		}) as Promise<APIMessage>;
 	}
 
 	/**
@@ -146,10 +141,10 @@ export class WebhooksAPI {
 		messageId: string,
 		{ thread_id, ...body }: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string },
 	) {
-		return (await this.rest.patch(Routes.webhookMessage(id, token, messageId), {
+		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),
 			body,
-		})) as APIMessage;
+		}) as Promise<APIMessage>;
 	}
 
 	/**

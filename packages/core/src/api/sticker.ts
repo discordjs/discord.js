@@ -1,5 +1,5 @@
 import type { REST } from '@discordjs/rest';
-import { Routes, type APISticker, type RESTGetNitroStickerPacksResult } from 'discord-api-types/v10';
+import { Routes, type RESTGetNitroStickerPacksResult, type RESTGetAPIStickerResult } from 'discord-api-types/v10';
 
 export class StickersAPI {
 	public constructor(private readonly rest: REST) {}
@@ -8,7 +8,7 @@ export class StickersAPI {
 	 * Fetches all of the nitro sticker packs
 	 */
 	public async getNitroStickers() {
-		return (await this.rest.get(Routes.nitroStickerPacks())) as RESTGetNitroStickerPacksResult;
+		return this.rest.get(Routes.nitroStickerPacks()) as Promise<RESTGetNitroStickerPacksResult>;
 	}
 
 	/**
@@ -17,6 +17,6 @@ export class StickersAPI {
 	 * @param stickerId - The id of the sticker
 	 */
 	public async get(stickerId: string) {
-		return (await this.rest.get(Routes.sticker(stickerId))) as APISticker;
+		return this.rest.get(Routes.sticker(stickerId)) as Promise<RESTGetAPIStickerResult>;
 	}
 }

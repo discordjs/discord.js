@@ -1,6 +1,5 @@
 import type { REST } from '@discordjs/rest';
-import type { WebSocketManager } from '@discordjs/ws';
-import { WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
 	GatewayChannelPinsUpdateDispatchData,

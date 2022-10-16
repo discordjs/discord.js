@@ -26,7 +26,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread
 	 */
 	public async get(channelId: string, threadId: string) {
-		return (await this.rest.get(Routes.threads(channelId, threadId))) as APIThreadChannel;
+		return this.rest.get(Routes.threads(channelId, threadId)) as Promise<APIThreadChannel>;
 	}
 
 	/**
@@ -36,9 +36,7 @@ export class ThreadsAPI {
 	 * @param options - The options to use when starting the thread
 	 */
 	public async start(channelId: string, { message_id, ...body }: StartThreadOptions) {
-		return (await this.rest.post(Routes.threads(channelId, message_id), {
-			body,
-		})) as APIThreadChannel;
+		return this.rest.post(Routes.threads(channelId, message_id), { body }) as Promise<APIThreadChannel>;
 	}
 
 	/**
@@ -55,10 +53,7 @@ export class ThreadsAPI {
 			message: messageBody,
 		};
 
-		return (await this.rest.post(Routes.threads(channelId), {
-			files,
-			body,
-		})) as APIThreadChannel;
+		return this.rest.post(Routes.threads(channelId), { files, body }) as Promise<APIThreadChannel>;
 	}
 
 	/**
@@ -67,7 +62,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to join
 	 */
 	public async join(threadId: string) {
-		return this.rest.put(Routes.threadMembers(threadId, '@me'));
+		await this.rest.put(Routes.threadMembers(threadId, '@me'));
 	}
 
 	/**
@@ -77,7 +72,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to add to the thread
 	 */
 	public async addMember(threadId: string, userId: string) {
-		return this.rest.put(Routes.threadMembers(threadId, userId));
+		await this.rest.put(Routes.threadMembers(threadId, userId));
 	}
 
 	/**
@@ -86,7 +81,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to leave
 	 */
 	public async leave(threadId: string) {
-		return this.rest.delete(Routes.threadMembers(threadId, '@me'));
+		await this.rest.delete(Routes.threadMembers(threadId, '@me'));
 	}
 
 	/**
@@ -96,7 +91,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to remove from the thread
 	 */
 	public async removeMember(threadId: string, userId: string) {
-		return this.rest.delete(Routes.threadMembers(threadId, userId));
+		await this.rest.delete(Routes.threadMembers(threadId, userId));
 	}
 
 	/**
@@ -106,7 +101,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user
 	 */
 	public async getMember(threadId: string, userId: string) {
-		return (await this.rest.get(Routes.threadMembers(threadId, userId))) as APIThreadMember;
+		return this.rest.get(Routes.threadMembers(threadId, userId)) as Promise<APIThreadMember>;
 	}
 
 	/**
@@ -115,6 +110,6 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to fetch the members from
 	 */
 	public async getAllMembers(threadId: string) {
-		return (await this.rest.get(Routes.threadMembers(threadId))) as APIThreadMember[];
+		return this.rest.get(Routes.threadMembers(threadId)) as Promise<APIThreadMember[]>;
 	}
 }

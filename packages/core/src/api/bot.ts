@@ -18,7 +18,7 @@ export class BotsAPI {
 	 * Returns the user object of the requester's account
 	 */
 	public async getUser() {
-		return (await this.rest.get(Routes.user('@me'))) as APIUser;
+		return this.rest.get(Routes.user('@me')) as Promise<APIUser>;
 	}
 
 	/**
@@ -27,9 +27,9 @@ export class BotsAPI {
 	 * @param options - The options to use when fetching the current user's guilds
 	 */
 	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
-		return (await this.rest.get(Routes.userGuilds(), {
+		return this.rest.get(Routes.userGuilds(), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as APIPartialGuild[];
+		}) as Promise<APIPartialGuild[]>;
 	}
 
 	/**
@@ -47,7 +47,7 @@ export class BotsAPI {
 	 * @param user - The new data for the current user
 	 */
 	public async edit(user: RESTPatchAPICurrentUserJSONBody) {
-		return (await this.rest.patch(Routes.user('@me'), { body: user })) as APIUser;
+		return this.rest.patch(Routes.user('@me'), { body: user }) as Promise<APIUser>;
 	}
 
 	/**
@@ -56,7 +56,7 @@ export class BotsAPI {
 	 * @param guildId - The id of the guild
 	 */
 	public async getMember(guildId: string) {
-		return (await this.rest.get(Routes.userGuildMember(guildId))) as APIGuildMember;
+		return this.rest.get(Routes.userGuildMember(guildId)) as Promise<APIGuildMember>;
 	}
 
 	/**
@@ -67,10 +67,7 @@ export class BotsAPI {
 	 * @param reason - The reason for editing this guild member
 	 */
 	public async editMember(guildId: string, member: RESTPatchAPIGuildMemberJSONBody = {}, reason?: string) {
-		return (await this.rest.patch(Routes.guildMember(guildId, '@me'), {
-			reason,
-			body: member,
-		})) as APIGuildMember;
+		return this.rest.patch(Routes.guildMember(guildId, '@me'), { reason, body: member }) as Promise<APIGuildMember>;
 	}
 
 	/**
@@ -80,9 +77,7 @@ export class BotsAPI {
 	 * @param options - The options to use when setting the voice state
 	 */
 	public async setVoiceState(guildId: string, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return (await this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body: options,
-		})) as APIGuildMember;
+		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), { body: options }) as Promise<APIGuildMember>;
 	}
 
 	/**
@@ -91,10 +86,6 @@ export class BotsAPI {
 	 * @param userId - The id of the user to open a DM channel with
 	 */
 	public async createDM(userId: string) {
-		return (await this.rest.post(Routes.userChannels(), {
-			body: {
-				recipient_id: userId,
-			},
-		})) as APIDMChannel;
+		return this.rest.post(Routes.userChannels(), { body: { recipient_id: userId } }) as Promise<APIDMChannel>;
 	}
 }

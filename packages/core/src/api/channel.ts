@@ -24,10 +24,7 @@ export class ChannelsAPI {
 	 * @param message - The options to use when sending the message
 	 */
 	public async send(channelId: string, { files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] }) {
-		return (await this.rest.post(Routes.channelMessages(channelId), {
-			files,
-			body,
-		})) as APIMessage;
+		return this.rest.post(Routes.channelMessages(channelId), { files, body }) as Promise<APIMessage>;
 	}
 
 	/**
@@ -36,7 +33,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel
 	 */
 	public async get(channelId: string) {
-		return (await this.rest.get(Routes.channel(channelId))) as APIChannel;
+		return this.rest.get(Routes.channel(channelId)) as Promise<APIChannel>;
 	}
 
 	/**
@@ -46,9 +43,7 @@ export class ChannelsAPI {
 	 * @param channel - The new channel data
 	 */
 	public async edit(channelId: string, channel: RESTPatchAPIChannelJSONBody) {
-		return (await this.rest.patch(Routes.channel(channelId), {
-			body: channel,
-		})) as APIChannel;
+		return this.rest.patch(Routes.channel(channelId), { body: channel }) as Promise<APIChannel>;
 	}
 
 	/**
@@ -57,7 +52,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 */
 	public async delete(channelId: string) {
-		return (await this.rest.delete(Routes.channel(channelId))) as APIChannel;
+		return this.rest.delete(Routes.channel(channelId)) as Promise<APIChannel>;
 	}
 
 	/**
@@ -67,9 +62,9 @@ export class ChannelsAPI {
 	 * @param options - The options to use when fetching messages
 	 */
 	public async getMessages(channelId: string, options: RESTGetAPIChannelMessagesQuery = {}) {
-		return (await this.rest.get(Routes.channelMessages(channelId), {
+		return this.rest.get(Routes.channelMessages(channelId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as APIMessage[];
+		}) as Promise<APIMessage[]>;
 	}
 
 	/**
@@ -87,7 +82,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch pinned messages from
 	 */
 	public async getPins(channelId: string) {
-		return (await this.rest.get(Routes.channelPins(channelId))) as APIMessage[];
+		return this.rest.get(Routes.channelPins(channelId)) as Promise<APIMessage[]>;
 	}
 
 	/**
@@ -107,7 +102,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to delete
 	 */
 	public async deleteMessage(channelId: string, messageId: string) {
-		return (await this.rest.delete(Routes.channelMessage(channelId, messageId))) as APIMessage;
+		return this.rest.delete(Routes.channelMessage(channelId, messageId)) as Promise<APIMessage>;
 	}
 
 	/**
@@ -117,11 +112,7 @@ export class ChannelsAPI {
 	 * @param messageIds - The ids of the messages to delete
 	 */
 	public async bulkDeleteMessages(channelId: string, messageIds: string[]): Promise<void> {
-		await this.rest.post(Routes.channelBulkDelete(channelId), {
-			body: {
-				messages: messageIds,
-			},
-		});
+		await this.rest.post(Routes.channelBulkDelete(channelId), { body: { messages: messageIds } });
 	}
 
 	/**
@@ -131,7 +122,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to fetch
 	 */
 	public async getMessage(channelId: string, messageId: string) {
-		return (await this.rest.get(Routes.channelMessage(channelId, messageId))) as APIMessage;
+		return this.rest.get(Routes.channelMessage(channelId, messageId)) as Promise<APIMessage>;
 	}
 
 	/**
@@ -141,7 +132,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to crosspost
 	 */
 	public async crosspostMessage(channelId: string, messageId: string) {
-		return (await this.rest.post(Routes.channelMessageCrosspost(channelId, messageId))) as APIMessage;
+		return this.rest.post(Routes.channelMessageCrosspost(channelId, messageId)) as Promise<APIMessage>;
 	}
 
 	/**
@@ -161,11 +152,9 @@ export class ChannelsAPI {
 	 * @param webhookChannelId - The id of the webhook channel to follow the announcements in
 	 */
 	public async followAnnouncements(channelId: string, webhookChannelId: string) {
-		return (await this.rest.post(Routes.channelFollowers(channelId), {
-			body: {
-				webhook_channel_id: webhookChannelId,
-			},
-		})) as APIFollowedChannel;
+		return this.rest.post(Routes.channelFollowers(channelId), {
+			body: { webhook_channel_id: webhookChannelId },
+		}) as Promise<APIFollowedChannel>;
 	}
 
 	/**
@@ -175,9 +164,7 @@ export class ChannelsAPI {
 	 * @param options - The options to use when creating the invite
 	 */
 	public async createInvite(channelId: string, options: RESTPostAPIChannelInviteJSONBody) {
-		return (await this.rest.post(Routes.channelInvites(channelId), {
-			body: options,
-		})) as APIInvite;
+		return this.rest.post(Routes.channelInvites(channelId), { body: options }) as Promise<APIInvite>;
 	}
 
 	/**
@@ -186,7 +173,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch invites from
 	 */
 	public async getInvites(channelId: string) {
-		return (await this.rest.get(Routes.channelInvites(channelId))) as APIInvite[];
+		return this.rest.get(Routes.channelInvites(channelId)) as Promise<APIInvite[]>;
 	}
 
 	/**
@@ -201,9 +188,9 @@ export class ChannelsAPI {
 		archivedStatus: 'private' | 'public',
 		options: RESTGetAPIChannelThreadsArchivedQuery = {},
 	) {
-		return (await this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
+		return this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as RESTGetAPIChannelUsersThreadsArchivedResult;
+		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
 	}
 
 	/**
@@ -213,8 +200,8 @@ export class ChannelsAPI {
 	 * @param options - The options to use when fetching joined archived threads
 	 */
 	public async getJoinedPrivateArchivedThreads(channelId: string, options: RESTGetAPIChannelThreadsArchivedQuery = {}) {
-		return (await this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
+		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as RESTGetAPIChannelUsersThreadsArchivedResult;
+		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
 	}
 }

@@ -23,10 +23,7 @@ export class MessagesAPI {
 		messageId: string,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
 	) {
-		return (await this.rest.patch(Routes.channelMessage(channelId, messageId), {
-			files,
-			body,
-		})) as APIMessage;
+		return this.rest.patch(Routes.channelMessage(channelId, messageId), { files, body }) as Promise<APIMessage>;
 	}
 
 	/**
@@ -43,9 +40,9 @@ export class MessagesAPI {
 		emoji: string,
 		options: RESTGetAPIChannelMessageReactionUsersQuery = {},
 	) {
-		return (await this.rest.get(Routes.channelMessageReaction(channelId, messageId, emoji), {
+		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, emoji), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-		})) as APIUser[];
+		}) as Promise<APIUser[]>;
 	}
 
 	/**
