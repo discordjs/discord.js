@@ -34,7 +34,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to send the message in
 	 * @param message - The options to use when sending the message
 	 */
-	public async sendMessage(
+	public async createMessage(
 		channelId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
 	) {
