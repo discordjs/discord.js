@@ -2,6 +2,10 @@ import type { REST } from '@discordjs/rest';
 import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
+	GatewayAutoModerationActionExecutionDispatchData,
+	GatewayAutoModerationRuleCreateDispatchData,
+	GatewayAutoModerationRuleDeleteDispatchData,
+	GatewayAutoModerationRuleUpdateDispatchData,
 	GatewayChannelCreateDispatchData,
 	GatewayChannelDeleteDispatchData,
 	GatewayChannelPinsUpdateDispatchData,
@@ -137,6 +141,12 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
 	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<GatewayResumedDispatch['d']>];
 	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
+	[GatewayDispatchEvents.AutoModerationActionExecution]: [
+		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
+	];
+	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
 }
 
 export type ManagerShardEventsMap = {
