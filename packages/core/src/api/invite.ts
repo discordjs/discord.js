@@ -1,5 +1,5 @@
-import type { REST } from '@discordjs/rest';
-import { Routes, type RESTGetAPIInviteResult } from 'discord-api-types/v10';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import { Routes, type RESTGetAPIInviteQuery, type RESTGetAPIInviteResult } from 'discord-api-types/v10';
 
 export class InvitesAPI {
 	public constructor(private readonly rest: REST) {}
@@ -9,8 +9,10 @@ export class InvitesAPI {
 	 *
 	 * @param code - The invite code
 	 */
-	public async get(code: string) {
-		return this.rest.get(Routes.invite(code)) as Promise<RESTGetAPIInviteResult>;
+	public async get(code: string, options: RESTGetAPIInviteQuery = {}) {
+		return this.rest.get(Routes.invite(code), {
+			query: makeURLSearchParams(options as Record<string, unknown>),
+		}) as Promise<RESTGetAPIInviteResult>;
 	}
 
 	/**

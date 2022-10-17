@@ -13,6 +13,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 	type RESTPostAPIWebhookWithTokenResult,
 	type RESTPostAPIWebhookWithTokenSlackQuery,
+	type RESTPostAPIWebhookWithTokenWaitResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -67,6 +68,33 @@ export class WebhooksAPI {
 	}
 
 	/**
+	 * Executes a webhook and returns the created message
+	 *
+	 * @param id - The id of the webhook
+	 * @param token - The token of the webhook
+	 * @param options - The options to use when executing the webhook
+	 */
+	public async execute(
+		id: Snowflake,
+		token: string,
+		options: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait: true },
+	): Promise<RESTPostAPIWebhookWithTokenWaitResult>;
+
+	/**
+	 * Executes a webhook
+	 *
+	 * @param id - The id of the webhook
+	 * @param token - The token of the webhook
+	 * @param options - The options to use when executing the webhook
+	 */
+	public async execute(
+		id: Snowflake,
+		token: string,
+		options: RESTPostAPIWebhookWithTokenJSONBody &
+			RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait?: false },
+	): Promise<void>;
+
+	/**
 	 * Executes a webhook
 	 *
 	 * @param id - The id of the webhook
@@ -87,7 +115,8 @@ export class WebhooksAPI {
 			query: makeURLSearchParams({ wait, thread_id }),
 			files,
 			body,
-		});
+			// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
 	}
 
 	/**

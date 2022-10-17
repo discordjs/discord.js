@@ -1,19 +1,19 @@
-import { type REST, makeURLSearchParams } from '@discordjs/rest';
+import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
-	type RESTGetAPIApplicationCommandsResult,
-	type RESTPostAPIApplicationCommandsJSONBody,
+	Routes,
 	type RESTGetAPIApplicationCommandPermissionsResult,
 	type RESTGetAPIApplicationCommandResult,
+	type RESTGetAPIApplicationCommandsResult,
 	type RESTGetAPIGuildApplicationCommandsPermissionsResult,
 	type RESTPatchAPIApplicationCommandJSONBody,
 	type RESTPatchAPIApplicationCommandResult,
+	type RESTPostAPIApplicationCommandsJSONBody,
 	type RESTPostAPIApplicationCommandsResult,
 	type RESTPutAPIApplicationCommandPermissionsJSONBody,
 	type RESTPutAPIApplicationCommandPermissionsResult,
 	type RESTPutAPIApplicationCommandsJSONBody,
 	type RESTPutAPIApplicationCommandsResult,
 	type Snowflake,
-	Routes,
 } from 'discord-api-types/v10';
 
 export class ApplicationCommandsAPI {
