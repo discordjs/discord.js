@@ -128,11 +128,11 @@ export class InteractionsAPI {
 	 * @param interaction - The autocomplete interaction to respond to
 	 * @param options - Options for the autocomplete response
 	 */
-	public async sendAutocomplete(
+	public async createAutocompleteResponse(
 		interaction: APIInteraction,
 		options: APICommandAutocompleteInteractionResponseCallbackData,
 	) {
-		return this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
 				data: options,
@@ -146,7 +146,7 @@ export class InteractionsAPI {
 	 * @param interaction - The interaction to respond to
 	 * @param modal - The modal to send
 	 */
-	public async sendModal(interaction: APIInteraction, modal: APIModalInteractionResponseCallbackData) {
+	public async createModal(interaction: APIInteraction, modal: APIModalInteractionResponseCallbackData) {
 		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			body: {
 				type: InteractionResponseType.Modal,
