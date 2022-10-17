@@ -20,7 +20,7 @@ export class InteractionsAPI {
 	 * @param interaction - The interaction to reply to
 	 * @param options - The options to use when replying
 	 */
-	public async reply(interaction: APIInteraction, options: APIInteractionResponseCallbackData & { files: RawFile[] }) {
+	public async reply(interaction: APIInteraction, options: APIInteractionResponseCallbackData & { files?: RawFile[] }) {
 		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
 			files: options.files,
 			body: {
