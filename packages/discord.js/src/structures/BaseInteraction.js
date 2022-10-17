@@ -284,7 +284,42 @@ class BaseInteraction extends Base {
       ].includes(this.componentType)
     );
   }
-
+    /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.StringSelect}.
+   * @returns {boolean}
+   */
+  isStringSelect() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.StringSelect;
+  }
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.UserSelect}.
+   * @returns {boolean}
+   */
+  isUserSelect() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.UserSelect;
+  }
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.RoleSelect}.
+   * @returns {boolean}
+   */
+  isRoleSelect() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.RoleSelect;
+  }
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.ChannelSelect}.
+   * @returns {boolean}
+   */
+  isChannelSelect() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.ChannelSelect;
+  }
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}
+   * from a {@link ComponentType.MentionableSelect}.
+   * @returns {boolean}
+   */
+  isMentionableSelect() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.MentionableSelect;
+  }
   /**
    * Indicates whether this interaction can be replied to.
    * @returns {boolean}
