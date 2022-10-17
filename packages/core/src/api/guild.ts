@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
-import type {} from 'discord-api-types/v10';
 import {
 	Routes,
 	type GuildWidgetStyle,
@@ -16,6 +15,7 @@ import {
 	type RESTGetAPIGuildInvitesResult,
 	type RESTGetAPIGuildMemberResult,
 	type RESTGetAPIGuildMembersQuery,
+	type RESTGetAPIGuildMembersSearchResult,
 	type RESTGetAPIGuildPreviewResult,
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildResult,
@@ -35,11 +35,14 @@ import {
 	type RESTGetAPIGuildWelcomeScreenResult,
 	type RESTGetAPIGuildWidgetImageResult,
 	type RESTGetAPIGuildWidgetJSONResult,
+	type RESTGetAPITemplateResult,
 	type RESTPatchAPIAutoModerationRuleJSONBody,
 	type RESTPatchAPIGuildChannelPositionsJSONBody,
 	type RESTPatchAPIGuildEmojiJSONBody,
 	type RESTPatchAPIGuildEmojiResult,
 	type RESTPatchAPIGuildJSONBody,
+	type RESTPatchAPIGuildMemberJSONBody,
+	type RESTPatchAPIGuildMemberResult,
 	type RESTPatchAPIGuildResult,
 	type RESTPatchAPIGuildRoleJSONBody,
 	type RESTPatchAPIGuildRolePositionsJSONBody,
@@ -70,15 +73,11 @@ import {
 	type RESTPostAPIGuildsJSONBody,
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
+	type RESTPostAPIGuildTemplatesResult,
+	type RESTPostAPITemplateCreateGuildJSONBody,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
-	type RESTGetAPIGuildMembersSearchResult,
-	type RESTPatchAPIGuildMemberJSONBody,
-	type RESTPatchAPIGuildMemberResult,
-	type RESTGetAPITemplateResult,
-	type RESTPostAPIGuildTemplatesResult,
-	type RESTPostAPITemplateCreateGuildJSONBody,
 } from 'discord-api-types/v10';
 
 export class GuildsAPI {

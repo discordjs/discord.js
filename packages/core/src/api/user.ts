@@ -1,10 +1,10 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
-	type RESTGetAPIUserResult,
 	Routes,
 	type RESTGetAPICurrentUserGuildsQuery,
 	type RESTGetAPICurrentUserGuildsResult,
 	type RESTGetAPICurrentUserResult,
+	type RESTGetAPIUserResult,
 	type RESTGetCurrentUserGuildMemberResult,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,

@@ -1,14 +1,11 @@
 /* eslint-disable jsdoc/check-param-names */
-import { makeURLSearchParams, type REST, type RawFile } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
-	type RESTGetAPIChannelMessageReactionUsersQuery,
-	type RESTGetAPIChannelMessageReactionUsersResult,
-	type RESTPatchAPIChannelMessageResult,
-	type RESTPostAPIChannelMessageJSONBody,
-	type RESTPostAPIChannelMessageResult,
 	Routes,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
+	type RESTGetAPIChannelMessageReactionUsersQuery,
+	type RESTGetAPIChannelMessageReactionUsersResult,
 	type RESTGetAPIChannelMessageResult,
 	type RESTGetAPIChannelMessagesQuery,
 	type RESTGetAPIChannelMessagesResult,
@@ -17,11 +14,14 @@ import {
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
 	type RESTPatchAPIChannelJSONBody,
+	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
 	type RESTPostAPIChannelFollowersResult,
 	type RESTPostAPIChannelInviteJSONBody,
 	type RESTPostAPIChannelInviteResult,
 	type RESTPostAPIChannelMessageCrosspostResult,
+	type RESTPostAPIChannelMessageJSONBody,
+	type RESTPostAPIChannelMessageResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
