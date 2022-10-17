@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,

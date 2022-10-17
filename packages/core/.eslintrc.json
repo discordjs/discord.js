@@ -1,3 +1,6 @@
 {
-	"extends": "../../.eslintrc.json"
+	"extends": "../../.eslintrc.json",
+	"rules": {
+		"jsdoc/check-param-names": "off"
+	}
 }

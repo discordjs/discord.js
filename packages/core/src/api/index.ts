@@ -1,4 +1,5 @@
 import type { REST } from '@discordjs/rest';
+import { ApplicationCommandsAPI } from './applicationCommands.js';
 import { ChannelsAPI } from './channel.js';
 import { GuildsAPI } from './guild.js';
 import { InteractionsAPI } from './interactions.js';
@@ -38,6 +39,8 @@ export class API {
 
 	public readonly webhooks: WebhooksAPI;
 
+	public readonly applicationCommands: ApplicationCommandsAPI;
+
 	public constructor(public readonly rest: REST) {
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);
@@ -48,5 +51,6 @@ export class API {
 		this.voice = new VoiceAPI(rest);
 		this.webhooks = new WebhooksAPI(rest);
 		this.interactions = new InteractionsAPI(rest, this.webhooks);
+		this.applicationCommands = new ApplicationCommandsAPI(rest);
 	}
 }

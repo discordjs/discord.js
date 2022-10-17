@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
 import type { RawFile, REST } from '@discordjs/rest';
 import {
 	InteractionResponseType,
