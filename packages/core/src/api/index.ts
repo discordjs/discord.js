@@ -20,7 +20,7 @@ export * from './voice.js';
 export * from './webhook.js';
 
 export class API {
-	public readonly bots: UsersAPI;
+	public readonly users: UsersAPI;
 
 	public readonly channels: ChannelsAPI;
 
@@ -39,7 +39,7 @@ export class API {
 	public readonly webhooks: WebhooksAPI;
 
 	public constructor(public readonly rest: REST) {
-		this.bots = new UsersAPI(rest);
+		this.users = new UsersAPI(rest);
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);
 		this.invites = new InvitesAPI(rest);
