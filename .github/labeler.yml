@@ -14,6 +14,9 @@ packages:builders:
 packages:collection:
   - packages/collection/*
   - packages/collection/**/*
+packages/core:
+  - packages:core/*
+  - packages:core/**/*
 packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
@@ -41,6 +44,3 @@ packages:voice:
 packages:ws:
   - packages/ws/*
   - packages/ws/**/*
-packages/core:
-  - packages:core/*
-  - packages:core/**/*

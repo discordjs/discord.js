@@ -153,12 +153,12 @@ export type ManagerShardEventsMap = {
 	[K in keyof MappedEvents]: MappedEvents[K];
 };
 
-export interface EmitterOptions {
+export interface ClientOptions {
 	rest: REST;
 	ws: WebSocketManager;
 }
 
-export function createEmitter({ rest, ws }: EmitterOptions) {
+export function createClient({ rest, ws }: ClientOptions) {
 	const eventAPI = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
