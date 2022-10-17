@@ -174,6 +174,7 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    */
   followUp(options) {
+    if (this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionBeenDeferred));
     if (!this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionNotReplied));
     return this.webhook.send(options);
   }

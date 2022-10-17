@@ -128,6 +128,7 @@
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
  * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
+ * @property {'InteractionBeenDeferred'} InteractionBeenDeferred
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType

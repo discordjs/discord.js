@@ -137,6 +137,7 @@ const Messages = {
   [DjsErrorCodes.InteractionAlreadyReplied]: 'The reply to this interaction has already been sent or deferred.',
   [DjsErrorCodes.InteractionNotReplied]: 'The reply to this interaction has not been sent or deferred.',
   [DjsErrorCodes.InteractionEphemeralReplied]: 'Ephemeral responses cannot be deleted.',
+  [DjsErrorCodes.InteractionBeenDeferred]: 'You cannot use followUp() after the interaction been deferred.',
 
   [DjsErrorCodes.CommandInteractionOptionNotFound]: name => `Required option "${name}" not found.`,
   [DjsErrorCodes.CommandInteractionOptionType]: (name, type, expected) =>
