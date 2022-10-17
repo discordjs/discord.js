@@ -1,11 +1,8 @@
 import type { REST } from '@discordjs/rest';
 import { ChannelsAPI } from './channel.js';
 import { GuildsAPI } from './guild.js';
-import { GuildMembersAPI } from './guildMember.js';
-import { GuildTemplatesAPI } from './guildTemplate.js';
 import { InteractionsAPI } from './interactions.js';
 import { InvitesAPI } from './invite.js';
-import { MessagesAPI } from './message.js';
 import { StickersAPI } from './sticker.js';
 import { ThreadsAPI } from './thread.js';
 import { UsersAPI } from './user.js';
@@ -15,11 +12,8 @@ import { WebhooksAPI } from './webhook.js';
 export * from './user.js';
 export * from './channel.js';
 export * from './guild.js';
-export * from './guildMember.js';
-export * from './guildTemplate.js';
 export * from './interactions.js';
 export * from './invite.js';
-export * from './message.js';
 export * from './sticker.js';
 export * from './thread.js';
 export * from './voice.js';
@@ -32,15 +26,9 @@ export class API {
 
 	public readonly guilds: GuildsAPI;
 
-	public readonly guildMembers: GuildMembersAPI;
-
-	public readonly guildTemplates: GuildTemplatesAPI;
-
 	public readonly interactions: InteractionsAPI;
 
 	public readonly invites: InvitesAPI;
-
-	public readonly messages: MessagesAPI;
 
 	public readonly stickers: StickersAPI;
 
@@ -54,10 +42,7 @@ export class API {
 		this.bots = new UsersAPI(rest);
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);
-		this.guildMembers = new GuildMembersAPI(rest);
-		this.guildTemplates = new GuildTemplatesAPI(rest);
 		this.invites = new InvitesAPI(rest);
-		this.messages = new MessagesAPI(rest);
 		this.stickers = new StickersAPI(rest);
 		this.threads = new ThreadsAPI(rest);
 		this.voice = new VoiceAPI(rest);

@@ -1,5 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import type {} from 'discord-api-types/v10';
 import {
 	Routes,
 	type GuildWidgetStyle,
@@ -69,10 +70,15 @@ import {
 	type RESTPostAPIGuildsJSONBody,
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
-	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
+	type RESTGetAPIGuildMembersSearchResult,
+	type RESTPatchAPIGuildMemberJSONBody,
+	type RESTPatchAPIGuildMemberResult,
+	type RESTGetAPITemplateResult,
+	type RESTPostAPIGuildTemplatesResult,
+	type RESTPostAPITemplateCreateGuildJSONBody,
 } from 'discord-api-types/v10';
 
 export class GuildsAPI {
@@ -623,18 +629,6 @@ export class GuildsAPI {
 	}
 
 	/**
-	 * Creates a new template for a guild
-	 *
-	 * @param guildId - The id of the guild to create the template for
-	 * @param options - The options for creating the template
-	 */
-	public async createTemplate(guildId: Snowflake, options: RESTPostAPIGuildTemplatesJSONBody) {
-		return this.rest.post(Routes.guildTemplates(guildId), {
-			body: options,
-		}) as Promise<RESTPostAPIGuildScheduledEventResult>;
-	}
-
-	/**
 	 * Syncs a template for a guild
 	 *
 	 * @param guildId - The id of the guild to sync the template for
@@ -788,5 +782,91 @@ export class GuildsAPI {
 	 */
 	public async deleteAutoModerationRule(guildID: Snowflake, ruleID: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildAutoModerationRule(guildID, ruleID), { reason });
+	}
+
+	/**
+	 * Fetches a guild member
+	 *
+	 * @param guildId - The id of the guild
+	 * @param userId - The id of the user
+	 */
+	public async getMember(guildId: Snowflake, userId: Snowflake) {
+		return this.rest.get(Routes.guildMember(guildId, userId)) as Promise<RESTGetAPIGuildMemberResult>;
+	}
+
+	/**
+	 * Searches for guild members
+	 *
+	 * @param guildId - The id of the guild to search in
+	 * @param query - The query to search for
+	 * @param limit - The maximum number of members to return
+	 */
+	public async searchForMember(guildId: Snowflake, query: string, limit: number = 1) {
+		return this.rest.get(Routes.guildMembersSearch(guildId), {
+			query: makeURLSearchParams({ query, limit }),
+		}) as Promise<RESTGetAPIGuildMembersSearchResult>;
+	}
+
+	/**
+	 * Edits a guild member
+	 *
+	 * @param guildId - The id of the guild
+	 * @param userId - The id of the user
+	 * @param options - The options to use when editing the guild member
+	 * @param reason - The reason for editing this guild member
+	 */
+	public async editMember(
+		guildId: Snowflake,
+		userId: Snowflake,
+		options: RESTPatchAPIGuildMemberJSONBody = {},
+		reason?: string,
+	) {
+		return this.rest.patch(Routes.guildMember(guildId, userId), {
+			reason,
+			body: options,
+		}) as Promise<RESTPatchAPIGuildMemberResult>;
+	}
+
+	/**
+	 * Adds a role to a guild member
+	 *
+	 * @param guildId - The id of the guild
+	 * @param userId - The id of the user
+	 * @param roleId - The id of the role
+	 * @param reason - The reason for adding this role to the guild member
+	 */
+	public async addRoleToMember(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, reason?: string) {
+		await this.rest.put(Routes.guildMemberRole(guildId, userId, roleId), { reason });
+	}
+
+	/**
+	 * Removes a role from a guild member
+	 *
+	 * @param guildId - The id of the guild
+	 * @param userId - The id of the user
+	 * @param roleId - The id of the role
+	 * @param reason - The reason for removing this role from the guild member
+	 */
+	public async removeRoleFromMember(guildId: Snowflake, userId: Snowflake, roleId: Snowflake, reason?: string) {
+		await this.rest.delete(Routes.guildMemberRole(guildId, userId, roleId), { reason });
+	}
+
+	/**
+	 * Fetches a guild template
+	 *
+	 * @param templateCode - The code of the template
+	 */
+	public async getTemplate(templateCode: string) {
+		return this.rest.get(Routes.template(templateCode)) as Promise<RESTGetAPITemplateResult>;
+	}
+
+	/**
+	 * Creates a new template
+	 *
+	 * @param templateCode - The code of the template
+	 * @param options - The options to use when creating the template
+	 */
+	public async createTemplate(templateCode: string, options: RESTPostAPITemplateCreateGuildJSONBody) {
+		return this.rest.post(Routes.template(templateCode), { body: options }) as Promise<RESTPostAPIGuildTemplatesResult>;
 	}
 }
