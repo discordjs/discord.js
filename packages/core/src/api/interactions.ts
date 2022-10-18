@@ -1,9 +1,9 @@
 import type { RawFile, REST } from '@discordjs/rest';
+import type { Snowflake } from 'discord-api-types/v10';
 import {
 	InteractionResponseType,
 	Routes,
 	type APICommandAutocompleteInteractionResponseCallbackData,
-	type APIInteraction,
 	type APIInteractionResponseCallbackData,
 	type APIModalInteractionResponseCallbackData,
 	type RESTGetAPIWebhookWithTokenMessageResult,
@@ -16,11 +16,16 @@ export class InteractionsAPI {
 	/**
 	 * Replies to an interaction
 	 *
-	 * @param interaction - The interaction to reply to
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when replying
 	 */
-	public async reply(interaction: APIInteraction, options: APIInteractionResponseCallbackData & { files?: RawFile[] }) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	public async reply(
+		interactionId: Snowflake,
+		interactionToken: string,
+		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
+	) {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files: options.files,
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
@@ -32,10 +37,11 @@ export class InteractionsAPI {
 	/**
 	 * Defers the reply to an interaction
 	 *
-	 * @param interaction - The interaction to defer the reply to
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 */
-	public async defer(interaction: APIInteraction) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	public async defer(interactionId: Snowflake, interactionToken: string) {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 			},
@@ -45,10 +51,11 @@ export class InteractionsAPI {
 	/**
 	 * Defers an update from a message component interaction
 	 *
-	 * @param interaction - The component interaction to defer the update for
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 */
-	public async deferMessageUpdate(interaction: APIInteraction) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	public async deferMessageUpdate(interactionId: Snowflake, interactionToken: string) {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate,
 			},
@@ -58,38 +65,43 @@ export class InteractionsAPI {
 	/**
 	 * Reply to a deferred interaction
 	 *
-	 * @param interaction - The interaction to reply to
+	 * @param applicationId - The application ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when replying
 	 */
 	public async followUp(
-		interaction: APIInteraction,
+		applicationId: Snowflake,
+		interactionToken: string,
 		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		await this.webhooks.execute(interaction.application_id, interaction.token, options);
+		await this.webhooks.execute(applicationId, interactionToken, options);
 	}
 
 	/**
 	 * Edits the initial reply to an interaction
 	 *
-	 * @param interaction - The interaction to edit the reply to
+	 * @param applicationId - The application ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when editing the reply
 	 */
 	public async editReply(
-		interaction: APIInteraction,
+		applicationId: Snowflake,
+		interactionToken: string,
 		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		return this.webhooks.editMessage(interaction.application_id, interaction.token, '@original', options);
+		return this.webhooks.editMessage(applicationId, interactionToken, '@original', options);
 	}
 
 	/**
 	 * Fetches the initial reply to an interaction
 	 *
-	 * @param interaction - The interaction to fetch the reply from
+	 * @param applicationId - The application ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 */
-	public async getOriginalReply(interaction: APIInteraction) {
+	public async getOriginalReply(applicationId: Snowflake, interactionToken: string) {
 		return this.webhooks.getMessage(
-			interaction.application_id,
-			interaction.token,
+			applicationId,
+			interactionToken,
 			'@original',
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
@@ -97,23 +109,26 @@ export class InteractionsAPI {
 	/**
 	 * Deletes the initial reply to an interaction
 	 *
-	 * @param interaction - The interaction to delete the reply from
+	 * @param applicationId - The application ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 */
-	public async deleteReply(interaction: APIInteraction) {
-		await this.webhooks.deleteMessage(interaction.application_id, interaction.token, '@original');
+	public async deleteReply(applicationId: Snowflake, interactionToken: string) {
+		await this.webhooks.deleteMessage(applicationId, interactionToken, '@original');
 	}
 
 	/**
 	 * Updates the the message the component interaction was triggered on
 	 *
-	 * @param interaction - The interaction to update
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when updating the interaction
 	 */
 	public async updateMessage(
-		interaction: APIInteraction,
+		interactionId: Snowflake,
+		interactionToken: string,
 		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
 			body: {
 				type: InteractionResponseType.UpdateMessage,
@@ -125,14 +140,16 @@ export class InteractionsAPI {
 	/**
 	 * Sends an autocomplete response to an interaction
 	 *
-	 * @param interaction - The autocomplete interaction to respond to
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param options - Options for the autocomplete response
 	 */
 	public async createAutocompleteResponse(
-		interaction: APIInteraction,
+		interactionId: Snowflake,
+		interactionToken: string,
 		options: APICommandAutocompleteInteractionResponseCallbackData,
 	) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
 				data: options,
@@ -143,11 +160,16 @@ export class InteractionsAPI {
 	/**
 	 * Sends a modal response to an interaction
 	 *
-	 * @param interaction - The interaction to respond to
+	 * @param interactionId - The ID of the interaction
+	 * @param interactionToken - The token of the interaction
 	 * @param modal - The modal to send
 	 */
-	public async createModal(interaction: APIInteraction, modal: APIModalInteractionResponseCallbackData) {
-		await this.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+	public async createModal(
+		interactionId: Snowflake,
+		interactionToken: string,
+		modal: APIModalInteractionResponseCallbackData,
+	) {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.Modal,
 				data: modal,
