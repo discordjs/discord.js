@@ -1574,11 +1574,11 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
-  public isStringSelect(): this is SelectMenuInteraction<Cached>;
-  public isUserSelect(): this is SelectMenuInteraction<Cached>;
-  public isRoleSelect(): this is SelectMenuInteraction<Cached>;
-  public isChannelSelect(): this is SelectMenuInteraction<Cached>;
-  public isMentionableSelect(): this is SelectMenuInteraction<Cached>;
+  public isStringSelect(): this is SelectMenuInteraction<Cached, ComponentType.StringSelect>;
+  public isUserSelect(): this is SelectMenuInteraction<Cached, ComponentType.UserSelect>;
+  public isRoleSelect(): this is SelectMenuInteraction<Cached, ComponentType.RoleSelect>;
+  public isChannelSelect(): this is SelectMenuInteraction<Cached, ComponentType.ChannelSelect>;
+  public isMentionableSelect(): this is SelectMenuInteraction<Cached, ComponentType.MentionableSelect>;
   public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
@@ -2286,7 +2286,22 @@ export class Role extends Base {
   public toString(): RoleMention;
 }
 
-export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
+export type SelectMenuType =
+  | ComponentType.StringSelect
+  | ComponentType.UserSelect
+  | ComponentType.RoleSelect
+  | ComponentType.MentionableSelect
+  | ComponentType.ChannelSelect;
+export type TypeResolver<Type, Required, Value, NotRequired> = Type extends Required
+  ? Value
+  : Type extends [NotRequired]
+  ? Value | null
+  : null;
+
+export class SelectMenuInteraction<
+  Cached extends CacheType = CacheType,
+  Type extends SelectMenuType = SelectMenuType,
+> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client<true>, data: RawMessageSelectMenuInteractionData);
   public get component(): CacheTypeReducer<
     Cached,
@@ -2295,21 +2310,36 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType:
-    | ComponentType.StringSelect
-    | ComponentType.UserSelect
-    | ComponentType.RoleSelect
-    | ComponentType.MentionableSelect
-    | ComponentType.ChannelSelect;
+  public componentType: ComponentType.SelectMenu;
   public values: string[];
-  public members?: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
-  public users?: Collection<Snowflake, CacheTypeReducer<Cached, User, APIUser>>;
-  public channels?: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIChannel>>;
-  public roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
-
-  public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
-  public inRawGuild(): this is SelectMenuInteraction<'raw'>;
+  public members: CacheTypeReducer<
+    Cached,
+    TypeResolver<
+      Type,
+      ComponentType.UserSelect,
+      Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>,
+      ComponentType.MentionableSelect
+    >,
+    null
+  >;
+  public users: TypeResolver<
+    Type,
+    ComponentType.UserSelect,
+    Collection<Snowflake, Cached extends 'raw' ? APIUser : User>,
+    ComponentType.MentionableSelect
+  >;
+  public channels: Type extends ComponentType.ChannelSelect
+    ? Collection<Snowflake, Cached extends 'raw' ? APIChannel : Channel>
+    : null;
+  public roles: TypeResolver<
+    Type,
+    ComponentType.RoleSelect,
+    Collection<Snowflake, Cached extends 'raw' ? APIRole : Role>,
+    ComponentType.MentionableSelect
+  >;
+  public inGuild(): this is SelectMenuInteraction<'raw' | 'cached', Type>;
+  public inCachedGuild(): this is SelectMenuInteraction<'cached', Type>;
+  public inRawGuild(): this is SelectMenuInteraction<'raw', Type>;
 }
 
 export interface ShardEventTypes {
