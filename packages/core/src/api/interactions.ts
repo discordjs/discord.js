@@ -16,7 +16,7 @@ export class InteractionsAPI {
 	/**
 	 * Replies to an interaction
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The Id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when replying
 	 */
@@ -37,7 +37,7 @@ export class InteractionsAPI {
 	/**
 	 * Defers the reply to an interaction
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
 	public async defer(interactionId: Snowflake, interactionToken: string) {
@@ -51,7 +51,7 @@ export class InteractionsAPI {
 	/**
 	 * Defers an update from a message component interaction
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
 	public async deferMessageUpdate(interactionId: Snowflake, interactionToken: string) {
@@ -65,7 +65,7 @@ export class InteractionsAPI {
 	/**
 	 * Reply to a deferred interaction
 	 *
-	 * @param applicationId - The application ID of the interaction
+	 * @param applicationId - The application Id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when replying
 	 */
@@ -80,7 +80,7 @@ export class InteractionsAPI {
 	/**
 	 * Edits the initial reply to an interaction
 	 *
-	 * @param applicationId - The application ID of the interaction
+	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when editing the reply
 	 */
@@ -95,7 +95,7 @@ export class InteractionsAPI {
 	/**
 	 * Fetches the initial reply to an interaction
 	 *
-	 * @param applicationId - The application ID of the interaction
+	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
 	public async getOriginalReply(applicationId: Snowflake, interactionToken: string) {
@@ -109,7 +109,7 @@ export class InteractionsAPI {
 	/**
 	 * Deletes the initial reply to an interaction
 	 *
-	 * @param applicationId - The application ID of the interaction
+	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
 	public async deleteReply(applicationId: Snowflake, interactionToken: string) {
@@ -119,7 +119,7 @@ export class InteractionsAPI {
 	/**
 	 * Updates the the message the component interaction was triggered on
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when updating the interaction
 	 */
@@ -140,7 +140,7 @@ export class InteractionsAPI {
 	/**
 	 * Sends an autocomplete response to an interaction
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - Options for the autocomplete response
 	 */
@@ -160,7 +160,7 @@ export class InteractionsAPI {
 	/**
 	 * Sends a modal response to an interaction
 	 *
-	 * @param interactionId - The ID of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param modal - The modal to send
 	 */

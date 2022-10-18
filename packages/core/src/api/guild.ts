@@ -760,12 +760,12 @@ export class GuildsAPI {
 	}
 
 	public async editAutoModerationRule(
-		guildID: Snowflake,
-		ruleID: Snowflake,
+		guildId: Snowflake,
+		ruleId: Snowflake,
 		options: RESTPatchAPIAutoModerationRuleJSONBody,
 		reason?: string,
 	) {
-		return this.rest.patch(Routes.guildAutoModerationRule(guildID, ruleID), {
+		return this.rest.patch(Routes.guildAutoModerationRule(guildId, ruleId), {
 			reason,
 			body: options,
 		}) as Promise<RESTPatchAPIAutoModerationRuleJSONBody>;
@@ -774,12 +774,12 @@ export class GuildsAPI {
 	/**
 	 * Deletes an auto moderation rule for a guild
 	 *
-	 * @param guildID - The id of the guild to delete the auto moderation rule from
-	 * @param ruleID - The id of the auto moderation rule to delete
+	 * @param guildId - The id of the guild to delete the auto moderation rule from
+	 * @param ruleId - The id of the auto moderation rule to delete
 	 * @param reason - The reason for deleting the auto moderation rule
 	 */
-	public async deleteAutoModerationRule(guildID: Snowflake, ruleID: Snowflake, reason?: string) {
-		await this.rest.delete(Routes.guildAutoModerationRule(guildID, ruleID), { reason });
+	public async deleteAutoModerationRule(guildId: Snowflake, ruleId: Snowflake, reason?: string) {
+		await this.rest.delete(Routes.guildAutoModerationRule(guildId, ruleId), { reason });
 	}
 
 	/**

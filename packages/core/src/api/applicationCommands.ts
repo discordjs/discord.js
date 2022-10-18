@@ -144,18 +144,18 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Edits a guild command
 	 *
-	 * @param applicationID - The application id of the command
-	 * @param guildID - The guild id of the command
-	 * @param commandID - The command id to edit
+	 * @param applicationId - The application id of the command
+	 * @param guildId - The guild id of the command
+	 * @param commandId - The command id to edit
 	 * @param options - The options to use when editing the command
 	 */
 	public async editGuildCommand(
-		applicationID: Snowflake,
-		guildID: Snowflake,
-		commandID: Snowflake,
+		applicationId: Snowflake,
+		guildId: Snowflake,
+		commandId: Snowflake,
 		options: RESTPatchAPIApplicationCommandJSONBody,
 	) {
-		return this.rest.patch(Routes.applicationGuildCommand(applicationID, guildID, commandID), {
+		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body: options,
 		}) as Promise<RESTPatchAPIApplicationCommandResult>;
 	}
@@ -163,12 +163,12 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Deletes a guild command
 	 *
-	 * @param applicationID - The application id of the command
-	 * @param guildID - The guild id of the command
-	 * @param commandID - The id of the command to delete
+	 * @param applicationId - The application id of the command
+	 * @param guildId - The guild id of the command
+	 * @param commandId - The id of the command to delete
 	 */
-	public async deleteGuildCommand(applicationID: Snowflake, guildID: Snowflake, commandID: Snowflake) {
-		await this.rest.delete(Routes.applicationGuildCommand(applicationID, guildID, commandID));
+	public async deleteGuildCommand(applicationId: Snowflake, guildId: Snowflake, commandId: Snowflake) {
+		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId));
 	}
 
 	/**

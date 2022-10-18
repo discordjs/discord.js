@@ -97,10 +97,10 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
-	 * @param userID - The id of the user to delete the reaction for
+	 * @param userId - The id of the user to delete the reaction for
 	 */
-	public async deleteUserMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string, userID: Snowflake) {
-		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, emoji, userID));
+	public async deleteUserMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string, userId: Snowflake) {
+		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, emoji, userId));
 	}
 
 	/**
