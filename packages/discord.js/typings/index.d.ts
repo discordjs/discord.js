@@ -2033,6 +2033,10 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
