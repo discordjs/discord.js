@@ -2310,7 +2310,7 @@ export class SelectMenuInteraction<
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType: ComponentType.SelectMenu;
+  public componentType: SelectMenuType;
   public values: string[];
   public members: CacheTypeReducer<
     Cached,
