@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.0...@discordjs/ws@0.4.1) - (2022-10-10)
+
+## Bug Fixes
+
+- **WebSocketShard:** Dispatch race condition (#8731) ([c2b6777](https://github.com/discordjs/discord.js/commit/c2b677759b905d6eb3ebcefcec2cb04eb38436bb))
+
+# [@discordjs/ws@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.3.0...@discordjs/ws@0.4.0) - (2022-10-08)
+
+## Bug Fixes
+
+- Ws package.json path (#8720) ([7af3c3b](https://github.com/discordjs/discord.js/commit/7af3c3b6f1517a5d14372b5aa0ef3a2ed8633f6f))
+- **WebSocketShard:** Add ready data parameter to ready event (#8705) ([a7eab50](https://github.com/discordjs/discord.js/commit/a7eab50ee3e286ca10e37107d695385251bd044d))
+- Footer / sidebar / deprecation alert ([ba3e0ed](https://github.com/discordjs/discord.js/commit/ba3e0ed348258fe8e51eefb4aa7379a1230616a9))
+
+## Documentation
+
+- Change name (#8604) ([dd5a089](https://github.com/discordjs/discord.js/commit/dd5a08944c258a847fc4377f1d5e953264ab47d0))
+
+## Features
+
+- Web-components (#8715) ([0ac3e76](https://github.com/discordjs/discord.js/commit/0ac3e766bd9dbdeb106483fa4bb085d74de346a2))
+- Add `@discordjs/util` (#8591) ([b2ec865](https://github.com/discordjs/discord.js/commit/b2ec865765bf94181473864a627fb63ea8173fd3))
+
+## Refactor
+
+- Website components (#8600) ([c334157](https://github.com/discordjs/discord.js/commit/c3341570d983aea9ecc419979d5a01de658c9d67))
+- Use `eslint-config-neon` for packages. (#8579) ([edadb9f](https://github.com/discordjs/discord.js/commit/edadb9fe5dfd9ff51a3cfc9b25cb242d3f9f5241))
+
 # [@discordjs/ws@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.2.0...@discordjs/ws@0.3.0) - (2022-08-22)
 
 ## Bug Fixes

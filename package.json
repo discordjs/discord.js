@@ -11,7 +11,8 @@
 		"fmt": "turbo run format --parallel",
 		"postinstall": "is-ci || husky install",
 		"docs": "turbo run docs --parallel",
-		"update": "yarn upgrade-interactive"
+		"update": "yarn upgrade-interactive",
+		"create-package": "node packages/scripts/src/packageScript.mjs"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
@@ -46,8 +47,10 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.0.3",
 		"tsup": "^6.2.3",
-		"turbo": "^1.5.5",
-		"typescript": "^4.8.4"
+		"turbo": "^1.5.6",
+		"typescript": "^4.8.4",
+		"unocss": "^0.45.29",
+		"vitest": "^0.24.1"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
@@ -56,7 +59,8 @@
 		"node": ">=16.9.0"
 	},
 	"workspaces": [
+		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.2.1"
+	"packageManager": "yarn@3.2.4"
 }

@@ -2,10 +2,8 @@ import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
 import { Agent } from 'undici';
 import type { RESTOptions } from '../REST.js';
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
-const Package = require('../../../package.json');
 
-export const DefaultUserAgent = `DiscordBot (${Package.homepage}, ${Package.version})`;
+export const DefaultUserAgent = `DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])`;
 
 export const DefaultRestOptions: Required<RESTOptions> = {
 	get agent() {

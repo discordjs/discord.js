@@ -53,7 +53,7 @@ class BaseInteraction extends Base {
     this.guildId = data.guild_id ?? null;
 
     /**
-     * The user which sent this interaction
+     * The user who created this interaction
      * @type {User}
      */
     this.user = this.client.users._add(data.user ?? data.member.user);

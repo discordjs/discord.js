@@ -313,7 +313,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token));
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
     return new Webhook(this, { token, ...data });
   }
 
@@ -479,7 +479,7 @@ class Client extends BaseClient {
     if (typeof options.intents === 'undefined') {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = IntentsBitField.resolve(options.intents);
+      options.intents = new IntentsBitField(options.intents).freeze();
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
