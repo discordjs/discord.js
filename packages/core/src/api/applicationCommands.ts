@@ -35,11 +35,11 @@ export class ApplicationCommandsAPI {
 	 * Creates a new global command
 	 *
 	 * @param applicationId - The application id to create the command for
-	 * @param options - The options to use when creating the command
+	 * @param data - The data to use when creating the command
 	 */
-	public async createGlobalCommand(applicationId: Snowflake, options: RESTPostAPIApplicationCommandsJSONBody) {
+	public async createGlobalCommand(applicationId: Snowflake, data: RESTPostAPIApplicationCommandsJSONBody) {
 		return this.rest.post(Routes.applicationCommands(applicationId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPostAPIApplicationCommandsResult>;
 	}
 
@@ -60,15 +60,15 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @param applicationId - The application id of the command
 	 * @param commandId - The id of the command to edit
-	 * @param options - The options to use when editing the command
+	 * @param data - The data to use when editing the command
 	 */
 	public async editGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		options: RESTPatchAPIApplicationCommandJSONBody,
+		data: RESTPatchAPIApplicationCommandJSONBody,
 	) {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPatchAPIApplicationCommandResult>;
 	}
 
@@ -86,11 +86,11 @@ export class ApplicationCommandsAPI {
 	 * Overwrites global commands
 	 *
 	 * @param applicationId - The application id to overwrite commands for
-	 * @param options - The options to use when overwriting commands
+	 * @param data - The data to use when overwriting commands
 	 */
-	public async bulkOverwriteGlobalCommands(applicationId: Snowflake, options: RESTPutAPIApplicationCommandsJSONBody) {
+	public async bulkOverwriteGlobalCommands(applicationId: Snowflake, data: RESTPutAPIApplicationCommandsJSONBody) {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPutAPIApplicationCommandsResult>;
 	}
 
@@ -99,15 +99,15 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @param applicationId - The application id to fetch commands for
 	 * @param guildId - The guild id to fetch commands for
-	 * @param options - The options to use when fetching commands
+	 * @param data - The data to use when fetching commands
 	 */
 	public async getGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		options: { with_localizations?: boolean } = {},
+		data: { with_localizations?: boolean } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(data),
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
@@ -116,15 +116,15 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @param applicationId - The application id to create the command for
 	 * @param guildId - The guild id to create the command for
-	 * @param options - The options to use when creating the command
+	 * @param data - The data to use when creating the command
 	 */
 	public async createGuildCommand(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		options: RESTPostAPIApplicationCommandsJSONBody,
+		data: RESTPostAPIApplicationCommandsJSONBody,
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPostAPIApplicationCommandsResult>;
 	}
 
@@ -147,16 +147,16 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id of the command
 	 * @param guildId - The guild id of the command
 	 * @param commandId - The command id to edit
-	 * @param options - The options to use when editing the command
+	 * @param data - The data to use when editing the command
 	 */
 	public async editGuildCommand(
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		options: RESTPatchAPIApplicationCommandJSONBody,
+		data: RESTPatchAPIApplicationCommandJSONBody,
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPatchAPIApplicationCommandResult>;
 	}
 
@@ -176,15 +176,15 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @param applicationId - The application id to overwrite commands for
 	 * @param guildId - The guild id to overwrite commands for
-	 * @param options - The options to use when overwriting commands
+	 * @param data - The data to use when overwriting commands
 	 */
 	public async bulkOverwriteGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		options: RESTPutAPIApplicationCommandsJSONBody,
+		data: RESTPutAPIApplicationCommandsJSONBody,
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPutAPIApplicationCommandsResult>;
 	}
 
@@ -219,16 +219,16 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id to edit the permissions for
 	 * @param guildId - The guild id to edit the permissions for
 	 * @param commandId - The id of the command to edit the permissions for
-	 * @param options - The options to use when editing the permissions
+	 * @param data - The data to use when editing the permissions
 	 */
 	public async editGuildCommandPermissions(
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		options: RESTPutAPIApplicationCommandPermissionsJSONBody,
+		data: RESTPutAPIApplicationCommandPermissionsJSONBody,
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
-			body: options,
+			body: data,
 		}) as Promise<RESTPutAPIApplicationCommandPermissionsResult>;
 	}
 }

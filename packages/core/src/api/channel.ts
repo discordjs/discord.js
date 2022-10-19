@@ -31,7 +31,7 @@ export class ChannelsAPI {
 	 * Sends a message in a channel
 	 *
 	 * @param channelId - The id of the channel to send the message in
-	 * @param message - The options to use when sending the message
+	 * @param data - The data to use when sending the message
 	 */
 	public async createMessage(
 		channelId: Snowflake,
@@ -48,7 +48,7 @@ export class ChannelsAPI {
 	 *
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
-	 * @param options - The options to use when editing the message
+	 * @param data - The data to use when editing the message
 	 */
 	public async editMessage(
 		channelId: Snowflake,
@@ -148,10 +148,10 @@ export class ChannelsAPI {
 	 * Edits a channel
 	 *
 	 * @param channelId - The id of the channel to edit
-	 * @param channel - The new channel data
+	 * @param data - The new channel data
 	 */
-	public async edit(channelId: Snowflake, channel: RESTPatchAPIChannelJSONBody) {
-		return this.rest.patch(Routes.channel(channelId), { body: channel }) as Promise<RESTPatchAPIChannelResult>;
+	public async edit(channelId: Snowflake, data: RESTPatchAPIChannelJSONBody) {
+		return this.rest.patch(Routes.channel(channelId), { body: data }) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
@@ -274,12 +274,12 @@ export class ChannelsAPI {
 	 * Creates a new invite for a channel
 	 *
 	 * @param channelId - The id of the channel to create an invite for
-	 * @param options - The options to use when creating the invite
+	 * @param data - The data to use when creating the invite
 	 */
-	public async createInvite(channelId: Snowflake, options: RESTPostAPIChannelInviteJSONBody, reason?: string) {
+	public async createInvite(channelId: Snowflake, data: RESTPostAPIChannelInviteJSONBody, reason?: string) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			reason,
-			body: options,
+			body: data,
 		}) as Promise<RESTPostAPIChannelInviteResult>;
 	}
 

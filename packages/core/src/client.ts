@@ -159,20 +159,20 @@ export interface ClientOptions {
 }
 
 export function createClient({ rest, ws }: ClientOptions) {
-	const eventAPI = new API(rest);
+	const api = new API(rest);
 	const emitter = new AsyncEventEmitter<ManagerShardEventsMap>();
 
-	ws.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
-		function wrapIntrinsicProps<T>(obj: T): WithIntrinsicProps<T> {
-			return {
-				api: eventAPI,
-				shardId,
-				data: obj,
-			};
-		}
+	function wrapIntrinsicProps<T>(obj: T, shardId: number): WithIntrinsicProps<T> {
+		return {
+			api,
+			shardId,
+			data: obj,
+		};
+	}
 
+	ws.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 		// @ts-expect-error event props can't be resolved properly, but they are correct
-		emitter.emit(dispatch.t, wrapIntrinsicProps(dispatch.d));
+		emitter.emit(dispatch.t, wrapIntrinsicProps(dispatch.d, shardId));
 	});
 
 	return emitter;

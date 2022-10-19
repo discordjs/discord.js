@@ -18,18 +18,18 @@ export class InteractionsAPI {
 	 *
 	 * @param interactionId - The Id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when replying
+	 * @param data - The data to use when replying
 	 */
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
-		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			files: options.files,
+			files,
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
-				data: options,
+				data,
 			},
 		});
 	}
@@ -67,14 +67,14 @@ export class InteractionsAPI {
 	 *
 	 * @param applicationId - The application Id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when replying
+	 * @param data - The data to use when replying
 	 */
 	public async followUp(
 		applicationId: Snowflake,
 		interactionToken: string,
-		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		await this.webhooks.execute(applicationId, interactionToken, options);
+		await this.webhooks.execute(applicationId, interactionToken, data);
 	}
 
 	/**
@@ -82,14 +82,14 @@ export class InteractionsAPI {
 	 *
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when editing the reply
+	 * @param data - The data to use when editing the reply
 	 */
 	public async editReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		options: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, '@original', options);
+		return this.webhooks.editMessage(applicationId, interactionToken, '@original', data);
 	}
 
 	/**
@@ -121,7 +121,7 @@ export class InteractionsAPI {
 	 *
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when updating the interaction
+	 * @param data - The data to use when updating the interaction
 	 */
 	public async updateMessage(
 		interactionId: Snowflake,
@@ -142,17 +142,17 @@ export class InteractionsAPI {
 	 *
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - Options for the autocomplete response
+	 * @param data - Data for the autocomplete response
 	 */
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
-		options: APICommandAutocompleteInteractionResponseCallbackData,
+		data: APICommandAutocompleteInteractionResponseCallbackData,
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-				data: options,
+				data,
 			},
 		});
 	}
@@ -162,17 +162,17 @@ export class InteractionsAPI {
 	 *
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param modal - The modal to send
+	 * @param data - The modal to send
 	 */
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		modal: APIModalInteractionResponseCallbackData,
+		data: APIModalInteractionResponseCallbackData,
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			body: {
 				type: InteractionResponseType.Modal,
-				data: modal,
+				data,
 			},
 		});
 	}

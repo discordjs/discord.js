@@ -34,13 +34,13 @@ export class WebhooksAPI {
 	 * Creates a new webhook
 	 *
 	 * @param channelId - The id of the channel to create the webhook in
-	 * @param options - The options to use when creating the webhook
+	 * @param data - The data to use when creating the webhook
 	 * @param reason - The reason for creating the webhook
 	 */
-	public async create(channelId: Snowflake, options: RESTPostAPIChannelWebhookJSONBody, reason?: string) {
+	public async create(channelId: Snowflake, data: RESTPostAPIChannelWebhookJSONBody, reason?: string) {
 		return this.rest.post(Routes.channelWebhooks(channelId), {
 			reason,
-			body: options,
+			body: data,
 		}) as Promise<RESTPostAPIWebhookWithTokenResult>;
 	}
 
@@ -72,12 +72,12 @@ export class WebhooksAPI {
 	 *
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
-	 * @param options - The options to use when executing the webhook
+	 * @param data - The data to use when executing the webhook
 	 */
 	public async execute(
 		id: Snowflake,
 		token: string,
-		options: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait: true },
+		data: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait: true },
 	): Promise<RESTPostAPIWebhookWithTokenWaitResult>;
 
 	/**
@@ -85,13 +85,12 @@ export class WebhooksAPI {
 	 *
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
-	 * @param options - The options to use when executing the webhook
+	 * @param data - The data to use when executing the webhook
 	 */
 	public async execute(
 		id: Snowflake,
 		token: string,
-		options: RESTPostAPIWebhookWithTokenJSONBody &
-			RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait?: false },
+		data: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait?: false },
 	): Promise<void>;
 
 	/**
@@ -99,7 +98,7 @@ export class WebhooksAPI {
 	 *
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
-	 * @param options - The options to use when executing the webhook
+	 * @param data - The data to use when executing the webhook
 	 */
 	public async execute(
 		id: Snowflake,
@@ -167,7 +166,7 @@ export class WebhooksAPI {
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param messageId - The id of the message to edit
-	 * @param options - The options to use when editing the message
+	 * @param data - The data to use when editing the message
 	 */
 	public async editMessage(
 		id: Snowflake,

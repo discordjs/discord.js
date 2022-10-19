@@ -35,7 +35,7 @@ pnpm add @discordjs/core
 ```ts
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
-import { Gateway, GatewayIntentBits, InteractionType, MessageFlags, createEmitter } from '@discordjs/core';
+import { Gateway, GatewayIntentBits, InteractionType, MessageFlags, createClient } from '@discordjs/core';
 
 // Create REST and web socket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
@@ -46,11 +46,11 @@ const ws = new WebSocketManager({
 });
 
 // Create a client to emit relevant events.
-const emitter = createEmitter({ rest, ws });
+const client = createClient({ rest, ws });
 
 // Listen for interactions
 // Each event contains an `api` prop along with the event data that allows you to interface with the discord REST API
-emitter.on('interactionCreate', async ({ interaction, api }) => {
+client.on('interactionCreate', async ({ interaction, api }) => {
 	if (!(interaction.type === InteractionType.ApplicationCommand) || interaction.data.name !== 'ping') {
 		return;
 	}
@@ -59,7 +59,7 @@ emitter.on('interactionCreate', async ({ interaction, api }) => {
 });
 
 // Listen for the ready event
-emitter.on('ready', () => console.log('Ready!'));
+client.on('ready', () => console.log('Ready!'));
 
 // Start the ws connection.
 ws.connect();

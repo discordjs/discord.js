@@ -35,9 +35,9 @@ export class ThreadsAPI {
 	 * Creates a new thread
 	 *
 	 * @param channelId - The id of the channel to start the thread in
-	 * @param options - The options to use when starting the thread
+	 * @param data - The data to use when starting the thread
 	 */
-	public async start(channelId: Snowflake, { message_id, ...body }: StartThreadOptions) {
+	public async create(channelId: Snowflake, { message_id, ...body }: StartThreadOptions) {
 		return this.rest.post(Routes.threads(channelId, message_id), { body }) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
@@ -45,9 +45,9 @@ export class ThreadsAPI {
 	 * Creates a new forum post
 	 *
 	 * @param channelId - The id of the forum channel to start the thread in
-	 * @param options - The options to use when starting the thread
+	 * @param data - The data to use when starting the thread
 	 */
-	public async startForumThread(channelId: Snowflake, { message, ...optionsBody }: StartForumThreadOptions) {
+	public async createForumThread(channelId: Snowflake, { message, ...optionsBody }: StartForumThreadOptions) {
 		const { files, ...messageBody } = message;
 
 		const body = {
