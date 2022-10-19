@@ -1574,11 +1574,11 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
-  public isStringSelect(): this is SelectMenuInteraction<Cached, ComponentType.StringSelect>;
-  public isUserSelect(): this is SelectMenuInteraction<Cached, ComponentType.UserSelect>;
-  public isRoleSelect(): this is SelectMenuInteraction<Cached, ComponentType.RoleSelect>;
-  public isChannelSelect(): this is SelectMenuInteraction<Cached, ComponentType.ChannelSelect>;
-  public isMentionableSelect(): this is SelectMenuInteraction<Cached, ComponentType.MentionableSelect>;
+  public isStringSelectMenu(): this is SelectMenuInteraction<Cached, ComponentType.StringSelect>;
+  public isUserSelectMenu(): this is SelectMenuInteraction<Cached, ComponentType.UserSelect>;
+  public isRoleSelectMenu(): this is SelectMenuInteraction<Cached, ComponentType.RoleSelect>;
+  public isChannelSelectMenu(): this is SelectMenuInteraction<Cached, ComponentType.ChannelSelect>;
+  public isMentionableSelectMenu(): this is SelectMenuInteraction<Cached, ComponentType.MentionableSelect>;
   public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
@@ -2292,9 +2292,10 @@ export type SelectMenuType =
   | ComponentType.RoleSelect
   | ComponentType.MentionableSelect
   | ComponentType.ChannelSelect;
-export type TypeResolver<Type, Required, Value, NotRequired> = Type extends Required
+
+export type TypeResolver<Type, Required, Value, Optional> = Type extends Required
   ? Value
-  : Type extends [NotRequired]
+  : Type extends Optional
   ? Value | null
   : null;
 
@@ -2310,7 +2311,7 @@ export class SelectMenuInteraction<
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType: SelectMenuType;
+  public componentType: Type;
   public values: string[];
   public members: CacheTypeReducer<
     Cached,
@@ -2337,6 +2338,7 @@ export class SelectMenuInteraction<
     Collection<Snowflake, Cached extends 'raw' ? APIRole : Role>,
     ComponentType.MentionableSelect
   >;
+
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached', Type>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached', Type>;
   public inRawGuild(): this is SelectMenuInteraction<'raw', Type>;
