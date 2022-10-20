@@ -67,7 +67,7 @@
 		"astro-critters": "^1.0.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.38",
+		"eslint-config-neon": "^0.1.39",
 		"eslint-formatter-pretty": "^4.1.0",
 		"happy-dom": "^7.6.0",
 		"hast-util-to-string": "^2.0.0",

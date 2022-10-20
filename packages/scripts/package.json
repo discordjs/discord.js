@@ -59,7 +59,7 @@
 		"@vitest/coverage-c8": "^0.24.3",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.38",
+		"eslint-config-neon": "^0.1.39",
 		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
 		"tsup": "^6.3.0",
