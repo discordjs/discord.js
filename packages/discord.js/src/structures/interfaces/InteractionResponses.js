@@ -136,21 +136,22 @@ class InteractionResponses {
   }
 
   /**
-   * Edits the initial reply to this interaction.
+   * Edits a reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
+   * @param {MessageResolvable|"@original"} [message="@original"] The response to edit
    * @returns {Promise<Message>}
    * @example
-   * // Edit the reply to this interaction
+   * // Edit the initial reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async editReply(options) {
+  async editReply(options, message = '@original') {
     if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
-    const message = await this.webhook.editMessage('@original', options);
+    const msg = await this.webhook.editMessage(message, options);
     this.replied = true;
-    return message;
+    return msg;
   }
 
   /**
