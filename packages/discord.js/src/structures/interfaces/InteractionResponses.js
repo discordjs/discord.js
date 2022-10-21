@@ -122,12 +122,12 @@ class InteractionResponses {
   }
 
   /**
-   * Fetches the initial reply to this interaction.
+   * Fetches a reply to this interaction.
    * @see Webhook#fetchMessage
    * @param {MessageResolvable|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
-   * // Fetch the reply to this interaction
+   * // Fetch the initial reply to this interaction
    * interaction.fetchReply()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
@@ -156,12 +156,12 @@ class InteractionResponses {
   }
 
   /**
-   * Deletes the initial reply to this interaction.
+   * Deletes a reply to this interaction.
    * @see Webhook#deleteMessage
    * @param {MessageResolvable|'@original'} [message='@original'] The response to edit
    * @returns {Promise<void>}
    * @example
-   * // Delete the reply to this interaction
+   * // Delete the initial reply to this interaction
    * interaction.deleteReply()
    *   .then(console.log)
    *   .catch(console.error);
