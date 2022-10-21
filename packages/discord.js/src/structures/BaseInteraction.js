@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { SelectMenuTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -274,14 +275,7 @@ class BaseInteraction extends Base {
    */
   isSelectMenu() {
     return (
-      this.type === InteractionType.MessageComponent &&
-      [
-        ComponentType.StringSelect,
-        ComponentType.UserSelect,
-        ComponentType.RoleSelect,
-        ComponentType.MentionableSelect,
-        ComponentType.ChannelSelect,
-      ].includes(this.componentType)
+      this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType)
     );
   }
   /**
