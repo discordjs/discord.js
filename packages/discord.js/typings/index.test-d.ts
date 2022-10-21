@@ -24,6 +24,9 @@ import {
   APIEmbed,
   ApplicationCommandType,
   APIMessage,
+  APIChannel,
+  APIUser,
+  APIGuildMember,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -141,6 +144,7 @@ import {
   ChannelFlagsBitField,
   GuildForumThreadManager,
   GuildTextThreadManager,
+  Channel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1640,10 +1644,7 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (
-    interaction.type === InteractionType.MessageComponent &&
-    interaction.componentType === ComponentType.StringSelect
-  ) {
+  if (interaction.isSelectMenu()) {
     expectType<SelectMenuInteraction>(interaction);
     expectType<SelectMenuComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
@@ -1665,6 +1666,37 @@ client.on('interactionCreate', async interaction => {
       expectType<Message>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));
+    }
+
+    if (interaction.isChannelSelectMenu()) {
+      expectType<Collection<string, Channel | APIChannel>>(interaction.channels);
+      expectType<null>(interaction.members);
+      expectType<null>(interaction.users);
+      expectType<null>(interaction.roles);
+      expectType<ComponentType.ChannelSelect>(interaction.componentType);
+    } else if (interaction.isMentionableSelectMenu()) {
+      expectType<null>(interaction.channels);
+      expectType<Collection<string, GuildMember | APIGuildMember> | null>(interaction.members);
+      expectType<Collection<string, User | APIUser>>(interaction.users);
+      expectType<Collection<string, Role | APIRole> | null>(interaction.roles);
+      expectType<ComponentType.MentionableSelect>(interaction.componentType);
+    } else if (interaction.isUserSelectMenu()) {
+      expectType<null>(interaction.channels);
+      expectType<Collection<string, GuildMember | APIGuildMember> | null>(interaction.members);
+      expectType<Collection<string, User | APIUser>>(interaction.users);
+      expectType<null>(interaction.roles);
+      expectType<ComponentType.UserSelect>(interaction.componentType);
+    } else if (interaction.isRoleSelectMenu()) {
+      expectType<null>(interaction.channels);
+      expectType<null>(interaction.members);
+      expectType<null>(interaction.users);
+      expectType<Collection<string, Role | APIRole>>(interaction.roles);
+      expectType<ComponentType.RoleSelect>(interaction.componentType);
+    } else if (interaction.isStringSelectMenu()) {
+      expectType<null>(interaction.channels);
+      expectType<null>(interaction.members);
+      expectType<null>(interaction.users);
+      expectType<null>(interaction.roles);
     }
   }
 
