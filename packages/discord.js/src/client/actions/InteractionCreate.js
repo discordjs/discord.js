@@ -10,6 +10,7 @@ const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction'
 const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
 const Events = require('../../util/Events');
+const { UserSelectMenuInteraction, StringSelectMenuInteraction, RoleSelectMenuInteraction, MentionableSelectMenuInteraction, ChannelSelectMenuInteraction } = require('../..');
 
 class InteractionCreateAction extends Action {
   handle(data) {
@@ -50,11 +51,19 @@ class InteractionCreateAction extends Action {
             InteractionClass = ButtonInteraction;
             break;
           case ComponentType.ChannelSelect:
+            InteractionClass = ChannelSelectMenuInteraction;
+            break;
           case ComponentType.MentionableSelect:
+            InteractionClass = MentionableSelectMenuInteraction;
+            break;
           case ComponentType.RoleSelect:
+            InteractionClass = RoleSelectMenuInteraction;
+            break;
           case ComponentType.StringSelect:
+            InteractionClass = StringSelectMenuInteraction;
+            break;
           case ComponentType.UserSelect:
-            InteractionClass = SelectMenuInteraction;
+            InteractionClass = UserSelectMenuInteraction;
             break;
           default:
             client.emit(
