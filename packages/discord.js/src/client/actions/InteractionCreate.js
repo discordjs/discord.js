@@ -4,15 +4,11 @@ const { InteractionType, ComponentType, ApplicationCommandType } = require('disc
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
-const ChannelSelectMenuInteraction = require('../../structures/ChannelSelectMenuInteraction');
 const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
-const MentionableSelectMenuInteraction = require('../../structures/MentionableSelectMenuInteraction');
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
-const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
+const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction')
 const Events = require('../../util/Events');
 
 class InteractionCreateAction extends Action {
@@ -54,19 +50,11 @@ class InteractionCreateAction extends Action {
             InteractionClass = ButtonInteraction;
             break;
           case ComponentType.ChannelSelect:
-            InteractionClass = ChannelSelectMenuInteraction;
-            break;
           case ComponentType.MentionableSelect:
-            InteractionClass = MentionableSelectMenuInteraction;
-            break;
           case ComponentType.RoleSelect:
-            InteractionClass = RoleSelectMenuInteraction;
-            break;
           case ComponentType.StringSelect:
-            InteractionClass = StringSelectMenuInteraction;
-            break;
           case ComponentType.UserSelect:
-            InteractionClass = UserSelectMenuInteraction;
+            InteractionClass = SelectMenuInteraction;
             break;
           default:
             client.emit(

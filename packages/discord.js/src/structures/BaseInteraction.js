@@ -269,7 +269,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a base {@link SelectMenuInteraction}.
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
    * @returns {boolean}
    */
   isSelectMenu() {
@@ -285,35 +285,36 @@ class BaseInteraction extends Base {
     );
   }
   /**
-   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.StringSelect}.
    * @returns {boolean}
    */
   isStringSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.StringSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link UserSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.UserSelect}.
    * @returns {boolean}
    */
   isUserSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.UserSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link RoleSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.RoleSelect}.
    * @returns {boolean}
    */
   isRoleSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.RoleSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link ChannelSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.ChannelSelect}.
    * @returns {boolean}
    */
   isChannelSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.ChannelSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a
+   * {@link ComponentType.MentionableSelect}.
    * @returns {boolean}
    */
   isMentionableSelectMenu() {
