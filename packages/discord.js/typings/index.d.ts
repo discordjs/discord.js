@@ -2293,6 +2293,12 @@ export type SelectMenuType =
   | ComponentType.MentionableSelect
   | ComponentType.ChannelSelect;
 
+export type TypeResolver<Type, Required, Value, Optional> = Type extends Required
+  ? Value
+  : Type extends Optional
+  ? Value | null
+  : null;
+
 export class SelectMenuInteraction<
   Cached extends CacheType = CacheType,
   Type extends SelectMenuType = SelectMenuType,
@@ -2309,20 +2315,29 @@ export class SelectMenuInteraction<
   public values: string[];
   public members: CacheTypeReducer<
     Cached,
-    Type extends ComponentType.UserSelect | ComponentType.MentionableSelect
-      ? Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>
-      : null,
+    TypeResolver<
+      Type,
+      ComponentType.UserSelect,
+      Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>,
+      ComponentType.MentionableSelect
+    >,
     null
   >;
-  public users: Type extends ComponentType.UserSelect | ComponentType.MentionableSelect
-    ? Collection<Snowflake, Cached extends 'raw' ? APIUser : User>
-    : null;
+  public users: TypeResolver<
+    Type,
+    ComponentType.UserSelect,
+    Collection<Snowflake, Cached extends 'raw' ? APIUser : User>,
+    ComponentType.MentionableSelect
+  >;
   public channels: Type extends ComponentType.ChannelSelect
     ? Collection<Snowflake, Cached extends 'raw' ? APIChannel : Channel>
     : null;
-  public roles: Type extends ComponentType.RoleSelect | ComponentType.MentionableSelect
-    ? Collection<Snowflake, Cached extends 'raw' ? APIRole : Role>
-    : null;
+  public roles: TypeResolver<
+    Type,
+    ComponentType.RoleSelect,
+    Collection<Snowflake, Cached extends 'raw' ? APIRole : Role>,
+    ComponentType.MentionableSelect
+  >;
 
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached', Type>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached', Type>;
