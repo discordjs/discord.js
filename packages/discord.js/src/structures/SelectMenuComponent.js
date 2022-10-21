@@ -67,7 +67,7 @@ class SelectMenuComponent extends Component {
    * @readonly
    */
   get channelTypes() {
-    return this.data.options ?? null;
+    return this.data.channel_types ?? null;
   }
 }
 

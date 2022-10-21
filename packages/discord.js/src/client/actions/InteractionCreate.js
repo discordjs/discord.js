@@ -4,13 +4,16 @@ const { InteractionType, ComponentType, ApplicationCommandType } = require('disc
 const Action = require('./Action');
 const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
 const ButtonInteraction = require('../../structures/ButtonInteraction');
+const ChannelSelectMenuInteraction = require('../../structures/ChannelSelectMenuInteraction');
 const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
+const MentionableSelectMenuInteraction = require('../../structures/MentionableSelectMenuInteraction');
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
+const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
+const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
+const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction')
 const Events = require('../../util/Events');
-const { UserSelectMenuInteraction, StringSelectMenuInteraction, RoleSelectMenuInteraction, MentionableSelectMenuInteraction, ChannelSelectMenuInteraction } = require('../..');
 
 class InteractionCreateAction extends Action {
   handle(data) {

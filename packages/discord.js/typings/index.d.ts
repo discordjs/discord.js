@@ -5429,7 +5429,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface SelectMenuComponentData extends BaseComponentData {
-  type: ComponentType.StringSelect;
+  type: ComponentType.StringSelect | ComponentType.UserSelect | ComponentType.RoleSelect | ComponentType.ChannelSelect | ComponentType.MentionableSelect ;
   customId: string;
   disabled?: boolean;
   maxValues?: number;
