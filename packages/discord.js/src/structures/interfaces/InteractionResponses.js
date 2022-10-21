@@ -158,7 +158,7 @@ class InteractionResponses {
   /**
    * Deletes a reply to this interaction.
    * @see Webhook#deleteMessage
-   * @param {MessageResolvable|'@original'} [message='@original'] The response to edit
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
    * // Delete the initial reply to this interaction
