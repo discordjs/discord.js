@@ -17,16 +17,17 @@ class UserSelectMenuInteraction extends SelectMenuInteraction {
             this.users.set(user.id, this.client.users._add(user) ?? user);
           }
 
-            /**
-             * Collection of the selected users
-             * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
-             */
-            this.members = new Collection();
-
-            if (data.data.resolved.members) {
+          if (data.data.resolved.members) {
+                /**
+                 * Collection of the selected users
+                 * @type {Collection<Snowflake, GuildMember|APIGuildMember>?}
+                 */
+                this.members = new Collection();
                 for (const member of Object.values(data.data.resolved.members)) {
                     this.members.set(member.id, this.guild?.members._add(member) ?? member);
                 }
+            } else {
+                this.members = null;
             }
     }
 }

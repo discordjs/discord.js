@@ -269,7 +269,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
+   * Indicates whether this interaction is a base {@link SelectMenuInteraction}.
    * @returns {boolean}
    */
   isSelectMenu() {
@@ -285,36 +285,35 @@ class BaseInteraction extends Base {
     );
   }
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.StringSelect}.
+   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}
    * @returns {boolean}
    */
   isStringSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.StringSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.UserSelect}.
+   * Indicates whether this interaction is a {@link UserSelectMenuInteraction}
    * @returns {boolean}
    */
   isUserSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.UserSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.RoleSelect}.
+   * Indicates whether this interaction is a {@link RoleSelectMenuInteraction}
    * @returns {boolean}
    */
   isRoleSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.RoleSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a {@link ComponentType.ChannelSelect}.
+   * Indicates whether this interaction is a {@link ChannelSelectMenuInteraction}
    * @returns {boolean}
    */
   isChannelSelectMenu() {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.ChannelSelect;
   }
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction} from a
-   * {@link ComponentType.MentionableSelect}.
+   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
    * @returns {boolean}
    */
   isMentionableSelectMenu() {
