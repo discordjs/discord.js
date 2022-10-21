@@ -439,12 +439,12 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     options: InteractionDeferReplyOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | WebhookEditMessageOptions,
     message?: MessageResolvable | '@original',
   ): Promise<Message<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
@@ -1830,12 +1830,12 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | WebhookEditMessageOptions,
     message?: MessageResolvable | '@original',
   ): Promise<Message<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
@@ -2021,7 +2021,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | WebhookEditMessageOptions,
     message?: MessageResolvable | '@original',
@@ -2030,7 +2030,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferReplyOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { fetchReply: true },

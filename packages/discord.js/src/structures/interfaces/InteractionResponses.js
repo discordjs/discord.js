@@ -124,6 +124,7 @@ class InteractionResponses {
   /**
    * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
    * // Fetch the reply to this interaction
@@ -131,15 +132,15 @@ class InteractionResponses {
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  fetchReply() {
-    return this.webhook.fetchMessage('@original');
+  fetchReply(message = '@original') {
+    return this.webhook.fetchMessage(message);
   }
 
   /**
    * Edits a reply to this interaction.
    * @see Webhook#editMessage
    * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
-   * @param {MessageResolvable|"@original"} [message="@original"] The response to edit
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to edit
    * @returns {Promise<Message>}
    * @example
    * // Edit the initial reply to this interaction
@@ -157,6 +158,7 @@ class InteractionResponses {
   /**
    * Deletes the initial reply to this interaction.
    * @see Webhook#deleteMessage
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to edit
    * @returns {Promise<void>}
    * @example
    * // Delete the reply to this interaction
@@ -164,9 +166,9 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deleteReply() {
+  async deleteReply(message = '@original') {
     if (this.ephemeral) throw new DiscordjsError(ErrorCodes.InteractionEphemeralReplied);
-    await this.webhook.deleteMessage('@original');
+    await this.webhook.deleteMessage(message);
   }
 
   /**
