@@ -162,6 +162,13 @@ exports.SelectMenuBuilder = exports.StringSelectMenuBuilder;
 exports.UserSelectMenuBuilder = require('./structures/UserSelectMenuBuilder');
 exports.SelectMenuComponent = require('./structures/SelectMenuComponent');
 exports.SelectMenuInteraction = require('./structures/SelectMenuInteraction');
+exports.StringSelectMenuInteraction = require('./structures/StringSelectMenuInteraction');
+exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteraction');
+exports.ChannelSelectMenuInteraction = require('./structures/ChannelSelectMenuInteraction');
+exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction');
+exports.MentionableSelectMenuInteraction = require('./structures/MentionableSelectMenuInteraction');
+
+
 exports.SelectMenuOptionBuilder = require('./structures/SelectMenuOptionBuilder');
 exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
