@@ -3543,6 +3543,11 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public get channelCountWithoutThreads(): number;
   public guild: Guild;
 
+  public addFollower(
+    channel: NewsChannel | Snowflake,
+    targetChannel: TextChannelResolvable,
+    reason?: string,
+  ): Promise<Snowflake>;
   public create<T extends GuildChannelTypes>(
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
