@@ -2286,8 +2286,11 @@ export class Role extends Base {
   public toString(): RoleMention;
 }
 
-export type SelectMenuType =
-  |;
+export type SelectMenuType = ComponentType.StringSelect | 
+ComponentType.UserSelect |
+ComponentType.RoleSelect |
+ComponentType.MentionableSelect|
+ComponentType.ChannelSelect;
 export type AnySelectMenuInteraction<Cached extends CacheType = CacheType> = StringSelectMenuInteraction<Cached> | ChannelSelectMenuInteraction<Cached> | UserSelectMenuInteraction<Cached> | RoleSelectMenuInteraction<Cached> | MentiobnableSelectMenuInteraction<Cached>;
 
 export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
@@ -2299,11 +2302,7 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     SelectMenuComponent | APISelectMenuComponent,
     SelectMenuComponent | APISelectMenuComponent
   >;
-  public componentType: ComponentType.StringSelect |
-   ComponentType.UserSelect |
-   ComponentType.RoleSelect |
-   ComponentType.MentionableSelect|
-   ComponentType.ChannelSelect;
+  public componentType: SelectMenuType;
   public values: string[];
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
