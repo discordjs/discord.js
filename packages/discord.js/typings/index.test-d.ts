@@ -362,7 +362,7 @@ client.on('messageCreate', async message => {
 
   // Verify that select menus interaction are inferred.
   const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.StringSelect });
-  expectAssignable<Promise<SelectMenuInteraction>>(
+  expectAssignable<Promise<StringSelectMenuInteraction>>(
     message.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
   expectAssignable<Promise<SelectMenuInteraction>>(
