@@ -13,7 +13,6 @@ export class UserSelectMenuBuilder extends BaseSelectMenu {
 	 * 	custom_id: 'a cool select menu',
 	 * 	placeholder: 'select an option',
 	 * 	max_values: 2,
-	 * 	],
 	 * });
 	 * ```
 	 * @example
