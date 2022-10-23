@@ -6,16 +6,16 @@ const SelectMenuInteraction = require('./SelectMenuInteraction');
  * @extends {SelectMenuInteraction}
  */
 class RoleSelectMenuInteraction extends SelectMenuInteraction {
-    constructor(client, data) {
-        super(client, data);
-        /**
-         * Collection of the selected roles
-         * @type {Collection<Snowflake, Role|APIRole>}
-         */
-        this.roles = new Collection();
-        for (const role of Object.values(data.data.resolved.roles)) {
-            this.roles.set(role.id, this.guild?.roles._add(role) ?? role);
-          }
+  constructor(client, data) {
+    super(client, data);
+    /**
+     * Collection of the selected roles
+     * @type {Collection<Snowflake, Role|APIRole>}
+     */
+    this.roles = new Collection();
+    for (const role of Object.values(data.data.resolved.roles)) {
+      this.roles.set(role.id, this.guild?.roles._add(role) ?? role);
     }
+  }
 }
 module.exports = RoleSelectMenuInteraction;

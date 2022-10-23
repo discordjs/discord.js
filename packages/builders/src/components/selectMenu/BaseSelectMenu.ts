@@ -52,7 +52,7 @@ export class BaseSelectMenu extends ComponentBuilder<APISelectMenuComponent> {
 		this.data.disabled = disabledValidator.parse(disabled);
 		return this;
 	}
-	
+
 	public toJSON(): APISelectMenuComponent {
 		customIdValidator.parse(this.data.custom_id);
 		return {

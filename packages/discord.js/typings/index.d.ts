@@ -2286,12 +2286,18 @@ export class Role extends Base {
   public toString(): RoleMention;
 }
 
-export type SelectMenuType = ComponentType.StringSelect | 
-ComponentType.UserSelect |
-ComponentType.RoleSelect |
-ComponentType.MentionableSelect|
-ComponentType.ChannelSelect;
-export type AnySelectMenuInteraction<Cached extends CacheType = CacheType> = StringSelectMenuInteraction<Cached> | ChannelSelectMenuInteraction<Cached> | UserSelectMenuInteraction<Cached> | RoleSelectMenuInteraction<Cached> | MentiobnableSelectMenuInteraction<Cached>;
+export type SelectMenuType =
+  | ComponentType.StringSelect
+  | ComponentType.UserSelect
+  | ComponentType.RoleSelect
+  | ComponentType.MentionableSelect
+  | ComponentType.ChannelSelect;
+export type AnySelectMenuInteraction<Cached extends CacheType = CacheType> =
+  | StringSelectMenuInteraction<Cached>
+  | ChannelSelectMenuInteraction<Cached>
+  | UserSelectMenuInteraction<Cached>
+  | RoleSelectMenuInteraction<Cached>
+  | MentiobnableSelectMenuInteraction<Cached>;
 
 export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client<true>, data: RawMessageSelectMenuInteractionData);
@@ -2315,7 +2321,7 @@ export class RoleSelectMenuInteraction<Cached extends CacheType = CacheType> ext
   public inCachedGuild(): this is RoleSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is RoleSelectMenuInteraction<'raw'>;
 }
-export class UserSelectMenuInteraction <Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
+export class UserSelectMenuInteraction<Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
   public componentType: ComponentType.UserSelect;
   public users: Collection<Snowflake, User>;
   public members: CacheTypeReducer<Cached, Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>>;
@@ -2323,23 +2329,25 @@ export class UserSelectMenuInteraction <Cached extends CacheType = CacheType> ex
   public inCachedGuild(): this is UserSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is UserSelectMenuInteraction<'raw'>;
 }
-export class ChannelSelectMenuInteraction <Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
+export class ChannelSelectMenuInteraction<Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
   public componentType: ComponentType.ChannelSelect;
   public channels: Collection<Snowflake, Channel>;
   public inGuild(): this is ChannelSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ChannelSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is ChannelSelectMenuInteraction<'raw'>;
 }
-export class MentiobnableSelectMenuInteraction <Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
+export class MentiobnableSelectMenuInteraction<
+  Cached extends CacheType = CacheType,
+> extends SelectMenuInteraction<Cached> {
   public componentType: ComponentType.MentionableSelect;
   public roles: Collection<Snowflake, Cached extends 'raw' ? APIRole : Role>;
   public users: Collection<Snowflake, User>;
-  public members: CacheTypeReducer< Cached, Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>>;
+  public members: CacheTypeReducer<Cached, Collection<Snowflake, Cached extends 'raw' ? APIGuildMember : GuildMember>>;
   public inGuild(): this is MentiobnableSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MentiobnableSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is MentiobnableSelectMenuInteraction<'raw'>;
 }
-export class StringSelectMenuInteraction <Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
+export class StringSelectMenuInteraction<Cached extends CacheType = CacheType> extends SelectMenuInteraction<Cached> {
   public componentType: ComponentType.StringSelect;
   public inGuild(): this is StringSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is StringSelectMenuInteraction<'cached'>;
@@ -3198,7 +3206,7 @@ export const Constants: {
   TextBasedChannelTypes: TextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  SelectMenuTypes: SelectMenuType[]
+  SelectMenuTypes: SelectMenuType[];
 };
 
 export const version: string;

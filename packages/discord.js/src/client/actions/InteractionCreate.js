@@ -12,7 +12,7 @@ const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction'
 const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
 const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction')
+const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction');
 const Events = require('../../util/Events');
 
 class InteractionCreateAction extends Action {

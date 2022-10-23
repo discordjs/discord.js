@@ -274,9 +274,7 @@ class BaseInteraction extends Base {
    * @returns {boolean}
    */
   isSelectMenu() {
-    return (
-      this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType)
-    );
+    return this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType);
   }
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}

@@ -6,16 +6,16 @@ const SelectMenuInteraction = require('./SelectMenuInteraction');
  * @extends {SelectMenuInteraction}
  */
 class ChannelSelectMenuInteraction extends SelectMenuInteraction {
-    constructor(client, data) {
-        super(client, data);
-        /**
-         * Collection of the selected channels
-         * @type {Collection<Snowflake, Channel|APIChannel>}
-         */
-        this.channels = new Collection();
-        for (const channel of Object.values(data.data.resolved.channels)) {
-            this.channels.set(channel.id, this.client.channels._add(channel, this.guild) ?? channel);
-          }
+  constructor(client, data) {
+    super(client, data);
+    /**
+     * Collection of the selected channels
+     * @type {Collection<Snowflake, Channel|APIChannel>}
+     */
+    this.channels = new Collection();
+    for (const channel of Object.values(data.data.resolved.channels)) {
+      this.channels.set(channel.id, this.client.channels._add(channel, this.guild) ?? channel);
     }
+  }
 }
 module.exports = ChannelSelectMenuInteraction;

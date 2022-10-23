@@ -14,7 +14,7 @@ class SelectMenuInteraction extends MessageComponentInteraction {
      * @type {string[]}
      */
     this.values = data.data.values ?? [];
-    }
+  }
 }
 
 module.exports = SelectMenuInteraction;
