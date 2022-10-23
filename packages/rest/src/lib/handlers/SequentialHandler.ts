@@ -137,7 +137,7 @@ export class SequentialHandler implements IHandler {
 	 * @param time - The amount of time to delay all requests for
 	 */
 	private async globalDelayFor(time: number): Promise<void> {
-		await sleep(time, undefined);
+		await sleep(time);
 		this.manager.globalDelay = null;
 	}
 
