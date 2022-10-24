@@ -441,8 +441,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
-    message?: MessageResolvable | '@original',
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: MessageResolvable | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
@@ -1832,8 +1831,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
-    message?: MessageResolvable | '@original',
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: MessageResolvable | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
@@ -2023,8 +2021,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
-    message?: MessageResolvable | '@original',
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
@@ -5756,6 +5753,10 @@ export interface WebhookEditData {
 
 export interface WebhookEditMessageOptions extends Omit<MessageEditOptions, 'flags'> {
   threadId?: Snowflake;
+}
+
+export interface InteractionEditReplyOptions extends WebhookEditMessageOptions {
+  message?: MessageResolvable | '@original';
 }
 
 export interface WebhookFetchMessageOptions {
