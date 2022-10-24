@@ -274,6 +274,7 @@ const keys = [
 
   'InteractionAlreadyReplied',
   'InteractionNotReplied',
+  'InteractionEphemeralReplied',
 
   'CommandInteractionOptionNotFound',
   'CommandInteractionOptionType',
