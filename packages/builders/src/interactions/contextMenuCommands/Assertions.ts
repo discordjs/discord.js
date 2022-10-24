@@ -7,7 +7,7 @@ const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
 	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-	.regex(/^( *[\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+ *)+$/u)
+	.regex(/^( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}]+ *)+$/u)
 	.setValidationEnabled(isValidationEnabled);
 const typePredicate = s
 	.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message))
