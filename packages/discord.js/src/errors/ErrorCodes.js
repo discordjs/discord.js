@@ -128,6 +128,7 @@
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
  * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
+ * <warn>This property is deprecated.</warn>
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType
@@ -273,7 +274,6 @@ const keys = [
 
   'InteractionAlreadyReplied',
   'InteractionNotReplied',
-  'InteractionEphemeralReplied',
 
   'CommandInteractionOptionNotFound',
   'CommandInteractionOptionType',
