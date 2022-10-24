@@ -610,7 +610,7 @@ export class ButtonBuilder extends BuilderButtonComponent {
 }
 
 export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
-  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public constructor(data?: Partial<StringSelectMenuComponentData | APISelectMenuComponent>);
   private static normalizeEmoji(
     selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
   ): (APISelectMenuOption | SelectMenuOptionBuilder)[];
@@ -623,21 +623,21 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): StringSelectMenuBuilder;
 }
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
-  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public constructor(data?: Partial<UserSelectMenuComponentData | APISelectMenuComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): UserSelectMenuBuilder;
 }
 export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
-  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public constructor(data?: Partial<RoleSelectMenuComponentData | APISelectMenuComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): RoleSelectMenuBuilder;
 }
 export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
-  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public constructor(data?: Partial<MentionableSelectMenuComponentData | APISelectMenuComponent>);
   public static from(
     other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent,
   ): MentionableSelectMenuBuilder;
 }
 export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
-  public constructor(data?: Partial<SelectMenuComponentData | APISelectMenuComponent>);
+  public constructor(data?: Partial<ChannelSelectMenuComponentData | APISelectMenuComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): ChannelSelectMenuBuilder;
 }
 
@@ -5441,15 +5441,32 @@ export interface MessageReference {
 
 export type MessageResolvable = Message | Snowflake;
 
-export interface SelectMenuComponentData extends BaseComponentData {
+export interface BaseSelectMenuComponentData extends BaseComponentData {
   type: SelectMenuType;
   customId: string;
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
-  channelTypes?: ChannelType[];
-  options?: SelectMenuComponentOptionData[];
   placeholder?: string;
+}
+export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
+  type: ComponentType.StringSelect;
+  options?: SelectMenuComponentOptionData[];
+}
+export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
+  type: ComponentType.ChannelSelect;
+  channelTypes?: ChannelType[];
+}
+
+export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
+  type: ComponentType.UserSelect;
+}
+
+export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData {
+  type: ComponentType.RoleSelect;
+}
+export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData {
+  type: ComponentType.MentionableSelect;
 }
 
 export interface MessageSelectOption {
