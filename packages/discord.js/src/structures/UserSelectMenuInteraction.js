@@ -1,6 +1,8 @@
 'use strict';
+
 const { Collection } = require('@discordjs/collection');
 const SelectMenuInteraction = require('./SelectMenuInteraction');
+
 /**
  * Represents a {@link ComponentType.UserSelect} select menu interaction.
  * @extends {SelectMenuInteraction}
@@ -31,4 +33,5 @@ class UserSelectMenuInteraction extends SelectMenuInteraction {
     }
   }
 }
+
 module.exports = UserSelectMenuInteraction;
