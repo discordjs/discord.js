@@ -307,8 +307,15 @@ export class SequentialHandler implements IHandler {
 		try {
 			res = await request(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
-			// Retry the specified number of times for possible timed out requests
-			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
+			if (!(error instanceof Error)) throw error;
+			let retry = false;
+			// Retry for possible timed out requests
+			if (error.name === 'AbortError') retry = true;
+			// Downlevel ECONNRESET to retry as it may be recoverable
+			// When rest can be run in a non node env, this cast is still acceptable as .code will be an undefined property
+			if ((error as NodeJS.ErrnoException).code === 'ECONNRESET' || error.message.includes('ECONNREST')) retry = true;
+			// Retry the specified number of times if needed
+			if (retry && retries !== this.manager.options.retries) {
 				// eslint-disable-next-line no-param-reassign
 				return await this.runRequest(routeId, url, options, requestData, ++retries);
 			}
