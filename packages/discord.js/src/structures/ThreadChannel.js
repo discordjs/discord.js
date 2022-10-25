@@ -456,24 +456,22 @@ class ThreadChannel extends BaseChannel {
   setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags, reason });
   }
-  
+
   /**
    * Pins this thread channel from the forum channel.
    * @param {string} [reason] Reason for pinning
    * @returns {Promise<ThreadChannel>}
    */
-   pin(reason) {
-    if (this.parent.type !== ChannelType.ForumChannel) throw new DiscordjsError(ErrorCodes.CannotPinThreadOutOfForumChannel);
+  pin(reason) {
     return this.edit({ flags: [ChannelFlags.Pinned], reason });
   }
-  
+
   /**
    * Unpins this thread channel from the forum channel.
    * @param {string} [reason] Reason for unpinning
    * @returns {Promise<ThreadChannel>}
    */
-   unpin(reason) {
-    if (this.parent.type !== ChannelType.ForumChannel) throw new DiscordjsError(ErrorCodes.CannotUnpinThreadOutOfForumChannel);
+  unpin(reason) {
     const flags = [this.flags.remove(ChannelFlags.Pinned)];
     return this.edit({ flags, reason });
   }
