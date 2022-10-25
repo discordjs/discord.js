@@ -206,7 +206,7 @@ class WebSocketShard extends EventEmitter {
       return Promise.resolve();
     }
 
-    const gateway = this.resumeUrl || this.manager.gateway;
+    const gateway = this.resumeUrl ?? this.manager.gateway;
     
     return new Promise((resolve, reject) => {
       const cleanup = () => {
