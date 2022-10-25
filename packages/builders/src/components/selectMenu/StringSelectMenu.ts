@@ -43,7 +43,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenu {
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
 		const { options, ...initData } = data ?? {};
-		super({ type: ComponentType.StringSelect, ...initData });
+		super({ ...initData, type: ComponentType.StringSelect });
 		this.options = options?.map((option: APISelectMenuOption) => new SelectMenuOptionBuilder(option)) ?? [];
 	}
 

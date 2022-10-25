@@ -39,6 +39,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {?number} maxValues The maximum amount of options that can be selected
  * @property {?number} minValues The minimum amount of options that can be selected
  * @property {?SelectMenuComponentOptionData[]} options The options in this select menu
+ * @property {?ChannelType[]} channelTypes The available channel types of options
  * @property {?string} placeholder The placeholder of the select menu
  */
 

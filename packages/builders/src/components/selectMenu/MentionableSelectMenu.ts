@@ -25,6 +25,6 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenu {
 	 * ```
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
-		super({ type: ComponentType.MentionableSelect, ...data });
+		super({ ...data, type: ComponentType.MentionableSelect });
 	}
 }

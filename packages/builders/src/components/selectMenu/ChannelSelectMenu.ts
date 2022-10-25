@@ -5,7 +5,6 @@ import { customIdValidator } from '../Assertions.js';
 import { BaseSelectMenu } from './BaseSelectMenu.js';
 
 export class ChannelSelectMenuBuilder extends BaseSelectMenu {
-	public channel_types: ChannelType[];
 
 	/**
 	 * Creates a new select menu from API data
@@ -31,16 +30,14 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenu {
 	 * ```
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
-		const { channel_types, ...initData } = data ?? {};
-		super({ type: ComponentType.ChannelSelect, ...initData });
-		this.channel_types = channel_types ?? [];
+		const { channel_types=[], ...initData } = data ?? {};
+		super({ ...initData, type: ComponentType.ChannelSelect, channel_types });
 	}
 
 	public addChannelTypes(...types: RestOrArray<ChannelType>) {
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
-
-		this.channel_types.push(...types);
+		this.data.channel_types?.push(...types);
 		return this;
 	}
 
@@ -48,7 +45,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenu {
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		this.channel_types.splice(0, this.channel_types.length, ...types);
+		this.data.channel_types?.splice(0, this.data.channel_types.length, ...types);
 		return this;
 	}
 
@@ -60,7 +57,6 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenu {
 
 		return {
 			...this.data,
-			channel_types: this.channel_types,
 		} as APISelectMenuComponent;
 	}
 }

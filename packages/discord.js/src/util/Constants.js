@@ -120,7 +120,7 @@ exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStage
  * * {@link ComponentType.RoleSelect}
  * * {@link ComponentType.MentionableSelect}
  * * {@link ComponentType.ChannelSelect}
- * @typedef {ChannelType[]} SelectMenuTypes
+ * @typedef {ComponentType[]} SelectMenuTypes
  */
 exports.SelectMenuTypes = [
   ComponentType.StringSelect,

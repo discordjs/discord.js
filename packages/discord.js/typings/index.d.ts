@@ -5469,6 +5469,12 @@ export interface MentionableSelectMenuComponentData extends BaseSelectMenuCompon
   type: ComponentType.MentionableSelect;
 }
 
+export type SelectMenuComponentData =
+  | StringSelectMenuComponentData
+  | ChannelSelectMenuComponentData
+  | UserSelectMenuComponentData
+  | RoleSelectMenuComponentData
+  | MentiobnableSelectMenuInteraction;
 export interface MessageSelectOption {
   default: boolean;
   description: string | null;

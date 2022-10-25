@@ -25,6 +25,6 @@ export class RoleSelectMenuBuilder extends BaseSelectMenu {
 	 * ```
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
-		super({ type: ComponentType.RoleSelect, ...data });
+		super({ ...data, type: ComponentType.RoleSelect });
 	}
 }

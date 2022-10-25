@@ -25,6 +25,6 @@ export class UserSelectMenuBuilder extends BaseSelectMenu {
 	 * ```
 	 */
 	public constructor(data?: Partial<APISelectMenuComponent>) {
-		super({ type: ComponentType.UserSelect, ...data });
+		super({ ...data, type: ComponentType.UserSelect });
 	}
 }
