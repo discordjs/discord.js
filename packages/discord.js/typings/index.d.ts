@@ -2640,6 +2640,8 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
   public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
+  public pin(reason?: string): Promise<ThreadChannel<true>>;
+  public unpin(reason?: string): Promise<ThreadChannel<true>>;
   public toString(): ChannelMention;
 }
 

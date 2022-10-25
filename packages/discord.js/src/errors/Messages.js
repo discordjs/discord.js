@@ -95,6 +95,8 @@ const Messages = {
   [DjsErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',
   [DjsErrorCodes.GuildScheduledEventResolve]: 'Could not resolve the guild scheduled event.',
   [DjsErrorCodes.FetchOwnerId]: "Couldn't resolve the guild ownerId to fetch the member.",
+  [DjsErrorCodes.CannotPinThreadOutOfForumChannel]: 'Cannot pin a thread which is not in a ForumChannel.',
+  [DjsErrorCodes.CannotUnpinThreadOutOfForumChannel]: 'Cannot unpin a thread which is not in a ForumChannel.',
 
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,

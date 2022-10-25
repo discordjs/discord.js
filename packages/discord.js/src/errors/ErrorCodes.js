@@ -90,6 +90,8 @@
  * @property {'StageChannelResolve'} StageChannelResolve
  * @property {'GuildScheduledEventResolve'} GuildScheduledEventResolve
  * @property {'FetchOwnerId'} FetchOwnerId
+ * @property {'CannotPinThreadOutOfForumChannel'} CannotPinThreadOutOfForumChannel
+ * @property {'CannotUnpinThreadOutOfForumChannel'} CannotUnpinThreadOutOfForumChannel
 
  * @property {'InvalidType'} InvalidType
  * @property {'InvalidElement'} InvalidElement
@@ -236,6 +238,8 @@ const keys = [
   'StageChannelResolve',
   'GuildScheduledEventResolve',
   'FetchOwnerId',
+  'CannotPinThreadOutOfForumChannel',
+  'CannotUnpinThreadOutOfForumChannel',
 
   'InvalidType',
   'InvalidElement',
