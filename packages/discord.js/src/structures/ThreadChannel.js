@@ -467,7 +467,7 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Unpins this thread channel from the forum channel.
+   * Unpins this thread from the forum channel.
    * @param {string} [reason] Reason for unpinning
    * @returns {Promise<ThreadChannel>}
    */
