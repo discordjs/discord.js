@@ -472,8 +472,7 @@ class ThreadChannel extends BaseChannel {
    * @returns {Promise<ThreadChannel>}
    */
   unpin(reason) {
-    const flags = [this.flags.remove(ChannelFlags.Pinned)];
-    return this.edit({ flags, reason });
+    return this.edit({ flags: this.flags.remove(ChannelFlags.Pinned), reason });
   }
 
   /**
