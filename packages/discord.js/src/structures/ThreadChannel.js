@@ -463,7 +463,7 @@ class ThreadChannel extends BaseChannel {
    * @returns {Promise<ThreadChannel>}
    */
   pin(reason) {
-    return this.edit({ flags: [ChannelFlags.Pinned], reason });
+    return this.edit({ flags: this.flags.add(ChannelFlags.Pinned), reason });
   }
 
   /**
