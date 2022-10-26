@@ -63,14 +63,14 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     this.sessionId = null;
-    
+
     /**
      * The resume url for this shard
      * @type {?string}
      * @private
      */
     this.resumeUrl = null;
-    
+
     /**
      * The previous heartbeat ping of the shard
      * @type {number}
@@ -207,7 +207,7 @@ class WebSocketShard extends EventEmitter {
     }
 
     const gateway = this.resumeUrl || this.manager.gateway;
-    
+
     return new Promise((resolve, reject) => {
       const cleanup = () => {
         this.removeListener(WebSocketShardEvents.Close, onClose);
@@ -425,7 +425,7 @@ class WebSocketShard extends EventEmitter {
         this.emit(WebSocketShardEvents.Ready);
 
         this.sessionId = packet.d.session_id;
-        this.resumeUrl = packet.d.resume_gateway_url
+        this.resumeUrl = packet.d.resume_gateway_url;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WaitingForGuilds;
         this.debug(`[READY] Session ${this.sessionId} | Resume url ${this.resumeUrl}.`);
