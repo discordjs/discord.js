@@ -138,7 +138,7 @@ class InteractionResponses {
 
   /**
    * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
-   * @property {MessageResolvable|'@original'} [message] The response to edit
+   * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
    */
 
   /**
