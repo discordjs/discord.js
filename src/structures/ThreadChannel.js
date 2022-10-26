@@ -5,6 +5,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { RangeError } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
+const ChannelFlags = require('../util/ChannelFlags');
 const Permissions = require('../util/Permissions');
 const { resolveAutoArchiveMaxLimit } = require('../util/Util');
 
@@ -323,6 +324,7 @@ class ThreadChannel extends Channel {
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    */
 
   /**
@@ -349,6 +351,7 @@ class ThreadChannel extends Channel {
         locked: data.locked,
         invitable: this.type === 'GUILD_PRIVATE_THREAD' ? data.invitable : undefined,
         applied_tags: data.appliedTags,
+        flags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
       },
       reason,
     });
@@ -440,6 +443,24 @@ class ThreadChannel extends Channel {
    */
   setRateLimitPerUser(rateLimitPerUser, reason) {
     return this.edit({ rateLimitPerUser }, reason);
+  }
+
+  /**
+   * Pins this thread from the forum channel.
+   * @param {string} [reason] Reason for pinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  pin(reason) {
+    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED), reason });
+  }
+
+  /**
+   * Unpins this thread from the forum channel.
+   * @param {string} [reason] Reason for unpinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  unpin(reason) {
+    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED), reason });
   }
 
   /**

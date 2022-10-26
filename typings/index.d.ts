@@ -2600,6 +2600,8 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public setLocked(locked?: boolean, reason?: string): Promise<ThreadChannel>;
   public setName(name: string, reason?: string): Promise<ThreadChannel>;
   public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel>;
+  public pin(reason?: string): Promise<ThreadChannel>;
+  public unpin(reason?: string): Promise<ThreadChannel>;
 }
 
 export class ThreadMember extends Base {
@@ -6086,6 +6088,7 @@ export interface ThreadEditData {
   locked?: boolean;
   invitable?: boolean;
   threadName?: string;
+  flags?: ChannelFlagsResolvable;
 }
 
 export type ThreadMemberFlagsString = '';
