@@ -8,7 +8,7 @@ import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../
 import { HTTPError } from '../errors/HTTPError.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, parseHeader, parseResponse } from '../utils/utils.js';
+import { hasSublimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
 import type { IHandler } from './IHandler.js';
 
 /**
@@ -308,14 +308,8 @@ export class SequentialHandler implements IHandler {
 			res = await request(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
 			if (!(error instanceof Error)) throw error;
-			let retry = false;
-			// Retry for possible timed out requests
-			if (error.name === 'AbortError') retry = true;
-			// Downlevel ECONNRESET to retry as it may be recoverable
-			// When rest can be run in a non node env, this cast is still acceptable as .code will be an undefined property
-			if ((error as NodeJS.ErrnoException).code === 'ECONNRESET' || error.message.includes('ECONNREST')) retry = true;
 			// Retry the specified number of times if needed
-			if (retry && retries !== this.manager.options.retries) {
+			if (shouldRetry(error) && retries !== this.manager.options.retries) {
 				// eslint-disable-next-line no-param-reassign
 				return await this.runRequest(routeId, url, options, requestData, ++retries);
 			}
