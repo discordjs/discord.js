@@ -852,10 +852,11 @@ class WebSocketShard extends EventEmitter {
     // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
-    // Step 5: Reset the sequence and session id if requested
+    // Step 5: Reset the sequence, resume url and session id if requested
     if (reset) {
       this.sequence = -1;
       this.sessionId = null;
+      this.resumeUrl = null;
     }
 
     // Step 6: reset the rate limit data
