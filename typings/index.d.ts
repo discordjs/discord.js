@@ -2931,6 +2931,7 @@ export const Constants: {
     devDependencies: Record<string, string>;
     [key: string]: unknown;
   };
+  MaxBulkDeletableMessageAge: 1_209_600_000;
   UserAgent: string;
   Endpoints: {
     botGateway: string;
