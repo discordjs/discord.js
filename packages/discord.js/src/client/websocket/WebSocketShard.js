@@ -69,7 +69,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?string}
      * @private
      */
-    this.resumeUrl = null;
+    this.resumeURL = null;
 
     /**
      * The previous heartbeat ping of the shard
@@ -206,7 +206,7 @@ class WebSocketShard extends EventEmitter {
       return Promise.resolve();
     }
 
-    const gateway = this.resumeUrl ?? this.manager.gateway;
+    const gateway = this.resumeURL ?? this.manager.gateway;
 
     return new Promise((resolve, reject) => {
       const cleanup = () => {
@@ -425,10 +425,10 @@ class WebSocketShard extends EventEmitter {
         this.emit(WebSocketShardEvents.Ready);
 
         this.sessionId = packet.d.session_id;
-        this.resumeUrl = packet.d.resume_gateway_url;
+        this.resumeURL = packet.d.resume_gateway_url;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WaitingForGuilds;
-        this.debug(`[READY] Session ${this.sessionId} | Resume url ${this.resumeUrl}.`);
+        this.debug(`[READY] Session ${this.sessionId} | Resume url ${this.resumeURL}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
         break;
@@ -856,7 +856,7 @@ class WebSocketShard extends EventEmitter {
     if (reset) {
       this.sequence = -1;
       this.sessionId = null;
-      this.resumeUrl = null;
+      this.resumeURL = null;
     }
 
     // Step 6: reset the rate limit data

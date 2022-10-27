@@ -2994,7 +2994,7 @@ export class WebSocketShard extends EventEmitter {
   private sequence: number;
   private closeSequence: number;
   private sessionId: string | null;
-  private resumeUrl: string | null;
+  private resumeURL: string | null;
   private lastPingTimestamp: number;
   private lastHeartbeatAcked: boolean;
   private readonly ratelimit: {
