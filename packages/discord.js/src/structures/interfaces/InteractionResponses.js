@@ -124,7 +124,7 @@ class InteractionResponses {
   /**
    * Fetches a reply to this interaction.
    * @see Webhook#fetchMessage
-   * @param {MessageResolvable|'@original'} [message='@original'] The response to fetch
+   * @param {Snowflake|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
    * // Fetch the initial reply to this interaction
