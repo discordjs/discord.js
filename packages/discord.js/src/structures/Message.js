@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -622,10 +622,10 @@ class Message extends Base {
   get bulkDeletable() {
     const permissions = this.channel?.permissionsFor(this.client.user);
     return (
-      this.deletable &&
       this.inGuild() &&
-      permissions.has(PermissionFlagsBits.ManageMessages) &&
-      Date.now() - this.createdTimestamp < 1_209_600_000
+      Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+      this.deletable &&
+      permissions?.has(PermissionFlagsBits.ManageMessages, false)
     );
   }
 

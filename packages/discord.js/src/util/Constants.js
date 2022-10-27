@@ -3,6 +3,12 @@
 const { ChannelType, MessageType } = require('discord-api-types/v10');
 
 /**
+ * Max bulk deletable message age
+ * @typedef {number} MaxBulkDeletableMessageAge
+ */
+exports.MaxBulkDeletableMessageAge = 1_209_600_000;
+
+/**
  * The name of an item to be swept in Sweepers
  * * `applicationCommands` - both global and guild commands
  * * `bans`
