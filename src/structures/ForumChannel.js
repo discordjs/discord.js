@@ -71,7 +71,8 @@ class ForumChannel extends GuildChannel {
        * The emoji to show in the add reaction button on a thread in a guild forum channel
        * @type {?DefaultReactionEmoji}
        */
-      this.defaultReactionEmoji = data.default_reaction_emoji && transformAPIGuildDefaultReaction(data.default_reaction_emoji);
+      this.defaultReactionEmoji =
+        data.default_reaction_emoji && transformAPIGuildDefaultReaction(data.default_reaction_emoji);
     } else {
       this.defaultReactionEmoji ??= null;
     }
