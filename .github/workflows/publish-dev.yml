@@ -42,10 +42,9 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build dependencies
         run: yarn build
