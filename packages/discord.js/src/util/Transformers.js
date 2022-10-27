@@ -1,5 +1,6 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
 
 /**
@@ -9,6 +10,7 @@ const snakeCase = require('lodash.snakecase');
  */
 function toSnakeCase(obj) {
   if (typeof obj !== 'object' || !obj) return obj;
+  if (isJSONEncodable(obj)) return obj.toJSON();
   if (obj instanceof Date) return obj;
   if (Array.isArray(obj)) return obj.map(toSnakeCase);
   return Object.fromEntries(Object.entries(obj).map(([key, value]) => [snakeCase(key), toSnakeCase(value)]));
