@@ -14,7 +14,7 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
+const { InteractionTypes, MessageTypes, SystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -636,10 +636,10 @@ class Message extends Base {
   get bulkDeletable() {
     const permissions = this.channel?.permissionsFor(this.client.user);
     return (
-      this.deletable &&
       this.inGuild() &&
-      permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) &&
-      Date.now() - this.createdTimestamp < 1_209_600_000
+      Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+      this.deletable &&
+      permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)
     );
   }
 

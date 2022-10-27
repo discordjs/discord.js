@@ -4,6 +4,12 @@ const process = require('node:process');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError, TypeError } = require('../errors');
 
+/**
+ * Max bulk deletable message age
+ * @typedef {number} MaxBulkDeletableMessageAge
+ */
+exports.MaxBulkDeletableMessageAge = 1_209_600_000;
+
 exports.UserAgent = `DiscordBot (${Package.homepage}, ${Package.version}) Node.js/${process.version}`;
 
 /**
