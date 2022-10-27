@@ -766,6 +766,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private presence: ClientPresence;
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
+  private get _censoredToken(): string | null;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
