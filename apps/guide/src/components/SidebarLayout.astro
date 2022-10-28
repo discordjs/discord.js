@@ -13,15 +13,13 @@ const pages = await Astro.glob<{ category: string; title: string }>('../pages/**
 type Props = MarkdownLayoutProps<{}>;
 const { headings, url, frontmatter } = Astro.props;
 
-const groupedPages = pages.reduce((acc, page) => {
+const groupedPages = pages.reduce<Record<string, typeof pages>>((acc, page) => {
 	const { category } = page.frontmatter;
-	if (!acc[category]) {
-		acc[category] = [];
-	}
+	acc[category] ??= [];
 
 	acc[category]?.push(page);
 	return acc;
-}, {} as Record<string, typeof pages>);
+}, {});
 
 // @ts-expect-error props is not typed
 const category = frontmatter.category as string;
