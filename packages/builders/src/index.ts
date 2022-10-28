@@ -16,10 +16,21 @@ export * from './components/selectMenu/BaseSelectMenu.js';
 export * from './components/selectMenu/ChannelSelectMenu.js';
 export * from './components/selectMenu/MentionableSelectMenu.js';
 export * from './components/selectMenu/RoleSelectMenu.js';
-export * from './components/selectMenu/SelectMenu.js';
-export * from './components/selectMenu/SelectMenuOption.js';
-export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/StringSelectMenu.js';
+// TODO: Remove those aliases in v2
+export {
+	/**
+	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuBuilder} instead.
+	 */
+	StringSelectMenuBuilder as SelectMenuBuilder,
+} from './components/selectMenu/StringSelectMenu.js';
+export {
+	/**
+	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuOptionBuilder} instead.
+	 */
+	StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
+} from './components/selectMenu/StringSelectMenuOption.js';
+export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/UserSelectMenu.js';
 
 export * as SlashCommandAssertions from './interactions/slashCommands/Assertions.js';
