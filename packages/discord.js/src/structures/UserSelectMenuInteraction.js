@@ -24,9 +24,9 @@ class UserSelectMenuInteraction extends SelectMenuInteraction {
        * Collection of the selected users
        * @type {Collection<Snowflake, GuildMember|APIGuildMember>?}
        */
-      this.members = new Collection();
-      for (const member of Object.values(data.data.resolved.members)) {
-        this.members.set(member.id, this.guild?.members._add(member) ?? member);
+      for (const [id, member] of Object.entries(data.data.resolved.members)) {
+        const user = data.data.resolved.users[id];
+        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
       }
     } else {
       this.members = null;
