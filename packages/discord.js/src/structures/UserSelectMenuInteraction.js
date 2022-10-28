@@ -20,6 +20,7 @@ class UserSelectMenuInteraction extends SelectMenuInteraction {
     }
 
     if (data.data.resolved.members) {
+      this.members = new Collection()
       /**
        * Collection of the selected users
        * @type {Collection<Snowflake, GuildMember|APIGuildMember>?}
