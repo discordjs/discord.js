@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -327,5 +328,10 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
+
+BaseInteraction.prototype.isSelectMenu = deprecate(
+  BaseInteraction.prototype.isSelectMenu,
+  'BaseInteraction#isSelectMenu is deprecated. Use BaseInteraction#isStringSelectMenu instead.',
+);
 
 module.exports = BaseInteraction;

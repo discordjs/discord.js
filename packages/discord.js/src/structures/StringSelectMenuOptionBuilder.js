@@ -17,6 +17,7 @@ class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
       }),
     );
   }
+
   /**
    * Sets the emoji to display on this option
    * @param {ComponentEmojiResolvable} emoji The emoji to display on this option
