@@ -639,7 +639,8 @@ class Message extends Base {
       this.inGuild() &&
       Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
       this.deletable &&
-      permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)
+      permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false) ??
+      false
     );
   }
 
