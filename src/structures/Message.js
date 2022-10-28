@@ -636,10 +636,10 @@ class Message extends Base {
   get bulkDeletable() {
     const permissions = this.channel?.permissionsFor(this.client.user);
     return (
-      this.inGuild() &&
-      Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
-      this.deletable &&
-      permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false) ??
+      (this.inGuild() &&
+        Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+        this.deletable &&
+        permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)) ??
       false
     );
   }
