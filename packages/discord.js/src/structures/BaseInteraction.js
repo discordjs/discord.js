@@ -331,7 +331,7 @@ class BaseInteraction extends Base {
 
 BaseInteraction.prototype.isSelectMenu = deprecate(
   BaseInteraction.prototype.isSelectMenu,
-  'BaseInteraction#isSelectMenu is deprecated. Use BaseInteraction#isStringSelectMenu instead.',
+  'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
 );
 
 module.exports = BaseInteraction;
