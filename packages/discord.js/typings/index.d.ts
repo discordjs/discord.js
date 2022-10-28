@@ -2433,6 +2433,8 @@ export type AnySelectMenuInteraction<Cached extends CacheType = CacheType> =
   | MentionableSelectMenuInteraction<Cached>
   | ChannelSelectMenuInteraction<Cached>;
 
+export type SelectMenuType = APISelectMenuComponent['type'];
+
 export interface ShardEventTypes {
   death: [process: ChildProcess | Worker];
   disconnect: [];
@@ -3286,6 +3288,7 @@ export const Constants: {
   TextBasedChannelTypes: TextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
+  SelectMenuTypes: SelectMenuType[];
 };
 
 export const version: string;

@@ -115,7 +115,7 @@ function createComponentBuilder(data) {
     case ComponentType.Button:
       return new ButtonBuilder(data);
     case ComponentType.StringSelect:
-      return new SelectMenuBuilder(data);
+      return new StringSelectMenuBuilder(data);
     case ComponentType.TextInput:
       return new TextInputBuilder(data);
     case ComponentType.UserSelect:
@@ -144,7 +144,7 @@ const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMen
 const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
 const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
 const RoleSelectMenuComponent = require('../structures/RoleSelectMenuComponent');
-const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
+const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
 const StringSelectMenuComponent = require('../structures/StringSelectMenuComponent');
 const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');

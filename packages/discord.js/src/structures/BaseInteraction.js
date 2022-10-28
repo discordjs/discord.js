@@ -4,6 +4,7 @@ const { deprecate } = require('util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { SelectMenuTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -269,7 +270,7 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
-  // TODO: Remove in next major
+  // TODO: Replace with isAnySelectMenu in the next major - get rid of isAnySelectMenu
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
@@ -278,6 +279,14 @@ class BaseInteraction extends Base {
    */
   isSelectMenu() {
     return this.isStringSelectMenu();
+  }
+
+  /**
+   * Indicates whether this interaction is a select menu of any known type.
+   * @returns {boolean}
+   */
+  isAnySelectMenu() {
+    return this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType);
   }
 
   /**
