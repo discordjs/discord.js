@@ -1,7 +1,7 @@
-import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
-import { BaseSelectMenu } from './BaseSelectMenu.js';
+import { ComponentType, type APIRoleSelectComponent } from 'discord-api-types/v10';
+import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
-export class RoleSelectMenuBuilder extends BaseSelectMenu {
+export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder {
 	/**
 	 * Creates a new select menu from API data
 	 *
@@ -24,7 +24,7 @@ export class RoleSelectMenuBuilder extends BaseSelectMenu {
 	 * 	.setMinValues(1)
 	 * ```
 	 */
-	public constructor(data?: Partial<APISelectMenuComponent>) {
+	public constructor(data?: Partial<APIRoleSelectComponent>) {
 		super({ ...data, type: ComponentType.RoleSelect });
 	}
 }

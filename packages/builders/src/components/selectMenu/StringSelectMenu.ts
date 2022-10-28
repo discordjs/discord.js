@@ -1,10 +1,10 @@
-import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
+import { ComponentType, type APIStringSelectComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { jsonOptionValidator, optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
-import { BaseSelectMenu } from './BaseSelectMenu.js';
+import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 import { SelectMenuOptionBuilder } from './SelectMenuOption.js';
 
-export class StringSelectMenuBuilder extends BaseSelectMenu {
+export class StringSelectMenuBuilder extends BaseSelectMenuBuilder {
 	/**
 	 * The options within this select menu
 	 */
@@ -41,7 +41,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenu {
 	 * 	});
 	 * ```
 	 */
-	public constructor(data?: Partial<APISelectMenuComponent>) {
+	public constructor(data?: Partial<APIStringSelectComponent>) {
 		const { options, ...initData } = data ?? {};
 		super({ ...initData, type: ComponentType.StringSelect });
 		this.options = options?.map((option: APISelectMenuOption) => new SelectMenuOptionBuilder(option)) ?? [];
@@ -91,13 +91,13 @@ export class StringSelectMenuBuilder extends BaseSelectMenu {
 	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public override toJSON(): APISelectMenuComponent {
+	public override toJSON(): APIStringSelectComponent {
 		validateRequiredSelectMenuParameters(this.options, this.data.custom_id);
 
 		return {
 			...this.data,
 			options: this.options.map((option) => option.toJSON()),
-		} as APISelectMenuComponent;
+		} as APIStringSelectComponent;
 	}
 }
 

@@ -1,7 +1,7 @@
-import { ComponentType, type APISelectMenuComponent } from 'discord-api-types/v10';
-import { BaseSelectMenu } from './BaseSelectMenu.js';
+import { ComponentType, type APIUserSelectComponent } from 'discord-api-types/v10';
+import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
-export class UserSelectMenuBuilder extends BaseSelectMenu {
+export class UserSelectMenuBuilder extends BaseSelectMenuBuilder {
 	/**
 	 * Creates a new select menu from API data
 	 *
@@ -24,7 +24,7 @@ export class UserSelectMenuBuilder extends BaseSelectMenu {
 	 * 	.setMinValues(1)
 	 * ```
 	 */
-	public constructor(data?: Partial<APISelectMenuComponent>) {
+	public constructor(data?: Partial<APIUserSelectComponent>) {
 		super({ ...data, type: ComponentType.UserSelect });
 	}
 }
