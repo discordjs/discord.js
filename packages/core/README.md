@@ -55,7 +55,7 @@ client.on('interactionCreate', async ({ interaction, api }) => {
 		return;
 	}
 
-	api.interactions.reply(interaction, { content: 'Pong!', flags: MessageFlags.Ephemeral });
+	api.interactions.reply(interaction.id, interaction.token, { content: 'Pong!', flags: MessageFlags.Ephemeral });
 });
 
 // Listen for the ready event
