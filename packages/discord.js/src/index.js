@@ -174,6 +174,7 @@ exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteract
 exports.StringSelectMenuInteraction = require('./structures/StringSelectMenuInteraction');
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction');
 exports.SelectMenuOptionBuilder = require('./structures/SelectMenuOptionBuilder');
+exports.StringSelectMenuOptionBuilder = require('./structures/StringSelectMenuOptionBuilder');
 exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
 exports.Sticker = require('./structures/Sticker').Sticker;

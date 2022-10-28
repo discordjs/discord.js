@@ -1,13 +1,13 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const SelectMenuInteraction = require('./SelectMenuInteraction');
+const MessageComponentInteraction = require('./MessageComponentInteraction');
 
 /**
  * Represents a {@link ComponentType.MentionableSelect} select menu interaction.
- * @extends {SelectMenuInteraction}
+ * @extends {MessageComponentInteraction}
  */
-class MentionableSelectMenuInteraction extends SelectMenuInteraction {
+class MentionableSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
 
@@ -15,15 +15,15 @@ class MentionableSelectMenuInteraction extends SelectMenuInteraction {
 
     /**
      * Collection of the selected users
-     * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
-     */
-    this.members = new Collection();
-
-    /**
-     * Collection of the selected users
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
+
+    /**
+     * Collection of the selected users
+     * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
+     */
+    this.members = new Collection();
 
     /**
      * Collection of the selected roles

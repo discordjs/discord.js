@@ -1,11 +1,21 @@
 'use strict';
 
-const SelectMenuInteraction = require('./SelectMenuInteraction');
+const MessageComponentInteraction = require('./MessageComponentInteraction');
 
 /**
  * Represents a {@link ComponentType.StringSelect} select menu interaction.
- * @extends {SelectMenuInteraction}
+ * @extends {MessageComponentInteraction}
  */
-class StringSelectMenuInteraction extends SelectMenuInteraction {}
+class StringSelectMenuInteraction extends MessageComponentInteraction {
+  constructor(client, data) {
+    super(client, data);
+
+    /**
+     * The values selected
+     * @type {string[]}
+     */
+    this.values = data.data.values ?? [];
+  }
+}
 
 module.exports = StringSelectMenuInteraction;

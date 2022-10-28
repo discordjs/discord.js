@@ -141,6 +141,7 @@ import {
   ChannelFlagsBitField,
   GuildForumThreadManager,
   GuildTextThreadManager,
+  AnySelectMenuInteraction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1508,7 +1509,7 @@ if (interaction.inGuild()) {
 
 client.on('interactionCreate', async interaction => {
   if (interaction.type === InteractionType.MessageComponent) {
-    expectType<SelectMenuInteraction | ButtonInteraction>(interaction);
+    expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
     if (interaction.inCachedGuild()) {
