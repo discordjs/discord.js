@@ -268,12 +268,55 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
+  // TODO: Remove in next major
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
+   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
+   *
+   * @deprecated Use {@link Interaction#isStringSelectMenu} instead
    */
   isSelectMenu() {
-    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.SelectMenu;
+    return this.isStringSelectMenu();
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
+   * @returns {boolean}
+   */
+  isStringSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.StringSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link UserSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isUserSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.UserSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link RoleSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isRoleSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.RoleSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link ChannelSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isChannelSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.ChannelSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isMentionableSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.MentionableSelect;
   }
 
   /**
