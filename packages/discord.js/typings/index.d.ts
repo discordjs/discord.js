@@ -639,6 +639,7 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): StringSelectMenuBuilder;
 }
 
+/** @deprecated */
 export { StringSelectMenuBuilder as SelectMenuBuilder };
 
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
@@ -697,6 +698,7 @@ export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIString
   public get options(): APISelectMenuOption[];
 }
 
+/** @deprecated */
 export { StringSelectMenuComponent as SelectMenuComponent };
 
 export class UserSelectMenuComponent extends BaseSelectMenuComponent<APIUserSelectComponent> {}
@@ -1612,6 +1614,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
   /** @deprecated */
   public isSelectMenu(): this is StringSelectMenuInteraction<Cached>;
+  public isAnySelectMenu(): this is AnySelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isUserSelectMenu(): this is UserSelectMenuInteraction<Cached>;
   public isRoleSelectMenu(): this is RoleSelectMenuInteraction<Cached>;
@@ -2346,6 +2349,7 @@ export class StringSelectMenuInteraction<
   public inRawGuild(): this is StringSelectMenuInteraction<'raw'>;
 }
 
+/** @deprecated */
 export { StringSelectMenuInteraction as SelectMenuInteraction };
 
 export class UserSelectMenuInteraction<
