@@ -21,8 +21,9 @@ import type {
 	GatewayGuildMemberRemoveDispatchData,
 	GatewayGuildMembersChunkDispatchData,
 	GatewayGuildMemberUpdateDispatchData,
+	GatewayGuildRoleCreateDispatchData,
 	GatewayGuildRoleDeleteDispatchData,
-	GatewayGuildRoleModifyDispatchData,
+	GatewayGuildRoleUpdateDispatchData,
 	GatewayGuildScheduledEventCreateDispatchData,
 	GatewayGuildScheduledEventDeleteDispatchData,
 	GatewayGuildScheduledEventUpdateDispatchData,
@@ -46,13 +47,12 @@ import type {
 	GatewayMessageUpdateDispatchData,
 	GatewayPresenceUpdateDispatchData,
 	GatewayReadyDispatchData,
-	GatewayResumedDispatch,
 	GatewayStageInstanceCreateDispatchData,
 	GatewayStageInstanceDeleteDispatchData,
 	GatewayStageInstanceUpdateDispatchData,
 	GatewayThreadCreateDispatchData,
 	GatewayThreadDeleteDispatchData,
-	GatewayThreadListSync,
+	GatewayThreadListSyncDispatchData,
 	GatewayThreadMembersUpdateDispatchData,
 	GatewayThreadMemberUpdateDispatchData,
 	GatewayThreadUpdateDispatchData,
@@ -94,9 +94,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.GuildMemberRemove]: [WithIntrinsicProps<GatewayGuildMemberRemoveDispatchData>];
 	[GatewayDispatchEvents.GuildMemberUpdate]: [WithIntrinsicProps<GatewayGuildMemberUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildMembersChunk]: [WithIntrinsicProps<GatewayGuildMembersChunkDispatchData>];
-	[GatewayDispatchEvents.GuildRoleCreate]: [WithIntrinsicProps<GatewayGuildRoleModifyDispatchData>];
+	[GatewayDispatchEvents.GuildRoleCreate]: [WithIntrinsicProps<GatewayGuildRoleCreateDispatchData>];
 	[GatewayDispatchEvents.GuildRoleDelete]: [WithIntrinsicProps<GatewayGuildRoleDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildRoleUpdate]: [WithIntrinsicProps<GatewayGuildRoleModifyDispatchData>];
+	[GatewayDispatchEvents.GuildRoleUpdate]: [WithIntrinsicProps<GatewayGuildRoleUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildScheduledEventCreate]: [WithIntrinsicProps<GatewayGuildScheduledEventCreateDispatchData>];
 	[GatewayDispatchEvents.GuildScheduledEventDelete]: [WithIntrinsicProps<GatewayGuildScheduledEventDeleteDispatchData>];
 	[GatewayDispatchEvents.GuildScheduledEventUpdate]: [WithIntrinsicProps<GatewayGuildScheduledEventUpdateDispatchData>];
@@ -131,7 +131,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.StageInstanceUpdate]: [WithIntrinsicProps<GatewayStageInstanceUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadCreate]: [WithIntrinsicProps<GatewayThreadCreateDispatchData>];
 	[GatewayDispatchEvents.ThreadDelete]: [WithIntrinsicProps<GatewayThreadDeleteDispatchData>];
-	[GatewayDispatchEvents.ThreadListSync]: [WithIntrinsicProps<GatewayThreadListSync>];
+	[GatewayDispatchEvents.ThreadListSync]: [WithIntrinsicProps<GatewayThreadListSyncDispatchData>];
 	[GatewayDispatchEvents.ThreadMemberUpdate]: [WithIntrinsicProps<GatewayThreadMemberUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadMembersUpdate]: [WithIntrinsicProps<GatewayThreadMembersUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadUpdate]: [WithIntrinsicProps<GatewayThreadUpdateDispatchData>];
@@ -139,7 +139,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.VoiceServerUpdate]: [WithIntrinsicProps<GatewayVoiceServerUpdateDispatchData>];
 	[GatewayDispatchEvents.VoiceStateUpdate]: [WithIntrinsicProps<GatewayVoiceStateUpdateDispatchData>];
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
-	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<GatewayResumedDispatch['d']>];
+	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<never>];
 	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
 	[GatewayDispatchEvents.AutoModerationActionExecution]: [
 		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,

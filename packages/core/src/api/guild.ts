@@ -469,7 +469,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches an emoji for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the emoji for
+	 * @param guildId - The id of the guild to fetch the emoji from
 	 * @param emojiId - The id of the emoji to fetch
 	 */
 	public async getEmoji(guildId: Snowflake, emojiId: Snowflake) {

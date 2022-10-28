@@ -49,10 +49,13 @@ export class WebhooksAPI {
 	 *
 	 * @param id - The id of the webhook to edit
 	 * @param webhook - The new webhook data
-	 * @param token - The token of the webhook
-	 * @param reason - The reason for editing the webhook
+	 * @param options - The options to use when editing the webhook
 	 */
-	public async edit(id: Snowflake, webhook: RESTPatchAPIWebhookJSONBody, token?: string, reason?: string) {
+	public async edit(
+		id: Snowflake,
+		webhook: RESTPatchAPIWebhookJSONBody,
+		{ token, reason }: { reason?: string; token?: string } = {},
+	) {
 		return this.rest.patch(Routes.webhook(id, token), { reason, body: webhook }) as Promise<RESTPatchAPIWebhookResult>;
 	}
 
@@ -60,10 +63,9 @@ export class WebhooksAPI {
 	 * Deletes a webhook
 	 *
 	 * @param id - The id of the webhook to delete
-	 * @param token - The token of the webhook
-	 * @param reason - The reason for deleting the webhook
+	 * @param options - The options to use when deleting the webhook
 	 */
-	public async delete(id: Snowflake, token?: string, reason?: string) {
+	public async delete(id: Snowflake, { token, reason }: { reason?: string; token?: string } = {}) {
 		await this.rest.delete(Routes.webhook(id, token), { reason });
 	}
 
