@@ -18,7 +18,7 @@
 
 ## About
 
-`@discordjs/core` is thinly abstracted wrapper around the "core" components of the discord API: rest, and gateway.
+`@discordjs/core` is a thinly abstracted wrapper around the "core" components of the Discord API: REST, and gateway.
 
 ## Installation
 
