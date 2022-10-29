@@ -37,7 +37,7 @@ import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
 import { Gateway, GatewayIntentBits, InteractionType, MessageFlags, createClient } from '@discordjs/core';
 
-// Create REST and web socket managers directly
+// Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
 const ws = new WebSocketManager({
 	token,
@@ -49,7 +49,7 @@ const ws = new WebSocketManager({
 const client = createClient({ rest, ws });
 
 // Listen for interactions
-// Each event contains an `api` prop along with the event data that allows you to interface with the discord REST API
+// Each event contains an `api` prop along with the event data that allows you to interface with the Discord REST API
 client.on('interactionCreate', async ({ interaction, api }) => {
 	if (!(interaction.type === InteractionType.ApplicationCommand) || interaction.data.name !== 'ping') {
 		return;
@@ -61,20 +61,20 @@ client.on('interactionCreate', async ({ interaction, api }) => {
 // Listen for the ready event
 client.on('ready', () => console.log('Ready!'));
 
-// Start the ws connection.
+// Start the WebSocket connection.
 ws.connect();
 ```
 
 ## Independent REST API Usage
 
 ```ts
-// Create rest instance
+// Create REST instance
 const rest = new REST({ version: '10' }).setToken(token);
 
-// Pass into api
+// Pass into API
 const api = new API(rest);
 
-// Fetch a guild using the api wrapper
+// Fetch a guild using the API wrapper
 const guild = await api.guilds.get('1234567891011');
 ```
 

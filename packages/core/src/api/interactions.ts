@@ -16,7 +16,7 @@ export class InteractionsAPI {
 	/**
 	 * Replies to an interaction
 	 *
-	 * @param interactionId - The Id of the interaction
+	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when replying
 	 */
@@ -65,7 +65,7 @@ export class InteractionsAPI {
 	/**
 	 * Reply to a deferred interaction
 	 *
-	 * @param applicationId - The application Id of the interaction
+	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when replying
 	 */
