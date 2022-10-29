@@ -640,7 +640,7 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
 }
 
 export {
-  /** @deprecated */
+  /** @deprecated Use {@link StringSelectMenuBuilder} instead */
   StringSelectMenuBuilder as SelectMenuBuilder,
 };
 
@@ -701,7 +701,7 @@ export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIString
 }
 
 export {
-  /** @deprecated */
+  /** @deprecated Use {@link StringSelectMenuComponent} instead */
   StringSelectMenuComponent as SelectMenuComponent,
 };
 
@@ -1616,7 +1616,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  /** @deprecated */
+  /** @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead */
   public isSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isAnySelectMenu(): this is AnySelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
@@ -2354,7 +2354,7 @@ export class StringSelectMenuInteraction<
 }
 
 export {
-  /** @deprecated */
+  /** @deprecated Use {@link StringSelectMenuInteraction} instead */
   StringSelectMenuInteraction as SelectMenuInteraction,
 };
 
