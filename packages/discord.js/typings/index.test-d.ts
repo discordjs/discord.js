@@ -113,7 +113,7 @@ import {
   ButtonBuilder,
   EmbedBuilder,
   MessageActionRowComponent,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
   TextInputBuilder,
   TextInputComponent,
   Embed,
@@ -144,6 +144,10 @@ import {
   AnySelectMenuInteraction,
   StringSelectMenuInteraction,
   StringSelectMenuComponent,
+  UserSelectMenuInteraction,
+  RoleSelectMenuInteraction,
+  ChannelSelectMenuInteraction,
+  MentionableSelectMenuInteraction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -492,7 +496,7 @@ client.on('messageCreate', async message => {
   const selectsRow: ActionRowData<MessageActionRowComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new SelectMenuBuilder(),
+      new StringSelectMenuBuilder(),
       {
         type: ComponentType.StringSelect,
         label: 'select menu',
@@ -1126,7 +1130,7 @@ client.on('guildCreate', async g => {
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
         { type: ComponentType.StringSelect, customId: 'foo' },
-        new SelectMenuBuilder(),
+        new StringSelectMenuBuilder(),
         // @ts-expect-error
         { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
         // @ts-expect-error
@@ -1888,7 +1892,7 @@ const button = new ButtonBuilder({
   customId: 'test',
 });
 
-const selectMenu = new SelectMenuBuilder({
+const selectMenu = new StringSelectMenuBuilder({
   maxValues: 10,
   minValues: 2,
   customId: 'test',
@@ -1898,7 +1902,7 @@ new ActionRowBuilder({
   components: [selectMenu.toJSON(), button.toJSON()],
 });
 
-new SelectMenuBuilder({
+new StringSelectMenuBuilder({
   customId: 'foo',
 });
 
@@ -1957,10 +1961,10 @@ chatInputInteraction.showModal({
 });
 
 declare const selectMenuData: APISelectMenuComponent;
-SelectMenuBuilder.from(selectMenuData);
+StringSelectMenuBuilder.from(selectMenuData);
 
 declare const selectMenuComp: SelectMenuComponent;
-SelectMenuBuilder.from(selectMenuComp);
+StringSelectMenuBuilder.from(selectMenuComp);
 
 declare const buttonData: APIButtonComponent;
 ButtonBuilder.from(buttonData);
@@ -2031,3 +2035,22 @@ expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(threadChannel.flags);
 
 expectType<null>(partialGroupDMChannel.flags);
+
+// Select menu type narrowing
+if (interaction.isAnySelectMenu()) {
+  expectType<AnySelectMenuInteraction>(interaction);
+}
+
+declare const anySelectMenu: AnySelectMenuInteraction;
+
+if (anySelectMenu.isStringSelectMenu()) {
+  expectType<StringSelectMenuInteraction>(anySelectMenu);
+} else if (anySelectMenu.isUserSelectMenu()) {
+  expectType<UserSelectMenuInteraction>(anySelectMenu);
+} else if (anySelectMenu.isRoleSelectMenu()) {
+  expectType<RoleSelectMenuInteraction>(anySelectMenu);
+} else if (anySelectMenu.isChannelSelectMenu()) {
+  expectType<ChannelSelectMenuInteraction>(anySelectMenu);
+} else if (anySelectMenu.isMentionableSelectMenu()) {
+  expectType<MentionableSelectMenuInteraction>(anySelectMenu);
+}
