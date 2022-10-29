@@ -145,7 +145,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild's channels
 	 *
-	 * @param guildId - The id of the guild to fetch the channels for
+	 * @param guildId - The id of the guild to fetch the channels from
 	 */
 	public async getChannels(guildId: Snowflake) {
 		return this.rest.get(Routes.guildChannels(guildId)) as Promise<RESTGetAPIGuildChannelsResult>;
@@ -168,7 +168,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a guild channel's positions
 	 *
-	 * @param guildId - The id of the guild to edit the channel positions for
+	 * @param guildId - The id of the guild to edit the channel positions from
 	 * @param data - The data to edit the channel positions with
 	 * @param reason - The reason for editing the channel positions
 	 */
@@ -192,7 +192,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild member ban
 	 *
-	 * @param guildId - The id of the guild to fetch the ban for
+	 * @param guildId - The id of the guild to fetch the ban from
 	 */
 	public async getMemberBans(guildId: Snowflake) {
 		return this.rest.get(Routes.guildBans(guildId)) as Promise<RESTGetAPIGuildBansResult>;
@@ -303,7 +303,7 @@ export class GuildsAPI {
 	/**
 	 * Fetch the number of pruned members in a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the number of pruned members for
+	 * @param guildId - The id of the guild to fetch the number of pruned members from
 	 * @param options - The options for fetching the number of pruned members
 	 */
 	public async getPruneCount(guildId: Snowflake, options: { days?: number; includeRoles?: string[] } = {}) {
@@ -329,7 +329,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches voice regions for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the voice regions for
+	 * @param guildId - The id of the guild to fetch the voice regions from
 	 */
 	public async getVoiceRegions(guildId: Snowflake) {
 		return this.rest.get(Routes.guildVoiceRegions(guildId)) as Promise<RESTGetAPIGuildVoiceRegionsResult>;
@@ -338,7 +338,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the invites for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the invites for
+	 * @param guildId - The id of the guild to fetch the invites from
 	 */
 	public async getInvites(guildId: Snowflake) {
 		return this.rest.get(Routes.guildInvites(guildId)) as Promise<RESTGetAPIGuildInvitesResult>;
@@ -347,7 +347,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the integrations for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the integrations for
+	 * @param guildId - The id of the guild to fetch the integrations from
 	 */
 	public async getIntegrations(guildId: Snowflake) {
 		return this.rest.get(Routes.guildIntegrations(guildId)) as Promise<RESTGetAPIGuildIntegrationsResult>;
@@ -367,7 +367,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget settings for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the widget settings for
+	 * @param guildId - The id of the guild to fetch the widget settings from
 	 */
 	public async getWidgetSettings(guildId: Snowflake) {
 		return this.rest.get(Routes.guildWidgetSettings(guildId)) as Promise<RESTGetAPIGuildWidgetImageResult>;
@@ -376,7 +376,7 @@ export class GuildsAPI {
 	/**
 	 * Edits the widget settings for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the widget settings for
+	 * @param guildId - The id of the guild to edit the widget settings from
 	 * @param data - The new widget settings data
 	 * @param reason - The reason for editing the widget settings
 	 */
@@ -390,7 +390,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the widget for
+	 * @param guildId - The id of the guild to fetch the widget from
 	 */
 	public async getWidget(guildId: Snowflake) {
 		return this.rest.get(Routes.guildWidgetJSON(guildId)) as Promise<RESTGetAPIGuildWidgetJSONResult>;
@@ -399,7 +399,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the vanity url for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the vanity url for
+	 * @param guildId - The id of the guild to fetch the vanity url from
 	 */
 	public async getVanityURL(guildId: Snowflake) {
 		return this.rest.get(Routes.guildVanityUrl(guildId)) as Promise<RESTGetAPIGuildVanityUrlResult>;
@@ -408,7 +408,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget image for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the widget image for
+	 * @param guildId - The id of the guild to fetch the widget image from
 	 * @param style - The style of the widget image
 	 */
 	public async getWidgetImage(guildId: Snowflake, style?: GuildWidgetStyle) {
@@ -420,7 +420,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the welcome screen for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the welcome screen for
+	 * @param guildId - The id of the guild to fetch the welcome screen from
 	 */
 	public async getWelcomeScreen(guildId: Snowflake) {
 		return this.rest.get(Routes.guildWelcomeScreen(guildId)) as Promise<RESTGetAPIGuildWelcomeScreenResult>;
@@ -460,7 +460,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all emojis for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the emojis for
+	 * @param guildId - The id of the guild to fetch the emojis from
 	 */
 	public async getEmojis(guildId: Snowflake) {
 		return this.rest.get(Routes.guildEmojis(guildId)) as Promise<RESTGetAPIGuildEmojisResult>;
@@ -479,7 +479,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new emoji for a guild
 	 *
-	 * @param guildId - The id of the guild to create the emoji for
+	 * @param guildId - The id of the guild to create the emoji from
 	 * @param data - The data for creating the emoji
 	 * @param reason - The reason for creating the emoji
 	 */
@@ -493,7 +493,7 @@ export class GuildsAPI {
 	/**
 	 * Edits an emoji for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the emoji for
+	 * @param guildId - The id of the guild to edit the emoji from
 	 * @param emojiId - The id of the emoji to edit
 	 * @param data - The data for editing the emoji
 	 * @param reason - The reason for editing the emoji
@@ -513,7 +513,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes an emoji for a guild
 	 *
-	 * @param guildId - The id of the guild to delete the emoji for
+	 * @param guildId - The id of the guild to delete the emoji from
 	 * @param emojiId - The id of the emoji to delete
 	 * @param reason - The reason for deleting the emoji
 	 */
@@ -524,7 +524,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all scheduled events for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the scheduled events for
+	 * @param guildId - The id of the guild to fetch the scheduled events from
 	 * @param options - The options for fetching the scheduled events
 	 */
 	public async getAllEvents(guildId: Snowflake, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
@@ -536,7 +536,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new scheduled event for a guild
 	 *
-	 * @param guildId - The id of the guild to create the scheduled event for
+	 * @param guildId - The id of the guild to create the scheduled event from
 	 * @param data - The data to create the event with
 	 * @param reason - The reason for creating the scheduled event
 	 */
@@ -550,7 +550,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a scheduled event for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the scheduled event for
+	 * @param guildId - The id of the guild to fetch the scheduled event from
 	 * @param eventId - The id of the scheduled event to fetch
 	 * @param options - The options for fetching the scheduled event
 	 */
@@ -563,7 +563,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a scheduled event for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the scheduled event for
+	 * @param guildId - The id of the guild to edit the scheduled event from
 	 * @param eventId - The id of the scheduled event to edit
 	 * @param data - The new event data
 	 * @param reason - The reason for editing the scheduled event
@@ -583,7 +583,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a scheduled event for a guild
 	 *
-	 * @param guildId - The id of the guild to delete the scheduled event for
+	 * @param guildId - The id of the guild to delete the scheduled event from
 	 * @param eventId - The id of the scheduled event to delete
 	 * @param reason - The reason for deleting the scheduled event
 	 */
@@ -594,7 +594,7 @@ export class GuildsAPI {
 	/**
 	 * Gets all users that are interested in a scheduled event
 	 *
-	 * @param guildId - The id of the guild to fetch the scheduled event users for
+	 * @param guildId - The id of the guild to fetch the scheduled event users from
 	 * @param eventId - The id of the scheduled event to fetch the users for
 	 * @param options - The options for fetching the scheduled event users
 	 */
@@ -611,7 +611,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all the templates for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the templates for
+	 * @param guildId - The id of the guild to fetch the templates from
 	 */
 	public async getTemplates(guildId: Snowflake) {
 		return this.rest.get(Routes.guildTemplates(guildId)) as Promise<RESTGetAPIGuildTemplatesResult>;
@@ -620,7 +620,7 @@ export class GuildsAPI {
 	/**
 	 * Syncs a template for a guild
 	 *
-	 * @param guildId - The id of the guild to sync the template for
+	 * @param guildId - The id of the guild to sync the template from
 	 * @param templateCode - The code of the template to sync
 	 */
 	public async syncTemplate(guildId: Snowflake, templateCode: string) {
@@ -630,7 +630,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a template for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the template for
+	 * @param guildId - The id of the guild to edit the template from
 	 * @param templateCode - The code of the template to edit
 	 * @param data - The data for editing the template
 	 */
@@ -643,7 +643,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a template for a guild
 	 *
-	 * @param guildId - The id of the guild to delete the template for
+	 * @param guildId - The id of the guild to delete the template from
 	 * @param templateCode - The code of the template to delete
 	 */
 	public async deleteTemplate(guildId: Snowflake, templateCode: string) {
@@ -653,7 +653,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all the stickers for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the stickers for
+	 * @param guildId - The id of the guild to fetch the stickers from
 	 */
 	public async getStickers(guildId: Snowflake) {
 		return this.rest.get(Routes.guildStickers(guildId)) as Promise<RESTGetAPIGuildStickersResult>;
@@ -662,7 +662,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a sticker for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the sticker for
+	 * @param guildId - The id of the guild to fetch the sticker from
 	 * @param stickerId - The id of the sticker to fetch
 	 */
 	public async getSticker(guildId: Snowflake, stickerId: Snowflake) {
@@ -672,7 +672,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a sticker for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the sticker for
+	 * @param guildId - The id of the guild to edit the sticker from
 	 * @param stickerId - The id of the sticker to edit
 	 * @param data - The data for editing the sticker
 	 * @param reason - The reason for editing the sticker
@@ -692,7 +692,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a sticker for a guild
 	 *
-	 * @param guildId - The id of the guild to delete the sticker for
+	 * @param guildId - The id of the guild to delete the sticker from
 	 * @param stickerId - The id of the sticker to delete
 	 * @param reason - The reason for deleting the sticker
 	 */
@@ -703,7 +703,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the audit logs for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the audit logs for
+	 * @param guildId - The id of the guild to fetch the audit logs from
 	 * @param options - The options for fetching the audit logs
 	 */
 	public async getAuditLogs(guildId: Snowflake, options: RESTGetAPIAuditLogQuery = {}) {
@@ -715,7 +715,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all auto moderation rules for a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the auto moderation rules for
+	 * @param guildId - The id of the guild to fetch the auto moderation rules from
 	 */
 	public async getAutoModerationRules(guildId: Snowflake) {
 		return this.rest.get(Routes.guildAutoModerationRules(guildId)) as Promise<RESTGetAPIAutoModerationRulesResult>;
@@ -736,7 +736,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new auto moderation rule for a guild
 	 *
-	 * @param guildId - The id of the guild to create the auto moderation rule for
+	 * @param guildId - The id of the guild to create the auto moderation rule from
 	 * @param data - The data for creating the auto moderation rule
 	 */
 	public async createAutoModerationRule(
@@ -753,7 +753,7 @@ export class GuildsAPI {
 	/**
 	 * Edits an auto moderation rule for a guild
 	 *
-	 * @param guildId - The id of the guild to edit the auto moderation rule for
+	 * @param guildId - The id of the guild to edit the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to edit
 	 * @param data - The data for editing the auto moderation rule
 	 * @param reason - The reason for editing the auto moderation rule
