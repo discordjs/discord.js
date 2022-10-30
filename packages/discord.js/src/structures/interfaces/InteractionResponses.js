@@ -171,7 +171,6 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply(message = '@original') {
-    if (this.ephemeral) throw new DiscordjsError(ErrorCodes.InteractionEphemeralReplied);
     await this.webhook.deleteMessage(message);
   }
 
