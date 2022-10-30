@@ -155,8 +155,6 @@ function escapeMarkdown(
   return text;
 }
 
-
-console.log(escapeMarkdown("_"))
 /**
  * Escapes code block markdown in a string.
  * @param {string} text Content to escape
