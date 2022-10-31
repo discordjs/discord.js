@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const MessageComponentInteraction = require('./MessageComponentInteraction');
+const Events = require('../util/Events');
 
 /**
  * Represents a {@link ComponentType.MentionableSelect} select menu interaction.
@@ -34,7 +35,16 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
     if (members) {
       for (const [id, member] of Object.entries(members)) {
         const user = users[id];
-        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
+        if (!user) {
+          this.client.emit(
+            Events.Debug,
+            `[MentionableSelectMenuInteraction] Recieved a member without a user, skipping ${id}`,
+          );
+
+          continue;
+        }
+
+        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
       }
     }
 

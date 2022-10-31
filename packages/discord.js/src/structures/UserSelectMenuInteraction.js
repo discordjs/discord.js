@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const MessageComponentInteraction = require('./MessageComponentInteraction');
+const Events = require('../util/Events');
 
 /**
  * Represents a {@link ComponentType.UserSelect} select menu interaction.
@@ -28,8 +29,18 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
     }
 
     if (data.data.resolved.members) {
-      for (const member of Object.values(data.data.resolved.members)) {
-        this.members.set(member.id, this.guild?.members._add(member) ?? member);
+      for (const [id, member] of Object.entries(data.data.resolved.members)) {
+        const user = data.data.resolved.users[id];
+        if (!user) {
+          this.client.emit(
+            Events.Debug,
+            `[UserSelectMenuInteraction] Recieved a member without a user, skipping ${id}`,
+          );
+
+          continue;
+        }
+
+        this.members.set(member.id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
       }
     }
   }
