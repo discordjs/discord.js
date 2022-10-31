@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, GuildFeature } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const Invite = require('../structures/Invite');
@@ -207,6 +207,18 @@ class GuildInviteManager extends CachedManager {
     const code = DataResolver.resolveInviteCode(invite);
 
     await this.client.rest.delete(Routes.invite(code), { reason });
+  }
+  /**
+   * Sets whether the guild's invites are disabled.
+   * @param {boolean} [disabled=true] Whether the invites are disabled
+   * @returns {Promise<void>}
+   */
+  async setDisabled(disabled = true) {
+    const features = this.guild.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
+    if (disabled) features.push(GuildFeature.InvitesDisabled);
+    await this.guild.edit({
+      features,
+    });
   }
 }
 

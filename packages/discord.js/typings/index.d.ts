@@ -3563,6 +3563,7 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+  public setDisabled(disabled?: boolean): Promise<void>;
 }
 
 export class GuildScheduledEventManager extends CachedManager<
