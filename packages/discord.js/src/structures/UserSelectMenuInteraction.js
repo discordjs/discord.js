@@ -19,7 +19,7 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
     this.users = new Collection();
 
     /**
-     * Collection of the selected users
+     * Collection of the selected members
      * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
      */
     this.members = new Collection();
@@ -34,7 +34,7 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
         if (!user) {
           this.client.emit(
             Events.Debug,
-            `[UserSelectMenuInteraction] Recieved a member without a user, skipping ${id}`,
+            `[UserSelectMenuInteraction] Received a member without a user, skipping ${id}`,
           );
 
           continue;

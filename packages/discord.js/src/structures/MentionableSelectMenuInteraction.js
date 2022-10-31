@@ -38,7 +38,7 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
         if (!user) {
           this.client.emit(
             Events.Debug,
-            `[MentionableSelectMenuInteraction] Recieved a member without a user, skipping ${id}`,
+            `[MentionableSelectMenuInteraction] Received a member without a user, skipping ${id}`,
           );
 
           continue;
