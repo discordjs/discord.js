@@ -40,7 +40,7 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
           continue;
         }
 
-        this.members.set(member.id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
+        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
       }
     }
   }
