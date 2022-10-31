@@ -1,7 +1,7 @@
 'use strict';
 
-const { process } = require('node:process');
-const { StringSelectMenuComponent } = require('./StringSelectMenuComponent');
+const process = require('node:process');
+const StringSelectMenuComponent = require('./StringSelectMenuComponent');
 
 let deprecationEmitted = false;
 
