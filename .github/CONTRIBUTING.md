@@ -34,7 +34,7 @@ When testing local changes you may notice you need to manually recompile typescr
 
 To avoid this you can use the `--watch` parameter in the package build script to automatically recompile the project when changes are detected.
 
-For example, to automatically recompile the `@discordjs/rest` project when changes are detected, run `yarn turbo run build --filter=@discordjs/rest -- --watch` in in the root folder of where you cloned the discord.js repo.
+For example, to automatically recompile the `@discordjs/rest` project when changes are detected, run `yarn turbo run build --filter=@discordjs/rest -- --watch` in the root folder of where you cloned the discord.js repo.
 
 ## Adding new packages
 
