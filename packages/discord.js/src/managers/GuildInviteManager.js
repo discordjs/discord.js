@@ -216,9 +216,7 @@ class GuildInviteManager extends CachedManager {
   async setDisabled(disabled = true) {
     const features = this.guild.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
     if (disabled) features.push(GuildFeature.InvitesDisabled);
-    await this.guild.edit({
-      features,
-    });
+    await this.guild.edit({ features });
   }
 }
 
