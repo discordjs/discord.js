@@ -26,7 +26,8 @@
 		"test": "__tests__"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"scripts"
 	],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
