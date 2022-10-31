@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.12.0](https://github.com/discordjs/discord.js/compare/13.11.0...13.12.0) - (2022-10-10)
+
+## Documentation
+
+- Update UserContextMenu documentation v13 (#8721) ([ea117bf](https://github.com/discordjs/discord.js/commit/ea117bfb7e04e1103eaf24208c06979ce8493129))
+
+## Features
+
+- **Util:** Backport `escapeMarkdown` PRs to v13 (#8703) ([8a6588a](https://github.com/discordjs/discord.js/commit/8a6588a13203120b0d185732cd7db7ecdb9f00f7))
+
 # [13.11.0](https://github.com/discordjs/discord.js/compare/13.10.3...13.11.0) - (2022-09-15)
 
 ## Bug Fixes

@@ -29,3 +29,4 @@ docs/docs.json
 .idea/
 .DS_Store
 .yarn/
+.turbo/
