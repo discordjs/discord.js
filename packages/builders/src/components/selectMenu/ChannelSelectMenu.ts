@@ -59,6 +59,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder {
 
 		return {
 			...this.data,
+			channel_types: this.channel_types
 		} as APIChannelSelectComponent;
 	}
 }
