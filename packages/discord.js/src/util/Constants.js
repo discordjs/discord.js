@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, MessageType } = require('discord-api-types/v10');
+const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v10');
 
 /**
  * The name of an item to be swept in Sweepers
@@ -114,10 +114,28 @@ exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.Public
 exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 
 /**
+ * The types of select menus. The available types are:
+ * * {@link ComponentType.StringSelect}
+ * * {@link ComponentType.UserSelect}
+ * * {@link ComponentType.RoleSelect}
+ * * {@link ComponentType.MentionableSelect}
+ * * {@link ComponentType.ChannelSelect}
+ * @typedef {ComponentType[]} SelectMenuTypes
+ */
+exports.SelectMenuTypes = [
+  ComponentType.StringSelect,
+  ComponentType.UserSelect,
+  ComponentType.RoleSelect,
+  ComponentType.MentionableSelect,
+  ComponentType.ChannelSelect,
+];
+
+/**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {SweeperKey[]} SweeperKeys The possible names of items that can be swept in sweepers
  * @property {NonSystemMessageTypes} NonSystemMessageTypes The types of messages that are not deemed a system type
  * @property {TextBasedChannelTypes} TextBasedChannelTypes The types of channels that are text-based
  * @property {ThreadChannelTypes} ThreadChannelTypes The types of channels that are threads
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
+ * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
  */
