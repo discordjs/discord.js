@@ -29,15 +29,14 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * ```
 	 */
 	public constructor(data?: Partial<APIChannelSelectComponent>) {
-		const { channel_types = [], ...initData } = data ?? {};
-		super({ ...initData, type: ComponentType.ChannelSelect, channel_types });
+		super({ ...data, type: ComponentType.ChannelSelect });
 	}
 
 	public addChannelTypes(...types: RestOrArray<ChannelType>) {
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		this.data.channel_types?.push(...channelTypesValidator.parse(types));
+		(this.data.channel_types ??= []).push(...channelTypesValidator.parse(types));
 		return this;
 	}
 
@@ -45,7 +44,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		this.data.channel_types?.splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(types));
+		(this.data.channel_types ??= []).splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(types));
 		return this;
 	}
 
