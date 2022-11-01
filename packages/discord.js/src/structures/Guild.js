@@ -1196,6 +1196,7 @@ class Guild extends AnonymousGuild {
     await this.client.rest.delete(Routes.guild(this.id));
     return this;
   }
+  
   /**
    * Sets whether this guild's invites are disabled.
    * @param {boolean} [disabled=true] Whether the invites are disabled
