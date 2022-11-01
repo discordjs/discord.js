@@ -1198,12 +1198,12 @@ class Guild extends AnonymousGuild {
   }
   /**
    * Sets whether this guild's invites are disabled.
-   * @param {boolean} [paused=true] Whether the invites are disabled
+   * @param {boolean} [disabled=true] Whether the invites are disabled
    * @returns {Promise<Guild>}
    */
-  async pauseInvites(paused = true) {
+  async disableInvites(disabled = true) {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
-    if (paused) features.push(GuildFeature.InvitesDisabled);
+    if (disabled) features.push(GuildFeature.InvitesDisabled);
     await this.edit({ features });
     return this;
   }
