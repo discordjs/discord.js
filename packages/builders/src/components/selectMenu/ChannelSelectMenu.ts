@@ -36,7 +36,8 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		(this.data.channel_types ??= []).push(...channelTypesValidator.parse(types));
+		this.data.channel_types ??= [];
+		this.data.channel_types.push(...channelTypesValidator.parse(types));
 		return this;
 	}
 
@@ -44,7 +45,8 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		(this.data.channel_types ??= []).splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(types));
+		this.data.channel_types ??= [];
+		this.data.channel_types.splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(types));
 		return this;
 	}
 
