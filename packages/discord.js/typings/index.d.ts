@@ -2815,9 +2815,10 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
+  // The following 3 methods can only be run on forum threads.
   public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
-  public pin(reason?: string): Promise<AnyThreadChannel>;
-  public unpin(reason?: string): Promise<AnyThreadChannel>;
+  public pin(reason?: string): Promise<ThreadChannel<true>>;
+  public unpin(reason?: string): Promise<ThreadChannel<true>>;
   public toString(): ChannelMention;
 }
 
