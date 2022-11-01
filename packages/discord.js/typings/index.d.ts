@@ -460,11 +460,11 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     options: InteractionDeferReplyOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
@@ -1911,11 +1911,11 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
@@ -2101,15 +2101,15 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public deleteReply(): Promise<void>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
-    options: string | MessagePayload | WebhookEditMessageOptions,
+    options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public fetchReply(): Promise<Message<BooleanCache<Cached>>>;
+  public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { fetchReply: true },
@@ -3178,6 +3178,7 @@ export class WebSocketShard extends EventEmitter {
   private sequence: number;
   private closeSequence: number;
   private sessionId: string | null;
+  private resumeURL: string | null;
   private lastPingTimestamp: number;
   private lastHeartbeatAcked: boolean;
   private readonly ratelimit: {
@@ -5973,6 +5974,10 @@ export interface WebhookEditData {
 
 export interface WebhookEditMessageOptions extends Omit<MessageEditOptions, 'flags'> {
   threadId?: Snowflake;
+}
+
+export interface InteractionEditReplyOptions extends WebhookEditMessageOptions {
+  message?: MessageResolvable | '@original';
 }
 
 export interface WebhookFetchMessageOptions {
