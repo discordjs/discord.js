@@ -68,7 +68,7 @@ export function validateRequiredSelectMenuOptionParameters(label?: string, value
 	labelValueDescriptionValidator.parse(value);
 }
 
-export const channelTypesValidator = s.nativeEnum(ChannelType).array;
+export const channelTypesValidator = s.nativeEnum(ChannelType).array.setValidationEnabled(isValidationEnabled);
 
 export const urlValidator = s.string
 	.url({

@@ -12,7 +12,7 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
 
-    const { members, users, roles } = data.data.resolved || {};
+    const { members, users, roles } = data.data.resolved ?? {};
 
     /**
      * Collection of the selected users

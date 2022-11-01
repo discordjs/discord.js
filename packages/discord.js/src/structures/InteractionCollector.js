@@ -154,7 +154,7 @@ class InteractionCollector extends Collector {
     if (
       this.messageInteractionId &&
       interaction.message?.interaction?.id &&
-      interaction.message?.interaction?.id !== this.messageInteractionId
+      interaction.message.interaction.id !== this.messageInteractionId
     ) {
       return null;
     }
