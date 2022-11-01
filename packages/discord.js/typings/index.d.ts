@@ -1151,6 +1151,7 @@ export class Guild extends AnonymousGuild {
   public fetchWidget(): Promise<Widget>;
   public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
   public leave(): Promise<Guild>;
+  public pauseInvites(paused?: boolean): Promise<Guild>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -3563,7 +3564,6 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
-  public setDisabled(disabled?: boolean): Promise<void>;
 }
 
 export class GuildScheduledEventManager extends CachedManager<

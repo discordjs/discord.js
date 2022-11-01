@@ -1196,6 +1196,17 @@ class Guild extends AnonymousGuild {
     await this.client.rest.delete(Routes.guild(this.id));
     return this;
   }
+  /**
+   * Sets whether this guild's invites are disabled.
+   * @param {boolean} [paused=true] Whether the invites are disabled
+   * @returns {Promise<Guild>}
+   */
+  async pauseInvites(paused = true) {
+    const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
+    if (paused) features.push(GuildFeature.InvitesDisabled);
+    await this.edit({ features });
+    return this;
+  }
 
   /**
    * Whether this guild equals another guild. It compares all properties, so for most operations
