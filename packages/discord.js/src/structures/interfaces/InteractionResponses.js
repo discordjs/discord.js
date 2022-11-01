@@ -122,56 +122,49 @@ class InteractionResponses {
   }
 
   /**
-   * Fetches a reply to this interaction.
+   * Fetches the initial reply to this interaction.
    * @see Webhook#fetchMessage
-   * @param {Snowflake|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
-   * // Fetch the initial reply to this interaction
+   * // Fetch the reply to this interaction
    * interaction.fetchReply()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  fetchReply(message = '@original') {
-    return this.webhook.fetchMessage(message);
+  fetchReply() {
+    return this.webhook.fetchMessage('@original');
   }
 
   /**
-   * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
-   * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
-   */
-
-  /**
-   * Edits a reply to this interaction.
+   * Edits the initial reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|MessagePayload|InteractionEditReplyOptions} options The new options for the message
+   * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
    * @returns {Promise<Message>}
    * @example
-   * // Edit the initial reply to this interaction
+   * // Edit the reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
   async editReply(options) {
     if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
-    const msg = await this.webhook.editMessage(options.message ?? '@original', options);
+    const message = await this.webhook.editMessage('@original', options);
     this.replied = true;
-    return msg;
+    return message;
   }
 
   /**
-   * Deletes a reply to this interaction.
+   * Deletes the initial reply to this interaction.
    * @see Webhook#deleteMessage
-   * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
-   * // Delete the initial reply to this interaction
+   * // Delete the reply to this interaction
    * interaction.deleteReply()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deleteReply(message = '@original') {
-    await this.webhook.deleteMessage(message);
+  async deleteReply() {
+    await this.webhook.deleteMessage('@original');
   }
 
   /**
