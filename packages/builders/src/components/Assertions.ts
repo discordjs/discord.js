@@ -1,5 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import { ButtonStyle, type APIMessageComponentEmoji } from 'discord-api-types/v10';
+import { ButtonStyle, ChannelType, type APIMessageComponentEmoji } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../util/validation.js';
 import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOption.js';
 
@@ -67,6 +67,8 @@ export function validateRequiredSelectMenuOptionParameters(label?: string, value
 	labelValueDescriptionValidator.parse(label);
 	labelValueDescriptionValidator.parse(value);
 }
+
+export const channelTypesValidator = s.nativeEnum(ChannelType).array;
 
 export const urlValidator = s.string
 	.url({

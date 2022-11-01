@@ -1,6 +1,6 @@
 'use strict';
 
-const { deprecate } = require('util');
+const { deprecate } = require('node:util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');

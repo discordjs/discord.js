@@ -1,7 +1,7 @@
 import type { APIChannelSelectComponent, ChannelType } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import { customIdValidator } from '../Assertions.js';
+import { channelTypesValidator, customIdValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSelectComponent> {
@@ -36,7 +36,8 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	public addChannelTypes(...types: RestOrArray<ChannelType>) {
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
-		this.data.channel_types?.push(...types);
+
+		this.data.channel_types?.push(...channelTypesValidator.parse(types));
 		return this;
 	}
 
@@ -44,7 +45,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 		// eslint-disable-next-line no-param-reassign
 		types = normalizeArray(types);
 
-		this.data.channel_types?.splice(0, this.data.channel_types.length, ...types);
+		this.data.channel_types?.splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(types));
 		return this;
 	}
 
