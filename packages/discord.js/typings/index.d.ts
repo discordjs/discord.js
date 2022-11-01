@@ -649,19 +649,19 @@ export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): UserSelectMenuBuilder;
 }
 
-export class RoleSelectMenuBuilder extends BuilderUserSelectMenuComponent {
+export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
   public constructor(data?: Partial<RoleSelectMenuComponentData | APIRoleSelectComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): RoleSelectMenuBuilder;
 }
 
-export class MentionableSelectMenuBuilder extends BuilderUserSelectMenuComponent {
+export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
   public constructor(data?: Partial<MentionableSelectMenuComponentData | APIMentionableSelectComponent>);
   public static from(
     other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent,
   ): MentionableSelectMenuBuilder;
 }
 
-export class ChannelSelectMenuBuilder extends BuilderUserSelectMenuComponent {
+export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
   public constructor(data?: Partial<ChannelSelectMenuComponentData | APIChannelSelectComponent>);
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): ChannelSelectMenuBuilder;
 }
