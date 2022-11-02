@@ -30,7 +30,7 @@ If you want to test changes you've made locally, you can do so by using `yarn li
 
 ### Working with TypeScript packages
 
-When testing local changes you may notice you need to manually recompile typescript projects on every change in order to get the latest code changes to test locally.
+When testing local changes, you may notice you need to manually recompile TypeScript projects on every change in order to get the latest code changes to test locally.
 
 To avoid this you can use the `--watch` parameter in the package build script to automatically recompile the project when changes are detected.
 
