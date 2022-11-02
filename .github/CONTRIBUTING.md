@@ -19,7 +19,7 @@ To get ready to work on the codebase, please do the following:
 
 ## Testing changes locally
 
-If you want to test changes you've made locally, you can do so by using `yarn link`. This will create a symlink to your local copy of the discordjs libraries.`
+If you want to test changes you've made locally, you can do so by using `yarn link`. This will create a symlink to your local copy of the discord.js libraries.
 
 1. Create a new directory `mkdir discordjs-test` and move into it `cd discordjs-test`
 2. Initialize a new yarn 3 project `yarn init -2`
