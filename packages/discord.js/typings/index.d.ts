@@ -2370,8 +2370,12 @@ export class UserSelectMenuInteraction<
     UserSelectMenuComponent | APIUserSelectComponent
   >;
   public componentType: ComponentType.UserSelect;
+  public values: Snowflake[];
   public users: Collection<Snowflake, User>;
-  public members: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
+  public members: Collection<
+    Snowflake,
+    CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
+  >;
   public inGuild(): this is UserSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is UserSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is UserSelectMenuInteraction<'raw'>;
@@ -2389,7 +2393,8 @@ export class RoleSelectMenuInteraction<
     RoleSelectMenuComponent | APIRoleSelectComponent
   >;
   public componentType: ComponentType.RoleSelect;
-  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  public values: Snowflake[];
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
   public inGuild(): this is RoleSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is RoleSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is RoleSelectMenuInteraction<'raw'>;
@@ -2407,9 +2412,13 @@ export class MentionableSelectMenuInteraction<
     MentionableSelectMenuComponent | APIMentionableSelectComponent
   >;
   public componentType: ComponentType.MentionableSelect;
+  public values: Snowflake[];
   public users: Collection<Snowflake, User>;
-  public members: Collection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIGuildMember>>;
-  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  public members: Collection<
+    Snowflake,
+    CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
+  >;
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
   public inGuild(): this is MentionableSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MentionableSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is MentionableSelectMenuInteraction<'raw'>;
@@ -2427,7 +2436,11 @@ export class ChannelSelectMenuInteraction<
     ChannelSelectMenuComponent | APIChannelSelectComponent
   >;
   public componentType: ComponentType.ChannelSelect;
-  public channels: Collection<Snowflake, CacheTypeReducer<Cached, Channel, APIChannel>>;
+  public values: Snowflake[];
+  public channels: Collection<
+    Snowflake,
+    CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+  >;
   public inGuild(): this is ChannelSelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ChannelSelectMenuInteraction<'cached'>;
   public inRawGuild(): this is ChannelSelectMenuInteraction<'raw'>;

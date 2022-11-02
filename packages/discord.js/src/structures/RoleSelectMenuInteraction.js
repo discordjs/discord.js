@@ -12,6 +12,12 @@ class RoleSelectMenuInteraction extends MessageComponentInteraction {
     super(client, data);
 
     /**
+     * Array of selected roles' ids
+     * @type {Snowflake[]}
+     */
+    this.values = data.data.values ?? [];
+
+    /**
      * Collection of the selected roles
      * @type {Collection<Snowflake, Role|APIRole>}
      */
