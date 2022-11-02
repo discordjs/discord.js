@@ -1205,8 +1205,7 @@ class Guild extends AnonymousGuild {
   async disableInvites(disabled = true) {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
     if (disabled) features.push(GuildFeature.InvitesDisabled);
-    await this.edit({ features });
-    return this;
+    return this.edit({ features });
   }
 
   /**
