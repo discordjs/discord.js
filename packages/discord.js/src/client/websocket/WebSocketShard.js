@@ -80,7 +80,6 @@ class WebSocketShard extends EventEmitter {
     /**
      * The last time a ping was sent (a timestamp)
      * @type {number}
-     * @private
      */
     this.lastPingTimestamp = -1;
 
