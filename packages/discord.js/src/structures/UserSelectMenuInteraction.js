@@ -13,7 +13,7 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
     super(client, data);
 
     /**
-     * Array of selected users' ids
+     * An array of the selected user ids
      * @type {Snowflake[]}
      */
     this.values = data.data.values ?? [];

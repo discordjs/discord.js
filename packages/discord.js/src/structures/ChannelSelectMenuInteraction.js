@@ -12,7 +12,7 @@ class ChannelSelectMenuInteraction extends MessageComponentInteraction {
     super(client, data);
 
     /**
-     * Array of selected channels' ids
+     * An array of the selected channel ids
      * @type {Snowflake[]}
      */
     this.values = data.data.values ?? [];
