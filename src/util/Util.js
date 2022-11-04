@@ -199,6 +199,7 @@ class Util extends null {
         })
         .join(inlineCode ? '\\`' : '`');
     }
+    if (escape) text = Util.escapeEscape(text);
     if (inlineCode) text = Util.escapeInlineCode(text);
     if (codeBlock) text = Util.escapeCodeBlock(text);
     if (italic) text = Util.escapeItalic(text);
@@ -206,7 +207,6 @@ class Util extends null {
     if (underline) text = Util.escapeUnderline(text);
     if (strikethrough) text = Util.escapeStrikethrough(text);
     if (spoiler) text = Util.escapeSpoiler(text);
-    if (escape) text = Util.escapeEscape(text);
     if (heading) text = Util.escapeHeading(text);
     if (bulletedList) text = Util.escapeBulletedList(text);
     if (numberedList) text = Util.escapeNumberedList(text);
