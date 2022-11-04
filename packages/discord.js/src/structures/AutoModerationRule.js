@@ -24,7 +24,7 @@ class AutoModerationRule extends Base {
     this.guildId = data.guild_id;
 
     /**
-     * The guild of this auto moderation rule.
+     * The guild this auto moderation rule is for.
      * @type {Guild}
      */
     this.guild = guild;
