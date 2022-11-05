@@ -142,7 +142,7 @@ class Webhook {
    */
   /**
    * The channel that this webhook belongs to
-   * @type {?GuildTextBasedChannel}
+   * @type {?(GuildTextBasedChannel|ForumChannel)}
    * @readonly
    */
   get channel() {
