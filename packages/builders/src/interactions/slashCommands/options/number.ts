@@ -1,6 +1,7 @@
 import { s } from '@sapphire/shapeshift';
-import { ApplicationCommandOptionType, type APIApplicationCommandNumberOption } from 'discord-api-types/v10';
+import type { APIApplicationCommandNumberOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
+import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
@@ -12,7 +13,7 @@ export class SlashCommandNumberOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
-	public readonly type = ApplicationCommandOptionType.Number as const;
+	public override readonly data: Partial<APIApplicationCommandNumberOption> = {};
 
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
@@ -20,7 +21,7 @@ export class SlashCommandNumberOption
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
 
-		Reflect.set(this, 'max_value', max);
+		Reflect.set(this.data, 'max_value', max);
 
 		return this;
 	}
@@ -31,19 +32,19 @@ export class SlashCommandNumberOption
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
 
-		Reflect.set(this, 'min_value', min);
+		Reflect.set(this.data, 'min_value', min);
 
 		return this;
 	}
 
 	public toJSON(): APIApplicationCommandNumberOption {
-		this.runRequiredValidations();
+		validateOptionParameters(this.data);
 
-		if (this.autocomplete && Array.isArray(this.choices) && this.choices.length > 0) {
+		if (Reflect.get(this.data, 'autocomplete') && Reflect.get(this.data, 'choices')?.length) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this.data };
 	}
 }
 

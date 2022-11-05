@@ -1,12 +1,13 @@
-import { ApplicationCommandOptionType, type APIApplicationCommandAttachmentOption } from 'discord-api-types/v10';
+import type { APIApplicationCommandAttachmentOption } from 'discord-api-types/v10';
+import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 
 export class SlashCommandAttachmentOption extends ApplicationCommandOptionBase {
-	public override readonly type = ApplicationCommandOptionType.Attachment as const;
+	public override readonly data: Partial<APIApplicationCommandAttachmentOption> = {};
 
 	public toJSON(): APIApplicationCommandAttachmentOption {
-		this.runRequiredValidations();
+		validateOptionParameters(this.data);
 
-		return { ...this };
+		return { ...this.data };
 	}
 }

@@ -1,5 +1,5 @@
+import type { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions.js';
-import type { ToAPIApplicationCommandOptions } from '../SlashCommandBuilder';
 import { SlashCommandAttachmentOption } from '../options/attachment.js';
 import { SlashCommandBooleanOption } from '../options/boolean.js';
 import { SlashCommandChannelOption } from '../options/channel.js';
@@ -12,7 +12,7 @@ import { SlashCommandUserOption } from '../options/user.js';
 import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';
 
 export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
-	public readonly options!: ToAPIApplicationCommandOptions[];
+	public readonly data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody> = {};
 
 	/**
 	 * Adds a boolean option
@@ -144,7 +144,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 			| ((builder: T) => Omit<T, 'addChoices'> | Omit<T, 'setAutocomplete'> | T),
 		Instance: new () => T,
 	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
-		const { options } = this;
+		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
 		validateMaxOptionsLength(options);

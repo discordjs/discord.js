@@ -1,5 +1,14 @@
 import { s } from '@sapphire/shapeshift';
-import { Locale, type APIApplicationCommandOptionChoice, type LocalizationMap } from 'discord-api-types/v10';
+import {
+	Locale,
+	type APIApplicationCommandOptionChoice,
+	type LocalizationMap,
+	type RESTPostAPIChatInputApplicationCommandsJSONBody,
+	type APIApplicationCommandBasicOption,
+	type APIApplicationCommandSubcommandGroupOption,
+	type APIApplicationCommandSubcommandOption,
+	ApplicationCommandOptionType,
+} from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
@@ -35,18 +44,32 @@ export function validateMaxOptionsLength(options: unknown): asserts options is T
 }
 
 export function validateRequiredParameters(
-	name: string,
-	description: string,
-	options: ToAPIApplicationCommandOptions[],
-) {
+	arg: Partial<
+		| APIApplicationCommandBasicOption
+		| APIApplicationCommandSubcommandGroupOption
+		| APIApplicationCommandSubcommandOption
+		| RESTPostAPIChatInputApplicationCommandsJSONBody
+	>,
+): asserts arg is typeof arg & { name: string; type: number } {
 	// Assert name matches all conditions
-	validateName(name);
+	validateName(arg.name);
 
 	// Assert description conditions
-	validateDescription(description);
+	validateDescription(arg.description);
 
 	// Assert options conditions
-	validateMaxOptionsLength(options);
+	if ('options' in arg) validateMaxOptionsLength(arg.options);
+}
+
+export function validateSubcommandOptions(data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody>) {
+	if (
+		data.options!.some(
+			(option) =>
+				option.type !== ApplicationCommandOptionType.Subcommand &&
+				option.type !== ApplicationCommandOptionType.SubcommandGroup,
+		)
+	)
+		throw new Error(' ');
 }
 
 const booleanPredicate = s.boolean;
@@ -71,6 +94,13 @@ export function assertReturnOfBuilder<
 	s.instance(ExpectedInstanceOf).parse(input);
 }
 
+export function assertChoices(
+	data: Partial<APIApplicationCommandBasicOption>,
+	set: boolean = false,
+): asserts data is typeof data & { choices: APIApplicationCommandOptionChoice[] } {
+	if (set || !('choices' in data) || typeof data.choices === 'undefined') Reflect.set(data, 'choices', []);
+}
+
 export const localizationMapPredicate = s
 	.object<LocalizationMap>(Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])))
 	.strict.nullish.setValidationEnabled(isValidationEnabled);
@@ -83,6 +113,19 @@ const dmPermissionPredicate = s.boolean.nullish;
 
 export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
 	dmPermissionPredicate.parse(value);
+}
+
+export function validateOptionParameters(
+	data: Partial<APIApplicationCommandBasicOption>,
+): asserts data is typeof data & { description: string; name: string; type: number } {
+	validateRequiredParameters(data);
+
+	// Validate localizations
+	validateLocalizationMap(data.name_localizations);
+	validateLocalizationMap(data.description_localizations);
+
+	// Assert that you actually passed a boolean
+	validateRequired(data.required);
 }
 
 const memberPermissionPredicate = s.union(

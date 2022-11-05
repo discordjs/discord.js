@@ -1,12 +1,13 @@
-import { ApplicationCommandOptionType, type APIApplicationCommandMentionableOption } from 'discord-api-types/v10';
+import type { APIApplicationCommandMentionableOption } from 'discord-api-types/v10';
+import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 
 export class SlashCommandMentionableOption extends ApplicationCommandOptionBase {
-	public readonly type = ApplicationCommandOptionType.Mentionable as const;
+	public override readonly data: Partial<APIApplicationCommandMentionableOption> = {};
 
 	public toJSON(): APIApplicationCommandMentionableOption {
-		this.runRequiredValidations();
+		validateOptionParameters(this.data);
 
-		return { ...this };
+		return { ...this.data };
 	}
 }

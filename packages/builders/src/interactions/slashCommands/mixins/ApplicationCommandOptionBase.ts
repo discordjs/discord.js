@@ -1,11 +1,9 @@
-import type { APIApplicationCommandBasicOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import { validateRequiredParameters, validateRequired, validateLocalizationMap } from '../Assertions.js';
+import type { APIApplicationCommandBasicOption } from 'discord-api-types/v10';
+import { validateRequired } from '../Assertions.js';
 import { SharedNameAndDescription } from './NameAndDescription.js';
 
 export abstract class ApplicationCommandOptionBase extends SharedNameAndDescription {
-	public abstract readonly type: ApplicationCommandOptionType;
-
-	public readonly required: boolean = false;
+	public override readonly data: Partial<APIApplicationCommandBasicOption> = {};
 
 	/**
 	 * Marks the option as required
@@ -16,21 +14,10 @@ export abstract class ApplicationCommandOptionBase extends SharedNameAndDescript
 		// Assert that you actually passed a boolean
 		validateRequired(required);
 
-		Reflect.set(this, 'required', required);
+		Reflect.set(this.data, 'required', required);
 
 		return this;
 	}
 
 	public abstract toJSON(): APIApplicationCommandBasicOption;
-
-	protected runRequiredValidations() {
-		validateRequiredParameters(this.name, this.description, []);
-
-		// Validate localizations
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
-
-		// Assert that you actually passed a boolean
-		validateRequired(this.required);
-	}
 }

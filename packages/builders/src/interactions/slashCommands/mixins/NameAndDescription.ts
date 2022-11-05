@@ -1,14 +1,29 @@
-import type { LocaleString, LocalizationMap } from 'discord-api-types/v10';
+import type {
+	LocaleString,
+	LocalizationMap,
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
+	APIApplicationCommandBasicOption,
+	APIApplicationCommandSubcommandGroupOption,
+} from 'discord-api-types/v10';
 import { validateDescription, validateLocale, validateName } from '../Assertions.js';
+import type { SlashCommandBuilder } from '../SlashCommandBuilder.js';
+import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase';
 
-export class SharedNameAndDescription {
-	public readonly name!: string;
-
-	public readonly name_localizations?: LocalizationMap;
-
-	public readonly description!: string;
-
-	public readonly description_localizations?: LocalizationMap;
+export class SharedNameAndDescription<
+	T extends APIApplicationCommandSubcommandGroupOption | ApplicationCommandOptionBase | SlashCommandBuilder =
+		| APIApplicationCommandSubcommandGroupOption
+		| ApplicationCommandOptionBase
+		| SlashCommandBuilder,
+> {
+	public readonly data: Partial<
+		T extends ApplicationCommandOptionBase
+			? APIApplicationCommandBasicOption
+			: T extends SlashCommandBuilder
+			? RESTPostAPIChatInputApplicationCommandsJSONBody
+			: T extends APIApplicationCommandSubcommandGroupOption
+			? APIApplicationCommandSubcommandGroupOption
+			: APIApplicationCommandBasicOption | RESTPostAPIChatInputApplicationCommandsJSONBody
+	> = {};
 
 	/**
 	 * Sets the name
@@ -19,7 +34,7 @@ export class SharedNameAndDescription {
 		// Assert the name matches the conditions
 		validateName(name);
 
-		Reflect.set(this, 'name', name);
+		Reflect.set(this.data, 'name', name);
 
 		return this;
 	}
@@ -33,7 +48,7 @@ export class SharedNameAndDescription {
 		// Assert the description matches the conditions
 		validateDescription(description);
 
-		Reflect.set(this, 'description', description);
+		Reflect.set(this.data, 'description', description);
 
 		return this;
 	}
@@ -45,20 +60,20 @@ export class SharedNameAndDescription {
 	 * @param localizedName - The localized description for the given locale
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
-		if (!this.name_localizations) {
-			Reflect.set(this, 'name_localizations', {});
+		if (!this.data.name_localizations) {
+			Reflect.set(this.data, 'name_localizations', {});
 		}
 
 		const parsedLocale = validateLocale(locale);
 
 		if (localizedName === null) {
-			this.name_localizations![parsedLocale] = null;
+			this.data.name_localizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateName(localizedName);
 
-		this.name_localizations![parsedLocale] = localizedName;
+		this.data.name_localizations![parsedLocale] = localizedName;
 		return this;
 	}
 
@@ -69,11 +84,11 @@ export class SharedNameAndDescription {
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
-			Reflect.set(this, 'name_localizations', null);
+			Reflect.set(this.data, 'name_localizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'name_localizations', {});
+		Reflect.set(this.data, 'name_localizations', {});
 
 		for (const args of Object.entries(localizedNames)) {
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
@@ -89,20 +104,20 @@ export class SharedNameAndDescription {
 	 * @param localizedDescription - The localized description for the given locale
 	 */
 	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
-		if (!this.description_localizations) {
-			Reflect.set(this, 'description_localizations', {});
+		if (!this.data.description_localizations) {
+			Reflect.set(this.data, 'description_localizations', {});
 		}
 
 		const parsedLocale = validateLocale(locale);
 
 		if (localizedDescription === null) {
-			this.description_localizations![parsedLocale] = null;
+			this.data.description_localizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateDescription(localizedDescription);
 
-		this.description_localizations![parsedLocale] = localizedDescription;
+		this.data.description_localizations![parsedLocale] = localizedDescription;
 		return this;
 	}
 
@@ -113,11 +128,11 @@ export class SharedNameAndDescription {
 	 */
 	public setDescriptionLocalizations(localizedDescriptions: LocalizationMap | null) {
 		if (localizedDescriptions === null) {
-			Reflect.set(this, 'description_localizations', null);
+			Reflect.set(this.data, 'description_localizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'description_localizations', {});
+		Reflect.set(this.data, 'description_localizations', {});
 		for (const args of Object.entries(localizedDescriptions)) {
 			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
 		}

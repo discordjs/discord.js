@@ -1,5 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import { ChannelType } from 'discord-api-types/v10';
+import { ChannelType, type APIApplicationCommandChannelOption } from 'discord-api-types/v10';
 
 // Only allow valid channel types to be used. (This can't be dynamic because const enums are erased at runtime)
 const allowedChannelTypes = [
@@ -19,7 +19,7 @@ export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelT
 const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 
 export class ApplicationCommandOptionChannelTypesMixin {
-	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
+	public readonly data: Partial<APIApplicationCommandChannelOption> = {};
 
 	/**
 	 * Adds channel types to this option
@@ -27,11 +27,11 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 * @param channelTypes - The channel types to add
 	 */
 	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
-		if (this.channel_types === undefined) {
-			Reflect.set(this, 'channel_types', []);
+		if (this.data.channel_types === undefined) {
+			Reflect.set(this.data, 'channel_types', []);
 		}
 
-		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+		this.data.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
 
 		return this;
 	}

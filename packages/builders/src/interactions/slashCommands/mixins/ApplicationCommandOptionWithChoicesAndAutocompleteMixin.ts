@@ -1,6 +1,7 @@
 import { s } from '@sapphire/shapeshift';
+import type { APIApplicationCommandBasicOption } from 'discord-api-types/v10';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
+import { assertChoices, localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 const numberPredicate = s.number.greaterThan(Number.NEGATIVE_INFINITY).lessThan(Number.POSITIVE_INFINITY);
@@ -12,12 +13,7 @@ const choicesPredicate = s.object({
 const booleanPredicate = s.boolean;
 
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends number | string> {
-	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
-
-	public readonly autocomplete?: boolean;
-
-	// Since this is present and this is a mixin, this is needed
-	public readonly type!: ApplicationCommandOptionType;
+	public readonly data: Partial<APIApplicationCommandBasicOption> = {};
 
 	/**
 	 * Adds multiple choices for this option
@@ -25,40 +21,37 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 	 * @param choices - The choices to add
 	 */
 	public addChoices(...choices: APIApplicationCommandOptionChoice<T>[]): this {
-		if (choices.length > 0 && this.autocomplete) {
+		if (choices.length > 0 && 'autocomplete' in this.data && this.data.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
 		choicesPredicate.parse(choices);
+		assertChoices(this.data);
 
-		if (this.choices === undefined) {
-			Reflect.set(this, 'choices', []);
-		}
-
-		validateChoicesLength(choices.length, this.choices);
+		validateChoicesLength(choices.length, this.data.choices);
 
 		for (const { name, name_localizations, value } of choices) {
 			// Validate the value
-			if (this.type === ApplicationCommandOptionType.String) {
+			if (this.data.type === ApplicationCommandOptionType.String) {
 				stringPredicate.parse(value);
 			} else {
 				numberPredicate.parse(value);
 			}
 
-			this.choices!.push({ name, name_localizations, value });
+			this.data.choices!.push({ name, name_localizations, value });
 		}
 
 		return this;
 	}
 
 	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(...choices: Input): this {
-		if (choices.length > 0 && this.autocomplete) {
+		if (choices.length > 0 && 'autocomplete' in this.data && this.data.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
 		choicesPredicate.parse(choices);
 
-		Reflect.set(this, 'choices', []);
+		Reflect.set(this.data, 'choices', []);
 		this.addChoices(...choices);
 
 		return this;
@@ -73,11 +66,11 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 		// Assert that you actually passed a boolean
 		booleanPredicate.parse(autocomplete);
 
-		if (autocomplete && Array.isArray(this.choices) && this.choices.length > 0) {
+		if (autocomplete && 'choices' in this.data && Array.isArray(this.data.choices) && this.data.choices.length > 0) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		Reflect.set(this, 'autocomplete', autocomplete);
+		Reflect.set(this.data, 'autocomplete', autocomplete);
 
 		return this;
 	}

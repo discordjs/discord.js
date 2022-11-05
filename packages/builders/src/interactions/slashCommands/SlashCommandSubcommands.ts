@@ -5,7 +5,7 @@ import {
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { assertReturnOfBuilder, validateMaxOptionsLength, validateRequiredParameters } from './Assertions.js';
-import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
+import type { SlashCommandBuilder, ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase.js';
 import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
@@ -15,22 +15,9 @@ import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js
  *
  * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
  */
-@mix(SharedNameAndDescription)
+@mix(SharedNameAndDescription<SlashCommandBuilder>)
 export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationCommandOptions {
-	/**
-	 * The name of this subcommand group
-	 */
-	public readonly name: string = undefined!;
-
-	/**
-	 * The description of this subcommand group
-	 */
-	public readonly description: string = undefined!;
-
-	/**
-	 * The subcommands part of this subcommand group
-	 */
-	public readonly options: SlashCommandSubcommandBuilder[] = [];
+	public readonly data: Partial<APIApplicationCommandSubcommandGroupOption> = {};
 
 	/**
 	 * Adds a new subcommand to this group
@@ -42,7 +29,7 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 			| SlashCommandSubcommandBuilder
 			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
 	) {
-		const { options } = this;
+		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
 		validateMaxOptionsLength(options);
@@ -61,20 +48,21 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 	}
 
 	public toJSON(): APIApplicationCommandSubcommandGroupOption {
-		validateRequiredParameters(this.name, this.description, this.options);
+		validateRequiredParameters(this.data);
 
 		return {
 			type: ApplicationCommandOptionType.SubcommandGroup,
-			name: this.name,
-			name_localizations: this.name_localizations,
-			description: this.description,
-			description_localizations: this.description_localizations,
-			options: this.options.map((option) => option.toJSON()),
+			name: this.data.name!,
+			name_localizations: this.data.name_localizations,
+			description: this.data.description!,
+			description_localizations: this.data.description_localizations,
+			options: this.data.options,
 		};
 	}
 }
 
-export interface SlashCommandSubcommandGroupBuilder extends SharedNameAndDescription {}
+export interface SlashCommandSubcommandGroupBuilder
+	extends SharedNameAndDescription<APIApplicationCommandSubcommandGroupOption> {}
 
 /**
  * Represents a subcommand
@@ -99,17 +87,19 @@ export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOpt
 	public readonly options: ApplicationCommandOptionBase[] = [];
 
 	public toJSON(): APIApplicationCommandSubcommandOption {
-		validateRequiredParameters(this.name, this.description, this.options);
+		validateRequiredParameters(this.data);
 
 		return {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: this.name,
-			name_localizations: this.name_localizations,
+			name_localizations: this.data.name_localizations,
 			description: this.description,
-			description_localizations: this.description_localizations,
+			description_localizations: this.data.description_localizations,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}
 }
 
-export interface SlashCommandSubcommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions<false> {}
+export interface SlashCommandSubcommandBuilder
+	extends SharedNameAndDescription<SlashCommandBuilder>,
+		SharedSlashCommandOptions<false> {}

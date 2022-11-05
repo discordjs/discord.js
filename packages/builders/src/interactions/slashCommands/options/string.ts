@@ -1,6 +1,7 @@
 import { s } from '@sapphire/shapeshift';
-import { ApplicationCommandOptionType, type APIApplicationCommandStringOption } from 'discord-api-types/v10';
+import type { APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
+import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
 
@@ -9,11 +10,7 @@ const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000)
 
 @mix(ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
-	public readonly type = ApplicationCommandOptionType.String as const;
-
-	public readonly max_length?: number;
-
-	public readonly min_length?: number;
+	public override readonly data: Partial<APIApplicationCommandStringOption> = {};
 
 	/**
 	 * Sets the maximum length of this string option.
@@ -23,7 +20,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public setMaxLength(max: number): this {
 		maxLengthValidator.parse(max);
 
-		Reflect.set(this, 'max_length', max);
+		Reflect.set(this.data, 'max_length', max);
 
 		return this;
 	}
@@ -36,19 +33,19 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public setMinLength(min: number): this {
 		minLengthValidator.parse(min);
 
-		Reflect.set(this, 'min_length', min);
+		Reflect.set(this.data, 'min_length', min);
 
 		return this;
 	}
 
 	public toJSON(): APIApplicationCommandStringOption {
-		this.runRequiredValidations();
+		validateOptionParameters(this.data);
 
-		if (this.autocomplete && Array.isArray(this.choices) && this.choices.length > 0) {
+		if (Reflect.get(this.data, 'autocomplete') && Reflect.get(this.data, 'choices')?.length) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this.data };
 	}
 }
 

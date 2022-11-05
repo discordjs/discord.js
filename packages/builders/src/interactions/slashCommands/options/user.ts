@@ -1,12 +1,13 @@
-import { ApplicationCommandOptionType, type APIApplicationCommandUserOption } from 'discord-api-types/v10';
+import type { APIApplicationCommandUserOption } from 'discord-api-types/v10';
+import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 
 export class SlashCommandUserOption extends ApplicationCommandOptionBase {
-	public readonly type = ApplicationCommandOptionType.User as const;
+	public override readonly data: Partial<APIApplicationCommandUserOption> = {};
 
 	public toJSON(): APIApplicationCommandUserOption {
-		this.runRequiredValidations();
+		validateOptionParameters(this.data);
 
-		return { ...this };
+		return { ...this.data };
 	}
 }

@@ -16,39 +16,7 @@ import {
 } from './Assertions.js';
 
 export class ContextMenuCommandBuilder {
-	/**
-	 * The name of this context menu command
-	 */
-	public readonly name: string = undefined!;
-
-	/**
-	 * The localized names for this command
-	 */
-	public readonly name_localizations?: LocalizationMap;
-
-	/**
-	 * The type of this context menu command
-	 */
-	public readonly type: ContextMenuCommandType = undefined!;
-
-	/**
-	 * Whether the command is enabled by default when the app is added to a guild
-	 *
-	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
-	 */
-	public readonly default_permission: boolean | undefined = undefined;
-
-	/**
-	 * Set of permissions represented as a bit set for the command
-	 */
-	public readonly default_member_permissions: Permissions | null | undefined = undefined;
-
-	/**
-	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
-	 */
-	public readonly dm_permission: boolean | undefined = undefined;
+	public readonly data: Partial<RESTPostAPIContextMenuApplicationCommandsJSONBody> = {};
 
 	/**
 	 * Sets the name
@@ -59,7 +27,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the name matches the conditions
 		validateName(name);
 
-		Reflect.set(this, 'name', name);
+		Reflect.set(this.data, 'name', name);
 
 		return this;
 	}
@@ -73,7 +41,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the type is valid
 		validateType(type);
 
-		Reflect.set(this, 'type', type);
+		Reflect.set(this.data, 'type', type);
 
 		return this;
 	}
@@ -91,7 +59,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value matches the conditions
 		validateDefaultPermission(value);
 
-		Reflect.set(this, 'default_permission', value);
+		Reflect.set(this.data, 'default_permission', value);
 
 		return this;
 	}
@@ -108,7 +76,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 
-		Reflect.set(this, 'default_member_permissions', permissionValue);
+		Reflect.set(this.data, 'default_member_permissions', permissionValue);
 
 		return this;
 	}
@@ -124,7 +92,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value matches the conditions
 		validateDMPermission(enabled);
 
-		Reflect.set(this, 'dm_permission', enabled);
+		Reflect.set(this.data, 'dm_permission', enabled);
 
 		return this;
 	}
@@ -136,20 +104,20 @@ export class ContextMenuCommandBuilder {
 	 * @param localizedName - The localized description for the given locale
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
-		if (!this.name_localizations) {
-			Reflect.set(this, 'name_localizations', {});
+		if (!this.data.name_localizations) {
+			Reflect.set(this.data, 'name_localizations', {});
 		}
 
 		const parsedLocale = validateLocale(locale);
 
 		if (localizedName === null) {
-			this.name_localizations![parsedLocale] = null;
+			this.data.name_localizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateName(localizedName);
 
-		this.name_localizations![parsedLocale] = localizedName;
+		this.data.name_localizations![parsedLocale] = localizedName;
 		return this;
 	}
 
@@ -160,11 +128,11 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
-			Reflect.set(this, 'name_localizations', null);
+			Reflect.set(this.data, 'name_localizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'name_localizations', {});
+		Reflect.set(this.data, 'name_localizations', {});
 
 		for (const args of Object.entries(localizedNames))
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
@@ -179,11 +147,11 @@ export class ContextMenuCommandBuilder {
 	 * As such, it may throw an error if the data is invalid.
 	 */
 	public toJSON(): RESTPostAPIContextMenuApplicationCommandsJSONBody {
-		validateRequiredParameters(this.name, this.type);
+		validateRequiredParameters(this.data);
 
-		validateLocalizationMap(this.name_localizations);
+		validateLocalizationMap(this.data.name_localizations);
 
-		return { ...this };
+		return { ...this.data };
 	}
 }
 
