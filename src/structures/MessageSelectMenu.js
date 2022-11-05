@@ -41,7 +41,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @param {MessageSelectMenu|MessageSelectMenuOptions} [data={}] MessageSelectMenu to clone or raw data
    */
   constructor(data = {}) {
-    super({ type: MessageSelectMenu.checkType(data.type) ? data.type : 'SELECT_MENU' });
+    super({ type: SelectMenuComponentTypes[data.type] ? data.type : 'SELECT_MENU' });
     this.setup(data);
   }
 
@@ -107,7 +107,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectMenu}
    */
   setType(type) {
-    if (!MessageSelectMenu.checkType(type)) throw new TypeError('INVALID_TYPE', 'type', 'SelectMenuComponentType');
+    if (!SelectMenuComponentTypes[type]) throw new TypeError('INVALID_TYPE', 'type', 'SelectMenuComponentType');
     this.type = BaseMessageComponent.resolveType(type);
     return this;
   }
@@ -253,14 +253,6 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   static normalizeOptions(...options) {
     return options.flat(Infinity).map(option => this.normalizeOption(option));
-  }
-  /**
-   * Check if type is a select menu
-   * @param {MessageComponentType} type The select menu type
-   * @returns {boolean}
-   */
-  static checkType(type) {
-    return SelectMenuComponentTypes[type];
   }
 }
 
