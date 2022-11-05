@@ -1,8 +1,4 @@
 export abstract class ApplicationCommandNumericOptionMinMaxValueMixin {
-	public readonly max_value?: number;
-
-	public readonly min_value?: number;
-
 	/**
 	 * Sets the maximum number value of this option
 	 *

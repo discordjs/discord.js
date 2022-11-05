@@ -1,4 +1,5 @@
 import { s } from '@sapphire/shapeshift';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import type { APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { validateOptionParameters } from '../Assertions.js';
@@ -10,7 +11,9 @@ const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000)
 
 @mix(ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
-	public override readonly data: Partial<APIApplicationCommandStringOption> = {};
+	public override readonly data: Partial<APIApplicationCommandStringOption> = {
+		type: ApplicationCommandOptionType.String,
+	};
 
 	/**
 	 * Sets the maximum length of this string option.

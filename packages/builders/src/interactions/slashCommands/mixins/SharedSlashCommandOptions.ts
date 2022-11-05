@@ -144,6 +144,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 			| ((builder: T) => Omit<T, 'addChoices'> | Omit<T, 'setAutocomplete'> | T),
 		Instance: new () => T,
 	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
+		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options

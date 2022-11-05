@@ -1,5 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import type { APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { validateOptionParameters } from '../Assertions.js';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
@@ -13,7 +14,9 @@ export class SlashCommandIntegerOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
-	public override readonly data: Partial<APIApplicationCommandIntegerOption> = {};
+	public override readonly data: Partial<APIApplicationCommandIntegerOption> = {
+		type: ApplicationCommandOptionType.Integer,
+	};
 
 	/**
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}

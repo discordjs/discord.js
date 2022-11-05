@@ -102,6 +102,7 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandGroupBuilder
 			| ((subcommandGroup: SlashCommandSubcommandGroupBuilder) => SlashCommandSubcommandGroupBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
+		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
@@ -128,6 +129,7 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandBuilder
 			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
+		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
