@@ -5539,6 +5539,7 @@ export interface MessageReference {
 export type MessageResolvable = Message | Snowflake;
 
 export interface BaseMessageSelectMenuOptions {
+  type?: SelectMenuComponentType | SelectMenuComponentTypes;
   customId?: string;
   disabled?: boolean;
   maxValues?: number;

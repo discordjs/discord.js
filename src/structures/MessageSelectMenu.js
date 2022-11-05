@@ -86,7 +86,7 @@ class MessageSelectMenu extends BaseMessageComponent {
      * @type {boolean}
      */
     this.channelTypes =
-      data.channel_types.map(channelType =>
+      data.channel_types?.map(channelType =>
         typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
       ) ?? [];
   }
