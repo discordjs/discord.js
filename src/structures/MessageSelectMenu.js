@@ -118,8 +118,9 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectMenu}
    */
   addChannelTypes(...channelTypes) {
-    // eslint-disable-next-line max-len, prettier/prettier
-    if (!channelTypes.every(channelType => ChannelTypes[channelType])) throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) {
+      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    }
     this.channelTypes.push(
       ...channelTypes.map(channelType => (typeof channelType === 'string' ? channelType : ChannelTypes[channelType])),
     );
@@ -132,8 +133,9 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @returns {MessageSelectMenu}
    */
   setChannelTypes(...channelTypes) {
-    // eslint-disable-next-line max-len, prettier/prettier
-    if (!channelTypes.every(channelType => ChannelTypes[channelType])) throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) {
+      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    }
     this.channelTypes = channelTypes.map(channelType =>
       typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
     );
