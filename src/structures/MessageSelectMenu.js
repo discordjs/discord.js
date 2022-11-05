@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
-const { MessageComponentTypes } = require('../util/Constants');
+const { MessageComponentTypes, SelectMenuComponentTypes, ChannelTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -41,8 +41,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @param {MessageSelectMenu|MessageSelectMenuOptions} [data={}] MessageSelectMenu to clone or raw data
    */
   constructor(data = {}) {
-    super({ type: 'SELECT_MENU' });
-
+    super({ type: MessageSelectMenu.checkType(data.type) ? data.type : 'SELECT_MENU' });
     this.setup(data);
   }
 
@@ -72,7 +71,7 @@ class MessageSelectMenu extends BaseMessageComponent {
     this.maxValues = data.max_values ?? data.maxValues ?? null;
 
     /**
-     * Options for the select menu
+     * Options for the STRING_SELECT menu
      * @type {MessageSelectOption[]}
      */
     this.options = this.constructor.normalizeOptions(data.options ?? []);
@@ -82,6 +81,14 @@ class MessageSelectMenu extends BaseMessageComponent {
      * @type {boolean}
      */
     this.disabled = data.disabled ?? false;
+    /**
+     * Channels that are possible to select in CHANNEL_SELECT menu
+     * @type {boolean}
+     */
+    this.channelTypes =
+      data.channel_types.map(channelType =>
+        typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
+      ) ?? [];
   }
 
   /**
@@ -91,6 +98,45 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   setCustomId(customId) {
     this.customId = Util.verifyString(customId, RangeError, 'SELECT_MENU_CUSTOM_ID');
+    return this;
+  }
+
+  /**
+   * Sets the type of the select menu
+   * @param {SelectMenuComponentType} type Type of the select menu
+   * @returns {MessageSelectMenu}
+   */
+  setType(type) {
+    if (!MessageSelectMenu.checkType(type)) throw new TypeError('INVALID_TYPE', 'type', 'SelectMenuComponentType');
+    this.type = BaseMessageComponent.resolveType(type);
+    return this;
+  }
+
+  /**
+   * Adds the channel type to the select menu
+   * @param {...ChannelType[]} channelType Added channel type
+   * @returns {MessageSelectMenu}
+   */
+  addChannelTypes(...channelTypes) {
+    // eslint-disable-next-line max-len, prettier/prettier
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    this.channelTypes.push(
+      ...channelTypes.map(channelType => (typeof channelType === 'string' ? channelType : ChannelTypes[channelType])),
+    );
+    return this;
+  }
+
+  /**
+   * Sets the channel types of the select menu
+   * @param {ChannelType[]} channelTypes An array of new channel types
+   * @returns {MessageSelectMenu}
+   */
+  setChannelTypes(...channelTypes) {
+    // eslint-disable-next-line max-len, prettier/prettier
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+    this.channelTypes = channelTypes.map(channelType =>
+      typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
+    );
     return this;
   }
 
@@ -179,6 +225,7 @@ class MessageSelectMenu extends BaseMessageComponent {
       min_values: this.minValues,
       max_values: this.maxValues ?? (this.minValues ? this.options.length : undefined),
       options: this.options,
+      channel_types: this.channelTypes.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)),
       type: typeof this.type === 'string' ? MessageComponentTypes[this.type] : this.type,
     };
   }
@@ -206,6 +253,14 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   static normalizeOptions(...options) {
     return options.flat(Infinity).map(option => this.normalizeOption(option));
+  }
+  /**
+   * Check if type is a select menu
+   * @param {MessageComponentType} type The select menu type
+   * @returns {boolean}
+   */
+  static checkType(type) {
+    return SelectMenuComponentTypes[type];
   }
 }
 

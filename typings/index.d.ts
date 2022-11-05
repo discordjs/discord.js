@@ -52,6 +52,8 @@ import {
   Snowflake,
   LocalizationMap,
   LocaleString,
+  APIGuildMember,
+  APIChannel,
 } from 'discord-api-types/v9';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -90,6 +92,7 @@ import {
   GuildScheduledEventStatuses,
   GuildScheduledEventPrivacyLevels,
   VideoQualityModes,
+  SelectMenuComponentTypes,
 } from './enums';
 import {
   RawActivityData,
@@ -1408,6 +1411,10 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
+  public isStringSelect(): this is SelectMenuInteraction<Cached>;
+  public isUserSelect(): this is SelectMenuInteraction<Cached>;
+  public isMentionableSelect(): this is SelectMenuInteraction<Cached>;
+  public isChannelSelect(): this is SelectMenuInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
 }
 
@@ -1530,7 +1537,13 @@ export type AwaitMessageCollectorOptionsParams<
 
 export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
   BUTTON: ButtonInteraction<Cached>;
+  /** @deprecated */
   SELECT_MENU: SelectMenuInteraction<Cached>;
+  STRING_SELECT: SelectMenuInteraction<Cached>;
+  USER_SELECT: SelectMenuInteraction<Cached>;
+  ROLE_SELECT: SelectMenuInteraction<Cached>;
+  MENTIONABLE_SELECT: SelectMenuInteraction<Cached>;
+  CHANNEL_SELECT: SelectMenuInteraction<Cached>;
   ACTION_ROW: MessageComponentInteraction<Cached>;
 }
 
@@ -1540,7 +1553,13 @@ export type MappedInteractionTypes<Cached extends boolean = boolean> = EnumValue
   typeof MessageComponentTypes,
   {
     BUTTON: ButtonInteraction<WrapBooleanCache<Cached>>;
+    /** @deprecated */
     SELECT_MENU: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    STRING_SELECT: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    USER_SELECT: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    ROLE_SELECT: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    MENTIONABLE_SELECT: SelectMenuInteraction<WrapBooleanCache<Cached>>;
+    CHANNEL_SELECT: SelectMenuInteraction<WrapBooleanCache<Cached>>;
     ACTION_ROW: MessageComponentInteraction<WrapBooleanCache<Cached>>;
     TEXT_INPUT: ModalSubmitInteraction<WrapBooleanCache<Cached>>;
   }
@@ -1874,11 +1893,15 @@ export class MessageSelectMenu extends BaseMessageComponent {
   public disabled: boolean;
   public maxValues: number | null;
   public minValues: number | null;
+  public channelTypes: ChannelTypes[];
   public options: MessageSelectOption[];
   public placeholder: string | null;
-  public type: 'SELECT_MENU';
+  public type: SelectMenuComponentType;
   public addOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
   public setOptions(...options: MessageSelectOptionData[] | MessageSelectOptionData[][]): this;
+  public addChannelTypes(...channelTypes: ChannelTypes[]): this;
+  public setChannelTypes(...channelTypes: ChannelTypes[]): this;
+  public setType(type: SelectMenuComponentType | SelectMenuComponentTypes): this;
   public setCustomId(customId: string): this;
   public setDisabled(disabled?: boolean): this;
   public setMaxValues(maxValues: number): this;
@@ -2131,8 +2154,18 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     MessageSelectMenu | APISelectMenuComponent,
     MessageSelectMenu | APISelectMenuComponent
   >;
-  public componentType: 'SELECT_MENU';
+  public componentType: SelectMenuComponentType;
   public values: string[];
+  public users: Collection<Snowflake, User>;
+  public members: Collection<
+    Snowflake,
+    CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
+  >;
+  public channels: Collection<
+    Snowflake,
+    CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+  >;
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
@@ -3034,6 +3067,7 @@ export const Constants: {
   InteractionTypes: EnumHolder<typeof InteractionTypes>;
   InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
   MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
+  SelectMenuComponentTypes: EnumHolder<typeof SelectMenuComponentTypes>;
   MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
   ModalComponentTypes: EnumHolder<typeof ModalComponentTypes>;
   TextInputStyles: EnumHolder<typeof TextInputStyles>;
@@ -5504,15 +5538,35 @@ export interface MessageReference {
 
 export type MessageResolvable = Message | Snowflake;
 
-export interface MessageSelectMenuOptions extends BaseMessageComponentOptions {
+export interface BaseMessageSelectMenuOptions {
   customId?: string;
   disabled?: boolean;
   maxValues?: number;
   minValues?: number;
-  options?: MessageSelectOptionData[];
   placeholder?: string;
 }
+export interface StringMessageSelectMenuOptions extends BaseMessageSelectMenuOptions {
+  type?:
+    | 'STRING_SELECT'
+    | 'SELECT_MENU'
+    | SelectMenuComponentTypes.STRING_SELECT
+    | SelectMenuComponentTypes.SELECT_MENU;
+  options?: MessageSelectOptionData[];
+}
 
+export interface ChannelMessageSelectMenuOptions extends BaseMessageSelectMenuOptions {
+  type?: 'CHANNEL_SELECT' | SelectMenuComponentTypes.CHANNEL_SELECT;
+  channelTypes?: ChannelTypes[];
+}
+
+export interface OtherMessageSelectMenuOptions extends BaseMessageSelectMenuOptions {
+  type?: ExcludeEnum<typeof SelectMenuComponentTypes, 'CHANNEL_SELECT' | 'STRING_SELECT'>;
+}
+
+export type MessageSelectMenuOptions =
+  | StringMessageSelectMenuOptions
+  | ChannelMessageSelectMenuOptions
+  | OtherMessageSelectMenuOptions;
 export interface MessageSelectOption {
   default: boolean;
   description: string | null;
@@ -6026,6 +6080,8 @@ export interface Vanity {
 export type VerificationLevel = keyof typeof VerificationLevels;
 
 export type VideoQualityMode = keyof typeof VideoQualityModes;
+
+export type SelectMenuComponentType = keyof typeof SelectMenuComponentTypes;
 
 export type VoiceBasedChannelTypes = VoiceBasedChannel['type'];
 
