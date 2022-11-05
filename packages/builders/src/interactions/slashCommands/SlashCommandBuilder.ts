@@ -54,7 +54,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDefaultPermission(value);
 
-		Reflect.set(this.data, 'default_permission', value);
+		this.data.default_permission = value;
 
 		return this;
 	}
@@ -71,7 +71,7 @@ export class SlashCommandBuilder {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 
-		Reflect.set(this.data, 'default_member_permissions', permissionValue);
+		this.data.default_member_permissions = permissionValue;
 
 		return this;
 	}
@@ -87,7 +87,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDMPermission(enabled);
 
-		Reflect.set(this.data, 'dm_permission', enabled);
+		this.data.dm_permission = enabled ?? undefined;
 
 		return this;
 	}
@@ -102,7 +102,7 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandGroupBuilder
 			| ((subcommandGroup: SlashCommandSubcommandGroupBuilder) => SlashCommandSubcommandGroupBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
-		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
+		if (!('options' in this.data)) this.data.options = [];
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
@@ -129,7 +129,7 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandBuilder
 			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
-		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
+		if (!('options' in this.data)) this.data.options = [];
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options

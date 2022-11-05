@@ -28,7 +28,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 */
 	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
 		if (this.data.channel_types === undefined) {
-			Reflect.set(this.data, 'channel_types', []);
+			this.data.channel_types = [];
 		}
 
 		this.data.channel_types!.push(...channelTypesPredicate.parse(channelTypes));

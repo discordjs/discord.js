@@ -14,7 +14,7 @@ export abstract class ApplicationCommandOptionBase extends SharedNameAndDescript
 		// Assert that you actually passed a boolean
 		validateRequired(required);
 
-		Reflect.set(this.data, 'required', required);
+		this.data.required = required;
 
 		return this;
 	}

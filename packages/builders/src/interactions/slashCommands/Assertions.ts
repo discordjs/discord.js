@@ -101,6 +101,12 @@ export function assertChoices(
 	if (set || !('choices' in data) || typeof data.choices === 'undefined') Reflect.set(data, 'choices', []);
 }
 
+export function assertAutocomplete(
+	data: Partial<APIApplicationCommandBasicOption>,
+): asserts data is typeof data & { autocomplete?: boolean } {
+	Reflect.set(data, 'autocomplete', undefined);
+}
+
 export const localizationMapPredicate = s
 	.object<LocalizationMap>(Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])))
 	.strict.nullish.setValidationEnabled(isValidationEnabled);

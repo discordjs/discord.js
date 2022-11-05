@@ -29,7 +29,7 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 			| SlashCommandSubcommandBuilder
 			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
 	) {
-		if (!('options' in this.data)) Reflect.set(this.data, 'options', []);
+		if (!('options' in this.data)) this.data.options = [];
 		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options

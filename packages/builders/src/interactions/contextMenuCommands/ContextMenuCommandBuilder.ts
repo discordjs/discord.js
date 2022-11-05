@@ -27,7 +27,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the name matches the conditions
 		validateName(name);
 
-		Reflect.set(this.data, 'name', name);
+		this.data.name = name;
 
 		return this;
 	}
@@ -41,7 +41,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the type is valid
 		validateType(type);
 
-		Reflect.set(this.data, 'type', type);
+		this.data.type = type;
 
 		return this;
 	}
@@ -59,7 +59,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value matches the conditions
 		validateDefaultPermission(value);
 
-		Reflect.set(this.data, 'default_permission', value);
+		this.data.default_permission = value;
 
 		return this;
 	}
@@ -76,7 +76,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 
-		Reflect.set(this.data, 'default_member_permissions', permissionValue);
+		this.data.default_member_permissions = permissionValue;
 
 		return this;
 	}
@@ -92,7 +92,7 @@ export class ContextMenuCommandBuilder {
 		// Assert the value matches the conditions
 		validateDMPermission(enabled);
 
-		Reflect.set(this.data, 'dm_permission', enabled);
+		this.data.dm_permission = enabled ?? undefined;
 
 		return this;
 	}
@@ -105,7 +105,7 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.data.name_localizations) {
-			Reflect.set(this.data, 'name_localizations', {});
+			this.data.name_localizations = {};
 		}
 
 		const parsedLocale = validateLocale(locale);
@@ -128,11 +128,11 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
-			Reflect.set(this.data, 'name_localizations', null);
+			this.data.name_localizations = null;
 			return this;
 		}
 
-		Reflect.set(this.data, 'name_localizations', {});
+		this.data.name_localizations = {};
 
 		for (const args of Object.entries(localizedNames))
 			this.setNameLocalization(...(args as [LocaleString, string | null]));

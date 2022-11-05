@@ -207,8 +207,8 @@ describe('Slash Commands', () => {
 
 				expect(() => {
 					const option = getStringOption();
-					Reflect.set(option, 'autocomplete', true);
-					Reflect.set(option, 'choices', [{ name: 'Fancy Pants', value: 'fp_1' }]);
+					Reflect.set(option.data, 'autocomplete', true);
+					Reflect.set(option.data, 'choices', [{ name: 'Fancy Pants', value: 'fp_1' }]);
 					return option.toJSON();
 				}).toThrowError();
 

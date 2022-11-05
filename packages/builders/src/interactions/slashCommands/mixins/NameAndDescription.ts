@@ -34,7 +34,7 @@ export class SharedNameAndDescription<
 		// Assert the name matches the conditions
 		validateName(name);
 
-		Reflect.set(this.data, 'name', name);
+		this.data.name = name;
 
 		return this;
 	}
@@ -48,7 +48,7 @@ export class SharedNameAndDescription<
 		// Assert the description matches the conditions
 		validateDescription(description);
 
-		Reflect.set(this.data, 'description', description);
+		this.data.description = description;
 
 		return this;
 	}
@@ -61,7 +61,7 @@ export class SharedNameAndDescription<
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.data.name_localizations) {
-			Reflect.set(this.data, 'name_localizations', {});
+			this.data.name_localizations = {};
 		}
 
 		const parsedLocale = validateLocale(locale);
@@ -84,11 +84,11 @@ export class SharedNameAndDescription<
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
-			Reflect.set(this.data, 'name_localizations', null);
+			this.data.name_localizations = null;
 			return this;
 		}
 
-		Reflect.set(this.data, 'name_localizations', {});
+		this.data.name_localizations = {};
 
 		for (const args of Object.entries(localizedNames)) {
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
@@ -105,7 +105,7 @@ export class SharedNameAndDescription<
 	 */
 	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
 		if (!this.data.description_localizations) {
-			Reflect.set(this.data, 'description_localizations', {});
+			this.data.description_localizations = {};
 		}
 
 		const parsedLocale = validateLocale(locale);
@@ -128,11 +128,11 @@ export class SharedNameAndDescription<
 	 */
 	public setDescriptionLocalizations(localizedDescriptions: LocalizationMap | null) {
 		if (localizedDescriptions === null) {
-			Reflect.set(this.data, 'description_localizations', null);
+			this.data.description_localizations = null;
 			return this;
 		}
 
-		Reflect.set(this.data, 'description_localizations', {});
+		this.data.description_localizations = {};
 		for (const args of Object.entries(localizedDescriptions)) {
 			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
 		}

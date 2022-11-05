@@ -1,7 +1,7 @@
 import { s } from '@sapphire/shapeshift';
 import type { APIApplicationCommandBasicOption } from 'discord-api-types/v10';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import { assertChoices, localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
+import { assertAutocomplete, assertChoices, localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
 const numberPredicate = s.number.greaterThan(Number.NEGATIVE_INFINITY).lessThan(Number.POSITIVE_INFINITY);
@@ -49,9 +49,10 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
+		assertChoices(this.data);
 		choicesPredicate.parse(choices);
 
-		Reflect.set(this.data, 'choices', []);
+		this.data.choices = [];
 		this.addChoices(...choices);
 
 		return this;
@@ -70,7 +71,8 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		Reflect.set(this.data, 'autocomplete', autocomplete);
+		assertAutocomplete(this.data);
+		this.data.autocomplete = autocomplete;
 
 		return this;
 	}
