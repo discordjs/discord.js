@@ -1,4 +1,7 @@
-import type { RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type {
+	RESTPostAPIChatInputApplicationCommandsJSONBody,
+	APIApplicationCommandSubcommandOption,
+} from 'discord-api-types/v10';
 import { assertReturnOfBuilder, validateMaxOptionsLength } from '../Assertions.js';
 import { SlashCommandAttachmentOption } from '../options/attachment.js';
 import { SlashCommandBooleanOption } from '../options/boolean.js';
@@ -12,7 +15,9 @@ import { SlashCommandUserOption } from '../options/user.js';
 import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';
 
 export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
-	public readonly data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody> = {};
+	public readonly data: Partial<
+		APIApplicationCommandSubcommandOption | RESTPostAPIChatInputApplicationCommandsJSONBody
+	> = {};
 
 	/**
 	 * Adds a boolean option

@@ -155,7 +155,9 @@ export interface SlashCommandSubcommandsOnlyBuilder
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription<SlashCommandBuilder>,
 		SharedSlashCommandOptions,
-		Pick<SlashCommandBuilder, 'toJSON'> {}
+		Pick<SlashCommandBuilder, 'toJSON'> {
+	data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody>;
+}
 
 export interface ToAPIApplicationCommandOptions {
 	toJSON(): APIApplicationCommandOption;

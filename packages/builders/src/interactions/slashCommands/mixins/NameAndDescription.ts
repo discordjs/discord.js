@@ -2,27 +2,23 @@ import type {
 	LocaleString,
 	LocalizationMap,
 	RESTPostAPIChatInputApplicationCommandsJSONBody,
-	APIApplicationCommandBasicOption,
-	APIApplicationCommandSubcommandGroupOption,
+	ApplicationCommandOptionType,
+	APIApplicationCommandOptionBase,
 } from 'discord-api-types/v10';
 import { validateDescription, validateLocale, validateName } from '../Assertions.js';
 import type { SlashCommandBuilder } from '../SlashCommandBuilder.js';
-import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase';
 
 export class SharedNameAndDescription<
-	T extends APIApplicationCommandSubcommandGroupOption | ApplicationCommandOptionBase | SlashCommandBuilder =
-		| APIApplicationCommandSubcommandGroupOption
-		| ApplicationCommandOptionBase
+	T extends APIApplicationCommandOptionBase<ApplicationCommandOptionType> | SlashCommandBuilder =
+		| APIApplicationCommandOptionBase<ApplicationCommandOptionType>
 		| SlashCommandBuilder,
 > {
 	public readonly data: Partial<
-		T extends ApplicationCommandOptionBase
-			? APIApplicationCommandBasicOption
+		T extends APIApplicationCommandOptionBase<ApplicationCommandOptionType>
+			? APIApplicationCommandOptionBase<ApplicationCommandOptionType>
 			: T extends SlashCommandBuilder
 			? RESTPostAPIChatInputApplicationCommandsJSONBody
-			: T extends APIApplicationCommandSubcommandGroupOption
-			? APIApplicationCommandSubcommandGroupOption
-			: APIApplicationCommandBasicOption | RESTPostAPIChatInputApplicationCommandsJSONBody
+			: APIApplicationCommandOptionBase<ApplicationCommandOptionType> | RESTPostAPIChatInputApplicationCommandsJSONBody
 	> = {};
 
 	/**

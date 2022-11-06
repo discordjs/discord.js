@@ -63,7 +63,9 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 }
 
 export interface SlashCommandSubcommandGroupBuilder
-	extends SharedNameAndDescription<APIApplicationCommandSubcommandGroupOption> {}
+	extends SharedNameAndDescription<APIApplicationCommandSubcommandGroupOption> {
+	readonly data: Partial<APIApplicationCommandSubcommandGroupOption>;
+}
 
 /**
  * Represents a subcommand
@@ -102,5 +104,7 @@ export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOpt
 }
 
 export interface SlashCommandSubcommandBuilder
-	extends SharedNameAndDescription<SlashCommandBuilder>,
-		SharedSlashCommandOptions<false> {}
+	extends SharedNameAndDescription<APIApplicationCommandSubcommandOption>,
+		SharedSlashCommandOptions<false> {
+	readonly data: Partial<APIApplicationCommandSubcommandOption>;
+}
