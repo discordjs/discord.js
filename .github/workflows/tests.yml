@@ -20,10 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build dependencies
         run: yarn build

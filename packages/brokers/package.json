@@ -26,7 +26,8 @@
 		"test": "__tests__"
 	},
 	"files": [
-		"dist"
+		"dist",
+		"scripts"
 	],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
@@ -61,17 +62,17 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.8",
-		"@microsoft/api-extractor": "^7.32.1",
-		"@types/node": "^16.11.52",
-		"@vitest/coverage-c8": "^0.22.1",
+		"@microsoft/api-extractor": "^7.33.4",
+		"@types/node": "^16.11.68",
+		"@vitest/coverage-c8": "^0.24.3",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.38",
+		"eslint-config-neon": "^0.1.39",
 		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"tsup": "^6.2.3",
+		"tsup": "^6.3.0",
 		"typescript": "^4.8.4",
-		"vitest": "^0.22.1"
+		"vitest": "^0.24.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"
