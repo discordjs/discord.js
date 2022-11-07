@@ -408,7 +408,7 @@ class ApplicationCommand extends Base {
   toString() {
     return this.type === ApplicationCommandType.ChatInput
       ? chatInputApplicationCommandMention(this.name, this.id)
-      : '[object Object]';
+      : super.toString();
   }
 
   /**
