@@ -376,7 +376,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
     enforceOptionOrder?: boolean,
   ): boolean;
-  public toString(): ChatInputApplicationCommandMention;
+  public toString(): ChatInputApplicationCommandMention | string;
   public static optionsEqual(
     existing: ApplicationCommandOption[],
     options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
