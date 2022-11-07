@@ -376,7 +376,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
     enforceOptionOrder?: boolean,
   ): boolean;
-  public toString(): ApplicationCommandMention;
+  public toString(): ChatInputApplicationCommandMention;
   public static optionsEqual(
     existing: ApplicationCommandOption[],
     options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
@@ -4120,8 +4120,6 @@ export type ApplicationCommandData =
   | MessageApplicationCommandData
   | ChatInputApplicationCommandData;
 
-export type ApplicationCommandMention = `</${string}:${Snowflake}>`;
-
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
   channelTypes?: ChannelType[];
@@ -4489,6 +4487,8 @@ export interface ChannelWebhookCreateOptions {
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
   channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | Snowflake;
 }
+
+export type ChatInputApplicationCommandMention = `</${string}:${Snowflake}>`;
 
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
