@@ -376,6 +376,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
     enforceOptionOrder?: boolean,
   ): boolean;
+  public toString(): ApplicationCommandMention;
   public static optionsEqual(
     existing: ApplicationCommandOption[],
     options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
@@ -4118,6 +4119,8 @@ export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
   | ChatInputApplicationCommandData;
+
+export type ApplicationCommandMention = `</${string}:${Snowflake}>`;
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
