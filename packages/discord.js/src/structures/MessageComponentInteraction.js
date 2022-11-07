@@ -105,13 +105,3 @@ class MessageComponentInteraction extends BaseInteraction {
 InteractionResponses.applyToClass(MessageComponentInteraction);
 
 module.exports = MessageComponentInteraction;
-
-/**
- * @external APIMessageSelectMenu
- * @see {@link https://discord.com/developers/docs/interactions/message-components#select-menu-object}
- */
-
-/**
- * @external APIMessageButton
- * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
- */
