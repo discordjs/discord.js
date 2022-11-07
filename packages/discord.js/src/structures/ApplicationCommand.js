@@ -396,6 +396,17 @@ class ApplicationCommand extends Base {
     }
     return true;
   }
+  
+  /**
+   * When concatenated with a string, this automatically returns the command's mention instead of the ApplicationCommand object.
+   * @returns {string}
+   * @example
+   * // Logs: Command: </ping:123456789012345678>
+   * console.log(`Command: ${command}`);
+   */
+  toString() {
+    return `</${this.name}:${this.id}>`
+  }
 
   /**
    * Recursively checks that all options for an {@link ApplicationCommand} are equal to the provided options.
