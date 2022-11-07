@@ -270,6 +270,14 @@ export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: true): `
  * @param emojiId - The emoji ID to format
  * @param animated - Whether the emoji is animated or not. Defaults to `false`
  */
+export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: boolean): `<:_:${C}>` | `<a:_:${C}>`;
+
+/**
+ * Formats an emoji ID into a fully qualified emoji identifier
+ *
+ * @param emojiId - The emoji ID to format
+ * @param animated - Whether the emoji is animated or not. Defaults to `false`
+ */
 export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<:_:${C}>` | `<a:_:${C}>` {
 	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
 }
