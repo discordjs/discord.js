@@ -66,6 +66,8 @@ class AutoModerationRule extends Base {
        * Additional data used to determine whether an auto moderation rule should be triggered.
        * @typedef {Object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
+       * @property {string[]} regexPatterns The regular expression patterns which will be matched against the content
+       * <info>Only Rust-flavored regular expressions are supported.</info>
        * @property {AutoModerationRuleKeywordPresetType[]} presets
        * The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering
@@ -79,6 +81,7 @@ class AutoModerationRule extends Base {
        */
       this.triggerMetadata = {
         keywordFilter: data.trigger_metadata.keyword_filter ?? [],
+        regexPatterns: data.trigger_metadata.regex_patterns ?? [],
         presets: data.trigger_metadata.presets ?? [],
         allowList: data.trigger_metadata.allow_list ?? [],
         mentionTotalLimit: data.trigger_metadata.mention_total_limit ?? null,
@@ -188,6 +191,17 @@ class AutoModerationRule extends Base {
    */
   setKeywordFilter(keywordFilter, reason) {
     return this.edit({ triggerMetadata: { keywordFilter }, reason });
+  }
+
+  /**
+   * Sets the regular expression patterns for this auto moderation rule.
+   * @param {string[]} regexPatterns The regular expression patterns of this auto moderation rule
+   * <info>Only Rust-flavored regular expressions are supported.</info>
+   * @param {string} [reason] The reason for changing the regular expression patterns of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setRegexPatterns(regexPatterns, reason) {
+    return this.edit({ triggerMetadata: { regexPatterns }, reason });
   }
 
   /**

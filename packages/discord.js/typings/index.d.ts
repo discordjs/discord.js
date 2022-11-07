@@ -362,6 +362,7 @@ export class AutoModerationRule extends Base {
   public setName(name: string, reason?: string): Promise<AutoModerationRule>;
   public setEventType(eventType: AutoModerationRuleEventType, reason?: string): Promise<AutoModerationRule>;
   public setKeywordFilter(keywordFilter: string[], reason?: string): Promise<AutoModerationRule>;
+  public setRegexPatterns(regexPatterns: string[], reason?: string): Promise<AutoModerationRule>;
   public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
@@ -4443,6 +4444,7 @@ export interface AutoModerationActionMetadata {
 
 export interface AutoModerationTriggerMetadata {
   keywordFilter: string[];
+  regexPatterns: string[];
   presets: AutoModerationRuleKeywordPresetType[];
   allowList: string[];
   mentionTotalLimit: number | null;
