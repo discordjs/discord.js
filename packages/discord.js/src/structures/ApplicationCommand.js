@@ -1,5 +1,6 @@
 'use strict';
 
+const { chatInputApplicationCommandMention } = require('@discordjs/builders');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
@@ -405,7 +406,7 @@ class ApplicationCommand extends Base {
    * console.log(`Command: ${command}`);
    */
   toString() {
-    return `</${this.name}:${this.id}>`
+    return chatInputApplicationCommandMention(`${this.name}`, this.id);
   }
 
   /**
