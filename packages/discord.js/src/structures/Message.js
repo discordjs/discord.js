@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -608,6 +608,25 @@ class Message extends Base {
       this.author.id === this.client.user.id ||
         (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
           this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
+    );
+  }
+
+  /**
+   * Whether the message is bulk deletable by the client user
+   * @type {boolean}
+   * @readonly
+   * @example
+   * // Filter for bulk deletable messages
+   * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
+   */
+  get bulkDeletable() {
+    const permissions = this.channel?.permissionsFor(this.client.user);
+    return (
+      (this.inGuild() &&
+        Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+        this.deletable &&
+        permissions?.has(PermissionFlagsBits.ManageMessages, false)) ??
+      false
     );
   }
 
