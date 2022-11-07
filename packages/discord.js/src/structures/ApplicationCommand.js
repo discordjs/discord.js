@@ -2,7 +2,7 @@
 
 const { chatInputApplicationCommandMention } = require('@discordjs/builders');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const { ApplicationCommandOptionType, ApplicationCommandType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
 const Base = require('./Base');
 const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
