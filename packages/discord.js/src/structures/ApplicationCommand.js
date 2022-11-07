@@ -399,7 +399,8 @@ class ApplicationCommand extends Base {
   }
   
   /**
-   * When concatenated with a string, if this is a chat input command, this automatically returns the command's mention instead of the ApplicationCommand object.
+   * When concatenated with a string, if this is a chat input command,
+   * this automatically returns the command's mention instead of the ApplicationCommand object.
    * @returns {string}
    * @example
    * // Logs: Command: </ping:123456789012345678>
