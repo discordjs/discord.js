@@ -66,10 +66,15 @@ class MessageComponentInteraction extends BaseInteraction {
   }
 
   /**
-   * Raw message components from the API
-   * * APIMessageButton
-   * * APIMessageSelectMenu
-   * @typedef {APIMessageButton|APIMessageSelectMenu} APIMessageActionRowComponent
+   * Components that can be placed in an action row for messages.
+   * * ButtonComponent
+   * * StringSelectMenuComponent
+   * * UserSelectMenuComponent
+   * * RoleSelectMenuComponent
+   * * MentionableSelectMenuComponent
+   * * ChannelSelectMenuComponent
+   * @typedef {ButtonComponent|StringSelectMenuComponent|UserSelectMenuComponent|
+   * RoleSelectMenuComponent|MentionableSelectMenuComponent|ChannelSelectMenuComponent} MessageActionRowComponent
    */
 
   /**
