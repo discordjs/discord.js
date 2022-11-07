@@ -1295,7 +1295,7 @@ exports.MessageComponentTypes = {
   SELECT_MENU: 3,
 };
 /**
- * Components types that are select menus. The available types are:
+ * The types of components that are select menus. The available types are:
  * * SELECT_MENU (deprecated)
  * * STRING_MENU
  * * TEXT_INPUT

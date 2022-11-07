@@ -25,7 +25,7 @@ class SelectMenuInteraction extends MessageComponentInteraction {
     this.users = new Collection();
 
     /**
-     * Collection of the selected users
+     * Collection of the selected members
      * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
      */
     this.members = new Collection();
@@ -37,7 +37,7 @@ class SelectMenuInteraction extends MessageComponentInteraction {
     this.roles = new Collection();
 
     /**
-     * Collection of the selected roles
+     * Collection of the selected channels
      * @type {Collection<Snowflake, Channel|APIChannel>}
      */
     this.channels = new Collection();

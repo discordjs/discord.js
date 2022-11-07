@@ -83,7 +83,7 @@ class MessageSelectMenu extends BaseMessageComponent {
     this.disabled = data.disabled ?? false;
     /**
      * Channels that are possible to select in CHANNEL_SELECT menu
-     * @type {boolean}
+     * @type {ChannelType[]}
      */
     this.channelTypes =
       data.channel_types?.map(channelType =>
