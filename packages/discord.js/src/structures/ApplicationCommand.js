@@ -406,7 +406,7 @@ class ApplicationCommand extends Base {
    * console.log(`Command: ${command}`);
    */
   toString() {
-    return chatInputApplicationCommandMention(`${this.name}`, this.id);
+    return chatInputApplicationCommandMention(this.name, this.id);
   }
 
   /**
