@@ -401,7 +401,7 @@ class ApplicationCommand extends Base {
   /**
    * When concatenated with a string, this automatically returns the command's mention
    * instead of the ApplicationCommand object.
-   * <info>This only works with {@link ChatInputCommandInteraction}s.</info>
+   * <info>This only works with chat input application commands.</info>
    * @returns {string}
    * @example
    * // Logs: Command: </ping:123456789012345678>
