@@ -1,20 +1,55 @@
 /**
- * Yields the numbers in the given range as an array
+ * Options for creating a range
+ */
+export interface RangeOptions {
+	/**
+	 * The end of the range (exclusive)
+	 */
+	end: number;
+	/**
+	 * The start of the range (inclusive)
+	 */
+	start: number;
+	/**
+	 * The amount to increment by
+	 *
+	 * @defaultValue `1`
+	 */
+	step?: number;
+}
+
+/**
+ * Yields the numbers in the given range as an array.
  *
- * @param start - The start of the range
- * @param end - The end of the range (inclusive)
- * @param step - The amount to increment between each number
+ * @remarks
+ * This method is end-exclusive, for example the last number yielded by `range(5)` is 4. if you
+ * prefer add 1 to the range or `end` option.
+ * @param range - A number representing the the range to yield (exclusive) or an object with start, end and step
  * @example
  * Basic range
  * ```ts
- * range(3, 5); // [3, 4, 5]
+ * range(5); // [0, 1, 2, 3, 4]
  * ```
  * @example
  * Range with a step
  * ```ts
- * range(3, 10, 2); // [3, 5, 7, 9]
+ * range({ start: 3, end: 10, step: 2 }); // [3, 5, 7, 9]
  * ```
  */
-export function range(start: number, end: number, step = 1): number[] {
-	return Array.from({ length: (end - start) / step + 1 }, (_, index) => start + index * step);
+export function* range(range: RangeOptions | number) {
+	let rangeEnd: number;
+	let start = 0;
+	let step = 1;
+
+	if (typeof range === 'number') {
+		rangeEnd = range;
+	} else {
+		start = range.start;
+		rangeEnd = range.end;
+		step = range.step ?? 1;
+	}
+
+	for (let index = start; index < rangeEnd; index += step) {
+		yield index;
+	}
 }
