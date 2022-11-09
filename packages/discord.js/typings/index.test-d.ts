@@ -148,6 +148,7 @@ import {
   RoleSelectMenuInteraction,
   ChannelSelectMenuInteraction,
   MentionableSelectMenuInteraction,
+  MessageMentions,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -349,6 +350,10 @@ client.on('messageCreate', async message => {
     expectType<GuildTextBasedChannel>(message.channel);
     expectType<Guild>(message.guild);
     expectType<GuildMember | null>(message.member);
+
+    expectType<MessageMentions<true>>(message.mentions);
+    expectType<Guild>(message.guild);
+    expectType<Collection<Snowflake, GuildMember>>(message.mentions.members);
   }
 
   expectType<TextBasedChannel>(message.channel);
@@ -1425,6 +1430,10 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<null>(message.guild);
   expectType<null>(message.guildId);
   expectType<TextBasedChannel>(message.channel.messages.channel);
+
+  expectType<MessageMentions<false>>(message.mentions);
+  expectType<null>(message.mentions.guild);
+  expectType<null>(message.mentions.members);
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;

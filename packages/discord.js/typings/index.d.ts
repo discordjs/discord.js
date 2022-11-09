@@ -1795,7 +1795,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public id: Snowflake;
   public interaction: MessageInteraction | null;
   public get member(): GuildMember | null;
-  public mentions: MessageMentions;
+  public mentions: MessageMentions<InGuild>;
   public nonce: string | number | null;
   public get partial(): false;
   public get pinnable(): boolean;
@@ -1954,7 +1954,7 @@ export class MessageFlagsBitField extends BitField<MessageFlagsString> {
   public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
 }
 
-export class MessageMentions {
+export class MessageMentions<InGuild extends boolean = boolean> {
   private constructor(
     message: Message,
     users: APIUser[] | Collection<Snowflake, User>,
@@ -1970,9 +1970,9 @@ export class MessageMentions {
   public get channels(): Collection<Snowflake, Channel>;
   public readonly client: Client;
   public everyone: boolean;
-  public readonly guild: Guild;
+  public readonly guild: If<InGuild, Guild>;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
-  public get members(): Collection<Snowflake, GuildMember> | null;
+  public get members(): If<InGuild, Collection<Snowflake, GuildMember>>;
   public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
   public roles: Collection<Snowflake, Role>;
