@@ -585,7 +585,7 @@ function cleanCodeBlockContent(text) {
  */
 function parseWebhookURL(url) {
   const matches = url.match(
-    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
+    /https?:\/\/(?:ptb\.|canary\.)?discord(?:app)?\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
   );
 
   if (!matches || matches.length <= 2) return null;
