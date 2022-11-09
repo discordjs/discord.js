@@ -36,7 +36,7 @@ export interface RangeOptions {
  * @example
  * Range with a step
  * ```ts
- * for (const number in range({ start: 3, end: 10, step: 2 })) {
+ * for (const number of range({ start: 3, end: 10, step: 2 })) {
  * 	console.log(number);
  * }
  * // Prints 3, 5, 7, 9
