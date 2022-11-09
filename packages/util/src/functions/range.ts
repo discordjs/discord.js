@@ -19,11 +19,11 @@ export interface RangeOptions {
 }
 
 /**
- * Yields the numbers in the given range as an array.
+ * A generator to yield numbers in a given range
  *
  * @remarks
- * This method is end-exclusive, for example the last number yielded by `range(5)` is 4. if you
- * prefer add 1 to the range or `end` option.
+ * This method is end-exclusive, for example the last number yielded by `range(5)` is 4. If you
+ * prefer for the end to be included add 1 to the range or `end` option.
  * @param range - A number representing the the range to yield (exclusive) or an object with start, end and step
  * @example
  * Basic range
