@@ -152,6 +152,16 @@ class ApplicationCommand extends Base {
        */
       this.version = data.version;
     }
+
+    if ('nsfw' in data) {
+      /**
+       * Whether this command is NSFW
+       * @type {?boolean}
+       */
+      this.nsfw = data.nsfw;
+    } else {
+      this.nsfw ??= null;
+    }
   }
 
   /**
@@ -377,6 +387,7 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
+      ('nsfw' in command && command.nsfw !== this.nsfw) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
