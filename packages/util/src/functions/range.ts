@@ -28,12 +28,18 @@ export interface RangeOptions {
  * @example
  * Basic range
  * ```ts
- * range(5); // [0, 1, 2, 3, 4]
+ * for (const number of range(5)) {
+ *  console.log(number);
+ * }
+ * // Prints 0, 1, 2, 3, 4
  * ```
  * @example
  * Range with a step
  * ```ts
- * range({ start: 3, end: 10, step: 2 }); // [3, 5, 7, 9]
+ * for (const number in range({ start: 3, end: 10, step: 2 })) {
+ * 	console.log(number);
+ * }
+ * // Prints 3, 5, 7, 9
  * ```
  */
 export function* range(range: RangeOptions | number) {
