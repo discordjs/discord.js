@@ -4216,6 +4216,7 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   descriptionLocalizations?: LocalizationMap;
   type?: ApplicationCommandType.ChatInput;
   options?: ApplicationCommandOptionData[];
+  nsfw?: boolean;
 }
 
 export type ApplicationCommandData =

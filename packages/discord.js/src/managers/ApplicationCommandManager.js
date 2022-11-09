@@ -252,6 +252,7 @@ class ApplicationCommandManager extends CachedManager {
       name: command.name,
       name_localizations: command.nameLocalizations ?? command.name_localizations,
       description: command.description,
+      nsfw: command.nsfw,
       description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
