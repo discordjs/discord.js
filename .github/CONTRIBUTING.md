@@ -25,7 +25,7 @@ If you want to test changes you've made locally, you can do so by using `yarn li
 2. Initialize a new yarn 3 project `yarn init -2`
 3. Disable pnp `yarn config set nodeLinker node-modules`
 4. Now link the local discord.js project you cloned earlier `yarn link -A {PATH_TO_DISCORDJS_REPO}`
-5. Install packages you'd like to test locally `yarn add discord.js@latest`, `yarn add @discord/rest@latest`, etc. **Note: Make sure you use `latest` tag or else yarn will try to install the remote package from npm**
+5. Install packages you'd like to test locally `yarn add discord.js@latest`, `yarn add @discordjs/rest@latest`, etc. **Note: Make sure you use `latest` tag or else yarn will try to install the remote package from npm**
 6. Import the package in your source code and test them out!
 
 ### Working with TypeScript packages
