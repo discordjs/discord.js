@@ -52,6 +52,12 @@ class ApplicationCommand extends Base {
      */
     this.type = data.type;
 
+    /**
+     * Whether this command is age-restricted (18+)
+     * @type {boolean}
+     */
+    this.nsfw = data.nsfw ?? false;
+
     this._patch(data);
   }
 
@@ -151,16 +157,6 @@ class ApplicationCommand extends Base {
        * @type {Snowflake}
        */
       this.version = data.version;
-    }
-
-    if ('nsfw' in data) {
-      /**
-       * Whether this command is NSFW
-       * @type {?boolean}
-       */
-      this.nsfw = data.nsfw;
-    } else {
-      this.nsfw ??= null;
     }
   }
 
