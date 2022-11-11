@@ -28,7 +28,7 @@ class InteractionResponses {
 
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
-   * @typedef {Object} InteractionDeferUpdateOptions
+   * @typedef {Object} InteractionDeferMessageUpdateOptions
    * @property {boolean} [fetchResponse] Whether to fetch the reply
    */
 
@@ -44,7 +44,7 @@ class InteractionResponses {
 
   /**
    * Options for updating the message received from a {@link MessageComponentInteraction}.
-   * @typedef {MessageEditOptions} InteractionUpdateOptions
+   * @typedef {MessageEditOptions} InteractionUpdateMessageOptions
    * @property {boolean} [fetchResponse] Whether to fetch the reply
    */
 
@@ -137,14 +137,14 @@ class InteractionResponses {
   }
 
   /**
-   * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
+   * @typedef {WebhookEditMessageOptions} InteractionEditResponseOptions
    * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
    */
 
   /**
    * Edits a reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|MessagePayload|InteractionEditReplyOptions} options The new options for the message
+   * @param {string|MessagePayload|InteractionEditResponseOptions} options The new options for the message
    * @returns {Promise<Message>}
    * @example
    * // Edit the initial reply to this interaction
@@ -186,7 +186,7 @@ class InteractionResponses {
 
   /**
    * Defers an update to the message to which the component was attached.
-   * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
+   * @param {InteractionDeferMessageUpdateOptions} [options] Options for deferring the update to this interaction
    * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
@@ -209,7 +209,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message of the component on which the interaction was received on.
-   * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
+   * @param {string|MessagePayload|InteractionUpdateMessageOptions} options The options for the updated message
    * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
