@@ -23,13 +23,13 @@ class InteractionResponses {
    * Options for deferring the reply to an {@link BaseInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @property {boolean} [fetchResponse] Whether to fetch the reply
    */
 
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
    * @typedef {Object} InteractionDeferUpdateOptions
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @property {boolean} [fetchResponse] Whether to fetch the reply
    */
 
   /**
@@ -37,7 +37,7 @@ class InteractionResponses {
    * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @property {boolean} [fetchResponse] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.</info>
    */
@@ -45,7 +45,7 @@ class InteractionResponses {
   /**
    * Options for updating the message received from a {@link MessageComponentInteraction}.
    * @typedef {MessageEditOptions} InteractionUpdateOptions
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @property {boolean} [fetchResponse] Whether to fetch the reply
    */
 
   /**
@@ -77,17 +77,17 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+    return options.fetchResponse ? this.fetchResponse() : new InteractionResponse(this);
   }
 
   /**
    * Creates a reply to this interaction.
-   * <info>Use the `fetchReply` option to get the bot's reply message.</info>
+   * <info>Use the `fetchResponse` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Reply to the interaction and fetch the response
-   * interaction.reply({ content: 'Pong!', fetchReply: true })
+   * interaction.reply({ content: 'Pong!', fetchResponse: true })
    *   .then((message) => console.log(`Reply sent with content ${message.content}`))
    *   .catch(console.error);
    * @example
@@ -118,7 +118,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+    return options.fetchResponse ? this.fetchResponse() : new InteractionResponse(this);
   }
 
   /**
@@ -128,11 +128,11 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    * @example
    * // Fetch the initial reply to this interaction
-   * interaction.fetchReply()
+   * interaction.fetchResponse()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  fetchReply(message = '@original') {
+  fetchResponse(message = '@original') {
     return this.webhook.fetchMessage(message);
   }
 
@@ -148,11 +148,11 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    * @example
    * // Edit the initial reply to this interaction
-   * interaction.editReply('New content')
+   * interaction.editResponse('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async editReply(options) {
+  async editResponse(options) {
     if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
     const msg = await this.webhook.editMessage(options.message ?? '@original', options);
     this.replied = true;
@@ -166,11 +166,11 @@ class InteractionResponses {
    * @returns {Promise<void>}
    * @example
    * // Delete the initial reply to this interaction
-   * interaction.deleteReply()
+   * interaction.deleteResponse()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deleteReply(message = '@original') {
+  async deleteResponse(message = '@original') {
     await this.webhook.deleteMessage(message);
   }
 
@@ -190,11 +190,11 @@ class InteractionResponses {
    * @returns {Promise<Message|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
-   * interaction.deferUpdate()
+   * interaction.deferMessageUpdate()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deferUpdate(options = {}) {
+  async deferMessageUpdate(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -204,7 +204,7 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
+    return options.fetchResponse ? this.fetchResponse() : new InteractionResponse(this, this.message?.interaction?.id);
   }
 
   /**
@@ -213,14 +213,14 @@ class InteractionResponses {
    * @returns {Promise<Message|void>}
    * @example
    * // Remove the components from the message
-   * interaction.update({
+   * interaction.updateMessage({
    *   content: "A component interaction was received",
    *   components: []
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async update(options) {
+  async updateMessage(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     let messagePayload;
@@ -239,7 +239,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
+    return options.fetchResponse ? this.fetchResponse() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
@@ -294,12 +294,12 @@ class InteractionResponses {
     const props = [
       'deferReply',
       'reply',
-      'fetchReply',
-      'editReply',
-      'deleteReply',
+      'fetchResponse',
+      'editResponse',
+      'deleteResponse',
       'followUp',
-      'deferUpdate',
-      'update',
+      'deferMessageUpdate',
+      'updateMessage',
       'showModal',
       'awaitModalSubmit',
     ];
