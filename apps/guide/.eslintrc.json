@@ -1,0 +1,11 @@
+{
+	"extends": ["../../.eslintrc.json", "neon/react", "neon/astro", "neon/prettier"],
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"rules": {
+		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".astro"] }]
+	}
+}

@@ -16,3 +16,14 @@ To get ready to work on the codebase, please do the following:
 4. Code your heart out!
 5. Run `yarn test` to run ESLint and ensure any JSDoc changes are valid
 6. [Submit a pull request](https://github.com/discordjs/discord.js/compare) (Make sure you follow the [conventional commit format](https://github.com/discordjs/discord.js/blob/main/.github/COMMIT_CONVENTION.md))
+
+## Adding new packages
+
+If you'd like to create another package under the `@discordjs` organization run the following command:
+
+```bash
+yarn create-package <package-name> [package-description]
+```
+
+This will create new package directory under `packages/` with the required configuration files. You can
+begin to make changes within the `src/` directory.

@@ -1,43 +1,43 @@
-'packages:builders':
+apps:guide:
+  - apps/guide/*
+  - apps/guide/**/*
+apps:website:
+  - apps/website/*
+  - apps/website/**/*
+
+packages:brokers:
+  - packages/brokers/*
+  - packages/brokers/**/*
+packages:builders:
   - packages/builders/*
   - packages/builders/**/*
-
-'packages:collection':
+packages:collection:
   - packages/collection/*
   - packages/collection/**/*
-
-'packages:discord.js':
+packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
-
-'packages:docgen':
+packages:docgen:
   - packages/docgen/*
   - packages/docgen/**/*
-
-'packages:proxy':
+packages:proxy:
   - packages/proxy/*
   - packages/proxy/**/*
-
-'packages:proxy-container':
+packages:proxy-container:
   - packages/proxy-container/*
   - packages/proxy-container/**/*
-
-'packages:rest':
+packages:rest:
   - packages/rest/*
   - packages/rest/**/*
-
-'packages:voice':
-  - packages/voice/*
-  - packages/voice/**/*
-
-'packages:website':
-  - packages/website/*
-  - packages/website/**/*
-
-'packages:ws':
-  - packages/ws/*
-  - packages/ws/**/*
-
-'packages:util':
+packages/ui:
+  - packages:ui/*
+  - packages:ui/**/*
+packages:util:
   - packages/util/*
   - packages/util/**/*
+packages:voice:
+  - packages/voice/*
+  - packages/voice/**/*
+packages:ws:
+  - packages/ws/*
+  - packages/ws/**/*

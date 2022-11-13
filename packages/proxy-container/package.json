@@ -4,8 +4,8 @@
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext mjs,js,ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
 		"prepack": "yarn lint && yarn test && yarn build"
 	},
@@ -43,17 +43,18 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/proxy": "^1.1.0",
-		"@discordjs/rest": "^1.1.0",
+		"@discordjs/proxy": "^1.2.0",
+		"@discordjs/rest": "^1.3.0",
 		"tslib": "^2.4.0"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.64",
+		"@types/node": "16.11.68",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.24.0",
-		"eslint-config-neon": "^0.1.34",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.39",
+		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"tsup": "^6.2.3",
+		"tsup": "^6.3.0",
 		"typescript": "^4.8.4"
 	},
 	"engines": {

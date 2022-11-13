@@ -1,0 +1,89 @@
+{
+	"name": "@discordjs/guide",
+	"version": "0.1.0",
+	"description": "Imagine a guide... that explores the many possibilities for your discord.js bot",
+	"private": true,
+	"scripts": {
+		"test": "vitest run",
+		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
+		"dev": "yarn workspaces foreach -ptR run build && astro dev",
+		"preview": "astro preview",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix --format=pretty"
+	},
+	"type": "module",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@astrojs/image": "^0.10.0",
+		"@astrojs/mdx": "^0.11.4",
+		"@astrojs/react": "^1.2.1",
+		"@code-hike/mdx": "^0.7.4",
+		"@discordjs/ui": "workspace:^",
+		"ariakit": "^2.0.0-next.41",
+		"cmdk": "^0.1.20",
+		"meilisearch": "^0.28.0",
+		"react": "^17.0.2",
+		"react-custom-scrollbars-2": "^4.5.0",
+		"react-dom": "^17.0.2",
+		"react-icons": "^4.6.0",
+		"react-use": "^17.4.0",
+		"sharp": "^0.31.1",
+		"shiki": "^0.11.1"
+	},
+	"devDependencies": {
+		"@astrojs/prefetch": "^0.1.0",
+		"@testing-library/react": "^13.4.0",
+		"@testing-library/user-event": "^14.4.3",
+		"@types/node": "16.11.68",
+		"@types/react": "^17.0.50",
+		"@types/react-dom": "^17.0.17",
+		"@types/react-syntax-highlighter": "^15.5.5",
+		"@unocss/cli": "^0.45.30",
+		"@unocss/reset": "^0.45.30",
+		"@vitejs/plugin-react": "^2.1.0",
+		"@vitest/coverage-c8": "^0.24.3",
+		"astro": "^1.5.2",
+		"astro-compress": "^1.0.12",
+		"astro-critters": "^1.0.5",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.39",
+		"eslint-formatter-pretty": "^4.1.0",
+		"happy-dom": "^7.6.0",
+		"hast-util-to-string": "^2.0.0",
+		"hastscript": "^7.1.0",
+		"html-escaper": "^3.0.3",
+		"prettier": "^2.7.1",
+		"prettier-plugin-astro": "^0.6.0",
+		"prettier-plugin-tailwindcss": "^0.1.13",
+		"rehype-autolink-headings": "^6.1.1",
+		"rehype-slug": "^5.0.1",
+		"typescript": "^4.8.4",
+		"unocss": "^0.45.30",
+		"vercel": "^28.4.12",
+		"vitest": "^0.24.3"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	}
+}

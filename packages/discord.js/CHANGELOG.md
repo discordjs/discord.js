@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.6.0](https://github.com/discordjs/discord.js/compare/14.5.0...14.6.0) - (2022-10-10)
+
+## Bug Fixes
+
+- **ClientOptions:** Make `ClientOptions#intents` returns an IntentsBitField (#8617) ([4c2955a](https://github.com/discordjs/discord.js/commit/4c2955a5de6779c29c09e63ba9ad2b235904f842))
+- Correctly construct a builder (#8727) ([e548e6a](https://github.com/discordjs/discord.js/commit/e548e6a10b7e1720f5e8f3c859b0b64d5134a012))
+- **Components:** Error with unknown components (#8724) ([6fd331d](https://github.com/discordjs/discord.js/commit/6fd331dd528e78fd023c908bd58af3faa9ed6c65))
+- **Client:** Don't auth for webhook fetches with token (#8709) ([01d75c8](https://github.com/discordjs/discord.js/commit/01d75c8b8b14f33c95a4da83a8494db848beeb8c))
+- Re-export util (#8699) ([a306219](https://github.com/discordjs/discord.js/commit/a306219673335584accd2ff77ab34d2812ef6c5d))
+- Throw discord.js errors correctly (#8697) ([ace974f](https://github.com/discordjs/discord.js/commit/ace974fc1fdbc5bcaa0d7f6f6d17de185c9f9cbf))
+
+## Documentation
+
+- **Utils:** Remove `private` from `parseEmoji` (#8718) ([a31e605](https://github.com/discordjs/discord.js/commit/a31e605e09064a300e31a3c91466b613654ba98e))
+- Update UserContextMenuCommandInteraction documentation (#8717) ([7556db2](https://github.com/discordjs/discord.js/commit/7556db243d9480949835668fcb5724fdd5d70e08))
+- Fix `AwaitMessageComponentOptions` typedef (#8696) ([9effd82](https://github.com/discordjs/discord.js/commit/9effd82abe82ba71ae627673da21ba07e1ede23e))
+
+## Features
+
+- **Util:** Escape more markdown characters (#8701) ([7b8966b](https://github.com/discordjs/discord.js/commit/7b8966bca156db79933403289741893a6e10ccd5))
+- **GuildChannelManager:** Allow creating channels with a default auto archive duration (#8693) ([628759b](https://github.com/discordjs/discord.js/commit/628759bcff8b0d4c77926cee2b8c18d8fdb4c260))
+- Add `@discordjs/util` (#8591) ([b2ec865](https://github.com/discordjs/discord.js/commit/b2ec865765bf94181473864a627fb63ea8173fd3))
+- **ForumChannel:** Add `defaultSortOrder` (#8633) ([883f6e9](https://github.com/discordjs/discord.js/commit/883f6e9202a559c986f4b15fccb422b5aea7bea8))
+
+## Refactor
+
+- Rename Error to DiscordjsError internally (#8706) ([aec44a0](https://github.com/discordjs/discord.js/commit/aec44a0c93f620b22242f35e626d817e831fc8cb))
+
+## Typings
+
+- Fix events augmentation (#8681) ([ac83ada](https://github.com/discordjs/discord.js/commit/ac83ada306ec153c13260d2bd53e4d704884b68a))
+- **Message:** Remove `& this` from `#inGuild` typeguard (#8704) ([c0f7a1a](https://github.com/discordjs/discord.js/commit/c0f7a1a89a4cf62edc7065bd200b2ce4018e0a27))
+- **ModalBuilder:** Fix constructor typings (#8690) ([2ea2a85](https://github.com/discordjs/discord.js/commit/2ea2a85e6335d57f44689f9b6e284129104de8fc))
+
 # [14.5.0](https://github.com/discordjs/discord.js/compare/14.4.0...14.5.0) - (2022-09-25)
 
 ## Bug Fixes

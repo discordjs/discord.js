@@ -82,12 +82,20 @@ function createComponent(data) {
       return new ActionRow(data);
     case ComponentType.Button:
       return new ButtonComponent(data);
-    case ComponentType.SelectMenu:
-      return new SelectMenuComponent(data);
+    case ComponentType.StringSelect:
+      return new StringSelectMenuComponent(data);
     case ComponentType.TextInput:
       return new TextInputComponent(data);
+    case ComponentType.UserSelect:
+      return new UserSelectMenuComponent(data);
+    case ComponentType.RoleSelect:
+      return new RoleSelectMenuComponent(data);
+    case ComponentType.MentionableSelect:
+      return new MentionableSelectMenuComponent(data);
+    case ComponentType.ChannelSelect:
+      return new ChannelSelectMenuComponent(data);
     default:
-      throw new Error(`Found unknown component type: ${data.type}`);
+      return new Component(data);
   }
 }
 
@@ -106,12 +114,20 @@ function createComponentBuilder(data) {
       return new ActionRowBuilder(data);
     case ComponentType.Button:
       return new ButtonBuilder(data);
-    case ComponentType.SelectMenu:
-      return new SelectMenuBuilder(data);
+    case ComponentType.StringSelect:
+      return new StringSelectMenuBuilder(data);
     case ComponentType.TextInput:
-      return new TextInputComponent(data);
+      return new TextInputBuilder(data);
+    case ComponentType.UserSelect:
+      return new UserSelectMenuBuilder(data);
+    case ComponentType.RoleSelect:
+      return new RoleSelectMenuBuilder(data);
+    case ComponentType.MentionableSelect:
+      return new MentionableSelectMenuBuilder(data);
+    case ComponentType.ChannelSelect:
+      return new ChannelSelectMenuBuilder(data);
     default:
-      throw new Error(`Found unknown component type: ${data.type}`);
+      return new ComponentBuilder(data);
   }
 }
 
@@ -121,10 +137,19 @@ const ActionRow = require('../structures/ActionRow');
 const ActionRowBuilder = require('../structures/ActionRowBuilder');
 const ButtonBuilder = require('../structures/ButtonBuilder');
 const ButtonComponent = require('../structures/ButtonComponent');
+const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
+const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuComponent');
 const Component = require('../structures/Component');
-const SelectMenuBuilder = require('../structures/SelectMenuBuilder');
-const SelectMenuComponent = require('../structures/SelectMenuComponent');
+const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
+const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
+const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
+const RoleSelectMenuComponent = require('../structures/RoleSelectMenuComponent');
+const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
+const StringSelectMenuComponent = require('../structures/StringSelectMenuComponent');
+const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');
+const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
+const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');
 
 /**
  * @external JSONEncodable

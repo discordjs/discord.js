@@ -53,7 +53,7 @@ export function createApiModel(data: any) {
  *
  * @param item - The API item to resolve the summary text for.
  */
-function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
+export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 	if (!item.tsdocComment) {
 		return null;
 	}

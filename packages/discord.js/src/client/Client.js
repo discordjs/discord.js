@@ -214,13 +214,7 @@ class Client extends BaseClient {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
-    this.emit(
-      Events.Debug,
-      `Provided token: ${token
-        .split('.')
-        .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
-        .join('.')}`,
-    );
+    this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
 
     if (this.options.presence) {
       this.options.ws.presence = this.presence._parse(this.options.presence);
@@ -313,7 +307,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token));
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
     return new Webhook(this, { token, ...data });
   }
 
@@ -460,6 +454,21 @@ class Client extends BaseClient {
   }
 
   /**
+   * Partially censored client token for debug logging purposes.
+   * @type {?string}
+   * @readonly
+   * @private
+   */
+  get _censoredToken() {
+    if (!this.token) return null;
+
+    return this.token
+      .split('.')
+      .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
+      .join('.');
+  }
+
+  /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
@@ -479,7 +488,7 @@ class Client extends BaseClient {
     if (typeof options.intents === 'undefined') {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = IntentsBitField.resolve(options.intents);
+      options.intents = new IntentsBitField(options.intents).freeze();
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');

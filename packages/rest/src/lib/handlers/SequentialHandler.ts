@@ -8,7 +8,7 @@ import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../
 import { HTTPError } from '../errors/HTTPError.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, parseHeader, parseResponse } from '../utils/utils.js';
+import { hasSublimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
 import type { IHandler } from './IHandler.js';
 
 /**
@@ -137,7 +137,7 @@ export class SequentialHandler implements IHandler {
 	 * @param time - The amount of time to delay all requests for
 	 */
 	private async globalDelayFor(time: number): Promise<void> {
-		await sleep(time, undefined, { ref: false });
+		await sleep(time);
 		this.manager.globalDelay = null;
 	}
 
@@ -307,8 +307,9 @@ export class SequentialHandler implements IHandler {
 		try {
 			res = await request(url, { ...options, signal: controller.signal });
 		} catch (error: unknown) {
-			// Retry the specified number of times for possible timed out requests
-			if (error instanceof Error && error.name === 'AbortError' && retries !== this.manager.options.retries) {
+			if (!(error instanceof Error)) throw error;
+			// Retry the specified number of times if needed
+			if (shouldRetry(error) && retries !== this.manager.options.retries) {
 				// eslint-disable-next-line no-param-reassign
 				return await this.runRequest(routeId, url, options, requestData, ++retries);
 			}
@@ -460,7 +461,7 @@ export class SequentialHandler implements IHandler {
 
 				this.#sublimitPromise?.resolve();
 				this.#sublimitPromise = null;
-				await sleep(sublimitTimeout, undefined, { ref: false });
+				await sleep(sublimitTimeout);
 				let resolve: () => void;
 				// eslint-disable-next-line promise/param-names, no-promise-executor-return
 				const promise = new Promise<void>((res) => (resolve = res));
