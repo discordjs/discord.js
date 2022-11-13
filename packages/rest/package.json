@@ -5,10 +5,10 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "downlevel-dts dist docs/dist --to=3.7 && api-extractor run --local",
+		"docs": "api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
@@ -56,25 +56,25 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.37.12",
+		"discord-api-types": "^0.37.15",
 		"file-type": "^18.0.0",
 		"tslib": "^2.4.0",
 		"undici": "^5.11.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.8",
-		"@microsoft/api-extractor": "^7.32.0",
-		"@types/node": "16.11.64",
-		"@vitest/coverage-c8": "^0.24.1",
+		"@microsoft/api-extractor": "^7.33.4",
+		"@types/node": "16.11.68",
+		"@vitest/coverage-c8": "^0.24.3",
 		"cross-env": "^7.0.3",
-		"downlevel-dts": "^0.10.1",
 		"esbuild-plugin-version-injector": "^1.0.0",
 		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.37",
+		"eslint-config-neon": "^0.1.39",
+		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"tsup": "^6.2.3",
+		"tsup": "^6.3.0",
 		"typescript": "^4.8.4",
-		"vitest": "^0.24.1"
+		"vitest": "^0.24.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

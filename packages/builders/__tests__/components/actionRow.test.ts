@@ -9,8 +9,8 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	createComponentBuilder,
-	SelectMenuBuilder,
-	SelectMenuOptionBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
 } from '../../src/index.js';
 
 const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
@@ -29,7 +29,7 @@ const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent>
 	type: ComponentType.ActionRow,
 	components: [
 		{
-			type: ComponentType.SelectMenu,
+			type: ComponentType.StringSelect,
 			custom_id: '1234',
 			options: [
 				{
@@ -73,7 +73,7 @@ describe('Action Row Components', () => {
 						url: 'https://google.com',
 					},
 					{
-						type: ComponentType.SelectMenu,
+						type: ComponentType.StringSelect,
 						placeholder: 'test',
 						custom_id: 'test',
 						options: [
@@ -108,7 +108,7 @@ describe('Action Row Components', () => {
 				type: ComponentType.ActionRow,
 				components: [
 					{
-						type: ComponentType.SelectMenu,
+						type: ComponentType.StringSelect,
 						custom_id: '1234',
 						options: [
 							{
@@ -134,17 +134,17 @@ describe('Action Row Components', () => {
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
 			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
-			const selectMenu = new SelectMenuBuilder()
+			const selectMenu = new StringSelectMenuBuilder()
 				.setCustomId('1234')
 				.setMaxValues(10)
 				.setMinValues(12)
 				.setOptions(
-					new SelectMenuOptionBuilder().setLabel('one').setValue('one'),
-					new SelectMenuOptionBuilder().setLabel('two').setValue('two'),
+					new StringSelectMenuOptionBuilder().setLabel('one').setValue('one'),
+					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
 				)
 				.setOptions([
-					new SelectMenuOptionBuilder().setLabel('one').setValue('one'),
-					new SelectMenuOptionBuilder().setLabel('two').setValue('two'),
+					new StringSelectMenuOptionBuilder().setLabel('one').setValue('one'),
+					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
 				]);
 
 			expect(new ActionRowBuilder().addComponents(button).toJSON()).toEqual(rowWithButtonData);

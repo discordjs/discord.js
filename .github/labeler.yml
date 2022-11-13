@@ -5,6 +5,9 @@ apps:website:
   - apps/website/*
   - apps/website/**/*
 
+packages:brokers:
+  - packages/brokers/*
+  - packages/brokers/**/*
 packages:builders:
   - packages/builders/*
   - packages/builders/**/*
