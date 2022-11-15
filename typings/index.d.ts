@@ -1960,7 +1960,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
