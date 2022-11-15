@@ -32,7 +32,8 @@ class AutoModerationRuleManager extends CachedManager {
    * <info>Only Rust-flavored regular expressions are supported.</info>
    * @property {AutoModerationRuleKeywordPresetType[]} [presets]
    * The internally pre-defined wordsets which will be searched for in the content
-   * @property {string[]} [allowList] The substrings that will be exempt from triggering trigger type 4
+   * @property {string[]} [allowList] The substrings that will be exempt from triggering
+   * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
    */
 
