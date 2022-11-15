@@ -18,12 +18,6 @@ class AutoModerationRule extends Base {
     this.id = data.id;
 
     /**
-     * The guild id of this auto moderation rule.
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id;
-
-    /**
      * The guild this auto moderation rule is for.
      * @type {Guild}
      */

@@ -6,12 +6,6 @@
 class AutoModerationActionExecution {
   constructor(data, guild) {
     /**
-     * The guild id where this action was executed from.
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id;
-
-    /**
      * The guild where this action was executed from.
      * @type {Guild}
      */

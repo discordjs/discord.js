@@ -328,7 +328,6 @@ export abstract class AnonymousGuild extends BaseGuild {
 
 export class AutoModerationActionExecution {
   private constructor(data: GatewayAutoModerationActionExecutionDispatchData, guild: Guild);
-  public guildId: Snowflake;
   public guild: Guild;
   public action: AutoModerationAction;
   public ruleId: Snowflake;
@@ -346,7 +345,6 @@ export class AutoModerationActionExecution {
 export class AutoModerationRule extends Base {
   private constructor(client: Client<true>, data: APIAutoModerationRule, guild: Guild);
   public id: Snowflake;
-  public guildId: Snowflake;
   public guild: Guild;
   public name: string;
   public creatorId: Snowflake;
