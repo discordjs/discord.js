@@ -119,7 +119,7 @@ class InteractionResponses {
    * @param {MessageResolvable|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message|APIMessage>}
    * @example
-   * // Fetch the reply to this interaction
+   * // Fetch the initial reply to this interaction
    * interaction.fetchReply()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
@@ -129,7 +129,7 @@ class InteractionResponses {
   }
 
   /**
-   * Edits the initial reply to this interaction.
+   * Edits the reply to this interaction.
    * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
    * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
    */
@@ -140,7 +140,7 @@ class InteractionResponses {
    * @param {string|MessagePayload|InteractionEditReplyOptions} options The new options for the message
    * @returns {Promise<Message|APIMessage>}
    * @example
-   * // Edit the reply to this interaction
+   * // Edit the initial reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
@@ -158,7 +158,7 @@ class InteractionResponses {
    * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
-   * // Delete the reply to this interaction
+   * // Delete the initial reply to this interaction
    * interaction.deleteReply()
    *   .then(console.log)
    *   .catch(console.error);
