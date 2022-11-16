@@ -255,7 +255,7 @@ class Activity {
         this.url === activity.url &&
         this.state === activity.state &&
         this.details === activity.details &&
-        this.emoji === activity.emoji)
+        this.emoji?.id === activity.emoji?.id)
     );
   }
 
