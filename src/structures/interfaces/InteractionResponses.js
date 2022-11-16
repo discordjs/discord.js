@@ -129,7 +129,7 @@ class InteractionResponses {
   }
 
   /**
-   * Edits a reply to this interaction.
+   * Options that can be passed into editReply.
    * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
    * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
    */
