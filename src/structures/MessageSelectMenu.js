@@ -119,7 +119,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   addChannelTypes(...channelTypes) {
     if (!channelTypes.every(channelType => ChannelTypes[channelType])) {
-      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Array<ChannelType>');
+      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Rest<ChannelTypes[]>');
     }
     this.channelTypes.push(
       ...channelTypes.map(channelType => (typeof channelType === 'string' ? channelType : ChannelTypes[channelType])),
