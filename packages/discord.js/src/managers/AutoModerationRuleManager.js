@@ -20,6 +20,12 @@ class AutoModerationRuleManager extends CachedManager {
     this.guild = guild;
   }
 
+  /**
+   * The cache of this manager
+   * @type {Collection<Snowflake, AutoModerationRule>}
+   * @name AutoModerationRuleManager#cache
+   */
+
   _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
   }
