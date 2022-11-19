@@ -1774,6 +1774,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, Attachment>;
   public author: User;
+  public get bulkDeletable(): boolean;
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
@@ -3182,7 +3183,7 @@ export class WebSocketShard extends EventEmitter {
   private closeSequence: number;
   private sessionId: string | null;
   private resumeURL: string | null;
-  private lastPingTimestamp: number;
+  public lastPingTimestamp: number;
   private lastHeartbeatAcked: boolean;
   private readonly ratelimit: {
     queue: unknown[];
@@ -3297,6 +3298,7 @@ export type NonSystemMessageType =
   | MessageType.ContextMenuCommand;
 
 export const Constants: {
+  MaxBulkDeletableMessageAge: 1_209_600_000;
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
