@@ -3,17 +3,17 @@
 import { describe, test, expect } from 'vitest';
 import { Collection } from '../src/index.js';
 
-type TestCollection = Collection<string, number>;
+type TestCollection<V> = Collection<string, V>;
 
-function createCollection(): TestCollection {
+function createCollection<V = number>(): TestCollection<V> {
 	return new Collection();
 }
 
-function createCollectionFrom(...entries: [key: string, value: number][]): TestCollection {
+function createCollectionFrom<V = number>(...entries: [key: string, value: V][]): TestCollection<V> {
 	return new Collection(entries);
 }
 
-function createTestCollection(): TestCollection {
+function createTestCollection(): TestCollection<number> {
 	return createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
 }
 
@@ -767,6 +767,19 @@ describe('sort() tests', () => {
 			const coll = createCollectionFrom(['a', 5], ['b', 3], ['c', 1]);
 			expect(coll.sort()).toStrictEqual(createCollectionFrom(['c', 1], ['b', 3], ['a', 5]));
 		});
+	});
+});
+
+describe('subtract() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3], ['d', undefined]);
+	const coll2 = createCollectionFrom(['b', 2], ['c', 0]);
+
+	test('it returns a new collection', () => {
+		const c = coll1.subtract(coll2);
+		expect(c).toBeInstanceOf(Collection);
+		expect(c.size).toStrictEqual(3);
+
+		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['c', 3], ['d', undefined]));
 	});
 });
 
