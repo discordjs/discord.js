@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { DiscordjsRangeError, ErrorCodes } = require('../errors');
@@ -455,6 +455,24 @@ class ThreadChannel extends BaseChannel {
    */
   setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags, reason });
+  }
+
+  /**
+   * Pins this thread from the forum channel (only applicable to forum threads).
+   * @param {string} [reason] Reason for pinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  pin(reason) {
+    return this.edit({ flags: this.flags.add(ChannelFlags.Pinned), reason });
+  }
+
+  /**
+   * Unpins this thread from the forum channel (only applicable to forum threads).
+   * @param {string} [reason] Reason for unpinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  unpin(reason) {
+    return this.edit({ flags: this.flags.remove(ChannelFlags.Pinned), reason });
   }
 
   /**
