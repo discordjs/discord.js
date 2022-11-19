@@ -696,6 +696,7 @@ export class Collection<K, V> extends Map<K, V> {
 				coll.set(k, v);
 			}
 		}
+
 		return coll;
 	}
 
