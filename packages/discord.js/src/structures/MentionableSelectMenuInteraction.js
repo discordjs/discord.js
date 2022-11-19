@@ -13,7 +13,7 @@ class MentionableSelectMenuInteraction extends MessageComponentInteraction {
     super(client, data);
 
     /**
-     *  An array of the selected user/role ids
+     * An array of the selected user and role ids
      * @type {Snowflake[]}
      */
     this.values = data.data.values ?? [];
