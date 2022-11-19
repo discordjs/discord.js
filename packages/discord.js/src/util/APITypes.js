@@ -169,6 +169,26 @@
  */
 
 /**
+ * @external AutoModerationActionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
+ */
+
+/**
+ * @external AutoModerationRuleEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleEventType}
+ */
+
+/**
+ * @external AutoModerationRuleTriggerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleTriggerType}
+ */
+
+/**
+ * @external AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleKeywordPresetType}
+ */
+
+/**
  * @external AuditLogEvent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AuditLogEvent}
  */

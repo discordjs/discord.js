@@ -12,6 +12,7 @@ const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -98,6 +99,12 @@ class Guild extends AnonymousGuild {
      * @type {GuildScheduledEventManager}
      */
     this.scheduledEvents = new GuildScheduledEventManager(this);
+
+    /**
+     * A manager of the auto moderation rules of this guild.
+     * @type {AutoModerationRuleManager}
+     */
+    this.autoModerationRules = new AutoModerationRuleManager(this);
 
     if (!data) return;
     if (data.unavailable) {

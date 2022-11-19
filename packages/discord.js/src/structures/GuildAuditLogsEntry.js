@@ -2,6 +2,7 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
+const AutoModerationRule = require('./AutoModerationRule');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
@@ -27,6 +28,7 @@ const Targets = {
   Sticker: 'Sticker',
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
+  AutoModeration: 'AutoModeration',
   Unknown: 'Unknown',
 };
 
@@ -46,10 +48,11 @@ const Targets = {
  * * A guild scheduled event
  * * A thread
  * * An application command
+ * * An auto moderation rule
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule)} AuditLogEntryTarget
  */
 
 /**
@@ -223,6 +226,15 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.AutoModerationBlockMessage:
+      case AuditLogEvent.AutoModerationFlagToChannel:
+      case AuditLogEvent.AutoModerationUserCommunicationDisabled:
+        this.extra = {
+          autoModerationRuleName: data.options.auto_moderation_rule_name,
+          autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+        };
+        break;
+
       default:
         break;
     }
@@ -352,6 +364,20 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.ApplicationCommand) {
       this.target = logs.applicationCommands.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.AutoModeration) {
+      this.target =
+        guild.autoModerationRules.cache.get(data.target_id) ??
+        new AutoModerationRule(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { id: data.target_id, guild_id: guild.id },
+          ),
+          guild,
+        );
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
@@ -377,6 +403,7 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
+    if (target >= 140 && target < 150) return Targets.AutoModeration;
     return Targets.Unknown;
   }
 
@@ -402,6 +429,8 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.AutoModerationRuleCreate,
+        AuditLogEvent.AutoModerationBlockMessage,
       ].includes(action)
     ) {
       return 'Create';
@@ -427,6 +456,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.AutoModerationRuleDelete,
       ].includes(action)
     ) {
       return 'Delete';
@@ -450,6 +480,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.AutoModerationRuleUpdate,
       ].includes(action)
     ) {
       return 'Update';
