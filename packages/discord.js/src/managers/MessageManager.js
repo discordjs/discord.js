@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
 const { resolvePartialEmoji } = require('../util/Util');
@@ -148,6 +148,15 @@ class MessageManager extends CachedManager {
    */
 
   /**
+   * Options that can be passed to edit a message.
+   * @typedef {BaseMessageOptions} MessageEditOptions
+   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] An array of attachments to keep,
+   * all attachments will be kept if omitted
+   * @property {MessageFlags} [flags] Which flags to set for the message
+   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
+   */
+
+  /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
    * @param {string|MessageEditOptions|MessagePayload} options The options to edit the message
@@ -155,7 +164,7 @@ class MessageManager extends CachedManager {
    */
   async edit(message, options) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const { body, files } = await (options instanceof MessagePayload
       ? options
@@ -181,7 +190,7 @@ class MessageManager extends CachedManager {
    */
   async crosspost(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
     return this.cache.get(data.id) ?? this._add(data);
@@ -195,7 +204,7 @@ class MessageManager extends CachedManager {
    */
   async pin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.put(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -208,7 +217,7 @@ class MessageManager extends CachedManager {
    */
   async unpin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -221,10 +230,10 @@ class MessageManager extends CachedManager {
    */
   async react(message, emoji) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     emoji = resolvePartialEmoji(emoji);
-    if (!emoji) throw new TypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
+    if (!emoji) throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
 
     const emojiId = emoji.id
       ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
@@ -240,7 +249,7 @@ class MessageManager extends CachedManager {
    */
   async delete(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
   }

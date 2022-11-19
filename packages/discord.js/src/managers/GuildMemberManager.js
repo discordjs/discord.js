@@ -1,13 +1,12 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { Error, TypeError, RangeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
@@ -97,7 +96,7 @@ class GuildMemberManager extends CachedManager {
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
     if (!options.force) {
       const cachedUser = this.cache.get(userId);
       if (cachedUser) return cachedUser;
@@ -110,7 +109,7 @@ class GuildMemberManager extends CachedManager {
     };
     if (options.roles) {
       if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
-        throw new TypeError(
+        throw new DiscordjsTypeError(
           ErrorCodes.InvalidType,
           'options.roles',
           'Array or Collection of Roles or Snowflakes',
@@ -121,15 +120,19 @@ class GuildMemberManager extends CachedManager {
       for (const role of options.roles.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) {
-          throw new TypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'options.roles', role);
+          throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'options.roles', role);
         }
         resolvedRoles.push(resolvedRole);
       }
       resolvedOptions.roles = resolvedRoles;
     }
     const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
-    // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof Buffer ? (options.fetchWhenExisting === false ? null : this.fetch(userId)) : this._add(data);
+    // Data is an empty Uint8Array if the member is already part of the guild.
+    return data instanceof Uint8Array
+      ? options.fetchWhenExisting === false
+        ? null
+        : this.fetch(userId)
+      : this._add(data);
   }
 
   /**
@@ -288,12 +291,12 @@ class GuildMemberManager extends CachedManager {
    */
   async edit(user, { reason, ...data }) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
     if (data.channel) {
       data.channel = this.guild.channels.resolve(data.channel);
       if (!(data.channel instanceof BaseGuildVoiceChannel)) {
-        throw new Error(ErrorCodes.GuildVoiceChannelResolve);
+        throw new DiscordjsError(ErrorCodes.GuildVoiceChannelResolve);
       }
       data.channel_id = data.channel.id;
       data.channel = undefined;
@@ -359,7 +362,7 @@ class GuildMemberManager extends CachedManager {
    *    .catch(console.error);
    */
   async prune({ days, dry = false, count: compute_prune_count, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError(ErrorCodes.PruneDaysType);
+    if (typeof days !== 'number') throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
 
     const query = { days };
     const resolvedRoles = [];
@@ -367,7 +370,7 @@ class GuildMemberManager extends CachedManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'options.roles', role);
+        throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'options.roles', role);
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -401,7 +404,7 @@ class GuildMemberManager extends CachedManager {
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) return Promise.reject(new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
+    if (!id) return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
 
@@ -441,6 +444,42 @@ class GuildMemberManager extends CachedManager {
     return this.guild.bans.remove(user, reason);
   }
 
+  /**
+   * Options used for adding or removing a role from a member.
+   * @typedef {Object} AddOrRemoveGuildMemberRoleOptions
+   * @property {GuildMemberResolvable} user The user to add/remove the role from
+   * @property {RoleResolvable} role The role to add/remove
+   * @property {string} [reason] Reason for adding/removing the role
+   */
+
+  /**
+   * Adds a role to a member.
+   * @param {AddOrRemoveGuildMemberRoleOptions} options Options for adding the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async addRole(options) {
+    const { user, role, reason } = options;
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+    await this.client.rest.put(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
+  }
+
+  /**
+   * Removes a role from a member.
+   * @param {AddOrRemoveGuildMemberRoleOptions} options Options for removing the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async removeRole(options) {
+    const { user, role, reason } = options;
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+    await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
+  }
+
   async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
@@ -461,7 +500,7 @@ class GuildMemberManager extends CachedManager {
   } = {}) {
     return new Promise((resolve, reject) => {
       if (!query && !user_ids) query = '';
-      if (nonce.length > 32) throw new RangeError(ErrorCodes.MemberFetchNonceLength);
+      if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
       this.guild.shard.send({
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
@@ -494,7 +533,7 @@ class GuildMemberManager extends CachedManager {
       const timeout = setTimeout(() => {
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
-        reject(new Error(ErrorCodes.GuildMembersTimeout));
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
       }, time).unref();
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);

@@ -128,6 +128,7 @@
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
  * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
+ * <warn>This property is deprecated.</warn>
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType
@@ -142,6 +143,8 @@
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
 
  * @property {'NotImplemented'} NotImplemented
+
+ * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
 
  * @property {'SweepFilterReturn'} SweepFilterReturn
  */
@@ -288,6 +291,8 @@ const keys = [
   'NotImplemented',
 
   'SweepFilterReturn',
+
+  'GuildForumMessageRequired',
 ];
 
 // JSDoc for IntelliSense purposes

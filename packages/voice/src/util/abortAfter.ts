@@ -6,8 +6,7 @@
 export function abortAfter(delay: number): [AbortController, AbortSignal] {
 	const ac = new AbortController();
 	const timeout = setTimeout(() => ac.abort(), delay);
-	// @ts-expect-error
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	// @ts-expect-error: No type for timeout
 	ac.signal.addEventListener('abort', () => clearTimeout(timeout));
 	return [ac, ac.signal];
 }

@@ -5,7 +5,7 @@ const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents an invitation to a guild channel.
@@ -13,7 +13,7 @@ const { Error, ErrorCodes } = require('../errors');
  */
 class Invite extends Base {
   /**
-   * A regular expression that globally matches Discord invite links.
+   * A regular expression that matches Discord invite links.
    * The `code` group property is present on the `exec()` result of this expression.
    * @type {RegExp}
    * @memberof Invite
@@ -234,7 +234,7 @@ class Invite extends Base {
   get deletable() {
     const guild = this.guild;
     if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
-    if (!guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
+    if (!guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return Boolean(
       this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||
         guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),

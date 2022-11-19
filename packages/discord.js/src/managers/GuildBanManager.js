@@ -1,12 +1,15 @@
 'use strict';
 
+const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, Error, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const { GuildMember } = require('../structures/GuildMember');
+
+let deprecationEmittedForDeleteMessageDays = false;
 
 /**
  * Manages API methods for GuildBans and stores their cache.
@@ -101,7 +104,7 @@ class GuildBanManager extends CachedManager {
     if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
 
     if (!before && !after && !limit && typeof cache === 'undefined') {
-      return Promise.reject(new Error(ErrorCodes.FetchBanResolveId));
+      return Promise.reject(new DiscordjsError(ErrorCodes.FetchBanResolveId));
     }
 
     return this._fetchMany(options);
@@ -129,6 +132,9 @@ class GuildBanManager extends CachedManager {
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
    * @property {number} [deleteMessageDays] Number of days of messages to delete, must be between 0 and 7, inclusive
+   * <warn>This property is deprecated. Use `deleteMessageSeconds` instead.</warn>
+   * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
+   * must be between 0 and 604800 (7 days), inclusive
    * @property {string} [reason] The reason for the ban
    */
 
@@ -146,11 +152,26 @@ class GuildBanManager extends CachedManager {
    *   .catch(console.error);
    */
   async create(user, options = {}) {
-    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     const id = this.client.users.resolveId(user);
-    if (!id) throw new Error(ErrorCodes.BanResolveId, true);
+    if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId, true);
+
+    if (typeof options.deleteMessageDays !== 'undefined' && !deprecationEmittedForDeleteMessageDays) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        'The deleteMessageDays option for GuildBanManager#create() is deprecated. Use the deleteMessageSeconds option instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForDeleteMessageDays = true;
+    }
+
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
-      body: { delete_message_days: options.deleteMessageDays },
+      body: {
+        delete_message_seconds:
+          options.deleteMessageSeconds ??
+          (options.deleteMessageDays ? options.deleteMessageDays * 24 * 60 * 60 : undefined),
+      },
       reason: options.reason,
     });
     if (user instanceof GuildMember) return user;
@@ -174,7 +195,7 @@ class GuildBanManager extends CachedManager {
    */
   async remove(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new Error(ErrorCodes.BanResolveId);
+    if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId);
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
     return this.client.users.resolve(user);
   }

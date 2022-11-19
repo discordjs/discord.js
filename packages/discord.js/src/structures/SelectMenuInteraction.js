@@ -1,20 +1,24 @@
 'use strict';
 
-const MessageComponentInteraction = require('./MessageComponentInteraction');
+const process = require('node:process');
+const StringSelectMenuInteraction = require('./StringSelectMenuInteraction');
+
+let deprecationEmitted = false;
 
 /**
- * Represents a select menu interaction.
- * @extends {MessageComponentInteraction}
+ * @deprecated Use {@link StringSelectMenuInteraction} instead.
  */
-class SelectMenuInteraction extends MessageComponentInteraction {
-  constructor(client, data) {
-    super(client, data);
+class SelectMenuInteraction extends StringSelectMenuInteraction {
+  constructor(...params) {
+    super(...params);
 
-    /**
-     * The values selected, if the component which was interacted with was a select menu
-     * @type {string[]}
-     */
-    this.values = data.data.values ?? [];
+    if (!deprecationEmitted) {
+      process.emitWarning(
+        'The SelectMenuInteraction class is deprecated, use StringSelectMenuInteraction instead.',
+        'DeprecationWarning',
+      );
+      deprecationEmitted = true;
+    }
   }
 }
 

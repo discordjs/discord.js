@@ -8,7 +8,7 @@ const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
-const { Error, TypeError, RangeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
@@ -211,16 +211,10 @@ class Client extends BaseClient {
    * client.login('my token');
    */
   async login(token = this.token) {
-    if (!token || typeof token !== 'string') throw new Error(ErrorCodes.TokenInvalid);
+    if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
-    this.emit(
-      Events.Debug,
-      `Provided token: ${token
-        .split('.')
-        .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
-        .join('.')}`,
-    );
+    this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
 
     if (this.options.presence) {
       this.options.ws.presence = this.presence._parse(this.options.presence);
@@ -313,7 +307,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token));
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
     return new Webhook(this, { token, ...data });
   }
 
@@ -366,7 +360,7 @@ class Client extends BaseClient {
    */
   async fetchGuildPreview(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
     const data = await this.rest.get(Routes.guildPreview(id));
     return new GuildPreview(this, data);
   }
@@ -378,7 +372,7 @@ class Client extends BaseClient {
    */
   async fetchGuildWidget(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
     const data = await this.rest.get(Routes.guildWidgetJSON(id));
     return new Widget(this, data);
   }
@@ -413,23 +407,23 @@ class Client extends BaseClient {
    * console.log(`Generated bot invite link: ${link}`);
    */
   generateInvite(options = {}) {
-    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
-    if (!this.application) throw new Error(ErrorCodes.ClientNotReady, 'generate an invite link');
+    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
 
     const { scopes } = options;
     if (typeof scopes === 'undefined') {
-      throw new TypeError(ErrorCodes.InvalidMissingScopes);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (!Array.isArray(scopes)) {
-      throw new TypeError(ErrorCodes.InvalidType, 'scopes', 'Array of Invite Scopes', true);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'scopes', 'Array of Invite Scopes', true);
     }
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
-      throw new TypeError(ErrorCodes.InvalidMissingScopes);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
     if (invalidScope) {
-      throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'scopes', invalidScope);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'scopes', invalidScope);
     }
 
     const query = makeURLSearchParams({
@@ -445,7 +439,7 @@ class Client extends BaseClient {
 
     if (options.guild) {
       const guildId = this.guilds.resolveId(options.guild);
-      if (!guildId) throw new TypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
+      if (!guildId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildId);
     }
 
@@ -457,6 +451,21 @@ class Client extends BaseClient {
       actions: false,
       presence: false,
     });
+  }
+
+  /**
+   * Partially censored client token for debug logging purposes.
+   * @type {?string}
+   * @readonly
+   * @private
+   */
+  get _censoredToken() {
+    if (!this.token) return null;
+
+    return this.token
+      .split('.')
+      .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
+      .join('.');
   }
 
   /**
@@ -477,31 +486,31 @@ class Client extends BaseClient {
    */
   _validateOptions(options = this.options) {
     if (typeof options.intents === 'undefined') {
-      throw new TypeError(ErrorCodes.ClientMissingIntents);
+      throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = IntentsBitField.resolve(options.intents);
+      options.intents = new IntentsBitField(options.intents).freeze();
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'shards', "'auto', a number or array of numbers");
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shards', "'auto', a number or array of numbers");
     }
-    if (options.shards && !options.shards.length) throw new RangeError(ErrorCodes.ClientInvalidProvidedShards);
+    if (options.shards && !options.shards.length) throw new DiscordjsRangeError(ErrorCodes.ClientInvalidProvidedShards);
     if (typeof options.makeCache !== 'function') {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'makeCache', 'a function');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'makeCache', 'a function');
     }
     if (typeof options.sweepers !== 'object' || options.sweepers === null) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
     }
     if (!Array.isArray(options.partials)) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'partials', 'an Array');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'partials', 'an Array');
     }
     if (typeof options.waitGuildTimeout !== 'number' || isNaN(options.waitGuildTimeout)) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'waitGuildTimeout', 'a number');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'waitGuildTimeout', 'a number');
     }
     if (typeof options.failIfNotExists !== 'boolean') {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
   }
 }

@@ -11,7 +11,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -216,6 +216,8 @@ class Guild extends AnonymousGuild {
        * @type {?boolean}
        */
       this.widgetEnabled = data.widget_enabled;
+    } else {
+      this.widgetEnabled ??= null;
     }
 
     if ('widget_channel_id' in data) {
@@ -224,6 +226,8 @@ class Guild extends AnonymousGuild {
        * @type {?string}
        */
       this.widgetChannelId = data.widget_channel_id;
+    } else {
+      this.widgetChannelId ??= null;
     }
 
     if ('explicit_content_filter' in data) {
@@ -285,6 +289,16 @@ class Guild extends AnonymousGuild {
       this.maximumPresences = data.max_presences;
     } else {
       this.maximumPresences ??= null;
+    }
+
+    if ('max_video_channel_users' in data) {
+      /**
+       * The maximum amount of users allowed in a video channel.
+       * @type {?number}
+       */
+      this.maxVideoChannelUsers = data.max_video_channel_users;
+    } else {
+      this.maxVideoChannelUsers ??= null;
     }
 
     if ('approximate_member_count' in data) {
@@ -453,7 +467,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchOwner(options) {
     if (!this.ownerId) {
-      throw new Error(ErrorCodes.FetchOwnerId);
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId);
     }
     const member = await this.members.fetch({ ...options, user: this.ownerId });
     return member;
@@ -479,7 +493,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?TextChannel}
+   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)}
    * @readonly
    */
   get widgetChannel() {
@@ -550,7 +564,7 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<Collection<string, GuildTemplate>>}
    */
   async fetchTemplates() {
-    const templates = await this.client.rest.get(Routes.guildTemplate(this.id));
+    const templates = await this.client.rest.get(Routes.guildTemplates(this.id));
     return templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection());
   }
 
@@ -604,7 +618,7 @@ class Guild extends AnonymousGuild {
    */
   async fetchVanityData() {
     if (!this.features.includes(GuildFeature.VanityURL)) {
-      throw new Error(ErrorCodes.VanityURL);
+      throw new DiscordjsError(ErrorCodes.VanityURL);
     }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
     this.vanityURLCode = data.code;
@@ -646,14 +660,15 @@ class Guild extends AnonymousGuild {
    * Data for the Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannel} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)} channel The widget invite channel
    */
 
   /**
    * The Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?GuildChannelResolvable} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake)} channel
+   * The widget invite channel
    */
 
   /**
@@ -705,7 +720,7 @@ class Guild extends AnonymousGuild {
 
     if (options.user) {
       const id = this.client.users.resolveId(options.user);
-      if (!id) throw new TypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
       query.set('user_id', id);
     }
 
@@ -713,7 +728,6 @@ class Guild extends AnonymousGuild {
     return new GuildAuditLogs(this, data);
   }
 
-  /* eslint-disable max-len */
   /**
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
@@ -818,7 +832,7 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {GuildTextChannelResolvable} channel The channel to link for this welcome channel
+   * @property {TextChannel|NewsChannel|ForumChannel|Snowflake} channel The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 
@@ -1164,7 +1178,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async leave() {
-    if (this.ownerId === this.client.user.id) throw new Error(ErrorCodes.GuildOwned);
+    if (this.ownerId === this.client.user.id) throw new DiscordjsError(ErrorCodes.GuildOwned);
     await this.client.rest.delete(Routes.userGuild(this.id));
     return this;
   }
@@ -1264,7 +1278,7 @@ class Guild extends AnonymousGuild {
    */
   _sortedChannels(channel) {
     const category = channel.type === ChannelType.GuildCategory;
-    const channelTypes = [ChannelType.GuildText, ChannelType.GuildNews];
+    const channelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
     return discordSort(
       this.channels.cache.filter(
         c =>

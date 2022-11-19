@@ -1,24 +1,24 @@
 {
 	"name": "@discordjs/collection",
-	"version": "1.0.1",
+	"version": "1.2.0",
 	"description": "Utility data structure used in discord.js",
 	"scripts": {
 		"test": "vitest run",
-		"build": "unbuild",
-		"lint": "prettier --check . && eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && eslint src __tests__ --ext mjs,js,ts --fix",
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "downlevel-dts . docs --to=3.7 && docgen -i src/index.ts -c docs/index.json -o docs/docs.json --typescript && api-extractor run --local",
+		"docs": "api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.cjs",
+		"require": "./dist/index.js",
 		"types": "./dist/index.d.ts"
 	},
 	"directories": {
@@ -33,7 +33,7 @@
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Antonio Roman <kyradiscord@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
 	"keywords": [
@@ -50,18 +50,19 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@discordjs/docgen": "workspace:^",
-		"@favware/cliff-jumper": "^1.8.5",
-		"@microsoft/api-extractor": "^7.28.6",
-		"@types/node": "^16.11.46",
-		"c8": "^7.12.0",
-		"downlevel-dts": "^0.10.0",
-		"eslint": "^8.20.0",
+		"@favware/cliff-jumper": "^1.8.8",
+		"@microsoft/api-extractor": "^7.33.4",
+		"@types/node": "16.11.68",
+		"@vitest/coverage-c8": "^0.24.3",
+		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.0.0",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.39",
+		"eslint-formatter-pretty": "^4.1.0",
 		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.7.6",
-		"vitest": "^0.19.1"
+		"tsup": "^6.3.0",
+		"typescript": "^4.8.4",
+		"vitest": "^0.24.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -1,43 +1,69 @@
-export * as EmbedAssertions from './messages/embed/Assertions';
-export * from './messages/embed/Embed';
-export * from './messages/formatters';
+export * as EmbedAssertions from './messages/embed/Assertions.js';
+export * from './messages/embed/Embed.js';
+export * from './messages/formatters.js';
 
-export * as ComponentAssertions from './components/Assertions';
-export * from './components/ActionRow';
-export * from './components/button/Button';
-export * from './components/Component';
-export * from './components/Components';
-export * from './components/textInput/TextInput';
-export * as TextInputAssertions from './components/textInput/Assertions';
-export * from './interactions/modals/Modal';
-export * as ModalAssertions from './interactions/modals/Assertions';
-export * from './components/selectMenu/SelectMenu';
-export * from './components/selectMenu/SelectMenuOption';
+export * as ComponentAssertions from './components/Assertions.js';
+export * from './components/ActionRow.js';
+export * from './components/button/Button.js';
+export * from './components/Component.js';
+export * from './components/Components.js';
+export * from './components/textInput/TextInput.js';
+export * as TextInputAssertions from './components/textInput/Assertions.js';
+export * from './interactions/modals/Modal.js';
+export * as ModalAssertions from './interactions/modals/Assertions.js';
 
-export * as SlashCommandAssertions from './interactions/slashCommands/Assertions';
-export * from './interactions/slashCommands/SlashCommandBuilder';
-export * from './interactions/slashCommands/SlashCommandSubcommands';
-export * from './interactions/slashCommands/options/boolean';
-export * from './interactions/slashCommands/options/channel';
-export * from './interactions/slashCommands/options/integer';
-export * from './interactions/slashCommands/options/mentionable';
-export * from './interactions/slashCommands/options/number';
-export * from './interactions/slashCommands/options/role';
-export * from './interactions/slashCommands/options/attachment';
-export * from './interactions/slashCommands/options/string';
-export * from './interactions/slashCommands/options/user';
-export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
-export * from './interactions/slashCommands/mixins/NameAndDescription';
-export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions';
+export * from './components/selectMenu/BaseSelectMenu.js';
+export * from './components/selectMenu/ChannelSelectMenu.js';
+export * from './components/selectMenu/MentionableSelectMenu.js';
+export * from './components/selectMenu/RoleSelectMenu.js';
+export * from './components/selectMenu/StringSelectMenu.js';
+// TODO: Remove those aliases in v2
+export {
+	/**
+	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuBuilder} instead.
+	 */
+	StringSelectMenuBuilder as SelectMenuBuilder,
+} from './components/selectMenu/StringSelectMenu.js';
+export {
+	/**
+	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuOptionBuilder} instead.
+	 */
+	StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
+} from './components/selectMenu/StringSelectMenuOption.js';
+export * from './components/selectMenu/StringSelectMenuOption.js';
+export * from './components/selectMenu/UserSelectMenu.js';
 
-export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions';
-export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder';
+export * as SlashCommandAssertions from './interactions/slashCommands/Assertions.js';
+export * from './interactions/slashCommands/SlashCommandBuilder.js';
+export * from './interactions/slashCommands/SlashCommandSubcommands.js';
+export * from './interactions/slashCommands/options/boolean.js';
+export * from './interactions/slashCommands/options/channel.js';
+export * from './interactions/slashCommands/options/integer.js';
+export * from './interactions/slashCommands/options/mentionable.js';
+export * from './interactions/slashCommands/options/number.js';
+export * from './interactions/slashCommands/options/role.js';
+export * from './interactions/slashCommands/options/attachment.js';
+export * from './interactions/slashCommands/options/string.js';
+export * from './interactions/slashCommands/options/user.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+export * from './interactions/slashCommands/mixins/NameAndDescription.js';
+export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js';
 
-export * from './util/jsonEncodable';
-export * from './util/equatable';
-export * from './util/componentUtil';
-export * from './util/normalizeArray';
-export * from './util/validation';
+export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
+export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
+
+export * from './util/componentUtil.js';
+export * from './util/normalizeArray.js';
+export * from './util/validation.js';
+export * from '@discordjs/util';
+
+/**
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders/#readme | @discordjs/builders} version
+ * that you are currently using.
+ */
+// This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const version: string = '[VI]{{inject}}[/VI]';

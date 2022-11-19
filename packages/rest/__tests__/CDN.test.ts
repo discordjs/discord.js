@@ -1,11 +1,11 @@
 import { test, expect } from 'vitest';
-import { CDN } from '../src';
+import { CDN } from '../src/index.js';
 
 const base = 'https://discord.com';
 const id = '123456';
 const hash = 'abcdef';
 const animatedHash = 'a_bcdef';
-const defaultAvatar = 1234 % 5;
+const defaultAvatar = 1_234 % 5;
 
 const cdn = new CDN(base);
 

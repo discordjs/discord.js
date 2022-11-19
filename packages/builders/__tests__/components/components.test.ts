@@ -1,24 +1,24 @@
 import {
-	APIActionRowComponent,
-	APIButtonComponent,
-	APIMessageActionRowComponent,
-	APISelectMenuComponent,
-	APITextInputComponent,
 	ButtonStyle,
 	ComponentType,
 	TextInputStyle,
+	type APIButtonComponent,
+	type APIMessageActionRowComponent,
+	type APISelectMenuComponent,
+	type APITextInputComponent,
+	type APIActionRowComponent,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	createComponentBuilder,
-	SelectMenuBuilder,
+	StringSelectMenuBuilder,
 	TextInputBuilder,
-} from '../../src/index';
+} from '../../src/index.js';
 
 describe('createComponentBuilder', () => {
-	test.each([ButtonBuilder, SelectMenuBuilder, TextInputBuilder])(
+	test.each([ButtonBuilder, StringSelectMenuBuilder, TextInputBuilder])(
 		'passing an instance of %j should return itself',
 		(Builder) => {
 			const builder = new Builder();
@@ -45,14 +45,14 @@ describe('createComponentBuilder', () => {
 		expect(createComponentBuilder(button)).toBeInstanceOf(ButtonBuilder);
 	});
 
-	test('GIVEN a select menu component THEN returns a SelectMenuBuilder', () => {
+	test('GIVEN a select menu component THEN returns a StringSelectMenuBuilder', () => {
 		const selectMenu: APISelectMenuComponent = {
 			custom_id: 'abc',
 			options: [],
-			type: ComponentType.SelectMenu,
+			type: ComponentType.StringSelect,
 		};
 
-		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(SelectMenuBuilder);
+		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(StringSelectMenuBuilder);
 	});
 
 	test('GIVEN a text input component THEN returns a TextInputBuilder', () => {
@@ -67,7 +67,7 @@ describe('createComponentBuilder', () => {
 	});
 
 	test('GIVEN an unknown component type THEN throws error', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Unknown component type
 		expect(() => createComponentBuilder({ type: 'invalid' })).toThrowError();
 	});
 });

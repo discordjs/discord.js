@@ -1,5 +1,6 @@
 'use strict';
 
+const { embedLength } = require('@discordjs/builders');
 const isEqual = require('fast-deep-equal');
 
 /**
@@ -115,10 +116,10 @@ class Embed {
   get video() {
     if (!this.data.video) return null;
     return {
-      url: this.data.image.url,
-      proxyURL: this.data.image.proxy_url,
-      height: this.data.image.height,
-      width: this.data.image.width,
+      url: this.data.video.url,
+      proxyURL: this.data.video.proxy_url,
+      height: this.data.video.height,
+      width: this.data.video.width,
     };
   }
 
@@ -181,13 +182,7 @@ class Embed {
    * @readonly
    */
   get length() {
-    return (
-      (this.data.title?.length ?? 0) +
-      (this.data.description?.length ?? 0) +
-      (this.data.fields?.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0) ?? 0) +
-      (this.data.footer?.text.length ?? 0) +
-      (this.data.author?.name.length ?? 0)
-    );
+    return embedLength(this.data);
   }
 
   /**

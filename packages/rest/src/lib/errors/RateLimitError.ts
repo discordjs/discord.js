@@ -2,13 +2,21 @@ import type { RateLimitData } from '../REST';
 
 export class RateLimitError extends Error implements RateLimitData {
 	public timeToReset: number;
+
 	public limit: number;
+
 	public method: string;
+
 	public hash: string;
+
 	public url: string;
+
 	public route: string;
+
 	public majorParameter: string;
+
 	public global: boolean;
+
 	public constructor({ timeToReset, limit, method, hash, url, route, majorParameter, global }: RateLimitData) {
 		super();
 		this.timeToReset = timeToReset;

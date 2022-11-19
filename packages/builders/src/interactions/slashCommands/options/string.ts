@@ -1,16 +1,18 @@
 import { s } from '@sapphire/shapeshift';
-import { APIApplicationCommandStringOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
+import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
 
-const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6000);
-const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6000);
+const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6_000);
+const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000);
 
 @mix(ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public readonly type = ApplicationCommandOptionType.String as const;
+
 	public readonly max_length?: number;
+
 	public readonly min_length?: number;
 
 	/**

@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'main'
-      - 'stable'
-      - '!docs'
     tags:
       - '**'
   workflow_dispatch:
@@ -12,30 +10,37 @@ on:
       ref:
         description: 'The branch, tag or SHA to checkout'
         required: true
+      ref_type:
+        type: choice
+        description: 'Branch or tag'
+        options:
+          - branch
+          - tag
+        required: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 jobs:
   build:
     name: Build documentation
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
-    outputs:
-      BRANCH_NAME: ${{ steps.env.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ steps.env.outputs.BRANCH_OR_TAG }}
-      SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.ref || '' }}
+          ref: ${{ inputs.ref || '' }}
 
       - name: Install node.js v16
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build dependencies
         run: yarn build
@@ -55,13 +60,6 @@ jobs:
           name: api-extractor
           path: packages/*/docs/docs.api.json
 
-      - name: Set outputs for upload job
-        id: env
-        run: |
-          echo "::set-output name=BRANCH_NAME::${GITHUB_REF_NAME}"
-          echo "::set-output name=BRANCH_OR_TAG::${GITHUB_REF_TYPE}"
-          echo "::set-output name=SHA::${GITHUB_SHA}"
-
   upload:
     name: Upload Documentation
     needs: build
@@ -69,12 +67,11 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'voice', 'ws']
+        package: ['brokers', 'builders', 'collection', 'discord.js', 'proxy', 'rest', 'util', 'voice', 'ws']
     runs-on: ubuntu-latest
     env:
-      BRANCH_NAME: ${{ github.event.inputs.ref || needs.build.outputs.BRANCH_NAME }}
-      BRANCH_OR_TAG: ${{ needs.build.outputs.BRANCH_OR_TAG }}
-      SHA: ${{ needs.build.outputs.SHA }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -83,11 +80,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build actions
         run: yarn workspace @discordjs/actions build
@@ -112,33 +107,37 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag' }}
+        if: ${{ github.ref_type == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
-          tag: ${{ env.BRANCH_NAME }}
+          tag: ${{ env.GITHUB_REF_NAME }}
 
       - name: Move docs to correct directory
-        if: ${{ (github.event.inputs.ref || env.BRANCH_OR_TAG == 'tag') && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
           fi
 
       - name: Move docs to correct directory
-        if: ${{ !github.event.inputs.ref && env.BRANCH_OR_TAG == 'branch' }}
+        if: ${{ github.ref_type == 'branch' }}
         env:
           PACKAGE: ${{ matrix.package }}
         run: |
           mkdir -p out/${PACKAGE}
-          mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${BRANCH_NAME}.json
+          if [[ $PACKAGE == "discord.js" ]]; then
+            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${GITHUB_REF_NAME}.json
+          fi
           if [[ $PACKAGE != "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${BRANCH_NAME}.api.json
+            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${GITHUB_REF_NAME}.api.json
           fi
 
       - name: Commit and push
@@ -147,5 +146,5 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
-          git commit -m "Docs build for ${BRANCH_OR_TAG} ${BRANCH_NAME}: ${SHA}" || true
+          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
           git push

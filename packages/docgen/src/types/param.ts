@@ -1,8 +1,8 @@
 import type { ParameterReflection } from 'typedoc';
-import { DocumentedItem } from './item.js';
-import { DocumentedVarType } from './var-type.js';
 import type { Param } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
+import { DocumentedItem } from './item.js';
+import { DocumentedVarType } from './var-type.js';
 
 export class DocumentedParam extends DocumentedItem<Param | ParameterReflection> {
 	public override serializer() {
@@ -11,14 +11,14 @@ export class DocumentedParam extends DocumentedItem<Param | ParameterReflection>
 
 			return {
 				name: data.name,
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-nullish-coalescing
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 				description: data.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
-				optional: data.flags.isOptional || typeof data.defaultValue != 'undefined',
+				optional: data.flags.isOptional || typeof data.defaultValue !== 'undefined',
 				default:
 					(data.defaultValue === '...' ? undefined : data.defaultValue) ??
 					(data.comment?.blockTags
-						// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-						?.find((t) => t.tag === '@default')
+						?.find((block) => block.tag === '@default')
+						// eslint-disable-next-line no-param-reassign
 						?.content.reduce((prev, curr) => (prev += curr.text), '')
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 						.trim() ||

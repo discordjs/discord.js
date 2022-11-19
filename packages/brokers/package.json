@@ -1,0 +1,83 @@
+{
+	"name": "@discordjs/brokers",
+	"version": "0.1.0",
+	"description": "Powerful set of message brokers",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"fmt": "yarn format",
+		"docs": "api-extractor run --local",
+		"prepack": "yarn lint && yarn test && yarn build",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist",
+		"scripts"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Roman <kyradiscord@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"message",
+		"brokers",
+		"redis",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@msgpack/msgpack": "^2.8.0",
+		"@vladfrangu/async_event_emitter": "^2.1.2",
+		"ioredis": "^5.2.3"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^1.8.8",
+		"@microsoft/api-extractor": "^7.33.4",
+		"@types/node": "^16.11.68",
+		"@vitest/coverage-c8": "^0.24.3",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.25.0",
+		"eslint-config-neon": "^0.1.39",
+		"eslint-formatter-pretty": "^4.1.0",
+		"prettier": "^2.7.1",
+		"tsup": "^6.3.0",
+		"typescript": "^4.8.4",
+		"vitest": "^0.24.3"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

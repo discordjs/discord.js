@@ -1,9 +1,9 @@
 import { s } from '@sapphire/shapeshift';
-import { APIApplicationCommandIntegerOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
+import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
+import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
 
 const numberValidator = s.number.int;
 
@@ -14,6 +14,9 @@ export class SlashCommandIntegerOption
 {
 	public readonly type = ApplicationCommandOptionType.Integer as const;
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
+	 */
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
 
@@ -22,6 +25,9 @@ export class SlashCommandIntegerOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
+	 */
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
 

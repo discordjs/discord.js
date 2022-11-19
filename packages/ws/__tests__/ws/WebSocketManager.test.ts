@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest';
-import { APIGatewayBotInfo, GatewayOpcodes, GatewaySendPayload } from 'discord-api-types/v10';
-import { MockAgent, Interceptable } from 'undici';
+import { GatewayOpcodes, type APIGatewayBotInfo, type GatewaySendPayload } from 'discord-api-types/v10';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { IShardingStrategy, WebSocketManager } from '../../src';
+import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 
 vi.useFakeTimers();
 
@@ -80,7 +80,7 @@ test('fetch gateway information', async () => {
 		})
 		.reply(fetch);
 
-	NOW.mockReturnValue(Infinity);
+	NOW.mockReturnValue(Number.POSITIVE_INFINITY);
 	const cacheExpired = await manager.fetchGatewayInformation();
 	expect(cacheExpired).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
@@ -171,8 +171,11 @@ test('it handles passing in both shardIds and shardCount', async () => {
 test('strategies', async () => {
 	class MockStrategy implements IShardingStrategy {
 		public spawn = vi.fn();
+
 		public connect = vi.fn();
+
 		public destroy = vi.fn();
+
 		public send = vi.fn();
 	}
 
@@ -183,6 +186,34 @@ test('strategies', async () => {
 	const strategy = new MockStrategy();
 	manager.setStrategy(strategy);
 
+	const data: APIGatewayBotInfo = {
+		shards: 1,
+		session_start_limit: {
+			max_concurrency: 3,
+			reset_after: 60,
+			remaining: 3,
+			total: 3,
+		},
+		url: 'wss://gateway.discord.gg',
+	};
+
+	const fetch = vi.fn(() => ({
+		data,
+		statusCode: 200,
+		responseOptions: {
+			headers: {
+				'content-type': 'application/json',
+			},
+		},
+	}));
+
+	mockPool
+		.intercept({
+			path: '/api/v10/gateway/bot',
+			method: 'GET',
+		})
+		.reply(fetch);
+
 	await manager.connect();
 	expect(strategy.spawn).toHaveBeenCalledWith(shardIds);
 	expect(strategy.connect).toHaveBeenCalled();
@@ -191,6 +222,7 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
+	// eslint-disable-next-line id-length
 	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);

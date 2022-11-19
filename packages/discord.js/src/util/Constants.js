@@ -1,6 +1,12 @@
 'use strict';
 
-const { ChannelType, MessageType } = require('discord-api-types/v10');
+const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v10');
+
+/**
+ * Max bulk deletable message age
+ * @typedef {number} MaxBulkDeletableMessageAge
+ */
+exports.MaxBulkDeletableMessageAge = 1_209_600_000;
 
 /**
  * The name of an item to be swept in Sweepers
@@ -53,13 +59,19 @@ exports.NonSystemMessageTypes = [
 ];
 
 /**
- * The channels that are text-based.
- * * DMChannel
+ * The guild channels that are text-based.
  * * TextChannel
  * * NewsChannel
  * * ThreadChannel
  * * VoiceChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
+ * @typedef {TextChannel|NewsChannel|ThreadChannel|VoiceChannel} GuildTextBasedChannel
+ */
+
+/**
+ * The channels that are text-based.
+ * * DMChannel
+ * * GuildTextBasedChannel
+ * @typedef {DMChannel|GuildTextBasedChannel} TextBasedChannels
  */
 
 /**
@@ -73,35 +85,31 @@ exports.NonSystemMessageTypes = [
  * The types of channels that are text-based. The available types are:
  * * {@link ChannelType.DM}
  * * {@link ChannelType.GuildText}
- * * {@link ChannelType.GuildNews}
- * * {@link ChannelType.GuildNewsThread}
- * * {@link ChannelType.GuildPublicThread}
- * * {@link ChannelType.GuildPrivateThread}
+ * * {@link ChannelType.GuildAnnouncement}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
   ChannelType.DM,
   ChannelType.GuildText,
-  ChannelType.GuildNews,
-  ChannelType.GuildNewsThread,
-  ChannelType.GuildPublicThread,
-  ChannelType.GuildPrivateThread,
+  ChannelType.GuildAnnouncement,
+  ChannelType.AnnouncementThread,
+  ChannelType.PublicThread,
+  ChannelType.PrivateThread,
   ChannelType.GuildVoice,
 ];
 
 /**
  * The types of channels that are threads. The available types are:
- * * {@link ChannelType.GuildNewsThread}
- * * {@link ChannelType.GuildPublicThread}
- * * {@link ChannelType.GuildPrivateThread}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
-exports.ThreadChannelTypes = [
-  ChannelType.GuildNewsThread,
-  ChannelType.GuildPublicThread,
-  ChannelType.GuildPrivateThread,
-];
+exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.PublicThread, ChannelType.PrivateThread];
 
 /**
  * The types of channels that are voice-based. The available types are:
@@ -112,10 +120,29 @@ exports.ThreadChannelTypes = [
 exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 
 /**
+ * The types of select menus. The available types are:
+ * * {@link ComponentType.StringSelect}
+ * * {@link ComponentType.UserSelect}
+ * * {@link ComponentType.RoleSelect}
+ * * {@link ComponentType.MentionableSelect}
+ * * {@link ComponentType.ChannelSelect}
+ * @typedef {ComponentType[]} SelectMenuTypes
+ */
+exports.SelectMenuTypes = [
+  ComponentType.StringSelect,
+  ComponentType.UserSelect,
+  ComponentType.RoleSelect,
+  ComponentType.MentionableSelect,
+  ComponentType.ChannelSelect,
+];
+
+/**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
+ * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {SweeperKey[]} SweeperKeys The possible names of items that can be swept in sweepers
  * @property {NonSystemMessageTypes} NonSystemMessageTypes The types of messages that are not deemed a system type
  * @property {TextBasedChannelTypes} TextBasedChannelTypes The types of channels that are text-based
  * @property {ThreadChannelTypes} ThreadChannelTypes The types of channels that are threads
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
+ * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
  */

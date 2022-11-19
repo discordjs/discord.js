@@ -4,7 +4,7 @@ const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { fetch } = require('undici');
-const { Error: DiscordError, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Invite = require('../structures/Invite');
 
 /**
@@ -116,7 +116,7 @@ class DataResolver extends null {
 
     if (typeof resource[Symbol.asyncIterator] === 'function') {
       const buffers = [];
-      for await (const data of resource) buffers.push(data);
+      for await (const data of resource) buffers.push(Buffer.from(data));
       return { data: Buffer.concat(buffers) };
     }
 
@@ -129,11 +129,11 @@ class DataResolver extends null {
       const file = path.resolve(resource);
 
       const stats = await fs.stat(file);
-      if (!stats.isFile()) throw new DiscordError(ErrorCodes.FileNotFound, file);
+      if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.FileNotFound, file);
       return { data: await fs.readFile(file) };
     }
 
-    throw new TypeError(ErrorCodes.ReqResourceType);
+    throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
   }
 }
 

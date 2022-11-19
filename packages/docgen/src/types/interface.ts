@@ -1,5 +1,5 @@
-import { DocumentedClass } from './class.js';
 import type { Interface } from '../interfaces/index.js';
+import { DocumentedClass } from './class.js';
 
 export class DocumentedInterface extends DocumentedClass {
 	public override serializer() {
