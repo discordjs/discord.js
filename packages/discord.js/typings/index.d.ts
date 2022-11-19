@@ -31,7 +31,7 @@ import {
   ModalBuilder as BuildersModal,
   AnyComponentBuilder,
   ComponentBuilder,
-  type RestOrArray,
+  RestOrArray,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
