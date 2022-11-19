@@ -1774,6 +1774,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, Attachment>;
   public author: User;
+  public get bulkDeletable(): boolean;
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
@@ -2828,7 +2829,10 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
   public setInvitable(invitable?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
+  // The following 3 methods can only be run on forum threads.
   public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
+  public pin(reason?: string): Promise<ThreadChannel<true>>;
+  public unpin(reason?: string): Promise<ThreadChannel<true>>;
   public toString(): ChannelMention;
 }
 
@@ -3307,6 +3311,7 @@ export type NonSystemMessageType =
   | MessageType.ContextMenuCommand;
 
 export const Constants: {
+  MaxBulkDeletableMessageAge: 1_209_600_000;
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];

@@ -140,6 +140,7 @@ function escapeMarkdown(
       })
       .join(inlineCode ? '\\`' : '`');
   }
+  if (escape) text = escapeEscape(text);
   if (inlineCode) text = escapeInlineCode(text);
   if (codeBlock) text = escapeCodeBlock(text);
   if (italic) text = escapeItalic(text);
@@ -147,7 +148,6 @@ function escapeMarkdown(
   if (underline) text = escapeUnderline(text);
   if (strikethrough) text = escapeStrikethrough(text);
   if (spoiler) text = escapeSpoiler(text);
-  if (escape) text = escapeEscape(text);
   if (heading) text = escapeHeading(text);
   if (bulletedList) text = escapeBulletedList(text);
   if (numberedList) text = escapeNumberedList(text);
