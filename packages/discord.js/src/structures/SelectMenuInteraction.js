@@ -7,6 +7,7 @@ let deprecationEmitted = false;
 
 /**
  * @deprecated Use {@link StringSelectMenuInteraction} instead.
+ * @extends {StringSelectMenuInteraction}
  */
 class SelectMenuInteraction extends StringSelectMenuInteraction {
   constructor(...params) {
