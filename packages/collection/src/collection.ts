@@ -685,6 +685,22 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * The subtract method returns a new structure containing items where the keys and values of the original structure are not present in the other.
+	 *
+	 * @param other - The other Collection to filter against
+	 */
+	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
+		const coll = new this.constructor[Symbol.species]<K, V>();
+		for (const [k, v] of this) {
+			if (!other.has(k) || !Object.is(v, other.get(k))) {
+				coll.set(k, v);
+			}
+		}
+
+		return coll;
+	}
+
+	/**
 	 * The difference method returns a new structure containing items where the key is present in one of the original structures but not the other.
 	 *
 	 * @param other - The other Collection to filter against
