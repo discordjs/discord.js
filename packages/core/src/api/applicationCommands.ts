@@ -104,6 +104,7 @@ export class ApplicationCommandsAPI {
 	public async getGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
+		// TODO: Use -types type instead when package is bumped.
 		data: { with_localizations?: boolean } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {

@@ -2103,7 +2103,7 @@ __metadata:
     cross-env: ^7.0.3
     discord-api-types: ^0.37.14
     eslint: ^8.25.0
-    eslint-config-neon: ^0.1.38
+    eslint-config-neon: ^0.1.39
     eslint-formatter-pretty: ^4.1.0
     prettier: ^2.7.1
     tsup: ^6.2.3
@@ -9444,7 +9444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-neon@npm:^0.1.38, eslint-config-neon@npm:^0.1.40":
+"eslint-config-neon@npm:^0.1.39, eslint-config-neon@npm:^0.1.40":
   version: 0.1.40
   resolution: "eslint-config-neon@npm:0.1.40"
   dependencies:

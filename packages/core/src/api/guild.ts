@@ -1,4 +1,9 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import type {
+	RESTGetAPIGuildPruneCountQuery,
+	RESTPostAPIGuildStickerFormDataBody,
+	RESTPostAPIGuildStickerResult,
+} from 'discord-api-types/v10';
 import {
 	Routes,
 	type GuildWidgetStyle,
@@ -136,7 +141,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when fetching the guild members
 	 */
-	public async getAllMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
+	public async getMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
 		return this.rest.get(Routes.guildMembers(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildMemberResult>;
@@ -172,7 +177,7 @@ export class GuildsAPI {
 	 * @param data - The data to edit the channel positions with
 	 * @param reason - The reason for editing the channel positions
 	 */
-	public async setChannelPosition(
+	public async setChannelPositions(
 		guildId: Snowflake,
 		data: RESTPatchAPIGuildChannelPositionsJSONBody,
 		reason?: string,
@@ -247,13 +252,13 @@ export class GuildsAPI {
 	}
 
 	/**
-	 * Sets a role position in a guild
+	 * Sets role positions in a guild
 	 *
 	 * @param guildId - The id of the guild to set role positions for
 	 * @param data - The data for setting a role position
 	 * @param reason - The reason for setting the role position
 	 */
-	public async setRolePosition(guildId: Snowflake, data: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
+	public async setRolePositions(guildId: Snowflake, data: RESTPatchAPIGuildRolePositionsJSONBody, reason?: string) {
 		return this.rest.patch(Routes.guildRoles(guildId), {
 			reason,
 			body: data,
@@ -294,19 +299,19 @@ export class GuildsAPI {
 	 * @param reason - The reason for editing the MFA level
 	 */
 	public async editMFALevel(guildId: Snowflake, level: number, reason?: string) {
-		return this.rest.post(Routes.guild(guildId), {
+		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
 			body: { mfa_level: level },
 		}) as Promise<RESTPostAPIGuildsMFAResult>;
 	}
 
 	/**
-	 * Fetch the number of pruned members in a guild
+	 * Fetch the number of members that can be pruned from a guild
 	 *
 	 * @param guildId - The id of the guild to fetch the number of pruned members from
 	 * @param options - The options for fetching the number of pruned members
 	 */
-	public async getPruneCount(guildId: Snowflake, options: { days?: number; includeRoles?: string[] } = {}) {
+	public async getPruneCount(guildId: Snowflake, options: RESTGetAPIGuildPruneCountQuery = {}) {
 		return this.rest.get(Routes.guildPrune(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildPruneCountResult>;
@@ -527,7 +532,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the scheduled events from
 	 * @param options - The options for fetching the scheduled events
 	 */
-	public async getAllEvents(guildId: Snowflake, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
+	public async getScheduledEvents(guildId: Snowflake, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
 		return this.rest.get(Routes.guildScheduledEvents(guildId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildScheduledEventsResult>;
@@ -540,7 +545,7 @@ export class GuildsAPI {
 	 * @param data - The data to create the event with
 	 * @param reason - The reason for creating the scheduled event
 	 */
-	public async createEvent(guildId: Snowflake, data: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
+	public async createScheduledEvent(guildId: Snowflake, data: RESTPostAPIGuildScheduledEventJSONBody, reason?: string) {
 		return this.rest.post(Routes.guildScheduledEvents(guildId), {
 			reason,
 			body: data,
@@ -554,7 +559,11 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to fetch
 	 * @param options - The options for fetching the scheduled event
 	 */
-	public async getEvent(guildId: Snowflake, eventId: Snowflake, options: RESTGetAPIGuildScheduledEventQuery = {}) {
+	public async getScheduledEvent(
+		guildId: Snowflake,
+		eventId: Snowflake,
+		options: RESTGetAPIGuildScheduledEventQuery = {},
+	) {
 		return this.rest.get(Routes.guildScheduledEvent(guildId, eventId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildScheduledEventResult>;
@@ -568,7 +577,7 @@ export class GuildsAPI {
 	 * @param data - The new event data
 	 * @param reason - The reason for editing the scheduled event
 	 */
-	public async editEvent(
+	public async editScheduledEvent(
 		guildId: Snowflake,
 		eventId: Snowflake,
 		data: RESTPatchAPIGuildScheduledEventJSONBody,
@@ -587,7 +596,7 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to delete
 	 * @param reason - The reason for deleting the scheduled event
 	 */
-	public async deleteEvent(guildId: Snowflake, eventId: Snowflake, reason?: string) {
+	public async deleteScheduledEvent(guildId: Snowflake, eventId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildScheduledEvent(guildId, eventId), { reason });
 	}
 
@@ -598,7 +607,7 @@ export class GuildsAPI {
 	 * @param eventId - The id of the scheduled event to fetch the users for
 	 * @param options - The options for fetching the scheduled event users
 	 */
-	public async getEventUsers(
+	public async getScheduledEventUsers(
 		guildId: Snowflake,
 		eventId: Snowflake,
 		options: RESTGetAPIGuildScheduledEventUsersQuery = {},
@@ -667,6 +676,20 @@ export class GuildsAPI {
 	 */
 	public async getSticker(guildId: Snowflake, stickerId: Snowflake) {
 		return this.rest.get(Routes.guildSticker(guildId, stickerId)) as Promise<RESTGetAPIGuildStickerResult>;
+	}
+
+	/**
+	 * Creates a sticker for a guild
+	 *
+	 * @param guildId - The id of the guild to create the sticker for
+	 * @param data - The data for creating the sticker
+	 * @param reason - The reason for creating the sticker
+	 */
+	public async createSticker(guildId: Snowflake, data: RESTPostAPIGuildStickerFormDataBody, reason?: string) {
+		return this.rest.post(Routes.guildStickers(guildId), {
+			reason,
+			body: data,
+		}) as Promise<RESTPostAPIGuildStickerResult>;
 	}
 
 	/**
