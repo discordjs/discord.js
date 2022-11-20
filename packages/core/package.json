@@ -54,7 +54,7 @@
 		"@favware/cliff-jumper": "^1.8.8",
 		"@microsoft/api-extractor": "^7.32.0",
 		"@types/node": "^16.11.64",
-		"@vitest/coverage-c8": "^0.24.1",
+		"@vitest/coverage-c8": "^0.24.3",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.25.0",
 		"eslint-config-neon": "^0.1.39",
@@ -62,7 +62,7 @@
 		"prettier": "^2.7.1",
 		"tsup": "^6.2.3",
 		"typescript": "^4.8.4",
-		"vitest": "^0.24.1"
+		"vitest": "^0.24.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"
