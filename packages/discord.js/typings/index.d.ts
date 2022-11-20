@@ -3012,6 +3012,7 @@ export class WebSocketShard extends EventEmitter {
   private readyDispatchTimeout: NodeJS.Timeout | null;
   private closeEmitted: boolean;
   private wsCloseTimeout: NodeJS.Timeout | null;
+  private lastReplayedAt: number;
 
   public manager: WebSocketManager;
   public id: number;
