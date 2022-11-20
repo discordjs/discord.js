@@ -592,7 +592,7 @@ class WebSocketShard extends EventEmitter {
     this.helloTimeout = setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
       this.destroy({ reset: true, closeCode: 4009 });
-    }, 20_000).unref();
+    }, 20_000);
   }
 
   /**
@@ -617,7 +617,7 @@ class WebSocketShard extends EventEmitter {
       }
       this.debug('Did not receive RESUMED in time. Destroying and connecting again.');
       this.destroy({ reset: false, closeCode: 4009 });
-    }, 20_000).unref();
+    }, 20_000);
   }
 
   /**
@@ -638,7 +638,7 @@ class WebSocketShard extends EventEmitter {
     this.readyDispatchTimeout = setTimeout(() => {
       this.debug('Did not receive READY in time. Destroying and connecting again.');
       this.destroy({ reset: true, closeCode: 4009 });
-    }, 20_000).unref();
+    }, 20_000);
   }
 
   /**
