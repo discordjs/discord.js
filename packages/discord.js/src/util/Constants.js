@@ -10,6 +10,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
 
 /**
  * The name of an item to be swept in Sweepers
+ * * `autoModerationRules`
  * * `applicationCommands` - both global and guild commands
  * * `bans`
  * * `emojis`
@@ -27,6 +28,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
  * @typedef {string} SweeperKey
  */
 exports.SweeperKeys = [
+  'autoModerationRules',
   'applicationCommands',
   'bans',
   'emojis',

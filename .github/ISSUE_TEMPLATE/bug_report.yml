@@ -132,6 +132,8 @@ body:
         - DirectMessageTyping
         - MessageContent
         - GuildScheduledEvents
+        - AutoModerationConfiguration
+        - AutoModerationExecution
       multiple: true
     validations:
       required: true

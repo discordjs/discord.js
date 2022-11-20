@@ -61,7 +61,7 @@ class TextBasedChannel {
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
    * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
    * The files to send with the message.
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
+   * @property {ActionRow[]|ActionRowBuilder[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
