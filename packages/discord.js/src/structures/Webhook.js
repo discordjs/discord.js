@@ -144,14 +144,16 @@ class Webhook {
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
    */
+
   /**
-   * The channel that this webhook belongs to
+   * The channel the webhook belongs to
    * @type {?(TextChannel|VoiceChannel|NewsChannel|ForumChannel)}
    * @readonly
    */
   get channel() {
     return this.client.channels.resolve(this.channelId);
   }
+
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookCreateMessageOptions} options The options to provide
