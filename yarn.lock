@@ -2101,7 +2101,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.24.1
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.14
+    discord-api-types: ^0.37.15
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.39
     eslint-formatter-pretty: ^4.1.0

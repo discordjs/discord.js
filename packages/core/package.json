@@ -48,7 +48,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"@vladfrangu/async_event_emitter": "^2.1.2",
-		"discord-api-types": "^0.37.14"
+		"discord-api-types": "^0.37.15"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.8.8",

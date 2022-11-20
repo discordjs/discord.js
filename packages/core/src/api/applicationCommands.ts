@@ -13,6 +13,7 @@ import {
 	type RESTPutAPIApplicationCommandPermissionsResult,
 	type RESTPutAPIApplicationCommandsJSONBody,
 	type RESTPutAPIApplicationCommandsResult,
+	type RESTGetAPIApplicationGuildCommandsQuery,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -104,11 +105,10 @@ export class ApplicationCommandsAPI {
 	public async getGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		// TODO: Use -types type instead when package is bumped.
-		data: { with_localizations?: boolean } = {},
+		data: RESTGetAPIApplicationGuildCommandsQuery = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
-			query: makeURLSearchParams(data),
+			query: makeURLSearchParams(data as Record<string, unknown>),
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
