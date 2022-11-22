@@ -13,3 +13,4 @@ api/
 .next/
 .vercel/
 .cache/
+public/searchIndex
