@@ -2366,16 +2366,16 @@ __metadata:
   dependencies:
     "@actions/core": ^1.10.0
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2390,7 +2390,7 @@ __metadata:
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsup: ^6.5.0
     typescript: ^4.9.3
   languageName: unknown
@@ -2404,17 +2404,17 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.6
     "@msgpack/msgpack": ^2.8.0
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     ioredis: ^5.2.4
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsup: ^6.5.0
     typescript: ^4.9.3
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2427,7 +2427,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.6
     "@sapphire/shapeshift": ^3.7.0
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.19
     esbuild-plugin-version-injector: ^1.0.0
@@ -2435,12 +2435,12 @@ __metadata:
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     fast-deep-equal: ^3.1.3
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     ts-mixer: ^6.0.2
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2451,16 +2451,16 @@ __metadata:
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     esbuild-plugin-version-injector: ^1.0.0
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsup: ^6.5.0
     typescript: ^4.9.3
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2480,7 +2480,7 @@ __metadata:
     turbo: ^1.6.3
     typescript: ^4.9.3
     unocss: ^0.46.5
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2497,7 +2497,7 @@ __metadata:
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     jsdoc-to-markdown: ^7.1.1
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typedoc: ^0.23.21
@@ -2526,11 +2526,11 @@ __metadata:
     "@unocss/cli": ^0.46.5
     "@unocss/reset": ^0.46.5
     "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     ariakit: ^2.0.0-next.41
     astro: ^1.6.10
-    astro-compress: ^1.1.8
-    astro-critters: ^1.1.8
+    astro-compress: ^1.1.9
+    astro-critters: ^1.1.9
     cmdk: ^0.1.20
     cross-env: ^7.0.3
     eslint: ^8.28.0
@@ -2541,7 +2541,7 @@ __metadata:
     hastscript: ^7.1.0
     html-escaper: ^3.0.3
     meilisearch: ^0.29.1
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     prettier-plugin-astro: ^0.7.0
     prettier-plugin-tailwindcss: ^0.1.13
     react: ^17.0.2
@@ -2556,7 +2556,7 @@ __metadata:
     typescript: ^4.9.3
     unocss: ^0.46.5
     vercel: ^28.5.6
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2571,7 +2571,7 @@ __metadata:
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
@@ -2588,18 +2588,18 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.6
     "@types/node": 16.18.3
     "@types/supertest": ^2.0.12
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     supertest: ^6.3.1
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
     undici: ^5.12.0
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2614,7 +2614,7 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.2.2
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.19
     esbuild-plugin-version-injector: ^1.0.0
@@ -2622,12 +2622,12 @@ __metadata:
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     file-type: ^18.0.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
     undici: ^5.12.0
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2641,19 +2641,19 @@ __metadata:
     "@microsoft/tsdoc-config": 0.16.1
     "@types/fs-extra": ^9.0.13
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     commander: ^9.4.1
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     fs-extra: ^10.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
     undici: ^5.12.0
-    vitest: ^0.25.2
+    vitest: ^0.25.3
     yaml: ^2.1.3
   languageName: unknown
   linkType: soft
@@ -2669,13 +2669,13 @@ __metadata:
     "@types/react-dom": ^18.0.9
     "@unocss/reset": ^0.46.5
     "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     ariakit: ^2.0.0-next.41
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     react: ^18.2.0
     react-dom: ^18.2.0
     react-icons: ^4.6.0
@@ -2683,7 +2683,7 @@ __metadata:
     unocss: ^0.46.5
     vite: ^3.2.4
     vite-plugin-dts: ^1.7.1
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2694,16 +2694,16 @@ __metadata:
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
     "@types/node": 16.18.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsd: ^0.24.1
     tsup: ^6.5.0
     typescript: ^4.9.3
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2728,7 +2728,7 @@ __metadata:
     jest: ^29.3.1
     jest-websocket-mock: ^2.4.0
     mock-socket: ^9.1.5
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     prism-media: ^1.3.4
     tslib: ^2.4.1
     tsup: ^6.5.0
@@ -2757,7 +2757,7 @@ __metadata:
     "@unocss/reset": ^0.46.5
     "@vercel/og": ^0.0.21
     "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.41
     cmdk: ^0.1.20
@@ -2772,7 +2772,7 @@ __metadata:
     next-mdx-remote: ^4.2.0
     next-progress: ^2.2.0
     next-themes: ^0.2.1
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     prettier-plugin-tailwindcss: ^0.1.13
     react: ^18.2.0
     react-custom-scrollbars-2: ^4.5.0
@@ -2791,7 +2791,7 @@ __metadata:
     typescript: ^4.9.3
     unocss: ^0.46.5
     vercel: ^28.5.6
-    vitest: ^0.25.2
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2807,7 +2807,7 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@types/node": 16.18.3
     "@types/ws": ^8.5.3
-    "@vitest/coverage-c8": ^0.25.2
+    "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.19
@@ -2816,12 +2816,12 @@ __metadata:
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
     mock-socket: ^9.1.5
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.3
     undici: ^5.12.0
-    vitest: ^0.25.2
+    vitest: ^0.25.3
     ws: ^8.11.0
     zlib-sync: ^0.1.7
   languageName: unknown
@@ -3731,19 +3731,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nikolarhristov/pipeline@npm:0.0.1":
-  version: 0.0.1
-  resolution: "@nikolarhristov/pipeline@npm:0.0.1"
+"@nikolarhristov/pipeline@npm:0.0.2":
+  version: 0.0.2
+  resolution: "@nikolarhristov/pipeline@npm:0.0.2"
   dependencies:
     critters: 0.0.16
     csso: 5.0.5
     deepmerge-ts: 4.2.2
     fast-glob: 3.2.12
-    html-minifier-terser: 7.0.0
+    html-minifier-terser: 7.1.0
     sharp: 0.31.2
     svgo: 3.0.2
     terser: 5.15.1
-  checksum: d0fe82f16256cf571310b0f5dd7065ba87dbdc2d1b3380fa62ad5f7124fc6522b625d9606fb6e148112f1b0c478e0e1873b64d7e29791d69e6636f197fb877c1
+  checksum: aa8cb3d62234cd6625911dfb9e48c1fd19406d7b3beac95c078e7b8a17234a14d5f9972d011f673d49f40be3489373b77811eae9c7877fd48eea4eb7a720cadf
   languageName: node
   linkType: hard
 
@@ -5678,13 +5678,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-c8@npm:^0.25.2":
-  version: 0.25.2
-  resolution: "@vitest/coverage-c8@npm:0.25.2"
+"@vitest/coverage-c8@npm:^0.25.3":
+  version: 0.25.3
+  resolution: "@vitest/coverage-c8@npm:0.25.3"
   dependencies:
     c8: ^7.12.0
-    vitest: 0.25.2
-  checksum: 2e6554b0f060fb3f2f8c021bdacb1eabd7471e1fb8568c49c5db84c1edb1f5af642bfc579531942c389dfce85a3ced632e4967548d1a8fe85475f512863a516f
+    vitest: 0.25.3
+  checksum: 39d20990d56750e35c51aababe32a300cc30e6941442586d935e6f1f5ae29f4838bd5c7bcb70fc8cad19304dd1852bb6b5342e3367b1813dae79db99f201e768
   languageName: node
   linkType: hard
 
@@ -6310,21 +6310,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro-compress@npm:^1.1.8":
-  version: 1.1.8
-  resolution: "astro-compress@npm:1.1.8"
+"astro-compress@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "astro-compress@npm:1.1.9"
   dependencies:
-    "@nikolarhristov/pipeline": 0.0.1
-  checksum: f7466f3c99e32b659dcf863142b7f5284089c401bdc15d5cf466c003f4e5396af1362e99581536af3dde738fe8f386f38849a77cf4e99dd383badb0b7a561b18
+    "@nikolarhristov/pipeline": 0.0.2
+  checksum: 53dadf1d0e863ce1d4f8a1e625413a538203e70d5e3171823b108c06a0d95897557dffee06b009f2254c44563665e6bceb3ecf0d838c1cd0f100acd69ea45b1e
   languageName: node
   linkType: hard
 
-"astro-critters@npm:^1.1.8":
-  version: 1.1.8
-  resolution: "astro-critters@npm:1.1.8"
+"astro-critters@npm:^1.1.9":
+  version: 1.1.9
+  resolution: "astro-critters@npm:1.1.9"
   dependencies:
-    "@nikolarhristov/pipeline": 0.0.1
-  checksum: c4d6cfc1a0f97b39b708138306532e0182f5e82637f28e5b319ec3e59834b451ffd87e493db856802b43bae59f7aad4b0e633e473c8842384903042ec46c4af9
+    "@nikolarhristov/pipeline": 0.0.2
+  checksum: 2031c7c0d4f3be37b5c30d66f7784834091feaa07897b2c8752e42780d9ca6d6aa5d5fd288b835a2811ca391505c8058134f9ca357a496d0b0b8becb43887426
   languageName: node
   linkType: hard
 
@@ -8824,7 +8824,7 @@ __metadata:
     fast-deep-equal: ^3.1.3
     jest: ^29.3.1
     lodash.snakecase: ^4.1.1
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsd: ^0.24.1
     tslib: ^2.4.1
     tslint: ^6.1.3
@@ -9164,7 +9164,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.3.1":
+"entities@npm:^4.2.0, entities@npm:^4.4.0":
   version: 4.4.0
   resolution: "entities@npm:4.4.0"
   checksum: 84d250329f4b56b40fa93ed067b194db21e8815e4eb9b59f43a086f0ecd342814f6bc483de8a77da5d64e0f626033192b1b4f1792232a7ea6b970ebe0f3187c2
@@ -12273,20 +12273,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-minifier-terser@npm:7.0.0":
-  version: 7.0.0
-  resolution: "html-minifier-terser@npm:7.0.0"
+"html-minifier-terser@npm:7.1.0":
+  version: 7.1.0
+  resolution: "html-minifier-terser@npm:7.1.0"
   dependencies:
     camel-case: ^4.1.2
     clean-css: 5.2.0
-    commander: ^9.4.0
-    entities: ^4.3.1
+    commander: ^9.4.1
+    entities: ^4.4.0
     param-case: ^3.0.4
     relateurl: ^0.2.7
-    terser: ^5.14.2
+    terser: ^5.15.1
   bin:
     html-minifier-terser: cli.js
-  checksum: eabd3b4835d9663bf7c30ea0f1c57870b0d8f7dc27b9fa17852ea57bfdd5fdc0ed9b7b83a7f13edd8626ccf98d3082e347764754278a661cab291469fd37dced
+  checksum: 351de28d85f142314a6a9b5222bdcaf068cef6bf2f521952ef55d99a6acdcecd0b4dbc42578da2d438d579c6e868b899ca19eac901ee6f9f0c69c223b5942099
   languageName: node
   linkType: hard
 
@@ -17198,6 +17198,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "prettier@npm:2.8.0"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 72004ce0cc9bb097daf3e3833f62495768724392c1d5b178dd47372337616e9e50ecbb0804f236596223f7b5eb1bbe69cefc8957dca21112c5777e77ef73a564
+  languageName: node
+  linkType: hard
+
 "pretty-bytes@npm:5.6.0, pretty-bytes@npm:^5.3.0":
   version: 5.6.0
   resolution: "pretty-bytes@npm:5.6.0"
@@ -19935,7 +19944,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:5.15.1, terser@npm:^5.14.2":
+"terser@npm:5.15.1, terser@npm:^5.15.1":
   version: 5.15.1
   resolution: "terser@npm:5.15.1"
   dependencies:
@@ -21678,9 +21687,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:0.25.2, vitest@npm:^0.25.2":
-  version: 0.25.2
-  resolution: "vitest@npm:0.25.2"
+"vitest@npm:0.25.3, vitest@npm:^0.25.3":
+  version: 0.25.3
+  resolution: "vitest@npm:0.25.3"
   dependencies:
     "@types/chai": ^4.3.3
     "@types/chai-subset": ^1.3.3
@@ -21715,7 +21724,7 @@ __metadata:
       optional: true
   bin:
     vitest: vitest.mjs
-  checksum: f41fe7c2c1fe8142ceb90f4d4bebca90c62615c168ff82ea5e797affb8cfd78a49c8900f6d9c552e0da1208961750b6cc705113ad99315e69afba5cd3fdef794
+  checksum: cd54de758f41295ef8a5304318b0de37f3182ec9b179d983cb0199dac89d51b80ee30124754703ef77ce4a1b675f3b02094ef96790889d5c9212dbab7490b4d0
   languageName: node
   linkType: hard
 
