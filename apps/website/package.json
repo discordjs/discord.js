@@ -61,7 +61,7 @@
 		"react-syntax-highlighter": "^15.5.0",
 		"react-use": "^17.4.0",
 		"rehype-ignore": "^1.0.3",
-		"rehype-pretty-code": "^0.5.0",
+		"rehype-pretty-code": "^0.5.1",
 		"rehype-raw": "^6.1.1",
 		"rehype-slug": "^5.1.0",
 		"remark-gfm": "^3.0.1",
