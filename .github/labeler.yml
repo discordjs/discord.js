@@ -29,6 +29,9 @@ packages:proxy-container:
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*
+packages/sharder:
+  - packages:sharder/*
+  - packages:sharder/**/*
 packages/ui:
   - packages:ui/*
   - packages:ui/**/*

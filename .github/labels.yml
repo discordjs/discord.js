@@ -66,6 +66,8 @@
   color: fbca04
 - name: packages:rest
   color: fbca04
+- name: packages:sharder
+  color: fbca04
 - name: packages:ui
   color: fbca04
 - name: packages:util
