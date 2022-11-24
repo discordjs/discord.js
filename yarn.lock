@@ -2098,17 +2098,17 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@microsoft/api-extractor": ^7.32.0
     "@types/node": ^16.11.64
-    "@vitest/coverage-c8": ^0.24.3
+    "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.15
     eslint: ^8.25.0
     eslint-config-neon: ^0.1.39
     eslint-formatter-pretty: ^4.1.0
-    prettier: ^2.7.1
+    prettier: ^2.8.0
     tsup: ^6.2.3
     typescript: ^4.8.4
-    vitest: ^0.24.3
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -5140,16 +5140,6 @@ __metadata:
   peerDependencies:
     vite: ^3.0.0
   checksum: cc85ab31b4689ab137c4b1e65383dccce494371523eb164c579096e513a2abbaa7efb49ba08655fae9f6692f5b7b2602ad339bdce4ae5982fc08fe444fb8a4e5
-  languageName: node
-  linkType: hard
-
-"@vitest/coverage-c8@npm:^0.24.3":
-  version: 0.24.5
-  resolution: "@vitest/coverage-c8@npm:0.24.5"
-  dependencies:
-    c8: ^7.12.0
-    vitest: 0.24.5
-  checksum: 54ca01a281df13f6c312a9fd14cff31a214b5886549ebe8179b94423aad831e6c3d5438a45464596703f02c7a4117f1b1a7c31fb84c3779d20c47cbb0dc9a3fb
   languageName: node
   linkType: hard
 

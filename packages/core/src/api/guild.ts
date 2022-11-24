@@ -1,3 +1,4 @@
+import type { RawFile } from '@discordjs/rest';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import type {
 	RESTGetAPIGuildPruneCountQuery,
@@ -685,10 +686,18 @@ export class GuildsAPI {
 	 * @param data - The data for creating the sticker
 	 * @param reason - The reason for creating the sticker
 	 */
-	public async createSticker(guildId: Snowflake, data: RESTPostAPIGuildStickerFormDataBody, reason?: string) {
+	public async createSticker(
+		guildId: Snowflake,
+		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
+		reason?: string,
+	) {
+		const fileData = { ...file, key: 'file' };
+
 		return this.rest.post(Routes.guildStickers(guildId), {
+			appendToFormData: true,
+			body,
+			files: [fileData],
 			reason,
-			body: data,
 		}) as Promise<RESTPostAPIGuildStickerResult>;
 	}
 

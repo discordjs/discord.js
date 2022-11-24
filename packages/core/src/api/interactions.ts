@@ -83,13 +83,15 @@ export class InteractionsAPI {
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when editing the reply
+	 * @param messageId - The id of the message to edit, if omitted the original reply will be edited
 	 */
 	public async editReply(
 		applicationId: Snowflake,
 		interactionToken: string,
 		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		messageId?: string,
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, '@original', data);
+		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', data);
 	}
 
 	/**
