@@ -56,10 +56,10 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.37.19",
+		"discord-api-types": "^0.37.20",
 		"file-type": "^18.0.0",
 		"tslib": "^2.4.1",
-		"undici": "^5.12.0"
+		"undici": "^5.13.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.9.0",

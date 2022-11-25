@@ -48,7 +48,7 @@ export async function createPackage(packageName: string, packageDescription?: st
 	await writeFile('cliff.toml', cliffTOML);
 
 	// Update .cliff-jumperrc.json
-	const newCliffJumperJSON = { ...cliffJumperJSON, name: packageName, packagePath: packageDir };
+	const newCliffJumperJSON = { ...cliffJumperJSON, name: packageName, packagePath: `packages/${packageName}` };
 
 	await writeFile('.cliff-jumperrc.json', JSON.stringify(newCliffJumperJSON, null, 2));
 
@@ -61,7 +61,7 @@ export async function createPackage(packageName: string, packageDescription?: st
 	await writeFile('labels.yml', stringifyYAML(labelsYAML));
 
 	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
-	labelerYAML[packageDir] = [`${packageDir}/*`, `${packageDir}/**/*`];
+	labelerYAML[`packages/${packageName}`] = [`packages:${packageName}/*`, `packages:${packageName}/**/*`];
 
 	await writeFile('labeler.yml', stringifyYAML(labelerYAML));
 

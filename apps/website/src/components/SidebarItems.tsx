@@ -82,23 +82,24 @@ export function SidebarItems({
 				.map((group, idx) => (
 					<Section icon={resolveIcon(group)} key={idx} title={group}>
 						{groupItems[group].map((member, index) => (
-							<Link href={member.path} key={index} prefetch={false}>
-								<a
-									className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-										asPath === member.path
-											? 'bg-blurple text-white'
-											: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
-									}`}
-									onClick={() => setOpened(false)}
-									title={member.name}
-								>
-									<div className="flex flex-row place-items-center gap-2 lg:text-sm">
-										<span className="truncate">{member.name}</span>
-										{member.overloadIndex && member.overloadIndex > 1 ? (
-											<span className="text-xs">{member.overloadIndex}</span>
-										) : null}
-									</div>
-								</a>
+							<Link
+								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
+									asPath === member.path
+										? 'bg-blurple text-white'
+										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
+								}`}
+								href={member.path}
+								key={index}
+								onClick={() => setOpened(false)}
+								prefetch={false}
+								title={member.name}
+							>
+								<div className="flex flex-row place-items-center gap-2 lg:text-sm">
+									<span className="truncate">{member.name}</span>
+									{member.overloadIndex && member.overloadIndex > 1 ? (
+										<span className="text-xs">{member.overloadIndex}</span>
+									) : null}
+								</div>
 							</Link>
 						))}
 					</Section>
