@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 5
+          fetch-depth: 0
 
       - name: Install node.js v16
         uses: actions/setup-node@v3
