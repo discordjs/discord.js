@@ -1,4 +1,4 @@
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FiExternalLink } from 'react-icons/fi';
 import vercelLogo from '../assets/powered-by-vercel.svg';
@@ -20,10 +20,12 @@ export default function IndexRoute() {
 						significantly tidier and easier to comprehend.
 					</p>
 					<div className="flex flex-row gap-4">
-						<Link href="/docs" prefetch={false}>
-							<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
-								Docs
-							</a>
+						<Link
+							className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
+							href="/docs"
+							prefetch={false}
+						>
+							Docs
 						</Link>
 						<a
 							className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 border-light-900 hover:bg-light-200 active:bg-light-300 focus:ring-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 rounded border bg-transparent px-4 text-base font-semibold leading-none text-black no-underline outline-0 focus:ring active:translate-y-px dark:text-white"

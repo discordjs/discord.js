@@ -1,6 +1,7 @@
 /* eslint-disable no-case-declarations */
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+// eslint-disable-next-line n/prefer-global/process
 import process, { cwd } from 'node:process';
 import {
 	findPackage,
