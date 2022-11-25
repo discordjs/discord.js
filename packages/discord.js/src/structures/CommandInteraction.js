@@ -205,15 +205,15 @@ class CommandInteraction extends BaseInteraction {
   /* eslint-disable no-empty-function */
   deferReply() {}
   reply() {}
-  fetchReply() {}
-  editReply() {}
-  deleteReply() {}
+  fetchResponse() {}
+  editResponse() {}
+  deleteResponse() {}
   followUp() {}
   showModal() {}
   awaitModalSubmit() {}
 }
 
-InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
+InteractionResponses.applyToClass(CommandInteraction, ['deferMessageUpdate', 'updateMessage']);
 
 module.exports = CommandInteraction;
 
