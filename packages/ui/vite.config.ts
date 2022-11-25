@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-	plugins: [react(), dts(), Unocss()],
+	plugins: [dts(), react(), Unocss()],
 	build: {
 		lib: {
 			entry: resolve(__dirname, 'src/lib/index.ts'),
