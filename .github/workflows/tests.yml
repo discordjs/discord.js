@@ -26,35 +26,35 @@ jobs:
 
       - name: Build dependencies (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn build -- --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+        run: yarn build --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
 
       - name: Build dependencies (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn test -- --filter="...[HEAD^1]"
+        run: yarn build --filter="...[HEAD^1]"
 
       - name: ESLint (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn lint -- --format=compact --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+        run: yarn lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" -- --format=compact
 
       - name: ESLint (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn lint -- --format=compact --filter="...[HEAD^1]"
+        run: yarn lint --filter="...[HEAD^1]" -- --format=compact
 
       - name: Tests (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn test -- --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+        run: yarn test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
 
       - name: Tests (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn test -- --filter="...[HEAD^1]"
+        run: yarn test --filter="...[HEAD^1]"
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn docs -- --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+        run: yarn docs --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
 
       - name: Docs (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn docs -- --filter="...[HEAD^1]"
+        run: yarn docs --filter="...[HEAD^1]"
 
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'
