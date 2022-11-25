@@ -56,25 +56,25 @@
 	"dependencies": {
 		"@discordjs/util": "workspace:^",
 		"@sapphire/shapeshift": "^3.7.0",
-		"discord-api-types": "^0.37.15",
+		"discord-api-types": "^0.37.20",
 		"fast-deep-equal": "^3.1.3",
-		"ts-mixer": "^6.0.1",
-		"tslib": "^2.4.0"
+		"ts-mixer": "^6.0.2",
+		"tslib": "^2.4.1"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.8.8",
-		"@microsoft/api-extractor": "^7.33.4",
-		"@types/node": "16.11.68",
-		"@vitest/coverage-c8": "^0.24.3",
+		"@favware/cliff-jumper": "^1.9.0",
+		"@microsoft/api-extractor": "^7.33.6",
+		"@types/node": "16.18.3",
+		"@vitest/coverage-c8": "^0.25.3",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.0.0",
-		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.39",
+		"eslint": "^8.28.0",
+		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.7.1",
-		"tsup": "^6.3.0",
-		"typescript": "^4.8.4",
-		"vitest": "^0.24.3"
+		"prettier": "^2.8.0",
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.3",
+		"vitest": "^0.25.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"
