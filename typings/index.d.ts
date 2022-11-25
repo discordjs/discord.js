@@ -6060,6 +6060,7 @@ export type WebhookEditMessageOptions = Pick<
 export interface InteractionEditReplyOptions extends WebhookEditMessageOptions {
   message?: MessageResolvable | '@original';
 }
+
 export interface WebhookFetchMessageOptions {
   cache?: boolean;
   threadId?: Snowflake;
