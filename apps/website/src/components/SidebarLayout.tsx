@@ -1,7 +1,7 @@
 import type { getMembers, ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { Button } from 'ariakit/button';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
-import Image from 'next/future/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
@@ -89,7 +89,6 @@ export function SidebarLayout({
 			...PACKAGES.map((pkg) => (
 				<Link href={`/docs/packages/${pkg}/main`} key={pkg} passHref prefetch={false}>
 					<MenuItem
-						as="a"
 						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 						onClick={() => packageMenu.setOpen(false)}
 						state={packageMenu}
@@ -109,7 +108,6 @@ export function SidebarLayout({
 				?.map((item) => (
 					<Link href={`/docs/packages/${packageName}/${item}`} key={item} passHref prefetch={false}>
 						<MenuItem
-							as="a"
 							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 							onClick={() => versionMenu.setOpen(false)}
 							state={versionMenu}
@@ -129,8 +127,13 @@ export function SidebarLayout({
 				.split('/')
 				.slice(1)
 				.map((path, idx, original) => (
-					<Link href={`/${original.slice(0, idx + 1).join('/')}`} key={idx} prefetch={false}>
-						<a className="focus:ring-width-2 focus:ring-blurple rounded outline-0 hover:underline focus:ring">{path}</a>
+					<Link
+						className="focus:ring-width-2 focus:ring-blurple rounded outline-0 hover:underline focus:ring"
+						href={`/${original.slice(0, idx + 1).join('/')}`}
+						key={idx}
+						prefetch={false}
+					>
+						{path}
 					</Link>
 				)),
 		[asPathWithoutContainerKey],
