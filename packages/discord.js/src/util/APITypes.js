@@ -99,6 +99,11 @@
  */
 
 /**
+ * @external APIMessageActionRowComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageActionRowComponent}
+ */
+
+/**
  * @external APIMessageComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageComponent}
  */
@@ -166,6 +171,26 @@
 /**
  * @external ApplicationFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationFlags}
+ */
+
+/**
+ * @external AutoModerationActionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
+ */
+
+/**
+ * @external AutoModerationRuleEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleEventType}
+ */
+
+/**
+ * @external AutoModerationRuleTriggerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleTriggerType}
+ */
+
+/**
+ * @external AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleKeywordPresetType}
  */
 
 /**
