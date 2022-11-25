@@ -11,6 +11,7 @@ export default {
 	},
 	cleanDistDir: true,
 	experimental: {
+		appDir: true,
 		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
 		fallbackNodePolyfills: false,
 	},

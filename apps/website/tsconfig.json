@@ -9,6 +9,11 @@
 		"allowJs": false,
 		"incremental": true,
 		"skipLibCheck": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
 			"~/*": ["./src/*"]
 		}
