@@ -8,15 +8,15 @@ import {
 } from '../Assertions.js';
 
 /**
- * Represents a option within a select menu component
+ * Represents an option within a string select menu component
  */
-export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
+export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
 	/**
-	 * Creates a new select menu option from API data
+	 * Creates a new string select menu option from API data
 	 *
-	 * @param data - The API data to create this select menu option with
+	 * @param data - The API data to create this string select menu option with
 	 * @example
-	 * Creating a select menu option from an API data object
+	 * Creating a string select menu option from an API data object
 	 * ```ts
 	 * const selectMenuOption = new SelectMenuOptionBuilder({
 	 * 	label: 'catchy label',
@@ -24,7 +24,7 @@ export class SelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOptio
 	 * });
 	 * ```
 	 * @example
-	 * Creating a select menu option using setters and API data
+	 * Creating a string select menu option using setters and API data
 	 * ```ts
 	 * const selectMenuOption = new SelectMenuOptionBuilder({
 	 * 	default: true,

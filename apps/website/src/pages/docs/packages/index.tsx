@@ -78,34 +78,39 @@ export default function PackagesRoute(props: Partial<PackageProps> & { error?: s
 					</div>
 				</a>
 				{PACKAGES.map((pkg) => (
-					<Link href={`/docs/packages/${pkg}/${findLatestVersion(pkg)?.version ?? 'main'}`} key={pkg} prefetch={false}>
-						<a className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white">
+					<Link
+						className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white"
+						href={`/docs/packages/${pkg}/${findLatestVersion(pkg)?.version ?? 'main'}`}
+						key={pkg}
+						prefetch={false}
+					>
+						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex grow flex-row place-content-between place-items-center gap-4">
-								<div className="flex grow flex-row place-content-between place-items-center gap-4">
-									<div className="flex flex-row place-content-between place-items-center gap-4">
-										<VscPackage size={25} />
-										<h2 className="font-semibold">{pkg}</h2>
-									</div>
-									<Link href={`/docs/packages/${pkg}`} prefetch={false}>
-										<Button
-											as="div"
-											className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-0 focus:ring focus:ring-white active:translate-y-px"
-											onClick={async (ev: MouseEvent<HTMLDivElement>) => handleClick(ev, pkg)}
-											role="link"
-										>
-											Select version
-										</Button>
-									</Link>
+								<div className="flex flex-row place-content-between place-items-center gap-4">
+									<VscPackage size={25} />
+									<h2 className="font-semibold">{pkg}</h2>
 								</div>
-								<VscArrowRight size={20} />
+								<Link href={`/docs/packages/${pkg}`} prefetch={false}>
+									<Button
+										as="div"
+										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-0 focus:ring focus:ring-white active:translate-y-px"
+										onClick={async (ev: MouseEvent<HTMLDivElement>) => handleClick(ev, pkg)}
+										role="link"
+									>
+										Select version
+									</Button>
+								</Link>
 							</div>
-						</a>
+							<VscArrowRight size={20} />
+						</div>
 					</Link>
 				))}
-				<Link href="/" prefetch={false}>
-					<a className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px">
-						<VscArrowLeft size={20} /> Go back
-					</a>
+				<Link
+					className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
+					href="/"
+					prefetch={false}
+				>
+					<VscArrowLeft size={20} /> Go back
 				</Link>
 			</div>
 		</div>

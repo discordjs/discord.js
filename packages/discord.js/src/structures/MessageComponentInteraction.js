@@ -66,10 +66,15 @@ class MessageComponentInteraction extends BaseInteraction {
   }
 
   /**
-   * Raw message components from the API
-   * * APIMessageButton
-   * * APIMessageSelectMenu
-   * @typedef {APIMessageButton|APIMessageSelectMenu} APIMessageActionRowComponent
+   * Components that can be placed in an action row for messages.
+   * * ButtonComponent
+   * * StringSelectMenuComponent
+   * * UserSelectMenuComponent
+   * * RoleSelectMenuComponent
+   * * MentionableSelectMenuComponent
+   * * ChannelSelectMenuComponent
+   * @typedef {ButtonComponent|StringSelectMenuComponent|UserSelectMenuComponent|
+   * RoleSelectMenuComponent|MentionableSelectMenuComponent|ChannelSelectMenuComponent} MessageActionRowComponent
    */
 
   /**
@@ -100,13 +105,3 @@ class MessageComponentInteraction extends BaseInteraction {
 InteractionResponses.applyToClass(MessageComponentInteraction);
 
 module.exports = MessageComponentInteraction;
-
-/**
- * @external APIMessageSelectMenu
- * @see {@link https://discord.com/developers/docs/interactions/message-components#select-menu-object}
- */
-
-/**
- * @external APIMessageButton
- * @see {@link https://discord.com/developers/docs/interactions/message-components#button-object}
- */

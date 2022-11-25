@@ -55,25 +55,25 @@
     "@discordjs/util": "workspace:^",
     "@sapphire/snowflake": "^3.2.2",
     "@types/ws": "^8.5.3",
-    "discord-api-types": "^0.37.13",
+    "discord-api-types": "^0.37.20",
     "fast-deep-equal": "^3.1.3",
     "lodash.snakecase": "^4.1.1",
-    "tslib": "^2.4.0",
-    "undici": "^5.11.0",
-    "ws": "^8.9.0"
+    "tslib": "^2.4.1",
+    "undici": "^5.13.0",
+    "ws": "^8.11.0"
   },
   "devDependencies": {
     "@discordjs/docgen": "workspace:^",
-    "@favware/cliff-jumper": "^1.8.8",
-    "@types/node": "16.11.64",
+    "@favware/cliff-jumper": "^1.9.0",
+    "@types/node": "16.18.3",
     "dtslint": "^4.2.1",
-    "eslint": "^8.25.0",
+    "eslint": "^8.28.0",
     "eslint-formatter-pretty": "^4.1.0",
-    "jest": "^29.1.2",
-    "prettier": "^2.7.1",
+    "jest": "^29.3.1",
+    "prettier": "^2.8.0",
     "tsd": "^0.24.1",
     "tslint": "^6.1.3",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.3"
   },
   "engines": {
     "node": ">=16.9.0"
