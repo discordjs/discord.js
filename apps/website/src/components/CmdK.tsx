@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
