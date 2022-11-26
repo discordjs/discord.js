@@ -14,7 +14,7 @@ const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { Error } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
-const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
+const { InteractionTypes, MessageTypes, SystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -633,6 +633,25 @@ class Message extends Base {
       this.author.id === this.client.user.id ||
         (permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
           this.guild.me.communicationDisabledUntilTimestamp < Date.now()),
+    );
+  }
+
+  /**
+   * Whether the message is bulk deletable by the client user
+   * @type {boolean}
+   * @readonly
+   * @example
+   * // Filter for bulk deletable messages
+   * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
+   */
+  get bulkDeletable() {
+    const permissions = this.channel?.permissionsFor(this.client.user);
+    return (
+      (this.inGuild() &&
+        Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+        this.deletable &&
+        permissions?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)) ??
+      false
     );
   }
 

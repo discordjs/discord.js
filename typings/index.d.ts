@@ -355,11 +355,11 @@ export interface InteractionResponseFields<Cached extends CacheType = CacheType>
   webhook: InteractionWebhook;
   reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  deleteReply(): Promise<void>;
-  editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
+  deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
+  editReply(options: string | MessagePayload | InteractionEditReplyOptions): Promise<GuildCacheMessage<Cached>>;
   deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  fetchReply(message?: MessageResolvable | '@original'): Promise<GuildCacheMessage<Cached>>;
   followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
 }
 
@@ -395,9 +395,9 @@ export abstract class BaseCommandInteraction<Cached extends CacheType = CacheTyp
   public inRawGuild(): this is BaseCommandInteraction<'raw'>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
-  public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
+  public editReply(options: string | MessagePayload | InteractionEditReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
@@ -1568,6 +1568,7 @@ export class Message<Cached extends boolean = boolean> extends Base {
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, MessageAttachment>;
   public author: User;
+  public get bulkDeletable(): boolean;
   public readonly channel: If<Cached, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public readonly cleanContent: string;
@@ -1735,9 +1736,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
-  public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
+  public editReply(options: string | MessagePayload | InteractionEditReplyOptions): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
@@ -1968,13 +1969,13 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<void>;
-  public deleteReply(): Promise<void>;
-  public editReply(options: string | MessagePayload | WebhookEditMessageOptions): Promise<GuildCacheMessage<Cached>>;
+  public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
+  public editReply(options: string | MessagePayload | InteractionEditReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options: InteractionDeferReplyOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<void>;
   public deferUpdate(options: InteractionDeferUpdateOptions & { fetchReply: true }): Promise<GuildCacheMessage<Cached>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<void>;
-  public fetchReply(): Promise<GuildCacheMessage<Cached>>;
+  public fetchReply(message?: MessageResolvable | '@original'): Promise<GuildCacheMessage<Cached>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<GuildCacheMessage<Cached>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
@@ -3006,6 +3007,7 @@ export const Constants: {
     devDependencies: Record<string, string>;
     [key: string]: unknown;
   };
+  MaxBulkDeletableMessageAge: 1_209_600_000;
   UserAgent: string;
   Endpoints: {
     botGateway: string;
@@ -6164,6 +6166,9 @@ export type WebhookEditMessageOptions = Pick<
   WebhookMessageOptions,
   'content' | 'embeds' | 'files' | 'allowedMentions' | 'components' | 'attachments' | 'threadId'
 >;
+export interface InteractionEditReplyOptions extends WebhookEditMessageOptions {
+  message?: MessageResolvable | '@original';
+}
 
 export interface WebhookFetchMessageOptions {
   cache?: boolean;
