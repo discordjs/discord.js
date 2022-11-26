@@ -116,6 +116,7 @@ export class WebhooksAPI {
 			query: makeURLSearchParams({ wait, thread_id }),
 			files,
 			body,
+			auth: false,
 			// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
 	}
@@ -127,10 +128,16 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when executing the webhook
 	 */
-	public async executeSlack(id: Snowflake, token: string, options: RESTPostAPIWebhookWithTokenSlackQuery = {}) {
+	public async executeSlack(
+		id: Snowflake,
+		token: string,
+		body: unknown,
+		options: RESTPostAPIWebhookWithTokenSlackQuery = {},
+	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-			body: options,
+			body,
+			auth: false,
 		});
 	}
 
@@ -141,10 +148,16 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when executing the webhook
 	 */
-	public async executeGitHub(id: Snowflake, token: string, options: RESTPostAPIWebhookWithTokenGitHubQuery = {}) {
+	public async executeGitHub(
+		id: Snowflake,
+		token: string,
+		body: unknown,
+		options: RESTPostAPIWebhookWithTokenGitHubQuery = {},
+	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
-			body: options,
+			body,
+			auth: false,
 		});
 	}
 
@@ -159,6 +172,7 @@ export class WebhooksAPI {
 	public async getMessage(id: Snowflake, token: string, messageId: Snowflake, options: { thread_id?: string } = {}) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
+			auth: false,
 		}) as Promise<RESTGetAPIChannelMessageResult>;
 	}
 
@@ -178,6 +192,7 @@ export class WebhooksAPI {
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),
+			auth: false,
 			body,
 		}) as Promise<RESTPatchAPIWebhookWithTokenMessageResult>;
 	}
@@ -193,6 +208,7 @@ export class WebhooksAPI {
 	public async deleteMessage(id: Snowflake, token: string, messageId: Snowflake, options: { thread_id?: string } = {}) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
+			auth: false,
 		});
 	}
 }

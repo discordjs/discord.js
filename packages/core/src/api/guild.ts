@@ -1,12 +1,8 @@
 import type { RawFile } from '@discordjs/rest';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
-import type {
-	RESTGetAPIGuildPruneCountQuery,
-	RESTPostAPIGuildStickerFormDataBody,
-	RESTPostAPIGuildStickerResult,
-} from 'discord-api-types/v10';
 import {
 	Routes,
+	type GuildMFALevel,
 	type GuildWidgetStyle,
 	type RESTGetAPIAuditLogQuery,
 	type RESTGetAPIAuditLogResult,
@@ -37,6 +33,10 @@ import {
 	type RESTGetAPIGuildThreadsResult,
 	type RESTGetAPIGuildVanityUrlResult,
 	type RESTGetAPIGuildVoiceRegionsResult,
+	type RESTGetAPIGuildPruneCountQuery,
+	type RESTPostAPIGuildStickerFormDataBody,
+	type RESTPostAPIGuildStickerResult,
+	type RESTGetAPIGuildMembersSearchQuery,
 	type RESTGetAPIGuildWelcomeScreenResult,
 	type RESTGetAPIGuildWidgetImageResult,
 	type RESTGetAPIGuildWidgetJSONResult,
@@ -299,7 +299,7 @@ export class GuildsAPI {
 	 * @param level - The new MFA level
 	 * @param reason - The reason for editing the MFA level
 	 */
-	public async editMFALevel(guildId: Snowflake, level: number, reason?: string) {
+	public async editMFALevel(guildId: Snowflake, level: GuildMFALevel, reason?: string) {
 		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
 			body: { mfa_level: level },
@@ -830,9 +830,9 @@ export class GuildsAPI {
 	 * @param query - The query to search for
 	 * @param limit - The maximum number of members to return
 	 */
-	public async searchForMember(guildId: Snowflake, query: string, limit: number = 1) {
+	public async searchForMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersSearchQuery) {
 		return this.rest.get(Routes.guildMembersSearch(guildId), {
-			query: makeURLSearchParams({ query, limit }),
+			query: makeURLSearchParams(options as unknown as Record<string, unknown>),
 		}) as Promise<RESTGetAPIGuildMembersSearchResult>;
 	}
 

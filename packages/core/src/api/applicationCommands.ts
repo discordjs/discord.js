@@ -12,6 +12,7 @@ import {
 	type RESTPutAPIApplicationCommandPermissionsJSONBody,
 	type RESTPutAPIApplicationCommandPermissionsResult,
 	type RESTPutAPIApplicationCommandsJSONBody,
+	type RESTGetAPIApplicationCommandsQuery,
 	type RESTPutAPIApplicationCommandsResult,
 	type RESTGetAPIApplicationGuildCommandsQuery,
 	type Snowflake,
@@ -26,9 +27,9 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id to fetch commands for
 	 * @param options - The options to use when fetching commands
 	 */
-	public async getGlobalCommands(applicationId: Snowflake, options: { with_localizations?: boolean } = {}) {
+	public async getGlobalCommands(applicationId: Snowflake, options: RESTGetAPIApplicationCommandsQuery = {}) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
@@ -217,18 +218,22 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Edits the permissions for a guild command
 	 *
+	 * @param userToken - The token of the user to edit permissions on behalf of
 	 * @param applicationId - The application id to edit the permissions for
 	 * @param guildId - The guild id to edit the permissions for
 	 * @param commandId - The id of the command to edit the permissions for
 	 * @param data - The data to use when editing the permissions
 	 */
 	public async editGuildCommandPermissions(
+		userToken: string,
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
 		data: RESTPutAPIApplicationCommandPermissionsJSONBody,
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
+			headers: { Authorization: `${userToken} Bearer` },
+			auth: false,
 			body: data,
 		}) as Promise<RESTPutAPIApplicationCommandPermissionsResult>;
 	}
