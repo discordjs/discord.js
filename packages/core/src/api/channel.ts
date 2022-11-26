@@ -1,4 +1,3 @@
-import type { RouteLike } from '@discordjs/rest';
 import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -76,7 +75,7 @@ export class ChannelsAPI {
 		emoji: string,
 		options: RESTGetAPIChannelMessageReactionUsersQuery = {},
 	) {
-		return this.rest.get(encodeURI(Routes.channelMessageReaction(channelId, messageId, emoji)) as RouteLike, {
+		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
 			query: makeURLSearchParams(options as Record<string, unknown>),
 		}) as Promise<RESTGetAPIChannelMessageReactionUsersResult>;
 	}
@@ -89,7 +88,7 @@ export class ChannelsAPI {
 	 * @param emoji - The emoji to delete the reaction for
 	 */
 	public async deleteOwnMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.delete(encodeURI(Routes.channelMessageOwnReaction(channelId, messageId, emoji)) as RouteLike);
+		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)));
 	}
 
 	/**
@@ -101,9 +100,7 @@ export class ChannelsAPI {
 	 * @param userId - The id of the user to delete the reaction for
 	 */
 	public async deleteUserMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string, userId: Snowflake) {
-		await this.rest.delete(
-			encodeURI(Routes.channelMessageUserReaction(channelId, messageId, emoji, userId)) as RouteLike,
-		);
+		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, encodeURIComponent(emoji), userId));
 	}
 
 	/**
@@ -124,7 +121,7 @@ export class ChannelsAPI {
 	 * @param emoji - The emoji to delete the reactions for
 	 */
 	public async deleteAllMessageReactionsForEmoji(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.delete(encodeURI(Routes.channelMessageReaction(channelId, messageId, emoji)) as RouteLike);
+		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)));
 	}
 
 	/**
@@ -135,7 +132,7 @@ export class ChannelsAPI {
 	 * @param emoji - The emoji to add the reaction with
 	 */
 	public async addMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.put(encodeURI(Routes.channelMessageOwnReaction(channelId, messageId, emoji)) as RouteLike);
+		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)));
 	}
 
 	/**
