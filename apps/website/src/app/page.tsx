@@ -1,14 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { FiExternalLink } from 'react-icons/fi';
-import vercelLogo from '../src/assets/powered-by-vercel.svg';
+import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import { CODE_EXAMPLE } from '~/util/constants';
-import '@unocss/reset/tailwind.css';
-import '../src/styles/inter.css';
-import '../src/styles/unocss.css';
-import '../src/styles/cmdk.css';
-import '../src/styles/main.css';
 
 export default function Index() {
 	return (
