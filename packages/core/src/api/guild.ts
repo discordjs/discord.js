@@ -274,7 +274,7 @@ export class GuildsAPI {
 	 * @param data - data for editing the role
 	 * @param reason - The reason for editing the role
 	 */
-	public async editRole(guildId: Snowflake, roleId: string, data: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
+	public async editRole(guildId: Snowflake, roleId: Snowflake, data: RESTPatchAPIGuildRoleJSONBody, reason?: string) {
 		return this.rest.patch(Routes.guildRole(guildId, roleId), {
 			reason,
 			body: data,
@@ -288,7 +288,7 @@ export class GuildsAPI {
 	 * @param roleId - The id of the role to delete
 	 * @param reason - The reason for deleting the role
 	 */
-	public async deleteRole(guildId: Snowflake, roleId: string, reason?: string) {
+	public async deleteRole(guildId: Snowflake, roleId: Snowflake, reason?: string) {
 		await this.rest.delete(Routes.guildRole(guildId, roleId), { reason });
 	}
 
