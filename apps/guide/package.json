@@ -5,11 +5,13 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
+		"build:local": "yarn build:prod",
 		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
 		"dev": "yarn workspaces foreach -ptR run build && astro dev",
 		"preview": "astro preview",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix --format=pretty"
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx,.astro --fix --format=pretty",
+		"fmt": "yarn format"
 	},
 	"type": "module",
 	"contributors": [

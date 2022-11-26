@@ -6,6 +6,8 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build:affected": "turbo run build --filter='...[origin/main]'",
+		"build:apps": "turbo run build:local --filter='...{apps/*}'",
+		"build:apps:affected": "turbo run build:local --filter='...{apps/*}[origin/main]'",
 		"test": "turbo run test --parallel",
 		"test:affected": "turbo run test --filter='...[origin/main]' --parallel",
 		"lint": "turbo run lint --parallel",

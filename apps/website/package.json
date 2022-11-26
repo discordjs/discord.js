@@ -15,7 +15,8 @@
 		"dev:css": "yarn generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix --format=pretty"
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix --format=pretty",
+		"fmt": "yarn format"
 	},
 	"type": "module",
 	"contributors": [
