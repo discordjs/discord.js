@@ -232,7 +232,7 @@ export class ApplicationCommandsAPI {
 		data: RESTPutAPIApplicationCommandPermissionsJSONBody,
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
-			headers: { Authorization: `Bearer ${userToken.replaceAll(/\bbearer\b/gim, '').trimStart()}` },
+			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
 			auth: false,
 			body: data,
 		}) as Promise<RESTPutAPIApplicationCommandPermissionsResult>;
