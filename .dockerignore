@@ -20,19 +20,37 @@ dist/
 # Miscellaneous
 .tmp/
 .vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
 .idea/
 .DS_Store
 .turbo
 tsconfig.tsbuildinfo
+coverage/
+__tests__/
 
 # yarn
 .pnp.*
 .yarn/*
-!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Cache
+.prettiercache
+.eslintcache
+
+# Docker specific
+.cliff-jumperrc.json
+api-extractor.json
+.eslintrc.json
+.lintstagedrc.cjs
+.lintstagedrc.cjs
+.prettierignore
+.prettierrc.js
+.prettierrc.cjs
+cliff.toml
+CHANGELOG.md
+README.md
+tsconfig.eslint.json
+docs/
