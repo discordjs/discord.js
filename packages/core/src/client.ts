@@ -66,7 +66,7 @@ import { API } from './api/index.js';
 
 export interface IntrinsicProps {
 	/**
-	 * The rest API
+	 * The REST API
 	 */
 	api: API;
 	/**

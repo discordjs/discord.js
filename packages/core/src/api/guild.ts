@@ -100,7 +100,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild preview
 	 *
-	 * @param guildId - The id of the guild to fetch the preview for
+	 * @param guildId - The id of the guild to fetch the preview from
 	 */
 	public async getPreview(guildId: Snowflake) {
 		return this.rest.get(Routes.guildPreview(guildId)) as Promise<RESTGetAPIGuildPreviewResult>;
@@ -189,7 +189,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the active threads in a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the active threads for
+	 * @param guildId - The id of the guild to fetch the active threads from
 	 */
 	public async getActiveThreads(guildId: Snowflake) {
 		return this.rest.get(Routes.guildActiveThreads(guildId)) as Promise<RESTGetAPIGuildThreadsResult>;
@@ -235,7 +235,7 @@ export class GuildsAPI {
 	/**
 	 * Gets all the roles in a guild
 	 *
-	 * @param guildId - The id of the guild to fetch the roles fo
+	 * @param guildId - The id of the guild to fetch the roles from
 	 */
 	public async getRoles(guildId: Snowflake) {
 		return this.rest.get(Routes.guildRoles(guildId)) as Promise<RESTGetAPIGuildRolesResult>;
