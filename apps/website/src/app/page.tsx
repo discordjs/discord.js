@@ -5,7 +5,7 @@ import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import { CODE_EXAMPLE } from '~/util/constants';
 
-export default function IndexRoute() {
+export default function Page() {
 	return (
 		<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
@@ -23,7 +23,6 @@ export default function IndexRoute() {
 						<Link
 							className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
 							href="/docs"
-							prefetch={false}
 						>
 							Docs
 						</Link>

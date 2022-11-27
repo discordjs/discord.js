@@ -1,5 +1,7 @@
+'use client';
+
 import type { ApiFunctionJSON } from '@discordjs/api-extractor-utils';
-import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import { useState } from 'react';
 import { VscChevronDown, VscVersions } from 'react-icons/vsc';
 import { DocContainer } from '../DocContainer';
