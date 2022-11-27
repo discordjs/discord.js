@@ -12,6 +12,7 @@ export default {
 	cleanDistDir: true,
 	experimental: {
 		appDir: true,
+		serverComponentsExternalPackages: ['shiki'],
 		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
 		fallbackNodePolyfills: false,
 	},

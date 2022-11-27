@@ -18,18 +18,18 @@ import { createApiModel } from '@discordjs/scripts';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 // import Head from 'next/head';
 import { notFound } from 'next/navigation';
-// import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import rehypeIgnore from 'rehype-ignore';
-// import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
+import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-// import { getHighlighter } from 'shiki';
-// import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
-// import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
-// import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
-// import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
+import { getHighlighter } from 'shiki';
+import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
+import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
+import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
+import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
+import { MDXRemote } from '~/components/MDXRemote';
 import { SidebarLayout } from '~/components/SidebarLayout';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
@@ -136,25 +136,25 @@ async function getData(slug: string[]) {
 				rehypeRaw,
 				rehypeIgnore,
 				rehypeSlug,
-				// [
-				// 	rehypePrettyCode,
-				// 	{
-				// 		theme: {
-				// 			dark: shikiThemeDarkPlus,
-				// 			light: shikiThemeLightPlus,
-				// 		},
-				// 		getHighlighter: async (options?: Partial<Options>) =>
-				// 			getHighlighter({
-				// 				...options,
-				// 				langs: [
-				// 					// @ts-expect-error: Working as intended
-				// 					{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
-				// 					// @ts-expect-error: Working as intended
-				// 					{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
-				// 				],
-				// 			}),
-				// 	},
-				// ],
+				[
+					rehypePrettyCode,
+					{
+						theme: {
+							dark: shikiThemeDarkPlus,
+							light: shikiThemeLightPlus,
+						},
+						getHighlighter: async (options?: Partial<Options>) =>
+							getHighlighter({
+								...options,
+								langs: [
+									// @ts-expect-error: Working as intended
+									{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
+									// @ts-expect-error: Working as intended
+									{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
+								],
+							}),
+					},
+				],
 			],
 			format: 'md',
 		},
@@ -289,11 +289,11 @@ export default async function Page({ params }: any) {
 								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head> */}
 							{member(data.data.member)}
-						</> /* : params.data?.source ? (
+						</>
+					) : data.data?.source ? (
 						<div className="prose max-w-none">
 							<MDXRemote {...data.data?.source} />
 						</div>
-					) */
 					) : null}
 				</SidebarLayout>
 			</MemberProvider>
