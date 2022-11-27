@@ -4,13 +4,12 @@ on:
     types: [opened, edited]
 
 jobs:
-  triage:
+  issue-triage:
     runs-on: ubuntu-latest
     steps:
       - uses: github/issue-labeler@v2.5
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           configuration-path: .github/issue-labeler.yml
-          # The day when this workflow was created. This is used to prevent the workflow from removing labels that were manually added before this workflow was created.
           not-before: 2022-11-27T07:05:06.752Z
           enable-versioned-regex: 0
