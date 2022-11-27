@@ -1,8 +1,8 @@
 'use client';
 
-import { type DisclosureState, useDialogState } from 'ariakit';
-import type { PropsWithChildren } from 'react';
-import { createContext, useContext } from 'react';
+import { useDialogState } from 'ariakit/dialog';
+import type { DisclosureState } from 'ariakit/disclosure';
+import { type PropsWithChildren, createContext, useContext } from 'react';
 
 export const CmdKContext = createContext<DisclosureState | null>(null);
 

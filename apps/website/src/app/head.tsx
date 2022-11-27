@@ -20,6 +20,9 @@ export default function Head() {
 			<meta content="https://discordjs.dev/api/og" key="og_image" property="og:image" />
 			<meta content="summary_large_image" name="twitter:card" />
 			<meta content="@iCrawlToGo" name="twitter:creator" />
+			<title key="title">discord.js</title>
+			<meta content="minimum-scale=1, initial-scale=1, width=device-width" name="viewport" />
+			<meta content="#5865f2" name="theme-color" />
 		</>
 	);
 }

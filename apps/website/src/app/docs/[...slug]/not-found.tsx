@@ -1,13 +1,13 @@
-import Head from 'next/head';
+// import Head from 'next/head';
 import Link from 'next/link';
 
-export default function FourOhFourPage() {
+export default function NotFound() {
 	return (
 		<>
-			<Head>
+			{/* <Head>
 				<title key="title">discord.js | 404</title>
 				<meta content="discord.js | 404" key="og_title" property="og:title" />
-			</Head>
+			</Head> */}
 			<div className="mx-auto flex h-full max-w-lg flex-col place-content-center place-items-center gap-8 py-16 px-8 lg:py-0 lg:px-6">
 				<h1 className="text-[9rem] font-black leading-none md:text-[12rem]">404</h1>
 				<h2 className="text-[2rem] md:text-[3rem]">Not found.</h2>

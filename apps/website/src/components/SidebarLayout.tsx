@@ -86,6 +86,7 @@ export function SidebarLayout({ packageName, branchName, data, children }: Props
 			<a href="https://discord.js.org/#/docs/discord.js" key="discord.js">
 				<MenuItem
 					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
+					id="discord-js"
 					onClick={() => packageMenu.setOpen(false)}
 					state={packageMenu}
 				>
@@ -96,6 +97,7 @@ export function SidebarLayout({ packageName, branchName, data, children }: Props
 				<Link href={`/docs/packages/${pkg}/main`} key={pkg} passHref prefetch={false}>
 					<MenuItem
 						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
+						id={pkg}
 						onClick={() => packageMenu.setOpen(false)}
 						state={packageMenu}
 					>

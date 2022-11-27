@@ -12,7 +12,7 @@ export default {
 	cleanDistDir: true,
 	experimental: {
 		appDir: true,
-		serverComponentsExternalPackages: ['shiki'],
+		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju', 'shiki'],
 		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
 		fallbackNodePolyfills: false,
 	},
