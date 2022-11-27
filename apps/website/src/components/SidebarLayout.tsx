@@ -94,7 +94,7 @@ export function SidebarLayout({ packageName, branchName, data, children }: Props
 				</MenuItem>
 			</a>,
 			...PACKAGES.map((pkg) => (
-				<Link href={`/docs/packages/${pkg}/main`} key={pkg} passHref prefetch={false}>
+				<Link href={`/docs/packages/${pkg}/main`} key={pkg}>
 					<MenuItem
 						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 						id={pkg}
@@ -114,7 +114,7 @@ export function SidebarLayout({ packageName, branchName, data, children }: Props
 		() =>
 			versions
 				?.map((item) => (
-					<Link href={`/docs/packages/${packageName}/${item}`} key={item} passHref prefetch={false}>
+					<Link href={`/docs/packages/${packageName}/${item}`} key={item}>
 						<MenuItem
 							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 							onClick={() => versionMenu.setOpen(false)}
@@ -139,7 +139,6 @@ export function SidebarLayout({ packageName, branchName, data, children }: Props
 						className="focus:ring-width-2 focus:ring-blurple rounded outline-0 hover:underline focus:ring"
 						href={`/${original.slice(0, idx + 1).join('/')}`}
 						key={idx}
-						prefetch={false}
 					>
 						{path}
 					</Link>

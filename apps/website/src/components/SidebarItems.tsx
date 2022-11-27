@@ -93,7 +93,6 @@ export function SidebarItems({
 								href={member.path}
 								key={index}
 								onClick={() => setOpened(false)}
-								prefetch={false}
 								title={member.name}
 							>
 								<div className="flex flex-row place-items-center gap-2 lg:text-sm">

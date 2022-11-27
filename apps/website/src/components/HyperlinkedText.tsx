@@ -13,7 +13,6 @@ export function HyperlinkedText({ tokens }: { tokens: TokenDocumentation[] }) {
 							className="text-blurple focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
 							href={token.path}
 							key={idx}
-							prefetch={false}
 						>
 							{token.text}
 						</Link>
