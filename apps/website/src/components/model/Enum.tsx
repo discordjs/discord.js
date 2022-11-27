@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiEnumJSON } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
 import { Fragment } from 'react';

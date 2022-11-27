@@ -1,6 +1,9 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
+
+export const dynamicParams = false;
 
 export async function generateStaticParams() {
 	return PACKAGES.map((packageName) => ({ package: packageName }));
@@ -8,10 +11,10 @@ export async function generateStaticParams() {
 
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {
-		throw new Error('Failed to fetch data');
+		notFound();
 	}
 
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, { next: { revalidate: 3_600 } });
 	const data: string[] = await res.json();
 
 	if (!data.length) {

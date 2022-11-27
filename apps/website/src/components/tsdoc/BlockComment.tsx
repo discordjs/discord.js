@@ -1,3 +1,5 @@
+'use client';
+
 import { Alert } from '@discordjs/ui';
 import { StandardTags } from '@microsoft/tsdoc';
 import type { PropsWithChildren } from 'react';

@@ -3,7 +3,7 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import {
 	VscArrowRight,
@@ -57,7 +57,7 @@ export function CmdKDialog({
 					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
 					key={item.id}
 					onSelect={() => {
-						void router.push(item.path);
+						router.push(item.path);
 						dialog!.setOpen(false);
 					}}
 				>

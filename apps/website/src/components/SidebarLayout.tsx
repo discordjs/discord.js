@@ -1,8 +1,11 @@
+'use client';
+
 import type { getMembers, ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { Button } from 'ariakit/button';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { useTheme } from 'next-themes';
 import { type PropsWithChildren, useState, useEffect, useMemo, Fragment } from 'react';
@@ -28,7 +31,6 @@ import { fetcher } from '~/util/fetcher';
 import type { findMember } from '~/util/model.server';
 
 export interface SidebarLayoutProps {
-	asPath: string;
 	branchName: string;
 	data: {
 		description: string;
@@ -50,13 +52,7 @@ export interface GroupedMembers {
 	Variables: Members;
 }
 
-export function SidebarLayout({
-	packageName,
-	branchName,
-	data,
-	asPath,
-	children,
-}: PropsWithChildren<SidebarLayoutProps>) {
+export function SidebarLayout({ packageName, branchName, data, children }: PropsWithChildren<SidebarLayoutProps>) {
 	const dialog = useCmdK();
 	const { data: versions } = useSWR<string[]>(`https://docs.discordjs.dev/api/info?package=${packageName}`, fetcher);
 	const { resolvedTheme, setTheme } = useTheme();
@@ -73,7 +69,17 @@ export function SidebarLayout({
 		}
 	}, [matches]);
 
-	const asPathWithoutContainerKey = useMemo(() => asPath?.split(':')[0] ?? '', [asPath]);
+	const pathname = usePathname();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
+	}, [pathname]);
+
+	const asPathWithoutContainerKey = useMemo(
+		() => asPathWithoutQueryAndAnchor?.split(':')[0] ?? '',
+		[asPathWithoutQueryAndAnchor],
+	);
 
 	const packageMenuItems = useMemo(
 		() => [
@@ -276,7 +282,7 @@ export function SidebarLayout({
 							{versionMenuItems}
 						</Menu>
 					</div>
-					<SidebarItems asPath={asPath} members={data?.members ?? []} setOpened={setOpened} />
+					<SidebarItems asPath={asPathWithoutQueryAndAnchor} members={data?.members ?? []} setOpened={setOpened} />
 				</Scrollbars>
 			</nav>
 			<main

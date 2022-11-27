@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { useMemo } from 'react';
 import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';

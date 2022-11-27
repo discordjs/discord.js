@@ -1,3 +1,5 @@
+'use client';
+
 import { Section } from '@discordjs/ui';
 import Link from 'next/link';
 import { type Dispatch, type SetStateAction, useMemo } from 'react';

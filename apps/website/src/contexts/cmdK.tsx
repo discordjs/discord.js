@@ -1,3 +1,5 @@
+'use client';
+
 import { type DisclosureState, useDialogState } from 'ariakit';
 import type { PropsWithChildren } from 'react';
 import { createContext, useContext } from 'react';

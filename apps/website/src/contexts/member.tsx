@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiItemJSON } from '@discordjs/api-extractor-utils';
 import { createContext, useContext, type ReactNode } from 'react';
 

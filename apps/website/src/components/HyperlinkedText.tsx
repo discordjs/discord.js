@@ -1,3 +1,5 @@
+'use client';
+
 import type { TokenDocumentation } from '@discordjs/api-extractor-utils';
 import Link from 'next/link';
 

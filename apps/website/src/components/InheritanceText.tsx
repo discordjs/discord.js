@@ -1,3 +1,5 @@
+'use client';
+
 import type { InheritanceData } from '@discordjs/api-extractor-utils';
 import Link from 'next/link';
 

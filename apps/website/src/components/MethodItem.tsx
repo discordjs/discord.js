@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
 import { useCallback, useMemo, useState } from 'react';
