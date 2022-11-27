@@ -8,7 +8,7 @@ packages:discord.js:
   - '### Which package is this bug report for\?\n\ndiscord.js'
 packages:rest:
   - '### Which package is this bug report for\?\n\nrest'
-packages/proxy:
+packages:proxy:
   - '### Which package is this bug report for\?\n\nproxy'
 packages:proxy-container:
   - '### Which package is this bug report for\?\n\nproxy-container'
