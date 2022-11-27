@@ -16,6 +16,7 @@ import {
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
+import Image from 'next/image';
 // import Head from 'next/head';
 import { notFound } from 'next/navigation';
 import { serialize } from 'next-mdx-remote/serialize';
@@ -29,15 +30,15 @@ import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
 import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
 import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
 import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
+import vercelLogo from '../../../assets/powered-by-vercel.svg';
 import { MDXRemote } from '~/components/MDXRemote';
-import { SidebarLayout } from '~/components/SidebarLayout';
+import { Nav } from '~/components/Nav';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Function } from '~/components/model/Function';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
-import { CmdKProvider } from '~/contexts/cmdK';
 import { MemberProvider } from '~/contexts/member';
 import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
@@ -256,7 +257,7 @@ function member(props?: ApiItemJSON | undefined) {
 	}
 }
 
-export default async function Page({ params }: any) {
+export default async function Page({ params }: { params: { slug: string[] } }) {
 	const data = await getData(params.slug);
 
 	// const name = useMemo(
@@ -276,28 +277,115 @@ export default async function Page({ params }: any) {
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
 	return (
-		<CmdKProvider>
-			<MemberProvider member={data.data?.member}>
-				<SidebarLayout {...data}>
-					{data.data?.member ? (
-						<>
-							{/* <Head>
+		<MemberProvider member={data.data?.member}>
+			<Nav members={data.data.members} />
+			<>
+				{/* <Head>
 								<title key="title">{name}</title>
 								<meta content={params.data.description} key="description" name="description" />
 								<meta content={ogTitle} key="og_title" property="og:title" />
 								<meta content={params.data.description} key="og_description" property="og:description" />
 								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head> */}
-							{member(data.data.member)}
-						</>
-					) : data.data?.source ? (
-						<div className="prose max-w-none">
-							<MDXRemote {...data.data?.source} />
+				<main
+					className={`pt-18 lg:pl-76 ${
+						(data?.data.member?.kind === 'Class' || data?.data.member?.kind === 'Interface') &&
+						((data.data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
+							(data.data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+							? 'xl:pr-64'
+							: ''
+					}`}
+				>
+					<article className="dark:bg-dark-600 bg-light-600">
+						<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
+							{data.data?.member ? (
+								member(data.data.member)
+							) : data.data?.source ? (
+								<div className="prose max-w-none">
+									<MDXRemote {...data.data?.source} />
+								</div>
+							) : null}
 						</div>
-					) : null}
-				</SidebarLayout>
-			</MemberProvider>
-		</CmdKProvider>
+						<div className="h-76 md:h-52" />
+						<footer
+							className={`dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 ${
+								(data?.data.member?.kind === 'Class' || data?.data.member?.kind === 'Interface') &&
+								((data.data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
+									(data.data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+									? 'xl:pr-76'
+									: 'xl:pr-16'
+							}`}
+						>
+							<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
+								<div className="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
+									<a
+										className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+										href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+										rel="noopener noreferrer"
+										target="_blank"
+										title="Vercel"
+									>
+										<Image alt="Vercel" src={vercelLogo} />
+									</a>
+									<div className="flex flex-row gap-6 md:gap-12">
+										<div className="flex flex-col gap-2">
+											<div className="text-lg font-semibold">Community</div>
+											<div className="flex flex-col gap-1">
+												<a
+													className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+													href="https://discord.gg/djs"
+													rel="noopener noreferrer"
+													target="_blank"
+												>
+													Discord
+												</a>
+												<a
+													className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+													href="https://github.com/discordjs/discord.js/discussions"
+													rel="noopener noreferrer"
+													target="_blank"
+												>
+													GitHub discussions
+												</a>
+											</div>
+										</div>
+										<div className="flex flex-col gap-2">
+											<div className="text-lg font-semibold">Project</div>
+											<div className="flex flex-col gap-1">
+												<a
+													className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+													href="https://github.com/discordjs/discord.js"
+													rel="noopener noreferrer"
+													target="_blank"
+												>
+													discord.js
+												</a>
+												<a
+													className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+													href="https://discordjs.guide"
+													rel="noopener noreferrer"
+													target="_blank"
+												>
+													discord.js guide
+												</a>
+												<a
+													className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+													href="https://discord-api-types.dev"
+													rel="noopener noreferrer"
+													target="_blank"
+												>
+													discord-api-types
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</footer>
+					</article>
+				</main>
+			</>
+		</MemberProvider>
 	);
 }
 

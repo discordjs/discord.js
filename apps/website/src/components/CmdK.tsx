@@ -3,7 +3,7 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import {
 	VscArrowRight,
@@ -38,17 +38,15 @@ function resolveIcon(item: keyof typeof ApiItemKind) {
 	}
 }
 
-export function CmdKDialog({
-	currentPackageName,
-	currentVersion,
-}: {
-	currentPackageName?: string | undefined;
-	currentVersion?: string | undefined;
-}) {
+export function CmdKDialog() {
+	const pathname = usePathname();
 	const router = useRouter();
 	const dialog = useCmdK();
 	const [search, setSearch] = useState('');
 	const [searchResults, setSearchResults] = useState<any[]>([]);
+
+	const packageName = pathname?.split('/').slice(3, 4)[0];
+	const branchName = pathname?.split('/').slice(4, 5)[0];
 
 	const searchResultItems = useMemo(
 		() =>
@@ -103,12 +101,12 @@ export function CmdKDialog({
 
 	useEffect(() => {
 		const searchDoc = async (searchString: string, version: string) => {
-			const res = await client.index(`${currentPackageName}-${version}`).search(searchString, { limit: 5 });
+			const res = await client.index(`${packageName}-${version}`).search(searchString, { limit: 5 });
 			setSearchResults(res.hits);
 		};
 
-		if (search && currentPackageName) {
-			void searchDoc(search, currentVersion?.replaceAll('.', '-') ?? 'main');
+		if (search && packageName) {
+			void searchDoc(search, branchName?.replaceAll('.', '-') ?? 'main');
 		} else {
 			setSearchResults([]);
 		}

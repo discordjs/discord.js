@@ -1,5 +1,6 @@
 'use client';
 
+import type { getMembers } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
 import Link from 'next/link';
 import { type Dispatch, type SetStateAction, useMemo } from 'react';
@@ -11,7 +12,17 @@ import {
 	VscSymbolVariable,
 	VscSymbolMethod,
 } from 'react-icons/vsc';
-import type { GroupedMembers, Members } from './SidebarLayout';
+
+type Members = ReturnType<typeof getMembers>;
+
+interface GroupedMembers {
+	Classes: Members;
+	Enums: Members;
+	Functions: Members;
+	Interfaces: Members;
+	Types: Members;
+	Variables: Members;
+}
 
 function groupMembers(members: Members): GroupedMembers {
 	const Classes: Members = [];
