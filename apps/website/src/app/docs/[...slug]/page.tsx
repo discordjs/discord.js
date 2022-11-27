@@ -18,7 +18,7 @@ import { createApiModel } from '@discordjs/scripts';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 // import Head from 'next/head';
 import { notFound } from 'next/navigation';
-import { MDXRemote } from 'next-mdx-remote';
+// import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import rehypeIgnore from 'rehype-ignore';
 // import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
@@ -126,86 +126,77 @@ async function getData(slug: string[]) {
 
 	const [memberName, overloadIndex] = member?.split('%3A') ?? [];
 
-	try {
-		const readme = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'README.md'), 'utf8');
+	const readme = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'README.md'), 'utf8');
 
-		const mdxSource = await serialize(readme, {
-			mdxOptions: {
-				remarkPlugins: [remarkGfm],
-				remarkRehypeOptions: { allowDangerousHtml: true },
-				rehypePlugins: [
-					rehypeRaw,
-					rehypeIgnore,
-					rehypeSlug,
-					// [
-					// 	rehypePrettyCode,
-					// 	{
-					// 		theme: {
-					// 			dark: shikiThemeDarkPlus,
-					// 			light: shikiThemeLightPlus,
-					// 		},
-					// 		getHighlighter: async (options?: Partial<Options>) =>
-					// 			getHighlighter({
-					// 				...options,
-					// 				langs: [
-					// 					// @ts-expect-error: Working as intended
-					// 					{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
-					// 					// @ts-expect-error: Working as intended
-					// 					{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
-					// 				],
-					// 			}),
-					// 	},
-					// ],
-				],
-				format: 'md',
-			},
+	const mdxSource = await serialize(readme, {
+		mdxOptions: {
+			remarkPlugins: [remarkGfm],
+			remarkRehypeOptions: { allowDangerousHtml: true },
+			rehypePlugins: [
+				rehypeRaw,
+				rehypeIgnore,
+				rehypeSlug,
+				// [
+				// 	rehypePrettyCode,
+				// 	{
+				// 		theme: {
+				// 			dark: shikiThemeDarkPlus,
+				// 			light: shikiThemeLightPlus,
+				// 		},
+				// 		getHighlighter: async (options?: Partial<Options>) =>
+				// 			getHighlighter({
+				// 				...options,
+				// 				langs: [
+				// 					// @ts-expect-error: Working as intended
+				// 					{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
+				// 					// @ts-expect-error: Working as intended
+				// 					{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
+				// 				],
+				// 			}),
+				// 	},
+				// ],
+			],
+			format: 'md',
+		},
+	});
+
+	let data;
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+		const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+		data = JSON.parse(res);
+	} else {
+		const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
+			next: { revalidate: 3_600 },
 		});
-
-		let data;
-		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-			data = JSON.parse(res);
-		} else {
-			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
-				next: { revalidate: 3_600 },
-			});
-			data = await res.json();
-		}
-
-		const model = createApiModel(data);
-		const pkg = findPackage(model, packageName);
-
-		// eslint-disable-next-line prefer-const
-		let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
-		if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
-			containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
-		}
-
-		const members = pkg
-			? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
-			: [];
-		const member =
-			memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
-		const description = member ? tryResolveDescription(member) ?? DESCRIPTION : DESCRIPTION;
-
-		return {
-			packageName,
-			branchName,
-			data: {
-				members,
-				member,
-				description,
-				source: mdxSource,
-			},
-		};
-	} catch (error_) {
-		const error = error_ as Error;
-		console.error(error);
-
-		return {
-			error: error.message,
-		};
+		data = await res.json();
 	}
+
+	const model = createApiModel(data);
+	const pkg = findPackage(model, packageName);
+
+	// eslint-disable-next-line prefer-const
+	let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
+	if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
+		containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
+	}
+
+	const members = pkg
+		? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
+		: [];
+	const foundMember =
+		memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
+	const description = foundMember ? tryResolveDescription(foundMember) ?? DESCRIPTION : DESCRIPTION;
+
+	return {
+		packageName,
+		branchName,
+		data: {
+			members,
+			member: foundMember,
+			description,
+			source: mdxSource,
+		},
+	};
 }
 
 // function resolveMember(packageName?: string | undefined, member?: SidebarLayoutProps['data']['member']) {
@@ -284,9 +275,7 @@ export default async function Page({ params }: any) {
 	// Just in case
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
-	return data.error ? (
-		<div className="flex h-full max-h-full w-full max-w-full flex-row">{data.error}</div>
-	) : (
+	return (
 		<CmdKProvider>
 			<MemberProvider member={data.data?.member}>
 				<SidebarLayout {...data}>
@@ -300,11 +289,11 @@ export default async function Page({ params }: any) {
 								<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 							</Head> */}
 							{member(data.data.member)}
-						</>
-					) : /* params.data?.source */ false ? (
+						</> /* : params.data?.source ? (
 						<div className="prose max-w-none">
 							<MDXRemote {...data.data?.source} />
 						</div>
+					) */
 					) : null}
 				</SidebarLayout>
 			</MemberProvider>
