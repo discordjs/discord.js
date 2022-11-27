@@ -16,6 +16,8 @@ jobs:
             folder: 'builders'
           - package: '@discordjs/collection'
             folder: 'collection'
+          - package: '@discordjs/core'
+            folder: 'core'
           - package: 'discord.js'
             folder: 'discord.js'
           - package: '@discordjs/proxy'

@@ -390,5 +390,5 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 }
 
 export const config = {
-	unstable_includeFiles: [`../../packages/{brokers,builders,collection,proxy,rest,util,voice,ws}/README.md`],
+	unstable_includeFiles: [`../../packages/{brokers,builders,collection,core,proxy,rest,util,voice,ws}/README.md`],
 };
