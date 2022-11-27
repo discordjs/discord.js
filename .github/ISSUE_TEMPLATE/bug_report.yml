@@ -15,6 +15,7 @@ body:
         - brokers
         - builders
         - collection
+        - core
         - rest
         - proxy
         - proxy-container
