@@ -2089,6 +2089,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/core@workspace:packages/core":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/core@workspace:packages/core"
+  dependencies:
+    "@discordjs/rest": "workspace:^"
+    "@discordjs/ws": "workspace:^"
+    "@favware/cliff-jumper": ^1.9.0
+    "@microsoft/api-extractor": ^7.33.6
+    "@types/node": 16.18.3
+    "@vitest/coverage-c8": ^0.25.3
+    "@vladfrangu/async_event_emitter": ^2.1.2
+    cross-env: ^7.0.3
+    discord-api-types: ^0.37.20
+    eslint: ^8.28.0
+    eslint-config-neon: ^0.1.40
+    eslint-formatter-pretty: ^4.1.0
+    prettier: ^2.8.0
+    tsup: ^6.5.0
+    typescript: ^4.9.3
+    vitest: ^0.25.3
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/discord.js@workspace:.":
   version: 0.0.0-use.local
   resolution: "@discordjs/discord.js@workspace:."
@@ -2420,7 +2443,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/ws@workspace:packages/ws":
+"@discordjs/ws@workspace:^, @discordjs/ws@workspace:packages/ws":
   version: 0.0.0-use.local
   resolution: "@discordjs/ws@workspace:packages/ws"
   dependencies:
