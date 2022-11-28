@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.3.0...@discordjs/builders@1.4.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+- Allow punctuation characters in context menus (#8783) ([b521366](https://github.com/discordjs/discord.js/commit/b5213664fa66746daab1673ebe2adf2db3d1522c))
+
+## Typings
+
+- **Formatters:** Allow boolean in `formatEmoji` (#8823) ([ec37f13](https://github.com/discordjs/discord.js/commit/ec37f137fd4fca0fdbdb8a5c83abf32362a8f285))
+
 # [@discordjs/builders@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.2.0...@discordjs/builders@1.3.0) - (2022-10-08)
 
 ## Bug Fixes
