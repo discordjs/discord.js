@@ -227,7 +227,7 @@ declare module 'node:events' {
 
 export class Activity {
   private constructor(presence: Presence, data?: RawActivityData);
-  private readonly presence: Presence;
+  public readonly presence: Presence;
   public applicationId: Snowflake | null;
   public assets: RichPresenceAssets | null;
   public buttons: string[];
@@ -2350,7 +2350,7 @@ export class ReactionEmoji extends Emoji {
 
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
-  private readonly activity: Activity;
+  public readonly activity: Activity;
   public largeImage: Snowflake | null;
   public largeText: string | null;
   public smallImage: Snowflake | null;
