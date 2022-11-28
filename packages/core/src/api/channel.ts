@@ -76,7 +76,7 @@ export class ChannelsAPI {
 		options: RESTGetAPIChannelMessageReactionUsersQuery = {},
 	) {
 		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIChannelMessageReactionUsersResult>;
 	}
 
@@ -171,7 +171,7 @@ export class ChannelsAPI {
 	 */
 	public async getMessages(channelId: Snowflake, options: RESTGetAPIChannelMessagesQuery = {}) {
 		return this.rest.get(Routes.channelMessages(channelId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIChannelMessagesResult>;
 	}
 
@@ -305,7 +305,7 @@ export class ChannelsAPI {
 		options: RESTGetAPIChannelThreadsArchivedQuery = {},
 	) {
 		return this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
 	}
 
@@ -320,7 +320,7 @@ export class ChannelsAPI {
 		options: RESTGetAPIChannelThreadsArchivedQuery = {},
 	) {
 		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
 	}
 }

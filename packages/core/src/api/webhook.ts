@@ -135,7 +135,7 @@ export class WebhooksAPI {
 		options: RESTPostAPIWebhookWithTokenSlackQuery = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 			body,
 			auth: false,
 		});
@@ -155,7 +155,7 @@ export class WebhooksAPI {
 		options: RESTPostAPIWebhookWithTokenGitHubQuery = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 			body,
 			auth: false,
 		});
@@ -171,7 +171,7 @@ export class WebhooksAPI {
 	 */
 	public async getMessage(id: Snowflake, token: string, messageId: Snowflake, options: { thread_id?: string } = {}) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 			auth: false,
 		}) as Promise<RESTGetAPIChannelMessageResult>;
 	}
@@ -207,7 +207,7 @@ export class WebhooksAPI {
 	 */
 	public async deleteMessage(id: Snowflake, token: string, messageId: Snowflake, options: { thread_id?: string } = {}) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 			auth: false,
 		});
 	}

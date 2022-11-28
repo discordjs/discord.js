@@ -42,7 +42,7 @@ export class UsersAPI {
 	 */
 	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
 		return this.rest.get(Routes.userGuilds(), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPICurrentUserGuildsResult>;
 	}
 

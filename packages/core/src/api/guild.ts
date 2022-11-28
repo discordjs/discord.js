@@ -144,7 +144,7 @@ export class GuildsAPI {
 	 */
 	public async getMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
 		return this.rest.get(Routes.guildMembers(guildId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildMemberResult>;
 	}
 
@@ -314,7 +314,7 @@ export class GuildsAPI {
 	 */
 	public async getPruneCount(guildId: Snowflake, options: RESTGetAPIGuildPruneCountQuery = {}) {
 		return this.rest.get(Routes.guildPrune(guildId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildPruneCountResult>;
 	}
 
@@ -535,7 +535,7 @@ export class GuildsAPI {
 	 */
 	public async getScheduledEvents(guildId: Snowflake, options: RESTGetAPIGuildScheduledEventsQuery = {}) {
 		return this.rest.get(Routes.guildScheduledEvents(guildId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildScheduledEventsResult>;
 	}
 
@@ -566,7 +566,7 @@ export class GuildsAPI {
 		options: RESTGetAPIGuildScheduledEventQuery = {},
 	) {
 		return this.rest.get(Routes.guildScheduledEvent(guildId, eventId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildScheduledEventResult>;
 	}
 
@@ -614,7 +614,7 @@ export class GuildsAPI {
 		options: RESTGetAPIGuildScheduledEventUsersQuery = {},
 	) {
 		return this.rest.get(Routes.guildScheduledEventUsers(guildId, eventId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildScheduledEventUsersResult>;
 	}
 
@@ -740,7 +740,7 @@ export class GuildsAPI {
 	 */
 	public async getAuditLogs(guildId: Snowflake, options: RESTGetAPIAuditLogQuery = {}) {
 		return this.rest.get(Routes.guildAuditLog(guildId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIAuditLogResult>;
 	}
 
@@ -832,7 +832,7 @@ export class GuildsAPI {
 	 */
 	public async searchForMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersSearchQuery) {
 		return this.rest.get(Routes.guildMembersSearch(guildId), {
-			query: makeURLSearchParams(options as unknown as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIGuildMembersSearchResult>;
 	}
 

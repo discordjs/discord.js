@@ -11,7 +11,7 @@ export class InvitesAPI {
 	 */
 	public async get(code: string, options: RESTGetAPIInviteQuery = {}) {
 		return this.rest.get(Routes.invite(code), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIInviteResult>;
 	}
 
