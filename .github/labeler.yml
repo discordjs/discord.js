@@ -15,8 +15,8 @@ packages:collection:
   - packages/collection/*
   - packages/collection/**/*
 packages/core:
-  - packages:core/*
-  - packages:core/**/*
+  - packages/core/*
+  - packages/core/**/*
 packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
