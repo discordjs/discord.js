@@ -144,7 +144,6 @@ class Activity {
     /**
      * The presence of the Activity
      * @type {Presence}
-     * @private
      * @readonly
      * @name Activity#presence
      */
@@ -295,7 +294,6 @@ class RichPresenceAssets {
     /**
      * The activity of the RichPresenceAssets
      * @type {Activity}
-     * @private
      * @readonly
      * @name RichPresenceAssets#activity
      */
