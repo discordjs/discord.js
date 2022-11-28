@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.13.0...@discordjs/voice@0.14.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Voice postbuild script (#8741) ([5ffabb1](https://github.com/discordjs/discord.js/commit/5ffabb119fa3a35266ab31545a4a4b9a049eacce))
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+
 # [@discordjs/voice@0.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.11.0...@discordjs/voice@0.13.0) - (2022-10-08)
 
 ## Bug Fixes
