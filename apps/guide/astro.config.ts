@@ -110,6 +110,7 @@ export default defineConfig({
 				'ariakit-utils/system': fileURLToPath(new URL('node_modules/ariakit-utils/esm/system.js', rootDir)),
 				'react-icons/fi': fileURLToPath(new URL('node_modules/react-icons/fi/index.esm.js', rootDir)),
 				'react-icons/vsc': fileURLToPath(new URL('node_modules/react-icons/vsc/index.esm.js', rootDir)),
+				'react-use': fileURLToPath(new URL('node_modules/react-use/esm/index.js', rootDir)),
 			},
 		},
 	},
