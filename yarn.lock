@@ -2311,7 +2311,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
-    "@discordjs/rest": ^1.0.0
+    "@discordjs/rest": "workspace:^"
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
@@ -2332,7 +2332,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/rest@^1.0.0, @discordjs/rest@^1.3.0, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
+"@discordjs/rest@^1.3.0, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
