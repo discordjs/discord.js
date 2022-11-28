@@ -16,6 +16,7 @@ body:
         - discord.js
         - builders
         - collection
+        - core
         - rest
         - proxy
         - proxy-container
