@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PACKAGES } from '~/util/constants';
 
-export const dynamicParams = false;
-
 export async function generateStaticParams() {
 	return PACKAGES.map((packageName) => ({ package: packageName }));
 }
