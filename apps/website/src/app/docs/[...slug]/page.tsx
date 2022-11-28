@@ -82,13 +82,13 @@ export async function generateStaticParams() {
 												'packages',
 												packageName,
 												versions[idx] ?? 'main',
-												`${member.name}:${member.overloadIndex}:${member.kind}`,
+												`${member.name}%3A${member.overloadIndex}%3A${member.kind}`,
 											],
 										};
 									}
 
 									return {
-										slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
+										slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}%3A${member.kind}`],
 									};
 								}),
 							),
@@ -103,11 +103,11 @@ export async function generateStaticParams() {
 						...getMembers(pkg, 'main').map((member) => {
 							if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 								return {
-									slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+									slug: ['packages', packageName, 'main', `${member.name}%3A${member.overloadIndex}%3A${member.kind}`],
 								};
 							}
 
-							return { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] };
+							return { slug: ['packages', packageName, 'main', `${member.name}%3A${member.kind}`] };
 						}),
 					];
 				} catch {
@@ -388,7 +388,3 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 		</MemberProvider>
 	);
 }
-
-export const config = {
-	unstable_includeFiles: [`../../packages/{brokers,builders,collection,core,proxy,rest,util,voice,ws}/README.md`],
-};
