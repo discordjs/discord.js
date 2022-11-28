@@ -29,7 +29,7 @@ export class ApplicationCommandsAPI {
 	 */
 	public async getGlobalCommands(applicationId: Snowflake, options: RESTGetAPIApplicationCommandsQuery = {}) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
-			query: makeURLSearchParams(options as Record<string, unknown>),
+			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
@@ -109,7 +109,7 @@ export class ApplicationCommandsAPI {
 		data: RESTGetAPIApplicationGuildCommandsQuery = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
-			query: makeURLSearchParams(data as Record<string, unknown>),
+			query: makeURLSearchParams(data),
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
