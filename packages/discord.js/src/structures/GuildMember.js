@@ -54,7 +54,7 @@ class GuildMember extends Base {
     this.communicationDisabledUntilTimestamp = null;
 
     /**
-     * The role ids of this member
+     * The role ids of the member
      * @type {Snowflake[]}
      * @private
      */
