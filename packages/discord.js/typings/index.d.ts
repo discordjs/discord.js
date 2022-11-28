@@ -227,6 +227,7 @@ declare module 'node:events' {
 
 export class Activity {
   private constructor(presence: Presence, data?: RawActivityData);
+  private readonly presence: Presence;
   public applicationId: Snowflake | null;
   public assets: RichPresenceAssets | null;
   public buttons: string[];
@@ -1417,6 +1418,7 @@ export class GuildEmoji extends BaseGuildEmoji {
 
 export class GuildMember extends PartialTextBasedChannel(Base) {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
+  private _roles: Snowflake[];
   public avatar: string | null;
   public get bannable(): boolean;
   public get dmChannel(): DMChannel | null;
@@ -2348,6 +2350,7 @@ export class ReactionEmoji extends Emoji {
 
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
+  private readonly activity: Activity;
   public largeImage: Snowflake | null;
   public largeText: string | null;
   public smallImage: Snowflake | null;
@@ -3577,6 +3580,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
 
 export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
   protected constructor(client: Client<true>, holds: Constructable<Holds>);
+  private readonly _cache: Collection<K, Holds>;
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 

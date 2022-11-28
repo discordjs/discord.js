@@ -141,6 +141,13 @@ class Presence extends Base {
  */
 class Activity {
   constructor(presence, data) {
+    /**
+     * The presence of the Activity
+     * @type {Presence}
+     * @private
+     * @readonly
+     * @name Activity#presence
+     */
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
@@ -285,6 +292,13 @@ class Activity {
  */
 class RichPresenceAssets {
   constructor(activity, assets) {
+    /**
+     * The activity of the RichPresenceAssets
+     * @type {Activity}
+     * @private
+     * @readonly
+     * @name RichPresenceAssets#activity
+     */
     Object.defineProperty(this, 'activity', { value: activity });
 
     /**
