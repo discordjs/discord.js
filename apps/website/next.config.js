@@ -15,7 +15,6 @@ export default withBundleAnalyzer({
 		ignoreDuringBuilds: true,
 	},
 	cleanDistDir: true,
-	outputFileTracing: true,
 	experimental: {
 		appDir: true,
 		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju', 'shiki'],
