@@ -1,8 +1,8 @@
 'use client';
 
 import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
+import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import type { PropsWithChildren } from 'react';
-import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';

@@ -1,8 +1,9 @@
+import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
+import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
-import { VscPackage, VscChevronDown } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
 
 export function PackageSelect() {

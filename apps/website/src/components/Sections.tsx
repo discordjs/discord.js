@@ -7,8 +7,10 @@ import type {
 	ApiConstructorJSON,
 } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
+import { VscSymbolConstant } from '@react-icons/all-files/vsc/VscSymbolConstant';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { useMemo } from 'react';
-import { VscSymbolConstant, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';

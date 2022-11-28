@@ -1,10 +1,11 @@
 'use client';
 
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
+import { FiLink } from '@react-icons/all-files/fi/FiLink';
+import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
+import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import { useCallback, useMemo, useState } from 'react';
-import { FiLink } from 'react-icons/fi';
-import { VscChevronDown, VscVersions } from 'react-icons/vsc';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';

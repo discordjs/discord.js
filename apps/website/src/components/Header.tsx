@@ -1,12 +1,15 @@
 'use client';
 
+import { FiCommand } from '@react-icons/all-files/fi/FiCommand';
+import { VscColorMode } from '@react-icons/all-files/vsc/VscColorMode';
+import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted';
+import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
+import { VscSearch } from '@react-icons/all-files/vsc/VscSearch';
 import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { FiCommand } from 'react-icons/fi';
-import { VscColorMode, VscGithubInverted, VscMenu, VscSearch } from 'react-icons/vsc';
 import { useCmdK } from '~/contexts/cmdK';
 import { useNav } from '~/contexts/nav';
 

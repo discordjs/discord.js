@@ -5,11 +5,12 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build:local": "yarn run --top-level docs --force && cross-env NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
+		"build:local": "yarn run --top-level docs --force && cross-env-shell NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
 		"build:prod": "yarn workspaces foreach -ptR run build && yarn build:css && yarn build:next",
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
 		"build:search_indicies": "yarn node scripts/generateAllIndicies.js",
+		"build:analyze": "yarn run --top-level docs --force && cross-env-shell ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
@@ -46,6 +47,7 @@
 		"@discordjs/ui": "workspace:^",
 		"@microsoft/api-extractor-model": "7.24.0",
 		"@microsoft/tsdoc": "0.14.1",
+		"@react-icons/all-files": "^4.1.0",
 		"@vercel/og": "^0.0.21",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.41",
@@ -58,7 +60,6 @@
 		"react": "^18.2.0",
 		"react-custom-scrollbars-2": "^4.5.0",
 		"react-dom": "^18.2.0",
-		"react-icons": "^4.6.0",
 		"react-syntax-highlighter": "^15.5.0",
 		"react-use": "^17.4.0",
 		"rehype-ignore": "^1.0.3",
@@ -71,6 +72,7 @@
 		"swr": "^1.3.0"
 	},
 	"devDependencies": {
+		"@next/bundle-analyzer": "^13.0.5",
 		"@testing-library/react": "^13.4.0",
 		"@testing-library/user-event": "^14.4.3",
 		"@types/node": "16.18.3",

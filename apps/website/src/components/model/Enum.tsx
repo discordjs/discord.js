@@ -2,8 +2,8 @@
 
 import type { ApiEnumJSON } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
+import { VscSymbolEnumMember } from '@react-icons/all-files/vsc/VscSymbolEnumMember';
 import { Fragment } from 'react';
-import { VscSymbolEnumMember } from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { CodeListing, CodeListingSeparatorType } from '../CodeListing';
 import { DocContainer } from '../DocContainer';

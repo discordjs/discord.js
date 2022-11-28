@@ -1,8 +1,10 @@
 'use client';
 
 import type { ApiClassJSON, ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
+import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { useMemo } from 'react';
-import { VscListSelection, VscSymbolMethod, VscSymbolProperty } from 'react-icons/vsc';
 
 export function TableOfContentItems({
 	methods,

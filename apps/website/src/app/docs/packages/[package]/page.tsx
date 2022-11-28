@@ -1,6 +1,8 @@
+import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
+import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
+import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { VscArrowLeft, VscArrowRight, VscVersions } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
 
 export const dynamicParams = false;

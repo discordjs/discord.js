@@ -1,5 +1,7 @@
+import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
+import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
+import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
-import { VscArrowLeft, VscArrowRight, VscPackage } from 'react-icons/vsc';
 import { PACKAGES } from '~/util/constants';
 
 async function getData() {

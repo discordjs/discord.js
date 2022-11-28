@@ -45,12 +45,12 @@
 	"dependencies": {
 		"ariakit": "^2.0.0-next.41",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"react-icons": "^4.6.0"
+		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.9.0",
 		"@ladle/react": "^2.4.5",
+		"@react-icons/all-files": "^4.1.0",
 		"@types/node": "16.18.3",
 		"@types/react": "^18.0.25",
 		"@types/react-dom": "^18.0.9",

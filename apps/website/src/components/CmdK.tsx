@@ -1,20 +1,18 @@
 'use client';
 
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
+import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
+import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
+import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
+import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import {
-	VscArrowRight,
-	VscSymbolClass,
-	VscSymbolEnum,
-	VscSymbolField,
-	VscSymbolInterface,
-	VscSymbolMethod,
-	VscSymbolProperty,
-	VscSymbolVariable,
-} from 'react-icons/vsc';
 import { useKey } from 'react-use';
 import { useCmdK } from '~/contexts/cmdK';
 import { client } from '~/util/search';

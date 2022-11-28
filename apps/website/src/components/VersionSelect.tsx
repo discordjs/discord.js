@@ -1,8 +1,9 @@
+import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
+import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
-import { VscVersions, VscChevronDown } from 'react-icons/vsc';
 import useSWR from 'swr';
 import { fetcher } from '~/util/fetcher';
 

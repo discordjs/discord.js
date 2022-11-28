@@ -2,17 +2,15 @@
 
 import type { getMembers } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
+import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
+import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
+import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo, useState, useEffect } from 'react';
-import {
-	VscSymbolClass,
-	VscSymbolEnum,
-	VscSymbolInterface,
-	VscSymbolField,
-	VscSymbolVariable,
-	VscSymbolMethod,
-} from 'react-icons/vsc';
 import { useNav } from '~/contexts/nav';
 
 type Members = ReturnType<typeof getMembers>;
