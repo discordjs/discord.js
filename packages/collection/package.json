@@ -55,7 +55,7 @@
 		"@types/node": "16.18.3",
 		"@vitest/coverage-c8": "^0.25.3",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.0.0",
+		"esbuild-plugin-version-injector": "^1.0.2",
 		"eslint": "^8.28.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",

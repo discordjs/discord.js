@@ -2050,12 +2050,12 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
-    "@sapphire/shapeshift": ^3.7.0
+    "@sapphire/shapeshift": ^3.7.1
     "@types/node": 16.18.3
     "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.20
-    esbuild-plugin-version-injector: ^1.0.0
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2078,7 +2078,7 @@ __metadata:
     "@types/node": 16.18.3
     "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
-    esbuild-plugin-version-injector: ^1.0.0
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2119,7 +2119,7 @@ __metadata:
     "@commitlint/cli": ^17.3.0
     "@commitlint/config-angular": ^17.3.0
     "@favware/cliff-jumper": ^1.9.0
-    "@favware/npm-deprecate": ^1.0.5
+    "@favware/npm-deprecate": ^1.0.6
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.2
     is-ci: ^3.0.1
@@ -2177,8 +2177,8 @@ __metadata:
     "@vitest/coverage-c8": ^0.25.3
     ariakit: ^2.0.0-next.41
     astro: ^1.6.11
-    astro-compress: ^1.1.10
-    astro-critters: ^1.1.10
+    astro-compress: ^1.1.12
+    astro-critters: ^1.1.12
     cmdk: ^0.1.20
     cross-env: ^7.0.3
     eslint: ^8.28.0
@@ -2191,7 +2191,7 @@ __metadata:
     meilisearch: ^0.29.1
     prettier: ^2.8.0
     prettier-plugin-astro: ^0.7.0
-    prettier-plugin-tailwindcss: ^0.1.13
+    prettier-plugin-tailwindcss: ^0.2.0
     react: ^18.2.0
     react-custom-scrollbars-2: ^4.5.0
     react-dom: ^18.2.0
@@ -2265,7 +2265,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.20
-    esbuild-plugin-version-injector: ^1.0.0
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2369,7 +2369,7 @@ __metadata:
     "@types/ws": ^8.5.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.20
-    esbuild-plugin-version-injector: ^1.0.0
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2421,7 +2421,7 @@ __metadata:
     next-progress: ^2.2.0
     next-themes: ^0.2.1
     prettier: ^2.8.0
-    prettier-plugin-tailwindcss: ^0.1.13
+    prettier-plugin-tailwindcss: ^0.2.0
     react: ^18.2.0
     react-custom-scrollbars-2: ^4.5.0
     react-dom: ^18.2.0
@@ -2459,7 +2459,7 @@ __metadata:
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.20
-    esbuild-plugin-version-injector: ^1.0.0
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2592,22 +2592,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/npm-deprecate@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@favware/npm-deprecate@npm:1.0.5"
+"@favware/npm-deprecate@npm:^1.0.6":
+  version: 1.0.6
+  resolution: "@favware/npm-deprecate@npm:1.0.6"
   dependencies:
     "@sapphire/fetch": ^2.4.1
-    "@sapphire/utilities": ^3.8.0
+    "@sapphire/utilities": ^3.11.0
     colorette: ^2.0.19
-    commander: ^9.4.0
+    commander: ^9.4.1
     js-yaml: ^4.1.0
     micromatch: ^4.0.5
-    npm-package-arg: ^9.1.0
-    npm-registry-fetch: ^13.3.0
+    npm-package-arg: ^10.0.0
+    npm-registry-fetch: ^14.0.2
   bin:
-    nd: dist/cli.js
-    npm-deprecate: dist/cli.js
-  checksum: 6ea6ab42cad38d9ab19bf33a71b0a0056c10edcce23f1cde98c91d1bb39723d996a6ce6203805dd828cc42dffd4d4cd1d9ef0dc1446795ae1df95e2be0a9c640
+    nd: ./dist/cli.js
+    npm-deprecate: ./dist/cli.js
+  checksum: f64f85ceeabf084de03c968e1c481a276d1d0f949a489a13edba21f543dd1b65521082426f9f2747ad65781d71140067a520c2ac919ae65f268d0c9be6d78d95
   languageName: node
   linkType: hard
 
@@ -3356,9 +3356,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nikolarhristov/pipeline@npm:0.0.2":
-  version: 0.0.2
-  resolution: "@nikolarhristov/pipeline@npm:0.0.2"
+"@nikolarhristov/pipeline@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@nikolarhristov/pipeline@npm:0.0.7"
   dependencies:
     critters: 0.0.16
     csso: 5.0.5
@@ -3367,8 +3367,8 @@ __metadata:
     html-minifier-terser: 7.1.0
     sharp: 0.31.2
     svgo: 3.0.2
-    terser: 5.15.1
-  checksum: aa8cb3d62234cd6625911dfb9e48c1fd19406d7b3beac95c078e7b8a17234a14d5f9972d011f673d49f40be3489373b77811eae9c7877fd48eea4eb7a720cadf
+    terser: 5.16.0
+  checksum: b427c5b26314d239e8adc9b654d0443170cee48b1780faa2a6f33b4c5a056254ad3379866410ffd7d8e95a070121474646160c859e4b1e86b32f23a53c8b6a44
   languageName: node
   linkType: hard
 
@@ -3406,6 +3406,15 @@ __metadata:
     "@gar/promisify": ^1.1.3
     semver: ^7.3.5
   checksum: 405074965e72d4c9d728931b64d2d38e6ea12066d4fad651ac253d175e413c06fe4350970c783db0d749181da8fe49c42d3880bd1cbc12cd68e3a7964d820225
+  languageName: node
+  linkType: hard
+
+"@npmcli/fs@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@npmcli/fs@npm:3.1.0"
+  dependencies:
+    semver: ^7.3.5
+  checksum: a50a6818de5fc557d0b0e6f50ec780a7a02ab8ad07e5ac8b16bf519e0ad60a144ac64f97d05c443c3367235d337182e1d012bbac0eb8dbae8dc7b40b193efd0e
   languageName: node
   linkType: hard
 
@@ -3804,20 +3813,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/result@npm:^2.5.0, @sapphire/result@npm:^2.6.0":
+"@sapphire/result@npm:^2.6.0":
   version: 2.6.0
   resolution: "@sapphire/result@npm:2.6.0"
   checksum: bab9e963c85c7ea0a410c36617b7d32fca8749739b7fbb61bf7a2eff566d002af78606c379b1a71f2857bf9c04d3f5f1af67f02278da75ac660f2f6ddfef26b5
   languageName: node
   linkType: hard
 
-"@sapphire/shapeshift@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@sapphire/shapeshift@npm:3.7.0"
+"@sapphire/shapeshift@npm:^3.7.1":
+  version: 3.7.1
+  resolution: "@sapphire/shapeshift@npm:3.7.1"
   dependencies:
     fast-deep-equal: ^3.1.3
     lodash.uniqwith: ^4.5.0
-  checksum: 4fed0865abcf3653406cfa1f4a2a7d1c51103cee1c13ec4fd8fbc84bd32d20b2949e2266531c2d81b9b1e3af32787cd1f5d66a3d6146d6afb553ca2c6377beb1
+  checksum: 06afc7015aa51c8f0e1f2aafe07ba1c6d8452ac68b4c86ffd32ba7ab3dad196f2adf5558436bb4cdbdcf1e33112c158777f44ba4b43f0b2cab8cf51f561f72d4
   languageName: node
   linkType: hard
 
@@ -3828,7 +3837,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:3.11.0, @sapphire/utilities@npm:^3.8.0":
+"@sapphire/utilities@npm:3.11.0, @sapphire/utilities@npm:^3.11.0":
   version: 3.11.0
   resolution: "@sapphire/utilities@npm:3.11.0"
   checksum: 3c8521038b8879524e8114f39eefc8b3b06cf825995f709684238b5cb14bd7df06d232a26a88f79160df290a66f9aa3133f5ce4ff8e2398033db9f301ad31e0d
@@ -5762,21 +5771,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro-compress@npm:^1.1.10":
-  version: 1.1.10
-  resolution: "astro-compress@npm:1.1.10"
+"astro-compress@npm:^1.1.12":
+  version: 1.1.12
+  resolution: "astro-compress@npm:1.1.12"
   dependencies:
-    "@nikolarhristov/pipeline": 0.0.2
-  checksum: 4aa596e9c1b07faba3ff64dd96306b1571b5bf9257f70abeac68aff01683844f88b71e0cb804a2505fa9945ae25dbbf5accd8738a640135e4e192969ce30859b
+    "@nikolarhristov/pipeline": 0.0.7
+  checksum: fd499a15cbf269663cc3f6a1405440c4642e741b707ed06f6ac5bfbac65ae6b406b068bbda66f30dbd95f8bf49df1ed703f9c5f42b2658a34839719e6c0593b9
   languageName: node
   linkType: hard
 
-"astro-critters@npm:^1.1.10":
-  version: 1.1.10
-  resolution: "astro-critters@npm:1.1.10"
+"astro-critters@npm:^1.1.12":
+  version: 1.1.12
+  resolution: "astro-critters@npm:1.1.12"
   dependencies:
-    "@nikolarhristov/pipeline": 0.0.2
-  checksum: a5fccc0fd520910b8fee3efcb834d293419b506493e7a0cd777d250c0528aed1f0413fa0f6d64b7f7e5e40ff62c685e692415c6c877ec09fdeec6c54d532edd1
+    "@nikolarhristov/pipeline": 0.0.7
+  checksum: ef20ef9965392ed6acda8daad3557aa2268bce865e3b1a33b9fd8212b12370f0b97c5df43ab7ba3276715dea4780ba1abbf6b8cddd04f731881b3eb757120b3d
   languageName: node
   linkType: hard
 
@@ -6459,6 +6468,27 @@ __metadata:
     tar: ^6.1.11
     unique-filename: ^2.0.0
   checksum: d91409e6e57d7d9a3a25e5dcc589c84e75b178ae8ea7de05cbf6b783f77a5fae938f6e8fda6f5257ed70000be27a681e1e44829251bfffe4c10216002f8f14e6
+  languageName: node
+  linkType: hard
+
+"cacache@npm:^17.0.0":
+  version: 17.0.2
+  resolution: "cacache@npm:17.0.2"
+  dependencies:
+    "@npmcli/fs": ^3.1.0
+    fs-minipass: ^2.1.0
+    glob: ^8.0.1
+    lru-cache: ^7.7.1
+    minipass: ^3.1.6
+    minipass-collect: ^1.0.2
+    minipass-flush: ^1.0.5
+    minipass-pipeline: ^1.2.4
+    p-map: ^4.0.0
+    promise-inflight: ^1.0.1
+    ssri: ^10.0.0
+    tar: ^6.1.11
+    unique-filename: ^3.0.0
+  checksum: 75a41961b7f49901a8b24b5e30a6ecce9cbf2c7af6c872b0436b0d4dc1ebf7afbb41ba1e5309f943f2c3e8823ea49fbd8ce3cd832beea4f23d5da07595752c85
   languageName: node
   linkType: hard
 
@@ -9070,12 +9100,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-plugin-version-injector@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "esbuild-plugin-version-injector@npm:1.0.0"
+"esbuild-plugin-version-injector@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "esbuild-plugin-version-injector@npm:1.0.2"
   dependencies:
-    "@sapphire/result": ^2.5.0
-  checksum: 2a6eb3f2b3d3d24c6ca8af28925ad8e6f6d0a75f41cdb089bd76c7a74fbd6948d8f64563aa58bd65751054a28be0cfc081a0f56102a1952a5ba4ac541c2ff336
+    "@sapphire/result": ^2.6.0
+  checksum: 9972c10a8bed4fb751970aaa36cbc04af1895f770f762f107db9ff15add58bb7e531936a2a21b7e4a88083c896e8846364bdd8a51bdb853bbf67906e7b50e831
   languageName: node
   linkType: hard
 
@@ -11672,12 +11702,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^5.0.0":
-  version: 5.2.1
-  resolution: "hosted-git-info@npm:5.2.1"
+"hosted-git-info@npm:^6.0.0":
+  version: 6.1.1
+  resolution: "hosted-git-info@npm:6.1.1"
   dependencies:
     lru-cache: ^7.5.1
-  checksum: fa35df185224adfd69141f3b2f8cc31f50e705a5ebb415ccfbfd055c5b94bd08d3e658edf1edad9e2ac7d81831ac7cf261f5d219b3adc8d744fb8cdacaaf2ead
+  checksum: fcd3ca2eaa05f3201425ccbb8aa47f88cdda4a3a6d79453f8e269f7171356278bd1db08f059d8439eb5eaa91c6a8a20800fc49cca6e9e4e899b202a332d5ba6b
   languageName: node
   linkType: hard
 
@@ -14011,7 +14041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-fetch-happen@npm:^10.0.3, make-fetch-happen@npm:^10.0.6":
+"make-fetch-happen@npm:^10.0.3":
   version: 10.2.1
   resolution: "make-fetch-happen@npm:10.2.1"
   dependencies:
@@ -14032,6 +14062,30 @@ __metadata:
     socks-proxy-agent: ^7.0.0
     ssri: ^9.0.0
   checksum: 2332eb9a8ec96f1ffeeea56ccefabcb4193693597b132cd110734d50f2928842e22b84cfa1508e921b8385cdfd06dda9ad68645fed62b50fff629a580f5fb72c
+  languageName: node
+  linkType: hard
+
+"make-fetch-happen@npm:^11.0.0":
+  version: 11.0.1
+  resolution: "make-fetch-happen@npm:11.0.1"
+  dependencies:
+    agentkeepalive: ^4.2.1
+    cacache: ^17.0.0
+    http-cache-semantics: ^4.1.0
+    http-proxy-agent: ^5.0.0
+    https-proxy-agent: ^5.0.0
+    is-lambda: ^1.0.1
+    lru-cache: ^7.7.1
+    minipass: ^3.1.6
+    minipass-collect: ^1.0.2
+    minipass-fetch: ^3.0.0
+    minipass-flush: ^1.0.5
+    minipass-pipeline: ^1.2.4
+    negotiator: ^0.6.3
+    promise-retry: ^2.0.1
+    socks-proxy-agent: ^7.0.0
+    ssri: ^10.0.0
+  checksum: 871083ce4b775521229efcc972f544ffcbb5f70fd8f5582edaa1b3e555de772e076babf4b044a2d48efc326d54aa151f5ea3458615ecfcfb81cb6480bcb2e1c6
   languageName: node
   linkType: hard
 
@@ -15069,6 +15123,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minipass-fetch@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "minipass-fetch@npm:3.0.0"
+  dependencies:
+    encoding: ^0.1.13
+    minipass: ^3.1.6
+    minipass-sized: ^1.0.3
+    minizlib: ^2.1.2
+  dependenciesMeta:
+    encoding:
+      optional: true
+  checksum: ebc876b8763d858a759bd53a04eedc85f111a9fc0ab822a4b445c5eb71f34dc3fd3442d75484df156ca57e2dea37edfc77a585c27c67be835589f212772ddb6e
+  languageName: node
+  linkType: hard
+
 "minipass-flush@npm:^1.0.5":
   version: 1.0.5
   resolution: "minipass-flush@npm:1.0.5"
@@ -15585,6 +15654,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"npm-package-arg@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "npm-package-arg@npm:10.0.0"
+  dependencies:
+    hosted-git-info: ^6.0.0
+    proc-log: ^3.0.0
+    semver: ^7.3.5
+    validate-npm-package-name: ^5.0.0
+  checksum: 5f35870b4786e27358c672820ab6abb9b87e214dc1795aef96f6993ea74b789b27318017650dc4da965c249ee3e66ab9dc1ac12c68e7209dd9afae1ad7e3f0b8
+  languageName: node
+  linkType: hard
+
 "npm-package-arg@npm:^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^8.0.0":
   version: 8.1.5
   resolution: "npm-package-arg@npm:8.1.5"
@@ -15596,30 +15677,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-package-arg@npm:^9.0.1, npm-package-arg@npm:^9.1.0":
-  version: 9.1.2
-  resolution: "npm-package-arg@npm:9.1.2"
+"npm-registry-fetch@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "npm-registry-fetch@npm:14.0.2"
   dependencies:
-    hosted-git-info: ^5.0.0
-    proc-log: ^2.0.1
-    semver: ^7.3.5
-    validate-npm-package-name: ^4.0.0
-  checksum: 3793488843985ed71deb14fcba7c068d8ed03a18fd8f6b235c6a64465c9a25f60261598106d5cc8677c0bee9548e405c34c2e3c7a822e3113d3389351c745dfa
-  languageName: node
-  linkType: hard
-
-"npm-registry-fetch@npm:^13.3.0":
-  version: 13.3.1
-  resolution: "npm-registry-fetch@npm:13.3.1"
-  dependencies:
-    make-fetch-happen: ^10.0.6
+    make-fetch-happen: ^11.0.0
     minipass: ^3.1.6
-    minipass-fetch: ^2.0.3
+    minipass-fetch: ^3.0.0
     minipass-json-stream: ^1.0.1
     minizlib: ^2.1.2
-    npm-package-arg: ^9.0.1
-    proc-log: ^2.0.0
-  checksum: 5a941c2c799568e0dbccfc15f280444da398dadf2eede1b1921f08ddd5cb5f32c7cb4d16be96401f95a33073aeec13a3fd928c753790d3c412c2e64e7f7c6ee4
+    npm-package-arg: ^10.0.0
+    proc-log: ^3.0.0
+  checksum: 8053307989b5c1e7fc459889115fa6ec0965c973e73717357735d18e7b0840bc739a7c0d4c40083a4d2a9de11566540f7da2a8fe5e2ff3f721e8847cd2d5d5a6
   languageName: node
   linkType: hard
 
@@ -16495,12 +16564,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-tailwindcss@npm:^0.1.13":
-  version: 0.1.13
-  resolution: "prettier-plugin-tailwindcss@npm:0.1.13"
+"prettier-plugin-tailwindcss@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "prettier-plugin-tailwindcss@npm:0.2.0"
   peerDependencies:
     prettier: ">=2.2.0"
-  checksum: 1b9000686e661be81de7d36d514c5ee34a98b11639b538bce8dd3a482c073c0148feb9d54b526babaede681d1c5ecb318ad97f38e8d71dd5cc26c33dfcaf8344
+  checksum: 427cd16e5c664e45965d0742e524ccf9b345bcb91a28d77bf03fa8e249eb0ecf6412ef6e91fb628b7773c8b60b1ed2c47d00211034918ddd4456f27305b9d5e7
   languageName: node
   linkType: hard
 
@@ -16607,10 +16676,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"proc-log@npm:^2.0.0, proc-log@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "proc-log@npm:2.0.1"
-  checksum: f6f23564ff759097db37443e6e2765af84979a703d2c52c1b9df506ee9f87caa101ba49d8fdc115c1a313ec78e37e8134704e9069e6a870f3499d98bb24c436f
+"proc-log@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "proc-log@npm:3.0.0"
+  checksum: 02b64e1b3919e63df06f836b98d3af002b5cd92655cab18b5746e37374bfb73e03b84fe305454614b34c25b485cc687a9eebdccf0242cda8fda2475dd2c97e02
   languageName: node
   linkType: hard
 
@@ -18569,6 +18638,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssri@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "ssri@npm:10.0.0"
+  dependencies:
+    minipass: ^3.1.1
+  checksum: c8707ee2351bcfe5258e47b4e08ded4b2e8aec1d79853adec43bf4da6d6e071930ec72a01555f835d772892a230dc17eeb2331b7053a62fa4fd458b863a42741
+  languageName: node
+  linkType: hard
+
 "ssri@npm:^8.0.0":
   version: 8.0.1
   resolution: "ssri@npm:8.0.1"
@@ -19195,21 +19273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser@npm:5.15.1":
-  version: 5.15.1
-  resolution: "terser@npm:5.15.1"
-  dependencies:
-    "@jridgewell/source-map": ^0.3.2
-    acorn: ^8.5.0
-    commander: ^2.20.0
-    source-map-support: ~0.5.20
-  bin:
-    terser: bin/terser
-  checksum: 9880a1e0956983a1ce5de204ea35121c0009fa41d582a6904ae850e1953a1a2cc021168439565280c5a8eee67c85a874175627e24989b046c7a72589b81c3979
-  languageName: node
-  linkType: hard
-
-"terser@npm:^5.15.1":
+"terser@npm:5.16.0, terser@npm:^5.15.1":
   version: 5.16.0
   resolution: "terser@npm:5.16.0"
   dependencies:
@@ -20283,12 +20347,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"unique-filename@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "unique-filename@npm:3.0.0"
+  dependencies:
+    unique-slug: ^4.0.0
+  checksum: 8e2f59b356cb2e54aab14ff98a51ac6c45781d15ceaab6d4f1c2228b780193dc70fae4463ce9e1df4479cb9d3304d7c2043a3fb905bdeca71cc7e8ce27e063df
+  languageName: node
+  linkType: hard
+
 "unique-slug@npm:^3.0.0":
   version: 3.0.0
   resolution: "unique-slug@npm:3.0.0"
   dependencies:
     imurmurhash: ^0.1.4
   checksum: 49f8d915ba7f0101801b922062ee46b7953256c93ceca74303bd8e6413ae10aa7e8216556b54dc5382895e8221d04f1efaf75f945c2e4a515b4139f77aa6640c
+  languageName: node
+  linkType: hard
+
+"unique-slug@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "unique-slug@npm:4.0.0"
+  dependencies:
+    imurmurhash: ^0.1.4
+  checksum: 0884b58365af59f89739e6f71e3feacb5b1b41f2df2d842d0757933620e6de08eff347d27e9d499b43c40476cbaf7988638d3acb2ffbcb9d35fd035591adfd15
   languageName: node
   linkType: hard
 
@@ -20694,12 +20776,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"validate-npm-package-name@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "validate-npm-package-name@npm:4.0.0"
+"validate-npm-package-name@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "validate-npm-package-name@npm:5.0.0"
   dependencies:
     builtins: ^5.0.0
-  checksum: a32fd537bad17fcb59cfd58ae95a414d443866020d448ec3b22e8d40550cb585026582a57efbe1f132b882eea4da8ac38ee35f7be0dd72988a3cb55d305a20c1
+  checksum: 5342a994986199b3c28e53a8452a14b2bb5085727691ea7aa0d284a6606b127c371e0925ae99b3f1ef7cc7d2c9de75f52eb61a3d1cc45e39bca1e3a9444cbb4e
   languageName: node
   linkType: hard
 
