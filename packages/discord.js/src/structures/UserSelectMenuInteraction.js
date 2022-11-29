@@ -35,20 +35,15 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
       this.users.set(user.id, this.client.users._add(user));
     }
 
-    if (resolved?.members) {
-      for (const [id, member] of Object.entries(resolved.members)) {
-        const user = resolved.users[id];
-        if (!user) {
-          this.client.emit(
-            Events.Debug,
-            `[UserSelectMenuInteraction] Received a member without a user, skipping ${id}`,
-          );
+    for (const [id, member] of Object.entries(resolved?.members ?? {})) {
+      const user = resolved.users[id];
 
-          continue;
-        }
-
-        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
+      if (!user) {
+        this.client.emit(Events.Debug, `[UserSelectMenuInteraction] Received a member without a user, skipping ${id}`);
+        continue;
       }
+
+      this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
     }
   }
 }
