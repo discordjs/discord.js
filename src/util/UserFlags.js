@@ -36,6 +36,9 @@ class UserFlags extends BitField {}
  * * `EARLY_VERIFIED_BOT_DEVELOPER`
  * * `DISCORD_CERTIFIED_MODERATOR`
  * * `BOT_HTTP_INTERACTIONS`
+ * * `SPAMMER`
+ * * `ACTIVE_DEVELOPER`
+ * * `QUARANTINED`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
  */
@@ -54,6 +57,12 @@ UserFlags.FLAGS = {
   EARLY_VERIFIED_BOT_DEVELOPER: 1 << 17,
   DISCORD_CERTIFIED_MODERATOR: 1 << 18,
   BOT_HTTP_INTERACTIONS: 1 << 19,
+  SPAMMER: 1 << 20,
+  ACTIVE_DEVELOPER: 1 << 22,
+  /**
+   *  This value would be 1 << 44, but bit shifting above 1 << 30 requires bigints.
+   */
+  QUARANTINED: 17592186044416,
 };
 
 module.exports = UserFlags;

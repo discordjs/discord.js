@@ -31,6 +31,8 @@ class ApplicationFlags extends BitField {}
  * * `EMBEDDED`
  * * `GATEWAY_MESSAGE_CONTENT`
  * * `GATEWAY_MESSAGE_CONTENT_LIMITED`
+ * * `EMBEDDED_FIRST_PARTY`
+ * * `APPLICATION_COMMAND_BADGE`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
  */
@@ -43,6 +45,8 @@ ApplicationFlags.FLAGS = {
   EMBEDDED: 1 << 17,
   GATEWAY_MESSAGE_CONTENT: 1 << 18,
   GATEWAY_MESSAGE_CONTENT_LIMITED: 1 << 19,
+  EMBEDDED_FIRST_PARTY: 1 << 20,
+  APPLICATION_COMMAND_BADGE: 1 << 23,
 };
 
 module.exports = ApplicationFlags;
