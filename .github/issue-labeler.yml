@@ -4,6 +4,8 @@ packages:builders:
   - '### Which package is this bug report for\?\n\nbuilders'
 packages:collection:
   - '### Which package is this bug report for\?\n\ncollection'
+packages:core:
+  - '### Which package is this bug report for\?\n\ncore'
 packages:discord.js:
   - '### Which package is this bug report for\?\n\ndiscord.js'
 packages:rest:
