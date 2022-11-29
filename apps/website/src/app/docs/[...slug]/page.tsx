@@ -82,13 +82,13 @@ export async function generateStaticParams() {
 												'packages',
 												packageName,
 												versions[idx] ?? 'main',
-												`${member.name}%3A${member.overloadIndex}%3A${member.kind}`,
+												`${member.name}:${member.overloadIndex}:${member.kind}`,
 											],
 										};
 									}
 
 									return {
-										slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}%3A${member.kind}`],
+										slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
 									};
 								}),
 							),
@@ -103,11 +103,11 @@ export async function generateStaticParams() {
 						...getMembers(pkg, 'main').map((member) => {
 							if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 								return {
-									slug: ['packages', packageName, 'main', `${member.name}%3A${member.overloadIndex}%3A${member.kind}`],
+									slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
 								};
 							}
 
-							return { slug: ['packages', packageName, 'main', `${member.name}%3A${member.kind}`] };
+							return { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] };
 						}),
 					];
 				} catch {
@@ -127,7 +127,7 @@ async function getData(slug: string[]) {
 
 	const [memberName, overloadIndex] = member?.split('%3A') ?? [];
 
-	const readme = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'README.md'), 'utf8');
+	const readme = await readFile(join(cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
 
 	const mdxSource = await serialize(readme, {
 		mdxOptions: {

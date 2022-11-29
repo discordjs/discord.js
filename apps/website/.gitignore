@@ -21,6 +21,7 @@ typings/
 build/
 src/styles/unocss.css
 .next/
+src/assets/readme/
 
 # Miscellaneous
 .tmp/
