@@ -35,6 +35,29 @@ export const enum ApplicationCommandPermissionTypes {
   USER = 2,
 }
 
+export const enum AutoModerationRuleTriggerTypes {
+  KEYWORD = 1,
+  SPAM = 2,
+  KEYWORD_PRESET = 3,
+  MENTION_SPAM = 4,
+}
+
+export const enum AutoModerationRuleKeywordPresetTypes {
+  PROFANITY = 1,
+  SEXUAL_CONTENT = 2,
+  SLURS = 3,
+}
+
+export const enum AutoModerationActionTypes {
+  BLOCK_MESSAGE = 1,
+  SEND_ALERT_MESSAGE = 2,
+  TIMEOUT = 3,
+}
+
+export const enum AutoModerationRuleEventTypes {
+  MESSAGE_SEND = 1,
+}
+
 export const enum ChannelTypes {
   GUILD_TEXT = 0,
   DM = 1,

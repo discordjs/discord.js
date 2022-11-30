@@ -33,7 +33,8 @@ class AutoModerationRuleManager extends CachedManager {
    * Options used to set the trigger metadata of an auto moderation rule.
    * @typedef {Object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
-   * @property {string[]} [regexPatterns] The regular expression patterns which will be matched against the content
+   * @property {(string|RegExp)[]} [regexPatterns] The regular expression patterns
+   *  which will be matched against the content
    * <info>Only Rust-flavored regular expressions are supported.</info>
    * @property {AutoModerationRuleKeywordPresetType[]} [presets]
    * The internally pre-defined wordsets which will be searched for in the content
@@ -66,8 +67,8 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
    * <info>This property is required if using a `triggerType` of
-   * {@link AutoModerationRuleTriggerType.KEYWORD}, {@link AutoModerationRuleTriggerType.KEYWORD_PRESET},
-   * or {@link AutoModerationRuleTriggerType.MENTION_SPAM}.</info>
+   * {@link AutoModerationRuleTriggerTypes.KEYWORD}, {@link AutoModerationRuleTriggerTypes.KEYWORD_PRESET},
+   * or {@link AutoModerationRuleTriggerTypes.MENTION_SPAM}.</info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
@@ -101,14 +102,16 @@ class AutoModerationRuleManager extends CachedManager {
         trigger_type: typeof triggerType === 'number' ? triggerType : AutoModerationRuleTriggerTypes[triggerType],
         trigger_metadata: triggerMetadata && {
           keyword_filter: triggerMetadata.keywordFilter,
-          regex_patterns: triggerMetadata.regexPatterns,
+          regex_patterns: triggerMetadata.regexPatterns?.map(regex =>
+            regex instanceof RegExp ? regex.source : regex.toString(),
+          ),
           presets: triggerMetadata.presets?.map(preset =>
             typeof preset === 'number' ? preset : AutoModerationRuleKeywordPresetTypes[preset],
           ),
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
         },
-        actions: actions.map(action => ({
+        actions: actions?.map(action => ({
           type: typeof action.type === 'number' ? action.type : AutoModerationActionTypes[action.type],
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
@@ -162,7 +165,9 @@ class AutoModerationRuleManager extends CachedManager {
           event_type: typeof eventType === 'number' ? eventType : AutoModerationRuleEventTypes[eventType],
           trigger_metadata: triggerMetadata && {
             keyword_filter: triggerMetadata.keywordFilter,
-            regex_patterns: triggerMetadata.regexPatterns,
+            regex_patterns: triggerMetadata.regexPatterns?.map(regex =>
+              regex instanceof RegExp ? regex.source : regex.toString(),
+            ),
             presets: triggerMetadata.presets?.map(preset =>
               typeof preset === 'number' ? preset : AutoModerationRuleKeywordPresetTypes[preset],
             ),

@@ -8,7 +8,7 @@ const Invite = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
 const Webhook = require('./Webhook');
-const { OverwriteTypes, PartialTypes } = require('../util/Constants');
+const { OverwriteTypes, PartialTypes, AutoModerationRuleTriggerTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
@@ -511,7 +511,7 @@ class GuildAuditLogsEntry {
       case Actions.AUTO_MODERATION_USER_COMMUNICATION_DISABLED:
         this.extra = {
           autoModerationRuleName: data.options.auto_moderation_rule_name,
-          autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+          autoModerationRuleTriggerType: AutoModerationRuleTriggerTypes[data.options.auto_moderation_rule_trigger_type],
         };
         break;
       default:

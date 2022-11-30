@@ -1,5 +1,7 @@
 'use strict';
 
+const { AutoModerationRuleTriggerTypes } = require('../util/Constants');
+
 /**
  * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.
  */
@@ -27,7 +29,7 @@ class AutoModerationActionExecution {
      * The trigger type of the auto moderation rule which was triggered.
      * @type {AutoModerationRuleTriggerType}
      */
-    this.ruleTriggerType = data.rule_trigger_type;
+    this.ruleTriggerType = AutoModerationRuleTriggerTypes[data.rule_trigger_type];
 
     /**
      * The id of the user that triggered this action.
