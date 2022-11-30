@@ -44,12 +44,8 @@ import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
 
-export async function generateStaticParams({ params }: { params: { package: string } }) {
-	const packageName = params.package;
-
-	if (!packageName) {
-		return [{ slug: [] }];
-	}
+export async function generateStaticParams({ params }: { params?: { package: string } }) {
+	const packageName = params?.package ?? 'builders';
 
 	try {
 		let data: any[] = [];
@@ -73,22 +69,17 @@ export async function generateStaticParams({ params }: { params: { package: stri
 			const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
 
 			return [
-				...versions.map((version) => ({ slug: ['packages', packageName, version] })),
+				...versions.map((version) => ({ slug: [version] })),
 				...pkgs.flatMap((pkg, idx) =>
 					getMembers(pkg, versions[idx] ?? 'main').map((member) => {
 						if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 							return {
-								slug: [
-									'packages',
-									packageName,
-									versions[idx] ?? 'main',
-									`${member.name}:${member.overloadIndex}:${member.kind}`,
-								],
+								slug: [versions[idx] ?? 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
 							};
 						}
 
 						return {
-							slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
+							slug: [versions[idx] ?? 'main', `${member.name}:${member.kind}`],
 						};
 					}),
 				),
@@ -99,19 +90,19 @@ export async function generateStaticParams({ params }: { params: { package: stri
 		const pkg = findPackage(model, packageName)!;
 
 		return [
-			{ slug: ['packages', packageName, 'main'] },
+			{ slug: ['main'] },
 			...getMembers(pkg, 'main').map((member) => {
 				if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
 					return {
-						slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+						slug: ['main', `${member.name}:${member.overloadIndex}:${member.kind}`],
 					};
 				}
 
-				return { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] };
+				return { slug: ['main', `${member.name}:${member.kind}`] };
 			}),
 		];
 	} catch {
-		return [{ slug: [] }];
+		return [{ slug: ['main'] }];
 	}
 }
 
