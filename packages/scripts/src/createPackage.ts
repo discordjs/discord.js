@@ -58,12 +58,19 @@ export async function createPackage(packageName: string, packageDescription?: st
 	const labelsYAML = parseYAML(await readFile('labels.yml', 'utf8')) as LabelerData[];
 	labelsYAML.push({ name: `packages:${packageName}`, color: 'fbca04' });
 
+	labelsYAML.sort((a, b) => a.name.localeCompare(b.name));
+
 	await writeFile('labels.yml', stringifyYAML(labelsYAML));
 
 	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
 	labelerYAML[`packages/${packageName}`] = [`packages:${packageName}/*`, `packages:${packageName}/**/*`];
 
-	await writeFile('labeler.yml', stringifyYAML(labelerYAML));
+	const sortedLabelerYAML: Record<string, string[]> = {};
+	for (const key of Object.keys(labelerYAML).sort((a, b) => a.localeCompare(b))) {
+		sortedLabelerYAML[key] = labelerYAML[key]!;
+	}
+
+	await writeFile('labeler.yml', stringifyYAML(sortedLabelerYAML));
 
 	// Move back to root
 	chdir('..');
