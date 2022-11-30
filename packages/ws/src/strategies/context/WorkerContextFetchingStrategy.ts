@@ -27,9 +27,9 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 			}
 
 			if (payload.op === WorkerSendPayloadOp.ShardCanIdentify) {
-				const resolve = this.waitForIdentifyPromises.get(payload.shardId);
+				const resolve = this.waitForIdentifyPromises.get(payload.nonce);
 				resolve?.();
-				this.waitForIdentifyPromises.delete(payload.shardId);
+				this.waitForIdentifyPromises.delete(payload.nonce);
 			}
 		});
 	}
@@ -56,13 +56,14 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 		parentPort!.postMessage(payload);
 	}
 
-	public async waitForIdentify(shardId: number): Promise<void> {
+	public async waitForIdentify(): Promise<void> {
+		const nonce = Math.random();
 		const payload: WorkerRecievePayload = {
 			op: WorkerRecievePayloadOp.WaitForIdentify,
-			shardId,
+			nonce,
 		};
 		// eslint-disable-next-line no-promise-executor-return
-		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(shardId, resolve));
+		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
 		return promise;
 	}

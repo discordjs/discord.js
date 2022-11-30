@@ -23,10 +23,10 @@ export enum WorkerSendPayloadOp {
 
 export type WorkerSendPayload =
 	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
+	| { nonce: number; op: WorkerSendPayloadOp.ShardCanIdentify }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
 	| { op: WorkerSendPayloadOp.Destroy; options?: WebSocketShardDestroyOptions; shardId: number }
-	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number }
-	| { op: WorkerSendPayloadOp.ShardCanIdentify; shardId: number };
+	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number };
 
 export enum WorkerRecievePayloadOp {
 	Connected,
@@ -41,10 +41,10 @@ export type WorkerRecievePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
 	| { data: any; event: WebSocketShardEvents; op: WorkerRecievePayloadOp.Event; shardId: number }
 	| { nonce: number; op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number }
+	| { nonce: number; op: WorkerRecievePayloadOp.WaitForIdentify }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
 	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
-	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number }
-	| { op: WorkerRecievePayloadOp.WaitForIdentify; shardId: number };
+	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number };
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -122,8 +122,6 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			await this.throttler.waitForIdentify();
-
 			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.Connect,
 				shardId,
@@ -222,7 +220,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				await this.throttler.waitForIdentify();
 				const response: WorkerSendPayload = {
 					op: WorkerSendPayloadOp.ShardCanIdentify,
-					shardId: payload.shardId,
+					nonce: payload.nonce,
 				};
 				worker.postMessage(response);
 				break;
