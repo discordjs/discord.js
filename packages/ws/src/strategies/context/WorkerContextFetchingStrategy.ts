@@ -12,6 +12,8 @@ import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IConte
 export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	private readonly sessionPromises = new Collection<number, (session: SessionInfo | null) => void>();
 
+	private readonly waitForIdentifyPromises = new Collection<number, () => void>();
+
 	public constructor(public readonly options: FetchingStrategyOptions) {
 		if (isMainThread) {
 			throw new Error('Cannot instantiate WorkerContextFetchingStrategy on the main thread');
@@ -46,5 +48,16 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 			session: sessionInfo,
 		};
 		parentPort!.postMessage(payload);
+	}
+
+	public async waitForIdentify(shardId: number): Promise<void> {
+		const payload: WorkerRecievePayload = {
+			op: WorkerRecievePayloadOp.WaitForIdentify,
+			shardId,
+		};
+		// eslint-disable-next-line no-promise-executor-return
+		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(shardId, resolve));
+		parentPort!.postMessage(payload);
+		return promise;
 	}
 }

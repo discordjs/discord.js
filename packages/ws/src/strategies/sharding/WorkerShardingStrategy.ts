@@ -18,13 +18,15 @@ export enum WorkerSendPayloadOp {
 	Destroy,
 	Send,
 	SessionInfoResponse,
+	ShardCanIdentify,
 }
 
 export type WorkerSendPayload =
 	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
 	| { op: WorkerSendPayloadOp.Destroy; options?: WebSocketShardDestroyOptions; shardId: number }
-	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number };
+	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number }
+	| { op: WorkerSendPayloadOp.ShardCanIdentify; shardId: number };
 
 export enum WorkerRecievePayloadOp {
 	Connected,
@@ -32,6 +34,7 @@ export enum WorkerRecievePayloadOp {
 	Event,
 	RetrieveSessionInfo,
 	UpdateSessionInfo,
+	WaitForIdentify,
 }
 
 export type WorkerRecievePayload =
@@ -40,7 +43,8 @@ export type WorkerRecievePayload =
 	| { nonce: number; op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
 	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
-	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number };
+	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number }
+	| { op: WorkerRecievePayloadOp.WaitForIdentify; shardId: number };
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -211,6 +215,16 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 			case WorkerRecievePayloadOp.UpdateSessionInfo: {
 				await this.manager.options.updateSessionInfo(payload.shardId, payload.session);
+				break;
+			}
+
+			case WorkerRecievePayloadOp.WaitForIdentify: {
+				await this.throttler.waitForIdentify();
+				const response: WorkerSendPayload = {
+					op: WorkerSendPayloadOp.ShardCanIdentify,
+					shardId: payload.shardId,
+				};
+				worker.postMessage(response);
 				break;
 			}
 		}
