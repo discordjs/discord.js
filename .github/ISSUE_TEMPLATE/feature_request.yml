@@ -18,6 +18,7 @@ body:
         - builders
         - collection
         - core
+        - formatters
         - proxy
         - proxy-container
         - rest

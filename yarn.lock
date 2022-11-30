@@ -2047,6 +2047,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/builders@workspace:packages/builders"
   dependencies:
+    "@discordjs/formatters": "workspace:^"
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
@@ -2152,6 +2153,26 @@ __metadata:
     typescript: ^4.9.3
   bin:
     docgen: ./dist/cli.js
+  languageName: unknown
+  linkType: soft
+
+"@discordjs/formatters@workspace:^, @discordjs/formatters@workspace:packages/formatters":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/formatters@workspace:packages/formatters"
+  dependencies:
+    "@favware/cliff-jumper": ^1.8.8
+    "@microsoft/api-extractor": ^7.32.0
+    "@types/node": ^16.18.3
+    "@vitest/coverage-c8": ^0.25.3
+    cross-env: ^7.0.3
+    discord-api-types: ^0.37.20
+    eslint: ^8.28.0
+    eslint-config-neon: ^0.1.40
+    eslint-formatter-pretty: ^4.1.0
+    prettier: ^2.8.0
+    tsup: ^6.5.0
+    typescript: ^4.9.3
+    vitest: ^0.25.3
   languageName: unknown
   linkType: soft
 
@@ -2582,7 +2603,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/cliff-jumper@npm:^1.9.0":
+"@favware/cliff-jumper@npm:^1.8.8, @favware/cliff-jumper@npm:^1.9.0":
   version: 1.9.0
   resolution: "@favware/cliff-jumper@npm:1.9.0"
   dependencies:
@@ -3201,7 +3222,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/api-extractor@npm:^7.33.5, @microsoft/api-extractor@npm:^7.33.6":
+"@microsoft/api-extractor@npm:^7.32.0, @microsoft/api-extractor@npm:^7.33.5, @microsoft/api-extractor@npm:^7.33.6":
   version: 7.33.6
   resolution: "@microsoft/api-extractor@npm:7.33.6"
   dependencies:
@@ -4452,6 +4473,13 @@ __metadata:
   version: 14.18.34
   resolution: "@types/node@npm:14.18.34"
   checksum: 25ac3b456a0b7b82c76b37276ec86845849e8276fc81d1470a87227c105c619e299aa7165b6148aa11a4ea156b1452f6d3327935f3e7dc0067ff54dde0e3d4e0
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^16.18.3":
+  version: 16.18.3
+  resolution: "@types/node@npm:16.18.3"
+  checksum: 6b8ba2ea5d842f7986e366cb9184c54d273d492784dc62e08fd5afeae938d9b61aec6e4222d2541cd18f9b1412ba361bbcb3f4204fb003608af80a2a6af959f9
   languageName: node
   linkType: hard
 

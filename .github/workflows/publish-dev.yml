@@ -18,6 +18,8 @@ jobs:
             folder: 'collection'
           - package: '@discordjs/core'
             folder: 'core'
+          - package: '@discordjs/formatters'
+            folder: 'formatters'
           - package: 'discord.js'
             folder: 'discord.js'
           - package: '@discordjs/proxy'

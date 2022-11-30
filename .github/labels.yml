@@ -110,3 +110,5 @@
   color: 80c042
 - name: wontfix
   color: ffffff
+- name: packages:formatters
+  color: fbca04
