@@ -1,14 +1,14 @@
 'use client';
 
 import { FiCommand } from '@react-icons/all-files/fi/FiCommand';
-import { VscColorMode } from '@react-icons/all-files/vsc/VscColorMode';
+// import { VscColorMode } from '@react-icons/all-files/vsc/VscColorMode';
 import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 import { VscSearch } from '@react-icons/all-files/vsc/VscSearch';
 import { Button } from 'ariakit/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
+// import { useTheme } from 'next-themes';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useCmdK } from '~/contexts/cmdK';
 import { useNav } from '~/contexts/nav';
@@ -17,9 +17,9 @@ export function Header() {
 	const pathname = usePathname();
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { setOpened } = useNav();
-	const { resolvedTheme, setTheme } = useTheme();
+	// const { resolvedTheme, setTheme } = useTheme();
 	const dialog = useCmdK();
-	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
+	// const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
 	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
 
 	useEffect(() => {
@@ -111,13 +111,13 @@ export function Header() {
 						>
 							<VscGithubInverted size={24} />
 						</Button>
-						<Button
+						{/* <Button
 							aria-label="Toggle theme"
 							className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded-full rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 							onClick={() => toggleTheme()}
 						>
 							<VscColorMode size={24} />
-						</Button>
+						</Button> */}
 					</div>
 				</div>
 			</div>
