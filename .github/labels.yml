@@ -62,6 +62,8 @@
   color: fbca04
 - name: packages:docgen
   color: fbca04
+- name: packages:formatters
+  color: fbca04
 - name: packages:proxy
   color: fbca04
 - name: packages:proxy-container
@@ -110,5 +112,3 @@
   color: 80c042
 - name: wontfix
   color: ffffff
-- name: packages:formatters
-  color: fbca04
