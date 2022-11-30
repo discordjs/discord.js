@@ -3,6 +3,7 @@ import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import type { OptionalWebSocketManagerOptions, SessionInfo } from '../ws/WebSocketManager.js';
+import type { SendRateLimitState } from '../ws/WebSocketShard.js';
 
 /**
  * Valid encoding types
@@ -60,3 +61,10 @@ export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Identify,
 	GatewayOpcodes.Resume,
 ]);
+
+export function getInitialSendRateLimitState(): SendRateLimitState {
+	return {
+		remaining: 120,
+		resetAt: Date.now() + 60_000,
+	};
+}
