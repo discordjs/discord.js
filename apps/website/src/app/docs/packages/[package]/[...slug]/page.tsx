@@ -30,7 +30,7 @@ import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
 import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
 import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
 import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
-import vercelLogo from '../../../assets/powered-by-vercel.svg';
+import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
 import { MDXRemote } from '~/components/MDXRemote';
 import { Nav } from '~/components/Nav';
 import { Class } from '~/components/model/Class';
@@ -44,84 +44,92 @@ import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
 
-export async function generateStaticParams() {
-	return (
-		await Promise.all(
-			PACKAGES.map(async (packageName) => {
-				try {
-					let data: any[] = [];
-					let versions: string[] = [];
-					if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-						const res = await readFile(
-							join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),
-							'utf8',
-						);
-						data = JSON.parse(res);
-					} else {
-						const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
-						versions = await response.json();
-						versions = versions.slice(-2);
+export async function generateStaticParams({ params }: { params: { package: string } }) {
+	const packageName = params.package;
 
-						for (const version of versions) {
-							const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
-							data = [...data, await res.json()];
+	try {
+		let data: any[] = [];
+		let versions: string[] = [];
+		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+			data = JSON.parse(res);
+		} else {
+			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
+			versions = await response.json();
+			versions = versions.slice(-2);
+
+			for (const version of versions) {
+				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
+				data = [...data, await res.json()];
+			}
+		}
+
+		if (Array.isArray(data)) {
+			const models = data.map((innerData) => createApiModel(innerData));
+			const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
+
+			return [
+				...versions.map((version) => ({ slug: ['packages', packageName, version] })),
+				...pkgs.flatMap((pkg, idx) =>
+					getMembers(pkg, versions[idx] ?? 'main').map((member) => {
+						if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+							return {
+								slug: [
+									'packages',
+									packageName,
+									versions[idx] ?? 'main',
+									`${member.name}:${member.overloadIndex}:${member.kind}`,
+								],
+							};
 						}
-					}
 
-					if (Array.isArray(data)) {
-						const models = data.map((innerData) => createApiModel(innerData));
-						const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
+						return {
+							slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
+						};
+					}),
+				),
+			];
+		}
 
-						return [
-							...versions.map((version) => ({ slug: ['packages', packageName, version] })),
-							...pkgs.flatMap((pkg, idx) =>
-								getMembers(pkg, versions[idx] ?? 'main').map((member) => {
-									if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-										return {
-											slug: [
-												'packages',
-												packageName,
-												versions[idx] ?? 'main',
-												`${member.name}:${member.overloadIndex}:${member.kind}`,
-											],
-										};
-									}
+		const model = createApiModel(data);
+		const pkg = findPackage(model, packageName)!;
 
-									return {
-										slug: ['packages', packageName, versions[idx] ?? 'main', `${member.name}:${member.kind}`],
-									};
-								}),
-							),
-						];
-					}
-
-					const model = createApiModel(data);
-					const pkg = findPackage(model, packageName)!;
-
-					return [
-						{ slug: ['packages', packageName, 'main'] },
-						...getMembers(pkg, 'main').map((member) => {
-							if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-								return {
-									slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
-								};
-							}
-
-							return { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] };
-						}),
-					];
-				} catch {
-					return { slug: ['packages', '404'] };
+		return [
+			{ slug: ['packages', packageName, 'main'] },
+			...getMembers(pkg, 'main').map((member) => {
+				if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+					return {
+						slug: ['packages', packageName, 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+					};
 				}
+
+				return { slug: ['packages', packageName, 'main', `${member.name}:${member.kind}`] };
 			}),
-		)
-	).flat();
+		];
+	} catch {
+		return { slug: [] };
+	}
 }
 
-async function getData(slug: string[]) {
-	const [path, packageName = 'builders', branchName = 'main', member] = slug;
+async function getData(packageName: string, slug: string[]) {
+	const [branchName = 'main', member] = slug;
 
-	if (path !== 'packages' || !PACKAGES.includes(packageName)) {
+	if (!PACKAGES.includes(packageName)) {
+		notFound();
+	}
+
+	let data;
+	try {
+		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+			data = JSON.parse(res);
+		} else {
+			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
+				next: { revalidate: 3_600 },
+			});
+			data = await res.json();
+		}
+	} catch {
 		notFound();
 	}
 
@@ -160,21 +168,6 @@ async function getData(slug: string[]) {
 			format: 'md',
 		},
 	});
-
-	let data;
-	try {
-		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-			data = JSON.parse(res);
-		} else {
-			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
-				next: { revalidate: 3_600 },
-			});
-			data = await res.json();
-		}
-	} catch {
-		notFound();
-	}
 
 	const model = createApiModel(data);
 	const pkg = findPackage(model, packageName);
@@ -261,8 +254,8 @@ function member(props?: ApiItemJSON | undefined) {
 	}
 }
 
-export default async function Page({ params }: { params: { slug: string[] } }) {
-	const data = await getData(params.slug);
+export default async function Page({ params }: { params: { package: string; slug: string[] } }) {
+	const data = await getData(params.package, params.slug);
 
 	// const name = useMemo(
 	// 	() => `discord.js${params.data?.member?.name ? ` | ${params.data.member.name}` : ''}`,
