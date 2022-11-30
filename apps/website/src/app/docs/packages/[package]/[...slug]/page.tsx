@@ -47,6 +47,10 @@ import { tryResolveDescription } from '~/util/summary';
 export async function generateStaticParams({ params }: { params: { package: string } }) {
 	const packageName = params.package;
 
+	if (!packageName) {
+		return [{ slug: [] }];
+	}
+
 	try {
 		let data: any[] = [];
 		let versions: string[] = [];
@@ -107,7 +111,7 @@ export async function generateStaticParams({ params }: { params: { package: stri
 			}),
 		];
 	} catch {
-		return { slug: [] };
+		return [{ slug: [] }];
 	}
 }
 
