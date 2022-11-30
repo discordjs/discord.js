@@ -195,7 +195,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the regular expression patterns for this auto moderation rule.
-   * @param {(string|RegExp)[]} regexPatterns The regular expression patterns of this auto moderation rule
+   * @param {string[]} regexPatterns The regular expression patterns of this auto moderation rule
    * <info>Only Rust-flavored regular expressions are supported.</info>
    * @param {string} [reason] The reason for changing the regular expression patterns of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}

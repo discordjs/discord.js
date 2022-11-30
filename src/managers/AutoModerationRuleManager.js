@@ -33,7 +33,7 @@ class AutoModerationRuleManager extends CachedManager {
    * Options used to set the trigger metadata of an auto moderation rule.
    * @typedef {Object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
-   * @property {(string|RegExp)[]} [regexPatterns] The regular expression patterns
+   * @property {string[]} [regexPatterns] The regular expression patterns
    *  which will be matched against the content
    * <info>Only Rust-flavored regular expressions are supported.</info>
    * @property {AutoModerationRuleKeywordPresetType[]} [presets]
@@ -102,9 +102,7 @@ class AutoModerationRuleManager extends CachedManager {
         trigger_type: typeof triggerType === 'number' ? triggerType : AutoModerationRuleTriggerTypes[triggerType],
         trigger_metadata: triggerMetadata && {
           keyword_filter: triggerMetadata.keywordFilter,
-          regex_patterns: triggerMetadata.regexPatterns?.map(regex =>
-            regex instanceof RegExp ? regex.source : regex.toString(),
-          ),
+          regex_patterns: triggerMetadata.regexPatterns,
           presets: triggerMetadata.presets?.map(preset =>
             typeof preset === 'number' ? preset : AutoModerationRuleKeywordPresetTypes[preset],
           ),
@@ -165,9 +163,7 @@ class AutoModerationRuleManager extends CachedManager {
           event_type: typeof eventType === 'number' ? eventType : AutoModerationRuleEventTypes[eventType],
           trigger_metadata: triggerMetadata && {
             keyword_filter: triggerMetadata.keywordFilter,
-            regex_patterns: triggerMetadata.regexPatterns?.map(regex =>
-              regex instanceof RegExp ? regex.source : regex.toString(),
-            ),
+            regex_patterns: triggerMetadata.regexPatterns,
             presets: triggerMetadata.presets?.map(preset =>
               typeof preset === 'number' ? preset : AutoModerationRuleKeywordPresetTypes[preset],
             ),

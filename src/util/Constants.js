@@ -1229,6 +1229,15 @@ exports.ApplicationCommandOptionTypes = createEnum([
 ]);
 
 /**
+ * The type of an {@link ApplicationCommandPermissions} object:
+ * * ROLE
+ * * USER
+ * @typedef {string} ApplicationCommandPermissionType
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permission-type}
+ */
+exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
+
+/**
  * The type of an {@link AutoModerationRuleTriggerTypes} object:
  * * KEYWORD
  * * SPAM
