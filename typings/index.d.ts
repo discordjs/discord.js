@@ -4011,7 +4011,9 @@ export type ApplicationFlagsString =
   | 'VERIFICATION_PENDING_GUILD_LIMIT'
   | 'EMBEDDED'
   | 'GATEWAY_MESSAGE_CONTENT'
-  | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
+  | 'GATEWAY_MESSAGE_CONTENT_LIMITED'
+  | 'EMBEDDED_FIRST_PARTY'
+  | 'APPLICATION_COMMAND_BADGE';
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
@@ -5451,7 +5453,8 @@ export type MessageFlagsString =
   | 'URGENT'
   | 'HAS_THREAD'
   | 'EPHEMERAL'
-  | 'LOADING';
+  | 'LOADING'
+  | 'FAILED_TO_MENTION_SOME_ROLES_IN_THREAD';
 
 export interface MessageInteraction {
   id: Snowflake;
@@ -6014,7 +6017,10 @@ export type UserFlagsString =
   | 'VERIFIED_BOT'
   | 'EARLY_VERIFIED_BOT_DEVELOPER'
   | 'DISCORD_CERTIFIED_MODERATOR'
-  | 'BOT_HTTP_INTERACTIONS';
+  | 'BOT_HTTP_INTERACTIONS'
+  | 'SPAMMER'
+  | 'ACTIVE_DEVELOPER'
+  | 'QUARANTINED';
 
 export type UserMention = `<@${Snowflake}>`;
 
