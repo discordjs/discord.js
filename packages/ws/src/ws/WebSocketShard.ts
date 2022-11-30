@@ -274,10 +274,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.debug(['Connection closed while waiting for the send rate limit to reset, re-queueing payload']);
 					this.sendQueue.shift();
 					return this.send(payload);
-				} else {
-					// This is so the listener is removed
-					controller.abort();
 				}
+
+				// This is so the listener from the `once` call is removed
+				controller.abort();
 			}
 
 			this.sendRateLimitState = getInitialSendRateLimitState();
