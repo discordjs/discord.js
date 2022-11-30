@@ -93,5 +93,9 @@ parentPort!
 			case WorkerSendPayloadOp.SessionInfoResponse: {
 				break;
 			}
+
+			case WorkerSendPayloadOp.ShardCanIdentify: {
+				break;
+			}
 		}
 	});

@@ -25,6 +25,12 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 				resolve?.(payload.session);
 				this.sessionPromises.delete(payload.nonce);
 			}
+
+			if (payload.op === WorkerSendPayloadOp.ShardCanIdentify) {
+				const resolve = this.waitForIdentifyPromises.get(payload.shardId);
+				resolve?.();
+				this.waitForIdentifyPromises.delete(payload.shardId);
+			}
 		});
 	}
 
