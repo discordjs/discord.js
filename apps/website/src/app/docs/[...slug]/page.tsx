@@ -111,7 +111,7 @@ export async function generateStaticParams() {
 						}),
 					];
 				} catch {
-					return { slug: [] };
+					return { slug: ['packages', '404'] };
 				}
 			}),
 		)
@@ -162,14 +162,18 @@ async function getData(slug: string[]) {
 	});
 
 	let data;
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-		const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-		data = JSON.parse(res);
-	} else {
-		const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
-			next: { revalidate: 3_600 },
-		});
-		data = await res.json();
+	try {
+		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+			data = JSON.parse(res);
+		} else {
+			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
+				next: { revalidate: 3_600 },
+			});
+			data = await res.json();
+		}
+	} catch {
+		notFound();
 	}
 
 	const model = createApiModel(data);
