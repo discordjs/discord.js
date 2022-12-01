@@ -14,12 +14,13 @@ body:
       label: Which package is the feature request for?
       options:
         - discord.js
+        - brokers
         - builders
         - collection
         - core
-        - rest
         - proxy
         - proxy-container
+        - rest
         - voice
         - ws
     validations:
