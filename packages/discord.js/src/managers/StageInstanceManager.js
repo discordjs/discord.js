@@ -61,7 +61,7 @@ class StageInstanceManager extends CachedManager {
     const channelId = this.guild.channels.resolveId(channel);
     if (!channelId) throw new DiscordjsError(ErrorCodes.StageChannelResolve);
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
-    let { guildScheduledEvent, topic, privacyLevel, sendStartNotification } = options;
+    const { guildScheduledEvent, topic, privacyLevel, sendStartNotification } = options;
 
     const guildScheduledEventId = guildScheduledEvent && this.resolveId(guildScheduledEvent);
 
@@ -71,7 +71,7 @@ class StageInstanceManager extends CachedManager {
         topic,
         privacy_level: privacyLevel,
         send_start_notification: sendStartNotification,
-        guild_scheduled_event_id: guildScheduledEventId ?? undefined,
+        guild_scheduled_event_id: guildScheduledEventId,
       },
     });
 
