@@ -14,6 +14,10 @@ export default withBundleAnalyzer({
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
+	// Until Next.js fixes their type issues
+	typescript: {
+		ignoreBuildErrors: true,
+	},
 	cleanDistDir: true,
 	outputFileTracing: true,
 	experimental: {

@@ -5,10 +5,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PACKAGES } from '~/util/constants';
 
-export async function generateStaticParams() {
-	return PACKAGES.map((packageName) => ({ package: packageName }));
-}
-
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {
 		notFound();

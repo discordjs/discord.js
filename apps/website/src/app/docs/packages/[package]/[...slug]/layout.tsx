@@ -3,7 +3,7 @@ import { Providers } from './providers';
 import { CmdKDialog } from '~/components/CmdK';
 import { Header } from '~/components/Header';
 
-export default function SidebarLayout({ children }: PropsWithChildren<any>) {
+export default function SidebarLayout({ children }: PropsWithChildren) {
 	return (
 		<Providers>
 			<Header />

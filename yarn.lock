@@ -2419,8 +2419,7 @@ __metadata:
     meilisearch: ^0.30.0
     next: ^13.0.6-canary.1
     next-mdx-remote: ^4.2.0
-    next-progress: ^2.2.0
-    next-themes: ^0.2.1
+    next-themes: "npm:@wits/next-themes@latest"
     prettier: ^2.8.0
     prettier-plugin-tailwindcss: ^0.2.0
     react: ^18.2.0
@@ -15543,26 +15542,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-progress@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "next-progress@npm:2.2.0"
-  dependencies:
-    nprogress: ^0.2.0
-  peerDependencies:
-    next: ">=6.0.0"
-    react: ">=16.0.0"
-  checksum: ef0e2c66c6990a6d0cf20c28896461ab32a3322972d52f3cb3ee2d2d58bdc2b620a402b1d7df9e0340b230d9ec9a9457584871ea0b8b890b1fc334d1886d2b97
-  languageName: node
-  linkType: hard
-
-"next-themes@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "next-themes@npm:0.2.1"
+"next-themes@npm:@wits/next-themes@latest":
+  version: 0.2.12
+  resolution: "@wits/next-themes@npm:0.2.12"
   peerDependencies:
     next: "*"
     react: "*"
     react-dom: "*"
-  checksum: ebc248b956138e73436c4ed0a0f0a877a0a48a33156db577029b8b8469e48b5c777d61abf2baeb75953378febea74e067a4869ff90b4a3e94fce123289b862ba
+  checksum: fe3d0c78d67da86b1374c2f069096d6710bdda5f519ed2eb506f616372e4bfaad2281998a33efcae4b61e5a1e48bdaba6e0b006b296daf9a1211efcb77da2e88
   languageName: node
   linkType: hard
 
@@ -15920,13 +15907,6 @@ __metadata:
     gauge: ^4.0.3
     set-blocking: ^2.0.0
   checksum: ae238cd264a1c3f22091cdd9e2b106f684297d3c184f1146984ecbe18aaa86343953f26b9520dedd1b1372bc0316905b736c1932d778dbeb1fcf5a1001390e2a
-  languageName: node
-  linkType: hard
-
-"nprogress@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "nprogress@npm:0.2.0"
-  checksum: 66b7bec5d563ecf2d1c3d2815e6d5eb74ed815eee8563e0afa63d3f185ab1b9cf2ddd97e1ded263b9995c5019d26d600320e849e50f3747984daa033744619dc
   languageName: node
   linkType: hard
 

@@ -4,7 +4,6 @@ apps:guide:
 apps:website:
   - apps/website/*
   - apps/website/**/*
-
 packages:brokers:
   - packages/brokers/*
   - packages/brokers/**/*
@@ -32,9 +31,9 @@ packages:proxy-container:
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*
-packages/ui:
-  - packages:ui/*
-  - packages:ui/**/*
+packages:ui:
+  - packages/ui/*
+  - packages/ui/**/*
 packages:util:
   - packages/util/*
   - packages/util/**/*
