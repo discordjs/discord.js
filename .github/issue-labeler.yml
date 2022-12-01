@@ -1,20 +1,20 @@
 packages:brokers:
-  - '### Which package is this bug report for\?\n\nbrokers'
+  - '### Which package is this (bug report|feature request) for\?\n\nbrokers'
 packages:builders:
-  - '### Which package is this bug report for\?\n\nbuilders'
+  - '### Which package is this (bug report|feature request) for\?\n\nbuilders'
 packages:collection:
-  - '### Which package is this bug report for\?\n\ncollection'
+  - '### Which package is this (bug report|feature request) for\?\n\ncollection'
 packages:core:
-  - '### Which package is this bug report for\?\n\ncore'
+  - '### Which package is this (bug report|feature request) for\?\n\ncore'
 packages:discord.js:
-  - '### Which package is this bug report for\?\n\ndiscord.js'
+  - '### Which package is this (bug report|feature request) for\?\n\ndiscord.js'
 packages:rest:
-  - '### Which package is this bug report for\?\n\nrest'
+  - '### Which package is this (bug report|feature request) for\?\n\nrest'
 packages:proxy:
-  - '### Which package is this bug report for\?\n\nproxy'
+  - '### Which package is this (bug report|feature request) for\?\n\nproxy'
 packages:proxy-container:
-  - '### Which package is this bug report for\?\n\nproxy-container'
+  - '### Which package is this (bug report|feature request) for\?\n\nproxy-container'
 packages:voice:
-  - '### Which package is this bug report for\?\n\nvoice'
+  - '### Which package is this (bug report|feature request) for\?\n\nvoice'
 packages:ws:
-  - '### Which package is this bug report for\?\n\nws'
+  - '### Which package is this (bug report|feature request) for\?\n\nws'
