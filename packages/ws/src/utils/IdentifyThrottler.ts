@@ -19,6 +19,7 @@ export class IdentifyThrottler {
 			if (this.identifyState.remaining <= 0) {
 				const diff = this.identifyState.resetsAt - Date.now();
 				if (diff <= 5_000) {
+					// To account for the latency the IDENTIFY payload goes through, we add a bit more wait time
 					const time = diff + Math.random() * 1_500;
 					await sleep(time);
 				}
