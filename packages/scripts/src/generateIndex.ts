@@ -28,7 +28,7 @@ export interface MemberJSON {
 	summary: string | null;
 }
 
-export const PACKAGES = ['builders', 'collection', 'core', 'proxy', 'rest', 'util', 'voice', 'ws'];
+export const PACKAGES = ['brokers', 'builders', 'collection', 'core', 'proxy', 'rest', 'util', 'voice', 'ws'];
 let idx = 0;
 
 export function createApiModel(data: any) {
