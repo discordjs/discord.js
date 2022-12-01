@@ -186,10 +186,10 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 
-	const payload: GatewaySendPayload = {
+	const payload = {
 		op: GatewayOpcodes.RequestGuildMembers,
 		d: { guild_id: '123', limit: 0, query: '' },
-	};
+	} satisfies GatewaySendPayload;
 	await manager.send(0, payload);
 	expect(mockSend).toHaveBeenCalledWith(0, payload);
 	expect(managerEmitSpy).toHaveBeenCalledWith(WebSocketShardEvents.Dispatch, {

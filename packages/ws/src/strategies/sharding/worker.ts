@@ -40,12 +40,12 @@ for (const shardId of data.shardIds) {
 	for (const event of Object.values(WebSocketShardEvents)) {
 		// @ts-expect-error: Event types incompatible
 		shard.on(event, (data) => {
-			const payload: WorkerRecievePayload = {
+			const payload = {
 				op: WorkerRecievePayloadOp.Event,
 				event,
 				data,
 				shardId,
-			};
+			} satisfies WorkerRecievePayload;
 			parentPort!.postMessage(payload);
 		});
 	}

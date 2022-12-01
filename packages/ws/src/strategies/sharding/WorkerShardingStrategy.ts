@@ -122,10 +122,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			const payload: WorkerSendPayload = {
+			const payload = {
 				op: WorkerSendPayloadOp.Connect,
 				shardId,
-			};
+			} satisfies WorkerSendPayload;
 
 			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<void>((resolve) => this.connectPromises.set(shardId, resolve));
@@ -143,11 +143,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			const payload: WorkerSendPayload = {
+			const payload = {
 				op: WorkerSendPayloadOp.Destroy,
 				shardId,
 				options,
-			};
+			} satisfies WorkerSendPayload;
 
 			promises.push(
 				// eslint-disable-next-line no-promise-executor-return, promise/prefer-await-to-then
@@ -171,11 +171,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			throw new Error(`No worker found for shard ${shardId}`);
 		}
 
-		const payload: WorkerSendPayload = {
+		const payload = {
 			op: WorkerSendPayloadOp.Send,
 			shardId,
 			payload: data,
-		};
+		} satisfies WorkerSendPayload;
 		worker.postMessage(payload);
 	}
 

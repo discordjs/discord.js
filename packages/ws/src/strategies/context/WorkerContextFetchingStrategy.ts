@@ -36,11 +36,11 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		const nonce = Math.random();
-		const payload: WorkerRecievePayload = {
+		const payload = {
 			op: WorkerRecievePayloadOp.RetrieveSessionInfo,
 			shardId,
 			nonce,
-		};
+		} satisfies WorkerRecievePayload;
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
@@ -48,20 +48,20 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	}
 
 	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
-		const payload: WorkerRecievePayload = {
+		const payload = {
 			op: WorkerRecievePayloadOp.UpdateSessionInfo,
 			shardId,
 			session: sessionInfo,
-		};
+		} satisfies WorkerRecievePayload;
 		parentPort!.postMessage(payload);
 	}
 
 	public async waitForIdentify(): Promise<void> {
 		const nonce = Math.random();
-		const payload: WorkerRecievePayload = {
+		const payload = {
 			op: WorkerRecievePayloadOp.WaitForIdentify,
 			nonce,
-		};
+		} satisfies WorkerRecievePayload;
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
