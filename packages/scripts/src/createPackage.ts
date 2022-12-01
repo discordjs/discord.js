@@ -63,7 +63,7 @@ export async function createPackage(packageName: string, packageDescription?: st
 	await writeFile('labels.yml', stringifyYAML(labelsYAML));
 
 	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
-	labelerYAML[`packages/${packageName}`] = [`packages:${packageName}/*`, `packages:${packageName}/**/*`];
+	labelerYAML[`packages:${packageName}`] = [`packages/${packageName}/*`, `packages/${packageName}/**/*`];
 
 	const sortedLabelerYAML: Record<string, string[]> = {};
 	for (const key of Object.keys(labelerYAML).sort((a, b) => a.localeCompare(b))) {
