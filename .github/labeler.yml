@@ -4,7 +4,6 @@ apps:guide:
 apps:website:
   - apps/website/*
   - apps/website/**/*
-
 packages:brokers:
   - packages/brokers/*
   - packages/brokers/**/*
