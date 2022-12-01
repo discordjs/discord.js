@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.7.1](https://github.com/discordjs/discord.js/compare/14.7.0...14.7.1) - (2022-12-01)
+
+## Bug Fixes
+
+- Prevent crash on no select menu option (#8881) ([11d195d](https://github.com/discordjs/discord.js/commit/11d195d04ff57d51adb0f0d3a0a7342f9e34aba0))
+
 # [14.7.0](https://github.com/discordjs/discord.js/compare/14.6.0...14.7.0) - (2022-11-28)
 
 ## Bug Fixes
