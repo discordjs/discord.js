@@ -21,14 +21,12 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 		parentPort!.on('message', (payload: WorkerSendPayload) => {
 			if (payload.op === WorkerSendPayloadOp.SessionInfoResponse) {
-				const resolve = this.sessionPromises.get(payload.nonce);
-				resolve?.(payload.session);
+				this.sessionPromises.get(payload.nonce)?.(payload.session);
 				this.sessionPromises.delete(payload.nonce);
 			}
 
 			if (payload.op === WorkerSendPayloadOp.ShardCanIdentify) {
-				const resolve = this.waitForIdentifyPromises.get(payload.nonce);
-				resolve?.();
+				this.waitForIdentifyPromises.get(payload.nonce)?.();
 				this.waitForIdentifyPromises.delete(payload.nonce);
 			}
 		});
