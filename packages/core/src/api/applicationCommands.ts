@@ -24,6 +24,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches all global commands for a application
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands}
 	 * @param applicationId - The application id to fetch commands for
 	 * @param options - The options to use when fetching commands
 	 */
@@ -36,6 +37,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Creates a new global command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#create-global-application-command}
 	 * @param applicationId - The application id to create the command for
 	 * @param data - The data to use when creating the command
 	 */
@@ -48,6 +50,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches a global command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-global-application-command}
 	 * @param applicationId - The application id to fetch the command from
 	 * @param commandId - The command id to fetch
 	 */
@@ -60,6 +63,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Edits a global command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#edit-global-application-command}
 	 * @param applicationId - The application id of the command
 	 * @param commandId - The id of the command to edit
 	 * @param data - The data to use when editing the command
@@ -77,6 +81,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Deletes a global command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#delete-global-application-command}
 	 * @param applicationId - The application id of the command
 	 * @param commandId - The id of the command to delete
 	 */
@@ -87,6 +92,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Overwrites global commands
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands}
 	 * @param applicationId - The application id to overwrite commands for
 	 * @param data - The data to use when overwriting commands
 	 */
@@ -99,6 +105,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches all commands for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-guild-application-commands}
 	 * @param applicationId - The application id to fetch commands for
 	 * @param guildId - The guild id to fetch commands for
 	 * @param data - The data to use when fetching commands
@@ -116,6 +123,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Creates a new command for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command}
 	 * @param applicationId - The application id to create the command for
 	 * @param guildId - The guild id to create the command for
 	 * @param data - The data to use when creating the command
@@ -133,6 +141,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches a guild command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command}
 	 * @param applicationId - The application id to fetch the command from
 	 * @param guildId - The guild id to fetch the command from
 	 * @param commandId - The command id to fetch
@@ -146,6 +155,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Edits a guild command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#edit-guild-application-command}
 	 * @param applicationId - The application id of the command
 	 * @param guildId - The guild id of the command
 	 * @param commandId - The command id to edit
@@ -165,6 +175,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Deletes a guild command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#delete-guild-application-command}
 	 * @param applicationId - The application id of the command
 	 * @param guildId - The guild id of the command
 	 * @param commandId - The id of the command to delete
@@ -176,6 +187,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Bulk overwrites guild commands
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands}
 	 * @param applicationId - The application id to overwrite commands for
 	 * @param guildId - The guild id to overwrite commands for
 	 * @param data - The data to use when overwriting commands
@@ -193,6 +205,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches the permissions for a guild command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command-permissions}
 	 * @param applicationId - The application id to get the permissions for
 	 * @param guildId - The guild id of the command
 	 * @param commandId - The command id to get the permissions for
@@ -206,6 +219,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Fetches all permissions for all commands in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-application-command-permissions}
 	 * @param applicationId - The application id to get the permissions for
 	 * @param guildId - The guild id to get the permissions for
 	 */
@@ -218,6 +232,7 @@ export class ApplicationCommandsAPI {
 	/**
 	 * Edits the permissions for a guild command
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#edit-application-command-permissions}
 	 * @param userToken - The token of the user to edit permissions on behalf of
 	 * @param applicationId - The application id to edit the permissions for
 	 * @param guildId - The guild id to edit the permissions for
