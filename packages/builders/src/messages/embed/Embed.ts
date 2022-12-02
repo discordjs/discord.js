@@ -1,5 +1,4 @@
 import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, APIEmbedImage } from 'discord-api-types/v10';
-import { embedLength } from '../../util/componentUtil.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import {
 	colorPredicate,
@@ -284,12 +283,5 @@ export class EmbedBuilder {
 	 */
 	public toJSON(): APIEmbed {
 		return { ...this.data };
-	}
-
-	/**
-	 * The accumulated length for the embed title, description, fields, footer text, and author name.
-	 */
-	public get length(): number {
-		return embedLength(this.data);
 	}
 }
