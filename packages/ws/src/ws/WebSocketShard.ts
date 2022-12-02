@@ -295,6 +295,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`intents: ${this.strategy.options.intents}`,
 			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
 		]);
+
+		await this.strategy.waitForIdentify();
+
 		const d: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,

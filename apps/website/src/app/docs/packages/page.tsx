@@ -5,12 +5,13 @@ import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
 import { PACKAGES } from '~/util/constants';
 
+// eslint-disable-next-line unicorn/numeric-separators-style
+export const revalidate = 3600;
+
 async function getData() {
 	return Promise.all(
 		PACKAGES.map(async (pkg) => {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, {
-				next: { revalidate: 3_600 },
-			});
+			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`);
 			const versions = await response.json();
 			const latestVersion = versions.at(-2) ?? 'main';
 			return { packageName: pkg, version: latestVersion };
