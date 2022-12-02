@@ -44,6 +44,9 @@ import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
 
+// eslint-disable-next-line unicorn/numeric-separators-style
+export const revalidate = 3600;
+
 export async function generateStaticParams({ params }: { params?: { package: string } }) {
 	const packageName = params?.package ?? 'builders';
 
@@ -54,16 +57,12 @@ export async function generateStaticParams({ params }: { params?: { package: str
 			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
 		} else {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
-				next: { revalidate: 3_600 },
-			});
+			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 			versions = await response.json();
 			versions = versions.slice(-2);
 
 			for (const version of versions) {
-				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`, {
-					next: { revalidate: 3_600 },
-				});
+				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
 				data = [...data, await res.json()];
 			}
 		}
@@ -123,9 +122,7 @@ async function getData(packageName: string, slug: string[]) {
 			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
 		} else {
-			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`, {
-				next: { revalidate: 3_600 },
-			});
+			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
 			data = await res.json();
 		}
 	} catch {
