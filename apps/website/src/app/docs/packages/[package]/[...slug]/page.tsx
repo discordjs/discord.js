@@ -44,9 +44,6 @@ import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
 
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
-
 export async function generateStaticParams({ params }: { params?: { package: string } }) {
 	const packageName = params?.package ?? 'builders';
 

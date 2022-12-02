@@ -5,9 +5,6 @@ import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
 import { PACKAGES } from '~/util/constants';
 
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
-
 async function getData() {
 	return Promise.all(
 		PACKAGES.map(async (pkg) => {
