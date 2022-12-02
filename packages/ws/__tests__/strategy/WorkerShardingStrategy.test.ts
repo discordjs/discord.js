@@ -27,7 +27,7 @@ const mockConstructor = vi.fn();
 const mockSend = vi.fn();
 const mockTerminate = vi.fn();
 
-const memberChunkData: GatewayDispatchPayload = {
+const memberChunkData = {
 	op: GatewayOpcodes.Dispatch,
 	s: 123,
 	t: GatewayDispatchEvents.GuildMembersChunk,
@@ -35,13 +35,14 @@ const memberChunkData: GatewayDispatchPayload = {
 		guild_id: '123',
 		members: [],
 	},
-};
+} as unknown as GatewayDispatchPayload;
 
 const sessionInfo: SessionInfo = {
 	shardId: 0,
 	shardCount: 2,
 	sequence: 123,
 	sessionId: 'abc',
+	resumeURL: 'wss://ehehe.gg',
 };
 
 vi.mock('node:worker_threads', async () => {
@@ -107,6 +108,10 @@ vi.mock('node:worker_threads', async () => {
 						session: { ...message.session, sequence: message.session.sequence + 1 },
 					};
 					this.emit('message', session);
+					break;
+				}
+
+				case WorkerSendPayloadOp.ShardCanIdentify: {
 					break;
 				}
 			}
@@ -181,7 +186,10 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 
-	const payload: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '123', limit: 0 } };
+	const payload = {
+		op: GatewayOpcodes.RequestGuildMembers,
+		d: { guild_id: '123', limit: 0, query: '' },
+	} satisfies GatewaySendPayload;
 	await manager.send(0, payload);
 	expect(mockSend).toHaveBeenCalledWith(0, payload);
 	expect(managerEmitSpy).toHaveBeenCalledWith(WebSocketShardEvents.Dispatch, {

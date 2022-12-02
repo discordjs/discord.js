@@ -1,3 +1,5 @@
+'use client';
+
 import type {
 	ApiItemJSON,
 	TokenDocumentation,
@@ -6,18 +8,16 @@ import type {
 	ApiInterfaceJSON,
 } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
-import type { ReactNode } from 'react';
+import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
+import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
+import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
+import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { Fragment, type PropsWithChildren } from 'react';
+import type { ReactNode } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import {
-	VscSymbolClass,
-	VscSymbolMethod,
-	VscSymbolEnum,
-	VscSymbolInterface,
-	VscSymbolVariable,
-	VscListSelection,
-	VscSymbolParameter,
-} from 'react-icons/vsc';
 import { useMedia } from 'react-use';
 import { HyperlinkedText } from './HyperlinkedText';
 import { SyntaxHighlighter } from './SyntaxHighlighter';

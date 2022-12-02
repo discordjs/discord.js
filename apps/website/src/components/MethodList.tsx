@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
 import { Fragment, useMemo } from 'react';
 import { MethodItem } from './MethodItem';

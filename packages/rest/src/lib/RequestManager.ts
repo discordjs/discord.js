@@ -88,7 +88,7 @@ export interface RequestData {
 	/**
 	 * Reason to show in the audit logs
 	 */
-	reason?: string;
+	reason?: string | undefined;
 	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
@@ -499,7 +499,7 @@ export class RequestManager extends EventEmitter {
 
 		const baseRoute = endpoint
 			// Strip out all ids
-			.replace(/\d{16,19}/g, ':id')
+			.replaceAll(/\d{16,19}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
 			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
 

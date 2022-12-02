@@ -1,3 +1,5 @@
+'use client';
+
 import type { TypeParameterData } from '@discordjs/api-extractor-utils';
 import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';

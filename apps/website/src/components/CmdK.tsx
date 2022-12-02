@@ -1,18 +1,18 @@
+'use client';
+
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
+import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
+import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
+import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
+import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { Dialog } from 'ariakit/dialog';
 import { Command } from 'cmdk';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import {
-	VscArrowRight,
-	VscSymbolClass,
-	VscSymbolEnum,
-	VscSymbolField,
-	VscSymbolInterface,
-	VscSymbolMethod,
-	VscSymbolProperty,
-	VscSymbolVariable,
-} from 'react-icons/vsc';
 import { useKey } from 'react-use';
 import { useCmdK } from '~/contexts/cmdK';
 import { client } from '~/util/search';
@@ -36,26 +36,24 @@ function resolveIcon(item: keyof typeof ApiItemKind) {
 	}
 }
 
-export function CmdKDialog({
-	currentPackageName,
-	currentVersion,
-}: {
-	currentPackageName?: string | undefined;
-	currentVersion?: string | undefined;
-}) {
+export function CmdKDialog() {
+	const pathname = usePathname();
 	const router = useRouter();
 	const dialog = useCmdK();
 	const [search, setSearch] = useState('');
 	const [searchResults, setSearchResults] = useState<any[]>([]);
 
+	const packageName = pathname?.split('/').slice(3, 4)[0];
+	const branchName = pathname?.split('/').slice(4, 5)[0];
+
 	const searchResultItems = useMemo(
 		() =>
 			searchResults?.map((item) => (
 				<Command.Item
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 [&[aria-selected]]:ring my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white [&[aria-selected]]:ring"
 					key={item.id}
 					onSelect={() => {
-						void router.push(item.path);
+						router.push(item.path);
 						dialog!.setOpen(false);
 					}}
 				>
@@ -101,12 +99,12 @@ export function CmdKDialog({
 
 	useEffect(() => {
 		const searchDoc = async (searchString: string, version: string) => {
-			const res = await client.index(`${currentPackageName}-${version}`).search(searchString, { limit: 5 });
+			const res = await client.index(`${packageName}-${version}`).search(searchString, { limit: 5 });
 			setSearchResults(res.hits);
 		};
 
-		if (search && currentPackageName) {
-			void searchDoc(search, currentVersion?.replaceAll('.', '-') ?? 'main');
+		if (search && packageName) {
+			void searchDoc(search, branchName?.replaceAll('.', '-') ?? 'main');
 		} else {
 			setSearchResults([]);
 		}

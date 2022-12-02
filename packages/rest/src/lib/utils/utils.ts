@@ -43,7 +43,7 @@ function serializeSearchParam(value: unknown): string | null {
  * @param options - The options to use
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams(options?: Record<string, unknown>) {
+export function makeURLSearchParams<T extends object>(options?: Readonly<T>) {
 	const params = new URLSearchParams();
 	if (!options) return params;
 
@@ -134,4 +134,17 @@ export async function resolveBody(body: RequestInit['body']): Promise<RequestOpt
 	}
 
 	throw new TypeError(`Unable to resolve body.`);
+}
+
+/**
+ * Check whether an error indicates that a retry can be attempted
+ *
+ * @param error - The error thrown by the network request
+ * @returns Whether the error indicates a retry should be attempted
+ */
+export function shouldRetry(error: Error | NodeJS.ErrnoException) {
+	// Retry for possible timed out requests
+	if (error.name === 'AbortError') return true;
+	// Downlevel ECONNRESET to retry as it may be recoverable
+	return ('code' in error && error.code === 'ECONNRESET') || error.message.includes('ECONNRESET');
 }

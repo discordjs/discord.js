@@ -4,13 +4,32 @@ import type { MarkdownLayoutProps } from 'astro';
 import { ExternalLink } from './ExternalLink.jsx';
 import { Navbar } from './Navbar.jsx';
 import { Outline } from './Outline.jsx';
+import { PageButton } from './PageButton.jsx';
 import { SidebarItems } from './SidebarItems.jsx';
 import { generateGithubURL } from '~/util/url.js';
 
 const pages = await Astro.glob<{ category: string; title: string }>('../pages/**/*.mdx');
 
 type Props = MarkdownLayoutProps<{}>;
-const { headings, url } = Astro.props;
+const { headings, url, frontmatter } = Astro.props;
+
+const groupedPages = pages.reduce<Record<string, typeof pages>>((acc, page) => {
+	const { category } = page.frontmatter;
+	acc[category] ??= [];
+
+	acc[category]?.push(page);
+	return acc;
+}, {});
+
+// @ts-expect-error props is not typed
+const category = frontmatter.category as string;
+
+const curCategoryPages = groupedPages[category];
+const curCategoryIndex = curCategoryPages!.findIndex((page) => page.url === url);
+
+const pagePrev = curCategoryPages![curCategoryIndex - 1];
+// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+const pageNext = curCategoryPages![curCategoryIndex + 1];
 ---
 
 <script>
@@ -57,14 +76,38 @@ const { headings, url } = Astro.props;
 				<Outline client:load headings={headings} />
 			</div>
 			<Separator className="my-5 border-light-800 dark:border-dark-100" />
-			<div class="flex place-content-end">
-				<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
+			<div class="flex flex-col space-y-5">
+				<div class="flex place-content-end">
+					<ExternalLink client:load href={generateGithubURL(url!)} title="Edit this page on github" />
+				</div>
+				<div class="flex w-full">
+					{
+						pagePrev && (
+							<PageButton
+								direction="prev"
+								title={pagePrev.frontmatter.title}
+								url={pagePrev.url === '' ? '/' : pagePrev.url!}
+							/>
+						)
+					}
+					<div class="ml-auto self-end justify-self-end">
+						{
+							pageNext && (
+								<PageButton
+									direction="next"
+									title={pageNext.frontmatter.title}
+									url={pageNext.url === '' ? '/' : pageNext.url!}
+								/>
+							)
+						}
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div class="h-76 md:h-52"></div>
 		<footer
-			class="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 xl:pr-76"
+			class="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 xl:pr-76 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16"
 		>
 			<div class="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
 				<div class="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">

@@ -1,15 +1,28 @@
+'use client';
+
+import type { getMembers } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
+import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
+import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
+import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
+import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import Link from 'next/link';
-import { type Dispatch, type SetStateAction, useMemo } from 'react';
-import {
-	VscSymbolClass,
-	VscSymbolEnum,
-	VscSymbolInterface,
-	VscSymbolField,
-	VscSymbolVariable,
-	VscSymbolMethod,
-} from 'react-icons/vsc';
-import type { GroupedMembers, Members } from './SidebarLayout';
+import { usePathname } from 'next/navigation';
+import { useMemo, useState, useEffect } from 'react';
+import { useNav } from '~/contexts/nav';
+
+type Members = ReturnType<typeof getMembers>;
+
+interface GroupedMembers {
+	Classes: Members;
+	Enums: Members;
+	Functions: Members;
+	Interfaces: Members;
+	Types: Members;
+	Variables: Members;
+}
 
 function groupMembers(members: Members): GroupedMembers {
 	const Classes: Members = [];
@@ -64,15 +77,15 @@ function resolveIcon(item: keyof GroupedMembers) {
 	}
 }
 
-export function SidebarItems({
-	members,
-	setOpened,
-	asPath,
-}: {
-	asPath: string;
-	members: Members;
-	setOpened: Dispatch<SetStateAction<boolean>>;
-}) {
+export function SidebarItems({ members }: { members: Members }) {
+	const pathname = usePathname();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	const { setOpened } = useNav();
+
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
+	}, [pathname]);
+
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
 	return (
@@ -82,23 +95,23 @@ export function SidebarItems({
 				.map((group, idx) => (
 					<Section icon={resolveIcon(group)} key={idx} title={group}>
 						{groupItems[group].map((member, index) => (
-							<Link href={member.path} key={index} prefetch={false}>
-								<a
-									className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-										asPath === member.path
-											? 'bg-blurple text-white'
-											: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
-									}`}
-									onClick={() => setOpened(false)}
-									title={member.name}
-								>
-									<div className="flex flex-row place-items-center gap-2 lg:text-sm">
-										<span className="truncate">{member.name}</span>
-										{member.overloadIndex && member.overloadIndex > 1 ? (
-											<span className="text-xs">{member.overloadIndex}</span>
-										) : null}
-									</div>
-								</a>
+							<Link
+								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
+									asPathWithoutQueryAndAnchor === member.path
+										? 'bg-blurple text-white'
+										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
+								}`}
+								href={member.path}
+								key={index}
+								onClick={() => setOpened(false)}
+								title={member.name}
+							>
+								<div className="flex flex-row place-items-center gap-2 lg:text-sm">
+									<span className="truncate">{member.name}</span>
+									{member.overloadIndex && member.overloadIndex > 1 ? (
+										<span className="text-xs">{member.overloadIndex}</span>
+									) : null}
+								</div>
 							</Link>
 						))}
 					</Section>
