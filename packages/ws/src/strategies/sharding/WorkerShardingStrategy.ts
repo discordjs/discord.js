@@ -18,10 +18,12 @@ export enum WorkerSendPayloadOp {
 	Destroy,
 	Send,
 	SessionInfoResponse,
+	ShardCanIdentify,
 }
 
 export type WorkerSendPayload =
 	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
+	| { nonce: number; op: WorkerSendPayloadOp.ShardCanIdentify }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
 	| { op: WorkerSendPayloadOp.Destroy; options?: WebSocketShardDestroyOptions; shardId: number }
 	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number };
@@ -32,12 +34,14 @@ export enum WorkerRecievePayloadOp {
 	Event,
 	RetrieveSessionInfo,
 	UpdateSessionInfo,
+	WaitForIdentify,
 }
 
 export type WorkerRecievePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
 	| { data: any; event: WebSocketShardEvents; op: WorkerRecievePayloadOp.Event; shardId: number }
 	| { nonce: number; op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number }
+	| { nonce: number; op: WorkerRecievePayloadOp.WaitForIdentify }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
 	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
 	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number };
@@ -118,12 +122,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			await this.throttler.waitForIdentify();
-
-			const payload: WorkerSendPayload = {
+			const payload = {
 				op: WorkerSendPayloadOp.Connect,
 				shardId,
-			};
+			} satisfies WorkerSendPayload;
 
 			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<void>((resolve) => this.connectPromises.set(shardId, resolve));
@@ -141,11 +143,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			const payload: WorkerSendPayload = {
+			const payload = {
 				op: WorkerSendPayloadOp.Destroy,
 				shardId,
 				options,
-			};
+			} satisfies WorkerSendPayload;
 
 			promises.push(
 				// eslint-disable-next-line no-promise-executor-return, promise/prefer-await-to-then
@@ -169,11 +171,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			throw new Error(`No worker found for shard ${shardId}`);
 		}
 
-		const payload: WorkerSendPayload = {
+		const payload = {
 			op: WorkerSendPayloadOp.Send,
 			shardId,
 			payload: data,
-		};
+		} satisfies WorkerSendPayload;
 		worker.postMessage(payload);
 	}
 
@@ -211,6 +213,16 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 			case WorkerRecievePayloadOp.UpdateSessionInfo: {
 				await this.manager.options.updateSessionInfo(payload.shardId, payload.session);
+				break;
+			}
+
+			case WorkerRecievePayloadOp.WaitForIdentify: {
+				await this.throttler.waitForIdentify();
+				const response: WorkerSendPayload = {
+					op: WorkerSendPayloadOp.ShardCanIdentify,
+					nonce: payload.nonce,
+				};
+				worker.postMessage(response);
 				break;
 			}
 		}
