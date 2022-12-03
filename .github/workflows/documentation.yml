@@ -67,7 +67,20 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['brokers', 'builders', 'collection', 'core', 'discord.js', 'formatters', 'proxy', 'rest', 'util', 'voice', 'ws']
+        package:
+          [
+            'brokers',
+            'builders',
+            'collection',
+            'core',
+            'discord.js',
+            'formatters',
+            'proxy',
+            'rest',
+            'util',
+            'voice',
+            'ws',
+          ]
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -111,7 +124,7 @@ jobs:
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
-          tag: ${{ env.GITHUB_REF_NAME }}
+          tag: ${{ github.ref_name }}
 
       - name: Move docs to correct directory
         if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
