@@ -1266,7 +1266,7 @@ export class Guild extends AnonymousGuild {
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
-  public editWelcomeScreen(data: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
+  public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
     options?: GuildAuditLogsFetchOptions<T>,
@@ -1388,7 +1388,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get viewable(): boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
   public delete(reason?: string): Promise<this>;
-  public edit(data: GuildChannelEditOptions): Promise<this>;
+  public edit(options: GuildChannelEditOptions): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
@@ -2704,7 +2704,7 @@ export class Sticker extends Base {
   public fetch(): Promise<Sticker>;
   public fetchPack(): Promise<StickerPack | null>;
   public fetchUser(): Promise<User | null>;
-  public edit(data?: GuildStickerEditOptions): Promise<Sticker>;
+  public edit(options?: GuildStickerEditOptions): Promise<Sticker>;
   public delete(reason?: string): Promise<Sticker>;
   public equals(other: Sticker | unknown): boolean;
 }
@@ -3163,7 +3163,7 @@ export class VoiceState extends Base {
   public setChannel(channel: GuildVoiceChannelResolvable | null, reason?: string): Promise<GuildMember>;
   public setRequestToSpeak(request?: boolean): Promise<this>;
   public setSuppressed(suppressed?: boolean): Promise<this>;
-  public edit(data: VoiceStateEditOptions): Promise<this>;
+  public edit(options: VoiceStateEditOptions): Promise<this>;
 }
 
 export class Webhook extends WebhookMixin() {
