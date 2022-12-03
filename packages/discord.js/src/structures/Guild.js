@@ -737,7 +737,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * The data for editing a guild.
-   * @typedef {Object} GuildEditData
+   * @typedef {Object} GuildEditOptions
    * @property {string} [name] The name of the guild
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
    * @property {?GuildExplicitContentFilter} [explicitContentFilter] The level of the explicit content filter
@@ -778,7 +778,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Updates the guild with new information - e.g. a new name.
-   * @param {GuildEditData} data The data to update the guild with
+   * @param {GuildEditOptions} options The options to provide
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name
@@ -788,50 +788,50 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  async edit(data) {
+  async edit(options) {
     const _data = {};
-    if (data.name) _data.name = data.name;
-    if (typeof data.verificationLevel !== 'undefined') {
-      _data.verification_level = data.verificationLevel;
+    if (options.name) _data.name = options.name;
+    if (typeof options.verificationLevel !== 'undefined') {
+      _data.verification_level = options.verificationLevel;
     }
-    if (typeof data.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.channels.resolveId(data.afkChannel);
+    if (typeof options.afkChannel !== 'undefined') {
+      _data.afk_channel_id = this.client.channels.resolveId(options.afkChannel);
     }
-    if (typeof data.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.channels.resolveId(data.systemChannel);
+    if (typeof options.systemChannel !== 'undefined') {
+      _data.system_channel_id = this.client.channels.resolveId(options.systemChannel);
     }
-    if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (typeof data.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(data.icon);
-    if (data.owner) _data.owner_id = this.client.users.resolveId(data.owner);
-    if (typeof data.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(data.splash);
-    if (typeof data.discoverySplash !== 'undefined') {
-      _data.discovery_splash = await DataResolver.resolveImage(data.discoverySplash);
+    if (options.afkTimeout) _data.afk_timeout = Number(options.afkTimeout);
+    if (typeof options.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(options.icon);
+    if (options.owner) _data.owner_id = this.client.users.resolveId(options.owner);
+    if (typeof options.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(options.splash);
+    if (typeof options.discoverySplash !== 'undefined') {
+      _data.discovery_splash = await DataResolver.resolveImage(options.discoverySplash);
     }
-    if (typeof data.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(data.banner);
-    if (typeof data.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = data.explicitContentFilter;
+    if (typeof options.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(options.banner);
+    if (typeof options.explicitContentFilter !== 'undefined') {
+      _data.explicit_content_filter = options.explicitContentFilter;
     }
-    if (typeof data.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications = data.defaultMessageNotifications;
+    if (typeof options.defaultMessageNotifications !== 'undefined') {
+      _data.default_message_notifications = options.defaultMessageNotifications;
     }
-    if (typeof data.systemChannelFlags !== 'undefined') {
-      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(data.systemChannelFlags);
+    if (typeof options.systemChannelFlags !== 'undefined') {
+      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(options.systemChannelFlags);
     }
-    if (typeof data.rulesChannel !== 'undefined') {
-      _data.rules_channel_id = this.client.channels.resolveId(data.rulesChannel);
+    if (typeof options.rulesChannel !== 'undefined') {
+      _data.rules_channel_id = this.client.channels.resolveId(options.rulesChannel);
     }
-    if (typeof data.publicUpdatesChannel !== 'undefined') {
-      _data.public_updates_channel_id = this.client.channels.resolveId(data.publicUpdatesChannel);
+    if (typeof options.publicUpdatesChannel !== 'undefined') {
+      _data.public_updates_channel_id = this.client.channels.resolveId(options.publicUpdatesChannel);
     }
-    if (typeof data.features !== 'undefined') {
-      _data.features = data.features;
+    if (typeof options.features !== 'undefined') {
+      _data.features = options.features;
     }
-    if (typeof data.description !== 'undefined') {
-      _data.description = data.description;
+    if (typeof options.description !== 'undefined') {
+      _data.description = options.description;
     }
-    if (typeof data.preferredLocale !== 'undefined') _data.preferred_locale = data.preferredLocale;
-    if ('premiumProgressBarEnabled' in data) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: data.reason });
+    if (typeof options.preferredLocale !== 'undefined') _data.preferred_locale = options.preferredLocale;
+    if ('premiumProgressBarEnabled' in options) _data.premium_progress_bar_enabled = options.premiumProgressBarEnabled;
+    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: options.reason });
     return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
@@ -845,7 +845,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Welcome screen edit data
-   * @typedef {Object} WelcomeScreenEditData
+   * @typedef {Object} WelcomeScreenEditOptions
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
@@ -861,7 +861,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data that can be resolved to a GuildVoiceChannel object. This can be:
-   * * A VoiceChannel
+   * * A VoiceChannelprovide
    * * A StageChannel
    * * A Snowflake
    * @typedef {VoiceChannel|StageChannel|Snowflake} GuildVoiceChannelResolvable
@@ -869,7 +869,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Updates the guild's welcome screen
-   * @param {WelcomeScreenEditData} data Data to edit the welcome screen with
+   * @param {WelcomeScreenEditOptions} options The options to provide
    * @returns {Promise<WelcomeScreen>}
    * @example
    * guild.editWelcomeScreen({
@@ -883,8 +883,8 @@ class Guild extends AnonymousGuild {
    *   ],
    * })
    */
-  async editWelcomeScreen(data) {
-    const { enabled, description, welcomeChannels } = data;
+  async editWelcomeScreen(options) {
+    const { enabled, description, welcomeChannels } = options;
     const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {

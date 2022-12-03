@@ -258,7 +258,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Edits the channel.
    * @param {GuildChannelResolvable} channel The channel to edit
-   * @param {GuildChannelEditOptions} data Options for editing the channel
+   * @param {GuildChannelEditOptions} options Options for editing the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -266,19 +266,19 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async edit(channel, data) {
+  async edit(channel, options) {
     channel = this.resolve(channel);
     if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = data.parent && this.client.channels.resolveId(data.parent);
+    const parent = options.parent && this.client.channels.resolveId(options.parent);
 
-    if (typeof data.position !== 'undefined') {
-      await this.setPosition(channel, data.position, { position: data.position, reason: data.reason });
+    if (typeof options.position !== 'undefined') {
+      await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
     }
 
-    let permission_overwrites = data.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites = options.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
 
-    if (data.lockPermissions) {
+    if (options.lockPermissions) {
       if (parent) {
         const newParent = this.guild.channels.resolve(parent);
         if (newParent?.type === ChannelType.GuildCategory) {
@@ -295,26 +295,27 @@ class GuildChannelManager extends CachedManager {
 
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
-        name: (data.name ?? channel.name).trim(),
-        type: data.type,
-        topic: data.topic,
-        nsfw: data.nsfw,
-        bitrate: data.bitrate ?? channel.bitrate,
-        user_limit: data.userLimit ?? channel.userLimit,
-        rtc_region: 'rtcRegion' in data ? data.rtcRegion : channel.rtcRegion,
-        video_quality_mode: data.videoQualityMode,
+        name: (options.name ?? channel.name).trim(),
+        type: options.type,
+        topic: options.topic,
+        nsfw: options.nsfw,
+        bitrate: options.bitrate ?? channel.bitrate,
+        user_limit: options.userLimit ?? channel.userLimit,
+        rtc_region: 'rtcRegion' in options ? options.rtcRegion : channel.rtcRegion,
+        video_quality_mode: options.videoQualityMode,
         parent_id: parent,
-        lock_permissions: data.lockPermissions,
-        rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: data.defaultAutoArchiveDuration,
+        lock_permissions: options.lockPermissions,
+        rate_limit_per_user: options.rateLimitPerUser,
+        default_auto_archive_duration: options.defaultAutoArchiveDuration,
         permission_overwrites,
-        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
-        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
-        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
-        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
-        default_sort_order: data.defaultSortOrder,
+        available_tags: options.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji:
+          options.defaultReactionEmoji && transformGuildDefaultReaction(options.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: options.defaultThreadRateLimitPerUser,
+        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
+        default_sort_order: options.defaultSortOrder,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;

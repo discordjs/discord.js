@@ -101,7 +101,7 @@ class GuildStickerManager extends CachedManager {
   /**
    * Edits a sticker.
    * @param {StickerResolvable} sticker The sticker to edit
-   * @param {GuildStickerEditData} [data={}] The new data for the sticker
+   * @param {GuildStickerEditOptions} [data={}] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
   async edit(sticker, data = {}) {
