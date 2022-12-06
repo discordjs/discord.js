@@ -54,7 +54,9 @@ export async function generateStaticParams({ params }: { params?: { package: str
 			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
 		} else {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
+			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
+				next: { revalidate: 3_600 },
+			});
 			versions = await response.json();
 			versions = versions.slice(-2);
 
