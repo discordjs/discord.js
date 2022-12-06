@@ -2120,7 +2120,7 @@ __metadata:
     "@commitlint/cli": ^17.3.0
     "@commitlint/config-angular": ^17.3.0
     "@favware/cliff-jumper": ^1.9.0
-    "@favware/npm-deprecate": ^1.0.6
+    "@favware/npm-deprecate": ^1.0.7
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.2
     is-ci: ^3.0.1
@@ -2623,9 +2623,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/npm-deprecate@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "@favware/npm-deprecate@npm:1.0.6"
+"@favware/npm-deprecate@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@favware/npm-deprecate@npm:1.0.7"
   dependencies:
     "@sapphire/fetch": ^2.4.1
     "@sapphire/utilities": ^3.11.0
@@ -2638,7 +2638,7 @@ __metadata:
   bin:
     nd: ./dist/cli.js
     npm-deprecate: ./dist/cli.js
-  checksum: f64f85ceeabf084de03c968e1c481a276d1d0f949a489a13edba21f543dd1b65521082426f9f2747ad65781d71140067a520c2ac919ae65f268d0c9be6d78d95
+  checksum: 83b1c9259dfcab376dd8702b85c5875811c60a4c57fb562c4431b3d7523f7f2e80435da31c63e55246659d4da8d0fc3da20f7f5f40e0dd103e7d681ba6a55d32
   languageName: node
   linkType: hard
 
