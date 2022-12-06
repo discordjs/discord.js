@@ -11,6 +11,7 @@ class UserFlagsBitField extends BitField {
   /**
    * Numeric user flags.
    * @type {UserFlags}
+   * @memberof UserFlagsBitField
    */
   static Flags = UserFlags;
 }
