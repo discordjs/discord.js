@@ -24,11 +24,10 @@ export class ThreadsAPI {
 	/**
 	 * Fetches a thread
 	 *
-	 * @param channelId - The id of the channel to fetch the thread from
 	 * @param threadId - The id of the thread
 	 */
-	public async get(channelId: Snowflake, threadId: Snowflake) {
-		return this.rest.get(Routes.threads(channelId, threadId)) as Promise<APIThreadChannel>;
+	public async get(threadId: Snowflake) {
+		return this.rest.get(Routes.channel(threadId)) as Promise<APIThreadChannel>;
 	}
 
 	/**

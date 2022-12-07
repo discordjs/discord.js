@@ -89,7 +89,7 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		messageId?: string,
+		messageId?: Snowflake | '@original',
 	) {
 		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', data);
 	}
@@ -113,9 +113,10 @@ export class InteractionsAPI {
 	 *
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
+	 * @param messageId - The id of the message to delete. If omitted, the original reply will be deleted
 	 */
-	public async deleteReply(applicationId: Snowflake, interactionToken: string) {
-		await this.webhooks.deleteMessage(applicationId, interactionToken, '@original');
+	public async deleteReply(applicationId: Snowflake, interactionToken: string, messageId?: Snowflake | '@original') {
+		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original');
 	}
 
 	/**
