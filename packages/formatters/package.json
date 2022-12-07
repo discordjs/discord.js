@@ -1,16 +1,15 @@
 {
-	"name": "@discordjs/brokers",
+	"name": "@discordjs/formatters",
 	"version": "0.1.0",
-	"description": "Powerful set of message brokers",
+	"description": "A set of functions to format strings for Discord.",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"fmt": "yarn format",
 		"docs": "api-extractor run --local",
-		"prepack": "yarn lint && yarn test && yarn build",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
 		"release": "cliff-jumper"
 	},
 	"main": "./dist/index.js",
@@ -26,27 +25,16 @@
 		"test": "__tests__"
 	},
 	"files": [
-		"dist",
-		"scripts"
+		"dist"
 	],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
-		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
 		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Aura Roman <kyradiscord@gmail.com>",
-		"DD <didinele.dev@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"api",
-		"message",
-		"brokers",
-		"redis",
-		"discordapp",
-		"discordjs"
-	],
+	"keywords": [],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/discordjs/discord.js.git"
@@ -56,14 +44,12 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@msgpack/msgpack": "^2.8.0",
-		"@vladfrangu/async_event_emitter": "^2.1.2",
-		"ioredis": "^5.2.4"
+		"discord-api-types": "^0.37.20"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.9.0",
-		"@microsoft/api-extractor": "^7.33.6",
-		"@types/node": "16.18.4",
+		"@favware/cliff-jumper": "^1.8.8",
+		"@microsoft/api-extractor": "^7.32.0",
+		"@types/node": "^16.18.3",
 		"@vitest/coverage-c8": "^0.25.3",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.28.0",

@@ -23,7 +23,7 @@ import {
 	TimestampStyles,
 	underscore,
 	userMention,
-} from '../../src/index.js';
+} from '../src/index.js';
 
 describe('Message formatters', () => {
 	describe('codeBlock', () => {

@@ -22,6 +22,9 @@ packages:discord.js:
 packages:docgen:
   - packages/docgen/*
   - packages/docgen/**/*
+packages:formatters:
+  - packages/formatters/*
+  - packages/formatters/**/*
 packages:proxy:
   - packages/proxy/*
   - packages/proxy/**/*
