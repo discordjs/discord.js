@@ -5,15 +5,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { PACKAGES } from '~/util/constants';
 
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
-
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {
 		notFound();
 	}
 
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, { next: { revalidate: 3_600 } });
 	const data: string[] = await res.json();
 
 	if (!data.length) {

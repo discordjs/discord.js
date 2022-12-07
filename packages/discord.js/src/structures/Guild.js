@@ -1205,6 +1205,17 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Sets whether this guild's invites are disabled.
+   * @param {boolean} [disabled=true] Whether the invites are disabled
+   * @returns {Promise<Guild>}
+   */
+  async disableInvites(disabled = true) {
+    const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
+    if (disabled) features.push(GuildFeature.InvitesDisabled);
+    return this.edit({ features });
+  }
+
+  /**
    * Whether this guild equals another guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.

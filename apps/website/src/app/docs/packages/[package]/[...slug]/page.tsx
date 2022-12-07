@@ -44,9 +44,6 @@ import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
 
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
-
 export async function generateStaticParams({ params }: { params?: { package: string } }) {
 	const packageName = params?.package ?? 'builders';
 
@@ -57,7 +54,9 @@ export async function generateStaticParams({ params }: { params?: { package: str
 			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
 			data = JSON.parse(res);
 		} else {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
+			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
+				next: { revalidate: 3_600 },
+			});
 			versions = await response.json();
 			versions = versions.slice(-2);
 
