@@ -861,7 +861,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data that can be resolved to a GuildVoiceChannel object. This can be:
-   * * A VoiceChannelprovide
+   * * A VoiceChannel
    * * A StageChannel
    * * A Snowflake
    * @typedef {VoiceChannel|StageChannel|Snowflake} GuildVoiceChannelResolvable
