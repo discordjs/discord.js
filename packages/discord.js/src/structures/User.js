@@ -110,6 +110,16 @@ class User extends Base {
        */
       this.flags = new UserFlagsBitField(data.public_flags);
     }
+
+    if ('avatar_decoration' in data) {
+      /**
+       * The user avatar decoration's hash
+       * @type {?string}
+       */
+      this.avatarDecoration = data.avatar_decoration;
+    } else {
+      this.avatarDecoration ??= null;
+    }
   }
 
   /**
@@ -146,6 +156,15 @@ class User extends Base {
    */
   avatarURL(options = {}) {
     return this.avatar && this.client.rest.cdn.avatar(this.id, this.avatar, options);
+  }
+
+  /**
+   * A link to the user's avatar decoration.
+   * @param {BaseImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  avatarDecorationURL(options = {}) {
+    return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);
   }
 
   /**

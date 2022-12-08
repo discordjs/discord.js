@@ -96,6 +96,21 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a user avatar decoration URL.
+	 *
+	 * @param userId - The id of the user
+	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
+	 * @param options - Optional options for the avatar decoration
+	 */
+	public avatarDecoration(
+		userId: string,
+		userAvatarDecoration: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
+	}
+
+	/**
 	 * Generates a banner URL, e.g. for a user or a guild.
 	 *
 	 * @param id - The id that has the banner splash
