@@ -5514,7 +5514,7 @@ export interface IntegrationAccount {
   name: string;
 }
 
-export type IntegrationType = 'twitch' | 'youtube' | 'discord';
+export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
 
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
@@ -5965,6 +5965,8 @@ export interface RoleTagData {
   botId?: Snowflake;
   integrationId?: Snowflake;
   premiumSubscriberRole?: true;
+  subscriptionListingId?: Snowflake;
+  availableForPurchase?: true;
 }
 
 export interface SetChannelPositionOptions {
