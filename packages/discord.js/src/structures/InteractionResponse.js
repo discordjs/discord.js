@@ -23,7 +23,7 @@ class InteractionResponse {
   }
 
   /**
-   * The timestamp the interaction's response was created at
+   * The timestamp the interaction response was created at
    * @type {number}
    * @readonly
    */
@@ -32,7 +32,7 @@ class InteractionResponse {
   }
 
   /**
-   * The time the interaction's response was created at
+   * The time the interaction response was created at
    * @type {Date}
    * @readonly
    */
