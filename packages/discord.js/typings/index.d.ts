@@ -555,6 +555,8 @@ export class InteractionResponse<Cached extends boolean = boolean> {
   public interaction: Interaction<WrapBooleanCache<Cached>>;
   public client: Client;
   public id: Snowflake;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
   public awaitMessageComponent<T extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<T, Cached>,
   ): Promise<MappedInteractionTypes<Cached>[T]>;
