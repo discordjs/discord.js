@@ -1,50 +1,26 @@
 'use strict';
 
-const { SelectMenuOptionBuilder: BuildersSelectMenuOption, isJSONEncodable } = require('@discordjs/builders');
-const { toSnakeCase } = require('../util/Transformers');
-const { resolvePartialEmoji } = require('../util/Util');
+const process = require('node:process');
+const StringSelectMenuOptionBuilder = require('./StringSelectMenuOptionBuilder');
+
+let deprecationEmitted = false;
 
 /**
- * Represents a select menu option builder.
- * @extends {BuildersSelectMenuOption}
+ * @deprecated Use {@link StringSelectMenuOptionBuilder} instead.
+ * @extends {StringSelectMenuOptionBuilder}
  */
-class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
-  constructor({ emoji, ...data } = {}) {
-    super(
-      toSnakeCase({
-        ...data,
-        emoji: emoji && typeof emoji === 'string' ? resolvePartialEmoji(emoji) : emoji,
-      }),
-    );
-  }
-  /**
-   * Sets the emoji to display on this option
-   * @param {ComponentEmojiResolvable} emoji The emoji to display on this option
-   * @returns {SelectMenuOptionBuilder}
-   */
-  setEmoji(emoji) {
-    if (typeof emoji === 'string') {
-      return super.setEmoji(resolvePartialEmoji(emoji));
-    }
-    return super.setEmoji(emoji);
-  }
+class SelectMenuOptionBuilder extends StringSelectMenuOptionBuilder {
+  constructor(...params) {
+    super(...params);
 
-  /**
-   * Creates a new select menu option builder from JSON data
-   * @param {JSONEncodable<APISelectMenuOption>|APISelectMenuOption} other The other data
-   * @returns {SelectMenuOptionBuilder}
-   */
-  static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
+    if (!deprecationEmitted) {
+      process.emitWarning(
+        'The SelectMenuOptionBuilder class is deprecated, use StringSelectMenuOptionBuilder instead.',
+        'DeprecationWarning',
+      );
+      deprecationEmitted = true;
     }
-    return new this(other);
   }
 }
 
 module.exports = SelectMenuOptionBuilder;
-
-/**
- * @external BuildersSelectMenuOption
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuOptionBuilder}
- */

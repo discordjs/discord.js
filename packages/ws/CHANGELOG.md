@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.1...@discordjs/ws@0.5.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Documentation
+
+- Remove unused imports (#8744) ([179392d](https://github.com/discordjs/discord.js/commit/179392d6d7d634c6d10f6abb20c072516c1c1d43))
+
+## Features
+
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+
 # [@discordjs/ws@0.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.0...@discordjs/ws@0.4.1) - (2022-10-10)
 
 ## Bug Fixes

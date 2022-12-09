@@ -147,10 +147,17 @@ class InteractionCollector extends Collector {
      * @event InteractionCollector#collect
      * @param {BaseInteraction} interaction The interaction that was collected
      */
+
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
+    if (
+      this.messageInteractionId &&
+      interaction.message?.interaction?.id &&
+      interaction.message.interaction.id !== this.messageInteractionId
+    ) {
+      return null;
+    }
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 

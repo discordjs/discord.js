@@ -38,10 +38,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build dependencies
         run: yarn build
@@ -68,7 +67,20 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        package: ['builders', 'collection', 'discord.js', 'proxy', 'rest', 'util', 'voice', 'ws']
+        package:
+          [
+            'brokers',
+            'builders',
+            'collection',
+            'core',
+            'discord.js',
+            'formatters',
+            'proxy',
+            'rest',
+            'util',
+            'voice',
+            'ws',
+          ]
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -81,10 +93,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build actions
         run: yarn workspace @discordjs/actions build
@@ -113,7 +124,7 @@ jobs:
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
-          tag: ${{ env.GITHUB_REF_NAME }}
+          tag: ${{ github.ref_name }}
 
       - name: Move docs to correct directory
         if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}

@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -612,6 +612,25 @@ class Message extends Base {
   }
 
   /**
+   * Whether the message is bulk deletable by the client user
+   * @type {boolean}
+   * @readonly
+   * @example
+   * // Filter for bulk deletable messages
+   * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
+   */
+  get bulkDeletable() {
+    const permissions = this.channel?.permissionsFor(this.client.user);
+    return (
+      (this.inGuild() &&
+        Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+        this.deletable &&
+        permissions?.has(PermissionFlagsBits.ManageMessages, false)) ??
+      false
+    );
+  }
+
+  /**
    * Whether the message is pinnable by the client user
    * @type {boolean}
    * @readonly
@@ -769,7 +788,6 @@ class Message extends Base {
   /**
    * Options provided when sending a message as an inline reply.
    * @typedef {BaseMessageCreateOptions} MessageReplyOptions
-   * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
    * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message

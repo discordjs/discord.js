@@ -1,3 +1,5 @@
+'use client';
+
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 

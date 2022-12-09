@@ -4,19 +4,27 @@ apps:guide:
 apps:website:
   - apps/website/*
   - apps/website/**/*
-
+packages:brokers:
+  - packages/brokers/*
+  - packages/brokers/**/*
 packages:builders:
   - packages/builders/*
   - packages/builders/**/*
 packages:collection:
   - packages/collection/*
   - packages/collection/**/*
+packages:core:
+  - packages/core/*
+  - packages/core/**/*
 packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
 packages:docgen:
   - packages/docgen/*
   - packages/docgen/**/*
+packages:formatters:
+  - packages/formatters/*
+  - packages/formatters/**/*
 packages:proxy:
   - packages/proxy/*
   - packages/proxy/**/*
@@ -26,9 +34,9 @@ packages:proxy-container:
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*
-packages/ui:
-  - packages:ui/*
-  - packages:ui/**/*
+packages:ui:
+  - packages/ui/*
+  - packages/ui/**/*
 packages:util:
   - packages/util/*
   - packages/util/**/*

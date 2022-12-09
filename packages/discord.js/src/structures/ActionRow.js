@@ -25,7 +25,7 @@ class ActionRow extends Component {
    * Creates a new action row builder from JSON data
    * @param {JSONEncodable<APIActionRowComponent>|APIActionRowComponent} other The other data
    * @returns {ActionRowBuilder}
-   * @deprecated Use {@link ActionRowBuilder.from()} instead.
+   * @deprecated Use {@link ActionRowBuilder.from} instead.
    */
   static from(other) {
     if (isJSONEncodable(other)) {

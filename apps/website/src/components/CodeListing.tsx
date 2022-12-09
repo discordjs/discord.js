@@ -1,6 +1,8 @@
+'use client';
+
 import type { TokenDocumentation, ApiItemJSON, AnyDocNodeJSON, InheritanceData } from '@discordjs/api-extractor-utils';
+import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import type { PropsWithChildren } from 'react';
-import { FiLink } from 'react-icons/fi';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './tsdoc/TSDoc';
@@ -34,7 +36,7 @@ export function CodeListing({
 }>) {
 	return (
 		<div className="scroll-mt-30 flex flex-col gap-4" id={name}>
-			<div className="md:-ml-8.5 flex flex-col gap-0.5 md:flex-row md:place-items-center md:gap-2">
+			<div className="md:-ml-8.5 flex flex-col gap-2 md:flex-row md:place-items-center">
 				<a
 					aria-label="Anchor"
 					className="focus:ring-width-2 focus:ring-blurple hidden rounded outline-0 focus:ring md:inline-block"
@@ -73,7 +75,7 @@ export function CodeListing({
 				</div>
 			</div>
 			{summary || inheritanceData ? (
-				<div className="flex flex-col gap-4">
+				<div className="mb-4 flex flex-col gap-4">
 					{deprecation ? <TSDoc node={deprecation} /> : null}
 					{summary ? <TSDoc node={summary} /> : null}
 					{comment ? <TSDoc node={comment} /> : null}

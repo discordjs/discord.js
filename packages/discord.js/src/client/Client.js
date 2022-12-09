@@ -214,13 +214,7 @@ class Client extends BaseClient {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
-    this.emit(
-      Events.Debug,
-      `Provided token: ${token
-        .split('.')
-        .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
-        .join('.')}`,
-    );
+    this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
 
     if (this.options.presence) {
       this.options.ws.presence = this.presence._parse(this.options.presence);
@@ -457,6 +451,21 @@ class Client extends BaseClient {
       actions: false,
       presence: false,
     });
+  }
+
+  /**
+   * Partially censored client token for debug logging purposes.
+   * @type {?string}
+   * @readonly
+   * @private
+   */
+  get _censoredToken() {
+    if (!this.token) return null;
+
+    return this.token
+      .split('.')
+      .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
+      .join('.');
   }
 
   /**

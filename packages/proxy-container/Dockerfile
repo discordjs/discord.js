@@ -1,18 +1,43 @@
-FROM node:16-alpine
+FROM node:16-alpine as builder
+
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /usr/proxy
 
-# First copy over dependencies separate from src for better caching
-COPY package.json yarn.lock tsconfig.json .yarnrc.yml tsup.config.js ./
-COPY .yarn ./.yarn
-COPY ./packages/proxy-container/package.json ./packages/proxy-container/
+COPY . .
+RUN yarn dlx turbo prune --scope=@discordjs/proxy-container --docker
 
-WORKDIR /usr/proxy/packages/proxy-container
+FROM node:16-alpine AS installer
 
-RUN yarn workspaces focus
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
-# Next up, copy over our src and build it, then prune deps for prod
-COPY ./packages/proxy-container ./
-RUN yarn build && yarn workspaces focus --production
+WORKDIR /usr/proxy
 
-CMD ["node", "--enable-source-maps", "./dist/index.js"]
+COPY .gitignore .gitignore
+COPY .yarn/ .yarn/
+COPY .yarnrc.yml .yarnrc.yml
+COPY --from=builder /usr/proxy/out/json/ .
+COPY --from=builder /usr/proxy/out/yarn.lock ./yarn.lock
+RUN yarn install
+
+COPY --from=builder /usr/proxy/out/full/ .
+COPY tsup.config.js tsup.config.js
+COPY turbo.json turbo.json
+COPY tsconfig.json tsconfig.json
+RUN yarn dlx turbo run build --filter=@discordjs/proxy-container...
+
+RUN yarn workspaces focus @discordjs/proxy-container --production
+
+FROM node:16-alpine AS runner
+
+WORKDIR /usr/proxy
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 proxy
+USER proxy
+
+COPY --from=installer /usr/proxy .
+
+CMD ["node", "--enable-source-maps", "packages/proxy-container/dist/index.js"]

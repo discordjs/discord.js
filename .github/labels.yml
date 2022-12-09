@@ -20,10 +20,10 @@
   color: 0075ca
 - name: dependencies
   color: 276bd1
-- name: discussion
-  color: b6b1f9
 - name: discord
   color: '5663e9'
+- name: discussion
+  color: b6b1f9
 - name: documentation
   color: 0075ca
 - name: duplicate
@@ -40,23 +40,29 @@
   color: 4b1f8e
 - name: help wanted
   color: '008672'
-- name: interactions
-  color: 80c042
 - name: in progress
   color: ffccd7
 - name: in review
   color: aed5fc
+- name: interactions
+  color: 80c042
 - name: invalid
   color: e4e669
 - name: need repro
   color: c66037
+- name: packages:brokers
+  color: fbca04
 - name: packages:builders
   color: fbca04
 - name: packages:collection
   color: fbca04
+- name: packages:core
+  color: fbca04
 - name: packages:discord.js
   color: fbca04
 - name: packages:docgen
+  color: fbca04
+- name: packages:formatters
   color: fbca04
 - name: packages:proxy
   color: fbca04

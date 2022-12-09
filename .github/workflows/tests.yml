@@ -15,27 +15,48 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Install node.js v16
         uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --immutable
+        uses: ./packages/actions/src/yarnCache
 
-      - name: Build dependencies
-        run: yarn build
+      - name: Build dependencies (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: yarn build --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
 
-      - name: ESLint
-        run: yarn lint -- --format=compact
+      - name: Build dependencies (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: yarn build --filter="...[HEAD^1]"
 
-      - name: Tests
-        run: yarn test
+      - name: ESLint (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: yarn lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" -- --format=compact
 
-      - name: Docs
-        run: yarn docs
+      - name: ESLint (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: yarn lint --filter="...[HEAD^1]" -- --format=compact
+
+      - name: Tests (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: yarn test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+
+      - name: Tests (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: yarn test --filter="...[HEAD^1]"
+
+      - name: Docs (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: yarn docs --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]"
+
+      - name: Docs (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: yarn docs --filter="...[HEAD^1]"
 
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'
