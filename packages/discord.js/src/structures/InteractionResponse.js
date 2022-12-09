@@ -32,7 +32,7 @@ class InteractionResponse {
   }
 
   /**
-   * The time the interaction's resposne was created at
+   * The time the interaction's response was created at
    * @type {Date}
    * @readonly
    */
