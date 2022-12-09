@@ -1,3 +1,5 @@
+'use client';
+
 import type {
 	AnyDocNodeJSON,
 	DocPlainTextJSON,
@@ -38,20 +40,24 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 				if (codeDestination) {
 					return (
-						<Link href={codeDestination.path} key={idx} prefetch={false}>
-							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
-								{text ?? codeDestination.name}
-							</a>
+						<Link
+							className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
+							href={codeDestination.path}
+							key={idx}
+						>
+							{text ?? codeDestination.name}
 						</Link>
 					);
 				}
 
 				if (urlDestination) {
 					return (
-						<Link href={urlDestination} key={idx} prefetch={false}>
-							<a className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring">
-								{text ?? urlDestination}
-							</a>
+						<Link
+							className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
+							href={urlDestination}
+							key={idx}
+						>
+							{text ?? urlDestination}
 						</Link>
 					);
 				}

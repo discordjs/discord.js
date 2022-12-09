@@ -65,6 +65,13 @@ class WebSocketShard extends EventEmitter {
     this.sessionId = null;
 
     /**
+     * The resume url for this shard
+     * @type {?string}
+     * @private
+     */
+    this.resumeURL = null;
+
+    /**
      * The previous heartbeat ping of the shard
      * @type {number}
      */
@@ -73,7 +80,6 @@ class WebSocketShard extends EventEmitter {
     /**
      * The last time a ping was sent (a timestamp)
      * @type {number}
-     * @private
      */
     this.lastPingTimestamp = -1;
 
@@ -193,11 +199,13 @@ class WebSocketShard extends EventEmitter {
    * or reject if we couldn't connect
    */
   connect() {
-    const { gateway, client } = this.manager;
+    const { client } = this.manager;
 
     if (this.connection?.readyState === WebSocket.OPEN && this.status === Status.Ready) {
       return Promise.resolve();
     }
+
+    const gateway = this.resumeURL ?? this.manager.gateway;
 
     return new Promise((resolve, reject) => {
       const cleanup = () => {
@@ -416,9 +424,10 @@ class WebSocketShard extends EventEmitter {
         this.emit(WebSocketShardEvents.Ready);
 
         this.sessionId = packet.d.session_id;
+        this.resumeURL = packet.d.resume_gateway_url;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WaitingForGuilds;
-        this.debug(`[READY] Session ${this.sessionId}.`);
+        this.debug(`[READY] Session ${this.sessionId} | Resume url ${this.resumeURL}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
         break;
@@ -740,7 +749,12 @@ class WebSocketShard extends EventEmitter {
    */
   _send(data) {
     if (this.connection?.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
+      this.debug(
+        `Tried to send packet '${JSON.stringify(data).replaceAll(
+          this.manager.client.token,
+          this.manager.client._censoredToken,
+        )}' but no WebSocket is available!`,
+      );
       this.destroy({ closeCode: 4_000 });
       return;
     }
@@ -842,10 +856,11 @@ class WebSocketShard extends EventEmitter {
     // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
-    // Step 5: Reset the sequence and session id if requested
+    // Step 5: Reset the sequence, resume url and session id if requested
     if (reset) {
       this.sequence = -1;
       this.sessionId = null;
+      this.resumeURL = null;
     }
 
     // Step 6: reset the rate limit data

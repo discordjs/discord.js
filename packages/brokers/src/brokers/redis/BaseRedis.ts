@@ -61,7 +61,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		this.options = { ...DefaultBrokerOptions, ...options };
 		options.redisClient.defineCommand('xcleangroup', {
 			numberOfKeys: 1,
-			lua: readFileSync(resolve(__dirname, '..', '..', '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
+			lua: readFileSync(resolve(__dirname, '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
 		});
 		this.streamReadClient = options.redisClient.duplicate();
 	}

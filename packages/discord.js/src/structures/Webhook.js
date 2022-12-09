@@ -39,7 +39,11 @@ class Webhook {
      * @name Webhook#token
      * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', {
+      value: data.token ?? null,
+      writable: true,
+      configurable: true,
+    });
 
     if ('avatar' in data) {
       /**
@@ -73,7 +77,7 @@ class Webhook {
 
     if ('channel_id' in data) {
       /**
-       * The channel the webhook belongs to
+       * The id of the channel the webhook belongs to
        * @type {Snowflake}
        */
       this.channelId = data.channel_id;
@@ -142,6 +146,15 @@ class Webhook {
    */
 
   /**
+   * The channel the webhook belongs to
+   * @type {?(TextChannel|VoiceChannel|NewsChannel|ForumChannel)}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.channelId);
+  }
+
+  /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|WebhookCreateMessageOptions} options The options to provide
    * @returns {Promise<Message>}
@@ -206,7 +219,12 @@ class Webhook {
     });
 
     const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
+    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
+      body,
+      files,
+      query,
+      auth: false,
+    });
 
     if (!this.client.channels) return d;
     return this.client.channels.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
@@ -349,7 +367,10 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), { reason, auth: !this.token });
+    await this.client.rest.delete(Routes.webhook(this.id, this.token), {
+      reason,
+      auth: !this.token,
+    });
   }
 
   /**

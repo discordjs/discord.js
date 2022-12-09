@@ -1,6 +1,5 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { WebSocketManager } from '../../ws/WebSocketManager';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
@@ -15,11 +14,8 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 
 	private readonly shards = new Collection<number, WebSocketShard>();
 
-	private readonly throttler: IdentifyThrottler;
-
 	public constructor(manager: WebSocketManager) {
 		this.manager = manager;
-		this.throttler = new IdentifyThrottler(manager);
 	}
 
 	/**
@@ -46,7 +42,6 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const shard of this.shards.values()) {
-			await this.throttler.waitForIdentify();
 			promises.push(shard.connect());
 		}
 
