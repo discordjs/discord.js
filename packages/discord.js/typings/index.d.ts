@@ -6266,5 +6266,6 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export * from 'discord-api-types/v10';
 export * from '@discordjs/builders';
+export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
