@@ -16,6 +16,7 @@ export class InteractionsAPI {
 	/**
 	 * Replies to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when replying
@@ -37,6 +38,7 @@ export class InteractionsAPI {
 	/**
 	 * Defers the reply to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
@@ -51,6 +53,7 @@ export class InteractionsAPI {
 	/**
 	 * Defers an update from a message component interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
@@ -65,6 +68,7 @@ export class InteractionsAPI {
 	/**
 	 * Reply to a deferred interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when replying
@@ -80,6 +84,8 @@ export class InteractionsAPI {
 	/**
 	 * Edits the initial reply to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#edit-original-interaction-response}
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#edit-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when editing the reply
@@ -97,6 +103,7 @@ export class InteractionsAPI {
 	/**
 	 * Fetches the initial reply to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 */
@@ -111,6 +118,8 @@ export class InteractionsAPI {
 	/**
 	 * Deletes the initial reply to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#delete-original-interaction-response}
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#delete-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param messageId - The id of the message to delete. If omitted, the original reply will be deleted
@@ -122,6 +131,7 @@ export class InteractionsAPI {
 	/**
 	 * Updates the the message the component interaction was triggered on
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The data to use when updating the interaction
@@ -143,6 +153,7 @@ export class InteractionsAPI {
 	/**
 	 * Sends an autocomplete response to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - Data for the autocomplete response
@@ -163,6 +174,7 @@ export class InteractionsAPI {
 	/**
 	 * Sends a modal response to an interaction
 	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param data - The modal to send

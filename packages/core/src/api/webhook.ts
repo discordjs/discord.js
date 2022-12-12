@@ -23,6 +23,8 @@ export class WebhooksAPI {
 	/**
 	 * Fetches a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-webhook}
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-webhook-with-token}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 */
@@ -33,6 +35,7 @@ export class WebhooksAPI {
 	/**
 	 * Creates a new webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#create-webhook}
 	 * @param channelId - The id of the channel to create the webhook in
 	 * @param data - The data to use when creating the webhook
 	 * @param reason - The reason for creating the webhook
@@ -47,6 +50,8 @@ export class WebhooksAPI {
 	/**
 	 * Edits a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#modify-webhook}
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#modify-webhook-with-token}
 	 * @param id - The id of the webhook to edit
 	 * @param webhook - The new webhook data
 	 * @param options - The options to use when editing the webhook
@@ -62,6 +67,8 @@ export class WebhooksAPI {
 	/**
 	 * Deletes a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#delete-webhook}
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#delete-webhook-with-token}
 	 * @param id - The id of the webhook to delete
 	 * @param options - The options to use when deleting the webhook
 	 */
@@ -72,6 +79,7 @@ export class WebhooksAPI {
 	/**
 	 * Executes a webhook and returns the created message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param data - The data to use when executing the webhook
@@ -85,6 +93,7 @@ export class WebhooksAPI {
 	/**
 	 * Executes a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param data - The data to use when executing the webhook
@@ -98,6 +107,7 @@ export class WebhooksAPI {
 	/**
 	 * Executes a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param data - The data to use when executing the webhook
@@ -124,6 +134,7 @@ export class WebhooksAPI {
 	/**
 	 * Executes a slack webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-slackcompatible-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when executing the webhook
@@ -144,6 +155,7 @@ export class WebhooksAPI {
 	/**
 	 * Executes a github webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when executing the webhook
@@ -164,6 +176,7 @@ export class WebhooksAPI {
 	/**
 	 * Fetches an associated message from a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-webhook-message}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param messageId - The id of the message to fetch
@@ -179,6 +192,7 @@ export class WebhooksAPI {
 	/**
 	 * Edits an associated message from a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#edit-webhook-message}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param messageId - The id of the message to edit
@@ -200,6 +214,7 @@ export class WebhooksAPI {
 	/**
 	 * Deletes an associated message from a webhook
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#delete-webhook-message}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
 	 * @param messageId - The id of the message to delete
