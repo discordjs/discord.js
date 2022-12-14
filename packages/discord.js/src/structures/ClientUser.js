@@ -44,19 +44,19 @@ class ClientUser extends User {
 
   /**
    * Data used to edit the logged in client
-   * @typedef {Object} ClientUserEditData
+   * @typedef {Object} ClientUserEditOptions
    * @property {string} [username] The new username
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
    */
 
   /**
    * Edits the logged in client.
-   * @param {ClientUserEditData} data The new data
+   * @param {ClientUserEditOptions} options The options to provide
    * @returns {Promise<ClientUser>}
    */
-  async edit(data) {
-    if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
-    const newData = await this.client.rest.patch(Routes.user(), { body: data });
+  async edit(options) {
+    if (typeof options.avatar !== 'undefined') options.avatar = await DataResolver.resolveImage(options.avatar);
+    const newData = await this.client.rest.patch(Routes.user(), { body: options });
     this.client.token = newData.token;
     this.client.rest.setToken(newData.token);
     const { updated } = this.client.actions.UserUpdate.handle(newData);
