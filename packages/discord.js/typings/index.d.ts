@@ -1089,13 +1089,13 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   private _subcommand: string | null;
   private _getTypedOption(
     name: string,
-    type: ApplicationCommandOptionType,
+    allowedTypes: ApplicationCommandOptionType[],
     properties: (keyof ApplicationCommandOption)[],
     required: true,
   ): CommandInteractionOption<Cached>;
   private _getTypedOption(
     name: string,
-    type: ApplicationCommandOptionType,
+    allowedTypes: ApplicationCommandOptionType[],
     properties: (keyof ApplicationCommandOption)[],
     required: boolean,
   ): CommandInteractionOption<Cached> | null;
@@ -6266,5 +6266,6 @@ export type InternalDiscordGatewayAdapterCreator = (
 // External
 export * from 'discord-api-types/v10';
 export * from '@discordjs/builders';
+export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
