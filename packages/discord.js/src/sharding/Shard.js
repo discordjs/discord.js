@@ -21,8 +21,14 @@ class Shard extends EventEmitter {
   constructor(manager, id) {
     super();
 
-    if (manager.mode === 'process') childProcess = require('node:child_process');
-    else if (manager.mode === 'worker') Worker = require('node:worker_threads').Worker;
+    switch (manager.mode) {
+      case 'process':
+        childProcess = require('node:child_process');
+        break;
+      case 'worker':
+        Worker = require('node:worker_threads').Worker;
+        break;
+    }
 
     /**
      * Manager that created the shard
@@ -112,18 +118,21 @@ class Shard extends EventEmitter {
 
     this._exitListener = this._handleExit.bind(this, undefined, timeout);
 
-    if (this.manager.mode === 'process') {
-      this.process = childProcess
-        .fork(path.resolve(this.manager.file), this.args, {
-          env: this.env,
-          execArgv: this.execArgv,
-        })
-        .on('message', this._handleMessage.bind(this))
-        .on('exit', this._exitListener);
-    } else if (this.manager.mode === 'worker') {
-      this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
-        .on('message', this._handleMessage.bind(this))
-        .on('exit', this._exitListener);
+    switch (this.manager.mode) {
+      case 'process':
+        this.process = childProcess
+          .fork(path.resolve(this.manager.file), this.args, {
+            env: this.env,
+            execArgv: this.execArgv,
+          })
+          .on('message', this._handleMessage.bind(this))
+          .on('exit', this._exitListener);
+        break;
+      case 'worker':
+        this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
+          .on('message', this._handleMessage.bind(this))
+          .on('exit', this._exitListener);
+        break;
     }
 
     this._evals.clear();
