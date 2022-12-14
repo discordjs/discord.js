@@ -22,6 +22,7 @@ export class UsersAPI {
 	/**
 	 * Fetches a user by their id
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-user}
 	 * @param userId - The id of the user to fetch
 	 */
 	public async get(userId: Snowflake) {
@@ -30,6 +31,8 @@ export class UsersAPI {
 
 	/**
 	 * Returns the user object of the requester's account
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user}
 	 */
 	public async getCurrent() {
 		return this.rest.get(Routes.user('@me')) as Promise<RESTGetAPICurrentUserResult>;
@@ -38,6 +41,7 @@ export class UsersAPI {
 	/**
 	 * Returns a list of partial guild objects the current user is a member of
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user-guilds}
 	 * @param options - The options to use when fetching the current user's guilds
 	 */
 	public async getGuilds(options: RESTGetAPICurrentUserGuildsQuery = {}) {
@@ -49,6 +53,7 @@ export class UsersAPI {
 	/**
 	 * Leaves the guild with the given id
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#leave-guild}
 	 * @param guildId - The id of the guild
 	 */
 	public async leaveGuild(guildId: Snowflake) {
@@ -58,6 +63,7 @@ export class UsersAPI {
 	/**
 	 * Edits the current user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#modify-current-user}
 	 * @param user - The new data for the current user
 	 */
 	public async edit(user: RESTPatchAPICurrentUserJSONBody) {
@@ -67,6 +73,7 @@ export class UsersAPI {
 	/**
 	 * Fetches the guild member for the current user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user-guild-member}
 	 * @param guildId - The id of the guild
 	 */
 	public async getGuildMember(guildId: Snowflake) {
@@ -76,6 +83,7 @@ export class UsersAPI {
 	/**
 	 * Edits the guild member for the current user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-member}
 	 * @param guildId - The id of the guild
 	 * @param member - The new data for the guild member
 	 * @param reason - The reason for editing this guild member
@@ -90,6 +98,7 @@ export class UsersAPI {
 	/**
 	 * Sets the voice state for the current user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when setting the voice state
 	 */
@@ -102,6 +111,7 @@ export class UsersAPI {
 	/**
 	 * Opens a new DM channel with a user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#create-dm}
 	 * @param userId - The id of the user to open a DM channel with
 	 */
 	public async createDM(userId: Snowflake) {

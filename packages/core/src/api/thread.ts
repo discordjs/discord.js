@@ -24,16 +24,18 @@ export class ThreadsAPI {
 	/**
 	 * Fetches a thread
 	 *
-	 * @param channelId - The id of the channel to fetch the thread from
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel}
 	 * @param threadId - The id of the thread
 	 */
-	public async get(channelId: Snowflake, threadId: Snowflake) {
-		return this.rest.get(Routes.threads(channelId, threadId)) as Promise<APIThreadChannel>;
+	public async get(threadId: Snowflake) {
+		return this.rest.get(Routes.channel(threadId)) as Promise<APIThreadChannel>;
 	}
 
 	/**
 	 * Creates a new thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-from-message}
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-without-message}
 	 * @param channelId - The id of the channel to start the thread in
 	 * @param data - The data to use when starting the thread
 	 */
@@ -44,6 +46,7 @@ export class ThreadsAPI {
 	/**
 	 * Creates a new forum post
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-in-forum-channel}
 	 * @param channelId - The id of the forum channel to start the thread in
 	 * @param data - The data to use when starting the thread
 	 */
@@ -61,6 +64,7 @@ export class ThreadsAPI {
 	/**
 	 * Adds the current user to a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#join-thread}
 	 * @param threadId - The id of the thread to join
 	 */
 	public async join(threadId: Snowflake) {
@@ -70,6 +74,7 @@ export class ThreadsAPI {
 	/**
 	 * Adds a member to a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#add-thread-member}
 	 * @param threadId - The id of the thread to add the member to
 	 * @param userId - The id of the user to add to the thread
 	 */
@@ -80,6 +85,7 @@ export class ThreadsAPI {
 	/**
 	 * Removes the current user from a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#leave-thread}
 	 * @param threadId - The id of the thread to leave
 	 */
 	public async leave(threadId: Snowflake) {
@@ -89,6 +95,7 @@ export class ThreadsAPI {
 	/**
 	 * Removes a member from a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#remove-thread-member}
 	 * @param threadId - The id of the thread to remove the member from
 	 * @param userId - The id of the user to remove from the thread
 	 */
@@ -99,6 +106,7 @@ export class ThreadsAPI {
 	/**
 	 * Fetches a member of a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
 	 * @param threadId - The id of the thread to fetch the member from
 	 * @param userId - The id of the user
 	 */
@@ -109,6 +117,7 @@ export class ThreadsAPI {
 	/**
 	 * Fetches all members of a thread
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#list-thread-members}
 	 * @param threadId - The id of the thread to fetch the members from
 	 */
 	public async getAllMembers(threadId: Snowflake) {

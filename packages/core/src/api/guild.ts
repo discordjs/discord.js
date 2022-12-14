@@ -91,6 +91,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
 	 * @param guildId - The id of the guild
 	 */
 	public async get(guildId: string) {
@@ -100,6 +101,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild preview
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-preview}
 	 * @param guildId - The id of the guild to fetch the preview from
 	 */
 	public async getPreview(guildId: Snowflake) {
@@ -109,6 +111,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild}
 	 * @param data - The guild to create
 	 */
 	public async create(data: RESTPostAPIGuildsJSONBody) {
@@ -118,6 +121,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild}
 	 * @param guildId - The id of the guild to edit
 	 * @param data - The new guild data
 	 * @param reason - The reason for editing this guild
@@ -129,6 +133,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild}
 	 * @param guildId - The id of the guild to delete
 	 * @param reason - The reason for deleting this guild
 	 */
@@ -139,6 +144,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all the members of a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#list-guild-members}
 	 * @param guildId - The id of the guild
 	 * @param options - The options to use when fetching the guild members
 	 */
@@ -151,6 +157,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild's channels
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-channels}
 	 * @param guildId - The id of the guild to fetch the channels from
 	 */
 	public async getChannels(guildId: Snowflake) {
@@ -160,6 +167,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a guild channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild-channel}
 	 * @param guildId - The id of the guild to create the channel in
 	 * @param data - The data to create the new channel
 	 * @param reason - The reason for creating this channel
@@ -174,6 +182,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a guild channel's positions
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions}
 	 * @param guildId - The id of the guild to edit the channel positions from
 	 * @param data - The data to edit the channel positions with
 	 * @param reason - The reason for editing the channel positions
@@ -189,6 +198,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the active threads in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#list-active-guild-threads}
 	 * @param guildId - The id of the guild to fetch the active threads from
 	 */
 	public async getActiveThreads(guildId: Snowflake) {
@@ -198,6 +208,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild member ban
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-bans}
 	 * @param guildId - The id of the guild to fetch the ban from
 	 */
 	public async getMemberBans(guildId: Snowflake) {
@@ -207,6 +218,7 @@ export class GuildsAPI {
 	/**
 	 * Bans a user from a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild-ban}
 	 * @param guildId - The id of the guild to ban the member in
 	 * @param userId - The id of the user to ban
 	 * @param options - Options for banning the user
@@ -224,6 +236,7 @@ export class GuildsAPI {
 	/**
 	 * Unbans a user from a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#remove-guild-ban}
 	 * @param guildId - The id of the guild to unban the member in
 	 * @param userId - The id of the user to unban
 	 * @param reason - The reason for unbanning the user
@@ -235,6 +248,7 @@ export class GuildsAPI {
 	/**
 	 * Gets all the roles in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-roles}
 	 * @param guildId - The id of the guild to fetch the roles from
 	 */
 	public async getRoles(guildId: Snowflake) {
@@ -244,6 +258,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a guild role
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild-role}
 	 * @param guildId - The id of the guild to create the role in
 	 * @param data - The data to create the role with
 	 * @param reason - The reason for creating the role
@@ -255,6 +270,7 @@ export class GuildsAPI {
 	/**
 	 * Sets role positions in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-role-positions}
 	 * @param guildId - The id of the guild to set role positions for
 	 * @param data - The data for setting a role position
 	 * @param reason - The reason for setting the role position
@@ -269,6 +285,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a guild role
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-role}
 	 * @param guildId - The id of the guild to edit the role in
 	 * @param roleId - The id of the role to edit
 	 * @param data - data for editing the role
@@ -284,6 +301,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a guild role
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild-role}
 	 * @param guildId - The id of the guild to delete the role in
 	 * @param roleId - The id of the role to delete
 	 * @param reason - The reason for deleting the role
@@ -295,6 +313,7 @@ export class GuildsAPI {
 	/**
 	 * Edits the multi-factor-authentication (MFA) level of a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-mfa-level}
 	 * @param guildId - The id of the guild to edit the MFA level for
 	 * @param level - The new MFA level
 	 * @param reason - The reason for editing the MFA level
@@ -309,6 +328,7 @@ export class GuildsAPI {
 	/**
 	 * Fetch the number of members that can be pruned from a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-prune-count}
 	 * @param guildId - The id of the guild to fetch the number of pruned members from
 	 * @param options - The options for fetching the number of pruned members
 	 */
@@ -321,6 +341,7 @@ export class GuildsAPI {
 	/**
 	 * Prunes members in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#begin-guild-prune}
 	 * @param guildId - The id of the guild to prune members in
 	 * @param options - The options for pruning members
 	 * @param reason - The reason for pruning members
@@ -335,6 +356,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches voice regions for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-voice-regions}
 	 * @param guildId - The id of the guild to fetch the voice regions from
 	 */
 	public async getVoiceRegions(guildId: Snowflake) {
@@ -344,6 +366,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the invites for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-invites}
 	 * @param guildId - The id of the guild to fetch the invites from
 	 */
 	public async getInvites(guildId: Snowflake) {
@@ -353,6 +376,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the integrations for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-integrations}
 	 * @param guildId - The id of the guild to fetch the integrations from
 	 */
 	public async getIntegrations(guildId: Snowflake) {
@@ -362,6 +386,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes an integration from a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild-integration}
 	 * @param guildId - The id of the guild to delete the integration from
 	 * @param integrationId - The id of the integration to delete
 	 * @param reason - The reason for deleting the integration
@@ -373,6 +398,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget settings for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-widget-settings}
 	 * @param guildId - The id of the guild to fetch the widget settings from
 	 */
 	public async getWidgetSettings(guildId: Snowflake) {
@@ -382,6 +408,7 @@ export class GuildsAPI {
 	/**
 	 * Edits the widget settings for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-widget}
 	 * @param guildId - The id of the guild to edit the widget settings from
 	 * @param data - The new widget settings data
 	 * @param reason - The reason for editing the widget settings
@@ -396,6 +423,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-widget}
 	 * @param guildId - The id of the guild to fetch the widget from
 	 */
 	public async getWidget(guildId: Snowflake) {
@@ -405,6 +433,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the vanity url for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-vanity-url}
 	 * @param guildId - The id of the guild to fetch the vanity url from
 	 */
 	public async getVanityURL(guildId: Snowflake) {
@@ -414,6 +443,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the widget image for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-widget-image}
 	 * @param guildId - The id of the guild to fetch the widget image from
 	 * @param style - The style of the widget image
 	 */
@@ -426,6 +456,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the welcome screen for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-welcome-screen}
 	 * @param guildId - The id of the guild to fetch the welcome screen from
 	 */
 	public async getWelcomeScreen(guildId: Snowflake) {
@@ -435,6 +466,7 @@ export class GuildsAPI {
 	/**
 	 * Edits the welcome screen for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-welcome-screen}
 	 * @param guildId - The id of the guild to edit the welcome screen for
 	 * @param data - The new welcome screen data
 	 * @param reason - The reason for editing the welcome screen
@@ -449,6 +481,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a user's voice state in a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-user-voice-state}
 	 * @param guildId - The id of the guild to edit the current user's voice state in
 	 * @param userId - The id of the user to edit the voice state for
 	 * @param data - The data for editing the voice state
@@ -466,6 +499,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all emojis for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/emoji#list-guild-emojis}
 	 * @param guildId - The id of the guild to fetch the emojis from
 	 */
 	public async getEmojis(guildId: Snowflake) {
@@ -475,6 +509,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches an emoji for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/emoji#get-guild-emoji}
 	 * @param guildId - The id of the guild to fetch the emoji from
 	 * @param emojiId - The id of the emoji to fetch
 	 */
@@ -485,6 +520,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new emoji for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/emoji#create-guild-emoji}
 	 * @param guildId - The id of the guild to create the emoji from
 	 * @param data - The data for creating the emoji
 	 * @param reason - The reason for creating the emoji
@@ -499,6 +535,7 @@ export class GuildsAPI {
 	/**
 	 * Edits an emoji for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/emoji#modify-guild-emoji}
 	 * @param guildId - The id of the guild to edit the emoji from
 	 * @param emojiId - The id of the emoji to edit
 	 * @param data - The data for editing the emoji
@@ -519,6 +556,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes an emoji for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/emoji#delete-guild-emoji}
 	 * @param guildId - The id of the guild to delete the emoji from
 	 * @param emojiId - The id of the emoji to delete
 	 * @param reason - The reason for deleting the emoji
@@ -530,6 +568,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all scheduled events for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#list-scheduled-events-for-guild}
 	 * @param guildId - The id of the guild to fetch the scheduled events from
 	 * @param options - The options for fetching the scheduled events
 	 */
@@ -542,6 +581,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new scheduled event for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#create-guild-scheduled-event}
 	 * @param guildId - The id of the guild to create the scheduled event from
 	 * @param data - The data to create the event with
 	 * @param reason - The reason for creating the scheduled event
@@ -556,6 +596,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a scheduled event for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event}
 	 * @param guildId - The id of the guild to fetch the scheduled event from
 	 * @param eventId - The id of the scheduled event to fetch
 	 * @param options - The options for fetching the scheduled event
@@ -573,6 +614,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a scheduled event for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#modify-guild-scheduled-event}
 	 * @param guildId - The id of the guild to edit the scheduled event from
 	 * @param eventId - The id of the scheduled event to edit
 	 * @param data - The new event data
@@ -593,6 +635,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a scheduled event for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#delete-guild-scheduled-event}
 	 * @param guildId - The id of the guild to delete the scheduled event from
 	 * @param eventId - The id of the scheduled event to delete
 	 * @param reason - The reason for deleting the scheduled event
@@ -604,6 +647,7 @@ export class GuildsAPI {
 	/**
 	 * Gets all users that are interested in a scheduled event
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#get-guild-scheduled-event-users}
 	 * @param guildId - The id of the guild to fetch the scheduled event users from
 	 * @param eventId - The id of the scheduled event to fetch the users for
 	 * @param options - The options for fetching the scheduled event users
@@ -621,6 +665,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all the templates for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#get-guild-templates}
 	 * @param guildId - The id of the guild to fetch the templates from
 	 */
 	public async getTemplates(guildId: Snowflake) {
@@ -630,6 +675,7 @@ export class GuildsAPI {
 	/**
 	 * Syncs a template for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#sync-guild-template}
 	 * @param guildId - The id of the guild to sync the template from
 	 * @param templateCode - The code of the template to sync
 	 */
@@ -640,6 +686,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a template for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#modify-guild-template}
 	 * @param guildId - The id of the guild to edit the template from
 	 * @param templateCode - The code of the template to edit
 	 * @param data - The data for editing the template
@@ -653,6 +700,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a template for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#delete-guild-template}
 	 * @param guildId - The id of the guild to delete the template from
 	 * @param templateCode - The code of the template to delete
 	 */
@@ -663,6 +711,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all the stickers for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#list-guild-stickers}
 	 * @param guildId - The id of the guild to fetch the stickers from
 	 */
 	public async getStickers(guildId: Snowflake) {
@@ -672,6 +721,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a sticker for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#get-guild-sticker}
 	 * @param guildId - The id of the guild to fetch the sticker from
 	 * @param stickerId - The id of the sticker to fetch
 	 */
@@ -682,6 +732,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a sticker for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#create-guild-sticker}
 	 * @param guildId - The id of the guild to create the sticker for
 	 * @param data - The data for creating the sticker
 	 * @param reason - The reason for creating the sticker
@@ -704,6 +755,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a sticker for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#modify-guild-sticker}
 	 * @param guildId - The id of the guild to edit the sticker from
 	 * @param stickerId - The id of the sticker to edit
 	 * @param data - The data for editing the sticker
@@ -724,6 +776,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes a sticker for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#delete-guild-sticker}
 	 * @param guildId - The id of the guild to delete the sticker from
 	 * @param stickerId - The id of the sticker to delete
 	 * @param reason - The reason for deleting the sticker
@@ -735,6 +788,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches the audit logs for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log}
 	 * @param guildId - The id of the guild to fetch the audit logs from
 	 * @param options - The options for fetching the audit logs
 	 */
@@ -747,6 +801,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches all auto moderation rules for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#list-auto-moderation-rules-for-guild}
 	 * @param guildId - The id of the guild to fetch the auto moderation rules from
 	 */
 	public async getAutoModerationRules(guildId: Snowflake) {
@@ -756,6 +811,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches an auto moderation rule for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#get-auto-moderation-rule}
 	 * @param guildId - The id of the guild to fetch the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to fetch
 	 */
@@ -768,6 +824,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new auto moderation rule for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#create-auto-moderation-rule}
 	 * @param guildId - The id of the guild to create the auto moderation rule from
 	 * @param data - The data for creating the auto moderation rule
 	 */
@@ -785,6 +842,7 @@ export class GuildsAPI {
 	/**
 	 * Edits an auto moderation rule for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#modify-auto-moderation-rule}
 	 * @param guildId - The id of the guild to edit the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to edit
 	 * @param data - The data for editing the auto moderation rule
@@ -805,6 +863,7 @@ export class GuildsAPI {
 	/**
 	 * Deletes an auto moderation rule for a guild
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#delete-auto-moderation-rule}
 	 * @param guildId - The id of the guild to delete the auto moderation rule from
 	 * @param ruleId - The id of the auto moderation rule to delete
 	 * @param reason - The reason for deleting the auto moderation rule
@@ -816,6 +875,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild member
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-member}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
 	 */
@@ -826,6 +886,7 @@ export class GuildsAPI {
 	/**
 	 * Searches for guild members
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#search-guild-members}
 	 * @param guildId - The id of the guild to search in
 	 * @param query - The query to search for
 	 * @param limit - The maximum number of members to return
@@ -839,6 +900,7 @@ export class GuildsAPI {
 	/**
 	 * Edits a guild member
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-member}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
 	 * @param data - The data to use when editing the guild member
@@ -859,6 +921,7 @@ export class GuildsAPI {
 	/**
 	 * Adds a role to a guild member
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member-role}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
 	 * @param roleId - The id of the role
@@ -871,6 +934,7 @@ export class GuildsAPI {
 	/**
 	 * Removes a role from a guild member
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#remove-guild-member-role}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
 	 * @param roleId - The id of the role
@@ -883,6 +947,7 @@ export class GuildsAPI {
 	/**
 	 * Fetches a guild template
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#get-guild-template}
 	 * @param templateCode - The code of the template
 	 */
 	public async getTemplate(templateCode: string) {
@@ -892,6 +957,7 @@ export class GuildsAPI {
 	/**
 	 * Creates a new template
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild-template#create-guild-template}
 	 * @param templateCode - The code of the template
 	 * @param data - The data to use when creating the template
 	 */

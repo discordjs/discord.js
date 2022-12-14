@@ -7,6 +7,7 @@ export class InvitesAPI {
 	/**
 	 * Fetches an invite
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/invite#get-invite}
 	 * @param code - The invite code
 	 */
 	public async get(code: string, options: RESTGetAPIInviteQuery = {}) {
@@ -18,6 +19,7 @@ export class InvitesAPI {
 	/**
 	 * Deletes an invite
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/invite#delete-invite}
 	 * @param code - The invite code
 	 * @param reason - The reason for deleting the invite
 	 */

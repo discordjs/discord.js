@@ -6,6 +6,8 @@ export class VoiceAPI {
 
 	/**
 	 * Fetches all voice regions
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/voice#list-voice-regions}
 	 */
 	public async getVoiceRegions() {
 		return this.rest.get(Routes.voiceRegions()) as Promise<GetAPIVoiceRegionsResult>;

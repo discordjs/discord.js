@@ -30,6 +30,7 @@ export class ChannelsAPI {
 	/**
 	 * Sends a message in a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#create-message}
 	 * @param channelId - The id of the channel to send the message in
 	 * @param data - The data to use when sending the message
 	 */
@@ -46,6 +47,7 @@ export class ChannelsAPI {
 	/**
 	 * Edits a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#edit-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
 	 * @param data - The data to use when editing the message
@@ -64,6 +66,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the reactions for a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
 	 * @param emoji - The emoji to get the reactions for
@@ -83,6 +86,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a reaction for the current user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-own-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
@@ -94,6 +98,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a reaction for a user
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-user-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
@@ -106,6 +111,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes all reactions for a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-all-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
 	 */
@@ -116,6 +122,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes all reactions of an emoji for a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
 	 * @param emoji - The emoji to delete the reactions for
@@ -127,6 +134,7 @@ export class ChannelsAPI {
 	/**
 	 * Adds a reaction to a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#create-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
 	 * @param emoji - The emoji to add the reaction with
@@ -138,6 +146,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel}
 	 * @param channelId - The id of the channel
 	 */
 	public async get(channelId: Snowflake) {
@@ -147,6 +156,7 @@ export class ChannelsAPI {
 	/**
 	 * Edits a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#modify-channel}
 	 * @param channelId - The id of the channel to edit
 	 * @param data - The new channel data
 	 */
@@ -157,6 +167,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#deleteclose-channel}
 	 * @param channelId - The id of the channel to delete
 	 */
 	public async delete(channelId: Snowflake) {
@@ -166,6 +177,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the messages of a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-messages}
 	 * @param channelId - The id of the channel to fetch messages from
 	 * @param options - The options to use when fetching messages
 	 */
@@ -178,6 +190,7 @@ export class ChannelsAPI {
 	/**
 	 * Shows a typing indicator in a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#trigger-typing-indicator}
 	 * @param channelId - The id of the channel to show the typing indicator in
 	 */
 	public async showTyping(channelId: Snowflake) {
@@ -187,6 +200,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the pinned messages of a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-pinned-messages}
 	 * @param channelId - The id of the channel to fetch pinned messages from
 	 */
 	public async getPins(channelId: Snowflake) {
@@ -196,6 +210,7 @@ export class ChannelsAPI {
 	/**
 	 * Pins a message in a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#pin-message}
 	 * @param channelId - The id of the channel to pin the message in
 	 * @param messageId - The id of the message to pin
 	 * @param reason - The reason for pinning the message
@@ -207,6 +222,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete
 	 * @param reason - The reason for deleting the message
@@ -218,6 +234,7 @@ export class ChannelsAPI {
 	/**
 	 * Bulk deletes messages
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#bulk-delete-messages}
 	 * @param channelId - The id of the channel the messages are in
 	 * @param messageIds - The ids of the messages to delete
 	 */
@@ -228,6 +245,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to fetch
 	 */
@@ -238,6 +256,7 @@ export class ChannelsAPI {
 	/**
 	 * Crossposts a message
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#crosspost-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to crosspost
 	 */
@@ -250,6 +269,7 @@ export class ChannelsAPI {
 	/**
 	 * Unpins a message in a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#unpin-message}
 	 * @param channelId - The id of the channel to unpin the message in
 	 * @param messageId - The id of the message to unpin
 	 * @param reason - The reason for unpinning the message
@@ -261,6 +281,7 @@ export class ChannelsAPI {
 	/**
 	 * Follows an announcement channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#follow-announcement-channel}
 	 * @param channelId - The id of the announcement channel to follow
 	 * @param webhookChannelId - The id of the webhook channel to follow the announcements in
 	 */
@@ -273,6 +294,7 @@ export class ChannelsAPI {
 	/**
 	 * Creates a new invite for a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#create-channel-invite}
 	 * @param channelId - The id of the channel to create an invite for
 	 * @param data - The data to use when creating the invite
 	 */
@@ -286,6 +308,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the invites of a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-invites}
 	 * @param channelId - The id of the channel to fetch invites from
 	 */
 	public async getInvites(channelId: Snowflake) {
@@ -295,6 +318,8 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the archived threads of a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#list-public-archived-threads}
+	 * @see {@link https://discord.com/developers/docs/resources/channel#list-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch archived threads from
 	 * @param archivedStatus - The archived status of the threads to fetch
 	 * @param options - The options to use when fetching archived threads
@@ -312,6 +337,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the private joined archived threads of a channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#list-joined-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch joined archived threads from
 	 * @param options - The options to use when fetching joined archived threads
 	 */
