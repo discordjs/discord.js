@@ -2102,7 +2102,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.20
+    discord-api-types: next
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -8461,6 +8461,13 @@ __metadata:
   version: 0.37.20
   resolution: "discord-api-types@npm:0.37.20"
   checksum: 88ebed85aada3483e83ac46a1b4574c0d59948060ac72f451d658fa646b20d62bd6f21792043621dcc5a9e9353d95c25de70646b8d2a93f0022154345800b26c
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:next":
+  version: 0.37.23-next.2b75d13.1671054341
+  resolution: "discord-api-types@npm:0.37.23-next.2b75d13.1671054341"
+  checksum: dd1bedf7a7bc590d51128ec54541a4f6c8abe2aee1babdbd1d9856b2e1e421d8c6529c39cc929c0efb6e7c0876919caa31f10d8fa5fa00a1e65db77f85f6347e
   languageName: node
   linkType: hard
 

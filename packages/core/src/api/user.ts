@@ -1,6 +1,8 @@
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
+	type RESTGetAPICurrentUserConnectionsResult,
 	type RESTGetAPICurrentUserGuildsQuery,
 	type RESTGetAPICurrentUserGuildsResult,
 	type RESTGetAPICurrentUserResult,
@@ -13,6 +15,8 @@ import {
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
+	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
+	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -118,5 +122,35 @@ export class UsersAPI {
 		return this.rest.post(Routes.userChannels(), {
 			body: { recipient_id: userId },
 		}) as Promise<RESTPostAPICurrentUserCreateDMChannelResult>;
+	}
+
+	/**
+	 * Gets the current user's connections
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-user-connections}
+	 */
+	public async getConnections() {
+		return this.rest.get(Routes.userConnections()) as Promise<RESTGetAPICurrentUserConnectionsResult>;
+	}
+
+	/**
+	 * Gets the current user's active application role connection
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#get-user-application-role-connection}
+	 * @param applicationId - The id of the application
+	 */
+	public async getApplicationRoleConnection(applicationId: Snowflake) {
+		return this.rest.get(
+			Routes.userApplicationRoleConnection(applicationId),
+		) as Promise<RESTGetAPICurrentUserApplicationRoleConnectionResult>;
+	}
+
+	public async updateApplicationRoleConnection(
+		applicationId: Snowflake,
+		options: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
+	) {
+		return this.rest.put(Routes.userApplicationRoleConnection(applicationId), {
+			body: options,
+		}) as Promise<RESTPutAPICurrentUserApplicationRoleConnectionResult>;
 	}
 }
