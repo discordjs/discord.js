@@ -145,6 +145,13 @@ export class UsersAPI {
 		) as Promise<RESTGetAPICurrentUserApplicationRoleConnectionResult>;
 	}
 
+	/**
+	 * Updates the current user's application role connection
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/user#update-user-application-role-connection}
+	 * @param applicationId - The id of the application
+	 * @param options - The options to use when updating the application role connection
+	 */
 	public async updateApplicationRoleConnection(
 		applicationId: Snowflake,
 		options: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
