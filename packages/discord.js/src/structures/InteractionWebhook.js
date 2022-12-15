@@ -45,7 +45,7 @@ class InteractionWebhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
 
