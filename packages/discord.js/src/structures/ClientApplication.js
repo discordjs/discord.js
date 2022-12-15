@@ -159,8 +159,19 @@ class ClientApplication extends Application {
   }
 
   /**
+   * Data for creating or editing an application role connection metadata.
+   * @typedef {Object} ApplicationRoleConnectionMetadataData
+   * @property {string} name The name of the metadata field
+   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {string} description The description of the metadata field
+   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {string} key The dictionary key of the metadata field
+   * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
+   */
+
+  /**
    * Updates this application's role connection metadata records
-   * @param {ApplicationRoleConnectionMetadata[]} records The new role connection metadata records
+   * @param {ApplicationRoleConnectionMetadataData[]} records The new role connection metadata records
    * @returns {Promise<ApplicationRoleConnectionMetadata[]>}
    */
   async editRoleConnectionMetadataRecords(records) {

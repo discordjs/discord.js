@@ -983,7 +983,7 @@ export class ClientApplication extends Application {
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public editRoleConnectionMetadataRecords(
-    records: ApplicationRoleConnectionMetadata[],
+    records: ApplicationRoleConnectionMetadataData[],
   ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
@@ -4468,6 +4468,15 @@ export type ApplicationCommandPermissionIdResolvable =
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString = keyof typeof ApplicationFlags;
+
+export interface ApplicationRoleConnectionMetadataData {
+  name: string;
+  nameLocalizations?: LocalizationMap | null;
+  description: string;
+  descriptionLocalizations?: LocalizationMap | null;
+  key: string;
+  type: ApplicationRoleConnectionMetadataType;
+}
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];

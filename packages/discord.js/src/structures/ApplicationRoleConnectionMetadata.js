@@ -12,11 +12,7 @@ class ApplicationRoleConnectionMetadata {
      * The name localizations for this metadata field
      * @type {?Object<Locale, string>}
      */
-    if ('name_localizations' in data) {
-      this.nameLocalizations = data.name_localizations;
-    } else {
-      this.nameLocalizations ??= null;
-    }
+    this.nameLocalizations = data.name_localizations ?? null;
 
     /**
      * The description of this metadata field
@@ -28,11 +24,7 @@ class ApplicationRoleConnectionMetadata {
      * The description localizations for this metadata field
      * @type {?Object<Locale, string>}
      */
-    if ('description_localizations' in data) {
-      this.descriptionLocalizations = data.description_localizations;
-    } else {
-      this.descriptionLocalizations ??= null;
-    }
+    this.descriptionLocalizations = data.description_localizations ?? null;
 
     /**
      * The dictionary key for this metadata field
