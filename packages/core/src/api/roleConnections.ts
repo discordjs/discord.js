@@ -1,10 +1,10 @@
 import type { REST } from '@discordjs/rest';
-import type { Snowflake } from 'discord-api-types/globals';
 import {
 	Routes,
 	type RESTGetAPIApplicationRoleConnectionMetadataResult,
 	type RESTPutAPIApplicationRoleConnectionMetadataResult,
 	type RESTPutAPIApplicationCommandPermissionsJSONBody,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class RoleConnectionsAPI {
