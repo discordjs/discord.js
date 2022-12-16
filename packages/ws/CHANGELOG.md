@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.5.0...@discordjs/ws@0.6.0) - (2022-12-16)
+
+## Bug Fixes
+
+- **WebSocketShard:** Send ratelimit handling (#8887) ([40b504a](https://github.com/discordjs/discord.js/commit/40b504a2088effc6a467f40ac3cf2a6d736ab209))
+
+## Features
+
+- **core:** Add support for role connections (#8930) ([3d6fa24](https://github.com/discordjs/discord.js/commit/3d6fa248c07b2278504bbe8bafa17a3294971fd9))
+
+## Refactor
+
+- **WebSocketShard:** Identify throttling (#8888) ([8f552a0](https://github.com/discordjs/discord.js/commit/8f552a0e17c0eca71063e7a4353b9b351bcdf9fd))
+
 # [@discordjs/ws@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.1...@discordjs/ws@0.5.0) - (2022-11-28)
 
 ## Bug Fixes
