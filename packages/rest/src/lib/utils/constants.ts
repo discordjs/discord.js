@@ -1,7 +1,6 @@
 import process from 'node:process';
 import { APIVersion } from 'discord-api-types/v10';
 import { Agent } from 'undici';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { RESTOptions } from '../REST.js';
 
 export const DefaultUserAgent = `DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])`;

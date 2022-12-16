@@ -2,7 +2,6 @@ import process from 'node:process';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { SessionInfo, OptionalWebSocketManagerOptions } from '../ws/WebSocketManager.js';
 import type { SendRateLimitState } from '../ws/WebSocketShard.js';
 
