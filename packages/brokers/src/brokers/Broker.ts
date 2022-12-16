@@ -34,7 +34,7 @@ export interface BaseBrokerOptions {
 /**
  * Default broker options
  */
-export const DefaultBrokerOptions: Required<BaseBrokerOptions> = {
+export const DefaultBrokerOptions = {
 	name: randomBytes(20).toString('hex'),
 	maxChunk: 10,
 	blockTimeout: 5_000,
@@ -43,7 +43,7 @@ export const DefaultBrokerOptions: Required<BaseBrokerOptions> = {
 		return Buffer.from(encoded.buffer, encoded.byteOffset, encoded.byteLength);
 	},
 	decode: (data): unknown => decode(data),
-};
+} as const satisfies Required<BaseBrokerOptions>;
 
 export type ToEventMap<
 	TRecord extends Record<string, any>,
