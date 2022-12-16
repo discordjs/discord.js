@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@0.2.0...@discordjs/core@0.3.0) - (2022-12-16)
+
+## Bug Fixes
+
+- **core:** Instantiate/export role connections ([166f742](https://github.com/discordjs/discord.js/commit/166f742d02d475a5044f935ee638ae1e25075b9c))
+
 # [@discordjs/core@0.2.0](https://github.com/discordjs/discord.js/tree/@discordjs/core@0.2.0) - (2022-12-16)
 
 ## Bug Fixes
