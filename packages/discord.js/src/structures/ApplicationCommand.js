@@ -52,6 +52,12 @@ class ApplicationCommand extends Base {
      */
     this.type = data.type;
 
+    /**
+     * Whether this command is age-restricted (18+)
+     * @type {boolean}
+     */
+    this.nsfw = data.nsfw ?? false;
+
     this._patch(data);
   }
 
@@ -188,6 +194,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandType.ChatInput}
    * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {boolean} [nsfw] Whether the command is age-restricted
    * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
    * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
@@ -377,6 +384,7 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
+      ('nsfw' in command && command.nsfw !== this.nsfw) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
