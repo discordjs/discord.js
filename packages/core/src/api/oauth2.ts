@@ -67,7 +67,6 @@ export class OAuth2API {
 	 * This is primarily used for testing purposes
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#client-credentials-grant}
 	 * @param options - The options for the client credentials grant request
-	 * @returns
 	 */
 	public async getToken(options: RESTPostOAuth2ClientCredentialsURLEncodedData) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
