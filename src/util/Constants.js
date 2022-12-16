@@ -1386,7 +1386,7 @@ exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VO
 exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
 
 /**
- * Sort {@link ForumChannel} posts by ?
+ * Sort {@link ForumChannel} posts by creation time or activity
  * * LATEST_ACTIVITY
  * * CREATION_DATE
  * @typedef {string} SortOrderType
