@@ -2283,7 +2283,7 @@ __metadata:
     "@types/node": 16.18.4
     "@vitest/coverage-c8": ^0.25.3
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.20
+    discord-api-types: ^0.37.23
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
@@ -2478,7 +2478,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.20
+    discord-api-types: ^0.37.23
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
