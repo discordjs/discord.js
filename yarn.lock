@@ -8464,13 +8464,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.37.23":
-  version: 0.37.23
-  resolution: "discord-api-types@npm:0.37.23"
-  checksum: 68c385366ccec523c35db4048f2c0d1fcd979fefb620ba57707dc648d0e647b817047a03682d9cac2e9e9a1642f2129ad343ac66a7a9b1e0d6bf53bc5eb11f37
-  languageName: node
-  linkType: hard
-
 "discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local
   resolution: "discord.js@workspace:packages/discord.js"
