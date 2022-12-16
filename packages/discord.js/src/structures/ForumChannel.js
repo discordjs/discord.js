@@ -134,6 +134,12 @@ class ForumChannel extends GuildChannel {
     } else {
       this.defaultSortOrder ??= null;
     }
+
+    /**
+     * The default layout type used to display posts
+     * @type {ForumLayoutType}
+     */
+    this.defaultForumLayout = data.default_forum_layout;
   }
 
   /**
@@ -223,6 +229,16 @@ class ForumChannel extends GuildChannel {
    */
   setDefaultSortOrder(defaultSortOrder, reason) {
     return this.edit({ defaultSortOrder, reason });
+  }
+
+  /**
+   * Sets the default forum layout type used to display posts
+   * @param {ForumLayoutType} defaultForumLayout The default forum layout type to set on this channel
+   * @param {string} [reason] Reason for changing the default forum layout
+   * @returns {Promise<ForumChannel>}
+   */
+  setDefaultForumLayout(defaultForumLayout, reason) {
+    return this.edit({ defaultForumLayout, reason });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

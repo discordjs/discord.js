@@ -161,6 +161,7 @@ class GuildChannelManager extends CachedManager {
     defaultReactionEmoji,
     defaultAutoArchiveDuration,
     defaultSortOrder,
+    defaultForumLayout,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -184,6 +185,7 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_auto_archive_duration: defaultAutoArchiveDuration,
         default_sort_order: defaultSortOrder,
+        default_forum_layout: defaultForumLayout,
       },
       reason,
     });
@@ -252,6 +254,7 @@ class GuildChannelManager extends CachedManager {
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
+   * @property {ForumLayoutType} [defaultForumLayout] The default forum layout to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
@@ -314,6 +317,7 @@ class GuildChannelManager extends CachedManager {
         default_thread_rate_limit_per_user: options.defaultThreadRateLimitPerUser,
         flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
         default_sort_order: options.defaultSortOrder,
+        default_forum_layout: options.defaultForumLayout,
       },
       reason: options.reason,
     });

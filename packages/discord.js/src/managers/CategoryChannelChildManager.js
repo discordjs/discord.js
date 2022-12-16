@@ -56,6 +56,7 @@ class CategoryChannelChildManager extends DataManager {
    * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
    * The default auto archive duration for all new threads in this channel
    * @property {SortOrderType} [defaultSortOrder] The default sort order mode used to order posts (forum only).
+   * @property {ForumLayoutType} [defaultForumLayout] The default layout used to display posts (forum only).
    * @property {string} [reason] Reason for creating the new channel
    */
 

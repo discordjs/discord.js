@@ -149,6 +149,7 @@ import {
   AuditLogRuleTriggerType,
   GatewayAutoModerationActionExecutionDispatchData,
   APIAutoModerationRule,
+  ForumLayoutType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2253,6 +2254,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   public nsfw: boolean;
   public topic: string | null;
   public defaultSortOrder: SortOrderType | null;
+  public defaultForumLayout: ForumLayoutType;
 
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
@@ -2265,6 +2267,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
+  public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;
 }
 
 export class PermissionOverwrites extends Base {
@@ -4584,6 +4587,7 @@ export interface CategoryCreateChannelOptions {
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   defaultSortOrder?: SortOrderType;
+  defaultForumLayout?: ForumLayoutType;
   reason?: string;
 }
 
@@ -5334,6 +5338,7 @@ export interface GuildChannelEditOptions {
   defaultThreadRateLimitPerUser?: number;
   flags?: ChannelFlagsResolvable;
   defaultSortOrder?: SortOrderType | null;
+  defaultForumLayout?: ForumLayoutType;
   reason?: string;
 }
 
