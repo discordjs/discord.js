@@ -152,6 +152,8 @@ import {
   AutoModerationActionExecution,
   AutoModerationRule,
   AutoModerationRuleManager,
+  PrivateThreadChannel,
+  PublicThreadChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1744,6 +1746,13 @@ client.on('interactionCreate', async interaction => {
 
       expectType<GuildBasedChannel>(interaction.options.getChannel('test', true));
       expectType<Role>(interaction.options.getRole('test', true));
+
+      expectType<PublicThreadChannel>(interaction.options.getChannel('test', true, [ChannelType.PublicThread]));
+      expectType<PublicThreadChannel>(interaction.options.getChannel('test', true, [ChannelType.AnnouncementThread]));
+      expectType<PublicThreadChannel>(
+        interaction.options.getChannel('test', true, [ChannelType.PublicThread, ChannelType.AnnouncementThread]),
+      );
+      expectType<PrivateThreadChannel>(interaction.options.getChannel('test', true, [ChannelType.PrivateThread]));
 
       expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText]));
       expectType<TextChannel | null>(interaction.options.getChannel('test', false, [ChannelType.GuildText]));

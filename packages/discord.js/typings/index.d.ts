@@ -1117,12 +1117,32 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     name: string,
     required: true,
     channelTypes?: T[],
-  ): Extract<NonNullable<CommandInteractionOption<Cached>['channel']>, { type: T }>;
+  ): Extract<
+    NonNullable<CommandInteractionOption<Cached>['channel']>,
+    {
+      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
+      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
+      // Hence the need for this ternary
+      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+        : T;
+    }
+  >;
   public getChannel<T extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
     channelTypes?: T[],
-  ): Extract<NonNullable<CommandInteractionOption<Cached>['channel']>, { type: T }> | null;
+  ): Extract<
+    NonNullable<CommandInteractionOption<Cached>['channel']>,
+    {
+      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
+      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
+      // Hence the need for this ternary
+      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+        : T;
+    }
+  > | null;
   public getString(name: string, required: true): string;
   public getString(name: string, required?: boolean): string | null;
   public getInteger(name: string, required: true): number;
