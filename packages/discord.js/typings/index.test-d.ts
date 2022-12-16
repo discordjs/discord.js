@@ -1744,6 +1744,15 @@ client.on('interactionCreate', async interaction => {
 
       expectType<GuildBasedChannel>(interaction.options.getChannel('test', true));
       expectType<Role>(interaction.options.getRole('test', true));
+
+      expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText]));
+      expectType<TextChannel | null>(interaction.options.getChannel('test', false, [ChannelType.GuildText]));
+      expectType<ForumChannel | VoiceChannel>(
+        interaction.options.getChannel('test', true, [ChannelType.GuildForum, ChannelType.GuildVoice]),
+      );
+      expectType<ForumChannel | VoiceChannel | null>(
+        interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
+      );
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);

@@ -135,6 +135,7 @@
  * @property {'CommandInteractionOptionEmpty'} CommandInteractionOptionEmpty
  * @property {'CommandInteractionOptionNoSubcommand'} CommandInteractionOptionNoSubcommand
  * @property {'CommandInteractionOptionNoSubcommandGroup'} CommandInteractionOptionNoSubcommandGroup
+ * @property {'CommandInteractionOptionInvalidChannelType'} CommandInteractionOptionInvalidChannelType
  * @property {'AutocompleteInteractionOptionNoFocusedOption'} AutocompleteInteractionOptionNoFocusedOption
 
  * @property {'ModalSubmitInteractionFieldNotFound'} ModalSubmitInteractionFieldNotFound
@@ -281,6 +282,7 @@ const keys = [
   'CommandInteractionOptionEmpty',
   'CommandInteractionOptionNoSubcommand',
   'CommandInteractionOptionNoSubcommandGroup',
+  'CommandInteractionOptionInvalidChannelType',
   'AutocompleteInteractionOptionNoFocusedOption',
 
   'ModalSubmitInteractionFieldNotFound',

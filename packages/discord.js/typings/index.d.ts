@@ -1113,8 +1113,16 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['channel']>;
-  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['channel']> | null;
+  public getChannel<T extends ChannelType = ChannelType>(
+    name: string,
+    required: true,
+    channelTypes?: T[],
+  ): Extract<NonNullable<CommandInteractionOption<Cached>['channel']>, { type: T }>;
+  public getChannel<T extends ChannelType = ChannelType>(
+    name: string,
+    required?: boolean,
+    channelTypes?: T[],
+  ): Extract<NonNullable<CommandInteractionOption<Cached>['channel']>, { type: T }> | null;
   public getString(name: string, required: true): string;
   public getString(name: string, required?: boolean): string | null;
   public getInteger(name: string, required: true): number;
