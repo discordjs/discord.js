@@ -1,3 +1,4 @@
+import { setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -192,17 +193,24 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	public async requestGuildMembers(shardId: number, options: GatewayRequestGuildMembersData) {
 		const promise = new Promise<APIGuildMember[]>((resolve, reject) => {
 			const guildMembers: APIGuildMember[] = [];
-			this.ws.once('error', (error) => reject(error));
+
+			const timeout = setTimeout(() => {
+				reject(new Error('Request timed out'));
+			}, 10_000);
 
 			const handler = ({ shardId: eventShardId, data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]) => {
-				if (eventShardId === shardId) {
-					guildMembers.push(...data.members);
+				if (eventShardId !== shardId && data.guild_id !== options.guild_id) {
+					return;
 				}
+
+				guildMembers.push(...data.members);
 
 				if (data.chunk_index >= data.chunk_count - 1) {
 					this.off(GatewayDispatchEvents.GuildMembersChunk, handler);
 					resolve(guildMembers);
 				}
+
+				timeout.refresh();
 			};
 
 			this.on(GatewayDispatchEvents.GuildMembersChunk, handler);
