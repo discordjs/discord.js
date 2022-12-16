@@ -1,11 +1,11 @@
+import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FiExternalLink } from 'react-icons/fi';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import { CODE_EXAMPLE } from '~/util/constants';
 
-export default function IndexRoute() {
+export default function Page() {
 	return (
 		<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">

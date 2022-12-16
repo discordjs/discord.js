@@ -48,7 +48,37 @@ const rootDir = new URL('../../', import.meta.url);
 export default defineConfig({
 	integrations: [
 		react(),
-		mdx(),
+		mdx({
+			remarkPlugins: [[remarkCodeHike, { autoImport: false, theme: shikiThemeDarkPlus, lineNumbers: true }]],
+			rehypePlugins: [
+				rehypeSlug,
+				[
+					rehypeAutolinkHeadings,
+					{
+						properties: {
+							class:
+								'relative inline-flex w-6 h-6 place-items-center place-content-center outline-0 text-black dark:text-white ml-2',
+						},
+						behavior: 'after',
+						group: ({ tagName }: { tagName: string }) =>
+							h('div', {
+								class: `[&>*]:inline-block [&>h1]:m-0 [&>h2]:m-0 [&>h3]:m-0 [&>h4]:m-0 level-${tagName}`,
+								tabIndex: -1,
+							}),
+						content: (heading: Node) => [
+							h(
+								`span.anchor-icon`,
+								{
+									ariaHidden: 'true',
+								},
+								LinkIcon,
+							),
+							createSROnlyLabel(toString(heading)),
+						],
+					},
+				],
+			],
+		}),
 		image({
 			serviceEntryPoint: '@astrojs/image/sharp',
 		}),
@@ -62,35 +92,6 @@ export default defineConfig({
 		compress(),
 	],
 	markdown: {
-		remarkPlugins: [[remarkCodeHike, { autoImport: false, theme: shikiThemeDarkPlus, lineNumbers: true }]],
-		rehypePlugins: [
-			rehypeSlug,
-			[
-				rehypeAutolinkHeadings,
-				{
-					properties: {
-						class:
-							'relative inline-flex w-6 h-6 place-items-center place-content-center outline-0 text-black dark:text-white ml-2',
-					},
-					behavior: 'after',
-					group: ({ tagName }: { tagName: string }) =>
-						h('div', {
-							class: `[&>*]:inline-block [&>h1]:m-0 [&>h2]:m-0 [&>h3]:m-0 [&>h4]:m-0 level-${tagName}`,
-							tabIndex: -1,
-						}),
-					content: (heading: Node) => [
-						h(
-							`span.anchor-icon`,
-							{
-								ariaHidden: 'true',
-							},
-							LinkIcon,
-						),
-						createSROnlyLabel(toString(heading)),
-					],
-				},
-			],
-		],
 		extendDefaultPlugins: true,
 		syntaxHighlight: false,
 	},

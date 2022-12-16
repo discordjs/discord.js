@@ -7,6 +7,7 @@ export default async function middleware(request: NextRequest) {
 	}
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {
+		// eslint-disable-next-line prefer-named-capture-group
 		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'builders';
 		const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
 		const data: string[] = await res.json();

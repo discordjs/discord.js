@@ -15,9 +15,11 @@ body:
         - brokers
         - builders
         - collection
-        - rest
+        - core
+        - formatters
         - proxy
         - proxy-container
+        - rest
         - voice
         - ws
     validations:

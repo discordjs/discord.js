@@ -1,3 +1,5 @@
+'use client';
+
 import type { ApiPropertyItemJSON } from '@discordjs/api-extractor-utils';
 import { Fragment, useMemo } from 'react';
 import { CodeListing } from './CodeListing';

@@ -85,18 +85,18 @@ class CommandInteractionOptionResolver {
   /**
    * Gets an option by name and property and checks its type.
    * @param {string} name The name of the option.
-   * @param {ApplicationCommandOptionType} type The type of the option.
+   * @param {ApplicationCommandOptionType[]} allowedTypes The allowed types of the option.
    * @param {string[]} properties The properties to check for for `required`.
    * @param {boolean} required Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
    * @private
    */
-  _getTypedOption(name, type, properties, required) {
+  _getTypedOption(name, allowedTypes, properties, required) {
     const option = this.get(name, required);
     if (!option) {
       return null;
-    } else if (option.type !== type) {
-      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, type);
+    } else if (!allowedTypes.includes(option.type)) {
+      throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, allowedTypes.join(', '));
     } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
     }
@@ -134,7 +134,7 @@ class CommandInteractionOptionResolver {
    * @returns {?boolean} The value of the option, or null if not set and not required.
    */
   getBoolean(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Boolean, ['value'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.Boolean], ['value'], required);
     return option?.value ?? null;
   }
 
@@ -146,7 +146,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getChannel(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Channel, ['channel'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.Channel], ['channel'], required);
     return option?.channel ?? null;
   }
 
@@ -157,7 +157,7 @@ class CommandInteractionOptionResolver {
    * @returns {?string} The value of the option, or null if not set and not required.
    */
   getString(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.String, ['value'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.String], ['value'], required);
     return option?.value ?? null;
   }
 
@@ -168,7 +168,7 @@ class CommandInteractionOptionResolver {
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getInteger(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Integer, ['value'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.Integer], ['value'], required);
     return option?.value ?? null;
   }
 
@@ -179,7 +179,7 @@ class CommandInteractionOptionResolver {
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getNumber(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Number, ['value'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.Number], ['value'], required);
     return option?.value ?? null;
   }
 
@@ -190,7 +190,12 @@ class CommandInteractionOptionResolver {
    * @returns {?User} The value of the option, or null if not set and not required.
    */
   getUser(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.User, ['user'], required);
+    const option = this._getTypedOption(
+      name,
+      [ApplicationCommandOptionType.User, ApplicationCommandOptionType.Mentionable],
+      ['user'],
+      required,
+    );
     return option?.user ?? null;
   }
 
@@ -201,7 +206,12 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if the user is not present in the guild or the option is not set.
    */
   getMember(name) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.User, ['member'], false);
+    const option = this._getTypedOption(
+      name,
+      [ApplicationCommandOptionType.User, ApplicationCommandOptionType.Mentionable],
+      ['member'],
+      false,
+    );
     return option?.member ?? null;
   }
 
@@ -212,7 +222,12 @@ class CommandInteractionOptionResolver {
    * @returns {?(Role|APIRole)} The value of the option, or null if not set and not required.
    */
   getRole(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Role, ['role'], required);
+    const option = this._getTypedOption(
+      name,
+      [ApplicationCommandOptionType.Role, ApplicationCommandOptionType.Mentionable],
+      ['role'],
+      required,
+    );
     return option?.role ?? null;
   }
 
@@ -223,7 +238,7 @@ class CommandInteractionOptionResolver {
    * @returns {?Attachment} The value of the option, or null if not set and not required.
    */
   getAttachment(name, required = false) {
-    const option = this._getTypedOption(name, ApplicationCommandOptionType.Attachment, ['attachment'], required);
+    const option = this._getTypedOption(name, [ApplicationCommandOptionType.Attachment], ['attachment'], required);
     return option?.attachment ?? null;
   }
 
@@ -237,7 +252,7 @@ class CommandInteractionOptionResolver {
   getMentionable(name, required = false) {
     const option = this._getTypedOption(
       name,
-      ApplicationCommandOptionType.Mentionable,
+      [ApplicationCommandOptionType.Mentionable],
       ['user', 'member', 'role'],
       required,
     );
@@ -252,7 +267,7 @@ class CommandInteractionOptionResolver {
    * The value of the option, or null if not set and not required.
    */
   getMessage(name, required = false) {
-    const option = this._getTypedOption(name, '_MESSAGE', ['message'], required);
+    const option = this._getTypedOption(name, ['_MESSAGE'], ['message'], required);
     return option?.message ?? null;
   }
 
