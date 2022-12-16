@@ -419,6 +419,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   >;
   public type: ApplicationCommandType;
   public version: Snowflake;
+  public nsfw: boolean;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: Partial<ApplicationCommandData>): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setName(name: string): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -4169,6 +4170,7 @@ export interface BaseApplicationCommandData {
   nameLocalizations?: LocalizationMap;
   dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
+  nsfw?: boolean;
 }
 
 export interface AttachmentData {
