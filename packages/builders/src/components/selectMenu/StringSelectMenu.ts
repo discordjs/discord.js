@@ -77,12 +77,48 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 * @param options - The options to set on this select menu
 	 */
 	public setOptions(...options: RestOrArray<APISelectMenuOption | StringSelectMenuOptionBuilder>) {
+		return this.spliceOptions(0, this.options.length, ...options);
+	}
+
+	/**
+	 * Removes, replaces, or inserts options in the string select menu.
+	 *
+	 * @remarks
+	 * This method behaves similarly
+	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice}.
+	 *
+	 * It's useful for modifying and adjusting order of the already-existing options of a string select menu.
+	 * @example
+	 * Remove the first option
+	 * ```ts
+	 * selectMenu.spliceOptions(0, 1);
+	 * ```
+	 * @example
+	 * Remove the first n option
+	 * ```ts
+	 * const n = 4
+	 * selectMenu.spliceOptions(0, n);
+	 * ```
+	 * @example
+	 * Remove the last option
+	 * ```ts
+	 * selectMenu.spliceOptions(-1, 1);
+	 * ```
+	 * @param index - The index to start at
+	 * @param deleteCount - The number of options to remove
+	 * @param options - The replacing option objects or builders
+	 */
+	public spliceOptions(
+		index: number,
+		deleteCount: number,
+		...options: RestOrArray<APISelectMenuOption | StringSelectMenuOptionBuilder>
+	) {
 		// eslint-disable-next-line no-param-reassign
 		options = normalizeArray(options);
-		optionsLengthValidator.parse(options.length);
+		optionsLengthValidator.parse(this.options.length - deleteCount + options.length);
 		this.options.splice(
-			0,
-			this.options.length,
+			index,
+			deleteCount,
 			...options.map((option) =>
 				option instanceof StringSelectMenuOptionBuilder
 					? option

@@ -29,6 +29,16 @@ const selectMenuData: APISelectMenuComponent = {
 	options: [selectMenuOptionData],
 };
 
+function makeStringSelectMenuWithOptions() {
+	const selectMenu = new StringSelectMenuBuilder();
+	selectMenu.addOptions(
+		{ label: 'foo', value: 'bar' },
+		{ label: 'foo2', value: 'bar2' },
+		{ label: 'foo3', value: 'bar3' },
+	);
+	return selectMenu;
+}
+
 describe('Select Menu Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid inputs THEN Select Menu does not throw', () => {
@@ -175,6 +185,12 @@ describe('Select Menu Components', () => {
 					.toJSON(),
 			).toEqual(selectMenuData);
 			expect(new StringSelectMenuOptionBuilder(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
+		});
+
+		test('GIVEN a StringSelectMenuBuilder using StringSelectMenuBuilder#spliceOptions works', () => {
+			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 1).options.length).toBe(2);
+			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 1, selectMenuOptionData).options.length).toBe(3);
+			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 3, selectMenuOptionData).options.length).toBe(1);
 		});
 	});
 });
