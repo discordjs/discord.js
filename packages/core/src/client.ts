@@ -1,6 +1,7 @@
 import { setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayDispatchEvents,
@@ -189,19 +190,22 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
 	 * @param shardId - The id of the shard to request guild members from
 	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each guild members chunk event
 	 */
-	public async requestGuildMembers(shardId: number, options: GatewayRequestGuildMembersData) {
+	public async requestGuildMembers(shardId: number, options: GatewayRequestGuildMembersData, timeout = 10_000) {
+		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
+
 		const promise = new Promise<APIGuildMember[]>((resolve, reject) => {
 			const guildMembers: APIGuildMember[] = [];
 
-			const timeout = setTimeout(() => {
+			const timer = setTimeout(() => {
 				reject(new Error('Request timed out'));
-			}, 10_000);
+			}, timeout);
 
-			const handler = ({ shardId: eventShardId, data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]) => {
-				if (eventShardId !== shardId && data.guild_id !== options.guild_id) {
-					return;
-				}
+			const handler = ({ data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]) => {
+				timer.refresh();
+
+				if (data.nonce !== nonce) return;
 
 				guildMembers.push(...data.members);
 
@@ -209,8 +213,6 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 					this.off(GatewayDispatchEvents.GuildMembersChunk, handler);
 					resolve(guildMembers);
 				}
-
-				timeout.refresh();
 			};
 
 			this.on(GatewayDispatchEvents.GuildMembersChunk, handler);
@@ -219,7 +221,10 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		await this.ws.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length
-			d: options,
+			d: {
+				...options,
+				nonce,
+			},
 		});
 
 		return promise;

@@ -47,6 +47,7 @@
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/ws": "workspace:^",
+		"@sapphire/snowflake": "^3.3.0",
 		"@vladfrangu/async_event_emitter": "^2.1.2",
 		"discord-api-types": "^0.37.23"
 	},
