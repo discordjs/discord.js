@@ -8,6 +8,8 @@
   color: fbca04
 - name: backlog
   color: 7ef7ef
+- name: backport
+  color: 88aabb
 - name: blocked
   color: fc1423
 - name: bug
