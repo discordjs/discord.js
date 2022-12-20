@@ -840,8 +840,8 @@ class WebSocketShard extends EventEmitter {
         if (emit) {
           this._emitDestroyed();
         } else if (
-          this.connection?.readyState === WebSocket.CLOSING ||
-          this.connection?.readyState === WebSocket.CLOSED
+          this.connection.readyState === WebSocket.CLOSING ||
+          this.connection.readyState === WebSocket.CLOSED
         ) {
           this.closeEmitted = false;
           this.debug(
