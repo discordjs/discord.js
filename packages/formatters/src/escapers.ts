@@ -308,5 +308,3 @@ export function escapeNumberedList(text: string): string {
 export function escapeMaskedLink(text: string): string {
 	return text.replaceAll(/\[.+]\(.+\)/gm, '\\$&');
 }
-
-/* eslint-enable prefer-named-capture-group */
