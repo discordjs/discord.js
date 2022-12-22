@@ -5310,7 +5310,7 @@ export interface AutoModerationRuleCreateOptions {
   eventType: AutoModerationRuleEventType;
   triggerType: AutoModerationRuleTriggerType;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
-  actions: AutoModerationActionOptions;
+  actions: AutoModerationActionOptions[];
   enabled?: boolean;
   exemptRoles?: Collection<Snowflake, Role> | RoleResolvable[];
   exemptChannels?: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[];
