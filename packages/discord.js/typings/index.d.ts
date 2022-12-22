@@ -368,7 +368,7 @@ export class AutoModerationRule extends Base {
   public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
-  public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
+  public setActions(actions: AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
     roles: Collection<Snowflake, Role> | RoleResolvable[],
