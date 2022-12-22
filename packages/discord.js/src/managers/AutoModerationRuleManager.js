@@ -59,6 +59,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {string[]} [allowList] The substrings that will be exempt from triggering
    * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
+   * @property {boolean} [mentionRaidProtectionEnabled] Whether to automatically detect mention raids
    */
 
   /**
@@ -124,6 +125,7 @@ class AutoModerationRuleManager extends CachedManager {
           presets: triggerMetadata.presets,
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
+          mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
         },
         actions: actions.map(action => ({
           type: action.type,
@@ -180,6 +182,7 @@ class AutoModerationRuleManager extends CachedManager {
           presets: triggerMetadata.presets,
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
+          mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
         },
         actions: actions?.map(action => ({
           type: action.type,
