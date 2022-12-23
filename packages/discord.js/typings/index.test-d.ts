@@ -24,6 +24,8 @@ import {
   APIEmbed,
   ApplicationCommandType,
   APIMessage,
+  APIActionRowComponent,
+  APIActionRowComponentTypes,
   APIStringSelectComponent,
 } from 'discord-api-types/v10';
 import {
@@ -134,6 +136,8 @@ import {
   Webhook,
   WebhookClient,
   InteractionWebhook,
+  ActionRowComponent,
+  ActionRow,
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
@@ -2045,6 +2049,24 @@ EmbedBuilder.from(embedData);
 
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
+
+declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+ActionRowBuilder.from(actionRowData);
+
+declare const actionRowComp: ActionRow<ActionRowComponent>;
+ActionRowBuilder.from(actionRowComp);
+
+declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
+declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
+
+expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
+expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
+
+declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
+
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
 declare const stageChannel: StageChannel;
 declare const partialGroupDMChannel: PartialGroupDMChannel;
