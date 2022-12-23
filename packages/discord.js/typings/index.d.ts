@@ -678,7 +678,7 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get style(): ButtonStyle;
   public get label(): string | null;
   public get emoji(): APIMessageComponentEmoji | null;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean ;
   public get customId(): string | null;
   public get url(): string | null;
 }
@@ -759,7 +759,7 @@ export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extend
   public get maxValues(): number | null;
   public get minValues(): number | null;
   public get customId(): string;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean;
 }
 
 export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIStringSelectComponent> {
