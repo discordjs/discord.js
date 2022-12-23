@@ -1168,6 +1168,7 @@ class Guild extends AnonymousGuild {
    * @param {?TextChannelResolvable} safetyAlertsChannel The new safety alerts channel
    * @param {string} [reason] Reason for changing the guild's safety alerts channel
    * @returns {Promise<Guild>}
+   * @example
    * // Edit the guild safety alerts channel
    * guild.setSafetyAlertsChannel(channel)
    *  .then(updated => console.log(`Updated guild safety alerts channel to ${guild.safetyAlertsChannel.name}`))
