@@ -316,7 +316,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The options used to edit a thread channel
-   * @typedef {Object} ThreadEditData
+   * @typedef {Object} ThreadEditOptions
    * @property {string} [name] The new name for the thread
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time after which the thread
@@ -332,7 +332,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * Edits this thread.
-   * @param {ThreadEditData} data The new data for this thread
+   * @param {ThreadEditOptions} options The options to provide
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
@@ -340,19 +340,19 @@ class ThreadChannel extends BaseChannel {
    *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
-  async edit(data) {
+  async edit(options) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
-        name: (data.name ?? this.name).trim(),
-        archived: data.archived,
-        auto_archive_duration: data.autoArchiveDuration,
-        rate_limit_per_user: data.rateLimitPerUser,
-        locked: data.locked,
-        invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
-        applied_tags: data.appliedTags,
-        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
+        name: (options.name ?? this.name).trim(),
+        archived: options.archived,
+        auto_archive_duration: options.autoArchiveDuration,
+        rate_limit_per_user: options.rateLimitPerUser,
+        locked: options.locked,
+        invitable: this.type === ChannelType.PrivateThread ? options.invitable : undefined,
+        applied_tags: options.appliedTags,
+        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;

@@ -207,7 +207,7 @@ class Role extends Base {
 
   /**
    * Edits the role.
-   * @param {EditRoleOptions} data The new data for the role
+   * @param {RoleEditOptions} options The options to provide
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -215,8 +215,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.roles.edit(this, data);
+  edit(options) {
+    return this.guild.roles.edit(this, options);
   }
 
   /**

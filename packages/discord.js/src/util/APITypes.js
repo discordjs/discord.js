@@ -219,6 +219,11 @@
  */
 
 /**
+ * @external ForumLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
+ */
+
+/**
  * @external GatewayCloseCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayCloseCodes}
  */

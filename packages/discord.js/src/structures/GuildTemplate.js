@@ -155,14 +155,14 @@ class GuildTemplate extends Base {
 
   /**
    * Options used to edit a guild template.
-   * @typedef {Object} EditGuildTemplateOptions
+   * @typedef {Object} GuildTemplateEditOptions
    * @property {string} [name] The name of this template
    * @property {string} [description] The description of this template
    */
 
   /**
    * Updates the metadata of this template.
-   * @param {EditGuildTemplateOptions} [options] Options for editing the template
+   * @param {GuildTemplateEditOptions} [options] Options for editing the template
    * @returns {Promise<GuildTemplate>}
    */
   async edit({ name, description } = {}) {

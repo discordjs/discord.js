@@ -68,7 +68,7 @@ class WebhookClient extends BaseClient {
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookCreateMessageOptions} options The content for the reply
+   * @param {string|MessagePayload|WebhookMessageCreateOptions} options The content for the reply
    * @returns {Promise<APIMessage>}
    */
   send() {}
@@ -84,7 +84,7 @@ class WebhookClient extends BaseClient {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable} message The message to edit
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<APIMessage>} Returns the message edited by this webhook
    */
   editMessage() {}

@@ -270,7 +270,7 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * The data for editing a guild member.
-   * @typedef {Object} GuildMemberEditData
+   * @typedef {Object} GuildMemberEditOptions
    * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
@@ -286,43 +286,43 @@ class GuildMemberManager extends CachedManager {
    * Edits a member of the guild.
    * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to edit
-   * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  async edit(user, { reason, ...data }) {
+  async edit(user, { reason, ...options }) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
-    if (data.channel) {
-      data.channel = this.guild.channels.resolve(data.channel);
-      if (!(data.channel instanceof BaseGuildVoiceChannel)) {
+    if (options.channel) {
+      options.channel = this.guild.channels.resolve(options.channel);
+      if (!(options.channel instanceof BaseGuildVoiceChannel)) {
         throw new DiscordjsError(ErrorCodes.GuildVoiceChannelResolve);
       }
-      data.channel_id = data.channel.id;
-      data.channel = undefined;
-    } else if (data.channel === null) {
-      data.channel_id = null;
-      data.channel = undefined;
+      options.channel_id = options.channel.id;
+      options.channel = undefined;
+    } else if (options.channel === null) {
+      options.channel_id = null;
+      options.channel = undefined;
     }
-    data.roles &&= data.roles.map(role => (role instanceof Role ? role.id : role));
+    options.roles &&= options.roles.map(role => (role instanceof Role ? role.id : role));
 
-    if (typeof data.communicationDisabledUntil !== 'undefined') {
-      data.communication_disabled_until =
+    if (typeof options.communicationDisabledUntil !== 'undefined') {
+      options.communication_disabled_until =
         // eslint-disable-next-line eqeqeq
-        data.communicationDisabledUntil != null
-          ? new Date(data.communicationDisabledUntil).toISOString()
-          : data.communicationDisabledUntil;
+        options.communicationDisabledUntil != null
+          ? new Date(options.communicationDisabledUntil).toISOString()
+          : options.communicationDisabledUntil;
     }
 
     let endpoint;
     if (id === this.client.user.id) {
-      const keys = Object.keys(data);
+      const keys = Object.keys(options);
       if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
       else endpoint = Routes.guildMember(this.guild.id, id);
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
-    const d = await this.client.rest.patch(endpoint, { body: data, reason });
+    const d = await this.client.rest.patch(endpoint, { body: options, reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
