@@ -678,7 +678,7 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get style(): ButtonStyle;
   public get label(): string | null;
   public get emoji(): APIMessageComponentEmoji | null;
-  public get disabled(): boolean ;
+  public get disabled(): boolean;
   public get customId(): string | null;
   public get url(): string | null;
 }
