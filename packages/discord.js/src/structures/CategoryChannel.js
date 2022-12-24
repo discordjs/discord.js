@@ -9,15 +9,6 @@ const CategoryChannelChildManager = require('../managers/CategoryChannelChildMan
  */
 class CategoryChannel extends GuildChannel {
   /**
-   * A manager of the channels belonging to this category
-   * @type {CategoryChannelChildManager}
-   * @readonly
-   */
-  get children() {
-    return new CategoryChannelChildManager(this);
-  }
-
-  /**
    * Sets the category parent of this channel.
    * <warn>It is not currently possible to set the parent of a CategoryChannel.</warn>
    * @method setParent
@@ -27,6 +18,15 @@ class CategoryChannel extends GuildChannel {
    * @param {SetParentOptions} [options={}] The options for setting the parent
    * @returns {Promise<GuildChannel>}
    */
+
+  /**
+   * A manager of the channels belonging to this category
+   * @type {CategoryChannelChildManager}
+   * @readonly
+   */
+  get children() {
+    return new CategoryChannelChildManager(this);
+  }
 }
 
 module.exports = CategoryChannel;
