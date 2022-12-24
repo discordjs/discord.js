@@ -10,7 +10,13 @@ const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
 const ChannelFlags = require('../util/ChannelFlags');
-const { ThreadChannelTypes, ChannelTypes, VideoQualityModes, SortOrderTypes } = require('../util/Constants');
+const {
+  ThreadChannelTypes,
+  ChannelTypes,
+  VideoQualityModes,
+  SortOrderTypes,
+  ForumLayoutTypes,
+} = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
 const { resolveAutoArchiveMaxLimit, transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Util');
@@ -144,6 +150,7 @@ class GuildChannelManager extends CachedManager {
       availableTags,
       defaultReactionEmoji,
       defaultSortOrder,
+      defaultForumLayout,
       reason,
     } = {},
   ) {
@@ -154,6 +161,9 @@ class GuildChannelManager extends CachedManager {
     const videoMode = typeof videoQualityMode === 'number' ? videoQualityMode : VideoQualityModes[videoQualityMode];
 
     const sortMode = typeof defaultSortOrder === 'number' ? defaultSortOrder : SortOrderTypes[defaultSortOrder];
+
+    const layoutMode =
+      typeof defaultForumLayout === 'number' ? defaultForumLayout : ForumLayoutTypes[defaultForumLayout];
 
     if (intType === ChannelTypes.GUILD_STORE && !storeChannelDeprecationEmitted) {
       storeChannelDeprecationEmitted = true;
@@ -181,6 +191,7 @@ class GuildChannelManager extends CachedManager {
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_sort_order: sortMode,
+        default_forum_layout: layoutMode,
       },
       reason,
     });

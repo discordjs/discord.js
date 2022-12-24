@@ -3,7 +3,7 @@
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
-const { SortOrderTypes } = require('../util/Constants');
+const { SortOrderTypes, ForumLayoutTypes } = require('../util/Constants');
 const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Util');
 
 /**
@@ -134,6 +134,12 @@ class ForumChannel extends GuildChannel {
     } else {
       this.defaultSortOrder ??= null;
     }
+
+    /**
+     * The default layout type used to display posts
+     * @type {ForumLayoutType}
+     */
+    this.defaultForumLayout = ForumLayoutTypes[data.default_forum_layout];
   }
 
   /**
@@ -143,7 +149,7 @@ class ForumChannel extends GuildChannel {
    * @returns {Promise<ForumChannel>}
    */
   setAvailableTags(availableTags, reason) {
-    return this.edit({ availableTags, reason });
+    return this.edit({ availableTags }, reason);
   }
 
   /**
@@ -153,7 +159,7 @@ class ForumChannel extends GuildChannel {
    * @returns {Promise<ForumChannel>}
    */
   setDefaultReactionEmoji(defaultReactionEmoji, reason) {
-    return this.edit({ defaultReactionEmoji, reason });
+    return this.edit({ defaultReactionEmoji }, reason);
   }
 
   /**
@@ -163,7 +169,7 @@ class ForumChannel extends GuildChannel {
    * @returns {Promise<ForumChannel>}
    */
   setDefaultThreadRateLimitPerUser(defaultThreadRateLimitPerUser, reason) {
-    return this.edit({ defaultThreadRateLimitPerUser, reason });
+    return this.edit({ defaultThreadRateLimitPerUser }, reason);
   }
 
   /**
@@ -173,7 +179,17 @@ class ForumChannel extends GuildChannel {
    * @returns {Promise<ForumChannel>}
    */
   setDefaultSortOrder(defaultSortOrder, reason) {
-    return this.edit({ defaultSortOrder, reason });
+    return this.edit({ defaultSortOrder }, reason);
+  }
+
+  /**
+   * Sets the default forum layout type used to display posts
+   * @param {ForumLayoutType} defaultForumLayout The default forum layout type to set on this channel
+   * @param {string} [reason] Reason for changing the default forum layout
+   * @returns {Promise<ForumChannel>}
+   */
+  setDefaultForumLayout(defaultForumLayout, reason) {
+    return this.edit({ defaultForumLayout }, reason);
   }
 
   /**
@@ -207,7 +223,7 @@ class ForumChannel extends GuildChannel {
    * @returns {Promise<ForumChannel>}
    */
   setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason) {
-    return this.edit({ defaultAutoArchiveDuration, reason });
+    return this.edit({ defaultAutoArchiveDuration }, reason);
   }
 
   /**
@@ -222,7 +238,7 @@ class ForumChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({ topic, reason });
+    return this.edit({ topic }, reason);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

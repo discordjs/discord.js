@@ -1394,6 +1394,16 @@ exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
  */
 exports.SortOrderTypes = createEnum([null, 'LATEST_ACTIVITY', 'CREATION_DATE']);
 
+/**
+ * The default forum layout to set on the {@link ForumChannel}
+ * * NOT_SET
+ * * LIST_VIEW
+ * * GALLERY_VIEW
+ * @typedef {string} ForumLayoutType
+ * @see {@link https://discord.com/developers/docs/resources/channel/#channel-object-forum-layout-types}
+ */
+exports.ForumLayoutTypes = createEnum(['NOT_SET', 'LIST_VIEW', 'GALLERY_VIEW']);
+
 exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {
