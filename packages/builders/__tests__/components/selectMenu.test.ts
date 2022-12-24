@@ -39,6 +39,10 @@ function makeStringSelectMenuWithOptions() {
 	return selectMenu;
 }
 
+function mapStringSelectMenuOptionBuildersToJson(selectMenu: StringSelectMenuBuilder) {
+	return selectMenu.options.map((option) => option.toJSON());
+}
+
 describe('Select Menu Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid inputs THEN Select Menu does not throw', () => {
@@ -188,9 +192,38 @@ describe('Select Menu Components', () => {
 		});
 
 		test('GIVEN a StringSelectMenuBuilder using StringSelectMenuBuilder#spliceOptions works', () => {
-			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 1).options.length).toBe(2);
-			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 1, selectMenuOptionData).options.length).toBe(3);
-			expect(makeStringSelectMenuWithOptions().spliceOptions(0, 3, selectMenuOptionData).options.length).toBe(1);
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(makeStringSelectMenuWithOptions().spliceOptions(0, 1)),
+			).toStrictEqual([
+				{ label: 'foo2', value: 'bar2' },
+				{ label: 'foo3', value: 'bar3' },
+			]);
+
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(
+					makeStringSelectMenuWithOptions().spliceOptions(0, 1, selectMenuOptionData),
+				),
+			).toStrictEqual([selectMenuOptionData, { label: 'foo2', value: 'bar2' }, { label: 'foo3', value: 'bar3' }]);
+
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(
+					makeStringSelectMenuWithOptions().spliceOptions(0, 3, selectMenuOptionData),
+				),
+			).toStrictEqual([selectMenuOptionData]);
+
+			expect(() =>
+				makeStringSelectMenuWithOptions().spliceOptions(
+					0,
+					0,
+					...Array.from({ length: 26 }, () => selectMenuOptionData),
+				),
+			).toThrowError();
+
+			expect(() =>
+				makeStringSelectMenuWithOptions()
+					.setOptions(Array.from({ length: 25 }, () => selectMenuOptionData))
+					.spliceOptions(-1, 2, selectMenuOptionData, selectMenuOptionData),
+			).toThrowError();
 		});
 	});
 });

@@ -115,8 +115,10 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	) {
 		// eslint-disable-next-line no-param-reassign
 		options = normalizeArray(options);
-		optionsLengthValidator.parse(this.options.length - deleteCount + options.length);
-		this.options.splice(
+
+		const clone = [...this.options];
+
+		clone.splice(
 			index,
 			deleteCount,
 			...options.map((option) =>
@@ -125,6 +127,11 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 					: new StringSelectMenuOptionBuilder(jsonOptionValidator.parse(option)),
 			),
 		);
+
+		optionsLengthValidator.parse(clone.length);
+
+		this.options.splice(0, this.options.length, ...clone);
+
 		return this;
 	}
 
