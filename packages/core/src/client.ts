@@ -70,6 +70,7 @@ import {
 	type GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { API } from './api/index.js';
+import { calculateShardId } from './util/ws.js';
 
 export interface IntrinsicProps {
 	/**
@@ -188,11 +189,11 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * Requests guild members from the gateway.
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
-	 * @param shardId - The id of the shard to request guild members from
 	 * @param options - The options for the request
 	 * @param timeout - The timeout for waiting for each guild members chunk event
 	 */
-	public async requestGuildMembers(shardId: number, options: GatewayRequestGuildMembersData, timeout = 10_000) {
+	public async requestGuildMembers(options: GatewayRequestGuildMembersData, timeout = 10_000) {
+		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
 		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
 
 		const promise = new Promise<APIGuildMember[]>((resolve, reject) => {

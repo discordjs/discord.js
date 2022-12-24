@@ -50,7 +50,7 @@ const client = new Client({ rest, ws });
 
 // Listen for interactions
 // Each event contains an `api` prop along with the event data that allows you to interface with the Discord REST API
-client.on('interactionCreate', async ({ interaction, api }) => {
+client.on(GatewayDispatchEvents.InteractionCreate, async ({ interaction, api }) => {
 	if (!(interaction.type === InteractionType.ApplicationCommand) || interaction.data.name !== 'ping') {
 		return;
 	}
@@ -59,7 +59,7 @@ client.on('interactionCreate', async ({ interaction, api }) => {
 });
 
 // Listen for the ready event
-client.once('ready', () => console.log('Ready!'));
+client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
 ws.connect();
