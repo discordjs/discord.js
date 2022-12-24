@@ -603,7 +603,9 @@ class WebSocketShard extends EventEmitter {
       );
 
       // Cleanup connection listeners
-      this._cleanupConnection();
+      if (this.connection) {
+        this._cleanupConnection();
+      }
 
       this.emitClose();
       // Setting the variable false to check for zombie connections.

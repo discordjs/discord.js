@@ -142,12 +142,24 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {ChannelType[]} [channelTypes=[]] The allowed types of channels. If empty, all channel types are allowed.
    * @returns {?(GuildChannel|ThreadChannel|APIChannel)}
    * The value of the option, or null if not set and not required.
    */
-  getChannel(name, required = false) {
+  getChannel(name, required = false, channelTypes = []) {
     const option = this._getTypedOption(name, [ApplicationCommandOptionType.Channel], ['channel'], required);
-    return option?.channel ?? null;
+    const channel = option?.channel ?? null;
+
+    if (channel && channelTypes.length > 0 && !channelTypes.includes(channel.type)) {
+      throw new DiscordjsTypeError(
+        ErrorCodes.CommandInteractionOptionInvalidChannelType,
+        name,
+        channel.type,
+        channelTypes.join(', '),
+      );
+    }
+
+    return channel;
   }
 
   /**
