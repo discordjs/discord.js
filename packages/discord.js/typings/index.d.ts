@@ -288,11 +288,11 @@ export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilde
       | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
     >,
   );
-  public static from(
+  public static from<T extends AnyComponentBuilder = AnyComponentBuilder>(
     other:
-      | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>>
-      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>,
-  ): ActionRowBuilder;
+      | JSONEncodable<APIActionRowComponent<ReturnType<T['toJSON']>>>
+      | APIActionRowComponent<ReturnType<T['toJSON']>>,
+  ): ActionRowBuilder<T>;
 }
 
 export type MessageActionRowComponent =
