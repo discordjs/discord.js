@@ -51,6 +51,7 @@
   "dependencies": {
     "@discordjs/builders": "workspace:^",
     "@discordjs/collection": "workspace:^",
+    "@discordjs/formatters": "workspace:^",
     "@discordjs/rest": "workspace:^",
     "@discordjs/util": "workspace:^",
     "@sapphire/snowflake": "^3.2.2",
