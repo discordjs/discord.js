@@ -50,7 +50,7 @@ const manager = new WebSocketManager({
 	rest,
 });
 
-manager.addListener(WebSocketShardEvents.Dispatch, (event) => {
+manager.on(WebSocketShardEvents.Dispatch, (event) => {
 	// Process gateway events here.
 });
 
