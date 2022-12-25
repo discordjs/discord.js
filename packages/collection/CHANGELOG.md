@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.2.0...@discordjs/collection@1.3.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- Add `Collection#subtract()` (#8393) ([291f36c](https://github.com/discordjs/discord.js/commit/291f36cd736b5dea058145a1335bf7c78ec1d81d))
+
 # [@discordjs/collection@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.1.0...@discordjs/collection@1.2.0) - (2022-10-08)
 
 ## Bug Fixes

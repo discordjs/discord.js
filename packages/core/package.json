@@ -1,0 +1,73 @@
+{
+	"name": "@discordjs/core",
+	"version": "0.3.0",
+	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"docs": "api-extractor run --local",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/rest": "workspace:^",
+		"@discordjs/ws": "workspace:^",
+		"@vladfrangu/async_event_emitter": "^2.1.2",
+		"discord-api-types": "^0.37.23"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^1.9.0",
+		"@microsoft/api-extractor": "^7.33.6",
+		"@types/node": "16.18.4",
+		"@vitest/coverage-c8": "^0.25.3",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.28.0",
+		"eslint-config-neon": "^0.1.40",
+		"eslint-formatter-pretty": "^4.1.0",
+		"prettier": "^2.8.0",
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.3",
+		"vitest": "^0.25.3"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

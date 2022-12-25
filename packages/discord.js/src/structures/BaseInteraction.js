@@ -275,7 +275,7 @@ class BaseInteraction extends Base {
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
    *
-   * @deprecated Use {@link Interaction#isStringSelectMenu} instead
+   * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
   isSelectMenu() {
     return this.isStringSelectMenu();

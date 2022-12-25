@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.5.0...@discordjs/ws@0.6.0) - (2022-12-16)
+
+## Bug Fixes
+
+- **WebSocketShard:** Send ratelimit handling (#8887) ([40b504a](https://github.com/discordjs/discord.js/commit/40b504a2088effc6a467f40ac3cf2a6d736ab209))
+
+## Features
+
+- **core:** Add support for role connections (#8930) ([3d6fa24](https://github.com/discordjs/discord.js/commit/3d6fa248c07b2278504bbe8bafa17a3294971fd9))
+
+## Refactor
+
+- **WebSocketShard:** Identify throttling (#8888) ([8f552a0](https://github.com/discordjs/discord.js/commit/8f552a0e17c0eca71063e7a4353b9b351bcdf9fd))
+
+# [@discordjs/ws@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.1...@discordjs/ws@0.5.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Documentation
+
+- Remove unused imports (#8744) ([179392d](https://github.com/discordjs/discord.js/commit/179392d6d7d634c6d10f6abb20c072516c1c1d43))
+
+## Features
+
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+
 # [@discordjs/ws@0.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.4.0...@discordjs/ws@0.4.1) - (2022-10-10)
 
 ## Bug Fixes

@@ -145,6 +145,8 @@ const Messages = {
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   [DjsErrorCodes.CommandInteractionOptionNoSubcommand]: 'No subcommand specified for interaction.',
   [DjsErrorCodes.CommandInteractionOptionNoSubcommandGroup]: 'No subcommand group specified for interaction.',
+  [DjsErrorCodes.CommandInteractionOptionInvalidChannelType]: (name, type, expected) =>
+    `The type of channel of the option "${name}" is: ${type}; expected ${expected}.`,
   [DjsErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
   [DjsErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>

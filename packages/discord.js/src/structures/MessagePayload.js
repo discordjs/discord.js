@@ -287,7 +287,7 @@ module.exports = MessagePayload;
 
 /**
  * A possible payload option.
- * @typedef {MessageCreateOptions|MessageEditOptions|WebhookCreateMessageOptions|WebhookEditMessageOptions|
+ * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
  */
 

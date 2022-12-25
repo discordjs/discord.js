@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@1.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.2.0...@discordjs/proxy@1.2.1) - (2022-11-25)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
 # [@discordjs/proxy@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.1.0...@discordjs/proxy@1.2.0) - (2022-10-07)
 
 ## Bug Fixes

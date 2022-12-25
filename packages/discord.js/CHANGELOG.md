@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.7.1](https://github.com/discordjs/discord.js/compare/14.7.0...14.7.1) - (2022-12-01)
+
+## Bug Fixes
+
+- Prevent crash on no select menu option (#8881) ([11d195d](https://github.com/discordjs/discord.js/commit/11d195d04ff57d51adb0f0d3a0a7342f9e34aba0))
+
+# [14.7.0](https://github.com/discordjs/discord.js/compare/14.6.0...14.7.0) - (2022-11-28)
+
+## Bug Fixes
+
+- **MessageMentions:** Add `InGuild` generic (#8828) ([f982803](https://github.com/discordjs/discord.js/commit/f9828034cd21e6f702762a46923e0f42115596f6))
+- **Activity:** Fix equals() not checking for differing emoji (#8841) ([7e06f68](https://github.com/discordjs/discord.js/commit/7e06f68185423ba7cb310220b213f445b6571e29))
+- Fixed react/astro/guide/discord.js build, updated dependencies, fix crawlvatar (#8861) ([d0c8256](https://github.com/discordjs/discord.js/commit/d0c82561b8a1765a1daa362ca903f3ffb3fa33ee))
+- **escapeMarkdown:** Fix double escaping (#8798) ([d6873b7](https://github.com/discordjs/discord.js/commit/d6873b7159352479475b3a0daa215bddbdd3a79b))
+- **Transfomers:** Call `.toJSON` in `toSnakeCase` (#8790) ([017f9b1](https://github.com/discordjs/discord.js/commit/017f9b1ed4014dc1db0b78c1a77e463b4403de5d))
+- Censor token in debug output (#8764) ([53d8e87](https://github.com/discordjs/discord.js/commit/53d8e87d7f3a329608250656950bd0a200adb1c7))
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Documentation
+
+- Describe InteractionEditReplyOptions (#8840) ([cb77fd0](https://github.com/discordjs/discord.js/commit/cb77fd02d083438de2aff6f0769baf7d1797bc65))
+- **AutoModerationRuleManager:** Describe cache (#8848) ([d275480](https://github.com/discordjs/discord.js/commit/d2754802cc3479e6288cdbfcd48c76bf57e09a07))
+- Fix message action row components (#8819) ([65bc0ad](https://github.com/discordjs/discord.js/commit/65bc0adbf4d7870d33b92585ca18f964f24bc84e))
+- Specify `ActionRowBuilder` for `components` (#8834) ([8ed5c1b](https://github.com/discordjs/discord.js/commit/8ed5c1beb622f71ce0bd89e4cbeff50e464da8fe))
+- Add `@extends` for select menu classes (#8824) ([09f65b7](https://github.com/discordjs/discord.js/commit/09f65b724b0d2f36bbe89b83570c0d18093b5126))
+- Make WebSocketShard.lastPingTimestamp public (#8768) ([68c9cb3](https://github.com/discordjs/discord.js/commit/68c9cb37bc3df6326b720291827ea477e421faf2))
+- **MessageReplyOptions:** Remove duplicate stickers field (#8766) ([6e348ff](https://github.com/discordjs/discord.js/commit/6e348ffd1d8db8d8ad2da7823460814695e01a43))
+
+## Features
+
+- **Webhook:** Add `channel` property (#8812) ([decbce4](https://github.com/discordjs/discord.js/commit/decbce401062af75f633e6acacc88207b115a719))
+- Auto Moderation (#7938) ([fd4ba5e](https://github.com/discordjs/discord.js/commit/fd4ba5eaba66898699127fc0d5f0ab52c18e3db0))
+- **SelectMenuInteractions:** Add `values` property (#8805) ([b2fabd1](https://github.com/discordjs/discord.js/commit/b2fabd130a76ea54cfbfa1b871ef8659513c2c7a))
+- **ThreadChannel:** Add a helper for pin and unpin (#8786) ([e74aa7f](https://github.com/discordjs/discord.js/commit/e74aa7f6b0fe04e3473fc4a62a73a7db87307685))
+- Add `Message#bulkDeletable` (#8760) ([ff85481](https://github.com/discordjs/discord.js/commit/ff85481d3e7cd6f7c5e38edbe43b27b104e82fba))
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+- **InteractionResponses:** Add message parameter (#8773) ([8b400ca](https://github.com/discordjs/discord.js/commit/8b400ca975c6bad00060b9c67068f42bd53524ba))
+- Support resume urls (#8784) ([88cd9d9](https://github.com/discordjs/discord.js/commit/88cd9d906074eb79e85df0ef49287f11133d2e0d))
+- Allow deletion of ephemeral messages (#8774) ([fc10774](https://github.com/discordjs/discord.js/commit/fc107744618857bf28c2167f204253baf690ede8))
+- **GuildChannelManager:** Add `.addFollower()` method (#8567) ([caeb1cb](https://github.com/discordjs/discord.js/commit/caeb1cbfdb2f2f007252c4d7e9f47a575c24bcb5))
+
+## Refactor
+
+- **Embed:** Use `embedLength` function from builders (#8735) ([cb3826c](https://github.com/discordjs/discord.js/commit/cb3826ce6dbcd3cf7ab639af6cdfcea80336aa1d))
+
 # [14.6.0](https://github.com/discordjs/discord.js/compare/14.5.0...14.6.0) - (2022-10-10)
 
 ## Bug Fixes
@@ -230,7 +275,7 @@ All notable changes to this project will be documented in this file.
 
 - **DataResolver#resolveImage:** Adjust to updated resolveFile (#8308) ([3a7e93d](https://github.com/discordjs/discord.js/commit/3a7e93df576172c797f1d8bd6483234bb6af2d00))
 
-# [14.0.0](https://github.com/discordjs/discord.js/tree/14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/13.12.0...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 

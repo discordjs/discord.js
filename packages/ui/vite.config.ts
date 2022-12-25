@@ -14,7 +14,15 @@ export default defineConfig({
 			fileName: 'ui',
 		},
 		rollupOptions: {
-			external: ['react', 'react-dom', 'ariakit/disclosure', 'react-icons/vsc'],
+			external: [
+				'react',
+				'react-dom',
+				'ariakit/disclosure',
+				'@react-icons/all-files/vsc/VscFlame',
+				'@react-icons/all-files/vsc/VscInfo',
+				'@react-icons/all-files/vsc/VscWarning',
+				'@react-icons/all-files/vsc/VscChevronDown',
+			],
 		},
 	},
 });

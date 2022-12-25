@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.4.0...@discordjs/rest@1.5.0) - (2022-12-16)
+
+## Features
+
+- **core:** Add support for role connections (#8930) ([3d6fa24](https://github.com/discordjs/discord.js/commit/3d6fa248c07b2278504bbe8bafa17a3294971fd9))
+
+# [@discordjs/rest@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.3.0...@discordjs/rest@1.4.0) - (2022-11-28)
+
+## Bug Fixes
+
+- **SequentialHandler:** Downlevel ECONNRESET errors (#8785) ([5a70057](https://github.com/discordjs/discord.js/commit/5a70057826b47fb8251f3d836a536de689444ca1))
+- Make ratelimit timeout require event loop to be active (#8779) ([68d5712](https://github.com/discordjs/discord.js/commit/68d5712deae85532604d93b4505f0953d664cde7))
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- Add `@discordjs/core` (#8736) ([2127b32](https://github.com/discordjs/discord.js/commit/2127b32d26dedeb44ec43d16ec2e2046919f9bb0))
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+
+## Refactor
+
+- Update `makeURLSearchParams` to accept readonly non-`Record`s (#8868) ([8376e2d](https://github.com/discordjs/discord.js/commit/8376e2dbcd38697ce62615d9a539fd198fbc4713))
+
 # [@discordjs/rest@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.2.0...@discordjs/rest@1.3.0) - (2022-10-08)
 
 ## Bug Fixes

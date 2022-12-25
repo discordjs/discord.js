@@ -88,7 +88,7 @@ export interface RequestData {
 	/**
 	 * Reason to show in the audit logs
 	 */
-	reason?: string;
+	reason?: string | undefined;
 	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
