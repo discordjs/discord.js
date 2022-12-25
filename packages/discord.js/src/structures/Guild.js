@@ -760,7 +760,6 @@ class Guild extends AnonymousGuild {
    * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [reason] Reason for editing this guild
    */
-  /* eslint-enable max-len */
 
   /**
    * Data that can be resolved to a Text Channel object. This can be:
@@ -912,7 +911,6 @@ class Guild extends AnonymousGuild {
     return new WelcomeScreen(this, patchData);
   }
 
-  /* eslint-disable max-len */
   /**
    * Edits the level of the explicit content filter.
    * @param {?GuildExplicitContentFilter} explicitContentFilter The new level of the explicit content filter
@@ -925,14 +923,14 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications The new default message notification level of the guild
+   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications
+   * The new default message notification level of the guild
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications, reason });
   }
-  /* eslint-enable max-len */
 
   /**
    * Edits the flags of the default message notifications of the guild.
