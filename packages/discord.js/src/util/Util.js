@@ -9,6 +9,11 @@ const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = 
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
+ * Anything that can be a JSON value.
+ * @typedef {string | number | Object | boolean | JSONValue[]} JSONValue
+ */
+
+/**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
  * @param {Object} obj The object to flatten.
  * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.

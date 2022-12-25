@@ -18,6 +18,8 @@ module.exports = (client, { d: data }) => {
    * @typedef {Object} GuildMembersChunk
    * @property {number} index Index of the received chunk
    * @property {number} count Number of chunks the client should receive
+   * @property {JSONValue[]} notFound An array of whatever could not be found
+   * when using {@link GatewayOpcodes.RequestGuildMembers}
    * @property {?string} nonce Nonce for this chunk
    */
 
@@ -29,8 +31,9 @@ module.exports = (client, { d: data }) => {
    * @param {GuildMembersChunk} chunk Properties of the received chunk
    */
   client.emit(Events.GuildMembersChunk, members, guild, {
-    count: data.chunk_count,
     index: data.chunk_index,
+    count: data.chunk_count,
+    notFound: data.not_found,
     nonce: data.nonce,
   });
 };

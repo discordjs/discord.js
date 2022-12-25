@@ -229,6 +229,8 @@ declare module 'node:events' {
   }
 }
 
+type JSONValue = string | number | object | boolean | JSONValue[];
+
 //#region Classes
 
 export class Activity {
@@ -4710,7 +4712,7 @@ export interface ClientEvents {
   guildMembersChunk: [
     members: Collection<Snowflake, GuildMember>,
     guild: Guild,
-    data: { count: number; index: number; nonce: string | undefined },
+    data: { index: number; count: number; notFound: JSONValue[]; nonce: string | undefined },
   ];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
