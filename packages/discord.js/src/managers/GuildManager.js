@@ -185,7 +185,8 @@ class GuildManager extends CachedManager {
         roles: roles.map(({ color, permissions, ...options }) => ({
           ...options,
           color: color && resolveColor(color),
-          permissions: permissions && PermissionsBitField.resolve(permissions).toString(),
+          permissions:
+            typeof permissions === 'undefined' ? undefined : PermissionsBitField.resolve(permissions).toString(),
         })),
         channels: channels.map(
           ({
@@ -204,8 +205,8 @@ class GuildManager extends CachedManager {
             video_quality_mode: videoQualityMode,
             permission_overwrites: permissionOverwrites?.map(({ allow, deny, ...options2 }) => ({
               ...options2,
-              allow: allow && PermissionsBitField.resolve(allow).toString(),
-              deny: deny && PermissionsBitField.resolve(deny).toString(),
+              allow: typeof allow === 'undefined' ? undefined : PermissionsBitField.resolve(allow).toString(),
+              deny: typeof deny === 'undefined' ? undefined : PermissionsBitField.resolve(deny).toString(),
             })),
             rate_limit_per_user: rateLimitPerUser,
           }),
@@ -213,7 +214,10 @@ class GuildManager extends CachedManager {
         afk_channel_id: afkChannelId,
         afk_timeout: afkTimeout,
         system_channel_id: systemChannelId,
-        system_channel_flags: systemChannelFlags && SystemChannelFlagsBitField.resolve(systemChannelFlags),
+        system_channel_flags:
+          typeof systemChannelFlags === 'undefined'
+            ? undefined
+            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
       },
     });
 
