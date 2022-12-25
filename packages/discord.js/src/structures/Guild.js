@@ -810,10 +810,11 @@ class Guild extends AnonymousGuild {
     reason,
   }) {
     const {
-      client: { channels, users },
+      client: { actions, channels, rest, users },
+      id,
     } = this;
 
-    const newData = await this.client.rest.patch(Routes.guild(this.id), {
+    const newData = await rest.patch(Routes.guild(id), {
       body: {
         name,
         verification_level: verificationLevel,
@@ -838,7 +839,7 @@ class Guild extends AnonymousGuild {
       reason,
     });
 
-    return this.client.actions.GuildUpdate.handle(newData).updated;
+    return actions.GuildUpdate.handle(newData).updated;
   }
 
   /**
