@@ -10,7 +10,7 @@ const isObject = d => typeof d === 'object' && d !== null;
 
 /**
  * Anything that can be a JSON value.
- * @typedef {string | number | Object | boolean | JSONValue[]} JSONValue
+ * @typedef {string|number|Object|boolean|JSONValue[]} JSONValue
  */
 
 /**
