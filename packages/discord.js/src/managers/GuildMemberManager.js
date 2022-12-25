@@ -229,9 +229,10 @@ class GuildMemberManager extends CachedManager {
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
   } = {}) {
+    if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
+
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
-      if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
       this.guild.shard.send({
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
