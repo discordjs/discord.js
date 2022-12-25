@@ -69,6 +69,13 @@ describe('Markdown escapers', () => {
 		test('basic (*)', () => {
 			expect(escapeItalic('*test*')).toEqual('\\*test\\*');
 		});
+
+		test('emoji', () => {
+			const testOne = 'This is a test with _emojis_ <:Frost_ed_Wreath:1053399941210443826> and **bold text**.';
+			expect(escapeItalic(testOne)).toEqual(
+				'This is a test with \\_emojis\\_ <:Frost_ed_Wreath:1053399941210443826> and **bold text**.',
+			);
+		});
 	});
 
 	describe('escapeUnderline', () => {
@@ -80,6 +87,13 @@ describe('Markdown escapers', () => {
 
 		test('basic', () => {
 			expect(escapeUnderline('__test__')).toEqual('\\_\\_test\\_\\_');
+		});
+
+		test('emoji', () => {
+			const testTwo = 'This is a test with __emojis__ <:Frost__ed__Wreath:1053399939654352978> and **bold text**.';
+			expect(escapeUnderline(testTwo)).toBe(
+				'This is a test with \\_\\_emojis\\_\\_ <:Frost__ed__Wreath:1053399939654352978> and **bold text**.',
+			);
 		});
 	});
 
