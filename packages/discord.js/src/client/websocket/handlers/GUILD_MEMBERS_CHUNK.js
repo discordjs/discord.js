@@ -18,7 +18,7 @@ module.exports = (client, { d: data }) => {
    * @typedef {Object} GuildMembersChunk
    * @property {number} index Index of the received chunk
    * @property {number} count Number of chunks the client should receive
-   * @property {JSONValue[]} notFound An array of whatever could not be found
+   * @property {*[]} notFound An array of whatever could not be found
    * when using {@link GatewayOpcodes.RequestGuildMembers}
    * @property {?string} nonce Nonce for this chunk
    */
