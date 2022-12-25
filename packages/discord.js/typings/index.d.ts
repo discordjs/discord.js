@@ -229,7 +229,7 @@ declare module 'node:events' {
   }
 }
 
-type JSONValue = string | number | object | boolean | JSONValue[];
+export type JSONValue = string | number | object | boolean | JSONValue[];
 
 //#region Classes
 
