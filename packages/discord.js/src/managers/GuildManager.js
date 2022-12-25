@@ -57,14 +57,14 @@ class GuildManager extends CachedManager {
   /**
    * Partial data for a Role.
    * @typedef {Object} PartialRoleData
-   * @property {Snowflake|number} [id] The role's id, used to set channel overrides,
-   * this is a placeholder and will be replaced by the API after consumption
+   * @property {Snowflake|number} [id] The role's id, used to set channel overrides.
+   * This is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
-   * @property {boolean} [hoist] Whether or not the role should be hoisted
+   * @property {boolean} [hoist] Whether the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
-   * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   * @property {boolean} [mentionable] Whether the role should be mentionable
    */
 
   /**
@@ -79,8 +79,8 @@ class GuildManager extends CachedManager {
   /**
    * Partial data for a Channel.
    * @typedef {Object} PartialChannelData
-   * @property {Snowflake|number} [id] The channel's id, used to set its parent,
-   * this is a placeholder and will be replaced by the API after consumption
+   * @property {Snowflake|number} [id] The channel's id, used to set its parent.
+   * This is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
    * @property {ChannelType.GuildText|ChannelType.GuildVoice|ChannelType.GuildCategory} [type] The type of the channel
    * @property {string} name The name of the channel
@@ -141,18 +141,18 @@ class GuildManager extends CachedManager {
    * Options used to create a guild.
    * @typedef {Object} GuildCreateOptions
    * @property {string} name The name of the guild
-   * @property {Snowflake|number} [afkChannelId] The AFK channel's id
-   * @property {number} [afkTimeout] The AFK timeout in seconds
-   * @property {PartialChannelData[]} [channels=[]] The channels for this guild
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
+   * @property {GuildVerificationLevel} [verificationLevel] The verification level for the guild
    * @property {GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
    * for the guild
    * @property {GuildExplicitContentFilter} [explicitContentFilter] The explicit content filter level for the guild
-   * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
+   * @property {PartialChannelData[]} [channels=[]] The channels for this guild
+   * @property {Snowflake|number} [afkChannelId] The AFK channel's id
+   * @property {number} [afkTimeout] The AFK timeout in seconds
    * the first element of this array is used to change properties of the guild's everyone role.
    * @property {Snowflake|number} [systemChannelId] The system channel's id
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
-   * @property {GuildVerificationLevel} [verificationLevel] The verification level for the guild
    */
   /* eslint-enable max-len */
 
@@ -164,81 +164,80 @@ class GuildManager extends CachedManager {
    */
   async create({
     name,
-    afkChannelId,
-    afkTimeout,
-    channels = [],
+    icon = null,
+    verificationLevel,
     defaultMessageNotifications,
     explicitContentFilter,
-    icon = null,
     roles = [],
+    channels = [],
+    afkChannelId,
+    afkTimeout,
     systemChannelId,
     systemChannelFlags,
-    verificationLevel,
   }) {
-    icon = await DataResolver.resolveImage(icon);
-
-    for (const channel of channels) {
-      channel.parent_id = channel.parentId;
-      delete channel.parentId;
-      channel.user_limit = channel.userLimit;
-      delete channel.userLimit;
-      channel.rate_limit_per_user = channel.rateLimitPerUser;
-      delete channel.rateLimitPerUser;
-      channel.rtc_region = channel.rtcRegion;
-      delete channel.rtcRegion;
-      channel.video_quality_mode = channel.videoQualityMode;
-      delete channel.videoQualityMode;
-
-      if (!channel.permissionOverwrites) continue;
-      for (const overwrite of channel.permissionOverwrites) {
-        overwrite.allow &&= PermissionsBitField.resolve(overwrite.allow).toString();
-        overwrite.deny &&= PermissionsBitField.resolve(overwrite.deny).toString();
-      }
-      channel.permission_overwrites = channel.permissionOverwrites;
-      delete channel.permissionOverwrites;
-    }
-    for (const role of roles) {
-      role.color &&= resolveColor(role.color);
-      role.permissions &&= PermissionsBitField.resolve(role.permissions).toString();
-    }
-    systemChannelFlags &&= SystemChannelFlagsBitField.resolve(systemChannelFlags);
-
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {
         name,
-        icon,
+        icon: icon && (await DataResolver.resolveImage(icon)),
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
-        roles,
-        channels,
+        roles: roles.map(({ color, permissions, ...options }) => ({
+          ...options,
+          color: color && resolveColor(color),
+          permissions: permissions && PermissionsBitField.resolve(permissions).toString(),
+        })),
+        channels: channels.map(
+          ({
+            parentId,
+            userLimit,
+            rtcRegion,
+            videoQualityMode,
+            permissionOverwrites,
+            rateLimitPerUser,
+            ...options
+          }) => ({
+            ...options,
+            parent_id: parentId,
+            user_limit: userLimit,
+            rtc_region: rtcRegion,
+            video_quality_mode: videoQualityMode,
+            permission_overwrites: permissionOverwrites?.map(({ allow, deny, ...options2 }) => ({
+              ...options2,
+              allow: allow && PermissionsBitField.resolve(allow).toString(),
+              deny: deny && PermissionsBitField.resolve(deny).toString(),
+            })),
+            rate_limit_per_user: rateLimitPerUser,
+          }),
+        ),
         afk_channel_id: afkChannelId,
         afk_timeout: afkTimeout,
         system_channel_id: systemChannelId,
-        system_channel_flags: systemChannelFlags,
+        system_channel_flags: systemChannelFlags && SystemChannelFlagsBitField.resolve(systemChannelFlags),
       },
     });
 
-    if (this.client.guilds.cache.has(data.id)) return this.client.guilds.cache.get(data.id);
+    return (
+      this.client.guilds.cache.get(data.id) ??
+      new Promise(resolve => {
+        const handleGuild = guild => {
+          if (guild.id === data.id) {
+            clearTimeout(timeout);
+            this.client.removeListener(Events.GuildCreate, handleGuild);
+            this.client.decrementMaxListeners();
+            resolve(guild);
+          }
+        };
+        this.client.incrementMaxListeners();
+        this.client.on(Events.GuildCreate, handleGuild);
 
-    return new Promise(resolve => {
-      const handleGuild = guild => {
-        if (guild.id === data.id) {
-          clearTimeout(timeout);
+        const timeout = setTimeout(() => {
           this.client.removeListener(Events.GuildCreate, handleGuild);
           this.client.decrementMaxListeners();
-          resolve(guild);
-        }
-      };
-      this.client.incrementMaxListeners();
-      this.client.on(Events.GuildCreate, handleGuild);
-
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildCreate, handleGuild);
-        this.client.decrementMaxListeners();
-        resolve(this.client.guilds._add(data));
-      }, 10_000).unref();
-    });
+          resolve(this.client.guilds._add(data));
+        }, 10_000).unref();
+      })
+    );
   }
 
   /**
