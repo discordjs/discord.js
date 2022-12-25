@@ -229,8 +229,6 @@ declare module 'node:events' {
   }
 }
 
-export type JSONValue = string | number | object | boolean | JSONValue[];
-
 //#region Classes
 
 export class Activity {
@@ -5647,6 +5645,8 @@ export interface InviteCreateOptions {
 }
 
 export type InviteResolvable = string;
+
+export type JSONValue = string | number | object | boolean | JSONValue[];
 
 export interface LifetimeFilterOptions<K, V> {
   excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
