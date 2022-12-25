@@ -150,6 +150,8 @@ import {
   GatewayAutoModerationActionExecutionDispatchData,
   APIAutoModerationRule,
   ForumLayoutType,
+  ApplicationRoleConnectionMetadataType,
+  APIApplicationRoleConnectionMetadata,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -453,6 +455,16 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
+export class ApplicationRoleConnectionMetadata {
+  private constructor(data: APIApplicationRoleConnectionMetadata);
+  public name: string;
+  public nameLocalizations: LocalizationMap | null;
+  public description: string;
+  public descriptionLocalizations: LocalizationMap | null;
+  public key: string;
+  public type: ApplicationRoleConnectionMetadataType;
+}
+
 export type ApplicationResolvable = Application | Activity | Snowflake;
 
 export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
@@ -678,7 +690,7 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get style(): ButtonStyle;
   public get label(): string | null;
   public get emoji(): APIMessageComponentEmoji | null;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean;
   public get customId(): string | null;
   public get url(): string | null;
 }
@@ -759,7 +771,7 @@ export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extend
   public get maxValues(): number | null;
   public get minValues(): number | null;
   public get customId(): string;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean;
 }
 
 export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIStringSelectComponent> {
@@ -966,8 +978,13 @@ export class ClientApplication extends Application {
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
+  public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
   public fetch(): Promise<ClientApplication>;
+  public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
+  public editRoleConnectionMetadataRecords(
+    records: ApplicationRoleConnectionMetadataEditOptions[],
+  ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
 export class ClientPresence extends Presence {
@@ -4479,6 +4496,15 @@ export type ApplicationCommandPermissionIdResolvable =
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString = keyof typeof ApplicationFlags;
+
+export interface ApplicationRoleConnectionMetadataEditOptions {
+  name: string;
+  nameLocalizations?: LocalizationMap | null;
+  description: string;
+  descriptionLocalizations?: LocalizationMap | null;
+  key: string;
+  type: ApplicationRoleConnectionMetadataType;
+}
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
