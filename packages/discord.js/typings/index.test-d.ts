@@ -1496,6 +1496,7 @@ declare const guildMemberManager: GuildMemberManager;
   expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({}));
   expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ user: ['12345678901234567'] }));
   expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ withPresences: false }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', withPresences: true }));
 
   expectType<Promise<Collection<Snowflake, GuildMember>>>(
     guildMemberManager.fetch({ query: 'test', user: ['12345678901234567'], nonce: 'test' }),

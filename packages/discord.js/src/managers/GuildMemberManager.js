@@ -204,10 +204,10 @@ class GuildMemberManager extends CachedManager {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const { user, cache, force } = options;
+    const { user, limit, withPresences, cache, force } = options;
     const resolvedUser = this.client.users.resolveId(user ?? options);
-    if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
-    const resolvedUsers = user?.map(users => this.client.users.resolveId(users));
+    if (resolvedUser && !limit && !withPresences) return this._fetchSingle({ user: resolvedUser, cache, force });
+    const resolvedUsers = user?.map?.(users => this.client.users.resolveId(users)) ?? resolvedUser;
     return this._fetchMany({ ...options, users: resolvedUsers });
   }
 
@@ -257,7 +257,7 @@ class GuildMemberManager extends CachedManager {
           clearTimeout(timeout);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
-          resolve(Array.isArray(users) ? fetchedMembers : fetchedMembers.first());
+          resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
         }
       };
       const timeout = setTimeout(() => {
