@@ -235,10 +235,11 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * Updates the voice state of the bot user
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#update-voice-state}
-	 * @param shardId - The id of the shard to update the voice state in
 	 * @param options - The options for updating the voice state
 	 */
-	public async updateVoiceState(shardId: number, options: GatewayVoiceStateUpdateData) {
+	public async updateVoiceState(options: GatewayVoiceStateUpdateData) {
+		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
+
 		await this.ws.send(shardId, {
 			op: GatewayOpcodes.VoiceStateUpdate,
 			// eslint-disable-next-line id-length
