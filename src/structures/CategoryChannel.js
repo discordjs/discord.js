@@ -37,8 +37,6 @@ class CategoryChannel extends GuildChannel {
    * @property {boolean} [nsfw] Whether the new channel is NSFW
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
    * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @property {boolean} [lockPermissions]
-   * Lock the permissions of the new channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
