@@ -223,13 +223,12 @@ class GuildManager extends CachedManager {
         const handleGuild = guild => {
           if (guild.id === data.id) {
             clearTimeout(timeout);
-            this.client.removeListener(Events.GuildCreate, handleGuild);
             this.client.decrementMaxListeners();
             resolve(guild);
           }
         };
         this.client.incrementMaxListeners();
-        this.client.on(Events.GuildCreate, handleGuild);
+        this.client.once(Events.GuildCreate, handleGuild);
 
         const timeout = setTimeout(() => {
           this.client.removeListener(Events.GuildCreate, handleGuild);
