@@ -247,8 +247,8 @@ class GuildMemberManager extends CachedManager {
       const fetchedMembers = new Collection();
       let i = 0;
       const handler = (members, _, chunk) => {
-        timeout.refresh();
         if (chunk.nonce !== nonce) return;
+        timeout.refresh();
         i++;
         for (const member of members.values()) {
           fetchedMembers.set(member.id, member);
