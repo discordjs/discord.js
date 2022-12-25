@@ -4403,7 +4403,7 @@ export interface ApplicationCommandBooleanOption extends BaseApplicationCommandO
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.SubcommandGroup;
-  options?: ApplicationCommandSubCommandData[];
+  options: ApplicationCommandSubCommandData[];
 }
 
 export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandOptionsData, 'required'> {
