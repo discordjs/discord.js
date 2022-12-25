@@ -3877,9 +3877,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
-  public fetch(
-    options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
-  ): Promise<GuildMember>;
+  public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
   public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public fetchMe(options?: BaseFetchOptions): Promise<GuildMember>;
   public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
@@ -5155,7 +5153,6 @@ export interface FetchMembersOptions {
   withPresences?: boolean;
   time?: number;
   nonce?: string;
-  force?: boolean;
 }
 
 export interface FetchMessageOptions extends BaseFetchOptions {
