@@ -45,11 +45,11 @@ class BaseSelectMenuComponent extends Component {
 
   /**
    * Whether this select menu is disabled
-   * @type {?boolean}
+   * @type {boolean}
    * @readonly
    */
   get disabled() {
-    return this.data.disabled ?? null;
+    return this.data.disabled ?? false;
   }
 }
 
