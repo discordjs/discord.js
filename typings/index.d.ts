@@ -4640,9 +4640,8 @@ export interface EmbedFooterData {
 
 export type EmojiIdentifierResolvable =
   | EmojiResolvable
-  | `${string}:${Snowflake}`
-  | `<:${string}:${Snowflake}>`
-  | `<a:${string}:${Snowflake}>`
+  | `${'' | 'a:'}${string}:${Snowflake}`
+  | `<${'' | 'a'}:${string}:${Snowflake}>`
   | string;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
