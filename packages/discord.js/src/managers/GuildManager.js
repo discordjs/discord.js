@@ -203,8 +203,8 @@ class GuildManager extends CachedManager {
             user_limit: userLimit,
             rtc_region: rtcRegion,
             video_quality_mode: videoQualityMode,
-            permission_overwrites: permissionOverwrites?.map(({ allow, deny, ...options2 }) => ({
-              ...options2,
+            permission_overwrites: permissionOverwrites?.map(({ allow, deny, ...permissionOverwriteOptions }) => ({
+              ...permissionOverwriteOptions,
               allow: typeof allow === 'undefined' ? undefined : PermissionsBitField.resolve(allow).toString(),
               deny: typeof deny === 'undefined' ? undefined : PermissionsBitField.resolve(deny).toString(),
             })),
