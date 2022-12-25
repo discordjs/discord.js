@@ -707,7 +707,7 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   public constructor(data?: Partial<StringSelectMenuComponentData | APIStringSelectComponent>);
   private static normalizeEmoji(
     selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
-  ): (APISelectMenuOption | SelectMenuOptionBuilder)[];
+  ): (APISelectMenuOption | StringSelectMenuOptionBuilder)[];
   public override addOptions(
     ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
   ): this;
@@ -720,6 +720,8 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
 export {
   /** @deprecated Use {@link StringSelectMenuBuilder} instead */
   StringSelectMenuBuilder as SelectMenuBuilder,
+  /** @deprecated Use {@link StringSelectMenuOptionBuilder} instead */
+  StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
 };
 
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
@@ -744,10 +746,10 @@ export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent 
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): ChannelSelectMenuBuilder;
 }
 
-export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+export class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
   public override setEmoji(emoji: ComponentEmojiResolvable): this;
-  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): SelectMenuOptionBuilder;
+  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): StringSelectMenuOptionBuilder;
 }
 
 export class ModalBuilder extends BuildersModal {
