@@ -809,28 +809,26 @@ class Guild extends AnonymousGuild {
     premiumProgressBarEnabled,
     reason,
   }) {
-    const {
-      client: { actions, channels, rest, users },
-      id,
-    } = this;
-
-    const newData = await rest.patch(Routes.guild(id), {
+    const data = await this.client.rest.patch(Routes.guild(this.id), {
       body: {
         name,
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
-        afk_channel_id: afkChannel && channels.resolveId(afkChannel),
+        afk_channel_id: afkChannel && this.client.channels.resolveId(afkChannel),
         afk_timeout: afkTimeout,
         icon: icon && (await DataResolver.resolveImage(icon)),
-        owner_id: owner && users.resolveId(owner),
+        owner_id: owner && this.client.users.resolveId(owner),
         splash: splash && (await DataResolver.resolveImage(splash)),
         discovery_splash: discoverySplash && (await DataResolver.resolveImage(discoverySplash)),
         banner: banner && (await DataResolver.resolveImage(banner)),
-        system_channel_id: systemChannel && channels.resolveId(systemChannel),
-        system_channel_flags: systemChannelFlags && SystemChannelFlagsBitField.resolve(systemChannelFlags),
-        rules_channel_id: rulesChannel && channels.resolveId(rulesChannel),
-        public_updates_channel_id: publicUpdatesChannel && channels.resolveId(publicUpdatesChannel),
+        system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
+        system_channel_flags:
+          typeof systemChannelFlags === 'undefined'
+            ? undefined
+            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+        rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
+        public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,
         features,
         description,
@@ -839,7 +837,7 @@ class Guild extends AnonymousGuild {
       reason,
     });
 
-    return actions.GuildUpdate.handle(newData).updated;
+    return this.client.actions.GuildUpdate.handle(data).updated;
   }
 
   /**
