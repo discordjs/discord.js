@@ -257,9 +257,7 @@ class GuildMemberManager extends CachedManager {
           clearTimeout(timeout);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
-          let fetched = fetchedMembers;
-          if (users && !Array.isArray(users) && fetched.size) fetched = fetched.first();
-          resolve(fetched);
+          resolve(Array.isArray(users) ? fetchedMembers : fetchedMembers.first());
         }
       };
       const timeout = setTimeout(() => {
