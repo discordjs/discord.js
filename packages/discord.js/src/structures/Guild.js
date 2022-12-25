@@ -740,24 +740,24 @@ class Guild extends AnonymousGuild {
    * @typedef {Object} GuildEditOptions
    * @property {string} [name] The name of the guild
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
+   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
+   * notification level of the guild
    * @property {?GuildExplicitContentFilter} [explicitContentFilter] The level of the explicit content filter
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
-   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
-   * notification level of the guild
+   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {?string} [preferredLocale] The preferred locale of the guild
-   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
-   * @property {?string} [description] The discovery description of the guild
    * @property {GuildFeature[]} [features] The features of the guild
+   * @property {?string} [description] The discovery description of the guild
+   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [reason] Reason for editing this guild
    */
   /* eslint-enable max-len */
@@ -788,50 +788,57 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  async edit(options) {
-    const _data = {};
-    if (options.name) _data.name = options.name;
-    if (typeof options.verificationLevel !== 'undefined') {
-      _data.verification_level = options.verificationLevel;
-    }
-    if (typeof options.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.channels.resolveId(options.afkChannel);
-    }
-    if (typeof options.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.channels.resolveId(options.systemChannel);
-    }
-    if (options.afkTimeout) _data.afk_timeout = Number(options.afkTimeout);
-    if (typeof options.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(options.icon);
-    if (options.owner) _data.owner_id = this.client.users.resolveId(options.owner);
-    if (typeof options.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(options.splash);
-    if (typeof options.discoverySplash !== 'undefined') {
-      _data.discovery_splash = await DataResolver.resolveImage(options.discoverySplash);
-    }
-    if (typeof options.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(options.banner);
-    if (typeof options.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = options.explicitContentFilter;
-    }
-    if (typeof options.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications = options.defaultMessageNotifications;
-    }
-    if (typeof options.systemChannelFlags !== 'undefined') {
-      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(options.systemChannelFlags);
-    }
-    if (typeof options.rulesChannel !== 'undefined') {
-      _data.rules_channel_id = this.client.channels.resolveId(options.rulesChannel);
-    }
-    if (typeof options.publicUpdatesChannel !== 'undefined') {
-      _data.public_updates_channel_id = this.client.channels.resolveId(options.publicUpdatesChannel);
-    }
-    if (typeof options.features !== 'undefined') {
-      _data.features = options.features;
-    }
-    if (typeof options.description !== 'undefined') {
-      _data.description = options.description;
-    }
-    if (typeof options.preferredLocale !== 'undefined') _data.preferred_locale = options.preferredLocale;
-    if ('premiumProgressBarEnabled' in options) _data.premium_progress_bar_enabled = options.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: options.reason });
+  async edit({
+    name,
+    verificationLevel,
+    defaultMessageNotifications,
+    explicitContentFilter,
+    afkChannel,
+    afkTimeout,
+    icon,
+    owner,
+    splash,
+    discoverySplash,
+    banner,
+    systemChannel,
+    systemChannelFlags,
+    rulesChannel,
+    publicUpdatesChannel,
+    preferredLocale,
+    features,
+    description,
+    premiumProgressBarEnabled,
+    reason,
+  }) {
+    const {
+      client: { channels, users },
+    } = this;
+
+    const newData = await this.client.rest.patch(Routes.guild(this.id), {
+      body: {
+        name,
+        verification_level: verificationLevel,
+        default_message_notifications: defaultMessageNotifications,
+        explicit_content_filter: explicitContentFilter,
+        afk_channel_id: afkChannel && channels.resolveId(afkChannel),
+        afk_timeout: afkTimeout,
+        icon: icon && (await DataResolver.resolveImage(icon)),
+        owner_id: owner && users.resolveId(owner),
+        splash: splash && (await DataResolver.resolveImage(splash)),
+        discovery_splash: discoverySplash && (await DataResolver.resolveImage(discoverySplash)),
+        banner: banner && (await DataResolver.resolveImage(banner)),
+        system_channel_id: systemChannel && channels.resolveId(systemChannel),
+        system_channel_flags: systemChannelFlags && SystemChannelFlagsBitField.resolve(systemChannelFlags),
+        rules_channel_id: rulesChannel && channels.resolveId(rulesChannel),
+        public_updates_channel_id: publicUpdatesChannel && channels.resolveId(publicUpdatesChannel),
+        preferred_locale: preferredLocale,
+        features,
+        description,
+        premium_progress_bar_enabled: premiumProgressBarEnabled,
+      },
+      reason,
+    });
+
     return this.client.actions.GuildUpdate.handle(newData).updated;
   }
 
