@@ -788,7 +788,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async edit({
-    name,
     verificationLevel,
     defaultMessageNotifications,
     explicitContentFilter,
@@ -804,14 +803,12 @@ class Guild extends AnonymousGuild {
     rulesChannel,
     publicUpdatesChannel,
     preferredLocale,
-    features,
-    description,
     premiumProgressBarEnabled,
-    reason,
+    ...options
   }) {
     const data = await this.client.rest.patch(Routes.guild(this.id), {
       body: {
-        name,
+        ...options,
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
@@ -830,11 +827,9 @@ class Guild extends AnonymousGuild {
         rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
         public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,
-        features,
-        description,
         premium_progress_bar_enabled: premiumProgressBarEnabled,
       },
-      reason,
+      reason: options.reason,
     });
 
     return this.client.actions.GuildUpdate.handle(data).updated;
