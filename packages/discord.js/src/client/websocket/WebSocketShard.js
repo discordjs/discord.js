@@ -820,14 +820,12 @@ class WebSocketShard extends EventEmitter {
       if (this.connection.readyState === WebSocket.OPEN) {
         this.connection.close(closeCode);
         this.debug(`[WebSocket] Close: Tried closing. | WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
-        if (this.connection.readyState === WebSocket.CLOSING || this.connection.readyState === WebSocket.CLOSED) {
-          this.closeEmitted = false;
-          this.debug(
-            `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
+        this.closeEmitted = false;
+        this.debug(
+          `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
             Timeout: ${this.manager.client.options.closeTimeout}ms`,
-          );
-          this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
-        }
+        );
+        this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
       } else {
         // Connection is not OPEN
         this.debug(`WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
