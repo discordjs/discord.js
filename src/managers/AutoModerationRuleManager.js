@@ -17,13 +17,34 @@ const {
 class AutoModerationRuleManager extends CachedManager {
   constructor(guild, iterable) {
     super(guild.client, AutoModerationRule, iterable);
-
+    
     /**
      * The guild this manager belongs to.
      * @type {Guild}
      */
     this.guild = guild;
   }
+  
+  /**
+   * Deletes an auto moderation rule.
+   * @param {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to delete
+   /**
+    * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
+    * @method resolve
+    * @memberof AutoModerationRuleManager
+    * @instance
+    * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+    * @returns {?AutoModerationRule}
+    */
+  
+   /**
+    * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
+    * @method resolveId
+    * @memberof AutoModerationRuleManager
+    * @instance
+    * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+    * @returns {?Snowflake}
+    */
 
   _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
@@ -255,9 +276,6 @@ class AutoModerationRuleManager extends CachedManager {
     );
   }
 
-  /**
-   * Deletes an auto moderation rule.
-   * @param {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to delete
    * @param {string} [reason] The reason for deleting the auto moderation rule
    * @returns {Promise<void>}
    */
@@ -265,24 +283,6 @@ class AutoModerationRuleManager extends CachedManager {
     const autoModerationRuleId = this.resolveId(autoModerationRule);
     await this.client.api.guilds(this.guild.id)('auto-moderation').rules(autoModerationRuleId).delete({ reason });
   }
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
-   * @method resolve
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?AutoModerationRule}
-   */
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
-   * @method resolveId
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
 module.exports = AutoModerationRuleManager;
