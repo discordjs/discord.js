@@ -2731,6 +2731,7 @@ export class Util extends null {
   ): Promise<{ id: Snowflake; position: number }[]>;
   /** @deprecated This will be removed in the next major version. */
   public static splitMessage(text: string, options?: SplitOptions): string[];
+  /** @deprecated This will be removed in the next major version. */
   public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
 }
 
