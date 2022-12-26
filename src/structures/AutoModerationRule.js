@@ -236,7 +236,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the actions for this auto moderation rule.
-   * @param {AutoModerationActionOptions} actions The actions of this auto moderation rule
+   * @param {AutoModerationActionOptions[]} actions The actions of this auto moderation rule
    * @param {string} [reason] The reason for changing the actions of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
