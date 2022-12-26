@@ -14,7 +14,6 @@ const { basename, flatten } = require('../util/Util');
  */
 class Attachment {
   constructor(data) {
-    this.attachment = data.url;
     /**
      * The name of this attachment
      * @type {string}
