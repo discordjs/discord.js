@@ -24,6 +24,7 @@ class AutoModerationRuleManager extends CachedManager {
      */
     this.guild = guild;
   }
+
   /**
    * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
    * @method resolve
