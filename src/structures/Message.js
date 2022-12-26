@@ -868,8 +868,8 @@ class Message extends Base {
    * * `1440` (1 day)
    * * `4320` (3 days)
    * * `10080` (7 days)
-   * * `'MAX'` Based on the guild's features
-   * <warn>The `'MAX'` option is deprecated and will be removed in the next major version.</warn>
+   * * `'MAX'` (7 days)
+   * <warn>This option is deprecated and will be removed in the next major version.</warn>
    * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
