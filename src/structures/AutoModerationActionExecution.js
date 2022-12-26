@@ -58,7 +58,7 @@ class AutoModerationActionExecution {
 
     /**
      * The content that triggered this action.
-     * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged gateway intent.</info>
+     * <info>This property requires the {@link Intents.FLAGS.MESSAGE_CONTENT} privileged gateway intent.</info>
      * @type {string}
      */
     this.content = data.content;
