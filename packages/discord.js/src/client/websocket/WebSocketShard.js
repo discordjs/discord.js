@@ -278,6 +278,7 @@ class WebSocketShard extends EventEmitter {
       this.setHelloTimeout();
 
       this.connectedAt = Date.now();
+      this.setWsCloseTimeout(-1);
 
       // Adding a handshake timeout to just make sure no zombie connection appears.
       const ws = (this.connection = WebSocket.create(gateway, wsQuery, { handshakeTimeout: 30_000 }));
