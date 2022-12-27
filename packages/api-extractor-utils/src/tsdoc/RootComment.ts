@@ -8,6 +8,7 @@ export interface DocCommentJSON extends DocNodeJSON {
 	customBlocks: DocBlockJSON[];
 	deprecated: DocNodeJSON[];
 	remarks: DocNodeJSON[];
+	seeBlocks: DocBlockJSON[];
 	summary: DocNodeJSON[];
 }
 
@@ -20,5 +21,6 @@ export function comment(comment: DocComment, model: ApiModel, version: string, p
 		deprecated:
 			comment.deprecatedBlock?.content.nodes.map((node) => createCommentNode(node, model, version, parentItem)) ?? [],
 		customBlocks: comment.customBlocks.map((_block) => block(_block, model, version, parentItem)),
+		seeBlocks: comment.seeBlocks.map((_block) => block(_block, model, version, parentItem)) ?? [],
 	};
 }

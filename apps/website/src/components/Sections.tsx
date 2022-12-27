@@ -15,6 +15,7 @@ import { useMedia } from 'react-use';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
+import { SeeBlock } from './tsdoc/SeeBlock';
 import { TSDoc } from './tsdoc/TSDoc';
 
 export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
@@ -91,6 +92,7 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 						{data.remarks ? <TSDoc node={data.remarks} /> : null}
 						{data.comment ? <TSDoc node={data.comment} /> : null}
 						{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
+						<SeeBlock blocks={data.seeBlocks} />
 					</div>
 				) : null}
 			</div>
