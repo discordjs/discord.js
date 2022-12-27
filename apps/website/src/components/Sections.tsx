@@ -92,7 +92,7 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 						{data.remarks ? <TSDoc node={data.remarks} /> : null}
 						{data.comment ? <TSDoc node={data.comment} /> : null}
 						{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
-						<SeeBlock blocks={data.seeBlocks} />
+						{data.seeBlocks.length ? <SeeBlock blocks={data.seeBlocks} /> : null}
 					</div>
 				) : null}
 			</div>
