@@ -74,6 +74,7 @@ jobs:
             'collection',
             'core',
             'discord.js',
+            'next',
             'formatters',
             'proxy',
             'rest',
