@@ -201,11 +201,10 @@ export class ApiNodeJSONEncoder {
 			deprecated: item.tsdocComment?.deprecatedBlock
 				? (createCommentNode(item.tsdocComment.deprecatedBlock, model, version, item.parent) as DocNodeContainerJSON)
 				: null,
-			seeBlocks: item.tsdocComment?.seeBlocks
-				? item.tsdocComment.seeBlocks.map(
-						(block) => createCommentNode(block, model, version, item.parent) as DocBlockJSON,
-				  )
-				: [],
+			seeBlocks:
+				item.tsdocComment?.seeBlocks?.map(
+					(block) => createCommentNode(block, model, version, item.parent) as DocBlockJSON,
+				) ?? [],
 			path,
 			containerKey: item.containerKey,
 			comment: item.tsdocComment ? createCommentNode(item.tsdocComment, model, version, item.parent) : null,
