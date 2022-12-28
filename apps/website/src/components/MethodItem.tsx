@@ -116,9 +116,9 @@ export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJ
 					{overloadedData.summary ?? data.summary ? <TSDoc node={overloadedData.summary ?? data.summary!} /> : null}
 					{overloadedData.remarks ? <TSDoc node={overloadedData.remarks} /> : null}
 					{overloadedData.comment ? <TSDoc node={overloadedData.comment} /> : null}
-					{data.seeBlocks.length ? <SeeBlock blocks={data.seeBlocks} /> : null}
 					{overloadedData.parameters.length ? <ParameterTable data={overloadedData.parameters} /> : null}
 					{data.inheritanceData ? <InheritanceText data={data.inheritanceData} /> : null}
+					{data.seeBlocks.length ? <SeeBlock blocks={data.seeBlocks} /> : null}
 				</div>
 			) : null}
 		</div>
