@@ -35,6 +35,7 @@ import {
   AnyComponentBuilder,
   ComponentBuilder,
   type RestOrArray,
+  ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
@@ -4280,13 +4281,13 @@ export type ApplicationCommandData =
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
-  channelTypes?: ChannelType[];
-  channel_types?: ChannelType[];
+  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
+  channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Channel;
-  channelTypes?: ChannelType[];
+  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export interface ApplicationCommandRoleOptionData extends BaseApplicationCommandOptionsData {
