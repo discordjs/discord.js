@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import type { ApiFunctionJSON } from '@discordjs/api-extractor-utils';
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
@@ -9,6 +9,7 @@ import { DocContainer } from '../DocContainer';
 import { ParametersSection } from '../Sections';
 
 export function Function({ data }: { data: ApiFunctionJSON }) {
+	// TODO: Extract this into a client component
 	const [overloadIndex, setOverloadIndex] = useState(1);
 	const overloadedData = data.mergedSiblings[overloadIndex - 1]!;
 	const menu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });

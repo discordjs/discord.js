@@ -1,13 +1,12 @@
 'use client';
 
-import type { getMembers } from '@discordjs/api-extractor-utils';
+import type { PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { PackageSelect } from './PackageSelect';
-import { SidebarItems } from './SidebarItems';
 import { VersionSelect } from './VersionSelect';
 import { useNav } from '~/contexts/nav';
 
-export function Nav({ members }: { members: ReturnType<typeof getMembers> }) {
+export function Nav({ children }: PropsWithChildren<{}>) {
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { opened } = useNav();
 
@@ -30,7 +29,7 @@ export function Nav({ members }: { members: ReturnType<typeof getMembers> }) {
 					<PackageSelect />
 					<VersionSelect />
 				</div>
-				<SidebarItems members={members} />
+				{children}
 			</Scrollbars>
 		</nav>
 	);

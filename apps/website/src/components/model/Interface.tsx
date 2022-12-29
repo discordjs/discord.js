@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import type { ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
 import { DocContainer } from '../DocContainer';

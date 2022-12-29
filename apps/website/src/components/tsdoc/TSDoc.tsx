@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import type {
 	AnyDocNodeJSON,
@@ -16,27 +16,27 @@ import { SyntaxHighlighter } from '../SyntaxHighlighter';
 import { BlockComment } from './BlockComment';
 
 export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
-	const createNode = useCallback((node: AnyDocNodeJSON, idx?: number): ReactNode => {
+	const createNode = useCallback((tsdoc: AnyDocNodeJSON, idx?: number): ReactNode => {
 		let numberOfExamples = 0;
 		let exampleIndex = 0;
 
-		switch (node.kind) {
+		switch (tsdoc.kind) {
 			case DocNodeKind.PlainText:
 				return (
 					<span className="break-words" key={idx}>
-						{(node as DocPlainTextJSON).text}
+						{(tsdoc as DocPlainTextJSON).text}
 					</span>
 				);
 			case DocNodeKind.Paragraph:
 				return (
 					<span className="break-words leading-relaxed" key={idx}>
-						{(node as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
+						{(tsdoc as DocNodeContainerJSON).nodes.map((node, idx) => createNode(node, idx))}
 					</span>
 				);
 			case DocNodeKind.SoftBreak:
 				return <Fragment key={idx} />;
 			case DocNodeKind.LinkTag: {
-				const { codeDestination, urlDestination, text } = node as DocLinkTagJSON;
+				const { codeDestination, urlDestination, text } = tsdoc as DocLinkTagJSON;
 
 				if (codeDestination) {
 					return (
@@ -66,7 +66,7 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			}
 
 			case DocNodeKind.CodeSpan: {
-				const { code } = node as DocFencedCodeJSON;
+				const { code } = tsdoc as DocFencedCodeJSON;
 				return (
 					<code className="font-mono text-sm" key={idx}>
 						{code}
@@ -75,13 +75,13 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 			}
 
 			case DocNodeKind.FencedCode: {
-				const { language, code } = node as DocFencedCodeJSON;
+				const { language, code } = tsdoc as DocFencedCodeJSON;
 				return <SyntaxHighlighter code={code} key={idx} language={language} />;
 			}
 
 			case DocNodeKind.ParamBlock:
 			case DocNodeKind.Block: {
-				const { tag } = node as DocBlockJSON;
+				const { tag } = tsdoc as DocBlockJSON;
 
 				if (tag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase) {
 					exampleIndex++;
@@ -91,13 +91,13 @@ export function TSDoc({ node }: { node: AnyDocNodeJSON }): JSX.Element {
 
 				return (
 					<BlockComment index={index} key={idx} tagName={tag.tagName}>
-						{(node as DocBlockJSON).content.map((node, idx) => createNode(node, idx))}
+						{(tsdoc as DocBlockJSON).content.map((node, idx) => createNode(node, idx))}
 					</BlockComment>
 				);
 			}
 
 			case DocNodeKind.Comment: {
-				const comment = node as DocCommentJSON;
+				const comment = tsdoc as DocCommentJSON;
 
 				if (!comment.customBlocks.length) {
 					return null;

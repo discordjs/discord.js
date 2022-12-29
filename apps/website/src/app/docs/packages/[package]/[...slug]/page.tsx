@@ -33,6 +33,7 @@ import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
 import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
 import { MDXRemote } from '~/components/MDXRemote';
 import { Nav } from '~/components/Nav';
+import { SidebarItems } from '~/components/SidebarItems';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Function } from '~/components/model/Function';
@@ -168,14 +169,11 @@ async function getData(packageName: string, slug: string[]) {
 	const pkg = findPackage(model, packageName);
 
 	// eslint-disable-next-line prefer-const
-	let { containerKey, name } = findMember(model, packageName, memberName, branchName) ?? {};
+	let { containerKey, displayName: name } = findMember(model, packageName, memberName, branchName) ?? {};
 	if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
 		containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 	}
 
-	const members = pkg
-		? getMembers(pkg, branchName).filter((item) => item.overloadIndex === null || item.overloadIndex <= 1)
-		: [];
 	const foundMember =
 		memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
 	const description = foundMember ? tryResolveDescription(foundMember) ?? DESCRIPTION : DESCRIPTION;
@@ -183,12 +181,9 @@ async function getData(packageName: string, slug: string[]) {
 	return {
 		packageName,
 		branchName,
-		data: {
-			members,
-			member: foundMember,
-			description,
-			source: mdxSource,
-		},
+		source: mdxSource,
+		member: foundMember,
+		members: model.tryGetPackageByName(packageName)?.members ?? [],
 	};
 }
 
@@ -269,8 +264,14 @@ export default async function Page({ params }: { params: { package: string; slug
 	// return <iframe src="https://discord.js.org" style={{ border: 0, height: '100%', width: '100%' }}></iframe>;
 
 	return (
-		<MemberProvider member={data.data?.member}>
-			<Nav members={data.data.members} />
+		<MemberProvider member={data?.member}>
+			{/* Note we split the navigation bar here because `SidebarItems` is
+			a server component which means `Nav` cannot import it. We make it a server
+			component to avoid the serialization steps from api-extractor and for it not to be
+			sent for the client to render. */}
+			<Nav>
+				<SidebarItems members={data.members} />
+			</Nav>
 			<>
 				{/* <Head>
 								<title key="title">{name}</title>
@@ -281,29 +282,29 @@ export default async function Page({ params }: { params: { package: string; slug
 							</Head> */}
 				<main
 					className={`pt-18 lg:pl-76 ${
-						(data?.data.member?.kind === 'Class' || data?.data.member?.kind === 'Interface') &&
-						((data.data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
-							(data.data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+						(data?.member?.kind === 'Class' || data?.member?.kind === 'Interface') &&
+						((data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
+							(data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
 							? 'xl:pr-64'
 							: ''
 					}`}
 				>
 					<article className="dark:bg-dark-600 bg-light-600">
 						<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
-							{data.data?.member ? (
-								member(data.data.member)
-							) : data.data?.source ? (
+							{data?.member ? (
+								member(data.member)
+							) : data?.source ? (
 								<div className="prose max-w-none">
-									<MDXRemote {...data.data?.source} />
+									<MDXRemote {...data?.source} />
 								</div>
 							) : null}
 						</div>
 						<div className="h-76 md:h-52" />
 						<footer
 							className={`dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 ${
-								(data?.data.member?.kind === 'Class' || data?.data.member?.kind === 'Interface') &&
-								((data.data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
-									(data.data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+								(data?.member?.kind === 'Class' || data?.member?.kind === 'Interface') &&
+								((data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
+									(data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
 									? 'xl:pr-76'
 									: 'xl:pr-16'
 							}`}

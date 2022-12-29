@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import type { ApiEnumJSON } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
