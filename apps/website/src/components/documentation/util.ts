@@ -1,6 +1,6 @@
 import { genToken } from '@discordjs/api-extractor-utils';
 import type { ApiModel, ExcerptToken } from '@microsoft/api-extractor-model';
 
-export function tokenize(model: ApiModel, tokens: ExcerptToken[]) {
+export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[]) {
 	return tokens.map((token) => genToken(model, token, ' '));
 }

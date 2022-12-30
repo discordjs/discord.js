@@ -1,25 +1,18 @@
 'use server';
 
-import type { ApiClassJSON } from '@discordjs/api-extractor-utils';
-import { DocContainer } from '../DocContainer';
-import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
+import type { ApiClass } from '@microsoft/api-extractor-model';
+import { Documentation } from '../documentation/Documentation';
+import { MethodsSection } from '../documentation/section/MethodsSection';
+import { PropertiesSection } from '../documentation/section/PropertiesSection';
+// import { MethodsSection } from '../documentation/section/MethodsSection';
+// import { PropertiesSection } from '../documentation/section/PropertiesSection';
 
-export function Class({ data }: { data: ApiClassJSON }) {
+export function Class({ clazz }: { clazz: ApiClass }) {
 	return (
-		<DocContainer
-			excerpt={data.excerpt}
-			extendsTokens={data.extendsTokens}
-			implementsTokens={data.implementsTokens}
-			kind={data.kind}
-			methods={data.methods}
-			name={data.name}
-			properties={data.properties}
-			summary={data.summary}
-			typeParams={data.typeParameters}
-		>
-			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
-		</DocContainer>
+		<div>
+			<Documentation item={clazz} />
+			<PropertiesSection item={clazz} />
+			<MethodsSection item={clazz} />
+		</div>
 	);
 }

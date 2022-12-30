@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import type {
 	ApiClassJSON,
@@ -7,6 +7,7 @@ import type {
 	ApiConstructorJSON,
 } from '@discordjs/api-extractor-utils';
 import { Section } from '@discordjs/ui';
+import type { ApiItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolConstant } from '@react-icons/all-files/vsc/VscSymbolConstant';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
@@ -15,14 +16,14 @@ import { useMedia } from 'react-use';
 import { MethodList } from './MethodList';
 import { ParameterTable } from './ParameterTable';
 import { PropertyList } from './PropertyList';
-import { TSDoc } from './tsdoc/TSDoc';
+import { TSDoc } from './documentation/tsdoc/TSDoc';
 
-export function PropertiesSection({ data }: { data: ApiClassJSON['properties'] | ApiInterfaceJSON['properties'] }) {
+export function PropertiesSection({ item }: { item: ApiItemContainerMixin }) {
 	const matches = useMedia('(max-width: 768px)', true);
 
-	return data.length ? (
+	return item.members.length ? (
 		<Section dense={matches} icon={<VscSymbolProperty size={20} />} padded title="Properties">
-			<PropertyList data={data} />
+			<PropertyList item={item} />
 		</Section>
 	) : null;
 }
@@ -86,10 +87,10 @@ export function ConstructorSection({ data }: { data: ApiConstructorJSON }) {
 				</div>
 				{data.summary || data.parameters.length ? (
 					<div className="mb-4 flex flex-col gap-4">
-						{data.deprecated ? <TSDoc node={data.deprecated} /> : null}
-						{data.summary ? <TSDoc node={data.summary} /> : null}
-						{data.remarks ? <TSDoc node={data.remarks} /> : null}
-						{data.comment ? <TSDoc node={data.comment} /> : null}
+						{data.deprecated ? <TSDoc tsdoc={data.deprecated} /> : null}
+						{data.summary ? <TSDoc tsdoc={data.summary} /> : null}
+						{data.remarks ? <TSDoc tsdoc={data.remarks} /> : null}
+						{data.comment ? <TSDoc tsdoc={data.comment} /> : null}
 						{data.parameters.length ? <ParameterTable data={data.parameters} /> : null}
 					</div>
 				) : null}

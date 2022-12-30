@@ -6,7 +6,7 @@ import { Header } from './Header';
 export function Documentation({ item }: { item: ApiItem }) {
 	return (
 		<div>
-			<Header item={item} />
+			<Header kind={item.kind} name={item.displayName} />
 		</div>
 	);
 }

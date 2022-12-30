@@ -4,7 +4,7 @@ import type { TypeParameterData } from '@discordjs/api-extractor-utils';
 import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
-import { TSDoc } from './tsdoc/TSDoc';
+import { TSDoc } from './documentation/tsdoc/TSDoc';
 
 const rowElements = {
 	Name: 'font-mono whitespace-nowrap',

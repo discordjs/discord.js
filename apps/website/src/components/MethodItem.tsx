@@ -5,13 +5,19 @@ import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
+import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { ParameterTable } from './ParameterTable';
-import { TSDoc } from './tsdoc/TSDoc';
+import { TSDoc } from './documentation/tsdoc/TSDoc';
 
-export function MethodItem({ data }: { data: ApiMethodJSON | ApiMethodSignatureJSON }) {
+export interface MethodItemProps {
+	data: ApiMethodJSON | ApiMethodSignatureJSON;
+	overloads: ReactNode[];
+}
+
+export function MethodItem({ data, overloads }: MethodItemProps) {
 	const method = data as ApiMethodJSON;
 	const [overloadIndex, setOverloadIndex] = useState(1);
 	const overloadedData = method.mergedSiblings[overloadIndex - 1]!;

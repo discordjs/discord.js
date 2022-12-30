@@ -1,29 +1,25 @@
-'use client';
+'use server';
 
-import type { ApiPropertyItemJSON } from '@discordjs/api-extractor-utils';
+import type { ApiClass, ApiItem, ApiPropertyItem } from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
 import { CodeListing } from './CodeListing';
 
-export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
+export function PropertyList({ item }: { item: ApiItem }) {
 	const propertyItems = useMemo(
 		() =>
-			data.map((prop) => (
-				<Fragment key={prop.name}>
-					<CodeListing
-						comment={prop.comment}
-						deprecation={prop.deprecated}
-						inheritanceData={prop.inheritanceData}
-						name={prop.name}
-						optional={prop.optional}
-						readonly={prop.readonly}
-						summary={prop.summary}
-						typeTokens={prop.propertyTypeTokens}
-					/>
-					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
-				</Fragment>
-			)),
-		[data],
+			item.members
+				.filter((member) => member.kind === ApiItemKind.Property)
+				.map((prop) => (
+					<Fragment key={prop.displayName}>
+						<CodeListing item={prop as ApiPropertyItem} parentKey={item.containerKey} />
+						<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
+					</Fragment>
+				)),
+		[item.containerKey, item.members],
 	);
 
 	return <div className="flex flex-col gap-4">{propertyItems}</div>;
 }
+
+declare const test: ApiClass;

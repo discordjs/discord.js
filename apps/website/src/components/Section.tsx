@@ -10,7 +10,7 @@ import { useMedia } from 'react-use';
 // from server-side rendering.
 export function Section(options: PropsWithChildren<SectionOptions>) {
 	const matches = useMedia('(max-width: 768px)', true);
-	options.dense ??= matches;
+	const modifiedOptions = { ...options, dense: matches };
 
-	return <DJSSection {...options} />;
+	return <DJSSection {...modifiedOptions} />;
 }

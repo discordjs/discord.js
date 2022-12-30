@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import { useMemo, type ReactNode } from 'react';
 

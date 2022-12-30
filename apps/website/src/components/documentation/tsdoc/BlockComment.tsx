@@ -1,4 +1,4 @@
-'use client';
+'use server';
 
 import { Alert } from '@discordjs/ui';
 import { StandardTags } from '@microsoft/tsdoc';

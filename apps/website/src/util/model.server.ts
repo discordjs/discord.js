@@ -9,7 +9,7 @@ export function findMemberByKey(model: ApiModel, packageName: string, containerK
 		return undefined;
 	}
 
-	return ApiNodeJSONEncoder.encode(model, member, version);
+	return member;
 }
 
 export function findMember(

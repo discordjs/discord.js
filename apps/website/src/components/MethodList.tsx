@@ -1,23 +1,31 @@
-'use client';
+'use server';
 
-import type { ApiMethodJSON, ApiMethodSignatureJSON } from '@discordjs/api-extractor-utils';
+import type { ApiItem, ApiItemContainerMixin, ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { MethodItem } from './MethodItem';
+import { Method } from './model/method/Method';
 
-export function MethodList({ data }: { data: (ApiMethodJSON | ApiMethodSignatureJSON)[] }) {
+function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
+	return (
+		item.kind === ApiItemKind.Method ||
+		(item.kind === ApiItemKind.MethodSignature && (item as ApiMethod).overloadIndex <= 1)
+	);
+}
+
+export function MethodList({ item }: { item: ApiItemContainerMixin }) {
 	const methodItems = useMemo(
 		() =>
-			data
-				.filter((method) => method.overloadIndex <= 1)
-				.map((method) => (
-					<Fragment
-						key={`${method.name}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`}
-					>
-						<MethodItem data={method} />
-						<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
-					</Fragment>
-				)),
-		[data],
+			item.members.filter(isMethodLike).map((method) => (
+				<Fragment
+					key={`${method.displayName}${
+						method.overloadIndex && method.overloadIndex > 1 ? `:${(method as ApiMethod).overloadIndex}` : ''
+					}`}
+				>
+					<Method method={method} />
+					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
+				</Fragment>
+			)),
+		[item.members],
 	);
 
 	return <div className="flex flex-col gap-4">{methodItems}</div>;
