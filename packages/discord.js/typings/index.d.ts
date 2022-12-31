@@ -5430,23 +5430,23 @@ export interface GuildWidgetSettings {
 export interface GuildEditOptions {
   name?: string;
   verificationLevel?: GuildVerificationLevel | null;
-  explicitContentFilter?: GuildExplicitContentFilter | null;
   defaultMessageNotifications?: GuildDefaultMessageNotifications | null;
-  afkChannel?: VoiceChannelResolvable | null;
-  systemChannel?: TextChannelResolvable | null;
-  systemChannelFlags?: SystemChannelFlagsResolvable;
+  explicitContentFilter?: GuildExplicitContentFilter | null;
   afkTimeout?: number;
+  afkChannel?: VoiceChannelResolvable | null;
   icon?: BufferResolvable | Base64Resolvable | null;
   owner?: GuildMemberResolvable;
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
+  systemChannel?: TextChannelResolvable | null;
+  systemChannelFlags?: SystemChannelFlagsResolvable;
   rulesChannel?: TextChannelResolvable | null;
   publicUpdatesChannel?: TextChannelResolvable | null;
   preferredLocale?: Locale | null;
-  premiumProgressBarEnabled?: boolean;
-  description?: string | null;
   features?: `${GuildFeature}`[];
+  description?: string | null;
+  premiumProgressBarEnabled?: boolean;
   reason?: string;
 }
 
