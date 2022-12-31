@@ -238,7 +238,7 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setMentionRaidProtectionEnabled(mentionRaidProtectionEnabled, reason) {
-    return this.edit({ triggerMetadata: { mentionRaidProtectionEnabled }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionRaidProtectionEnabled }, reason });
   }
 
   /**
