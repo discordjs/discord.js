@@ -5406,16 +5406,16 @@ export interface GuildChannelOverwriteOptions {
 
 export interface GuildCreateOptions {
   name: string;
-  afkChannelId?: Snowflake | number;
-  afkTimeout?: number;
-  channels?: PartialChannelData[];
+  icon?: BufferResolvable | Base64Resolvable | null;
+  verificationLevel?: GuildVerificationLevel;
   defaultMessageNotifications?: GuildDefaultMessageNotifications;
   explicitContentFilter?: GuildExplicitContentFilter;
-  icon?: BufferResolvable | Base64Resolvable | null;
   roles?: PartialRoleData[];
-  systemChannelFlags?: SystemChannelFlagsResolvable;
+  channels?: PartialChannelData[];
+  afkChannelId?: Snowflake | number;
+  afkTimeout?: number;
   systemChannelId?: Snowflake | number;
-  verificationLevel?: GuildVerificationLevel;
+  systemChannelFlags?: SystemChannelFlagsResolvable;
 }
 
 export interface GuildWidgetSettings {
