@@ -7,9 +7,16 @@ import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import { BurstHandler } from './handlers/BurstHandler.js';
 import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
-import { DefaultRestOptions, DefaultUserAgent, OverwrittenMimeTypes, RESTEvents } from './utils/constants.js';
+import {
+	BurstHandlerMajorIdKey,
+	DefaultRestOptions,
+	DefaultUserAgent,
+	OverwrittenMimeTypes,
+	RESTEvents,
+} from './utils/constants.js';
 import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
@@ -172,6 +179,16 @@ export interface RequestManager {
 	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
+
+/**
+ * Invalid request limiting is done on a per-IP basis, not a per-token basis.
+ * The best we can do is track invalid counts process-wide (on the theory that
+ * users could have multiple bots run from one process) rather than per-bot.
+ * Therefore, store these at file scope here rather than in the client's
+ * RESTManager object.
+ */
+let invalidCount = 0;
+let invalidCountResetTime: number | null = null;
 
 /**
  * Represents the class that manages handlers for endpoints
@@ -351,7 +368,10 @@ export class RequestManager extends EventEmitter {
 	 */
 	private createHandler(hash: string, majorParameter: string) {
 		// Create the async request queue to handle requests
-		const queue = new SequentialHandler(this, hash, majorParameter);
+		const queue =
+			majorParameter === BurstHandlerMajorIdKey
+				? new BurstHandler(this, hash, majorParameter)
+				: new SequentialHandler(this, hash, majorParameter);
 		// Save the queue based on its id
 		this.handlers.set(queue.id, queue);
 
@@ -492,6 +512,30 @@ export class RequestManager extends EventEmitter {
 	}
 
 	/**
+	 * Increment the invalid request count and emit warning if necessary
+	 *
+	 * @internal
+	 */
+	public incrementInvalidCount() {
+		if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
+			invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
+			invalidCount = 0;
+		}
+
+		invalidCount++;
+
+		const emitInvalid =
+			this.options.invalidRequestWarningInterval > 0 && invalidCount % this.options.invalidRequestWarningInterval === 0;
+		if (emitInvalid) {
+			// Let library users know periodically about invalid requests
+			this.emit(RESTEvents.InvalidRequestWarning, {
+				count: invalidCount,
+				remainingTime: invalidCountResetTime - Date.now(),
+			});
+		}
+	}
+
+	/**
 	 * Generates route data for an endpoint:method
 	 *
 	 * @param endpoint - The raw endpoint to generalize
@@ -499,6 +543,14 @@ export class RequestManager extends EventEmitter {
 	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
+		if (endpoint.startsWith('/interactions/') && endpoint.endsWith('/callback')) {
+			return {
+				majorParameter: BurstHandlerMajorIdKey,
+				bucketRoute: '/interactions/:id/:token/callback',
+				original: endpoint,
+			};
+		}
+
 		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(endpoint);
 
 		// Get the major id for this route - global otherwise

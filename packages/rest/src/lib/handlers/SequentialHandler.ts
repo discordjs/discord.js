@@ -6,20 +6,9 @@ import type { RateLimitData, RequestOptions } from '../REST';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
 import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
-import { RateLimitError } from '../errors/RateLimitError.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
-import type { IHandler } from './IHandler.js';
-
-/**
- * Invalid request limiting is done on a per-IP basis, not a per-token basis.
- * The best we can do is track invalid counts process-wide (on the theory that
- * users could have multiple bots run from one process) rather than per-bot.
- * Therefore, store these at file scope here rather than in the client's
- * RESTManager object.
- */
-let invalidCount = 0;
-let invalidCountResetTime: number | null = null;
+import { hasSublimit, onRateLimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
+import type { IHandler, PolyFillAbortSignal } from './IHandler.js';
 
 const enum QueueType {
 	Standard,
@@ -27,7 +16,7 @@ const enum QueueType {
 }
 
 /**
- * The structure used to handle requests for a given bucket
+ * The structure used to handle sequential requests for a given bucket
  */
 export class SequentialHandler implements IHandler {
 	/**
@@ -139,22 +128,6 @@ export class SequentialHandler implements IHandler {
 	private async globalDelayFor(time: number): Promise<void> {
 		await sleep(time);
 		this.manager.globalDelay = null;
-	}
-
-	/*
-	 * Determines whether the request should be queued or whether a RateLimitError should be thrown
-	 */
-	private async onRateLimit(rateLimitData: RateLimitData) {
-		const { options } = this.manager;
-		if (!options.rejectOnRateLimit) return;
-
-		const shouldThrow =
-			typeof options.rejectOnRateLimit === 'function'
-				? await options.rejectOnRateLimit(rateLimitData)
-				: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
-		if (shouldThrow) {
-			throw new RateLimitError(rateLimitData);
-		}
 	}
 
 	/**
@@ -269,7 +242,7 @@ export class SequentialHandler implements IHandler {
 			// Let library users know they have hit a rate limit
 			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
 			// Determine whether a RateLimitError should be thrown
-			await this.onRateLimit(rateLimitData);
+			await onRateLimit(this.manager, rateLimitData);
 			// When not erroring, emit debug for what is happening
 			if (isGlobal) {
 				this.debug(`Global rate limit hit, blocking all requests for ${timeout}ms`);
@@ -388,23 +361,7 @@ export class SequentialHandler implements IHandler {
 
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {
-			if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
-				invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
-				invalidCount = 0;
-			}
-
-			invalidCount++;
-
-			const emitInvalid =
-				this.manager.options.invalidRequestWarningInterval > 0 &&
-				invalidCount % this.manager.options.invalidRequestWarningInterval === 0;
-			if (emitInvalid) {
-				// Let library users know periodically about invalid requests
-				this.manager.emit(RESTEvents.InvalidRequestWarning, {
-					count: invalidCount,
-					remainingTime: invalidCountResetTime - Date.now(),
-				});
-			}
+			this.manager.incrementInvalidCount();
 		}
 
 		if (status >= 200 && status < 300) {
@@ -425,7 +382,7 @@ export class SequentialHandler implements IHandler {
 				timeout = this.timeToReset;
 			}
 
-			await this.onRateLimit({
+			await onRateLimit(this.manager, {
 				timeToReset: timeout,
 				limit,
 				method,
@@ -501,10 +458,4 @@ export class SequentialHandler implements IHandler {
 			return res;
 		}
 	}
-}
-
-interface PolyFillAbortSignal {
-	readonly aborted: boolean;
-	addEventListener(type: 'abort', listener: () => void): void;
-	removeEventListener(type: 'abort', listener: () => void): void;
 }
