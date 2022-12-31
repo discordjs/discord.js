@@ -150,6 +150,8 @@ import {
   GatewayAutoModerationActionExecutionDispatchData,
   APIAutoModerationRule,
   ForumLayoutType,
+  ApplicationRoleConnectionMetadataType,
+  APIApplicationRoleConnectionMetadata,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -288,11 +290,11 @@ export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilde
       | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
     >,
   );
-  public static from(
+  public static from<T extends AnyComponentBuilder = AnyComponentBuilder>(
     other:
-      | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>>
-      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>,
-  ): ActionRowBuilder;
+      | JSONEncodable<APIActionRowComponent<ReturnType<T['toJSON']>>>
+      | APIActionRowComponent<ReturnType<T['toJSON']>>,
+  ): ActionRowBuilder<T>;
 }
 
 export type MessageActionRowComponent =
@@ -368,7 +370,7 @@ export class AutoModerationRule extends Base {
   public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
-  public setActions(actions: AutoModerationActionOptions, reason?: string): Promise<AutoModerationRule>;
+  public setActions(actions: AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
     roles: Collection<Snowflake, Role> | RoleResolvable[],
@@ -451,6 +453,16 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
+}
+
+export class ApplicationRoleConnectionMetadata {
+  private constructor(data: APIApplicationRoleConnectionMetadata);
+  public name: string;
+  public nameLocalizations: LocalizationMap | null;
+  public description: string;
+  public descriptionLocalizations: LocalizationMap | null;
+  public key: string;
+  public type: ApplicationRoleConnectionMetadataType;
 }
 
 export type ApplicationResolvable = Application | Activity | Snowflake;
@@ -678,7 +690,7 @@ export class ButtonComponent extends Component<APIButtonComponent> {
   public get style(): ButtonStyle;
   public get label(): string | null;
   public get emoji(): APIMessageComponentEmoji | null;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean;
   public get customId(): string | null;
   public get url(): string | null;
 }
@@ -695,7 +707,7 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   public constructor(data?: Partial<StringSelectMenuComponentData | APIStringSelectComponent>);
   private static normalizeEmoji(
     selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
-  ): (APISelectMenuOption | SelectMenuOptionBuilder)[];
+  ): (APISelectMenuOption | StringSelectMenuOptionBuilder)[];
   public override addOptions(
     ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
   ): this;
@@ -708,6 +720,8 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
 export {
   /** @deprecated Use {@link StringSelectMenuBuilder} instead */
   StringSelectMenuBuilder as SelectMenuBuilder,
+  /** @deprecated Use {@link StringSelectMenuOptionBuilder} instead */
+  StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
 };
 
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
@@ -732,10 +746,10 @@ export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent 
   public static from(other: JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent): ChannelSelectMenuBuilder;
 }
 
-export class SelectMenuOptionBuilder extends BuildersSelectMenuOption {
+export class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
   public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
   public override setEmoji(emoji: ComponentEmojiResolvable): this;
-  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): SelectMenuOptionBuilder;
+  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): StringSelectMenuOptionBuilder;
 }
 
 export class ModalBuilder extends BuildersModal {
@@ -759,7 +773,7 @@ export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extend
   public get maxValues(): number | null;
   public get minValues(): number | null;
   public get customId(): string;
-  public get disabled(): boolean | null;
+  public get disabled(): boolean;
 }
 
 export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIStringSelectComponent> {
@@ -966,8 +980,13 @@ export class ClientApplication extends Application {
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
+  public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
   public fetch(): Promise<ClientApplication>;
+  public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
+  public editRoleConnectionMetadataRecords(
+    records: ApplicationRoleConnectionMetadataEditOptions[],
+  ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
 export class ClientPresence extends Presence {
@@ -1113,8 +1132,36 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel(name: string, required: true): NonNullable<CommandInteractionOption<Cached>['channel']>;
-  public getChannel(name: string, required?: boolean): NonNullable<CommandInteractionOption<Cached>['channel']> | null;
+  public getChannel<T extends ChannelType = ChannelType>(
+    name: string,
+    required: true,
+    channelTypes?: T[],
+  ): Extract<
+    NonNullable<CommandInteractionOption<Cached>['channel']>,
+    {
+      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
+      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
+      // Hence the need for this ternary
+      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+        : T;
+    }
+  >;
+  public getChannel<T extends ChannelType = ChannelType>(
+    name: string,
+    required?: boolean,
+    channelTypes?: T[],
+  ): Extract<
+    NonNullable<CommandInteractionOption<Cached>['channel']>,
+    {
+      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
+      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
+      // Hence the need for this ternary
+      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+        : T;
+    }
+  > | null;
   public getString(name: string, required: true): string;
   public getString(name: string, required?: boolean): string | null;
   public getInteger(name: string, required: true): number;
@@ -3337,6 +3384,7 @@ export class Widget extends Base {
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
   public id: Snowflake;
+  public name: string;
   public instantInvite?: string;
   public channels: Collection<Snowflake, WidgetChannel>;
   public members: Collection<string, WidgetMember>;
@@ -4358,7 +4406,7 @@ export interface ApplicationCommandBooleanOption extends BaseApplicationCommandO
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.SubcommandGroup;
-  options?: ApplicationCommandSubCommandData[];
+  options: ApplicationCommandSubCommandData[];
 }
 
 export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandOptionsData, 'required'> {
@@ -4451,6 +4499,15 @@ export type ApplicationCommandPermissionIdResolvable =
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString = keyof typeof ApplicationFlags;
+
+export interface ApplicationRoleConnectionMetadataEditOptions {
+  name: string;
+  nameLocalizations?: LocalizationMap | null;
+  description: string;
+  descriptionLocalizations?: LocalizationMap | null;
+  key: string;
+  type: ApplicationRoleConnectionMetadataType;
+}
 
 export interface AuditLogChange {
   key: APIAuditLogChange['key'];
@@ -5282,7 +5339,7 @@ export interface AutoModerationRuleCreateOptions {
   eventType: AutoModerationRuleEventType;
   triggerType: AutoModerationRuleTriggerType;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
-  actions: AutoModerationActionOptions;
+  actions: AutoModerationActionOptions[];
   enabled?: boolean;
   exemptRoles?: Collection<Snowflake, Role> | RoleResolvable[];
   exemptChannels?: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[];

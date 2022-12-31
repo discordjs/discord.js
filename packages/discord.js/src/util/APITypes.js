@@ -174,6 +174,11 @@
  */
 
 /**
+ * @external ApplicationRoleConnectionMetadataType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationRoleConnectionMetadataType}
+ */
+
+/**
  * @external AutoModerationActionType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
  */
