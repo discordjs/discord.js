@@ -1,10 +1,11 @@
-'use client';
+'use server';
 
-import type { TypeParameterData } from '@discordjs/api-extractor-utils';
+import type { ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
 import { HyperlinkedText } from './HyperlinkedText';
 import { Table } from './Table';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
+import { tokenize } from './documentation/util';
 
 const rowElements = {
 	Name: 'font-mono whitespace-nowrap',
@@ -12,17 +13,25 @@ const rowElements = {
 	Default: 'font-mono whitespace-pre break-normal',
 };
 
-export function TypeParamTable({ data }: { data: TypeParameterData[] }) {
+export function TypeParamTable({ item }: { item: ApiTypeParameterListMixin }) {
 	const rows = useMemo(
 		() =>
-			data.map((typeParam) => ({
+			item.typeParameters.map((typeParam) => ({
 				Name: typeParam.name,
-				Constraints: <HyperlinkedText tokens={typeParam.constraintTokens} />,
-				Optional: typeParam.optional ? 'Yes' : 'No',
-				Default: <HyperlinkedText tokens={typeParam.defaultTokens} />,
-				Description: typeParam.commentBlock ? <TSDoc node={typeParam.commentBlock} /> : 'None',
+				Constraints: (
+					<HyperlinkedText tokens={tokenize(item.getAssociatedModel()!, typeParam.constraintExcerpt.spannedTokens)} />
+				),
+				Optional: typeParam.isOptional ? 'Yes' : 'No',
+				Default: (
+					<HyperlinkedText tokens={tokenize(item.getAssociatedModel()!, typeParam.defaultTypeExcerpt.spannedTokens)} />
+				),
+				Description: typeParam.tsdocTypeParamBlock ? (
+					<TSDoc item={item} tsdoc={typeParam.tsdocTypeParamBlock.content} />
+				) : (
+					'None'
+				),
 			})),
-		[data],
+		[item],
 	);
 
 	return (

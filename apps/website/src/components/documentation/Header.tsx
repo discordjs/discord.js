@@ -28,7 +28,7 @@ function generateIcon(kind: ApiItemKind) {
 
 export function Header({ kind, name }: PropsWithChildren<{ kind: ApiItemKind; name: string }>) {
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex flex-col">
 			<h2 className="flex flex-row place-items-center gap-2 break-all text-2xl font-bold">
 				<span>{generateIcon(kind)}</span>
 				{name}

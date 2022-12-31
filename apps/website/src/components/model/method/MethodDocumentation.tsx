@@ -28,7 +28,9 @@ export function MethodDocumentation({ method, fallbackSummary, parentContainerKe
 			{method.tsdocComment?.summarySection ?? fallbackSummary ? (
 				<TSDoc item={method} tsdoc={method.tsdocComment?.summarySection ?? fallbackSummary!} />
 			) : null}
-			{method.tsdocComment?.remarksBlock ? <TSDoc item={method} tsdoc={method.tsdocComment.remarksBlock} /> : null}
+			{method.tsdocComment?.remarksBlock ? (
+				<TSDoc item={method} tsdoc={method.tsdocComment.remarksBlock.content} />
+			) : null}
 			{method.tsdocComment ? <TSDoc item={method} tsdoc={method.tsdocComment} /> : null}
 			{method.parameters.length ? <ParameterTable item={method} /> : null}
 			{isInherited ? (
