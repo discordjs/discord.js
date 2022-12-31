@@ -835,21 +835,25 @@ class WebSocketShard extends EventEmitter {
           );
           this.connection.terminate();
         }
+
         // Emit the destroyed event if needed
-        if (emit) this._emitDestroyed();
+        if (emit) {
+          this._emitDestroyed();
+        } else if (
+          this.connection.readyState === WebSocket.CLOSING ||
+          this.connection.readyState === WebSocket.CLOSED
+        ) {
+          this.closeEmitted = false;
+          this.debug(
+            `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
+            Timeout: ${this.manager.client.options.closeTimeout}ms`,
+          );
+          this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
+        }
       }
     } else if (emit) {
       // We requested a destroy, but we had no connection. Emit destroyed
       this._emitDestroyed();
-    }
-
-    if (this.connection?.readyState === WebSocket.CLOSING || this.connection?.readyState === WebSocket.CLOSED) {
-      this.closeEmitted = false;
-      this.debug(
-        `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
-        Timeout: ${this.manager.client.options.closeTimeout}ms`,
-      );
-      this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
     }
 
     // Step 2: Null the connection object
