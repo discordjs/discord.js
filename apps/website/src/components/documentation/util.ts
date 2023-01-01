@@ -8,8 +8,8 @@ import type {
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 
-export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[]) {
-	return tokens.map((token) => genToken(model, token, ' '));
+export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[], version: string) {
+	return tokens.map((token) => genToken(model, token, version));
 }
 
 export function hasProperties(item: ApiItemContainerMixin) {

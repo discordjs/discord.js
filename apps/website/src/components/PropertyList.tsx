@@ -3,7 +3,7 @@
 import type { ApiClass, ApiItem, ApiPropertyItem } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { CodeListing } from './CodeListing';
+import { CodeListing, CodeListingSeparatorType } from './CodeListing';
 
 export function PropertyList({ item, version }: { item: ApiItem; version: string }) {
 	const propertyItems = useMemo(
@@ -12,7 +12,12 @@ export function PropertyList({ item, version }: { item: ApiItem; version: string
 				.filter((member) => member.kind === ApiItemKind.Property)
 				.map((prop) => (
 					<Fragment key={prop.displayName}>
-						<CodeListing item={prop as ApiPropertyItem} parentKey={item.containerKey} version={version} />
+						<CodeListing
+							item={prop as ApiPropertyItem}
+							parentKey={item.containerKey}
+							separator={CodeListingSeparatorType.Type}
+							version={version}
+						/>
 						<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
 					</Fragment>
 				)),

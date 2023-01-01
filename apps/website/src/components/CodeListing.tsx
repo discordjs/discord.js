@@ -61,12 +61,14 @@ export function CodeListing({
 				) : null}
 				<div className="flex flex-row flex-wrap place-items-center gap-1">
 					<h4 className="break-all font-mono text-lg font-bold">
-						{item.name}
+						{item.displayName}
 						{item.isOptional ? '?' : ''}
 					</h4>
 					<h4 className="font-mono text-lg font-bold">{separator}</h4>
 					<h4 className="break-all font-mono text-lg font-bold">
-						<HyperlinkedText tokens={tokenize(item.getAssociatedModel()!, item.excerpt.spannedTokens)} />
+						<HyperlinkedText
+							tokens={tokenize(item.getAssociatedModel()!, item.propertyTypeExcerpt.spannedTokens, version)}
+						/>
 					</h4>
 				</div>
 			</div>
