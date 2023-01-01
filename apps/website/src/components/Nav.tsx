@@ -1,12 +1,13 @@
 'use client';
 
-import type { PropsWithChildren } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { PackageSelect } from './PackageSelect';
+import { SidebarItems } from './SidebarItems';
 import { VersionSelect } from './VersionSelect';
+import type { SidebarSectionItemData } from './sidebar/SidebarSection';
 import { useNav } from '~/contexts/nav';
 
-export function Nav({ children }: PropsWithChildren<{}>) {
+export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { opened } = useNav();
 
@@ -29,7 +30,7 @@ export function Nav({ children }: PropsWithChildren<{}>) {
 					<PackageSelect />
 					<VersionSelect />
 				</div>
-				{children}
+				<SidebarItems members={members} />
 			</Scrollbars>
 		</nav>
 	);

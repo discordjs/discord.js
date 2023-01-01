@@ -6,8 +6,6 @@ import process, { cwd } from 'node:process';
 import {
 	findPackage,
 	getMembers,
-	type ApiItemJSON,
-	type ApiClassJSON,
 	type ApiFunctionJSON,
 	type ApiInterfaceJSON,
 	type ApiTypeAliasJSON,
@@ -15,9 +13,8 @@ import {
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
-import type { ApiClass, ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiClass, ApiInterface, ApiItem } from '@microsoft/api-extractor-model';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
-import { Head } from 'next';
 import Image from 'next/image';
 // import Head from 'next/head';
 import { notFound } from 'next/navigation';
@@ -36,12 +33,14 @@ import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
 import { MDXRemote } from '~/components/MDXRemote';
 import { Nav } from '~/components/Nav';
 import { SidebarItems } from '~/components/SidebarItems';
+import { resolveURI } from '~/components/documentation/util';
 import { Class } from '~/components/model/Class';
 import { Enum } from '~/components/model/Enum';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Function } from '~/components/model/function/Function';
+import type { SidebarSectionItemData } from '~/components/sidebar/SidebarSection';
 import { MemberProvider } from '~/contexts/member';
 import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
@@ -227,10 +226,19 @@ async function getData(packageName: string, slug: string[]) {
 // 	}
 // }
 
-function member(props?: ApiItem) {
+function serializeIntoSidebarItemData(item: ApiItem, version: string): SidebarSectionItemData {
+	return {
+		kind: item.kind,
+		name: item.displayName,
+		href: resolveURI(item, version),
+		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
+	};
+}
+
+function member(version: string, props?: ApiItem) {
 	switch (props?.kind) {
 		case 'Class':
-			return <Class clazz={props as ApiClass} />;
+			return <Class clazz={props as ApiClass} version={version} />;
 		case 'Function':
 			return <Function data={props as ApiFunctionJSON} key={props.containerKey} />;
 		case 'Interface':
@@ -248,7 +256,7 @@ function member(props?: ApiItem) {
 
 export default async function Page({ params }: { params: { package: string; slug: string[] } }) {
 	const data = await getData(params.package, params.slug);
-
+	const version = params.slug[0]!;
 	// const name = useMemo(
 	// 	() => `discord.js${params.data?.member?.name ? ` | ${params.data.member.name}` : ''}`,
 	// 	[params.data?.member?.name],
@@ -267,13 +275,7 @@ export default async function Page({ params }: { params: { package: string; slug
 
 	return (
 		<div>
-			{/* Note we split the navigation bar here because `SidebarItems` is
-		a server component which means `Nav` cannot import it. We make it a server
-		component to avoid the serialization steps from api-extractor and for it not to be
-		sent for the client to render. */}
-			<Nav>
-				<SidebarItems members={data.members} />
-			</Nav>
+			<Nav members={data.members.map((member) => serializeIntoSidebarItemData(member, version))} />
 			{/* <Head>
 				<title key="title">{name}</title>
 				<meta content={params.data.description} key="description" name="description" />
@@ -284,8 +286,7 @@ export default async function Page({ params }: { params: { package: string; slug
 			<main
 				className={`pt-18 lg:pl-76 ${
 					(data?.member?.kind === 'Class' || data?.member?.kind === 'Interface') &&
-					((data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
-						(data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+					(data.member as ApiClass | ApiInterface).members.length
 						? 'xl:pr-64'
 						: ''
 				}`}
@@ -293,7 +294,7 @@ export default async function Page({ params }: { params: { package: string; slug
 				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
 						{data?.member ? (
-							member(data.member)
+							member(version, data.member)
 						) : data?.source ? (
 							<div className="prose max-w-none">
 								<MDXRemote {...data?.source} />
@@ -304,8 +305,7 @@ export default async function Page({ params }: { params: { package: string; slug
 					<footer
 						className={`dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16 ${
 							(data?.member?.kind === 'Class' || data?.member?.kind === 'Interface') &&
-							((data.member as ApiClassJSON | ApiInterfaceJSON).methods?.length ||
-								(data.member as ApiClassJSON | ApiInterfaceJSON).properties?.length)
+							(data.member as ApiClass | ApiInterface).members.length
 								? 'xl:pr-76'
 								: 'xl:pr-16'
 						}`}

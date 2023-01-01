@@ -19,10 +19,12 @@ export function CodeListing({
 	children,
 	separator,
 	parentKey,
+	version,
 }: PropsWithChildren<{
 	item: ApiPropertyItem;
 	parentKey: string;
 	separator?: CodeListingSeparatorType;
+	version: string;
 }>) {
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
@@ -74,11 +76,10 @@ export function CodeListing({
 					{item.tsdocComment?.summarySection ? <TSDoc item={item} tsdoc={item.tsdocComment.summarySection} /> : null}
 					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
 					{isInherited ? (
-						// TODO: Version
 						<InheritanceText
 							parentKey={item.parent!.containerKey}
 							parentName={item.parent!.displayName}
-							path={generatePath(item.getHierarchy(), '')}
+							path={generatePath(item.getHierarchy(), version)}
 						/>
 					) : null}
 					{children}

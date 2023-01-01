@@ -1,5 +1,3 @@
-'use server';
-
 import { generatePath } from '@discordjs/api-extractor-utils';
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';

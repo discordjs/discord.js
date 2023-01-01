@@ -1,5 +1,6 @@
 'use client';
 
+import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
@@ -13,6 +14,7 @@ import { useNav } from '~/contexts/nav';
 
 export interface SidebarSectionItemData {
 	href: string;
+	kind: ApiItemKind;
 	name: string;
 	overloadIndex?: number | undefined;
 }

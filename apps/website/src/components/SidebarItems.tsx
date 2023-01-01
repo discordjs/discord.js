@@ -1,10 +1,10 @@
-'use server';
+'use client';
 
-import { generatePath } from '@discordjs/api-extractor-utils';
-import type { ApiItem } from '@microsoft/api-extractor-model';
-import { useMemo } from 'react';
+import { usePathname } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import type { SidebarSectionItemData } from './sidebar/SidebarSection';
 import { SidebarSection } from './sidebar/SidebarSection';
+import { useNav } from '~/contexts/nav';
 
 interface GroupedMembers {
 	Classes: SidebarSectionItemData[];
@@ -15,15 +15,7 @@ interface GroupedMembers {
 	Variables: SidebarSectionItemData[];
 }
 
-function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
-	return {
-		name: item.displayName,
-		href: generatePath(item.getHierarchy(), item.displayName),
-		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
-	};
-}
-
-function groupMembers(members: readonly ApiItem[]): GroupedMembers {
+function groupMembers(members: readonly SidebarSectionItemData[]): GroupedMembers {
 	const Classes: SidebarSectionItemData[] = [];
 	const Enums: SidebarSectionItemData[] = [];
 	const Interfaces: SidebarSectionItemData[] = [];
@@ -34,22 +26,22 @@ function groupMembers(members: readonly ApiItem[]): GroupedMembers {
 	for (const member of members) {
 		switch (member.kind) {
 			case 'Class':
-				Classes.push(serializeIntoSidebarItemData(member));
+				Classes.push(member);
 				break;
 			case 'Enum':
-				Enums.push(serializeIntoSidebarItemData(member));
+				Enums.push(member);
 				break;
 			case 'Interface':
-				Interfaces.push(serializeIntoSidebarItemData(member));
+				Interfaces.push(member);
 				break;
 			case 'TypeAlias':
-				Types.push(serializeIntoSidebarItemData(member));
+				Types.push(member);
 				break;
 			case 'Variable':
-				Variables.push(serializeIntoSidebarItemData(member));
+				Variables.push(member);
 				break;
 			case 'Function':
-				Functions.push(serializeIntoSidebarItemData(member));
+				Functions.push(member);
 				break;
 			default:
 				break;
@@ -59,14 +51,14 @@ function groupMembers(members: readonly ApiItem[]): GroupedMembers {
 	return { Classes, Functions, Enums, Interfaces, Types, Variables };
 }
 
-export function SidebarItems({ members }: { members: readonly ApiItem[] }) {
-	// const pathname = usePathname();
-	// const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
-	// const { setOpened } = useNav();
+export function SidebarItems({ members }: { members: SidebarSectionItemData[] }) {
+	const pathname = usePathname();
+	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	const { setOpened } = useNav();
 
-	// useEffect(() => {
-	// 	setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
-	// }, [pathname]);
+	useEffect(() => {
+		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
+	}, [pathname]);
 
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
