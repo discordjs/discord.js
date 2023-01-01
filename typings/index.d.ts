@@ -4638,7 +4638,11 @@ export interface EmbedFooterData {
   iconURL?: string;
 }
 
-export type EmojiIdentifierResolvable = string | EmojiResolvable;
+export type EmojiIdentifierResolvable =
+  | EmojiResolvable
+  | `${'' | 'a:'}${string}:${Snowflake}`
+  | `<${'' | 'a'}:${string}:${Snowflake}>`
+  | string;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
@@ -5490,13 +5494,7 @@ export interface MessageOptions {
   flags?: BitFieldResolvable<'SUPPRESS_EMBEDS', number>;
 }
 
-export type MessageReactionResolvable =
-  | MessageReaction
-  | Snowflake
-  | `${string}:${Snowflake}`
-  | `<:${string}:${Snowflake}>`
-  | `<a:${string}:${Snowflake}>`
-  | string;
+export type MessageReactionResolvable = MessageReaction | Snowflake | string;
 
 export interface MessageReference {
   channelId: Snowflake;
