@@ -569,7 +569,7 @@ class WebSocketShard extends EventEmitter {
     this.debug('Setting a HELLO timeout for 20s.');
     this.helloTimeout = setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
-      this.destroy({ reset: true, closeCode: 4009 });
+      this.destroy({ reset: false, closeCode: 4009 });
     }, 20_000).unref();
   }
 
@@ -590,19 +590,18 @@ class WebSocketShard extends EventEmitter {
     }
     this.wsCloseTimeout = setTimeout(() => {
       this.setWsCloseTimeout(-1);
-      this.debug(`[WebSocket] Close Emitted: ${this.closeEmitted}`);
+
       // Check if close event was emitted.
       if (this.closeEmitted) {
-        this.debug(
-          `[WebSocket] was closed. | WS State: ${CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]}`,
-        );
+        this.debug(`[WebSocket] close was already emitted, assuming the connection was closed properly.`);
         // Setting the variable false to check for zombie connections.
         this.closeEmitted = false;
         return;
       }
 
       this.debug(
-        `[WebSocket] did not close properly, assuming a zombie connection.\nEmitting close and reconnecting again.`,
+        // eslint-disable-next-line max-len
+        `[WebSocket] Close Emitted: ${this.closeEmitted} | did not close properly, assuming a zombie connection.\nEmitting close and reconnecting again.`,
       );
 
       // Cleanup connection listeners
@@ -657,7 +656,7 @@ class WebSocketShard extends EventEmitter {
     Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`,
       );
 
-      this.destroy({ reset: true, closeCode: 4009 });
+      this.destroy({ reset: false, closeCode: 4009 });
       return;
     }
 
