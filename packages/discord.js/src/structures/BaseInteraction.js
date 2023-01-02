@@ -322,7 +322,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link MentionableSelectMenuInteraction}
    * @returns {boolean}
    */
   isMentionableSelectMenu() {
