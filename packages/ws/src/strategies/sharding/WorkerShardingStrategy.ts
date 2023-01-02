@@ -38,6 +38,7 @@ export enum WorkerRecievePayloadOp {
 	UpdateSessionInfo,
 	WaitForIdentify,
 	FetchStatusResponse,
+	WorkerReady,
 }
 
 export type WorkerRecievePayload =
@@ -48,7 +49,8 @@ export type WorkerRecievePayload =
 	| { nonce: number; op: WorkerRecievePayloadOp.WaitForIdentify }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
 	| { op: WorkerRecievePayloadOp.Destroyed; shardId: number }
-	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number };
+	| { op: WorkerRecievePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number }
+	| { op: WorkerRecievePayloadOp.WorkerReady };
 
 /**
  * Options for a {@link WorkerShardingStrategy}
@@ -58,6 +60,10 @@ export interface WorkerShardingStrategyOptions {
 	 * Dictates how many shards should be spawned per worker thread.
 	 */
 	shardsPerWorker: number | 'all';
+	/**
+	 * Path to the worker file to use. The worker requires quite a bit of setup, it is recommended you leverage the {@link WorkerBootstraper} class.
+	 */
+	workerPath?: string;
 }
 
 /**
@@ -93,32 +99,20 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const shardsPerWorker = this.options.shardsPerWorker === 'all' ? shardIds.length : this.options.shardsPerWorker;
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
 
-		let shards = 0;
-		while (shards !== shardIds.length) {
-			const slice = shardIds.slice(shards, shardsPerWorker + shards);
+		const loops = Math.ceil(shardIds.length / shardsPerWorker);
+		const promises: Promise<void>[] = [];
+
+		for (let idx = 0; idx < loops; idx++) {
+			const slice = shardIds.slice(idx * shardsPerWorker, (idx + 1) * shardsPerWorker);
 			const workerData: WorkerData = {
 				...strategyOptions,
 				shardIds: slice,
 			};
 
-			const worker = new Worker(join(__dirname, 'worker.js'), { workerData });
-			await once(worker, 'online');
-			worker
-				.on('error', (err) => {
-					throw err;
-				})
-				.on('messageerror', (err) => {
-					throw err;
-				})
-				.on('message', async (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
-
-			this.#workers.push(worker);
-			for (const shardId of slice) {
-				this.#workerByShardId.set(shardId, worker);
-			}
-
-			shards += slice.length;
+			promises.push(this.setupWorker(workerData));
 		}
+
+		await Promise.all(promises);
 	}
 
 	/**
@@ -210,6 +204,41 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		return statuses;
 	}
 
+	private async setupWorker(workerData: WorkerData) {
+		const worker = new Worker((this.options.workerPath ??= join(__dirname, 'defaultWorker.js')), { workerData });
+
+		await once(worker, 'online');
+		// We do this in case the user has any potentially long running code in their worker
+		await this.waitForWorkerReady(worker);
+
+		worker
+			.on('error', (err) => {
+				throw err;
+			})
+			.on('messageerror', (err) => {
+				throw err;
+			})
+			.on('message', async (payload: WorkerRecievePayload) => this.onMessage(worker, payload));
+
+		this.#workers.push(worker);
+		for (const shardId of workerData.shardIds) {
+			this.#workerByShardId.set(shardId, worker);
+		}
+	}
+
+	private async waitForWorkerReady(worker: Worker): Promise<void> {
+		return new Promise((resolve) => {
+			const handler = (payload: WorkerRecievePayload) => {
+				if (payload.op === WorkerRecievePayloadOp.WorkerReady) {
+					resolve();
+					worker.off('message', handler);
+				}
+			};
+
+			worker.on('message', handler);
+		});
+	}
+
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
 		switch (payload.op) {
 			case WorkerRecievePayloadOp.Connected: {
@@ -258,6 +287,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			case WorkerRecievePayloadOp.FetchStatusResponse: {
 				this.fetchStatusPromises.get(payload.nonce)?.(payload.status);
 				this.fetchStatusPromises.delete(payload.nonce);
+				break;
+			}
+
+			case WorkerRecievePayloadOp.WorkerReady: {
 				break;
 			}
 		}
