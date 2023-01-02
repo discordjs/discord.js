@@ -518,7 +518,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
-   * @property {ChannelType[]} [channelTypes] When the option type is channel,
+   * @property {ApplicationCommandOptionAllowedChannelTypes[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -598,4 +598,9 @@ module.exports = ApplicationCommand;
 /**
  * @external APIApplicationCommandOption
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
+ */
+
+/**
+ * @external ApplicationCommandOptionAllowedChannelTypes
+ * @see {@link https://discord.js.org/#/docs/builders/main/typedef/ApplicationCommandOptionAllowedChannelTypes}
  */
