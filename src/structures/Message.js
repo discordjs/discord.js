@@ -58,6 +58,17 @@ class Message extends Base {
      */
     this.id = data.id;
 
+    if ('position' in data) {
+      /**
+       * A generally increasing integer (there may be gaps or duplicates) that represents
+       * the approximate position of the message in a thread.
+       * @type {?number}
+       */
+      this.position = data.position;
+    } else {
+      this.position ??= null;
+    }
+
     /**
      * The timestamp the message was sent at
      * @type {number}
@@ -855,9 +866,10 @@ class Message extends Base {
    * archived. This can be:
    * * `60` (1 hour)
    * * `1440` (1 day)
-   * * `4320` (3 days) <warn>This is only available when the guild has the `THREE_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `10080` (7 days) <warn>This is only available when the guild has the `SEVEN_DAY_THREAD_ARCHIVE` feature.</warn>
-   * * `'MAX'` Based on the guild's features
+   * * `4320` (3 days)
+   * * `10080` (7 days)
+   * * `'MAX'` (7 days)
+   * <warn>This option is deprecated and will be removed in the next major version.</warn>
    * @typedef {number|string} ThreadAutoArchiveDuration
    */
 
@@ -873,7 +885,7 @@ class Message extends Base {
 
   /**
    * Create a new public thread from this message
-   * @see ThreadManager#create
+   * @see GuildTextThreadManager#create
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */

@@ -12,6 +12,7 @@ const isObject = d => typeof d === 'object' && d !== null;
 
 let deprecationEmittedForSplitMessage = false;
 let deprecationEmittedForRemoveMentions = false;
+let deprecationEmittedForResolveAutoArchiveMaxLimit = false;
 
 /**
  * Contains various general-purpose utility methods.
@@ -661,12 +662,84 @@ class Util extends null {
   /**
    * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
    * @param {Guild} guild The guild to resolve this limit from.
+   * @deprecated This will be removed in the next major version.
    * @returns {number}
    */
-  static resolveAutoArchiveMaxLimit({ features }) {
-    if (features.includes('SEVEN_DAY_THREAD_ARCHIVE')) return 10080;
-    if (features.includes('THREE_DAY_THREAD_ARCHIVE')) return 4320;
-    return 1440;
+  static resolveAutoArchiveMaxLimit() {
+    if (!deprecationEmittedForResolveAutoArchiveMaxLimit) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        "The Util.resolveAutoArchiveMaxLimit method and the 'MAX' option are deprecated and will be removed in the next major version.",
+        'DeprecationWarning',
+      );
+      deprecationEmittedForResolveAutoArchiveMaxLimit = true;
+    }
+    return 10080;
+  }
+
+  /**
+   * Transforms an API guild forum tag to camel-cased guild forum tag.
+   * @param {APIGuildForumTag} tag The tag to transform
+   * @returns {GuildForumTag}
+   * @ignore
+   */
+  static transformAPIGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji:
+        tag.emoji_id ?? tag.emoji_name
+          ? {
+              id: tag.emoji_id,
+              name: tag.emoji_name,
+            }
+          : null,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum tag to an API guild forum tag.
+   * @param {GuildForumTag} tag The tag to transform
+   * @returns {APIGuildForumTag}
+   * @ignore
+   */
+  static transformGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji_id: tag.emoji?.id ?? null,
+      emoji_name: tag.emoji?.name ?? null,
+    };
+  }
+
+  /**
+   * Transforms an API guild forum default reaction object to a
+   * camel-cased guild forum default reaction object.
+   * @param {APIGuildForumDefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {DefaultReactionEmoji}
+   * @ignore
+   */
+  static transformAPIGuildDefaultReaction(defaultReaction) {
+    return {
+      id: defaultReaction.emoji_id,
+      name: defaultReaction.emoji_name,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum default reaction object to an
+   * API guild forum default reaction object.
+   * @param {DefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {APIGuildForumDefaultReactionEmoji}
+   * @ignore
+   */
+  static transformGuildDefaultReaction(defaultReaction) {
+    return {
+      emoji_id: defaultReaction.id,
+      emoji_name: defaultReaction.name,
+    };
   }
 }
 

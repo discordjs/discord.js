@@ -9,10 +9,17 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
-const { ThreadChannelTypes, ChannelTypes, VideoQualityModes } = require('../util/Constants');
+const ChannelFlags = require('../util/ChannelFlags');
+const {
+  ThreadChannelTypes,
+  ChannelTypes,
+  VideoQualityModes,
+  SortOrderTypes,
+  ForumLayoutTypes,
+} = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Util = require('../util/Util');
-const { resolveAutoArchiveMaxLimit } = require('../util/Util');
+const { resolveAutoArchiveMaxLimit, transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Util');
 
 let cacheWarningEmitted = false;
 let storeChannelDeprecationEmitted = false;
@@ -73,8 +80,9 @@ class GuildChannelManager extends CachedManager {
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
    * * A ThreadChannel object
+   * * A ForumChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|ForumChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
@@ -138,12 +146,24 @@ class GuildChannelManager extends CachedManager {
       position,
       rateLimitPerUser,
       rtcRegion,
+      videoQualityMode,
+      availableTags,
+      defaultReactionEmoji,
+      defaultSortOrder,
+      defaultForumLayout,
       reason,
     } = {},
   ) {
     parent &&= this.client.channels.resolveId(parent);
     permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
     const intType = typeof type === 'number' ? type : ChannelTypes[type] ?? ChannelTypes.GUILD_TEXT;
+
+    const videoMode = typeof videoQualityMode === 'number' ? videoQualityMode : VideoQualityModes[videoQualityMode];
+
+    const sortMode = typeof defaultSortOrder === 'number' ? defaultSortOrder : SortOrderTypes[defaultSortOrder];
+
+    const layoutMode =
+      typeof defaultForumLayout === 'number' ? defaultForumLayout : ForumLayoutTypes[defaultForumLayout];
 
     if (intType === ChannelTypes.GUILD_STORE && !storeChannelDeprecationEmitted) {
       storeChannelDeprecationEmitted = true;
@@ -167,6 +187,11 @@ class GuildChannelManager extends CachedManager {
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
+        video_quality_mode: videoMode,
+        available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
+        default_sort_order: sortMode,
+        default_forum_layout: layoutMode,
       },
       reason,
     });
@@ -175,7 +200,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Creates a webhook for the channel.
-   * @param {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
+   * @param {GuildChannelResolvable} channel The channel to create the webhook for
    * @param {string} name The name of the webhook
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
@@ -224,6 +249,11 @@ class GuildChannelManager extends CachedManager {
    * The default auto archive duration for all new threads in this channel
    * @property {?string} [rtcRegion] The RTC region of the channel
    * @property {?VideoQualityMode|number} [videoQualityMode] The camera video quality mode of the channel
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
+   * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
+   * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
+   * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
+   * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
    */
 
   /**
@@ -282,6 +312,12 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: data.rateLimitPerUser,
         default_auto_archive_duration: defaultAutoArchiveDuration,
         permission_overwrites,
+        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
+        flags: 'flags' in data ? ChannelFlags.resolve(data.flags) : undefined,
+        default_sort_order:
+          typeof data.defaultSortOrder === 'string' ? SortOrderTypes[data.defaultSortOrder] : data.defaultSortOrder,
       },
       reason,
     });

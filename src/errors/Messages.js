@@ -166,6 +166,8 @@ const Messages = {
   NOT_IMPLEMENTED: (what, name) => `Method ${what} not implemented on ${name}.`,
 
   SWEEP_FILTER_RETURN: 'The return value of the sweepFilter function was not false or a Function',
+
+  GUILD_FORUM_MESSAGE_REQUIRED: 'You must provide a message to create a guild forum thread',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
