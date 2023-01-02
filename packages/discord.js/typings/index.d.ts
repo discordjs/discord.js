@@ -3384,6 +3384,7 @@ export class Widget extends Base {
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
   public id: Snowflake;
+  public name: string;
   public instantInvite?: string;
   public channels: Collection<Snowflake, WidgetChannel>;
   public members: Collection<string, WidgetMember>;
@@ -5042,7 +5043,11 @@ export interface EmbedField {
   inline: boolean;
 }
 
-export type EmojiIdentifierResolvable = string | EmojiResolvable;
+export type EmojiIdentifierResolvable =
+  | EmojiResolvable
+  | `${'' | 'a:'}${string}:${Snowflake}`
+  | `<${'' | 'a'}:${string}:${Snowflake}>`
+  | string;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
@@ -5405,16 +5410,16 @@ export interface GuildChannelOverwriteOptions {
 
 export interface GuildCreateOptions {
   name: string;
-  afkChannelId?: Snowflake | number;
-  afkTimeout?: number;
-  channels?: PartialChannelData[];
+  icon?: BufferResolvable | Base64Resolvable | null;
+  verificationLevel?: GuildVerificationLevel;
   defaultMessageNotifications?: GuildDefaultMessageNotifications;
   explicitContentFilter?: GuildExplicitContentFilter;
-  icon?: BufferResolvable | Base64Resolvable | null;
   roles?: PartialRoleData[];
-  systemChannelFlags?: SystemChannelFlagsResolvable;
+  channels?: PartialChannelData[];
+  afkChannelId?: Snowflake | number;
+  afkTimeout?: number;
   systemChannelId?: Snowflake | number;
-  verificationLevel?: GuildVerificationLevel;
+  systemChannelFlags?: SystemChannelFlagsResolvable;
 }
 
 export interface GuildWidgetSettings {
@@ -5425,23 +5430,23 @@ export interface GuildWidgetSettings {
 export interface GuildEditOptions {
   name?: string;
   verificationLevel?: GuildVerificationLevel | null;
-  explicitContentFilter?: GuildExplicitContentFilter | null;
   defaultMessageNotifications?: GuildDefaultMessageNotifications | null;
-  afkChannel?: VoiceChannelResolvable | null;
-  systemChannel?: TextChannelResolvable | null;
-  systemChannelFlags?: SystemChannelFlagsResolvable;
+  explicitContentFilter?: GuildExplicitContentFilter | null;
   afkTimeout?: number;
+  afkChannel?: VoiceChannelResolvable | null;
   icon?: BufferResolvable | Base64Resolvable | null;
   owner?: GuildMemberResolvable;
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
+  systemChannel?: TextChannelResolvable | null;
+  systemChannelFlags?: SystemChannelFlagsResolvable;
   rulesChannel?: TextChannelResolvable | null;
   publicUpdatesChannel?: TextChannelResolvable | null;
   preferredLocale?: Locale | null;
-  premiumProgressBarEnabled?: boolean;
-  description?: string | null;
   features?: `${GuildFeature}`[];
+  description?: string | null;
+  premiumProgressBarEnabled?: boolean;
   reason?: string;
 }
 
@@ -5787,13 +5792,7 @@ export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> 
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
-export type MessageReactionResolvable =
-  | MessageReaction
-  | Snowflake
-  | `${string}:${Snowflake}`
-  | `<:${string}:${Snowflake}>`
-  | `<a:${string}:${Snowflake}>`
-  | string;
+export type MessageReactionResolvable = MessageReaction | Snowflake | string;
 
 export interface MessageReference {
   channelId: Snowflake;
