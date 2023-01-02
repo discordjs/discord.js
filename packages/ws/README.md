@@ -139,10 +139,10 @@ manager.setStrategy(
 And your `worker.ts` file:
 
 ```ts
-import { WorkerBootstraper, WebSocketShardEvents } from '@discordjs/ws';
+import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
 
-const bootstraper = new WorkerBootstraper();
-void bootstraper.bootstrap({
+const bootstrapper = new WorkerBootstrapper();
+void bootstrapper.bootstrap({
 	// Those will be sent to the main thread for the manager to emit
 	forwardEvents: [
 		WebSocketShardEvents.Closed,

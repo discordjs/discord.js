@@ -1,4 +1,4 @@
-import { WorkerBootstraper } from '../../utils/WorkerBootstraper.js';
+import { WorkerBootstrapper } from '../../utils/WorkerBootstrapper.js';
 
-const bootstraper = new WorkerBootstraper();
-void bootstraper.bootstrap();
+const bootstrapper = new WorkerBootstrapper();
+void bootstrapper.bootstrap();

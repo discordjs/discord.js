@@ -8,7 +8,7 @@ export * from './strategies/sharding/WorkerShardingStrategy.js';
 
 export * from './utils/constants.js';
 export * from './utils/IdentifyThrottler.js';
-export * from './utils/WorkerBootstraper.js';
+export * from './utils/WorkerBootstrapper.js';
 
 export * from './ws/WebSocketManager.js';
 export * from './ws/WebSocketShard.js';

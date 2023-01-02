@@ -61,7 +61,7 @@ export interface WorkerShardingStrategyOptions {
 	 */
 	shardsPerWorker: number | 'all';
 	/**
-	 * Path to the worker file to use. The worker requires quite a bit of setup, it is recommended you leverage the {@link WorkerBootstraper} class.
+	 * Path to the worker file to use. The worker requires quite a bit of setup, it is recommended you leverage the {@link WorkerBootstrapper} class.
 	 */
 	workerPath?: string;
 }
