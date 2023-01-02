@@ -2095,6 +2095,7 @@ __metadata:
   resolution: "@discordjs/core@workspace:packages/core"
   dependencies:
     "@discordjs/rest": "workspace:^"
+    "@discordjs/util": "workspace:^"
     "@discordjs/ws": "workspace:^"
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6

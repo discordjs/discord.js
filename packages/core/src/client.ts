@@ -1,5 +1,6 @@
 import { setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
+import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -70,7 +71,6 @@ import {
 	type GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { API } from './api/index.js';
-import { calculateShardId } from './util/ws.js';
 
 export interface IntrinsicProps {
 	/**
