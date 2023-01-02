@@ -25,7 +25,7 @@ export interface BootstrapOptions {
 	/**
 	 * Function to call when a shard is created for additional setup
 	 */
-	shardCallback?(shardId: number, shard: WebSocketShard): Awaitable<void>;
+	shardCallback?(shard: WebSocketShard): Awaitable<void>;
 }
 
 /**
@@ -161,7 +161,7 @@ export class WorkerBootstrapper {
 			}
 
 			// Any additional setup the user might want to do
-			await options.shardCallback?.(shardId, shard);
+			await options.shardCallback?.(shard);
 			this.shards.set(shardId, shard);
 		}
 

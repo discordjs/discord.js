@@ -152,9 +152,10 @@ void bootstrapper.bootstrap({
 		WebSocketShardEvents.Resumed,
 	],
 	// The first parameter here is the shardId in case you need it
-	shardCallback: (_, shard) => {
+	shardCallback: (shard) => {
 		shard.on(WebSocketShardEvents.Dispatch, (event) => {
 			// Process gateway events here however you want (e.g. send them through a message broker)
+			// You also have access to shard.id if you need it
 		});
 	},
 });
