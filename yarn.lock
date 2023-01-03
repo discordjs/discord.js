@@ -2231,8 +2231,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy-container@workspace:packages/proxy-container"
   dependencies:
-    "@discordjs/proxy": ^1.2.1
-    "@discordjs/rest": ^1.4.0
+    "@discordjs/proxy": "workspace:^"
+    "@discordjs/rest": "workspace:^"
     "@types/node": 16.18.4
     cross-env: ^7.0.3
     eslint: ^8.28.0
@@ -2245,7 +2245,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/proxy@^1.2.1, @discordjs/proxy@workspace:packages/proxy":
+"@discordjs/proxy@workspace:^, @discordjs/proxy@workspace:packages/proxy":
   version: 0.0.0-use.local
   resolution: "@discordjs/proxy@workspace:packages/proxy"
   dependencies:
@@ -2270,7 +2270,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/rest@^1.4.0, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
+"@discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
