@@ -3,15 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 // eslint-disable-next-line n/prefer-global/process
 import process, { cwd } from 'node:process';
-import {
-	findPackage,
-	getMembers,
-	type ApiFunctionJSON,
-	type ApiInterfaceJSON,
-	type ApiTypeAliasJSON,
-	type ApiVariableJSON,
-	type ApiEnumJSON,
-} from '@discordjs/api-extractor-utils';
+import { findPackage } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
 import type {
 	ApiClass,
@@ -36,87 +28,107 @@ import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
 import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
 import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
 import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
-import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
+import vercelLogo from '../../../../../../assets/powered-by-vercel.svg';
+import { fetchModelJSON } from '~/app/docAPI';
 import { MDXRemote } from '~/components/MDXRemote';
-import { Nav } from '~/components/Nav';
-import { resolveURI } from '~/components/documentation/util';
 import { Class } from '~/components/model/Class';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import type { SidebarSectionItemData } from '~/components/sidebar/SidebarSection';
 import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
-import { tryResolveDescription } from '~/util/summary';
+// import { tryResolveDescription } from '~/util/summary';
 
-export async function generateStaticParams({ params }: { params?: { package: string } }) {
+export async function generateStaticParams({ params }: { params?: { package: string; version: string } }) {
 	const packageName = params?.package ?? 'builders';
+	const version = params?.version ?? 'main';
 
-	try {
-		let data: any[] = [];
-		let versions: string[] = [];
-		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-			data = JSON.parse(res);
-		} else {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
-				next: { revalidate: 3_600 },
-			});
-			versions = await response.json();
-			versions = versions.slice(-2);
+	const modelJSON = await fetchModelJSON(packageName, version);
+	const model = createApiModel(modelJSON);
 
-			for (const version of versions) {
-				const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
-				data = [...data, await res.json()];
-			}
-		}
+	const pkg = model.tryGetPackageByName(packageName);
 
-		if (Array.isArray(data)) {
-			const models = data.map((innerData) => createApiModel(innerData));
-			const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
-
-			return [
-				...versions.map((version) => ({ slug: [version] })),
-				...pkgs.flatMap((pkg, idx) =>
-					getMembers(pkg, versions[idx] ?? 'main').map((member) => {
-						if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-							return {
-								slug: [versions[idx] ?? 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
-							};
-						}
-
-						return {
-							slug: [versions[idx] ?? 'main', `${member.name}:${member.kind}`],
-						};
-					}),
-				),
-			];
-		}
-
-		const model = createApiModel(data);
-		const pkg = findPackage(model, packageName)!;
-
-		return [
-			{ slug: ['main'] },
-			...getMembers(pkg, 'main').map((member) => {
-				if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-					return {
-						slug: ['main', `${member.name}:${member.overloadIndex}:${member.kind}`],
-					};
-				}
-
-				return { slug: ['main', `${member.name}:${member.kind}`] };
-			}),
-		];
-	} catch {
-		return [{ slug: ['main'] }];
+	if (!pkg) {
+		return notFound();
 	}
+
+	const entry = pkg.entryPoints[0];
+
+	if (!entry) {
+		return notFound();
+	}
+
+	const { members } = entry;
+
+	return members.map((member) => ({
+		item: member.displayName,
+	}));
+
+	// try {
+	// 	let data: any[] = [];
+	// 	let versions: string[] = [];
+	// 	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+	// 		const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+	// 		data = JSON.parse(res);
+	// 	} else {
+	// 		const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
+	// 			next: { revalidate: 3_600 },
+	// 		});
+	// 		versions = await response.json();
+	// 		versions = versions.slice(-2);
+
+	// 		for (const version of versions) {
+	// 			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
+	// 			data = [...data, await res.json()];
+	// 		}
+	// 	}
+
+	// 	if (Array.isArray(data)) {
+	// 		const models = data.map((innerData) => createApiModel(innerData));
+	// 		const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
+
+	// 		return [
+	// 			...versions.map((version) => ({ slug: [version] })),
+	// 			...pkgs.flatMap((pkg, idx) =>
+	// 				getMembers(pkg, versions[idx] ?? 'main').map((member) => {
+	// 					if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+	// 						return {
+	// 							slug: [versions[idx] ?? 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+	// 						};
+	// 					}
+
+	// 					return {
+	// 						slug: [versions[idx] ?? 'main', `${member.name}:${member.kind}`],
+	// 					};
+	// 				}),
+	// 			),
+	// 		];
+	// 	}
+
+	// 	const model = createApiModel(data);
+	// 	const pkg = findPackage(model, packageName)!;
+
+	// 	return [
+	// 		{ slug: ['main'] },
+	// 		...getMembers(pkg, 'main').map((member) => {
+	// 			if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
+	// 				return {
+	// 					slug: ['main', `${member.name}:${member.overloadIndex}:${member.kind}`],
+	// 				};
+	// 			}
+
+	// 			return { slug: ['main', `${member.name}:${member.kind}`] };
+	// 		}),
+	// 	];
+	// } catch {
+	// 	return [{ slug: ['main'] }];
+	// }
 }
 
-async function getData(packageName: string, slug: string[]) {
-	const [branchName = 'main', member] = slug;
+async function getData(params: { item: string; package: string; version: string }) {
+	const { package: packageName, version: branchName = 'main', item } = params;
 
 	if (!PACKAGES.includes(packageName)) {
 		notFound();
@@ -135,7 +147,7 @@ async function getData(packageName: string, slug: string[]) {
 		notFound();
 	}
 
-	const [memberName, overloadIndex] = member?.split('%3A') ?? [];
+	const [memberName, overloadIndex] = item?.split('%3A') ?? [];
 
 	const readme = await readFile(join(cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
 
@@ -182,7 +194,7 @@ async function getData(packageName: string, slug: string[]) {
 
 	const foundMember =
 		memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
-	const description = foundMember ? tryResolveDescription(foundMember) ?? DESCRIPTION : DESCRIPTION;
+	// const description = foundMember ? tryResolveDescription(foundMember) ?? DESCRIPTION : DESCRIPTION;
 
 	return {
 		packageName,
@@ -236,15 +248,6 @@ async function getData(packageName: string, slug: string[]) {
 // 	}
 // }
 
-function serializeIntoSidebarItemData(item: ApiItem, version: string): SidebarSectionItemData {
-	return {
-		kind: item.kind,
-		name: item.displayName,
-		href: resolveURI(item, version),
-		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
-	};
-}
-
 function member(version: string, props?: ApiItem) {
 	switch (props?.kind) {
 		case 'Class':
@@ -264,9 +267,9 @@ function member(version: string, props?: ApiItem) {
 	}
 }
 
-export default async function Page({ params }: { params: { package: string; slug: string[] } }) {
-	const data = await getData(params.package, params.slug);
-	const version = params.slug[0]!;
+export default async function Page({ params }: { params: { item: string; package: string; version: string } }) {
+	const data = await getData(params);
+	const { version } = params;
 	// const name = useMemo(
 	// 	() => `discord.js${params.data?.member?.name ? ` | ${params.data.member.name}` : ''}`,
 	// 	[params.data?.member?.name],
@@ -285,7 +288,6 @@ export default async function Page({ params }: { params: { package: string; slug
 
 	return (
 		<div>
-			<Nav members={data.members.map((member) => serializeIntoSidebarItemData(member, version))} />
 			{/* <Head>
 				<title key="title">{name}</title>
 				<meta content={params.data.description} key="description" name="description" />
