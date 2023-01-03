@@ -143,11 +143,11 @@ export class WorkerBootstrapper {
 	/**
 	 * Bootstraps the worker thread with the provided options
 	 */
-	public async bootstrap(options: BootstrapOptions = {}): Promise<void> {
+	public async bootstrap(options: Readonly<BootstrapOptions> = {}): Promise<void> {
 		// Start by initializing the shards
 		for (const shardId of this.data.shardIds) {
 			const shard = new WebSocketShard(new WorkerContextFetchingStrategy(this.data), shardId);
-			for (const event of (options.forwardEvents ??= Object.values(WebSocketShardEvents))) {
+			for (const event of options.forwardEvents ?? Object.values(WebSocketShardEvents)) {
 				// @ts-expect-error: Event types incompatible
 				shard.on(event, (data) => {
 					const payload = {
