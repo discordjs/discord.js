@@ -1,6 +1,5 @@
 import { createApiModel } from '@discordjs/scripts';
 import type { ApiItem } from '@microsoft/api-extractor-model';
-import { ApiModel } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
@@ -8,9 +7,9 @@ import { Header } from '~/components/Header';
 import { Nav } from '~/components/Nav';
 import { resolveURI } from '~/components/documentation/util';
 import type { SidebarSectionItemData } from '~/components/sidebar/SidebarSection';
-import { PACKAGES } from '~/util/constants';
+import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 
-interface Params {
+export interface Params {
 	package: string;
 	version: string;
 }
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
 
 	await Promise.all(
 		PACKAGES.map(async (packageName) => {
-			const versions = await fetchVersions(packageName);
+			const versions = (await fetchVersions(packageName)).slice(-N_RECENT_VERSIONS);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));
 		}),

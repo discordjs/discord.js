@@ -3,7 +3,6 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 // eslint-disable-next-line n/prefer-global/process
 import process, { cwd } from 'node:process';
-import { findPackage } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
 import type {
 	ApiClass,
@@ -13,31 +12,19 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 } from '@microsoft/api-extractor-model';
-import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
+import { ApiFunction, ApiItemKind } from '@microsoft/api-extractor-model';
 import Image from 'next/image';
 // import Head from 'next/head';
 import { notFound } from 'next/navigation';
-import { serialize } from 'next-mdx-remote/serialize';
-import rehypeIgnore from 'rehype-ignore';
-import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
-import rehypeRaw from 'rehype-raw';
-import rehypeSlug from 'rehype-slug';
-import remarkGfm from 'remark-gfm';
-import { getHighlighter } from 'shiki';
-import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
-import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
-import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
-import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
 import vercelLogo from '../../../../../../assets/powered-by-vercel.svg';
 import { fetchModelJSON } from '~/app/docAPI';
-import { MDXRemote } from '~/components/MDXRemote';
 import { Class } from '~/components/model/Class';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import { DESCRIPTION, PACKAGES } from '~/util/constants';
+import { PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 // import { tryResolveDescription } from '~/util/summary';
 
@@ -65,66 +52,6 @@ export async function generateStaticParams({ params }: { params?: { package: str
 	return members.map((member) => ({
 		item: member.displayName,
 	}));
-
-	// try {
-	// 	let data: any[] = [];
-	// 	let versions: string[] = [];
-	// 	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-	// 		const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-	// 		data = JSON.parse(res);
-	// 	} else {
-	// 		const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
-	// 			next: { revalidate: 3_600 },
-	// 		});
-	// 		versions = await response.json();
-	// 		versions = versions.slice(-2);
-
-	// 		for (const version of versions) {
-	// 			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`);
-	// 			data = [...data, await res.json()];
-	// 		}
-	// 	}
-
-	// 	if (Array.isArray(data)) {
-	// 		const models = data.map((innerData) => createApiModel(innerData));
-	// 		const pkgs = models.map((model) => findPackage(model, packageName)) as ApiPackage[];
-
-	// 		return [
-	// 			...versions.map((version) => ({ slug: [version] })),
-	// 			...pkgs.flatMap((pkg, idx) =>
-	// 				getMembers(pkg, versions[idx] ?? 'main').map((member) => {
-	// 					if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-	// 						return {
-	// 							slug: [versions[idx] ?? 'main', `${member.name}:${member.overloadIndex}:${member.kind}`],
-	// 						};
-	// 					}
-
-	// 					return {
-	// 						slug: [versions[idx] ?? 'main', `${member.name}:${member.kind}`],
-	// 					};
-	// 				}),
-	// 			),
-	// 		];
-	// 	}
-
-	// 	const model = createApiModel(data);
-	// 	const pkg = findPackage(model, packageName)!;
-
-	// 	return [
-	// 		{ slug: ['main'] },
-	// 		...getMembers(pkg, 'main').map((member) => {
-	// 			if (member.kind === ApiItemKind.Function && member.overloadIndex && member.overloadIndex > 1) {
-	// 				return {
-	// 					slug: ['main', `${member.name}:${member.overloadIndex}:${member.kind}`],
-	// 				};
-	// 			}
-
-	// 			return { slug: ['main', `${member.name}:${member.kind}`] };
-	// 		}),
-	// 	];
-	// } catch {
-	// 	return [{ slug: ['main'] }];
-	// }
 }
 
 async function getData(params: { item: string; package: string; version: string }) {
@@ -149,42 +76,7 @@ async function getData(params: { item: string; package: string; version: string 
 
 	const [memberName, overloadIndex] = item?.split('%3A') ?? [];
 
-	const readme = await readFile(join(cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
-
-	const mdxSource = await serialize(readme, {
-		mdxOptions: {
-			remarkPlugins: [remarkGfm],
-			remarkRehypeOptions: { allowDangerousHtml: true },
-			rehypePlugins: [
-				rehypeRaw,
-				rehypeIgnore,
-				rehypeSlug,
-				[
-					rehypePrettyCode,
-					{
-						theme: {
-							dark: shikiThemeDarkPlus,
-							light: shikiThemeLightPlus,
-						},
-						getHighlighter: async (options?: Partial<Options>) =>
-							getHighlighter({
-								...options,
-								langs: [
-									// @ts-expect-error: Working as intended
-									{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
-									// @ts-expect-error: Working as intended
-									{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
-								],
-							}),
-					},
-				],
-			],
-			format: 'md',
-		},
-	});
-
 	const model = createApiModel(data);
-	const pkg = findPackage(model, packageName);
 
 	// eslint-disable-next-line prefer-const
 	let { containerKey, displayName: name } = findMember(model, packageName, memberName, branchName) ?? {};
@@ -199,7 +91,6 @@ async function getData(params: { item: string; package: string; version: string 
 	return {
 		packageName,
 		branchName,
-		source: mdxSource,
 		member: foundMember,
 		members:
 			model
@@ -305,13 +196,7 @@ export default async function Page({ params }: { params: { item: string; package
 			>
 				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">
-						{data?.member ? (
-							member(version, data.member)
-						) : data?.source ? (
-							<div className="prose max-w-none">
-								<MDXRemote {...data?.source} />
-							</div>
-						) : null}
+						{data?.member ? member(version, data.member) : null}
 					</div>
 					<div className="h-76 md:h-52" />
 					<footer
