@@ -1,5 +1,5 @@
 import { once } from 'node:events';
-import path, { join } from 'node:path';
+import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
@@ -227,22 +227,24 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	private resolveWorkerPath(): string {
-		if (!this.options.workerPath) {
+		const path = this.options.workerPath;
+
+		if (!path) {
 			return join(__dirname, 'defaultWorker.js');
 		}
 
-		if (path.isAbsolute(this.options.workerPath)) {
-			return this.options.workerPath;
+		if (isAbsolute(path)) {
+			return path;
 		}
 
-		if (/^\.\.?[/\\]/.test(this.options.workerPath)) {
-			return path.resolve(this.options.workerPath);
+		if (/^\.\.?[/\\]/.test(path)) {
+			return resolve(path);
 		}
 
 		try {
-			return require.resolve(this.options.workerPath);
+			return require.resolve(path);
 		} catch {
-			return path.resolve(this.options.workerPath);
+			return resolve(path);
 		}
 	}
 
