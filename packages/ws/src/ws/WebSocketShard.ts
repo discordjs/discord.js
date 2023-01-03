@@ -33,6 +33,7 @@ export enum WebSocketShardEvents {
 	Closed = 'closed',
 	Debug = 'debug',
 	Dispatch = 'dispatch',
+	HeartbeatComplete = 'heartbeat',
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
@@ -54,10 +55,11 @@ export enum WebSocketShardDestroyRecovery {
 export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
+	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
+	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
 };
 
 export interface WebSocketShardDestroyOptions {
@@ -506,7 +508,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.HeartbeatAck: {
 				this.isAck = true;
-				this.debug([`Got heartbeat ack after ${Date.now() - this.lastHeartbeatAt}ms`]);
+
+				const ackAt = Date.now();
+				this.emit(WebSocketShardEvents.HeartbeatComplete, {
+					ackAt,
+					heartbeatAt: this.lastHeartbeatAt,
+					latency: ackAt - this.lastHeartbeatAt,
+				});
+
 				break;
 			}
 		}
