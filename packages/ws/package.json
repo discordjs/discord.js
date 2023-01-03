@@ -16,9 +16,23 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./defaultWorker": {
+			"import": "./dist/defaultWorker.mjs",
+			"require": "./dist/defaultWorker.js"
+		},
+		"./defaultWorker.js": {
+			"import": "./dist/defaultWorker.mjs",
+			"require": "./dist/defaultWorker.js"
+		},
+		"./defaultWorker.mjs": {
+			"import": "./dist/defaultWorker.mjs",
+			"require": "./dist/defaultWorker.js"
+		}
 	},
 	"directories": {
 		"lib": "src",

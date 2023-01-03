@@ -1,5 +1,5 @@
 import { once } from 'node:events';
-import { join } from 'node:path';
+import path, { join } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
@@ -205,7 +205,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	private async setupWorker(workerData: WorkerData) {
-		const worker = new Worker((this.options.workerPath ??= join(__dirname, 'defaultWorker.js')), { workerData });
+		const worker = new Worker(this.resolveWorkerPath(), { workerData });
 
 		await once(worker, 'online');
 		// We do this in case the user has any potentially long running code in their worker
@@ -223,6 +223,26 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		this.#workers.push(worker);
 		for (const shardId of workerData.shardIds) {
 			this.#workerByShardId.set(shardId, worker);
+		}
+	}
+
+	private resolveWorkerPath(): string {
+		if (!this.options.workerPath) {
+			return join(__dirname, 'defaultWorker.js');
+		}
+
+		if (path.isAbsolute(this.options.workerPath)) {
+			return this.options.workerPath;
+		}
+
+		if (/^\.\.?[/\\]/.test(this.options.workerPath)) {
+			return path.resolve(this.options.workerPath);
+		}
+
+		try {
+			return require.resolve(this.options.workerPath);
+		} catch {
+			return path.resolve(this.options.workerPath);
 		}
 	}
 
