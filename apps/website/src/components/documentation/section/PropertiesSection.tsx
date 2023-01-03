@@ -7,7 +7,7 @@ import { PropertyList } from '~/components/PropertyList';
 
 export function PropertiesSection({ item, version }: { item: ApiItemContainerMixin; version: string }) {
 	return (
-		<SectionShell icon={<VscSymbolProperty size={20} />} title="Properties">
+		<SectionShell icon={<VscSymbolProperty size={20} />} padded title="Properties">
 			<PropertyList item={item} version={version} />
 		</SectionShell>
 	);

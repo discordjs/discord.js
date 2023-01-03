@@ -13,7 +13,14 @@ import {
 	type ApiEnumJSON,
 } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
-import type { ApiClass, ApiInterface, ApiItem } from '@microsoft/api-extractor-model';
+import type {
+	ApiClass,
+	ApiEnum,
+	ApiInterface,
+	ApiItem,
+	ApiTypeAlias,
+	ApiVariable,
+} from '@microsoft/api-extractor-model';
 import { ApiFunction, ApiItemKind, type ApiPackage } from '@microsoft/api-extractor-model';
 import Image from 'next/image';
 // import Head from 'next/head';
@@ -32,16 +39,14 @@ import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
 import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
 import { MDXRemote } from '~/components/MDXRemote';
 import { Nav } from '~/components/Nav';
-import { SidebarItems } from '~/components/SidebarItems';
 import { resolveURI } from '~/components/documentation/util';
 import { Class } from '~/components/model/Class';
-import { Enum } from '~/components/model/Enum';
 import { Interface } from '~/components/model/Interface';
 import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
+import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
 import type { SidebarSectionItemData } from '~/components/sidebar/SidebarSection';
-import { MemberProvider } from '~/contexts/member';
 import { DESCRIPTION, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 import { tryResolveDescription } from '~/util/summary';
@@ -184,7 +189,12 @@ async function getData(packageName: string, slug: string[]) {
 		branchName,
 		source: mdxSource,
 		member: foundMember,
-		members: model.tryGetPackageByName(packageName)?.members?.[0]?.members ?? [],
+		members:
+			model
+				.tryGetPackageByName(packageName)
+				?.members?.[0]?.members.filter(
+					(member) => !(member.kind === ApiItemKind.Function && (member as ApiFunction).overloadIndex > 1),
+				) ?? [],
 	};
 }
 
@@ -240,15 +250,15 @@ function member(version: string, props?: ApiItem) {
 		case 'Class':
 			return <Class clazz={props as ApiClass} version={version} />;
 		case 'Function':
-			return <Function data={props as ApiFunctionJSON} key={props.containerKey} />;
+			return <Function item={props as ApiFunction} key={props.containerKey} />;
 		case 'Interface':
-			return <Interface data={props as ApiInterfaceJSON} />;
+			return <Interface item={props as ApiInterface} version={version} />;
 		case 'TypeAlias':
-			return <TypeAlias data={props as ApiTypeAliasJSON} />;
+			return <TypeAlias item={props as ApiTypeAlias} />;
 		case 'Variable':
-			return <Variable data={props as ApiVariableJSON} />;
+			return <Variable item={props as ApiVariable} />;
 		case 'Enum':
-			return <Enum data={props as ApiEnumJSON} />;
+			return <Enum item={props as ApiEnum} version={version} />;
 		default:
 			return <div>Cannot render that item type</div>;
 	}

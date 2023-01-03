@@ -1,9 +1,9 @@
 'use server';
 
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
+import { OverloadSwitcher } from '../../OverloadSwitcher';
 import { MethodDocumentation } from './MethodDocumentation';
 import { MethodHeader } from './MethodName';
-import { OverloadSwitcher } from './OverloadSwitcher';
 
 export function Method({ method }: { method: ApiMethod | ApiMethodSignature }) {
 	if (method.getMergedSiblings().length > 1) {

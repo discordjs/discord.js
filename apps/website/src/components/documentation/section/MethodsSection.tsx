@@ -7,7 +7,7 @@ import { MethodList } from '~/components/MethodList';
 
 export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 	return (
-		<SectionShell icon={<VscSymbolMethod size={20} />} title="Methods">
+		<SectionShell icon={<VscSymbolMethod size={20} />} padded title="Methods">
 			<MethodList item={item} />
 		</SectionShell>
 	);

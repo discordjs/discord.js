@@ -1,20 +1,18 @@
-'use server';
-
 import { generatePath } from '@discordjs/api-extractor-utils';
 import type { ApiPropertyItem } from '@microsoft/api-extractor-model';
-import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import type { PropsWithChildren } from 'react';
+import { Anchor } from './Anchor';
 import { HyperlinkedText } from './HyperlinkedText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
 import { tokenize } from './documentation/util';
 
-export enum CodeListingSeparatorType {
+export enum PropertySeparatorType {
 	Type = ':',
 	Value = '=',
 }
 
-export function CodeListing({
+export function Property({
 	item,
 	children,
 	separator,
@@ -23,7 +21,7 @@ export function CodeListing({
 }: PropsWithChildren<{
 	item: ApiPropertyItem;
 	parentKey: string;
-	separator?: CodeListingSeparatorType;
+	separator?: PropertySeparatorType;
 	version: string;
 }>) {
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
@@ -33,13 +31,7 @@ export function CodeListing({
 	return (
 		<div className="scroll-mt-30 flex flex-col gap-4" id={item.displayName}>
 			<div className="md:-ml-8.5 flex flex-col gap-2 md:flex-row md:place-items-center">
-				<a
-					aria-label="Anchor"
-					className="focus:ring-width-2 focus:ring-blurple hidden rounded outline-0 focus:ring md:inline-block"
-					href={`#${item.displayName}`}
-				>
-					<FiLink size={20} />
-				</a>
+				<Anchor href={`#${item.displayName}`} />
 				{isDeprecated || item.isReadonly || item.isOptional ? (
 					<div className="flex flex-row gap-1">
 						{isDeprecated ? (

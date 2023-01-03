@@ -3,10 +3,13 @@ import type {
 	ApiFunction,
 	ApiItem,
 	ApiItemContainerMixin,
+	ApiMethod,
+	ApiMethodSignature,
 	ApiModel,
 	ExcerptToken,
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { TableOfContentsSerialized } from '../TableOfContentItems';
 
 export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[], version: string) {
 	return tokens.map((token) => genToken(model, token, version));
@@ -51,4 +54,21 @@ export function resolveURI(item: ApiItem, version: string): string {
 
 	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
 	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
+}
+
+export function serializeMembers(clazz: ApiItemContainerMixin): TableOfContentsSerialized[] {
+	return clazz.members.map((member) => {
+		if (member.kind === 'Method' || member.kind === 'MethodSignature') {
+			return {
+				kind: member.kind as 'Method' | 'MethodSignature',
+				name: member.displayName,
+			};
+		} else {
+			return {
+				kind: member.kind as 'Property' | 'PropertySignature',
+				name: member.displayName,
+				overloadIndex: (member as ApiMethod | ApiMethodSignature).overloadIndex,
+			};
+		}
+	});
 }

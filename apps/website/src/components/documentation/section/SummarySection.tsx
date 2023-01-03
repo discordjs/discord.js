@@ -5,7 +5,7 @@ import { SectionShell } from './SectionShell';
 
 export function SummarySection({ item }: { item: ApiDeclaredItem }) {
 	return (
-		<SectionShell icon={<VscListSelection size={20} />} title="Summary">
+		<SectionShell icon={<VscListSelection size={20} />} padded separator title="Summary">
 			{item.tsdocComment?.summarySection ? (
 				<TSDoc item={item} tsdoc={item.tsdocComment.summarySection} />
 			) : (

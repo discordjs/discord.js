@@ -16,7 +16,7 @@ export function OverloadSwitcher({ overloads, children }: PropsWithChildren<{ ov
 	const menu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
 
 	return (
-		<div className="flex flex-row place-items-center gap-2">
+		<div className="flex flex-col place-items-start gap-2">
 			<MenuButton
 				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 				state={menu}

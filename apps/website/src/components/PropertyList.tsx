@@ -3,19 +3,19 @@
 import type { ApiClass, ApiItem, ApiPropertyItem } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { CodeListing, CodeListingSeparatorType } from './CodeListing';
+import { Property, PropertySeparatorType } from './Property';
 
 export function PropertyList({ item, version }: { item: ApiItem; version: string }) {
 	const propertyItems = useMemo(
 		() =>
 			item.members
-				.filter((member) => member.kind === ApiItemKind.Property)
+				.filter((member) => member.kind === ApiItemKind.Property || member.kind === ApiItemKind.PropertySignature)
 				.map((prop) => (
 					<Fragment key={prop.displayName}>
-						<CodeListing
+						<Property
 							item={prop as ApiPropertyItem}
 							parentKey={item.containerKey}
-							separator={CodeListingSeparatorType.Type}
+							separator={PropertySeparatorType.Type}
 							version={version}
 						/>
 						<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />

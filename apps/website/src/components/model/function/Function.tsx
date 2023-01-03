@@ -1,20 +1,32 @@
 'use server';
 
 import type { ApiFunctionJSON } from '@discordjs/api-extractor-utils';
+import type { ApiFunction } from '@microsoft/api-extractor-model';
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import { useState } from 'react';
 import { DocContainer } from '../../DocContainer';
-import { ParametersSection } from '../../Sections';
+import { OverloadSwitcher } from '../../OverloadSwitcher';
 import { FunctionBody } from './FunctionBody';
 import { Documentation } from '~/components/documentation/Documentation';
+import { Header } from '~/components/documentation/Header';
 
-export function Function({ data }: { data: ApiFunctionJSON }) {
-	// // TODO: Extract this into a client component
+export function Function({ item }: { item: ApiFunction }) {
 	// const [overloadIndex, setOverloadIndex] = useState(1);
 	// const overloadedData = data.mergedSiblings[overloadIndex - 1]!;
 	// const menu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
+
+	const overloads = item
+		.getMergedSiblings()
+		.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={idx} />);
+
+	return (
+		<div>
+			<Header kind={item.kind} name={item.name} />
+			<OverloadSwitcher overloads={overloads} />
+		</div>
+	);
 
 	// return (
 	// 	<DocContainer
@@ -66,5 +78,5 @@ export function Function({ data }: { data: ApiFunctionJSON }) {
 	// 	</DocContainer>
 	// );
 
-	return null;
+	// return null;
 }
