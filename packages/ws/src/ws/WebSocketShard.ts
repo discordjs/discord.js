@@ -87,8 +87,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly textDecoder = new TextDecoder();
 
-	private status: WebSocketShardStatus = WebSocketShardStatus.Idle;
-
 	private replayedEvents = 0;
 
 	private isAck = true;
@@ -107,6 +105,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	public readonly strategy: IContextFetchingStrategy;
 
+	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
+
+	public get status(): WebSocketShardStatus {
+		return this.#status;
+	}
+
 	public constructor(strategy: IContextFetchingStrategy, id: number) {
 		super();
 		this.strategy = strategy;
@@ -114,7 +118,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async connect() {
-		if (this.status !== WebSocketShardStatus.Idle) {
+		if (this.#status !== WebSocketShardStatus.Idle) {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
@@ -148,7 +152,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
 
-		this.status = WebSocketShardStatus.Connecting;
+		this.#status = WebSocketShardStatus.Connecting;
 
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
@@ -163,7 +167,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
-		if (this.status === WebSocketShardStatus.Idle) {
+		if (this.#status === WebSocketShardStatus.Idle) {
 			this.debug(['Tried to destroy a shard that was idle']);
 			return;
 		}
@@ -221,7 +225,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
 
-		this.status = WebSocketShardStatus.Idle;
+		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
 			return this.connect();
@@ -248,7 +252,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("WebSocketShard wasn't connected");
 		}
 
-		if (this.status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
+		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
 			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
 			await once(this, WebSocketShardEvents.Ready);
 		}
@@ -320,12 +324,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		});
 
 		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
-		this.status = WebSocketShardStatus.Ready;
+		this.#status = WebSocketShardStatus.Ready;
 	}
 
 	private async resume(session: SessionInfo) {
 		this.debug(['Resuming session']);
-		this.status = WebSocketShardStatus.Resuming;
+		this.#status = WebSocketShardStatus.Resuming;
 		this.replayedEvents = 0;
 		return this.send({
 			op: GatewayOpcodes.Resume,
@@ -420,7 +424,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
-				if (this.status === WebSocketShardStatus.Resuming) {
+				if (this.#status === WebSocketShardStatus.Resuming) {
 					this.replayedEvents++;
 				}
 
@@ -442,7 +446,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					}
 
 					case GatewayDispatchEvents.Resumed: {
-						this.status = WebSocketShardStatus.Ready;
+						this.#status = WebSocketShardStatus.Ready;
 						this.debug([`Resumed and replayed ${this.replayedEvents} events`]);
 						this.emit(WebSocketShardEvents.Resumed);
 						break;
