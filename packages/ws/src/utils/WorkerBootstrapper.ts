@@ -42,6 +42,12 @@ export class WorkerBootstrapper {
 	 */
 	protected readonly shards = new Collection<number, WebSocketShard>();
 
+	public constructor() {
+		if (isMainThread) {
+			throw new Error('Expected WorkerBootstrap to not be used within the main thread');
+		}
+	}
+
 	/**
 	 * Helper method to initiate a shard's connection process
 	 */
@@ -138,16 +144,10 @@ export class WorkerBootstrapper {
 	 * Bootstraps the worker thread with the provided options
 	 */
 	public async bootstrap(options: BootstrapOptions = {}): Promise<void> {
-		options.forwardEvents ??= Object.values(WebSocketShardEvents);
-
-		if (isMainThread) {
-			throw new Error('Expected WorkerBootstrap to not be used within the main thread');
-		}
-
 		// Start by initializing the shards
 		for (const shardId of this.data.shardIds) {
 			const shard = new WebSocketShard(new WorkerContextFetchingStrategy(this.data), shardId);
-			for (const event of options.forwardEvents) {
+			for (const event of (options.forwardEvents ??= Object.values(WebSocketShardEvents))) {
 				// @ts-expect-error: Event types incompatible
 				shard.on(event, (data) => {
 					const payload = {
