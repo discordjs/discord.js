@@ -5,8 +5,8 @@ import type { PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
 import { Header } from '~/components/Header';
 import { Nav } from '~/components/Nav';
+import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveURI } from '~/components/documentation/util';
-import type { SidebarSectionItemData } from '~/components/sidebar/SidebarSection';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 
 export interface Params {

@@ -2,9 +2,9 @@
 
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { PackageSelect } from './PackageSelect';
-import { SidebarItems } from './SidebarItems';
+import { Sidebar } from './Sidebar';
+import type { SidebarSectionItemData } from './Sidebar';
 import { VersionSelect } from './VersionSelect';
-import type { SidebarSectionItemData } from './sidebar/SidebarSection';
 import { useNav } from '~/contexts/nav';
 
 export function Nav({ members }: { members: SidebarSectionItemData[] }) {
@@ -30,7 +30,7 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 					<PackageSelect />
 					<VersionSelect />
 				</div>
-				<SidebarItems members={members} />
+				<Sidebar members={members} />
 			</Scrollbars>
 		</nav>
 	);
