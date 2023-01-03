@@ -24,14 +24,6 @@
 		"./defaultWorker": {
 			"import": "./dist/defaultWorker.mjs",
 			"require": "./dist/defaultWorker.js"
-		},
-		"./defaultWorker.js": {
-			"import": "./dist/defaultWorker.mjs",
-			"require": "./dist/defaultWorker.js"
-		},
-		"./defaultWorker.mjs": {
-			"import": "./dist/defaultWorker.mjs",
-			"require": "./dist/defaultWorker.js"
 		}
 	},
 	"directories": {
