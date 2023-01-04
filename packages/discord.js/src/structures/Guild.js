@@ -5,7 +5,6 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -700,7 +699,8 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to fetch audit logs.
    * @typedef {Object} GuildAuditLogsFetchOptions
-   * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
    * @property {number} [limit] The number of entries to return
    * @property {UserResolvable} [user] Only return entries for actions made by this user
    * @property {?AuditLogEvent} [type] Only return entries for this action type
@@ -716,19 +716,21 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
+  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
+    const resolvedBefore = before?.id ?? before;
+    const resolvedAfter = after?.id ?? after;
 
     const query = makeURLSearchParams({
-      before: options.before,
-      limit: options.limit,
-      action_type: options.type,
+      before: resolvedBefore,
+      after: resolvedAfter,
+      limit,
+      action_type: type,
     });
 
-    if (options.user) {
-      const id = this.client.users.resolveId(options.user);
-      if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
-      query.set('user_id', id);
+    if (user) {
+      const userId = this.client.users.resolveId(user);
+      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      query.set('user_id', userId);
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
