@@ -1,47 +1,15 @@
-'use server';
-
-import { genLinkToken } from '@discordjs/api-extractor-utils';
 import type { ApiItem } from '@microsoft/api-extractor-model';
-import type {
-	DocBlock,
-	DocComment,
-	DocFencedCode,
-	DocLinkTag,
-	DocNode,
-	DocNodeContainer,
-	DocPlainText,
-} from '@microsoft/tsdoc';
+import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, DocPlainText } from '@microsoft/tsdoc';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
-import { BlockComment } from './BlockComment';
+import { resolveURI } from '../util';
+import { DeprecatedBlock, ExampleBlock, RemarksBlock, SeeBlock } from './BlockComment';
 
-function resolvePath(item: ApiItem, link: DocLinkTag) {
-	const packageEntryPoint = link.codeDestination?.importPath
-		? item.getAssociatedModel()!.getAssociatedPackage()?.findEntryPointsByPath(link.codeDestination.importPath)[0]
-		: null;
-
-	// TODO Handle version
-	const codeDestination = link.codeDestination
-		? genLinkToken(item.getAssociatedModel()!, link.codeDestination, packageEntryPoint ?? null, ' ')
-		: null;
-	const text = link.linkText ?? null;
-	const urlDestination = link.urlDestination ?? null;
-
-	return {
-		text,
-		codeDestination,
-		urlDestination,
-	};
-}
-
-export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
+export function TSDoc({ item, tsdoc, version }: { item: ApiItem; tsdoc: DocNode; version: string }): JSX.Element {
 	const createNode = useCallback(
 		(tsdoc: DocNode, idx?: number): ReactNode => {
-			let numberOfExamples = 0;
-			let exampleIndex = 0;
-
 			switch (tsdoc.kind) {
 				case DocNodeKind.PlainText:
 					return (
@@ -49,6 +17,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 							{(tsdoc as DocPlainText).text}
 						</span>
 					);
+				case DocNodeKind.Section:
 				case DocNodeKind.Paragraph:
 					return (
 						<span className="break-words leading-relaxed" key={idx}>
@@ -58,16 +27,22 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 				case DocNodeKind.SoftBreak:
 					return <Fragment key={idx} />;
 				case DocNodeKind.LinkTag: {
-					const { codeDestination, urlDestination, text } = resolvePath(item, tsdoc as DocLinkTag);
+					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
 
 					if (codeDestination) {
+						const foundItem = item
+							.getAssociatedModel()
+							?.resolveDeclarationReference(codeDestination, item).resolvedApiItem;
+
+						if (!foundItem) return null;
+
 						return (
 							<Link
 								className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
-								href={codeDestination.path}
+								href={resolveURI(foundItem, version)}
 								key={idx}
 							>
-								{text ?? codeDestination.name}
+								{linkText ?? foundItem.displayName}
 							</Link>
 						);
 					}
@@ -79,7 +54,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 								href={urlDestination}
 								key={idx}
 							>
-								{text ?? urlDestination}
+								{linkText ?? urlDestination}
 							</Link>
 						);
 					}
@@ -101,36 +76,28 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 					return <SyntaxHighlighter code={code} key={idx} language={language} />;
 				}
 
-				case DocNodeKind.ParamBlock:
-				case DocNodeKind.Block: {
-					const { blockTag: tag } = tsdoc as DocBlock;
-
-					if (tag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase) {
-						exampleIndex++;
-					}
-
-					const index = numberOfExamples > 1 ? exampleIndex : undefined;
-
-					return (
-						<BlockComment index={index} key={idx} tagName={tag.tagName}>
-							{createNode((tsdoc as DocBlock).content)}
-						</BlockComment>
-					);
-				}
-
 				case DocNodeKind.Comment: {
 					const comment = tsdoc as DocComment;
 
-					if (!comment.customBlocks.length) {
-						return null;
-					}
-
-					// Cheat a bit by finding out how many comments we have beforehand...
-					numberOfExamples = comment.customBlocks.filter(
+					const exampleBlocks = comment.customBlocks.filter(
 						(block) => block.blockTag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
-					).length;
+					);
 
-					return <div key={idx}>{comment.customBlocks.map((node, idx) => createNode(node, idx))}</div>;
+					return (
+						<div className="flex flex-col space-y-2">
+							{comment.deprecatedBlock ? (
+								<DeprecatedBlock>{createNode(comment.deprecatedBlock.content)}</DeprecatedBlock>
+							) : null}
+							{comment.summarySection ? createNode(comment.summarySection) : null}
+							{comment.remarksBlock ? <RemarksBlock>{createNode(comment.remarksBlock.content)}</RemarksBlock> : null}
+							{exampleBlocks.length
+								? exampleBlocks.map((block, idx) => <ExampleBlock key={idx}>{createNode(block.content)}</ExampleBlock>)
+								: null}
+							{comment.seeBlocks.length ? (
+								<SeeBlock>{comment.seeBlocks.map((seeBlock, idx) => createNode(seeBlock.content, idx))}</SeeBlock>
+							) : null}
+						</div>
+					);
 				}
 
 				default:
@@ -138,7 +105,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 					return null;
 			}
 		},
-		[item],
+		[item, version],
 	);
 
 	return (

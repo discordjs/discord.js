@@ -23,6 +23,7 @@ export function genLinkToken(
 ): LinkTagCodeLink | null {
 	const item = model.resolveDeclarationReference(ref, context ?? undefined).resolvedApiItem ?? null;
 
+	console.log(item);
 	if (!item) {
 		return null;
 	}

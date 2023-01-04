@@ -9,13 +9,13 @@ import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 
-export interface Params {
+export interface VersionRouteParams {
 	package: string;
 	version: string;
 }
 
 export async function generateStaticParams() {
-	const params: Params[] = [];
+	const params: VersionRouteParams[] = [];
 
 	await Promise.all(
 		PACKAGES.map(async (packageName) => {
@@ -37,7 +37,7 @@ function serializeIntoSidebarItemData(item: ApiItem, version: string): SidebarSe
 	};
 }
 
-export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: Params }>) {
+export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
 	const model = createApiModel(modelJSON);
 
@@ -59,7 +59,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 		<div>
 			<Header />
 			<Nav members={members.map((member) => serializeIntoSidebarItemData(member, params.version))} />
-			{children}
+			<div className="pt-18 lg:pl-76">{children}</div>
 		</div>
 	);
 }

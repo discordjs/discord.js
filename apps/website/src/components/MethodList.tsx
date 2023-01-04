@@ -12,7 +12,7 @@ function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	);
 }
 
-export function MethodList({ item }: { item: ApiItemContainerMixin }) {
+export function MethodList({ item, version }: { item: ApiItemContainerMixin; version: string }) {
 	const methodItems = useMemo(
 		() =>
 			item.members.filter(isMethodLike).map((method) => (
@@ -21,11 +21,11 @@ export function MethodList({ item }: { item: ApiItemContainerMixin }) {
 						method.overloadIndex && method.overloadIndex > 1 ? `:${(method as ApiMethod).overloadIndex}` : ''
 					}`}
 				>
-					<Method method={method} />
+					<Method method={method} version={version} />
 					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
 				</Fragment>
 			)),
-		[item.members],
+		[item.members, version],
 	);
 
 	return <div className="flex flex-col gap-4">{methodItems}</div>;

@@ -25,7 +25,7 @@ export function MemberContainerDocumentation({
 			<SummarySection item={item} />
 			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
 			{hasProperties(item) ? <PropertiesSection item={item} version={version} /> : null}
-			{hasMethods(item) ? <MethodsSection item={item} /> : null}
+			{hasMethods(item) ? <MethodsSection item={item} version={version} /> : null}
 
 			<Outline members={serializeMembers(item)} />
 		</Documentation>

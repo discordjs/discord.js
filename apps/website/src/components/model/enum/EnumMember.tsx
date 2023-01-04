@@ -16,7 +16,9 @@ export function EnumMember({ member, version }: { member: ApiEnumMember; version
 					version={version}
 				/>
 			</div>
-			{member.tsdocComment ? <TSDoc item={member} tsdoc={member.tsdocComment.summarySection} /> : null}
+			{member.tsdocComment ? (
+				<TSDoc item={member} tsdoc={member.tsdocComment.summarySection} version={version} />
+			) : null}
 		</div>
 	);
 }

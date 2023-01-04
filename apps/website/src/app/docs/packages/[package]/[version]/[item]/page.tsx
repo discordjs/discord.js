@@ -3,9 +3,11 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 // eslint-disable-next-line n/prefer-global/process
 import process, { cwd } from 'node:process';
+import { resolveDocComment } from '@discordjs/api-extractor-utils';
 import { createApiModel } from '@discordjs/scripts';
 import type {
 	ApiClass,
+	ApiDeclaredItem,
 	ApiEnum,
 	ApiInterface,
 	ApiItem,
@@ -24,39 +26,32 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import { PACKAGES } from '~/util/constants';
+import { DESCRIPTION, OVERLOAD_SEPARATOR, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
-// import { tryResolveDescription } from '~/util/summary';
 
-export async function generateStaticParams({ params }: { params?: { package: string; version: string } }) {
-	const packageName = params?.package ?? 'builders';
-	const version = params?.version ?? 'main';
+export interface ItemRouteParams {
+	item: string;
+	package: string;
+	version: string;
+}
 
+export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
 	const model = createApiModel(modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
-
-	if (!pkg) {
-		return notFound();
-	}
-
-	const entry = pkg.entryPoints[0];
+	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
 		return notFound();
 	}
 
-	const { members } = entry;
-
-	return members.map((member) => ({
+	return entry.members.map((member) => ({
 		item: member.displayName,
 	}));
 }
 
-async function getData(params: { item: string; package: string; version: string }) {
-	const { package: packageName, version: branchName = 'main', item } = params;
-
+async function getData({ package: packageName, version: branchName = 'main', item }: ItemRouteParams) {
 	if (!PACKAGES.includes(packageName)) {
 		notFound();
 	}
@@ -74,24 +69,23 @@ async function getData(params: { item: string; package: string; version: string 
 		notFound();
 	}
 
-	const [memberName, overloadIndex] = item?.split('%3A') ?? [];
-
+	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
 	const model = createApiModel(data);
 
 	// eslint-disable-next-line prefer-const
-	let { containerKey, displayName: name } = findMember(model, packageName, memberName, branchName) ?? {};
+	let { containerKey, displayName: name } = findMember(model, packageName, memberName) ?? {};
 	if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
 		containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 	}
 
-	const foundMember =
-		memberName && containerKey ? findMemberByKey(model, packageName, containerKey, branchName) ?? null : null;
-	// const description = foundMember ? tryResolveDescription(foundMember) ?? DESCRIPTION : DESCRIPTION;
+	const foundMember = memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
+	const description = foundMember ? resolveDocComment(foundMember as ApiDeclaredItem) ?? DESCRIPTION : DESCRIPTION;
 
 	return {
 		packageName,
 		branchName,
 		member: foundMember,
+		description,
 		members:
 			model
 				.tryGetPackageByName(packageName)
@@ -100,44 +94,6 @@ async function getData(params: { item: string; package: string; version: string 
 				) ?? [],
 	};
 }
-
-// function resolveMember(packageName?: string | undefined, member?: SidebarLayoutProps['data']['member']) {
-// 	switch (member?.kind) {
-// 		case 'Class': {
-// 			const typedMember = member as ApiClassJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&methods=${typedMember.methods.length}&props=${typedMember.properties.length}`;
-// 		}
-
-// 		case 'Function': {
-// 			const typedMember = member as ApiFunctionJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
-// 		}
-
-// 		case 'Interface': {
-// 			const typedMember = member as ApiInterfaceJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&methods=${typedMember.methods.length}&props=${typedMember.properties.length}`;
-// 		}
-
-// 		case 'TypeAlias': {
-// 			const typedMember = member as ApiTypeAliasJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
-// 		}
-
-// 		case 'Variable': {
-// 			const typedMember = member as ApiVariableJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}`;
-// 		}
-
-// 		case 'Enum': {
-// 			const typedMember = member as ApiEnumJSON;
-// 			return `?pkg=${packageName}&kind=${typedMember.kind}&name=${typedMember.name}&members=${typedMember.members.length}`;
-// 		}
-
-// 		default: {
-// 			return `?pkg=${packageName}&kind=${member?.kind}&name=${member?.name}`;
-// 		}
-// 	}
-// }
 
 function member(version: string, props?: ApiItem) {
 	switch (props?.kind) {
@@ -187,12 +143,12 @@ export default async function Page({ params }: { params: { item: string; package
 				<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 			</Head> */}
 			<main
-				className={`pt-18 lg:pl-76 ${
+				className={
 					(data?.member?.kind === 'Class' || data?.member?.kind === 'Interface') &&
 					(data.member as ApiClass | ApiInterface).members.length
 						? 'xl:pr-64'
 						: ''
-				}`}
+				}
 			>
 				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="dark:bg-dark-800 relative z-10 min-h-[calc(100vh_-_70px)] bg-white p-6 pb-20 shadow">

@@ -66,9 +66,7 @@ export function Property({
 			</div>
 			{hasSummary || isInherited ? (
 				<div className="mb-4 flex flex-col gap-4">
-					{item.tsdocComment?.deprecatedBlock ? <TSDoc item={item} tsdoc={item.tsdocComment.deprecatedBlock} /> : null}
-					{item.tsdocComment?.summarySection ? <TSDoc item={item} tsdoc={item.tsdocComment.summarySection} /> : null}
-					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
+					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} version={version} /> : null}
 					{isInherited ? (
 						<InheritanceText
 							parentKey={item.parent!.containerKey}

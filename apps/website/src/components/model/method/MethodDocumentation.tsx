@@ -9,9 +9,15 @@ export interface MethodDocumentationProps {
 	fallbackSummary?: DocSection;
 	method: ApiMethod | ApiMethodSignature;
 	parentContainerKey?: string;
+	version: string;
 }
 
-export function MethodDocumentation({ method, fallbackSummary, parentContainerKey }: MethodDocumentationProps) {
+export function MethodDocumentation({
+	method,
+	fallbackSummary,
+	parentContainerKey,
+	version,
+}: MethodDocumentationProps) {
 	const isInherited = parentContainerKey && method.parent?.containerKey !== parentContainerKey;
 
 	if (!(method.tsdocComment?.summarySection || method.parameters.length > 0)) {
@@ -20,23 +26,13 @@ export function MethodDocumentation({ method, fallbackSummary, parentContainerKe
 
 	return (
 		<div className="mb-4 flex flex-col gap-4">
-			{method.tsdocComment?.deprecatedBlock ? (
-				<TSDoc item={method} tsdoc={method.tsdocComment.deprecatedBlock} />
-			) : null}
-			{method.tsdocComment?.summarySection ?? fallbackSummary ? (
-				<TSDoc item={method} tsdoc={method.tsdocComment?.summarySection ?? fallbackSummary!} />
-			) : null}
-			{method.tsdocComment?.remarksBlock ? (
-				<TSDoc item={method} tsdoc={method.tsdocComment.remarksBlock.content} />
-			) : null}
-			{method.tsdocComment ? <TSDoc item={method} tsdoc={method.tsdocComment} /> : null}
+			{method.tsdocComment ? <TSDoc item={method} tsdoc={method.tsdocComment} version={version} /> : null}
 			{method.parameters.length ? <ParameterTable item={method} /> : null}
 			{isInherited ? (
-				// TODO: Version
 				<InheritanceText
 					parentKey={method.parent!.containerKey}
 					parentName={method.parent!.displayName}
-					path={generatePath(method.getHierarchy(), '')}
+					path={generatePath(method.getHierarchy(), version)}
 				/>
 			) : null}
 		</div>

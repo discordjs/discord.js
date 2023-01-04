@@ -47,7 +47,7 @@ export function resolveURI(item: ApiItem, version: string): string {
 			item.kind,
 		)
 	) {
-		path += `#${item.displayName}`;
+		path += `${item.parent ? `/${item.parent.displayName}` : ''}#${item.displayName}`;
 	} else {
 		path += `/${item.displayName}:${item.kind}`;
 	}
