@@ -717,12 +717,9 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchAuditLogs({ before, after, limit, user, type } = {}) {
-    const resolvedBefore = before?.id ?? before;
-    const resolvedAfter = after?.id ?? after;
-
     const query = makeURLSearchParams({
-      before: resolvedBefore,
-      after: resolvedAfter,
+      before: before?.id ?? before,
+      after: after?.id ?? after,
       limit,
       action_type: type,
     });
