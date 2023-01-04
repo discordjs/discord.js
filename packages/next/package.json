@@ -1,7 +1,7 @@
 {
 	"name": "@discordjs/next",
 	"version": "0.1.0",
-	"description": "A powerful typescript library for interacting with the Discord API",
+	"description": "A powerful TypeScript library for interacting with the Discord API",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
