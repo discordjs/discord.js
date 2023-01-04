@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/core",
-	"version": "0.1.0",
+	"version": "0.3.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",
@@ -48,7 +48,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"@vladfrangu/async_event_emitter": "^2.1.2",
-		"discord-api-types": "^0.37.20"
+		"discord-api-types": "^0.37.23"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.9.0",

@@ -185,7 +185,7 @@ function escapeItalic(text) {
     return `\\*${match}`;
   });
   i = 0;
-  return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+  return text.replace(/(?<=^|[^_])(?<!<a?:.+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
     if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
     return `\\_${match}`;
   });
@@ -211,7 +211,7 @@ function escapeBold(text) {
  */
 function escapeUnderline(text) {
   let i = 0;
-  return text.replace(/__(_)?/g, (_, match) => {
+  return text.replace(/(?<!<a?:.+)__(_)?(?!:\d+>)/g, (_, match) => {
     if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
     return '\\_\\_';
   });
@@ -477,13 +477,14 @@ function resolveColor(color) {
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
+    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    color = Colors[color];
   } else if (Array.isArray(color)) {
     color = (color[0] << 16) + (color[1] << 8) + color[2];
   }
 
   if (color < 0 || color > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
-  else if (Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
+  if (typeof color !== 'number' || Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
 
   return color;
 }
@@ -607,6 +608,10 @@ module.exports = {
   escapeUnderline,
   escapeStrikethrough,
   escapeSpoiler,
+  escapeHeading,
+  escapeBulletedList,
+  escapeNumberedList,
+  escapeMaskedLink,
   fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,

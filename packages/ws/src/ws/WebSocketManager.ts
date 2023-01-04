@@ -264,11 +264,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 			if (Array.isArray(this.options.shardIds)) {
 				shardIds = this.options.shardIds;
 			} else {
-				shardIds = range(this.options.shardIds.start, this.options.shardIds.end);
+				const { start, end } = this.options.shardIds;
+				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
 			const data = await this.fetchGatewayInformation();
-			shardIds = range(0, (this.options.shardCount ?? data.shards) - 1);
+			shardIds = [...range(this.options.shardCount ?? data.shards)];
 		}
 
 		this.shardIds = shardIds;

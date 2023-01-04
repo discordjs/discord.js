@@ -126,7 +126,7 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookCreateMessageOptions
+   * @typedef {BaseMessageOptions} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
@@ -139,7 +139,7 @@ class Webhook {
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {BaseMessageOptions} WebhookEditMessageOptions
+   * @typedef {BaseMessageOptions} WebhookMessageEditOptions
    * @property {Attachment[]} [attachments] Attachments to send with the message
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
@@ -156,7 +156,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookCreateMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageCreateOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message
@@ -261,7 +261,7 @@ class Webhook {
 
   /**
    * Options used to edit a {@link Webhook}.
-   * @typedef {Object} WebhookEditData
+   * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
    * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
@@ -270,7 +270,7 @@ class Webhook {
 
   /**
    * Edits this webhook.
-   * @param {WebhookEditData} options Options for editing the webhook
+   * @param {WebhookEditOptions} options Options for editing the webhook
    * @returns {Promise<Webhook>}
    */
   async edit({ name = this.name, avatar, channel, reason }) {
@@ -322,7 +322,7 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {

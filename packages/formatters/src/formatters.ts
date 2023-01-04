@@ -415,7 +415,7 @@ export const TimestampStyles = {
 	 * Relative time format, consisting of a relative duration format, e.g. 2 months ago
 	 */
 	RelativeTime: 'R',
-} as const;
+} as const satisfies Record<string, string>;
 
 /**
  * The possible values, see {@link TimestampStyles} for more information

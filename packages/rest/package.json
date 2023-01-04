@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/rest",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
@@ -56,7 +56,7 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.37.20",
+		"discord-api-types": "^0.37.23",
 		"file-type": "^18.0.0",
 		"tslib": "^2.4.1",
 		"undici": "^5.13.0"

@@ -30,7 +30,7 @@ class DMChannel extends BaseChannel {
     super._patch(data);
 
     if (data.recipients) {
-      const recipient = data.recipients[0];
+      const recipient = data.recipients.find(user => user.id !== this.client.user.id);
 
       /**
        * The recipient's id

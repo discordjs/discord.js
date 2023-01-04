@@ -30,10 +30,16 @@ yarn add @discordjs/ws
 pnpm add @discordjs/ws
 ```
 
+### Optional packages
+
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
+
 ## Example usage
 
 ```ts
-import { WebSocketManager } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -42,6 +48,10 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
 	rest,
+});
+
+manager.on(WebSocketShardEvents.Dispatch, (event) => {
+	// Process gateway events here.
 });
 
 await manager.connect();

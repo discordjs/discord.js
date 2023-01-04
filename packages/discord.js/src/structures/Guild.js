@@ -737,30 +737,29 @@ class Guild extends AnonymousGuild {
 
   /**
    * The data for editing a guild.
-   * @typedef {Object} GuildEditData
+   * @typedef {Object} GuildEditOptions
    * @property {string} [name] The name of the guild
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
+   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
+   * notification level of the guild
    * @property {?GuildExplicitContentFilter} [explicitContentFilter] The level of the explicit content filter
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
-   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
-   * notification level of the guild
+   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {?string} [preferredLocale] The preferred locale of the guild
-   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
-   * @property {?string} [description] The discovery description of the guild
    * @property {GuildFeature[]} [features] The features of the guild
+   * @property {?string} [description] The discovery description of the guild
+   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [reason] Reason for editing this guild
    */
-  /* eslint-enable max-len */
 
   /**
    * Data that can be resolved to a Text Channel object. This can be:
@@ -778,7 +777,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Updates the guild with new information - e.g. a new name.
-   * @param {GuildEditData} data The data to update the guild with
+   * @param {GuildEditOptions} options The options to provide
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name
@@ -788,51 +787,52 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  async edit(data) {
-    const _data = {};
-    if (data.name) _data.name = data.name;
-    if (typeof data.verificationLevel !== 'undefined') {
-      _data.verification_level = data.verificationLevel;
-    }
-    if (typeof data.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.channels.resolveId(data.afkChannel);
-    }
-    if (typeof data.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.channels.resolveId(data.systemChannel);
-    }
-    if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (typeof data.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(data.icon);
-    if (data.owner) _data.owner_id = this.client.users.resolveId(data.owner);
-    if (typeof data.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(data.splash);
-    if (typeof data.discoverySplash !== 'undefined') {
-      _data.discovery_splash = await DataResolver.resolveImage(data.discoverySplash);
-    }
-    if (typeof data.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(data.banner);
-    if (typeof data.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = data.explicitContentFilter;
-    }
-    if (typeof data.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications = data.defaultMessageNotifications;
-    }
-    if (typeof data.systemChannelFlags !== 'undefined') {
-      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(data.systemChannelFlags);
-    }
-    if (typeof data.rulesChannel !== 'undefined') {
-      _data.rules_channel_id = this.client.channels.resolveId(data.rulesChannel);
-    }
-    if (typeof data.publicUpdatesChannel !== 'undefined') {
-      _data.public_updates_channel_id = this.client.channels.resolveId(data.publicUpdatesChannel);
-    }
-    if (typeof data.features !== 'undefined') {
-      _data.features = data.features;
-    }
-    if (typeof data.description !== 'undefined') {
-      _data.description = data.description;
-    }
-    if (typeof data.preferredLocale !== 'undefined') _data.preferred_locale = data.preferredLocale;
-    if ('premiumProgressBarEnabled' in data) _data.premium_progress_bar_enabled = data.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: data.reason });
-    return this.client.actions.GuildUpdate.handle(newData).updated;
+  async edit({
+    verificationLevel,
+    defaultMessageNotifications,
+    explicitContentFilter,
+    afkChannel,
+    afkTimeout,
+    icon,
+    owner,
+    splash,
+    discoverySplash,
+    banner,
+    systemChannel,
+    systemChannelFlags,
+    rulesChannel,
+    publicUpdatesChannel,
+    preferredLocale,
+    premiumProgressBarEnabled,
+    ...options
+  }) {
+    const data = await this.client.rest.patch(Routes.guild(this.id), {
+      body: {
+        ...options,
+        verification_level: verificationLevel,
+        default_message_notifications: defaultMessageNotifications,
+        explicit_content_filter: explicitContentFilter,
+        afk_channel_id: afkChannel && this.client.channels.resolveId(afkChannel),
+        afk_timeout: afkTimeout,
+        icon: icon && (await DataResolver.resolveImage(icon)),
+        owner_id: owner && this.client.users.resolveId(owner),
+        splash: splash && (await DataResolver.resolveImage(splash)),
+        discovery_splash: discoverySplash && (await DataResolver.resolveImage(discoverySplash)),
+        banner: banner && (await DataResolver.resolveImage(banner)),
+        system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
+        system_channel_flags:
+          typeof systemChannelFlags === 'undefined'
+            ? undefined
+            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+        rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
+        public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
+        preferred_locale: preferredLocale,
+        premium_progress_bar_enabled: premiumProgressBarEnabled,
+      },
+      reason: options.reason,
+    });
+
+    return this.client.actions.GuildUpdate.handle(data).updated;
   }
 
   /**
@@ -845,7 +845,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Welcome screen edit data
-   * @typedef {Object} WelcomeScreenEditData
+   * @typedef {Object} WelcomeScreenEditOptions
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
@@ -869,7 +869,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Updates the guild's welcome screen
-   * @param {WelcomeScreenEditData} data Data to edit the welcome screen with
+   * @param {WelcomeScreenEditOptions} options The options to provide
    * @returns {Promise<WelcomeScreen>}
    * @example
    * guild.editWelcomeScreen({
@@ -883,8 +883,8 @@ class Guild extends AnonymousGuild {
    *   ],
    * })
    */
-  async editWelcomeScreen(data) {
-    const { enabled, description, welcomeChannels } = data;
+  async editWelcomeScreen(options) {
+    const { enabled, description, welcomeChannels } = options;
     const welcome_channels = welcomeChannels?.map(welcomeChannelData => {
       const emoji = this.emojis.resolve(welcomeChannelData.emoji);
       return {
@@ -905,7 +905,6 @@ class Guild extends AnonymousGuild {
     return new WelcomeScreen(this, patchData);
   }
 
-  /* eslint-disable max-len */
   /**
    * Edits the level of the explicit content filter.
    * @param {?GuildExplicitContentFilter} explicitContentFilter The new level of the explicit content filter
@@ -918,14 +917,14 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications The new default message notification level of the guild
+   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications
+   * The new default message notification level of the guild
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications, reason });
   }
-  /* eslint-enable max-len */
 
   /**
    * Edits the flags of the default message notifications of the guild.

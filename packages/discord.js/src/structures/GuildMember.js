@@ -307,11 +307,11 @@ class GuildMember extends Base {
 
   /**
    * Edits this member.
-   * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.guild.members.edit(this, data);
+  edit(options) {
+    return this.guild.members.edit(this, options);
   }
 
   /**

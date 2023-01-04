@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.4.0...@discordjs/rest@1.5.0) - (2022-12-16)
+
+## Features
+
+- **core:** Add support for role connections (#8930) ([3d6fa24](https://github.com/discordjs/discord.js/commit/3d6fa248c07b2278504bbe8bafa17a3294971fd9))
+
 # [@discordjs/rest@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.3.0...@discordjs/rest@1.4.0) - (2022-11-28)
 
 ## Bug Fixes

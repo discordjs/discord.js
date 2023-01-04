@@ -88,6 +88,7 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationRoleConnectionMetadata = require('./structures/ApplicationRoleConnectionMetadata');
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
 exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
 exports.AutoModerationRule = require('./structures/AutoModerationRule');
@@ -206,5 +207,6 @@ exports.WebSocket = require('./WebSocket');
 // External
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);
+__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);

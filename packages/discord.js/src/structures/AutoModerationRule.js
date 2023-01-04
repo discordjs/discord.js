@@ -184,7 +184,7 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setKeywordFilter(keywordFilter, reason) {
-    return this.edit({ triggerMetadata: { keywordFilter }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, keywordFilter }, reason });
   }
 
   /**
@@ -195,7 +195,7 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setRegexPatterns(regexPatterns, reason) {
-    return this.edit({ triggerMetadata: { regexPatterns }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, regexPatterns }, reason });
   }
 
   /**
@@ -205,7 +205,7 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setPresets(presets, reason) {
-    return this.edit({ triggerMetadata: { presets }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, presets }, reason });
   }
 
   /**
@@ -215,7 +215,7 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setAllowList(allowList, reason) {
-    return this.edit({ triggerMetadata: { allowList }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, allowList }, reason });
   }
 
   /**
@@ -225,12 +225,12 @@ class AutoModerationRule extends Base {
    * @returns {Promise<AutoModerationRule>}
    */
   setMentionTotalLimit(mentionTotalLimit, reason) {
-    return this.edit({ triggerMetadata: { mentionTotalLimit }, reason });
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionTotalLimit }, reason });
   }
 
   /**
    * Sets the actions for this auto moderation rule.
-   * @param {AutoModerationActionOptions} actions The actions of this auto moderation rule
+   * @param {AutoModerationActionOptions[]} actions The actions of this auto moderation rule
    * @param {string} [reason] The reason for changing the actions of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

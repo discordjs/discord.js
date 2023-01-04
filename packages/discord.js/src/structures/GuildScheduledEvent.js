@@ -240,7 +240,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Options used to create an invite URL to a {@link GuildScheduledEvent}
-   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteURLOptions
+   * @typedef {InviteCreateOptions} GuildScheduledEventInviteURLCreateOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is
    * {@link GuildScheduledEventEntityType.External}, gets ignored otherwise</warn>
@@ -248,7 +248,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Creates an invite URL to this guild scheduled event.
-   * @param {CreateGuildScheduledEventInviteURLOptions} [options] The options to create the invite
+   * @param {GuildScheduledEventInviteURLCreateOptions} [options] The options to create the invite
    * @returns {Promise<string>}
    */
   async createInviteURL(options) {
