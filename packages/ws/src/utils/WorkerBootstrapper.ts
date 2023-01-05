@@ -54,7 +54,7 @@ export class WorkerBootstrapper {
 	protected async connect(shardId: number): Promise<void> {
 		const shard = this.shards.get(shardId);
 		if (!shard) {
-			throw new Error(`Shard ${shardId} does not exist`);
+			throw new RangeError(`Shard ${shardId} does not exist`);
 		}
 
 		await shard.connect();
@@ -66,7 +66,7 @@ export class WorkerBootstrapper {
 	protected async destroy(shardId: number, options?: WebSocketShardDestroyOptions): Promise<void> {
 		const shard = this.shards.get(shardId);
 		if (!shard) {
-			throw new Error(`Shard ${shardId} does not exist`);
+			throw new RangeError(`Shard ${shardId} does not exist`);
 		}
 
 		await shard.destroy(options);
@@ -106,7 +106,7 @@ export class WorkerBootstrapper {
 					case WorkerSendPayloadOp.Send: {
 						const shard = this.shards.get(payload.shardId);
 						if (!shard) {
-							throw new Error(`Shard ${payload.shardId} does not exist`);
+							throw new RangeError(`Shard ${payload.shardId} does not exist`);
 						}
 
 						await shard.send(payload.payload);
