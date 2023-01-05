@@ -1,11 +1,9 @@
-import { generatePath } from '@discordjs/api-extractor-utils';
-import type { ApiPropertyItem } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem, ApiPropertyItem } from '@microsoft/api-extractor-model';
 import type { PropsWithChildren } from 'react';
 import { Anchor } from './Anchor';
-import { HyperlinkedText } from './HyperlinkedText';
+import { ExcerptText } from './ExcerptText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
-import { tokenize } from './documentation/util';
 
 export enum PropertySeparatorType {
 	Type = ':',
@@ -17,12 +15,10 @@ export function Property({
 	children,
 	separator,
 	parentKey,
-	version,
 }: PropsWithChildren<{
 	item: ApiPropertyItem;
 	parentKey: string;
 	separator?: PropertySeparatorType;
-	version: string;
 }>) {
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
@@ -58,20 +54,17 @@ export function Property({
 					</h4>
 					<h4 className="font-mono text-lg font-bold">{separator}</h4>
 					<h4 className="break-all font-mono text-lg font-bold">
-						<HyperlinkedText
-							tokens={tokenize(item.getAssociatedModel()!, item.propertyTypeExcerpt.spannedTokens, version)}
-						/>
+						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
 					</h4>
 				</div>
 			</div>
 			{hasSummary || isInherited ? (
 				<div className="mb-4 flex flex-col gap-4">
-					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} version={version} /> : null}
+					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
 					{isInherited ? (
 						<InheritanceText
-							parentKey={item.parent!.containerKey}
-							parentName={item.parent!.displayName}
-							path={generatePath(item.getHierarchy(), version)}
+							extendsExcerpt={(item.parent as ApiDeclaredItem).excerpt}
+							model={item.getAssociatedModel()!}
 						/>
 					) : null}
 					{children}

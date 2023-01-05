@@ -8,7 +8,7 @@ import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
 import { Header } from '~/components/Header';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
-import { resolveURI } from '~/components/documentation/util';
+import { resolveItemURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 
 export interface VersionRouteParams {
@@ -30,11 +30,11 @@ export async function generateStaticParams() {
 	return params;
 }
 
-function serializeIntoSidebarItemData(item: ApiItem, version: string): SidebarSectionItemData {
+function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
 	return {
 		kind: item.kind,
 		name: item.displayName,
-		href: resolveURI(item, version),
+		href: resolveItemURI(item),
 		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
 	};
 }
@@ -60,7 +60,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 	return (
 		<div>
 			<Header />
-			<Nav members={members.map((member) => serializeIntoSidebarItemData(member, params.version))} />
+			<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
 			<article className="pt-18 lg:pl-76">
 				<div className="relative z-10 min-h-[calc(100vh_-_70px)]">{children}</div>
 				<div className="h-76 md:h-52" />

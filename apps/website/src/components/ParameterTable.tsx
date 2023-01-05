@@ -1,11 +1,8 @@
-'use server';
-
 import type { ApiParameterListMixin } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
-import { HyperlinkedText } from './HyperlinkedText';
+import { ExcerptText } from './ExcerptText';
 import { Table } from './Table';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
-import { tokenize } from './documentation/util';
 
 const columnStyles = {
 	Name: 'font-mono whitespace-nowrap',
@@ -17,9 +14,7 @@ export function ParameterTable({ item }: { item: ApiParameterListMixin }) {
 		() =>
 			item.parameters.map((param) => ({
 				Name: param.name,
-				Type: (
-					<HyperlinkedText tokens={tokenize(item.getAssociatedModel()!, param.parameterTypeExcerpt.spannedTokens)} />
-				),
+				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} model={item.getAssociatedModel()!} />,
 				Optional: param.isOptional ? 'Yes' : 'No',
 				Description: param.tsdocParamBlock ? <TSDoc item={item} tsdoc={param.tsdocParamBlock.content} /> : 'None',
 			})),

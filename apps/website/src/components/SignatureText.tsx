@@ -1,20 +1,10 @@
-import type { TokenDocumentation } from '@discordjs/api-extractor-utils';
-import type { ApiModel, ExcerptToken } from '@microsoft/api-extractor-model';
-import { HyperlinkedText } from './HyperlinkedText';
-import { tokenize } from './documentation/util';
+import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
+import { ExcerptText } from './ExcerptText';
 
-export function SignatureText({
-	tokens,
-	model,
-	version,
-}: {
-	model: ApiModel;
-	tokens: readonly ExcerptToken[];
-	version: string;
-}) {
+export function SignatureText({ excerpt, model }: { excerpt: Excerpt; model: ApiModel }) {
 	return (
 		<h4 className="break-all font-mono text-lg font-bold">
-			<HyperlinkedText tokens={tokenize(model, tokens, version)} />
+			<ExcerptText excerpt={excerpt} model={model} />
 		</h4>
 	);
 }

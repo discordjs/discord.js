@@ -8,11 +8,11 @@ import { PropertiesSection } from '../documentation/section/PropertiesSection';
 import { SummarySection } from '../documentation/section/SummarySection';
 import { hasMethods, hasProperties, serializeMembers } from '../documentation/util';
 
-export function Interface({ item, version }: { item: ApiInterface; version: string }) {
+export function Interface({ item }: { item: ApiInterface }) {
 	return (
 		<Documentation item={item}>
 			<SummarySection item={item} />
-			{hasProperties(item) ? <PropertiesSection item={item} version={version} /> : null}
+			{hasProperties(item) ? <PropertiesSection item={item} /> : null}
 			{hasMethods(item) ? <MethodsSection item={item} /> : null}
 			<Outline members={serializeMembers(item)} />
 		</Documentation>

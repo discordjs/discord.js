@@ -5,10 +5,10 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { SectionShell } from './SectionShell';
 import { PropertyList } from '~/components/PropertyList';
 
-export function PropertiesSection({ item, version }: { item: ApiItemContainerMixin; version: string }) {
+export function PropertiesSection({ item }: { item: ApiItemContainerMixin }) {
 	return (
 		<SectionShell icon={<VscSymbolProperty size={20} />} padded title="Properties">
-			<PropertyList item={item} version={version} />
+			<PropertyList item={item} />
 		</SectionShell>
 	);
 }

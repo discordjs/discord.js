@@ -1,6 +1,5 @@
-import { genToken } from '@discordjs/api-extractor-utils';
 import { type ApiClass, ApiItemKind } from '@microsoft/api-extractor-model';
-import { HyperlinkedText } from '../HyperlinkedText';
+import { ExcerptText } from '../ExcerptText';
 
 export function ExtendsText({ item }: { item: ApiClass }) {
 	if (item.kind === ApiItemKind.Class && !(item as ApiClass).extendsType) {
@@ -8,14 +7,16 @@ export function ExtendsText({ item }: { item: ApiClass }) {
 	}
 
 	const model = item.getAssociatedModel()!;
-	const extendsTokens =
-		(item as ApiClass).extendsType?.excerpt.spannedTokens.map((token) => genToken(model, token, ' ')) ?? [];
+
+	if (!item.extendsType) {
+		return null;
+	}
 
 	return (
 		<div className="flex flex-row place-items-center gap-4">
 			<h3 className="text-xl font-bold">Extends</h3>
 			<span className="break-all font-mono">
-				<HyperlinkedText tokens={extendsTokens} />
+				<ExcerptText excerpt={item.extendsType.excerpt} model={model} />
 			</span>
 		</div>
 	);

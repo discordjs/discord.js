@@ -1,18 +1,30 @@
-'use server';
+import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
+import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
+import { ItemLink } from './ItemLink';
+import { resolveItemURI } from './documentation/util';
 
-import type { InheritanceData } from '@discordjs/api-extractor-utils';
-import Link from 'next/link';
+export function InheritanceText({ extendsExcerpt, model }: { extendsExcerpt: Excerpt; model: ApiModel }) {
+	const parentTypeExcerpt = extendsExcerpt.spannedTokens.find((token) => token.kind === ExcerptTokenKind.Reference);
 
-export function InheritanceText({ path, parentName }: InheritanceData) {
+	if (!parentTypeExcerpt) {
+		return null;
+	}
+
+	const parentItem = model.resolveDeclarationReference(parentTypeExcerpt.canonicalReference!, model).resolvedApiItem;
+
+	if (!parentItem) {
+		return null;
+	}
+
 	return (
 		<span className="font-semibold">
 			Inherited from{' '}
-			<Link
+			<ItemLink
 				className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
-				href={path}
+				itemURI={resolveItemURI(parentItem)}
 			>
-				{parentName}
-			</Link>
+				{parentItem.displayName}
+			</ItemLink>
 		</span>
 	);
 }

@@ -4,10 +4,11 @@ import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
-import { resolveURI } from '../util';
+import { resolveItemURI } from '../util';
 import { DeprecatedBlock, ExampleBlock, RemarksBlock, SeeBlock } from './BlockComment';
+import { ItemLink } from '~/components/ItemLink';
 
-export function TSDoc({ item, tsdoc, version }: { item: ApiItem; tsdoc: DocNode; version: string }): JSX.Element {
+export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
 		(tsdoc: DocNode, idx?: number): ReactNode => {
 			switch (tsdoc.kind) {
@@ -37,13 +38,13 @@ export function TSDoc({ item, tsdoc, version }: { item: ApiItem; tsdoc: DocNode;
 						if (!foundItem) return null;
 
 						return (
-							<Link
+							<ItemLink
 								className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
-								href={resolveURI(foundItem, version)}
+								itemURI={resolveItemURI(foundItem)}
 								key={idx}
 							>
 								{linkText ?? foundItem.displayName}
-							</Link>
+							</ItemLink>
 						);
 					}
 
@@ -105,7 +106,7 @@ export function TSDoc({ item, tsdoc, version }: { item: ApiItem; tsdoc: DocNode;
 					return null;
 			}
 		},
-		[item, version],
+		[item],
 	);
 
 	return (

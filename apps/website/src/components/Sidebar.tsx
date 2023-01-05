@@ -10,6 +10,7 @@ import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { ItemLink } from './ItemLink';
 import { Section } from './Section';
 import { useNav } from '~/contexts/nav';
 
@@ -100,13 +101,13 @@ export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 				.map((group, idx) => (
 					<Section icon={resolveIcon(group)} key={idx} title={group}>
 						{groupItems[group].map((member, index) => (
-							<Link
+							<ItemLink
 								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
 									asPathWithoutQueryAndAnchor === member.href
 										? 'bg-blurple text-white'
 										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 								}`}
-								href={member.href}
+								itemURI={member.href}
 								key={index}
 								onClick={() => setOpened(false)}
 								title={member.name}
@@ -117,7 +118,7 @@ export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 										<span className="text-xs">{member.overloadIndex}</span>
 									) : null}
 								</div>
-							</Link>
+							</ItemLink>
 						))}
 					</Section>
 				))}

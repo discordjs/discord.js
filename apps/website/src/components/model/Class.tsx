@@ -11,7 +11,7 @@ import { SummarySection } from '../documentation/section/SummarySection';
 import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
 import { hasProperties, hasMethods, serializeMembers } from '../documentation/util';
 
-export function Class({ clazz, version }: { clazz: ApiClass; version: string }) {
+export function Class({ clazz }: { clazz: ApiClass }) {
 	const constructor = clazz.members.find((member) => member.kind === ApiItemKind.Constructor) as
 		| ApiConstructor
 		| undefined;
@@ -22,9 +22,9 @@ export function Class({ clazz, version }: { clazz: ApiClass; version: string }) 
 			<SyntaxHighlighter code={clazz.excerpt.text} />
 			<SummarySection item={clazz} />
 			{clazz.typeParameters.length ? <TypeParameterSection item={clazz} /> : null}
-			{constructor ? <ConstructorSection item={constructor} version={version} /> : null}
-			{hasProperties(clazz) ? <PropertiesSection item={clazz} version={version} /> : null}
-			{hasMethods(clazz) ? <MethodsSection item={clazz} version={version} /> : null}
+			{constructor ? <ConstructorSection item={constructor} /> : null}
+			{hasProperties(clazz) ? <PropertiesSection item={clazz} /> : null}
+			{hasMethods(clazz) ? <MethodsSection item={clazz} /> : null}
 
 			<Outline members={serializeMembers(clazz)} />
 		</Documentation>

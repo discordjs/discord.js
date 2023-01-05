@@ -4,8 +4,7 @@ import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-mod
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import { useCallback, useMemo } from 'react';
-import { HyperlinkedText } from '~/components/HyperlinkedText';
-import { tokenize } from '~/components/documentation/util';
+import { ExcerptText } from '~/components/ExcerptText';
 
 export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignature }) {
 	const isDeprecated = Boolean(method.tsdocComment?.deprecatedBlock);
@@ -62,7 +61,7 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 					<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(method)}</h4>
 					<h4 className="font-mono text-lg font-bold">:</h4>
 					<h4 className="break-all font-mono text-lg font-bold">
-						<HyperlinkedText tokens={tokenize(method.getAssociatedModel()!, method.returnTypeExcerpt.spannedTokens)} />
+						<ExcerptText excerpt={method.returnTypeExcerpt} model={method.getAssociatedModel()!} />
 					</h4>
 				</div>
 			</div>

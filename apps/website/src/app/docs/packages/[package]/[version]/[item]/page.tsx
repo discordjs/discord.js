@@ -76,20 +76,20 @@ async function fetchMember({ package: packageName, version: branchName = 'main',
 	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
 }
 
-function Member({ version, member }: { member?: ApiItem; version: string }) {
+function Member({ member }: { member?: ApiItem }) {
 	switch (member?.kind) {
 		case 'Class':
-			return <Class clazz={member as ApiClass} version={version} />;
+			return <Class clazz={member as ApiClass} />;
 		case 'Function':
 			return <Function item={member as ApiFunction} key={member.containerKey} />;
 		case 'Interface':
-			return <Interface item={member as ApiInterface} version={version} />;
+			return <Interface item={member as ApiInterface} />;
 		case 'TypeAlias':
 			return <TypeAlias item={member as ApiTypeAlias} />;
 		case 'Variable':
 			return <Variable item={member as ApiVariable} />;
 		case 'Enum':
-			return <Enum item={member as ApiEnum} version={version} />;
+			return <Enum item={member as ApiEnum} />;
 		default:
 			return <div>Cannot render that item type</div>;
 	}
@@ -97,7 +97,6 @@ function Member({ version, member }: { member?: ApiItem; version: string }) {
 
 export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
-	const { version } = params;
 
 	return (
 		<div>
@@ -111,7 +110,7 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 			>
 				<article className="dark:bg-dark-600 bg-light-600">
 					<div className="dark:bg-dark-800  bg-white p-6 pb-20 shadow">
-						{member ? <Member member={member} version={version} /> : null}
+						{member ? <Member member={member} /> : null}
 					</div>
 				</article>
 			</main>

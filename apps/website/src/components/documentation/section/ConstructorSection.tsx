@@ -4,10 +4,10 @@ import { TSDoc } from '../tsdoc/TSDoc';
 import { SectionShell } from './SectionShell';
 import { ParameterTable } from '~/components/ParameterTable';
 
-export function ConstructorSection({ item, version }: { item: ApiConstructor; version: string }) {
+export function ConstructorSection({ item }: { item: ApiConstructor }) {
 	return (
 		<SectionShell icon={<VscSymbolMethod size={20} />} padded title="Constructor">
-			{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} version={version} /> : null}
+			{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
 			<ParameterTable item={item} />
 		</SectionShell>
 	);
