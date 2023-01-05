@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Role connection metadata object for an application.
+ */
 class ApplicationRoleConnectionMetadata {
   constructor(data) {
     /**
