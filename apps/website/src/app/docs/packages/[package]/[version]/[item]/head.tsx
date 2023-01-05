@@ -84,7 +84,6 @@ export default async function Head({ params }: { params: ItemRouteParams }) {
 			<meta content={ogTitle} key="og_title" property="og:title" />
 			<meta content={description ?? ''} key="og_description" property="og:description" />
 			<meta content={ogImage} key="og_image" property="og:image" />
-			<meta content={`https://discordjs.dev/api/og_model${ogImage}`} key="og_image" property="og:image" />
 		</>
 	);
 }
