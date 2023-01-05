@@ -30,16 +30,25 @@ class CategoryChannel extends GuildChannel {
   /**
    * Options for creating a channel using {@link CategoryChannel#createChannel}.
    * @typedef {Object} CategoryCreateChannelOptions
+   * @property {string} [name] The name of the new channel
    * @property {ChannelType|number} [type='GUILD_TEXT'] The type of the new channel.
+   * @property {number} [position] Position of the new channel
    * @property {string} [topic] The topic for the new channel
    * @property {boolean} [nsfw] Whether the new channel is NSFW
    * @property {number} [bitrate] Bitrate of the new channel in bits (only voice)
    * @property {number} [userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites of the new channel
-   * @property {number} [position] Position of the new channel
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the new channel in seconds
-   * @property {string} [rtcRegion] The specific region of the new channel.
+   * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
+   * The default auto archive duration for all new threads in this channel
+   * @property {?string} [rtcRegion] The specific region of the new channel
+   * @property {?VideoQualityMode|number} [videoQualityMode] The camera video quality mode of the new channel
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the new channel
+   * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
+   * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
+   * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
+   * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the new channel
    * @property {string} [reason] Reason for creating the new channel
    */
 

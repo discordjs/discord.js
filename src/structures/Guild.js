@@ -569,7 +569,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?TextChannel}
+   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)}
    * @readonly
    */
   get widgetChannel() {

@@ -72,6 +72,18 @@ export const enum ChannelTypes {
   GUILD_PRIVATE_THREAD = 12,
   GUILD_STAGE_VOICE = 13,
   GUILD_DIRECTORY = 14,
+  GUILD_FORUM = 15,
+}
+
+export const enum SortOrderType {
+  LATEST_ACTIVITY = 1,
+  CREATION_DATE = 2,
+}
+
+export const enum ForumLayoutType {
+  NOT_SET = 0,
+  LIST_VIEW = 1,
+  GALLERY_VIEW = 2,
 }
 
 export const enum MessageTypes {

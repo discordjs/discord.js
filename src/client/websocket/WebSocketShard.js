@@ -578,14 +578,10 @@ class WebSocketShard extends EventEmitter {
     }
     this.wsCloseTimeout = setTimeout(() => {
       this.setWsCloseTimeout(-1);
-      this.debug(`[WebSocket] Close Emitted: ${this.closeEmitted}`);
+
       // Check if close event was emitted.
       if (this.closeEmitted) {
-        this.debug(
-          `[WebSocket] was closed. | WS State: ${
-            CONNECTION_STATE[this.connection?.readyState ?? WebSocket.CLOSED]
-          } | Close Emitted: ${this.closeEmitted}`,
-        );
+        this.debug(`[WebSocket] close was already emitted, assuming the connection was closed properly.`);
         // Setting the variable false to check for zombie connections.
         this.closeEmitted = false;
         return;
@@ -593,13 +589,17 @@ class WebSocketShard extends EventEmitter {
 
       this.debug(
         // eslint-disable-next-line max-len
-        `[WebSocket] did not close properly, assuming a zombie connection.\nEmitting close and reconnecting again.`,
+        `[WebSocket] Close Emitted: ${this.closeEmitted} | did not close properly, assuming a zombie connection.\nEmitting close and reconnecting again.`,
       );
 
-      this.emitClose();
-      // Setting the variable false to check for zombie connections.
-      this.closeEmitted = false;
-    }, time).unref();
+      if (this.connection) this._cleanupConnection();
+
+      this.emitClose({
+        code: 4009,
+        reason: 'Session time out.',
+        wasClean: false,
+      });
+    }, time);
   }
 
   /**
@@ -824,14 +824,11 @@ class WebSocketShard extends EventEmitter {
       this._emitDestroyed();
     }
 
-    if (this.connection?.readyState === WebSocket.CLOSING || this.connection?.readyState === WebSocket.CLOSED) {
-      this.closeEmitted = false;
-      this.debug(
-        `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
+    this.debug(
+      `[WebSocket] Adding a WebSocket close timeout to ensure a correct WS reconnect.
         Timeout: ${this.manager.client.options.closeTimeout}ms`,
-      );
-      this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
-    }
+    );
+    this.setWsCloseTimeout(this.manager.client.options.closeTimeout);
 
     // Step 2: Null the connection object
     this.connection = null;
