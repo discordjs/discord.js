@@ -70,4 +70,11 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		if (!shard) throw new Error(`Shard ${shardId} not found`);
 		return shard.send(payload);
 	}
+
+	/**
+	 * {@inheritDoc IShardingStrategy.fetchStatus}
+	 */
+	public async fetchStatus() {
+		return this.shards.mapValues((shard) => shard.status);
+	}
 }
