@@ -1,5 +1,3 @@
-'use server';
-
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { FiLink } from '@react-icons/all-files/fi/FiLink';

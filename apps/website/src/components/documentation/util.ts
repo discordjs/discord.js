@@ -1,21 +1,14 @@
-import { genToken } from '@discordjs/api-extractor-utils';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import type {
 	ApiItem,
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-	ApiModel,
 	ApiProperty,
 	ApiPropertySignature,
-	ExcerptToken,
 } from '@microsoft/api-extractor-model';
 import type { TableOfContentsSerialized } from '../TableOfContentItems';
 import { resolveMembers } from '~/util/members';
-
-export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[], version: string) {
-	return tokens.map((token) => genToken(model, token, version));
-}
 
 export function hasProperties(item: ApiItemContainerMixin) {
 	return resolveMembers(item, memberPredicate).some(
