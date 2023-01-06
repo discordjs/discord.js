@@ -2095,9 +2095,11 @@ __metadata:
   resolution: "@discordjs/core@workspace:packages/core"
   dependencies:
     "@discordjs/rest": "workspace:^"
+    "@discordjs/util": "workspace:^"
     "@discordjs/ws": "workspace:^"
     "@favware/cliff-jumper": ^1.9.0
     "@microsoft/api-extractor": ^7.33.6
+    "@sapphire/snowflake": ^3.3.0
     "@types/node": 16.18.4
     "@vitest/coverage-c8": ^0.25.3
     "@vladfrangu/async_event_emitter": ^2.1.2
@@ -3895,6 +3897,13 @@ __metadata:
   version: 3.2.2
   resolution: "@sapphire/snowflake@npm:3.2.2"
   checksum: 315fecef4738092c2a2f3509b132b811fcbfa6c98d5d45d951adaf3ca21608be69043bcc137cc6933a7c3e55cbdc066daa5bb484603e6575422b335445b59315
+  languageName: node
+  linkType: hard
+
+"@sapphire/snowflake@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "@sapphire/snowflake@npm:3.3.0"
+  checksum: 122bbe325d596d670650c5c037d7f80a85a280ef5d5170dcb11030252773defa0df76277bcd28e663abe9c206310dcc596e3be32666fc6c53dede2798c3109da
   languageName: node
   linkType: hard
 
