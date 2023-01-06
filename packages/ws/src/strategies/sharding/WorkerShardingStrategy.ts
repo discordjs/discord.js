@@ -5,7 +5,7 @@ import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from '../../ws/WebSocketShard';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy.js';
 
@@ -19,9 +19,11 @@ export enum WorkerSendPayloadOp {
 	Send,
 	SessionInfoResponse,
 	ShardCanIdentify,
+	FetchStatus,
 }
 
 export type WorkerSendPayload =
+	| { nonce: number; op: WorkerSendPayloadOp.FetchStatus; shardId: number }
 	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
 	| { nonce: number; op: WorkerSendPayloadOp.ShardCanIdentify }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
@@ -35,11 +37,13 @@ export enum WorkerRecievePayloadOp {
 	RetrieveSessionInfo,
 	UpdateSessionInfo,
 	WaitForIdentify,
+	FetchStatusResponse,
 }
 
 export type WorkerRecievePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
 	| { data: any; event: WebSocketShardEvents; op: WorkerRecievePayloadOp.Event; shardId: number }
+	| { nonce: number; op: WorkerRecievePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerRecievePayloadOp.RetrieveSessionInfo; shardId: number }
 	| { nonce: number; op: WorkerRecievePayloadOp.WaitForIdentify }
 	| { op: WorkerRecievePayloadOp.Connected; shardId: number }
@@ -71,6 +75,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	private readonly connectPromises = new Collection<number, () => void>();
 
 	private readonly destroyPromises = new Collection<number, () => void>();
+
+	private readonly fetchStatusPromises = new Collection<number, (status: WebSocketShardStatus) => void>();
 
 	private readonly throttler: IdentifyThrottler;
 
@@ -179,18 +185,41 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		worker.postMessage(payload);
 	}
 
+	/**
+	 * {@inheritDoc IShardingStrategy.fetchStatus}
+	 */
+	public async fetchStatus() {
+		const statuses = new Collection<number, WebSocketShardStatus>();
+
+		for (const [shardId, worker] of this.#workerByShardId.entries()) {
+			const nonce = Math.random();
+			const payload = {
+				op: WorkerSendPayloadOp.FetchStatus,
+				shardId,
+				nonce,
+			} satisfies WorkerSendPayload;
+
+			// eslint-disable-next-line no-promise-executor-return
+			const promise = new Promise<WebSocketShardStatus>((resolve) => this.fetchStatusPromises.set(nonce, resolve));
+			worker.postMessage(payload);
+
+			const status = await promise;
+			statuses.set(shardId, status);
+		}
+
+		return statuses;
+	}
+
 	private async onMessage(worker: Worker, payload: WorkerRecievePayload) {
 		switch (payload.op) {
 			case WorkerRecievePayloadOp.Connected: {
-				const resolve = this.connectPromises.get(payload.shardId)!;
-				resolve();
+				this.connectPromises.get(payload.shardId)?.();
 				this.connectPromises.delete(payload.shardId);
 				break;
 			}
 
 			case WorkerRecievePayloadOp.Destroyed: {
-				const resolve = this.destroyPromises.get(payload.shardId)!;
-				resolve();
+				this.destroyPromises.get(payload.shardId)?.();
 				this.destroyPromises.delete(payload.shardId);
 				break;
 			}
@@ -223,6 +252,12 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 					nonce: payload.nonce,
 				};
 				worker.postMessage(response);
+				break;
+			}
+
+			case WorkerRecievePayloadOp.FetchStatusResponse: {
+				this.fetchStatusPromises.get(payload.nonce)?.(payload.status);
+				this.fetchStatusPromises.delete(payload.nonce);
 				break;
 			}
 		}
