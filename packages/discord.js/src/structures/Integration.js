@@ -16,6 +16,7 @@ const IntegrationApplication = require('./IntegrationApplication');
  * * `twitch`
  * * `youtube`
  * * `discord`
+ * * `guild_subscription`
  * @typedef {string} IntegrationType
  */
 
