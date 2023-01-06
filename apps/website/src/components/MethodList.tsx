@@ -1,9 +1,14 @@
-'use server';
-
-import type { ApiItem, ApiItemContainerMixin, ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
+import type {
+	ApiDeclaredItem,
+	ApiItem,
+	ApiItemContainerMixin,
+	ApiMethod,
+	ApiMethodSignature,
+} from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
 import { Method } from './model/method/Method';
+import { resolveMembers } from '~/util/members';
 
 function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	return (
@@ -13,19 +18,23 @@ function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 }
 
 export function MethodList({ item }: { item: ApiItemContainerMixin }) {
+	const members = resolveMembers(item, isMethodLike);
+
 	const methodItems = useMemo(
 		() =>
-			item.members.filter(isMethodLike).map((method) => (
-				<Fragment
-					key={`${method.displayName}${
-						method.overloadIndex && method.overloadIndex > 1 ? `:${(method as ApiMethod).overloadIndex}` : ''
-					}`}
-				>
-					<Method method={method} />
-					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
-				</Fragment>
-			)),
-		[item.members],
+			members.map(({ item: method, inherited }) => {
+				return (
+					<Fragment
+						key={`${method.displayName}${
+							method.overloadIndex && method.overloadIndex > 1 ? `:${(method as ApiMethod).overloadIndex}` : ''
+						}`}
+					>
+						<Method inheritedFrom={inherited as ApiDeclaredItem & ApiItemContainerMixin} method={method} />
+						<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
+					</Fragment>
+				);
+			}),
+		[members],
 	);
 
 	return <div className="flex flex-col gap-4">{methodItems}</div>;

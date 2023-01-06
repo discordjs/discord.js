@@ -5,7 +5,7 @@ import { Section } from '@discordjs/ui';
 import type { PropsWithChildren } from 'react';
 import { useMedia } from 'react-use';
 
-export function SectionShell(opts: PropsWithChildren<SectionOptions & { separator?: boolean }>) {
+export function ResponsiveSection(opts: PropsWithChildren<SectionOptions & { separator?: boolean }>) {
 	const matches = useMedia('(max-width: 768px)', true);
 
 	const { children, separator, ...rest } = opts;

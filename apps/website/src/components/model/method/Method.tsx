@@ -1,9 +1,20 @@
-import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
+import type {
+	ApiDeclaredItem,
+	ApiItemContainerMixin,
+	ApiMethod,
+	ApiMethodSignature,
+} from '@microsoft/api-extractor-model';
 import { OverloadSwitcher } from '../../OverloadSwitcher';
 import { MethodDocumentation } from './MethodDocumentation';
 import { MethodHeader } from './MethodName';
 
-export function Method({ method }: { method: ApiMethod | ApiMethodSignature }) {
+export function Method({
+	method,
+	inheritedFrom,
+}: {
+	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
+	method: ApiMethod | ApiMethodSignature;
+}) {
 	if (method.getMergedSiblings().length > 1) {
 		// We have overloads, use the overload switcher, but render
 		// each overload node on the server.
@@ -22,7 +33,7 @@ export function Method({ method }: { method: ApiMethod | ApiMethodSignature }) {
 	return (
 		<>
 			<MethodHeader method={method} />
-			<MethodDocumentation method={method} />
+			<MethodDocumentation inheritedFrom={inheritedFrom} method={method} />
 		</>
 	);
 }

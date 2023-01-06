@@ -2,13 +2,13 @@
 
 import type { ApiItemContainerMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
-import { SectionShell } from './SectionShell';
+import { ResponsiveSection } from './ResponsiveSection';
 import { PropertyList } from '~/components/PropertyList';
 
 export function PropertiesSection({ item }: { item: ApiItemContainerMixin }) {
 	return (
-		<SectionShell icon={<VscSymbolProperty size={20} />} padded title="Properties">
+		<ResponsiveSection icon={<VscSymbolProperty size={20} />} padded title="Properties">
 			<PropertyList item={item} />
-		</SectionShell>
+		</ResponsiveSection>
 	);
 }

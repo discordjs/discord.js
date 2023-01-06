@@ -1,4 +1,4 @@
-import type { ApiDeclaredItem, ApiPropertyItem } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem, ApiItemContainerMixin, ApiPropertyItem } from '@microsoft/api-extractor-model';
 import type { PropsWithChildren } from 'react';
 import { Anchor } from './Anchor';
 import { ExcerptText } from './ExcerptText';
@@ -14,15 +14,14 @@ export function Property({
 	item,
 	children,
 	separator,
-	parentKey,
+	inheritedFrom,
 }: PropsWithChildren<{
+	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
 	item: ApiPropertyItem;
-	parentKey: string;
 	separator?: PropertySeparatorType;
 }>) {
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
-	const isInherited = item.parent?.containerKey !== parentKey;
 
 	return (
 		<div className="scroll-mt-30 flex flex-col gap-4" id={item.displayName}>
@@ -58,15 +57,10 @@ export function Property({
 					</h4>
 				</div>
 			</div>
-			{hasSummary || isInherited ? (
+			{hasSummary || inheritedFrom ? (
 				<div className="mb-4 flex flex-col gap-4">
 					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
-					{isInherited ? (
-						<InheritanceText
-							extendsExcerpt={(item.parent as ApiDeclaredItem).excerpt}
-							model={item.getAssociatedModel()!}
-						/>
-					) : null}
+					{inheritedFrom ? <InheritanceText parent={inheritedFrom} /> : null}
 					{children}
 				</div>
 			) : null}

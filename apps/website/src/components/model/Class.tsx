@@ -25,7 +25,6 @@ export function Class({ clazz }: { clazz: ApiClass }) {
 			{constructor ? <ConstructorSection item={constructor} /> : null}
 			{hasProperties(clazz) ? <PropertiesSection item={clazz} /> : null}
 			{hasMethods(clazz) ? <MethodsSection item={clazz} /> : null}
-
 			<Outline members={serializeMembers(clazz)} />
 		</Documentation>
 	);

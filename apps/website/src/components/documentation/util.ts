@@ -1,28 +1,31 @@
 import { genToken } from '@discordjs/api-extractor-utils';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
 import type {
 	ApiItem,
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
 	ApiModel,
+	ApiProperty,
+	ApiPropertySignature,
 	ExcerptToken,
 } from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
 import type { TableOfContentsSerialized } from '../TableOfContentItems';
+import { resolveMembers } from '~/util/members';
 
 export function tokenize(model: ApiModel, tokens: readonly ExcerptToken[], version: string) {
 	return tokens.map((token) => genToken(model, token, version));
 }
 
 export function hasProperties(item: ApiItemContainerMixin) {
-	return item.members.some(
-		(member) => member.kind === ApiItemKind.Property || member.kind === ApiItemKind.PropertySignature,
+	return resolveMembers(item, memberPredicate).some(
+		({ item: member }) => member.kind === ApiItemKind.Property || member.kind === ApiItemKind.PropertySignature,
 	);
 }
 
 export function hasMethods(item: ApiItemContainerMixin) {
-	return item.members.some(
-		(member) => member.kind === ApiItemKind.Method || member.kind === ApiItemKind.MethodSignature,
+	return resolveMembers(item, memberPredicate).some(
+		({ item: member }) => member.kind === ApiItemKind.Method || member.kind === ApiItemKind.MethodSignature,
 	);
 }
 
@@ -30,8 +33,17 @@ export function resolveItemURI(item: ApiItem): string {
 	return `/${item.displayName}:${item.kind}`;
 }
 
+function memberPredicate(item: ApiItem): item is ApiMethod | ApiMethodSignature | ApiProperty | ApiPropertySignature {
+	return (
+		item.kind === ApiItemKind.Property ||
+		item.kind === ApiItemKind.PropertySignature ||
+		item.kind === ApiItemKind.Method ||
+		item.kind === ApiItemKind.MethodSignature
+	);
+}
+
 export function serializeMembers(clazz: ApiItemContainerMixin): TableOfContentsSerialized[] {
-	return clazz.members.map((member) => {
+	return resolveMembers(clazz, memberPredicate).map(({ item: member }) => {
 		if (member.kind === 'Method' || member.kind === 'MethodSignature') {
 			return {
 				kind: member.kind as 'Method' | 'MethodSignature',

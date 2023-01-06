@@ -2,13 +2,13 @@
 
 import type { ApiItemContainerMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
-import { SectionShell } from './SectionShell';
+import { ResponsiveSection } from './ResponsiveSection';
 import { MethodList } from '~/components/MethodList';
 
 export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 	return (
-		<SectionShell icon={<VscSymbolMethod size={20} />} padded title="Methods">
+		<ResponsiveSection icon={<VscSymbolMethod size={20} />} padded title="Methods">
 			<MethodList item={item} />
-		</SectionShell>
+		</ResponsiveSection>
 	);
 }
