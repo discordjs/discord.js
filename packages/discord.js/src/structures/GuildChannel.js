@@ -298,7 +298,7 @@ class GuildChannel extends BaseChannel {
   /**
    * Options used to set the parent of a channel.
    * @typedef {Object} SetParentOptions
-   * @property {boolean} [lockPermissions=true] Whether to lock the permissions to what the parent's permissions are
+   * @property {boolean} [lockPermissions=false] Whether to lock the permissions to what the parent's permissions are
    * @property {string} [reason] The reason for modifying the parent of the channel
    */
 
@@ -309,11 +309,16 @@ class GuildChannel extends BaseChannel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Add a parent to a channel
-   * message.channel.setParent('355908108431917066', { lockPermissions: false })
-   *   .then(channel => console.log(`New parent of ${message.channel.name}: ${channel.name}`))
+   * message.channel.setParent('355908108431917066')
+   *   .then(channel => console.log(`New parent of ${channel.name}: ${channel.parent.name}`))
+   *   .catch(console.error);
+   * @example
+   * // Move a channel and sync its permissions with the parent
+   * message.channel.setParent('355908108431917066', { lockPermissions: true })
+   *   .then(channel => console.log(`Moved ${message.channel.name} to ${channel.parent.name}`))
    *   .catch(console.error);
    */
-  setParent(channel, { lockPermissions = true, reason } = {}) {
+  setParent(channel, { lockPermissions = false, reason } = {}) {
     return this.edit({
       parent: channel ?? null,
       lockPermissions,
