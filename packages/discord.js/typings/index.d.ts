@@ -5322,6 +5322,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
 
 export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
   before?: Snowflake | GuildAuditLogsEntry;
+  after?: Snowflake | GuildAuditLogsEntry;
   limit?: number;
   user?: UserResolvable;
   type?: T;
