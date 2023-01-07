@@ -32,6 +32,8 @@ class StageInstanceManager extends CachedManager {
    * @property {string} topic The topic of the stage instance
    * @property {PrivacyLevel|number} [privacyLevel] The privacy level of the stage instance
    * @property {boolean} [sendStartNotification] Whether to notify `@everyone` that the stage instance has started
+   * @property {GuildScheduledEventResolvable} [guildScheduledEvent]
+   * The guild scheduled event associated with the stage instance
    */
 
   /**
