@@ -622,7 +622,8 @@ class WebSocketShard extends EventEmitter {
     this.resumedDispatchTimeout = setTimeout(() => {
       if ((Date.now() - this.lastReplayedAt) < 20_000) {
         this.debug('Received a message within the last 20s. Delaying RESUMED timeout.');
-        return this.setResumedDispatchTimeout();
+        this.setResumedDispatchTimeout();
+        return
       }
       this.debug('Did not receive RESUMED in time. Destroying and connecting again.');
       this.destroy({ reset: false, closeCode: 4009 });
