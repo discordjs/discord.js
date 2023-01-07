@@ -323,8 +323,8 @@ class ThreadChannel extends Channel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
-   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    */
 
   /**
