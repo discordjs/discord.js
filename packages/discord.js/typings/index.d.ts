@@ -1920,6 +1920,12 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public position: number | null;
+  public roleSubscriptionData: {
+    roleSubscriptionListingId: Snowflake;
+    tierName: string;
+    totalMonthsSubscribed: number;
+    isRenewal: boolean;
+  } | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;

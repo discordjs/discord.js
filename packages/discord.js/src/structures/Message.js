@@ -198,6 +198,25 @@ class Message extends Base {
       this.position ??= null;
     }
 
+    if ('role_subscription_data' in data) {
+      /**
+       * The data of the role subscription purchase or renewal.
+       * @type {?Object}
+       * @property {Snowflake} [roleSubscriptionListingId] The id of the SKU and listing the user is subscribed to
+       * @property {string} [tierName] The name of the tier the user is subscribed to
+       * @property {number} [totalMonthsSubscribed] The total number of months the user has been subscribed for
+       * @property {boolean} [isRenewal] Whether this notification is a renewal
+       */
+      this.roleSubscriptionData = {
+        roleSubscriptionListingId: data.role_subscription_data.role_subscription_listing_id,
+        tierName: data.role_subscription_data.tier_name,
+        totalMonthsSubscribed: data.role_subscription_data.total_months_subscribed,
+        isRenewal: data.role_subscription_data.is_renewal,
+      };
+    } else {
+      this.roleSubscriptionData ??= null;
+    }
+
     // Discord sends null if the message has not been edited
     if (data.edited_timestamp) {
       /**
