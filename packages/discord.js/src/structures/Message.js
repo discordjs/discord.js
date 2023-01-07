@@ -201,6 +201,7 @@ class Message extends Base {
     if ('role_subscription_data' in data) {
       /**
        * The data of the role subscription purchase or renewal.
+       * <info>This is present on {@link MessageType.RoleSubscriptionPurchase}.</info>
        * @type {?Object}
        * @property {Snowflake} [roleSubscriptionListingId] The id of the SKU and listing the user is subscribed to
        * @property {string} [tierName] The name of the tier the user is subscribed to
