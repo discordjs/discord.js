@@ -97,5 +97,21 @@ parentPort!
 			case WorkerSendPayloadOp.ShardCanIdentify: {
 				break;
 			}
+
+			case WorkerSendPayloadOp.FetchStatus: {
+				const shard = shards.get(payload.shardId);
+				if (!shard) {
+					throw new Error(`Shard ${payload.shardId} does not exist`);
+				}
+
+				const response = {
+					op: WorkerRecievePayloadOp.FetchStatusResponse,
+					status: shard.status,
+					nonce: payload.nonce,
+				} satisfies WorkerRecievePayload;
+
+				parentPort!.postMessage(response);
+				break;
+			}
 		}
 	});

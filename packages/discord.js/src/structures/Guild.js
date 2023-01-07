@@ -5,7 +5,6 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -700,7 +699,8 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to fetch audit logs.
    * @typedef {Object} GuildAuditLogsFetchOptions
-   * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
    * @property {number} [limit] The number of entries to return
    * @property {UserResolvable} [user] Only return entries for actions made by this user
    * @property {?AuditLogEvent} [type] Only return entries for this action type
@@ -716,19 +716,18 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
-
+  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
     const query = makeURLSearchParams({
-      before: options.before,
-      limit: options.limit,
-      action_type: options.type,
+      before: before?.id ?? before,
+      after: after?.id ?? after,
+      limit,
+      action_type: type,
     });
 
-    if (options.user) {
-      const id = this.client.users.resolveId(options.user);
-      if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
-      query.set('user_id', id);
+    if (user) {
+      const userId = this.client.users.resolveId(user);
+      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      query.set('user_id', userId);
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
@@ -740,27 +739,26 @@ class Guild extends AnonymousGuild {
    * @typedef {Object} GuildEditOptions
    * @property {string} [name] The name of the guild
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
+   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
+   * notification level of the guild
    * @property {?GuildExplicitContentFilter} [explicitContentFilter] The level of the explicit content filter
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
-   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
-   * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
-   * notification level of the guild
+   * @property {?TextChannelResolvable} [systemChannel] The system channel of the guild
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {?string} [preferredLocale] The preferred locale of the guild
-   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
-   * @property {?string} [description] The discovery description of the guild
    * @property {GuildFeature[]} [features] The features of the guild
+   * @property {?string} [description] The discovery description of the guild
+   * @property {boolean} [premiumProgressBarEnabled] Whether the guild's premium progress bar is enabled
    * @property {string} [reason] Reason for editing this guild
    */
-  /* eslint-enable max-len */
 
   /**
    * Data that can be resolved to a Text Channel object. This can be:
@@ -788,51 +786,52 @@ class Guild extends AnonymousGuild {
    *   .then(updated => console.log(`New guild name ${updated}`))
    *   .catch(console.error);
    */
-  async edit(options) {
-    const _data = {};
-    if (options.name) _data.name = options.name;
-    if (typeof options.verificationLevel !== 'undefined') {
-      _data.verification_level = options.verificationLevel;
-    }
-    if (typeof options.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.channels.resolveId(options.afkChannel);
-    }
-    if (typeof options.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.channels.resolveId(options.systemChannel);
-    }
-    if (options.afkTimeout) _data.afk_timeout = Number(options.afkTimeout);
-    if (typeof options.icon !== 'undefined') _data.icon = await DataResolver.resolveImage(options.icon);
-    if (options.owner) _data.owner_id = this.client.users.resolveId(options.owner);
-    if (typeof options.splash !== 'undefined') _data.splash = await DataResolver.resolveImage(options.splash);
-    if (typeof options.discoverySplash !== 'undefined') {
-      _data.discovery_splash = await DataResolver.resolveImage(options.discoverySplash);
-    }
-    if (typeof options.banner !== 'undefined') _data.banner = await DataResolver.resolveImage(options.banner);
-    if (typeof options.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = options.explicitContentFilter;
-    }
-    if (typeof options.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications = options.defaultMessageNotifications;
-    }
-    if (typeof options.systemChannelFlags !== 'undefined') {
-      _data.system_channel_flags = SystemChannelFlagsBitField.resolve(options.systemChannelFlags);
-    }
-    if (typeof options.rulesChannel !== 'undefined') {
-      _data.rules_channel_id = this.client.channels.resolveId(options.rulesChannel);
-    }
-    if (typeof options.publicUpdatesChannel !== 'undefined') {
-      _data.public_updates_channel_id = this.client.channels.resolveId(options.publicUpdatesChannel);
-    }
-    if (typeof options.features !== 'undefined') {
-      _data.features = options.features;
-    }
-    if (typeof options.description !== 'undefined') {
-      _data.description = options.description;
-    }
-    if (typeof options.preferredLocale !== 'undefined') _data.preferred_locale = options.preferredLocale;
-    if ('premiumProgressBarEnabled' in options) _data.premium_progress_bar_enabled = options.premiumProgressBarEnabled;
-    const newData = await this.client.rest.patch(Routes.guild(this.id), { body: _data, reason: options.reason });
-    return this.client.actions.GuildUpdate.handle(newData).updated;
+  async edit({
+    verificationLevel,
+    defaultMessageNotifications,
+    explicitContentFilter,
+    afkChannel,
+    afkTimeout,
+    icon,
+    owner,
+    splash,
+    discoverySplash,
+    banner,
+    systemChannel,
+    systemChannelFlags,
+    rulesChannel,
+    publicUpdatesChannel,
+    preferredLocale,
+    premiumProgressBarEnabled,
+    ...options
+  }) {
+    const data = await this.client.rest.patch(Routes.guild(this.id), {
+      body: {
+        ...options,
+        verification_level: verificationLevel,
+        default_message_notifications: defaultMessageNotifications,
+        explicit_content_filter: explicitContentFilter,
+        afk_channel_id: afkChannel && this.client.channels.resolveId(afkChannel),
+        afk_timeout: afkTimeout,
+        icon: icon && (await DataResolver.resolveImage(icon)),
+        owner_id: owner && this.client.users.resolveId(owner),
+        splash: splash && (await DataResolver.resolveImage(splash)),
+        discovery_splash: discoverySplash && (await DataResolver.resolveImage(discoverySplash)),
+        banner: banner && (await DataResolver.resolveImage(banner)),
+        system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
+        system_channel_flags:
+          typeof systemChannelFlags === 'undefined'
+            ? undefined
+            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+        rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
+        public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
+        preferred_locale: preferredLocale,
+        premium_progress_bar_enabled: premiumProgressBarEnabled,
+      },
+      reason: options.reason,
+    });
+
+    return this.client.actions.GuildUpdate.handle(data).updated;
   }
 
   /**
@@ -905,7 +904,6 @@ class Guild extends AnonymousGuild {
     return new WelcomeScreen(this, patchData);
   }
 
-  /* eslint-disable max-len */
   /**
    * Edits the level of the explicit content filter.
    * @param {?GuildExplicitContentFilter} explicitContentFilter The new level of the explicit content filter
@@ -918,14 +916,14 @@ class Guild extends AnonymousGuild {
 
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications The new default message notification level of the guild
+   * @param {?GuildDefaultMessageNotifications} defaultMessageNotifications
+   * The new default message notification level of the guild
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications, reason });
   }
-  /* eslint-enable max-len */
 
   /**
    * Edits the flags of the default message notifications of the guild.
