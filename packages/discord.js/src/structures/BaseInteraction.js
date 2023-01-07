@@ -270,16 +270,15 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
-  // TODO: Get rid of this in the next major
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
-   *
    * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
-  isSelectMenu() {
-    return this.isStringSelectMenu();
-  }
+  isSelectMenu = deprecate(
+    () => this.isStringSelectMenu(),
+    'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
+  );
 
   /**
    * Indicates whether this interaction is a select menu of any known type.
@@ -337,10 +336,5 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
-
-BaseInteraction.prototype.isSelectMenu = deprecate(
-  BaseInteraction.prototype.isSelectMenu,
-  'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
-);
 
 module.exports = BaseInteraction;

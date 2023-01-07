@@ -27,12 +27,10 @@ class ActionRow extends Component {
    * @returns {ActionRowBuilder}
    * @deprecated Use {@link ActionRowBuilder.from} instead.
    */
-  static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
-  }
+  static from = deprecate(
+    other => new this(isJSONEncodable(other) ? other.toJSON() : other),
+    'ActionRow.from() is deprecated. Use ActionRowBuilder.from() instead.',
+  );
 
   /**
    * Returns the API-compatible JSON for this component
@@ -42,7 +40,5 @@ class ActionRow extends Component {
     return { ...this.data, components: this.components.map(c => c.toJSON()) };
   }
 }
-
-ActionRow.from = deprecate(ActionRow.from, 'ActionRow.from() is deprecated. Use ActionRowBuilder.from() instead.');
 
 module.exports = ActionRow;
