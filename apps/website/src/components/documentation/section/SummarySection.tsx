@@ -7,7 +7,7 @@ export function SummarySection({ item }: { item: ApiDeclaredItem }) {
 	return (
 		<ResponsiveSection icon={<VscListSelection size={20} />} padded separator title="Summary">
 			{item.tsdocComment?.summarySection ? (
-				<TSDoc item={item} tsdoc={item.tsdocComment.summarySection} />
+				<TSDoc item={item} tsdoc={item.tsdocComment} />
 			) : (
 				<p>No summary provided.</p>
 			)}

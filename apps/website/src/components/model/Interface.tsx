@@ -1,19 +1,19 @@
-'use server';
-
 import type { ApiInterface } from '@microsoft/api-extractor-model';
 import { Outline } from '../Outline';
 import { Documentation } from '../documentation/Documentation';
-import { MethodsSection } from '../documentation/section/MethodsSection';
-import { PropertiesSection } from '../documentation/section/PropertiesSection';
-import { SummarySection } from '../documentation/section/SummarySection';
-import { hasMethods, hasProperties, serializeMembers } from '../documentation/util';
+import { HierarchyText } from '../documentation/ExtendsText';
+import { Members } from '../documentation/Members';
+import { ObjectHeader } from '../documentation/ObjectHeader';
+import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
+import { serializeMembers } from '../documentation/util';
 
 export function Interface({ item }: { item: ApiInterface }) {
 	return (
-		<Documentation item={item}>
-			<SummarySection item={item} />
-			{hasProperties(item) ? <PropertiesSection item={item} /> : null}
-			{hasMethods(item) ? <MethodsSection item={item} /> : null}
+		<Documentation>
+			<ObjectHeader item={item} />
+			<HierarchyText item={item} type="Extends" />
+			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
+			<Members item={item} />
 			<Outline members={serializeMembers(item)} />
 		</Documentation>
 	);
