@@ -59,9 +59,10 @@ class StageInstanceManager extends CachedManager {
     const channelId = this.guild.channels.resolveId(channel);
     if (!channelId) throw new Error('STAGE_CHANNEL_RESOLVE');
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
-    let { topic, privacyLevel, sendStartNotification } = options;
+    let { guildScheduledEvent, topic, privacyLevel, sendStartNotification } = options;
 
     privacyLevel &&= typeof privacyLevel === 'number' ? privacyLevel : PrivacyLevels[privacyLevel];
+    const guildScheduledEventId = guildScheduledEvent && this.resolveId(guildScheduledEvent);
 
     const data = await this.client.api['stage-instances'].post({
       data: {
@@ -69,6 +70,7 @@ class StageInstanceManager extends CachedManager {
         topic,
         privacy_level: privacyLevel,
         send_start_notification: sendStartNotification,
+        guild_scheduled_event_id: guildScheduledEventId,
       },
     });
 
