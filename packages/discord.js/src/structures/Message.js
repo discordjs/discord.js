@@ -210,7 +210,7 @@ class Message extends Base {
 
       /**
        * The data of the role subscription purchase or renewal.
-       * <info>This is present on {@link MessageType.RoleSubscriptionPurchase}.</info>
+       * <info>This is present on {@link MessageType.RoleSubscriptionPurchase} messages.</info>
        * @type {?RoleSubscriptionData}
        */
       this.roleSubscriptionData = {
