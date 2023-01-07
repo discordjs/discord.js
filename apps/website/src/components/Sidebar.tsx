@@ -8,7 +8,7 @@ import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterfac
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { ItemLink } from './ItemLink';
 import { Section } from './Section';
 import { useNav } from '~/contexts/nav';
@@ -84,12 +84,8 @@ function resolveIcon(item: string) {
 
 export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 	const pathname = usePathname();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	const asPathWithoutQueryAndAnchor = `/${pathname?.split('/').splice(-1) ?? ''}`;
 	const { setOpened } = useNav();
-
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
-	}, [pathname]);
 
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 

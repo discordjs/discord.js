@@ -1,5 +1,5 @@
 import { createApiModel } from '@discordjs/scripts';
-import type { ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
@@ -55,7 +55,13 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 		return notFound();
 	}
 
-	const { members } = entry;
+	const members = entry.members.filter((member) => {
+		if (member.kind !== 'Function') {
+			return true;
+		}
+
+		return (member as ApiFunction).overloadIndex === 1;
+	});
 
 	return (
 		<div>

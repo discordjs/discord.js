@@ -1,5 +1,3 @@
-'use server';
-
 import { useMemo, type ReactNode } from 'react';
 
 export function Table({

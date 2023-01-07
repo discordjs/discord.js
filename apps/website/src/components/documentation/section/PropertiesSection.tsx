@@ -1,5 +1,3 @@
-'use server';
-
 import type { ApiItemContainerMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { ResponsiveSection } from './ResponsiveSection';

@@ -1,5 +1,3 @@
-'use server';
-
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
