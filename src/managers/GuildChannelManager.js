@@ -80,9 +80,8 @@ class GuildChannelManager extends CachedManager {
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
    * * A ThreadChannel object
-   * * A ForumChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|ThreadChannel|ForumChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
