@@ -11,6 +11,8 @@ let TextChannel;
 let ThreadChannel;
 let VoiceChannel;
 let DirectoryChannel;
+let ForumChannel;
+const ChannelFlags = require('../util/ChannelFlags');
 const { ChannelTypes, ThreadChannelTypes, VoiceBasedChannelTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
@@ -47,6 +49,17 @@ class Channel extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    if ('flags' in data) {
+      /**
+       * The flags that are applied to the channel.
+       * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.</info>
+       * @type {?Readonly<ChannelFlags>}
+       */
+      this.flags = new ChannelFlags(data.flags).freeze();
+    } else {
+      this.flags ??= new ChannelFlags().freeze();
+    }
   }
 
   /**
@@ -183,6 +196,7 @@ class Channel extends Base {
     ThreadChannel ??= require('./ThreadChannel');
     VoiceChannel ??= require('./VoiceChannel');
     DirectoryChannel ??= require('./DirectoryChannel');
+    ForumChannel ??= require('./ForumChannel');
 
     let channel;
     if (!data.guild_id && !guild) {
@@ -231,6 +245,10 @@ class Channel extends Base {
 
           case ChannelTypes.GUILD_DIRECTORY:
             channel = new DirectoryChannel(client, data);
+            break;
+
+          case ChannelTypes.GUILD_FORUM:
+            channel = new ForumChannel(guild, data, client);
             break;
         }
         if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);

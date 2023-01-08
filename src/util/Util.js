@@ -12,6 +12,7 @@ const isObject = d => typeof d === 'object' && d !== null;
 
 let deprecationEmittedForSplitMessage = false;
 let deprecationEmittedForRemoveMentions = false;
+let deprecationEmittedForResolveAutoArchiveMaxLimit = false;
 
 /**
  * Contains various general-purpose utility methods.
@@ -41,15 +42,20 @@ class Util extends null {
       const element = obj[prop];
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+      const hasToJSON = elemIsObj && typeof element.toJSON === 'function';
 
       // If it's a Collection, make the array of keys
       if (element instanceof Collection) out[newProp] = Array.from(element.keys());
       // If the valueOf is a Collection, use its array of keys
       else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
-      // If it's an array, flatten each element
-      else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
+      // If it's an array, call toJSON function on each element if present, otherwise flatten each element
+      else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
       else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+      // If it's an object with a toJSON function, use the return value of it
+      else if (hasToJSON) out[newProp] = element.toJSON();
+      // If element is an object, use the flattened version of it
+      else if (typeof element === 'object') out[newProp] = Util.flatten(element);
       // If it's a primitive
       else if (!elemIsObj) out[newProp] = element;
     }
@@ -656,12 +662,84 @@ class Util extends null {
   /**
    * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
    * @param {Guild} guild The guild to resolve this limit from.
+   * @deprecated This will be removed in the next major version.
    * @returns {number}
    */
-  static resolveAutoArchiveMaxLimit({ features }) {
-    if (features.includes('SEVEN_DAY_THREAD_ARCHIVE')) return 10080;
-    if (features.includes('THREE_DAY_THREAD_ARCHIVE')) return 4320;
-    return 1440;
+  static resolveAutoArchiveMaxLimit() {
+    if (!deprecationEmittedForResolveAutoArchiveMaxLimit) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        "The Util.resolveAutoArchiveMaxLimit method and the 'MAX' option are deprecated and will be removed in the next major version.",
+        'DeprecationWarning',
+      );
+      deprecationEmittedForResolveAutoArchiveMaxLimit = true;
+    }
+    return 10080;
+  }
+
+  /**
+   * Transforms an API guild forum tag to camel-cased guild forum tag.
+   * @param {APIGuildForumTag} tag The tag to transform
+   * @returns {GuildForumTag}
+   * @ignore
+   */
+  static transformAPIGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji:
+        tag.emoji_id ?? tag.emoji_name
+          ? {
+              id: tag.emoji_id,
+              name: tag.emoji_name,
+            }
+          : null,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum tag to an API guild forum tag.
+   * @param {GuildForumTag} tag The tag to transform
+   * @returns {APIGuildForumTag}
+   * @ignore
+   */
+  static transformGuildForumTag(tag) {
+    return {
+      id: tag.id,
+      name: tag.name,
+      moderated: tag.moderated,
+      emoji_id: tag.emoji?.id ?? null,
+      emoji_name: tag.emoji?.name ?? null,
+    };
+  }
+
+  /**
+   * Transforms an API guild forum default reaction object to a
+   * camel-cased guild forum default reaction object.
+   * @param {APIGuildForumDefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {DefaultReactionEmoji}
+   * @ignore
+   */
+  static transformAPIGuildDefaultReaction(defaultReaction) {
+    return {
+      id: defaultReaction.emoji_id,
+      name: defaultReaction.emoji_name,
+    };
+  }
+
+  /**
+   * Transforms a camel-cased guild forum default reaction object to an
+   * API guild forum default reaction object.
+   * @param {DefaultReactionEmoji} defaultReaction The default reaction to transform
+   * @returns {APIGuildForumDefaultReactionEmoji}
+   * @ignore
+   */
+  static transformGuildDefaultReaction(defaultReaction) {
+    return {
+      emoji_id: defaultReaction.id,
+      emoji_name: defaultReaction.name,
+    };
   }
 }
 

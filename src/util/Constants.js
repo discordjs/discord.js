@@ -648,6 +648,7 @@ exports.ActivityTypes = createEnum(['PLAYING', 'STREAMING', 'LISTENING', 'WATCHI
  * * `GUILD_PRIVATE_THREAD` - a guild text channel's private thread channel
  * * `GUILD_STAGE_VOICE` - a guild stage voice channel
  * * `GUILD_DIRECTORY` - the channel in a hub containing guilds
+ * * `GUILD_FORUM` - a channel that can only contain threads
  * * `UNKNOWN` - a generic channel of unknown type, could be Channel or GuildChannel
  * @typedef {string} ChannelType
  * @see {@link https://discord.com/developers/docs/resources/channel#channel-object-channel-types}
@@ -667,6 +668,7 @@ exports.ChannelTypes = createEnum([
   'GUILD_PRIVATE_THREAD',
   'GUILD_STAGE_VOICE',
   'GUILD_DIRECTORY',
+  'GUILD_FORUM',
 ]);
 
 /**
@@ -1424,6 +1426,25 @@ exports.GuildScheduledEventEntityTypes = createEnum([null, 'STAGE_INSTANCE', 'VO
  * @see {@link https://discord.com/developers/docs/resources/channel#channel-object-video-quality-modes}
  */
 exports.VideoQualityModes = createEnum([null, 'AUTO', 'FULL']);
+
+/**
+ * Sort {@link ForumChannel} posts by creation time or activity
+ * * LATEST_ACTIVITY
+ * * CREATION_DATE
+ * @typedef {string} SortOrderType
+ * @see {@link https://discord.com/developers/docs/resources/channel/#channel-object-sort-order-types}
+ */
+exports.SortOrderTypes = createEnum([null, 'LATEST_ACTIVITY', 'CREATION_DATE']);
+
+/**
+ * The default forum layout to set on the {@link ForumChannel}
+ * * NOT_SET
+ * * LIST_VIEW
+ * * GALLERY_VIEW
+ * @typedef {string} ForumLayoutType
+ * @see {@link https://discord.com/developers/docs/resources/channel/#channel-object-forum-layout-types}
+ */
+exports.ForumLayoutTypes = createEnum(['NOT_SET', 'LIST_VIEW', 'GALLERY_VIEW']);
 
 exports._cleanupSymbol = Symbol('djsCleanup');
 
