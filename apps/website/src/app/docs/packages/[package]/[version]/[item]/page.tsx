@@ -24,6 +24,8 @@ import { Function } from '~/components/model/function/Function';
 import { OVERLOAD_SEPARATOR, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 
+export const dynamicParams = true;
+
 export interface ItemRouteParams {
 	item: string;
 	package: string;

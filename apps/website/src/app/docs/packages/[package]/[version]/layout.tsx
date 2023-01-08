@@ -11,6 +11,8 @@ import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 
+export const dynamicParams = true;
+
 export interface VersionRouteParams {
 	package: string;
 	version: string;

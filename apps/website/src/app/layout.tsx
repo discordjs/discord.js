@@ -7,6 +7,8 @@ import '../styles/unocss.css';
 import '../styles/cmdk.css';
 import '../styles/main.css';
 
+export const dynamicParams = true;
+
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<ServerThemeProvider
