@@ -17,6 +17,7 @@ try {
 
 /**
  * Represents a Shard's WebSocket connection
+ * @extends {EventEmitter}
  */
 class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
