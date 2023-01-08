@@ -705,9 +705,7 @@ export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
   end: [collected: Collection<K, V>, reason: string];
 }
 
-export type ChannelFlagsString =
-  | 'PINNED'
-  | 'REQUIRE_TAG';
+export type ChannelFlagsString = 'PINNED' | 'REQUIRE_TAG';
 export class ChannelFlags extends BitField<ChannelFlagsString> {
   public static FLAGS: Record<ChannelFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<ChannelFlagsString, number>): number;
@@ -5475,8 +5473,7 @@ export type MessageComponentType = keyof typeof MessageComponentTypes;
 
 export type MessageComponentTypeResolvable = MessageComponentType | MessageComponentTypes;
 
-export type GuildForumThreadMessageCreateOptions = MessageOptions &
-  Pick<MessageOptions, 'flags' | 'stickers'>;
+export type GuildForumThreadMessageCreateOptions = MessageOptions & Pick<MessageOptions, 'flags' | 'stickers'>;
 
 export interface MessageEditOptions {
   attachments?: MessageAttachment[];
@@ -6103,7 +6100,6 @@ export interface ThreadEditData {
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
-  threadName?: string;
   flags?: ChannelFlagsResolvable;
 }
 
@@ -6183,6 +6179,7 @@ export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 's
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
+  threadName?: string;
 }
 
 export type WebhookType = keyof typeof WebhookTypes;
