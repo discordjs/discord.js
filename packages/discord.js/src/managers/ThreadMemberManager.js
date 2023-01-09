@@ -122,7 +122,7 @@ class ThreadMemberManager extends CachedManager {
    * @typedef {Object} FetchThreadMembersOptions
    * @property {Snowflake} [after] Consider only thread members after this id
    * @property {number} [limit] The maximum number of thread members to return
-   * @property {boolean} [cache] Whether to cache the fetched thread members
+   * @property {boolean} [cache] Whether to cache the fetched thread members and guild members
    */
 
   /**
