@@ -155,7 +155,7 @@ class ThreadMemberManager extends CachedManager {
 
   async _fetchMany(options = {}) {
     const data = await this.client.rest.get(Routes.threadMembers(this.thread.id), {
-      query: makeURLSearchParams({ with_member: withMember }),
+      query: makeURLSearchParams({ with_member: options.withMember }),
     });
 
     return data.reduce((col, member) => col.set(member.user_id, this._add(member, options.cache)), new Collection());
