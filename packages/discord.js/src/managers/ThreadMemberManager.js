@@ -114,10 +114,13 @@ class ThreadMemberManager extends CachedManager {
   /**
    * @typedef {BaseFetchOptions} FetchThreadMemberOptions
    * @property {ThreadMemberResolvable} member The thread member to fetch
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
    */
 
   /**
    * @typedef {Object} FetchThreadMembersOptions
+   * @property {Snowflake} [after] Consider only thread members after this id
+   * @property {number} [limit] The maximum number of thread members to return
    * @property {boolean} [cache] Whether to cache the fetched thread members
    */
 
@@ -130,19 +133,19 @@ class ThreadMemberManager extends CachedManager {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const { member, cache, force } = options;
+    const { member, withMember, cache, force } = options;
     const resolvedMember = this.resolveId(member ?? options);
-    if (resolvedMember) return this._fetchSingle({ member: resolvedMember, cache, force });
+    if (resolvedMember) return this._fetchSingle({ member: resolvedMember, withMember, cache, force });
     return this._fetchMany(options);
   }
 
-  async _fetchSingle({ member, cache, force = false }) {
+  async _fetchSingle({ member, withMember, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(member);
       if (existing) return existing;
     }
 
-    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id, member));
+    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id, member), { body: { withMember } });
     return this._add(data, cache);
   }
 

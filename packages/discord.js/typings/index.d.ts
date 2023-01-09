@@ -2964,6 +2964,7 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
 export class ThreadMember extends Base {
   private constructor(thread: ThreadChannel, data?: RawThreadMemberData);
   public flags: ThreadMemberFlagsBitField;
+  public member: GuildMember | null;
   public get guildMember(): GuildMember | null;
   public id: Snowflake;
   public get joinedAt(): Date | null;
@@ -5185,9 +5186,12 @@ export interface FetchReactionUsersOptions {
 
 export interface FetchThreadMemberOptions extends BaseFetchOptions {
   member: ThreadMemberResolvable;
+  withMember?: boolean;
 }
 
 export interface FetchThreadMembersOptions {
+  after?: Snowflake;
+  limit?: number;
   cache?: boolean;
 }
 

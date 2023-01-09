@@ -41,6 +41,16 @@ class ThreadMember extends Base {
   _patch(data) {
     if ('join_timestamp' in data) this.joinedTimestamp = Date.parse(data.join_timestamp);
     if ('flags' in data) this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
+
+    /**
+     * The guild member associated with this thread member.
+     * @type {?GuildMember}
+     */
+    if ('member' in data) {
+      this.member = data.member;
+    } else {
+      this.member ??= null;
+    }
   }
 
   /**
