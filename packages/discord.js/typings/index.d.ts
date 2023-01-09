@@ -5190,6 +5190,7 @@ export interface FetchThreadMemberOptions extends BaseFetchOptions {
 }
 
 export interface FetchThreadMembersOptions {
+  withMember?: boolean;
   after?: Snowflake;
   limit?: number;
   cache?: boolean;
