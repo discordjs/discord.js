@@ -120,6 +120,7 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * @typedef {Object} FetchThreadMembersOptions
+   * @property {boolean} [withMember] Whether to also return the guild member data
    * @property {Snowflake} [after] Consider only thread members after this id
    * @property {number} [limit] The maximum number of thread members to return
    * @property {boolean} [cache] Whether to cache the fetched thread members and guild members
@@ -153,12 +154,12 @@ class ThreadMemberManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ withMember, after, limit, cache } = {}) {
     const data = await this.client.rest.get(Routes.threadMembers(this.thread.id), {
-      query: makeURLSearchParams({ with_member: options.withMember }),
+      query: makeURLSearchParams({ with_member: withMember, after, limit }),
     });
 
-    return data.reduce((col, member) => col.set(member.user_id, this._add(member, options.cache)), new Collection());
+    return data.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
   }
 }
 
