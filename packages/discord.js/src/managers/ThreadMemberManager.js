@@ -1,6 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
@@ -145,12 +146,18 @@ class ThreadMemberManager extends CachedManager {
       if (existing) return existing;
     }
 
-    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id, member), { body: { withMember } });
+    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id, member), {
+      query: makeURLSearchParams(withMember),
+    });
+
     return this._add(data, cache);
   }
 
   async _fetchMany(options = {}) {
-    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id));
+    const data = await this.client.rest.get(Routes.threadMembers(this.thread.id), {
+      query: makeURLSearchParams(options),
+    });
+
     return data.reduce((col, member) => col.set(member.user_id, this._add(member, options.cache)), new Collection());
   }
 }
