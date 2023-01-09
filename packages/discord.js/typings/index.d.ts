@@ -2962,7 +2962,7 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
 }
 
 export class ThreadMember extends Base {
-  private constructor(thread: ThreadChannel, data?: RawThreadMemberData);
+  private constructor(thread: ThreadChannel, data: RawThreadMemberData, extra?: unknown);
   public flags: ThreadMemberFlagsBitField;
   public member: GuildMember | null;
   public get guildMember(): GuildMember | null;
