@@ -133,7 +133,7 @@ class ThreadMemberManager extends CachedManager {
    * Options used to fetch multiple thread members without guild member data.
    * @typedef {Object} FetchThreadMembersWithoutGuildMemberDataOptions
    * @property {false} [withMember] Whether to also return the guild member data
-   * @property {boolean} [cache] Whether to cache the fetched thread members and guild members
+   * @property {boolean} [cache] Whether to cache the fetched thread members
    */
 
   /**
