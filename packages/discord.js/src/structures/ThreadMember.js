@@ -8,7 +8,7 @@ const ThreadMemberFlagsBitField = require('../util/ThreadMemberFlagsBitField');
  * @extends {Base}
  */
 class ThreadMember extends Base {
-  constructor(thread, data) {
+  constructor(thread, data, extra = {}) {
     super(thread.client);
 
     /**
@@ -35,10 +35,10 @@ class ThreadMember extends Base {
      */
     this.id = data.user_id;
 
-    this._patch(data);
+    this._patch(data, extra);
   }
 
-  _patch(data) {
+  _patch(data, extra) {
     if ('join_timestamp' in data) this.joinedTimestamp = Date.parse(data.join_timestamp);
     if ('flags' in data) this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
 
@@ -47,7 +47,7 @@ class ThreadMember extends Base {
      * @type {?GuildMember}
      */
     if ('member' in data) {
-      this.member = data.member;
+      this.member = this.thread.guild.members._add(data.member, extra.cache);
     } else {
       this.member ??= null;
     }
