@@ -5189,12 +5189,21 @@ export interface FetchThreadMemberOptions extends BaseFetchOptions {
   withMember?: boolean;
 }
 
-export interface FetchThreadMembersOptions {
-  withMember?: boolean;
+export interface FetchThreadMembersWithGuildMemberDataOptions {
+  withMember: true;
   after?: Snowflake;
   limit?: number;
   cache?: boolean;
 }
+
+export interface FetchThreadMembersWithoutGuildMemberDataOptions {
+  withMember?: false;
+  cache?: boolean;
+}
+
+export type FetchThreadMembersOptions =
+  | FetchThreadMembersWithGuildMemberDataOptions
+  | FetchThreadMembersWithoutGuildMemberDataOptions;
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
