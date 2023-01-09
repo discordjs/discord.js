@@ -4101,10 +4101,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
     options?: FetchThreadMembersWithGuildMemberDataOptions,
   ): Promise<Collection<Snowflake, ThreadMember<true>>>;
 
-  public fetch(
-    options?: FetchThreadMembersWithoutGuildMemberDataOptions,
-  ): Promise<Collection<Snowflake, ThreadMember<false>>>;
-
+  public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
   public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
