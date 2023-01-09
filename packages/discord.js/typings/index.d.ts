@@ -4098,7 +4098,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public fetch(options: ThreadMemberResolvable | FetchThreadMemberOptions): Promise<ThreadMember>;
 
   public fetch(
-    options?: FetchThreadMembersWithGuildMemberDataOptions,
+    options: FetchThreadMembersWithGuildMemberDataOptions,
   ): Promise<Collection<Snowflake, ThreadMember<true>>>;
 
   public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
