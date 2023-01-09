@@ -30,7 +30,7 @@ class ThreadMemberManager extends CachedManager {
 
   _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
-    if (cache) existing?._patch(data);
+    if (cache) existing?._patch(data, { cache });
     if (existing) return existing;
 
     const member = new ThreadMember(this.thread, data, { cache });
