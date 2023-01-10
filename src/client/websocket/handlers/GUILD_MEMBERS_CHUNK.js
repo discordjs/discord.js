@@ -19,6 +19,8 @@ module.exports = (client, { d: data }) => {
    * @property {number} index Index of the received chunk
    * @property {number} count Number of chunks the client should receive
    * @property {?string} nonce Nonce for this chunk
+   * @property {Array<*>} notFound An array of whatever could not be found
+   * when using {@link Opcodes.REQUEST_GUILD_MEMBERS}
    */
 
   /**
@@ -32,5 +34,6 @@ module.exports = (client, { d: data }) => {
     count: data.chunk_count,
     index: data.chunk_index,
     nonce: data.nonce,
+    notFound: data.not_found,
   });
 };
