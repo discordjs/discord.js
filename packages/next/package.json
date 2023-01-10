@@ -56,7 +56,7 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
 		"@microsoft/api-extractor": "^7.33.7",
-		"@types/node": "^16.18.11",
+		"@types/node": "^18.11.18",
 		"@vitest/coverage-c8": "^0.27.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.31.0",
@@ -68,7 +68,7 @@
 		"vitest": "^0.27.0"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.13.0"
 	},
 	"publishConfig": {
 		"access": "public"
