@@ -452,7 +452,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   pin(reason) {
-    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
@@ -461,7 +461,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   unpin(reason) {
-    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
@@ -471,7 +471,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<GuildForumThreadChannel>}
    */
   setAppliedTags(appliedTags, reason) {
-    return this.edit({ appliedTags, reason });
+    return this.edit({ appliedTags }, reason);
   }
 
   /**
