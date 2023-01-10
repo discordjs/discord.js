@@ -43,7 +43,7 @@ runs:
       uses: codecov/codecov-action@v3
       with:
         files: ./packages/next/coverage/cobertura-coverage.xml
-        flags: mext
+        flags: next
 
     - name: Upload Proxy Coverage
       uses: codecov/codecov-action@v3
