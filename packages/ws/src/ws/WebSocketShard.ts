@@ -81,8 +81,6 @@ export interface SendRateLimitState {
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private readonly id: number;
-
 	private useIdentifyCompress = false;
 
 	private inflate: Inflate | null = null;
@@ -105,7 +103,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly timeouts = new Collection<WebSocketShardEvents, NodeJS.Timeout>();
 
-	public readonly strategy: IContextFetchingStrategy;
+	private readonly strategy: IContextFetchingStrategy;
+
+	public readonly id: number;
 
 	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
 

@@ -4,7 +4,7 @@ import { createTsupConfig } from '../../tsup.config.js';
 export default createTsupConfig({
 	entry: {
 		index: 'src/index.ts',
-		worker: 'src/strategies/sharding/worker.ts',
+		defaultWorker: 'src/strategies/sharding/defaultWorker.ts',
 	},
 	external: ['zlib-sync'],
 	esbuildPlugins: [esbuildPluginVersionInjector()],
