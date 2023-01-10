@@ -29,7 +29,7 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 					}
 
 					return (
-						<ItemLink className="color-blurple" itemURI={resolveItemURI(item)} key={item.containerKey}>
+						<ItemLink className="text-blurple" itemURI={resolveItemURI(item)} key={item.containerKey}>
 							{token.text}
 						</ItemLink>
 					);

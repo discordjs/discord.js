@@ -1,5 +1,5 @@
-import type { ApiInterface, Excerpt } from '@microsoft/api-extractor-model';
-import { type ApiClass, ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiClass, ApiInterface, Excerpt } from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { ExcerptText } from '../ExcerptText';
 
 export function HierarchyText({ item, type }: { item: ApiClass | ApiInterface; type: 'Extends' | 'Implements' }) {

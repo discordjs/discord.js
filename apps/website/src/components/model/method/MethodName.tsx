@@ -1,7 +1,7 @@
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
-import { FiLink } from '@react-icons/all-files/fi/FiLink';
 import { useCallback, useMemo } from 'react';
+import { Anchor } from '~/components/Anchor';
 import { ExcerptText } from '~/components/ExcerptText';
 
 export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignature }) {
@@ -27,13 +27,7 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 	return (
 		<div className="flex flex-col">
 			<div className="flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center">
-				<a
-					aria-label="Anchor"
-					className="focus:ring-width-2 focus:ring-blurple hidden rounded outline-0 focus:ring md:inline-block"
-					href={`#${key}`}
-				>
-					<FiLink size={20} />
-				</a>
+				<Anchor href={`#${key}`} />
 				{isDeprecated ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isProtected) ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isStatic) ? (

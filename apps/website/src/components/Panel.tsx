@@ -1,4 +1,6 @@
-export function Panel({ children }: { children: React.ReactNode }) {
+import type { PropsWithChildren } from 'react';
+
+export function Panel({ children }: PropsWithChildren) {
 	return (
 		<>
 			{children}

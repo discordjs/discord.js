@@ -24,8 +24,6 @@ import { Function } from '~/components/model/function/Function';
 import { OVERLOAD_SEPARATOR, PACKAGES } from '~/util/constants';
 import { findMember, findMemberByKey } from '~/util/model.server';
 
-export const dynamicParams = true;
-
 export interface ItemRouteParams {
 	item: string;
 	package: string;
@@ -101,21 +99,16 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
 
 	return (
-		<div>
-			<main
-				className={
-					(member?.kind === 'Class' || member?.kind === 'Interface') &&
-					(member as ApiClass | ApiInterface).members.length
-						? 'xl:pr-64'
-						: ''
-				}
-			>
-				<article className="dark:bg-dark-600 bg-light-600">
-					<div className="dark:bg-dark-800  bg-white p-6 pb-20 shadow">
-						{member ? <Member member={member} /> : null}
-					</div>
-				</article>
-			</main>
-		</div>
+		<main
+			className={
+				(member?.kind === 'Class' || member?.kind === 'Interface') && (member as ApiClass | ApiInterface).members.length
+					? 'xl:pr-64'
+					: ''
+			}
+		>
+			<article className="dark:bg-dark-600 bg-light-600">
+				<div className="dark:bg-dark-800  bg-white p-6 pb-20 shadow">{member ? <Member member={member} /> : null}</div>
+			</article>
+		</main>
 	);
 }

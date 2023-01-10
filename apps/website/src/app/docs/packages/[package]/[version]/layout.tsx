@@ -3,15 +3,13 @@ import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
-import vercelLogo from '../../../../../assets/powered-by-vercel.svg';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
+import vercelLogo from '~/assets/powered-by-vercel.svg';
 import { Header } from '~/components/Header';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
-
-export const dynamicParams = true;
 
 export interface VersionRouteParams {
 	package: string;
@@ -66,7 +64,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 	});
 
 	return (
-		<div>
+		<>
 			<Header />
 			<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
 			<article className="pt-18 lg:pl-76">
@@ -140,6 +138,6 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 					</div>
 				</footer>
 			</article>
-		</div>
+		</>
 	);
 }
