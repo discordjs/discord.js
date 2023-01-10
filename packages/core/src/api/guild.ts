@@ -1,6 +1,5 @@
 import type { RawFile } from '@discordjs/rest';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
-import type { RESTGetAPIGuildMembersResult } from 'discord-api-types/v10';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -16,6 +15,7 @@ import {
 	type RESTGetAPIGuildIntegrationsResult,
 	type RESTGetAPIGuildInvitesResult,
 	type RESTGetAPIGuildMemberResult,
+	type RESTGetAPIGuildMembersResult,
 	type RESTGetAPIGuildMembersQuery,
 	type RESTGetAPIGuildMembersSearchResult,
 	type RESTGetAPIGuildPreviewResult,
