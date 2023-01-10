@@ -6,7 +6,7 @@ import type {
 } from '@microsoft/api-extractor-model';
 import { OverloadSwitcher } from '../../OverloadSwitcher';
 import { MethodDocumentation } from './MethodDocumentation';
-import { MethodHeader } from './MethodName';
+import { MethodHeader } from './MethodHeader';
 
 export function Method({
 	method,
