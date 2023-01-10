@@ -324,6 +324,7 @@ class ThreadChannel extends Channel {
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
+   * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    */
 
@@ -451,7 +452,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   pin(reason) {
-    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
@@ -460,7 +461,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   unpin(reason) {
-    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
@@ -470,7 +471,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<GuildForumThreadChannel>}
    */
   setAppliedTags(appliedTags, reason) {
-    return this.edit({ appliedTags, reason });
+    return this.edit({ appliedTags }, reason);
   }
 
   /**
@@ -521,7 +522,7 @@ class ThreadChannel extends Channel {
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(Permissions.FLAGS.MANAGE_THREADS, false)
     );
   }
@@ -553,7 +554,7 @@ class ThreadChannel extends Channel {
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
       permissions.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false) &&
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 
