@@ -2,12 +2,12 @@ import { setTimeout, clearTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { request, type Dispatcher } from 'undici';
-import type { RateLimitData, RequestOptions } from '../REST';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
+import { _evtInvalidRequestWarning, _evtRatelimited, _evtResponse, _evtRestDebug } from '../Events.js';
+import type { RateLimitData, RequestOptions } from '../REST.js';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
 import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
-import { RESTEvents } from '../utils/constants.js';
 import { hasSublimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
 import type { IHandler } from './IHandler.js';
 
@@ -128,7 +128,7 @@ export class SequentialHandler implements IHandler {
 	 * @param message - The message to debug
 	 */
 	private debug(message: string) {
-		this.manager.emit(RESTEvents.Debug, `[REST ${this.id}] ${message}`);
+		_evtRestDebug.post(`[REST ${this.id}] ${message}`);
 	}
 
 	/**
@@ -267,7 +267,7 @@ export class SequentialHandler implements IHandler {
 				global: isGlobal,
 			};
 			// Let library users know they have hit a rate limit
-			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
+			_evtRatelimited.post(rateLimitData);
 			// Determine whether a RateLimitError should be thrown
 			await this.onRateLimit(rateLimitData);
 			// When not erroring, emit debug for what is happening
@@ -319,10 +319,9 @@ export class SequentialHandler implements IHandler {
 			clearTimeout(timeout);
 		}
 
-		if (this.manager.listenerCount(RESTEvents.Response)) {
-			this.manager.emit(
-				RESTEvents.Response,
-				{
+		if (_evtResponse.getHandlers().length) {
+			_evtResponse.post({
+				request: {
 					method,
 					path: routeId.original,
 					route: routeId.bucketRoute,
@@ -330,8 +329,8 @@ export class SequentialHandler implements IHandler {
 					data: requestData,
 					retries,
 				},
-				{ ...res },
-			);
+				response: { ...res },
+			});
 		}
 
 		const status = res.statusCode;
@@ -400,7 +399,7 @@ export class SequentialHandler implements IHandler {
 				invalidCount % this.manager.options.invalidRequestWarningInterval === 0;
 			if (emitInvalid) {
 				// Let library users know periodically about invalid requests
-				this.manager.emit(RESTEvents.InvalidRequestWarning, {
+				_evtInvalidRequestWarning.post({
 					count: invalidCount,
 					remainingTime: invalidCountResetTime - Date.now(),
 				});

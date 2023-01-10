@@ -30,18 +30,6 @@ export const DefaultRestOptions = {
 	handlerSweepInterval: 3_600_000, // 1 Hour
 } as const satisfies Required<RESTOptions>;
 
-/**
- * The events that the REST manager emits
- */
-export const enum RESTEvents {
-	Debug = 'restDebug',
-	HandlerSweep = 'handlerSweep',
-	HashSweep = 'hashSweep',
-	InvalidRequestWarning = 'invalidRequestWarning',
-	RateLimited = 'rateLimited',
-	Response = 'response',
-}
-
 export const ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif'] as const satisfies readonly string[];
 export const ALLOWED_STICKER_EXTENSIONS = ['png', 'json'] as const satisfies readonly string[];
 export const ALLOWED_SIZES = [16, 32, 64, 128, 256, 512, 1_024, 2_048, 4_096] as const satisfies readonly number[];

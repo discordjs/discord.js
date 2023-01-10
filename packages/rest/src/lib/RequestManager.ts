@@ -1,15 +1,15 @@
 import { Blob, Buffer } from 'node:buffer';
-import { EventEmitter } from 'node:events';
 import { setInterval, clearInterval } from 'node:timers';
 import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import { _evtHandlerSweep, _evtHashSweep, _evtRestDebug } from './Events.js';
+import type { RESTOptions, RequestOptions } from './REST.js';
 import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
-import { DefaultRestOptions, DefaultUserAgent, OverwrittenMimeTypes, RESTEvents } from './utils/constants.js';
+import { DefaultRestOptions, DefaultUserAgent, OverwrittenMimeTypes } from './utils/constants.js';
 import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
@@ -156,27 +156,10 @@ export interface HashData {
 	value: string;
 }
 
-export interface RequestManager {
-	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
-
-	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
-		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
-}
-
 /**
  * Represents the class that manages handlers for endpoints
  */
-export class RequestManager extends EventEmitter {
+export class RequestManager {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
@@ -217,7 +200,6 @@ export class RequestManager extends EventEmitter {
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions>) {
-		super();
 		this.options = { ...DefaultRestOptions, ...options };
 		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = this.options.globalRequestsPerSecond;
@@ -256,13 +238,13 @@ export class RequestManager extends EventEmitter {
 					}
 
 					// Emit debug information
-					this.emit(RESTEvents.Debug, `Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
+					_evtRestDebug.post(`Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
 
 					return shouldSweep;
 				});
 
 				// Fire event
-				this.emit(RESTEvents.HashSweep, sweptHashes);
+				_evtHashSweep.post(sweptHashes);
 			}, this.options.hashSweepInterval).unref();
 		}
 
@@ -280,12 +262,12 @@ export class RequestManager extends EventEmitter {
 						sweptHandlers.set(key, val);
 					}
 
-					this.emit(RESTEvents.Debug, `Handler ${val.id} for ${key} swept due to being inactive`);
+					_evtRestDebug.post(`Handler ${val.id} for ${key} swept due to being inactive`);
 					return inactive;
 				});
 
 				// Fire event
-				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
+				_evtHandlerSweep.post(sweptHandlers);
 			}, this.options.handlerSweepInterval).unref();
 		}
 	}

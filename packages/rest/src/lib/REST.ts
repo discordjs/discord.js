@@ -1,18 +1,22 @@
-import { EventEmitter } from 'node:events';
-import type { Collection } from '@discordjs/collection';
 import type { request, Dispatcher } from 'undici';
 import { CDN } from './CDN.js';
 import {
+	evtHandlerSweep,
+	evtHashSweep,
+	evtInvalidRequestWarning,
+	evtRatelimited,
+	evtResponse,
+	evtRestDebug,
+} from './Events.js';
+import {
 	RequestManager,
 	RequestMethod,
-	type HashData,
 	type HandlerRequestData,
 	type InternalRequest,
 	type RequestData,
 	type RouteLike,
 } from './RequestManager.js';
-import type { IHandler } from './handlers/IHandler.js';
-import { DefaultRestOptions, RESTEvents } from './utils/constants.js';
+import { DefaultRestOptions } from './utils/constants.js';
 import { parseResponse } from './utils/utils.js';
 
 /**
@@ -122,7 +126,7 @@ export interface RESTOptions {
 }
 
 /**
- * Data emitted on `RESTEvents.RateLimited`
+ * Data emitted on `evtRatelimited`
  */
 export interface RateLimitData {
 	/**
@@ -205,56 +209,28 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-export interface RestEvents {
-	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
-	hashSweep: [sweptHashes: Collection<string, HashData>];
-	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
-	newListener: [name: string, listener: (...args: any) => void];
-	rateLimited: [rateLimitInfo: RateLimitData];
-	removeListener: [name: string, listener: (...args: any) => void];
-	response: [request: APIRequest, response: Dispatcher.ResponseData];
-	restDebug: [info: string];
-}
-
-export interface REST {
-	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
-
-	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
-		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
-}
-
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
-export class REST extends EventEmitter {
+export class REST {
 	public readonly cdn: CDN;
 
 	public readonly requestManager: RequestManager;
 
-	public constructor(options: Partial<RESTOptions> = {}) {
-		super();
-		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
-		this.requestManager = new RequestManager(options)
-			.on(RESTEvents.Debug, this.emit.bind(this, RESTEvents.Debug))
-			.on(RESTEvents.RateLimited, this.emit.bind(this, RESTEvents.RateLimited))
-			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning))
-			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
+	public readonly evtRestDebug = evtRestDebug;
 
-		this.on('newListener', (name, listener) => {
-			if (name === RESTEvents.Response) this.requestManager.on(name, listener);
-		});
-		this.on('removeListener', (name, listener) => {
-			if (name === RESTEvents.Response) this.requestManager.off(name, listener);
-		});
+	public readonly evtRatelimited = evtRatelimited;
+
+	public readonly evtInvalidRequestWarning = evtInvalidRequestWarning;
+
+	public readonly evtHashSweep = evtHashSweep;
+
+	public readonly evtHandlerSweep = evtHandlerSweep;
+
+	public readonly evtResponse = evtResponse;
+
+	public constructor(options: Partial<RESTOptions> = {}) {
+		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
+		this.requestManager = new RequestManager(options);
 	}
 
 	/**

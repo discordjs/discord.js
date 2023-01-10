@@ -5,7 +5,7 @@ import { setInterval, clearInterval, setTimeout } from 'node:timers';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
+import { DiscordAPIError, HTTPError, RateLimitError, REST } from '../src/index.js';
 import { genPath } from './util.js';
 
 let mockAgent: MockAgent;
@@ -86,11 +86,7 @@ test('Significant Invalid Requests', async () => {
 		.times(10);
 
 	const invalidListener = vitest.fn();
-	const invalidListener2 = vitest.fn();
-	api.on(RESTEvents.InvalidRequestWarning, invalidListener);
-	// Ensure listeners on REST do not get double added
-	api.on(RESTEvents.InvalidRequestWarning, invalidListener2);
-	api.off(RESTEvents.InvalidRequestWarning, invalidListener2);
+	api.evtInvalidRequestWarning.attach(invalidListener);
 
 	const [a, b, c, d, e] = [
 		api.get('/badRequest'),
@@ -121,7 +117,7 @@ test('Significant Invalid Requests', async () => {
 	await expect(i).rejects.toThrowError('Missing Permissions');
 	await expect(j).rejects.toThrowError('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(3);
-	api.off(RESTEvents.InvalidRequestWarning, invalidListener);
+	api.evtInvalidRequestWarning.detach();
 });
 
 test('Handle standard rate limits', async () => {

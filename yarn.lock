@@ -2290,6 +2290,7 @@ __metadata:
     eslint: ^8.28.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
+    evt: ^2.4.13
     file-type: ^18.0.0
     prettier: ^2.8.0
     tslib: ^2.4.1
@@ -10359,6 +10360,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"evt@npm:^2.4.13":
+  version: 2.4.13
+  resolution: "evt@npm:2.4.13"
+  dependencies:
+    minimal-polyfills: ^2.2.2
+    run-exclusive: ^2.2.18
+    tsafe: ^1.4.1
+  checksum: 0fe25ea8bfa8bddf8f9d2cacc1a2eb2be77fd6be4d513578e14877bcf794de15ea5a5522d0d2ab754cf3117497f31e0a4503e19be46f68c3cece0aaca35b9075
+  languageName: node
+  linkType: hard
+
 "execa@npm:^0.2.2":
   version: 0.2.2
   resolution: "execa@npm:0.2.2"
@@ -15320,6 +15332,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimal-polyfills@npm:^2.2.1, minimal-polyfills@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "minimal-polyfills@npm:2.2.2"
+  checksum: e3beab30d0e144e0e17d7a559f1c787645003fa483edcdd270a98c7fe935afeccd5af591d72a6dc73fed640b7d2c12ec653f3d524685a7240008d3143efd2050
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
@@ -18303,6 +18322,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"run-exclusive@npm:^2.2.18":
+  version: 2.2.18
+  resolution: "run-exclusive@npm:2.2.18"
+  dependencies:
+    minimal-polyfills: ^2.2.1
+  checksum: 1d684686bdc5e18082f945a871e2293ad371f87850c212af1dcd3d846b654dc58bdcf1f4117c1795bad32f7518518cda72d4746303a8446343a079f7f2f8c8f0
+  languageName: node
+  linkType: hard
+
 "run-parallel@npm:^1.1.9":
   version: 1.2.0
   resolution: "run-parallel@npm:1.2.0"
@@ -20084,6 +20112,13 @@ __metadata:
   version: 6.15.5
   resolution: "ts-toolbelt@npm:6.15.5"
   checksum: 24ad00cfd9ce735c76c873a9b1347eac475b94e39ebbdf100c9019dce88dd5f4babed52884cf82bb456a38c28edd0099ab6f704b84b2e5e034852b618472c1f3
+  languageName: node
+  linkType: hard
+
+"tsafe@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "tsafe@npm:1.4.1"
+  checksum: 0cc2afc7b6f2f09f8182acb4ae335e19c81eebf7de165dccd503e0c48a9a36ce4304ffa2ef38b830fbaabbe6131cf3c9ffa10cf15457a61c794f73e21b77df1b
   languageName: node
   linkType: hard
 
