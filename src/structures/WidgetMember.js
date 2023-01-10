@@ -4,6 +4,7 @@ const Base = require('./Base');
 
 /**
  * Represents a WidgetMember.
+ * @extends {Base}
  */
 class WidgetMember extends Base {
   /**
