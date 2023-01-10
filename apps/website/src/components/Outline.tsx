@@ -6,7 +6,7 @@ import { TableOfContentItems } from './TableOfContentItems';
 
 export function Outline({ members }: { members: TableOfContentsSerialized[] }) {
 	return (
-		<aside className="dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[72px] right-0 bottom-0 z-20 hidden h-[calc(100vh_-_72px)] w-64 border-l bg-white pr-2 xl:block">
+		<aside className="dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[57px] right-0 bottom-0 z-20 hidden h-[calc(100vh_-_72px)] w-64 border-l bg-white pr-2 xl:block">
 			<Scrollbars
 				autoHide
 				hideTracksWhenNotNeeded
