@@ -775,7 +775,8 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to fetch audit logs.
    * @typedef {Object} GuildAuditLogsFetchOptions
-   * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
    * @property {number} [limit] The number of entries to return
    * @property {UserResolvable} [user] Only return entries for actions made by this user
    * @property {AuditLogAction|number} [type] Only return entries for this action type
@@ -791,18 +792,17 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
-    if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
-
+  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
     const data = await this.client.api.guilds(this.id)['audit-logs'].get({
       query: {
-        before: options.before,
-        limit: options.limit,
-        user_id: this.client.users.resolveId(options.user),
-        action_type: options.type,
+        before: before?.id ?? before,
+        after: after?.id ?? after,
+        limit,
+        user_id: this.client.users.resolveId(user),
+        action_type: typeof type === 'string' ? GuildAuditLogs.Actions[type] : type,
       },
     });
+
     return GuildAuditLogs.build(this, data);
   }
 
