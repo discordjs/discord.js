@@ -40,8 +40,8 @@ jobs:
           # change this if you prefer a more strict cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
-      - name: Build dependencies
-        run: yarn build
+      - name: Build website
+        run: yarn workspace @discordjs/website run build:prod
 
       - name: Analyze bundle
         run: npx -p nextjs-bundle-analysis report
