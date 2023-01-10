@@ -190,7 +190,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	/**
 	 * Strategy used to manage shards
 	 *
-	 * @defaultValue `SimpleManagerToShardStrategy`
+	 * @defaultValue `SimpleShardingStrategy`
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
@@ -299,5 +299,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public send(shardId: number, payload: GatewaySendPayload) {
 		return this.strategy.send(shardId, payload);
+	}
+
+	public fetchStatus() {
+		return this.strategy.fetchStatus();
 	}
 }

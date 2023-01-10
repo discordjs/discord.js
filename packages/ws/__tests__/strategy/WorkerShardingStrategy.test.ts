@@ -114,6 +114,10 @@ vi.mock('node:worker_threads', async () => {
 				case WorkerSendPayloadOp.ShardCanIdentify: {
 					break;
 				}
+
+				case WorkerSendPayloadOp.FetchStatus: {
+					break;
+				}
 			}
 		}
 
