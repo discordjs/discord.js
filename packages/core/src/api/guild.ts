@@ -1,5 +1,6 @@
 import type { RawFile } from '@discordjs/rest';
 import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import type { RESTGetAPIGuildMembersResult } from 'discord-api-types/v10';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -151,7 +152,7 @@ export class GuildsAPI {
 	public async getMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
 		return this.rest.get(Routes.guildMembers(guildId), {
 			query: makeURLSearchParams(options),
-		}) as Promise<RESTGetAPIGuildMemberResult>;
+		}) as Promise<RESTGetAPIGuildMembersResult>;
 	}
 
 	/**
