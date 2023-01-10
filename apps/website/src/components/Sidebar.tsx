@@ -1,36 +1,41 @@
 'use client';
 
-import type { getMembers } from '@discordjs/api-extractor-utils';
-import { Section } from '@discordjs/ui';
+import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo } from 'react';
+import { ItemLink } from './ItemLink';
+import { Section } from './Section';
 import { useNav } from '~/contexts/nav';
 
-type Members = ReturnType<typeof getMembers>;
-
-interface GroupedMembers {
-	Classes: Members;
-	Enums: Members;
-	Functions: Members;
-	Interfaces: Members;
-	Types: Members;
-	Variables: Members;
+export interface SidebarSectionItemData {
+	href: string;
+	kind: ApiItemKind;
+	name: string;
+	overloadIndex?: number | undefined;
 }
 
-function groupMembers(members: Members): GroupedMembers {
-	const Classes: Members = [];
-	const Enums: Members = [];
-	const Interfaces: Members = [];
-	const Types: Members = [];
-	const Variables: Members = [];
-	const Functions: Members = [];
+interface GroupedMembers {
+	Classes: SidebarSectionItemData[];
+	Enums: SidebarSectionItemData[];
+	Functions: SidebarSectionItemData[];
+	Interfaces: SidebarSectionItemData[];
+	Types: SidebarSectionItemData[];
+	Variables: SidebarSectionItemData[];
+}
+
+function groupMembers(members: readonly SidebarSectionItemData[]): GroupedMembers {
+	const Classes: SidebarSectionItemData[] = [];
+	const Enums: SidebarSectionItemData[] = [];
+	const Interfaces: SidebarSectionItemData[] = [];
+	const Types: SidebarSectionItemData[] = [];
+	const Variables: SidebarSectionItemData[] = [];
+	const Functions: SidebarSectionItemData[] = [];
 
 	for (const member of members) {
 		switch (member.kind) {
@@ -60,7 +65,7 @@ function groupMembers(members: Members): GroupedMembers {
 	return { Classes, Functions, Enums, Interfaces, Types, Variables };
 }
 
-function resolveIcon(item: keyof GroupedMembers) {
+function resolveIcon(item: string) {
 	switch (item) {
 		case 'Classes':
 			return <VscSymbolClass size={20} />;
@@ -77,14 +82,10 @@ function resolveIcon(item: keyof GroupedMembers) {
 	}
 }
 
-export function SidebarItems({ members }: { members: Members }) {
+export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 	const pathname = usePathname();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
+	const asPathWithoutQueryAndAnchor = `/${pathname?.split('/').splice(-1) ?? ''}`;
 	const { setOpened } = useNav();
-
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
-	}, [pathname]);
 
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
@@ -95,13 +96,13 @@ export function SidebarItems({ members }: { members: Members }) {
 				.map((group, idx) => (
 					<Section icon={resolveIcon(group)} key={idx} title={group}>
 						{groupItems[group].map((member, index) => (
-							<Link
+							<ItemLink
 								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-									asPathWithoutQueryAndAnchor === member.path
+									asPathWithoutQueryAndAnchor === member.href
 										? 'bg-blurple text-white'
 										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 								}`}
-								href={member.path}
+								itemURI={member.href}
 								key={index}
 								onClick={() => setOpened(false)}
 								title={member.name}
@@ -112,7 +113,7 @@ export function SidebarItems({ members }: { members: Members }) {
 										<span className="text-xs">{member.overloadIndex}</span>
 									) : null}
 								</div>
-							</Link>
+							</ItemLink>
 						))}
 					</Section>
 				))}

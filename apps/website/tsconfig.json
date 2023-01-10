@@ -9,6 +9,7 @@
 		"allowJs": false,
 		"incremental": true,
 		"skipLibCheck": true,
+		"sourceMap": true,
 		"plugins": [
 			{
 				"name": "next"

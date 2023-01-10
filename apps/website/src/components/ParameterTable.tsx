@@ -1,26 +1,24 @@
-'use client';
-
-import type { ParameterDocumentation } from '@discordjs/api-extractor-utils';
+import type { ApiParameterListMixin } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
-import { HyperlinkedText } from './HyperlinkedText';
+import { ExcerptText } from './ExcerptText';
 import { Table } from './Table';
-import { TSDoc } from './tsdoc/TSDoc';
+import { TSDoc } from './documentation/tsdoc/TSDoc';
 
 const columnStyles = {
 	Name: 'font-mono whitespace-nowrap',
 	Type: 'font-mono whitespace-pre-wrap break-normal',
 };
 
-export function ParameterTable({ data }: { data: ParameterDocumentation[] }) {
+export function ParameterTable({ item }: { item: ApiParameterListMixin }) {
 	const rows = useMemo(
 		() =>
-			data.map((param) => ({
+			item.parameters.map((param) => ({
 				Name: param.name,
-				Type: <HyperlinkedText tokens={param.tokens} />,
+				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} model={item.getAssociatedModel()!} />,
 				Optional: param.isOptional ? 'Yes' : 'No',
-				Description: param.paramCommentBlock ? <TSDoc node={param.paramCommentBlock} /> : 'None',
+				Description: param.tsdocParamBlock ? <TSDoc item={item} tsdoc={param.tsdocParamBlock.content} /> : 'None',
 			})),
-		[data],
+		[item],
 	);
 
 	return (
