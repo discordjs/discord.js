@@ -1,22 +1,20 @@
-'use client';
+import type { ApiInterface } from '@microsoft/api-extractor-model';
+import { Outline } from '../Outline';
+import { Documentation } from '../documentation/Documentation';
+import { HierarchyText } from '../documentation/HierarchyText';
+import { Members } from '../documentation/Members';
+import { ObjectHeader } from '../documentation/ObjectHeader';
+import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
+import { serializeMembers } from '../documentation/util';
 
-import type { ApiInterfaceJSON } from '@discordjs/api-extractor-utils';
-import { DocContainer } from '../DocContainer';
-import { MethodsSection, PropertiesSection } from '../Sections';
-
-export function Interface({ data }: { data: ApiInterfaceJSON }) {
+export function Interface({ item }: { item: ApiInterface }) {
 	return (
-		<DocContainer
-			excerpt={data.excerpt}
-			kind={data.kind}
-			methods={data.methods}
-			name={data.name}
-			properties={data.properties}
-			summary={data.summary}
-			typeParams={data.typeParameters}
-		>
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
-		</DocContainer>
+		<Documentation>
+			<ObjectHeader item={item} />
+			<HierarchyText item={item} type="Extends" />
+			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
+			<Members item={item} />
+			<Outline members={serializeMembers(item)} />
+		</Documentation>
 	);
 }
