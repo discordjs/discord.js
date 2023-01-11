@@ -1044,6 +1044,8 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 
   public readonly client: Client;
   public collected: Collection<K, V>;
+  public lastCollectedTimestamp: number | null;
+  public get lastCollectedAt(): Date | null;
   public ended: boolean;
   public get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;

@@ -98,6 +98,20 @@ class Collector extends EventEmitter {
   }
 
   /**
+   * The timestamp at which this collector last collected an item
+   * @type {number|null}
+   */
+  lastCollectedTimestamp = null;
+
+  /**
+   * The Date at which this collector last collected an item
+   * @type {Date|null}
+   */
+  get lastCollectedAt() {
+    return this.lastCollectedTimestamp && new Date(this.lastCollectedTimestamp);
+  }
+
+  /**
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @returns {Promise<void>}
@@ -118,6 +132,7 @@ class Collector extends EventEmitter {
          */
         this.emit('collect', ...args);
 
+        this.lastCollectedTimestamp = Date.now();
         if (this._idletimeout) {
           clearTimeout(this._idletimeout);
           this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
