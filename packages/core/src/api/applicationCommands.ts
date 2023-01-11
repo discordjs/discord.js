@@ -32,7 +32,7 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommands(
 		applicationId: Snowflake,
 		query: RESTGetAPIApplicationCommandsQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
 			query: makeURLSearchParams(query),
@@ -50,7 +50,7 @@ export class ApplicationCommandsAPI {
 	public async createGlobalCommand(
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.applicationCommands(applicationId), {
 			body,
@@ -66,7 +66,11 @@ export class ApplicationCommandsAPI {
 	 * @param commandId - The command id to fetch
 	 * @param options - The options to use when fetching the command
 	 */
-	public async getGlobalCommand(applicationId: Snowflake, commandId: Snowflake, { signal }: { signal?: AbortSignal }) {
+	public async getGlobalCommand(
+		applicationId: Snowflake,
+		commandId: Snowflake,
+		{ signal }: { signal?: AbortSignal | undefined },
+	) {
 		return this.rest.get(Routes.applicationCommand(applicationId, commandId), {
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandResult>;
@@ -85,7 +89,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
 			body,
@@ -104,7 +108,7 @@ export class ApplicationCommandsAPI {
 	public async deleteGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), { signal });
 	}
@@ -120,7 +124,7 @@ export class ApplicationCommandsAPI {
 	public async bulkOverwriteGlobalCommands(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
 			body,
@@ -141,7 +145,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		query: RESTGetAPIApplicationGuildCommandsQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			query: makeURLSearchParams(query),
@@ -162,7 +166,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
@@ -183,7 +187,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			signal,
@@ -205,7 +209,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body,
@@ -226,7 +230,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), { signal });
 	}
@@ -244,7 +248,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
@@ -265,7 +269,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			signal,
@@ -283,7 +287,7 @@ export class ApplicationCommandsAPI {
 	public async getGuildCommandsPermissions(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildApplicationCommandsPermissions(applicationId, guildId), {
 			signal,
@@ -307,7 +311,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
-		{ signal }: { signal?: AbortSignal },
+		{ signal }: { signal?: AbortSignal | undefined },
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },

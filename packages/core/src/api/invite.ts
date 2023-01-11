@@ -9,10 +9,16 @@ export class InvitesAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/invite#get-invite}
 	 * @param code - The invite code
+	 * @param query - The options to use when fetching the invite
 	 */
-	public async get(code: string, options: RESTGetAPIInviteQuery = {}) {
+	public async get(
+		code: string,
+		query: RESTGetAPIInviteQuery = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.get(Routes.invite(code), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(query),
+			signal,
 		}) as Promise<RESTGetAPIInviteResult>;
 	}
 
@@ -21,9 +27,12 @@ export class InvitesAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/invite#delete-invite}
 	 * @param code - The invite code
-	 * @param reason - The reason for deleting the invite
+	 * @param options - The options to use when deleting the invite
 	 */
-	public async delete(code: string, reason?: string) {
-		await this.rest.delete(Routes.invite(code), { reason });
+	public async delete(
+		code: string,
+		{ reason, signal }: { reason?: string | undefined | undefined; signal?: AbortSignal | undefined } = {},
+	) {
+		await this.rest.delete(Routes.invite(code), { reason, signal });
 	}
 }

@@ -99,7 +99,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild
 	 */
-	public async get(guildId: string, options?: { signal?: AbortSignal }) {
+	public async get(guildId: string, options?: { signal?: AbortSignal | undefined }) {
 		return this.rest.get(Routes.guild(guildId), { signal: options?.signal }) as Promise<RESTGetAPIGuildResult>;
 	}
 
@@ -110,7 +110,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the preview from
 	 * @param options - The options for fetching the guild preview
 	 */
-	public async getPreview(guildId: Snowflake, options?: { signal?: AbortSignal }) {
+	public async getPreview(guildId: Snowflake, options?: { signal?: AbortSignal | undefined }) {
 		return this.rest.get(Routes.guildPreview(guildId), {
 			signal: options?.signal,
 		}) as Promise<RESTGetAPIGuildPreviewResult>;
@@ -123,7 +123,7 @@ export class GuildsAPI {
 	 * @param data - The guild to create
 	 * @param options - The options for creating the guild
 	 */
-	public async create(data: RESTPostAPIGuildsJSONBody, options?: { signal?: AbortSignal }) {
+	public async create(data: RESTPostAPIGuildsJSONBody, options?: { signal?: AbortSignal | undefined }) {
 		return this.rest.post(Routes.guilds(), { body: data, signal: options?.signal }) as Promise<RESTPostAPIGuildsResult>;
 	}
 
@@ -138,7 +138,7 @@ export class GuildsAPI {
 	public async edit(
 		guildId: Snowflake,
 		data: RESTPatchAPIGuildJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guild(guildId), {
 			reason,
@@ -155,7 +155,10 @@ export class GuildsAPI {
 	 * @param reason - The reason for deleting this guild
 	 * @param options - The options for deleting this guild
 	 */
-	public async delete(guildId: Snowflake, { signal, reason }: { reason?: string; signal?: AbortSignal } = {}) {
+	public async delete(
+		guildId: Snowflake,
+		{ signal, reason }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+	) {
 		await this.rest.delete(Routes.guild(guildId), { reason, signal });
 	}
 
@@ -170,7 +173,7 @@ export class GuildsAPI {
 	public async getMembers(
 		guildId: Snowflake,
 		query: RESTGetAPIGuildMembersQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildMembers(guildId), {
 			query: makeURLSearchParams(query),
@@ -185,7 +188,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the channels from
 	 * @param options - The options for fetching the guild channels
 	 */
-	public async getChannels(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getChannels(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildChannels(guildId), {
 			signal,
 		}) as Promise<RESTGetAPIGuildChannelsResult>;
@@ -202,7 +205,7 @@ export class GuildsAPI {
 	public async createChannel(
 		guildId: Snowflake,
 		body: RESTPostAPIGuildChannelJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildChannels(guildId), {
 			reason,
@@ -222,7 +225,7 @@ export class GuildsAPI {
 	public async setChannelPositions(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildChannelPositionsJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.patch(Routes.guildChannels(guildId), { reason, body, signal });
 	}
@@ -234,7 +237,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the active threads from
 	 * @param options - The options for fetching the active threads
 	 */
-	public async getActiveThreads(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getActiveThreads(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildActiveThreads(guildId), { signal }) as Promise<RESTGetAPIGuildThreadsResult>;
 	}
 
@@ -245,7 +248,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the ban from
 	 * @param options - The options for fetching the guild member ban
 	 */
-	public async getMemberBans(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getMemberBans(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildBans(guildId), { signal }) as Promise<RESTGetAPIGuildBansResult>;
 	}
 
@@ -262,7 +265,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPutAPIGuildBanJSONBody = {},
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.put(Routes.guildBan(guildId, userId), { reason, body, signal });
 	}
@@ -278,7 +281,7 @@ export class GuildsAPI {
 	public async unbanUser(
 		guildId: Snowflake,
 		userId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildBan(guildId, userId), { reason, signal });
 	}
@@ -290,7 +293,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the roles from
 	 * @param options - The options for fetching the guild roles
 	 */
-	public async getRoles(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getRoles(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildRoles(guildId), { signal }) as Promise<RESTGetAPIGuildRolesResult>;
 	}
 
@@ -305,7 +308,7 @@ export class GuildsAPI {
 	public async createRole(
 		guildId: Snowflake,
 		body: RESTPostAPIGuildRoleJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildRoles(guildId), { reason, body, signal }) as Promise<RESTPostAPIGuildRoleResult>;
 	}
@@ -321,7 +324,7 @@ export class GuildsAPI {
 	public async setRolePositions(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildRolePositionsJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildRoles(guildId), {
 			reason,
@@ -343,7 +346,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		roleId: Snowflake,
 		body: RESTPatchAPIGuildRoleJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildRole(guildId, roleId), {
 			reason,
@@ -363,7 +366,7 @@ export class GuildsAPI {
 	public async deleteRole(
 		guildId: Snowflake,
 		roleId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal },
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined },
 	) {
 		await this.rest.delete(Routes.guildRole(guildId, roleId), { reason, signal });
 	}
@@ -379,7 +382,7 @@ export class GuildsAPI {
 	public async editMFALevel(
 		guildId: Snowflake,
 		level: GuildMFALevel,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
@@ -399,7 +402,7 @@ export class GuildsAPI {
 	public async getPruneCount(
 		guildId: Snowflake,
 		query: RESTGetAPIGuildPruneCountQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildPrune(guildId), {
 			signal,
@@ -418,7 +421,7 @@ export class GuildsAPI {
 	public async beginPrune(
 		guildId: Snowflake,
 		body: RESTPostAPIGuildPruneJSONBody = {},
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildPrune(guildId), {
 			body,
@@ -434,7 +437,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the voice regions from
 	 * @param options - The options for fetching the voice regions
 	 */
-	public async getVoiceRegions(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getVoiceRegions(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildVoiceRegions(guildId), { signal }) as Promise<RESTGetAPIGuildVoiceRegionsResult>;
 	}
 
@@ -445,7 +448,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the invites from
 	 * @param options - The options for fetching the invites
 	 */
-	public async getInvites(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getInvites(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildInvites(guildId), { signal }) as Promise<RESTGetAPIGuildInvitesResult>;
 	}
 
@@ -456,7 +459,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the integrations from
 	 * @param options - The options for fetching the integrations
 	 */
-	public async getIntegrations(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getIntegrations(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildIntegrations(guildId), { signal }) as Promise<RESTGetAPIGuildIntegrationsResult>;
 	}
 
@@ -471,7 +474,7 @@ export class GuildsAPI {
 	public async deleteIntegration(
 		guildId: Snowflake,
 		integrationId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildIntegration(guildId, integrationId), { reason, signal });
 	}
@@ -483,7 +486,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the widget settings from
 	 * @param options - The options for fetching the widget settings
 	 */
-	public async getWidgetSettings(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getWidgetSettings(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildWidgetSettings(guildId), { signal }) as Promise<RESTGetAPIGuildWidgetImageResult>;
 	}
 
@@ -498,7 +501,7 @@ export class GuildsAPI {
 	public async editWidgetSettings(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildWidgetSettingsJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildWidgetSettings(guildId), {
 			reason,
@@ -514,7 +517,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the widget from
 	 * @param options - The options for fetching the widget
 	 */
-	public async getWidget(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getWidget(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildWidgetJSON(guildId), { signal }) as Promise<RESTGetAPIGuildWidgetJSONResult>;
 	}
 
@@ -525,7 +528,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the vanity url from
 	 * @param options - The options for fetching the vanity url
 	 */
-	public async getVanityURL(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getVanityURL(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildVanityUrl(guildId), { signal }) as Promise<RESTGetAPIGuildVanityUrlResult>;
 	}
 
@@ -537,7 +540,11 @@ export class GuildsAPI {
 	 * @param style - The style of the widget image
 	 * @param options - The options for fetching the widget image
 	 */
-	public async getWidgetImage(guildId: Snowflake, style?: GuildWidgetStyle, { signal }: { signal?: AbortSignal } = {}) {
+	public async getWidgetImage(
+		guildId: Snowflake,
+		style?: GuildWidgetStyle,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.get(Routes.guildWidgetImage(guildId), {
 			query: makeURLSearchParams({ style }),
 			signal,
@@ -551,7 +558,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the welcome screen from
 	 * @param options - The options for fetching the welcome screen
 	 */
-	public async getWelcomeScreen(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getWelcomeScreen(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildWelcomeScreen(guildId), { signal }) as Promise<RESTGetAPIGuildWelcomeScreenResult>;
 	}
 
@@ -566,7 +573,7 @@ export class GuildsAPI {
 	public async editWelcomeScreen(
 		guildId: Snowflake,
 		body?: RESTPatchAPIGuildWelcomeScreenJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildWelcomeScreen(guildId), {
 			reason,
@@ -588,7 +595,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.patch(Routes.guildVoiceState(guildId, userId), { reason, body, signal });
 	}
@@ -600,7 +607,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the emojis from
 	 * @param options - The options for fetching the emojis
 	 */
-	public async getEmojis(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getEmojis(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildEmojis(guildId), { signal }) as Promise<RESTGetAPIGuildEmojisResult>;
 	}
 
@@ -615,7 +622,7 @@ export class GuildsAPI {
 	public async getEmoji(
 		guildId: Snowflake,
 		emojiId: Snowflake,
-		{ signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildEmoji(guildId, emojiId), { signal }) as Promise<RESTGetAPIGuildEmojiResult>;
 	}
@@ -631,7 +638,7 @@ export class GuildsAPI {
 	public async createEmoji(
 		guildId: Snowflake,
 		body: RESTPostAPIGuildEmojiJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildEmojis(guildId), {
 			reason,
@@ -653,7 +660,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		emojiId: Snowflake,
 		body: RESTPatchAPIGuildEmojiJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildEmoji(guildId, emojiId), {
 			reason,
@@ -673,7 +680,7 @@ export class GuildsAPI {
 	public async deleteEmoji(
 		guildId: Snowflake,
 		emojiId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildEmoji(guildId, emojiId), { reason, signal });
 	}
@@ -688,7 +695,7 @@ export class GuildsAPI {
 	public async getScheduledEvents(
 		guildId: Snowflake,
 		query: RESTGetAPIGuildScheduledEventsQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildScheduledEvents(guildId), {
 			query: makeURLSearchParams(query),
@@ -707,7 +714,7 @@ export class GuildsAPI {
 	public async createScheduledEvent(
 		guildId: Snowflake,
 		body: RESTPostAPIGuildScheduledEventJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildScheduledEvents(guildId), {
 			reason,
@@ -729,7 +736,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		eventId: Snowflake,
 		query: RESTGetAPIGuildScheduledEventQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildScheduledEvent(guildId, eventId), {
 			query: makeURLSearchParams(query),
@@ -750,7 +757,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		eventId: Snowflake,
 		body: RESTPatchAPIGuildScheduledEventJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildScheduledEvent(guildId, eventId), {
 			reason,
@@ -770,7 +777,7 @@ export class GuildsAPI {
 	public async deleteScheduledEvent(
 		guildId: Snowflake,
 		eventId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildScheduledEvent(guildId, eventId), { reason, signal });
 	}
@@ -787,7 +794,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		eventId: Snowflake,
 		query: RESTGetAPIGuildScheduledEventUsersQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildScheduledEventUsers(guildId, eventId), {
 			query: makeURLSearchParams(query),
@@ -802,7 +809,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the templates from
 	 * @param options - The options for fetching the templates
 	 */
-	public async getTemplates(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getTemplates(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildTemplates(guildId), { signal }) as Promise<RESTGetAPIGuildTemplatesResult>;
 	}
 
@@ -814,7 +821,11 @@ export class GuildsAPI {
 	 * @param templateCode - The code of the template to sync
 	 * @param options - The options for syncing the template
 	 */
-	public async syncTemplate(guildId: Snowflake, templateCode: string, { signal }: { signal?: AbortSignal } = {}) {
+	public async syncTemplate(
+		guildId: Snowflake,
+		templateCode: string,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.put(Routes.guildTemplate(guildId, templateCode), {
 			signal,
 		}) as Promise<RESTPutAPIGuildTemplateSyncResult>;
@@ -833,7 +844,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		templateCode: string,
 		body: RESTPatchAPIGuildTemplateJSONBody,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildTemplate(guildId, templateCode), {
 			body,
@@ -849,7 +860,11 @@ export class GuildsAPI {
 	 * @param templateCode - The code of the template to delete
 	 * @param options - The options for deleting the template
 	 */
-	public async deleteTemplate(guildId: Snowflake, templateCode: string, { signal }: { signal?: AbortSignal } = {}) {
+	public async deleteTemplate(
+		guildId: Snowflake,
+		templateCode: string,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		await this.rest.delete(Routes.guildTemplate(guildId, templateCode), { signal });
 	}
 
@@ -860,7 +875,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the stickers from
 	 * @param options - The options for fetching the stickers
 	 */
-	public async getStickers(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getStickers(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildStickers(guildId), { signal }) as Promise<RESTGetAPIGuildStickersResult>;
 	}
 
@@ -872,7 +887,11 @@ export class GuildsAPI {
 	 * @param stickerId - The id of the sticker to fetch
 	 * @param options - The options for fetching the sticker
 	 */
-	public async getSticker(guildId: Snowflake, stickerId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getSticker(
+		guildId: Snowflake,
+		stickerId: Snowflake,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.get(Routes.guildSticker(guildId, stickerId), { signal }) as Promise<RESTGetAPIGuildStickerResult>;
 	}
 
@@ -887,7 +906,7 @@ export class GuildsAPI {
 	public async createSticker(
 		guildId: Snowflake,
 		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		const fileData = { ...file, key: 'file' };
 
@@ -913,7 +932,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		stickerId: Snowflake,
 		body: RESTPatchAPIGuildStickerJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildSticker(guildId, stickerId), {
 			reason,
@@ -933,7 +952,7 @@ export class GuildsAPI {
 	public async deleteSticker(
 		guildId: Snowflake,
 		stickerId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildSticker(guildId, stickerId), { reason, signal });
 	}
@@ -949,7 +968,7 @@ export class GuildsAPI {
 	public async getAuditLogs(
 		guildId: Snowflake,
 		query: RESTGetAPIAuditLogQuery = {},
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildAuditLog(guildId), {
 			query: makeURLSearchParams(query),
@@ -964,7 +983,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the auto moderation rules from
 	 * @param options - The options for fetching the auto moderation rules
 	 */
-	public async getAutoModerationRules(guildId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getAutoModerationRules(guildId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildAutoModerationRules(guildId), {
 			signal,
 		}) as Promise<RESTGetAPIAutoModerationRulesResult>;
@@ -978,7 +997,11 @@ export class GuildsAPI {
 	 * @param ruleId - The id of the auto moderation rule to fetch
 	 * @param options - The options for fetching the auto moderation rule
 	 */
-	public async getAutoModerationRule(guildId: Snowflake, ruleId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getAutoModerationRule(
+		guildId: Snowflake,
+		ruleId: Snowflake,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.get(Routes.guildAutoModerationRule(guildId, ruleId), {
 			signal,
 		}) as Promise<RESTGetAPIAutoModerationRuleResult>;
@@ -995,7 +1018,7 @@ export class GuildsAPI {
 	public async createAutoModerationRule(
 		guildId: Snowflake,
 		body: RESTPostAPIAutoModerationRuleJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.guildAutoModerationRules(guildId), {
 			reason,
@@ -1017,7 +1040,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		ruleId: Snowflake,
 		body: RESTPatchAPIAutoModerationRuleJSONBody,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildAutoModerationRule(guildId, ruleId), {
 			reason,
@@ -1036,7 +1059,7 @@ export class GuildsAPI {
 	public async deleteAutoModerationRule(
 		guildId: Snowflake,
 		ruleId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.delete(Routes.guildAutoModerationRule(guildId, ruleId), { reason, signal });
 	}
@@ -1049,7 +1072,7 @@ export class GuildsAPI {
 	 * @param userId - The id of the user
 	 * @param options - The options for fetching the guild member
 	 */
-	public async getMember(guildId: Snowflake, userId: Snowflake, { signal }: { signal?: AbortSignal } = {}) {
+	public async getMember(guildId: Snowflake, userId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.guildMember(guildId, userId), { signal }) as Promise<RESTGetAPIGuildMemberResult>;
 	}
 
@@ -1064,7 +1087,7 @@ export class GuildsAPI {
 	public async searchForMembers(
 		guildId: Snowflake,
 		query: RESTGetAPIGuildMembersSearchQuery,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.get(Routes.guildMembersSearch(guildId), {
 			query: makeURLSearchParams(query),
@@ -1085,7 +1108,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPatchAPIGuildMemberJSONBody = {},
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.guildMember(guildId, userId), {
 			reason,
@@ -1107,7 +1130,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		roleId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal } = {},
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
 	) {
 		await this.rest.put(Routes.guildMemberRole(guildId, userId, roleId), { reason, signal });
 	}
@@ -1125,7 +1148,7 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		roleId: Snowflake,
-		{ reason, signal }: { reason?: string; signal?: AbortSignal },
+		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined },
 	) {
 		await this.rest.delete(Routes.guildMemberRole(guildId, userId, roleId), { reason, signal });
 	}
@@ -1137,7 +1160,7 @@ export class GuildsAPI {
 	 * @param templateCode - The code of the template
 	 * @param options - The options for fetching the guild template
 	 */
-	public async getTemplate(templateCode: string, { signal }: { signal?: AbortSignal } = {}) {
+	public async getTemplate(templateCode: string, { signal }: { signal?: AbortSignal | undefined } = {}) {
 		return this.rest.get(Routes.template(templateCode), { signal }) as Promise<RESTGetAPITemplateResult>;
 	}
 
@@ -1152,7 +1175,7 @@ export class GuildsAPI {
 	public async createTemplate(
 		templateCode: string,
 		body: RESTPostAPITemplateCreateGuildJSONBody,
-		{ signal }: { signal?: AbortSignal } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.post(Routes.template(templateCode), { body, signal }) as Promise<RESTPostAPIGuildTemplatesResult>;
 	}

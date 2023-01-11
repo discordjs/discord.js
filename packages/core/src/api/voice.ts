@@ -1,5 +1,5 @@
 import type { REST } from '@discordjs/rest';
-import { Routes, type GetAPIVoiceRegionsResult } from 'discord-api-types/v10';
+import { Routes, type RESTGetAPIVoiceRegionsResult } from 'discord-api-types/v10';
 
 export class VoiceAPI {
 	public constructor(private readonly rest: REST) {}
@@ -8,8 +8,9 @@ export class VoiceAPI {
 	 * Fetches all voice regions
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/voice#list-voice-regions}
+	 * @param options - The options to use when fetching the voice regions
 	 */
-	public async getVoiceRegions() {
-		return this.rest.get(Routes.voiceRegions()) as Promise<GetAPIVoiceRegionsResult>;
+	public async getVoiceRegions({ signal }: { signal?: AbortSignal | undefined } = {}) {
+		return this.rest.get(Routes.voiceRegions(), { signal }) as Promise<RESTGetAPIVoiceRegionsResult>;
 	}
 }

@@ -34,15 +34,20 @@ export class OAuth2API {
 	 * Performs an OAuth2 token exchange, giving you an access token
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-exchange-example}
+	 * @param data - The data for the token exchange request
 	 * @param options - The options for the token exchange request
 	 */
-	public async tokenExchange(options: RESTPostOAuth2AccessTokenURLEncodedData) {
+	public async tokenExchange(
+		data: RESTPostOAuth2AccessTokenURLEncodedData,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(options),
+			body: makeURLSearchParams(data),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
 
@@ -50,15 +55,20 @@ export class OAuth2API {
 	 * Refreshes an OAuth2 access token, giving you a new one
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-refresh-token-exchange-example}
+	 * @param data - The options for the refresh token request
 	 * @param options - The options for the refresh token request
 	 */
-	public async refreshToken(options: RESTPostOAuth2RefreshTokenURLEncodedData) {
+	public async refreshToken(
+		data: RESTPostOAuth2RefreshTokenURLEncodedData,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(options),
+			body: makeURLSearchParams(data),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
 
@@ -68,15 +78,20 @@ export class OAuth2API {
 	 * @remarks
 	 * This is primarily used for testing purposes
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#client-credentials-grant}
+	 * @param data - The options for the client credentials grant request
 	 * @param options - The options for the client credentials grant request
 	 */
-	public async getToken(options: RESTPostOAuth2ClientCredentialsURLEncodedData) {
+	public async getToken(
+		data: RESTPostOAuth2ClientCredentialsURLEncodedData,
+		{ signal }: { signal?: AbortSignal | undefined } = {},
+	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(options),
+			body: makeURLSearchParams(data),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}
 
@@ -84,17 +99,23 @@ export class OAuth2API {
 	 * Fetches the current bot's application information
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
+	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation() {
-		return this.rest.get(Routes.oauth2CurrentApplication()) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
+	public async getCurrentBotApplicationInformation({ signal }: { signal?: AbortSignal | undefined } = {}) {
+		return this.rest.get(Routes.oauth2CurrentApplication(), {
+			signal,
+		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
 	}
 
 	/**
 	 * Fetches the current authorization information
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
+	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation() {
-		return this.rest.get(Routes.oauth2CurrentAuthorization()) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+	public async getCurrentAuthorizationInformation({ signal }: { signal?: AbortSignal | undefined } = {}) {
+		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
+			signal,
+		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
 	}
 }
