@@ -226,14 +226,4 @@ export class WebhooksAPI {
 			auth: false,
 		});
 	}
-
-	/**
-	 * Fetches channel webhooks
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
-	 * @param id - The id of the channel
-	 */
-	public async getChannel(id: Snowflake) {
-		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIWebhookResult>;
-	}
 }

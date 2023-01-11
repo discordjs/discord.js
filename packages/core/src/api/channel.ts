@@ -21,6 +21,7 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
+	type RESTGetAPIWebhookResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -348,5 +349,15 @@ export class ChannelsAPI {
 		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
 			query: makeURLSearchParams(options),
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
+	}
+
+	/**
+	 * Fetches channel webhooks
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
+	 * @param id - The id of the channel
+	 */
+	public async getWebhooks(id: Snowflake) {
+		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIWebhookResult>;
 	}
 }
