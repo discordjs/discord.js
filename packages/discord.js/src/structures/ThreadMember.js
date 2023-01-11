@@ -42,11 +42,12 @@ class ThreadMember extends Base {
     if ('join_timestamp' in data) this.joinedTimestamp = Date.parse(data.join_timestamp);
     if ('flags' in data) this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
 
-    /**
-     * The guild member associated with this thread member.
-     * @type {?GuildMember}
-     */
     if ('member' in data) {
+      /**
+       * The guild member associated with this thread member.
+       * @type {?GuildMember}
+       * @private
+       */
       this.member = this.thread.guild.members._add(data.member, extra.cache);
     } else {
       this.member ??= null;

@@ -2964,8 +2964,8 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
 export class ThreadMember<HasMemberData extends boolean = boolean> extends Base {
   private constructor(thread: ThreadChannel, data: RawThreadMemberData, extra?: unknown);
   public flags: ThreadMemberFlagsBitField;
-  public member: If<HasMemberData, GuildMember>;
-  public get guildMember(): GuildMember | null;
+  private member: If<HasMemberData, GuildMember>;
+  public get guildMember(): HasMemberData extends true ? GuildMember : GuildMember | null;
   public id: Snowflake;
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
