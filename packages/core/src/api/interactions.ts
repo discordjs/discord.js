@@ -91,9 +91,9 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: Pick<RequestData, 'signal'> = {},
 	) {
-		await this.webhooks.execute(applicationId, interactionToken, body, { signal });
+		await this.webhooks.execute(applicationId, interactionToken, body, options);
 	}
 
 	/**
@@ -112,9 +112,9 @@ export class InteractionsAPI {
 		interactionToken: string,
 		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', data, { signal });
+		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', data, options);
 	}
 
 	/**
@@ -128,14 +128,14 @@ export class InteractionsAPI {
 	public async getOriginalReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.webhooks.getMessage(
 			applicationId,
 			interactionToken,
 			'@original',
 			{},
-			{ signal },
+			options,
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
@@ -153,9 +153,9 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		options: Pick<RequestData, 'signal'> = {},
 	) {
-		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
+		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, options);
 	}
 
 	/**

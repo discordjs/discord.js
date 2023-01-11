@@ -25,10 +25,7 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param options - The options to use when deleting the invite
 	 */
-	public async delete(
-		code: string,
-		{ reason, signal }: { reason?: string | undefined | undefined; signal?: AbortSignal | undefined } = {},
-	) {
+	public async delete(code: string, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
 		await this.rest.delete(Routes.invite(code), { reason, signal });
 	}
 }

@@ -248,7 +248,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
