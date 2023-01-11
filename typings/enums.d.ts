@@ -110,6 +110,7 @@ export const enum MessageTypes {
   THREAD_STARTER_MESSAGE,
   GUILD_INVITE_REMINDER,
   CONTEXT_MENU_COMMAND,
+  AUTO_MODERATION_ACTION,
 }
 
 export const enum DefaultMessageNotificationLevels {

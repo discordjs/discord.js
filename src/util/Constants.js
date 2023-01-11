@@ -548,6 +548,7 @@ exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * * CONTEXT_MENU_COMMAND
+ * * AUTO_MODERATION_ACTION
  * @typedef {string} MessageType
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
  */
@@ -576,6 +577,7 @@ exports.MessageTypes = [
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
   'CONTEXT_MENU_COMMAND',
+  'AUTO_MODERATION_ACTION',
 ];
 
 /**
