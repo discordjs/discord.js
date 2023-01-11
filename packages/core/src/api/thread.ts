@@ -1,4 +1,4 @@
-import type { RawFile, REST } from '@discordjs/rest';
+import type { RawFile, RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
 	type APIThreadChannel,
@@ -28,7 +28,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread
 	 * @param options - The options to use when fetching the thread
 	 */
-	public async get(threadId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async get(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channel(threadId), { signal }) as Promise<APIThreadChannel>;
 	}
 
@@ -44,7 +44,7 @@ export class ThreadsAPI {
 	public async create(
 		channelId: Snowflake,
 		{ message_id, ...body }: StartThreadOptions,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.threads(channelId, message_id), {
 			body,
@@ -63,7 +63,7 @@ export class ThreadsAPI {
 	public async createForumThread(
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const { files, ...messageBody } = message;
 
@@ -82,7 +82,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to join
 	 * @param options - The options to use when joining the thread
 	 */
-	public async join(threadId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async join(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.put(Routes.threadMembers(threadId, '@me'), { signal });
 	}
 
@@ -94,11 +94,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to add to the thread
 	 * @param options - The options to use when adding the member to the thread
 	 */
-	public async addMember(
-		threadId: Snowflake,
-		userId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async addMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.put(Routes.threadMembers(threadId, userId), { signal });
 	}
 
@@ -109,7 +105,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to leave
 	 * @param options - The options to use when leaving the thread
 	 */
-	public async leave(threadId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async leave(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.delete(Routes.threadMembers(threadId, '@me'), { signal });
 	}
 
@@ -121,11 +117,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to remove from the thread
 	 * @param options - The options to use when removing the member from the thread
 	 */
-	public async removeMember(
-		threadId: Snowflake,
-		userId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async removeMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.delete(Routes.threadMembers(threadId, userId), { signal });
 	}
 
@@ -137,11 +129,7 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user
 	 * @param options - The options to use when fetching the member
 	 */
-	public async getMember(
-		threadId: Snowflake,
-		userId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async getMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.threadMembers(threadId, userId), { signal }) as Promise<APIThreadMember>;
 	}
 
@@ -152,7 +140,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to fetch the members from
 	 * @param options - The options to use when fetching the members
 	 */
-	public async getAllMembers(threadId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getAllMembers(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.threadMembers(threadId), { signal }) as Promise<RESTGetAPIChannelThreadMembersResult>;
 	}
 }

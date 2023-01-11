@@ -1,4 +1,4 @@
-import type { REST } from '@discordjs/rest';
+import type { RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIApplicationRoleConnectionMetadataResult,
@@ -17,7 +17,7 @@ export class RoleConnectionsAPI {
 	 * @param applicationId - The id of the application to get role connection metadata records for
 	 * @param options - The options to use when fetching the role connection metadata records
 	 */
-	public async getMetadataRecords(applicationId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getMetadataRecords(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.applicationRoleConnectionMetadata(applicationId), {
 			signal,
 		}) as Promise<RESTGetAPIApplicationRoleConnectionMetadataResult>;
@@ -33,7 +33,7 @@ export class RoleConnectionsAPI {
 	public async updateMetadataRecords(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationRoleConnectionMetadata(applicationId), {
 			body,

@@ -1,4 +1,4 @@
-import { makeURLSearchParams, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import { Routes, type RESTGetAPIInviteQuery, type RESTGetAPIInviteResult } from 'discord-api-types/v10';
 
 export class InvitesAPI {
@@ -11,11 +11,7 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param query - The options to use when fetching the invite
 	 */
-	public async get(
-		code: string,
-		query: RESTGetAPIInviteQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async get(code: string, query: RESTGetAPIInviteQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.invite(code), {
 			query: makeURLSearchParams(query),
 			signal,

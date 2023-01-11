@@ -1,4 +1,4 @@
-import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIChannelMessageResult,
@@ -29,7 +29,7 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when fetching the webhook
 	 */
-	public async get(id: Snowflake, token?: string, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async get(id: Snowflake, token?: string, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.webhook(id, token), { signal }) as Promise<RESTGetAPIWebhookResult>;
 	}
 
@@ -44,7 +44,7 @@ export class WebhooksAPI {
 	public async create(
 		channelId: Snowflake,
 		body: RESTPostAPIChannelWebhookJSONBody,
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelWebhooks(channelId), {
 			reason,
@@ -139,7 +139,7 @@ export class WebhooksAPI {
 			files,
 			...body
 		}: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.webhook(id, token), {
 			query: makeURLSearchParams({ wait, thread_id }),
@@ -165,7 +165,7 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenSlackQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
 			query: makeURLSearchParams(query),
@@ -189,7 +189,7 @@ export class WebhooksAPI {
 		token: string,
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenGitHubQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
 			query: makeURLSearchParams(query),
@@ -214,7 +214,7 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: { thread_id?: string } = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(query),
@@ -263,7 +263,7 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		query: { thread_id?: string } = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(query),

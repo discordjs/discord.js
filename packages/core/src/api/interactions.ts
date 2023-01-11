@@ -1,11 +1,11 @@
-import type { RawFile, REST } from '@discordjs/rest';
+import type { RawFile, RequestData, REST } from '@discordjs/rest';
 import { InteractionResponseType, Routes } from 'discord-api-types/v10';
 import type {
-	Snowflake,
 	APICommandAutocompleteInteractionResponseCallbackData,
 	APIInteractionResponseCallbackData,
 	APIModalInteractionResponseCallbackData,
 	RESTGetAPIWebhookWithTokenMessageResult,
+	Snowflake,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 
@@ -25,7 +25,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
@@ -46,11 +46,7 @@ export class InteractionsAPI {
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options to use when deferring
 	 */
-	public async defer(
-		interactionId: Snowflake,
-		interactionToken: string,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async defer(interactionId: Snowflake, interactionToken: string, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {
@@ -71,7 +67,7 @@ export class InteractionsAPI {
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
@@ -95,7 +91,7 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.webhooks.execute(applicationId, interactionToken, body, { signal });
 	}
@@ -116,7 +112,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		data: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		messageId?: Snowflake | '@original',
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', data, { signal });
 	}
@@ -132,7 +128,7 @@ export class InteractionsAPI {
 	public async getOriginalReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.webhooks.getMessage(
 			applicationId,
@@ -157,7 +153,7 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
 	}
@@ -175,7 +171,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
@@ -201,7 +197,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: APICommandAutocompleteInteractionResponseCallbackData,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
@@ -226,7 +222,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		body: APIModalInteractionResponseCallbackData,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,

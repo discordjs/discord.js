@@ -1,4 +1,4 @@
-import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTDeleteAPIChannelResult,
@@ -39,7 +39,7 @@ export class ChannelsAPI {
 	public async createMessage(
 		channelId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessages(channelId), {
 			files,
@@ -61,7 +61,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
-		{ signal }: { signal?: AbortSignal | undefined },
+		{ signal }: Pick<RequestData, 'signal'>,
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
 			files,
@@ -85,7 +85,7 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		emoji: string,
 		query: RESTGetAPIChannelMessageReactionUsersQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
 			query: makeURLSearchParams(query),
@@ -128,7 +128,7 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		emoji: string,
 		userId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, encodeURIComponent(emoji), userId), {
 			signal,
@@ -146,7 +146,7 @@ export class ChannelsAPI {
 	public async deleteAllMessageReactions(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId), { signal });
 	}
@@ -164,7 +164,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
 	}
@@ -182,7 +182,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
 	}
@@ -194,7 +194,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel
 	 * @param options - The options for fetching the channel
 	 */
-	public async get(channelId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async get(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channel(channelId), { signal }) as Promise<RESTGetAPIChannelResult>;
 	}
 
@@ -209,7 +209,7 @@ export class ChannelsAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIChannelJSONBody,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channel(channelId), { body, signal }) as Promise<RESTPatchAPIChannelResult>;
 	}
@@ -221,7 +221,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async delete(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.delete(Routes.channel(channelId), { signal }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
@@ -235,7 +235,7 @@ export class ChannelsAPI {
 	public async getMessages(
 		channelId: Snowflake,
 		query: RESTGetAPIChannelMessagesQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessages(channelId), {
 			query: makeURLSearchParams(query),
@@ -249,7 +249,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#trigger-typing-indicator}
 	 * @param channelId - The id of the channel to show the typing indicator in
 	 */
-	public async showTyping(channelId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async showTyping(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.post(Routes.channelTyping(channelId), { signal });
 	}
 
@@ -259,7 +259,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-pinned-messages}
 	 * @param channelId - The id of the channel to fetch pinned messages from
 	 */
-	public async getPins(channelId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getPins(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channelPins(channelId), { signal }) as Promise<RESTGetAPIChannelPinsResult>;
 	}
 
@@ -274,7 +274,7 @@ export class ChannelsAPI {
 	public async pinMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		await this.rest.put(Routes.channelPin(channelId, messageId), { reason, signal });
 	}
@@ -290,7 +290,7 @@ export class ChannelsAPI {
 	public async deleteMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessage(channelId, messageId), { reason, signal });
 	}
@@ -306,7 +306,7 @@ export class ChannelsAPI {
 	public async bulkDeleteMessages(
 		channelId: Snowflake,
 		messageIds: Snowflake[],
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	): Promise<void> {
 		await this.rest.post(Routes.channelBulkDelete(channelId), { reason, body: { messages: messageIds }, signal });
 	}
@@ -319,11 +319,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to fetch
 	 * @param options - The options for fetching the message
 	 */
-	public async getMessage(
-		channelId: Snowflake,
-		messageId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
-	) {
+	public async getMessage(channelId: Snowflake, messageId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channelMessage(channelId, messageId), {
 			signal,
 		}) as Promise<RESTGetAPIChannelMessageResult>;
@@ -340,7 +336,7 @@ export class ChannelsAPI {
 	public async crosspostMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessageCrosspost(channelId, messageId), {
 			signal,
@@ -358,7 +354,7 @@ export class ChannelsAPI {
 	public async unpinMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelPin(channelId, messageId), { reason, signal });
 	}
@@ -374,7 +370,7 @@ export class ChannelsAPI {
 	public async followAnnouncements(
 		channelId: Snowflake,
 		webhookChannelId: Snowflake,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelFollowers(channelId), {
 			body: { webhook_channel_id: webhookChannelId },
@@ -393,7 +389,7 @@ export class ChannelsAPI {
 	public async createInvite(
 		channelId: Snowflake,
 		body: RESTPostAPIChannelInviteJSONBody,
-		{ reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			reason,
@@ -409,7 +405,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch invites from
 	 * @param options - The options for fetching the invites
 	 */
-	public async getInvites(channelId: Snowflake, { signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getInvites(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channelInvites(channelId), { signal }) as Promise<RESTGetAPIChannelInvitesResult>;
 	}
 
@@ -427,7 +423,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		archivedStatus: 'private' | 'public',
 		query: RESTGetAPIChannelThreadsArchivedQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
 			query: makeURLSearchParams(query),
@@ -446,7 +442,7 @@ export class ChannelsAPI {
 	public async getJoinedPrivateArchivedThreads(
 		channelId: Snowflake,
 		query: RESTGetAPIChannelThreadsArchivedQuery = {},
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
 			query: makeURLSearchParams(query),

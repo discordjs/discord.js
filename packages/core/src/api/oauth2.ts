@@ -1,6 +1,5 @@
 import { URL } from 'node:url';
-import type { REST } from '@discordjs/rest';
-import { makeURLSearchParams } from '@discordjs/rest';
+import { type RequestData, type REST, makeURLSearchParams } from '@discordjs/rest';
 import {
 	Routes,
 	RouteBases,
@@ -39,7 +38,7 @@ export class OAuth2API {
 	 */
 	public async tokenExchange(
 		data: RESTPostOAuth2AccessTokenURLEncodedData,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(data),
@@ -60,7 +59,7 @@ export class OAuth2API {
 	 */
 	public async refreshToken(
 		data: RESTPostOAuth2RefreshTokenURLEncodedData,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(data),
@@ -83,7 +82,7 @@ export class OAuth2API {
 	 */
 	public async getToken(
 		data: RESTPostOAuth2ClientCredentialsURLEncodedData,
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(data),
@@ -101,7 +100,7 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
 	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation({ signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getCurrentBotApplicationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.oauth2CurrentApplication(), {
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
@@ -113,7 +112,7 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
 	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation({ signal }: { signal?: AbortSignal | undefined } = {}) {
+	public async getCurrentAuthorizationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
