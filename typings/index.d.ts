@@ -5326,7 +5326,8 @@ export type GuildFeatures =
   | 'THREE_DAY_THREAD_ARCHIVE'
   | 'SEVEN_DAY_THREAD_ARCHIVE'
   | 'PRIVATE_THREADS'
-  | 'ROLE_ICONS';
+  | 'ROLE_ICONS'
+  | 'AUTO_MODERATION';
 
 export interface GuildMemberEditData {
   nick?: string | null;
