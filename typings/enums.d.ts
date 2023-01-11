@@ -87,6 +87,7 @@ export const enum MessageTypes {
   THREAD_STARTER_MESSAGE,
   GUILD_INVITE_REMINDER,
   CONTEXT_MENU_COMMAND,
+  ROLE_SUBSCRIPTION_PURCHASE = 25,
 }
 
 export const enum DefaultMessageNotificationLevels {

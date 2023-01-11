@@ -224,6 +224,8 @@ class Guild extends AnonymousGuild {
      * * BANNER
      * * COMMERCE
      * * COMMUNITY
+     * * CREATOR_MONETIZABLE_PROVISIONAL
+     * * CREATOR_STORE_PAGE
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
@@ -237,11 +239,15 @@ class Guild extends AnonymousGuild {
      * * WELCOME_SCREEN_ENABLED
      * * TICKETED_EVENTS_ENABLED
      * * MONETIZATION_ENABLED
+     * <warn>`MONETIZATION_ENABLED` has been replaced.
+     * See [this pull request](https://github.com/discord/discord-api-docs/pull/5724) for more information.</warn>
      * * MORE_STICKERS
      * * THREE_DAY_THREAD_ARCHIVE
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * PRIVATE_THREADS
      * * ROLE_ICONS
+     * * ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE
+     * * ROLE_SUBSCRIPTIONS_ENABLED
      * @typedef {string} Features
      * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
