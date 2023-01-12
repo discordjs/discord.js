@@ -2248,6 +2248,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.27.0
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
+    esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0

@@ -16,9 +16,16 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./*": {
+			"import": "./dist/exports/*.mjs",
+			"require": "./dist/exports/*.js",
+			"types": "./dist/exports/*.d.ts"
+		}
 	},
 	"directories": {
 		"lib": "src",
@@ -59,6 +66,7 @@
 		"@types/node": "^18.11.18",
 		"@vitest/coverage-c8": "^0.27.0",
 		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.0.2",
 		"eslint": "^8.31.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",
