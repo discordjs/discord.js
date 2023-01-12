@@ -10,7 +10,7 @@ export interface ObjectHeaderProps {
 export function ObjectHeader({ item }: ObjectHeaderProps) {
 	return (
 		<>
-			<Header kind={item.kind} name={item.displayName} />
+			<Header kind={item.kind} name={item.displayName} sourceURL={item.sourceLocation.fileUrl} />
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />
 		</>
