@@ -3,7 +3,8 @@ import { APIVersion } from 'discord-api-types/v10';
 import { Agent } from 'undici';
 import type { RESTOptions } from '../REST.js';
 
-export const DefaultUserAgent = `DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])`;
+export const DefaultUserAgent =
+	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
 
 export const DefaultRestOptions = {
 	get agent() {
