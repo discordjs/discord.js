@@ -15,6 +15,7 @@ import {
 	type RESTGetAPIGuildIntegrationsResult,
 	type RESTGetAPIGuildInvitesResult,
 	type RESTGetAPIGuildMemberResult,
+	type RESTGetAPIGuildMembersResult,
 	type RESTGetAPIGuildMembersQuery,
 	type RESTGetAPIGuildMembersSearchResult,
 	type RESTGetAPIGuildPreviewResult,
@@ -151,7 +152,7 @@ export class GuildsAPI {
 	public async getMembers(guildId: Snowflake, options: RESTGetAPIGuildMembersQuery = {}) {
 		return this.rest.get(Routes.guildMembers(guildId), {
 			query: makeURLSearchParams(options),
-		}) as Promise<RESTGetAPIGuildMemberResult>;
+		}) as Promise<RESTGetAPIGuildMembersResult>;
 	}
 
 	/**

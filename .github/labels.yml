@@ -62,6 +62,8 @@
   color: fbca04
 - name: packages:discord.js
   color: fbca04
+- name: packages:next
+  color: fbca04
 - name: packages:docgen
   color: fbca04
 - name: packages:formatters
