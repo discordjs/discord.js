@@ -69,7 +69,7 @@ jobs:
 
       - name: Compare with base branch bundle
         if: success() && github.event.number
-        run: ls -laR apps/website/.next/analyze/base && npx -yes -p github:hashicorp/nextjs-bundle-analysis compare
+        run: ls -laR .next/analyze/base && npx -yes -p github:hashicorp/nextjs-bundle-analysis compare
 
       - name: Get comment body
         id: get-comment-body
