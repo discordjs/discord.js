@@ -33,8 +33,8 @@ async function fetchMember({ package: packageName, version, item }: ItemRoutePar
 function resolveMemberSearchParams(packageName: string, member: ApiItem): URLSearchParams {
 	const params = new URLSearchParams({
 		pkg: packageName,
-		kind: member.kind,
-		name: member.displayName,
+		kind: member?.kind,
+		name: member?.displayName,
 	});
 
 	switch (member?.kind) {
