@@ -128,7 +128,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/compiler@npm:^0.27.0 || ^0.28.0 || ^0.29.0 || ^0.30.0 || ^0.31.0, @astrojs/compiler@npm:^0.31.0, @astrojs/compiler@npm:^0.31.3":
+"@astrojs/compiler@npm:0.27.0 - 0.32.0 || ^0.32.0":
+  version: 0.32.0
+  resolution: "@astrojs/compiler@npm:0.32.0"
+  checksum: 586363da38a0e1522ad4ab3808a32e82d6e09448fe4b42e83bdb198d1be40100dcce17021eccfd295aedaef8894a1a001d7fb9f9f1b13f98537498f215fcf0a8
+  languageName: node
+  linkType: hard
+
+"@astrojs/compiler@npm:^0.31.0, @astrojs/compiler@npm:^0.31.3":
   version: 0.31.4
   resolution: "@astrojs/compiler@npm:0.31.4"
   checksum: 91ac088163d977bb904b296151dd0a395df93b0541c2183be6b72a1e390331642742bf134f449b83f55f48c7fccea85dfb3c91e7b5c5347b3427bc107f08716a
@@ -5992,17 +5999,17 @@ __metadata:
   linkType: hard
 
 "astro-eslint-parser@npm:^0.9.0":
-  version: 0.9.3
-  resolution: "astro-eslint-parser@npm:0.9.3"
+  version: 0.9.4
+  resolution: "astro-eslint-parser@npm:0.9.4"
   dependencies:
-    "@astrojs/compiler": ^0.27.0 || ^0.28.0 || ^0.29.0 || ^0.30.0 || ^0.31.0
+    "@astrojs/compiler": 0.27.0 - 0.32.0 || ^0.32.0
     "@typescript-eslint/types": ^5.25.0
     astrojs-compiler-sync: ^0.3.0
     debug: ^4.3.4
     eslint-scope: ^7.1.1
     eslint-visitor-keys: ^3.0.0
     espree: ^9.0.0
-  checksum: f412b8e5d792fe57285f2b5263ff928cf0e762911d1b6c4e1e2460ca210afa947ed8cb46c6de03150c402275f33fbf677bdeb05236bc37e9207be6dd56294877
+  checksum: 08715b82bc76c5fab4915e8abb9cdc1780a30e961a2a5e5afede05785e6cb508cc1c20db8271179415d64f3e855b2c0c71e4bb9d9b0ceef17fd9a14e99fd7215
   languageName: node
   linkType: hard
 
@@ -6763,9 +6770,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001400, caniuse-lite@npm:^1.0.30001406":
-  version: 1.0.30001442
-  resolution: "caniuse-lite@npm:1.0.30001442"
-  checksum: c1bff65bd4f53da2d288e7f55be40706ee0119b983eae5a9dcc884046990476891630aef72d708f7989f8f1964200c44e4c37ea40deecaa2fb4a480df23e6317
+  version: 1.0.30001443
+  resolution: "caniuse-lite@npm:1.0.30001443"
+  checksum: e39c17c54c7a2e263c05a7391b1126014be88826e5cacd6cf9e976b87c5a3a3ea3e53ff5d410093dbd56fac7b50fba4d55c2fa4d6b9c6bd28202886d7fedfd70
   languageName: node
   linkType: hard
 
@@ -7948,13 +7955,13 @@ __metadata:
   linkType: hard
 
 "css-to-react-native@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "css-to-react-native@npm:3.0.0"
+  version: 3.1.0
+  resolution: "css-to-react-native@npm:3.1.0"
   dependencies:
     camelize: ^1.0.0
     css-color-keywords: ^1.0.0
     postcss-value-parser: ^4.0.2
-  checksum: 98a2e9d4fbe9cabc8b744dfdd5ec108396ce497a7b860912a95b299bd52517461281810fcb707965a021a8be39adca9587184a26fb4e926211391a1557aca3c1
+  checksum: 06a44d500736fd063a59c1d8d6e4a46d4a71d7c27c35662c46a5163cfb18893f54fc98a2cd61c31126731658cd2da93425b5e77a6f3897b80357d29c4f19362e
   languageName: node
   linkType: hard
 
@@ -9586,12 +9593,13 @@ __metadata:
   linkType: hard
 
 "eslint-import-resolver-node@npm:^0.3.6":
-  version: 0.3.6
-  resolution: "eslint-import-resolver-node@npm:0.3.6"
+  version: 0.3.7
+  resolution: "eslint-import-resolver-node@npm:0.3.7"
   dependencies:
     debug: ^3.2.7
-    resolve: ^1.20.0
-  checksum: 6266733af1e112970e855a5bcc2d2058fb5ae16ad2a6d400705a86b29552b36131ffc5581b744c23d550de844206fb55e9193691619ee4dbf225c4bde526b1c8
+    is-core-module: ^2.11.0
+    resolve: ^1.22.1
+  checksum: 3379aacf1d2c6952c1b9666c6fa5982c3023df695430b0d391c0029f6403a7775414873d90f397e98ba6245372b6c8960e16e74d9e4a3b0c0a4582f3bdbe3d6e
   languageName: node
   linkType: hard
 
@@ -9706,8 +9714,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jsx-a11y@npm:^6.6.1":
-  version: 6.7.0
-  resolution: "eslint-plugin-jsx-a11y@npm:6.7.0"
+  version: 6.7.1
+  resolution: "eslint-plugin-jsx-a11y@npm:6.7.1"
   dependencies:
     "@babel/runtime": ^7.20.7
     aria-query: ^5.1.3
@@ -9727,7 +9735,7 @@ __metadata:
     semver: ^6.3.0
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: b7ea212bcf84912d264229e5e3cf255bc95a1193de1c7453d275a7afc959ce679c1bffb77cfd3d17f9b7105f41e0f62c8edb7f6d76985c79647edaa9f08aa814
+  checksum: f166dd5fe7257c7b891c6692e6a3ede6f237a14043ae3d97581daf318fc5833ddc6b4871aa34ab7656187430170500f6d806895747ea17ecdf8231a666c3c2fd
   languageName: node
   linkType: hard
 
@@ -17443,13 +17451,13 @@ __metadata:
   linkType: hard
 
 "rehype-ignore@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "rehype-ignore@npm:1.0.3"
+  version: 1.0.4
+  resolution: "rehype-ignore@npm:1.0.4"
   dependencies:
     hast-util-select: ~5.0.1
     unified: ~10.1.2
     unist-util-visit: ~4.1.0
-  checksum: d886ec276f97e838ed34f55a8e8f5d5a4c8106dcd35d37e84aa1bb625a8f7fc8e9776ecf4d36fda2af9853a3dab11dbb4d28362d84aea739c4b3d2789280f2e0
+  checksum: 3cfba4120acb20c9e40840435e048e1eda84a0f20082f9ad2786470da87bcc81876341c435fd793080cc4ce6533926279ca6b8b98c263f4716219a0002eaa01f
   languageName: node
   linkType: hard
 
@@ -17951,8 +17959,8 @@ __metadata:
   linkType: hard
 
 "rollup@npm:^3.2.5, rollup@npm:^3.7.0":
-  version: 3.9.1
-  resolution: "rollup@npm:3.9.1"
+  version: 3.10.0
+  resolution: "rollup@npm:3.10.0"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -17960,7 +17968,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 929cfab6b8bb2e20c28d7a4c3909b53729f4a63d8cc14f3b1a217d5f8e550737ee0903124ba58a1f2e7efd45c596e044a968aa379411731d0e76c910621d7d3f
+  checksum: 31a882689c58d084ac36362aeaf2422dc4b80d671bd88c856693c37d63a26ddac9b9819dfba7f79c2d50d5207868b0e3d75f728fe551bbc347cf5dedf8ece18e
   languageName: node
   linkType: hard
 
@@ -20264,16 +20272,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.12.0":
-  version: 5.14.0
-  resolution: "undici@npm:5.14.0"
-  dependencies:
-    busboy: ^1.6.0
-  checksum: cdc03ceff8d2b76a5ae08dc48d0b9d44dcb970f6e89e8a3cfe7031b9351dd3c90b223c143565c153a5f1165cd573aae1b128e6b9f557b4af4eb36da337a2a345
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.15.0":
+"undici@npm:^5.12.0, undici@npm:^5.15.0":
   version: 5.15.0
   resolution: "undici@npm:5.15.0"
   dependencies:
