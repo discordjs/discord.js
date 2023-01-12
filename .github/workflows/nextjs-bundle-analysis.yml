@@ -45,7 +45,7 @@ jobs:
         run: yarn workspace @discordjs/docgen run build
 
       - name: Build packages
-        run: yarn build
+        run: yarn run --top-level build
 
       - name: Build website
         run: yarn workspace @discordjs/website run build:local
