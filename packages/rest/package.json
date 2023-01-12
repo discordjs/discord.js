@@ -57,15 +57,15 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.4.0",
 		"discord-api-types": "^0.37.27",
-		"file-type": "^18.0.0",
+		"file-type": "^18.1.0",
 		"tslib": "^2.4.1",
-		"undici": "^5.14.0"
+		"undici": "^5.15.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
 		"@microsoft/api-extractor": "^7.33.7",
 		"@types/node": "16.18.11",
-		"@vitest/coverage-c8": "^0.27.0",
+		"@vitest/coverage-c8": "^0.27.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.0.2",
 		"eslint": "^8.31.0",
@@ -74,7 +74,7 @@
 		"prettier": "^2.8.2",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.4",
-		"vitest": "^0.27.0"
+		"vitest": "^0.27.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
