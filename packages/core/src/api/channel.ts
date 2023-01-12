@@ -358,6 +358,6 @@ export class ChannelsAPI {
 	 * @param id - The id of the channel
 	 */
 	public async getWebhooks(id: Snowflake) {
-		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIWebhookResult>;
+		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIChannelWebhooksResult>;
 	}
 }
