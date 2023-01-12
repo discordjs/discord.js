@@ -83,7 +83,7 @@ import {
 	type RESTPostAPITemplateCreateGuildJSONBody,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildTemplateSyncResult,
-	type RESTGetAPIWebhookResult,
+	type RESTGetAPIGuildWebhooksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
