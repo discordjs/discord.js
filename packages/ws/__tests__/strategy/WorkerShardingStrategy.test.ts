@@ -135,6 +135,7 @@ vi.mock('node:worker_threads', async () => {
 
 	return {
 		Worker: MockWorker,
+		workerData: {},
 	};
 });
 

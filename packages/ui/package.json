@@ -55,8 +55,8 @@
 		"@types/react": "^18.0.26",
 		"@types/react-dom": "^18.0.10",
 		"@unocss/reset": "^0.48.3",
-		"@vitejs/plugin-react": "^2.2.0",
-		"@vitest/coverage-c8": "^0.27.0",
+		"@vitejs/plugin-react": "^3.0.1",
+		"@vitest/coverage-c8": "^0.27.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.31.0",
 		"eslint-config-neon": "^0.1.40",
@@ -66,7 +66,7 @@
 		"unocss": "^0.48.3",
 		"vite": "^4.0.4",
 		"vite-plugin-dts": "^1.7.1",
-		"vitest": "^0.27.0"
+		"vitest": "^0.27.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

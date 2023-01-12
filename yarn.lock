@@ -327,7 +327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:>=7.0.0-0 <8.0.0, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.18.13, @babel/core@npm:^7.18.2, @babel/core@npm:^7.19.6, @babel/core@npm:^7.20.12":
+"@babel/core@npm:>=7.0.0-0 <8.0.0, @babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.18.13, @babel/core@npm:^7.18.2, @babel/core@npm:^7.19.6, @babel/core@npm:^7.20.12, @babel/core@npm:^7.20.7":
   version: 7.20.12
   resolution: "@babel/core@npm:7.20.12"
   dependencies:
@@ -1993,7 +1993,7 @@ __metadata:
   dependencies:
     "@actions/core": ^1.10.0
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2002,7 +2002,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2031,7 +2031,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.7
     "@msgpack/msgpack": ^2.8.0
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     "@vladfrangu/async_event_emitter": ^2.1.3
     cross-env: ^7.0.3
     eslint: ^8.31.0
@@ -2041,7 +2041,7 @@ __metadata:
     prettier: ^2.8.2
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2055,7 +2055,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.7
     "@sapphire/shapeshift": ^3.8.1
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
     esbuild-plugin-version-injector: ^1.0.2
@@ -2068,7 +2068,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2079,7 +2079,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.10.0
     "@microsoft/api-extractor": ^7.33.7
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
@@ -2088,11 +2088,11 @@ __metadata:
     prettier: ^2.8.2
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
-"@discordjs/core@workspace:packages/core":
+"@discordjs/core@workspace:^, @discordjs/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@discordjs/core@workspace:packages/core"
   dependencies:
@@ -2103,7 +2103,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.7
     "@sapphire/snowflake": ^3.4.0
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     "@vladfrangu/async_event_emitter": ^2.1.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
@@ -2113,7 +2113,7 @@ __metadata:
     prettier: ^2.8.2
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2130,10 +2130,10 @@ __metadata:
     is-ci: ^3.0.1
     lint-staged: ^13.1.0
     tsup: ^6.5.0
-    turbo: ^1.6.3
+    turbo: ^1.7.0
     typescript: ^4.9.4
     unocss: ^0.48.3
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2166,8 +2166,8 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^1.10.0
     "@microsoft/api-extractor": ^7.33.7
-    "@types/node": ^16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@types/node": 16.18.11
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
     eslint: ^8.31.0
@@ -2176,7 +2176,7 @@ __metadata:
     prettier: ^2.8.2
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2198,10 +2198,10 @@ __metadata:
     "@types/react-syntax-highlighter": ^15.5.6
     "@unocss/cli": ^0.48.3
     "@unocss/reset": ^0.48.3
-    "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitejs/plugin-react": ^3.0.1
+    "@vitest/coverage-c8": ^0.27.1
     ariakit: ^2.0.0-next.43
-    astro: ^1.9.1
+    astro: ^1.9.2
     astro-compress: ^1.1.25
     astro-critters: ^1.1.25
     cross-env: ^7.0.3
@@ -2226,8 +2226,36 @@ __metadata:
     shiki: ^0.12.1
     typescript: ^4.9.4
     unocss: ^0.48.3
-    vercel: ^28.11.0
-    vitest: ^0.27.0
+    vercel: ^28.11.1
+    vitest: ^0.27.1
+  languageName: unknown
+  linkType: soft
+
+"@discordjs/next@workspace:packages/next":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/next@workspace:packages/next"
+  dependencies:
+    "@discordjs/builders": "workspace:^"
+    "@discordjs/collection": "workspace:^"
+    "@discordjs/core": "workspace:^"
+    "@discordjs/formatters": "workspace:^"
+    "@discordjs/rest": "workspace:^"
+    "@discordjs/util": "workspace:^"
+    "@discordjs/ws": "workspace:^"
+    "@favware/cliff-jumper": ^1.10.0
+    "@microsoft/api-extractor": ^7.33.7
+    "@types/node": 18.11.18
+    "@vitest/coverage-c8": ^0.27.1
+    cross-env: ^7.0.3
+    discord-api-types: ^0.37.27
+    esbuild-plugin-version-injector: ^1.0.2
+    eslint: ^8.31.0
+    eslint-config-neon: ^0.1.40
+    eslint-formatter-pretty: ^4.1.0
+    prettier: ^2.8.2
+    tsup: ^6.5.0
+    typescript: ^4.9.4
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2259,7 +2287,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.33.7
     "@types/node": 16.18.11
     "@types/supertest": ^2.0.12
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2269,8 +2297,8 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.14.0
-    vitest: ^0.27.0
+    undici: ^5.15.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2285,20 +2313,20 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.4.0
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
-    file-type: ^18.0.0
+    file-type: ^18.1.0
     prettier: ^2.8.2
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.14.0
-    vitest: ^0.27.0
+    undici: ^5.15.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2310,9 +2338,9 @@ __metadata:
     "@microsoft/api-extractor-model": 7.25.3
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": 0.16.2
-    "@types/fs-extra": ^11.0.0
+    "@types/fs-extra": ^11.0.1
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     commander: ^9.5.0
     cross-env: ^7.0.3
     eslint: ^8.31.0
@@ -2323,8 +2351,8 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.14.0
-    vitest: ^0.27.0
+    undici: ^5.15.0
+    vitest: ^0.27.1
     yaml: ^2.2.1
   languageName: unknown
   linkType: soft
@@ -2340,8 +2368,8 @@ __metadata:
     "@types/react": ^18.0.26
     "@types/react-dom": ^18.0.10
     "@unocss/reset": ^0.48.3
-    "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitejs/plugin-react": ^3.0.1
+    "@vitest/coverage-c8": ^0.27.1
     ariakit: ^2.0.0-next.43
     cross-env: ^7.0.3
     eslint: ^8.31.0
@@ -2354,7 +2382,7 @@ __metadata:
     unocss: ^0.48.3
     vite: ^4.0.4
     vite-plugin-dts: ^1.7.1
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2365,7 +2393,7 @@ __metadata:
     "@favware/cliff-jumper": ^1.10.0
     "@microsoft/api-extractor": ^7.33.7
     "@types/node": 16.18.11
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2374,7 +2402,7 @@ __metadata:
     tsd: ^0.25.0
     tsup: ^6.5.0
     typescript: ^4.9.4
-    vitest: ^0.27.0
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2428,9 +2456,9 @@ __metadata:
     "@types/react-syntax-highlighter": ^15.5.6
     "@unocss/cli": ^0.48.3
     "@unocss/reset": ^0.48.3
-    "@vercel/og": ^0.0.25
-    "@vitejs/plugin-react": ^2.2.0
-    "@vitest/coverage-c8": ^0.27.0
+    "@vercel/og": ^0.0.26
+    "@vitejs/plugin-react": ^3.0.1
+    "@vitest/coverage-c8": ^0.27.1
     "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.43
     cmdk: ^0.1.21
@@ -2442,7 +2470,7 @@ __metadata:
     eslint-formatter-pretty: ^4.1.0
     happy-dom: ^8.1.3
     meilisearch: ^0.30.0
-    next: ^13.1.2-canary.4
+    next: ^13.1.2-canary.5
     next-mdx-remote: ^4.2.1
     next-themes: "npm:@wits/next-themes@latest"
     prettier: ^2.8.2
@@ -2453,17 +2481,17 @@ __metadata:
     react-syntax-highlighter: ^15.5.0
     react-use: ^17.4.0
     rehype-ignore: ^1.0.3
-    rehype-pretty-code: ^0.8.0
+    rehype-pretty-code: ^0.8.1
     rehype-raw: ^6.1.1
     rehype-slug: ^5.1.0
     remark-gfm: ^3.0.1
     sharp: ^0.31.3
     shiki: ^0.12.1
-    swr: ^1.3.0
+    swr: ^2.0.0
     typescript: ^4.9.4
     unocss: ^0.48.3
-    vercel: ^28.11.0
-    vitest: ^0.27.0
+    vercel: ^28.11.1
+    vitest: ^0.27.1
   languageName: unknown
   linkType: soft
 
@@ -2479,7 +2507,7 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@types/node": 16.18.11
     "@types/ws": ^8.5.4
-    "@vitest/coverage-c8": ^0.27.0
+    "@vitest/coverage-c8": ^0.27.1
     "@vladfrangu/async_event_emitter": ^2.1.3
     cross-env: ^7.0.3
     discord-api-types: ^0.37.27
@@ -2492,8 +2520,8 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.14.0
-    vitest: ^0.27.0
+    undici: ^5.15.0
+    vitest: ^0.27.1
     ws: ^8.12.0
     zlib-sync: ^0.1.7
   languageName: unknown
@@ -3441,10 +3469,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/env@npm:13.1.2-canary.4"
-  checksum: 250a0bef306fc738b814f7840b6d6a91e751858e39564afc5947737962e698a3b114b2b2e494772b95557fd4935a4cb6ebe4e8951c7b13fded43688eef943763
+"@next/env@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/env@npm:13.1.2-canary.5"
+  checksum: 99ab4c397dff7503b293ad47233c46776f11725d1c5fc8ff921f7e5a83907c88c1bbecb5dbd4c822c3761e35299d1deedb7492ea888d26c4910b70cd42260d18
   languageName: node
   linkType: hard
 
@@ -3457,93 +3485,93 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-android-arm-eabi@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-android-arm-eabi@npm:13.1.2-canary.4"
+"@next/swc-android-arm-eabi@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-android-arm-eabi@npm:13.1.2-canary.5"
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@next/swc-android-arm64@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-android-arm64@npm:13.1.2-canary.4"
+"@next/swc-android-arm64@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-android-arm64@npm:13.1.2-canary.5"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-darwin-arm64@npm:13.1.2-canary.4"
+"@next/swc-darwin-arm64@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-darwin-arm64@npm:13.1.2-canary.5"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-darwin-x64@npm:13.1.2-canary.4"
+"@next/swc-darwin-x64@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-darwin-x64@npm:13.1.2-canary.5"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-freebsd-x64@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-freebsd-x64@npm:13.1.2-canary.4"
+"@next/swc-freebsd-x64@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-freebsd-x64@npm:13.1.2-canary.5"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm-gnueabihf@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-linux-arm-gnueabihf@npm:13.1.2-canary.4"
+"@next/swc-linux-arm-gnueabihf@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-linux-arm-gnueabihf@npm:13.1.2-canary.5"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-linux-arm64-gnu@npm:13.1.2-canary.4"
+"@next/swc-linux-arm64-gnu@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-linux-arm64-gnu@npm:13.1.2-canary.5"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-linux-arm64-musl@npm:13.1.2-canary.4"
+"@next/swc-linux-arm64-musl@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-linux-arm64-musl@npm:13.1.2-canary.5"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-linux-x64-gnu@npm:13.1.2-canary.4"
+"@next/swc-linux-x64-gnu@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-linux-x64-gnu@npm:13.1.2-canary.5"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-linux-x64-musl@npm:13.1.2-canary.4"
+"@next/swc-linux-x64-musl@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-linux-x64-musl@npm:13.1.2-canary.5"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-win32-arm64-msvc@npm:13.1.2-canary.4"
+"@next/swc-win32-arm64-msvc@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-win32-arm64-msvc@npm:13.1.2-canary.5"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-win32-ia32-msvc@npm:13.1.2-canary.4"
+"@next/swc-win32-ia32-msvc@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-win32-ia32-msvc@npm:13.1.2-canary.5"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "@next/swc-win32-x64-msvc@npm:13.1.2-canary.4"
+"@next/swc-win32-x64-msvc@npm:13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "@next/swc-win32-x64-msvc@npm:13.1.2-canary.5"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -4325,7 +4353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/fs-extra@npm:^11.0.0":
+"@types/fs-extra@npm:^11.0.1":
   version: 11.0.1
   resolution: "@types/fs-extra@npm:11.0.1"
   dependencies:
@@ -4509,7 +4537,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
+"@types/node@npm:*, @types/node@npm:18.11.18":
   version: 18.11.18
   resolution: "@types/node@npm:18.11.18"
   checksum: 03f17f9480f8d775c8a72da5ea7e9383db5f6d85aa5fefde90dd953a1449bd5e4ffde376f139da4f3744b4c83942166d2a7603969a6f8ea826edfb16e6e3b49d
@@ -4530,7 +4558,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.11, @types/node@npm:^16.18.11":
+"@types/node@npm:16.18.11":
   version: 16.18.11
   resolution: "@types/node@npm:16.18.11"
   checksum: 2a3b1da13063debe6e26f732defb5f03ef4ef732c3e08daba838d8850433bd00e537ce1a97ce9bcfc4b15db5218d701d1265fae94e0d6926906bec157e6b46e0
@@ -5192,14 +5220,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/og@npm:^0.0.25":
-  version: 0.0.25
-  resolution: "@vercel/og@npm:0.0.25"
+"@vercel/og@npm:^0.0.26":
+  version: 0.0.26
+  resolution: "@vercel/og@npm:0.0.26"
   dependencies:
     "@resvg/resvg-wasm": 2.0.0-alpha.4
     satori: 0.0.46
     yoga-wasm-web: 0.3.0
-  checksum: 373461ef4377072075d4f50ecffb764aaab950f18cdc7a449bf482b91f7342f8509087ce1913528dd7d25bc86b297a127a4d116e8fed51e26dacb57ff480bd47
+  checksum: 3d6647ea8d801da6a233c10c5cd66ce8392909f3c853fd1c49d3ce07ebcec8ef4f95c57b2c576575590e4fcd00e1e691d0b1c9215afb106192bc3c7ae8e21eb3
   languageName: node
   linkType: hard
 
@@ -5268,7 +5296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^2.0.1, @vitejs/plugin-react@npm:^2.2.0":
+"@vitejs/plugin-react@npm:^2.0.1":
   version: 2.2.0
   resolution: "@vitejs/plugin-react@npm:2.2.0"
   dependencies:
@@ -5285,7 +5313,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-c8@npm:^0.27.0":
+"@vitejs/plugin-react@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@vitejs/plugin-react@npm:3.0.1"
+  dependencies:
+    "@babel/core": ^7.20.7
+    "@babel/plugin-transform-react-jsx-self": ^7.18.6
+    "@babel/plugin-transform-react-jsx-source": ^7.19.6
+    magic-string: ^0.27.0
+    react-refresh: ^0.14.0
+  peerDependencies:
+    vite: ^4.0.0
+  checksum: fde9dd4d3a3387d3a93ea164f58b71a40786842d66b072e75b10ef3c1c1f30cbe545367c4adb980d15f310a70c3ca24f8bf36ea5e896d0fcae0adc926172ca58
+  languageName: node
+  linkType: hard
+
+"@vitest/coverage-c8@npm:^0.27.1":
   version: 0.27.1
   resolution: "@vitest/coverage-c8@npm:0.27.1"
   dependencies:
@@ -5963,7 +6006,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro@npm:^1.9.1":
+"astro@npm:^1.9.2":
   version: 1.9.2
   resolution: "astro@npm:1.9.2"
   dependencies:
@@ -8418,7 +8461,7 @@ __metadata:
     tslib: ^2.4.1
     tslint: ^6.1.3
     typescript: ^4.9.4
-    undici: ^5.14.0
+    undici: ^5.15.0
     ws: ^8.12.0
   languageName: unknown
   linkType: soft
@@ -10434,7 +10477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:^18.0.0":
+"file-type@npm:^18.1.0":
   version: 18.1.0
   resolution: "file-type@npm:18.1.0"
   dependencies:
@@ -15360,24 +15403,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^13.1.2-canary.4":
-  version: 13.1.2-canary.4
-  resolution: "next@npm:13.1.2-canary.4"
+"next@npm:^13.1.2-canary.5":
+  version: 13.1.2-canary.5
+  resolution: "next@npm:13.1.2-canary.5"
   dependencies:
-    "@next/env": 13.1.2-canary.4
-    "@next/swc-android-arm-eabi": 13.1.2-canary.4
-    "@next/swc-android-arm64": 13.1.2-canary.4
-    "@next/swc-darwin-arm64": 13.1.2-canary.4
-    "@next/swc-darwin-x64": 13.1.2-canary.4
-    "@next/swc-freebsd-x64": 13.1.2-canary.4
-    "@next/swc-linux-arm-gnueabihf": 13.1.2-canary.4
-    "@next/swc-linux-arm64-gnu": 13.1.2-canary.4
-    "@next/swc-linux-arm64-musl": 13.1.2-canary.4
-    "@next/swc-linux-x64-gnu": 13.1.2-canary.4
-    "@next/swc-linux-x64-musl": 13.1.2-canary.4
-    "@next/swc-win32-arm64-msvc": 13.1.2-canary.4
-    "@next/swc-win32-ia32-msvc": 13.1.2-canary.4
-    "@next/swc-win32-x64-msvc": 13.1.2-canary.4
+    "@next/env": 13.1.2-canary.5
+    "@next/swc-android-arm-eabi": 13.1.2-canary.5
+    "@next/swc-android-arm64": 13.1.2-canary.5
+    "@next/swc-darwin-arm64": 13.1.2-canary.5
+    "@next/swc-darwin-x64": 13.1.2-canary.5
+    "@next/swc-freebsd-x64": 13.1.2-canary.5
+    "@next/swc-linux-arm-gnueabihf": 13.1.2-canary.5
+    "@next/swc-linux-arm64-gnu": 13.1.2-canary.5
+    "@next/swc-linux-arm64-musl": 13.1.2-canary.5
+    "@next/swc-linux-x64-gnu": 13.1.2-canary.5
+    "@next/swc-linux-x64-musl": 13.1.2-canary.5
+    "@next/swc-win32-arm64-msvc": 13.1.2-canary.5
+    "@next/swc-win32-ia32-msvc": 13.1.2-canary.5
+    "@next/swc-win32-x64-msvc": 13.1.2-canary.5
     "@swc/helpers": 0.4.14
     caniuse-lite: ^1.0.30001406
     postcss: 8.4.14
@@ -15424,7 +15467,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 486ac0a6f8d35d5a59ad0995deff75881ea5bc6b57df79564d016b911e1cdc27e50eecd458b7d3339b0d0ef502ac5dc71d25465090250ca9b9525c49b9072d3f
+  checksum: c1f1f4b4c91e8eae15990710e50dd702de77d36d4cdf334b91b8dd9d980c1e7d392527b5e1e456e1cf5b78a828f438241ad17082305354b6fd9a2e20f8eb15c1
   languageName: node
   linkType: hard
 
@@ -17422,16 +17465,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehype-pretty-code@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "rehype-pretty-code@npm:0.8.0"
+"rehype-pretty-code@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "rehype-pretty-code@npm:0.8.1"
   dependencies:
     hash-obj: ^4.0.0
     nanoid: ^4.0.0
     parse-numeric-range: ^1.3.0
   peerDependencies:
     shiki: "*"
-  checksum: 0f8ebdb55fadef9ed7e7394174972785f37fadc762f8a31aa6831a81866228c7214e0c3c34c3040524c11b05c97892f77eec07692f193fe163b7717473a26fc3
+  checksum: 17993afeb059cacb8d5cdfa070d03fc7ef32633fb45774ff7c09a2910e52cd5f6142bc23f73bd9084425e35dd92c3e8f11d621da8b5380667b5eb9be6a317d95
   languageName: node
   linkType: hard
 
@@ -19151,12 +19194,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "swr@npm:1.3.0"
+"swr@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "swr@npm:2.0.0"
+  dependencies:
+    use-sync-external-store: ^1.2.0
   peerDependencies:
     react: ^16.11.0 || ^17.0.0 || ^18.0.0
-  checksum: e7a184f0d560e9c8be85c023cc8e65e56a88a6ed46f9394b301b07f838edca23d2e303685319a4fcd620b81d447a7bcb489c7fa0a752c259f91764903c690cdb
+  checksum: 4852d8318ed022a681b40a384e675f65e211104d62075c1250b02f47cc8b739cb9138a954e2191c700e2de22b010b9bd05a113c71b193abe0c351d3c4f4646d8
   languageName: node
   linkType: hard
 
@@ -19919,7 +19964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:^1.6.3":
+"turbo@npm:^1.7.0":
   version: 1.7.0
   resolution: "turbo@npm:1.7.0"
   dependencies:
@@ -20219,7 +20264,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.12.0, undici@npm:^5.14.0":
+"undici@npm:^5.12.0":
+  version: 5.14.0
+  resolution: "undici@npm:5.14.0"
+  dependencies:
+    busboy: ^1.6.0
+  checksum: cdc03ceff8d2b76a5ae08dc48d0b9d44dcb970f6e89e8a3cfe7031b9351dd3c90b223c143565c153a5f1165cd573aae1b128e6b9f557b4af4eb36da337a2a345
+  languageName: node
+  linkType: hard
+
+"undici@npm:^5.15.0":
   version: 5.15.0
   resolution: "undici@npm:5.15.0"
   dependencies:
@@ -20610,6 +20664,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "use-sync-external-store@npm:1.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 5c639e0f8da3521d605f59ce5be9e094ca772bd44a4ce7322b055a6f58eeed8dda3c94cabd90c7a41fb6fa852210092008afe48f7038792fd47501f33299116a
+  languageName: node
+  linkType: hard
+
 "util-deprecate@npm:^1.0.1, util-deprecate@npm:^1.0.2, util-deprecate@npm:~1.0.1":
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
@@ -20716,7 +20779,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^28.11.0":
+"vercel@npm:^28.11.1":
   version: 28.11.1
   resolution: "vercel@npm:28.11.1"
   dependencies:
@@ -20951,7 +21014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:0.27.1, vitest@npm:^0.27.0":
+"vitest@npm:0.27.1, vitest@npm:^0.27.1":
   version: 0.27.1
   resolution: "vitest@npm:0.27.1"
   dependencies:
