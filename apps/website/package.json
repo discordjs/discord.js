@@ -99,5 +99,10 @@
 	},
 	"engines": {
 		"node": ">=16.9.0"
+	},
+	"nextBundleAnalysis": {
+		"budget": 358400,
+		"budgetPercentIncreaseRed": 20,
+		"showDetails": true
 	}
 }
