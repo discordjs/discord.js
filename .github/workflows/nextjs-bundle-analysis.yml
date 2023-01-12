@@ -39,9 +39,6 @@ jobs:
           path: apps/website/.next/cache
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
-      - name: Build legacy docgen
-        run: yarn workspace @discordjs/docgen run build
-
       - name: Build packages
         run: yarn run --top-level build
 
