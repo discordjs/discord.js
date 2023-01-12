@@ -28,6 +28,14 @@
 			"types": "./dist/exports/*.d.ts"
 		}
 	},
+	"typesVersions": {
+		"*": {
+			"*": [
+				"./dist/exports/*.d.ts",
+				"./dist/index.d.ts"
+			]
+		}
+	},
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
