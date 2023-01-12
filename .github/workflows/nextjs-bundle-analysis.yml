@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'main'
-    paths:
-      - 'apps/website/**'
   pull_request_target:
     paths:
       - 'apps/website/**'
