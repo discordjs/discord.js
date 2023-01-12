@@ -21,7 +21,7 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
-	type RESTGetAPIWebhookResult,
+	type RESTGetAPIChannelWebhooksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
