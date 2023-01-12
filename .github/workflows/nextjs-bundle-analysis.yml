@@ -5,7 +5,7 @@ on:
       - 'main'
     paths:
       - 'apps/website/**'
-  pull_request:
+  pull_request_target:
     paths:
       - 'apps/website/**'
   workflow_dispatch:
