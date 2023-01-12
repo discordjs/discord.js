@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'packages/*/src/**'
     tags:
       - '**'
   workflow_dispatch:
