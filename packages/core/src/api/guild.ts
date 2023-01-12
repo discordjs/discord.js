@@ -974,6 +974,6 @@ export class GuildsAPI {
 	 * @param id - The id of the guild
 	 */
 	public async getWebhooks(id: Snowflake) {
-		return this.rest.get(Routes.guildWebhooks(id)) as Promise<RESTGetAPIWebhookResult>;
+		return this.rest.get(Routes.guildWebhooks(id)) as Promise<RESTGetAPIGuildWebhooksResult>;
 	}
 }
