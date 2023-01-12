@@ -46,6 +46,7 @@ vi.mock('node:worker_threads', async () => {
 	return {
 		parentPort: new MockParentPort(),
 		isMainThread: false,
+		workerData: {},
 	};
 });
 
