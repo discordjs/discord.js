@@ -9,6 +9,7 @@ const { Error } = require('../errors');
  */
 class NewsChannel extends BaseGuildTextChannel {
   /**
+   * <info>This method returns itself. To get created webhook id, use `GuildChannelManager#addFolower`</info>
    * Adds the target to this channel's followers.
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
