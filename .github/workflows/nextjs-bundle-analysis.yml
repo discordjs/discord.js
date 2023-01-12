@@ -42,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Build website
-        run: yarn workspace @discordjs/website run build:prod
+        run: yarn workspace @discordjs/website run build:local
 
       - name: Analyze bundle
         run: npx -yes -p github:hashicorp/nextjs-bundle-analysis report
@@ -63,7 +63,7 @@ jobs:
 
       - name: Compare with base branch bundle
         if: success() && github.event.number
-        run: ls -laR .next/analyze/base && npx -yes -p github:hashicorp/nextjs-bundle-analysis compare
+        run: ls -laR apps/website/.next/analyze/base && npx -yes -p github:hashicorp/nextjs-bundle-analysis compare
 
       - name: Get comment body
         id: get-comment-body
@@ -73,7 +73,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require('fs');
-            const comment = fs.readFileSync('.next/analyze/__bundle_analysis_comment.txt', 'utf8');
+            const comment = fs.readFileSync('apps/website/.next/analyze/__bundle_analysis_comment.txt', 'utf8');
             core.setOutput('body', comment);
 
       - name: Find Comment
