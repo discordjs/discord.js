@@ -38,6 +38,7 @@ import {
 	type RESTPostAPIGuildStickerFormDataBody,
 	type RESTPostAPIGuildStickerResult,
 	type RESTGetAPIGuildMembersSearchQuery,
+	type RESTGetAPIGuildWebhooksResult,
 	type RESTGetAPIGuildWelcomeScreenResult,
 	type RESTGetAPIGuildWidgetImageResult,
 	type RESTGetAPIGuildWidgetJSONResult,
@@ -83,7 +84,6 @@ import {
 	type RESTPostAPITemplateCreateGuildJSONBody,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildTemplateSyncResult,
-	type RESTGetAPIGuildWebhooksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 

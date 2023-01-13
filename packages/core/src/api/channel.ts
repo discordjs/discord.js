@@ -12,6 +12,7 @@ import {
 	type RESTGetAPIChannelResult,
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
+	type RESTGetAPIChannelWebhooksResult,
 	type RESTPatchAPIChannelJSONBody,
 	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
@@ -21,7 +22,6 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
-	type RESTGetAPIChannelWebhooksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
