@@ -352,7 +352,7 @@ export class ChannelsAPI {
 	}
 
 	/**
-	 * Fetches channel webhooks
+	 * Fetches the webhooks of a channel
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
 	 * @param id - The id of the channel
