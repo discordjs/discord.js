@@ -12,10 +12,10 @@ import { beforeEach, test, vi, expect, afterEach } from 'vitest';
 import {
 	WebSocketManager,
 	WorkerSendPayloadOp,
-	WorkerRecievePayloadOp,
+	WorkerReceivePayloadOp,
 	WorkerShardingStrategy,
 	WebSocketShardEvents,
-	type WorkerRecievePayload,
+	type WorkerReceivePayload,
 	type WorkerSendPayload,
 	type SessionInfo,
 } from '../../src/index.js';
@@ -53,45 +53,54 @@ vi.mock('node:worker_threads', async () => {
 			super();
 			mockConstructor(...args);
 			// need to delay this by an event loop cycle to allow the strategy to attach a listener
-			setImmediate(() => this.emit('online'));
+			setImmediate(() => {
+				this.emit('online');
+				// same deal here
+				setImmediate(() => {
+					const message = {
+						op: WorkerReceivePayloadOp.WorkerReady,
+					} satisfies WorkerReceivePayload;
+					this.emit('message', message);
+				});
+			});
 		}
 
 		public postMessage(message: WorkerSendPayload) {
 			switch (message.op) {
 				case WorkerSendPayloadOp.Connect: {
-					const response: WorkerRecievePayload = {
-						op: WorkerRecievePayloadOp.Connected,
+					const response = {
+						op: WorkerReceivePayloadOp.Connected,
 						shardId: message.shardId,
-					};
+					} satisfies WorkerReceivePayload;
 					this.emit('message', response);
 					break;
 				}
 
 				case WorkerSendPayloadOp.Destroy: {
-					const response: WorkerRecievePayload = {
-						op: WorkerRecievePayloadOp.Destroyed,
+					const response = {
+						op: WorkerReceivePayloadOp.Destroyed,
 						shardId: message.shardId,
-					};
+					} satisfies WorkerReceivePayload;
 					this.emit('message', response);
 					break;
 				}
 
 				case WorkerSendPayloadOp.Send: {
 					if (message.payload.op === GatewayOpcodes.RequestGuildMembers) {
-						const response: WorkerRecievePayload = {
-							op: WorkerRecievePayloadOp.Event,
+						const response = {
+							op: WorkerReceivePayloadOp.Event,
 							shardId: message.shardId,
 							event: WebSocketShardEvents.Dispatch,
 							data: memberChunkData,
-						};
+						} satisfies WorkerReceivePayload;
 						this.emit('message', response);
 
 						// Fetch session info
-						const sessionFetch: WorkerRecievePayload = {
-							op: WorkerRecievePayloadOp.RetrieveSessionInfo,
+						const sessionFetch = {
+							op: WorkerReceivePayloadOp.RetrieveSessionInfo,
 							shardId: message.shardId,
 							nonce: Math.random(),
-						};
+						} satisfies WorkerReceivePayload;
 						this.emit('message', sessionFetch);
 					}
 
@@ -102,11 +111,11 @@ vi.mock('node:worker_threads', async () => {
 				case WorkerSendPayloadOp.SessionInfoResponse: {
 					message.session ??= sessionInfo;
 
-					const session: WorkerRecievePayload = {
-						op: WorkerRecievePayloadOp.UpdateSessionInfo,
+					const session = {
+						op: WorkerReceivePayloadOp.UpdateSessionInfo,
 						shardId: message.session.shardId,
 						session: { ...message.session, sequence: message.session.sequence + 1 },
-					};
+					} satisfies WorkerReceivePayload;
 					this.emit('message', session);
 					break;
 				}
@@ -126,6 +135,7 @@ vi.mock('node:worker_threads', async () => {
 
 	return {
 		Worker: MockWorker,
+		workerData: {},
 	};
 });
 
@@ -186,7 +196,7 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(
-		expect.stringContaining('worker.js'),
+		expect.stringContaining('defaultWorker.js'),
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 

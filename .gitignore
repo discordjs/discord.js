@@ -16,6 +16,7 @@ pids
 
 # Dist
 dist/
+dist-docs/
 
 # Miscellaneous
 .tmp/

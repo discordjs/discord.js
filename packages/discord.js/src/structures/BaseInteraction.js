@@ -270,11 +270,9 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
-  // TODO: Get rid of this in the next major
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
-   *
    * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
   isSelectMenu() {
