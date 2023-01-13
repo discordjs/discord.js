@@ -3,17 +3,9 @@
 import type { SectionOptions } from '@discordjs/ui';
 import { Section } from '@discordjs/ui';
 import type { PropsWithChildren } from 'react';
-import { useMedia } from 'react-use';
 
-export function ResponsiveSection(opts: PropsWithChildren<SectionOptions & { separator?: boolean }>) {
-	const matches = useMedia('(max-width: 768px)', true);
-
-	const { children, separator, ...rest } = opts;
-
-	const props = {
-		...rest,
-		dense: matches,
-	};
+export function DocumentationSection(opts: PropsWithChildren<SectionOptions & { separator?: boolean }>) {
+	const { children, separator, ...props } = opts;
 
 	return (
 		<Section {...props}>

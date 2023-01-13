@@ -4,7 +4,7 @@ import { Documentation } from '../../documentation/Documentation';
 import { EnumMember } from './EnumMember';
 import { Panel } from '~/components/Panel';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
-import { ResponsiveSection } from '~/components/documentation/section/ResponsiveSection';
+import { DocumentationSection } from '~/components/documentation/section/DocumentationSection';
 import { SummarySection } from '~/components/documentation/section/SummarySection';
 
 export function Enum({ item }: { item: ApiEnum }) {
@@ -12,7 +12,7 @@ export function Enum({ item }: { item: ApiEnum }) {
 		<Documentation item={item}>
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />
-			<ResponsiveSection icon={<VscSymbolEnum size={20} />} padded title="Members">
+			<DocumentationSection icon={<VscSymbolEnum size={20} />} padded title="Members">
 				<div className="flex flex-col gap-4">
 					{item.members.map((member) => (
 						<Panel key={member.containerKey}>
@@ -20,7 +20,7 @@ export function Enum({ item }: { item: ApiEnum }) {
 						</Panel>
 					))}
 				</div>
-			</ResponsiveSection>
+			</DocumentationSection>
 		</Documentation>
 	);
 }

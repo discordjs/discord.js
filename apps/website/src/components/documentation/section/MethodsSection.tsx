@@ -8,7 +8,7 @@ import type {
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useMemo, Fragment } from 'react';
-import { ResponsiveSection } from './ResponsiveSection';
+import { DocumentationSection } from './DocumentationSection';
 import { Method } from '~/components/model/method/Method';
 import { resolveMembers } from '~/util/members';
 
@@ -38,8 +38,8 @@ export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 	);
 
 	return (
-		<ResponsiveSection icon={<VscSymbolMethod size={20} />} padded title="Methods">
+		<DocumentationSection icon={<VscSymbolMethod size={20} />} padded title="Methods">
 			<div className="flex flex-col gap-4">{methodItems}</div>
-		</ResponsiveSection>
+		</DocumentationSection>
 	);
 }
