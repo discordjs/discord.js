@@ -255,6 +255,7 @@ class InteractionResponses {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
       },
+      auth: false,
     });
     this.replied = true;
   }
