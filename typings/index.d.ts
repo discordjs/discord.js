@@ -3584,22 +3584,24 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public thread: ThreadChannel;
   public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
-  public fetch(): Promise<Collection<Snowflake, ThreadMember>>
-  public fetch(member?: UserResolvable, options?: FetchThreadMemberOptions): Promise<ThreadMember>;
-
+  public fetch(): Promise<Collection<Snowflake, ThreadMember>>;
   public fetch(
-    options: ThreadMember<true> | ((FetchThreadMemberOptions & { withMember: true })),
+    member: ThreadMember<true>,
+    options?: FetchMemberOptions
+    ): Promise<ThreadMember<true>>;
+  public fetch(
+    member: Snowflake,
+    options: (FetchThreadMemberOptions & { withMember: true }),
   ): Promise<ThreadMember<true>>;
-
   public fetch(
     options: FetchThreadMembersWithGuildMemberDataOptions,
-  ): Promise<Collection<Snowflake, ThreadMember<true>>>;
-
-  public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
+    ): Promise<Collection<Snowflake, ThreadMember<true>>>;
+  public fetch(member: UserResolvable, options?: FetchThreadMemberOptions): Promise<ThreadMember>;
+  public fetch(options: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
 
   /** @deprecated Use `fetch(member, options)` instead. */
-  public fetch(cache?: boolean, options?: FetchMembersOptions): Promise<Collection<Snowflake, ThreadMember>>;
-  
+  public fetch(cache: boolean, options?: FetchMembersOptions): Promise<Collection<Snowflake, ThreadMember>>;
+
   public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
 }
@@ -4884,7 +4886,7 @@ export interface FetchThreadMembersWithGuildMemberDataOptions {
 }
 
 export interface FetchThreadMembersWithoutGuildMemberDataOptions {
-  withMember?: false;
+  withMember: false;
   cache?: boolean;
 }
 
