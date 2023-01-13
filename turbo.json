@@ -4,7 +4,7 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["../../tsconfig.json", "../../tsup.config.js", "src/**/*.ts", "tsconfig.json", "tsup.config.js"],
+			"inputs": ["../../tsconfig.json", "../../tsup.config.ts", "src/**/*.ts", "tsconfig.json", "tsup.config.ts"],
 			"outputs": ["dist/**"]
 		},
 		"@discordjs/ui#build": {
@@ -90,13 +90,13 @@
 				".eslintignore",
 				".eslintrc.json",
 				"astro.config.ts",
-				"prettierignore",
-				"prettierrc.js",
-				"prettierrc.cjs",
-				"prettierrc.json",
+				".prettierignore",
+				".prettierrc.js",
+				".prettierrc.cjs",
+				".prettierrc.json",
 				"tsconfig.json",
 				"tsconfig.eslint.json",
-				"tsup.config.js",
+				"tsup.config.ts",
 				"vite.config.ts"
 			],
 			"outputs": []
@@ -118,13 +118,13 @@
 				".eslintignore",
 				".eslintrc.json",
 				"astro.config.ts",
-				"prettierignore",
-				"prettierrc.js",
-				"prettierrc.cjs",
-				"prettierrc.json",
+				".prettierignore",
+				".prettierrc.js",
+				".prettierrc.cjs",
+				".prettierrc.json",
 				"tsconfig.json",
 				"tsconfig.eslint.json",
-				"tsup.config.js",
+				"tsup.config.ts",
 				"vite.config.ts"
 			],
 			"outputs": []
