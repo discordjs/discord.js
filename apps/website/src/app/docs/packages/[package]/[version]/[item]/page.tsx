@@ -1,9 +1,6 @@
 /* eslint-disable no-case-declarations */
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 // eslint-disable-next-line n/prefer-global/process
-import process, { cwd } from 'node:process';
-import { createApiModel, tryResolveSummaryText } from '@discordjs/scripts';
+import { addPackageToModel } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -18,8 +15,7 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 } from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiFunction } from '@microsoft/api-extractor-model';
-import type { Metadata } from 'next';
+import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';
 import { Class } from '~/components/model/Class';
@@ -112,7 +108,7 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }):
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
-	const model = createApiModel(modelJSON);
+	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
@@ -121,7 +117,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 		return notFound();
 	}
 
-	return entry.members.map((member) => ({
+	return entry.members.map((member: any) => ({
 		item: member.displayName,
 	}));
 }
@@ -131,21 +127,20 @@ async function fetchMember({ package: packageName, version: branchName = 'main',
 		notFound();
 	}
 
-	let data;
-	try {
-		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-			data = JSON.parse(res);
-		} else {
-			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
-			data = await res.json();
+	const model = new ApiModel();
+
+	if (branchName === 'main') {
+		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
+
+		for (const modelJSONFile of modelJSONFiles) {
+			addPackageToModel(model, modelJSONFile);
 		}
-	} catch {
-		notFound();
+	} else {
+		const modelJSON = await fetchModelJSON(packageName, branchName);
+		addPackageToModel(model, modelJSON);
 	}
 
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
-	const model = createApiModel(data);
 
 	// eslint-disable-next-line prefer-const
 	let { containerKey, displayName: name } = findMember(model, packageName, memberName) ?? {};

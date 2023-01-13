@@ -1,5 +1,6 @@
-import { createApiModel } from '@discordjs/scripts';
+import { addPackageToModel } from '@discordjs/scripts';
 import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
+import { ApiModel } from '@microsoft/api-extractor-model';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
@@ -41,7 +42,7 @@ function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
 
 export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
-	const model = createApiModel(modelJSON);
+	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(params.package);
 
