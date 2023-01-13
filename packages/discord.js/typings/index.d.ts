@@ -153,6 +153,7 @@ import {
   ForumLayoutType,
   ApplicationRoleConnectionMetadataType,
   APIApplicationRoleConnectionMetadata,
+  ImageFormat,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3445,6 +3446,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
 export const version: string;
