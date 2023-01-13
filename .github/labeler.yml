@@ -19,6 +19,9 @@ packages:core:
 packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
+packages:next:
+  - packages/next/*
+  - packages/next/**/*
 packages:docgen:
   - packages/docgen/*
   - packages/docgen/**/*

@@ -153,6 +153,7 @@ import {
   ForumLayoutType,
   ApplicationRoleConnectionMetadataType,
   APIApplicationRoleConnectionMetadata,
+  ImageFormat,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3446,6 +3447,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
 export const version: string;
@@ -4621,8 +4623,8 @@ export type CacheConstructors = {
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
 export type CacheFactory = (
   manager: CacheConstructors[keyof Caches],
-  holds: Caches[typeof manager['name']][1],
-) => typeof manager['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
+  holds: Caches[(typeof manager)['name']][1],
+) => (typeof manager)['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>

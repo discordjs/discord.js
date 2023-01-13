@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'packages/*/src/**'
     tags:
       - '**'
   workflow_dispatch:
@@ -74,6 +76,7 @@ jobs:
             'collection',
             'core',
             'discord.js',
+            'next',
             'formatters',
             'proxy',
             'rest',
