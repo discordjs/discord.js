@@ -968,7 +968,7 @@ export class GuildsAPI {
 	}
 
 	/**
-	 * Fetches guild webhooks
+	 * Fetches webhooks for a guild
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-guild-webhooks}
 	 * @param id - The id of the guild
