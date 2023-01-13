@@ -5,9 +5,10 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
 		"release": "cliff-jumper"
@@ -72,7 +73,7 @@
 		"@favware/cliff-jumper": "^1.10.0",
 		"@microsoft/api-extractor": "^7.33.7",
 		"@types/node": "16.18.11",
-		"@vitest/coverage-c8": "^0.27.0",
+		"@vitest/coverage-c8": "^0.27.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.0.2",
 		"eslint": "^8.31.0",
@@ -82,8 +83,8 @@
 		"prettier": "^2.8.2",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.4",
-		"undici": "^5.14.0",
-		"vitest": "^0.27.0",
+		"undici": "^5.15.0",
+		"vitest": "^0.27.1",
 		"zlib-sync": "^0.1.7"
 	},
 	"engines": {

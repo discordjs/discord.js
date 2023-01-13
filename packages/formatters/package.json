@@ -5,9 +5,10 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
 		"release": "cliff-jumper"
@@ -49,8 +50,8 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
 		"@microsoft/api-extractor": "^7.33.7",
-		"@types/node": "^16.18.11",
-		"@vitest/coverage-c8": "^0.27.0",
+		"@types/node": "16.18.11",
+		"@vitest/coverage-c8": "^0.27.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.31.0",
 		"eslint-config-neon": "^0.1.40",
@@ -58,7 +59,7 @@
 		"prettier": "^2.8.2",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.4",
-		"vitest": "^0.27.0"
+		"vitest": "^0.27.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

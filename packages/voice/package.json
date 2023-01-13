@@ -4,11 +4,12 @@
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
 		"test": "jest --coverage",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
 		"release": "cliff-jumper"

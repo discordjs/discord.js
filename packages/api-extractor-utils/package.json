@@ -31,8 +31,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@microsoft/api-extractor-model": "7.24.0",
-		"@microsoft/tsdoc": "0.14.1"
+		"@microsoft/api-extractor-model": "7.25.3",
+		"@microsoft/tsdoc": "0.14.2"
 	},
 	"devDependencies": {
 		"@types/node": "16.18.11",

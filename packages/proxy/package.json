@@ -5,10 +5,11 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy/*'",
 		"release": "cliff-jumper"
@@ -57,14 +58,14 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"tslib": "^2.4.1",
-		"undici": "^5.14.0"
+		"undici": "^5.15.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
 		"@microsoft/api-extractor": "^7.33.7",
 		"@types/node": "16.18.11",
 		"@types/supertest": "^2.0.12",
-		"@vitest/coverage-c8": "^0.27.0",
+		"@vitest/coverage-c8": "^0.27.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.31.0",
 		"eslint-config-neon": "^0.1.40",
@@ -73,7 +74,7 @@
 		"supertest": "^6.3.3",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.4",
-		"vitest": "^0.27.0"
+		"vitest": "^0.27.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
