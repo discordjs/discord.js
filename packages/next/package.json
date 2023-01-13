@@ -60,12 +60,8 @@
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"discord-api-types": "^0.37.27",
-		"@discordjs/actions": "workspace:^",
-		"@discordjs/api-extractor-utils": "workspace:^",
 		"@discordjs/brokers": "workspace:^",
 		"@discordjs/proxy": "workspace:^",
-		"@discordjs/scripts": "workspace:^",
-		"@discordjs/ui": "workspace:^",
 		"@discordjs/voice": "workspace:^"
 	},
 	"devDependencies": {
