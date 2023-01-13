@@ -174,6 +174,10 @@ exports.Opcodes = {
  * * APPLICATION_COMMAND_CREATE: applicationCommandCreate (deprecated)
  * * APPLICATION_COMMAND_DELETE: applicationCommandDelete (deprecated)
  * * APPLICATION_COMMAND_UPDATE: applicationCommandUpdate (deprecated)
+ * * AUTO_MODERATION_ACTION_EXECUTION: autoModerationActionExecution
+ * * AUTO_MODERATION_RULE_CREATE: autoModerationRuleCreate
+ * * AUTO_MODERATION_RULE_DELETE: autoModerationRuleDelete
+ * * AUTO_MODERATION_RULE_UPDATE: autoModerationRuleUpdate
  * * GUILD_CREATE: guildCreate
  * * GUILD_DELETE: guildDelete
  * * GUILD_UPDATE: guildUpdate
@@ -252,6 +256,10 @@ exports.Events = {
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
+  AUTO_MODERATION_ACTION_EXECUTION: 'autoModerationActionExecution',
+  AUTO_MODERATION_RULE_CREATE: 'autoModerationRuleCreate',
+  AUTO_MODERATION_RULE_DELETE: 'autoModerationRuleDelete',
+  AUTO_MODERATION_RULE_UPDATE: 'autoModerationRuleUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -540,6 +548,7 @@ exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * * CONTEXT_MENU_COMMAND
+ * * AUTO_MODERATION_ACTION
  * @typedef {string} MessageType
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
  */
@@ -568,11 +577,13 @@ exports.MessageTypes = [
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
   'CONTEXT_MENU_COMMAND',
+  'AUTO_MODERATION_ACTION',
 ];
 
 /**
  * The name of an item to be swept in Sweepers
  * * `applicationCommands` - both global and guild commands
+ * * `autoModerationRules`
  * * `bans`
  * * `emojis`
  * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
@@ -590,6 +601,7 @@ exports.MessageTypes = [
  */
 exports.SweeperKeys = [
   'applicationCommands',
+  'autoModerationRules',
   'bans',
   'emojis',
   'invites',
@@ -1230,6 +1242,45 @@ exports.ApplicationCommandOptionTypes = createEnum([
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
 /**
+ * The type of an {@link AutoModerationRuleTriggerTypes} object:
+ * * KEYWORD
+ * * SPAM
+ * * KEYWORD_PRESET
+ * * MENTION_SPAM
+ * @typedef {string} AutoModerationRuleTriggerType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types}
+ */
+exports.AutoModerationRuleTriggerTypes = createEnum([null, 'KEYWORD', null, 'SPAM', 'KEYWORD_PRESET', 'MENTION_SPAM']);
+
+/**
+ * The type of an {@link AutoModerationRuleKeywordPresetTypes} object:
+ * * KEYWORD
+ * * SPAM
+ * * KEYWORD_PRESET
+ * * MENTION_SPAM
+ * @typedef {string} AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types}
+ */
+exports.AutoModerationRuleKeywordPresetTypes = createEnum([null, 'PROFANITY', 'SEXUAL_CONTENT', 'SLURS']);
+/**
+ * The type of an {@link AutoModerationActionTypes} object:
+ * * BLOCK_MESSAGE
+ * * SEND_ALERT_MESSAGE
+ * * TIMEOUT
+ * @typedef {string} AutoModerationActionType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-action-object-action-types}
+ */
+exports.AutoModerationActionTypes = createEnum([null, 'BLOCK_MESSAGE', 'SEND_ALERT_MESSAGE', 'TIMEOUT']);
+
+/**
+ * The type of an {@link AutoModerationRuleEventTypes} object:
+ * * MESSAGE_SEND
+ * @typedef {string} AutoModerationRuleEventType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types}
+ */
+
+exports.AutoModerationRuleEventTypes = createEnum([null, 'MESSAGE_SEND']);
+/**
  * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
@@ -1432,6 +1483,14 @@ function createEnum(keys) {
  * The type of an {@link ApplicationCommandPermissions} object.
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
+ * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
+ * of content which can trigger the rule.
+ * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
+ * A type of an action which executes whenever a rule is triggered.
+ * @property {Object<AutoModerationRuleKeywordPresetType, number>} AutoModerationRuleKeywordPresetTypes
+ * The internally pre-defined wordsetswhich will be searched for in content
+ * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
+ *  a rule should be checked.
  * @property {Object<ChannelType, number>} ChannelTypes All available channel types.
  * @property {ClientApplicationAssetTypes} ClientApplicationAssetTypes The types of an {@link ApplicationAsset} object.
  * @property {Object<Color, number>} Colors An object with regularly used colors.
