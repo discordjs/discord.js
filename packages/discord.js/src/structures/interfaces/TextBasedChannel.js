@@ -3,7 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
-const { TypeError, Error, ErrorCodes } = require('../../errors');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors');
+const { MaxBulkDeletableMessageAge } = require('../../util/Constants');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
 const MessagePayload = require('../MessagePayload');
@@ -60,7 +61,7 @@ class TextBasedChannel {
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
    * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
    * The files to send with the message.
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
+   * @property {ActionRow[]|ActionRowBuilder[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
@@ -273,7 +274,7 @@ class TextBasedChannel {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -294,7 +295,9 @@ class TextBasedChannel {
     if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIds = messages instanceof Collection ? [...messages.keys()] : messages.map(m => m.id ?? m);
       if (filterOld) {
-        messageIds = messageIds.filter(id => Date.now() - DiscordSnowflake.timestampFrom(id) < 1_209_600_000);
+        messageIds = messageIds.filter(
+          id => Date.now() - DiscordSnowflake.timestampFrom(id) < MaxBulkDeletableMessageAge,
+        );
       }
       if (messageIds.length === 0) return new Collection();
       if (messageIds.length === 1) {
@@ -326,7 +329,7 @@ class TextBasedChannel {
       const msgs = await this.messages.fetch({ limit: messages });
       return this.bulkDelete(msgs, filterOld);
     }
-    throw new TypeError(ErrorCodes.MessageBulkDeleteType);
+    throw new DiscordjsTypeError(ErrorCodes.MessageBulkDeleteType);
   }
 
   /**

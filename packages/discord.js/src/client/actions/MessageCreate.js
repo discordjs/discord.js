@@ -10,6 +10,11 @@ class MessageCreateAction extends Action {
     if (channel) {
       if (!channel.isTextBased()) return {};
 
+      if (channel.isThread()) {
+        channel.messageCount++;
+        channel.totalMessageSent++;
+      }
+
       const existing = channel.messages.cache.get(data.id);
       if (existing) return { message: existing };
       const message = channel.messages._add(data);

@@ -29,29 +29,53 @@ Use it:
 
 ```ts
 import { Client } from 'discord.js';
-import { ProxyAgent } from 'undici';
 
 const client = new Client({
 	// other options,
 	rest: {
-		agent: new ProxyAgent('https://localhost:8080'),
+		api: 'http://localhost:8080/api',
 	},
+});
+```
+
+Or with just `@discordjs/rest`:
+
+```ts
+import { REST } from '@discordjs/rest';
+
+const rest = new REST({
+	api: 'http://localhost:8080/api',
 });
 ```
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [discord.js Discord server](https://discord.gg/djs)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
-- [Docker Hub](https://hub.docker.com/r/discordjs/proxy)
+- [Website][website] ([source][website-source])
+- [Documentation][documentation]
+- [Guide][guide] ([source][guide-source])
+  See also the [Update Guide][guide-update], including updated and removed items in the library.
+- [discord.js Discord server][discord]
+- [Discord API Discord server][discord-api]
+- [GitHub][source]
+- [Related libraries][related-libs]
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested.
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+
+[website]: https://discord.js.org/
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[documentation]: https://discord.js.org/
+[guide]: https://discordjs.guide/
+[guide-source]: https://github.com/discordjs/guide
+[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[discord]: https://discord.gg/djs
+[discord-api]: https://discord.gg/discord-api
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
+[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

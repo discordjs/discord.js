@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import {
 	type APIActionRowComponent,
 	ComponentType,
@@ -9,14 +11,24 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { ComponentBuilder } from './Component.js';
 import { createComponentBuilder } from './Components.js';
 import type { ButtonBuilder } from './button/Button.js';
-import type { SelectMenuBuilder } from './selectMenu/SelectMenu.js';
+import type { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
+import type { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
+import type { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
+import type { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
+import type { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import type { TextInputBuilder } from './textInput/TextInput.js';
 
 export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>
 	| MessageActionRowComponentBuilder;
 export type ModalComponentBuilder = ActionRowBuilder<ModalActionRowComponentBuilder> | ModalActionRowComponentBuilder;
-export type MessageActionRowComponentBuilder = ButtonBuilder | SelectMenuBuilder;
+export type MessageActionRowComponentBuilder =
+	| ButtonBuilder
+	| ChannelSelectMenuBuilder
+	| MentionableSelectMenuBuilder
+	| RoleSelectMenuBuilder
+	| StringSelectMenuBuilder
+	| UserSelectMenuBuilder;
 export type ModalActionRowComponentBuilder = TextInputBuilder;
 export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
@@ -33,6 +45,40 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 */
 	public readonly components: T[];
 
+	/**
+	 * Creates a new action row from API data
+	 *
+	 * @param data - The API data to create this action row with
+	 * @example
+	 * Creating an action row from an API data object
+	 * ```ts
+	 * const actionRow = new ActionRowBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			custom_id: "custom id",
+	 * 			label: "Type something",
+	 * 			style: TextInputStyle.Short,
+	 * 			type: ComponentType.TextInput,
+	 * 		},
+	 * 	],
+	 * });
+	 * ```
+	 * @example
+	 * Creating an action row using setters and API data
+	 * ```ts
+	 * const actionRow = new ActionRowBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			custom_id: "custom id",
+	 * 			label: "Click me",
+	 * 			style: ButtonStyle.Primary,
+	 * 			type: ComponentType.Button,
+	 * 		},
+	 * 	],
+	 * })
+	 * 	.addComponents(button2, button3);
+	 * ```
+	 */
 	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as T[];

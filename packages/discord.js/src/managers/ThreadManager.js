@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
 
 /**
@@ -17,7 +17,7 @@ class ThreadManager extends CachedManager {
 
     /**
      * The channel this Manager belongs to
-     * @type {NewsChannel|TextChannel|ForumChannel}
+     * @type {TextChannel|NewsChannel|ForumChannel}
      */
     this.channel = channel;
   }
@@ -162,7 +162,7 @@ class ThreadManager extends CachedManager {
             query.set('before', timestamp);
           }
         } catch {
-          throw new TypeError(ErrorCodes.InvalidType, 'before', 'DateResolvable or ThreadChannelResolvable');
+          throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'before', 'DateResolvable or ThreadChannelResolvable');
         }
       }
     }

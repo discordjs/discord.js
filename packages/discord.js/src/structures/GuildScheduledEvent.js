@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { GuildScheduledEventStatus, GuildScheduledEventEntityType, RouteBases } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents a scheduled event in a {@link Guild}.
@@ -240,7 +240,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Options used to create an invite URL to a {@link GuildScheduledEvent}
-   * @typedef {CreateInviteOptions} CreateGuildScheduledEventInviteURLOptions
+   * @typedef {InviteCreateOptions} GuildScheduledEventInviteURLCreateOptions
    * @property {GuildInvitableChannelResolvable} [channel] The channel to create the invite in.
    * <warn>This is required when the `entityType` of `GuildScheduledEvent` is
    * {@link GuildScheduledEventEntityType.External}, gets ignored otherwise</warn>
@@ -248,15 +248,15 @@ class GuildScheduledEvent extends Base {
 
   /**
    * Creates an invite URL to this guild scheduled event.
-   * @param {CreateGuildScheduledEventInviteURLOptions} [options] The options to create the invite
+   * @param {GuildScheduledEventInviteURLCreateOptions} [options] The options to create the invite
    * @returns {Promise<string>}
    */
   async createInviteURL(options) {
     let channelId = this.channelId;
     if (this.entityType === GuildScheduledEventEntityType.External) {
-      if (!options?.channel) throw new Error(ErrorCodes.InviteOptionsMissingChannel);
+      if (!options?.channel) throw new DiscordjsError(ErrorCodes.InviteOptionsMissingChannel);
       channelId = this.guild.channels.resolveId(options.channel);
-      if (!channelId) throw new Error(ErrorCodes.GuildChannelResolve);
+      if (!channelId) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     }
     const invite = await this.guild.invites.create(channelId, options);
     return `${RouteBases.invite}/${invite.code}?event=${this.id}`;

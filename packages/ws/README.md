@@ -30,6 +30,12 @@ yarn add @discordjs/ws
 pnpm add @discordjs/ws
 ```
 
+### Optional packages
+
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
+
 ## Example usage
 
 ```ts
@@ -42,6 +48,10 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
 	rest,
+});
+
+manager.on(WebSocketShardEvents.Dispatch, (event) => {
+	// Process gateway events here.
 });
 
 await manager.connect();
@@ -88,8 +98,10 @@ const manager = new WebSocketManager({
 You can also have the shards spawn in worker threads:
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents, WorkerShardingStrategy } from '@discordjs/ws';
+import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
+import { REST } from '@discordjs/rest';
 
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
@@ -103,25 +115,83 @@ manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }))
 manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }));
 ```
 
+**Note**: By default, this will cause the workers to effectively only be responsible for the WebSocket connection, they simply pass up all the events back to the main process for the manager to emit. If you want to have the workers handle events as well, you can pass in a `workerPath` option to the `WorkerShardingStrategy` constructor:
+
+```ts
+import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
+import { REST } from '@discordjs/rest';
+
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+});
+
+manager.setStrategy(
+	new WorkerShardingStrategy(manager, {
+		shardsPerWorker: 2,
+		workerPath: './worker.js',
+	}),
+);
+```
+
+And your `worker.ts` file:
+
+```ts
+import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
+
+const bootstrapper = new WorkerBootstrapper();
+void bootstrapper.bootstrap({
+	// Those will be sent to the main thread for the manager to emit
+	forwardEvents: [
+		WebSocketShardEvents.Closed,
+		WebSocketShardEvents.Debug,
+		WebSocketShardEvents.Hello,
+		WebSocketShardEvents.Ready,
+		WebSocketShardEvents.Resumed,
+	],
+	shardCallback: (shard) => {
+		shard.on(WebSocketShardEvents.Dispatch, (event) => {
+			// Process gateway events here however you want (e.g. send them through a message broker)
+			// You also have access to shard.id if you need it
+		});
+	},
+});
+```
+
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discord.js.org/#/docs/ws)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
-- [discord.js Discord server](https://discord.gg/djs)
-- [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/ws)
-- [npm](https://www.npmjs.com/package/@discordjs/ws)
-- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
+- [Website][website] ([source][website-source])
+- [Documentation][documentation]
+- [Guide][guide] ([source][guide-source])
+  See also the [Update Guide][guide-update], including updated and removed items in the library.
+- [discord.js Discord server][discord]
+- [Discord API Discord server][discord-api]
+- [GitHub][source]
+- [npm][npm]
+- [Related libraries][related-libs]
 
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/ws).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+[documentation][documentation].  
+See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+
+[website]: https://discord.js.org/
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[documentation]: https://discord.js.org/#/docs/ws
+[guide]: https://discordjs.guide/
+[guide-source]: https://github.com/discordjs/guide
+[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[discord]: https://discord.gg/djs
+[discord-api]: https://discord.gg/discord-api
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
+[npm]: https://www.npmjs.com/package/@discordjs/ws
+[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

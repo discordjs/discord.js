@@ -128,12 +128,14 @@
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
  * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
+ * <warn>This property is deprecated.</warn>
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType
  * @property {'CommandInteractionOptionEmpty'} CommandInteractionOptionEmpty
  * @property {'CommandInteractionOptionNoSubcommand'} CommandInteractionOptionNoSubcommand
  * @property {'CommandInteractionOptionNoSubcommandGroup'} CommandInteractionOptionNoSubcommandGroup
+ * @property {'CommandInteractionOptionInvalidChannelType'} CommandInteractionOptionInvalidChannelType
  * @property {'AutocompleteInteractionOptionNoFocusedOption'} AutocompleteInteractionOptionNoFocusedOption
 
  * @property {'ModalSubmitInteractionFieldNotFound'} ModalSubmitInteractionFieldNotFound
@@ -280,6 +282,7 @@ const keys = [
   'CommandInteractionOptionEmpty',
   'CommandInteractionOptionNoSubcommand',
   'CommandInteractionOptionNoSubcommandGroup',
+  'CommandInteractionOptionInvalidChannelType',
   'AutocompleteInteractionOptionNoFocusedOption',
 
   'ModalSubmitInteractionFieldNotFound',

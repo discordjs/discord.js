@@ -1,11 +1,19 @@
 {
-	"eslint.workingDirectories": [{ "pattern": "./packages/*" }],
+	"eslint.workingDirectories": [{ "pattern": "./apps/*" }, { "pattern": "./packages/*" }],
+	"eslint.validate": ["javascript", "javascriptreact", "astro", "typescript", "typescriptreact"],
+	"prettier.documentSelectors": ["**/*.astro"],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true,
 		"source.organizeImports": false
 	},
-	"unocss.root": "./packages/website",
+	"editor.trimAutoWhitespace": false,
+	"files.associations": {
+		"*.mdx": "markdown"
+	},
+	"files.insertFinalNewline": true,
+	"files.eol": "\n",
+	"npm.packageManager": "yarn",
 	"typescript.tsdk": "node_modules/typescript/lib"
 }

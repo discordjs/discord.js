@@ -1,0 +1,24 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"noEmit": true,
+		"allowJs": false,
+		"incremental": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"~/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts", ".next/types/**/*.ts"],
+	"exclude": ["node_modules"]
+}

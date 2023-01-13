@@ -2,13 +2,19 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
-const { ErrorCodes, TypeError } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
- * @extends {CachedManager}
+ * @extends {ThreadManager}
  */
 class GuildTextThreadManager extends ThreadManager {
+  /**
+   * The channel this Manager belongs to
+   * @name GuildTextThreadManager#channel
+   * @type {TextChannel|NewsChannel}
+   */
+
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
    * @typedef {StartThreadOptions} ThreadCreateOptions
@@ -62,7 +68,7 @@ class GuildTextThreadManager extends ThreadManager {
     let startMessageId;
     if (startMessage) {
       startMessageId = this.channel.messages.resolveId(startMessage);
-      if (!startMessageId) throw new TypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
+      if (!startMessageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
     } else if (this.channel.type !== ChannelType.GuildAnnouncement) {
       resolvedType = type ?? resolvedType;
     }

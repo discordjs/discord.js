@@ -5,11 +5,12 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const GuildTextThreadManager = require('./GuildTextThreadManager');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const ThreadChannel = require('../structures/ThreadChannel');
 const Webhook = require('../structures/Webhook');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -98,6 +99,24 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * Adds the target channel to a channel's followers.
+   * @param {NewsChannel|Snowflake} channel The channel to follow
+   * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
+   * @param {string} [reason] Reason for creating the webhook
+   * @returns {Promise<Snowflake>} Returns created target webhook id.
+   */
+  async addFollower(channel, targetChannel, reason) {
+    const channelId = this.resolveId(channel);
+    const targetChannelId = this.resolveId(targetChannel);
+    if (!channelId || !targetChannelId) throw new Error(ErrorCodes.GuildChannelResolve);
+    const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
+      body: { webhook_channel_id: targetChannelId },
+      reason,
+    });
+    return webhook_id;
+  }
+
+  /**
    * Options used to create a new channel in a guild.
    * @typedef {CategoryCreateChannelOptions} GuildChannelCreateOptions
    * @property {?CategoryChannelResolvable} [parent] Parent of the new channel
@@ -140,6 +159,9 @@ class GuildChannelManager extends CachedManager {
     videoQualityMode,
     availableTags,
     defaultReactionEmoji,
+    defaultAutoArchiveDuration,
+    defaultSortOrder,
+    defaultForumLayout,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -161,6 +183,9 @@ class GuildChannelManager extends CachedManager {
         video_quality_mode: videoQualityMode,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
+        default_auto_archive_duration: defaultAutoArchiveDuration,
+        default_sort_order: defaultSortOrder,
+        default_forum_layout: defaultForumLayout,
       },
       reason,
     });
@@ -169,7 +194,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|Snowflake} channel The channel to create the webhook for
+   * @property {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel
+   * The channel to create the webhook for
    */
 
   /**
@@ -189,7 +215,7 @@ class GuildChannelManager extends CachedManager {
    */
   async createWebhook({ channel, name, avatar, reason }) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
@@ -226,13 +252,16 @@ class GuildChannelManager extends CachedManager {
    * @property {GuildForumTagData[]} [availableTags] The tags to set as available in a forum channel
    * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
+   * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
+   * @property {ForumLayoutType} [defaultForumLayout] The default forum layout to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
   /**
    * Edits the channel.
    * @param {GuildChannelResolvable} channel The channel to edit
-   * @param {GuildChannelEditOptions} data Options for editing the channel
+   * @param {GuildChannelEditOptions} options Options for editing the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -240,19 +269,19 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async edit(channel, data) {
+  async edit(channel, options) {
     channel = this.resolve(channel);
-    if (!channel) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = data.parent && this.client.channels.resolveId(data.parent);
+    const parent = options.parent && this.client.channels.resolveId(options.parent);
 
-    if (typeof data.position !== 'undefined') {
-      await this.setPosition(channel, data.position, { position: data.position, reason: data.reason });
+    if (typeof options.position !== 'undefined') {
+      await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
     }
 
-    let permission_overwrites = data.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites = options.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
 
-    if (data.lockPermissions) {
+    if (options.lockPermissions) {
       if (parent) {
         const newParent = this.guild.channels.resolve(parent);
         if (newParent?.type === ChannelType.GuildCategory) {
@@ -269,24 +298,28 @@ class GuildChannelManager extends CachedManager {
 
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
-        name: (data.name ?? channel.name).trim(),
-        type: data.type,
-        topic: data.topic,
-        nsfw: data.nsfw,
-        bitrate: data.bitrate ?? channel.bitrate,
-        user_limit: data.userLimit ?? channel.userLimit,
-        rtc_region: 'rtcRegion' in data ? data.rtcRegion : channel.rtcRegion,
-        video_quality_mode: data.videoQualityMode,
+        name: (options.name ?? channel.name).trim(),
+        type: options.type,
+        topic: options.topic,
+        nsfw: options.nsfw,
+        bitrate: options.bitrate ?? channel.bitrate,
+        user_limit: options.userLimit ?? channel.userLimit,
+        rtc_region: 'rtcRegion' in options ? options.rtcRegion : channel.rtcRegion,
+        video_quality_mode: options.videoQualityMode,
         parent_id: parent,
-        lock_permissions: data.lockPermissions,
-        rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: data.defaultAutoArchiveDuration,
+        lock_permissions: options.lockPermissions,
+        rate_limit_per_user: options.rateLimitPerUser,
+        default_auto_archive_duration: options.defaultAutoArchiveDuration,
         permission_overwrites,
-        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
-        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
-        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
+        available_tags: options.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji:
+          options.defaultReactionEmoji && transformGuildDefaultReaction(options.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: options.defaultThreadRateLimitPerUser,
+        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
+        default_sort_order: options.defaultSortOrder,
+        default_forum_layout: options.defaultForumLayout,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;
@@ -306,7 +339,7 @@ class GuildChannelManager extends CachedManager {
    */
   async setPosition(channel, position, { relative, reason } = {}) {
     channel = this.resolve(channel);
-    if (!channel) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     const updatedChannels = await setPosition(
       channel,
       position,
@@ -349,7 +382,7 @@ class GuildChannelManager extends CachedManager {
     if (id) {
       const data = await this.client.rest.get(Routes.channel(id));
       // Since this is the guild manager, throw if on a different guild
-      if (this.guild.id !== data.guild_id) throw new Error(ErrorCodes.GuildChannelUnowned);
+      if (this.guild.id !== data.guild_id) throw new DiscordjsError(ErrorCodes.GuildChannelUnowned);
       return this.client.channels._add(data, this.guild, { cache });
     }
 
@@ -371,7 +404,7 @@ class GuildChannelManager extends CachedManager {
    */
   async fetchWebhooks(channel) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     const data = await this.client.rest.get(Routes.channelWebhooks(id));
     return data.reduce((hooks, hook) => hooks.set(hook.id, new Webhook(this.client, hook)), new Collection());
   }
@@ -445,7 +478,7 @@ class GuildChannelManager extends CachedManager {
    */
   async delete(channel, reason) {
     const id = this.resolveId(channel);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     await this.client.rest.delete(Routes.channel(id), { reason });
     this.client.actions.ChannelDelete.handle({ id });
   }

@@ -11,9 +11,10 @@ const allowedChannelTypes = [
 	ChannelType.PublicThread,
 	ChannelType.PrivateThread,
 	ChannelType.GuildStageVoice,
+	ChannelType.GuildForum,
 ] as const;
 
-export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
+export type ApplicationCommandOptionAllowedChannelTypes = (typeof allowedChannelTypes)[number];
 
 const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 

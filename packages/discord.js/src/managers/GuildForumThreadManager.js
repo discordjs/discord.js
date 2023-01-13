@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
 
 /**
@@ -11,15 +11,21 @@ const MessagePayload = require('../structures/MessagePayload');
  */
 class GuildForumThreadManager extends ThreadManager {
   /**
-   * @typedef {BaseMessageOptions} GuildForumThreadCreateOptions
-   * @property {stickers} [stickers] The stickers to send with the message
+   * The channel this Manager belongs to
+   * @name GuildForumThreadManager#channel
+   * @type {ForumChannel}
+   */
+
+  /**
+   * @typedef {BaseMessageOptions} GuildForumThreadMessageCreateOptions
+   * @property {StickerResolvable} [stickers] The stickers to send with the message
    * @property {BitFieldResolvable} [flags] The flags to send with the message
    */
 
   /**
    * Options for creating a thread.
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
-   * @property {GuildForumThreadCreateOptions|MessagePayload} message The message associated with the thread post
+   * @property {GuildForumThreadMessageCreateOptions|MessagePayload} message The message associated with the thread post
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    */
 
@@ -50,7 +56,7 @@ class GuildForumThreadManager extends ThreadManager {
     appliedTags,
   } = {}) {
     if (!message) {
-      throw new TypeError(ErrorCodes.GuildForumMessageRequired);
+      throw new DiscordjsTypeError(ErrorCodes.GuildForumMessageRequired);
     }
 
     const { body, files } = await (message instanceof MessagePayload ? message : MessagePayload.create(this, message))

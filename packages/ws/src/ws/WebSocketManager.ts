@@ -1,4 +1,5 @@
 import type { REST } from '@discordjs/rest';
+import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	Routes,
@@ -12,7 +13,6 @@ import {
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import { range, type Awaitable } from '../utils/utils.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 
 /**
@@ -190,7 +190,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	/**
 	 * Strategy used to manage shards
 	 *
-	 * @defaultValue `SimpleManagerToShardStrategy`
+	 * @defaultValue `SimpleShardingStrategy`
 	 */
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
@@ -264,11 +264,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 			if (Array.isArray(this.options.shardIds)) {
 				shardIds = this.options.shardIds;
 			} else {
-				shardIds = range(this.options.shardIds);
+				const { start, end } = this.options.shardIds;
+				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
 			const data = await this.fetchGatewayInformation();
-			shardIds = range({ start: 0, end: (this.options.shardCount ?? data.shards) - 1 });
+			shardIds = [...range(this.options.shardCount ?? data.shards)];
 		}
 
 		this.shardIds = shardIds;
@@ -298,5 +299,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public send(shardId: number, payload: GatewaySendPayload) {
 		return this.strategy.send(shardId, payload);
+	}
+
+	public fetchStatus() {
+		return this.strategy.fetchStatus();
 	}
 }

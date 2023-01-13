@@ -1,0 +1,84 @@
+{
+	"name": "@discordjs/brokers",
+	"version": "0.1.0",
+	"description": "Powerful set of message brokers",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"fmt": "yarn format",
+		"docs": "yarn build:docs && api-extractor run --local",
+		"prepack": "yarn lint && yarn test && yarn build",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/brokers/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist",
+		"scripts"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Roman <kyradiscord@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"message",
+		"brokers",
+		"redis",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@msgpack/msgpack": "^2.8.0",
+		"@vladfrangu/async_event_emitter": "^2.1.3",
+		"ioredis": "^5.2.4"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^1.10.0",
+		"@microsoft/api-extractor": "^7.33.7",
+		"@types/node": "16.18.11",
+		"@vitest/coverage-c8": "^0.27.1",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.31.0",
+		"eslint-config-neon": "^0.1.40",
+		"eslint-formatter-pretty": "^4.1.0",
+		"prettier": "^2.8.2",
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.4",
+		"vitest": "^0.27.1"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

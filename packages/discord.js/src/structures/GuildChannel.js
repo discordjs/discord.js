@@ -2,7 +2,7 @@
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -250,7 +250,7 @@ class GuildChannel extends BaseChannel {
    * @returns {Promise<GuildChannel>}
    */
   lockPermissions() {
-    if (!this.parent) return Promise.reject(new Error(ErrorCodes.GuildChannelOrphan));
+    if (!this.parent) return Promise.reject(new DiscordjsError(ErrorCodes.GuildChannelOrphan));
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }
@@ -268,7 +268,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Edits the channel.
-   * @param {GuildChannelEditOptions} data The new data for the channel
+   * @param {GuildChannelEditOptions} options The options to provide
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -276,8 +276,8 @@ class GuildChannel extends BaseChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.channels.edit(this, data);
+  edit(options) {
+    return this.guild.channels.edit(this, options);
   }
 
   /**

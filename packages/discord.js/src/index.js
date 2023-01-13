@@ -11,10 +11,9 @@ exports.ShardingManager = require('./sharding/ShardingManager');
 exports.WebhookClient = require('./client/WebhookClient');
 
 // Errors
-const { Error, TypeError, RangeError } = require('./errors/DJSError');
-exports.DiscordjsError = Error;
-exports.DiscordjsTypeError = TypeError;
-exports.DiscordjsRangeError = RangeError;
+exports.DiscordjsError = require('./errors/DJSError').DiscordjsError;
+exports.DiscordjsTypeError = require('./errors/DJSError').DiscordjsTypeError;
+exports.DiscordjsRangeError = require('./errors/DJSError').DiscordjsRangeError;
 exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
 
 // Utilities
@@ -49,6 +48,7 @@ exports.version = require('../package.json').version;
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
+exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
@@ -88,7 +88,10 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationRoleConnectionMetadata = require('./structures/ApplicationRoleConnectionMetadata');
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
+exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
+exports.AutoModerationRule = require('./structures/AutoModerationRule');
 exports.Base = require('./structures/Base');
 exports.BaseGuild = require('./structures/BaseGuild');
 exports.BaseGuildEmoji = require('./structures/BaseGuildEmoji');
@@ -155,9 +158,27 @@ exports.ReactionEmoji = require('./structures/ReactionEmoji');
 exports.RichPresenceAssets = require('./structures/Presence').RichPresenceAssets;
 exports.Role = require('./structures/Role').Role;
 exports.SelectMenuBuilder = require('./structures/SelectMenuBuilder');
+exports.ChannelSelectMenuBuilder = require('./structures/ChannelSelectMenuBuilder');
+exports.MentionableSelectMenuBuilder = require('./structures/MentionableSelectMenuBuilder');
+exports.RoleSelectMenuBuilder = require('./structures/RoleSelectMenuBuilder');
+exports.StringSelectMenuBuilder = require('./structures/StringSelectMenuBuilder');
+exports.UserSelectMenuBuilder = require('./structures/UserSelectMenuBuilder');
+exports.BaseSelectMenuComponent = require('./structures/BaseSelectMenuComponent');
 exports.SelectMenuComponent = require('./structures/SelectMenuComponent');
+exports.ChannelSelectMenuComponent = require('./structures/ChannelSelectMenuComponent');
+exports.MentionableSelectMenuComponent = require('./structures/MentionableSelectMenuComponent');
+exports.RoleSelectMenuComponent = require('./structures/RoleSelectMenuComponent');
+exports.StringSelectMenuComponent = require('./structures/StringSelectMenuComponent');
+exports.UserSelectMenuComponent = require('./structures/UserSelectMenuComponent');
 exports.SelectMenuInteraction = require('./structures/SelectMenuInteraction');
+exports.ChannelSelectMenuInteraction = require('./structures/ChannelSelectMenuInteraction');
+exports.MentionableSelectMenuInteraction = require('./structures/MentionableSelectMenuInteraction');
+exports.MentionableSelectMenuInteraction = require('./structures/MentionableSelectMenuInteraction');
+exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteraction');
+exports.StringSelectMenuInteraction = require('./structures/StringSelectMenuInteraction');
+exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction');
 exports.SelectMenuOptionBuilder = require('./structures/SelectMenuOptionBuilder');
+exports.StringSelectMenuOptionBuilder = require('./structures/StringSelectMenuOptionBuilder');
 exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
 exports.Sticker = require('./structures/Sticker').Sticker;
@@ -186,4 +207,6 @@ exports.WebSocket = require('./WebSocket');
 // External
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);
+__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
+__exportStar(require('@discordjs/util'), exports);

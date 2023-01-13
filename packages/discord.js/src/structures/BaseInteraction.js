@@ -1,8 +1,10 @@
 'use strict';
 
+const { deprecate } = require('node:util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
+const { SelectMenuTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -53,7 +55,7 @@ class BaseInteraction extends Base {
     this.guildId = data.guild_id ?? null;
 
     /**
-     * The user which sent this interaction
+     * The user who created this interaction
      * @type {User}
      */
     this.user = this.client.users._add(data.user ?? data.member.user);
@@ -269,11 +271,60 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
+   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
+   * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
   isSelectMenu() {
-    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.SelectMenu;
+    return this.isStringSelectMenu();
+  }
+
+  /**
+   * Indicates whether this interaction is a select menu of any known type.
+   * @returns {boolean}
+   */
+  isAnySelectMenu() {
+    return this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType);
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
+   * @returns {boolean}
+   */
+  isStringSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.StringSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link UserSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isUserSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.UserSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link RoleSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isRoleSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.RoleSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link ChannelSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isChannelSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.ChannelSelect;
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link MentionableSelectMenuInteraction}
+   * @returns {boolean}
+   */
+  isMentionableSelectMenu() {
+    return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.MentionableSelect;
   }
 
   /**
@@ -284,5 +335,10 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
+
+BaseInteraction.prototype.isSelectMenu = deprecate(
+  BaseInteraction.prototype.isSelectMenu,
+  'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
+);
 
 module.exports = BaseInteraction;

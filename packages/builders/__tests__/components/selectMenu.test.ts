@@ -1,9 +1,9 @@
 import { ComponentType, type APISelectMenuComponent, type APISelectMenuOption } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { SelectMenuBuilder, SelectMenuOptionBuilder } from '../../src/index.js';
+import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from '../../src/index.js';
 
-const selectMenu = () => new SelectMenuBuilder();
-const selectMenuOption = () => new SelectMenuOptionBuilder();
+const selectMenu = () => new StringSelectMenuBuilder();
+const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
 
@@ -28,6 +28,20 @@ const selectMenuData: APISelectMenuComponent = {
 	...selectMenuDataWithoutOptions,
 	options: [selectMenuOptionData],
 };
+
+function makeStringSelectMenuWithOptions() {
+	const selectMenu = new StringSelectMenuBuilder();
+	selectMenu.addOptions(
+		{ label: 'foo', value: 'bar' },
+		{ label: 'foo2', value: 'bar2' },
+		{ label: 'foo3', value: 'bar3' },
+	);
+	return selectMenu;
+}
+
+function mapStringSelectMenuOptionBuildersToJson(selectMenu: StringSelectMenuBuilder) {
+	return selectMenu.options.map((option) => option.toJSON());
+}
 
 describe('Select Menu Components', () => {
 	describe('Assertion Tests', () => {
@@ -165,16 +179,51 @@ describe('Select Menu Components', () => {
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {
 			expect(
-				new SelectMenuBuilder(selectMenuDataWithoutOptions)
-					.addOptions(new SelectMenuOptionBuilder(selectMenuOptionData))
+				new StringSelectMenuBuilder(selectMenuDataWithoutOptions)
+					.addOptions(new StringSelectMenuOptionBuilder(selectMenuOptionData))
 					.toJSON(),
 			).toEqual(selectMenuData);
 			expect(
-				new SelectMenuBuilder(selectMenuDataWithoutOptions)
-					.addOptions([new SelectMenuOptionBuilder(selectMenuOptionData)])
+				new StringSelectMenuBuilder(selectMenuDataWithoutOptions)
+					.addOptions([new StringSelectMenuOptionBuilder(selectMenuOptionData)])
 					.toJSON(),
 			).toEqual(selectMenuData);
-			expect(new SelectMenuOptionBuilder(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
+			expect(new StringSelectMenuOptionBuilder(selectMenuOptionData).toJSON()).toEqual(selectMenuOptionData);
+		});
+
+		test('GIVEN a StringSelectMenuBuilder using StringSelectMenuBuilder#spliceOptions works', () => {
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(makeStringSelectMenuWithOptions().spliceOptions(0, 1)),
+			).toStrictEqual([
+				{ label: 'foo2', value: 'bar2' },
+				{ label: 'foo3', value: 'bar3' },
+			]);
+
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(
+					makeStringSelectMenuWithOptions().spliceOptions(0, 1, selectMenuOptionData),
+				),
+			).toStrictEqual([selectMenuOptionData, { label: 'foo2', value: 'bar2' }, { label: 'foo3', value: 'bar3' }]);
+
+			expect(
+				mapStringSelectMenuOptionBuildersToJson(
+					makeStringSelectMenuWithOptions().spliceOptions(0, 3, selectMenuOptionData),
+				),
+			).toStrictEqual([selectMenuOptionData]);
+
+			expect(() =>
+				makeStringSelectMenuWithOptions().spliceOptions(
+					0,
+					0,
+					...Array.from({ length: 26 }, () => selectMenuOptionData),
+				),
+			).toThrowError();
+
+			expect(() =>
+				makeStringSelectMenuWithOptions()
+					.setOptions(Array.from({ length: 25 }, () => selectMenuOptionData))
+					.spliceOptions(-1, 2, selectMenuOptionData, selectMenuOptionData),
+			).toThrowError();
 		});
 	});
 });

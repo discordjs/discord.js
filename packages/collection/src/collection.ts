@@ -230,13 +230,13 @@ export class Collection<K, V> extends Map<K, V> {
 	 * ```
 	 */
 	public find<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
-	public find(fn: (value: V, key: K, collection: this) => boolean): V | undefined;
+	public find(fn: (value: V, key: K, collection: this) => unknown): V | undefined;
 	public find<This, V2 extends V>(
 		fn: (this: This, value: V, key: K, collection: this) => value is V2,
 		thisArg: This,
 	): V2 | undefined;
-	public find<This>(fn: (this: This, value: V, key: K, collection: this) => boolean, thisArg: This): V | undefined;
-	public find(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): V | undefined {
+	public find<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): V | undefined;
+	public find(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): V | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		for (const [key, val] of this) {
@@ -259,13 +259,13 @@ export class Collection<K, V> extends Map<K, V> {
 	 * ```
 	 */
 	public findKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
-	public findKey(fn: (value: V, key: K, collection: this) => boolean): K | undefined;
+	public findKey(fn: (value: V, key: K, collection: this) => unknown): K | undefined;
 	public findKey<This, K2 extends K>(
 		fn: (this: This, value: V, key: K, collection: this) => key is K2,
 		thisArg: This,
 	): K2 | undefined;
-	public findKey<This>(fn: (this: This, value: V, key: K, collection: this) => boolean, thisArg: This): K | undefined;
-	public findKey(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): K | undefined {
+	public findKey<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): K | undefined;
+	public findKey(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): K | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		for (const [key, val] of this) {
@@ -282,9 +282,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @param thisArg - Value to use as `this` when executing function
 	 * @returns The number of removed entries
 	 */
-	public sweep(fn: (value: V, key: K, collection: this) => boolean): number;
-	public sweep<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): number;
-	public sweep(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): number {
+	public sweep(fn: (value: V, key: K, collection: this) => unknown): number;
+	public sweep<T>(fn: (this: T, value: V, key: K, collection: this) => unknown, thisArg: T): number;
+	public sweep(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): number {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		const previousSize = this.size;
@@ -309,7 +309,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public filter<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): Collection<K2, V>;
 	public filter<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): Collection<K, V2>;
-	public filter(fn: (value: V, key: K, collection: this) => boolean): Collection<K, V>;
+	public filter(fn: (value: V, key: K, collection: this) => unknown): Collection<K, V>;
 	public filter<This, K2 extends K>(
 		fn: (this: This, value: V, key: K, collection: this) => key is K2,
 		thisArg: This,
@@ -318,8 +318,8 @@ export class Collection<K, V> extends Map<K, V> {
 		fn: (this: This, value: V, key: K, collection: this) => value is V2,
 		thisArg: This,
 	): Collection<K, V2>;
-	public filter<This>(fn: (this: This, value: V, key: K, collection: this) => boolean, thisArg: This): Collection<K, V>;
-	public filter(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): Collection<K, V> {
+	public filter<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): Collection<K, V>;
+	public filter(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): Collection<K, V> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		const results = new this.constructor[Symbol.species]<K, V>();
@@ -347,7 +347,7 @@ export class Collection<K, V> extends Map<K, V> {
 	public partition<V2 extends V>(
 		fn: (value: V, key: K, collection: this) => value is V2,
 	): [Collection<K, V2>, Collection<K, Exclude<V, V2>>];
-	public partition(fn: (value: V, key: K, collection: this) => boolean): [Collection<K, V>, Collection<K, V>];
+	public partition(fn: (value: V, key: K, collection: this) => unknown): [Collection<K, V>, Collection<K, V>];
 	public partition<This, K2 extends K>(
 		fn: (this: This, value: V, key: K, collection: this) => key is K2,
 		thisArg: This,
@@ -357,11 +357,11 @@ export class Collection<K, V> extends Map<K, V> {
 		thisArg: This,
 	): [Collection<K, V2>, Collection<K, Exclude<V, V2>>];
 	public partition<This>(
-		fn: (this: This, value: V, key: K, collection: this) => boolean,
+		fn: (this: This, value: V, key: K, collection: this) => unknown,
 		thisArg: This,
 	): [Collection<K, V>, Collection<K, V>];
 	public partition(
-		fn: (value: V, key: K, collection: this) => boolean,
+		fn: (value: V, key: K, collection: this) => unknown,
 		thisArg?: unknown,
 	): [Collection<K, V>, Collection<K, V>] {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
@@ -458,9 +458,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 * collection.some(user => user.discriminator === '0000');
 	 * ```
 	 */
-	public some(fn: (value: V, key: K, collection: this) => boolean): boolean;
-	public some<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): boolean;
-	public some(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): boolean {
+	public some(fn: (value: V, key: K, collection: this) => unknown): boolean;
+	public some<T>(fn: (this: T, value: V, key: K, collection: this) => unknown, thisArg: T): boolean;
+	public some(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		for (const [key, val] of this) {
@@ -483,7 +483,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public every<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): this is Collection<K2, V>;
 	public every<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): this is Collection<K, V2>;
-	public every(fn: (value: V, key: K, collection: this) => boolean): boolean;
+	public every(fn: (value: V, key: K, collection: this) => unknown): boolean;
 	public every<This, K2 extends K>(
 		fn: (this: This, value: V, key: K, collection: this) => key is K2,
 		thisArg: This,
@@ -492,8 +492,8 @@ export class Collection<K, V> extends Map<K, V> {
 		fn: (this: This, value: V, key: K, collection: this) => value is V2,
 		thisArg: This,
 	): this is Collection<K, V2>;
-	public every<This>(fn: (this: This, value: V, key: K, collection: this) => boolean, thisArg: This): boolean;
-	public every(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): boolean {
+	public every<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): boolean;
+	public every(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
 		for (const [key, val] of this) {
@@ -677,6 +677,22 @@ export class Collection<K, V> extends Map<K, V> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
 		for (const [k, v] of other) {
 			if (this.has(k) && Object.is(v, this.get(k))) {
+				coll.set(k, v);
+			}
+		}
+
+		return coll;
+	}
+
+	/**
+	 * The subtract method returns a new structure containing items where the keys and values of the original structure are not present in the other.
+	 *
+	 * @param other - The other Collection to filter against
+	 */
+	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
+		const coll = new this.constructor[Symbol.species]<K, V>();
+		for (const [k, v] of this) {
+			if (!other.has(k) || !Object.is(v, other.get(k))) {
 				coll.set(k, v);
 			}
 		}

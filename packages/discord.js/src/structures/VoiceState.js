@@ -2,7 +2,7 @@
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -208,7 +208,7 @@ class VoiceState extends Base {
 
   /**
    * Data to edit the logged in user's own voice state with, when in a stage channel
-   * @typedef {Object} VoiceStateEditData
+   * @typedef {Object} VoiceStateEditOptions
    * @property {boolean} [requestToSpeak] Whether or not the client is requesting to become a speaker.
    * <info>Only available to the logged in user's own voice state.</info>
    * @property {boolean} [suppressed] Whether or not the user should be suppressed.
@@ -216,35 +216,35 @@ class VoiceState extends Base {
 
   /**
    * Edits this voice state. Currently only available when in a stage channel
-   * @param {VoiceStateEditData} data The data to edit the voice state with
+   * @param {VoiceStateEditOptions} options The options to provide
    * @returns {Promise<VoiceState>}
    */
-  async edit(data) {
-    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new Error(ErrorCodes.VoiceNotStageChannel);
+  async edit(options) {
+    if (this.channel?.type !== ChannelType.GuildStageVoice) throw new DiscordjsError(ErrorCodes.VoiceNotStageChannel);
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
-    if (target !== '@me' && typeof data.requestToSpeak !== 'undefined') {
-      throw new Error(ErrorCodes.VoiceStateNotOwn);
+    if (target !== '@me' && typeof options.requestToSpeak !== 'undefined') {
+      throw new DiscordjsError(ErrorCodes.VoiceStateNotOwn);
     }
 
-    if (!['boolean', 'undefined'].includes(typeof data.requestToSpeak)) {
-      throw new TypeError(ErrorCodes.VoiceStateInvalidType, 'requestToSpeak');
+    if (!['boolean', 'undefined'].includes(typeof options.requestToSpeak)) {
+      throw new DiscordjsTypeError(ErrorCodes.VoiceStateInvalidType, 'requestToSpeak');
     }
 
-    if (!['boolean', 'undefined'].includes(typeof data.suppressed)) {
-      throw new TypeError(ErrorCodes.VoiceStateInvalidType, 'suppressed');
+    if (!['boolean', 'undefined'].includes(typeof options.suppressed)) {
+      throw new DiscordjsTypeError(ErrorCodes.VoiceStateInvalidType, 'suppressed');
     }
 
     await this.client.rest.patch(Routes.guildVoiceState(this.guild.id, target), {
       body: {
         channel_id: this.channelId,
-        request_to_speak_timestamp: data.requestToSpeak
+        request_to_speak_timestamp: options.requestToSpeak
           ? new Date().toISOString()
-          : data.requestToSpeak === false
+          : options.requestToSpeak === false
           ? null
           : undefined,
-        suppress: data.suppressed,
+        suppress: options.suppressed,
       },
     });
     return this;

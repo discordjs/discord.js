@@ -5,6 +5,8 @@
 
 const Util = require('../src/util/Util');
 const testString = "`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";
+const testStringForums =
+  '# Title\n## Subtitle\n### Subsubtitle\n- Bullet list\n - # Title with bullet\n * Subbullet\n1. Number list\n 1. Sub number list';
 
 describe('escapeCodeblock', () => {
   test('shared', () => {
@@ -56,6 +58,13 @@ describe('escapeItalic', () => {
   test('basic (*)', () => {
     expect(Util.escapeItalic('*test*')).toEqual('\\*test\\*');
   });
+
+  test('emoji', () => {
+    const testOne = 'This is a test with _emojis_ <:Frost_ed_Wreath:1053399941210443826> and **bold text**.';
+    expect(Util.escapeItalic(testOne)).toEqual(
+      'This is a test with \\_emojis\\_ <:Frost_ed_Wreath:1053399941210443826> and **bold text**.',
+    );
+  });
 });
 
 describe('escapeUnderline', () => {
@@ -67,6 +76,13 @@ describe('escapeUnderline', () => {
 
   test('basic', () => {
     expect(Util.escapeUnderline('__test__')).toEqual('\\_\\_test\\_\\_');
+  });
+
+  test('emoji', () => {
+    const testTwo = 'This is a test with __emojis__ <:Frost__ed__Wreath:1053399939654352978> and **bold text**.';
+    expect(Util.escapeUnderline(testTwo)).toBe(
+      'This is a test with \\_\\_emojis\\_\\_ <:Frost__ed__Wreath:1053399939654352978> and **bold text**.',
+    );
   });
 });
 
@@ -91,6 +107,48 @@ describe('escapeSpoiler', () => {
 
   test('basic', () => {
     expect(Util.escapeSpoiler('||test||')).toEqual('\\|\\|test\\|\\|');
+  });
+});
+
+describe('escapeHeading', () => {
+  test('shared', () => {
+    expect(Util.escapeHeading(testStringForums)).toEqual(
+      '\\# Title\n\\## Subtitle\n\\### Subsubtitle\n- Bullet list\n - \\# Title with bullet\n * Subbullet\n1. Number list\n 1. Sub number list',
+    );
+  });
+
+  test('basic', () => {
+    expect(Util.escapeHeading('# test')).toEqual('\\# test');
+  });
+});
+
+describe('escapeBulletedList', () => {
+  test('shared', () => {
+    expect(Util.escapeBulletedList(testStringForums)).toEqual(
+      '# Title\n## Subtitle\n### Subsubtitle\n\\- Bullet list\n \\- # Title with bullet\n \\* Subbullet\n1. Number list\n 1. Sub number list',
+    );
+  });
+
+  test('basic', () => {
+    expect(Util.escapeBulletedList('- test')).toEqual('\\- test');
+  });
+});
+
+describe('escapeNumberedList', () => {
+  test('shared', () => {
+    expect(Util.escapeNumberedList(testStringForums)).toEqual(
+      '# Title\n## Subtitle\n### Subsubtitle\n- Bullet list\n - # Title with bullet\n * Subbullet\n1\\. Number list\n 1\\. Sub number list',
+    );
+  });
+
+  test('basic', () => {
+    expect(Util.escapeNumberedList('1. test')).toEqual('1\\. test');
+  });
+});
+
+describe('escapeMaskedLink', () => {
+  test('basic', () => {
+    expect(Util.escapeMaskedLink('[test](https://discord.js.org)')).toEqual('\\[test](https://discord.js.org)');
   });
 });
 
@@ -176,7 +234,7 @@ describe('escapeMarkdown', () => {
       );
     });
 
-    test('edge-case odd number of fenses with no code block content', () => {
+    test('edge-case odd number of fences with no code block content', () => {
       expect(
         Util.escapeMarkdown('**foo** ```**bar**``` **fizz** ``` **buzz**', {
           codeBlock: false,

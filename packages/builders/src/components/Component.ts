@@ -1,10 +1,10 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIActionRowComponentTypes,
 	APIBaseComponent,
 	ComponentType,
 } from 'discord-api-types/v10';
-import type { JSONEncodable } from '../util/jsonEncodable';
 
 export type AnyAPIActionRowComponent = APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes;
 

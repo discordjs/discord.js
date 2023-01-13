@@ -10,16 +10,26 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - package: '@discordjs/brokers'
+            folder: 'brokers'
           - package: '@discordjs/builders'
             folder: 'builders'
           - package: '@discordjs/collection'
             folder: 'collection'
+          - package: '@discordjs/core'
+            folder: 'core'
+          - package: '@discordjs/formatters'
+            folder: 'formatters'
           - package: 'discord.js'
             folder: 'discord.js'
+          - package: '@discordjs/next'
+            folder: 'next'
           - package: '@discordjs/proxy'
             folder: 'proxy'
           - package: '@discordjs/rest'
             folder: 'rest'
+          - package: '@discordjs/util'
+            folder: 'util'
           - package: '@discordjs/voice'
             folder: 'voice'
           - package: '@discordjs/ws'
@@ -38,10 +48,9 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn --immutable
+        uses: ./packages/actions/src/yarnCache
 
       - name: Build dependencies
         run: yarn build

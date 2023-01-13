@@ -99,6 +99,11 @@
  */
 
 /**
+ * @external APIMessageActionRowComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageActionRowComponent}
+ */
+
+/**
  * @external APIMessageComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageComponent}
  */
@@ -169,6 +174,31 @@
  */
 
 /**
+ * @external ApplicationRoleConnectionMetadataType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationRoleConnectionMetadataType}
+ */
+
+/**
+ * @external AutoModerationActionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
+ */
+
+/**
+ * @external AutoModerationRuleEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleEventType}
+ */
+
+/**
+ * @external AutoModerationRuleTriggerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleTriggerType}
+ */
+
+/**
+ * @external AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleKeywordPresetType}
+ */
+
+/**
  * @external AuditLogEvent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AuditLogEvent}
  */
@@ -191,6 +221,11 @@
 /**
  * @external ComponentType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType}
+ */
+
+/**
+ * @external ForumLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
  */
 
 /**
@@ -331,6 +366,11 @@
 /**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ */
+
+/**
+ * @external SortOrderType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SortOrderType}
  */
 
 /**

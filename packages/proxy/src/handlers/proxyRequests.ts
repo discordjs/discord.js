@@ -32,8 +32,9 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 		// The 2nd parameter is here so the URL constructor doesn't complain about an "invalid url" when the origin is missing
 		// we don't actually care about the origin and the value passed is irrelevant
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		const fullRoute = new URL(url, 'http://noop').pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
+		const parsedUrl = new URL(url, 'http://noop');
+		// eslint-disable-next-line unicorn/no-unsafe-regex, prefer-named-capture-group
+		const fullRoute = parsedUrl.pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
 		try {
 			const discordResponse = await rest.raw({
@@ -42,6 +43,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
 				passThroughBody: true,
+				query: parsedUrl.searchParams,
 				headers: {
 					'Content-Type': req.headers['content-type']!,
 				},

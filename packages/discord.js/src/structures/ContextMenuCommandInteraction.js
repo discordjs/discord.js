@@ -1,9 +1,9 @@
 'use strict';
 
+const { lazy } = require('@discordjs/util');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { lazy } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -25,7 +25,7 @@ class ContextMenuCommandInteraction extends CommandInteraction {
     );
 
     /**
-     * The id of the target of the interaction
+     * The id of the target of this interaction
      * @type {Snowflake}
      */
     this.targetId = data.data.target_id;

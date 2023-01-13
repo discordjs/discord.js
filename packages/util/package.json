@@ -1,0 +1,78 @@
+{
+	"name": "@discordjs/util",
+	"version": "0.1.0",
+	"description": "Utilities shared across Discord.js packages",
+	"scripts": {
+		"build": "tsup",
+		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"test": "vitest run && tsd",
+		"lint": "prettier --check . && TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"fmt": "yarn format",
+		"docs": "yarn build:docs && api-extractor run --local",
+		"prepack": "yarn lint && yarn test && yarn build",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/util/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		"import": "./dist/index.mjs",
+		"require": "./dist/index.js",
+		"types": "./dist/index.d.ts"
+	},
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Aura Román <kyradiscord@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"devDependencies": {
+		"@favware/cliff-jumper": "^1.10.0",
+		"@microsoft/api-extractor": "^7.33.7",
+		"@types/node": "16.18.11",
+		"@vitest/coverage-c8": "^0.27.1",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.31.0",
+		"eslint-config-neon": "^0.1.40",
+		"eslint-formatter-pretty": "^4.1.0",
+		"prettier": "^2.8.2",
+		"tsd": "^0.25.0",
+		"tsup": "^6.5.0",
+		"typescript": "^4.9.4",
+		"vitest": "^0.27.1"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"tsd": {
+		"directory": "__tests__/types"
+	}
+}

@@ -5,7 +5,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
-const { Error: DiscordError, RangeError, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
@@ -56,15 +56,20 @@ function flatten(obj, ...props) {
 /**
  * Options used to escape markdown.
  * @typedef {Object} EscapeMarkdownOptions
- * @property {boolean} [codeBlock=true] Whether to escape code blocks or not
- * @property {boolean} [inlineCode=true] Whether to escape inline code or not
- * @property {boolean} [bold=true] Whether to escape bolds or not
- * @property {boolean} [italic=true] Whether to escape italics or not
- * @property {boolean} [underline=true] Whether to escape underlines or not
- * @property {boolean} [strikethrough=true] Whether to escape strikethroughs or not
- * @property {boolean} [spoiler=true] Whether to escape spoilers or not
- * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
- * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
+ * @property {boolean} [codeBlock=true] Whether to escape code blocks
+ * @property {boolean} [inlineCode=true] Whether to escape inline code
+ * @property {boolean} [bold=true] Whether to escape bolds
+ * @property {boolean} [italic=true] Whether to escape italics
+ * @property {boolean} [underline=true] Whether to escape underlines
+ * @property {boolean} [strikethrough=true] Whether to escape strikethroughs
+ * @property {boolean} [spoiler=true] Whether to escape spoilers
+ * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks
+ * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code
+ * @property {boolean} [escape=true] Whether to escape escape characters
+ * @property {boolean} [heading=false] Whether to escape headings
+ * @property {boolean} [bulletedList=false] Whether to escape bulleted lists
+ * @property {boolean} [numberedList=false] Whether to escape numbered lists
+ * @property {boolean} [maskedLink=false] Whether to escape masked links
  */
 
 /**
@@ -85,6 +90,11 @@ function escapeMarkdown(
     spoiler = true,
     codeBlockContent = true,
     inlineCodeContent = true,
+    escape = true,
+    heading = false,
+    bulletedList = false,
+    numberedList = false,
+    maskedLink = false,
   } = {},
 ) {
   if (!codeBlockContent) {
@@ -100,6 +110,11 @@ function escapeMarkdown(
           strikethrough,
           spoiler,
           inlineCodeContent,
+          escape,
+          heading,
+          bulletedList,
+          numberedList,
+          maskedLink,
         });
       })
       .join(codeBlock ? '\\`\\`\\`' : '```');
@@ -116,10 +131,16 @@ function escapeMarkdown(
           underline,
           strikethrough,
           spoiler,
+          escape,
+          heading,
+          bulletedList,
+          numberedList,
+          maskedLink,
         });
       })
       .join(inlineCode ? '\\`' : '`');
   }
+  if (escape) text = escapeEscape(text);
   if (inlineCode) text = escapeInlineCode(text);
   if (codeBlock) text = escapeCodeBlock(text);
   if (italic) text = escapeItalic(text);
@@ -127,6 +148,10 @@ function escapeMarkdown(
   if (underline) text = escapeUnderline(text);
   if (strikethrough) text = escapeStrikethrough(text);
   if (spoiler) text = escapeSpoiler(text);
+  if (heading) text = escapeHeading(text);
+  if (bulletedList) text = escapeBulletedList(text);
+  if (numberedList) text = escapeNumberedList(text);
+  if (maskedLink) text = escapeMaskedLink(text);
   return text;
 }
 
@@ -160,7 +185,7 @@ function escapeItalic(text) {
     return `\\*${match}`;
   });
   i = 0;
-  return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+  return text.replace(/(?<=^|[^_])(?<!<a?:.+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
     if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
     return `\\_${match}`;
   });
@@ -186,7 +211,7 @@ function escapeBold(text) {
  */
 function escapeUnderline(text) {
   let i = 0;
-  return text.replace(/__(_)?/g, (_, match) => {
+  return text.replace(/(?<!<a?:.+)__(_)?(?!:\d+>)/g, (_, match) => {
     if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
     return '\\_\\_';
   });
@@ -211,6 +236,51 @@ function escapeSpoiler(text) {
 }
 
 /**
+ * Escapes escape characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeEscape(text) {
+  return text.replaceAll('\\', '\\\\');
+}
+
+/**
+ * Escapes heading characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeHeading(text) {
+  return text.replaceAll(/^( {0,2}[*-] +)?(#{1,3} )/gm, '$1\\$2');
+}
+
+/**
+ * Escapes bulleted list characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeBulletedList(text) {
+  return text.replaceAll(/^( *)[*-]( +)/gm, '$1\\-$2');
+}
+
+/**
+ * Escapes numbered list characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeNumberedList(text) {
+  return text.replaceAll(/^( *\d+)\./gm, '$1\\.');
+}
+
+/**
+ * Escapes masked link characters in a string.
+ * @param {string} text Content to escape
+ * @returns {string}
+ */
+function escapeMaskedLink(text) {
+  return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$&');
+}
+
+/**
  * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
@@ -223,13 +293,13 @@ function escapeSpoiler(text) {
  * @returns {Promise<number>} The recommended number of shards
  */
 async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
-  if (!token) throw new DiscordError(ErrorCodes.TokenMissing);
+  if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
   });
   if (!response.ok) {
-    if (response.status === 401) throw new DiscordError(ErrorCodes.TokenInvalid);
+    if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
     throw response;
   }
   const { shards } = await response.json();
@@ -243,7 +313,6 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
  * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
- * @private
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
@@ -408,13 +477,14 @@ function resolveColor(color) {
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
+    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    color = Colors[color];
   } else if (Array.isArray(color)) {
     color = (color[0] << 16) + (color[1] << 8) + color[2];
   }
 
-  if (color < 0 || color > 0xffffff) throw new RangeError(ErrorCodes.ColorRange);
-  else if (Number.isNaN(color)) throw new TypeError(ErrorCodes.ColorConvert);
+  if (color < 0 || color > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  if (typeof color !== 'number' || Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
 
   return color;
 }
@@ -510,16 +580,6 @@ function cleanCodeBlockContent(text) {
 }
 
 /**
- * Lazily evaluates a callback function
- * @param {Function} cb The callback to lazily evaluate
- * @returns {Function}
- */
-function lazy(cb) {
-  let defaultValue;
-  return () => (defaultValue ??= cb());
-}
-
-/**
  * Parses a webhook URL for the id and token.
  * @param {string} url The URL to parse
  * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
@@ -548,6 +608,10 @@ module.exports = {
   escapeUnderline,
   escapeStrikethrough,
   escapeSpoiler,
+  escapeHeading,
+  escapeBulletedList,
+  escapeNumberedList,
+  escapeMaskedLink,
   fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,
@@ -562,7 +626,6 @@ module.exports = {
   basename,
   cleanContent,
   cleanCodeBlockContent,
-  lazy,
   parseWebhookURL,
 };
 

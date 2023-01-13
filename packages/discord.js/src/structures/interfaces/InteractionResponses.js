@@ -2,7 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/builders');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
-const { Error, ErrorCodes } = require('../../errors');
+const { DiscordjsError, ErrorCodes } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -64,7 +64,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     this.ephemeral = options.ephemeral ?? false;
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -99,7 +99,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async reply(options) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
@@ -122,50 +122,57 @@ class InteractionResponses {
   }
 
   /**
-   * Fetches the initial reply to this interaction.
+   * Fetches a reply to this interaction.
    * @see Webhook#fetchMessage
+   * @param {Snowflake|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
-   * // Fetch the reply to this interaction
+   * // Fetch the initial reply to this interaction
    * interaction.fetchReply()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  fetchReply() {
-    return this.webhook.fetchMessage('@original');
+  fetchReply(message = '@original') {
+    return this.webhook.fetchMessage(message);
   }
 
   /**
-   * Edits the initial reply to this interaction.
+   * Options that can be passed into {@link InteractionResponses#editReply}.
+   * @typedef {WebhookMessageEditOptions} InteractionEditReplyOptions
+   * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
+   */
+
+  /**
+   * Edits a reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
+   * @param {string|MessagePayload|InteractionEditReplyOptions} options The new options for the message
    * @returns {Promise<Message>}
    * @example
-   * // Edit the reply to this interaction
+   * // Edit the initial reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
   async editReply(options) {
-    if (!this.deferred && !this.replied) throw new Error(ErrorCodes.InteractionNotReplied);
-    const message = await this.webhook.editMessage('@original', options);
+    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    const msg = await this.webhook.editMessage(options.message ?? '@original', options);
     this.replied = true;
-    return message;
+    return msg;
   }
 
   /**
-   * Deletes the initial reply to this interaction.
+   * Deletes a reply to this interaction.
    * @see Webhook#deleteMessage
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
-   * // Delete the reply to this interaction
+   * // Delete the initial reply to this interaction
    * interaction.deleteReply()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deleteReply() {
-    if (this.ephemeral) throw new Error(ErrorCodes.InteractionEphemeralReplied);
-    await this.webhook.deleteMessage('@original');
+  async deleteReply(message = '@original') {
+    await this.webhook.deleteMessage(message);
   }
 
   /**
@@ -174,7 +181,7 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    */
   followUp(options) {
-    if (!this.deferred && !this.replied) return Promise.reject(new Error(ErrorCodes.InteractionNotReplied));
+    if (!this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionNotReplied));
     return this.webhook.send(options);
   }
 
@@ -189,7 +196,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferUpdate(options = {}) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredMessageUpdate,
@@ -215,7 +222,7 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async update(options) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
@@ -242,7 +249,7 @@ class InteractionResponses {
    * @returns {Promise<void>}
    */
   async showModal(modal) {
-    if (this.deferred || this.replied) throw new Error(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
@@ -272,14 +279,14 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   awaitModalSubmit(options) {
-    if (typeof options.time !== 'number') throw new Error(ErrorCodes.InvalidType, 'time', 'number');
+    if (typeof options.time !== 'number') throw new DiscordjsError(ErrorCodes.InvalidType, 'time', 'number');
     const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
     return new Promise((resolve, reject) => {
       const collector = new InteractionCollector(this.client, _options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }

@@ -1,7 +1,8 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType } = require('discord-api-types/v10');
-const { ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents an interaction's response
@@ -22,6 +23,24 @@ class InteractionResponse {
   }
 
   /**
+   * The timestamp the interaction response was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return DiscordSnowflake.timestampFrom(this.id);
+  }
+
+  /**
+   * The time the interaction response was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
    * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
@@ -34,7 +53,7 @@ class InteractionResponse {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }

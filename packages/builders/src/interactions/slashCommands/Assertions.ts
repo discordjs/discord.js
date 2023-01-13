@@ -94,3 +94,7 @@ const memberPermissionPredicate = s.union(
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);
 }
+
+export function validateNSFW(value: unknown): asserts value is boolean {
+	booleanPredicate.parse(value);
+}

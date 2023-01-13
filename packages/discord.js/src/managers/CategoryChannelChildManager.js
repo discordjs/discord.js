@@ -53,6 +53,10 @@ class CategoryChannelChildManager extends DataManager {
    * @property {GuildForumTagData[]} [availableTags] The tags that can be used in this channel (forum only).
    * @property {DefaultReactionEmoji} [defaultReactionEmoji]
    * The emoji to show in the add reaction button on a thread in a guild forum channel.
+   * @property {ThreadAutoArchiveDuration} [defaultAutoArchiveDuration]
+   * The default auto archive duration for all new threads in this channel
+   * @property {SortOrderType} [defaultSortOrder] The default sort order mode used to order posts (forum only).
+   * @property {ForumLayoutType} [defaultForumLayout] The default layout used to display posts (forum only).
    * @property {string} [reason] Reason for creating the new channel
    */
 

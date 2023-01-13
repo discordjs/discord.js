@@ -3,21 +3,17 @@ import { EventEmitter } from 'node:events';
 import { setInterval, clearInterval } from 'node:timers';
 import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
+import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
 import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
-import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants.js';
+import { DefaultRestOptions, DefaultUserAgent, OverwrittenMimeTypes, RESTEvents } from './utils/constants.js';
 import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-const getFileType = async (): Promise<typeof import('file-type')> => {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	let cached: Promise<typeof import('file-type')>;
-	return (cached ??= import('file-type'));
-};
+const getFileType = lazy(async () => import('file-type'));
 
 /**
  * Represents a file to be added to the request
@@ -92,7 +88,11 @@ export interface RequestData {
 	/**
 	 * Reason to show in the audit logs
 	 */
-	reason?: string;
+	reason?: string | undefined;
+	/**
+	 * The signal to abort the queue entry or the REST call, where applicable
+	 */
+	signal?: AbortSignal | undefined;
 	/**
 	 * If this request should be versioned
 	 *
@@ -133,7 +133,7 @@ export interface InternalRequest extends RequestData {
 	method: RequestMethod;
 }
 
-export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files'>;
+export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files' | 'signal'>;
 
 /**
  * Parsed route data for an endpoint
@@ -338,6 +338,7 @@ export class RequestManager extends EventEmitter {
 			body: request.body,
 			files: request.files,
 			auth: request.auth !== false,
+			signal: request.signal,
 		});
 	}
 
@@ -418,7 +419,14 @@ export class RequestManager extends EventEmitter {
 				if (Buffer.isBuffer(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed
 					const { fileTypeFromBuffer } = await getFileType();
-					const contentType = file.contentType ?? (await fileTypeFromBuffer(file.data))?.mime;
+					let contentType = file.contentType;
+					if (!contentType) {
+						const parsedType = (await fileTypeFromBuffer(file.data))?.mime;
+						if (parsedType) {
+							contentType = OverwrittenMimeTypes[parsedType as keyof typeof OverwrittenMimeTypes] ?? parsedType;
+						}
+					}
+
 					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
 				} else {
 					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
@@ -498,7 +506,7 @@ export class RequestManager extends EventEmitter {
 
 		const baseRoute = endpoint
 			// Strip out all ids
-			.replace(/\d{16,19}/g, ':id')
+			.replaceAll(/\d{16,19}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
 			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
 

@@ -5,13 +5,22 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build",
+		"build:affected": "turbo run build --filter='...[origin/main]'",
+		"build:apps": "turbo run build:local --filter='...{apps/*}'",
+		"build:apps:affected": "turbo run build:local --filter='...{apps/*}[origin/main]'",
 		"test": "turbo run test --parallel",
+		"test:affected": "turbo run test --filter='...[origin/main]' --parallel",
 		"lint": "turbo run lint --parallel",
+		"lint:affected": "turbo run lint --filter='...[origin/main]' --parallel",
 		"format": "turbo run format --parallel",
+		"format:affected": "turbo run format --filter='...[origin/main]' --parallel",
 		"fmt": "turbo run format --parallel",
-		"postinstall": "is-ci || husky install",
+		"fmt:affected": "turbo run format --filter='...[origin/main]' --parallel",
 		"docs": "turbo run docs --parallel",
-		"update": "yarn upgrade-interactive"
+		"docs:affected": "turbo run docs --filter='...[origin/main]' --parallel",
+		"postinstall": "is-ci || husky install",
+		"update": "yarn upgrade-interactive",
+		"create-package": "node packages/scripts/src/packageScript.mjs"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
@@ -37,26 +46,29 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.1.2",
-		"@commitlint/config-angular": "^17.1.0",
-		"@favware/cliff-jumper": "^1.8.7",
-		"@favware/npm-deprecate": "^1.0.5",
+		"@commitlint/cli": "^17.4.1",
+		"@commitlint/config-angular": "^17.4.0",
+		"@favware/cliff-jumper": "^1.10.0",
+		"@favware/npm-deprecate": "^1.0.7",
 		"conventional-changelog-cli": "^2.2.2",
-		"husky": "^8.0.1",
+		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^13.0.3",
-		"tsup": "^6.2.3",
-		"turbo": "^1.4.6",
-		"typescript": "^4.8.3"
+		"lint-staged": "^13.1.0",
+		"tsup": "^6.5.0",
+		"turbo": "^1.7.0",
+		"typescript": "^4.9.4",
+		"unocss": "^0.48.3",
+		"vitest": "^0.27.1"
 	},
 	"resolutions": {
-		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
+		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"
 	},
 	"workspaces": [
+		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.2.1"
+	"packageManager": "yarn@3.3.1"
 }

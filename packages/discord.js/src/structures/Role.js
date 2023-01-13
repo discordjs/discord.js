@@ -3,7 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -107,6 +107,8 @@ class Role extends Base {
      * @property {Snowflake} [botId] The id of the bot this role belongs to
      * @property {Snowflake|string} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
+     * @property {Snowflake} [subscriptionListingId] The id of this role's subscription SKU and listing
+     * @property {true} [availableForPurchase] Whether this role is available for purchase
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -118,6 +120,12 @@ class Role extends Base {
       }
       if ('premium_subscriber' in data.tags) {
         this.tags.premiumSubscriberRole = true;
+      }
+      if ('subscription_listing_id' in data.tags) {
+        this.tags.subscriptionListingId = data.tags.subscription_listing_id;
+      }
+      if ('available_for_purchase' in data.tags) {
+        this.tags.availableForPurchase = true;
       }
     }
   }
@@ -207,7 +215,7 @@ class Role extends Base {
 
   /**
    * Edits the role.
-   * @param {EditRoleOptions} data The new data for the role
+   * @param {RoleEditOptions} options The options to provide
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -215,8 +223,8 @@ class Role extends Base {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.roles.edit(this, data);
+  edit(options) {
+    return this.guild.roles.edit(this, options);
   }
 
   /**
@@ -229,7 +237,7 @@ class Role extends Base {
    */
   permissionsIn(channel, checkAdmin = true) {
     channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     return channel.rolePermissions(this, checkAdmin);
   }
 

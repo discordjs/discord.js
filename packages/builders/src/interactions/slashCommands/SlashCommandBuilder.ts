@@ -13,6 +13,7 @@ import {
 	validateDMPermission,
 	validateMaxOptionsLength,
 	validateRequiredParameters,
+	validateNSFW,
 } from './Assertions.js';
 import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
 import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
@@ -63,6 +64,11 @@ export class SlashCommandBuilder {
 	 * By default, commands are visible.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
+
+	/**
+	 * Whether this command is NSFW
+	 */
+	public readonly nsfw: boolean | undefined = undefined;
 
 	/**
 	 * Returns the final data that should be sent to Discord.
@@ -131,6 +137,18 @@ export class SlashCommandBuilder {
 
 		Reflect.set(this, 'dm_permission', enabled);
 
+		return this;
+	}
+
+	/**
+	 * Sets whether this command is NSFW
+	 *
+	 * @param nsfw - Whether this command is NSFW
+	 */
+	public setNSFW(nsfw = true) {
+		// Assert the value matches the conditions
+		validateNSFW(nsfw);
+		Reflect.set(this, 'nsfw', nsfw);
 		return this;
 	}
 
