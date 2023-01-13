@@ -1,16 +1,10 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ImageFormat, Routes, StickerFormatType } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-
-const stickerFormatExtensionMap = {
-  [StickerFormatType.PNG]: ImageFormat.PNG,
-  [StickerFormatType.APNG]: ImageFormat.PNG,
-  [StickerFormatType.Lottie]: ImageFormat.Lottie,
-  [StickerFormatType.GIF]: ImageFormat.GIF,
-};
+const { StickerFormatExtensionMap } = require('../util/Constants');
 
 /**
  * Represents a Sticker.
@@ -171,7 +165,7 @@ class Sticker extends Base {
    * @readonly
    */
   get url() {
-    return this.client.rest.cdn.sticker(this.id, stickerFormatExtensionMap[this.format]);
+    return this.client.rest.cdn.sticker(this.id, StickerFormatExtensionMap[this.format]);
   }
 
   /**
