@@ -2,9 +2,9 @@ import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { SessionInfo } from '../../ws/WebSocketManager.js';
 import {
-	WorkerRecievePayloadOp,
+	WorkerReceivePayloadOp,
 	WorkerSendPayloadOp,
-	type WorkerRecievePayload,
+	type WorkerReceivePayload,
 	type WorkerSendPayload,
 } from '../sharding/WorkerShardingStrategy.js';
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';
@@ -35,10 +35,10 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		const nonce = Math.random();
 		const payload = {
-			op: WorkerRecievePayloadOp.RetrieveSessionInfo,
+			op: WorkerReceivePayloadOp.RetrieveSessionInfo,
 			shardId,
 			nonce,
-		} satisfies WorkerRecievePayload;
+		} satisfies WorkerReceivePayload;
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
@@ -47,19 +47,19 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
 		const payload = {
-			op: WorkerRecievePayloadOp.UpdateSessionInfo,
+			op: WorkerReceivePayloadOp.UpdateSessionInfo,
 			shardId,
 			session: sessionInfo,
-		} satisfies WorkerRecievePayload;
+		} satisfies WorkerReceivePayload;
 		parentPort!.postMessage(payload);
 	}
 
 	public async waitForIdentify(): Promise<void> {
 		const nonce = Math.random();
 		const payload = {
-			op: WorkerRecievePayloadOp.WaitForIdentify,
+			op: WorkerReceivePayloadOp.WaitForIdentify,
 			nonce,
-		} satisfies WorkerRecievePayload;
+		} satisfies WorkerReceivePayload;
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
