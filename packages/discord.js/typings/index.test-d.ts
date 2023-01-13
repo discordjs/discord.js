@@ -1386,7 +1386,7 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 {
   expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
-  expectType<ApplicationCommandSubCommandData[] | undefined>(applicationSubGroupCommandData.options);
+  expectType<ApplicationCommandSubCommandData[]>(applicationSubGroupCommandData.options);
 }
 
 declare const autoModerationRuleManager: AutoModerationRuleManager;

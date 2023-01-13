@@ -30,10 +30,16 @@ yarn add @discordjs/ws
 pnpm add @discordjs/ws
 ```
 
+### Optional packages
+
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
+
 ## Example usage
 
 ```ts
-import { WebSocketManager } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -42,6 +48,10 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
 	rest,
+});
+
+manager.on(WebSocketShardEvents.Dispatch, (event) => {
+	// Process gateway events here.
 });
 
 await manager.connect();
@@ -89,7 +99,9 @@ You can also have the shards spawn in worker threads:
 
 ```ts
 import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
+import { REST } from '@discordjs/rest';
 
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
@@ -101,6 +113,51 @@ const manager = new WebSocketManager({
 manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }));
 // Or maybe you want all your shards under a single worker
 manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }));
+```
+
+**Note**: By default, this will cause the workers to effectively only be responsible for the WebSocket connection, they simply pass up all the events back to the main process for the manager to emit. If you want to have the workers handle events as well, you can pass in a `workerPath` option to the `WorkerShardingStrategy` constructor:
+
+```ts
+import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
+import { REST } from '@discordjs/rest';
+
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const manager = new WebSocketManager({
+	token: process.env.DISCORD_TOKEN,
+	intents: 0,
+	rest,
+});
+
+manager.setStrategy(
+	new WorkerShardingStrategy(manager, {
+		shardsPerWorker: 2,
+		workerPath: './worker.js',
+	}),
+);
+```
+
+And your `worker.ts` file:
+
+```ts
+import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
+
+const bootstrapper = new WorkerBootstrapper();
+void bootstrapper.bootstrap({
+	// Those will be sent to the main thread for the manager to emit
+	forwardEvents: [
+		WebSocketShardEvents.Closed,
+		WebSocketShardEvents.Debug,
+		WebSocketShardEvents.Hello,
+		WebSocketShardEvents.Ready,
+		WebSocketShardEvents.Resumed,
+	],
+	shardCallback: (shard) => {
+		shard.on(WebSocketShardEvents.Dispatch, (event) => {
+			// Process gateway events here however you want (e.g. send them through a message broker)
+			// You also have access to shard.id if you need it
+		});
+	},
+});
 ```
 
 ## Links
