@@ -33,6 +33,7 @@ export enum WebSocketShardEvents {
 	Closed = 'closed',
 	Debug = 'debug',
 	Dispatch = 'dispatch',
+	HeartbeatComplete = 'heartbeat',
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
@@ -54,10 +55,11 @@ export enum WebSocketShardDestroyRecovery {
 export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
+	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
+	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
 };
 
 export interface WebSocketShardDestroyOptions {
@@ -79,15 +81,11 @@ export interface SendRateLimitState {
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private readonly id: number;
-
 	private useIdentifyCompress = false;
 
 	private inflate: Inflate | null = null;
 
 	private readonly textDecoder = new TextDecoder();
-
-	private status: WebSocketShardStatus = WebSocketShardStatus.Idle;
 
 	private replayedEvents = 0;
 
@@ -105,7 +103,15 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly timeouts = new Collection<WebSocketShardEvents, NodeJS.Timeout>();
 
-	public readonly strategy: IContextFetchingStrategy;
+	private readonly strategy: IContextFetchingStrategy;
+
+	public readonly id: number;
+
+	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
+
+	public get status(): WebSocketShardStatus {
+		return this.#status;
+	}
 
 	public constructor(strategy: IContextFetchingStrategy, id: number) {
 		super();
@@ -114,7 +120,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async connect() {
-		if (this.status !== WebSocketShardStatus.Idle) {
+		if (this.#status !== WebSocketShardStatus.Idle) {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
@@ -148,7 +154,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
 
-		this.status = WebSocketShardStatus.Connecting;
+		this.#status = WebSocketShardStatus.Connecting;
 
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
@@ -163,7 +169,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
-		if (this.status === WebSocketShardStatus.Idle) {
+		if (this.#status === WebSocketShardStatus.Idle) {
 			this.debug(['Tried to destroy a shard that was idle']);
 			return;
 		}
@@ -221,7 +227,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
 
-		this.status = WebSocketShardStatus.Idle;
+		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
 			return this.connect();
@@ -248,7 +254,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("WebSocketShard wasn't connected");
 		}
 
-		if (this.status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
+		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
 			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
 			await once(this, WebSocketShardEvents.Ready);
 		}
@@ -320,12 +326,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		});
 
 		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
-		this.status = WebSocketShardStatus.Ready;
+		this.#status = WebSocketShardStatus.Ready;
 	}
 
 	private async resume(session: SessionInfo) {
 		this.debug(['Resuming session']);
-		this.status = WebSocketShardStatus.Resuming;
+		this.#status = WebSocketShardStatus.Resuming;
 		this.replayedEvents = 0;
 		return this.send({
 			op: GatewayOpcodes.Resume,
@@ -420,7 +426,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
-				if (this.status === WebSocketShardStatus.Resuming) {
+				if (this.#status === WebSocketShardStatus.Resuming) {
 					this.replayedEvents++;
 				}
 
@@ -442,7 +448,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					}
 
 					case GatewayDispatchEvents.Resumed: {
-						this.status = WebSocketShardStatus.Ready;
+						this.#status = WebSocketShardStatus.Ready;
 						this.debug([`Resumed and replayed ${this.replayedEvents} events`]);
 						this.emit(WebSocketShardEvents.Resumed);
 						break;
@@ -502,7 +508,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.HeartbeatAck: {
 				this.isAck = true;
-				this.debug([`Got heartbeat ack after ${Date.now() - this.lastHeartbeatAt}ms`]);
+
+				const ackAt = Date.now();
+				this.emit(WebSocketShardEvents.HeartbeatComplete, {
+					ackAt,
+					heartbeatAt: this.lastHeartbeatAt,
+					latency: ackAt - this.lastHeartbeatAt,
+				});
+
 				break;
 			}
 		}

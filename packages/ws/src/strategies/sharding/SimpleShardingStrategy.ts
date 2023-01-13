@@ -67,7 +67,17 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	 */
 	public async send(shardId: number, payload: GatewaySendPayload) {
 		const shard = this.shards.get(shardId);
-		if (!shard) throw new Error(`Shard ${shardId} not found`);
+		if (!shard) {
+			throw new RangeError(`Shard ${shardId} not found`);
+		}
+
 		return shard.send(payload);
+	}
+
+	/**
+	 * {@inheritDoc IShardingStrategy.fetchStatus}
+	 */
+	public async fetchStatus() {
+		return this.shards.mapValues((shard) => shard.status);
 	}
 }
