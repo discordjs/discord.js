@@ -99,13 +99,13 @@ class Collector extends EventEmitter {
 
   /**
    * The timestamp at which this collector last collected an item
-   * @type {number|null}
+   * @type {?number}
    */
   lastCollectedTimestamp = null;
 
   /**
    * The Date at which this collector last collected an item
-   * @type {Date|null}
+   * @type {?Date}
    */
   get lastCollectedAt() {
     return this.lastCollectedTimestamp && new Date(this.lastCollectedTimestamp);
