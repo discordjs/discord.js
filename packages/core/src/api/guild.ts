@@ -690,6 +690,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#list-scheduled-events-for-guild}
 	 * @param guildId - The id of the guild to fetch the scheduled events from
 	 * @param query - The query options for fetching the scheduled events
+	 * @param options - The options for fetching the scheduled events
 	 */
 	public async getScheduledEvents(
 		guildId: Snowflake,
@@ -788,6 +789,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to fetch the scheduled event users from
 	 * @param eventId - The id of the scheduled event to fetch the users for
 	 * @param query - The options for fetching the scheduled event users
+	 * @param options - The options for fetching the scheduled event users
 	 */
 	public async getScheduledEventUsers(
 		guildId: Snowflake,

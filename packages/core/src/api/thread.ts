@@ -10,10 +10,6 @@ import {
 	type Snowflake,
 } from 'discord-api-types/v10';
 
-export interface StartThreadOptions extends RESTPostAPIChannelThreadsJSONBody {
-	message_id?: string;
-}
-
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
 	message: RESTPostAPIGuildForumThreadsJSONBody['message'] & { files?: RawFile[] };
 }
@@ -39,14 +35,16 @@ export class ThreadsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-without-message}
 	 * @param channelId - The id of the channel to start the thread in
 	 * @param body - The data to use when starting the thread
+	 * @param messageId - The id of the message to start the thread from
 	 * @param options - The options to use when starting the thread
 	 */
 	public async create(
 		channelId: Snowflake,
-		{ message_id, ...body }: StartThreadOptions,
+		body: RESTPostAPIChannelThreadsJSONBody,
+		messageId?: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.threads(channelId, message_id), {
+		return this.rest.post(Routes.threads(channelId, messageId), {
 			body,
 			signal,
 		}) as Promise<RESTPostAPIChannelThreadsResult>;

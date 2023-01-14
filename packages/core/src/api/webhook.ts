@@ -65,7 +65,7 @@ export class WebhooksAPI {
 	public async edit(
 		id: Snowflake,
 		webhook: RESTPatchAPIWebhookJSONBody,
-		{ token, reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined; token?: string } = {},
+		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
 	) {
 		return this.rest.patch(Routes.webhook(id, token), {
 			reason,
@@ -84,7 +84,7 @@ export class WebhooksAPI {
 	 */
 	public async delete(
 		id: Snowflake,
-		{ token, reason, signal }: { reason?: string | undefined; signal?: AbortSignal | undefined; token?: string } = {},
+		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
 	) {
 		await this.rest.delete(Routes.webhook(id, token), { reason, signal });
 	}
@@ -102,7 +102,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait: true },
-		options?: { signal?: AbortSignal | undefined },
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIWebhookWithTokenWaitResult>;
 
 	/**
@@ -118,7 +118,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait?: false },
-		options?: { signal?: AbortSignal | undefined },
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<void>;
 
 	/**

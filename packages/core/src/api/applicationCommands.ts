@@ -46,6 +46,7 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#create-global-application-command}
 	 * @param applicationId - The application id to create the command for
 	 * @param body - The data to use when creating the command
+	 * @param options - The options to use when creating the command
 	 */
 	public async createGlobalCommand(
 		applicationId: Snowflake,

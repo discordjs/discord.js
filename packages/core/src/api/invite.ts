@@ -10,6 +10,7 @@ export class InvitesAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/invite#get-invite}
 	 * @param code - The invite code
 	 * @param query - The options to use when fetching the invite
+	 * @param options - The options to use when fetching the invite
 	 */
 	public async get(code: string, query: RESTGetAPIInviteQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.invite(code), {

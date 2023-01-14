@@ -106,7 +106,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: { signal: AbortSignal },
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), {
 			signal,
@@ -231,6 +231,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-messages}
 	 * @param channelId - The id of the channel to fetch messages from
 	 * @param query - The query options to use when fetching messages
+	 * @param options - The options for fetching the messages
 	 */
 	public async getMessages(
 		channelId: Snowflake,
@@ -248,6 +249,7 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#trigger-typing-indicator}
 	 * @param channelId - The id of the channel to show the typing indicator in
+	 * @param options - The options for showing the typing indicator
 	 */
 	public async showTyping(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.post(Routes.channelTyping(channelId), { signal });
@@ -258,6 +260,7 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-pinned-messages}
 	 * @param channelId - The id of the channel to fetch pinned messages from
+	 * @param options - The options for fetching the pinned messages
 	 */
 	public async getPins(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.channelPins(channelId), { signal }) as Promise<RESTGetAPIChannelPinsResult>;
