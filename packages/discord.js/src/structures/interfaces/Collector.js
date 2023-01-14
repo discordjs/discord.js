@@ -95,13 +95,13 @@ class Collector extends EventEmitter {
 
     if (options.time) this._timeout = setTimeout(() => this.stop('time'), options.time).unref();
     if (options.idle) this._idletimeout = setTimeout(() => this.stop('idle'), options.idle).unref();
-  }
 
-  /**
-   * The timestamp at which this collector last collected an item
-   * @type {?number}
-   */
-  lastCollectedTimestamp = null;
+    /**
+     * The timestamp at which this collector last collected an item
+     * @type {?number}
+     */
+    this.lastCollectedTimestamp = null;
+  }
 
   /**
    * The Date at which this collector last collected an item
