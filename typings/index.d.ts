@@ -1012,7 +1012,7 @@ export class Guild extends AnonymousGuild {
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = 'ALL'>(
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
-  public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
+  public fetchIntegrations(options?: FetchIntegrationsOptions): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -4985,6 +4985,11 @@ export interface FetchGuildScheduledEventsOptions {
 export interface FetchGuildScheduledEventSubscribersOptions {
   limit?: number;
   withMember?: boolean;
+}
+
+export interface FetchIntegrationsOptions {
+  hasCommands?: boolean;
+  includeRoleConnectionsMetadata?: boolean;
 }
 
 interface FetchInviteOptions extends BaseFetchOptions {
