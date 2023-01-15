@@ -39,7 +39,7 @@ pnpm add @discordjs/ws
 ## Example usage
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents, Events } from '@discordjs/ws';
+import { WebSocketManager, Events } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
