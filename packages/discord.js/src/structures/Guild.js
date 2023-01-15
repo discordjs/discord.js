@@ -547,8 +547,16 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Options used to fetch integrations.
+   * @typedef {Object} FetchIntegrationsOptions
+   * @property {boolean} [hasCommands] Whether to return integrations with registered commands
+   * @property {boolean} [includeRoleConnectionsMetadata] Whether to include role connections metadata
+   */
+
+  /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
+   * @param {FetchIntegrationsOptions} [options] Options for fetching integrations
    * @returns {Promise<Collection<Snowflake|string, Integration>>}
    * @example
    * // Fetch integrations
@@ -556,8 +564,14 @@ class Guild extends AnonymousGuild {
    *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
    *   .catch(console.error);
    */
-  async fetchIntegrations() {
-    const data = await this.client.rest.get(Routes.guildIntegrations(this.id));
+  async fetchIntegrations({ hasCommands, includeRoleConnectionsMetadata } = {}) {
+    const data = await this.client.rest.get(Routes.guildIntegrations(this.id), {
+      query: makeURLSearchParams({
+        has_commands: hasCommands,
+        include_role_connections_metadata: includeRoleConnectionsMetadata,
+      }),
+    });
+
     return data.reduce(
       (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),
       new Collection(),
