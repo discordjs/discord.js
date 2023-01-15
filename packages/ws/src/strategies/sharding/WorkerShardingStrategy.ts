@@ -3,9 +3,10 @@ import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
+import { InternalEvents } from '../../Events.js';
 import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from '../../ws/WebSocketShard';
+import type { WebSocketShardDestroyOptions, WebSocketShardStatus } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy.js';
 
@@ -41,9 +42,21 @@ export enum WorkerReceivePayloadOp {
 	WorkerReady,
 }
 
+// Use a string enum so that the values can just be used as a lookup into InternalEvents
+export enum ShardEvents {
+	Close = 'Close',
+	ConnectionError = 'ConnectionError',
+	Debug = 'Debug',
+	Dispatch = 'Dispatch',
+	HeartbeatComplete = 'HeartbeatComplete',
+	Hello = 'Hello',
+	Ready = 'Ready',
+	Resumed = 'Resumed',
+}
+
 export type WorkerReceivePayload =
-	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
-	| { data: any; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
+	// No way to get type safety on data
+	| { data: any; event: ShardEvents; op: WorkerReceivePayloadOp.Event }
 	| { nonce: number; op: WorkerReceivePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerReceivePayloadOp.RetrieveSessionInfo; shardId: number }
 	| { nonce: number; op: WorkerReceivePayloadOp.WaitForIdentify }
@@ -276,7 +289,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.Event: {
-				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
+				const evt = InternalEvents[payload.event];
+				evt.post(payload.data);
 				break;
 			}
 

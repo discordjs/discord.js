@@ -39,7 +39,7 @@ pnpm add @discordjs/ws
 ## Example usage
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents, Events } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -50,7 +50,7 @@ const manager = new WebSocketManager({
 	rest,
 });
 
-manager.on(WebSocketShardEvents.Dispatch, (event) => {
+Events.Dispatch.attach((event) => {
 	// Process gateway events here.
 });
 
@@ -139,23 +139,24 @@ manager.setStrategy(
 And your `worker.ts` file:
 
 ```ts
-import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
+import { WorkerBootstrapper, ShardEvents, Events } from '@discordjs/ws';
+
+// Listen to & process any events you want to
+Events.Debug.attach((event) => {
+	console.log('debug from worker', event);
+});
+
+Events.Dispatch.attach((event) => {
+	console.log('dispatch from worker', event);
+});
 
 const bootstrapper = new WorkerBootstrapper();
 void bootstrapper.bootstrap({
-	// Those will be sent to the main thread for the manager to emit
-	forwardEvents: [
-		WebSocketShardEvents.Closed,
-		WebSocketShardEvents.Debug,
-		WebSocketShardEvents.Hello,
-		WebSocketShardEvents.Ready,
-		WebSocketShardEvents.Resumed,
-	],
+	// Those will be sent to the main thread
+	forwardEvents: [ShardEvents.Closed, ShardEvents.Debug, ShardEvents.Hello, ShardEvents.Ready, ShardEvents.Resumed],
 	shardCallback: (shard) => {
-		shard.on(WebSocketShardEvents.Dispatch, (event) => {
-			// Process gateway events here however you want (e.g. send them through a message broker)
-			// You also have access to shard.id if you need it
-		});
+		// You can access the shard here if you need to for whatever reason
+		console.log(shard.id);
 	},
 });
 ```

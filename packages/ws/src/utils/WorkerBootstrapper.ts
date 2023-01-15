@@ -1,8 +1,10 @@
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { Awaitable } from '@discordjs/util';
+import { InternalEvents } from '../Events.js';
 import { WorkerContextFetchingStrategy } from '../strategies/context/WorkerContextFetchingStrategy.js';
 import {
+	ShardEvents,
 	WorkerReceivePayloadOp,
 	WorkerSendPayloadOp,
 	type WorkerData,
@@ -10,7 +12,7 @@ import {
 	type WorkerSendPayload,
 } from '../strategies/sharding/WorkerShardingStrategy.js';
 import type { WebSocketShardDestroyOptions } from '../ws/WebSocketShard.js';
-import { WebSocketShardEvents, WebSocketShard } from '../ws/WebSocketShard.js';
+import { WebSocketShard } from '../ws/WebSocketShard.js';
 
 /**
  * Options for bootstrapping the worker
@@ -21,7 +23,7 @@ export interface BootstrapOptions {
 	 * Note: By default, this will include ALL events
 	 * you most likely want to handle dispatch within the worker itself
 	 */
-	forwardEvents?: WebSocketShardEvents[];
+	forwardEvents?: ShardEvents[];
 	/**
 	 * Function to call when a shard is created for additional setup
 	 */
@@ -147,22 +149,23 @@ export class WorkerBootstrapper {
 		// Start by initializing the shards
 		for (const shardId of this.data.shardIds) {
 			const shard = new WebSocketShard(new WorkerContextFetchingStrategy(this.data), shardId);
-			for (const event of options.forwardEvents ?? Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error: Event types incompatible
-				shard.on(event, (data) => {
-					const payload = {
-						op: WorkerReceivePayloadOp.Event,
-						event,
-						data,
-						shardId,
-					} satisfies WorkerReceivePayload;
-					parentPort!.postMessage(payload);
-				});
-			}
 
 			// Any additional setup the user might want to do
 			await options.shardCallback?.(shard);
 			this.shards.set(shardId, shard);
+		}
+
+		// Event proxying
+		for (const event of options.forwardEvents ?? Object.values(ShardEvents)) {
+			const evt = InternalEvents[event];
+			evt.attach((data) => {
+				const payload = {
+					op: WorkerReceivePayloadOp.Event,
+					event,
+					data,
+				} satisfies WorkerReceivePayload;
+				parentPort!.postMessage(payload);
+			});
 		}
 
 		// Lastly, start listening to messages from the parent thread

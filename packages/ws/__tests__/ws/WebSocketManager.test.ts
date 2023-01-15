@@ -177,6 +177,8 @@ test('strategies', async () => {
 		public destroy = vi.fn();
 
 		public send = vi.fn();
+
+		public fetchStatus = vi.fn();
 	}
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
@@ -222,8 +224,11 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
-	// eslint-disable-next-line id-length
-	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
+	const send: GatewaySendPayload = {
+		op: GatewayOpcodes.RequestGuildMembers,
+		// eslint-disable-next-line id-length
+		d: { guild_id: '1234', limit: 0, query: '' },
+	};
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);
 });

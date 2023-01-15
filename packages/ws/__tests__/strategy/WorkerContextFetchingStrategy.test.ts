@@ -26,6 +26,7 @@ const session = {
 	shardCount: 1,
 	sequence: 123,
 	sessionId: 'abc',
+	resumeURL: 'wss://gateway.discord.gg',
 };
 
 vi.mock('node:worker_threads', async () => {

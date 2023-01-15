@@ -14,10 +14,11 @@ import {
 	WorkerSendPayloadOp,
 	WorkerReceivePayloadOp,
 	WorkerShardingStrategy,
-	WebSocketShardEvents,
+	ShardEvents,
 	type WorkerReceivePayload,
 	type WorkerSendPayload,
 	type SessionInfo,
+	Events,
 } from '../../src/index.js';
 
 let mockAgent: MockAgent;
@@ -89,9 +90,8 @@ vi.mock('node:worker_threads', async () => {
 					if (message.payload.op === GatewayOpcodes.RequestGuildMembers) {
 						const response = {
 							op: WorkerReceivePayloadOp.Event,
-							shardId: message.shardId,
-							event: WebSocketShardEvents.Dispatch,
-							data: memberChunkData,
+							event: ShardEvents.Dispatch,
+							data: { data: memberChunkData, shardId: message.shardId },
 						} satisfies WorkerReceivePayload;
 						this.emit('message', response);
 
@@ -165,7 +165,8 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 		updateSessionInfo: mockUpdateSessionInfo,
 	});
 
-	const managerEmitSpy = vi.spyOn(manager, 'emit');
+	const handle = vi.fn();
+	Events.Dispatch.attach(handle);
 
 	mockPool
 		.intercept({
@@ -206,10 +207,12 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	} satisfies GatewaySendPayload;
 	await manager.send(0, payload);
 	expect(mockSend).toHaveBeenCalledWith(0, payload);
-	expect(managerEmitSpy).toHaveBeenCalledWith(WebSocketShardEvents.Dispatch, {
-		...memberChunkData,
+
+	expect(handle).toHaveBeenCalledWith({
+		data: memberChunkData,
 		shardId: 0,
 	});
+
 	expect(mockRetrieveSessionInfo).toHaveBeenCalledWith(0);
 	expect(mockUpdateSessionInfo).toHaveBeenCalledWith(0, { ...sessionInfo, sequence: sessionInfo.sequence + 1 });
 

@@ -1,6 +1,5 @@
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
-import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	Routes,
 	type APIGatewayBotInfo,
@@ -13,7 +12,7 @@ import {
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
+import type { WebSocketShardDestroyOptions } from './WebSocketShard.js';
 
 /**
  * Represents a range of shard ids
@@ -162,13 +161,7 @@ export interface OptionalWebSocketManagerOptions {
 
 export type WebSocketManagerOptions = OptionalWebSocketManagerOptions & RequiredWebSocketManagerOptions;
 
-export type ManagerShardEventsMap = {
-	[K in keyof WebSocketShardEventsMap]: [
-		WebSocketShardEventsMap[K] extends [] ? { shardId: number } : WebSocketShardEventsMap[K][0] & { shardId: number },
-	];
-};
-
-export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class WebSocketManager {
 	/**
 	 * The options being used by this manager
 	 */
@@ -195,7 +188,6 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
 
 	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
-		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 	}
 

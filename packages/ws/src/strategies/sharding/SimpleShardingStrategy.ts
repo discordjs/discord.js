@@ -1,7 +1,7 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import type { WebSocketManager } from '../../ws/WebSocketManager';
-import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
+import { WebSocketShard, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy.js';
@@ -26,11 +26,6 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		for (const shardId of shardIds) {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
-			for (const event of Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error: Intentional
-				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
-			}
-
 			this.shards.set(shardId, shard);
 		}
 	}

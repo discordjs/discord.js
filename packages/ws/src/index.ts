@@ -13,6 +13,20 @@ export * from './utils/WorkerBootstrapper.js';
 export * from './ws/WebSocketManager.js';
 export * from './ws/WebSocketShard.js';
 
+// Specifically don't export InternalEvents
+export {
+	type CloseEvent,
+	type ConnectionErrorEvent,
+	type DebugEvent,
+	type DispatchEvent,
+	type HelloEvent,
+	type ReadyEvent,
+	type ResumedEvent,
+	type HeartbeatCompleteEvent,
+	Events,
+	filterEvtByShard,
+} from './Events.js';
+
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/ws/#readme | @discordjs/ws} version
  * that you are currently using.
