@@ -220,7 +220,7 @@ export class WebSocketShard {
 
 		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
 			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
-			await InternalEvents.Ready.pipe((data) => (data.shardId === this.id ? [data] : null)).waitFor();
+			await InternalEvents.Ready.pipe(filterEvtByShard(this.id)).waitFor();
 		}
 
 		await this.sendQueue.wait();
