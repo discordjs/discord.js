@@ -1301,6 +1301,8 @@ exports.MessageComponentTypes = {
   ]),
   /** @deprecated Use `STRING_SELECT` instead */
   SELECT_MENU: 3,
+  /** @deprecated Normally it would be `STRING_SELECT`, but not doing breaking changes disallows it */
+  3: 'SELECT_MENU',
 };
 /**
  * The types of components that are select menus. The available types are:
