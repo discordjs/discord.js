@@ -96,8 +96,10 @@ import {
   VideoQualityModes,
   SortOrderType,
   ForumLayoutType,
+  ApplicationRoleConnectionMetadataTypes,
 } from './enums';
 import {
+  APIApplicationRoleConnectionMetadata,
   APIAutoModerationRule,
   GatewayAutoModerationActionExecutionDispatchData,
   RawActivityData,
@@ -217,6 +219,7 @@ export abstract class Application extends Base {
   public icon: string | null;
   public id: Snowflake;
   public name: string | null;
+  public roleConnectionsVerificationURL: string | null;
   public coverURL(options?: StaticImageURLOptions): string | null;
   /** @deprecated This method is deprecated as it is unsupported and will be removed in the next major version. */
   public fetchAssets(): Promise<ApplicationAsset[]>;
@@ -286,6 +289,16 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
   private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
+}
+
+export class ApplicationRoleConnectionMetadata {
+  private constructor(data: APIApplicationRoleConnectionMetadata);
+  public name: string;
+  public nameLocalizations: LocalizationMap | null;
+  public description: string;
+  public descriptionLocalizations: LocalizationMap | null;
+  public key: string;
+  public type: ApplicationRoleConnectionMetadataTypes;
 }
 
 export type ApplicationResolvable = Application | Activity | Snowflake;
@@ -667,6 +680,10 @@ export class ClientApplication extends Application {
   public readonly partial: boolean;
   public rpcOrigins: string[];
   public fetch(): Promise<ClientApplication>;
+  public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
+  public editRoleConnectionMetadataRecords(
+    records: ApplicationRoleConnectionMetadataEditOptions[],
+  ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
 export class ClientPresence extends Presence {
@@ -4195,6 +4212,15 @@ export type ApplicationFlagsString =
   | 'EMBEDDED'
   | 'GATEWAY_MESSAGE_CONTENT'
   | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
+
+export interface ApplicationRoleConnectionMetadataEditOptions {
+  name: string;
+  nameLocalizations?: LocalizationMap | null;
+  description: string;
+  descriptionLocalizations?: LocalizationMap | null;
+  key: string;
+  type: ApplicationRoleConnectionMetadataTypes;
+}
 
 export interface AutoModerationAction {
   type: AutoModerationActionType | AutoModerationActionTypes;
