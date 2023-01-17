@@ -2821,6 +2821,7 @@ export class Webhook extends WebhookMixin() {
   private constructor(client: Client, data?: RawWebhookData);
   public avatar: string;
   public avatarURL(options?: StaticImageURLOptions): string | null;
+  public readonly channel: TextChannel | VoiceChannel | NewsChannel | ForumChannel | null;
   public channelId: Snowflake;
   public client: Client;
   public guildId: Snowflake;
