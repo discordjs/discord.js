@@ -10,6 +10,8 @@ packages:discord.js:
   - '### Which package is this (bug report|feature request) for\?\n\ndiscord.js'
 packages:formatters:
   - '### Which package is this (bug report|feature request) for\?\n\formatters'
+packages:next:
+  - '### Which package is this (bug report|feature request) for\?\n\next'
 packages:proxy:
   - '### Which package is this (bug report|feature request) for\?\n\nproxy'
 packages:proxy-container:
