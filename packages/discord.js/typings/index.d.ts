@@ -2155,6 +2155,7 @@ export class MessageReaction {
   public remove(): Promise<MessageReaction>;
   public fetch(): Promise<MessageReaction>;
   public toJSON(): unknown;
+  public valueOf(): Snowflake;
 }
 
 export interface ModalComponentData {
