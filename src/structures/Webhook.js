@@ -384,6 +384,7 @@ class Webhook {
   get channel() {
     return this.client.channels.resolve(this.channelId);
   }
+
   /**
    * The timestamp the webhook was created at
    * @type {number}
