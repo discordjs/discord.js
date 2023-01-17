@@ -4,7 +4,7 @@
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
 		"build": "tsup",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run && tsd",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
