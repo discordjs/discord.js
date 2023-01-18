@@ -130,8 +130,7 @@
 			"outputs": []
 		},
 		"docs": {
-			"dependsOn": ["^build"],
-			"outputs": ["../../api-extractor.json", "api-extractor.json", "docs/**", "tsconfig.json"]
+			"outputs": ["../../api-extractor.json", "api-extractor.json", "docs/**", "tsconfig.json", "dist-docs"]
 		},
 		"changelog": {
 			"outputs": ["cliff.toml", "CHANGELOG.md"]
