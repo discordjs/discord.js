@@ -272,10 +272,10 @@ export interface APIAutoModerationRuleTriggerMetadata {
 }
 
 export interface APIApplicationRoleConnectionMetadata {
-	type: ApplicationRoleConnectionMetadataTypes;
-	key: string;
-	name: string;
-	name_localizations?: LocalizationMap;
-	description: string;
+  type: ApplicationRoleConnectionMetadataTypes;
+  key: string;
+  name: string;
+  name_localizations?: LocalizationMap;
+  description: string;
   description_localizations?: LocalizationMap;
 }
