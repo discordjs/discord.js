@@ -1394,12 +1394,14 @@ export class GuildAuditLogsEntry<
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public executorId: Snowflake | null;
   public executor: User | null;
   public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
     ? GuildAuditLogsEntryExtraField[TResolvedType]
     : null;
   public id: Snowflake;
   public reason: string | null;
+  public targetId: Snowflake | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
     ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
