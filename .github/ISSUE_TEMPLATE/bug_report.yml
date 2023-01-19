@@ -17,6 +17,7 @@ body:
         - collection
         - core
         - formatters
+        - next
         - proxy
         - proxy-container
         - rest

@@ -153,6 +153,7 @@ import {
   ForumLayoutType,
   ApplicationRoleConnectionMetadataType,
   APIApplicationRoleConnectionMetadata,
+  ImageFormat,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3050,19 +3051,6 @@ export function cleanContent(str: string, channel: TextBasedChannel): string;
 export function discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
   collection: Collection<K, V>,
 ): Collection<K, V>;
-export function escapeMarkdown(text: string, options?: EscapeMarkdownOptions): string;
-export function escapeCodeBlock(text: string): string;
-export function escapeInlineCode(text: string): string;
-export function escapeBold(text: string): string;
-export function escapeItalic(text: string): string;
-export function escapeUnderline(text: string): string;
-export function escapeStrikethrough(text: string): string;
-export function escapeSpoiler(text: string): string;
-export function escapeEscape(text: string): string;
-export function escapeHeading(text: string): string;
-export function escapeBulletedList(text: string): string;
-export function escapeNumberedList(text: string): string;
-export function escapeMaskedLink(text: string): string;
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
@@ -3445,6 +3433,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
 export const version: string;
