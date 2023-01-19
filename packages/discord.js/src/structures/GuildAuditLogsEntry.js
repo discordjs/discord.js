@@ -94,7 +94,7 @@ class GuildAuditLogsEntry {
    */
   static Targets = Targets;
 
-  constructor(logs, guild, data) {
+  constructor(guild, data, logs) {
     /**
      * The target type of this entry
      * @type {AuditLogTargetType}
@@ -259,7 +259,7 @@ class GuildAuditLogsEntry {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
       this.target =
-        logs.webhooks.get(data.target_id) ??
+        logs?.webhooks.get(data.target_id) ??
         new Webhook(
           guild.client,
           this.changes.reduce(
@@ -297,7 +297,7 @@ class GuildAuditLogsEntry {
           : guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.Integration) {
       this.target =
-        logs.integrations.get(data.target_id) ??
+        logs?.integrations.get(data.target_id) ??
         new Integration(
           guild.client,
           this.changes.reduce(
@@ -363,7 +363,7 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.ApplicationCommand) {
-      this.target = logs.applicationCommands.get(data.target_id) ?? { id: data.target_id };
+      this.target = logs?.applicationCommands.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.AutoModeration) {
       this.target =
         guild.autoModerationRules.cache.get(data.target_id) ??
