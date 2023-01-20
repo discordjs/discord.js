@@ -2895,6 +2895,7 @@ export class WebSocketShard extends EventEmitter {
   private constructor(manager: WebSocketManager, id: number);
   private sequence: number;
   private closeSequence: number;
+  private resumeURL: string | null;
   private sessionId: string | null;
   private lastPingTimestamp: number;
   private lastHeartbeatAcked: boolean;
