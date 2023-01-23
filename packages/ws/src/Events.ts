@@ -1,6 +1,5 @@
 import type { GatewayDispatchPayload, GatewayReadyDispatchData } from 'discord-api-types/v10';
-import type { Operator, ToNonPostableEvt } from 'evt';
-import { Evt } from 'evt';
+import { Evt, type Operator, type ToNonPostableEvt } from 'evt';
 
 export interface CloseEvent {
 	code: number;
