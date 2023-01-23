@@ -66,9 +66,9 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 		return {
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: this.name,
-			name_localizations: this.name_localizations,
+			nameLocalizations: this.nameLocalizations,
 			description: this.description,
-			description_localizations: this.description_localizations,
+			descriptionLocalizations: this.descriptionLocalizations,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}
@@ -104,9 +104,9 @@ export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOpt
 		return {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: this.name,
-			name_localizations: this.name_localizations,
+			nameLocalizations: this.nameLocalizations,
 			description: this.description,
-			description_localizations: this.description_localizations,
+			descriptionLocalizations: this.descriptionLocalizations,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}

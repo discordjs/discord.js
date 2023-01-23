@@ -112,12 +112,12 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
-				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
-				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').nameLocalizations).toEqual(expectedSingleLocale);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).nameLocalizations).toEqual(
 					expectedMultipleLocales,
 				);
-				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
-				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+				expect(getBuilder().setNameLocalizations(null).nameLocalizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).nameLocalizations).toEqual({
 					'en-US': null,
 				});
 			});

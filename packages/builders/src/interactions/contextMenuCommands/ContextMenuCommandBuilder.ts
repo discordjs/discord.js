@@ -24,7 +24,7 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * The localized names for this command
 	 */
-	public readonly name_localizations?: LocalizationMap;
+	public readonly nameLocalizations?: LocalizationMap;
 
 	/**
 	 * The type of this context menu command
@@ -136,20 +136,20 @@ export class ContextMenuCommandBuilder {
 	 * @param localizedName - The localized description for the given locale
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
-		if (!this.name_localizations) {
-			Reflect.set(this, 'name_localizations', {});
+		if (!this.nameLocalizations) {
+			Reflect.set(this, 'nameLocalizations', {});
 		}
 
 		const parsedLocale = validateLocale(locale);
 
 		if (localizedName === null) {
-			this.name_localizations![parsedLocale] = null;
+			this.nameLocalizations![parsedLocale] = null;
 			return this;
 		}
 
 		validateName(localizedName);
 
-		this.name_localizations![parsedLocale] = localizedName;
+		this.nameLocalizations![parsedLocale] = localizedName;
 		return this;
 	}
 
@@ -160,11 +160,11 @@ export class ContextMenuCommandBuilder {
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
-			Reflect.set(this, 'name_localizations', null);
+			Reflect.set(this, 'nameLocalizations', null);
 			return this;
 		}
 
-		Reflect.set(this, 'name_localizations', {});
+		Reflect.set(this, 'nameLocalizations', {});
 
 		for (const args of Object.entries(localizedNames))
 			this.setNameLocalization(...(args as [LocaleString, string | null]));
@@ -181,7 +181,7 @@ export class ContextMenuCommandBuilder {
 	public toJSON(): RESTPostAPIContextMenuApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.type);
 
-		validateLocalizationMap(this.name_localizations);
+		validateLocalizationMap(this.nameLocalizations);
 
 		return { ...this };
 	}

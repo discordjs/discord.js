@@ -180,9 +180,9 @@ class ClientApplication extends Application {
         type: record.type,
         key: record.key,
         name: record.name,
-        name_localizations: record.nameLocalizations,
+        nameLocalizations: record.nameLocalizations,
         description: record.description,
-        description_localizations: record.descriptionLocalizations,
+        descriptionLocalizations: record.descriptionLocalizations,
       })),
     });
 

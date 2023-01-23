@@ -29,7 +29,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized names for this command
 	 */
-	public readonly name_localizations?: LocalizationMap;
+	public readonly nameLocalizations?: LocalizationMap;
 
 	/**
 	 * The description of this slash command
@@ -39,7 +39,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized descriptions for this command
 	 */
-	public readonly description_localizations?: LocalizationMap;
+	public readonly descriptionLocalizations?: LocalizationMap;
 
 	/**
 	 * The options of this slash command
@@ -80,8 +80,8 @@ export class SlashCommandBuilder {
 	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
 
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
+		validateLocalizationMap(this.nameLocalizations);
+		validateLocalizationMap(this.descriptionLocalizations);
 
 		return {
 			...this,

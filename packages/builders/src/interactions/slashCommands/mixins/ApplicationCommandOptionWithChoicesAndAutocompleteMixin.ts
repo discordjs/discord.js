@@ -6,7 +6,7 @@ const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqu
 const numberPredicate = s.number.greaterThan(Number.NEGATIVE_INFINITY).lessThan(Number.POSITIVE_INFINITY);
 const choicesPredicate = s.object({
 	name: stringPredicate,
-	name_localizations: localizationMapPredicate,
+	nameLocalizations: localizationMapPredicate,
 	value: s.union(stringPredicate, numberPredicate),
 }).array;
 const booleanPredicate = s.boolean;
@@ -37,7 +37,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 
 		validateChoicesLength(choices.length, this.choices);
 
-		for (const { name, name_localizations, value } of choices) {
+		for (const { name, nameLocalizations, value } of choices) {
 			// Validate the value
 			if (this.type === ApplicationCommandOptionType.String) {
 				stringPredicate.parse(value);
@@ -45,7 +45,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 				numberPredicate.parse(value);
 			}
 
-			this.choices!.push({ name, name_localizations, value });
+			this.choices!.push({ name, nameLocalizations, value });
 		}
 
 		return this;

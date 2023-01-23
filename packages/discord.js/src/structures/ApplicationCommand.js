@@ -70,12 +70,12 @@ class ApplicationCommand extends Base {
       this.name = data.name;
     }
 
-    if ('name_localizations' in data) {
+    if ('nameLocalizations' in data) {
       /**
        * The name localizations for this command
        * @type {?Object<Locale, string>}
        */
-      this.nameLocalizations = data.name_localizations;
+      this.nameLocalizations = data.nameLocalizations;
     } else {
       this.nameLocalizations ??= null;
     }
@@ -98,12 +98,12 @@ class ApplicationCommand extends Base {
       this.description = data.description;
     }
 
-    if ('description_localizations' in data) {
+    if ('descriptionLocalizations' in data) {
       /**
        * The description localizations for this command
        * @type {?Object<Locale, string>}
        */
-      this.descriptionLocalizations = data.description_localizations;
+      this.descriptionLocalizations = data.descriptionLocalizations;
     } else {
       this.descriptionLocalizations ??= null;
     }
@@ -390,9 +390,9 @@ class ApplicationCommand extends Base {
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       (typeof dmPermission !== 'undefined' && dmPermission !== this.dmPermission) ||
-      !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
+      !isEqual(command.nameLocalizations ?? command.nameLocalizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
-        command.descriptionLocalizations ?? command.description_localizations ?? {},
+        command.descriptionLocalizations ?? command.descriptionLocalizations ?? {},
         this.descriptionLocalizations ?? {},
       )
     ) {
@@ -456,9 +456,9 @@ class ApplicationCommand extends Base {
       (option.maxValue ?? option.max_value) !== existing.maxValue ||
       (option.minLength ?? option.min_length) !== existing.minLength ||
       (option.maxLength ?? option.max_length) !== existing.maxLength ||
-      !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
+      !isEqual(option.nameLocalizations ?? option.nameLocalizations ?? {}, existing.nameLocalizations ?? {}) ||
       !isEqual(
-        option.descriptionLocalizations ?? option.description_localizations ?? {},
+        option.descriptionLocalizations ?? option.descriptionLocalizations ?? {},
         existing.descriptionLocalizations ?? {},
       )
     ) {
@@ -474,7 +474,7 @@ class ApplicationCommand extends Base {
             choice.value === option.choices[index].value &&
             isEqual(
               choice.nameLocalizations ?? {},
-              option.choices[index].nameLocalizations ?? option.choices[index].name_localizations ?? {},
+              option.choices[index].nameLocalizations ?? option.choices[index].nameLocalizations ?? {},
             ),
         )
       ) {
@@ -552,17 +552,17 @@ class ApplicationCommand extends Base {
     const maxValueKey = received ? 'maxValue' : 'max_value';
     const minLengthKey = received ? 'minLength' : 'min_length';
     const maxLengthKey = received ? 'maxLength' : 'max_length';
-    const nameLocalizationsKey = received ? 'nameLocalizations' : 'name_localizations';
+    const nameLocalizationsKey = received ? 'nameLocalizations' : 'nameLocalizations';
     const nameLocalizedKey = received ? 'nameLocalized' : 'name_localized';
-    const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'description_localizations';
+    const descriptionLocalizationsKey = received ? 'descriptionLocalizations' : 'descriptionLocalizations';
     const descriptionLocalizedKey = received ? 'descriptionLocalized' : 'description_localized';
     return {
       type: option.type,
       name: option.name,
-      [nameLocalizationsKey]: option.nameLocalizations ?? option.name_localizations,
+      [nameLocalizationsKey]: option.nameLocalizations ?? option.nameLocalizations,
       [nameLocalizedKey]: option.nameLocalized ?? option.name_localized,
       description: option.description,
-      [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.description_localizations,
+      [descriptionLocalizationsKey]: option.descriptionLocalizations ?? option.descriptionLocalizations,
       [descriptionLocalizedKey]: option.descriptionLocalized ?? option.description_localized,
       required:
         option.required ??
@@ -574,7 +574,7 @@ class ApplicationCommand extends Base {
       choices: option.choices?.map(choice => ({
         name: choice.name,
         [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
-        [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
+        [nameLocalizationsKey]: choice.nameLocalizations ?? choice.nameLocalizations,
         value: choice.value,
       })),
       options: option.options?.map(o => this.transformOption(o, received)),

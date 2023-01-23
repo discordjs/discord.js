@@ -250,10 +250,10 @@ class ApplicationCommandManager extends CachedManager {
 
     return {
       name: command.name,
-      name_localizations: command.nameLocalizations ?? command.name_localizations,
+      nameLocalizations: command.nameLocalizations ?? command.nameLocalizations,
       description: command.description,
       nsfw: command.nsfw,
-      description_localizations: command.descriptionLocalizations ?? command.description_localizations,
+      descriptionLocalizations: command.descriptionLocalizations ?? command.descriptionLocalizations,
       type: command.type,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_member_permissions,

@@ -27,8 +27,8 @@ export abstract class ApplicationCommandOptionBase extends SharedNameAndDescript
 		validateRequiredParameters(this.name, this.description, []);
 
 		// Validate localizations
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
+		validateLocalizationMap(this.nameLocalizations);
+		validateLocalizationMap(this.descriptionLocalizations);
 
 		// Assert that you actually passed a boolean
 		validateRequired(this.required);
