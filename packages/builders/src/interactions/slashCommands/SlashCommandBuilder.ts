@@ -29,7 +29,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized names for this command
 	 */
-	public readonly name_localizations?: LocalizationMap;
+	public readonly nameLocalizations?: LocalizationMap;
 
 	/**
 	 * The description of this slash command
@@ -39,7 +39,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The localized descriptions for this command
 	 */
-	public readonly description_localizations?: LocalizationMap;
+	public readonly descriptionLocalizations?: LocalizationMap;
 
 	/**
 	 * The options of this slash command
@@ -52,18 +52,18 @@ export class SlashCommandBuilder {
 	 * @deprecated This property is deprecated and will be removed in the future.
 	 * You should use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
 	 */
-	public readonly default_permission: boolean | undefined = undefined;
+	public readonly defaultPermission: boolean | undefined = undefined;
 
 	/**
 	 * Set of permissions represented as a bit set for the command
 	 */
-	public readonly default_member_permissions: Permissions | null | undefined = undefined;
+	public readonly defaultMemberPermissions: Permissions | null | undefined = undefined;
 
 	/**
 	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
 	 * By default, commands are visible.
 	 */
-	public readonly dm_permission: boolean | undefined = undefined;
+	public readonly dmPermission: boolean | undefined = undefined;
 
 	/**
 	 * Whether this command is NSFW
@@ -80,8 +80,8 @@ export class SlashCommandBuilder {
 	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.description, this.options);
 
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
+		validateLocalizationMap(this.nameLocalizations);
+		validateLocalizationMap(this.descriptionLocalizations);
 
 		return {
 			...this,
@@ -102,7 +102,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDefaultPermission(value);
 
-		Reflect.set(this, 'default_permission', value);
+		Reflect.set(this, 'defaultPermission', value);
 
 		return this;
 	}
@@ -119,7 +119,7 @@ export class SlashCommandBuilder {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 
-		Reflect.set(this, 'default_member_permissions', permissionValue);
+		Reflect.set(this, 'defaultMemberPermissions', permissionValue);
 
 		return this;
 	}
@@ -135,7 +135,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDMPermission(enabled);
 
-		Reflect.set(this, 'dm_permission', enabled);
+		Reflect.set(this, 'dmPermission', enabled);
 
 		return this;
 	}

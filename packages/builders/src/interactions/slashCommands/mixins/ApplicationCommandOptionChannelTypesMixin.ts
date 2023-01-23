@@ -19,7 +19,7 @@ export type ApplicationCommandOptionAllowedChannelTypes = (typeof allowedChannel
 const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 
 export class ApplicationCommandOptionChannelTypesMixin {
-	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
+	public readonly channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
 
 	/**
 	 * Adds channel types to this option
@@ -27,11 +27,11 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 * @param channelTypes - The channel types to add
 	 */
 	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
-		if (this.channel_types === undefined) {
-			Reflect.set(this, 'channel_types', []);
+		if (this.channelTypes === undefined) {
+			Reflect.set(this, 'channelTypes', []);
 		}
 
-		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+		this.channelTypes!.push(...channelTypesPredicate.parse(channelTypes));
 
 		return this;
 	}
