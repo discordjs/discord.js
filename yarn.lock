@@ -1721,10 +1721,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@code-hike/lighter@npm:^0.2.0":
+"@code-hike/lighter@npm:0.2.6":
   version: 0.2.6
   resolution: "@code-hike/lighter@npm:0.2.6"
   checksum: 99fc5e12c371825a6dc57790ef6bfbcd62a65773f1d525b48b82780134a6269da348c0b67923949880b64e43075dfde81aa13d61ca3b5a27a8ce4c43fbba35b8
+  languageName: node
+  linkType: hard
+
+"@code-hike/mdx@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "@code-hike/mdx@npm:0.7.4"
+  dependencies:
+    hast-util-to-estree: ^1.4.0
+    is-plain-obj: ^3.0.0
+    node-fetch: ^2.0.0
+    remark-rehype: ^8.1.0
+    shiki: ^0.10.1
+    unified: ^9.2.2
+    unist-util-visit: ^2.0.0
+    unist-util-visit-parents: ^3.0.0
+  peerDependencies:
+    react: ^16.8.3 || ^17 || ^18
+  checksum: 90805a07d56877d502d2034101206962d41d41ad7820e06c5e6e7daa5e7e7589778285471b42de2b6024d5cd207c530b4201922cd64153697ce9b9a7a91fe081
   languageName: node
   linkType: hard
 
@@ -2463,6 +2481,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.29.7
     "@vscode/codicons": ^0.0.32
     ariakit: ^2.0.0-next.43
+    bright: ^0.5.5
     cmdk: ^0.2.0
     concurrently: ^7.6.0
     cpy-cli: ^4.2.0
@@ -7321,9 +7340,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserify-zlib@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "browserify-zlib@npm:0.1.4"
+"bright@npm:^0.5.5":
+  version: 0.5.5
+  resolution: "bright@npm:0.5.5"
+  dependencies:
+    "@code-hike/lighter": 0.2.6
+  peerDependencies:
+    react: ^18
+  checksum: 24fd0251dc9b34f9794359e2531bdd50bf160da0a400162074c453fa5b2de585ba1807d4038341cfa74fb1489205198885ae300ea02adc8fa615f90ca8503d09
+  languageName: node
+  linkType: hard
+
+"browserslist@npm:^4.21.3, browserslist@npm:^4.21.4":
+  version: 4.21.4
+  resolution: "browserslist@npm:4.21.4"
   dependencies:
     pako: ~0.2.0
   checksum: abee4cb4349e8a21391fd874564f41b113fe691372913980e6fa06a777e4ea2aad4e942af14ab99bce190d5ac8f5328201432f4ef0eae48c6d02208bc212976f

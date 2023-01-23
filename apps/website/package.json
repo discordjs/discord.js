@@ -52,6 +52,7 @@
 		"@vercel/og": "^0.4.1",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.43",
+		"bright": "^0.5.5",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.31.1",
 		"next": "^13.2.4",
