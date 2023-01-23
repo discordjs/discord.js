@@ -38,7 +38,7 @@ export function ItemLink(props: PropsWithChildren<ItemLinkProps>) {
 		throw new Error('ItemLink must be used inside a Next.js page. (e.g. /docs/packages/foo/main)');
 	}
 
-	const { itemURI, ...linkProps } = props;
+	const { itemURI, packageName: pkgName, ...linkProps } = props;
 
-	return <Link href={`/docs/packages/${props.packageName ?? packageName}/${version}/${itemURI}`} {...linkProps} />;
+	return <Link href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} {...linkProps} />;
 }

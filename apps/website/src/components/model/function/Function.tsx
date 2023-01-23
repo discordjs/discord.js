@@ -9,7 +9,7 @@ export function Function({ item }: { item: ApiFunction }) {
 	if (item.getMergedSiblings().length > 1) {
 		const overloads = item
 			.getMergedSiblings()
-			.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={idx} />);
+			.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={`${sibling.displayName}-${idx}`} />);
 
 		return (
 			<div>

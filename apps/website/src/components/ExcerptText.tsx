@@ -31,7 +31,7 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						<ItemLink
 							className="text-blurple"
 							itemURI={`${item.displayName}:${item.kind}`}
-							key={item.containerKey}
+							key={`${item.displayName}-${item.containerKey}`}
 							packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
 						>
 							{token.text}

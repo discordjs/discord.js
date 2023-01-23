@@ -60,7 +60,7 @@
 		"@unocss/reset": "^0.50.6",
 		"@vitejs/plugin-react": "^3.1.0",
 		"@vitest/coverage-c8": "^0.29.7",
-		"astro": "^1.9.2",
+		"astro": "^2.1.5",
 		"astro-compress": "^1.1.35",
 		"astro-critters": "^1.1.31",
 		"cross-env": "^7.0.3",
@@ -80,7 +80,7 @@
 		"shiki": "^0.14.1",
 		"typescript": "^5.0.2",
 		"unocss": "^0.50.6",
-		"vercel": "^28.18.0",
+		"vercel": "^28.18.1",
 		"vitest": "^0.29.7"
 	},
 	"engines": {

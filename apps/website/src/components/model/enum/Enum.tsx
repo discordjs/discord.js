@@ -14,8 +14,8 @@ export function Enum({ item }: { item: ApiEnum }) {
 			<SummarySection item={item} />
 			<DocumentationSection icon={<VscSymbolEnum size={20} />} padded title="Members">
 				<div className="flex flex-col gap-4">
-					{item.members.map((member) => (
-						<Panel key={member.containerKey}>
+					{item.members.map((member, idx) => (
+						<Panel key={`${member.displayName}-${idx}`}>
 							<EnumMember member={member} />
 						</Panel>
 					))}
