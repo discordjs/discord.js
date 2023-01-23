@@ -20,7 +20,7 @@ export class SlashCommandNumberOption
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
 
-		Reflect.set(this, 'max_value', max);
+		Reflect.set(this, 'maxValue', max);
 
 		return this;
 	}
@@ -31,7 +31,7 @@ export class SlashCommandNumberOption
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
 
-		Reflect.set(this, 'min_value', min);
+		Reflect.set(this, 'minValuevalue', min);
 
 		return this;
 	}

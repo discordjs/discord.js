@@ -11,9 +11,9 @@ const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public readonly type = ApplicationCommandOptionType.String as const;
 
-	public readonly max_length?: number;
+	public readonly maxLength?: number;
 
-	public readonly min_length?: number;
+	public readonly minLength?: number;
 
 	/**
 	 * Sets the maximum length of this string option.
@@ -23,7 +23,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public setMaxLength(max: number): this {
 		maxLengthValidator.parse(max);
 
-		Reflect.set(this, 'max_length', max);
+		Reflect.set(this, 'maxLength', max);
 
 		return this;
 	}
@@ -36,7 +36,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	public setMinLength(min: number): this {
 		minLengthValidator.parse(min);
 
-		Reflect.set(this, 'min_length', min);
+		Reflect.set(this, 'minLength', min);
 
 		return this;
 	}
