@@ -11,6 +11,7 @@ class ActionsManager {
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
+    this.register(require('./GuildAuditLogEntryCreate'));
     this.register(require('./GuildBanAdd'));
     this.register(require('./GuildBanRemove'));
     this.register(require('./GuildChannelsPositionUpdate'));
