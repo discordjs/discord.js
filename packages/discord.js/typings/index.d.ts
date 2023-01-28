@@ -652,10 +652,9 @@ export class BitField<S extends string, N extends number | bigint = number> {
   public missing(bits: BitFieldResolvable<S, N>, ...hasParams: readonly unknown[]): S[];
   public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
   public serialize(...hasParams: readonly unknown[]): Record<S, boolean>;
-  public toArray(...hasParams: readonly unknown[]): S[];
   public toJSON(): N extends number ? number : string;
   public valueOf(): N;
-  public [Symbol.iterator](): IterableIterator<S>;
+  public [Symbol.iterator](...hasParams: readonly unknown[]): IterableIterator<N>;
   public static Flags: EnumLike<unknown, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
@@ -2343,7 +2342,7 @@ export class PermissionsBitField extends BitField<PermissionsString, bigint> {
   public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
   public missing(bits: BitFieldResolvable<PermissionsString, bigint>, checkAdmin?: boolean): PermissionsString[];
   public serialize(checkAdmin?: boolean): Record<PermissionsString, boolean>;
-  public toArray(): PermissionsString[];
+  public [Symbol.iterator](): IterableIterator<bigint>;
 
   public static All: bigint;
   public static Default: bigint;

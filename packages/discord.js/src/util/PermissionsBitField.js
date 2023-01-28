@@ -93,11 +93,11 @@ class PermissionsBitField extends BitField {
   }
 
   /**
-   * Gets an {@link Array} of bitfield names based on the permissions available.
-   * @returns {string[]}
+   * Allows permissions bit fields to be consumed with for-of loops
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of}
    */
-  toArray() {
-    return super.toArray(false);
+  *[Symbol.iterator]() {
+    yield* super[Symbol.iterator](false);
   }
 }
 
