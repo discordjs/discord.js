@@ -193,7 +193,6 @@ class WebSocketManager extends EventEmitter {
     });
 
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, reason = '', shardId }) => {
-      this.shards.get(shardId).status = code === CloseCodes.Resuming ? Status.Resuming : Status.Disconnected;
       if (code === CloseCodes.Normal && this.destroyed) {
         /**
          * Emitted when a shard's WebSocket disconnects and will no longer reconnect.

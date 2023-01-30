@@ -3,6 +3,7 @@
 const EventEmitter = require('node:events');
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
+const { WebSocketShardStatus } = require('@discordjs/ws');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
@@ -26,12 +27,6 @@ class WebSocketShard extends EventEmitter {
      * @type {number}
      */
     this.id = id;
-
-    /**
-     * The current status of the shard
-     * @type {Status}
-     */
-    this.status = Status.Idle;
 
     /**
      * The previous heartbeat ping of the shard
@@ -63,6 +58,27 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
+   * The current status of the shard
+   * @type {Status}
+   */
+  get status() {
+    if (this.readyTimeout) return Status.WaitingForGuilds;
+    const status = this.manager._ws.fetchStatus().get(this.id);
+    switch (status) {
+      case WebSocketShardStatus.Idle:
+        return Status.Idle;
+      case WebSocketShardStatus.Connecting:
+        return Status.Connecting;
+      case WebSocketShardStatus.Ready:
+        return Status.Ready;
+      case WebSocketShardStatus.Resuming:
+        return Status.Resuming;
+      default:
+        return Status.Idle;
+    }
+  }
+
+  /**
    * Emits a debug event.
    * @param {string} message The debug message
    * @private
@@ -74,16 +90,6 @@ class WebSocketShard extends EventEmitter {
   /**
    * @external CloseEvent
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent}
-   */
-
-  /**
-   * @external ErrorEvent
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent}
-   */
-
-  /**
-   * @external MessageEvent
-   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent}
    */
 
   /**
@@ -130,7 +136,6 @@ class WebSocketShard extends EventEmitter {
     this.emit(WebSocketShardEvents.Ready);
 
     this.expectedGuilds = new Set(packet.guilds.map(d => d.id));
-    this.status = Status.WaitingForGuilds;
   }
 
   /**
@@ -157,7 +162,6 @@ class WebSocketShard extends EventEmitter {
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
       this.debug('Shard received all its guilds. Marking as fully ready.');
-      this.status = Status.Ready;
 
       /**
        * Emitted when the shard is fully ready.
@@ -188,8 +192,6 @@ class WebSocketShard extends EventEmitter {
         );
 
         this.readyTimeout = null;
-
-        this.status = Status.Ready;
 
         this.emit(WebSocketShardEvents.AllReady, this.expectedGuilds);
       },
