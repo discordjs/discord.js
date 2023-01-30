@@ -5350,9 +5350,10 @@ export interface GuildMemberEditData {
   communicationDisabledUntil?: DateResolvable | null;
   flags?: GuildMemberFlagsResolvable;
 }
-export type GuildMemberFlagsString = | 'DID_REJOIN' | 'COMPLETED_ONBOARDING'| 'BYPASSES_VERIFICATION'| 'STARTED_ONBOARDING';
 
-export type GuildMemberFlagsResolvable= BitFieldResolvable<GuildMemberFlagsString, number>;
+export type GuildMemberFlagsString = 'DID_REJOIN' | 'COMPLETED_ONBOARDING'| 'BYPASSES_VERIFICATION'| 'STARTED_ONBOARDING';
+
+export type GuildMemberFlagsResolvable = BitFieldResolvable<GuildMemberFlagsString, number>;
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
 

@@ -9,9 +9,9 @@ const BitField = require('./BitField');
 class GuildMemberFlags extends BitField {}
 
 /**
- * @name ActivityFlags
+ * @name GuildMemberFlags
  * @kind constructor
- * @memberof ActivityFlags
+ * @memberof GuildMemberFlags
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
@@ -33,9 +33,9 @@ GuildMemberFlags.FLAGS = {
 
 /**
  * Data that can be resolved to give a guild member flag bitfield. This can be:
- * * A string (see {@link GuildMemberFlagsBitField.Flags})
+ * * A string (see {@link GuildMemberFlags.FLAGS})
  * * A guild member flag
- * * An instance of GuildMemberFlagsBitField
+ * * An instance of GuildMemberFlags
  * * An Array of GuildMemberFlagsResolvable
  * @typedef {string|number|GuildMemberFlags|GuildMemberFlagsResolvable[]} GuildMemberFlagsResolvable
  */
