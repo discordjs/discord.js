@@ -3302,11 +3302,8 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
 
 export class WebSocketManager extends EventEmitter {
   private constructor(client: Client);
-  private totalShards: number | string;
-  private shardQueue: Set<WebSocketShard>;
   private readonly packetQueue: unknown[];
   private destroyed: boolean;
-  private reconnecting: boolean;
 
   public readonly client: Client;
   public gateway: string | null;
@@ -3319,8 +3316,6 @@ export class WebSocketManager extends EventEmitter {
 
   private debug(message: string, shard?: WebSocketShard): void;
   private connect(): Promise<void>;
-  private createShards(): Promise<void>;
-  private reconnect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): void;
   private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
