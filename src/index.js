@@ -36,6 +36,7 @@ exports.version = require('../package.json').version;
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
+exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
@@ -72,6 +73,8 @@ exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
+exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
+exports.AutoModerationRule = require('./structures/AutoModerationRule');
 exports.Base = require('./structures/Base');
 exports.BaseCommandInteraction = require('./structures/BaseCommandInteraction');
 exports.BaseGuild = require('./structures/BaseGuild');

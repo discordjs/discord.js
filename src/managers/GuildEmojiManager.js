@@ -156,7 +156,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       throw new Error('EMOJI_MANAGED');
     }
 
-    const { me } = this.guild;
+    const { me } = this.guild.members;
     if (!me) throw new Error('GUILD_UNCACHED_ME');
     if (!me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) {
       throw new Error('MISSING_MANAGE_EMOJIS_AND_STICKERS_PERMISSION', this.guild);

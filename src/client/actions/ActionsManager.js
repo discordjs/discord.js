@@ -4,6 +4,10 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(require('./AutoModerationActionExecution'));
+    this.register(require('./AutoModerationRuleCreate'));
+    this.register(require('./AutoModerationRuleDelete'));
+    this.register(require('./AutoModerationRuleUpdate'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
