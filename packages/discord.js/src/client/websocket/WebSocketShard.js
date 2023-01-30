@@ -29,6 +29,12 @@ class WebSocketShard extends EventEmitter {
     this.id = id;
 
     /**
+     * The current status of the shard
+     * @type {Status}
+     */
+    this.status = Status.Idle;
+
+    /**
      * The previous heartbeat ping of the shard
      * @type {number}
      */
@@ -58,23 +64,14 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * The current status of the shard
-   * @type {Status}
+   * Syncronizes the status property with the `@discordjs/ws` implementation.
    */
-  get status() {
-    if (this.readyTimeout) return Status.WaitingForGuilds;
-    const status = this.manager._ws.fetchStatus().get(this.id);
-    switch (status) {
-      case WebSocketShardStatus.Idle:
-        return Status.Idle;
-      case WebSocketShardStatus.Connecting:
-        return Status.Connecting;
-      case WebSocketShardStatus.Ready:
-        return Status.Ready;
-      case WebSocketShardStatus.Resuming:
-        return Status.Resuming;
-      default:
-        return Status.Idle;
+  async setStatus() {
+    if (this.readyTimeout) {
+      this.status = Status.WaitingForGuilds;
+    } else {
+      const status = (await this.manager._ws.fetchStatus()).get(this.id);
+      this.status = Status[WebSocketShardStatus[status]];
     }
   }
 

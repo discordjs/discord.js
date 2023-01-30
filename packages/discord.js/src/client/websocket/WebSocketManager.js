@@ -167,6 +167,7 @@ class WebSocketManager extends EventEmitter {
 
           this.checkShardsReady();
         });
+        shard.status = Status.Connecting;
       }
     }
 
@@ -194,6 +195,7 @@ class WebSocketManager extends EventEmitter {
 
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, reason = '', shardId }) => {
       if (code === CloseCodes.Normal && this.destroyed) {
+        this.shards.get(shardId).status = Status.Disconnected;
         /**
          * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
          * @event Client#shardDisconnect
@@ -205,6 +207,7 @@ class WebSocketManager extends EventEmitter {
         return;
       }
 
+      this.shards.get(shardId).status = code === CloseCodes.Resuming ? Status.Resuming : Status.Reconnecting;
       /**
        * Emitted when a shard is attempting to reconnect or re-identify.
        * @event Client#shardReconnecting
@@ -214,11 +217,13 @@ class WebSocketManager extends EventEmitter {
     });
 
     this._ws.on(WSWebSocketShardEvents.Resumed, ({ shardId }) => {
+      const shard = this.shards.get(shardId);
+      shard.setStatus();
       /**
        * Emitted when the shard resumes successfully
        * @event WebSocketShard#resumed
        */
-      this.shards.get(shardId).emit(WebSocketShardEvents.Resumed);
+      shard.emit(WebSocketShardEvents.Resumed);
     });
 
     this._ws.on(WSWebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency, shardId }) => {
