@@ -3504,16 +3504,23 @@ export enum DiscordjsErrorCodes {
   TokenMissing = 'TokenMissing',
   ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
+  /** @deprecated */
   WSCloseRequested = 'WSCloseRequested',
+  /** @deprecated */
   WSConnectionExists = 'WSConnectionExists',
+  /** @deprecated */
   WSNotOpen = 'WSNotOpen',
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
 
+  /** @deprecated */
   ShardingInvalid = 'ShardingInvalid',
+  /** @deprecated */
   ShardingRequired = 'ShardingRequired',
+  /** @deprecated */
   InvalidIntents = 'InvalidIntents',
+  /** @deprecated */
   DisallowedIntents = 'DisallowedIntents',
   ShardingNoShards = 'ShardingNoShards',
   ShardingInProcess = 'ShardingInProcess',

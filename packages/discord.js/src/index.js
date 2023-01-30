@@ -204,8 +204,6 @@ exports.WidgetMember = require('./structures/WidgetMember');
 exports.WelcomeChannel = require('./structures/WelcomeChannel');
 exports.WelcomeScreen = require('./structures/WelcomeScreen');
 
-exports.WebSocket = require('./WebSocket');
-
 // External
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);

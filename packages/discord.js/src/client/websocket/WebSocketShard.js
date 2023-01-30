@@ -129,7 +129,7 @@ class WebSocketShard extends EventEmitter {
      */
     this.emit(WebSocketShardEvents.Ready);
 
-    this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
+    this.expectedGuilds = new Set(packet.guilds.map(d => d.id));
     this.status = Status.WaitingForGuilds;
   }
 
@@ -214,7 +214,6 @@ class WebSocketShard extends EventEmitter {
       );
     }
     this.manager._ws.send(this.id, data);
-    this.processQueue();
   }
 }
 

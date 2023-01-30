@@ -97,11 +97,15 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   debug(message, shardId) {
-    this.client.emit(Events.Debug, `[WS => ${shardId ? `Shard ${shardId}` : 'Manager'}] ${message}`);
+    this.client.emit(
+      Events.Debug,
+      `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${message}`,
+    );
   }
 
   /**
    * Connects this manager to the gateway.
+   * @returns {Promise<void>}
    * @private
    */
   async connect() {
@@ -145,8 +149,6 @@ class WebSocketManager extends EventEmitter {
 
     this.gateway = `${gatewayURL}/`;
 
-    await this._ws.connect();
-
     this.totalShards = this.client.options.shardCount = await this._ws.getShardCount();
     this.client.options.shards = await this._ws.getShardIds();
     for (const id of this.client.options.shards) {
@@ -167,6 +169,8 @@ class WebSocketManager extends EventEmitter {
         });
       }
     }
+
+    return this._ws.connect();
   }
 
   /**
@@ -175,12 +179,12 @@ class WebSocketManager extends EventEmitter {
    */
   attachEvents() {
     this._ws.on(WSWebSocketShardEvents.Debug, ({ message, shardId }) => this.debug(message, shardId));
-    this._ws.on(WSWebSocketShardEvents.Dispatch, ({ packet, shardId }) => {
-      this.client.emit(Events.Raw, packet, shardId);
+    this._ws.on(WSWebSocketShardEvents.Dispatch, ({ data, shardId }) => {
+      this.client.emit(Events.Raw, data, shardId);
       const shard = this.shards.get(shardId);
-      this.handlePacket(packet, shard);
-      if (shard.status === Status.WaitingForGuilds && packet.t === GatewayDispatchEvents.GuildCreate) {
-        shard.onGuildPacket(packet);
+      this.handlePacket(data, shard);
+      if (shard.status === Status.WaitingForGuilds && data.t === GatewayDispatchEvents.GuildCreate) {
+        shard.gotGuild(data.d.id);
       }
     });
 
@@ -225,14 +229,14 @@ class WebSocketManager extends EventEmitter {
     });
 
     // TODO: refactor once error event gets exposed publicly
-    this._ws.on('error', ({ err, shardId }) => {
+    this._ws.on('error', err => {
       /**
        * Emitted whenever a shard's WebSocket encounters a connection error.
        * @event Client#shardError
        * @param {Error} error The encountered error
        * @param {number} shardId The shard that encountered this error
        */
-      this.client.emit(Events.ShardError, err, shardId);
+      this.client.emit(Events.ShardError, err, err.shardId);
     });
   }
 
