@@ -81,7 +81,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   debug(message) {
-    this.manager.debug(message, this);
+    this.manager.debug(message, this.id);
   }
 
   /**
@@ -150,7 +150,7 @@ class WebSocketShard extends EventEmitter {
    * Checks if the shard can be marked as ready
    * @private
    */
-  checkReady() {
+  async checkReady() {
     // Step 0. Clear the ready timeout, if it exists
     if (this.readyTimeout) {
       clearTimeout(this.readyTimeout);
@@ -159,6 +159,7 @@ class WebSocketShard extends EventEmitter {
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
       this.debug('Shard received all its guilds. Marking as fully ready.');
+      await this.setStatus();
 
       /**
        * Emitted when the shard is fully ready.
@@ -180,7 +181,7 @@ class WebSocketShard extends EventEmitter {
     const { waitGuildTimeout } = this.manager.client.options;
 
     this.readyTimeout = setTimeout(
-      () => {
+      async () => {
         this.debug(
           `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
             `${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.\nUnavailable guild count: ${
@@ -189,6 +190,7 @@ class WebSocketShard extends EventEmitter {
         );
 
         this.readyTimeout = null;
+        await this.setStatus();
 
         this.emit(WebSocketShardEvents.AllReady, this.expectedGuilds);
       },

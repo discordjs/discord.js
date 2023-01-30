@@ -105,7 +105,6 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects this manager to the gateway.
-   * @returns {Promise<void>}
    * @private
    */
   async connect() {
@@ -171,7 +170,8 @@ class WebSocketManager extends EventEmitter {
       }
     }
 
-    return this._ws.connect();
+    await this._ws.connect();
+    await Promise.all(this.shards.map(shard => shard.setStatus()));
   }
 
   /**
@@ -227,6 +227,7 @@ class WebSocketManager extends EventEmitter {
     });
 
     this._ws.on(WSWebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency, shardId }) => {
+      this.debug(`Heartbeat acknowledged, latency of ${latency}ms.`, shardId);
       const shard = this.shards.get(shardId);
       shard.lastPingTimestamp = heartbeatAt;
       shard.ping = latency;
