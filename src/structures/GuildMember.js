@@ -6,6 +6,7 @@ const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const GuildMemberFlags = require('../util/GuildMemberFlags');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -94,6 +95,15 @@ class GuildMember extends Base {
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
         data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    }
+    if ('flags' in data) {
+      /**
+       * The flags of this member
+       * @type {Readonly<GuildMemberFlags>}
+       */
+      this.flags = new GuildMemberFlags(data.flags).freeze();
+    } else {
+      this.flags ??= new GuildMemberFlags().freeze();
     }
   }
 
@@ -345,6 +355,16 @@ class GuildMember extends Base {
    */
   setNickname(nick, reason) {
     return this.edit({ nick }, reason);
+  }
+
+  /**
+   * Sets the flags for this member.
+   * @param {GuildMemberFlagsResolvable} flags The flags to set
+   * @param {string} [reason] Reason for setting the flags
+   * @returns {Promise<GuildMember>}
+   */
+  setFlags(flags, reason) {
+    return this.edit({ flags, reason });
   }
 
   /**
