@@ -196,6 +196,7 @@ class WebSocketShard extends EventEmitter {
       },
       hasGuildsIntent ? waitGuildTimeout : 0,
     ).unref();
+    await this.setStatus();
   }
 
   /**
