@@ -495,6 +495,7 @@ exports.WSEvents = keyMirror([
  * * `guilds.join`: allows the bot to join the user to any guild it is in using Guild#addMember
  * * `gdm.join`: allows joining the user to a group dm
  * * `webhook.incoming`: generates a webhook to a channel
+ * * `role_connections.write`: allows your app to update a user's connection and metadata for the app
  * @typedef {string} InviteScope
  * @see {@link https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes}
  */
@@ -511,6 +512,7 @@ exports.InviteScopes = [
   'guilds.join',
   'gdm.join',
   'webhook.incoming',
+  'role_connections.write',
 ];
 
 // TODO: change Integration#expireBehavior to this and clean up Integration

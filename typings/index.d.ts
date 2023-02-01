@@ -5591,7 +5591,8 @@ export type InviteScope =
   | 'guilds'
   | 'guilds.join'
   | 'gdm.join'
-  | 'webhook.incoming';
+  | 'webhook.incoming'
+  | 'role_connections.write';
 
 export interface LifetimeFilterOptions<K, V> {
   excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
