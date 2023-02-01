@@ -35,6 +35,13 @@ class WebSocketShard extends EventEmitter {
     this.status = Status.Idle;
 
     /**
+     * The sequence of the shard after close
+     * @type {number}
+     * @private
+     */
+    this.closeSequence = 0;
+
+    /**
      * The previous heartbeat ping of the shard
      * @type {number}
      */
@@ -61,18 +68,35 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
+
+    /**
+     * @external SessionInfo
+     * @see {@link https://discord.js.org/#/docs/ws/main/typedef/SessionInfo}
+     */
+
+    /**
+     * The session info used by `@discordjs/ws` package.
+     * @name WebSocketShard#sessionInfo
+     * @type {?SessionInfo}
+     * @private
+     */
+    Object.defineProperty(this, 'sessionInfo', { value: null, writable: true });
   }
 
   /**
-   * Syncronizes the status property with the `@discordjs/ws` implementation.
+   * Syncronizes the {@link WebSocketShard#status} property with the `@discordjs/ws` implementation
+   * and returns the new value.
+   * @returns {Promise<Status>}
+   * @private
    */
-  async setStatus() {
+  async getStatus() {
     if (this.readyTimeout) {
       this.status = Status.WaitingForGuilds;
     } else {
       const status = (await this.manager._ws.fetchStatus()).get(this.id);
       this.status = Status[WebSocketShardStatus[status]];
     }
+    return this.status;
   }
 
   /**
@@ -159,7 +183,7 @@ class WebSocketShard extends EventEmitter {
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
       this.debug('Shard received all its guilds. Marking as fully ready.');
-      await this.setStatus();
+      await this.getStatus();
 
       /**
        * Emitted when the shard is fully ready.
@@ -190,13 +214,13 @@ class WebSocketShard extends EventEmitter {
         );
 
         this.readyTimeout = null;
-        await this.setStatus();
+        await this.getStatus();
 
         this.emit(WebSocketShardEvents.AllReady, this.expectedGuilds);
       },
       hasGuildsIntent ? waitGuildTimeout : 0,
     ).unref();
-    await this.setStatus();
+    await this.getStatus();
   }
 
   /**
