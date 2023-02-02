@@ -17,6 +17,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @property {number} [maxValues] The maximum number of selections allowed
    * @property {MessageSelectOption[]} [options] Options for the select menu
    * @property {boolean} [disabled=false] Disables the select menu to prevent interactions
+   * @property {ChannelType[]} [channelTypes] List of channel types to include in the ChannelSelect component
    */
 
   /**
@@ -113,8 +114,8 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
-   * Adds the channel type to the select menu
-   * @param {...ChannelType[]} channelType Added channel type
+   * Adds the channel types to the select menu
+   * @param {...ChannelType[]} channelTypes Added channel types
    * @returns {MessageSelectMenu}
    */
   addChannelTypes(...channelTypes) {
@@ -129,7 +130,7 @@ class MessageSelectMenu extends BaseMessageComponent {
 
   /**
    * Sets the channel types of the select menu
-   * @param {ChannelType[]} channelTypes An array of new channel types
+   * @param {...ChannelType[]} channelTypes An array of new channel types
    * @returns {MessageSelectMenu}
    */
   setChannelTypes(...channelTypes) {

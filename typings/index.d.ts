@@ -42,7 +42,6 @@ import {
   APIPartialEmoji,
   APIPartialGuild,
   APIRole,
-  APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
   APIUser,
   GatewayVoiceServerUpdateDispatchData,
@@ -97,6 +96,7 @@ import {
   ForumLayoutType,
 } from './enums';
 import {
+  APISelectMenuComponent,
   RawActivityData,
   RawAnonymousGuildData,
   RawApplicationCommandData,
