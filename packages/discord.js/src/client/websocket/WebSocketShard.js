@@ -160,7 +160,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Called when a GuildCreate for this shard was sent after READY payload was received,
+   * Called when a GuildCreate or GuildDelete for this shard was sent after READY payload was received,
    * but before we emitted the READY event.
    * @param {Snowflake} guildId the id of the Guild sent in the payload
    * @private

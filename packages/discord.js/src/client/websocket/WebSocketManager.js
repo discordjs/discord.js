@@ -26,6 +26,8 @@ const BeforeReadyWhitelist = [
   GatewayDispatchEvents.GuildMemberRemove,
 ];
 
+const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
+
 /**
  * The WebSocket manager for this client.
  * <info>This class forwards raw dispatch events,
@@ -188,7 +190,7 @@ class WebSocketManager extends EventEmitter {
       this.client.emit(Events.Raw, data, shardId);
       const shard = this.shards.get(shardId);
       this.handlePacket(data, shard);
-      if (shard.status === Status.WaitingForGuilds && data.t === GatewayDispatchEvents.GuildCreate) {
+      if (shard.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(data.t)) {
         shard.gotGuild(data.d.id);
       }
     });
