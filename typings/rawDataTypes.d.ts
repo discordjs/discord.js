@@ -80,8 +80,17 @@ import {
   APISelectMenuOption,
   APIButtonComponent,
 } from 'discord-api-types/v9';
-import { GuildChannel, Guild, PermissionOverwrites } from '.';
-import type { ChannelTypes, MessageComponentTypes, SelectMenuComponentTypes } from './enums';
+import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
+import type {
+  AutoModerationActionTypes,
+  AutoModerationRuleEventTypes,
+  AutoModerationRuleKeywordPresetTypes,
+  AutoModerationRuleTriggerTypes,
+  ChannelTypes,
+  InteractionTypes,
+  MessageComponentTypes,
+  SelectMenuComponentTypes,
+} from './enums';
 
 export type RawActivityData = GatewayActivity;
 
@@ -215,7 +224,7 @@ export type RawWidgetData = APIGuildWidget;
 
 export type RawWidgetMemberData = APIGuildWidgetMember;
 
- export interface APIInteractionDataResolvedChannel extends Required<APIPartialChannel> {
+export interface APIInteractionDataResolvedChannel extends Required<APIPartialChannel> {
   thread_metadata?: APIThreadMetadata | null;
   permissions: Permissions;
   parent_id?: string | null;
@@ -322,3 +331,48 @@ export declare type APIMessageComponent = APIMessageActionRowComponent | APIActi
 export declare type APIActionRowComponentTypes = APIMessageActionRowComponent | APIModalActionRowComponent;
 export declare type APIMessageActionRowComponent = APIButtonComponent | APISelectMenuComponent;
 export declare type APIModalActionRowComponent = APITextInputComponent;
+
+export interface GatewayAutoModerationActionExecutionDispatchData {
+  guild_id: Snowflake;
+  action: APIAutoModerationAction;
+  rule_id: Snowflake;
+  rule_trigger_type: AutoModerationRuleTriggerTypes;
+  user_id: Snowflake;
+  channel_id?: Snowflake;
+  message_id?: Snowflake;
+  alert_system_message_id?: Snowflake;
+  content: string;
+  matched_keyword: string | null;
+  matched_content: string | null;
+}
+
+export interface APIAutoModerationAction {
+  type: AutoModerationActionTypes;
+  metadata?: APIAutoModerationActionMetadata;
+}
+export interface APIAutoModerationActionMetadata {
+  channel_id?: Snowflake;
+  duration_seconds?: number;
+}
+
+export interface APIAutoModerationRule {
+  id: Snowflake;
+  guild_id: Snowflake;
+  name: string;
+  creator_id: Snowflake;
+  event_type: AutoModerationRuleEventTypes;
+  trigger_type: AutoModerationRuleTriggerTypes;
+  trigger_metadata: APIAutoModerationRuleTriggerMetadata;
+  actions: APIAutoModerationAction[];
+  enabled: boolean;
+  exempt_roles: Snowflake[];
+  exempt_channels: Snowflake[];
+}
+
+export interface APIAutoModerationRuleTriggerMetadata {
+  keyword_filter?: string[];
+  presets?: AutoModerationRuleKeywordPresetTypes[];
+  allow_list?: string[];
+  regex_patterns?: string[];
+  mention_total_limit?: number;
+}
