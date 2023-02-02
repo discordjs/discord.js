@@ -22,7 +22,6 @@ import {
 } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import {
-  APIActionRowComponent,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
   APIApplicationCommandPermission,
@@ -34,8 +33,6 @@ import {
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIMessage,
-  APIMessageActionRowComponent,
-  APIMessageComponent,
   APIModalActionRowComponent,
   APIOverwrite,
   APIPartialChannel,
@@ -96,6 +93,9 @@ import {
   ForumLayoutType,
 } from './enums';
 import {
+  APIActionRowComponent,
+  APIMessageActionRowComponent,
+  APIMessageComponent,
   APISelectMenuComponent,
   RawActivityData,
   RawAnonymousGuildData,

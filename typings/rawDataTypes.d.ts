@@ -73,17 +73,15 @@ import {
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
   APIGuildScheduledEvent,
-  APIActionRowComponent,
   APITextInputComponent,
-  APIModalActionRowComponent,
   APIModalSubmitInteraction,
-  APIMessageComponentBaseInteractionData,
   APIThreadMetadata,
   Permissions,
   APISelectMenuOption,
+  APIButtonComponent,
 } from 'discord-api-types/v9';
-import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
-import type { ChannelTypes, InteractionTypes, MessageComponentTypes, SelectMenuComponentTypes } from './enums';
+import { GuildChannel, Guild, PermissionOverwrites } from '.';
+import type { ChannelTypes, MessageComponentTypes, SelectMenuComponentTypes } from './enums';
 
 export type RawActivityData = GatewayActivity;
 
@@ -314,3 +312,13 @@ export type APISelectMenuComponent =
   | APIRoleSelectComponent
   | APIMentionableSelectComponent
   | APIChannelSelectComponent;
+
+  export interface APIActionRowComponent<T extends APIActionRowComponentTypes> {
+    type: MessageComponentTypes.ACTION_ROW;
+    components: T[];
+}
+
+export declare type APIMessageComponent = APIMessageActionRowComponent | APIActionRowComponent<APIMessageActionRowComponent>;
+export declare type APIActionRowComponentTypes = APIMessageActionRowComponent | APIModalActionRowComponent;
+export declare type APIMessageActionRowComponent = APIButtonComponent | APISelectMenuComponent;
+export declare type APIModalActionRowComponent = APITextInputComponent;
