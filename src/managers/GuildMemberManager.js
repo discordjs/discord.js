@@ -1,3 +1,4 @@
+/* eslint-disable newline-per-chained-call */
 'use strict';
 
 const { Buffer } = require('node:buffer');
@@ -430,6 +431,40 @@ class GuildMemberManager extends CachedManager {
 
     const data = await this.client.api.guilds(this.guild.id).members(user).get();
     return this._add(data, cache);
+  }
+
+  /**
+   * Adds a role to a member.
+   * @param {GuildMemberResolvable} user
+   * @param {RoleResolvable} role
+   * @param {string} [reason]
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+
+  async addRole(user, role, reason) {
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+
+    await this.client.api.guild(this.guild.id).members(userId).roles(roleId).put({ reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
+  }
+
+  /**
+   * Removes a role from a member.
+   * @param {UserResolvable} user
+   * @param {RoleResolvable} role
+   * @param {string} [reason]
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+
+  async removeRole(user, role, reason) {
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+
+    await this.client.api.guild(this.guild.id).members(userId).roles(roleId).delete({ reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
 
   _fetchMany({
