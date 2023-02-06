@@ -14,14 +14,12 @@ class GuildMemberRemoveAction extends Action {
       guild.memberCount--;
       if (member) {
         guild.members.cache.delete(member.id);
-        shard.getStatus().then(status => {
-          /**
-           * Emitted whenever a member leaves a guild, or is kicked.
-           * @event Client#guildMemberRemove
-           * @param {GuildMember} member The member that has left/been kicked from the guild
-           */
-          if (status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
-        });
+        /**
+         * Emitted whenever a member leaves a guild, or is kicked.
+         * @event Client#guildMemberRemove
+         * @param {GuildMember} member The member that has left/been kicked from the guild
+         */
+        if (shard.status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
       }
       guild.presences.cache.delete(data.user.id);
       guild.voiceStates.cache.delete(data.user.id);

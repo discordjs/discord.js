@@ -28,6 +28,12 @@ const BeforeReadyWhitelist = [
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 
+const UNRESUMABLE_CLOSE_CODES = [
+  CloseCodes.Normal,
+  GatewayCloseCodes.AlreadyAuthenticated,
+  GatewayCloseCodes.InvalidSeq,
+];
+
 /**
  * The WebSocket manager for this client.
  * <info>This class forwards raw dispatch events,
@@ -177,7 +183,6 @@ class WebSocketManager extends EventEmitter {
     }
 
     await this._ws.connect();
-    await Promise.all(this.shards.map(shard => shard.getStatus()));
   }
 
   /**
@@ -200,7 +205,7 @@ class WebSocketManager extends EventEmitter {
     });
 
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, reason = '', shardId }) => {
-      if (code === CloseCodes.Normal && this.destroyed) {
+      if (UNRESUMABLE_CLOSE_CODES.includes(code) && this.destroyed) {
         this.shards.get(shardId).status = Status.Disconnected;
         /**
          * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
@@ -223,13 +228,17 @@ class WebSocketManager extends EventEmitter {
     });
     this._ws.on(WSWebSocketShardEvents.Hello, ({ shardId }) => {
       const shard = this.shards.get(shardId);
-      if (shard.sessionInfo) shard.closeSequence = shard.sessionInfo.sequence;
-      shard.getStatus();
+      if (shard.sessionInfo) {
+        shard.closeSequence = shard.sessionInfo.sequence;
+        shard.status = Status.Resuming;
+      } else {
+        shard.status = Status.Identifying;
+      }
     });
 
-    this._ws.on(WSWebSocketShardEvents.Resumed, async ({ shardId }) => {
+    this._ws.on(WSWebSocketShardEvents.Resumed, ({ shardId }) => {
       const shard = this.shards.get(shardId);
-      await shard.getStatus();
+      shard.status = Status.Ready;
       /**
        * Emitted when the shard resumes successfully
        * @event WebSocketShard#resumed
@@ -312,13 +321,11 @@ class WebSocketManager extends EventEmitter {
    */
   checkShardsReady() {
     if (this.status === Status.Ready) return;
-    if (this.shards.size !== this.totalShards) {
+    if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.Ready)) {
       return;
     }
 
-    Promise.all(this.shards.map(shard => shard.getStatus())).then(statuses => {
-      if (statuses.every(status => status === Status.Ready)) this.triggerClientReady();
-    });
+    this.triggerClientReady();
   }
 
   /**

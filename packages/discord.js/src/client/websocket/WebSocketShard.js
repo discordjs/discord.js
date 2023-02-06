@@ -3,7 +3,6 @@
 const EventEmitter = require('node:events');
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
-const { WebSocketShardStatus } = require('@discordjs/ws');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
@@ -84,22 +83,6 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Syncronizes the {@link WebSocketShard#status} property with the `@discordjs/ws` implementation
-   * and returns the new value.
-   * @returns {Promise<Status>}
-   * @private
-   */
-  async getStatus() {
-    if (this.readyTimeout) {
-      this.status = Status.WaitingForGuilds;
-    } else {
-      const status = (await this.manager._ws.fetchStatus()).get(this.id);
-      this.status = Status[WebSocketShardStatus[status]];
-    }
-    return this.status;
-  }
-
-  /**
    * Emits a debug event.
    * @param {string} message The debug message
    * @private
@@ -157,6 +140,7 @@ class WebSocketShard extends EventEmitter {
     this.emit(WebSocketShardEvents.Ready);
 
     this.expectedGuilds = new Set(packet.guilds.map(d => d.id));
+    this.status = Status.WaitingForGuilds;
   }
 
   /**
@@ -174,7 +158,7 @@ class WebSocketShard extends EventEmitter {
    * Checks if the shard can be marked as ready
    * @private
    */
-  async checkReady() {
+  checkReady() {
     // Step 0. Clear the ready timeout, if it exists
     if (this.readyTimeout) {
       clearTimeout(this.readyTimeout);
@@ -183,7 +167,7 @@ class WebSocketShard extends EventEmitter {
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
       this.debug('Shard received all its guilds. Marking as fully ready.');
-      await this.getStatus();
+      this.status = Status.Ready;
 
       /**
        * Emitted when the shard is fully ready.
@@ -205,7 +189,7 @@ class WebSocketShard extends EventEmitter {
     const { waitGuildTimeout } = this.manager.client.options;
 
     this.readyTimeout = setTimeout(
-      async () => {
+      () => {
         this.debug(
           `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
             `${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.\nUnavailable guild count: ${
@@ -214,13 +198,12 @@ class WebSocketShard extends EventEmitter {
         );
 
         this.readyTimeout = null;
-        await this.getStatus();
+        this.status = Status.Ready;
 
         this.emit(WebSocketShardEvents.AllReady, this.expectedGuilds);
       },
       hasGuildsIntent ? waitGuildTimeout : 0,
     ).unref();
-    await this.getStatus();
   }
 
   /**
