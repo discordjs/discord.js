@@ -9,7 +9,6 @@ import type {
   APIInteractionDataResolvedChannel,
   APIRole,
   APIButtonComponent,
-  APISelectMenuComponent,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -102,6 +101,7 @@ import {
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import type { APISelectMenuComponent } from './rawDataTypes'
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
