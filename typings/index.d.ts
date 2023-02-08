@@ -1437,6 +1437,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isStringSelect(): this is SelectMenuInteraction<Cached>;
   public isUserSelect(): this is SelectMenuInteraction<Cached>;
   public isMentionableSelect(): this is SelectMenuInteraction<Cached>;
+  public isRoleSelect(): this is SelectMenuInteraction<Cached>;
   public isChannelSelect(): this is SelectMenuInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
 }
