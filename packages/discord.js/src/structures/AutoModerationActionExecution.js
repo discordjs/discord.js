@@ -1,6 +1,6 @@
 'use strict';
 
-const { _transformAPIAutoModerationAction } = require('../util/Util');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
  * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.

@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const { _transformAPIAutoModerationAction } = require('../util/Util');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
  * Represents an auto moderation rule.

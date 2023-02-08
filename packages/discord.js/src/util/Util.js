@@ -371,22 +371,6 @@ function parseWebhookURL(url) {
   };
 }
 
-/**
- * Transforms an API auto moderation action object to a camel-cased variant.
- * @param {APIAutoModerationAction} autoModerationAction The action to transform
- * @returns {AutoModerationAction}
- * @ignore
- */
-function _transformAPIAutoModerationAction(autoModerationAction) {
-  return {
-    type: autoModerationAction.type,
-    metadata: {
-      durationSeconds: autoModerationAction.metadata.duration_seconds ?? null,
-      channelId: autoModerationAction.metadata.channel_id ?? null,
-    },
-  };
-}
-
 module.exports = {
   flatten,
   fetchRecommendedShardCount,
@@ -404,7 +388,6 @@ module.exports = {
   cleanContent,
   cleanCodeBlockContent,
   parseWebhookURL,
-  _transformAPIAutoModerationAction,
 };
 
 // Fixes Circular
