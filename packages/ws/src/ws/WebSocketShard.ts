@@ -33,6 +33,7 @@ export enum WebSocketShardEvents {
 	Closed = 'closed',
 	Debug = 'debug',
 	Dispatch = 'dispatch',
+	Error = 'error',
 	HeartbeatComplete = 'heartbeat',
 	Hello = 'hello',
 	Ready = 'ready',
@@ -56,6 +57,7 @@ export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
+	[WebSocketShardEvents.Error]: [payload: { error: unknown }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
@@ -242,10 +244,24 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.timeouts.set(event, timeout);
 		}
 
-		await once(this, event, { signal: controller.signal });
-		if (timeout) {
-			clearTimeout(timeout);
-			this.timeouts.delete(event);
+		try {
+			await once(this, event, { signal: controller.signal });
+		} catch (error) {
+			if (this.listenerCount(WebSocketShardEvents.Error) === 0) {
+				throw error;
+			}
+
+			// If the error is handled, we can just try to reconnect
+			await this.destroy({
+				code: CloseCodes.Normal,
+				reason: 'Something timed out',
+				recover: WebSocketShardDestroyRecovery.Reconnect,
+			});
+		} finally {
+			if (timeout) {
+				clearTimeout(timeout);
+				this.timeouts.delete(event);
+			}
 		}
 	}
 
@@ -393,7 +409,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.inflate.push(Buffer.from(decompressable), flush ? zlib.Z_SYNC_FLUSH : zlib.Z_NO_FLUSH);
 
 			if (this.inflate.err) {
-				this.emit('error', `${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`);
+				this.emit(WebSocketShardEvents.Error, {
+					error: `${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`,
+				});
 			}
 
 			if (!flush) {
@@ -522,7 +540,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(err: Error) {
-		this.emit('error', err);
+		this.emit(WebSocketShardEvents.Error, err);
 	}
 
 	private async onClose(code: number) {
