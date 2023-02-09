@@ -243,9 +243,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	// returns null on success, or an error unknown type) on failure
+	// returns null on success, or an error (unknown type) on failure
 	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null): Promise<unknown> {
-		this.debug([`Waiting for event ${event} for ${timeoutDuration ? `${timeoutDuration}ms` : 'indefinitely'}`]);
+		this.debug([`Waiting for event ${event} ${timeoutDuration ? `for ${timeoutDuration}ms` : 'indefinitely'}`]);
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
 		if (timeout) {
@@ -290,7 +290,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
 			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
-			await once(this, WebSocketShardEvents.Ready);
+			// This will throw if the shard throws an error event in the meantime, just requeue the payload
+			try {
+				await once(this, WebSocketShardEvents.Ready);
+			} catch {
+				return this.send(payload);
+			}
 		}
 
 		await this.sendQueue.wait();
