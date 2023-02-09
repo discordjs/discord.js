@@ -101,6 +101,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private session: SessionInfo | null = null;
 
+	// Indicates whether the shard has already resolved its original connect() call
+	private initialConnectResolved = false;
+
 	private readonly sendQueue = new AsyncQueue();
 
 	private readonly timeouts = new Collection<WebSocketShardEvents, NodeJS.Timeout>();
@@ -170,6 +173,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		} else {
 			await this.identify();
 		}
+
+		this.initialConnectResolved = true;
 	}
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
@@ -249,10 +254,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await once(this, event, { signal: controller.signal });
-			return true;
+			return null;
 			// Destructure since our Error event emits { error: unknown }
 		} catch ({ error }) {
-			if (this.listenerCount(WebSocketShardEvents.Error) === 0) {
+			if (this.listenerCount(WebSocketShardEvents.Error) === 0 || !this.initialConnectResolved) {
 				throw error;
 			}
 
@@ -269,7 +274,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
 
-			return false;
+			return error;
 		} finally {
 			if (timeout) {
 				clearTimeout(timeout);
