@@ -43,8 +43,8 @@ class AutoModerationActionExecution {
 
     /**
      * The id of the message that triggered this action.
-     * @type {?Snowflake}
      * <info>This will not be present if the message was blocked or the content was not part of any message.</info>
+     * @type {?Snowflake}
      */
     this.messageId = data.message_id ?? null;
 
