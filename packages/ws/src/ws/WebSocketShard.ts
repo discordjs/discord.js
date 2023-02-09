@@ -160,7 +160,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
-		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
+		if (!(await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout))) {
+			return;
+		}
 
 		if (session?.shardCount === this.strategy.options.shardCount) {
 			this.session = session;
@@ -236,7 +238,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null) {
+	// we also leverage a boolean return value indicating success since in case timeouts during a subsequent reconnect
+	// the error is just emitted as an event; the method can't throw/allow an uncatchable error
+	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null): Promise<boolean> {
 		this.debug([`Waiting for event ${event} for ${timeoutDuration ? `${timeoutDuration}ms` : 'indefinitely'}`]);
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
@@ -246,6 +250,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await once(this, event, { signal: controller.signal });
+			return true;
 		} catch (error) {
 			if (this.listenerCount(WebSocketShardEvents.Error) === 0) {
 				throw error;
@@ -257,6 +262,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				reason: 'Something timed out',
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
+
+			return false;
 		} finally {
 			if (timeout) {
 				clearTimeout(timeout);
@@ -341,7 +348,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
+		if (!(await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout))) {
+			return;
+		}
+
 		this.#status = WebSocketShardStatus.Ready;
 	}
 
