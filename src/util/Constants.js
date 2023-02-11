@@ -174,6 +174,7 @@ exports.Opcodes = {
  * * APPLICATION_COMMAND_CREATE: applicationCommandCreate (deprecated)
  * * APPLICATION_COMMAND_DELETE: applicationCommandDelete (deprecated)
  * * APPLICATION_COMMAND_UPDATE: applicationCommandUpdate (deprecated)
+ * * APPLICATION_COMMAND_PERMISSIONS_UPDATE applicationCommandPermissionsUpdate
  * * AUTO_MODERATION_ACTION_EXECUTION: autoModerationActionExecution
  * * AUTO_MODERATION_RULE_CREATE: autoModerationRuleCreate
  * * AUTO_MODERATION_RULE_DELETE: autoModerationRuleDelete
@@ -256,6 +257,7 @@ exports.Events = {
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE: 'applicationCommandPermissionsUpdate',
   AUTO_MODERATION_ACTION_EXECUTION: 'autoModerationActionExecution',
   AUTO_MODERATION_RULE_CREATE: 'autoModerationRuleCreate',
   AUTO_MODERATION_RULE_DELETE: 'autoModerationRuleDelete',
@@ -366,6 +368,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * The type of a WebSocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
+ * * APPLICATION_COMMAND_PERMISSIONS_UPDATE applicationCommandPermissionsUpdate
  * * APPLICATION_COMMAND_CREATE (deprecated)
  * * APPLICATION_COMMAND_DELETE (deprecated)
  * * APPLICATION_COMMAND_UPDATE (deprecated)
@@ -428,6 +431,7 @@ exports.WSEvents = keyMirror([
   'APPLICATION_COMMAND_CREATE',
   'APPLICATION_COMMAND_DELETE',
   'APPLICATION_COMMAND_UPDATE',
+  'APPLICATION_COMMAND_PERMISSIONS_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',

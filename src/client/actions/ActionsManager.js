@@ -4,6 +4,7 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(require('./ApplicationCommandPermissionsUpdate'));
     this.register(require('./AutoModerationActionExecution'));
     this.register(require('./AutoModerationRuleCreate'));
     this.register(require('./AutoModerationRuleDelete'));
