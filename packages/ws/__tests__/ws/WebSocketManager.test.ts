@@ -181,10 +181,13 @@ test('strategies', async () => {
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = [0, 1, 2];
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
-
-	const strategy = new MockStrategy();
-	manager.setStrategy(strategy);
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		rest,
+		shardIds,
+		buildStrategy: () => new MockStrategy(),
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
