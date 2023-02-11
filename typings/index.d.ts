@@ -4178,6 +4178,13 @@ export interface ApplicationCommandPermissionData {
   permission: boolean;
 }
 
+export interface ApplicationCommandPermissionsUpdateData { 
+  permissions: ApplicationCommandPermissions;
+  id: Snowflake;
+  guildId: Snowflake;
+  applicationId: Snowflake;
+}
+
 export interface ApplicationCommandPermissions extends ApplicationCommandPermissionData {
   type: ApplicationCommandPermissionType;
 }
@@ -4441,12 +4448,7 @@ export interface ClientEvents extends BaseClientEvents {
   applicationCommandDelete: [command: ApplicationCommand];
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
-  applicationCommandPermissionsUpdate: [data: { 
-    permissions: ApplicationCommandPermissions;
-    id: Snowflake;
-    guildId: Snowflake;
-    applicationId: Snowflake;
-  }];
+  applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
   autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
   autoModerationRuleDelete: [autoModerationRule: AutoModerationRule];
@@ -4725,6 +4727,7 @@ export interface ConstantsEvents {
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE: 'applicationCommandPermissionsUpdate';
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
   AUTO_MODERATION_ACTION_EXECUTION: 'autoModerationActionExecution';
@@ -6433,6 +6436,7 @@ export type WSEventType =
   | 'RESUMED'
   | 'APPLICATION_COMMAND_CREATE'
   | 'APPLICATION_COMMAND_DELETE'
+  | 'APPLICATION_COMMAND_PERMISSIONS_UPDATE'
   | 'APPLICATION_COMMAND_UPDATE'
   | 'GUILD_CREATE'
   | 'GUILD_DELETE'
