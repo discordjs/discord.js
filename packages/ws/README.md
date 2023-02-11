@@ -108,7 +108,7 @@ const manager = new WebSocketManager({
 	rest,
 	shardCount: 6,
 	// This will cause 3 workers to spawn, 2 shards per each
-	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWOrker: 2 }),
+	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
 	// Or maybe you want all your shards under a single worker
 	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }),
 });
@@ -127,7 +127,7 @@ const manager = new WebSocketManager({
 	rest,
 	buildStrategy: (manager) =>
 		new WorkerShardingStrategy(manager, {
-			shardsPerWOrker: 2,
+			shardsPerWorker: 2,
 			workerPath: './worker.js',
 		}),
 });

@@ -76,7 +76,7 @@ export interface OptionalWebSocketManagerOptions {
 	 * @example
 	 * ```ts
 	 * const manager = new WebSocketManager({
-	 * 	token: process.env.DISCORD_TOKEN,
+	 *  token: process.env.DISCORD_TOKEN,
 	 *  intents: 0, // for no intents
 	 *  rest,
 	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),

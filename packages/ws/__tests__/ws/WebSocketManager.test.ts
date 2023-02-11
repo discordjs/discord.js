@@ -177,7 +177,11 @@ test('strategies', async () => {
 		public destroy = vi.fn();
 
 		public send = vi.fn();
+
+		public fetchStatus = vi.fn();
 	}
+
+	const strategy = new MockStrategy();
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = [0, 1, 2];
@@ -186,7 +190,7 @@ test('strategies', async () => {
 		intents: 0,
 		rest,
 		shardIds,
-		buildStrategy: () => new MockStrategy(),
+		buildStrategy: () => strategy,
 	});
 
 	const data: APIGatewayBotInfo = {
