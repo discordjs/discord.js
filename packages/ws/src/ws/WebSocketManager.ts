@@ -11,7 +11,6 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
-import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 
@@ -71,6 +70,20 @@ export interface RequiredWebSocketManagerOptions {
  * Optional additional configuration for the WebSocketManager
  */
 export interface OptionalWebSocketManagerOptions {
+	/**
+	 * Builds the strategy to use for sharding
+	 *
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 * 	token: process.env.DISCORD_TOKEN,
+	 *  intents: 0, // for no intents
+	 *  rest,
+	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
+	 * });
+	 * ```
+	 */
+	buildStrategy(manager: WebSocketManager): IShardingStrategy;
 	/**
 	 * The compression method to use
 	 *
@@ -192,16 +205,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 *
 	 * @defaultValue `SimpleShardingStrategy`
 	 */
-	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
+	private readonly strategy: IShardingStrategy;
 
 	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
-	}
-
-	public setStrategy(strategy: IShardingStrategy) {
-		this.strategy = strategy;
-		return this;
+		this.strategy = this.options.buildStrategy(this);
 	}
 
 	/**

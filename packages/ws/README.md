@@ -107,12 +107,11 @@ const manager = new WebSocketManager({
 	intents: 0,
 	rest,
 	shardCount: 6,
+	// This will cause 3 workers to spawn, 2 shards per each
+	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWOrker: 2 }),
+	// Or maybe you want all your shards under a single worker
+	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }),
 });
-
-// This will cause 3 workers to spawn, 2 shards per each
-manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }));
-// Or maybe you want all your shards under a single worker
-manager.setStrategy(new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }));
 ```
 
 **Note**: By default, this will cause the workers to effectively only be responsible for the WebSocket connection, they simply pass up all the events back to the main process for the manager to emit. If you want to have the workers handle events as well, you can pass in a `workerPath` option to the `WorkerShardingStrategy` constructor:
@@ -126,14 +125,12 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
 	rest,
+	buildStrategy: (manager) =>
+		new WorkerShardingStrategy(manager, {
+			shardsPerWOrker: 2,
+			workerPath: './worker.js',
+		}),
 });
-
-manager.setStrategy(
-	new WorkerShardingStrategy(manager, {
-		shardsPerWorker: 2,
-		workerPath: './worker.js',
-	}),
-);
 ```
 
 And your `worker.ts` file:
