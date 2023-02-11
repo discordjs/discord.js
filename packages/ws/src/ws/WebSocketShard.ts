@@ -163,7 +163,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
-		if ((await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout)) !== null) {
+		const waitPromise = this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
+		if ((await this.bubbleWaitForEventError(waitPromise)) !== null) {
 			return;
 		}
 
@@ -243,8 +244,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 	}
 
-	// returns null on success, or an error (unknown type) on failure
-	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null): Promise<unknown> {
+	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null): Promise<void> {
 		this.debug([`Waiting for event ${event} ${timeoutDuration ? `for ${timeoutDuration}ms` : 'indefinitely'}`]);
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
@@ -252,19 +252,40 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.timeouts.set(event, timeout);
 		}
 
-		try {
-			await once(this, event, { signal: controller.signal });
-			return null;
-			// Destructure since our Error event emits { error: unknown }
-		} catch ({ error }) {
-			if (this.listenerCount(WebSocketShardEvents.Error) === 0 || !this.initialConnectResolved) {
-				throw error;
+		await once(this, event, { signal: controller.signal }).finally(() => {
+			if (timeout) {
+				clearTimeout(timeout);
+				this.timeouts.delete(event);
 			}
+		});
+	}
 
+	/**
+	 * Does special error handling for waitForEvent calls, depending on the current state of the connection lifecycle
+	 * (i.e. whether or not the original connect() call has resolved or if the user has an error listener)
+	 * Returns null on success, or an error (unknown type) on failure
+	 */
+	private async bubbleWaitForEventError(promise: Promise<unknown>): Promise<unknown> {
+		try {
+			await promise;
+			return null;
+		} catch (error) {
 			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
 			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
 			if (error instanceof Error && error.name === 'AbortError') {
 				this.emit(WebSocketShardEvents.Error, { error });
+			}
+
+			// As stated previously, any other error would have been caused by us emitting the error event, which looks
+			// like { error: unknown }
+			// eslint-disable-next-line no-ex-assign
+			error = (error as { error: unknown }).error;
+
+			// If the user has no handling on their end (error event) simply throw.
+			// We also want to throw if we're still in the initial `connect()` call, since that's the only time
+			// the user can catch the error "normally"
+			if (this.listenerCount(WebSocketShardEvents.Error) === 0 || !this.initialConnectResolved) {
+				throw error;
 			}
 
 			// If the error is handled, we can just try to reconnect
@@ -274,12 +295,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
 
-			return error;
-		} finally {
-			if (timeout) {
-				clearTimeout(timeout);
-				this.timeouts.delete(event);
-			}
+			return null;
 		}
 	}
 
@@ -364,7 +380,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		if ((await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout)) !== null) {
+		const waitPromise = this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
+		if ((await this.bubbleWaitForEventError(waitPromise)) !== null) {
 			return;
 		}
 
