@@ -108,6 +108,7 @@ class Permissions extends BitField {
  * * `SEND_MESSAGES_IN_THREADS`
  * * `START_EMBEDDED_ACTIVITIES`
  * * `MODERATE_MEMBERS`
+ * * `VIEW_CREATOR_MONETIZATION_ANALYTICS`
  * @type {Object<string, bigint>}
  * @see {@link https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags}
  */
@@ -156,6 +157,7 @@ Permissions.FLAGS = {
   SEND_MESSAGES_IN_THREADS: 1n << 38n,
   START_EMBEDDED_ACTIVITIES: 1n << 39n,
   MODERATE_MEMBERS: 1n << 40n,
+  VIEW_CREATOR_MONETIZATION_ANALYTICS: 1n << 41n,
 };
 
 /**
