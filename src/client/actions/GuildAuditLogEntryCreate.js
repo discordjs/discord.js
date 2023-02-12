@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const GuildAuditLogsEntry = require('../../structures/GuildAuditLogs').Entry;
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Constants');
 
 class GuildAuditLogEntryCreateAction extends Action {
   handle(data) {
