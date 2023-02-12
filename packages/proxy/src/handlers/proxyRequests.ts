@@ -58,7 +58,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 			} else if (error instanceof Error && error.name === 'AbortError') {
 				populateAbortErrorResponse(res);
 			} else {
-				// Unclear if there's better course of action here for unknown erorrs. Any web framework allows to pass in an error handler for something like this
+				// Unclear if there's better course of action here for unknown errors. Any web framework allows to pass in an error handler for something like this
 				// at which point the user could dictate what to do with the error - otherwise we could just 500
 				throw error;
 			}
