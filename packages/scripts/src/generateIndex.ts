@@ -152,7 +152,7 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	);
 }
 
-export async function generateAllIndicies() {
+export async function generateAllIndices() {
 	for (const pkg of PACKAGES) {
 		const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
 		const versions = await response.body.json();

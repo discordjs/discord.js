@@ -1,5 +1,5 @@
-import { generateAllIndicies } from '@discordjs/scripts';
+import { generateAllIndices } from '@discordjs/scripts';
 
-console.log('Generating all indicies...');
-await generateAllIndicies();
-console.log('Generated all indicies.');
+console.log('Generating all indices...');
+await generateAllIndices();
+console.log('Generated all indices.');
