@@ -580,7 +580,7 @@ export class InteractionResponse<Cached extends boolean = boolean> {
     options?: MessageCollectorOptionsParams<T, Cached>,
   ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
   public delete(): Promise<void>;
-  public edit(options: WebhookMessageEditOptions): Promise<Message>;
+  public edit(options: string | MessagePayload | WebhookMessageEditOptions): Promise<Message>;
   public fetch(): Promise<Message>;
 }
 
