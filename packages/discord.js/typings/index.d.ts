@@ -2703,12 +2703,20 @@ export {
   DeconstructedSnowflake,
 } from '@sapphire/snowflake';
 
-export class StageChannel extends BaseGuildVoiceChannel {
+export class StageChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, true, [
+  'lastPinTimestamp',
+  'lastPinAt',
+]) {
   public topic: string | null;
   public type: ChannelType.GuildStageVoice;
+  public nsfw: boolean;
+  public rateLimitPerUser: number | null;
   public get stageInstance(): StageInstance | null;
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageChannel>;
+  public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
+  public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
+  public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<VoiceChannel>;
 }
 
 export class DirectoryChannel extends BaseChannel {
