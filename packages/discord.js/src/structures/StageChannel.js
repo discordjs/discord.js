@@ -99,11 +99,11 @@ class StageChannel extends BaseGuildVoiceChannel {
    * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @param {string} [reason] Reason for changing the channel's bitrate
-   * @returns {Promise<VoiceChannel>}
+   * @returns {Promise<StageChannel>}
    * @example
-   * // Set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48_000)
-   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
+   * // Set the bitrate of a stage channel
+   * stageChannel.setBitrate(48_000)
+   *   .then(sc => console.log(`Set bitrate to ${sc.bitrate}bps for ${sc.name}`))
    *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
@@ -114,11 +114,11 @@ class StageChannel extends BaseGuildVoiceChannel {
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
    * @param {string} [reason] Reason for changing the user limit
-   * @returns {Promise<VoiceChannel>}
+   * @returns {Promise<StageChannel>}
    * @example
-   * // Set the user limit of a voice channel
-   * voiceChannel.setUserLimit(42)
-   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   * // Set the user limit of a stage channel
+   * stageChannel.setUserLimit(42)
+   *   .then(sc => console.log(`Set user limit to ${sc.userLimit} for ${sc.name}`))
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
@@ -129,7 +129,7 @@ class StageChannel extends BaseGuildVoiceChannel {
    * Sets the camera video quality mode of the channel.
    * @param {VideoQualityMode} videoQualityMode The new camera video quality mode.
    * @param {string} [reason] Reason for changing the camera video quality mode.
-   * @returns {Promise<VoiceChannel>}
+   * @returns {Promise<StageChannel>}
    */
   setVideoQualityMode(videoQualityMode, reason) {
     return this.edit({ videoQualityMode, reason });
