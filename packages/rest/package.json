@@ -60,7 +60,7 @@
 		"discord-api-types": "^0.37.27",
 		"file-type": "^18.1.0",
 		"tslib": "^2.4.1",
-		"undici": "^5.15.0"
+		"undici": "^5.19.1"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
