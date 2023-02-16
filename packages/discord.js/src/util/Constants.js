@@ -66,6 +66,7 @@ exports.NonSystemMessageTypes = [
  * * NewsChannel
  * * ThreadChannel
  * * VoiceChannel
+ * * StageChannel
  * @typedef {TextChannel|NewsChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
  */
 
