@@ -4178,7 +4178,7 @@ export interface ApplicationCommandPermissionData {
   permission: boolean;
 }
 
-export interface ApplicationCommandPermissionsUpdateData { 
+export interface ApplicationCommandPermissionsUpdateData {
   permissions: ApplicationCommandPermissions;
   id: Snowflake;
   guildId: Snowflake;
