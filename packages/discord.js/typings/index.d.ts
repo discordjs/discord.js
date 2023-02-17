@@ -1988,7 +1988,7 @@ export class AttachmentBuilder {
 
 export class Attachment {
   private constructor(data: APIAttachment);
-  public attachment: BufferResolvable | Stream;
+  private attachment: BufferResolvable | Stream;
   public contentType: string | null;
   public description: string | null;
   public ephemeral: boolean;
