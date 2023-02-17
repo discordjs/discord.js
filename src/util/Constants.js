@@ -1514,7 +1514,7 @@ function createEnum(keys) {
  * The type of an {@link ApplicationCommandPermissions} object.
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
- * @property {Object{ApplicationRoleConnectionMetadataType, number}} ApplicationRoleConnectionMetadataTypes
+ * @property {Object<ApplicationRoleConnectionMetadataType, number>} ApplicationRoleConnectionMetadataTypes
  * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
  * of content which can trigger the rule.
  * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
