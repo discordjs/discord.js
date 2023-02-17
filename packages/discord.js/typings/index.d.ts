@@ -1921,6 +1921,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public position: number | null;
+  public roleSubscriptionData: RoleSubscriptionData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
@@ -2155,6 +2156,7 @@ export class MessageReaction {
   public remove(): Promise<MessageReaction>;
   public fetch(): Promise<MessageReaction>;
   public toJSON(): unknown;
+  public valueOf(): Snowflake | string;
 }
 
 export interface ModalComponentData {
@@ -6016,6 +6018,13 @@ export interface RolePosition {
 
 export type RoleResolvable = Role | Snowflake;
 
+export interface RoleSubscriptionData {
+  roleSubscriptionListingId: Snowflake;
+  tierName: string;
+  totalMonthsSubscribed: number;
+  isRenewal: boolean;
+}
+
 export interface RoleTagData {
   botId?: Snowflake;
   integrationId?: Snowflake;
@@ -6133,7 +6142,8 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | ForumChannel
+  // TODO: Remove stage channel upon implementation of text-in-stage.
+  PartialGroupDMChannel | ForumChannel | StageChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
