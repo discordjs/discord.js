@@ -468,7 +468,7 @@ class ThreadChannel extends Channel {
    * Set the applied tags for this channel (only applicable to forum threads)
    * @param {Snowflake[]} appliedTags The tags to set for this channel
    * @param {string} [reason] Reason for changing the thread's applied tags
-   * @returns {Promise<GuildForumThreadChannel>}
+   * @returns {Promise<ThreadChannel>}
    */
   setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags }, reason);

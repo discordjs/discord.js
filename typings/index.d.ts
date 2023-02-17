@@ -6353,7 +6353,6 @@ export interface ThreadEditData {
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
-  threadName?: string;
   appliedTags?: Snowflake[];
   flags?: ChannelFlagsResolvable;
 }
@@ -6434,6 +6433,7 @@ export interface WebhookMessageOptions extends Omit<MessageOptions, 'reply' | 's
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
+  threadName?: string;
 }
 
 export type WebhookType = keyof typeof WebhookTypes;
