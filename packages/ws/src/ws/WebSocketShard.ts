@@ -542,7 +542,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.UnknownError: {
-				this.debug([`An unknown error occured: ${code}`]);
+				this.debug([`An unknown error occurred: ${code}`]);
 				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
 			}
 

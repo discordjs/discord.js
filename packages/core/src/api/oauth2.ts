@@ -39,6 +39,7 @@ export class OAuth2API {
 	public async tokenExchange(options: RESTPostOAuth2AccessTokenURLEncodedData) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(options),
+			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
@@ -54,6 +55,7 @@ export class OAuth2API {
 	public async refreshToken(options: RESTPostOAuth2RefreshTokenURLEncodedData) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(options),
+			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
@@ -71,6 +73,7 @@ export class OAuth2API {
 	public async getToken(options: RESTPostOAuth2ClientCredentialsURLEncodedData) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(options),
+			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},

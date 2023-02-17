@@ -12,7 +12,7 @@ const { GuildMember } = require('../structures/GuildMember');
 let deprecationEmittedForDeleteMessageDays = false;
 
 /**
- * Manages API methods for GuildBans and stores their cache.
+ * Manages API methods for guild bans and stores their cache.
  * @extends {CachedManager}
  */
 class GuildBanManager extends CachedManager {

@@ -11,6 +11,7 @@
  * @property {string} ClientReady ready
  * @property {string} Debug debug
  * @property {string} Error error
+ * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
  * @property {string} GuildBanAdd guildBanAdd
  * @property {string} GuildBanRemove guildBanRemove
  * @property {string} GuildCreate guildCreate
@@ -91,6 +92,7 @@ module.exports = {
   ClientReady: 'ready',
   Debug: 'debug',
   Error: 'error',
+  GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildBanAdd: 'guildBanAdd',
   GuildBanRemove: 'guildBanRemove',
   GuildCreate: 'guildCreate',
