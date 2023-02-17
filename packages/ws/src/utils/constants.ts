@@ -19,7 +19,7 @@ export enum CompressionMethod {
 	ZlibStream = 'zlib-stream',
 }
 
-export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]`;
+export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
 
