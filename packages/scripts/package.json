@@ -50,7 +50,7 @@
 		"commander": "^9.5.0",
 		"fs-extra": "^11.1.0",
 		"tslib": "^2.4.1",
-		"undici": "^5.15.0",
+		"undici": "^5.19.1",
 		"yaml": "^2.2.1"
 	},
 	"devDependencies": {

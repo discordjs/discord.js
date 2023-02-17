@@ -6133,7 +6133,8 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | ForumChannel
+  // TODO: Remove stage channel upon implementation of text-in-stage.
+  PartialGroupDMChannel | ForumChannel | StageChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
