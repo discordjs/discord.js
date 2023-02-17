@@ -127,7 +127,7 @@ class BitField {
    * @returns {string[]}
    */
   toArray(...hasParams) {
-    return Object.keys(this.constructor.Flags).filter(bit => this.has(bit, ...hasParams));
+    return [...this[Symbol.iterator](...hasParams)];
   }
 
   toJSON() {
@@ -138,8 +138,10 @@ class BitField {
     return this.bitfield;
   }
 
-  *[Symbol.iterator]() {
-    yield* this.toArray();
+  *[Symbol.iterator](...hasParams) {
+    for (const bitName of Object.keys(this.constructor.Flags)) {
+      if (this.has(bitName, ...hasParams)) yield bitName;
+    }
   }
 
   /**

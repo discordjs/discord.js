@@ -4,7 +4,7 @@
 	"description": "Implementation of the Discord Voice API for node.js",
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "jest --coverage",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
@@ -54,7 +54,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@types/ws": "^8.5.4",
-		"discord-api-types": "^0.37.27",
+		"discord-api-types": "^0.37.35",
 		"prism-media": "^1.3.4",
 		"tslib": "^2.4.1",
 		"ws": "^8.12.0"

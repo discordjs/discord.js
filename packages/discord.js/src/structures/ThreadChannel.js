@@ -46,6 +46,8 @@ class ThreadChannel extends BaseChannel {
   _patch(data, partial = false) {
     super._patch(data);
 
+    if ('message' in data) this.messages._add(data.message);
+
     if ('name' in data) {
       /**
        * The name of the thread

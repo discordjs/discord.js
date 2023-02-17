@@ -5,7 +5,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
@@ -58,7 +58,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"tslib": "^2.4.1",
-		"undici": "^5.15.0"
+		"undici": "^5.19.1"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",

@@ -5,7 +5,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"docs": "yarn build:docs && api-extractor run --local",
@@ -59,7 +59,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "^0.37.27"
+		"discord-api-types": "^0.37.35"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",

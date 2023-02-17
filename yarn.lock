@@ -2064,7 +2064,7 @@ __metadata:
     "@types/node": 16.18.11
     "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     downlevel-dts: ^0.11.0
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
@@ -2114,7 +2114,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.27.1
     "@vladfrangu/async_event_emitter": ^2.1.3
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2177,7 +2177,7 @@ __metadata:
     "@types/node": 16.18.11
     "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2255,7 +2255,7 @@ __metadata:
     "@types/node": 18.11.18
     "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2305,7 +2305,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.15.0
+    undici: ^5.19.1
     vitest: ^0.27.1
   languageName: unknown
   linkType: soft
@@ -2323,7 +2323,7 @@ __metadata:
     "@types/node": 16.18.11
     "@vitest/coverage-c8": ^0.27.1
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2333,7 +2333,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.15.0
+    undici: ^5.19.1
     vitest: ^0.27.1
   languageName: unknown
   linkType: soft
@@ -2359,7 +2359,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.15.0
+    undici: ^5.19.1
     vitest: ^0.27.1
     yaml: ^2.2.1
   languageName: unknown
@@ -2427,7 +2427,7 @@ __metadata:
     "@types/node": 16.18.11
     "@types/ws": ^8.5.4
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2518,7 +2518,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.27.1
     "@vladfrangu/async_event_emitter": ^2.1.3
     cross-env: ^7.0.3
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     esbuild-plugin-version-injector: ^1.0.2
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2528,7 +2528,7 @@ __metadata:
     tslib: ^2.4.1
     tsup: ^6.5.0
     typescript: ^4.9.4
-    undici: ^5.15.0
+    undici: ^5.19.1
     vitest: ^0.27.1
     ws: ^8.12.0
     zlib-sync: ^0.1.7
@@ -8436,10 +8436,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.37.27":
-  version: 0.37.27
-  resolution: "discord-api-types@npm:0.37.27"
-  checksum: f3c404db151862871686008a1e7902f22e2147b391840f9184568d5bc54593babac567fed90bd4831a6b793bd84c424172b081af36badbf950ea0e6fcd5d2e8a
+"discord-api-types@npm:^0.37.35":
+  version: 0.37.35
+  resolution: "discord-api-types@npm:0.37.35"
+  checksum: 0a65234eefb9675c6faf82f42be6b0a4ee75bf8b2c901eecefea6ca539cd4e2a501b7fc195415884912fdb5040c98727dbd0c5a1f6bc15951948be37d1be162b
   languageName: node
   linkType: hard
 
@@ -8457,7 +8457,7 @@ __metadata:
     "@sapphire/snowflake": ^3.4.0
     "@types/node": 16.18.11
     "@types/ws": ^8.5.4
-    discord-api-types: ^0.37.27
+    discord-api-types: ^0.37.35
     dtslint: ^4.2.1
     eslint: ^8.31.0
     eslint-formatter-pretty: ^4.1.0
@@ -8469,7 +8469,7 @@ __metadata:
     tslib: ^2.4.1
     tslint: ^6.1.3
     typescript: ^4.9.4
-    undici: ^5.15.0
+    undici: ^5.19.1
     ws: ^8.12.0
   languageName: unknown
   linkType: soft
@@ -20335,12 +20335,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.12.0, undici@npm:^5.15.0":
-  version: 5.15.0
-  resolution: "undici@npm:5.15.0"
+"undici@npm:^5.12.0, undici@npm:^5.19.1":
+  version: 5.19.1
+  resolution: "undici@npm:5.19.1"
   dependencies:
     busboy: ^1.6.0
-  checksum: cdc03ceff8d2b76a5ae08dc48d0b9d44dcb970f6e89e8a3cfe7031b9351dd3c90b223c143565c153a5f1165cd573aae1b128e6b9f557b4af4eb36da337a2a345
+  checksum: 57ee94ee74d944faa41dbcb2faf4e0c90069708d3aaae860185884e51376b5d457728352a8396d69a3c9cb752b62ff99a19a664c5aacb7ee61cc488af499a01c
   languageName: node
   linkType: hard
 

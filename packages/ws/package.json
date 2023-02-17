@@ -5,7 +5,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"docs": "yarn build:docs && api-extractor run --local",
@@ -65,7 +65,7 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.4",
 		"@vladfrangu/async_event_emitter": "^2.1.3",
-		"discord-api-types": "^0.37.27",
+		"discord-api-types": "^0.37.35",
 		"tslib": "^2.4.1",
 		"ws": "^8.12.0"
 	},
@@ -83,7 +83,7 @@
 		"prettier": "^2.8.2",
 		"tsup": "^6.5.0",
 		"typescript": "^4.9.4",
-		"undici": "^5.15.0",
+		"undici": "^5.19.1",
 		"vitest": "^0.27.1",
 		"zlib-sync": "^0.1.7"
 	},

@@ -1,5 +1,7 @@
 'use strict';
 
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
+
 /**
  * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.
  */
@@ -15,7 +17,7 @@ class AutoModerationActionExecution {
      * The action that was executed.
      * @type {AutoModerationAction}
      */
-    this.action = data.action;
+    this.action = _transformAPIAutoModerationAction(data.action);
 
     /**
      * The id of the auto moderation rule this action belongs to.
@@ -43,8 +45,8 @@ class AutoModerationActionExecution {
 
     /**
      * The id of the message that triggered this action.
-     * @type {?Snowflake}
      * <info>This will not be present if the message was blocked or the content was not part of any message.</info>
+     * @type {?Snowflake}
      */
     this.messageId = data.message_id ?? null;
 
