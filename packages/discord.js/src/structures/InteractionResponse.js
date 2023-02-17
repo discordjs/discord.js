@@ -72,7 +72,7 @@ class InteractionResponse {
   }
 
   /**
-   * Fetches the response as a Message object.
+   * Fetches the response as a {@link Message} object.
    * @returns {Promise<Message>}
    */
   fetch() {
