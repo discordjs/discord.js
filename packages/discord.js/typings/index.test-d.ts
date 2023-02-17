@@ -2138,3 +2138,8 @@ if (anySelectMenu.isStringSelectMenu()) {
 } else if (anySelectMenu.isMentionableSelectMenu()) {
   expectType<MentionableSelectMenuInteraction>(anySelectMenu);
 }
+
+client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
+  expectType<GuildAuditLogsEntry>(auditLogEntry);
+  expectType<Guild>(guild);
+});
