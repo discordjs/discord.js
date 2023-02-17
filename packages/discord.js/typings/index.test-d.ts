@@ -1526,17 +1526,29 @@ declare const guildBanManager: GuildBanManager;
   guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
 }
 
+declare const threadMemberWithGuildMember: ThreadMember<true>;
 declare const threadMemberManager: ThreadMemberManager;
 {
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false }));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', force: true }));
-  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false, force: true }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: threadMemberWithGuildMember }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: '12345678901234567', withMember: true }));
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
-  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({ cache: true }));
+
+  expectType<Promise<Collection<Snowflake, ThreadMember<true>>>>(
+    threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
+  );
+
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
+    threadMemberManager.fetch({ cache: true, withMember: false }),
+  );
+
   // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
   threadMemberManager.fetch({ cache: true, force: false });
+  // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
+  threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
 }
 
 declare const typing: Typing;
