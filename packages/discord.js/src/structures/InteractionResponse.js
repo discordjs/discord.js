@@ -88,6 +88,7 @@ class InteractionResponse {
   }
 
   /**
+   * Edits the response.
    * @param {string|MessagePayload|WebhookMessageEditOptions} options The new options for the response.
    * @returns {Promise<Message>}
    */
