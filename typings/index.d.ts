@@ -5406,7 +5406,7 @@ export interface GuildMemberEditData {
   flags?: GuildMemberFlagsResolvable;
 }
 
-export type GuildMemberFlagsString = 'DID_REJOIN' | 'COMPLETED_ONBOARDING'| 'BYPASSES_VERIFICATION'| 'STARTED_ONBOARDING';
+export type GuildMemberFlagsString = 'DID_REJOIN' | 'COMPLETED_ONBOARDING' | 'BYPASSES_VERIFICATION' | 'STARTED_ONBOARDING';
 
 export type GuildMemberFlagsResolvable = BitFieldResolvable<GuildMemberFlagsString, number>;
 
@@ -6493,6 +6493,10 @@ export type WSEventType =
   | 'APPLICATION_COMMAND_DELETE'
   | 'APPLICATION_COMMAND_PERMISSIONS_UPDATE'
   | 'APPLICATION_COMMAND_UPDATE'
+  | 'AUTO_MODERATION_ACTION_EXECUTION'
+  | 'AUTO_MODERATION_RULE_CREATE'
+  | 'AUTO_MODERATION_RULE_DELETE'
+  | 'AUTO_MODERATION_RULE_UPDATE'
   | 'GUILD_CREATE'
   | 'GUILD_DELETE'
   | 'GUILD_UPDATE'
