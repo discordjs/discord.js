@@ -2,6 +2,9 @@
 
 const { ApplicationRoleConnectionMetadataTypes } = require('../util/Constants');
 
+/**
+ * Represents metadata for an application's role connection.
+ */
 class ApplicationRoleConnectionMetadata {
   constructor(data) {
     /**
