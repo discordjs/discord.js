@@ -19,7 +19,7 @@ class GuildAuditLogEntryCreateAction extends Action {
        * @param {GuildAuditLogsEntry} auditLogEntry The entry that was created
        * @param {Guild} guild The guild where the entry was created
        */
-      client.emit(Events.GuildAuditLogEntryCreate, auditLogEntry, guild);
+      client.emit(Events.GUILD_AUDIT_LOG_ENTRY_CREATE, auditLogEntry, guild);
     }
 
     return { auditLogEntry };
