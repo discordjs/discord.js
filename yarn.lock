@@ -20335,16 +20335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.12.0":
-  version: 5.15.0
-  resolution: "undici@npm:5.15.0"
-  dependencies:
-    busboy: ^1.6.0
-  checksum: cdc03ceff8d2b76a5ae08dc48d0b9d44dcb970f6e89e8a3cfe7031b9351dd3c90b223c143565c153a5f1165cd573aae1b128e6b9f557b4af4eb36da337a2a345
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.19.1":
+"undici@npm:^5.12.0, undici@npm:^5.19.1":
   version: 5.19.1
   resolution: "undici@npm:5.19.1"
   dependencies:
