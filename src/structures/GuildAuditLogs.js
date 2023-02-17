@@ -241,7 +241,7 @@ class GuildAuditLogs {
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(this, guild, item);
+      const entry = new GuildAuditLogsEntry(guild, item, this);
       this.entries.set(entry.id, entry);
     }
   }
@@ -403,7 +403,7 @@ class GuildAuditLogs {
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
-  constructor(logs, guild, data) {
+  constructor(guild, data, logs) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
@@ -430,13 +430,19 @@ class GuildAuditLogsEntry {
     this.reason = data.reason ?? null;
 
     /**
+     * The id of the user that executed this entry
+     * @type {?Snowflake}
+     */
+    this.executorId = data.user_id;
+
+    /**
      * The user that executed this entry
      * @type {?User}
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(PartialTypes.USER)
         ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id)
+        : guild.client.users.cache.get(data.user_id) ?? null
       : null;
 
     /**
@@ -543,6 +549,12 @@ class GuildAuditLogsEntry {
     }
 
     /**
+     * The id of the target of this entry
+     * @type {?Snowflake}
+     */
+    this.targetId = data.target_id;
+
+    /**
      * The target of this entry
      * @type {?AuditLogEntryTarget}
      */
@@ -557,12 +569,12 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.USER && data.target_id) {
       this.target = guild.client.options.partials.includes(PartialTypes.USER)
         ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id);
+        : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.GUILD) {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target =
-        logs.webhooks.get(data.target_id) ??
+        logs?.webhooks.get(data.target_id) ??
         new Webhook(
           guild.client,
           this.changes.reduce(
@@ -597,10 +609,10 @@ class GuildAuditLogsEntry {
       this.target =
         data.action_type === Actions.MESSAGE_BULK_DELETE
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id);
+          : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.INTEGRATION) {
       this.target =
-        logs.integrations.get(data.target_id) ??
+        logs?.integrations.get(data.target_id) ??
         new Integration(
           guild.client,
           this.changes.reduce(

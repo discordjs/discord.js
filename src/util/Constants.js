@@ -246,6 +246,7 @@ exports.Opcodes = {
  * * GUILD_SCHEDULED_EVENT_DELETE: guildScheduledEventDelete
  * * GUILD_SCHEDULED_EVENT_USER_ADD: guildScheduledEventUserAdd
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE: guildScheduledEventUserRemove
+ * * GUILD_AUDIT_LOG_ENTRY_CREATE: guildAuditLogEntryCreate
  * @typedef {Object<string, string>} Events
  */
 exports.Events = {
@@ -329,6 +330,7 @@ exports.Events = {
   GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
   GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd',
   GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove',
+  GUILD_AUDIT_LOG_ENTRY_CREATE: 'guildAuditLogEntryCreate',
 };
 
 /**
@@ -426,6 +428,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_DELETE
  * * GUILD_SCHEDULED_EVENT_USER_ADD
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE
+ * * GUILD_AUDIT_LOG_ENTRY_CREATE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -490,6 +493,7 @@ exports.WSEvents = keyMirror([
   'GUILD_SCHEDULED_EVENT_DELETE',
   'GUILD_SCHEDULED_EVENT_USER_ADD',
   'GUILD_SCHEDULED_EVENT_USER_REMOVE',
+  'GUILD_AUDIT_LOG_ENTRY_CREATE',
 ]);
 
 /**

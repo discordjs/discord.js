@@ -1105,16 +1105,18 @@ export class GuildAuditLogsEntry<
     ? GuildAuditLogsTypes[TAction][0]
     : 'UNKNOWN',
 > {
-  private constructor(logs: GuildAuditLogs, guild: Guild, data: RawGuildAuditLogEntryData);
+  private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
   public action: TAction;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
+  public executorId: Snowflake | null;
   public executor: User | null;
   public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
+  public targetId: Snowflake | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
     ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
@@ -4581,6 +4583,7 @@ export interface ClientEvents extends BaseClientEvents {
   guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent, user: User];
+  guildAuditLogEntryCreate: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
 }
 
 export interface ClientFetchInviteOptions {
@@ -4844,6 +4847,7 @@ export interface ConstantsEvents {
   GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete';
   GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd';
   GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove';
+  GUILD_AUDIT_LOG_ENTRY_CREATE: 'guildAuditLogEntryCreate';
 }
 
 export interface ConstantsOpcodes {
