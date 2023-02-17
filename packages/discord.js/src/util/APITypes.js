@@ -274,6 +274,11 @@
  */
 
 /**
+ * @external GuildMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildMemberFlags}
+ */
+
+/**
  * @external GuildNSFWLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildNSFWLevel}
  */
