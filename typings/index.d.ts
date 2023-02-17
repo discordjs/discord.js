@@ -4178,6 +4178,13 @@ export interface ApplicationCommandPermissionData {
   permission: boolean;
 }
 
+export interface ApplicationCommandPermissionsUpdateData {
+  permissions: ApplicationCommandPermissions;
+  id: Snowflake;
+  guildId: Snowflake;
+  applicationId: Snowflake;
+}
+
 export interface ApplicationCommandPermissions extends ApplicationCommandPermissionData {
   type: ApplicationCommandPermissionType;
 }
@@ -4441,6 +4448,7 @@ export interface ClientEvents extends BaseClientEvents {
   applicationCommandDelete: [command: ApplicationCommand];
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
+  applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
   autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
   autoModerationRuleDelete: [autoModerationRule: AutoModerationRule];
@@ -4719,6 +4727,7 @@ export interface ConstantsEvents {
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE: 'applicationCommandPermissionsUpdate';
   /** @deprecated See [this issue](https://github.com/discord/discord-api-docs/issues/3690) for more information. */
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
   AUTO_MODERATION_ACTION_EXECUTION: 'autoModerationActionExecution';
@@ -5081,6 +5090,7 @@ interface GuildAuditLogsTypes {
   THREAD_CREATE: ['THREAD', 'CREATE'];
   THREAD_UPDATE: ['THREAD', 'UPDATE'];
   THREAD_DELETE: ['THREAD', 'DELETE'];
+  APPLICATION_COMMAND_PERMISSION_UPDATE: ['APPLICATION_COMMAND_PERMISSION', 'UPDATE'];
   AUTO_MODERATION_RULE_CREATE: ['AUTO_MODERATION', 'CREATE'];
   AUTO_MODERATION_RULE_UPDATE: ['AUTO_MODERATION', 'UPDATE'];
   AUTO_MODERATION_RULE_DELETE: ['AUTO_MODERATION', 'DELETE'];
@@ -5137,6 +5147,7 @@ export interface GuildAuditLogsIds {
   110: 'THREAD_CREATE';
   111: 'THREAD_UPDATE';
   112: 'THREAD_DELETE';
+  121: 'APPLICATION_COMMAND_PERMISSION_UPDATE';
   140: 'AUTO_MODERATION_RULE_CREATE';
   141: 'AUTO_MODERATION_RULE_UPDATE';
   142: 'AUTO_MODERATION_RULE_DELETE';
@@ -5177,6 +5188,9 @@ export interface GuildAuditLogsEntryExtraField {
   STAGE_INSTANCE_CREATE: StageChannel | { id: Snowflake };
   STAGE_INSTANCE_DELETE: StageChannel | { id: Snowflake };
   STAGE_INSTANCE_UPDATE: StageChannel | { id: Snowflake };
+  APPLICATION_COMMAND_PERMISSION_UPDATE: {
+    applicationId: Snowflake;
+  };
   AUTO_MODERATION_BLOCK_MESSAGE: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AutoModerationRuleTriggerType;
@@ -5203,6 +5217,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   STAGE_INSTANCE: StageInstance;
   STICKER: Sticker;
   GUILD_SCHEDULED_EVENT: GuildScheduledEvent;
+  APPLICATION_COMMAND: ApplicationCommand | { id: Snowflake };
   AUTO_MODERATION: AutoModerationRule;
 }
 
@@ -6421,6 +6436,7 @@ export type WSEventType =
   | 'RESUMED'
   | 'APPLICATION_COMMAND_CREATE'
   | 'APPLICATION_COMMAND_DELETE'
+  | 'APPLICATION_COMMAND_PERMISSIONS_UPDATE'
   | 'APPLICATION_COMMAND_UPDATE'
   | 'GUILD_CREATE'
   | 'GUILD_DELETE'
