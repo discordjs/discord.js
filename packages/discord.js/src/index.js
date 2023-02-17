@@ -28,6 +28,7 @@ exports.Colors = require('./util/Colors');
 exports.DataResolver = require('./util/DataResolver');
 exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
+exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField').GuildMemberFlagsBitField;
 exports.IntentsBitField = require('./util/IntentsBitField');
 exports.LimitedCollection = require('./util/LimitedCollection');
 exports.MessageFlagsBitField = require('./util/MessageFlagsBitField');

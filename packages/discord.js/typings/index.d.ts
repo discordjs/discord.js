@@ -154,6 +154,7 @@ import {
   ApplicationRoleConnectionMetadataType,
   APIApplicationRoleConnectionMetadata,
   ImageFormat,
+  GuildMemberFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1474,6 +1475,15 @@ export class GuildEmoji extends BaseGuildEmoji {
   public setName(name: string, reason?: string): Promise<GuildEmoji>;
 }
 
+export type GuildMemberFlagsString = keyof typeof GuildMemberFlags;
+
+export type GuildMemberFlagsResolvable = BitFieldResolvable<GuildMemberFlagsString, number>;
+
+export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
+  public static Flags: GuildMemberFlags;
+  public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
+}
+
 export class GuildMember extends PartialTextBasedChannel(Base) {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   public avatar: string | null;
@@ -1487,6 +1497,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
+  public flags: Readonly<GuildMemberFlagsBitField>;
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public get kickable(): boolean;
@@ -1516,6 +1527,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   };
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
+  public setFlags(flags: GuildMemberFlagsResolvable, reason?: string): Promise<GuildMember>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
   public toJSON(): unknown;
   public toString(): UserMention;
@@ -5482,6 +5494,7 @@ export interface GuildMemberEditOptions {
   deaf?: boolean;
   channel?: GuildVoiceChannelResolvable | null;
   communicationDisabledUntil?: DateResolvable | null;
+  flags?: GuildMemberFlagsResolvable;
   reason?: string;
 }
 
