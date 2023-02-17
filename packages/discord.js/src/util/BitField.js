@@ -65,10 +65,10 @@ class BitField {
    * Gets all given bits that are missing from the bitfield.
    * @param {BitFieldResolvable} bits Bit(s) to check for
    * @param {...*} hasParams Additional parameters for the has method, if any
-   * @returns {string[]}
+   * @returns {(number|bigint)[]}
    */
   missing(bits, ...hasParams) {
-    return new this.constructor(bits).remove(this).toArray(...hasParams);
+    return [...new this.constructor(bits).remove(this)[Symbol.iterator](...hasParams)];
   }
 
   /**
@@ -121,15 +121,6 @@ class BitField {
     return serialized;
   }
 
-  /**
-   * Gets an {@link Array} of bitfield names based on the bits available.
-   * @param {...*} hasParams Additional parameters for the has method, if any
-   * @returns {string[]}
-   */
-  toArray(...hasParams) {
-    return Object.keys(this.constructor.Flags).filter(bit => this.has(bit, ...hasParams));
-  }
-
   toJSON() {
     return typeof this.bitfield === 'number' ? this.bitfield : this.bitfield.toString();
   }
@@ -138,8 +129,15 @@ class BitField {
     return this.bitfield;
   }
 
-  *[Symbol.iterator]() {
-    yield* this.toArray();
+  /**
+   * Allows bit fields to be consumed with for-of loops
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of}
+   */
+  *[Symbol.iterator](...hasParams) {
+    const one = typeof this.bitfield === 'number' ? 1 : 1n;
+    for (let bit = one; bit <= this.bitfield; bit <<= one) {
+      if (this.has(bit, ...hasParams)) yield bit;
+    }
   }
 
   /**
