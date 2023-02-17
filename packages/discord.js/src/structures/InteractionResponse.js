@@ -70,6 +70,31 @@ class InteractionResponse {
       interactionType: InteractionType.MessageComponent,
     });
   }
+
+  /**
+   * Fetches the response as a {@link Message} object.
+   * @returns {Promise<Message>}
+   */
+  fetch() {
+    return this.interaction.fetchReply();
+  }
+
+  /**
+   * Deletes the response.
+   * @returns {Promise<void>}
+   */
+  delete() {
+    return this.interaction.deleteReply();
+  }
+
+  /**
+   * Edits the response.
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The new options for the response.
+   * @returns {Promise<Message>}
+   */
+  edit(options) {
+    return this.interaction.editReply(options);
+  }
 }
 
 // eslint-disable-next-line import/order

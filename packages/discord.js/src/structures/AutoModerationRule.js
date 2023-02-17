@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
  * Represents an auto moderation rule.
@@ -101,13 +102,7 @@ class AutoModerationRule extends Base {
        * The actions of this auto moderation rule.
        * @type {AutoModerationAction[]}
        */
-      this.actions = data.actions.map(action => ({
-        type: action.type,
-        metadata: {
-          durationSeconds: action.metadata.duration_seconds ?? null,
-          channelId: action.metadata.channel_id ?? null,
-        },
-      }));
+      this.actions = data.actions.map(action => _transformAPIAutoModerationAction(action));
     }
 
     if ('enabled' in data) {

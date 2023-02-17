@@ -158,6 +158,7 @@ import {
   AutoModerationRuleManager,
   PrivateThreadChannel,
   PublicThreadChannel,
+  GuildMemberFlagsBitField,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2150,3 +2151,10 @@ if (anySelectMenu.isStringSelectMenu()) {
 } else if (anySelectMenu.isMentionableSelectMenu()) {
   expectType<MentionableSelectMenuInteraction>(anySelectMenu);
 }
+
+client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
+  expectType<GuildAuditLogsEntry>(auditLogEntry);
+  expectType<Guild>(guild);
+});
+
+expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
