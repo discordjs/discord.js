@@ -4,6 +4,7 @@ import { chdir } from 'node:process';
 import { copy } from 'fs-extra';
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 import cliffJumperJSON from './template/.cliff-jumperrc.json';
+import apiExtractorJSON from './template/api-extractor.json';
 import templateJSON from './template/template.package.json';
 
 interface LabelerData {
@@ -52,6 +53,15 @@ export async function createPackage(packageName: string, packageDescription?: st
 
 	await writeFile('.cliff-jumperrc.json', JSON.stringify(newCliffJumperJSON, null, 2));
 
+	// Update api-extractor.json
+	const newApiExtractorJSON = { ...apiExtractorJSON };
+	newApiExtractorJSON.docModel.projectFolderUrl = newApiExtractorJSON.docModel.projectFolderUrl.replace(
+		'{name}',
+		packageName,
+	);
+
+	await writeFile('api-extractor.json', JSON.stringify(newApiExtractorJSON, null, 2));
+
 	// Move to github directory
 	chdir(join('..', '..', '.github'));
 
@@ -71,6 +81,13 @@ export async function createPackage(packageName: string, packageDescription?: st
 	}
 
 	await writeFile('labeler.yml', stringifyYAML(sortedLabelerYAML));
+
+	const issueLabelerYAML = parseYAML(await readFile('issue-labeler.yml', 'utf8')) as Record<string, string[]>;
+	issueLabelerYAML[`packages:${packageName}`] = [
+		`### Which package is this (bug report|feature request) for\\?\\n\\n${packageName}`,
+	];
+
+	await writeFile('issue-labeler.yml', stringifyYAML(issueLabelerYAML));
 
 	// Move back to root
 	chdir('..');

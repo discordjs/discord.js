@@ -1,4 +1,5 @@
 import { ApiItemKind } from '@microsoft/api-extractor-model';
+import { VscFileCode } from '@react-icons/all-files/vsc/VscFileCode';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
@@ -24,12 +25,23 @@ function generateIcon(kind: ApiItemKind) {
 	}
 }
 
-export function Header({ kind, name }: PropsWithChildren<{ kind: ApiItemKind; name: string }>) {
+export function Header({
+	kind,
+	name,
+	sourceURL,
+}: PropsWithChildren<{ kind: ApiItemKind; name: string; sourceURL?: string | undefined }>) {
 	return (
 		<div className="flex flex-col">
-			<h2 className="flex flex-row place-items-center gap-2 break-all text-2xl font-bold">
-				<span>{generateIcon(kind)}</span>
-				{name}
+			<h2 className="flex flex-row place-items-center justify-between gap-2 break-all text-2xl font-bold">
+				<span className="row flex flex place-items-center gap-2">
+					<span>{generateIcon(kind)}</span>
+					{name}
+				</span>
+				{sourceURL ? (
+					<a className="text-blurple" href={sourceURL}>
+						<VscFileCode />
+					</a>
+				) : null}
 			</h2>
 		</div>
 	);

@@ -15,7 +15,7 @@ class SelectMenuComponent extends StringSelectMenuComponent {
 
     if (!deprecationEmitted) {
       process.emitWarning(
-        'The SelectMenuComponent class is deprecated, use StringSelectMenuComponent instead.',
+        'The SelectMenuComponent class is deprecated. Use StringSelectMenuComponent instead.',
         'DeprecationWarning',
       );
       deprecationEmitted = true;

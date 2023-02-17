@@ -17,6 +17,7 @@ body:
         - collection
         - core
         - formatters
+        - next
         - proxy
         - proxy-container
         - rest
@@ -119,7 +120,7 @@ body:
         - No Intents
         - Guilds
         - GuildMembers
-        - GuildBans
+        - GuildModeration
         - GuildEmojisAndStickers
         - GuildIntegrations
         - GuildWebhooks

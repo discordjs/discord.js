@@ -25,7 +25,7 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 	);
 
 	return (
-		<div className="flex flex-col">
+		<div className="scroll-mt-30 flex flex-col" id={key}>
 			<div className="flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center">
 				<Anchor href={`#${key}`} />
 				{isDeprecated ||

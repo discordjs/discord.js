@@ -1,0 +1,24 @@
+packages:brokers:
+  - '### Which package is this (bug report|feature request) for\?\n\nbrokers'
+packages:builders:
+  - '### Which package is this (bug report|feature request) for\?\n\nbuilders'
+packages:collection:
+  - '### Which package is this (bug report|feature request) for\?\n\ncollection'
+packages:core:
+  - '### Which package is this (bug report|feature request) for\?\n\ncore'
+packages:discord.js:
+  - '### Which package is this (bug report|feature request) for\?\n\ndiscord.js'
+packages:formatters:
+  - '### Which package is this (bug report|feature request) for\?\n\nformatters'
+packages:next:
+  - '### Which package is this (bug report|feature request) for\?\n\nnext'
+packages:proxy:
+  - '### Which package is this (bug report|feature request) for\?\n\nproxy'
+packages:proxy-container:
+  - '### Which package is this (bug report|feature request) for\?\n\nproxy-container'
+packages:rest:
+  - '### Which package is this (bug report|feature request) for\?\n\nrest'
+packages:voice:
+  - '### Which package is this (bug report|feature request) for\?\n\nvoice'
+packages:ws:
+  - '### Which package is this (bug report|feature request) for\?\n\nws'

@@ -3,10 +3,10 @@ import { Collection } from '@discordjs/collection';
 import type { Awaitable } from '@discordjs/util';
 import { WorkerContextFetchingStrategy } from '../strategies/context/WorkerContextFetchingStrategy.js';
 import {
-	WorkerRecievePayloadOp,
+	WorkerReceivePayloadOp,
 	WorkerSendPayloadOp,
 	type WorkerData,
-	type WorkerRecievePayload,
+	type WorkerReceivePayload,
 	type WorkerSendPayload,
 } from '../strategies/sharding/WorkerShardingStrategy.js';
 import type { WebSocketShardDestroyOptions } from '../ws/WebSocketShard.js';
@@ -29,7 +29,7 @@ export interface BootstrapOptions {
 }
 
 /**
- * Utility class for bootstraping a worker thread to be used for sharding
+ * Utility class for bootstrapping a worker thread to be used for sharding
  */
 export class WorkerBootstrapper {
 	/**
@@ -84,8 +84,8 @@ export class WorkerBootstrapper {
 				switch (payload.op) {
 					case WorkerSendPayloadOp.Connect: {
 						await this.connect(payload.shardId);
-						const response: WorkerRecievePayload = {
-							op: WorkerRecievePayloadOp.Connected,
+						const response: WorkerReceivePayload = {
+							op: WorkerReceivePayloadOp.Connected,
 							shardId: payload.shardId,
 						};
 						parentPort!.postMessage(response);
@@ -94,8 +94,8 @@ export class WorkerBootstrapper {
 
 					case WorkerSendPayloadOp.Destroy: {
 						await this.destroy(payload.shardId, payload.options);
-						const response: WorkerRecievePayload = {
-							op: WorkerRecievePayloadOp.Destroyed,
+						const response: WorkerReceivePayload = {
+							op: WorkerReceivePayloadOp.Destroyed,
 							shardId: payload.shardId,
 						};
 
@@ -128,10 +128,10 @@ export class WorkerBootstrapper {
 						}
 
 						const response = {
-							op: WorkerRecievePayloadOp.FetchStatusResponse,
+							op: WorkerReceivePayloadOp.FetchStatusResponse,
 							status: shard.status,
 							nonce: payload.nonce,
-						} satisfies WorkerRecievePayload;
+						} satisfies WorkerReceivePayload;
 
 						parentPort!.postMessage(response);
 						break;
@@ -151,11 +151,11 @@ export class WorkerBootstrapper {
 				// @ts-expect-error: Event types incompatible
 				shard.on(event, (data) => {
 					const payload = {
-						op: WorkerRecievePayloadOp.Event,
+						op: WorkerReceivePayloadOp.Event,
 						event,
 						data,
 						shardId,
-					} satisfies WorkerRecievePayload;
+					} satisfies WorkerReceivePayload;
 					parentPort!.postMessage(payload);
 				});
 			}
@@ -169,8 +169,8 @@ export class WorkerBootstrapper {
 		this.setupThreadEvents();
 
 		const message = {
-			op: WorkerRecievePayloadOp.WorkerReady,
-		} satisfies WorkerRecievePayload;
+			op: WorkerReceivePayloadOp.WorkerReady,
+		} satisfies WorkerReceivePayload;
 		parentPort!.postMessage(message);
 	}
 }

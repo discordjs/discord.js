@@ -55,13 +55,13 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.1.0",
 		"tsup": "^6.5.0",
-		"turbo": "^1.6.3",
+		"turbo": "^1.7.0",
 		"typescript": "^4.9.4",
 		"unocss": "^0.48.3",
-		"vitest": "^0.27.0"
+		"vitest": "^0.27.1"
 	},
 	"resolutions": {
-		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
+		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -70,5 +70,5 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.2.4"
+	"packageManager": "yarn@3.3.1"
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, MessageType, ComponentType } = require('discord-api-types/v10');
+const { ChannelType, MessageType, ComponentType, ImageFormat, StickerFormatType } = require('discord-api-types/v10');
 
 /**
  * Max bulk deletable message age
@@ -139,6 +139,21 @@ exports.SelectMenuTypes = [
 ];
 
 /**
+ * A mapping between sticker formats and their respective image formats.
+ * * {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
+ * * {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
+ * * {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
+ * * {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
+ * @typedef {Object} StickerFormatExtensionMap
+ */
+exports.StickerFormatExtensionMap = {
+  [StickerFormatType.PNG]: ImageFormat.PNG,
+  [StickerFormatType.APNG]: ImageFormat.PNG,
+  [StickerFormatType.Lottie]: ImageFormat.Lottie,
+  [StickerFormatType.GIF]: ImageFormat.GIF,
+};
+
+/**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {SweeperKey[]} SweeperKeys The possible names of items that can be swept in sweepers
@@ -147,4 +162,5 @@ exports.SelectMenuTypes = [
  * @property {ThreadChannelTypes} ThreadChannelTypes The types of channels that are threads
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
  * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
+ * @property {Object} StickerFormatExtensionMap A mapping between sticker formats and their respective image formats.
  */
