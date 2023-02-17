@@ -1921,6 +1921,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reactions: ReactionManager;
   public stickers: Collection<Snowflake, Sticker>;
   public position: number | null;
+  public roleSubscriptionData: RoleSubscriptionData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
@@ -6015,6 +6016,13 @@ export interface RolePosition {
 }
 
 export type RoleResolvable = Role | Snowflake;
+
+export interface RoleSubscriptionData {
+  roleSubscriptionListingId: Snowflake;
+  tierName: string;
+  totalMonthsSubscribed: number;
+  isRenewal: boolean;
+}
 
 export interface RoleTagData {
   botId?: Snowflake;
