@@ -233,6 +233,7 @@ class Guild extends AnonymousGuild {
      * * COMMUNITY
      * * DISCOVERABLE
      * * FEATURABLE
+     * * INVITES_DISABLED
      * * INVITE_SPLASH
      * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
@@ -1315,6 +1316,17 @@ class Guild extends AnonymousGuild {
       reason,
     });
     return this;
+  }
+
+  /**
+   * Sets whether this guild's invites are disabled.
+   * @param {boolean} [disabled=true] Whether the invites are disabled
+   * @returns {Promise<Guild>}
+   */
+  disableInvites(disabled = true) {
+    const features = this.features.filter(feature => feature !== 'INVITES_DISABLED');
+    if (disabled) features.push('INVITES_DISABLED');
+    return this.edit({ features });
   }
 
   /**
