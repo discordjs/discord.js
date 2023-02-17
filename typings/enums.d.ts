@@ -252,3 +252,14 @@ export const enum WebhookTypes {
   'Channel Follower' = 2,
   Application = 3,
 }
+
+export enum ApplicationRoleConnectionMetadataTypes {
+  INTEGER_LESS_THAN_OR_EQUAL = 1,
+  INTEGER_GREATER_THAN_OR_EQUAL,
+  INTEGER_EQUAL,
+  INTEGER_NOT_EQUAL,
+  DATATIME_LESS_THAN_OR_EQUAL,
+  DATATIME_GREATER_THAN_OR_EQUAL,
+  BOOLEAN_EQUAL,
+  BOOLEAN_NOT_EQUAL,
+}

@@ -73,6 +73,8 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationRoleConnectionMetadata =
+  require('./structures/ApplicationRoleConnectionMetadata').ApplicationRoleConnectionMetadata;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
 exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
 exports.AutoModerationRule = require('./structures/AutoModerationRule');

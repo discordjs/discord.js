@@ -56,6 +56,16 @@ class Application extends Base {
     } else {
       this.icon ??= null;
     }
+
+    if ('role_connections_verification_url' in data) {
+      /**
+       * This application's role connection verification entry point URL
+       * @type {?string}
+       */
+      this.roleConnectionsVerificationURL = data.role_connections_verification_url;
+    } else {
+      this.roleConnectionsVerificationURL ??= null;
+    }
   }
 
   /**

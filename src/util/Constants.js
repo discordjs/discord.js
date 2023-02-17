@@ -499,6 +499,7 @@ exports.WSEvents = keyMirror([
  * * `guilds.join`: allows the bot to join the user to any guild it is in using Guild#addMember
  * * `gdm.join`: allows joining the user to a group dm
  * * `webhook.incoming`: generates a webhook to a channel
+ * * `role_connections.write`: allows your app to update a user's connection and metadata for the app
  * @typedef {string} InviteScope
  * @see {@link https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes}
  */
@@ -515,6 +516,7 @@ exports.InviteScopes = [
   'guilds.join',
   'gdm.join',
   'webhook.incoming',
+  'role_connections.write',
 ];
 
 // TODO: change Integration#expireBehavior to this and clean up Integration
@@ -1246,6 +1248,35 @@ exports.ApplicationCommandOptionTypes = createEnum([
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
 /**
+ * Each metadata type offers a comparison operation that allows
+ * guilds to configure role requirements based on metadata values stored by the bot.
+ * Bots specify a metadata value for each user and guilds specify
+ * the required guild's configured value within the guild role settings.
+ * All available channel types:
+ * * INTEGER_LESS_THAN_OR_EQUAL
+ * * INTEGER_GREATER_THAN_OR_EQUAL
+ * * INTEGER_EQUAL
+ * * INTEGER_NOT_EQUAL
+ * * DATATIME_LESS_THAN_OR_EQUAL
+ * * DATATIME_GREATER_THAN_OR_EQUAL
+ * * BOOLEAN_EQUAL
+ * * BOOLEAN_NOT_EQUAL
+ * @typedef {string} ApplicationRoleConnectionMetadataType
+ * @see{@link https://discord.com/developers/docs/resources/application-role-connection-metadata#application-role-connection-metadata-object-application-role-connection-metadata-type}
+ */
+exports.ApplicationRoleConnectionMetadataTypes = createEnum(
+  null,
+  'INTEGER_LESS_THAN_OR_EQUAL',
+  'INTEGER_GREATER_THAN_OR_EQUAL',
+  'INTEGER_EQUAL',
+  'INTEGER_NOT_EQUAL',
+  'DATATIME_LESS_THAN_OR_EQUAL',
+  'DATATIME_GREATER_THAN_OR_EQUAL',
+  'BOOLEAN_EQUAL',
+  'BOOLEAN_NOT_EQUAL',
+);
+
+/**
  * The type of an {@link AutoModerationRuleTriggerTypes} object:
  * * KEYWORD
  * * SPAM
@@ -1487,6 +1518,7 @@ function createEnum(keys) {
  * The type of an {@link ApplicationCommandPermissions} object.
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
+ * @property {Object<ApplicationRoleConnectionMetadataType, number>} ApplicationRoleConnectionMetadataTypes
  * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
  * of content which can trigger the rule.
  * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
