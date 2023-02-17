@@ -29,7 +29,7 @@ export interface BootstrapOptions {
 }
 
 /**
- * Utility class for bootstraping a worker thread to be used for sharding
+ * Utility class for bootstrapping a worker thread to be used for sharding
  */
 export class WorkerBootstrapper {
 	/**
