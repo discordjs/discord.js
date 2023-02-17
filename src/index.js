@@ -18,6 +18,7 @@ exports.Constants = require('./util/Constants');
 exports.DataResolver = require('./util/DataResolver');
 exports.DiscordAPIError = require('./rest/DiscordAPIError');
 exports.Formatters = require('./util/Formatters');
+exports.GuildMemberFlags = require('./util/GuildMemberFlags');
 exports.HTTPError = require('./rest/HTTPError');
 exports.Intents = require('./util/Intents');
 exports.LimitedCollection = require('./util/LimitedCollection');

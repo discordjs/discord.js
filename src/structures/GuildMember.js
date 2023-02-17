@@ -6,6 +6,7 @@ const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const GuildMemberFlags = require('../util/GuildMemberFlags');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -94,6 +95,15 @@ class GuildMember extends Base {
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
         data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    }
+    if ('flags' in data) {
+      /**
+       * The flags of this member
+       * @type {Readonly<GuildMemberFlags>}
+       */
+      this.flags = new GuildMemberFlags(data.flags).freeze();
+    } else {
+      this.flags ??= new GuildMemberFlags().freeze();
     }
   }
 
@@ -348,6 +358,16 @@ class GuildMember extends Base {
   }
 
   /**
+   * Sets the flags for this member.
+   * @param {GuildMemberFlagsResolvable} flags The flags to set
+   * @param {string} [reason] Reason for setting the flags
+   * @returns {Promise<GuildMember>}
+   */
+  setFlags(flags, reason) {
+    return this.edit({ flags, reason });
+  }
+
+  /**
    * Creates a DM channel between the client and this member.
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
@@ -446,6 +466,7 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.pending === member.pending &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
+      this.flags.equals(member.flags) &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
     );
