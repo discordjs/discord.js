@@ -147,7 +147,7 @@ class InteractionResponses {
    */
   async editReply(options) {
     if (!this.deferred && !this.replied) throw new Error('INTERACTION_NOT_REPLIED');
-    const message = await this.webhook.editMessage(options.messsage ?? '@original', options);
+    const message = await this.webhook.editMessage(options.message ?? '@original', options);
     this.replied = true;
     return message;
   }
