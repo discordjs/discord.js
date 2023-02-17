@@ -111,6 +111,7 @@ export const enum MessageTypes {
   GUILD_INVITE_REMINDER,
   CONTEXT_MENU_COMMAND,
   AUTO_MODERATION_ACTION,
+  ROLE_SUBSCRIPTION_PURCHASE,
 }
 
 export const enum DefaultMessageNotificationLevels {
