@@ -80,7 +80,7 @@ import {
   APITextInputComponent,
   APIModalActionRowComponent,
   APIModalSubmitInteraction,
-  LocalizationMap,
+  LocalizationMap
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
 import type {
@@ -90,7 +90,7 @@ import type {
   AutoModerationRuleTriggerTypes,
   InteractionTypes,
   MessageComponentTypes,
-  ApplicationRoleConnectionMetadataTypes,
+  ApplicationRoleConnectionMetadataTypes
 } from './enums';
 
 export type RawActivityData = GatewayActivity;

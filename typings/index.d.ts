@@ -4380,8 +4380,8 @@ export type CacheConstructors = {
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
 export type CacheFactory = (
   manager: CacheConstructors[keyof Caches],
-  holds: Caches[(typeof manager)['name']][1],
-) => (typeof manager)['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
+  holds: Caches[typeof manager['name']][1],
+) => typeof manager['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>
@@ -5395,11 +5395,7 @@ export interface GuildMemberEditData {
   flags?: GuildMemberFlagsResolvable;
 }
 
-export type GuildMemberFlagsString =
-  | 'DID_REJOIN'
-  | 'COMPLETED_ONBOARDING'
-  | 'BYPASSES_VERIFICATION'
-  | 'STARTED_ONBOARDING';
+export type GuildMemberFlagsString = 'DID_REJOIN' | 'COMPLETED_ONBOARDING' | 'BYPASSES_VERIFICATION' | 'STARTED_ONBOARDING';
 
 export type GuildMemberFlagsResolvable = BitFieldResolvable<GuildMemberFlagsString, number>;
 
