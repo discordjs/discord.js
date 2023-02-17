@@ -109,7 +109,7 @@ class GuildAuditLogsEntry {
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
-     * The type of action that occured.
+     * The type of action that occurred.
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
