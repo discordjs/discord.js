@@ -57,7 +57,7 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.4.0",
-		"discord-api-types": "^0.37.27",
+		"discord-api-types": "^0.37.35",
 		"file-type": "^18.1.0",
 		"tslib": "^2.4.1",
 		"undici": "^5.15.0"
