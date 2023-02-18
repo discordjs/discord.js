@@ -57,7 +57,7 @@ export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
-	[WebSocketShardEvents.Error]: [payload: { error: unknown }];
+	[WebSocketShardEvents.Error]: [payload: { error: Error }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
@@ -163,8 +163,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
-		const waitPromise = this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
-		if ((await this.bubbleWaitForEventError(waitPromise)) !== null) {
+		const { ok } = await this.bubbleWaitForEventError(
+			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
+		);
+		if (!ok) {
 			return;
 		}
 
@@ -263,12 +265,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	/**
 	 * Does special error handling for waitForEvent calls, depending on the current state of the connection lifecycle
 	 * (i.e. whether or not the original connect() call has resolved or if the user has an error listener)
-	 * Returns null on success, or an error (unknown type) on failure
 	 */
-	private async bubbleWaitForEventError(promise: Promise<unknown>): Promise<unknown> {
+	private async bubbleWaitForEventError(
+		promise: Promise<unknown>,
+	): Promise<{ error: unknown; ok: false } | { ok: true }> {
 		try {
 			await promise;
-			return null;
+			return { ok: true };
 		} catch (error) {
 			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
 			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
@@ -295,7 +298,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
 
-			return null;
+			return { ok: false, error };
 		}
 	}
 
@@ -380,8 +383,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		const waitPromise = this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
-		if ((await this.bubbleWaitForEventError(waitPromise)) !== null) {
+		const { ok } = await this.bubbleWaitForEventError(
+			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
+		);
+		if (!ok) {
 			return;
 		}
 
@@ -453,7 +458,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			if (this.inflate.err) {
 				this.emit(WebSocketShardEvents.Error, {
-					error: `${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`,
+					error: new Error(`${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`),
 				});
 			}
 
