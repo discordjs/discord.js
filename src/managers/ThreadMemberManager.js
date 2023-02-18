@@ -177,7 +177,7 @@ class ThreadMemberManager extends CachedManager {
     const id = this.resolveId(member);
     return id
       ? this._fetchOne(id, options)
-      : this._fetchMany(typeof member !== 'boolean' ? member : { ...options, cache: member });
+      : this._fetchMany(typeof member === 'boolean' ? { ...options, cache: member } : options);
   }
 }
 

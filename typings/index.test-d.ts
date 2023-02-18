@@ -1343,12 +1343,14 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
 );
 expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
 
+declare const threadMemberWithoutGuildMember: ThreadMember;
 declare const threadMemberWithGuildMember: ThreadMember<true>;
 declare const threadMemberManager: ThreadMemberManager;
 {
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678', { cache: false }));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678', { force: true }));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch(threadMemberWithoutGuildMember));
   expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch(threadMemberWithGuildMember));
   expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch('12345678901234567', { withMember: true }));
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
@@ -1358,6 +1360,9 @@ declare const threadMemberManager: ThreadMemberManager;
     threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
   );
 
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
+    threadMemberManager.fetch(undefined,  { cache: true })
+  )
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(
     threadMemberManager.fetch({ cache: true, withMember: false }),
   );
