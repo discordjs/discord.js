@@ -48,7 +48,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
  * @example
  * // Set the bitrate of a voice channel
  * voiceChannel.setBitrate(48_000)
- *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
+ *   .then(channel => console.log(`Set bitrate to ${channel.bitrate}bps for ${channel.name}`))
  *   .catch(console.error);
  */
 
@@ -79,7 +79,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
  * @example
  * // Set the user limit of a voice channel
  * voiceChannel.setUserLimit(42)
- *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+ *   .then(channel => console.log(`Set user limit to ${vcchanneluserLimit} for ${channel.name}`))
  *   .catch(console.error);
  */
 

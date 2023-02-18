@@ -44,8 +44,8 @@ class StageChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<StageChannel>}
    * @example
    * // Set a new channel topic
-   * stagechannel.setTopic('needs more rate limiting')
-   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   * stageChannel.setTopic('needs more rate limiting')
+   *   .then(channel => console.log(`Channel's new topic is ${channel.topic}`))
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
@@ -64,7 +64,7 @@ class StageChannel extends BaseGuildVoiceChannel {
  * @example
  * // Set the bitrate of a voice channel
  * stageChannel.setBitrate(48_000)
- *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
+ *   .then(channel => console.log(`Set bitrate to ${channel.bitrate}bps for ${channel.name}`))
  *   .catch(console.error);
  */
 
@@ -95,7 +95,7 @@ class StageChannel extends BaseGuildVoiceChannel {
  * @example
  * // Set the user limit of a voice channel
  * stageChannel.setUserLimit(42)
- *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+ *   .then(channel => console.log(`Set user limit to ${channel.userLimit} for ${channel.name}`))
  *   .catch(console.error);
  */
 
