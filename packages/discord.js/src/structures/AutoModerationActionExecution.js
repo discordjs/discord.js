@@ -100,8 +100,8 @@ class AutoModerationActionExecution {
    * @readonly
    */
   get user() {
-  return this.guild.client.users.cache.get(this.userId) ?? null;
-}
+    return this.guild.client.users.cache.get(this.userId) ?? null;
+  }
 }
 
 module.exports = AutoModerationActionExecution;
