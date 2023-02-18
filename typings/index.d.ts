@@ -97,7 +97,7 @@ import {
   ForumLayoutType,
   ApplicationRoleConnectionMetadataTypes,
 } from './enums';
-import {  
+import {
   APIActionRowComponent,
   APIApplicationRoleConnectionMetadata,
   APIAutoModerationRule,
