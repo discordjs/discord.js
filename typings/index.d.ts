@@ -3391,8 +3391,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-  public addRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>
-  public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+  public addRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public fetch(
     options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
@@ -3403,7 +3402,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public list(options?: GuildListMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
-  public removeRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>
+  public removeRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User | null>;
 }

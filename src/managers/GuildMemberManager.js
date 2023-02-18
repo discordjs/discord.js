@@ -435,12 +435,11 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * Adds a role to a member.
-   * @param {GuildMemberResolvable} user
-   * @param {RoleResolvable} role
-   * @param {string} [reason]
+   * @param {GuildMemberResolvable} user The user to add the role from
+   * @param {RoleResolvable} role The role to add
+   * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember|User|Snowflake>}
    */
-
   async addRole(user, role, reason) {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
@@ -452,12 +451,11 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * Removes a role from a member.
-   * @param {UserResolvable} user
-   * @param {RoleResolvable} role
-   * @param {string} [reason]
+   * @param {UserResolvable} user The user to remove the role from
+   * @param {RoleResolvable} role The role to remove
+   * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember|User|Snowflake>}
    */
-
   async removeRole(user, role, reason) {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
