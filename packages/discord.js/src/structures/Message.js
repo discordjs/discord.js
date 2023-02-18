@@ -649,7 +649,7 @@ class Message extends Base {
       (this.inGuild() &&
         Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
         this.deletable &&
-        this.channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false)) ??
+        this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageMessages, false)) ??
       false
     );
   }
