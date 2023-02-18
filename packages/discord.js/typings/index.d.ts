@@ -345,6 +345,7 @@ export class AutoModerationActionExecution {
   public userId: Snowflake;
   public get channel(): TextBasedChannel | null;
   public channelId: Snowflake | null;
+  public get member(): GuildMember | null;
   public messageId: Snowflake | null;
   public alertSystemMessageId: Snowflake | null;
   public content: string;

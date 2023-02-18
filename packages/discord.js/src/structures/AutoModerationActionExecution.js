@@ -95,12 +95,21 @@ class AutoModerationActionExecution {
   }
 
   /**
-   *  The the user that triggered this action.
+   *  The user that triggered this action.
    * @type {?User}
    * @readonly
    */
   get user() {
     return this.guild.client.users.cache.get(this.userId) ?? null;
+  }
+
+  /**
+   *  The guild member that triggered this action.
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild.members.cache.get(this.userId) ?? null;
   }
 }
 
