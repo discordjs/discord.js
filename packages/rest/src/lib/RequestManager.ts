@@ -499,14 +499,14 @@ export class RequestManager extends EventEmitter {
 	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
-		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{16,19})/.exec(endpoint);
+		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{16,20})/.exec(endpoint);
 
 		// Get the major id for this route - global otherwise
 		const majorId = majorIdMatch?.[1] ?? 'global';
 
 		const baseRoute = endpoint
 			// Strip out all ids
-			.replaceAll(/\d{16,19}/g, ':id')
+			.replaceAll(/\d{16,20}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
 			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
 
@@ -515,7 +515,7 @@ export class RequestManager extends EventEmitter {
 		// Hard-Code Old Message Deletion Exception (2 week+ old messages are a different bucket)
 		// https://github.com/discord/discord-api-docs/issues/1295
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
-			const id = /\d{16,19}$/.exec(endpoint)![0]!;
+			const id = /\d{16,20}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
 			if (Date.now() - timestamp > 1_000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';
