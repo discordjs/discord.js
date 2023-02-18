@@ -660,7 +660,7 @@ class Util extends null {
   }
 
   /**
-   * Resolves the maximum time a guild's thread channels should automatcally archive in case of no recent activity.
+   * Resolves the maximum time a guild's thread channels should automatically archive in case of no recent activity.
    * @param {Guild} guild The guild to resolve this limit from.
    * @deprecated This will be removed in the next major version.
    * @returns {number}

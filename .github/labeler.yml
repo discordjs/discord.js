@@ -1,0 +1,15 @@
+apps:guide:
+  - apps/guide/*
+  - apps/guide/**/*
+apps:website:
+  - apps/website/*
+  - apps/website/**/*
+packages:discord.js:
+  - scripts/*
+  - scripts/**/*
+  - src/*
+  - src/**/*
+  - test/*
+  - test/**/*
+  - typings/*
+  - typings/**/*

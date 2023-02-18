@@ -10,6 +10,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const { Events, Opcodes } = require('../util/Constants');
 const { PartialTypes } = require('../util/Constants');
+const GuildMemberFlags = require('../util/GuildMemberFlags');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -260,6 +261,7 @@ class GuildMemberManager extends CachedManager {
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
    * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
+   * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    */
 
   /**
@@ -291,6 +293,8 @@ class GuildMemberManager extends CachedManager {
 
     _data.communication_disabled_until =
       _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
+
+    _data.flags = _data.flags && GuildMemberFlags.resolve(_data.flags);
 
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {

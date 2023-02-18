@@ -1,0 +1,17 @@
+name: 'PR Triage'
+on:
+  pull_request_target:
+jobs:
+  pr-triage:
+    name: PR Triage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automatically label PR
+        uses: actions/labeler@v4
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          sync-labels: true
+
+      - name: Automatically assign reviewers
+        if: github.event.action == 'opened'
+        uses: kentaro-m/auto-assign-action@v1.2.4

@@ -4,6 +4,7 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
+    this.register(require('./ApplicationCommandPermissionsUpdate'));
     this.register(require('./AutoModerationActionExecution'));
     this.register(require('./AutoModerationRuleCreate'));
     this.register(require('./AutoModerationRuleDelete'));
@@ -11,6 +12,7 @@ class ActionsManager {
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
+    this.register(require('./GuildAuditLogEntryCreate'));
     this.register(require('./GuildBanAdd'));
     this.register(require('./GuildBanRemove'));
     this.register(require('./GuildChannelsPositionUpdate'));
