@@ -94,7 +94,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @example
    * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
-   *   .then(channel => console.log(`Set user limit to ${vcchanneluserLimit} for ${channel.name}`))
+   *   .then(channel => console.log(`Set user limit to ${channel.userLimit} for ${channel.name}`))
    *   .catch(console.error);
    */
 
