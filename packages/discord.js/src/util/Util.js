@@ -315,8 +315,8 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-    switch (type) {
+  return str.replaceAll(/<(?:(@[!&]?|#)|([/:])([\w ]+):)(\d{17,19})>/g, (match, type, prefix, name, id) => {
+    switch (type ?? prefix) {
       case '@':
       case '@!': {
         const member = channel.guild?.members.cache.get(id);
@@ -336,6 +336,10 @@ function cleanContent(str, channel) {
         const mentionedChannel = channel.client.channels.cache.get(id);
         return mentionedChannel ? `#${mentionedChannel.name}` : match;
       }
+      case '/':
+        return `/${name}`;
+      case ':':
+        return `:${name}:`;
       default: {
         return match;
       }
