@@ -1956,7 +1956,12 @@ declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
 expectType<TextBasedChannel>(TextBasedChannel);
 expectType<
-  ChannelType.GuildText | ChannelType.DM | ChannelType.GuildAnnouncement | ChannelType.GuildVoice | ThreadChannelType
+  | ChannelType.GuildText
+  | ChannelType.DM
+  | ChannelType.GuildAnnouncement
+  | ChannelType.GuildVoice
+  | ChannelType.GuildStageVoice
+  | ThreadChannelType
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);

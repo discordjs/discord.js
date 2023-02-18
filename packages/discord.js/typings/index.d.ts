@@ -4693,7 +4693,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | Snowflake;
+  channel: TextChannel | NewsChannel | VoiceChannel | StageChannel | ForumChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -6268,7 +6268,7 @@ export type WebhookClientOptions = Pick<ClientOptions, 'allowedMentions' | 'rest
 export interface WebhookEditOptions {
   name?: string;
   avatar?: BufferResolvable | null;
-  channel?: GuildTextChannelResolvable;
+  channel?: GuildTextChannelResolvable | VoiceChannel | ForumChannel | StageChannel;
   reason?: string;
 }
 

@@ -346,7 +346,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
+   * Options used to create a {@link Webhook}
    * @typedef {Object} ChannelWebhookCreateOptions
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
