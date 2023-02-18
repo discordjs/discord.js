@@ -148,8 +148,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * Fetches a collection of invites to this guild channel.
-   * Resolves with a collection mapping invites by their codes.
-   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
+   * @param {boolean} [cache=true] Whether to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites(cache = true) {
@@ -164,7 +163,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @example
    * // Set the bitrate of a voice channel
    * channel.setBitrate(48_000)
-   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}bps for ${vc.name}`))
+   *   .then(channel => console.log(`Set bitrate to ${channel.bitrate}bps for ${channel.name}`))
    *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
@@ -195,7 +194,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @example
    * // Set the user limit of a voice channel
    * channel.setUserLimit(42)
-   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *   .then(channel => console.log(`Set user limit to ${channel.userLimit} for ${channel.name}`))
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
