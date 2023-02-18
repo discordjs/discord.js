@@ -342,6 +342,7 @@ export class AutoModerationActionExecution {
   public ruleId: Snowflake;
   public ruleTriggerType: AutoModerationRuleTriggerType;
   public userId: Snowflake;
+  public get channel(): TextBasedChannel | null;
   public channelId: Snowflake | null;
   public messageId: Snowflake | null;
   public alertSystemMessageId: Snowflake | null;

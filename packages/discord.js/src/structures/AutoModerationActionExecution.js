@@ -84,6 +84,15 @@ class AutoModerationActionExecution {
   get autoModerationRule() {
     return this.guild.autoModerationRules.cache.get(this.ruleId) ?? null;
   }
+
+  /**
+   * The channel where this action was triggered from.
+   * @type {?TextBasedChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.guild.client.channels.resolve(this.channelId);
+  }
 }
 
 module.exports = AutoModerationActionExecution;
