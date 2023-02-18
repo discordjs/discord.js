@@ -3242,7 +3242,7 @@ export class Webhook extends WebhookMixin() {
   public token: string | null;
   public type: WebhookType;
   public applicationId: Snowflake | null;
-  public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | null;
+  public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | StageChannel | null;
   public isUserCreated(): this is this & {
     type: WebhookType.Incoming;
     applicationId: null;
@@ -6186,8 +6186,7 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  // TODO: Remove stage channel upon implementation of text-in-stage.
-  PartialGroupDMChannel | ForumChannel | StageChannel
+  PartialGroupDMChannel | ForumChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
