@@ -91,8 +91,17 @@ class AutoModerationActionExecution {
    * @readonly
    */
   get channel() {
-    return this.guild.client.channels.resolve(this.channelId);
+    return this.guild.channels.cache.get(this.channelId) ?? null;
   }
+
+  /**
+   *  The the user that triggered this action.
+   * @type {?User}
+   * @readonly
+   */
+  get user() {
+  return this.guild.client.users.cache.get(this.userId) ?? null;
+}
 }
 
 module.exports = AutoModerationActionExecution;
