@@ -95,7 +95,7 @@ class AutoModerationActionExecution {
   }
 
   /**
-   *  The user that triggered this action.
+   * The user that triggered this action.
    * @type {?User}
    * @readonly
    */
@@ -104,7 +104,7 @@ class AutoModerationActionExecution {
   }
 
   /**
-   *  The guild member that triggered this action.
+   * The guild member that triggered this action.
    * @type {?GuildMember}
    * @readonly
    */
