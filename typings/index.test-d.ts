@@ -1323,7 +1323,7 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(TextBasedChannel);
 expectType<
   | 'DM'
   | 'GUILD_NEWS'
@@ -1332,6 +1332,7 @@ expectType<
   | 'GUILD_PRIVATE_THREAD'
   | 'GUILD_NEWS_THREAD'
   | 'GUILD_VOICE'
+  | 'GUILD_STAGE_VOICE'
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel | ForumChannel>(
@@ -1340,4 +1341,4 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel | ForumChannel>(
   NonThreadGuildBasedChannel,
 );
-expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
+expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(GuildTextBasedChannel);
