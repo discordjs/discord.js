@@ -2201,9 +2201,9 @@ export class Role extends Base {
   public static comparePositions(role1: Role, role2: Role): number;
 }
 
-export class BaseSelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
+export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
-    public channels?: Collection<
+    public channels: Collection<
     Snowflake,
       CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
     >;
@@ -2225,11 +2225,6 @@ export class BaseSelectMenuInteraction<Cached extends CacheType = CacheType> ext
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
-}
-
-export class ChannelSelectMenuInteraction {
-  type: 'CHANNEL_SELECT',
-  channels: 
 }
 export interface ShardEventTypes {
   spawn: [process: ChildProcess | Worker];
