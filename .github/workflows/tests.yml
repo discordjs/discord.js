@@ -3,7 +3,8 @@ on:
   push:
   pull_request:
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  # Group based on workflow name and PR if it exists, if no PR, let it run so carryforward flags work
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 jobs:
   tests:
