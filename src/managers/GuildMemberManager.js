@@ -444,7 +444,7 @@ class GuildMemberManager extends CachedManager {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
 
-    await this.client.api.guild(this.guild.id).members(userId).roles(roleId).put({ reason });
+    await this.client.api.guilds(this.guild.id).members(userId).roles(roleId).put({ reason });
 
     return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
@@ -460,7 +460,7 @@ class GuildMemberManager extends CachedManager {
     const userId = this.guild.members.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
 
-    await this.client.api.guild(this.guild.id).members(userId).roles(roleId).delete({ reason });
+    await this.client.api.guilds(this.guild.id).members(userId).roles(roleId).delete({ reason });
 
     return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
