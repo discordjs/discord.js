@@ -279,7 +279,7 @@ class Interaction extends Base {
    * @deprecated Use {@link Interaction#isStringSelect()} instead
    */
   isSelectMenu() {
-    return this.type === InteractionTypes.STRING_SELECT;
+    return this.isStringSelectMenu();
   }
   /**
    * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `STRING_SELECT` type

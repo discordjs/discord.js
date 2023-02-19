@@ -1461,6 +1461,7 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isAnySelectMenu(): this is SelectMenuInteraction<Cached>;
+  /** @deprecated */
   public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isStringSelect(): this is SelectMenuInteraction<Cached>;
   public isUserSelect(): this is SelectMenuInteraction<Cached>;
@@ -2200,8 +2201,12 @@ export class Role extends Base {
   public static comparePositions(role1: Role, role2: Role): number;
 }
 
-export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
+export class BaseSelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
+    public channels?: Collection<
+    Snowflake,
+      CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+    >;
   public readonly component: CacheTypeReducer<
     Cached,
     MessageSelectMenu,
@@ -2210,22 +2215,22 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     MessageSelectMenu | APISelectMenuComponent
   >;
   public componentType: SelectMenuComponentType;
-  public values: string[];
-  public users: Collection<Snowflake, User>;
   public members: Collection<
-    Snowflake,
-    CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
-  >;
-  public channels: Collection<
-    Snowflake,
-    CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+  Snowflake,
+  CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
   >;
   public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
+  public users: Collection<Snowflake, User>;
+  public values: string[];
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
 }
 
+export class ChannelSelectMenuInteraction {
+  type: 'CHANNEL_SELECT',
+  channels: 
+}
 export interface ShardEventTypes {
   spawn: [process: ChildProcess | Worker];
   death: [process: ChildProcess | Worker];
