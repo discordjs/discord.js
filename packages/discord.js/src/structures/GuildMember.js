@@ -6,6 +6,7 @@ const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -92,6 +93,16 @@ class GuildMember extends Base {
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
         data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this member
+       * @type {Readonly<GuildMemberFlagsBitField>}
+       */
+      this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new GuildMemberFlagsBitField().freeze();
     }
   }
 
@@ -315,6 +326,16 @@ class GuildMember extends Base {
   }
 
   /**
+   * Sets the flags for this member.
+   * @param {GuildMemberFlagsResolvable} flags The flags to set
+   * @param {string} [reason] Reason for setting the flags
+   * @returns {Promise<GuildMember>}
+   */
+  setFlags(flags, reason) {
+    return this.edit({ flags, reason });
+  }
+
+  /**
    * Sets the nickname for this member.
    * @param {?string} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
@@ -423,6 +444,7 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.pending === member.pending &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
+      this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
     );
