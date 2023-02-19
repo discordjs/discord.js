@@ -3392,6 +3392,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public addRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>;
+  public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public fetch(
     options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
