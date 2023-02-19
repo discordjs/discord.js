@@ -120,7 +120,7 @@ body:
         - No Intents
         - Guilds
         - GuildMembers
-        - GuildBans
+        - GuildModeration
         - GuildEmojisAndStickers
         - GuildIntegrations
         - GuildWebhooks

@@ -78,7 +78,7 @@ class GuildAuditLogs {
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(this, guild, item);
+      const entry = new GuildAuditLogsEntry(guild, item, this);
       this.entries.set(entry.id, entry);
     }
   }

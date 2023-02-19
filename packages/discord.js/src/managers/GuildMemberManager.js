@@ -11,6 +11,7 @@ const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const Events = require('../util/Events');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const Partials = require('../util/Partials');
 
 /**
@@ -329,6 +330,7 @@ class GuildMemberManager extends CachedManager {
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
    * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
+   * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    * @property {string} [reason] Reason for editing this user
    */
 
@@ -362,6 +364,10 @@ class GuildMemberManager extends CachedManager {
         options.communicationDisabledUntil != null
           ? new Date(options.communicationDisabledUntil).toISOString()
           : options.communicationDisabledUntil;
+    }
+
+    if (typeof options.flags !== 'undefined') {
+      options.flags = GuildMemberFlagsBitField.resolve(options.flags);
     }
 
     let endpoint;
