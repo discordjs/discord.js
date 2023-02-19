@@ -3584,15 +3584,11 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public thread: ThreadChannel;
   public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
-  public fetch(): Promise<Collection<Snowflake, ThreadMember>>;
+  public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
   public fetch(
     member: ThreadMember<true>,
     options?: FetchMemberOptions
     ): Promise<ThreadMember<true>>;
-  public fetch(
-    member: ThreadMember,
-    options?: FetchMemberOptions
-    ): Promise<ThreadMember>;
   public fetch(
     member: Snowflake,
     options: (FetchThreadMemberOptions & { withMember: true }),
@@ -3600,9 +3596,8 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public fetch(
     options: FetchThreadMembersWithGuildMemberDataOptions,
     ): Promise<Collection<Snowflake, ThreadMember<true>>>;
-    public fetch(options: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
   public fetch(member: UserResolvable, options?: FetchThreadMemberOptions): Promise<ThreadMember>;
-  
+
   /** @deprecated Use `fetch(options)` instead. */
   public fetch(cache: boolean, options?: FetchThreadMembersOptions): Promise<Collection<Snowflake, ThreadMember>>;
 
