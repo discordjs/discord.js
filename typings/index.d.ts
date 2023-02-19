@@ -1461,13 +1461,13 @@ export class Interaction<Cached extends CacheType = CacheType> extends Base {
   public isMessageComponent(): this is MessageComponentInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isAnySelectMenu(): this is SelectMenuInteraction<Cached>;
-  /** @deprecated */
-  public isSelectMenu(): this is SelectMenuInteraction<Cached>;
-  public isStringSelect(): this is SelectMenuInteraction<Cached>;
-  public isUserSelect(): this is SelectMenuInteraction<Cached>;
-  public isMentionableSelect(): this is SelectMenuInteraction<Cached>;
-  public isRoleSelect(): this is SelectMenuInteraction<Cached>;
-  public isChannelSelect(): this is SelectMenuInteraction<Cached>;
+  /** @deprecated Use {@link Interaction#isStringSelect()} instead */
+  public isSelectMenu(): this is StringSelectInteraction<Cached>;
+  public isStringSelect(): this is StringSelectInteraction<Cached>;
+  public isUserSelect(): this is UserSelectInteraction<Cached>;
+  public isMentionableSelect(): this is MentionableSelectInteraction<Cached>;
+  public isRoleSelect(): this is RoleSelectInteraction<Cached>;
+  public isChannelSelect(): this is ChannelSelectInteraction<Cached>;
   public isRepliable(): this is this & InteractionResponseFields<Cached>;
 }
 
@@ -2201,12 +2201,8 @@ export class Role extends Base {
   public static comparePositions(role1: Role, role2: Role): number;
 }
 
-export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
+export class BaseSelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
-    public channels: Collection<
-    Snowflake,
-      CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
-    >;
   public readonly component: CacheTypeReducer<
     Cached,
     MessageSelectMenu,
@@ -2215,17 +2211,75 @@ export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends
     MessageSelectMenu | APISelectMenuComponent
   >;
   public componentType: SelectMenuComponentType;
-  public members: Collection<
-  Snowflake,
-  CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
-  >;
-  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
-  public users: Collection<Snowflake, User>;
   public values: string[];
   public inGuild(): this is SelectMenuInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is SelectMenuInteraction<'cached'>;
   public inRawGuild(): this is SelectMenuInteraction<'raw'>;
 }
+
+export class ChannelSelectInteraction<Cached extends CacheType = CacheType> extends BaseSelectMenuInteraction<Cached> {
+  public componentType: 'CHANNEL_SELECT';
+  public channels: Collection<
+  Snowflake,
+    CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+    >;
+    public inGuild(): this is ChannelSelectInteraction<'raw' | 'cached'>;
+    public inCachedGuild(): this is ChannelSelectInteraction<'cached'>;
+    public inRawGuild(): this is ChannelSelectInteraction<'raw'>;
+}
+
+export class MentionableSelectInteraction<Cached extends CacheType = CacheType> extends BaseSelectMenuInteraction<Cached> {
+  public componentType: 'MENTIONABLE_SELECT';
+  public channels?: Collection<
+  Snowflake,
+  CacheTypeReducer<Cached, Channel, APIChannel, Channel | APIChannel, Channel | APIChannel>
+  >;
+  public members?: Collection<
+  Snowflake,
+  CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
+  >;
+  public roles?: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
+  public users?: Collection<Snowflake, User>;
+  public inGuild(): this is MentionableSelectInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is MentionableSelectInteraction<'cached'>;
+  public inRawGuild(): this is MentionableSelectInteraction<'raw'>;
+}
+
+export class RoleSelectInteraction<Cached extends CacheType = CacheType> extends BaseSelectMenuInteraction<Cached> {
+  public componentType: 'ROLE_SELECT';
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
+  public inGuild(): this is RoleSelectInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is RoleSelectInteraction<'cached'>;
+  public inRawGuild(): this is RoleSelectInteraction<'raw'>;
+}
+
+export class StringSelectInteraction <Cached extends CacheType = CacheType> extends BaseSelectMenuInteraction<Cached> {
+  public componentType: 'STRING_SELECT';
+  public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, Role | APIRole, Role | APIRole>>;
+  public inGuild(): this is StringSelectInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is StringSelectInteraction<'cached'>;
+  public inRawGuild(): this is StringSelectInteraction<'raw'>;
+}
+
+export class UserSelectInteraction<Cached extends CacheType = CacheType> extends BaseSelectMenuInteraction<Cached> {
+  public componentType: 'USER_SELECT';
+  public members?: Collection<
+  Snowflake,
+  CacheTypeReducer<Cached, GuildMember, APIGuildMember, GuildMember | APIGuildMember, GuildMember | APIGuildMember>
+  >;
+  public users: Collection<Snowflake, User>;
+  public inGuild(): this is UserSelectInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is UserSelectInteraction<'cached'>;
+  public inRawGuild(): this is UserSelectInteraction<'raw'>;
+}
+
+export type SelectMenuInteraction <Cached extends CacheType = CacheType> =
+  | StringSelectInteraction <Cached>
+  | ChannelSelectInteraction <Cached>
+  | MentionableSelectInteraction <Cached>
+  | RoleSelectInteraction <Cached>
+  | UserSelectInteraction <Cached>;
+
 export interface ShardEventTypes {
   spawn: [process: ChildProcess | Worker];
   death: [process: ChildProcess | Worker];

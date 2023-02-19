@@ -97,6 +97,7 @@ import {
   GuildBan,
   GuildBanManager,
   ForumChannel,
+  StringSelectInteraction,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1108,8 +1109,7 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isSelectMenu()) {
-    expectType<SelectMenuInteraction>(interaction);
+  if (interaction.isAnySelectMenu()) {
     expectType<MessageSelectMenu | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
@@ -1131,6 +1131,16 @@ client.on('interactionCreate', async interaction => {
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<Message | APIMessage>>(interaction.reply({ fetchReply: true }));
     }
+
+    if(interaction.isStringSelect()) {
+      expectType<StringSelectInteraction>(interaction);
+    }
+
+    if(interaction.type === 'MESSAGE_COMPONENT' && interaction.componentType === 'STRING_SELECT') {
+      interaction
+      expectType<StringSelectInteraction>(interaction);
+    }
+
   }
 
   if (interaction.isCommand()) {

@@ -18,33 +18,25 @@ class SelectMenuInteraction extends MessageComponentInteraction {
      */
     this.values = data.data.values ?? [];
 
-    /**
-     * Collection of the selected users
-     * @type {Collection<Snowflake, User>}
-     */
-    this.users = new Collection();
-
-    /**
-     * Collection of the selected members
-     * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
-     */
-    this.members = new Collection();
-
-    /**
-     * Collection of the selected roles
-     * @type {Collection<Snowflake, Role|APIRole>}
-     */
-    this.roles = new Collection();
-
-    /**
-     * Collection of the selected channels
-     * @type {Collection<Snowflake, Channel|APIChannel>}
-     */
-    this.channels = new Collection();
-
     const { members, users, roles, channels } = data.data.resolved ?? {};
 
+    if (channels) {
+      /**
+       * Collection of the selected channels
+       * @type {Collection<Snowflake, Channel|APIChannel>}
+       */
+      this.channels = new Collection();
+      for (const channel of Object.values(channels)) {
+        this.channels.set(channel.id, this.client?.channels._add(channel) ?? channel);
+      }
+    }
+
     if (members) {
+      /**
+       * Collection of the selected members
+       * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
+       */
+      this.members = new Collection();
       for (const [id, member] of Object.entries(members)) {
         const user = users[id];
         if (!user) {
@@ -55,21 +47,25 @@ class SelectMenuInteraction extends MessageComponentInteraction {
       }
     }
 
-    if (users) {
-      for (const user of Object.values(users)) {
-        this.users.set(user.id, this.client.users._add(user));
-      }
-    }
-
     if (roles) {
+      /**
+       * Collection of the selected roles
+       * @type {Collection<Snowflake, Role|APIRole>}
+       */
+      this.roles = new Collection();
       for (const role of Object.values(roles)) {
         this.roles.set(role.id, this.guild?.roles._add(role) ?? role);
       }
     }
 
-    if (channels) {
-      for (const channel of Object.values(channels)) {
-        this.channels.set(channel.id, this.client?.channels._add(channel) ?? channel);
+    if (users) {
+      /**
+       * Collection of the selected users
+       * @type {Collection<Snowflake, User>}
+       */
+      this.users = new Collection();
+      for (const user of Object.values(users)) {
+        this.users.set(user.id, this.client.users._add(user));
       }
     }
   }
