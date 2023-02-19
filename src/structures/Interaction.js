@@ -269,10 +269,18 @@ class Interaction extends Base {
    * Indicates whether this interaction is a {@link SelectMenuInteraction}.
    * @returns {boolean}
    */
-  isSelectMenu() {
+  isAnySelectMenu() {
     return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && typeof this.values !== 'undefined';
   }
 
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}
+   * @returns {boolean}
+   * @deprecated Use {@link Interaction#isStringSelect()} instead
+   */
+  isSelectMenu() {
+    return this.type === InteractionTypes.STRING_SELECT;
+  }
   /**
    * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `STRING_SELECT` type
    * @returns {boolean}
