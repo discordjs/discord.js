@@ -38,6 +38,7 @@ import {
 	type RESTPostAPIGuildStickerFormDataBody,
 	type RESTPostAPIGuildStickerResult,
 	type RESTGetAPIGuildMembersSearchQuery,
+	type RESTGetAPIGuildWebhooksResult,
 	type RESTGetAPIGuildWelcomeScreenResult,
 	type RESTGetAPIGuildWidgetImageResult,
 	type RESTGetAPIGuildWidgetJSONResult,
@@ -964,5 +965,15 @@ export class GuildsAPI {
 	 */
 	public async createTemplate(templateCode: string, data: RESTPostAPITemplateCreateGuildJSONBody) {
 		return this.rest.post(Routes.template(templateCode), { body: data }) as Promise<RESTPostAPIGuildTemplatesResult>;
+	}
+
+	/**
+	 * Fetches webhooks for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-guild-webhooks}
+	 * @param id - The id of the guild
+	 */
+	public async getWebhooks(id: Snowflake) {
+		return this.rest.get(Routes.guildWebhooks(id)) as Promise<RESTGetAPIGuildWebhooksResult>;
 	}
 }
