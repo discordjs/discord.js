@@ -37,7 +37,7 @@ jobs:
       - name: Publish package
         if: steps.extract-tag.outputs.subpackage == 'true'  || !startsWith(steps.extract-tag.outputs.version, '13.')
         run: |
-          echo yarn workspace ${{ (steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '') + steps.extract-tag.outputs.package}} npm publish || true
+          echo yarn workspace ${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || ''}}${{ steps.extract-tag.outputs.package}} npm publish || true
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
