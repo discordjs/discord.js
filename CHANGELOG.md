@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.13.1](https://github.com/discordjs/discord.js/compare/13.13.0...13.13.1) - (2023-02-21)
+
+## Bug Fixes
+
+- **Constants:** Enum creation error (#9155) ([224f21c](https://github.com/discordjs/discord.js/commit/224f21c9c0eb01985dc8f3752186c16cfce5f2a6))
+
 # [13.13.0](https://github.com/discordjs/discord.js/compare/13.12.0...13.13.0) - (2023-02-21)
 
 ## Bug Fixes
