@@ -1281,7 +1281,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * @typedef {string} ApplicationRoleConnectionMetadataType
  * @see{@link https://discord.com/developers/docs/resources/application-role-connection-metadata#application-role-connection-metadata-object-application-role-connection-metadata-type}
  */
-exports.ApplicationRoleConnectionMetadataTypes = createEnum(
+exports.ApplicationRoleConnectionMetadataTypes = createEnum([
   null,
   'INTEGER_LESS_THAN_OR_EQUAL',
   'INTEGER_GREATER_THAN_OR_EQUAL',
@@ -1291,7 +1291,7 @@ exports.ApplicationRoleConnectionMetadataTypes = createEnum(
   'DATATIME_GREATER_THAN_OR_EQUAL',
   'BOOLEAN_EQUAL',
   'BOOLEAN_NOT_EQUAL',
-);
+]);
 
 /**
  * The type of an {@link AutoModerationRuleTriggerTypes} object:
