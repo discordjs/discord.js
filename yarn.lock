@@ -2039,7 +2039,7 @@ __metadata:
     "@msgpack/msgpack": ^2.8.0
     "@types/node": 16.18.11
     "@vitest/coverage-c8": ^0.27.1
-    "@vladfrangu/async_event_emitter": ^2.1.3
+    "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
     eslint: ^8.31.0
     eslint-config-neon: ^0.1.40
@@ -2112,7 +2112,7 @@ __metadata:
     "@sapphire/snowflake": ^3.4.0
     "@types/node": 16.18.11
     "@vitest/coverage-c8": ^0.27.1
-    "@vladfrangu/async_event_emitter": ^2.1.3
+    "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
     eslint: ^8.31.0
@@ -2516,7 +2516,7 @@ __metadata:
     "@types/node": 16.18.11
     "@types/ws": ^8.5.4
     "@vitest/coverage-c8": ^0.27.1
-    "@vladfrangu/async_event_emitter": ^2.1.3
+    "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
     esbuild-plugin-version-injector: ^1.0.2
@@ -5346,10 +5346,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vladfrangu/async_event_emitter@npm:^2.1.3":
-  version: 2.1.3
-  resolution: "@vladfrangu/async_event_emitter@npm:2.1.3"
-  checksum: 1541b281550b39446f86ea9d4622be0d74c4d3924b42550db11164b409a82010f396b588a87ffe27f72a96a7f92af0190f4c3b57861249a4038515e0d474b3c6
+"@vladfrangu/async_event_emitter@npm:^2.1.4":
+  version: 2.1.4
+  resolution: "@vladfrangu/async_event_emitter@npm:2.1.4"
+  checksum: 604d228a4fa46c0686d4377c2ca63035aa266382133f351f098d85782df4e451ebba2c528a7d54aa955c7fdb824a642a7ec63d5a85cf46f6cbaea46ea56a0959
   languageName: node
   linkType: hard
 
