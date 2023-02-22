@@ -10,7 +10,7 @@ class GuildAuditLogEntryCreateAction extends Action {
     let auditLogEntry;
 
     if (guild) {
-      auditLogEntry = guild.auditLogsEntries._add(data);
+      auditLogEntry = guild.auditLogs._add(data);
 
       /**
        * Emitted whenever a guild audit log entry is created.

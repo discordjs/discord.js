@@ -1276,7 +1276,7 @@ export class Guild extends AnonymousGuild {
   public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
-  public auditLogEntries: GuildAuditLogEntryManager;
+  public auditLogs: GuildAuditLogManager;
   public autoModerationRules: AutoModerationRuleManager;
   public available: boolean;
   public bans: GuildBanManager;
@@ -3808,13 +3808,12 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
-export class GuildAuditLogEntryManager extends CachedManager<
-  Snowflake,
-  GuildAuditLogsEntry,
-  GuildAuditLogsEntryResolvable
-> {
+export class GuildAuditLogManager extends CachedManager<Snowflake, GuildAuditLogsEntry, GuildAuditLogsEntryResolvable> {
   private constructor(guild: Guild);
   public guild: Guild;
+  public fetch<T extends GuildAuditLogsResolvable = null>(
+    options?: GuildAuditLogsFetchOptions<T>,
+  ): Promise<GuildAuditLogs<T>>;
 }
 
 export type MappedGuildChannelTypes = {

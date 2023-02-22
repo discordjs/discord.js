@@ -1,19 +1,17 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
-const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
-const GuildAuditLogEntryManager = require('../managers/GuildAuditLogEntryManager');
+const GuildAuditLogManager = require('../managers/GuildAuditLogManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -44,7 +42,7 @@ class Guild extends AnonymousGuild {
      * A manager of the guild audit logs of this guild
      * @type {GuildApplicationCommandManager}
      */
-    this.auditLogEntries = new GuildAuditLogEntryManager(this);
+    this.auditLogs = new GuildAuditLogManager(this);
 
     /**
      * A manager of the application commands belonging to this guild
@@ -704,16 +702,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Options used to fetch audit logs.
-   * @typedef {Object} GuildAuditLogsFetchOptions
-   * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
-   * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
-   * @property {number} [limit] The number of entries to return
-   * @property {UserResolvable} [user] Only return entries for actions made by this user
-   * @property {?AuditLogEvent} [type] Only return entries for this action type
-   */
-
-  /**
    * Fetches audit logs for this guild.
    * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
    * @returns {Promise<GuildAuditLogs>}
@@ -723,22 +711,8 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
-    const query = makeURLSearchParams({
-      before: before?.id ?? before,
-      after: after?.id ?? after,
-      limit,
-      action_type: type,
-    });
-
-    if (user) {
-      const userId = this.client.users.resolveId(user);
-      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
-      query.set('user_id', userId);
-    }
-
-    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
-    return new GuildAuditLogs(this, data);
+  fetchAuditLogs(options) {
+    return this.auditLogs.fetch(options);
   }
 
   /**

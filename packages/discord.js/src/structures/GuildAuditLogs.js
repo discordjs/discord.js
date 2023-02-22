@@ -77,7 +77,7 @@ class GuildAuditLogs {
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = guild.auditLogsEntries._add(item, true, { extras: [this] });
+      const entry = guild.auditLogs._add(item, true, { extras: [this] });
       this.entries.set(entry.id, entry);
     }
   }
