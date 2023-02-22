@@ -96,7 +96,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
-        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : stickerFormat === 'GIF' ? 'gif' : 'png'
+        `${root}/stickers/${stickerId}.${
+          stickerFormat === 'LOTTIE' ? 'json' : stickerFormat === 'GIF' ? 'gif' : 'png'
         }`,
       RoleIcon: (roleId, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
