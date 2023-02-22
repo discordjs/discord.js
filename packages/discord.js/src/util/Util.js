@@ -90,7 +90,7 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
   if (!text.includes(':')) return { animated: false, name: text, id: undefined };
-  const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{16,20})?>?/);
+  const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
   return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
 }
 
@@ -102,7 +102,7 @@ function parseEmoji(text) {
  */
 function resolvePartialEmoji(emoji) {
   if (!emoji) return null;
-  if (typeof emoji === 'string') return /^\d{16,20}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
+  if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
   const { id, name, animated } = emoji;
   if (!id && !name) return null;
   return { id, name, animated: Boolean(animated) };
@@ -315,7 +315,7 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(/<(@[!&]?|#)(\d{16,20})>/g, (match, type, id) => {
+  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
     switch (type) {
       case '@':
       case '@!': {
@@ -359,7 +359,7 @@ function cleanCodeBlockContent(text) {
  */
 function parseWebhookURL(url) {
   const matches = url.match(
-    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{16,20})\/([\w-]{68})/i,
+    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
   );
 
   if (!matches || matches.length <= 2) return null;
