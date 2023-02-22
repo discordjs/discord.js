@@ -1276,6 +1276,7 @@ export class Guild extends AnonymousGuild {
   public maxVideoChannelUsers: number | null;
   public approximateMemberCount: number | null;
   public approximatePresenceCount: number | null;
+  public auditLogEntries: GuildAuditLogEntryManager;
   public autoModerationRules: AutoModerationRuleManager;
   public available: boolean;
   public bans: GuildBanManager;
@@ -1390,7 +1391,7 @@ export class GuildAuditLogsEntry<
     ? GuildAuditLogsTypes[TAction][0]
     : GuildAuditLogsTargetType,
   TResolvedType = TAction extends null ? AuditLogEvent : TAction,
-> {
+> extends Base {
   private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
   public static Targets: GuildAuditLogsTargets;
   public action: TResolvedType;
@@ -1403,6 +1404,7 @@ export class GuildAuditLogsEntry<
   public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
     ? GuildAuditLogsEntryExtraField[TResolvedType]
     : null;
+  public guild: Guild;
   public id: Snowflake;
   public reason: string | null;
   public targetId: Snowflake | null;
@@ -1414,6 +1416,8 @@ export class GuildAuditLogsEntry<
   public static targetType(target: AuditLogEvent): GuildAuditLogsTargetType;
   public toJSON(): unknown;
 }
+
+export type GuildAuditLogsEntryResolvable = GuildAuditLogsEntry | Snowflake;
 
 export class GuildBan extends Base {
   private constructor(client: Client<true>, data: RawGuildBanData, guild: Guild);
@@ -3802,6 +3806,15 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
     options?: FetchGuildApplicationCommandFetchOptions,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+}
+
+export class GuildAuditLogEntryManager extends CachedManager<
+  Snowflake,
+  GuildAuditLogsEntry,
+  GuildAuditLogsEntryResolvable
+> {
+  private constructor(guild: Guild);
+  public guild: Guild;
 }
 
 export type MappedGuildChannelTypes = {

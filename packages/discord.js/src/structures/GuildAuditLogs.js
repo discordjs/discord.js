@@ -2,7 +2,6 @@
 
 const { Collection } = require('@discordjs/collection');
 const ApplicationCommand = require('./ApplicationCommand');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const { flatten } = require('../util/Util');
@@ -78,7 +77,7 @@ class GuildAuditLogs {
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(guild, item, this);
+      const entry = guild.auditLogsEntries._add(item, true, { extras: [this] });
       this.entries.set(entry.id, entry);
     }
   }

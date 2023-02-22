@@ -1,7 +1,6 @@
 'use strict';
 
 const Action = require('./Action');
-const GuildAuditLogsEntry = require('../../structures/GuildAuditLogsEntry');
 const Events = require('../../util/Events');
 
 class GuildAuditLogEntryCreateAction extends Action {
@@ -11,7 +10,7 @@ class GuildAuditLogEntryCreateAction extends Action {
     let auditLogEntry;
 
     if (guild) {
-      auditLogEntry = new GuildAuditLogsEntry(guild, data);
+      auditLogEntry = guild.auditLogsEntries._add(data);
 
       /**
        * Emitted whenever a guild audit log entry is created.

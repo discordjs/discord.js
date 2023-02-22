@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
 const AutoModerationRule = require('./AutoModerationRule');
+const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
@@ -85,8 +86,9 @@ const Targets = {
 
 /**
  * Audit logs entry.
+ * @extends {Base}
  */
-class GuildAuditLogsEntry {
+class GuildAuditLogsEntry extends Base {
   /**
    * Key mirror of all available audit log targets.
    * @type {Object<string, string>}
@@ -95,6 +97,14 @@ class GuildAuditLogsEntry {
   static Targets = Targets;
 
   constructor(guild, data, logs) {
+    super(guild.client);
+
+    /**
+     * The guild of this guild audit logs entry
+     * @type {Guild}
+     */
+    this.guild = guild;
+
     /**
      * The target type of this entry
      * @type {AuditLogTargetType}
@@ -131,9 +141,9 @@ class GuildAuditLogsEntry {
      * @type {?User}
      */
     this.executor = data.user_id
-      ? guild.client.options.partials.includes(Partials.User)
-        ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id) ?? null
+      ? this.client.options.partials.includes(Partials.User)
+        ? this.client.users._add({ id: data.user_id })
+        : this.client.users.cache.get(data.user_id) ?? null
       : null;
 
     /**
@@ -183,7 +193,7 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.MessagePin:
       case AuditLogEvent.MessageUnpin:
         this.extra = {
-          channel: guild.client.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
+          channel: this.client.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           messageId: data.options.message_id,
         };
         break;
@@ -222,7 +232,7 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.StageInstanceDelete:
       case AuditLogEvent.StageInstanceUpdate:
         this.extra = {
-          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
+          channel: this.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
 
@@ -264,16 +274,16 @@ class GuildAuditLogsEntry {
       this.target.id = data.target_id;
       // MemberDisconnect and similar types do not provide a target_id.
     } else if (targetType === Targets.User && data.target_id) {
-      this.target = guild.client.options.partials.includes(Partials.User)
-        ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id) ?? null;
+      this.target = this.client.options.partials.includes(Partials.User)
+        ? this.client.users._add({ id: data.target_id })
+        : this.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Guild) {
-      this.target = guild.client.guilds.cache.get(data.target_id);
+      this.target = this.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
       this.target =
         logs?.webhooks.get(data.target_id) ??
         new Webhook(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -292,7 +302,7 @@ class GuildAuditLogsEntry {
       this.target =
         guild.invites.cache.get(change) ??
         new Invite(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -306,12 +316,12 @@ class GuildAuditLogsEntry {
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id) ?? null;
+          : this.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Integration) {
       this.target =
         logs?.integrations.get(data.target_id) ??
         new Integration(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -335,7 +345,7 @@ class GuildAuditLogsEntry {
       this.target =
         guild.stageInstances.cache.get(data.target_id) ??
         new StageInstance(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -352,7 +362,7 @@ class GuildAuditLogsEntry {
       this.target =
         guild.stickers.cache.get(data.target_id) ??
         new Sticker(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -365,7 +375,7 @@ class GuildAuditLogsEntry {
       this.target =
         guild.scheduledEvents.cache.get(data.target_id) ??
         new GuildScheduledEvent(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;
@@ -380,7 +390,7 @@ class GuildAuditLogsEntry {
       this.target =
         guild.autoModerationRules.cache.get(data.target_id) ??
         new AutoModerationRule(
-          guild.client,
+          this.client,
           this.changes.reduce(
             (o, c) => {
               o[c.key] = c.new ?? c.old;

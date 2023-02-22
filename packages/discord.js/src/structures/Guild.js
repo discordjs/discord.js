@@ -13,6 +13,7 @@ const WelcomeScreen = require('./WelcomeScreen');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
+const GuildAuditLogEntryManager = require('../managers/GuildAuditLogEntryManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -38,6 +39,12 @@ const { discordSort } = require('../util/Util');
 class Guild extends AnonymousGuild {
   constructor(client, data) {
     super(client, data, false);
+
+    /**
+     * A manager of the guild audit logs of this guild
+     * @type {GuildApplicationCommandManager}
+     */
+    this.auditLogEntries = new GuildAuditLogEntryManager(this);
 
     /**
      * A manager of the application commands belonging to this guild

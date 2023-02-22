@@ -56,6 +56,7 @@ exports.ChannelManager = require('./managers/ChannelManager');
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager');
 exports.DataManager = require('./managers/DataManager');
 exports.GuildApplicationCommandManager = require('./managers/GuildApplicationCommandManager');
+exports.GuildAuditLogEntryManager = require('./managers/GuildAuditLogEntryManager');
 exports.GuildBanManager = require('./managers/GuildBanManager');
 exports.GuildChannelManager = require('./managers/GuildChannelManager');
 exports.GuildEmojiManager = require('./managers/GuildEmojiManager');
