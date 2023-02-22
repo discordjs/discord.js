@@ -1199,10 +1199,11 @@ exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
  * * PNG
  * * APNG
  * * LOTTIE
+ * * GIF
  * @typedef {string} StickerFormatType
  * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-format-types}
  */
-exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
+exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE', 'GIF']);
 
 /**
  * An overwrite type:
