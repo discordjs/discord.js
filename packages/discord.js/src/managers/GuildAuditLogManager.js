@@ -21,6 +21,11 @@ class GuildAuditLogManager extends CachedManager {
      */
     this.guild = guild;
   }
+  /**
+   * The cache of this Manager
+   * @type {Collection<Snowflake, GuildAuditLogsEntry>}
+   * @name GuildBanManager#cache
+   */
 
   _add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.cache.get(id ?? data.id);
