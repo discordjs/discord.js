@@ -64,7 +64,7 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.4",
-		"@vladfrangu/async_event_emitter": "^2.1.3",
+		"@vladfrangu/async_event_emitter": "^2.1.4",
 		"discord-api-types": "^0.37.35",
 		"tslib": "^2.4.1",
 		"ws": "^8.12.0"
