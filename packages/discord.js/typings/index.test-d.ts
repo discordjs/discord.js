@@ -160,6 +160,7 @@ import {
   PublicThreadChannel,
   GuildMemberManager,
   GuildMemberFlagsBitField,
+  CollectorEventType,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1311,6 +1312,18 @@ messageCollector.on('collect', (...args) => {
 
 (async () => {
   for await (const value of messageCollector) {
+    expectType<[CollectorEventType, Message<boolean>, Collection<Snowflake, Message>]>(value);
+  }
+
+  for await (const value of messageCollector.collectings()) {
+    expectType<[Message<boolean>, Collection<Snowflake, Message>]>(value);
+  }
+
+  for await (const value of messageCollector.disposings()) {
+    expectType<[Message<boolean>, Collection<Snowflake, Message>]>(value);
+  }
+
+  for await (const value of messageCollector.ignorings()) {
     expectType<[Message<boolean>, Collection<Snowflake, Message>]>(value);
   }
 })();
@@ -1322,6 +1335,18 @@ reactionCollector.on('dispose', (...args) => {
 
 (async () => {
   for await (const value of reactionCollector) {
+    expectType<[CollectorEventType, MessageReaction, User]>(value);
+  }
+
+  for await (const value of reactionCollector.collectings()) {
+    expectType<[MessageReaction, User]>(value);
+  }
+
+  for await (const value of reactionCollector.disposings()) {
+    expectType<[MessageReaction, User]>(value);
+  }
+
+  for await (const value of reactionCollector.ignorings()) {
     expectType<[MessageReaction, User]>(value);
   }
 })();
@@ -1916,6 +1941,18 @@ collector.on('end', (collection, reason) => {
 
 (async () => {
   for await (const value of collector) {
+    expectType<[CollectorEventType, Interaction, ...string[]]>(value);
+  }
+
+  for await (const value of collector.collectings()) {
+    expectType<[Interaction, ...string[]]>(value);
+  }
+
+  for await (const value of collector.disposings()) {
+    expectType<[Interaction, ...string[]]>(value);
+  }
+
+  for await (const value of collector.ignorings()) {
     expectType<[Interaction, ...string[]]>(value);
   }
 })();
