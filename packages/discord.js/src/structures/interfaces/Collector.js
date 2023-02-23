@@ -157,7 +157,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Returns a promise that resolves with the next collected, disposed or ignored elements;
+   * Returns a promise that resolves with the next collected, disposed, or ignored elements;
    * rejects with collected elements if the collector finishes without receiving a next element
    * @type {Promise}
    * @readonly
@@ -364,7 +364,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Allows collector to be consumed with for-await-of loop for collected, disposed and ignored elements
+   * Allows collectors to be consumed with for-await-of loop for collected, disposed, and ignored elements
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *[Symbol.asyncIterator]() {
@@ -404,7 +404,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Allows collector to be consumed with for-await-of loop for collected elements
+   * Allows collectors to be consumed with for-await-of loop for collected elements
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *collectings() {
@@ -435,7 +435,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Allows collector to be consumed with for-await-of loop for disposed elements
+   * Allows collectors to be consumed with for-await-of loop for disposed elements
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *disposings() {
@@ -466,7 +466,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Allows collector to be consumed with for-await-of loop for ignored elements
+   * Allows collectors to be consumed with for-await-of loop for ignored elements
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *ignorings() {
