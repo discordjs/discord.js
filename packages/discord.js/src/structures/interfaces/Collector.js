@@ -157,7 +157,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Returns a promise that resolves with the next collected element;
+   * Returns a promise that resolves with the next collected, disposed or ignored elements;
    * rejects with collected elements if the collector finishes without receiving a next element
    * @type {Promise}
    * @readonly
@@ -171,12 +171,24 @@ class Collector extends EventEmitter {
 
       const cleanup = () => {
         this.removeListener('collect', onCollect);
+        this.removeListener('dispose', onDispose);
+        this.removeListener('ignore', onIgnore);
         this.removeListener('end', onEnd);
       };
 
-      const onCollect = item => {
+      const onCollect = (...items) => {
         cleanup();
-        resolve(item);
+        resolve(['collecting', ...items]);
+      };
+
+      const onDispose = (...items) => {
+        cleanup();
+        resolve(['disposing', ...items]);
+      };
+
+      const onIgnore = (...items) => {
+        cleanup();
+        resolve(['ignoring', ...items]);
       };
 
       const onEnd = () => {
@@ -185,6 +197,107 @@ class Collector extends EventEmitter {
       };
 
       this.on('collect', onCollect);
+      this.on('dispose', onDispose);
+      this.on('ignore', onIgnore);
+      this.on('end', onEnd);
+    });
+  }
+
+  /**
+   * Returns a promise that resolves with the next collected elements;
+   * rejects with collected elements if the collector finishes without receiving a next element
+   * @type {Promise}
+   * @readonly
+   */
+  get nextCollecting() {
+    return new Promise((resolve, reject) => {
+      if (this.ended) {
+        reject(this.collected);
+        return;
+      }
+
+      const cleanup = () => {
+        this.removeListener('collect', onCollect);
+        this.removeListener('end', onEnd);
+      };
+
+      const onCollect = (...items) => {
+        cleanup();
+        resolve(items);
+      };
+
+      const onEnd = () => {
+        cleanup();
+        reject(this.collected);
+      };
+
+      this.on('collect', onCollect);
+      this.on('end', onEnd);
+    });
+  }
+
+  /**
+   * Returns a promise that resolves with the next disposed elements;
+   * rejects with collected elements if the collector finishes without receiving a next element
+   * @type {Promise}
+   * @readonly
+   */
+  get nextDisposing() {
+    return new Promise((resolve, reject) => {
+      if (this.ended) {
+        reject(this.collected);
+        return;
+      }
+
+      const cleanup = () => {
+        this.removeListener('dispose', onDispose);
+        this.removeListener('end', onEnd);
+      };
+
+      const onDispose = (...items) => {
+        cleanup();
+        resolve(items);
+      };
+
+      const onEnd = () => {
+        cleanup();
+        reject(this.collected);
+      };
+
+      this.on('dispose', onDispose);
+      this.on('end', onEnd);
+    });
+  }
+
+  /**
+   * Returns a promise that resolves with the next ignored elements;
+   * rejects with collected elements if the collector finishes without receiving a next element
+   * @type {Promise}
+   * @readonly
+   */
+  get nextIgnoring() {
+    return new Promise((resolve, reject) => {
+      if (this.ended) {
+        reject(this.collected);
+        return;
+      }
+
+      const cleanup = () => {
+        this.removeListener('ignore', onIgnore);
+        this.removeListener('end', onEnd);
+      };
+
+      const onIgnore = (...items) => {
+        cleanup();
+        resolve(items);
+      };
+
+      const onEnd = () => {
+        cleanup();
+        reject(this.collected);
+      };
+
+      this.on('ignore', onIgnore);
       this.on('end', onEnd);
     });
   }
@@ -251,12 +364,52 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Allows collectors to be consumed with for-await-of loops
+   * Allows collector to be consumed with for-await-of loop for collected, disposed and ignored elements
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *[Symbol.asyncIterator]() {
     const queue = [];
-    const onCollect = (...item) => queue.push(item);
+    const onCollect = (...items) => queue.push(['collecting', ...items]);
+    const onDispose = (...items) => queue.push(['disposing', ...items]);
+    const onIgnore = (...items) => queue.push(['ignoring', ...items]);
+    this.on('collect', onCollect);
+    this.on('dispose', onDispose);
+    this.on('ignore', onIgnore);
+
+    try {
+      while (queue.length || !this.ended) {
+        if (queue.length) {
+          yield queue.shift();
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            const tick = () => {
+              this.removeListener('collect', tick);
+              this.removeListener('dispose', tick);
+              this.removeListener('end', tick);
+              return resolve();
+            };
+            this.on('collect', tick);
+            this.on('dispose', tick);
+            this.on('ignore', tick);
+            this.on('end', tick);
+          });
+        }
+      }
+    } finally {
+      this.removeListener('collect', onCollect);
+      this.removeListener('dispose', onDispose);
+      this.removeListener('ignore', onIgnore);
+    }
+  }
+
+  /**
+   * Allows collector to be consumed with for-await-of loop for collected elements
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
+   */
+  async *collectings() {
+    const queue = [];
+    const onCollect = (...items) => queue.push(items);
     this.on('collect', onCollect);
 
     try {
@@ -278,6 +431,68 @@ class Collector extends EventEmitter {
       }
     } finally {
       this.removeListener('collect', onCollect);
+    }
+  }
+
+  /**
+   * Allows collector to be consumed with for-await-of loop for disposed elements
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
+   */
+  async *disposings() {
+    const queue = [];
+    const onDispose = (...items) => queue.push(items);
+    this.on('dispose', onDispose);
+
+    try {
+      while (queue.length || !this.ended) {
+        if (queue.length) {
+          yield queue.shift();
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            const tick = () => {
+              this.removeListener('dispose', tick);
+              this.removeListener('end', tick);
+              return resolve();
+            };
+            this.on('dispose', tick);
+            this.on('end', tick);
+          });
+        }
+      }
+    } finally {
+      this.removeListener('dispose', onDispose);
+    }
+  }
+
+  /**
+   * Allows collector to be consumed with for-await-of loop for ignored elements
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
+   */
+  async *ignorings() {
+    const queue = [];
+    const onIgnore = (...items) => queue.push(items);
+    this.on('ignore', onIgnore);
+
+    try {
+      while (queue.length || !this.ended) {
+        if (queue.length) {
+          yield queue.shift();
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            const tick = () => {
+              this.removeListener('ignore', tick);
+              this.removeListener('end', tick);
+              return resolve();
+            };
+            this.on('ignore', tick);
+            this.on('end', tick);
+          });
+        }
+      }
+    } finally {
+      this.removeListener('ignore', onIgnore);
     }
   }
 

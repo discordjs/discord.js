@@ -1040,6 +1040,8 @@ export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
   end: [collected: Collection<K, V>, reason: string];
 }
 
+export type CollectorEventType = 'collecting' | 'disposing' | 'ignoring';
+
 export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
   protected constructor(client: Client<true>, options?: CollectorOptions<[V, ...F]>);
   private _timeout: NodeJS.Timeout | null;
@@ -1051,14 +1053,20 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public ended: boolean;
   public get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
-  public get next(): Promise<V>;
+  public get next(): Promise<[CollectorEventType, V, ...F]>;
+  public get nextCollecting(): Promise<V>;
+  public get nextDisposing(): Promise<V>;
+  public get nextIgnoring(): Promise<V>;
   public options: CollectorOptions<[V, ...F]>;
   public checkEnd(): boolean;
+  public collectings(): AsyncIterableIterator<[V, ...F]>;
+  public disposings(): AsyncIterableIterator<[V, ...F]>;
   public handleCollect(...args: unknown[]): Promise<void>;
   public handleDispose(...args: unknown[]): Promise<void>;
+  public ignorings(): AsyncIterableIterator<[V, ...F]>;
   public stop(reason?: string): void;
   public resetTimer(options?: CollectorResetTimerOptions): void;
-  public [Symbol.asyncIterator](): AsyncIterableIterator<[V, ...F]>;
+  public [Symbol.asyncIterator](): AsyncIterableIterator<[CollectorEventType, V, ...F]>;
   public toJSON(): unknown;
 
   protected listener: (...args: any[]) => void;
