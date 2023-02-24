@@ -14,7 +14,7 @@ const WelcomeScreen = require('./WelcomeScreen');
 const { DiscordjsError, ErrorCodes, DiscordjsTypeError } = require('../errors');
 const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
-const GuildAuditLogManager = require('../managers/GuildAuditLogManager');
+const GuildAuditLogEntryManager = require('../managers/GuildAuditLogEntryManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -45,7 +45,7 @@ class Guild extends AnonymousGuild {
      * A manager of the guild audit logs of this guild
      * @type {GuildApplicationCommandManager}
      */
-    this.auditLogs = new GuildAuditLogManager(this);
+    this.auditLogEntries = new GuildAuditLogEntryManager(this);
 
     /**
      * A manager of the application commands belonging to this guild
@@ -708,7 +708,7 @@ class Guild extends AnonymousGuild {
    * Fetches audit logs for this guild.
    * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
    * @returns {Promise<GuildAuditLogs>}
-   * @deprecated Use {@link GuildAuditLogManager#fetch()} instead
+   * @deprecated Use {@link GuildAuditLogEntryManager#fetch()} instead
    * @example
    * // Output audit log entries
    * guild.fetchAuditLogs()
@@ -1305,7 +1305,7 @@ class Guild extends AnonymousGuild {
 }
 Guild.prototype.fetchAuditLogs = deprecate(
   Guild.prototype.fetchAuditLogs,
-  'Guild#fetchAuditLogs() is deprecated. Use GuildAuditLogManager#fetch() instead.',
+  'Guild#fetchAuditLogs() is deprecated. Use GuildAuditLogEntryManager#fetch() instead.',
 );
 
 exports.Guild = Guild;

@@ -160,7 +160,7 @@ import {
   PublicThreadChannel,
   GuildMemberManager,
   GuildMemberFlagsBitField,
-  GuildAuditLogManager,
+  GuildAuditLogEntryManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2183,4 +2183,4 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
-expectType<GuildAuditLogManager>(guild.auditLogs);
+expectType<GuildAuditLogEntryManager>(guild.auditLogEntries);
