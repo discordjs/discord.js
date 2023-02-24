@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -616,6 +616,8 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (!DeletableMessageTypes.includes(this.type)) return false;
+
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
