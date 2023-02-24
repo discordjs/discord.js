@@ -161,6 +161,7 @@ exports.SelectMenuTypes = [
  * * {@link MessageType.StageTopic}
  * * {@link MessageType.ThreadCreated}
  * * {@link MessageType.UserJoin}
+ * @typedef {MessageType[]} DeletableMessageTypes
  */
 exports.DeletableMessageTypes = [
   MessageType.AutoModerationAction,
