@@ -96,7 +96,7 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
-       * @property {?number} customMessage The custom message associated with this action
+       * @property {?string} customMessage The custom message associated with this action
        */
 
       /**

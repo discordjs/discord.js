@@ -75,7 +75,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @typedef {Object} AutoModerationActionMetadataOptions
    * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
-   * @property {AutoModerationActionType} customMessage The custom message of this action
+   * @property {string} customMessage The custom message of this action
    */
 
   /**
