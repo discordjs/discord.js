@@ -1054,9 +1054,9 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
   public get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
   public get next(): Promise<[CollectorEventType, V, ...F]>;
-  public get nextCollecting(): Promise<V>;
-  public get nextDisposing(): Promise<V>;
-  public get nextIgnoring(): Promise<V>;
+  public get nextCollecting(): Promise<[V, ...F]>;
+  public get nextDisposing(): Promise<[V, ...F]>;
+  public get nextIgnoring(): Promise<[V, ...F]>;
   public options: CollectorOptions<[V, ...F]>;
   public checkEnd(): boolean;
   public collectings(): AsyncIterableIterator<[V, ...F]>;
