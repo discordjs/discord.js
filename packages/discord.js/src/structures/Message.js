@@ -631,8 +631,9 @@ class Message extends Base {
     // This flag allows deleting even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
+    // The auto moderation action message author is the reference message author
     return Boolean(
-      this.author.id === this.client.user.id ||
+      (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) ||
         (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
           this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
     );
