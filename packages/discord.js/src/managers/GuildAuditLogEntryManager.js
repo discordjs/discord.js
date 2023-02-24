@@ -27,7 +27,7 @@ class GuildAuditLogEntryManager extends CachedManager {
   /**
    * The cache of this Manager
    * @type {Collection<Snowflake, GuildAuditLogsEntry>}
-   * @name GuildBanManager#cache
+   * @name GuildAuditLogEntryManager#cache
    */
 
   _add(data, cache = true, { id, extras = [] } = {}) {
@@ -83,7 +83,7 @@ class GuildAuditLogEntryManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
 
-    let notCachableObjects = {
+    const notCachableObjects = {
       webhooks: data.webhooks.reduce(
         (webhooks, webhook) => webhooks.set(webhook.id, new Webhook(this.client, webhook)),
         new Collection(),

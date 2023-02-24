@@ -2184,3 +2184,15 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
 expectType<GuildAuditLogEntryManager>(guild.auditLogEntries);
+
+expectType<Promise<Collection<Snowflake, GuildAuditLogsEntry<AuditLogEvent.BotAdd>>>>(
+  guild.auditLogEntries.fetch({ type: AuditLogEvent.BotAdd }),
+);
+
+expectType<Promise<Collection<Snowflake, GuildAuditLogsEntry>>>(
+  guild.auditLogEntries.fetch({ after: '1234567890123456789', user }),
+);
+
+expectType<Promise<Collection<Snowflake, GuildAuditLogsEntry>>>(
+  guild.auditLogEntries.fetch({ before: '1234567890123456789', user }),
+);
