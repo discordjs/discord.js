@@ -1,11 +1,14 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const GuildAuditLogs = require('../structures/GuildAuditLogs');
+const ApplicationCommand = require('../structures/ApplicationCommand');
 const GuildAuditLogsEntry = require('../structures/GuildAuditLogsEntry');
+const Integration = require('../structures/Integration');
+const Webhook = require('../structures/Webhook');
 
 /**
  * An extension for guild-specific application commands.
@@ -57,11 +60,11 @@ class GuildAuditLogManager extends CachedManager {
   /**
    * Fetches audit logs for this guild.
    * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
-   * @returns {Promise<GuildAuditLogs>}
+   * @returns {Promise<Collection<GuildAuditLogsEntry>>}
    * @example
    * // Output audit log entries
    * guild.auditLogs.fetch()
-   *   .then(audit => console.log(audit.entries.first()))
+   *   .then(audit => console.log(audit.first()))
    *   .catch(console.error);
    */
   async fetch({ before, after, limit, user, type } = {}) {
@@ -79,7 +82,35 @@ class GuildAuditLogManager extends CachedManager {
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
-    return new GuildAuditLogs(this, data);
+
+    let notCachableObjects = {
+      webhooks: data.webhooks.reduce((webhooks, webhook) =>
+        webhooks.set(webhook.id, new Webhook(this.client, webhook)),
+        new Collection(),
+      ),
+      integrations: data.integrations.reduce((integrations, integration) =>
+        integrations.set(integration.id, new Integration(this.client, integration, this.guild)),
+        new Collection(),
+      ),
+      applicationCommands: data.application_commands.reduce((applicationCommands, command) =>
+        applicationCommands.set(command.id, new ApplicationCommand(this.client, command, this.guild)),
+        new Collection(),
+      ),
+    };
+
+    for (const auditLogUser of data.users) this.client.users._add(auditLogUser);
+    for (const thread of data.threads) this.client.channels._add(thread, this.guild);
+    for (const autoModerationRule in data.auto_moderation_rules) {
+      this.guild.autoModerationRules._add(autoModerationRule);
+    }
+    for (const guildScheduledEvent in data.guild_scheduled_events) {
+      this.guild.scheduledEvents._add(guildScheduledEvent);
+    }
+
+    return data.audit_log_entries.reduce((col, auditLogEntity) =>
+      col.set(auditLogEntity.id, this._add(auditLogEntity, true, { extras: [notCachableObjects] })),
+      new Collection(),
+    );
   }
 }
 

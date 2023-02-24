@@ -1,14 +1,17 @@
 'use strict';
 
+const { deprecate } = require('util');
 const { Collection } = require('@discordjs/collection');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
+const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes, DiscordjsTypeError } = require('../errors');
 const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildAuditLogManager = require('../managers/GuildAuditLogManager');
@@ -705,14 +708,29 @@ class Guild extends AnonymousGuild {
    * Fetches audit logs for this guild.
    * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
    * @returns {Promise<GuildAuditLogs>}
+   * @deprecated Use {@link GuildAuditLogManager#fetch()} instead
    * @example
    * // Output audit log entries
    * guild.fetchAuditLogs()
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  fetchAuditLogs(options) {
-    return this.auditLogs.fetch(options);
+  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
+    const query = makeURLSearchParams({
+      before: before?.id ?? before,
+      after: after?.id ?? after,
+      limit,
+      action_type: type,
+    });
+
+    if (user) {
+      const userId = this.client.users.resolveId(user);
+      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      query.set('user_id', userId);
+    }
+
+    const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
+    return new GuildAuditLogs(this, data);
   }
 
   /**
@@ -1285,6 +1303,10 @@ class Guild extends AnonymousGuild {
     );
   }
 }
+Guild.prototype.fetchAuditLogs = deprecate(
+  Guild.prototype.fetchAuditLogs,
+  'Guild#fetchAuditLogs() is deprecated. Use GuildAuditLogManager#fetch() instead.',
+);
 
 exports.Guild = Guild;
 

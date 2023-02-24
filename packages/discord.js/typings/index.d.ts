@@ -1326,6 +1326,7 @@ export class Guild extends AnonymousGuild {
   public edit(options: GuildEditOptions): Promise<Guild>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
+  /** @deprecated */
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
@@ -3813,7 +3814,7 @@ export class GuildAuditLogManager extends CachedManager<Snowflake, GuildAuditLog
   public guild: Guild;
   public fetch<T extends GuildAuditLogsResolvable = null>(
     options?: GuildAuditLogsFetchOptions<T>,
-  ): Promise<GuildAuditLogs<T>>;
+  ): Promise<Collection<Snowflake, GuildAuditLogsEntry<T>>>;
 }
 
 export type MappedGuildChannelTypes = {
