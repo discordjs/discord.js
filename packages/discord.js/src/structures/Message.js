@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -616,6 +616,8 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (!DeletableMessageTypes.includes(this.type)) return false;
+
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
@@ -629,10 +631,10 @@ class Message extends Base {
     // This flag allows deleting even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
-    return Boolean(
-      this.author.id === this.client.user.id ||
-        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
+    // The auto moderation action message author is the reference message author
+    return (
+      (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) ||
+      (permissions.has(PermissionFlagsBits.ManageMessages, false) && !this.guild.members.me.isCommunicationDisabled())
     );
   }
 
@@ -645,12 +647,11 @@ class Message extends Base {
    * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
    */
   get bulkDeletable() {
-    const permissions = this.channel?.permissionsFor(this.client.user);
     return (
       (this.inGuild() &&
         Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
         this.deletable &&
-        permissions?.has(PermissionFlagsBits.ManageMessages, false)) ??
+        this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageMessages, false)) ??
       false
     );
   }

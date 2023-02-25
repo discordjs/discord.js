@@ -28,6 +28,7 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
     metadata: {
       durationSeconds: autoModerationAction.metadata.duration_seconds ?? null,
       channelId: autoModerationAction.metadata.channel_id ?? null,
+      customMessage: autoModerationAction.metadata.custom_message ?? null,
     },
   };
 }
