@@ -5080,23 +5080,6 @@ export interface ErrorEvent {
   target: WebSocket;
 }
 
-export interface EscapeMarkdownOptions {
-  codeBlock?: boolean;
-  inlineCode?: boolean;
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  strikethrough?: boolean;
-  spoiler?: boolean;
-  codeBlockContent?: boolean;
-  inlineCodeContent?: boolean;
-  escape?: boolean;
-  heading?: boolean;
-  bulletedList?: boolean;
-  numberedList?: boolean;
-  maskedLink?: boolean;
-}
-
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
   locale?: LocaleString;
@@ -5184,7 +5167,6 @@ export interface FetchMembersOptions {
   withPresences?: boolean;
   time?: number;
   nonce?: string;
-  force?: boolean;
 }
 
 export interface FetchMessageOptions extends BaseFetchOptions {
