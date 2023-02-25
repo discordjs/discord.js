@@ -341,8 +341,11 @@ export class AutoModerationActionExecution {
   public action: AutoModerationAction;
   public ruleId: Snowflake;
   public ruleTriggerType: AutoModerationRuleTriggerType;
+  public get user(): User | null;
   public userId: Snowflake;
+  public get channel(): TextBasedChannel | null;
   public channelId: Snowflake | null;
+  public get member(): GuildMember | null;
   public messageId: Snowflake | null;
   public alertSystemMessageId: Snowflake | null;
   public content: string;
