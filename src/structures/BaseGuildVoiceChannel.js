@@ -26,6 +26,8 @@ class BaseGuildVoiceChannel extends GuildChannel {
      * @type {boolean}
      */
     this.nsfw = Boolean(data.nsfw);
+
+    this._patch(data);
   }
 
   _patch(data) {
