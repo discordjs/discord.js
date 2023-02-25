@@ -1,0 +1,39 @@
+name: Publish Release
+on:
+  release:
+    types: [released]
+jobs:
+  npm-publish:
+    name: npm publish
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/yarnCache
+
+      - name: Build dependencies
+        run: yarn build
+
+      - name: Extract package and semver from tag
+        id: extract-tag
+        uses: ./packages/actions/src/formatTag
+        with:
+          tag: ${{ github.ref_name }}
+
+      - name: Publish package
+        run: |
+          yarn workspace ${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} npm publish
+        env:
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

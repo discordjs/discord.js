@@ -3448,6 +3448,29 @@ export type NonSystemMessageType =
   | MessageType.ChatInputCommand
   | MessageType.ContextMenuCommand;
 
+export type DeletableMessageType =
+  | MessageType.AutoModerationAction
+  | MessageType.ChannelFollowAdd
+  | MessageType.ChannelPinnedMessage
+  | MessageType.ChatInputCommand
+  | MessageType.ContextMenuCommand
+  | MessageType.Default
+  | MessageType.GuildBoost
+  | MessageType.GuildBoostTier1
+  | MessageType.GuildBoostTier2
+  | MessageType.GuildBoostTier3
+  | MessageType.GuildInviteReminder
+  | MessageType.InteractionPremiumUpsell
+  | MessageType.Reply
+  | MessageType.RoleSubscriptionPurchase
+  | MessageType.StageEnd
+  | MessageType.StageRaiseHand
+  | MessageType.StageSpeaker
+  | MessageType.StageStart
+  | MessageType.StageTopic
+  | MessageType.ThreadCreated
+  | MessageType.UserJoin;
+
 export const Constants: {
   MaxBulkDeletableMessageAge: 1_209_600_000;
   SweeperKeys: SweeperKey[];
@@ -3456,6 +3479,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
@@ -4546,6 +4570,7 @@ export interface AutoModerationAction {
 export interface AutoModerationActionMetadata {
   channelId: Snowflake | null;
   durationSeconds: number | null;
+  customMessage: string | null;
 }
 
 export interface AutoModerationTriggerMetadata {
@@ -5083,23 +5108,6 @@ export interface ErrorEvent {
   target: WebSocket;
 }
 
-export interface EscapeMarkdownOptions {
-  codeBlock?: boolean;
-  inlineCode?: boolean;
-  bold?: boolean;
-  italic?: boolean;
-  underline?: boolean;
-  strikethrough?: boolean;
-  spoiler?: boolean;
-  codeBlockContent?: boolean;
-  inlineCodeContent?: boolean;
-  escape?: boolean;
-  heading?: boolean;
-  bulletedList?: boolean;
-  numberedList?: boolean;
-  maskedLink?: boolean;
-}
-
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
   locale?: LocaleString;
@@ -5187,7 +5195,6 @@ export interface FetchMembersOptions {
   withPresences?: boolean;
   time?: number;
   nonce?: string;
-  force?: boolean;
 }
 
 export interface FetchMessageOptions extends BaseFetchOptions {

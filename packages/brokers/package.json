@@ -58,7 +58,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@msgpack/msgpack": "^2.8.0",
-		"@vladfrangu/async_event_emitter": "^2.1.3",
+		"@vladfrangu/async_event_emitter": "^2.1.4",
 		"ioredis": "^5.2.4"
 	},
 	"devDependencies": {
