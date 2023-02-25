@@ -101,6 +101,8 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
+       * @property {?string} customMessage
+       * The custom message that will be shown to members whenever the rule blocks their message.
        */
 
       /**
@@ -112,6 +114,7 @@ class AutoModerationRule extends Base {
         metadata: {
           durationSeconds: action.metadata.duration_seconds ?? null,
           channelId: action.metadata.channel_id ?? null,
+          customMessage: action.metadata.custom_message ?? null,
         },
       }));
     }
