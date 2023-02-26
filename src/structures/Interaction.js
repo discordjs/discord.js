@@ -265,12 +265,16 @@ class Interaction extends Base {
     );
   }
 
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
+   * @returns {boolean}
+   */
   isAnySelectMenu() {
     return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && typeof this.values !== 'undefined';
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `STRING_SELECT` type.
    * @returns {boolean}
    * @deprecated Use {@link Interaction#isStringSelect()} instead
    */
@@ -279,7 +283,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `STRING_SELECT` type
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `STRING_SELECT` type.
    * @returns {boolean}
    */
   isStringSelect() {
@@ -290,7 +294,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `USER_SELECT` type
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `USER_SELECT` type.
    * @returns {boolean}
    */
   isUserSelect() {
@@ -301,7 +305,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `ROLE_SELECT` type
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `ROLE_SELECT` type.
    * @returns {boolean}
    */
   isRoleSelect() {
@@ -312,7 +316,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `MENTIONABLE_SELECT` type
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `MENTIONABLE_SELECT` type.
    * @returns {boolean}
    */
   isMentionableSelect() {
@@ -323,7 +327,7 @@ class Interaction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `CHANNEL_SELECT` type
+   * Indicates whether this interaction is a {@link SelectMenuInteraction} with a `CHANNEL_SELECT` type.
    * @returns {boolean}
    */
   isChannelSelect() {
@@ -332,6 +336,7 @@ class Interaction extends Base {
       MessageComponentTypes[this.componentType] === MessageComponentTypes.CHANNEL_SELECT
     );
   }
+
   /**
    * Indicates whether this interaction can be replied to.
    * @returns {boolean}

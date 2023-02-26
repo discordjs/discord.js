@@ -1404,7 +1404,7 @@ exports.MessageComponentTypes = {
   ]),
   /** @deprecated Use `STRING_SELECT` instead */
   SELECT_MENU: 3,
-  /** @deprecated Normally it would be `STRING_SELECT`, but not doing breaking changes disallows it */
+  /** @deprecated Use `STRING_SELECT` instead */
   3: 'SELECT_MENU',
 };
 
@@ -1622,7 +1622,7 @@ function createEnum(keys) {
  * @property {Object<PrivacyLevel, number>} PrivacyLevels Privacy level of a {@link StageInstance} object.
  * @property {ShardEvents} ShardEvents The type of events emitted by a Shard.
  * @property {Status} Status The available statuses of the client.
- * @property {Object<SelectMenuComponentType, number>} SelectMenuComponentTypes The type of any select menu
+ * @property {Object<SelectMenuComponentType, number>} SelectMenuComponentTypes The type of any select menu.
  * @property {Object<StickerFormatType, number>} StickerFormatTypes The value set for a stickers format type.
  * @property {Object<StickerType, number>} StickerTypes The value set for a stickers type.
  * @property {SweeperKey[]} SweeperKeys The name of an item to be swept in Sweepers.

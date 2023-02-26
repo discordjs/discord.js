@@ -93,6 +93,7 @@ class MessageSelectMenu extends BaseMessageComponent {
         typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
       ) ?? [];
   }
+
   /**
    * Adds the channel types to the select menu
    * @param {...ChannelType[]} channelTypes Added channel types
