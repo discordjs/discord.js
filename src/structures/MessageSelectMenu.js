@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseMessageComponent = require('./BaseMessageComponent');
-const { MessageComponentTypes } = require('../util/Constants');
+const { ChannelTypes, MessageComponentTypes, SelectMenuComponentTypes } = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
@@ -17,6 +17,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @property {number} [maxValues] The maximum number of selections allowed
    * @property {MessageSelectOption[]} [options] Options for the select menu
    * @property {boolean} [disabled=false] Disables the select menu to prevent interactions
+   * @property {ChannelType[]} [channelTypes] List of channel types to include in the ChannelSelect component
    */
 
   /**
@@ -41,7 +42,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    * @param {MessageSelectMenu|MessageSelectMenuOptions} [data={}] MessageSelectMenu to clone or raw data
    */
   constructor(data = {}) {
-    super({ type: 'SELECT_MENU' });
+    super({ type: BaseMessageComponent.resolveType(data.type) ?? 'STRING_SELECT' });
 
     this.setup(data);
   }
@@ -72,7 +73,7 @@ class MessageSelectMenu extends BaseMessageComponent {
     this.maxValues = data.max_values ?? data.maxValues ?? null;
 
     /**
-     * Options for the select menu
+     * Options for the STRING_SELECT menu
      * @type {MessageSelectOption[]}
      */
     this.options = this.constructor.normalizeOptions(data.options ?? []);
@@ -82,6 +83,44 @@ class MessageSelectMenu extends BaseMessageComponent {
      * @type {boolean}
      */
     this.disabled = data.disabled ?? false;
+
+    /**
+     * Channels that are possible to select in CHANNEL_SELECT menu
+     * @type {ChannelType[]}
+     */
+    this.channelTypes =
+      data.channel_types?.map(channelType =>
+        typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
+      ) ?? [];
+  }
+  /**
+   * Adds the channel types to the select menu
+   * @param {...ChannelType[]} channelTypes Added channel types
+   * @returns {MessageSelectMenu}
+   */
+  addChannelTypes(...channelTypes) {
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) {
+      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Rest<ChannelTypes[]>');
+    }
+    this.channelTypes.push(
+      ...channelTypes.map(channelType => (typeof channelType === 'string' ? channelType : ChannelTypes[channelType])),
+    );
+    return this;
+  }
+
+  /**
+   * Sets the channel types of the select menu
+   * @param {...ChannelType[]} channelTypes An array of new channel types
+   * @returns {MessageSelectMenu}
+   */
+  setChannelTypes(...channelTypes) {
+    if (!channelTypes.every(channelType => ChannelTypes[channelType])) {
+      throw new TypeError('INVALID_TYPE', 'channelTypes', 'Rest<ChannelTypes[]>');
+    }
+    this.channelTypes = channelTypes.map(channelType =>
+      typeof channelType === 'string' ? channelType : ChannelTypes[channelType],
+    );
+    return this;
   }
 
   /**
@@ -136,6 +175,17 @@ class MessageSelectMenu extends BaseMessageComponent {
   }
 
   /**
+   * Sets the type of the select menu
+   * @param {SelectMenuComponentType} type Type of the select menu
+   * @returns {MessageSelectMenu}
+   */
+  setType(type) {
+    if (!SelectMenuComponentTypes[type]) throw new TypeError('INVALID_TYPE', 'type', 'SelectMenuComponentType');
+    this.type = BaseMessageComponent.resolveType(type);
+    return this;
+  }
+
+  /**
    * Adds options to the select menu.
    * @param {...MessageSelectOptionData|MessageSelectOptionData[]} options The options to add
    * @returns {MessageSelectMenu}
@@ -173,6 +223,7 @@ class MessageSelectMenu extends BaseMessageComponent {
    */
   toJSON() {
     return {
+      channel_types: this.channelTypes.map(type => (typeof type === 'string' ? ChannelTypes[type] : type)),
       custom_id: this.customId,
       disabled: this.disabled,
       placeholder: this.placeholder,

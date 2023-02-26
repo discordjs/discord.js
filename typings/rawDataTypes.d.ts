@@ -21,15 +21,12 @@ import {
   APIGuildWelcomeScreenChannel,
   APIGuildWidget,
   APIGuildWidgetMember,
-  APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIInvite,
   APIInviteStageInstance,
   APIMessage,
   APIMessageButtonInteractionData,
   APIMessageComponentInteraction,
-  APIMessageSelectMenuInteractionData,
   APIOverwrite,
   APIPartialChannel,
   APIPartialEmoji,
@@ -76,21 +73,23 @@ import {
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
   APIGuildScheduledEvent,
-  APIActionRowComponent,
   APITextInputComponent,
-  APIModalActionRowComponent,
   APIModalSubmitInteraction,
-  LocalizationMap
+  LocalizationMap,
+  APIThreadMetadata,
+  APISelectMenuOption,
+  APIButtonComponent
 } from 'discord-api-types/v9';
-import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
+import { GuildChannel, Guild, PermissionOverwrites, Permissions } from '.';
 import type {
   AutoModerationActionTypes,
   AutoModerationRuleEventTypes,
   AutoModerationRuleKeywordPresetTypes,
   AutoModerationRuleTriggerTypes,
-  InteractionTypes,
   MessageComponentTypes,
-  ApplicationRoleConnectionMetadataTypes
+  ApplicationRoleConnectionMetadataTypes,
+  SelectMenuComponentTypes,
+  ChannelTypes
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -153,7 +152,6 @@ export type RawInteractionData = GatewayInteractionCreateDispatchData;
 export type RawCommandInteractionData = APIApplicationCommandInteraction;
 export type RawMessageComponentInteractionData = APIMessageComponentInteraction;
 export type RawMessageButtonInteractionData = APIMessageButtonInteractionData;
-export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractionData;
 
 export type RawTextInputComponentData = APITextInputComponent;
 export type RawModalSubmitInteractionData = APIModalSubmitInteraction;
@@ -279,3 +277,110 @@ export interface APIApplicationRoleConnectionMetadata {
   description: string;
   description_localizations?: LocalizationMap;
 }
+
+export interface APIInteractionDataResolvedChannel extends Required<APIPartialChannel> {
+  thread_metadata?: APIThreadMetadata | null;
+  permissions: Permissions;
+  parent_id?: string | null;
+}
+
+export interface APIInteractionDataResolvedGuildMember extends Omit<APIGuildMember, 'user' | 'deaf' | 'mute'> {
+  permissions: Permissions;
+}
+
+export interface APIInteractionDataResolved {
+  users?: Record<Snowflake, APIUser>;
+  roles?: Record<Snowflake, APIRole>;
+  members?: Record<Snowflake, APIInteractionDataResolvedGuildMember>;
+  channels?: Record<Snowflake, APIInteractionDataResolvedChannel>;
+  attachments?: Record<Snowflake, APIAttachment>;
+}
+
+
+export type APIUserInteractionDataResolved = Required<Pick<APIInteractionDataResolved, 'users'>> &
+	Pick<APIInteractionDataResolved, 'members'>;
+
+export interface APIMessageStringSelectInteractionData {
+  custom_id: string;
+  component_type: SelectMenuComponentTypes.STRING_SELECT;
+  values: string[];
+}
+
+export interface APIMessageUserSelectInteractionData {
+  custom_id: string;
+  component_type: SelectMenuComponentTypes.USER_SELECT;
+  values: Snowflake[];
+  resolved: APIUserInteractionDataResolved;
+}
+
+export interface APIMessageRoleSelectInteractionData {
+  custom_id: string;
+  component_type: SelectMenuComponentTypes.ROLE_SELECT;
+  values: Snowflake[];
+  resolved: Required<Pick<APIInteractionDataResolved, 'roles'>>;
+}
+
+export interface APIMessageMentionableSelectInteractionData {
+  custom_id: string;
+  component_type: SelectMenuComponentTypes.MENTIONABLE_SELECT;
+  values: Snowflake[];
+  resolved: Pick<APIInteractionDataResolved, 'users' | 'members' | 'roles'>;
+}
+
+export interface APIMessageChannelSelectInteractionData {
+  custom_id: string;
+  component_type: SelectMenuComponentTypes.CHANNEL_SELECT;
+  values: Snowflake[];
+  resolved: Required<Pick<APIInteractionDataResolved, 'channels'>>;
+}
+
+export type APIMessageSelectMenuInteractionData =
+  | APIMessageStringSelectInteractionData
+  | APIMessageUserSelectInteractionData
+  | APIMessageRoleSelectInteractionData
+  | APIMessageMentionableSelectInteractionData
+  | APIMessageChannelSelectInteractionData;
+
+export type RawMessageSelectMenuInteractionData = APIMessageSelectMenuInteractionData;
+
+export interface APIBaseSelectMenuComponent<
+T extends SelectMenuComponentTypes
+> {
+  type: T;
+  custom_id: string;
+  placeholder?: string;
+  min_values?: number;
+  max_values?: number;
+  disabled?: boolean; 
+}
+
+export interface APIStringSelectComponent extends APIBaseSelectMenuComponent<SelectMenuComponentTypes.STRING_SELECT> {
+	options: APISelectMenuOption[];
+}
+
+export type APIUserSelectComponent = APIBaseSelectMenuComponent<SelectMenuComponentTypes.USER_SELECT>;
+
+export type APIRoleSelectComponent = APIBaseSelectMenuComponent<SelectMenuComponentTypes.ROLE_SELECT>;
+
+export type APIMentionableSelectComponent = APIBaseSelectMenuComponent<SelectMenuComponentTypes.MENTIONABLE_SELECT>;
+
+export interface APIChannelSelectComponent extends APIBaseSelectMenuComponent<SelectMenuComponentTypes.CHANNEL_SELECT> {
+  channel_types?: ChannelTypes[];
+}
+
+export type APISelectMenuComponent =
+  | APIStringSelectComponent
+  | APIUserSelectComponent
+  | APIRoleSelectComponent
+  | APIMentionableSelectComponent
+  | APIChannelSelectComponent;
+
+  export interface APIActionRowComponent<T extends APIActionRowComponentTypes> {
+    type: MessageComponentTypes.ACTION_ROW;
+    components: T[];
+}
+
+export declare type APIMessageComponent = APIMessageActionRowComponent | APIActionRowComponent<APIMessageActionRowComponent>;
+export declare type APIActionRowComponentTypes = APIMessageActionRowComponent | APIModalActionRowComponent;
+export declare type APIMessageActionRowComponent = APIButtonComponent | APISelectMenuComponent;
+export declare type APIModalActionRowComponent = APITextInputComponent;

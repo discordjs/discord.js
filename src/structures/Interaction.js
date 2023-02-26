@@ -265,17 +265,73 @@ class Interaction extends Base {
     );
   }
 
+  isAnySelectMenu() {
+    return InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT && typeof this.values !== 'undefined';
+  }
+
   /**
-   * Indicates whether this interaction is a {@link SelectMenuInteraction}.
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}
    * @returns {boolean}
+   * @deprecated Use {@link Interaction#isStringSelect()} instead
    */
   isSelectMenu() {
+    return this.isStringSelect();
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `STRING_SELECT` type
+   * @returns {boolean}
+   */
+  isStringSelect() {
     return (
       InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
-      MessageComponentTypes[this.componentType] === MessageComponentTypes.SELECT_MENU
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.STRING_SELECT
     );
   }
 
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `USER_SELECT` type
+   * @returns {boolean}
+   */
+  isUserSelect() {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.USER_SELECT
+    );
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `ROLE_SELECT` type
+   * @returns {boolean}
+   */
+  isRoleSelect() {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.ROLE_SELECT
+    );
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `MENTIONABLE_SELECT` type
+   * @returns {boolean}
+   */
+  isMentionableSelect() {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.MENTIONABLE_SELECT
+    );
+  }
+
+  /**
+   * Indicates whether this interaction is a {@link SelectMenuInteraction}.with a `CHANNEL_SELECT` type
+   * @returns {boolean}
+   */
+  isChannelSelect() {
+    return (
+      InteractionTypes[this.type] === InteractionTypes.MESSAGE_COMPONENT &&
+      MessageComponentTypes[this.componentType] === MessageComponentTypes.CHANNEL_SELECT
+    );
+  }
   /**
    * Indicates whether this interaction can be replied to.
    * @returns {boolean}

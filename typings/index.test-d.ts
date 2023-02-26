@@ -9,7 +9,6 @@ import type {
   APIInteractionDataResolvedChannel,
   APIRole,
   APIButtonComponent,
-  APISelectMenuComponent,
 } from 'discord-api-types/v9';
 import { AuditLogEvent } from 'discord-api-types/v9';
 import {
@@ -98,10 +97,15 @@ import {
   GuildBan,
   GuildBanManager,
   ForumChannel,
+  UserSelectInteraction,
+  StringSelectInteraction,
+  ChannelSelectInteraction,
+  MentionableSelectInteraction,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import type { APISelectMenuComponent } from './rawDataTypes';
 
 // Test type transformation:
 declare const serialize: <T>(value: T) => Serialized<T>;
@@ -587,10 +591,10 @@ client.on('messageCreate', async message => {
   expectAssignable<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'SELECT_MENU' });
-  expectAssignable<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
-  expectAssignable<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'SELECT_MENU' }));
-  expectAssignable<InteractionCollector<SelectMenuInteraction>>(selectMenuCollector);
+  const selectMenuCollector = message.createMessageComponentCollector({ componentType: 'STRING_SELECT' });
+  expectAssignable<Promise<SelectMenuInteraction>>(message.awaitMessageComponent({ componentType: 'STRING_SELECT' }));
+  expectAssignable<Promise<SelectMenuInteraction>>(channel.awaitMessageComponent({ componentType: 'STRING_SELECT' }));
+  expectAssignable<InteractionCollector<StringSelectInteraction>>(selectMenuCollector);
 
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
@@ -626,9 +630,9 @@ client.on('messageCreate', async message => {
   });
 
   message.createMessageComponentCollector({
-    componentType: 'SELECT_MENU',
+    componentType: 'USER_SELECT',
     filter: i => {
-      expectType<SelectMenuInteraction>(i);
+      expectType<UserSelectInteraction>(i);
       return true;
     },
   });
@@ -649,9 +653,9 @@ client.on('messageCreate', async message => {
   });
 
   message.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'CHANNEL_SELECT',
     filter: i => {
-      expectType<SelectMenuInteraction>(i);
+      expectType<ChannelSelectInteraction>(i);
       return true;
     },
   });
@@ -685,9 +689,9 @@ client.on('messageCreate', async message => {
   });
 
   channel.awaitMessageComponent({
-    componentType: 'SELECT_MENU',
+    componentType: 'MENTIONABLE_SELECT',
     filter: i => {
-      expectType<SelectMenuInteraction<'cached'>>(i);
+      expectType<MentionableSelectInteraction<'cached'>>(i);
       return true;
     },
   });
@@ -1108,24 +1112,24 @@ client.on('interactionCreate', async interaction => {
     }
   }
 
-  if (interaction.isSelectMenu()) {
-    expectType<SelectMenuInteraction>(interaction);
+  if (interaction.isStringSelect()) {
+    expectType<StringSelectInteraction>(interaction);
     expectType<MessageSelectMenu | APISelectMenuComponent>(interaction.component);
     expectType<Message | APIMessage>(interaction.message);
     if (interaction.inCachedGuild()) {
-      expectAssignable<SelectMenuInteraction>(interaction);
+      expectAssignable<StringSelectInteraction>(interaction);
       expectType<MessageSelectMenu>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inRawGuild()) {
-      expectAssignable<SelectMenuInteraction>(interaction);
+      expectAssignable<StringSelectInteraction>(interaction);
       expectType<APISelectMenuComponent>(interaction.component);
       expectType<APIMessage>(interaction.message);
       expectType<null>(interaction.guild);
       expectType<Promise<APIMessage>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
-      expectAssignable<SelectMenuInteraction>(interaction);
+      expectAssignable<StringSelectInteraction>(interaction);
       expectType<MessageSelectMenu | APISelectMenuComponent>(interaction.component);
       expectType<Message | APIMessage>(interaction.message);
       expectType<Guild | null>(interaction.guild);

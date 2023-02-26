@@ -1380,13 +1380,58 @@ exports.InteractionResponseTypes = createEnum([
  * The type of a message component
  * * ACTION_ROW
  * * BUTTON
- * * SELECT_MENU
  * * TEXT_INPUT
+ * * STRING_SELECT
+ * * USER_SELECT
+ * * ROLE_SELECT
+ * * MENTIONABLE_SELECT
+ * * CHANNEL_SELECT
+ * * SELECT_MENU (deprecated)
  * @typedef {string} MessageComponentType
  * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
  */
-exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON', 'SELECT_MENU', 'TEXT_INPUT']);
+exports.MessageComponentTypes = {
+  ...createEnum([
+    null,
+    'ACTION_ROW',
+    'BUTTON',
+    'STRING_SELECT',
+    'TEXT_INPUT',
+    'USER_SELECT',
+    'ROLE_SELECT',
+    'MENTIONABLE_SELECT',
+    'CHANNEL_SELECT',
+  ]),
+  /** @deprecated Use `STRING_SELECT` instead */
+  SELECT_MENU: 3,
+  /** @deprecated Normally it would be `STRING_SELECT`, but not doing breaking changes disallows it */
+  3: 'SELECT_MENU',
+};
 
+/**
+ * The types of components that are select menus. The available types are:
+ * * SELECT_MENU (deprecated)
+ * * STRING_MENU
+ * * USER_SELECT
+ * * ROLE_SELECT
+ * * MENTIONABLE_SELECT
+ * * CHANNEL_SELECT
+ * @typedef {string} SelectMenuComponentType
+ * @see {@link https://discord.com/developers/docs/interactions/message-components#component-object-component-types}
+ */
+exports.SelectMenuComponentTypes = {
+  ...createEnum([
+    ...new Array(3).fill(null),
+    'STRING_MENU',
+    null,
+    'USER_SELECT',
+    'ROLE_SELECT',
+    'MENTIONABLE_SELECT',
+    'CHANNEL_SELECT',
+  ]),
+  /** @deprecated Use `STRING_SELECT` instead */
+  SELECT_MENU: 3,
+};
 /**
  * The style of a message button
  * * PRIMARY
@@ -1577,6 +1622,7 @@ function createEnum(keys) {
  * @property {Object<PrivacyLevel, number>} PrivacyLevels Privacy level of a {@link StageInstance} object.
  * @property {ShardEvents} ShardEvents The type of events emitted by a Shard.
  * @property {Status} Status The available statuses of the client.
+ * @property {Object<SelectMenuComponentType, number>} SelectMenuComponentTypes The type of any select menu
  * @property {Object<StickerFormatType, number>} StickerFormatTypes The value set for a stickers format type.
  * @property {Object<StickerType, number>} StickerTypes The value set for a stickers type.
  * @property {SweeperKey[]} SweeperKeys The name of an item to be swept in Sweepers.
