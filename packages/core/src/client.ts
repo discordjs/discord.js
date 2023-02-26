@@ -7,7 +7,6 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayDispatchEvents,
 	GatewayOpcodes,
-	type GatewayVoiceStateUpdateData,
 	type APIGuildMember,
 	type GatewayAutoModerationActionExecutionDispatchData,
 	type GatewayAutoModerationRuleCreateDispatchData,
@@ -17,6 +16,7 @@ import {
 	type GatewayChannelDeleteDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
+	type GatewayGuildAuditLogEntryCreateDispatchData,
 	type GatewayGuildBanAddDispatchData,
 	type GatewayGuildBanRemoveDispatchData,
 	type GatewayGuildCreateDispatchData,
@@ -25,8 +25,8 @@ import {
 	type GatewayGuildIntegrationsUpdateDispatchData,
 	type GatewayGuildMemberAddDispatchData,
 	type GatewayGuildMemberRemoveDispatchData,
-	type GatewayGuildMembersChunkDispatchData,
 	type GatewayGuildMemberUpdateDispatchData,
+	type GatewayGuildMembersChunkDispatchData,
 	type GatewayGuildRoleCreateDispatchData,
 	type GatewayGuildRoleDeleteDispatchData,
 	type GatewayGuildRoleUpdateDispatchData,
@@ -51,6 +51,7 @@ import {
 	type GatewayMessageReactionRemoveDispatchData,
 	type GatewayMessageReactionRemoveEmojiDispatchData,
 	type GatewayMessageUpdateDispatchData,
+	type GatewayPresenceUpdateData,
 	type GatewayPresenceUpdateDispatchData,
 	type GatewayReadyDispatchData,
 	type GatewayRequestGuildMembersData,
@@ -60,15 +61,15 @@ import {
 	type GatewayThreadCreateDispatchData,
 	type GatewayThreadDeleteDispatchData,
 	type GatewayThreadListSyncDispatchData,
-	type GatewayThreadMembersUpdateDispatchData,
 	type GatewayThreadMemberUpdateDispatchData,
+	type GatewayThreadMembersUpdateDispatchData,
 	type GatewayThreadUpdateDispatchData,
 	type GatewayTypingStartDispatchData,
 	type GatewayUserUpdateDispatchData,
 	type GatewayVoiceServerUpdateDispatchData,
+	type GatewayVoiceStateUpdateData,
 	type GatewayVoiceStateUpdateDispatchData,
 	type GatewayWebhooksUpdateDispatchData,
-	type GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { API } from './api/index.js';
 
@@ -155,6 +156,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
 	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
 	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
 }
 
 export type ManagerShardEventsMap = {
