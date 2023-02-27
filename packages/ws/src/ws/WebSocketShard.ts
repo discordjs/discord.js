@@ -164,7 +164,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.sendRateLimitState = getInitialSendRateLimitState();
 
 		const { ok } = await this.bubbleWaitForEventError(
-			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
+			this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout),
 		);
 		if (!ok) {
 			return;
