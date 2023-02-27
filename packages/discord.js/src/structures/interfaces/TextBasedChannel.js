@@ -81,7 +81,7 @@ class TextBasedChannel {
    * @property {ReplyOptions} [reply] The options for replying to a message
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.SuppressEmbeds` can be set.</info>
+   * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
    */
 
   /**

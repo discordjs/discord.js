@@ -5667,8 +5667,8 @@ export interface InteractionReplyOptions extends BaseMessageOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds'>,
+    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds
   >;
 }
 
@@ -5839,10 +5839,7 @@ export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
   attachments?: JSONEncodable<AttachmentPayload>[];
-  flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
-    MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
-  >;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
 export type MessageReactionResolvable = MessageReaction | Snowflake | string;
