@@ -4,6 +4,7 @@ const { Error } = require('../../errors');
 const { InteractionResponseTypes, InteractionTypes } = require('../../util/Constants');
 const MessageFlags = require('../../util/MessageFlags');
 const InteractionCollector = require('../InteractionCollector');
+const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 const Modal = require('../Modal');
 
@@ -43,7 +44,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -69,14 +70,14 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
   /**
    * Creates a reply to this interaction.
    * <info>Use the `fetchReply` option to get the bot's reply message.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Reply to the interaction and fetch the response
    * interaction.reply({ content: 'Pong!', fetchReply: true })
@@ -110,7 +111,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
   /**
@@ -180,7 +181,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -197,13 +198,13 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
   }
 
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<Message|APIMessage|void>}
+   * @returns {Promise<Message|APIMessage|InteractionResponse>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -232,7 +233,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : undefined;
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**

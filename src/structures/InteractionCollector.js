@@ -15,6 +15,8 @@ const { InteractionTypes, MessageComponentTypes } = require('../util/Constants')
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
+ * @property {InteractionResponse} [interactionResponse] The interaction response to listen
+ * to message component interactions from
  */
 
 /**
@@ -42,10 +44,17 @@ class InteractionCollector extends Collector {
     this.messageId = options.message?.id ?? null;
 
     /**
+     * The message interaction id from which to collect interactions, if provided
+     * @type {?Snowflake}
+     */
+    this.messageInteractionId = options.interactionResponse?.id ?? null;
+
+    /**
      * The channel from which to collect interactions, if provided
      * @type {?Snowflake}
      */
     this.channelId =
+      options.interactionResponse?.interaction.channelId ??
       this.client.channels.resolveId(options.message?.channel) ??
       options.message?.channel_id ??
       this.client.channels.resolveId(options.channel);
@@ -55,6 +64,7 @@ class InteractionCollector extends Collector {
      * @type {?Snowflake}
      */
     this.guildId =
+      options.interactionResponse?.interaction.guildId ??
       this.client.guilds.resolveId(options.message?.guild) ??
       options.message?.guild_id ??
       this.client.guilds.resolveId(options.channel?.guild) ??
@@ -97,7 +107,7 @@ class InteractionCollector extends Collector {
       if (messages.has(this.messageId)) this.stop('messageDelete');
     };
 
-    if (this.messageId) {
+    if (this.messageId || this.messageInteractionId) {
       this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
       this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
@@ -148,6 +158,13 @@ class InteractionCollector extends Collector {
     if (this.interactionType && interaction.type !== this.interactionType) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (
+      this.messageInteractionId &&
+      interaction.message?.interaction?.id &&
+      interaction.message.interaction.id !== this.messageInteractionId
+    ) {
+      return null;
+    }
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
@@ -168,6 +185,7 @@ class InteractionCollector extends Collector {
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
+    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 
