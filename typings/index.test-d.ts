@@ -98,6 +98,7 @@ import {
   GuildBan,
   GuildBanManager,
   ForumChannel,
+  InteractionResponse,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1341,3 +1342,23 @@ expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextCha
   NonThreadGuildBasedChannel,
 );
 expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
+
+declare const commandInteraction: CommandInteraction;
+
+expectType<Promise<InteractionResponse>>(commandInteraction.reply({ content: 'Test' }))
+
+expectType<Promise<Message | APIMessage>>(commandInteraction.reply({ content: 'Test', fetchReply: true }))
+
+if(commandInteraction.inCachedGuild()){
+  expectType<Promise<Message>>(commandInteraction.reply({ content: 'Test', fetchReply: true }))
+}
+
+expectType<Promise<InteractionResponse>>(commandInteraction.deferReply());
+
+declare const interactionResponse: InteractionResponse
+
+expectType<Promise<Message>>(interactionResponse.fetch())
+
+expectType<Promise<Message>>(interactionResponse.edit({ content: "Edited message!" }))
+
+expectType<Snowflake>(interactionResponse.id)
