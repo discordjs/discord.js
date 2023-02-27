@@ -1345,20 +1345,20 @@ expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBa
 
 declare const commandInteraction: CommandInteraction;
 
-expectType<Promise<InteractionResponse>>(commandInteraction.reply({ content: 'Test' }))
+expectType<Promise<InteractionResponse>>(commandInteraction.reply({ content: 'Test' }));
 
-expectType<Promise<Message | APIMessage>>(commandInteraction.reply({ content: 'Test', fetchReply: true }))
+expectType<Promise<Message | APIMessage>>(commandInteraction.reply({ content: 'Test', fetchReply: true }));
 
 if(commandInteraction.inCachedGuild()){
-  expectType<Promise<Message>>(commandInteraction.reply({ content: 'Test', fetchReply: true }))
+  expectType<Promise<Message<true>>>(commandInteraction.reply({ content: 'Test', fetchReply: true }));
 }
 
 expectType<Promise<InteractionResponse>>(commandInteraction.deferReply());
 
-declare const interactionResponse: InteractionResponse
+declare const interactionResponse: InteractionResponse;
 
-expectType<Promise<Message>>(interactionResponse.fetch())
+expectType<Promise<Message>>(interactionResponse.fetch());
 
-expectType<Promise<Message>>(interactionResponse.edit({ content: "Edited message!" }))
+expectType<Promise<Message>>(interactionResponse.edit({ content: "Edited message!" }));
 
-expectType<Snowflake>(interactionResponse.id)
+expectType<Snowflake>(interactionResponse.id);
