@@ -66,6 +66,11 @@ export class SlashCommandBuilder {
 	public readonly dm_permission: boolean | undefined = undefined;
 
 	/**
+	 * The type of this command
+	 */
+	public readonly type: ContextMenuCommandType = 1;
+
+	/**
 	 * Whether this command is NSFW
 	 */
 	public readonly nsfw: boolean | undefined = undefined;
