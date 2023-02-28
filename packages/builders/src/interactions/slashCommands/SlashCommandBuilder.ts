@@ -1,5 +1,6 @@
 import type {
 	APIApplicationCommandOption,
+	ApplicationCommandType,
 	LocalizationMap,
 	Permissions,
 	RESTPostAPIChatInputApplicationCommandsJSONBody,
@@ -68,7 +69,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The type of this command
 	 */
-	public readonly type = 1;
+	public readonly type: ApplicationCommandType.ChatInput = 1;
 
 	/**
 	 * Whether this command is NSFW
