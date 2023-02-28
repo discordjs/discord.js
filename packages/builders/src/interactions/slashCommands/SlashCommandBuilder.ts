@@ -68,7 +68,7 @@ export class SlashCommandBuilder {
 	/**
 	 * The type of this command
 	 */
-	public readonly type: ContextMenuCommandType = 1;
+	public readonly type = 1;
 
 	/**
 	 * Whether this command is NSFW
