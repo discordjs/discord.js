@@ -19,7 +19,8 @@ class GuildForumThreadManager extends ThreadManager {
   /**
    * @typedef {BaseMessageOptions} GuildForumThreadMessageCreateOptions
    * @property {StickerResolvable} [stickers] The stickers to send with the message
-   * @property {BitFieldResolvable} [flags] The flags to send with the message
+   * @property {BitFieldResolvable} [flags] The flags to send with the message.
+   * Only `SUPPRESS_EMBEDS` and `SUPPRESS_NOTIFICATIONS` can be set.
    */
 
   /**

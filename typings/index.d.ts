@@ -5817,7 +5817,8 @@ export type MessageFlagsString =
   | 'URGENT'
   | 'HAS_THREAD'
   | 'EPHEMERAL'
-  | 'LOADING';
+  | 'LOADING'
+  | 'SUPPRESS_NOTIFICATIONS';
 
 export interface MessageInteraction {
   id: Snowflake;
@@ -5853,7 +5854,7 @@ export interface MessageOptions {
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   attachments?: MessageAttachment[];
-  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS', number>;
+  flags?: BitFieldResolvable<'SUPPRESS_EMBEDS' | 'SUPPRESS_NOTIFICATIONS', number>;
 }
 
 export type MessageReactionResolvable = MessageReaction | Snowflake | string;
