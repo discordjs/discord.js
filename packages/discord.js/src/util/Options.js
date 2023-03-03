@@ -65,7 +65,7 @@ const { version } = require('../../package.json');
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
- * @property {Function<WSWebSocketManager,IShardingStrategy>} [buildStrategy] Builds the strategy to use for sharding;
+ * @property {Function} [buildStrategy] Builds the strategy to use for sharding;
  * example: `(manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 })`
  */
 
