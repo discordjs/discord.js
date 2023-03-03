@@ -40,7 +40,7 @@ import {
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
-import { WebSocketManager as WSWebSocketManager, IShardingStrategy } from '@discordjs/ws';
+import { WebSocketManager as WSWebSocketManager, IShardingStrategy, SessionInfo } from '@discordjs/ws';
 import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
@@ -3315,7 +3315,7 @@ export class WebSocketManager extends EventEmitter {
   public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
   public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
-  private debug(message: string, shard?: WebSocketShard): void;
+  private debug(message: string, shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): void;
@@ -3335,26 +3335,11 @@ export interface WebSocketShardEventTypes {
 
 export class WebSocketShard extends EventEmitter {
   private constructor(manager: WebSocketManager, id: number);
-  private sequence: number;
   private closeSequence: number;
-  private sessionId: string | null;
-  private resumeURL: string | null;
+  private sessionInfo: SessionInfo | null;
   public lastPingTimestamp: number;
-  private lastHeartbeatAcked: boolean;
-  private readonly ratelimit: {
-    queue: unknown[];
-    total: number;
-    remaining: number;
-    time: 60e3;
-    timer: NodeJS.Timeout | null;
-  };
-  private connection: WebSocket | null;
-  private helloTimeout: NodeJS.Timeout | null;
-  private eventsAttached: boolean;
   private expectedGuilds: Set<Snowflake> | null;
   private readyTimeout: NodeJS.Timeout | null;
-  private closeEmitted: boolean;
-  private wsCloseTimeout: NodeJS.Timeout | null;
 
   public manager: WebSocketManager;
   public id: number;
@@ -3362,27 +3347,10 @@ export class WebSocketShard extends EventEmitter {
   public ping: number;
 
   private debug(message: string): void;
-  private connect(): Promise<void>;
-  private onOpen(): void;
-  private onMessage(event: MessageEvent): void;
-  private onError(error: ErrorEvent | unknown): void;
-  private onClose(event: CloseEvent): void;
-  private onPacket(packet: unknown): void;
+  private onReadyPacket(packet: unknown): void;
+  private gotGuild(guildId: Snowflake): void;
   private checkReady(): void;
-  private setHelloTimeout(time?: number): void;
-  private setWsCloseTimeout(time?: number): void;
-  private setHeartbeatTimer(time: number): void;
-  private sendHeartbeat(): void;
-  private ackHeartbeat(): void;
-  private identify(): void;
-  private identifyNew(): void;
-  private identifyResume(): void;
-  private _send(data: unknown): void;
-  private processQueue(): void;
-  private destroy(destroyOptions?: { closeCode?: number; reset?: boolean; emit?: boolean; log?: boolean }): void;
   private emitClose(event?: CloseEvent): void;
-  private _cleanupConnection(): void;
-  private _emitDestroyed(): void;
 
   public send(data: unknown, important?: boolean): void;
 
@@ -4880,7 +4848,6 @@ export interface CloseEvent {
   wasClean: boolean;
   code: number;
   reason: string;
-  target: WebSocket;
 }
 
 export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;

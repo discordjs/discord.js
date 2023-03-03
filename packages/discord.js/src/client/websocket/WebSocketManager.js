@@ -85,6 +85,16 @@ class WebSocketManager extends EventEmitter {
      */
     this.destroyed = false;
 
+    /**
+     * @external WSWebSocketManager
+     * @see {@link https://discord.js.org/#/docs/ws/main/class/WebSocketManager}
+     */
+
+    /**
+     * The internal WebSocketManager from `@discordjs/ws`.
+     * @type {WSWebSocketManager}
+     * @private
+     */
     this._ws = null;
   }
 
