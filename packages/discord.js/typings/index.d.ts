@@ -40,6 +40,7 @@ import {
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { WebSocketManager as WSWebSocketManager, IShardingStrategy } from '@discordjs/ws';
 import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
@@ -6337,6 +6338,7 @@ export interface WebSocketOptions {
   compress?: boolean;
   properties?: WebSocketProperties;
   version?: number;
+  buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
 }
 
 export interface WebSocketProperties {

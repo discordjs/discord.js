@@ -119,11 +119,11 @@ class WebSocketManager extends EventEmitter {
     const invalidToken = new DiscordjsError(ErrorCodes.TokenInvalid);
     const { shards, shardCount, intents, ws } = this.client.options;
     if (this._ws && this._ws.options.token !== this.client.token) {
-      await this._ws.destroy({ code: 1000, reason: 'Login with differing token requested' });
+      await this._ws.destroy({ code: CloseCodes.Normal, reason: 'Login with differing token requested' });
       this._ws = null;
     }
     if (!this._ws) {
-      this._ws = new WSWebSocketManager({
+      const wsOptions = {
         intents: intents.bitfield,
         rest: this.client.rest,
         token: this.client.token,
@@ -136,7 +136,9 @@ class WebSocketManager extends EventEmitter {
         updateSessionInfo: (shardId, sessionInfo) => {
           this.shards.get(shardId).sessionInfo = sessionInfo;
         },
-      });
+      };
+      if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;
+      this._ws = new WSWebSocketManager(wsOptions);
       this.attachEvents();
     }
 
@@ -253,8 +255,7 @@ class WebSocketManager extends EventEmitter {
       shard.ping = latency;
     });
 
-    // TODO: refactor once error event gets exposed publicly
-    this._ws.on('error', err => {
+    this._ws.on(WSWebSocketShardEvents.Error, err => {
       /**
        * Emitted whenever a shard's WebSocket encounters a connection error.
        * @event Client#shardError
@@ -283,7 +284,7 @@ class WebSocketManager extends EventEmitter {
     // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
     this.destroyed = true;
-    this._ws.destroy({ code: 1_000 });
+    this._ws.destroy({ code: CloseCodes.Normal });
   }
 
   /**
