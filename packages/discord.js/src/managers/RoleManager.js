@@ -200,8 +200,7 @@ class RoleManager extends CachedManager {
       name: options.name,
       color: options.color === undefined ? undefined : resolveColor(options.color),
       hoist: options.hoist,
-      permissions:
-        options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
+      permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,
       icon,
       unicode_emoji: options.unicodeEmoji,

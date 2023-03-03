@@ -185,8 +185,7 @@ class GuildManager extends CachedManager {
         roles: roles.map(({ color, permissions, ...options }) => ({
           ...options,
           color: color && resolveColor(color),
-          permissions:
-            permissions === undefined ? undefined : PermissionsBitField.resolve(permissions).toString(),
+          permissions: permissions === undefined ? undefined : PermissionsBitField.resolve(permissions).toString(),
         })),
         channels: channels.map(
           ({
@@ -215,9 +214,7 @@ class GuildManager extends CachedManager {
         afk_timeout: afkTimeout,
         system_channel_id: systemChannelId,
         system_channel_flags:
-          systemChannelFlags === undefined
-            ? undefined
-            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+          systemChannelFlags === undefined ? undefined : SystemChannelFlagsBitField.resolve(systemChannelFlags),
       },
     });
 

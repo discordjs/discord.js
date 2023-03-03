@@ -15,8 +15,7 @@ class InviteGuild extends AnonymousGuild {
      * The welcome screen for this invite guild
      * @type {?WelcomeScreen}
      */
-    this.welcomeScreen =
-      data.welcome_screen !== undefined ? new WelcomeScreen(this, data.welcome_screen) : null;
+    this.welcomeScreen = data.welcome_screen !== undefined ? new WelcomeScreen(this, data.welcome_screen) : null;
   }
 }
 
