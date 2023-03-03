@@ -16,7 +16,7 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
  */
 export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
 export function codeBlock(language: string, content?: string): string {
-	return typeof content === 'undefined' ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
+	return content === undefined ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 
 /**
@@ -238,11 +238,11 @@ export function chatInputApplicationCommandMention<
 	subcommandName?: S,
 	commandId?: I,
 ): `</${N} ${G} ${S}:${I}>` | `</${N} ${G}:${S}>` | `</${N}:${G}>` {
-	if (typeof commandId !== 'undefined') {
+	if (commandId !== undefined) {
 		return `</${commandName} ${subcommandGroupName} ${subcommandName!}:${commandId}>`;
 	}
 
-	if (typeof subcommandName !== 'undefined') {
+	if (subcommandName !== undefined) {
 		return `</${commandName} ${subcommandGroupName}:${subcommandName}>`;
 	}
 
@@ -336,7 +336,7 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 	messageId: M,
 	guildId?: G,
 ): `https://discord.com/channels/@me/${C}/${M}` | `https://discord.com/channels/${G}/${C}/${M}` {
-	return `${typeof guildId === 'undefined' ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
+	return `${guildId === undefined ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
 /**

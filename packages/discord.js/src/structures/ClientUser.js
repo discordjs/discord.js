@@ -55,7 +55,7 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   async edit(options) {
-    if (typeof options.avatar !== 'undefined') options.avatar = await DataResolver.resolveImage(options.avatar);
+    if (options.avatar !== undefined) options.avatar = await DataResolver.resolveImage(options.avatar);
     const newData = await this.client.rest.patch(Routes.user(), { body: options });
     this.client.token = newData.token;
     this.client.rest.setToken(newData.token);

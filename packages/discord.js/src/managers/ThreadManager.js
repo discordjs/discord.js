@@ -147,7 +147,7 @@ class ThreadManager extends CachedManager {
     let timestamp;
     let id;
     const query = makeURLSearchParams({ limit });
-    if (typeof before !== 'undefined') {
+    if (before !== undefined) {
       if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
         id = this.resolveId(before);
         timestamp = this.resolve(before)?.archivedAt?.toISOString();

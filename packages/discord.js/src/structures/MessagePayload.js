@@ -107,7 +107,7 @@ class MessagePayload {
     let content;
     if (this.options.content === null) {
       content = '';
-    } else if (typeof this.options.content !== 'undefined') {
+    } else if (this.options.content !== undefined) {
       content = verifyString(this.options.content, DiscordjsRangeError, ErrorCodes.MessageContentType, true);
     }
 
@@ -127,7 +127,7 @@ class MessagePayload {
     const tts = Boolean(this.options.tts);
 
     let nonce;
-    if (typeof this.options.nonce !== 'undefined') {
+    if (this.options.nonce !== undefined) {
       nonce = this.options.nonce;
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
         throw new DiscordjsRangeError(ErrorCodes.MessageNonceType);
@@ -147,8 +147,8 @@ class MessagePayload {
 
     let flags;
     if (
-      typeof this.options.flags !== 'undefined' ||
-      (this.isMessage && typeof this.options.reply === 'undefined') ||
+      this.options.flags !== undefined ||
+      (this.isMessage && this.options.reply === undefined) ||
       this.isMessageManager
     ) {
       flags =
@@ -163,11 +163,11 @@ class MessagePayload {
     }
 
     let allowedMentions =
-      typeof this.options.allowedMentions === 'undefined'
+      this.options.allowedMentions === undefined
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
 
-    if (typeof allowedMentions?.repliedUser !== 'undefined') {
+    if (allowedMentions?.repliedUser !== undefined) {
       allowedMentions = { ...allowedMentions, replied_user: allowedMentions.repliedUser };
       delete allowedMentions.repliedUser;
     }
@@ -205,7 +205,7 @@ class MessagePayload {
       username,
       avatar_url: avatarURL,
       allowed_mentions:
-        typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
+        content === undefined && message_reference === undefined ? undefined : allowedMentions,
       flags,
       message_reference,
       attachments: this.options.attachments,

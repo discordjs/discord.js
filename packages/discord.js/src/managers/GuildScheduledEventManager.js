@@ -85,12 +85,12 @@ class GuildScheduledEventManager extends CachedManager {
 
     let entity_metadata, channel_id;
     if (entityType === GuildScheduledEventEntityType.External) {
-      channel_id = typeof channel === 'undefined' ? channel : null;
+      channel_id = channel === undefined ? channel : null;
       entity_metadata = { location: entityMetadata?.location };
     } else {
       channel_id = this.guild.channels.resolveId(channel);
       if (!channel_id) throw new DiscordjsError(ErrorCodes.GuildVoiceChannelResolve);
-      entity_metadata = typeof entityMetadata === 'undefined' ? entityMetadata : null;
+      entity_metadata = entityMetadata === undefined ? entityMetadata : null;
     }
 
     const data = await this.client.rest.post(Routes.guildScheduledEvents(this.guild.id), {
@@ -214,7 +214,7 @@ class GuildScheduledEventManager extends CachedManager {
 
     const data = await this.client.rest.patch(Routes.guildScheduledEvent(this.guild.id, guildScheduledEventId), {
       body: {
-        channel_id: typeof channel === 'undefined' ? channel : this.guild.channels.resolveId(channel),
+        channel_id: channel === undefined ? channel : this.guild.channels.resolveId(channel),
         name,
         privacy_level: privacyLevel,
         scheduled_start_time: scheduledStartTime ? new Date(scheduledStartTime).toISOString() : undefined,
