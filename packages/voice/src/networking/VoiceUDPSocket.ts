@@ -130,7 +130,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	private onMessage(buffer: Buffer): void {
 		// Handle keep alive message
 		if (buffer.length === 8) {
-			const counter = buffer.readUInt32LE(0);
+			const counter = buffer.readUInt32LE(4);
 			const index = this.keepAlives.findIndex(({ value }) => value === counter);
 			if (index === -1) return;
 			this.ping = Date.now() - this.keepAlives[index]!.timestamp;
@@ -152,7 +152,8 @@ export class VoiceUDPSocket extends EventEmitter {
 			return;
 		}
 
-		this.keepAliveBuffer.writeUInt32LE(this.keepAliveCounter, 0);
+		this.keepAliveBuffer.writeUInt32BE(0x1337cafe, 0);
+		this.keepAliveBuffer.writeUInt32LE(this.keepAliveCounter, 4);
 		this.send(this.keepAliveBuffer);
 		this.keepAlives.push({
 			value: this.keepAliveCounter,
