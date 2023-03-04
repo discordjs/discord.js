@@ -5667,8 +5667,8 @@ export interface InteractionReplyOptions extends BaseMessageOptions {
   ephemeral?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds'>,
-    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds
+    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
   >;
 }
 
