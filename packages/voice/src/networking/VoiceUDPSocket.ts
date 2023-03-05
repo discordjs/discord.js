@@ -79,6 +79,8 @@ export class VoiceUDPSocket extends EventEmitter {
 
 	/**
 	 * The time taken to receive a response to keep alive messages.
+	 *
+	 * @deprecated This field is no longer updated as keep alive messages are no longer tracked.
 	 */
 	public ping?: number;
 
