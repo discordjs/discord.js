@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const process = require('node:process');
 const { setImmediate } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const {
@@ -33,6 +34,10 @@ const UNRESUMABLE_CLOSE_CODES = [
   GatewayCloseCodes.AlreadyAuthenticated,
   GatewayCloseCodes.InvalidSeq,
 ];
+
+const reasonIsDeprecated = 'the reason property is deprecated, use the code property to determine the reason';
+let deprecationEmittedForInvalidSessionEvent = false;
+let deprecationEmittedForDestroyedEvent = false;
 
 /**
  * The WebSocket manager for this client.
@@ -195,6 +200,25 @@ class WebSocketManager extends EventEmitter {
     }
 
     await this._ws.connect();
+
+    this.shards.forEach(shard => {
+      if (shard.listenerCount(WebSocketShardEvents.InvalidSession) > 0 && !deprecationEmittedForInvalidSessionEvent) {
+        process.emitWarning(
+          'The WebSocketShard#invalidSession event is deprecated and will never emit.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForInvalidSessionEvent = true;
+      }
+      if (shard.listenerCount(WebSocketShardEvents.Destroyed) > 0 && !deprecationEmittedForDestroyedEvent) {
+        process.emitWarning(
+          'The WebSocketShard#destroyed event is deprecated and will never emit.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForDestroyedEvent = true;
+      }
+    });
   }
 
   /**
@@ -216,16 +240,18 @@ class WebSocketManager extends EventEmitter {
       this.shards.get(shardId).onReadyPacket(data);
     });
 
-    this._ws.on(WSWebSocketShardEvents.Closed, ({ code, reason = '', shardId }) => {
+    this._ws.on(WSWebSocketShardEvents.Closed, ({ code, shardId }) => {
+      const shard = this.shards.get(shardId);
+      shard.emit(WebSocketShardEvents.Close, { code, reason: reasonIsDeprecated, wasClean: true });
       if (UNRESUMABLE_CLOSE_CODES.includes(code) && this.destroyed) {
-        this.shards.get(shardId).status = Status.Disconnected;
+        shard.status = Status.Disconnected;
         /**
          * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
          * @event Client#shardDisconnect
          * @param {CloseEvent} event The WebSocket close event
          * @param {number} id The shard id that disconnected
          */
-        this.client.emit(Events.ShardDisconnect, { code, reason, wasClean: true }, shardId);
+        this.client.emit(Events.ShardDisconnect, { code, reason: reasonIsDeprecated, wasClean: true }, shardId);
         this.debug(GatewayCloseCodes[code], shardId);
         return;
       }

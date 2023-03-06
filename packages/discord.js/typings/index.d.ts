@@ -4845,8 +4845,10 @@ export interface ClientUserEditOptions {
 }
 
 export interface CloseEvent {
+  /** @deprecated */
   wasClean: boolean;
   code: number;
+  /** @deprecated */
   reason: string;
 }
 
