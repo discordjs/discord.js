@@ -70,7 +70,7 @@ export class ApplicationCommandsAPI {
 	public async getGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.applicationCommand(applicationId, commandId), {
 			signal,
@@ -90,7 +90,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
 			body,
@@ -109,7 +109,7 @@ export class ApplicationCommandsAPI {
 	public async deleteGlobalCommand(
 		applicationId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), { signal });
 	}
@@ -125,7 +125,7 @@ export class ApplicationCommandsAPI {
 	public async bulkOverwriteGlobalCommands(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
 			body,
@@ -167,7 +167,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
@@ -188,7 +188,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			signal,
@@ -210,7 +210,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body,
@@ -312,7 +312,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
