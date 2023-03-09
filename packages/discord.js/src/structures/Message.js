@@ -604,8 +604,10 @@ class Message extends Base {
     const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
 
     // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked and the bot if the thread is locked and the bot does not have permission to manage threads.
+    // the thread is archived or the thread is locked and the bot does not have permission to manage threads
     if (this.channel?.isThread()) {
+      if (this.channel.archived) return false;
+
       const permissions = this.permissionsFor(this.client.user);
       if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
     }
