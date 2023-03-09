@@ -787,9 +787,9 @@ class Message extends Base {
 
     return this.client.actions.MessageReactionAdd.handle(
       {
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
+        [this.client.actions.injectedUser]: this.client.user,
+        [this.client.actions.injectedChannel]: this.channel,
+        [this.client.actions.injectedMessage]: this,
         emoji: resolvePartialEmoji(emoji),
       },
       true,
