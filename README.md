@@ -143,3 +143,4 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [rpc]: https://www.npmjs.com/package/discord-rpc
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
+.
