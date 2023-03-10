@@ -607,9 +607,10 @@ class Message extends Base {
     // the thread is archived or the thread is locked and the bot does not have permission to manage threads
     if (this.channel?.isThread()) {
       if (this.channel.archived) return false;
-
-      const permissions = this.permissionsFor(this.client.user);
-      if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      if (this.channel.locked) {
+        const permissions = this.permissionsFor(this.client.user);
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      }
     }
 
     return precheck;
