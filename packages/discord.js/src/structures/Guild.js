@@ -623,9 +623,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes(GuildFeature.VanityURL)) {
-      throw new DiscordjsError(ErrorCodes.VanityURL);
-    }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
     this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
