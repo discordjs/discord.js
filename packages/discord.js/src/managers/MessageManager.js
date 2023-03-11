@@ -43,6 +43,8 @@ class MessageManager extends CachedManager {
 
   /**
    * Options used to fetch a message.
+   * <info>The `before`, `after`, and `around` parameters are mutually exclusive (on Discord API side),
+   * only one may be passed at a time.</info>
    * @typedef {BaseFetchOptions} FetchMessageOptions
    * @property {MessageResolvable} message The message to fetch
    */
