@@ -3231,8 +3231,8 @@ export class VoiceState extends Base {
   public edit(options: VoiceStateEditOptions): Promise<this>;
 }
 
-export class Webhook extends WebhookMixin() {
-  private constructor(client: Client<true>, data?: RawWebhookData);
+export class BaseWebhook extends WebhookMixin() {
+  public constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
@@ -3240,35 +3240,13 @@ export class Webhook extends WebhookMixin() {
   public guildId: Snowflake;
   public name: string;
   public owner: User | APIUser | null;
-  public sourceGuild: Guild | APIPartialGuild | null;
-  public sourceChannel: NewsChannel | APIPartialChannel | null;
-  public token: string | null;
   public type: WebhookType;
   public applicationId: Snowflake | null;
   public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | StageChannel | null;
-  public isUserCreated(): this is this & {
-    type: WebhookType.Incoming;
-    applicationId: null;
-    owner: User | APIUser;
-  };
-  public isApplicationCreated(): this is this & {
-    type: WebhookType.Application;
-    applicationId: Snowflake;
-    owner: User | APIUser;
-  };
-  public isIncoming(): this is this & {
-    type: WebhookType.Incoming;
-    token: string;
-  };
-  public isChannelFollower(): this is this & {
-    type: WebhookType.ChannelFollower;
-    sourceGuild: Guild | APIPartialGuild;
-    sourceChannel: NewsChannel | APIPartialChannel;
-    token: null;
-    applicationId: null;
-    owner: User | APIUser;
-  };
-
+  public isUserCreated(): this is UserCreatedWebhook;
+  public isApplicationCreated(): this is ApplicationCreatedWebhook;
+  public isIncoming(): this is IncomingWebhook;
+  public isChannelFollower(): this is ChannelFollowerWebhook;
   public editMessage(
     message: MessageResolvable,
     options: string | MessagePayload | WebhookMessageEditOptions,
@@ -3276,6 +3254,32 @@ export class Webhook extends WebhookMixin() {
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
   public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message>;
 }
+
+export class IncomingWebhook extends BaseWebhook {
+  public type: WebhookType.Incoming;
+  public token: string;
+}
+
+export class UserCreatedWebhook extends IncomingWebhook {
+  public applicationId: null;
+  public owner: User | APIUser;
+}
+
+export class ApplicationCreatedWebhook extends BaseWebhook {
+  public type: WebhookType.Application;
+  public applicationId: Snowflake;
+  public token: string;
+}
+
+export class ChannelFollowerWebhook extends BaseWebhook {
+  public type: WebhookType.ChannelFollower;
+  public sourceGuild: Guild | APIPartialGuild;
+  public sourceChannel: NewsChannel | APIPartialChannel;
+  public token: null;
+  public applicationId: null;
+}
+
+export type Webhook = UserCreatedWebhook | ApplicationCreatedWebhook | IncomingWebhook | ChannelFollowerWebhook;
 
 export class WebhookClient extends WebhookMixin(BaseClient) {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
@@ -3851,7 +3855,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     options: GuildChannelCreateOptions & { type: T },
   ): Promise<MappedGuildChannelTypes[T]>;
   public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
-  public createWebhook(options: WebhookCreateOptions): Promise<Webhook>;
+  public createWebhook(options: WebhookCreateOptions): Promise<IncomingWebhook>;
   public edit(channel: GuildChannelResolvable, data: GuildChannelEditOptions): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildBasedChannel | null>;
   public fetch(
@@ -4202,7 +4206,7 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
     options?: MessageChannelCollectorOptionsParams<T, true>,
   ): InteractionCollector<MappedInteractionTypes[T]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
-  createWebhook(options: ChannelWebhookCreateOptions): Promise<Webhook>;
+  createWebhook(options: ChannelWebhookCreateOptions): Promise<IncomingWebhook>;
   fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   sendTyping(): Promise<void>;
   setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
@@ -4230,7 +4234,7 @@ export interface WebhookFields extends PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
   delete(reason?: string): Promise<void>;
-  edit(options: WebhookEditOptions): Promise<Webhook>;
+  edit(options: WebhookEditOptions): Promise<IncomingWebhook>;
   sendSlackMessage(body: unknown): Promise<boolean>;
 }
 

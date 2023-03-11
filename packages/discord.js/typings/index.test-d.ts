@@ -27,6 +27,7 @@ import {
   APIActionRowComponent,
   APIActionRowComponentTypes,
   APIStringSelectComponent,
+  APIUser,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -476,8 +477,6 @@ client.on('messageCreate', async message => {
     expectType<string>(webhook.token);
   }
 
-  expectNotType<Guild | APIPartialGuild>(webhook.sourceGuild);
-  expectNotType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
   expectNotType<string>(webhook.token);
 
   channel.awaitMessageComponent({
@@ -2138,6 +2137,12 @@ expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
+
+if(webhook.isUserCreated()){
+  expectType<User|APIUser>(webhook.owner);
+  expectType<null>(webhook.applicationId);
+}
+
 
 declare const categoryChannel: CategoryChannel;
 declare const forumChannel: ForumChannel;
