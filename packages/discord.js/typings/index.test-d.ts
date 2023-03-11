@@ -2138,7 +2138,7 @@ expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
 
-if(webhook.isUserCreated()){
+if (webhook.isUserCreated()){
   expectType<User|APIUser>(webhook.owner);
   expectType<null>(webhook.applicationId);
 }
