@@ -3241,7 +3241,6 @@ export class BaseWebhook extends WebhookMixin() {
   public name: string;
   public owner: User | APIUser | null;
   public type: WebhookType;
-  public applicationId: Snowflake | null;
   public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | StageChannel | null;
   public isUserCreated(): this is UserCreatedWebhook;
   public isApplicationCreated(): this is ApplicationCreatedWebhook;
@@ -3257,6 +3256,7 @@ export class BaseWebhook extends WebhookMixin() {
 
 export class IncomingWebhook extends BaseWebhook {
   public type: WebhookType.Incoming;
+  public applicationId: Snowflake | null;
   public token: string;
 }
 
