@@ -6391,3 +6391,4 @@ export * from '@discordjs/builders';
 export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
+export * from '@discordjs/ws';
