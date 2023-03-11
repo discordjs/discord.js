@@ -3257,6 +3257,8 @@ export class BaseWebhook extends WebhookMixin() {
 export class IncomingWebhook extends BaseWebhook {
   public type: WebhookType.Incoming;
   public applicationId: Snowflake | null;
+  public sourceGuild: null;
+  public sourceChannel: null;
   public token: string;
 }
 
@@ -3268,15 +3270,17 @@ export class UserCreatedWebhook extends IncomingWebhook {
 export class ApplicationCreatedWebhook extends BaseWebhook {
   public type: WebhookType.Application;
   public applicationId: Snowflake;
+  public sourceGuild: null;
+  public sourceChannel: null;
   public token: string;
 }
 
 export class ChannelFollowerWebhook extends BaseWebhook {
   public type: WebhookType.ChannelFollower;
+  public applicationId: null;
   public sourceGuild: Guild | APIPartialGuild;
   public sourceChannel: NewsChannel | APIPartialChannel;
   public token: null;
-  public applicationId: null;
 }
 
 export type Webhook = UserCreatedWebhook | ApplicationCreatedWebhook | IncomingWebhook | ChannelFollowerWebhook;

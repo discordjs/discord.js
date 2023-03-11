@@ -2143,7 +2143,6 @@ if(webhook.isUserCreated()){
   expectType<null>(webhook.applicationId);
 }
 
-
 declare const categoryChannel: CategoryChannel;
 declare const forumChannel: ForumChannel;
 
