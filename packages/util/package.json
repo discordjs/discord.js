@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/util",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
 		"build": "tsup",

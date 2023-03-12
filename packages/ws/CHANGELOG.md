@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.6.0...@discordjs/ws@0.7.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **WebSocketShard:** #send race condition due to ready state (#9226) ([a99fc64](https://github.com/discordjs/discord.js/commit/a99fc64e3f73c3976617a7ed825fa7d6e9fb3b53))
+- **WebSocketShard:** Wait for hello rather than ready in connect (#9178) ([27e0b32](https://github.com/discordjs/discord.js/commit/27e0b32c5f0fe605f152e6ba67ce3f596137ff01))
+- **WebSocketShard:** Proper error bubbling (#9119) ([9681f34](https://github.com/discordjs/discord.js/commit/9681f348770b0e2ff9b7c96b1c30575dd950e2ed))
+- Ws typo (#9056) ([05a1cbf](https://github.com/discordjs/discord.js/commit/05a1cbfe5479195b0bc9b6f0971fe39f6af6fd77))
+
+## Documentation
+
+- Fix typos (#9127) ([1ba1f23](https://github.com/discordjs/discord.js/commit/1ba1f238f04221ec890fc921678909b5b7d92c26))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+- Updated @discordjs/ws README.md to include optional packages (#8973) ([4ee00b6](https://github.com/discordjs/discord.js/commit/4ee00b6534fad39da1fe54fb2c1766b264a020ca))
+
+## Features
+
+- **WebSocketShard:** Heartbeat jitter (#9223) ([6ecff26](https://github.com/discordjs/discord.js/commit/6ecff26ec65ce1d559a3406b396b3190868b1961))
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+- **ws:** Custom workers (#9004) ([828a13b](https://github.com/discordjs/discord.js/commit/828a13b526dde1334e8879e76e664584bdb5db73))
+- **ws:** Metrics (#9005) ([0ff67d8](https://github.com/discordjs/discord.js/commit/0ff67d8e7adee43ff82bbf072dac9a4c7c9fe8c2))
+
+## Refactor
+
+- **WebSocketManager:** Passing in strategy (#9122) ([5c5a583](https://github.com/discordjs/discord.js/commit/5c5a5832b94cd4d371cc99c4f9c3384523dabeeb))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
 # [@discordjs/ws@0.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.5.0...@discordjs/ws@0.6.0) - (2022-12-16)
 
 ## Bug Fixes
