@@ -238,7 +238,7 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		{ thread_id, ...body }: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string },
-		{ signal }: { signal?: AbortSignal | undefined | undefined } = {},
+		{ signal }: { signal?: AbortSignal | undefined } = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),
