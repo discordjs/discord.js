@@ -35,7 +35,7 @@ pnpm add @discordjs/core
 ```ts
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
-import { GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
+import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
@@ -51,7 +51,7 @@ const client = new Client({ rest, ws });
 // Listen for interactions
 // Each event contains an `api` prop along with the event data that allows you to interface with the Discord REST API
 client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, api }) => {
-	if (!(interaction.type === InteractionType.ApplicationCommand) || interaction.data.name !== 'ping') {
+	if (interaction.type !== InteractionType.ApplicationCommand || interaction.data.name !== 'ping') {
 		return;
 	}
 

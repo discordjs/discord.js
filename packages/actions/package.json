@@ -40,19 +40,19 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@actions/core": "^1.10.0",
-		"tslib": "^2.4.1"
+		"tslib": "^2.5.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.11",
-		"@vitest/coverage-c8": "^0.27.1",
+		"@types/node": "16.18.13",
+		"@vitest/coverage-c8": "^0.29.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.31.0",
+		"eslint": "^8.35.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.2",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.4",
-		"vitest": "^0.27.1"
+		"prettier": "^2.8.4",
+		"tsup": "^6.6.3",
+		"typescript": "^4.9.5",
+		"vitest": "^0.29.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
