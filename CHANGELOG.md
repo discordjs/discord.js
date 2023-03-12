@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.14.0](https://github.com/discordjs/discord.js/compare/13.13.1...13.14.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **ThreadChannel:** Fetch starter message properly (#9217) ([af6a0e5](https://github.com/discordjs/discord.js/commit/af6a0e5d5136424e7c70dc9813456b7e85874087))
+- **Actions:** Inject built data by using a symbol (#9204) ([df68520](https://github.com/discordjs/discord.js/commit/df685203193faeaa392c4cb7cd9e140a241e3af5))
+
+## Features
+
+- Add support for gif stickers (v13) (#9158) ([4bc25c4](https://github.com/discordjs/discord.js/commit/4bc25c40f56f79e4aef970d9b689c4329e968382))
+- V13 support `SUPPRESS_NOTIFICATIONS` flag (#9184) ([120270e](https://github.com/discordjs/discord.js/commit/120270e8dc793f2ff2622d394fcd965ee0656636))
+
 # [13.13.1](https://github.com/discordjs/discord.js/compare/13.13.0...13.13.1) - (2023-02-21)
 
 ## Bug Fixes
