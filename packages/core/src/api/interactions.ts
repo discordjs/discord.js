@@ -28,6 +28,7 @@ export class InteractionsAPI {
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
+			auth: false,
 			body: {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data,
@@ -44,6 +45,7 @@ export class InteractionsAPI {
 	 */
 	public async defer(interactionId: Snowflake, interactionToken: string) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
 			},
@@ -59,6 +61,7 @@ export class InteractionsAPI {
 	 */
 	public async deferMessageUpdate(interactionId: Snowflake, interactionToken: string) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredMessageUpdate,
 			},
@@ -143,6 +146,7 @@ export class InteractionsAPI {
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
+			auth: false,
 			body: {
 				type: InteractionResponseType.UpdateMessage,
 				data,
@@ -164,6 +168,7 @@ export class InteractionsAPI {
 		data: APICommandAutocompleteInteractionResponseCallbackData,
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
 				data,
@@ -185,6 +190,7 @@ export class InteractionsAPI {
 		data: APIModalInteractionResponseCallbackData,
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
 			body: {
 				type: InteractionResponseType.Modal,
 				data,

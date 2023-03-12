@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
  * Represents an auto moderation rule.
@@ -95,19 +96,14 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
+       * @property {?string} customMessage The custom message that is shown whenever a message is blocked
        */
 
       /**
        * The actions of this auto moderation rule.
        * @type {AutoModerationAction[]}
        */
-      this.actions = data.actions.map(action => ({
-        type: action.type,
-        metadata: {
-          durationSeconds: action.metadata.duration_seconds ?? null,
-          channelId: action.metadata.channel_id ?? null,
-        },
-      }));
+      this.actions = data.actions.map(action => _transformAPIAutoModerationAction(action));
     }
 
     if ('enabled' in data) {

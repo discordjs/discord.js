@@ -1,5 +1,7 @@
 'use strict';
 
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
+
 /**
  * Represents the structure of an executed action when an {@link AutoModerationRule} is triggered.
  */
@@ -15,7 +17,7 @@ class AutoModerationActionExecution {
      * The action that was executed.
      * @type {AutoModerationAction}
      */
-    this.action = data.action;
+    this.action = _transformAPIAutoModerationAction(data.action);
 
     /**
      * The id of the auto moderation rule this action belongs to.
@@ -43,8 +45,8 @@ class AutoModerationActionExecution {
 
     /**
      * The id of the message that triggered this action.
-     * @type {?Snowflake}
      * <info>This will not be present if the message was blocked or the content was not part of any message.</info>
+     * @type {?Snowflake}
      */
     this.messageId = data.message_id ?? null;
 
@@ -81,6 +83,33 @@ class AutoModerationActionExecution {
    */
   get autoModerationRule() {
     return this.guild.autoModerationRules.cache.get(this.ruleId) ?? null;
+  }
+
+  /**
+   * The channel where this action was triggered from.
+   * @type {?TextBasedChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.guild.channels.cache.get(this.channelId) ?? null;
+  }
+
+  /**
+   * The user that triggered this action.
+   * @type {?User}
+   * @readonly
+   */
+  get user() {
+    return this.guild.client.users.cache.get(this.userId) ?? null;
+  }
+
+  /**
+   * The guild member that triggered this action.
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild.members.cache.get(this.userId) ?? null;
   }
 }
 

@@ -2,6 +2,7 @@ import process from 'node:process';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
+import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import type { SessionInfo, OptionalWebSocketManagerOptions } from '../ws/WebSocketManager.js';
 import type { SendRateLimitState } from '../ws/WebSocketShard.js';
 
@@ -19,7 +20,7 @@ export enum CompressionMethod {
 	ZlibStream = 'zlib-stream',
 }
 
-export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]`;
+export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
 
@@ -27,6 +28,7 @@ const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | n
  * Default options used by the manager
  */
 export const DefaultWebSocketManagerOptions = {
+	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,

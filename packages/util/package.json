@@ -4,7 +4,7 @@
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
 		"build": "tsup",
-		"build:docs": "tsc --emitDeclarationOnly --declarationMap --skipLibCheck --outDir \"dist-docs\"",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run && tsd",
 		"lint": "prettier --check . && TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
@@ -53,18 +53,18 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
-		"@microsoft/api-extractor": "^7.33.7",
-		"@types/node": "16.18.11",
-		"@vitest/coverage-c8": "^0.27.1",
+		"@microsoft/api-extractor": "^7.34.4",
+		"@types/node": "16.18.13",
+		"@vitest/coverage-c8": "^0.29.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.31.0",
+		"eslint": "^8.35.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.2",
+		"prettier": "^2.8.4",
 		"tsd": "^0.25.0",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.4",
-		"vitest": "^0.27.1"
+		"tsup": "^6.6.3",
+		"typescript": "^4.9.5",
+		"vitest": "^0.29.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
