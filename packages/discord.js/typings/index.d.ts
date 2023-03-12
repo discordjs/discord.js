@@ -341,8 +341,11 @@ export class AutoModerationActionExecution {
   public action: AutoModerationAction;
   public ruleId: Snowflake;
   public ruleTriggerType: AutoModerationRuleTriggerType;
+  public get user(): User | null;
   public userId: Snowflake;
+  public get channel(): TextBasedChannel | null;
   public channelId: Snowflake | null;
+  public get member(): GuildMember | null;
   public messageId: Snowflake | null;
   public alertSystemMessageId: Snowflake | null;
   public content: string;
@@ -630,17 +633,26 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, tr
   public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
 }
 
-export class BaseGuildVoiceChannel extends GuildChannel {
+export class BaseGuildVoiceChannel extends TextBasedChannelMixin(GuildChannel, true, [
+  'lastPinTimestamp',
+  'lastPinAt',
+]) {
   public constructor(guild: Guild, data?: RawGuildChannelData);
-  public get members(): Collection<Snowflake, GuildMember>;
+  public bitrate: number;
   public get full(): boolean;
   public get joinable(): boolean;
+  public get members(): Collection<Snowflake, GuildMember>;
+  public nsfw: boolean;
+  public rateLimitPerUser: number | null;
   public rtcRegion: string | null;
-  public bitrate: number;
   public userLimit: number;
+  public videoQualityMode: VideoQualityMode | null;
   public createInvite(options?: InviteCreateOptions): Promise<Invite>;
-  public setRTCRegion(rtcRegion: string | null, reason?: string): Promise<this>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
+  public setBitrate(bitrate: number, reason?: string): Promise<this>;
+  public setRTCRegion(rtcRegion: string | null, reason?: string): Promise<this>;
+  public setUserLimit(userLimit: number, reason?: string): Promise<this>;
+  public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<this>;
 }
 
 export type EnumLike<E, V> = Record<keyof E, V>;
@@ -2723,9 +2735,9 @@ export {
 } from '@sapphire/snowflake';
 
 export class StageChannel extends BaseGuildVoiceChannel {
+  public get stageInstance(): StageInstance | null;
   public topic: string | null;
   public type: ChannelType.GuildStageVoice;
-  public get stageInstance(): StageInstance | null;
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageChannel>;
 }
@@ -3176,18 +3188,9 @@ export type ComponentData =
   | ModalActionRowComponentData
   | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
 
-export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, true, [
-  'lastPinTimestamp',
-  'lastPinAt',
-]) {
-  public videoQualityMode: VideoQualityMode | null;
+export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
-  public nsfw: boolean;
-  public rateLimitPerUser: number | null;
-  public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
-  public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
-  public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<VoiceChannel>;
 }
 
 export class VoiceRegion {
@@ -3242,7 +3245,7 @@ export class Webhook extends WebhookMixin() {
   public token: string | null;
   public type: WebhookType;
   public applicationId: Snowflake | null;
-  public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | null;
+  public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | StageChannel | null;
   public isUserCreated(): this is this & {
     type: WebhookType.Incoming;
     applicationId: null;
@@ -3445,6 +3448,29 @@ export type NonSystemMessageType =
   | MessageType.ChatInputCommand
   | MessageType.ContextMenuCommand;
 
+export type DeletableMessageType =
+  | MessageType.AutoModerationAction
+  | MessageType.ChannelFollowAdd
+  | MessageType.ChannelPinnedMessage
+  | MessageType.ChatInputCommand
+  | MessageType.ContextMenuCommand
+  | MessageType.Default
+  | MessageType.GuildBoost
+  | MessageType.GuildBoostTier1
+  | MessageType.GuildBoostTier2
+  | MessageType.GuildBoostTier3
+  | MessageType.GuildInviteReminder
+  | MessageType.InteractionPremiumUpsell
+  | MessageType.Reply
+  | MessageType.RoleSubscriptionPurchase
+  | MessageType.StageEnd
+  | MessageType.StageRaiseHand
+  | MessageType.StageSpeaker
+  | MessageType.StageStart
+  | MessageType.StageTopic
+  | MessageType.ThreadCreated
+  | MessageType.UserJoin;
+
 export const Constants: {
   MaxBulkDeletableMessageAge: 1_209_600_000;
   SweeperKeys: SweeperKey[];
@@ -3453,6 +3479,7 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
@@ -4543,6 +4570,7 @@ export interface AutoModerationAction {
 export interface AutoModerationActionMetadata {
   channelId: Snowflake | null;
   durationSeconds: number | null;
+  customMessage: string | null;
 }
 
 export interface AutoModerationTriggerMetadata {
@@ -4693,7 +4721,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | Snowflake;
+  channel: TextChannel | NewsChannel | VoiceChannel | StageChannel | ForumChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -5799,7 +5827,10 @@ export interface MessageCreateOptions extends BaseMessageOptions {
   nonce?: string | number;
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
+  flags?: BitFieldResolvable<
+    Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
+    MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+  >;
 }
 
 export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
@@ -6168,8 +6199,7 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  // TODO: Remove stage channel upon implementation of text-in-stage.
-  PartialGroupDMChannel | ForumChannel | StageChannel
+  PartialGroupDMChannel | ForumChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
@@ -6251,7 +6281,7 @@ export type WebhookClientOptions = Pick<ClientOptions, 'allowedMentions' | 'rest
 export interface WebhookEditOptions {
   name?: string;
   avatar?: BufferResolvable | null;
-  channel?: GuildTextChannelResolvable;
+  channel?: GuildTextChannelResolvable | VoiceChannel | ForumChannel | StageChannel;
   reason?: string;
 }
 

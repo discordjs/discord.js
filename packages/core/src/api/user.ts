@@ -12,8 +12,6 @@ import {
 	type RESTPatchAPICurrentUserResult,
 	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
 	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
@@ -97,19 +95,6 @@ export class UsersAPI {
 			reason,
 			body: member,
 		}) as Promise<RESTPatchAPIGuildMemberResult>;
-	}
-
-	/**
-	 * Sets the voice state for the current user
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
-	 * @param guildId - The id of the guild
-	 * @param options - The options to use when setting the voice state
-	 */
-	public async setVoiceState(guildId: Snowflake, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body: options,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 
 	/**
