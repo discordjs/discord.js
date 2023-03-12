@@ -383,14 +383,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		const { ok } = await this.bubbleWaitForEventError(
+		await this.bubbleWaitForEventError(
 			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
 		);
-		if (!ok) {
-			return;
-		}
-
-		this.#status = WebSocketShardStatus.Ready;
 	}
 
 	private async resume(session: SessionInfo) {
@@ -499,7 +494,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.#status = WebSocketShardStatus.Ready;
 
 						this.session ??= {
 							sequence: payload.s,
@@ -510,6 +505,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);
+
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 						break;
 					}
 
@@ -567,7 +564,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
-				this.debug([`Starting to heartbeat every ${payload.d.heartbeat_interval}ms`]);
+				const jitter = Math.random();
+				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
+				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
+
+				await sleep(firstWait);
+				await this.heartbeat();
+
+				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
 				this.heartbeatInterval = setInterval(() => void this.heartbeat(), payload.d.heartbeat_interval);
 				break;
 			}
