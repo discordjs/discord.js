@@ -358,7 +358,7 @@ class GuildMemberManager extends CachedManager {
     }
     options.roles &&= options.roles.map(role => (role instanceof Role ? role.id : role));
 
-    if (typeof options.communicationDisabledUntil !== 'undefined') {
+    if (options.communicationDisabledUntil !== undefined) {
       options.communication_disabled_until =
         // eslint-disable-next-line eqeqeq
         options.communicationDisabledUntil != null
@@ -366,7 +366,7 @@ class GuildMemberManager extends CachedManager {
           : options.communicationDisabledUntil;
     }
 
-    if (typeof options.flags !== 'undefined') {
+    if (options.flags !== undefined) {
       options.flags = GuildMemberFlagsBitField.resolve(options.flags);
     }
 

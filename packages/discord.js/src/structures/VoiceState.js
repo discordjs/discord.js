@@ -224,7 +224,7 @@ class VoiceState extends Base {
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
-    if (target !== '@me' && typeof options.requestToSpeak !== 'undefined') {
+    if (target !== '@me' && options.requestToSpeak !== undefined) {
       throw new DiscordjsError(ErrorCodes.VoiceStateNotOwn);
     }
 

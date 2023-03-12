@@ -164,7 +164,7 @@ class BitField {
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, DefaultBit);
     if (typeof bit === 'string') {
-      if (typeof this.Flags[bit] !== 'undefined') return this.Flags[bit];
+      if (this.Flags[bit] !== undefined) return this.Flags[bit];
       if (!isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
     }
     throw new DiscordjsRangeError(ErrorCodes.BitFieldInvalid, bit);
