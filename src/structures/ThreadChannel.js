@@ -310,7 +310,7 @@ class ThreadChannel extends Channel {
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
     const channel = this.parent?.type === 'GUILD_FORUM' ? this : this.parent;
-    return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
+    return channel?.messages.fetch(this.id, options) ?? null;
   }
 
   /**
