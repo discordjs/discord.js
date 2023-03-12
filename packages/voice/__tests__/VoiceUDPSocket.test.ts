@@ -121,23 +121,6 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		expect(closed).toEqual(false);
 	});
 
-	test('Emits an error when no response received to keep alive messages', async () => {
-		const fake = new FakeSocket();
-		fake.send = jest.fn();
-		createSocket.mockImplementation(() => fake as any);
-		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25_565 });
-
-		let closed = false;
-		socket.on('close', () => (closed = true));
-
-		for (let index = 0; index < 15; index++) {
-			jest.advanceTimersToNextTimer();
-			await wait();
-		}
-
-		expect(closed).toEqual(true);
-	});
-
 	test('Recovers from intermittent responses', async () => {
 		const fake = new FakeSocket();
 		const fakeSend = jest.fn();

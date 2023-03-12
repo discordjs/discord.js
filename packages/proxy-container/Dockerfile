@@ -23,7 +23,7 @@ COPY --from=builder /usr/proxy/out/yarn.lock ./yarn.lock
 RUN yarn install
 
 COPY --from=builder /usr/proxy/out/full/ .
-COPY tsup.config.js tsup.config.js
+COPY tsup.config.ts tsup.config.ts
 COPY turbo.json turbo.json
 COPY tsconfig.json tsconfig.json
 RUN yarn dlx turbo run build --filter=@discordjs/proxy-container...

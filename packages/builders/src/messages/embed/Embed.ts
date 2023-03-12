@@ -94,7 +94,7 @@ export class EmbedBuilder {
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice}.
+	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice}.
 	 * The maximum amount of fields that can be added is 25.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing fields of an embed.

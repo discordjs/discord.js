@@ -7,7 +7,6 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayDispatchEvents,
 	GatewayOpcodes,
-	type GatewayVoiceStateUpdateData,
 	type APIGuildMember,
 	type GatewayAutoModerationActionExecutionDispatchData,
 	type GatewayAutoModerationRuleCreateDispatchData,
@@ -17,6 +16,7 @@ import {
 	type GatewayChannelDeleteDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
+	type GatewayGuildAuditLogEntryCreateDispatchData,
 	type GatewayGuildBanAddDispatchData,
 	type GatewayGuildBanRemoveDispatchData,
 	type GatewayGuildCreateDispatchData,
@@ -25,8 +25,8 @@ import {
 	type GatewayGuildIntegrationsUpdateDispatchData,
 	type GatewayGuildMemberAddDispatchData,
 	type GatewayGuildMemberRemoveDispatchData,
-	type GatewayGuildMembersChunkDispatchData,
 	type GatewayGuildMemberUpdateDispatchData,
+	type GatewayGuildMembersChunkDispatchData,
 	type GatewayGuildRoleCreateDispatchData,
 	type GatewayGuildRoleDeleteDispatchData,
 	type GatewayGuildRoleUpdateDispatchData,
@@ -51,6 +51,7 @@ import {
 	type GatewayMessageReactionRemoveDispatchData,
 	type GatewayMessageReactionRemoveEmojiDispatchData,
 	type GatewayMessageUpdateDispatchData,
+	type GatewayPresenceUpdateData,
 	type GatewayPresenceUpdateDispatchData,
 	type GatewayReadyDispatchData,
 	type GatewayRequestGuildMembersData,
@@ -60,15 +61,15 @@ import {
 	type GatewayThreadCreateDispatchData,
 	type GatewayThreadDeleteDispatchData,
 	type GatewayThreadListSyncDispatchData,
-	type GatewayThreadMembersUpdateDispatchData,
 	type GatewayThreadMemberUpdateDispatchData,
+	type GatewayThreadMembersUpdateDispatchData,
 	type GatewayThreadUpdateDispatchData,
 	type GatewayTypingStartDispatchData,
 	type GatewayUserUpdateDispatchData,
 	type GatewayVoiceServerUpdateDispatchData,
+	type GatewayVoiceStateUpdateData,
 	type GatewayVoiceStateUpdateDispatchData,
 	type GatewayWebhooksUpdateDispatchData,
-	type GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { API } from './api/index.js';
 
@@ -88,10 +89,17 @@ export interface WithIntrinsicProps<T> extends IntrinsicProps {
 }
 
 export interface MappedEvents {
+	[GatewayDispatchEvents.AutoModerationActionExecution]: [
+		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
+	];
+	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelCreate]: [WithIntrinsicProps<GatewayChannelCreateDispatchData>];
 	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
 	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
 	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
 	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
 	[GatewayDispatchEvents.GuildCreate]: [WithIntrinsicProps<GatewayGuildCreateDispatchData>];
@@ -134,6 +142,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageUpdate]: [WithIntrinsicProps<GatewayMessageUpdateDispatchData>];
 	[GatewayDispatchEvents.PresenceUpdate]: [WithIntrinsicProps<GatewayPresenceUpdateDispatchData>];
 	[GatewayDispatchEvents.Ready]: [WithIntrinsicProps<GatewayReadyDispatchData>];
+	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<never>];
 	[GatewayDispatchEvents.StageInstanceCreate]: [WithIntrinsicProps<GatewayStageInstanceCreateDispatchData>];
 	[GatewayDispatchEvents.StageInstanceDelete]: [WithIntrinsicProps<GatewayStageInstanceDeleteDispatchData>];
 	[GatewayDispatchEvents.StageInstanceUpdate]: [WithIntrinsicProps<GatewayStageInstanceUpdateDispatchData>];
@@ -143,18 +152,11 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.ThreadMemberUpdate]: [WithIntrinsicProps<GatewayThreadMemberUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadMembersUpdate]: [WithIntrinsicProps<GatewayThreadMembersUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadUpdate]: [WithIntrinsicProps<GatewayThreadUpdateDispatchData>];
+	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
 	[GatewayDispatchEvents.UserUpdate]: [WithIntrinsicProps<GatewayUserUpdateDispatchData>];
 	[GatewayDispatchEvents.VoiceServerUpdate]: [WithIntrinsicProps<GatewayVoiceServerUpdateDispatchData>];
 	[GatewayDispatchEvents.VoiceStateUpdate]: [WithIntrinsicProps<GatewayVoiceStateUpdateDispatchData>];
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
-	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<never>];
-	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
-	[GatewayDispatchEvents.AutoModerationActionExecution]: [
-		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
-	];
-	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
 }
 
 export type ManagerShardEventsMap = {
