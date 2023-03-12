@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.5.0...@discordjs/rest@1.6.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **snowflake:** Snowflakes length (#9144) ([955e8fe](https://github.com/discordjs/discord.js/commit/955e8fe312c42ad4937cc1994d1d81e517c413c8))
+- **RequestManager:** Inference of image/apng (#9014) ([ecb4281](https://github.com/discordjs/discord.js/commit/ecb4281d1e2d9a0a427605f75352cbf74ffb2d7c))
+
+## Documentation
+
+- Fix typos (#9127) ([1ba1f23](https://github.com/discordjs/discord.js/commit/1ba1f238f04221ec890fc921678909b5b7d92c26))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **Sticker:** Add support for gif stickers (#9038) ([6a9875d](https://github.com/discordjs/discord.js/commit/6a9875da054a875a4711394547d47439bbe66fb6))
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
 # [@discordjs/rest@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.4.0...@discordjs/rest@1.5.0) - (2022-12-16)
 
 ## Features
