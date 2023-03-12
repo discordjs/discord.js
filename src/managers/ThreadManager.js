@@ -127,7 +127,7 @@ class ThreadManager extends CachedManager {
     let timestamp;
     let id;
     if (typeof before !== 'undefined') {
-      if (before instanceof ThreadChannel || /^\d{16,19}$/.test(String(before))) {
+      if (before instanceof ThreadChannel || /^\d{17,19}$/.test(String(before))) {
         id = this.resolveId(before);
         timestamp = this.resolve(before)?.archivedAt?.toISOString();
       } else {
