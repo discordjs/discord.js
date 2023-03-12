@@ -383,14 +383,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		const { ok } = await this.bubbleWaitForEventError(
+		await this.bubbleWaitForEventError(
 			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
 		);
-		if (!ok) {
-			return;
-		}
-
-		this.#status = WebSocketShardStatus.Ready;
 	}
 
 	private async resume(session: SessionInfo) {
@@ -499,7 +494,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.#status = WebSocketShardStatus.Ready;
 
 						this.session ??= {
 							sequence: payload.s,
@@ -510,6 +505,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);
+
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 						break;
 					}
 
