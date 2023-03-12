@@ -59,17 +59,17 @@ export class WebhooksAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#modify-webhook}
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#modify-webhook-with-token}
 	 * @param id - The id of the webhook to edit
-	 * @param webhook - The new webhook data
+	 * @param body - The new webhook data
 	 * @param options - The options to use when editing the webhook
 	 */
 	public async edit(
 		id: Snowflake,
-		webhook: RESTPatchAPIWebhookJSONBody,
+		body: RESTPatchAPIWebhookJSONBody,
 		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
 	) {
 		return this.rest.patch(Routes.webhook(id, token), {
 			reason,
-			body: webhook,
+			body,
 			signal,
 		}) as Promise<RESTPatchAPIWebhookResult>;
 	}
@@ -238,7 +238,7 @@ export class WebhooksAPI {
 		token: string,
 		messageId: Snowflake,
 		{ thread_id, ...body }: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string },
-		{ signal }: { signal?: AbortSignal | undefined } = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),

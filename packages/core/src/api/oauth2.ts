@@ -33,15 +33,15 @@ export class OAuth2API {
 	 * Performs an OAuth2 token exchange, giving you an access token
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-exchange-example}
-	 * @param data - The data for the token exchange request
+	 * @param body - The body of the token exchange request
 	 * @param options - The options for the token exchange request
 	 */
 	public async tokenExchange(
-		data: RESTPostOAuth2AccessTokenURLEncodedData,
+		body: RESTPostOAuth2AccessTokenURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(data),
+			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',

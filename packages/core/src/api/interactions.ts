@@ -18,7 +18,7 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param callbackData - The callback data to use when replying
+	 * @param body - The callback data to use when replying
 	 * @param options - The options to use when replying
 	 */
 	public async reply(
@@ -84,16 +84,16 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param callbackData - The callback data to use when replying
+	 * @param body - The callback data to use when replying
 	 * @param options - The options to use when replying
 	 */
 	public async followUp(
 		applicationId: Snowflake,
 		interactionToken: string,
-		callbackData: APIInteractionResponseCallbackData & { files?: RawFile[] },
-		options?: Pick<RequestData, 'signal'>,
+		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		await this.webhooks.execute(applicationId, interactionToken, callbackData, options);
+		await this.webhooks.execute(applicationId, interactionToken, body, { signal });
 	}
 
 	/**
@@ -112,9 +112,11 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		messageId?: Snowflake | '@original',
-		options?: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, options);
+		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, {
+			signal,
+		});
 	}
 
 	/**
@@ -128,14 +130,14 @@ export class InteractionsAPI {
 	public async getOriginalReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		options?: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'>,
 	) {
 		return this.webhooks.getMessage(
 			applicationId,
 			interactionToken,
 			'@original',
 			{},
-			options,
+			{ signal },
 		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 

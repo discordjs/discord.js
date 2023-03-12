@@ -119,11 +119,11 @@ export class GuildsAPI {
 	 * Creates a guild
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild}
-	 * @param data - The guild to create
+	 * @param body - The guild to create
 	 * @param options - The options for creating the guild
 	 */
-	public async create(data: RESTPostAPIGuildsJSONBody, { signal }: Pick<RequestData, 'signal'>) {
-		return this.rest.post(Routes.guilds(), { body: data, signal }) as Promise<RESTPostAPIGuildsResult>;
+	public async create(body: RESTPostAPIGuildsJSONBody, { signal }: Pick<RequestData, 'signal'>) {
+		return this.rest.post(Routes.guilds(), { body, signal }) as Promise<RESTPostAPIGuildsResult>;
 	}
 
 	/**
@@ -151,13 +151,9 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild}
 	 * @param guildId - The id of the guild to delete
-	 * @param reason - The reason for deleting this guild
 	 * @param options - The options for deleting this guild
 	 */
-	public async delete(
-		guildId: Snowflake,
-		{ signal, reason }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
-	) {
+	public async delete(guildId: Snowflake, { signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {}) {
 		await this.rest.delete(Routes.guild(guildId), { reason, signal });
 	}
 
@@ -618,11 +614,7 @@ export class GuildsAPI {
 	 * @param emojiId - The id of the emoji to fetch
 	 * @param options - The options for fetching the emoji
 	 */
-	public async getEmoji(
-		guildId: Snowflake,
-		emojiId: Snowflake,
-		{ signal }: { reason?: string | undefined; signal?: AbortSignal | undefined } = {},
-	) {
+	public async getEmoji(guildId: Snowflake, emojiId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.guildEmoji(guildId, emojiId), { signal }) as Promise<RESTGetAPIGuildEmojiResult>;
 	}
 
