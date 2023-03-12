@@ -567,7 +567,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
-				this.debug([`Starting to heartbeat every ${payload.d.heartbeat_interval}ms`]);
+				const jitter = Math.random();
+				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
+				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
+
+				await sleep(firstWait);
+				await this.heartbeat();
+
+				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
 				this.heartbeatInterval = setInterval(() => void this.heartbeat(), payload.d.heartbeat_interval);
 				break;
 			}
