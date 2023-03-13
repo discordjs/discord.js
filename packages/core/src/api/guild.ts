@@ -1176,11 +1176,11 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param options - The options to use when setting the voice state
+	 * @param body - The options to use when setting the voice state
 	 */
-	public async setVoiceState(guildId: Snowflake, options: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
+	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body: options,
+			body,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 }
