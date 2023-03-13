@@ -84,6 +84,33 @@ class AutoModerationActionExecution {
   get autoModerationRule() {
     return this.guild.autoModerationRules.cache.get(this.ruleId) ?? null;
   }
+
+  /**
+   * The channel where this action was triggered from.
+   * @type {?TextBasedChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.guild.channels.cache.get(this.channelId) ?? null;
+  }
+
+  /**
+   * The user that triggered this action.
+   * @type {?User}
+   * @readonly
+   */
+  get user() {
+    return this.guild.client.users.cache.get(this.userId) ?? null;
+  }
+
+  /**
+   * The guild member that triggered this action.
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild.members.cache.get(this.userId) ?? null;
+  }
 }
 
 module.exports = AutoModerationActionExecution;

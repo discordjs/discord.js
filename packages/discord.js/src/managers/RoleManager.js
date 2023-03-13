@@ -137,7 +137,7 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
-    if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
+    if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
@@ -198,10 +198,9 @@ class RoleManager extends CachedManager {
 
     const body = {
       name: options.name,
-      color: typeof options.color === 'undefined' ? undefined : resolveColor(options.color),
+      color: options.color === undefined ? undefined : resolveColor(options.color),
       hoist: options.hoist,
-      permissions:
-        typeof options.permissions === 'undefined' ? undefined : new PermissionsBitField(options.permissions),
+      permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,
       icon,
       unicode_emoji: options.unicodeEmoji,

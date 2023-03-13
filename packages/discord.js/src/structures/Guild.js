@@ -830,9 +830,7 @@ class Guild extends AnonymousGuild {
         banner: banner && (await DataResolver.resolveImage(banner)),
         system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
         system_channel_flags:
-          typeof systemChannelFlags === 'undefined'
-            ? undefined
-            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+          systemChannelFlags === undefined ? undefined : SystemChannelFlagsBitField.resolve(systemChannelFlags),
         rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
         public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,

@@ -163,6 +163,7 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 		shardIds: [0, 1],
 		retrieveSessionInfo: mockRetrieveSessionInfo,
 		updateSessionInfo: mockUpdateSessionInfo,
+		buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' }),
 	});
 
 	const managerEmitSpy = vi.spyOn(manager, 'emit');
@@ -190,9 +191,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 				},
 			},
 		}));
-
-	const strategy = new WorkerShardingStrategy(manager, { shardsPerWorker: 'all' });
-	manager.setStrategy(strategy);
 
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(

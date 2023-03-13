@@ -194,7 +194,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel
+   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake} channel
    * The channel to create the webhook for
    */
 
@@ -275,7 +275,7 @@ class GuildChannelManager extends CachedManager {
 
     const parent = options.parent && this.client.channels.resolveId(options.parent);
 
-    if (typeof options.position !== 'undefined') {
+    if (options.position !== undefined) {
       await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
     }
 
@@ -440,7 +440,7 @@ class GuildChannelManager extends CachedManager {
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: typeof r.parent !== 'undefined' ? this.resolveId(r.parent) : undefined,
+      parent_id: r.parent !== undefined ? this.resolveId(r.parent) : undefined,
     }));
 
     await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });

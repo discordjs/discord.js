@@ -307,7 +307,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: token === undefined });
     return new Webhook(this, { token, ...data });
   }
 
@@ -411,7 +411,7 @@ class Client extends BaseClient {
     if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
 
     const { scopes } = options;
-    if (typeof scopes === 'undefined') {
+    if (scopes === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (!Array.isArray(scopes)) {
@@ -485,7 +485,7 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
+    if (options.intents === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
       options.intents = new IntentsBitField(options.intents).freeze();

@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/rest",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
@@ -58,24 +58,24 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.4.0",
 		"discord-api-types": "^0.37.35",
-		"file-type": "^18.1.0",
-		"tslib": "^2.4.1",
-		"undici": "^5.19.1"
+		"file-type": "^18.2.1",
+		"tslib": "^2.5.0",
+		"undici": "^5.20.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^1.10.0",
-		"@microsoft/api-extractor": "^7.33.7",
-		"@types/node": "16.18.11",
-		"@vitest/coverage-c8": "^0.27.1",
+		"@microsoft/api-extractor": "^7.34.4",
+		"@types/node": "16.18.13",
+		"@vitest/coverage-c8": "^0.29.1",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.0.2",
-		"eslint": "^8.31.0",
+		"esbuild-plugin-version-injector": "^1.0.3",
+		"eslint": "^8.35.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.2",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.4",
-		"vitest": "^0.27.1"
+		"prettier": "^2.8.4",
+		"tsup": "^6.6.3",
+		"typescript": "^4.9.5",
+		"vitest": "^0.29.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
