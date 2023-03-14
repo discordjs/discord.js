@@ -83,7 +83,7 @@ class GuildAuditLogEntryManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
 
-    const notCachableObjects = {
+    const uncacheable = {
       webhooks: data.webhooks.reduce(
         (webhooks, webhook) => webhooks.set(webhook.id, new Webhook(this.client, webhook)),
         new Collection(),
@@ -111,7 +111,7 @@ class GuildAuditLogEntryManager extends CachedManager {
 
     return data.audit_log_entries.reduce(
       (col, auditLogEntity) =>
-        col.set(auditLogEntity.id, this._add(auditLogEntity, true, { extras: [notCachableObjects] })),
+        col.set(auditLogEntity.id, this._add(auditLogEntity, true, { extras: [uncacheable] })),
       new Collection(),
     );
   }

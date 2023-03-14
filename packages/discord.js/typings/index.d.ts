@@ -2815,6 +2815,9 @@ export class Sweepers {
       SweeperDefinitions['applicationCommands'][1]
     >,
   ): number;
+  public sweepAuditLogEntries(
+    filter: CollectionSweepFilter<SweeperDefinitions['auditLogEntries'][0], SweeperDefinitions['auditLogEntries'][1]>,
+  ): number;
   public sweepAutoModerationRules(
     filter: CollectionSweepFilter<
       SweeperDefinitions['autoModerationRules'][0],
@@ -4629,6 +4632,7 @@ export interface Caches {
   // TODO: GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
   // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
   GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
+  GuildAuditLogEntryManager: [manager: typeof GuildAuditLogEntryManager, holds: typeof GuildAuditLogsEntry];
   GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
   GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: typeof ThreadChannel];
   GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
@@ -6144,6 +6148,7 @@ export interface LifetimeSweepOptions {
 
 export interface SweeperDefinitions {
   applicationCommands: [Snowflake, ApplicationCommand];
+  auditLogEntries: [Snowflake, GuildAuditLogsEntry];
   autoModerationRules: [Snowflake, AutoModerationRule];
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];

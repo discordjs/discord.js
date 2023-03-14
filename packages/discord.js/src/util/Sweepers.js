@@ -79,6 +79,16 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all audit logs entries and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine
+   * which audit logs entries will be removed from the caches
+   * @returns {number} Amount of audit logs entries that were removed from the caches
+   */
+  sweepAuditLogEntries(filter) {
+    return this._sweepGuildDirectProp('auditLogEntries', filter).items;
+  }
+
+  /**
    * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine
    * which auto moderation rules will be removed from the caches
