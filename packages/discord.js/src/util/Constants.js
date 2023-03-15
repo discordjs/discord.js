@@ -71,7 +71,7 @@ exports.NonSystemMessageTypes = [
  */
 
 /**
- * The types of channels that are text-based. The available types are:
+ * The types of guild channels that are text-based. The available types are:
  * * {@link ChannelType.GuildText}
  * * {@link ChannelType.GuildAnnouncement}
  * * {@link ChannelType.AnnouncementThread}
