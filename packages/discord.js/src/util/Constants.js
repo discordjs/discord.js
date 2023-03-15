@@ -71,6 +71,27 @@ exports.NonSystemMessageTypes = [
  */
 
 /**
+ * The types of channels that are text-based. The available types are:
+ * * {@link ChannelType.GuildText}
+ * * {@link ChannelType.GuildAnnouncement}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
+ * * {@link ChannelType.GuildVoice}
+ * * {@link ChannelType.GuildStageVoice}
+ * @typedef {ChannelType[]} GuildTextBasedChannelTypes
+ */
+exports.GuildTextBasedChannelTypes = [
+  ChannelType.GuildText,
+  ChannelType.GuildAnnouncement,
+  ChannelType.AnnouncementThread,
+  ChannelType.PublicThread,
+  ChannelType.PrivateThread,
+  ChannelType.GuildVoice,
+  ChannelType.GuildStageVoice,
+];
+
+/**
  * The channels that are text-based.
  * * DMChannel
  * * GuildTextBasedChannel
@@ -96,16 +117,7 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.GuildStageVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [
-  ChannelType.DM,
-  ChannelType.GuildText,
-  ChannelType.GuildAnnouncement,
-  ChannelType.AnnouncementThread,
-  ChannelType.PublicThread,
-  ChannelType.PrivateThread,
-  ChannelType.GuildVoice,
-  ChannelType.GuildStageVoice,
-];
+exports.TextBasedChannelTypes = [...exports.TextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
