@@ -14,7 +14,8 @@ import type { IHandler, PolyFillAbortSignal } from './IHandler.js';
  * Burst requests have no ratelimit handling but allow for pre- and post-processing
  * of data in the same manner as sequentially queued requests.
  *
- * <info>This queue may still emit a rate limit error if an unexpected 429 is hit</info>
+ * @remarks
+ * This queue may still emit a rate limit error if an unexpected 429 is hit</info>
  */
 export class BurstHandler implements IHandler {
 	/**
