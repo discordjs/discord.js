@@ -75,9 +75,9 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * The options for fetching multiple threads, the properties are mutually exclusive
+   * Options for fetching multiple threads.
    * @typedef {Object} FetchThreadsOptions
-   * @property {FetchArchivedThreadOptions} [archived] The options used to fetch archived threads
+   * @property {FetchArchivedThreadOptions} [archived] Options used to fetch archived threads
    */
 
   /**
