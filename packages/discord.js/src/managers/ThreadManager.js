@@ -94,7 +94,7 @@ class ThreadManager extends CachedManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  fetch(options, { cache = true, force = false } = {}) {
+  fetch(options, { cache, force } = {}) {
     if (!options) return this.fetchActive(cache);
     const channel = this.client.channels.resolveId(options);
     if (channel) return this.client.channels.fetch(channel, { cache, force });
