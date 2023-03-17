@@ -28,7 +28,6 @@
 		"newLine": "lf",
 		"noEmitHelpers": true,
 		"outDir": "dist",
-		"preserveConstEnums": true,
 		"removeComments": false,
 		"sourceMap": true,
 		"esModuleInterop": true,
