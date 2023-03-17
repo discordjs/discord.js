@@ -21,7 +21,7 @@ import type { IHandler } from './IHandler.js';
 let invalidCount = 0;
 let invalidCountResetTime: number | null = null;
 
-enum QueueType {
+const enum QueueType {
 	Standard,
 	Sublimit,
 }
