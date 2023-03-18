@@ -117,7 +117,7 @@ exports.GuildTextBasedChannelTypes = [
  * * {@link ChannelType.GuildStageVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [...exports.TextBasedChannelTypes, ChannelType.DM];
+exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
