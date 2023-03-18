@@ -580,6 +580,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.initialHeartbeatTimeoutController = controller;
 					await sleep(firstWait, undefined, { signal: controller.signal });
 				} catch {
+					this.debug(['Cancelled initial heartbeat due to #destroy being called']);
 					return;
 				} finally {
 					this.initialHeartbeatTimeoutController = null;
