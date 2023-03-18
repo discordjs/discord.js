@@ -2738,6 +2738,10 @@ export class Formatters extends null {
   public static blockQuote: typeof blockQuote;
   public static bold: typeof bold;
   public static channelMention: typeof channelMention;
+  public static chatInputApplicationCommandMention
+    <N extends string, G extends string, S extends string, I extends Snowflake>(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
+  public static chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(commandName: N, subcommandName: S, commandId: I): `</${N} ${S}:${I}>`;
+  public static chatInputApplicationCommandMention<N extends string, I extends Snowflake>(commandName: N, commandId: I): `</${N}:${I}>`;
   public static codeBlock: typeof codeBlock;
   public static formatEmoji: typeof formatEmoji;
   public static hideLinkEmbed: typeof hideLinkEmbed;
