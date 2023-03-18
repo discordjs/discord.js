@@ -575,16 +575,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
 				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
 
-				const controller = new AbortController();
-				this.initialHeartbeatTimeoutController = controller;
-
-				const cancelled = await sleep<boolean>(firstWait, false, { signal: controller.signal })
-					.catch(() => true)
-					.finally(() => {
-						this.initialHeartbeatTimeoutController = null;
-					});
-				if (cancelled) {
+				try {
+					const controller = new AbortController();
+					this.initialHeartbeatTimeoutController = controller;
+					await sleep(firstWait, undefined, { signal: controller.signal });
+				} catch {
 					return;
+				} finally {
+					this.initialHeartbeatTimeoutController = null;
 				}
 
 				await this.heartbeat();
