@@ -35,7 +35,6 @@
 		"forceConsistentCasingInFileNames": true,
 
 		// Language and Environment
-		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"lib": ["ESNext"],
 		"target": "ES2021",
