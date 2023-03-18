@@ -95,6 +95,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private sendRateLimitState: SendRateLimitState = getInitialSendRateLimitState();
 
+	private initialHeartbeatTimeoutController: AbortController | null = null;
+
 	private heartbeatInterval: NodeJS.Timer | null = null;
 
 	private lastHeartbeatAt = -1;
@@ -201,6 +203,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = true;
 		if (this.heartbeatInterval) {
 			clearInterval(this.heartbeatInterval);
+		}
+
+		if (this.initialHeartbeatTimeoutController) {
+			this.initialHeartbeatTimeoutController.abort();
+			this.initialHeartbeatTimeoutController = null;
 		}
 
 		this.lastHeartbeatAt = -1;
@@ -568,7 +575,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
 				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
 
-				await sleep(firstWait);
+				const controller = new AbortController();
+				this.initialHeartbeatTimeoutController = controller;
+
+				const cancelled = await sleep<boolean>(firstWait, false, { signal: controller.signal })
+					.catch(() => true)
+					.finally(() => {
+						this.initialHeartbeatTimeoutController = null;
+					});
+				if (cancelled) {
+					return;
+				}
+
 				await this.heartbeat();
 
 				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
