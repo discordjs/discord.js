@@ -307,7 +307,6 @@ class User extends Base {
   }
 }
 
-
 /**
  * Sends a message to this user.
  * @method send
