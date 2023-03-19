@@ -270,6 +270,7 @@ class InteractionResponses {
   /**
    * Collects a single modal submit interaction that passes the filter.
    * The Promise will reject if the time expires.
+   * <info>Use the `showModal` method to show a modal to the user
    * @param {AwaitModalSubmitOptions} options Options to pass to the internal collector
    * @returns {Promise<ModalSubmitInteraction>}
    * @example

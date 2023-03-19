@@ -320,6 +320,11 @@ class GuildMember extends Base {
    * Edits this member.
    * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Deafen a guild member
+   * guildMember.edit({ deaf: true })
+   *   .then(member => console.log(`Deafened ${member.nickname}`))
+   *   .catch(console.log);
    */
   edit(options) {
     return this.guild.members.edit(this, options);
@@ -340,6 +345,11 @@ class GuildMember extends Base {
    * @param {?string} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Set a nickname for a guild member
+   * guildMember.setNickname(null, "No nicknames allowed!")
+   *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
+   *   .catch(console.log);
    */
   setNickname(nick, reason) {
     return this.edit({ nick, reason });
@@ -395,6 +405,11 @@ class GuildMember extends Base {
    * // Time a guild member out for 5 minutes
    * guildMember.disableCommunicationUntil(Date.now() + (5 * 60 * 1000), 'They deserved it')
    *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Remove the timeout of a guild member
+   * guildMember.disableCommunicationUntil(null)
+   *   .then(member => `Removed timeout for ${member.nickname}`)
    *   .catch(console.error);
    */
   disableCommunicationUntil(communicationDisabledUntil, reason) {

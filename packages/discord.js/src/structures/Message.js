@@ -674,6 +674,11 @@ class Message extends Base {
   /**
    * Fetches the Message this crosspost/reply/pin-add references, if available to the client
    * @returns {Promise<Message>}
+   * @example
+   * // Fetch the reference of this message
+   * message.fetchReference()
+   *   .then(reference => console.log(`Fetched the reference of this message: ${reference.content}`))
+   *   .catch(console.error);
    */
   async fetchReference() {
     if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
