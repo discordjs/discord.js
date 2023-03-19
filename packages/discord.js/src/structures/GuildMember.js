@@ -346,7 +346,7 @@ class GuildMember extends Base {
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    * @example
-   * // Set a nickname for a guild member
+   * // Remove a nickname for a guild member
    * guildMember.setNickname(null, "No nicknames allowed!")
    *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
    *   .catch(console.log);
@@ -409,7 +409,7 @@ class GuildMember extends Base {
    * @example
    * // Remove the timeout of a guild member
    * guildMember.disableCommunicationUntil(null)
-   *   .then(member => `Removed timeout for ${member.nickname}`)
+   *   .then(member => `Removed timeout for ${member.displayName}`)
    *   .catch(console.error);
    */
   disableCommunicationUntil(communicationDisabledUntil, reason) {

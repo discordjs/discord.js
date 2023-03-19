@@ -1157,7 +1157,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets the guild's MFA level
-   * <info>An elevated MFA level requires guild moderators to have 2FA enabled
+   * <info>An elevated MFA level requires guild moderators to have 2FA enabled.</info>
    * @param {GuildMFALevel} level The MFA level
    * @param {string} [reason] Reason for changing the guild's MFA level
    * @returns {Promise<Guild>}
