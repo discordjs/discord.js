@@ -316,45 +316,8 @@ class User extends Base {
  * @returns {Promise<Message>}
  * @example
  * // Send a direct message
- * user.send('hello!')
- *   .then(message => console.log(`Sent message: ${message.content}`))
- *   .catch(console.error);
- * @example
- * // Send a remote file
- * user.send({
- *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
- * })
- *   .then(console.log)
- *   .catch(console.error);
- * @example
- * // Send a local file
- * user.send({
- *   files: [{
- *     attachment: 'entire/path/to/file.jpg',
- *     name: 'file.jpg',
- *     description: 'A description of the file'
- *   }]
- * })
- *   .then(console.log)
- *   .catch(console.error);
- * @example
- * // Send an embed with a local image inside
- * user.send({
- *   content: 'This is an embed',
- *   embeds: [
- *     {
- *       thumbnail: {
- *         url: 'attachment://file.jpg'
- *       }
- *     }
- *   ],
- *   files: [{
- *     attachment: 'entire/path/to/file.jpg',
- *     name: 'file.jpg',
- *     description: 'A description of the file'
- *   }]
- * })
- *   .then(console.log)
+ * user.send('Hello!')
+ *   .then(message => console.log(`Sent message: ${message.content} to ${user.tag}`))
  *   .catch(console.error);
  */
 
