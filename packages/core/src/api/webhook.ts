@@ -102,7 +102,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait: true },
-		options?: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIWebhookWithTokenWaitResult>;
 
 	/**
@@ -118,7 +118,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		body: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[]; wait?: false },
-		options?: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'>,
 	): Promise<void>;
 
 	/**

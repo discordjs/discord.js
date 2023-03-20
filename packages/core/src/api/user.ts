@@ -97,7 +97,7 @@ export class UsersAPI {
 	 * @param body - The new data for the guild member
 	 * @param options - The options for editing the guild member
 	 */
-	public async editGuildMember(
+	public async editCurrentGuildMember(
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildMemberJSONBody = {},
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},

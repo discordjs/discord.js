@@ -54,15 +54,15 @@ export class OAuth2API {
 	 * Refreshes an OAuth2 access token, giving you a new one
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-refresh-token-exchange-example}
-	 * @param data - The options for the refresh token request
+	 * @param body - The options for the refresh token request
 	 * @param options - The options for the refresh token request
 	 */
 	public async refreshToken(
-		data: RESTPostOAuth2RefreshTokenURLEncodedData,
+		body: RESTPostOAuth2RefreshTokenURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(data),
+			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -77,15 +77,15 @@ export class OAuth2API {
 	 * @remarks
 	 * This is primarily used for testing purposes
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#client-credentials-grant}
-	 * @param data - The options for the client credentials grant request
+	 * @param body - The options for the client credentials grant request
 	 * @param options - The options for the client credentials grant request
 	 */
 	public async getToken(
-		data: RESTPostOAuth2ClientCredentialsURLEncodedData,
+		body: RESTPostOAuth2ClientCredentialsURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(data),
+			body: makeURLSearchParams(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',

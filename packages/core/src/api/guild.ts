@@ -131,17 +131,17 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild}
 	 * @param guildId - The id of the guild to edit
-	 * @param data - The new guild data
+	 * @param body - The new guild data
 	 * @param options - The options for editing the guild
 	 */
 	public async edit(
 		guildId: Snowflake,
-		data: RESTPatchAPIGuildJSONBody,
+		body: RESTPatchAPIGuildJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.guild(guildId), {
 			reason,
-			body: data,
+			body,
 			signal,
 		}) as Promise<RESTPatchAPIGuildResult>;
 	}

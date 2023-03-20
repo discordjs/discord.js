@@ -155,9 +155,9 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
-		options?: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, options);
+		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
 	}
 
 	/**
