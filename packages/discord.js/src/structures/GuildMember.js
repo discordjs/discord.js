@@ -408,7 +408,7 @@ class GuildMember extends Base {
    * @example
    * // Remove the timeout of a guild member
    * guildMember.disableCommunicationUntil(null)
-   *   .then(member => `Removed timeout for ${member.displayName}`)
+   *   .then(member => console.log(`Removed timeout for ${member.displayName}`))
    *   .catch(console.error);
    */
   disableCommunicationUntil(communicationDisabledUntil, reason) {
