@@ -320,11 +320,6 @@ class GuildMember extends Base {
    * Edits this member.
    * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
-   * @example
-   * // Deafen a guild member
-   * guildMember.edit({ deaf: true })
-   *   .then(member => console.log(`Deafened ${member.nickname}`))
-   *   .catch(console.log);
    */
   edit(options) {
     return this.guild.members.edit(this, options);
@@ -346,10 +341,14 @@ class GuildMember extends Base {
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    * @example
+   * // Set a nickname for a guild member
+   * guildMember.setNickname("cool nickname", "Needed a new nickname")
+   *   .then(member => console.log(`Set nickname of ${member.user.username}`))
+   *   .catch(console.error);
    * // Remove a nickname for a guild member
    * guildMember.setNickname(null, "No nicknames allowed!")
    *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
-   *   .catch(console.log);
+   *   .catch(console.error);
    */
   setNickname(nick, reason) {
     return this.edit({ nick, reason });
