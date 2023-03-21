@@ -181,16 +181,6 @@ export interface RequestManager {
 }
 
 /**
- * Invalid request limiting is done on a per-IP basis, not a per-token basis.
- * The best we can do is track invalid counts process-wide (on the theory that
- * users could have multiple bots run from one process) rather than per-bot.
- * Therefore, store these at file scope here rather than in the client's
- * RESTManager object.
- */
-let invalidCount = 0;
-let invalidCountResetTime: number | null = null;
-
-/**
  * Represents the class that manages handlers for endpoints
  */
 export class RequestManager extends EventEmitter {
@@ -509,30 +499,6 @@ export class RequestManager extends EventEmitter {
 	 */
 	public clearHandlerSweeper() {
 		clearInterval(this.handlerTimer);
-	}
-
-	/**
-	 * Increment the invalid request count and emit warning if necessary
-	 *
-	 * @internal
-	 */
-	public incrementInvalidCount() {
-		if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
-			invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
-			invalidCount = 0;
-		}
-
-		invalidCount++;
-
-		const emitInvalid =
-			this.options.invalidRequestWarningInterval > 0 && invalidCount % this.options.invalidRequestWarningInterval === 0;
-		if (emitInvalid) {
-			// Let library users know periodically about invalid requests
-			this.emit(RESTEvents.InvalidRequestWarning, {
-				count: invalidCount,
-				remainingTime: invalidCountResetTime - Date.now(),
-			});
-		}
 	}
 
 	/**

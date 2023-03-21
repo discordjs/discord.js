@@ -1,13 +1,11 @@
-import { setTimeout, clearTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { request, type Dispatcher } from 'undici';
+import type { Dispatcher } from 'undici';
 import type { RequestOptions } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
-import { DiscordAPIError, type DiscordErrorData, type OAuthErrorData } from '../errors/DiscordAPIError.js';
-import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
-import { onRateLimit, parseHeader, parseResponse, shouldRetry } from '../utils/utils.js';
-import type { IHandler, PolyFillAbortSignal } from './IHandler.js';
+import { onRateLimit, parseHeader } from '../utils/utils.js';
+import type { IHandler } from './IHandler.js';
+import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 /**
  * The structure used to handle burst requests for a given bucket.
@@ -15,7 +13,7 @@ import type { IHandler, PolyFillAbortSignal } from './IHandler.js';
  * of data in the same manner as sequentially queued requests.
  *
  * @remarks
- * This queue may still emit a rate limit error if an unexpected 429 is hit</info>
+ * This queue may still emit a rate limit error if an unexpected 429 is hit
  */
 export class BurstHandler implements IHandler {
 	/**
@@ -64,10 +62,10 @@ export class BurstHandler implements IHandler {
 	}
 
 	/**
-	 * The method that actually makes the request to the api, and updates info about the bucket accordingly
+	 * The method that actually makes the request to the API, and updates info about the bucket accordingly
 	 *
-	 * @param routeId - The generalized api route with literal ids for major parameters
-	 * @param url - The fully resolved url to make the request to
+	 * @param routeId - The generalized API route with literal ids for major parameters
+	 * @param url - The fully resolved URL to make the request to
 	 * @param options - The fetch options needed to make the request
 	 * @param requestData - Extra data from the user's request needed for errors and additional processing
 	 * @param retries - The number of retries this request has already attempted (recursion)
@@ -81,32 +79,12 @@ export class BurstHandler implements IHandler {
 	): Promise<Dispatcher.ResponseData> {
 		const method = options.method ?? 'get';
 
-		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort(), this.manager.options.timeout).unref();
-		if (requestData.signal) {
-			// The type polyfill is required because Node.js's types are incomplete.
-			const signal = requestData.signal as PolyFillAbortSignal;
-			// If the user signal was aborted, abort the controller, else abort the local signal.
-			// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
-			// requests, and we do not want to cause unexpected side-effects.
-			if (signal.aborted) controller.abort();
-			else signal.addEventListener('abort', () => controller.abort());
-		}
+		const res = await makeNetworkRequest(this.manager, routeId, url, options, requestData, retries);
 
-		let res: Dispatcher.ResponseData;
-		try {
-			res = await request(url, { ...options, signal: controller.signal });
-		} catch (error: unknown) {
-			if (!(error instanceof Error)) throw error;
-			// Retry the specified number of times if needed
-			if (shouldRetry(error) && retries !== this.manager.options.retries) {
-				// eslint-disable-next-line no-param-reassign
-				return await this.runRequest(routeId, url, options, requestData, ++retries);
-			}
-
-			throw error;
-		} finally {
-			clearTimeout(timeout);
+		// Retry requested
+		if (res === null) {
+			// eslint-disable-next-line no-param-reassign
+			return this.runRequest(routeId, url, options, requestData, ++retries);
 		}
 
 		const status = res.statusCode;
@@ -118,7 +96,7 @@ export class BurstHandler implements IHandler {
 
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {
-			this.manager.incrementInvalidCount();
+			incrementInvalidCount(this.manager);
 		}
 
 		if (status >= 200 && status < 300) {
@@ -151,35 +129,19 @@ export class BurstHandler implements IHandler {
 				].join('\n'),
 			);
 
-			// We are bypassing all other limits, but an encountered limit should be respected (it's probably a non-punished ratelimit anyways)
+			// We are bypassing all other limits, but an encountered limit should be respected (it's probably a non-punished rate limit anyways)
 			await sleep(retryAfter);
 
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
-		} else if (status >= 500 && status < 600) {
-			// Retry the specified number of times for possible server side issues
-			if (retries !== this.manager.options.retries) {
+		} else {
+			const handled = await handleErrors(this.manager, res, method, url, requestData, retries);
+			if (handled === null) {
 				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);
 			}
 
-			// We are out of retries, throw an error
-			throw new HTTPError(status, method, url, requestData);
-		} else {
-			// Handle possible malformed requests
-			if (status >= 400 && status < 500) {
-				// If we receive this status code, it means the token we had is no longer valid.
-				if (status === 401 && requestData.auth) {
-					this.manager.setToken(null!);
-				}
-
-				// The request will not succeed for some reason, parse the error returned from the api
-				const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
-				// throw the API error
-				throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
-			}
-
-			return res;
+			return handled;
 		}
 	}
 }
