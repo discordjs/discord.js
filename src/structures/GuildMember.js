@@ -414,7 +414,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   ban(options) {
-    return this.guild.members.ban(this, options);
+    return this.guild.bans.create(this, options);
   }
 
   /**
