@@ -53,11 +53,13 @@ class ClientUser extends User {
    * @param {ClientUserEditData} data The new data
    * @returns {Promise<ClientUser>}
    */
-  async edit(data) {
-    if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
-    const newData = await this.client.api.users('@me').patch({ data });
-    this.client.token = newData.token;
-    const { updated } = this.client.actions.UserUpdate.handle(newData);
+  async edit({ username, avatar }) {
+    const data = await this.client.api
+      .users('@me')
+      .patch({ username, avatar: avatar && (await DataResolver.resolveImage(avatar)) });
+
+    this.client.token = data.token;
+    const { updated } = this.client.actions.UserUpdate.handle(data);
     return updated ?? this;
   }
 
