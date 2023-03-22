@@ -1341,7 +1341,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Leave a guild
    * guild.leave()
-   *   .then(g => console.log(`Left the guild ${g}`))
+   *   .then(guild => console.log(`Left the guild: ${guild.name}`))
    *   .catch(console.error);
    */
   async leave() {

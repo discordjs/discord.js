@@ -233,6 +233,10 @@ class Role extends Base {
    * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if this role's position is lower (other role's is higher),
    * positive number if this one is higher (other's is lower), 0 if equal
+   * * @example
+   * // Compare the position of a role to another
+   * const roleCompare = role.comparePositionTo(otherRole);
+   * if (roleCompare === 1) console.log(`${role.name} is higher than ${otherRole.name}`);
    */
   comparePositionTo(role) {
     return this.guild.roles.comparePositions(this, role);
