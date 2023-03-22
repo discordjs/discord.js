@@ -602,11 +602,17 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+
     // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked.
+    // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
     if (this.channel?.isThread()) {
-      return precheck && !this.channel.locked;
+      if (this.channel.archived) return false;
+      if (this.channel.locked) {
+        const permissions = this.permissionsFor(this.client.user);
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      }
     }
+
     return precheck;
   }
 
