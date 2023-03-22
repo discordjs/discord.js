@@ -86,7 +86,8 @@ class ThreadManager extends CachedManager {
    * ThreadChannelResolvable then the specified thread will be fetched. Fetches all active threads if `undefined`
    * @param {BaseFetchOptions} [cacheOptions] Additional options for this fetch. <warn>The `force` field gets ignored
    * if `options` is not a {@link ThreadChannelResolvable}</warn>
-   * @returns {Promise<?(ThreadChannel|FetchedThreads)>}
+   * @returns {Promise<?(ThreadChannel|FetchedThreads|FetchedThreadsMore)>}
+   * {@link FetchedThreads} if active & {@link FetchedThreadsMore} if archived.
    * @example
    * // Fetch a thread by its id
    * channel.threads.fetch('831955138126104859')
@@ -124,9 +125,8 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * The data returned from a thread fetch that returns multiple threads.
-   * @typedef {Object} FetchedThreads
-   * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched, with any members returned
+   * Data returned from fetching multiple threads.
+   * @typedef {FetchedThreads} FetchedThreadsMore
    * @property {?boolean} hasMore Whether there are potentially additional threads that require a subsequent call
    */
 
@@ -136,7 +136,7 @@ class ThreadManager extends CachedManager {
    * in the parent channel.</info>
    * @param {FetchArchivedThreadOptions} [options] The options to fetch archived threads
    * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
-   * @returns {Promise<FetchedThreads>}
+   * @returns {Promise<FetchedThreadsMore>}
    */
   async fetchArchived({ type = 'public', fetchAll = false, before, limit } = {}, cache = true) {
     let path = Routes.channelThreads(this.channel.id, type);
@@ -171,15 +171,13 @@ class ThreadManager extends CachedManager {
   }
 
   /**
-   * Obtains the accessible active threads from Discord.
-   * <info>This method requires the {@link PermissionFlagsBits.ReadMessageHistory} permission
-   * in the parent channel.</info>
-   * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
+   * Obtains all active thread channels in the guild.
+   * This internally calls {@link GuildChannelManager#fetchActiveThreads}.
+   * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    */
-  async fetchActive(cache = true) {
-    const raw = await this.client.rest.get(Routes.guildActiveThreads(this.channel.guild.id));
-    return this.constructor._mapThreads(raw, this.client, { parent: this.channel, cache });
+  fetchActive(cache = true) {
+    return this.channel.guild.channels.fetchActiveThreads(cache);
   }
 
   static _mapThreads(rawThreads, client, { parent, guild, cache }) {
@@ -188,12 +186,18 @@ class ThreadManager extends CachedManager {
       if (parent && thread.parentId !== parent.id) return coll;
       return coll.set(thread.id, thread);
     }, new Collection());
+
     // Discord sends the thread id as id in this object
-    for (const rawMember of rawThreads.members) client.channels.cache.get(rawMember.id)?.members._add(rawMember);
-    return {
-      threads,
-      hasMore: rawThreads.has_more ?? false,
-    };
+    const threadMembers = rawThreads.members.reduce(
+      (coll, raw) => coll.set(raw.user_id, threads.get(raw.id).members._add(raw)),
+      new Collection(),
+    );
+
+    const response = { threads, members: threadMembers };
+
+    // The GET `/guilds/{guild.id}/threads/active` route does not return `has_more`.
+    if ('has_more' in rawThreads) response.hasMore = rawThreads.has_more;
+    return response;
   }
 }
 
