@@ -5239,7 +5239,6 @@ export type FetchThreadMembersOptions =
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
-  active?: boolean;
 }
 
 export interface AttachmentPayload {
