@@ -93,6 +93,7 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.PublicThread}
  * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
+ * * {@link ChannelType.GuildStageVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -103,6 +104,7 @@ exports.TextBasedChannelTypes = [
   ChannelType.PublicThread,
   ChannelType.PrivateThread,
   ChannelType.GuildVoice,
+  ChannelType.GuildStageVoice,
 ];
 
 /**

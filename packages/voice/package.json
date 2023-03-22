@@ -68,7 +68,7 @@
 		"@types/jest": "^29.4.0",
 		"@types/node": "16.18.13",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.0.3",
+		"esbuild-plugin-version-injector": "^1.1.0",
 		"eslint": "^8.35.0",
 		"eslint-config-neon": "^0.1.40",
 		"eslint-formatter-pretty": "^4.1.0",

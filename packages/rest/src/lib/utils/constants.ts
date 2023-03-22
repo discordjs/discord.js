@@ -34,7 +34,7 @@ export const DefaultRestOptions = {
 /**
  * The events that the REST manager emits
  */
-export const enum RESTEvents {
+export enum RESTEvents {
 	Debug = 'restDebug',
 	HandlerSweep = 'handlerSweep',
 	HashSweep = 'hashSweep',
