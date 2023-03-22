@@ -28,14 +28,12 @@
 		"newLine": "lf",
 		"noEmitHelpers": true,
 		"outDir": "dist",
-		"preserveConstEnums": true,
 		"removeComments": false,
 		"sourceMap": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 
 		// Language and Environment
-		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"lib": ["ESNext"],
 		"target": "ES2021",
