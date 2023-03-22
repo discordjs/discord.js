@@ -345,6 +345,7 @@ class GuildMember extends Base {
    * guildMember.setNickname('cool nickname', 'Needed a new nickname')
    *   .then(member => console.log(`Set nickname of ${member.user.username}`))
    *   .catch(console.error);
+   * @example
    * // Remove a nickname for a guild member
    * guildMember.setNickname(null, 'No nicknames allowed!')
    *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
