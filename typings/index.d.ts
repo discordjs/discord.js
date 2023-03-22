@@ -5076,7 +5076,6 @@ export interface FetchReactionUsersOptions {
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
-  active?: boolean;
 }
 
 export interface FileOptions {
