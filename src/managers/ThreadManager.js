@@ -101,7 +101,7 @@ class ThreadManager extends CachedManager {
    * @property {string} [type='public'] The type of threads to fetch, either `public` or `private`
    * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when type is `private`.
    * Requires `MANAGE_THREADS` if true
-   * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were created before this Date
+   * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were archived before this Date
    * or Snowflake. <warn>Must be a {@link ThreadChannelResolvable} when type is `private` and fetchAll is `false`</warn>
    * @property {number} [limit] Maximum number of threads to return
    */
