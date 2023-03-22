@@ -75,10 +75,9 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * The options for fetching multiple threads, the properties are mutually exclusive
+   * Options for fetching multiple threads.
    * @typedef {Object} FetchThreadsOptions
-   * @property {FetchArchivedThreadOptions} [archived] The options used to fetch archived threads
-   * @property {boolean} [active] When true, fetches active threads. <warn>If `archived` is set, this is ignored!</warn>
+   * @property {FetchArchivedThreadOptions} [archived] Options used to fetch archived threads
    */
 
   /**
@@ -118,7 +117,7 @@ class ThreadManager extends CachedManager {
    * @property {string} [type='public'] The type of threads to fetch (`public` or `private`)
    * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when `type` is `private`
    * <info>This property requires the {@link PermissionFlagsBits.ManageThreads} permission if `true`.</info>
-   * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were created before this Date
+   * @property {DateResolvable|ThreadChannelResolvable} [before] Only return threads that were archived before this Date
    * or Snowflake
    * <warn>Must be a {@link ThreadChannelResolvable} when `type` is `private` and `fetchAll` is `false`.</warn>
    * @property {number} [limit] Maximum number of threads to return

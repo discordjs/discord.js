@@ -95,6 +95,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private sendRateLimitState: SendRateLimitState = getInitialSendRateLimitState();
 
+	private initialHeartbeatTimeoutController: AbortController | null = null;
+
 	private heartbeatInterval: NodeJS.Timer | null = null;
 
 	private lastHeartbeatAt = -1;
@@ -203,6 +205,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			clearInterval(this.heartbeatInterval);
 		}
 
+		if (this.initialHeartbeatTimeoutController) {
+			this.initialHeartbeatTimeoutController.abort();
+			this.initialHeartbeatTimeoutController = null;
+		}
+
 		this.lastHeartbeatAt = -1;
 
 		// Clear session state if applicable
@@ -217,8 +224,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// Prevent a reconnection loop by unbinding the main close event
 			this.connection.removeAllListeners('close');
 
-			const shouldClose =
-				this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING;
+			const shouldClose = this.connection.readyState === WebSocket.OPEN;
 
 			this.debug([
 				'Connection status during destroy',
@@ -294,7 +300,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// If the error is handled, we can just try to reconnect
 			await this.destroy({
 				code: CloseCodes.Normal,
-				reason: 'Something timed out',
+				reason: 'Something timed out or went wrong while waiting for an event',
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
 
@@ -352,6 +358,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async identify() {
+		this.debug(['Waiting for identify throttle']);
+
+		await this.strategy.waitForIdentify();
+
 		this.debug([
 			'Identifying',
 			`shard id: ${this.id.toString()}`,
@@ -359,8 +369,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`intents: ${this.strategy.options.intents}`,
 			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
 		]);
-
-		await this.strategy.waitForIdentify();
 
 		const d: GatewayIdentifyData = {
 			token: this.strategy.options.token,
@@ -568,7 +576,17 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
 				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
 
-				await sleep(firstWait);
+				try {
+					const controller = new AbortController();
+					this.initialHeartbeatTimeoutController = controller;
+					await sleep(firstWait, undefined, { signal: controller.signal });
+				} catch {
+					this.debug(['Cancelled initial heartbeat due to #destroy being called']);
+					return;
+				} finally {
+					this.initialHeartbeatTimeoutController = null;
+				}
+
 				await this.heartbeat();
 
 				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
