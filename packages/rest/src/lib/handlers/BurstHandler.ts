@@ -54,8 +54,7 @@ export class BurstHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: Omit<Dispatcher.RequestOptions, 'method' | 'origin' | 'path'> &
-			Partial<Pick<Dispatcher.RequestOptions, 'method'>> & { dispatcher?: Dispatcher },
+		options: RequestOptions,
 		requestData: HandlerRequestData,
 	): Promise<Dispatcher.ResponseData> {
 		return this.runRequest(routeId, url, options, requestData);
