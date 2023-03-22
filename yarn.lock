@@ -2066,7 +2066,7 @@ __metadata:
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
     downlevel-dts: ^0.11.0
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2089,7 +2089,7 @@ __metadata:
     "@types/node": 16.18.13
     "@vitest/coverage-c8": ^0.29.1
     cross-env: ^7.0.3
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2256,7 +2256,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.29.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2324,7 +2324,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.29.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2428,7 +2428,7 @@ __metadata:
     "@types/ws": ^8.5.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -2519,7 +2519,7 @@ __metadata:
     "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.35
-    esbuild-plugin-version-injector: ^1.0.3
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.35.0
     eslint-config-neon: ^0.1.40
     eslint-formatter-pretty: ^4.1.0
@@ -10202,12 +10202,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-plugin-version-injector@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "esbuild-plugin-version-injector@npm:1.0.3"
+"esbuild-plugin-version-injector@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "esbuild-plugin-version-injector@npm:1.1.0"
   dependencies:
     "@sapphire/result": ^2.6.0
-  checksum: 12c9e8bf55fd6dc80979b93a1fc0acfc5e9d94b2fed5a0e645cdac768d73841750edccde2d21641619f7d9e143d248ec3400a11ebcda81dfecd7c36e9acc83d7
+  checksum: 441a379eba7979eae9423056097aab7db9ea049967f322a3a65bec8fc361cf352d41425383954d0954a05cb38c3b5c035e8d11e629e78b9d85dae9f7b9360eea
   languageName: node
   linkType: hard
 
