@@ -6,9 +6,10 @@ import type { RESTOptions } from '../REST.js';
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
 
-export const DefaultUserAgentAppendix =
-	// @ts-expect-error Detecting runtime.
-	process.release?.name === 'node' ? ` Node.js/${process.version}` : process.isBun ? ` Bun/${process.version}` : '';
+/**
+ * The default string to append onto the user agent.
+ */
+export const DefaultUserAgentAppendix = process.release?.name === 'node' ? ` Node.js/${process.version}` : '';
 
 export const DefaultRestOptions = {
 	get agent() {
