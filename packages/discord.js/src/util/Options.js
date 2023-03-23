@@ -72,6 +72,13 @@ const { version } = require('../../package.json');
  */
 class Options extends null {
   /**
+   * The default user agent appendix.
+   * @memberof Options
+   * @private
+   */
+  static userAgentAppendix = `discord.js/${version} Node.js/${process.version}`;
+
+  /**
    * The default client options.
    * @returns {ClientOptions}
    */
@@ -97,7 +104,7 @@ class Options extends null {
       },
       rest: {
         ...DefaultRestOptions,
-        userAgentAppendix: `discord.js/${version} Node.js/${process.version}`,
+        userAgentAppendix: this.userAgentAppendix,
       },
       jsonTransformer: toSnakeCase,
     };

@@ -1030,6 +1030,7 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
+  private userAgentAppendix: string;
   public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
   public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
