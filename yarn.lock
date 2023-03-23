@@ -135,14 +135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/compiler@npm:^1.0.0, @astrojs/compiler@npm:^1.0.1":
-  version: 1.2.2
-  resolution: "@astrojs/compiler@npm:1.2.2"
-  checksum: 3bfc99bd7746a4932a047baee83e8f3cfc2c2e4b86752a8f9aeeb30fe1f9523c808f876ea22059a93484a1bb2753c079d4713e079b2d4dc0ba70335da1b347ec
-  languageName: node
-  linkType: hard
-
-"@astrojs/compiler@npm:^1.2.0":
+"@astrojs/compiler@npm:^1.0.0, @astrojs/compiler@npm:^1.0.1, @astrojs/compiler@npm:^1.2.0":
   version: 1.3.0
   resolution: "@astrojs/compiler@npm:1.3.0"
   checksum: d2eb523499289c567d2197b4d6b3106cab3449627dfd0017652cbf3829c73684bd5db8a2c011a3a96f058be3fdfbed2a46d23b6f04aece62b77808f6ee752e06
@@ -2149,7 +2142,7 @@ __metadata:
     "@discordjs/ui": "workspace:^"
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": 16.18.19
+    "@types/node": 18.15.6
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
     "@types/react-syntax-highlighter": ^15.5.6
@@ -2408,7 +2401,7 @@ __metadata:
     "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": 16.18.19
+    "@types/node": 18.15.6
     "@types/react": ^18.0.28
     "@types/react-dom": ^18.0.11
     "@unocss/cli": ^0.50.6
@@ -5157,10 +5150,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 18.15.5
-  resolution: "@types/node@npm:18.15.5"
-  checksum: 5fbf3453bd5ce1402bb2964e55d928fc8a8a7de5451b1b0fe66587fecb8a3eb86854ca9cefa5076a5971e2cff00e1773ceeb5d872a54f6c6ddfbbc1064b4e91a
+"@types/node@npm:*, @types/node@npm:18.15.6":
+  version: 18.15.6
+  resolution: "@types/node@npm:18.15.6"
+  checksum: 46a1b04553a03574fb845bb4414292d47338d29c40fa25861d3c9e8a957455dfb23ff6385428da1613b02ddc3b5b5fe91c9227c55db80a46a655799ea2add285
   languageName: node
   linkType: hard
 
@@ -5175,13 +5168,6 @@ __metadata:
   version: 16.18.19
   resolution: "@types/node@npm:16.18.19"
   checksum: 83d7b5927d467776e1be906a3174180c4d7937fd4b8a21dded787fd148b6fe6bb5dfa4cbcf5976c489697205bf8101aebfde89e96793ca32b19873c9c770dcd0
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:18.15.6":
-  version: 18.15.6
-  resolution: "@types/node@npm:18.15.6"
-  checksum: 46a1b04553a03574fb845bb4414292d47338d29c40fa25861d3c9e8a957455dfb23ff6385428da1613b02ddc3b5b5fe91c9227c55db80a46a655799ea2add285
   languageName: node
   linkType: hard
 
@@ -19543,9 +19529,9 @@ __metadata:
   linkType: hard
 
 "resolve.exports@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "resolve.exports@npm:2.0.1"
-  checksum: 03be177026b4fe8dc1b2ffb421bce9cbf7fe3446e9f0c958df9fc8e144864b3eeea19fe788e057fd8be6b5655e65ce245b4f379258c1336e2e8f9205cbd4a9b4
+  version: 2.0.2
+  resolution: "resolve.exports@npm:2.0.2"
+  checksum: 1c7778ca1b86a94f8ab4055d196c7d87d1874b96df4d7c3e67bbf793140f0717fd506dcafd62785b079cd6086b9264424ad634fb904409764c3509c3df1653f2
   languageName: node
   linkType: hard
 
