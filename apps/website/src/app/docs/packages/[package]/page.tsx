@@ -3,7 +3,10 @@ import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { ServerRuntime } from 'next/types';
 import { PACKAGES } from '~/util/constants';
+
+export const runtime: ServerRuntime = 'edge';
 
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {

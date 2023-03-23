@@ -2148,6 +2148,7 @@ __metadata:
     "@types/react-syntax-highlighter": ^15.5.6
     "@unocss/cli": ^0.50.6
     "@unocss/reset": ^0.50.6
+    "@vercel/analytics": ^0.1.11
     "@vitejs/plugin-react": ^3.1.0
     "@vitest/coverage-c8": ^0.29.7
     ariakit: ^2.0.0-next.43
@@ -2406,6 +2407,7 @@ __metadata:
     "@types/react-dom": ^18.0.11
     "@unocss/cli": ^0.50.6
     "@unocss/reset": ^0.50.6
+    "@vercel/analytics": ^0.1.11
     "@vercel/og": ^0.4.1
     "@vitejs/plugin-react": ^3.1.0
     "@vitest/coverage-c8": ^0.29.7
@@ -5840,6 +5842,15 @@ __metadata:
   version: 1.0.3
   resolution: "@vanilla-extract/private@npm:1.0.3"
   checksum: 866a71ba6804edeb0735684e7723ba78f5cf0bb40d4fb538fe6bf7d73928099e341312337b2a510ac0ce96ff8a4b39eb7f7a5fad0c842532353dd20e7278f29b
+  languageName: node
+  linkType: hard
+
+"@vercel/analytics@npm:^0.1.11":
+  version: 0.1.11
+  resolution: "@vercel/analytics@npm:0.1.11"
+  peerDependencies:
+    react: ^16.8||^17||^18
+  checksum: 05b8180ac6e23ebe7c09d74c43f8ee78c408cd0b6546e676389cbf4fba44dfeeae3648c9b52e2421be64fe3aeee8b026e6ea4bdfc0589fb5780670f2b090a167
   languageName: node
   linkType: hard
 
