@@ -31,10 +31,10 @@ class BaseClient extends EventEmitter {
      */
     this.rest = new REST({
       ...this.options.rest,
+      // Merging the default options when a custom user agent appendix is supplied
+      // Replaces the discord.js string. Enforce it.
       ...(customUserAgentAppendix
-        ? // Merging the default options when a custom user agent appendix is supplied
-          // Replaces the discord.js string. Enforce it.
-          { userAgentAppendix: `${Options.userAgentAppendix} ${customUserAgentAppendix}` }
+        ? { userAgentAppendix: `${Options.userAgentAppendix} ${customUserAgentAppendix}` }
         : []),
     });
   }
