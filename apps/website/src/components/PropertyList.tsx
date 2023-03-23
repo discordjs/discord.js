@@ -20,9 +20,9 @@ export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
 
 	const propertyItems = useMemo(
 		() =>
-			members.map((prop) => {
+			members.map((prop, idx) => {
 				return (
-					<Fragment key={prop.item.displayName}>
+					<Fragment key={`${prop.item.displayName}-${idx}`}>
 						<Property
 							inheritedFrom={prop.inherited as ApiDeclaredItem & ApiItemContainerMixin}
 							item={prop.item as ApiPropertyItem}

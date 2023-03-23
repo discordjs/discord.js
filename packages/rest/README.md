@@ -20,7 +20,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/rest
 yarn add @discordjs/rest
 pnpm add @discordjs/rest
@@ -30,7 +30,7 @@ pnpm add @discordjs/rest
 
 Install all required dependencies:
 
-```sh-session
+```sh
 npm install @discordjs/rest discord-api-types
 yarn add @discordjs/rest discord-api-types
 pnpm add @discordjs/rest discord-api-types

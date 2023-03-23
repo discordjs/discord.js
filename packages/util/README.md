@@ -17,7 +17,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/util
 yarn add @discordjs/util
 pnpm add @discordjs/util

@@ -3478,6 +3478,7 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
+  GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
@@ -6212,6 +6213,8 @@ export type TextBasedChannel = Exclude<
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
+
+export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM>;
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 

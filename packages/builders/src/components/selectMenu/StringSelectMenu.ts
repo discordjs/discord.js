@@ -1,5 +1,5 @@
-import type { APIStringSelectComponent } from 'discord-api-types/v10';
-import { ComponentType, type APISelectMenuOption } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v10';
+import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { jsonOptionValidator, optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
