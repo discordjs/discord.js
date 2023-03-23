@@ -236,7 +236,7 @@ class Role extends Base {
    * @example
    * // Compare the position of a role to another
    * const roleCompare = role.comparePositionTo(otherRole);
-   * if (roleCompare === 1) console.log(`${role.name} is higher than ${otherRole.name}`);
+   * if (roleCompare >= 1) console.log(`${role.name} is higher than ${otherRole.name}`);
    */
   comparePositionTo(role) {
     return this.guild.roles.comparePositions(this, role);
