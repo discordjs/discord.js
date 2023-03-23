@@ -1,69 +1,9 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Metadata } from 'next/types';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
-import { CODE_EXAMPLE, DESCRIPTION } from '~/util/constants';
-
-export const metadata: Metadata = {
-	title: 'discord.js',
-	description: DESCRIPTION,
-	viewport: {
-		minimumScale: 1,
-		initialScale: 1,
-		width: 'device-width',
-	},
-	icons: {
-		other: [
-			{
-				url: '/favicon-32x32.png',
-				sizes: '32x32',
-				type: 'image/png',
-			},
-			{
-				url: '/favicon-16x16.png',
-				sizes: '16x16',
-				type: 'image/png',
-			},
-		],
-		apple: [
-			'/apple-touch-icon.png',
-			{
-				url: '/safari-pinned-tab.svg',
-				rel: 'mask-icon',
-			},
-		],
-	},
-
-	manifest: '/site.webmanifest',
-
-	themeColor: '#5865f2',
-	colorScheme: 'light dark',
-
-	appleWebApp: {
-		title: 'discord.js',
-	},
-
-	applicationName: 'discord.js',
-
-	openGraph: {
-		siteName: 'discord.js',
-		type: 'website',
-		title: 'discord.js',
-		description: DESCRIPTION,
-		images: 'https://discordjs.dev/api/open-graph.png',
-	},
-
-	twitter: {
-		card: 'summary_large_image',
-		creator: '@iCrawlToGo',
-	},
-
-	other: {
-		'msapplication-TileColor': '#090a16',
-	},
-};
+import { CODE_EXAMPLE } from '~/util/constants';
 
 export default function Page() {
 	return (
