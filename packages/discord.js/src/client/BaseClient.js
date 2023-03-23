@@ -17,7 +17,7 @@ class BaseClient extends EventEmitter {
     if (options.rest?.userAgentAppendix !== undefined) {
       // Merging the default options when a custom user agent appendix is supplied
       // Replaces the discord.js string. Enforce it.
-      options.rest.userAgentAppendix = `${Options.userAgentAppendix} ${options.rest?.userAgentAppendix}`;
+      options.rest.userAgentAppendix = `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`;
     }
 
     if (typeof options !== 'object' || options === null) {
