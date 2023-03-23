@@ -6,6 +6,10 @@ import type { RESTOptions } from '../REST.js';
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
 
+export const DefaultUserAgentAppendix =
+	// @ts-expect-error Detecting runtime.
+	process.release?.name === 'node' ? ` Node.js/${process.version}` : process.isBun ? ` Bun/${process.version}` : '';
+
 export const DefaultRestOptions = {
 	get agent() {
 		return new Agent({
@@ -24,7 +28,7 @@ export const DefaultRestOptions = {
 	rejectOnRateLimit: null,
 	retries: 3,
 	timeout: 15_000,
-	userAgentAppendix: `Node.js/${process.version}`,
+	userAgentAppendix: DefaultUserAgentAppendix,
 	version: APIVersion,
 	hashSweepInterval: 14_400_000, // 4 Hours
 	hashLifetime: 86_400_000, // 24 Hours

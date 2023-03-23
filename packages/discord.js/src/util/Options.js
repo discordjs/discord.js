@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { DefaultRestOptions } = require('@discordjs/rest');
+const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
 const { version } = require('../../package.json');
 
@@ -77,7 +77,7 @@ class Options extends null {
    * @memberof Options
    * @private
    */
-  static userAgentAppendix = `discord.js/${version} Node.js/${process.version}`;
+  static userAgentAppendix = `discord.js/${version}${DefaultUserAgentAppendix}`;
 
   /**
    * The default client options.
