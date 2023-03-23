@@ -24,7 +24,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/core
 yarn add @discordjs/core
 pnpm add @discordjs/core

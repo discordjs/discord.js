@@ -1,11 +1,12 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { Metadata } from 'next/types';
 import vercelLogo from '../assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import { CODE_EXAMPLE, DESCRIPTION } from '~/util/constants';
 
-export const metadata = {
+export const metadata: Metadata = {
 	title: 'discord.js',
 	description: DESCRIPTION,
 	viewport: {
@@ -51,7 +52,7 @@ export const metadata = {
 		type: 'website',
 		title: 'discord.js',
 		description: DESCRIPTION,
-		images: 'https://discordjs.dev/api/og',
+		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {
@@ -66,7 +67,7 @@ export const metadata = {
 
 export default function Page() {
 	return (
-		<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:h-full lg:place-content-center lg:py-0 lg:px-6">
+		<div className="mx-auto flex h-screen max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:place-content-center lg:py-0 lg:px-6">
 			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
 				<div className="flex max-w-lg flex-col gap-3 lg:mr-8">
 					<h1 className="text-3xl font-black leading-tight sm:text-5xl sm:leading-tight">
@@ -104,7 +105,10 @@ export default function Page() {
 						</a>
 					</div>
 				</div>
-				<SyntaxHighlighter code={CODE_EXAMPLE} />
+				<div className="max-w-sm sm:max-w-6xl">
+					{/* @ts-expect-error async component */}
+					<SyntaxHighlighter code={CODE_EXAMPLE} />
+				</div>
 			</div>
 			<div className="flex flex-row place-content-center">
 				<a

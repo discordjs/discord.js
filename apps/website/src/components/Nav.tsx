@@ -8,7 +8,6 @@ import { VersionSelect } from './VersionSelect';
 import { useNav } from '~/contexts/nav';
 
 export function Nav({ members }: { members: SidebarSectionItemData[] }) {
-	// eslint-disable-next-line @typescript-eslint/unbound-method
 	const { opened } = useNav();
 
 	return (

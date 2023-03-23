@@ -1,9 +1,4 @@
-/* eslint-disable no-case-declarations */
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-// eslint-disable-next-line n/prefer-global/process
-import process, { cwd } from 'node:process';
-import { createApiModel, tryResolveSummaryText } from '@discordjs/scripts';
+import { addPackageToModel, tryResolveSummaryText } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -18,9 +13,9 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 } from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiFunction } from '@microsoft/api-extractor-model';
-import type { Metadata } from 'next';
+import { ApiItemKind, ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next/types';
 import { fetchModelJSON } from '~/app/docAPI';
 import { Class } from '~/components/model/Class';
 import { Interface } from '~/components/model/Interface';
@@ -39,7 +34,7 @@ export interface ItemRouteParams {
 
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams): Promise<ApiItem | undefined> {
 	const modelJSON = await fetchModelJSON(packageName, version);
-	const model = createApiModel(modelJSON);
+	const model = addPackageToModel(new ApiModel(), modelJSON);
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
@@ -89,11 +84,11 @@ function resolveMemberSearchParams(packageName: string, member: ApiItem): URLSea
 	return params;
 }
 
-export async function generateMetadata({ params }: { params: ItemRouteParams }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: ItemRouteParams }) {
 	const member = (await fetchHeadMember(params))!;
 	const name = `discord.js${member?.displayName ? ` | ${member.displayName}` : ''}`;
 	const ogTitle = `${params.package ?? 'discord.js'}${member?.displayName ? ` | ${member.displayName}` : ''}`;
-	const url = new URL('https://discordjs.dev/api/og_model');
+	const url = new URL('https://discordjs.dev/api/dynamic-open-graph.png');
 	const searchParams = resolveMemberSearchParams(params.package, member);
 	url.search = searchParams.toString();
 	const ogImage = url.toString();
@@ -107,21 +102,21 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }):
 			description: description ?? 'Discord.js API Documentation',
 			images: ogImage,
 		},
-	};
+	} satisfies Metadata;
 }
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
-	const model = createApiModel(modelJSON);
+	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		return notFound();
+		notFound();
 	}
 
-	return entry.members.map((member) => ({
+	return entry.members.map((member: ApiItem) => ({
 		item: member.displayName,
 	}));
 }
@@ -131,21 +126,20 @@ async function fetchMember({ package: packageName, version: branchName = 'main',
 		notFound();
 	}
 
-	let data;
-	try {
-		if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-			const res = await readFile(join(cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
-			data = JSON.parse(res);
-		} else {
-			const res = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${branchName}.api.json`);
-			data = await res.json();
+	const model = new ApiModel();
+
+	if (branchName === 'main') {
+		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
+
+		for (const modelJSONFile of modelJSONFiles) {
+			addPackageToModel(model, modelJSONFile);
 		}
-	} catch {
-		notFound();
+	} else {
+		const modelJSON = await fetchModelJSON(packageName, branchName);
+		addPackageToModel(model, modelJSON);
 	}
 
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
-	const model = createApiModel(data);
 
 	// eslint-disable-next-line prefer-const
 	let { containerKey, displayName: name } = findMember(model, packageName, memberName) ?? {};
@@ -161,7 +155,7 @@ function Member({ member }: { member?: ApiItem }) {
 		case 'Class':
 			return <Class clazz={member as ApiClass} />;
 		case 'Function':
-			return <Function item={member as ApiFunction} key={member.containerKey} />;
+			return <Function item={member as ApiFunction} key={`${member.displayName}-${member.containerKey}`} />;
 		case 'Interface':
 			return <Interface item={member as ApiInterface} />;
 		case 'TypeAlias':
@@ -179,7 +173,7 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
 
 	return (
-		<main
+		<div
 			className={
 				(member?.kind === 'Class' || member?.kind === 'Interface') && (member as ApiClass | ApiInterface).members.length
 					? 'xl:pr-64'
@@ -189,6 +183,6 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 			<article className="dark:bg-dark-600 bg-light-600">
 				<div className="dark:bg-dark-800  bg-white p-6 pb-20 shadow">{member ? <Member member={member} /> : null}</div>
 			</article>
-		</main>
+		</div>
 	);
 }

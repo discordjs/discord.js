@@ -20,7 +20,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/builders
 yarn add @discordjs/builders
 pnpm add @discordjs/builders
