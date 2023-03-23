@@ -113,7 +113,7 @@ export interface RequestHeaders {
 /**
  * Possible API methods to be used when doing requests
  */
-export const enum RequestMethod {
+export enum RequestMethod {
 	Delete = 'DELETE',
 	Get = 'GET',
 	Patch = 'PATCH',

@@ -160,6 +160,9 @@ import {
   PublicThreadChannel,
   GuildMemberManager,
   GuildMemberFlagsBitField,
+  ThreadManager,
+  FetchedThreads,
+  FetchedThreadsMore,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1477,6 +1480,18 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<MessageMentions<false>>(message.mentions);
   expectType<null>(message.mentions.guild);
   expectType<null>(message.mentions.members);
+}
+
+declare const threadManager: ThreadManager;
+{
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567'));
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567', { cache: true, force: false }));
+  expectType<Promise<FetchedThreads>>(threadManager.fetch());
+  expectType<Promise<FetchedThreads>>(threadManager.fetch({}));
+  expectType<Promise<FetchedThreadsMore>>(threadManager.fetch({ archived: { limit: 4 } }));
+
+  // @ts-expect-error The force option has no effect here.
+  threadManager.fetch({ archived: {} }, { force: true });
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;

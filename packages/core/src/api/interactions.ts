@@ -1,12 +1,11 @@
 import type { RawFile, REST } from '@discordjs/rest';
-import type { Snowflake } from 'discord-api-types/v10';
-import {
-	InteractionResponseType,
-	Routes,
-	type APICommandAutocompleteInteractionResponseCallbackData,
-	type APIInteractionResponseCallbackData,
-	type APIModalInteractionResponseCallbackData,
-	type RESTGetAPIWebhookWithTokenMessageResult,
+import { InteractionResponseType, Routes } from 'discord-api-types/v10';
+import type {
+	Snowflake,
+	APICommandAutocompleteInteractionResponseCallbackData,
+	APIInteractionResponseCallbackData,
+	APIModalInteractionResponseCallbackData,
+	RESTGetAPIWebhookWithTokenMessageResult,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 

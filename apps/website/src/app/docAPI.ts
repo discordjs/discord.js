@@ -15,7 +15,13 @@ export async function fetchModelJSON(packageName: string, version: string): Prom
 			join(process.cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),
 			'utf8',
 		);
-		return JSON.parse(res);
+
+		try {
+			return JSON.parse(res);
+		} catch {
+			console.log(res);
+			return {};
+		}
 	}
 
 	const response = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`, {
