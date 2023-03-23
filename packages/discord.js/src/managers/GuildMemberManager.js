@@ -443,7 +443,7 @@ class GuildMemberManager extends CachedManager {
 
     return pruned;
   }
-  
+
   /**
    * Disables a member's communication for a specified amount of time.
    * <info>The user must be a member of the guild</info>
