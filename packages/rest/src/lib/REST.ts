@@ -110,7 +110,7 @@ export interface RESTOptions {
 	/**
 	 * Extra information to add to the user agent
 	 *
-	 * @defaultValue `Node.js/${process.version}`
+	 * @defaultValue DefaultUserAgentAppendix
 	 */
 	userAgentAppendix: string;
 	/**
