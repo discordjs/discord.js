@@ -73,6 +73,7 @@ const { version } = require('../../package.json');
 class Options extends null {
   /**
    * The default user agent appendix.
+   * @type {string}
    * @memberof Options
    * @private
    */
