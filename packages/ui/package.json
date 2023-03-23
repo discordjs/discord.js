@@ -51,7 +51,7 @@
 		"@favware/cliff-jumper": "^2.0.0",
 		"@ladle/react": "^2.10.2",
 		"@react-icons/all-files": "^4.1.0",
-		"@types/node": "16.18.18",
+		"@types/node": "16.18.19",
 		"@types/react": "^18.0.28",
 		"@types/react-dom": "^18.0.11",
 		"@unocss/reset": "^0.50.6",

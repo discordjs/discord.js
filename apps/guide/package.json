@@ -5,7 +5,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lightouse-results",
+		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-results",
 		"build:local": "yarn build:prod",
 		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
 		"dev": "yarn workspaces foreach -ptR run build && astro dev",
@@ -53,7 +53,7 @@
 		"@astrojs/react": "^2.1.0",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.4.3",
-		"@types/node": "16.18.18",
+		"@types/node": "18.15.6",
 		"@types/react": "^18.0.28",
 		"@types/react-dom": "^18.0.11",
 		"@types/react-syntax-highlighter": "^15.5.6",
@@ -86,6 +86,6 @@
 		"vitest": "^0.29.7"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.13.0"
 	}
 }
