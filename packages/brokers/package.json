@@ -57,14 +57,14 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@msgpack/msgpack": "^2.8.0",
+		"@msgpack/msgpack": "^3.0.0-beta2",
 		"@vladfrangu/async_event_emitter": "^2.1.4",
 		"ioredis": "^5.3.1"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.18",
+		"@types/node": "16.18.19",
 		"@vitest/coverage-c8": "^0.29.7",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.36.0",

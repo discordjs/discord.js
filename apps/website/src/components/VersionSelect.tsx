@@ -18,8 +18,8 @@ export function VersionSelect() {
 	const versionMenuItems = useMemo(
 		() =>
 			versions
-				?.map((item) => (
-					<Link href={`/docs/packages/${packageName}/${item}`} key={item}>
+				?.map((item, idx) => (
+					<Link href={`/docs/packages/${packageName}/${item}`} key={`${item}-${idx}`}>
 						<MenuItem
 							className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 							onClick={() => versionMenu.setOpen(false)}

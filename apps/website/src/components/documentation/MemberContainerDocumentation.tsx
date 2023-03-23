@@ -11,15 +11,13 @@ import { hasProperties, hasMethods, serializeMembers } from './util';
 
 export function MemberContainerDocumentation({
 	item,
-	version,
 	subheading,
 }: {
 	item: ApiDeclaredItem & ApiItemContainerMixin & ApiTypeParameterListMixin;
 	subheading?: ReactNode;
-	version: string;
 }) {
 	return (
-		<Documentation item={item}>
+		<Documentation>
 			{subheading}
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />

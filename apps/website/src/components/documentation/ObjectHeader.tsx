@@ -1,10 +1,10 @@
-import type { ApiDeclaredItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem } from '@microsoft/api-extractor-model';
 import { SyntaxHighlighter } from '../SyntaxHighlighter';
 import { Header } from './Header';
 import { SummarySection } from './section/SummarySection';
 
 export interface ObjectHeaderProps {
-	item: ApiDeclaredItem & ApiItemContainerMixin;
+	item: ApiDeclaredItem;
 }
 
 export function ObjectHeader({ item }: ObjectHeaderProps) {

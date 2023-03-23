@@ -48,10 +48,10 @@ export function CmdKDialog() {
 
 	const searchResultItems = useMemo(
 		() =>
-			searchResults?.map((item) => (
+			searchResults?.map((item, idx) => (
 				<Command.Item
 					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white [&[aria-selected]]:ring"
-					key={item.id}
+					key={`${item.id}-${idx}`}
 					onSelect={() => {
 						router.push(item.path);
 						dialog!.setOpen(false);
