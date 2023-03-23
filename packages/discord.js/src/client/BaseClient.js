@@ -13,7 +13,12 @@ const { mergeDefault, flatten } = require('../util/Util');
 class BaseClient extends EventEmitter {
   constructor(options = {}) {
     super({ captureRejections: true });
-    const customUserAgentAppendix = options.rest?.userAgentAppendix;
+
+    if (options.rest?.userAgentAppendix !== undefined) {
+      // Merging the default options when a custom user agent appendix is supplied
+      // Replaces the discord.js string. Enforce it.
+      options.rest.userAgentAppendix = `${Options.userAgentAppendix} ${options.rest?.userAgentAppendix}`;
+    }
 
     if (typeof options !== 'object' || options === null) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
@@ -29,14 +34,7 @@ class BaseClient extends EventEmitter {
      * The REST manager of the client
      * @type {REST}
      */
-    this.rest = new REST({
-      ...this.options.rest,
-      // Merging the default options when a custom user agent appendix is supplied
-      // Replaces the discord.js string. Enforce it.
-      ...(customUserAgentAppendix
-        ? { userAgentAppendix: `${Options.userAgentAppendix} ${customUserAgentAppendix}` }
-        : []),
-    });
+    this.rest = new REST(this.options.rest);
   }
 
   /**
