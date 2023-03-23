@@ -5,6 +5,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
+		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lightouse-results",
 		"build:local": "yarn build:prod",
 		"build:prod": "yarn workspaces foreach -ptR run build && astro build",
 		"dev": "yarn workspaces foreach -ptR run build && astro dev",
@@ -71,6 +72,7 @@
 		"hast-util-to-string": "^2.0.0",
 		"hastscript": "^7.2.0",
 		"html-escaper": "^3.0.3",
+		"lighthouse": "^10.1.0",
 		"prettier": "^2.8.6",
 		"prettier-plugin-astro": "^0.8.0",
 		"prettier-plugin-tailwindcss": "^0.2.5",

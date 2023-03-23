@@ -28,7 +28,7 @@ jobs:
       - name: Add comment to PR
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: loading_comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v1
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ github.event.issue.number }}
@@ -43,7 +43,7 @@ jobs:
       - name: Audit preview URL with Lighthouse
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: lighthouse_audit
-        uses: treosh/lighthouse-ci-action@v3
+        uses: treosh/lighthouse-ci-action@v9
         with:
           urls: |
             ${{ steps.get_preview_url.outputs.vercel_preview_url }}
@@ -79,7 +79,7 @@ jobs:
       - name: Add comment to PR
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: comment_to_pr
-        uses: marocchino/sticky-pull-request-comment@v1
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           number: ${{ github.event.issue.number }}
           header: lighthouse

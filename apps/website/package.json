@@ -5,6 +5,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
+		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lightouse-results",
 		"build:copy_readme": "cpy '../../packages/*/README.md' 'src/assets/readme' --rename='home-{{basename}}'",
 		"build:local": "yarn run --top-level docs --force && yarn build:copy_readme && cross-env-shell NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
 		"build:prod": "yarn workspaces foreach -ptR run build && yarn build:copy_readme && yarn build:css && yarn build:next",
@@ -12,6 +13,7 @@
 		"build:css": "yarn generate:css",
 		"build:search_indices": "yarn node scripts/generateAllIndices.js",
 		"build:analyze": "yarn run --top-level docs --force && cross-env-shell ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
+		"preview": "next start",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
@@ -87,6 +89,7 @@
 		"eslint-config-neon": "^0.1.41",
 		"eslint-formatter-pretty": "^5.0.0",
 		"happy-dom": "^8.9.0",
+		"lighthouse": "^10.1.0",
 		"prettier": "^2.8.6",
 		"prettier-plugin-tailwindcss": "^0.2.5",
 		"typescript": "^5.0.2",
