@@ -15,15 +15,6 @@ body {
 	display: none;
 }
 
-pre[data-theme='light'] {
-	background: #ffffff;
-	border: 1px solid #dddddd;
-}
-
-pre[data-theme='dark'] {
-	background: #1e1e1e;
-}
-
 pre {
 	font-size: 13px !important;
 	white-space: pre;

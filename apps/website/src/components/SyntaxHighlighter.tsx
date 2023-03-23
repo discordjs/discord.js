@@ -7,7 +7,7 @@ export function SyntaxHighlighter(props: typeof Code) {
 				{/* @ts-expect-error async component */}
 				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="github-dark-dimmed" />
 			</div>
-			<div data-theme="light">
+			<div className="[&_pre]:rounded-md [&_pre]:border [&_pre]:border-gray-300" data-theme="light">
 				{/* @ts-expect-error async component */}
 				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="min-light" />
 			</div>

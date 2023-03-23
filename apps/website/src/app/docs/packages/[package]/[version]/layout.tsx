@@ -74,7 +74,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 				<article className="pt-18 lg:pl-76">
 					<div className="relative z-10 min-h-[calc(100vh_-_70px)]">{children}</div>
 					<div className="h-76 md:h-52" />
-					<footer className="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">
+					<footer className="dark:bg-dark-600 h-76 lg:pl-84 bg-light-600 xl:pr-84 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">
 						<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
 							<div className="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
 								<a
