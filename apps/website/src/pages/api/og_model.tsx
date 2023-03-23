@@ -166,5 +166,5 @@ export default async function handler(req: NextRequest) {
 }
 
 export const config = {
-	runtime: 'edge',
+	runtime: 'experimental-edge',
 };
