@@ -17,7 +17,7 @@
 
 **Node.js 18.13.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/next
 yarn add @discordjs/next
 pnpm add @discordjs/next

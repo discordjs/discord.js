@@ -3479,6 +3479,7 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
+  GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
@@ -4110,8 +4111,12 @@ export class ThreadManager<Forum extends boolean = boolean> extends CachedManage
   protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: If<Forum, ForumChannel, TextChannel | NewsChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
+  public fetch(
+    options: FetchThreadsOptions & { archived: FetchArchivedThreadOptions },
+    cacheOptions?: { cache?: boolean },
+  ): Promise<FetchedThreadsMore>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
-  public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
+  public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreadsMore>;
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
 }
 
@@ -5149,7 +5154,11 @@ export interface FetchChannelOptions extends BaseFetchOptions {
 
 export interface FetchedThreads {
   threads: Collection<Snowflake, AnyThreadChannel>;
-  hasMore?: boolean;
+  members: Collection<Snowflake, ThreadMember>;
+}
+
+export interface FetchedThreadsMore extends FetchedThreads {
+  hasMore: boolean;
 }
 
 export interface FetchGuildOptions extends BaseFetchOptions {
@@ -5240,7 +5249,6 @@ export type FetchThreadMembersOptions =
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
-  active?: boolean;
 }
 
 export interface AttachmentPayload {
@@ -6206,6 +6214,8 @@ export type TextBasedChannel = Exclude<
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
+
+export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM>;
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 

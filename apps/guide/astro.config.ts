@@ -92,7 +92,6 @@ export default defineConfig({
 		compress(),
 	],
 	markdown: {
-		extendDefaultPlugins: true,
 		syntaxHighlight: false,
 	},
 	vite: {

@@ -1,11 +1,15 @@
 /* eslint-disable react/no-unknown-property */
-import { ImageResponse } from '@vercel/og';
 
-const fonts = fetch(new URL('../../assets/fonts/Inter-Black.ttf', import.meta.url)).then(async (res) =>
+import { ImageResponse } from '@vercel/og';
+import type { ServerRuntime } from 'next/types';
+
+export const runtime: ServerRuntime = 'edge';
+
+const fonts = fetch(new URL('../../../assets/fonts/Inter-Black.ttf', import.meta.url)).then(async (res) =>
 	res.arrayBuffer(),
 );
 
-export default async function handler() {
+export async function GET() {
 	const fontData = await fonts;
 
 	return new ImageResponse(
@@ -38,7 +42,3 @@ export default async function handler() {
 		},
 	);
 }
-
-export const config = {
-	runtime: 'edge',
-};
