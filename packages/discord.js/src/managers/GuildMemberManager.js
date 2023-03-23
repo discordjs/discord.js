@@ -443,6 +443,24 @@ class GuildMemberManager extends CachedManager {
 
     return pruned;
   }
+  
+  /**
+   * Disables a member's communication for a specified amount of time.
+   * <info>The user must be a member of the guild</info>
+   * @param {UserResolvable} user The user to timeout
+   * @param {number|null} timeout The time in milliseconds to timeout the user for, or `null` to disable the timeout.
+   * @param {string} [reason] The reason for timing out the member
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // Disable a member's communication for 5 minutes
+   * guild.members.timeout(user, 5 * 60 * 1000, 'They deserved it')
+   *   .then((member) => console.log(`Successfully timed out ${member.user.tag}`))
+   *   .catch(console.error);
+   */
+  async timeout(user, timeout, reason) {
+    const communicationDisabledUntil = timeout && Date.now() + timeout;
+    return this.edit(user, { reason, communicationDisabledUntil });
+  }
 
   /**
    * Kicks a user from the guild.
