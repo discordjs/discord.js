@@ -364,7 +364,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   setNickname(nick, reason) {
-    return this.edit({ nick, reason });
+    return this.edit({ nick }, reason);
   }
 
   /**
