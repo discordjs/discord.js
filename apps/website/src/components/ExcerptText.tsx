@@ -1,7 +1,6 @@
 import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
 import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
 import { ItemLink } from './ItemLink';
-import { resolveItemURI } from './documentation/util';
 
 export interface ExcerptTextProps {
 	/**
@@ -29,7 +28,12 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 					}
 
 					return (
-						<ItemLink className="text-blurple" itemURI={resolveItemURI(item)} key={item.containerKey}>
+						<ItemLink
+							className="text-blurple"
+							itemURI={`${item.displayName}:${item.kind}`}
+							key={`${item.displayName}-${item.containerKey}`}
+							packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+						>
 							{token.text}
 						</ItemLink>
 					);

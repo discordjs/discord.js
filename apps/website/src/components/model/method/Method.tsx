@@ -20,7 +20,9 @@ export function Method({
 		// each overload node on the server.
 		const overloads = method
 			.getMergedSiblings()
-			.map((sibling, idx) => <MethodDocumentation key={idx} method={sibling as ApiMethod | ApiMethodSignature} />);
+			.map((sibling, idx) => (
+				<MethodDocumentation key={`${sibling.displayName}-${idx}`} method={sibling as ApiMethod | ApiMethodSignature} />
+			));
 
 		return (
 			<OverloadSwitcher overloads={overloads}>

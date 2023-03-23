@@ -28,7 +28,7 @@ export function SidebarItems({ pages }: { pages: MDXPage[] }) {
 	}, [state]);
 
 	return Object.keys(categories).map((category, idx) => (
-		<Section key={idx} title={category}>
+		<Section key={`${category}-${idx}`} title={category}>
 			{categories[category]?.map((member, index) => (
 				<a
 					className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
@@ -38,7 +38,7 @@ export function SidebarItems({ pages }: { pages: MDXPage[] }) {
 					}`}
 					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 					href={member.url || '/'}
-					key={index}
+					key={`${member.frontmatter.title}-${index}}`}
 					title={member.frontmatter.title}
 				>
 					<div className="flex flex-row place-items-center gap-2 lg:text-sm">

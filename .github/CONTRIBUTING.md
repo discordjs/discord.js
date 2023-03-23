@@ -40,7 +40,7 @@ For example, to automatically recompile the `@discordjs/rest` project when chang
 
 If you'd like to create another package under the `@discordjs` organization run the following command:
 
-```bash
+```sh
 yarn create-package <package-name> [package-description]
 ```
 

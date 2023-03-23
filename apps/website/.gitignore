@@ -29,3 +29,4 @@ coverage/
 .vercel
 public/searchIndex
 .vscode
+lighthouse-results/
