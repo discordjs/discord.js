@@ -31,18 +31,18 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@microsoft/api-extractor-model": "7.25.3",
+		"@microsoft/api-extractor-model": "7.26.4",
 		"@microsoft/tsdoc": "0.14.2"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.13",
+		"@types/node": "16.18.18",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.35.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.4",
-		"tsup": "^6.6.3",
-		"typescript": "^4.9.5"
+		"eslint": "^8.36.0",
+		"eslint-config-neon": "^0.1.41",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.6",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.2"
 	},
 	"engines": {
 		"node": ">=16.9.0"
