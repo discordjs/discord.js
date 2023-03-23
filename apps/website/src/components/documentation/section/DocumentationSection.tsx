@@ -1,8 +1,6 @@
-'use client';
-
 import type { SectionOptions } from '@discordjs/ui';
-import { Section } from '@discordjs/ui';
 import type { PropsWithChildren } from 'react';
+import { Section } from '../../Section';
 
 export function DocumentationSection(opts: PropsWithChildren<SectionOptions & { separator?: boolean }>) {
 	const { children, separator, ...props } = opts;
