@@ -3,6 +3,7 @@
 const process = require('node:process');
 const { DefaultRestOptions } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
+const { version } = require('../../package.json');
 
 /**
  * @typedef {Function} CacheFactory
@@ -94,7 +95,10 @@ class Options extends null {
         },
         version: 10,
       },
-      rest: DefaultRestOptions,
+      rest: {
+        ...DefaultRestOptions,
+        userAgentAppendix: `discord.js/${version} Node.js/${process.version}`,
+      },
       jsonTransformer: toSnakeCase,
     };
   }
