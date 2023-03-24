@@ -77,7 +77,7 @@ class Options extends null {
    * @memberof Options
    * @private
    */
-  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trim();
+  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
 
   /**
    * The default client options.
