@@ -8,7 +8,7 @@ export default function GlobalError({ error }: { error: Error }) {
 
 	return (
 		<html className={inter.variable} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-800 bg-white">
+			<body className="dark:bg-dark-800 bg-light-600">
 				<Providers>
 					<main className="mx-auto h-screen max-w-2xl">
 						<div className="mx-auto flex h-screen max-w-lg flex-col place-content-center place-items-center gap-8 py-16 px-8 lg:py-0 lg:px-6">
