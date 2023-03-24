@@ -1,6 +1,7 @@
 import { addPackageToModel } from '@discordjs/scripts';
 import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
 import { ApiModel } from '@microsoft/api-extractor-model';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
@@ -8,11 +9,12 @@ import { Providers } from './providers';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
 import { CmdKDialog } from '~/components/CmdK';
-import { Header } from '~/components/Header';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
+
+const Header = dynamic(async () => import('~/components/Header'));
 
 export interface VersionRouteParams {
 	package: string;
