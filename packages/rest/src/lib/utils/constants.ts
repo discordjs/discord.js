@@ -9,7 +9,7 @@ export const DefaultUserAgent =
 /**
  * The default string to append onto the user agent.
  */
-export const DefaultUserAgentAppendix = process.release?.name === 'node' ? ` Node.js/${process.version}` : '';
+export const DefaultUserAgentAppendix = process.release?.name === 'node' ? `Node.js/${process.version}` : '';
 
 export const DefaultRestOptions = {
 	get agent() {
