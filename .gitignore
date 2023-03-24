@@ -42,3 +42,4 @@ out/
 # Cache
 .prettiercache
 .eslintcache
+.vercel
