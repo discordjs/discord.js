@@ -3601,7 +3601,10 @@ export enum DiscordjsErrorCodes {
 
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
+  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
+  /** @deprecated */
   MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
+
   NotGuildSticker = 'NotGuildSticker',
 
   ReactionResolveUser = 'ReactionResolveUser',

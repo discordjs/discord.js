@@ -111,8 +111,11 @@ const Messages = {
 
   [DjsErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [DjsErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
+  [DjsErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
+    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
   [DjsErrorCodes.MissingManageEmojisAndStickersPermission]: guild =>
     `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+
   [DjsErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",

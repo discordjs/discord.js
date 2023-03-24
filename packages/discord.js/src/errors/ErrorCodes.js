@@ -106,7 +106,10 @@
 
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
+ * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
+ * <warn>This property is deprecated.</warn>
+ *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
@@ -255,7 +258,9 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
+  'MissingManageGuildExpressionsPermission',
   'MissingManageEmojisAndStickersPermission',
+
   'NotGuildSticker',
 
   'ReactionResolveUser',
