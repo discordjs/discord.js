@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '~/util/fetcher';
 
-export function VersionSelect() {
+export default function VersionSelect() {
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
@@ -36,7 +36,7 @@ export function VersionSelect() {
 	return (
 		<>
 			<MenuButton
-				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 				state={versionMenu}
 			>
 				<div className="flex flex-row place-content-between place-items-center">

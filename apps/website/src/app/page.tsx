@@ -7,7 +7,7 @@ import { CODE_EXAMPLE } from '~/util/constants';
 
 export default function Page() {
 	return (
-		<div className="mx-auto flex h-screen max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:place-content-center lg:py-0 lg:px-6">
+		<div className="mx-auto flex h-screen max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:place-content-center lg:py-0 lg:px-8">
 			<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
 				<div className="flex max-w-lg flex-col gap-3 lg:mr-8">
 					<h1 className="text-3xl font-black leading-tight sm:text-5xl sm:leading-tight">
@@ -23,7 +23,6 @@ export default function Page() {
 						<Link
 							className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
 							href="/docs"
-							prefetch={false}
 						>
 							Docs
 						</Link>
@@ -45,7 +44,7 @@ export default function Page() {
 						</a>
 					</div>
 				</div>
-				<div className="max-w-sm sm:max-w-6xl">
+				<div className="max-w-xs sm:max-w-6xl">
 					{/* @ts-expect-error async component */}
 					<SyntaxHighlighter code={CODE_EXAMPLE} />
 				</div>

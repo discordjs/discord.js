@@ -5,31 +5,23 @@ import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted'
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 import { VscSearch } from '@react-icons/all-files/vsc/VscSearch';
 import { Button } from 'ariakit/button';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Fragment, useEffect, useMemo, useState } from 'react';
-import { ThemeSwitcher } from './ThemeSwitcher';
+import { Fragment, useMemo } from 'react';
 import { useCmdK } from '~/contexts/cmdK';
 import { useNav } from '~/contexts/nav';
 
-export function Header() {
+const ThemeSwitcher = dynamic(async () => import('./ThemeSwitcher'));
+
+export default function Header() {
 	const pathname = usePathname();
 	const { setOpened } = useNav();
 	const dialog = useCmdK();
-	const [asPathWithoutQueryAndAnchor, setAsPathWithoutQueryAndAnchor] = useState('');
-
-	useEffect(() => {
-		setAsPathWithoutQueryAndAnchor(pathname?.split('?')[0]?.split('#')[0] ?? '');
-	}, [pathname]);
-
-	const asPathWithoutContainerKey = useMemo(
-		() => asPathWithoutQueryAndAnchor?.split(':')[0] ?? '',
-		[asPathWithoutQueryAndAnchor],
-	);
 
 	const pathElements = useMemo(
 		() =>
-			asPathWithoutContainerKey
+			pathname
 				.split('/')
 				.slice(1)
 				.map((path, idx, original) => (
@@ -41,7 +33,7 @@ export function Header() {
 						{path}
 					</Link>
 				)),
-		[asPathWithoutContainerKey],
+		[pathname],
 	);
 
 	const breadcrumbs = useMemo(
@@ -72,7 +64,7 @@ export function Header() {
 	);
 
 	return (
-		<header className="dark:bg-dark-600 dark:border-dark-100 bg-light-600 border-light-800 fixed top-0 left-0 z-20 w-full border-b">
+		<header className="dark:bg-dark-400 dark:border-dark-100 bg-light-600 border-light-800 fixed top-0 left-0 z-20 w-full border-b">
 			<div className="h-18 block px-6">
 				<div className="flex h-full flex-row place-content-between place-items-center">
 					<Button

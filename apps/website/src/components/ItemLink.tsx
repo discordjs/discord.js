@@ -31,10 +31,10 @@ export interface ItemLinkProps
  * generate the full path to the item client-side.
  */
 export function ItemLink(props: PropsWithChildren<ItemLinkProps>) {
-	const path = usePathname();
+	const pathname = usePathname();
 	const { packageName, version } = useCurrentPathMeta();
 
-	if (!path) {
+	if (!pathname) {
 		throw new Error('ItemLink must be used inside a Next.js page. (e.g. /docs/packages/foo/main)');
 	}
 

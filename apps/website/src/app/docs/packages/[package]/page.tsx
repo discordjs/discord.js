@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 	const data = await getData(params.package);
 
 	return (
-		<div className="min-w-xs sm:w-md mx-auto flex h-screen flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-8 lg:px-6">
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a version:</h1>
 				{data.map((version, idx) => (

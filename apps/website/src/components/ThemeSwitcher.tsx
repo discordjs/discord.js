@@ -3,20 +3,10 @@
 import { VscColorMode } from '@react-icons/all-files/vsc/VscColorMode';
 import { Button } from 'ariakit/button';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 
-export function ThemeSwitcher() {
-	const [mounted, setMounted] = useState(false);
+export default function ThemeSwitcher() {
 	const { resolvedTheme, setTheme } = useTheme();
 	const toggleTheme = () => setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
-
-	useEffect(() => {
-		setMounted(true);
-	}, []);
-
-	if (!mounted) {
-		return null;
-	}
 
 	return (
 		<Button
