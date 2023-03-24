@@ -2,9 +2,12 @@
 import '../styles/main.css';
 import '@code-hike/mdx/styles.css';
 import '../styles/ch.css';
+import { inject } from '@vercel/analytics';
 import type { MarkdownLayoutProps } from 'astro';
 import SidebarLayout from '../components/SidebarLayout.astro';
 import { DESCRIPTION } from '../util/constants.js';
+
+inject();
 
 type Props = MarkdownLayoutProps<{}>;
 const props = Astro.props;
