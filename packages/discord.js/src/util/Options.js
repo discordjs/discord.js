@@ -97,7 +97,6 @@ class Options extends null {
       sweepers: this.DefaultSweeperSettings,
       ws: {
         large_threshold: 50,
-        compress: false,
         properties: {
           os: process.platform,
           browser: 'discord.js',

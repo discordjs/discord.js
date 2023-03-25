@@ -7,6 +7,7 @@ const { Collection } = require('@discordjs/collection');
 const {
   WebSocketManager: WSWebSocketManager,
   WebSocketShardEvents: WSWebSocketShardEvents,
+  CompressionMethod,
   CloseCodes,
 } = require('@discordjs/ws');
 const { GatewayCloseCodes, GatewayDispatchEvents } = require('discord-api-types/v10');
@@ -16,6 +17,12 @@ const { DiscordjsError, ErrorCodes } = require('../../errors');
 const Events = require('../../util/Events');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
+
+let zlib;
+
+try {
+  zlib = require('zlib-sync');
+} catch {} // eslint-disable-line no-empty
 
 const BeforeReadyWhitelist = [
   GatewayDispatchEvents.Ready,
@@ -151,6 +158,7 @@ class WebSocketManager extends EventEmitter {
         updateSessionInfo: (shardId, sessionInfo) => {
           this.shards.get(shardId).sessionInfo = sessionInfo;
         },
+        compression: zlib ? CompressionMethod.ZlibStream : null,
       };
       if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;
       this._ws = new WSWebSocketManager(wsOptions);
