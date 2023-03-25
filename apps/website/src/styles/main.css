@@ -30,5 +30,5 @@ pre {
 }
 
 code {
-	font-family: 'JetBrains Mono', monospace !important;
+	font-family: var(--font-mono);
 }

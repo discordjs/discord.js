@@ -180,8 +180,8 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 					: ''
 			}
 		>
-			<article className="dark:bg-dark-600 bg-light-600">
-				<div className="dark:bg-dark-800  bg-white p-6 pb-20 shadow">{member ? <Member member={member} /> : null}</div>
+			<article className="dark:bg-dark-800 bg-light-600">
+				<div className="dark:bg-dark-600 bg-white p-6 pb-20 shadow">{member ? <Member member={member} /> : null}</div>
 			</article>
 		</div>
 	);

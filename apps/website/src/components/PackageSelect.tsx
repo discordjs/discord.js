@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { PACKAGES } from '~/util/constants';
 
-export function PackageSelect() {
+export default function PackageSelect() {
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 
@@ -43,7 +43,7 @@ export function PackageSelect() {
 	return (
 		<>
 			<MenuButton
-				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 				state={packageMenu}
 			>
 				<div className="flex flex-row place-content-between place-items-center">
