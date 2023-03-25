@@ -135,16 +135,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/compiler@npm:^1.0.0, @astrojs/compiler@npm:^1.0.1, @astrojs/compiler@npm:^1.2.0":
+"@astrojs/compiler@npm:^1.0.0, @astrojs/compiler@npm:^1.0.1, @astrojs/compiler@npm:^1.3.0":
   version: 1.3.0
   resolution: "@astrojs/compiler@npm:1.3.0"
   checksum: d2eb523499289c567d2197b4d6b3106cab3449627dfd0017652cbf3829c73684bd5db8a2c011a3a96f058be3fdfbed2a46d23b6f04aece62b77808f6ee752e06
   languageName: node
   linkType: hard
 
-"@astrojs/image@npm:^0.16.1":
-  version: 0.16.1
-  resolution: "@astrojs/image@npm:0.16.1"
+"@astrojs/image@npm:^0.16.2":
+  version: 0.16.2
+  resolution: "@astrojs/image@npm:0.16.2"
   dependencies:
     "@altano/tiny-async-pool": ^1.0.2
     http-cache-semantics: ^4.1.0
@@ -153,12 +153,12 @@ __metadata:
     magic-string: ^0.27.0
     mime: ^3.0.0
   peerDependencies:
-    astro: ^2.1.3
+    astro: ^2.1.6
     sharp: ">=0.31.0"
   peerDependenciesMeta:
     sharp:
       optional: true
-  checksum: 42db9d823f284ac444ff863a5c98881ed53a7921edc2132c294199e4bd53e4352da4dca71b7f5fc8d1f167003af927deb329ba5e73e4ea945dd8642878ae68ef
+  checksum: adce2e04f150bd1babe5a8ed6bbd7d14df8462b158fb188bdd2a95de0e086debce1cf15642358582dd1366c4ca27672764fc7b5f2b34d75f17a8d2b65fae686f
   languageName: node
   linkType: hard
 
@@ -1669,23 +1669,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@code-hike/lighter@npm:^0.2.0":
-  version: 0.2.6
-  resolution: "@code-hike/lighter@npm:0.2.6"
-  checksum: 99fc5e12c371825a6dc57790ef6bfbcd62a65773f1d525b48b82780134a6269da348c0b67923949880b64e43075dfde81aa13d61ca3b5a27a8ce4c43fbba35b8
+"@code-hike/lighter@npm:^0.5.2":
+  version: 0.5.2
+  resolution: "@code-hike/lighter@npm:0.5.2"
+  checksum: 436e8da6cc19821d972c1a430fc80a0c5a3188a754dc0c0f03f96081e51e9fff1bec783e5c9d10242265c1e9a4910b7cc53b2b8a844408ba81ddf1a3f37f913b
   languageName: node
   linkType: hard
 
-"@code-hike/mdx@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@code-hike/mdx@npm:0.8.0"
+"@code-hike/mdx@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@code-hike/mdx@npm:0.8.1"
   dependencies:
-    "@code-hike/lighter": ^0.2.0
+    "@code-hike/lighter": ^0.5.2
     node-fetch: ^2.0.0
     shiki: ^0.10.1
   peerDependencies:
     react: ^16.8.3 || ^17 || ^18
-  checksum: e9e59397b946714853b2a14486f1fddc58ce875496b6e245def60aa66cb199123b4a5a7577e99af9363f54586e559a4317c75f7e6e19513421f848fe3b408826
+  checksum: 32c3782335d2d88c2773d7850699780574df80b3c5494a805d1024d440782b33cc88e3e6ff6635074272caa30315be81ed404fa1aa7f626c9e107b80c4a65aa1
   languageName: node
   linkType: hard
 
@@ -1941,13 +1941,13 @@ __metadata:
   resolution: "@discordjs/actions@workspace:packages/actions"
   dependencies:
     "@actions/core": ^1.10.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -1961,12 +1961,12 @@ __metadata:
   dependencies:
     "@microsoft/api-extractor-model": 7.26.4
     "@microsoft/tsdoc": 0.14.2
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
   languageName: unknown
@@ -1979,7 +1979,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@msgpack/msgpack": ^3.0.0-beta2
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
@@ -1987,7 +1987,7 @@ __metadata:
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     ioredis: ^5.3.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
     vitest: ^0.29.7
@@ -2003,7 +2003,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@sapphire/shapeshift": ^3.8.1
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
@@ -2013,7 +2013,7 @@ __metadata:
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     fast-deep-equal: ^3.1.3
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     ts-mixer: ^6.0.3
     tslib: ^2.5.0
     tsup: ^6.7.0
@@ -2028,14 +2028,14 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
     vitest: ^0.29.7
@@ -2052,7 +2052,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@sapphire/snowflake": ^3.4.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
@@ -2060,7 +2060,7 @@ __metadata:
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
     vitest: ^0.29.7
@@ -2094,14 +2094,14 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^2.0.0
     "@types/jsdoc-to-markdown": ^7.0.3
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     commander: ^10.0.0
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     jsdoc-to-markdown: ^8.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typedoc: ^0.23.28
@@ -2117,14 +2117,14 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
     vitest: ^0.29.7
@@ -2135,16 +2135,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/guide@workspace:apps/guide"
   dependencies:
-    "@astrojs/image": ^0.16.1
+    "@astrojs/image": ^0.16.2
     "@astrojs/mdx": ^0.18.2
     "@astrojs/prefetch": ^0.2.1
     "@astrojs/react": ^2.1.0
-    "@code-hike/mdx": ^0.8.0
+    "@code-hike/mdx": ^0.8.1
     "@discordjs/ui": "workspace:^"
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": 18.15.6
-    "@types/react": ^18.0.28
+    "@types/node": 18.15.9
+    "@types/react": ^18.0.29
     "@types/react-dom": ^18.0.11
     "@types/react-syntax-highlighter": ^15.5.6
     "@unocss/cli": ^0.50.6
@@ -2153,7 +2153,7 @@ __metadata:
     "@vitejs/plugin-react": ^3.1.0
     "@vitest/coverage-c8": ^0.29.7
     ariakit: ^2.0.0-next.43
-    astro: ^2.1.5
+    astro: ^2.1.7
     astro-compress: ^1.1.35
     astro-critters: ^1.1.31
     cross-env: ^7.0.3
@@ -2165,7 +2165,7 @@ __metadata:
     hastscript: ^7.2.0
     html-escaper: ^3.0.3
     lighthouse: ^10.1.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     prettier-plugin-astro: ^0.8.0
     prettier-plugin-tailwindcss: ^0.2.5
     react: ^18.2.0
@@ -2175,7 +2175,7 @@ __metadata:
     react-use: ^17.4.0
     rehype-autolink-headings: ^6.1.1
     rehype-slug: ^5.1.0
-    sharp: ^0.31.3
+    sharp: ^0.32.0
     shiki: ^0.14.1
     typescript: ^5.0.2
     unocss: ^0.50.6
@@ -2197,7 +2197,7 @@ __metadata:
     "@discordjs/ws": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 18.15.6
+    "@types/node": 18.15.9
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
@@ -2205,7 +2205,7 @@ __metadata:
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.2
     vitest: ^0.29.7
@@ -2218,12 +2218,12 @@ __metadata:
   dependencies:
     "@discordjs/proxy": "workspace:^"
     "@discordjs/rest": "workspace:^"
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -2238,14 +2238,14 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@types/supertest": ^2.0.12
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     supertest: ^6.3.3
     tslib: ^2.5.0
     tsup: ^6.7.0
@@ -2265,7 +2265,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.34.4
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.4.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
@@ -2274,7 +2274,7 @@ __metadata:
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     file-type: ^18.2.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -2292,7 +2292,7 @@ __metadata:
     "@microsoft/tsdoc": 0.14.2
     "@microsoft/tsdoc-config": 0.16.2
     "@types/fs-extra": ^11.0.1
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     commander: ^10.0.0
     cross-env: ^7.0.3
@@ -2300,7 +2300,7 @@ __metadata:
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     fs-extra: ^11.1.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -2317,8 +2317,8 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@ladle/react": ^2.10.2
     "@react-icons/all-files": ^4.1.0
-    "@types/node": 16.18.19
-    "@types/react": ^18.0.28
+    "@types/node": 16.18.20
+    "@types/react": ^18.0.29
     "@types/react-dom": ^18.0.11
     "@unocss/reset": ^0.50.6
     "@vitejs/plugin-react": ^3.1.0
@@ -2328,7 +2328,7 @@ __metadata:
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     react: ^18.2.0
     react-dom: ^18.2.0
     typescript: ^5.0.2
@@ -2345,13 +2345,13 @@ __metadata:
   dependencies:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@vitest/coverage-c8": ^0.29.7
     cross-env: ^7.0.3
     eslint: ^8.36.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsd: ^0.28.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -2369,7 +2369,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@types/jest": ^29.5.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@types/ws": ^8.5.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
@@ -2380,7 +2380,7 @@ __metadata:
     jest: ^29.5.0
     jest-websocket-mock: ^2.4.0
     mock-socket: ^9.2.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     prism-media: ^1.3.5
     tslib: ^2.5.0
     tsup: ^6.7.0
@@ -2403,8 +2403,8 @@ __metadata:
     "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
-    "@types/node": 18.15.6
-    "@types/react": ^18.0.28
+    "@types/node": 18.15.9
+    "@types/react": ^18.0.29
     "@types/react-dom": ^18.0.11
     "@unocss/cli": ^0.50.6
     "@unocss/reset": ^0.50.6
@@ -2426,10 +2426,10 @@ __metadata:
     happy-dom: ^8.9.0
     lighthouse: ^10.1.0
     meilisearch: ^0.31.1
-    next: ^13.2.5-canary.15
+    next: ^13.2.5-canary.16
     next-mdx-remote: ^4.4.1
     next-themes: ^0.2.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     prettier-plugin-tailwindcss: ^0.2.5
     react: ^18.2.0
     react-custom-scrollbars-2: ^4.5.0
@@ -2439,7 +2439,7 @@ __metadata:
     rehype-raw: ^6.1.1
     rehype-slug: ^5.1.0
     remark-gfm: ^3.0.1
-    sharp: ^0.31.3
+    sharp: ^0.32.0
     swr: ^2.1.1
     typescript: ^5.0.2
     unocss: ^0.50.6
@@ -2458,7 +2458,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@sapphire/async-queue": ^1.5.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@types/ws": ^8.5.4
     "@vitest/coverage-c8": ^0.29.7
     "@vladfrangu/async_event_emitter": ^2.1.4
@@ -2469,7 +2469,7 @@ __metadata:
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
     mock-socket: ^9.2.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tslib: ^2.5.0
     tsup: ^6.7.0
     typescript: ^5.0.2
@@ -3751,10 +3751,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/env@npm:13.2.5-canary.15"
-  checksum: 6db56589006a904485a3b09fcd6fa1379fb4b385821a1001322cdab9846e301ab27899c210fa73b3193b98874289d4525d95b5800852b00b0579efe3b835bc12
+"@next/env@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/env@npm:13.2.5-canary.16"
+  checksum: b098eae73e2bbc2b22bd49dd7e91c04e0a6d23718c286e2db410871272a66d3840d4b2fdcee70fdafa1bf42798a5c04649c18032aec08859c957f45cf9976ed2
   languageName: node
   linkType: hard
 
@@ -3767,65 +3767,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-darwin-arm64@npm:13.2.5-canary.15"
+"@next/swc-darwin-arm64@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-darwin-arm64@npm:13.2.5-canary.16"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-darwin-x64@npm:13.2.5-canary.15"
+"@next/swc-darwin-x64@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-darwin-x64@npm:13.2.5-canary.16"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-linux-arm64-gnu@npm:13.2.5-canary.15"
+"@next/swc-linux-arm64-gnu@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-linux-arm64-gnu@npm:13.2.5-canary.16"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-linux-arm64-musl@npm:13.2.5-canary.15"
+"@next/swc-linux-arm64-musl@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-linux-arm64-musl@npm:13.2.5-canary.16"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-linux-x64-gnu@npm:13.2.5-canary.15"
+"@next/swc-linux-x64-gnu@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-linux-x64-gnu@npm:13.2.5-canary.16"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-linux-x64-musl@npm:13.2.5-canary.15"
+"@next/swc-linux-x64-musl@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-linux-x64-musl@npm:13.2.5-canary.16"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-win32-arm64-msvc@npm:13.2.5-canary.15"
+"@next/swc-win32-arm64-msvc@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-win32-arm64-msvc@npm:13.2.5-canary.16"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-win32-ia32-msvc@npm:13.2.5-canary.15"
+"@next/swc-win32-ia32-msvc@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-win32-ia32-msvc@npm:13.2.5-canary.16"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "@next/swc-win32-x64-msvc@npm:13.2.5-canary.15"
+"@next/swc-win32-x64-msvc@npm:13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "@next/swc-win32-x64-msvc@npm:13.2.5-canary.16"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -5154,7 +5154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:18.15.6":
+"@types/node@npm:*":
   version: 18.15.6
   resolution: "@types/node@npm:18.15.6"
   checksum: 46a1b04553a03574fb845bb4414292d47338d29c40fa25861d3c9e8a957455dfb23ff6385428da1613b02ddc3b5b5fe91c9227c55db80a46a655799ea2add285
@@ -5168,10 +5168,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:16.18.19":
-  version: 16.18.19
-  resolution: "@types/node@npm:16.18.19"
-  checksum: 83d7b5927d467776e1be906a3174180c4d7937fd4b8a21dded787fd148b6fe6bb5dfa4cbcf5976c489697205bf8101aebfde89e96793ca32b19873c9c770dcd0
+"@types/node@npm:16.18.20":
+  version: 16.18.20
+  resolution: "@types/node@npm:16.18.20"
+  checksum: 18ffcdfc59b090fc0e7b38624bbb3ff0029d759111014187a6d6619501dd157efaa18cce12a1e03fd686d99be91ba026e7b6cb58c47cbfe1368dc3d04e699cef
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:18.15.9":
+  version: 18.15.9
+  resolution: "@types/node@npm:18.15.9"
+  checksum: 5165f84f2fe25699879129b98c405c05e8d0428414c99fa544e22bdd0ea502aac384d26418298a31983064fa18c98e2fba5791b9c907bd78ccbcb49c23101bee
   languageName: node
   linkType: hard
 
@@ -5235,7 +5242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:>=16, @types/react@npm:^18.0.15, @types/react@npm:^18.0.28":
+"@types/react@npm:*, @types/react@npm:>=16, @types/react@npm:^18.0.15":
   version: 18.0.28
   resolution: "@types/react@npm:18.0.28"
   dependencies:
@@ -5243,6 +5250,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: e752df961105e5127652460504785897ca6e77259e0da8f233f694f9e8f451cde7fa0709d4456ade0ff600c8ce909cfe29f9b08b9c247fa9b734e126ec53edd7
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^18.0.29":
+  version: 18.0.29
+  resolution: "@types/react@npm:18.0.29"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: 75f56f81d80a1c15ee3fcd2039bdc5f7a70f49cf69827ee0fc8beece9809b234f245dd62552e91018d8f25792986bd513b44caf054554d5c5eb979a5f9460214
   languageName: node
   linkType: hard
 
@@ -6834,11 +6852,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro@npm:^2.1.5":
-  version: 2.1.5
-  resolution: "astro@npm:2.1.5"
+"astro@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "astro@npm:2.1.7"
   dependencies:
-    "@astrojs/compiler": ^1.2.0
+    "@astrojs/compiler": ^1.3.0
     "@astrojs/language-server": ^0.28.3
     "@astrojs/markdown-remark": ^2.1.2
     "@astrojs/telemetry": ^2.1.0
@@ -6898,7 +6916,7 @@ __metadata:
       optional: true
   bin:
     astro: astro.js
-  checksum: e707208cbd2df288900fff91d2b8271981c8bfb8697090f35834ff6c90c36a95acec6d66a0bbc0c637a338a7fe09344ba577710f7da6d56a203736a00065c6c4
+  checksum: adb0a822eb76aeb20fb38663176090aa08149a1ea1fa00658befb2ae73f46207b3518f3c0c9eb0248033c81c1938b342f3520662738c7e16ef7171eb3e5aa42b
   languageName: node
   linkType: hard
 
@@ -9427,7 +9445,7 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
     "@sapphire/snowflake": ^3.4.0
-    "@types/node": 16.18.19
+    "@types/node": 16.18.20
     "@types/ws": ^8.5.4
     discord-api-types: ^0.37.37
     dtslint: ^4.2.1
@@ -9436,7 +9454,7 @@ __metadata:
     fast-deep-equal: ^3.1.3
     jest: ^29.5.0
     lodash.snakecase: ^4.1.1
-    prettier: ^2.8.6
+    prettier: ^2.8.7
     tsd: ^0.28.0
     tslib: ^2.5.0
     tslint: ^6.1.3
@@ -16918,20 +16936,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^13.2.5-canary.15":
-  version: 13.2.5-canary.15
-  resolution: "next@npm:13.2.5-canary.15"
+"next@npm:^13.2.5-canary.16":
+  version: 13.2.5-canary.16
+  resolution: "next@npm:13.2.5-canary.16"
   dependencies:
-    "@next/env": 13.2.5-canary.15
-    "@next/swc-darwin-arm64": 13.2.5-canary.15
-    "@next/swc-darwin-x64": 13.2.5-canary.15
-    "@next/swc-linux-arm64-gnu": 13.2.5-canary.15
-    "@next/swc-linux-arm64-musl": 13.2.5-canary.15
-    "@next/swc-linux-x64-gnu": 13.2.5-canary.15
-    "@next/swc-linux-x64-musl": 13.2.5-canary.15
-    "@next/swc-win32-arm64-msvc": 13.2.5-canary.15
-    "@next/swc-win32-ia32-msvc": 13.2.5-canary.15
-    "@next/swc-win32-x64-msvc": 13.2.5-canary.15
+    "@next/env": 13.2.5-canary.16
+    "@next/swc-darwin-arm64": 13.2.5-canary.16
+    "@next/swc-darwin-x64": 13.2.5-canary.16
+    "@next/swc-linux-arm64-gnu": 13.2.5-canary.16
+    "@next/swc-linux-arm64-musl": 13.2.5-canary.16
+    "@next/swc-linux-x64-gnu": 13.2.5-canary.16
+    "@next/swc-linux-x64-musl": 13.2.5-canary.16
+    "@next/swc-win32-arm64-msvc": 13.2.5-canary.16
+    "@next/swc-win32-ia32-msvc": 13.2.5-canary.16
+    "@next/swc-win32-x64-msvc": 13.2.5-canary.16
     "@swc/helpers": 0.4.14
     caniuse-lite: ^1.0.30001406
     postcss: 8.4.14
@@ -16973,7 +16991,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: a443ac7232c7ec19642aedbfdb3fc7f4bdcbb8faf73bba82352a5dcacf524ca3e7a6b32924a32ed9e42287937f520c754413e592f6fa2cfb27349dc5b08645a1
+  checksum: d8036b26c6265c94d848a4a07af32c57d40ded028fd21085346e576aa23fa3c69d975bb5f7d50cb5a7564b5f4ab768e0f5b588502abb7be12ad7f5a55b103985
   languageName: node
   linkType: hard
 
@@ -17020,6 +17038,15 @@ __metadata:
   dependencies:
     node-gyp: latest
   checksum: 2508bd2d2981945406243a7bd31362fc7af8b70b8b4d65f869c61731800058fb818cc2fd36c8eac714ddd0e568cc85becf5e165cebbdf7b5024d5151bbc75ea1
+  languageName: node
+  linkType: hard
+
+"node-addon-api@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "node-addon-api@npm:6.0.0"
+  dependencies:
+    node-gyp: latest
+  checksum: a34a901b9f0d6d201a173e12ed378033e4e0f27f77fd27c225dc7e6f96e88a88e94bd78b2b0404fc95deee20a137f1cbfc92738cbfba38862ed9b6c2e61c1ab2
   languageName: node
   linkType: hard
 
@@ -18364,12 +18391,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.7.1, prettier@npm:^2.8.3, prettier@npm:^2.8.6":
+"prettier@npm:^2.7.1, prettier@npm:^2.8.3":
   version: 2.8.6
   resolution: "prettier@npm:2.8.6"
   bin:
     prettier: bin-prettier.js
   checksum: 8ac94fa67aec0e65743ea15ebf954ef2f1e52638abd129dc04e8b49e8bb3224c0233c98df6b5c98efd31bd2a43866590486559438ee4ead09dc81be389068572
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.8.7":
+  version: 2.8.7
+  resolution: "prettier@npm:2.8.7"
+  bin:
+    prettier: bin-prettier.js
+  checksum: fdc8f2616f099f5f0d685907f4449a70595a0fc1d081a88919604375989e0d5e9168d6121d8cc6861f21990b31665828e00472544d785d5940ea08a17660c3a6
   languageName: node
   linkType: hard
 
@@ -20072,7 +20108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:0.31.3, sharp@npm:^0.31.3":
+"sharp@npm:0.31.3":
   version: 0.31.3
   resolution: "sharp@npm:0.31.3"
   dependencies:
@@ -20086,6 +20122,23 @@ __metadata:
     tar-fs: ^2.1.1
     tunnel-agent: ^0.6.0
   checksum: 29fd1dfbc616c6389f53f366cec342b4353d9f2a37e98952ca273db38dca57dfa0f336322d6d763f0fae876042ead22fd86ffe26d70c32ade2458d421db60d04
+  languageName: node
+  linkType: hard
+
+"sharp@npm:^0.32.0":
+  version: 0.32.0
+  resolution: "sharp@npm:0.32.0"
+  dependencies:
+    color: ^4.2.3
+    detect-libc: ^2.0.1
+    node-addon-api: ^6.0.0
+    node-gyp: latest
+    prebuild-install: ^7.1.1
+    semver: ^7.3.8
+    simple-get: ^4.0.1
+    tar-fs: ^2.1.1
+    tunnel-agent: ^0.6.0
+  checksum: 82c6046038f45f1fdeb732cff8be6a8a3fb5eb25f46f4c3ecb4b71363c2c387b52de8c0c5c4674f2400663e467b8a7b93dbc5d70b3f0e145cb45fc27d39c5709
   languageName: node
   linkType: hard
 
