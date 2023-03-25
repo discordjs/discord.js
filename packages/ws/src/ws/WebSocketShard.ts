@@ -290,7 +290,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// As stated previously, any other error would have been caused by us emitting the error event, which looks
 			// like { error: unknown }
 			// eslint-disable-next-line no-ex-assign
-			error = isAbortError ? error : (error as { error: unknown }).error;
+			error = error instanceof Error ? error : (error as { error: unknown }).error;
 
 			// If the user has no handling on their end (error event) simply throw.
 			// We also want to throw if we're still in the initial `connect()` call, since that's the only time
