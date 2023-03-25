@@ -23,6 +23,7 @@ export default withBundleAnalyzer({
 	},
 	images: {
 		dangerouslyAllowSVG: true,
-		contentSecurityPolicy: "default-src 'self'; script-src 'none'; frame-src 'none'; sandbox;",
+		contentDispositionType: 'attachment',
+		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
 });

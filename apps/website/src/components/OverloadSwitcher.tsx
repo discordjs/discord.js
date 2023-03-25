@@ -2,7 +2,7 @@
 
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
-import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { useState } from 'react';
 

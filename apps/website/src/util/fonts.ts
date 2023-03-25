@@ -1,7 +1,13 @@
-import localFont from 'next/font/local';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 
-export const inter = localFont({
-	src: '../assets/fonts/Inter.ttf',
-	variable: '--font-inter',
+export const inter = Inter({
+	subsets: ['latin'],
 	display: 'swap',
+	variable: '--font-inter',
+});
+
+export const jetBrainsMono = JetBrains_Mono({
+	subsets: ['latin'],
+	display: 'swap',
+	variable: '--font-mono',
 });

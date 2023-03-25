@@ -1,3 +1,5 @@
+'use client';
+
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';

@@ -1,7 +1,7 @@
 import type { ApiFunction } from '@microsoft/api-extractor-model';
 import dynamic from 'next/dynamic';
+import { Header } from '../../documentation/Header';
 import { FunctionBody } from './FunctionBody';
-import { Header } from '~/components/documentation/Header';
 
 const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 

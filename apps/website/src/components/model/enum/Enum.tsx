@@ -1,11 +1,11 @@
 import type { ApiEnum } from '@microsoft/api-extractor-model';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { Panel } from '../../Panel';
 import { Documentation } from '../../documentation/Documentation';
+import { ObjectHeader } from '../../documentation/ObjectHeader';
+import { DocumentationSection } from '../../documentation/section/DocumentationSection';
+import { SummarySection } from '../../documentation/section/SummarySection';
 import { EnumMember } from './EnumMember';
-import { Panel } from '~/components/Panel';
-import { ObjectHeader } from '~/components/documentation/ObjectHeader';
-import { DocumentationSection } from '~/components/documentation/section/DocumentationSection';
-import { SummarySection } from '~/components/documentation/section/SummarySection';
 
 export function Enum({ item }: { item: ApiEnum }) {
 	return (
