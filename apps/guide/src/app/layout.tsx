@@ -9,6 +9,7 @@ import '@unocss/reset/tailwind-compat.css';
 import '~/styles/unocss.css';
 import '~/styles/cmdk.css';
 import '@code-hike/mdx/styles.css';
+import '~/styles/ch.css';
 import '~/styles/main.css';
 
 export const metadata: Metadata = {

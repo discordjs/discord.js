@@ -43,7 +43,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@code-hike/mdx": "^0.8.1",
+		"@code-hike/mdx": "^0.7.5-next.0",
 		"@discordjs/ui": "workspace:^",
 		"@react-icons/all-files": "^4.1.0",
 		"@vercel/analytics": "^0.1.11",

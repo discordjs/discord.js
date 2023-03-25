@@ -6,7 +6,6 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 // import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import themeGitHubDarkDimmed from './src/assets/github-dark-dimmed.json';
 
 export const Content = defineDocumentType(() => ({
 	name: 'Content',
@@ -68,7 +67,7 @@ export default makeSource({
 	contentDirPath: 'src/content',
 	documentTypes: [Content],
 	mdx: {
-		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: themeGitHubDarkDimmed, lineNumbers: true }]],
+		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: 'css-variables', lineNumbers: true }]],
 		rehypePlugins: [
 			rehypeSlug,
 			// [
