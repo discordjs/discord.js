@@ -1,4 +1,3 @@
-/* eslint-disable id-length */
 /* eslint-disable no-param-reassign */
 /**
  * @internal
@@ -62,7 +61,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @returns `true` if all of the elements exist, `false` if at least one does not exist.
 	 */
 	public hasAll(...keys: K[]) {
-		return keys.every((k) => super.has(k));
+		return keys.every((key) => super.has(key));
 	}
 
 	/**
@@ -72,7 +71,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * @returns `true` if any of the elements exist, `false` if none exist.
 	 */
 	public hasAny(...keys: K[]) {
-		return keys.some((k) => super.has(k));
+		return keys.some((key) => super.has(key));
 	}
 
 	/**
@@ -563,8 +562,12 @@ export class Collection<K, V> extends Map<K, V> {
 	public each<T>(fn: (this: T, value: V, key: K, collection: this) => void, thisArg: T): this;
 	public each(fn: (value: V, key: K, collection: this) => void, thisArg?: unknown): this {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
-		// eslint-disable-next-line unicorn/no-array-method-this-argument
-		this.forEach(fn as (value: V, key: K, map: Map<K, V>) => void, thisArg);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+
+		for (const [key, value] of this) {
+			fn(value, key, this);
+		}
+
 		return this;
 	}
 
@@ -661,8 +664,8 @@ export class Collection<K, V> extends Map<K, V> {
 		super.clear();
 
 		// Set the new entries
-		for (const [k, v] of entries) {
-			super.set(k, v);
+		for (const [key, value] of entries) {
+			super.set(key, value);
 		}
 
 		return this;
@@ -675,9 +678,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public intersect<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
 		const coll = new this.constructor[Symbol.species]<K, T>();
-		for (const [k, v] of other) {
-			if (this.has(k) && Object.is(v, this.get(k))) {
-				coll.set(k, v);
+		for (const [key, value] of other) {
+			if (this.has(key) && Object.is(value, this.get(key))) {
+				coll.set(key, value);
 			}
 		}
 
@@ -691,9 +694,9 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
 		const coll = new this.constructor[Symbol.species]<K, V>();
-		for (const [k, v] of this) {
-			if (!other.has(k) || !Object.is(v, other.get(k))) {
-				coll.set(k, v);
+		for (const [key, value] of this) {
+			if (!other.has(key) || !Object.is(value, other.get(key))) {
+				coll.set(key, value);
 			}
 		}
 
@@ -707,12 +710,12 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
 		const coll = new this.constructor[Symbol.species]<K, T | V>();
-		for (const [k, v] of other) {
-			if (!this.has(k)) coll.set(k, v);
+		for (const [key, value] of other) {
+			if (!this.has(key)) coll.set(key, value);
 		}
 
-		for (const [k, v] of this) {
-			if (!other.has(k)) coll.set(k, v);
+		for (const [key, value] of this) {
+			if (!other.has(key)) coll.set(key, value);
 		}
 
 		return coll;
@@ -754,19 +757,20 @@ export class Collection<K, V> extends Map<K, V> {
 	): Collection<K, R> {
 		const coll = new this.constructor[Symbol.species]<K, R>();
 		const keys = new Set([...this.keys(), ...other.keys()]);
-		for (const k of keys) {
-			const hasInSelf = this.has(k);
-			const hasInOther = other.has(k);
+
+		for (const key of keys) {
+			const hasInSelf = this.has(key);
+			const hasInOther = other.has(key);
 
 			if (hasInSelf && hasInOther) {
-				const r = whenInBoth(this.get(k)!, other.get(k)!, k);
-				if (r.keep) coll.set(k, r.value);
+				const result = whenInBoth(this.get(key)!, other.get(key)!, key);
+				if (result.keep) coll.set(key, result.value);
 			} else if (hasInSelf) {
-				const r = whenInSelf(this.get(k)!, k);
-				if (r.keep) coll.set(k, r.value);
+				const result = whenInSelf(this.get(key)!, key);
+				if (result.keep) coll.set(key, result.value);
 			} else if (hasInOther) {
-				const r = whenInOther(other.get(k)!, k);
-				if (r.keep) coll.set(k, r.value);
+				const result = whenInOther(other.get(key)!, key);
+				if (result.keep) coll.set(key, result.value);
 			}
 		}
 
@@ -815,11 +819,11 @@ export class Collection<K, V> extends Map<K, V> {
 		combine: (firstValue: V, secondValue: V, key: K) => V,
 	): Collection<K, V> {
 		const coll = new Collection<K, V>();
-		for (const [k, v] of entries) {
-			if (coll.has(k)) {
-				coll.set(k, combine(coll.get(k)!, v, k));
+		for (const [key, value] of entries) {
+			if (coll.has(key)) {
+				coll.set(key, combine(coll.get(key)!, value, key));
 			} else {
-				coll.set(k, v);
+				coll.set(key, value);
 			}
 		}
 
