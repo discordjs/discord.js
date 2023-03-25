@@ -16,6 +16,10 @@ export default defineConfig({
 				900: '#020208',
 			},
 		},
+		fontFamily: {
+			sans: ['var(--font-inter)'],
+			mono: ['var(--font-mono)'],
+		},
 	},
 	presets: [
 		presetUno({ dark: 'class' }),

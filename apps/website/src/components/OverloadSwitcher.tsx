@@ -2,7 +2,7 @@
 
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
-import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { useState } from 'react';
 
@@ -10,7 +10,7 @@ export interface OverloadSwitcherProps {
 	overloads: ReactNode[];
 }
 
-export function OverloadSwitcher({ overloads, children }: PropsWithChildren<{ overloads: ReactNode[] }>) {
+export default function OverloadSwitcher({ overloads, children }: PropsWithChildren<{ overloads: ReactNode[] }>) {
 	const [overloadIndex, setOverloadIndex] = useState(1);
 	const overloadedNode = overloads[overloadIndex - 1]!;
 	const menu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
@@ -18,7 +18,7 @@ export function OverloadSwitcher({ overloads, children }: PropsWithChildren<{ ov
 	return (
 		<div className="flex flex-col place-items-start gap-2">
 			<MenuButton
-				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+				className="bg-light-700 hover:bg-light-800 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
 				state={menu}
 			>
 				<div className="flex flex-row place-content-between place-items-center gap-2">

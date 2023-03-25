@@ -1,7 +1,7 @@
 import type { ApiItemContainerMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
+import { PropertyList } from '../../PropertyList';
 import { DocumentationSection } from './DocumentationSection';
-import { PropertyList } from '~/components/PropertyList';
 
 export function PropertiesSection({ item }: { item: ApiItemContainerMixin }) {
 	return (

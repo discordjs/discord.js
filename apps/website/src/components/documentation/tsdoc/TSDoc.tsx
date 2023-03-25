@@ -3,10 +3,10 @@ import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, 
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
+import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
 import { DeprecatedBlock, ExampleBlock, RemarksBlock, SeeBlock } from './BlockComment';
-import { ItemLink } from '~/components/ItemLink';
 
 export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(

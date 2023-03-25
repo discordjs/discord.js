@@ -51,6 +51,8 @@
 		"@microsoft/api-extractor-model": "7.26.4",
 		"@microsoft/tsdoc": "0.14.2",
 		"@react-icons/all-files": "^4.1.0",
+		"@vercel/analytics": "^0.1.11",
+		"@vercel/edge-config": "^0.1.5",
 		"@vercel/og": "^0.4.1",
 		"@vscode/codicons": "^0.0.32",
 		"ariakit": "^2.0.0-next.43",

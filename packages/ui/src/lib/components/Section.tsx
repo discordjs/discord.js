@@ -29,7 +29,7 @@ export function Section({
 	return (
 		<div className={`flex flex-col ${className}`}>
 			<Disclosure
-				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+				className="hover:bg-light-800 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded bg-white p-3 outline-0 focus:ring"
 				state={disclosure}
 			>
 				<div className="flex flex-row place-content-between place-items-center">
