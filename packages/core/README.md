@@ -83,7 +83,7 @@ const guild = await api.guilds.get('1234567891011');
 - [Website][website] ([source][website-source])
 - [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
-  See also the [Update Guide][guide-update], including updated and removed items in the library.
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
 - [Discord API Discord server][discord-api]
 - [GitHub][source]

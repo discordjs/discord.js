@@ -18,7 +18,7 @@
 
 ## About
 
-`@discordjs/formatters` set of functions to format strings for Discord.
+`@discordjs/formatters` is a collection of functions for formatting strings to be used on Discord.
 
 ## Installation
 
