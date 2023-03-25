@@ -13,6 +13,10 @@
 	</p>
 </div>
 
+## About
+
+`@discordjs/util` is a collection of utility functions for use with Discord.js.
+
 ## Installation
 
 **Node.js 16.9.0 or newer is required.**

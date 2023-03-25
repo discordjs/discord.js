@@ -18,7 +18,7 @@
 
 ## About
 
-`@discordjs/proxy` is a powerful wrapper around `@discordjs/rest` for running an HTTP proxy in front of Discord's API
+`@discordjs/proxy` is a powerful wrapper around `@discordjs/rest` for running an HTTP proxy in front of Discord's API.
 
 ## Installation
 

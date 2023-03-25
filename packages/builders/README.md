@@ -16,6 +16,10 @@
 	</p>
 </div>
 
+## About
+
+`@discord.js/builders` is a utility package for easily building Discord API payloads.
+
 ## Installation
 
 **Node.js 16.9.0 or newer is required.**

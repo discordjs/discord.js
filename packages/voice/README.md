@@ -18,7 +18,7 @@
 
 ## About
 
-An implementation of the Discord Voice API for Node.js, written in TypeScript.
+`@discordjs/voice` is a TypeScript implementation of the Discord Voice API for Node.js.
 
 **Features:**
 

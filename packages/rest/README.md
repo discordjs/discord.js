@@ -16,6 +16,10 @@
 	</p>
 </div>
 
+## About
+
+`@discord.js/rest` is a module that allows you to easily make REST requests to the Discord API.
+
 ## Installation
 
 **Node.js 16.9.0 or newer is required.**

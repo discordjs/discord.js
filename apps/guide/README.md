@@ -13,6 +13,10 @@
 	</p>
 </div>
 
+## About
+
+The official guide for discord.js, made to help you get started easily with the library.
+
 ## Links
 
 - [Website][website] ([source][website-source])
