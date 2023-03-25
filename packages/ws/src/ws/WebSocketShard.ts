@@ -298,7 +298,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			// If the error is handled, we can just try to reconnect
-			await this.destroy({
+			void this.destroy({
 				code: CloseCodes.Normal,
 				reason: 'Something timed out or went wrong while waiting for an event',
 				recover: WebSocketShardDestroyRecovery.Reconnect,
