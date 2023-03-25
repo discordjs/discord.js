@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next/types';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
@@ -71,8 +72,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html className={inter.variable} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-800 bg-white">
+			<body className="dark:bg-dark-800 bg-light-600">
 				<Providers>{children}</Providers>
+				<Analytics />
 			</body>
 		</html>
 	);

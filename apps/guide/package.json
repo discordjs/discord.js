@@ -39,6 +39,7 @@
 	"dependencies": {
 		"@code-hike/mdx": "^0.8.0",
 		"@discordjs/ui": "workspace:^",
+		"@vercel/analytics": "^0.1.11",
 		"ariakit": "^2.0.0-next.43",
 		"react": "^18.2.0",
 		"react-custom-scrollbars-2": "^4.5.0",

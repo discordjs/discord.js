@@ -2083,6 +2083,7 @@ __metadata:
     turbo: ^1.8.5
     typescript: ^5.0.2
     unocss: ^0.50.6
+    vercel: ^28.18.1
     vitest: ^0.29.7
   languageName: unknown
   linkType: soft
@@ -2148,6 +2149,7 @@ __metadata:
     "@types/react-syntax-highlighter": ^15.5.6
     "@unocss/cli": ^0.50.6
     "@unocss/reset": ^0.50.6
+    "@vercel/analytics": ^0.1.11
     "@vitejs/plugin-react": ^3.1.0
     "@vitest/coverage-c8": ^0.29.7
     ariakit: ^2.0.0-next.43
@@ -2406,6 +2408,8 @@ __metadata:
     "@types/react-dom": ^18.0.11
     "@unocss/cli": ^0.50.6
     "@unocss/reset": ^0.50.6
+    "@vercel/analytics": ^0.1.11
+    "@vercel/edge-config": ^0.1.5
     "@vercel/og": ^0.4.1
     "@vitejs/plugin-react": ^3.1.0
     "@vitest/coverage-c8": ^0.29.7
@@ -5843,10 +5847,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/analytics@npm:^0.1.11":
+  version: 0.1.11
+  resolution: "@vercel/analytics@npm:0.1.11"
+  peerDependencies:
+    react: ^16.8||^17||^18
+  checksum: 05b8180ac6e23ebe7c09d74c43f8ee78c408cd0b6546e676389cbf4fba44dfeeae3648c9b52e2421be64fe3aeee8b026e6ea4bdfc0589fb5780670f2b090a167
+  languageName: node
+  linkType: hard
+
 "@vercel/build-utils@npm:6.5.0":
   version: 6.5.0
   resolution: "@vercel/build-utils@npm:6.5.0"
   checksum: f72b3d516d1b0216e30c258c945681396f987fb56ff748584122afa3ca3e8c18224b8fea590f2cb7e8dceb5100fdae28eeaf7c7310ea5a0eb205dbf3191417ec
+  languageName: node
+  linkType: hard
+
+"@vercel/edge-config@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@vercel/edge-config@npm:0.1.5"
+  checksum: dec5f0794a6e9210f6f22b1d98f94c696f68bdcc6eed8bcd22e19572195285463663c65e2e3642bfbe2232bf0c460490b6cf3780dee638bec2b84157f4506d9b
   languageName: node
   linkType: hard
 

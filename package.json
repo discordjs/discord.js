@@ -58,6 +58,7 @@
 		"turbo": "^1.8.5",
 		"typescript": "^5.0.2",
 		"unocss": "^0.50.6",
+		"vercel": "^28.18.1",
 		"vitest": "^0.29.7"
 	},
 	"resolutions": {

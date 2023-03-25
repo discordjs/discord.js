@@ -3,11 +3,14 @@ import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
+import type { ServerRuntime } from 'next/types';
 import { PACKAGES } from '~/util/constants';
+
+export const runtime: ServerRuntime = 'edge';
 
 export default function Page() {
 	return (
-		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
+		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-8 lg:px-6">
 			<div className="flex grow flex-col place-content-center gap-4">
 				<h1 className="text-2xl font-semibold">Select a package:</h1>
 				<a
