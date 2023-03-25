@@ -72,5 +72,8 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.5.0"
+	"packageManager": "yarn@3.5.0",
+	"dependencies": {
+		"@react-icons/all-files": "^4.1.0"
+	}
 }
