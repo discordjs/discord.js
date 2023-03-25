@@ -2011,7 +2011,6 @@ __metadata:
     "@commitlint/config-angular": ^17.4.4
     "@favware/cliff-jumper": ^2.0.0
     "@favware/npm-deprecate": ^1.0.7
-    "@react-icons/all-files": ^4.1.0
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.3
     is-ci: ^3.0.1
@@ -2075,6 +2074,7 @@ __metadata:
     "@code-hike/mdx": ^0.8.1
     "@discordjs/ui": "workspace:^"
     "@next/bundle-analyzer": ^13.2.4
+    "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
     "@types/node": 18.15.9

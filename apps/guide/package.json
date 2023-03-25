@@ -45,6 +45,7 @@
 	"dependencies": {
 		"@code-hike/mdx": "^0.8.1",
 		"@discordjs/ui": "workspace:^",
+		"@react-icons/all-files": "^4.1.0",
 		"@vercel/analytics": "^0.1.11",
 		"@vercel/edge-config": "^0.1.5",
 		"@vercel/og": "^0.4.1",
