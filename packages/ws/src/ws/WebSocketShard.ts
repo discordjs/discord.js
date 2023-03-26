@@ -1,13 +1,12 @@
-/* eslint-disable id-length */
-import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
-import { inflate } from 'node:zlib';
+import type { Inflate } from 'node:zlib';
+import { inflate, createInflate, constants as zlibConstants } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -21,13 +20,9 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
-import type { Inflate } from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
-
-// eslint-disable-next-line promise/prefer-await-to-then
-const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
 
 export enum WebSocketShardEvents {
 	Closed = 'closed',
@@ -86,7 +81,7 @@ const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket(
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private useIdentifyCompress = false;
+	private useIdentifyCompression = false;
 
 	private inflate: Inflate | null = null;
 
@@ -161,22 +156,28 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
-		const { version, encoding, compression } = this.strategy.options;
+		const { version, encoding, transportCompression: compression, useIdentifyCompression } = this.strategy.options;
+		this.useIdentifyCompression = useIdentifyCompression;
+
+		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
 		if (compression) {
-			const zlib = await getZlibSync();
-			if (zlib) {
-				params.append('compress', compression);
-				this.inflate = new zlib.Inflate({
-					chunkSize: 65_535,
-					to: 'string',
-				});
-			} else if (!this.useIdentifyCompress) {
-				this.useIdentifyCompress = true;
-				console.warn(
-					'WebSocketShard: Compression is enabled but zlib-sync is not installed, falling back to identify compress',
-				);
+			if (useIdentifyCompression) {
+				console.warn('WebSocketShard: transport compression is enabled, disabling identify compression');
+				this.useIdentifyCompression = false;
 			}
+
+			params.append('compress', compression);
+			const inflate = createInflate({
+				chunkSize: 65_535,
+				flush: zlibConstants.Z_SYNC_FLUSH,
+			});
+
+			inflate.on('error', (error) => {
+				this.emit(WebSocketShardEvents.Error, { error });
+			});
+
+			this.inflate = inflate;
 		}
 
 		const session = await this.strategy.retrieveSessionInfo(this.id);
@@ -451,28 +452,29 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
+			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompression ? 'identify' : 'none'}`,
 		]);
 
-		const d: GatewayIdentifyData = {
+		const data: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
-			compress: this.useIdentifyCompress,
+			compress: this.useIdentifyCompression,
 			shard: [this.id, this.strategy.options.shardCount],
 		};
 
 		if (this.strategy.options.largeThreshold) {
-			d.large_threshold = this.strategy.options.largeThreshold;
+			data.large_threshold = this.strategy.options.largeThreshold;
 		}
 
 		if (this.strategy.options.initialPresence) {
-			d.presence = this.strategy.options.initialPresence;
+			data.presence = this.strategy.options.initialPresence;
 		}
 
 		await this.send({
 			op: GatewayOpcodes.Identify,
-			d,
+			// eslint-disable-next-line id-length
+			d: data,
 		});
 
 		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
@@ -490,6 +492,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.replayedEvents = 0;
 		return this.send({
 			op: GatewayOpcodes.Resume,
+			// eslint-disable-next-line id-length
 			d: {
 				token: this.strategy.options.token,
 				seq: session.sequence,
@@ -507,6 +510,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		await this.send({
 			op: GatewayOpcodes.Heartbeat,
+			// eslint-disable-next-line id-length
 			d: session?.sequence ?? null,
 		});
 
@@ -528,7 +532,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const decompressable = new Uint8Array(data as ArrayBuffer);
 
 		// Deal with identify compress
-		if (this.useIdentifyCompress) {
+		if (this.useIdentifyCompression) {
 			return new Promise((resolve, reject) => {
 				// eslint-disable-next-line promise/prefer-await-to-callbacks
 				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
@@ -544,28 +548,21 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		// Deal with gw wide zlib-stream compression
 		if (this.inflate) {
-			const l = decompressable.length;
 			const flush =
-				l >= 4 &&
-				decompressable[l - 4] === 0x00 &&
-				decompressable[l - 3] === 0x00 &&
-				decompressable[l - 2] === 0xff &&
-				decompressable[l - 1] === 0xff;
+				decompressable.length &&
+				decompressable.at(-4) === 0x00 &&
+				decompressable.at(-3) === 0x00 &&
+				decompressable.at(-2) === 0xff &&
+				decompressable.at(-1) === 0xff;
 
-			const zlib = (await getZlibSync())!;
-			this.inflate.push(Buffer.from(decompressable), flush ? zlib.Z_SYNC_FLUSH : zlib.Z_NO_FLUSH);
-
-			if (this.inflate.err) {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error(`${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`),
-				});
-			}
+			this.inflate!.write(decompressable, 'binary');
 
 			if (!flush) {
 				return null;
 			}
 
-			const { result } = this.inflate;
+			const [result] = await once(this.inflate, 'data');
+
 			if (!result) {
 				return null;
 			}
@@ -576,7 +573,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
-			`useIdentifyCompress: ${this.useIdentifyCompress.toString()}`,
+			`useIdentifyCompress: ${this.useIdentifyCompression.toString()}`,
 			`inflate: ${Boolean(this.inflate).toString()}`,
 		]);
 
@@ -838,7 +835,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			messages.length > 1
 				? `\n${messages
 						.slice(1)
-						.map((m) => `	${m}`)
+						.map((message) => `	${message}`)
 						.join('\n')}`
 				: ''
 		}`;
