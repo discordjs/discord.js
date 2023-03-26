@@ -64,9 +64,7 @@ To get started with a package, navigate to its directory (packages/{packagename}
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].
-See [the contribution guide][contributing] if you'd like to submit a PR.
+Please read through our [contributing guidelines][contributing] before making a PR. We welcome contributions of all kinds, not just code! If you're stuck for ideas, look at the [good first issue][good-first-issue] label on issues in the repository. If you have any questions about the project, feel free to ask them in [discord.js' Discord server][discord]. Before creating your own issue or pull request, always check to see if one already exists! Also, don't rush into creating a pull request; it's always better to take your time and ensure you're doing it correctly.
 
 ## Help
 
@@ -98,3 +96,4 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
+[good-first-issue]: https://github.com/discordjs/discord.js/labels/good%20first%20issue
