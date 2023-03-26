@@ -26,17 +26,17 @@ To get started with a package, navigate to its directory (packages/{packagename}
 
 ### Packages
 
-- [`discord.js`] ([source][source]) - A powerful Node.js module for interacting with the Discord API
-- [`@discordjs/brokers`] ([source][brokers-source]) - A collection of brokers for use with discord.js
-- [`@discordjs/builders`] ([source][builders-source]) - A utility package for easily building Discord API payloads
-- [`@discordjs/collection`] ([source][collection-source]) - A powerful utility data structure
-- [`@discordjs/core`] ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
-- [`@discordjs/formatters`] ([source][formatters-source]) - A collection of functions for formatting strings
-- [`@discordjs/proxy`] ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
-- [`@discordjs/rest`] ([source][rest-source]) - A module for interacting with the Discord REST API
-- [`@discordjs/voice`] ([source][voice-source]) - A module for interacting with the Discord Voice API
-- [`@discordjs/util`] ([source][util-source]) - A collection of utility functions
-- [`@discordjs/ws`] ([source][ws-source]) - A wrapper around Discord's gateway
+- `discord.js` ([source][source]) - A powerful Node.js module for interacting with the Discord API
+- `@discordjs/brokers` ([source][brokers-source]) - A collection of brokers for use with discord.js
+- `@discordjs/builders` ([source][builders-source]) - A utility package for easily building Discord API payloads
+- `@discordjs/collection` ([source][collection-source]) - A powerful utility data structure
+- `@discordjs/core` ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
+- `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
+- `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
+- `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
+- `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
+- `@discordjs/util` ([source][util-source]) - A collection of utility functions
+- `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
 
 ### Optional packages
 
