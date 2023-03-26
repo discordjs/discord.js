@@ -68,8 +68,7 @@ Please read through our [contributing guidelines][contributing] before making a 
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website

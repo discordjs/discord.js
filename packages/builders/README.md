@@ -54,8 +54,7 @@ See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
 [example]: https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md
 [website]: https://discord.js.org/
