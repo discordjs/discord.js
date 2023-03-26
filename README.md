@@ -18,23 +18,25 @@
 
 ## About
 
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
-[Discord API](https://discord.com/developers/docs/intro).
+This repository is a monorepo that contains multiple packages. The main and most popular package is [`discord.js`][source], which is the one you are most likely looking for. All packages have seperate [release][github-releases] cycles and version numbers.
 
-- Object-oriented
-- Predictable abstractions
-- Performant
-- 100% coverage of the Discord API
+## Getting started
 
-## Installation
+To get started with a package, navigate to its directory (packages/{packagename}) and follow the instructions in its README file. You can also find links to the documentation, guide, and other resources in the [Links](#links) section.
 
-**Node.js 16.9.0 or newer is required.**
+### Packages
 
-```sh
-npm install discord.js
-yarn add discord.js
-pnpm add discord.js
-```
+- [`discord.js`] ([source][source]) - A powerful Node.js module for interacting with the Discord API
+- [`@discordjs/brokers`] ([source][brokers-source]) - A collection of brokers for use with discord.js
+- [`@discordjs/builders`] ([source][builders-source]) - A utility package for easily building Discord API payloads
+- [`@discordjs/collection`] ([source][collection-source]) - A powerful utility data structure
+- [`@discordjs/core`] ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
+- [`@discordjs/formatters`] ([source][formatters-source]) - A collection of functions for formatting strings
+- [`@discordjs/proxy`] ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
+- [`@discordjs/rest`] ([source][rest-source]) - A module for interacting with the Discord REST API
+- [`@discordjs/voice`] ([source][voice-source]) - A module for interacting with the Discord Voice API
+- [`@discordjs/util`] ([source][util-source]) - A collection of utility functions
+- [`@discordjs/ws`] ([source][ws-source]) - A wrapper around Discord's gateway
 
 ### Optional packages
 
@@ -43,64 +45,6 @@ pnpm add discord.js
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
 - [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 - [@discordjs/voice](https://www.npmjs.com/package/@discordjs/voice) for interacting with the Discord Voice API (`npm install @discordjs/voice`)
-
-## Example usage
-
-Install discord.js:
-
-```sh
-npm install discord.js
-yarn add discord.js
-pnpm add discord.js
-```
-
-Register a slash command against the Discord API:
-
-```js
-const { REST, Routes } = require('discord.js');
-
-const commands = [
-	{
-		name: 'ping',
-		description: 'Replies with Pong!',
-	},
-];
-
-const rest = new REST({ version: '10' }).setToken(TOKEN);
-
-(async () => {
-	try {
-		console.log('Started refreshing application (/) commands.');
-
-		await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-
-		console.log('Successfully reloaded application (/) commands.');
-	} catch (error) {
-		console.error(error);
-	}
-})();
-```
-
-Afterwards we can create a quite simple example bot:
-
-```js
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on('ready', () => {
-	console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isChatInputCommand()) return;
-
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-});
-
-client.login(TOKEN);
-```
 
 ## Links
 
@@ -121,7 +65,7 @@ client.login(TOKEN);
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
+[documentation][documentation].
 See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
@@ -143,3 +87,14 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [rpc]: https://www.npmjs.com/package/discord-rpc
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
+[github-releases]: https://github.com/discordjs/discord.js/releases
+[brokers-source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
+[builders-source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
+[collection-source]: https://github.com/discordjs/discord.js/tree/main/packages/collection
+[core-source]: https://github.com/discordjs/discord.js/tree/main/packages/core
+[formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
+[proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
+[rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
+[voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
+[util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
+[ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
