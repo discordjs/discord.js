@@ -18,7 +18,7 @@
 
 ## About
 
-This repository is a monorepo that contains multiple packages. The main and most popular package is [`discord.js`][source], which is the one you are most likely looking for. All packages have seperate [release][github-releases] cycles and version numbers.
+This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`discord.js`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
 
 ## Getting started
 
