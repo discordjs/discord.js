@@ -64,7 +64,7 @@ To get started with a package, navigate to its directory (packages/{packagename}
 
 ## Contributing
 
-Please read through our [contributing guidelines][contributing] before making a PR. We welcome contributions of all kinds, not just code! If you're stuck for ideas, look at the [good first issue][good-first-issue] label on issues in the repository. If you have any questions about the project, feel free to ask them in [discord.js' Discord server][discord]. Before creating your own issue or pull request, always check to see if one already exists! Also, don't rush into creating a pull request; it's always better to take your time and ensure you're doing it correctly.
+Please read through our [contribution guidelines][contributing] before starting a pull request. We welcome contributions of all kinds, not just code! If you're stuck for ideas, look for the [good first issue][good-first-issue] label on issues in the repository. If you have any questions about the project, feel free to ask them on [Discord][discord]. Before creating your own issue or pull request, always check to see if one already exists! Don't rush contributions, take your time and ensure you're doing it correctly.
 
 ## Help
 
