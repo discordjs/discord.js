@@ -131,7 +131,7 @@ nudge in the right direction, please don't hesitate to join our official [discor
 
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs
+[documentation]: https://discordjs.dev/docs/packages/discord.js
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html

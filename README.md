@@ -73,7 +73,7 @@ nudge in the right direction, please don't hesitate to join our official [discor
 
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs
+[documentation]: https://discordjs.dev/docs/packages
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
@@ -96,4 +96,4 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[good-first-issue]: https://github.com/discordjs/discord.js/labels/good%20first%20issue
+[good-first-issue]: https://github.com/discordjs/discord.js/contribute

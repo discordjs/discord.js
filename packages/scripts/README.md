@@ -26,8 +26,7 @@
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the[documentation][documentation].  
 See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
