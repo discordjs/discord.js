@@ -70,7 +70,7 @@ Please read through our [contribution guidelines][contributing] before starting 
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][discord].
 
-[website]: https://discord.js.org/
+[website]: https://discordjs.dev/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discordjs.dev/docs/packages
 [guide]: https://discordjs.guide/

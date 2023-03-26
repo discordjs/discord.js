@@ -32,7 +32,7 @@ See [the contribution guide][contributing] if you'd like to submit a PR.
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
-[website]: https://discord.js.org/
+[website]: https://discordjs.dev/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
