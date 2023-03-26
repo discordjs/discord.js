@@ -455,7 +455,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		// Deal with gw wide zlib-stream compression
 		if (this.inflate) {
 			const flush =
-				decompressable.length &&
+				decompressable.length >= 4 &&
 				decompressable.at(-4) === 0x00 &&
 				decompressable.at(-3) === 0x00 &&
 				decompressable.at(-2) === 0xff &&
