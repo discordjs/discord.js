@@ -20,11 +20,7 @@
 
 This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`discord.js`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
 
-## Getting started
-
-To get started with a package, navigate to its directory (packages/{packagename}) and follow the instructions in its README file. You can also find links to the documentation, guide, and other resources in the [Links](#links) section.
-
-### Packages
+## Packages
 
 - `discord.js` ([source][source]) - A powerful Node.js module for interacting with the Discord API
 - `@discordjs/brokers` ([source][brokers-source]) - A collection of brokers for use with discord.js
@@ -37,14 +33,6 @@ To get started with a package, navigate to its directory (packages/{packagename}
 - `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/util` ([source][util-source]) - A collection of utility functions
 - `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
-
-### Optional packages
-
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
-- [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
-- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
-- [@discordjs/voice](https://www.npmjs.com/package/@discordjs/voice) for interacting with the Discord Voice API (`npm install @discordjs/voice`)
 
 ## Links
 
