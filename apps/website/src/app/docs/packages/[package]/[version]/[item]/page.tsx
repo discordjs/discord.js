@@ -155,7 +155,7 @@ function Member({ member }: { member?: ApiItem }) {
 		case 'Class':
 			return <Class clazz={member as ApiClass} />;
 		case 'Function':
-			return <Function item={member as ApiFunction} key={`${member.displayName}-${member.containerKey}`} />;
+			return <Function item={member as ApiFunction} />;
 		case 'Interface':
 			return <Interface item={member as ApiInterface} />;
 		case 'TypeAlias':
