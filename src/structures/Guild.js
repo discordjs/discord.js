@@ -257,6 +257,7 @@ class Guild extends AnonymousGuild {
      * * ROLE_ICONS
      * * ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE
      * * ROLE_SUBSCRIPTIONS_ENABLED
+     * * GUILD_WEB_PAGE_VANITY_URL
      * @typedef {string} Features
      * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
@@ -716,7 +717,7 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes('VANITY_URL')) {
+    if (!this.features.includes('VANITY_URL') && !this.features.includes('GUILD_WEB_PAGE_VANITY_URL')) {
       throw new Error('VANITY_URL');
     }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();

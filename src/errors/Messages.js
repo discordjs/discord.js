@@ -127,7 +127,7 @@ const Messages = {
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user id to remove from the reaction.",
 
-  VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
+  VANITY_URL: 'This guild does not have VANITY_URL or GUILD_WEB_PAGE_VANITY_URL features enabled.',
 
   INVITE_RESOLVE_CODE: 'Could not resolve the code to fetch the invite.',
 

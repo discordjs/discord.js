@@ -5405,7 +5405,8 @@ export type GuildFeatures =
   | 'PRIVATE_THREADS'
   | 'ROLE_ICONS'
   | 'ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE'
-  | 'ROLE_SUBSCRIPTIONS_ENABLED';
+  | 'ROLE_SUBSCRIPTIONS_ENABLED'
+  | 'GUILD_WEB_PAGE_VANITY_URL';
 
 export interface GuildMemberEditData {
   nick?: string | null;
