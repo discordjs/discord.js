@@ -15,7 +15,7 @@
 
 ## About
 
-`@discordjs/util` is a collection of utility functions for use with Discord.js.
+`@discordjs/util` is a collection of utility functions for use with discord.js.
 
 ## Installation
 
