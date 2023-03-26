@@ -59,7 +59,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [example]: https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs/builders
+[documentation]: https://discordjs.dev/docs/packages/builders
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html

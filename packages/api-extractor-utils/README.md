@@ -16,7 +16,6 @@
 ## Links
 
 - [Website][website] ([source][website-source])
-- [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
   Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
@@ -36,7 +35,6 @@ If you don't understand something in the documentation, you are experiencing pro
 
 [website]: https://discord.js.org/
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
