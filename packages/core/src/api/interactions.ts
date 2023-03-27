@@ -6,6 +6,7 @@ import type {
 	APIModalInteractionResponseCallbackData,
 	RESTGetAPIWebhookWithTokenMessageResult,
 	Snowflake,
+	APIInteractionResponseDeferredChannelMessageWithSource,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 
@@ -44,13 +45,20 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
+	 * @param data - The data to use when deferring the reply
 	 * @param options - The options to use when deferring
 	 */
-	public async defer(interactionId: Snowflake, interactionToken: string, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async defer(
+		interactionId: Snowflake,
+		interactionToken: string,
+		data: APIInteractionResponseDeferredChannelMessageWithSource['data'],
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {
 				type: InteractionResponseType.DeferredChannelMessageWithSource,
+				data,
 			},
 			signal,
 		});
