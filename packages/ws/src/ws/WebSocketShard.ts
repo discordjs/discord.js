@@ -278,15 +278,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			]);
 
 			return { ok: !closed };
-		} catch (error) {
-			const isAbortError = error instanceof Error && error.name === 'AbortError';
-
-			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
-			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
-			if (isAbortError) {
-				this.emit(WebSocketShardEvents.Error, { error: error as Error });
-			}
-
+		} catch {
 			// If we're here because of other reasons, we need to destroy the shard
 			void this.destroy({
 				code: CloseCodes.Normal,
