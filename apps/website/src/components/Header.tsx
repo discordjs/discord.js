@@ -65,7 +65,7 @@ export default function Header() {
 
 	return (
 		<header className="dark:bg-dark-400 dark:border-dark-100 bg-light-600 border-light-800 fixed top-0 left-0 z-20 w-full border-b">
-			<div className="h-18 block px-6">
+			<div className="block h-16 px-6">
 				<div className="flex h-full flex-row place-content-between place-items-center">
 					<Button
 						aria-label="Menu"
