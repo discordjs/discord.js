@@ -72,8 +72,8 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 			<main>
 				<Header />
 				<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
-				<article className="pt-18 lg:pl-76">
-					<div className="relative z-10 min-h-[calc(100vh_-_70px)]">{children}</div>
+				<article className="lg:pl-76 pt-16">
+					<div className="relative z-10">{children}</div>
 					<div className="h-76 md:h-52" />
 				</article>
 				<Footer />
