@@ -819,10 +819,9 @@ class Message extends Base {
 
   /**
    * Options provided when sending a message as an inline reply.
-   * @typedef {BaseMessageCreateOptions} MessageReplyOptions
+   * @typedef {MessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**
