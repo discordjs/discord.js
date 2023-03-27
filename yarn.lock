@@ -2007,6 +2007,7 @@ __metadata:
     "@vladfrangu/async_event_emitter": ^2.1.4
     cross-env: ^7.0.3
     discord-api-types: ^0.37.37
+    esbuild-plugin-version-injector: ^1.1.0
     eslint: ^8.37.0
     eslint-config-neon: ^0.1.41
     eslint-formatter-pretty: ^5.0.0
