@@ -16,7 +16,7 @@ jobs:
         run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Build docker image
-        run: docker build -t discordjs/proxy:latest -f packages/proxy-container/Dockerfile .
+        run: yarn docker build @discordjs/proxy-container -t discordjs/proxy:latest
 
       - name: Tag image with major
         run: docker tag discordjs/proxy discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json))

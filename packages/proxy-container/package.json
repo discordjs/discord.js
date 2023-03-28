@@ -7,7 +7,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn test && yarn build"
+		"prepack": "yarn lint && yarn build"
 	},
 	"type": "module",
 	"module": "./dist/index.js",
@@ -48,7 +48,7 @@
 		"tslib": "^2.5.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.20",
+		"@types/node": "16.18.21",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.36.0",
 		"eslint-config-neon": "^0.1.41",
