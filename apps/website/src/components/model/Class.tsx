@@ -22,7 +22,7 @@ export function Class({ clazz }: { clazz: ApiClass }) {
 			{clazz.typeParameters.length ? <TypeParameterSection item={clazz} /> : null}
 			{constructor ? <ConstructorSection item={constructor} /> : null}
 			<Members item={clazz} />
-			<Outline members={serializeMembers(clazz)} />
+			{/* <Outline members={serializeMembers(clazz)} /> */}
 		</Documentation>
 	);
 }

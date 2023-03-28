@@ -172,19 +172,5 @@ function Member({ member }: { member?: ApiItem }) {
 export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
 
-	return (
-		<div
-			className={
-				(member?.kind === 'Class' || member?.kind === 'Interface') && (member as ApiClass | ApiInterface).members.length
-					? 'xl:pr-64'
-					: ''
-			}
-		>
-			<article className="dark:bg-dark-800 bg-light-600">
-				<div className="dark:bg-dark-600 min-h-[calc(100vh_-_64px)] bg-white p-6 pb-20 shadow">
-					{member ? <Member member={member} /> : null}
-				</div>
-			</article>
-		</div>
-	);
+	return <div className="relative top-6">{member ? <Member member={member} /> : null}</div>;
 }
