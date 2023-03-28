@@ -48,7 +48,7 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.18.20",
+		"@types/node": "16.18.21",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.36.0",
 		"eslint-config-neon": "^0.1.41",

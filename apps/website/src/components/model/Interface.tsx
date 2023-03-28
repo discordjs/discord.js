@@ -14,7 +14,7 @@ export function Interface({ item }: { item: ApiInterface }) {
 			<HierarchyText item={item} type="Extends" />
 			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
 			<Members item={item} />
-			<Outline members={serializeMembers(item)} />
+			{/* <Outline members={serializeMembers(item)} /> */}
 		</Documentation>
 	);
 }
