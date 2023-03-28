@@ -3,7 +3,7 @@
 const { Emoji } = require('./Emoji');
 
 /**
- * Represents an effect used in a voice channel.
+ * Represents an effect used in a {@link VoiceChannel}.
  */
 class VoiceChannelEffect {
   constructor(data, guild) {
@@ -26,7 +26,7 @@ class VoiceChannelEffect {
     this.userId = data.user_id;
 
     /**
-     * The id of the user that sent the effect.
+     * The emoji of the effect.
      * @type {?Emoji}
      */
     this.emoji = data.emoji ? new Emoji(guild.client, data.emoji) : null;
