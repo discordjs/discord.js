@@ -5015,7 +5015,7 @@ export enum Events {
   ThreadMembersUpdate = 'threadMembersUpdate',
   UserUpdate = 'userUpdate',
   PresenceUpdate = 'presenceUpdate',
-  voiceChannelEffectSend = 'voiceChannelEffectSend',
+  VoiceChannelEffectSend = 'voiceChannelEffectSend',
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   TypingStart = 'typingStart',
