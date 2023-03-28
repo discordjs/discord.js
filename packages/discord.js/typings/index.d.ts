@@ -3196,8 +3196,15 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
 }
 
 export class VoiceChannelEffect {
+  // TODO: Revise after discord-api-types.
   private constructor(data: unknown, guild: Guild);
   public guild: Guild;
+  public channelId: Snowflake;
+  public userId: Snowflake;
+  public emoji: Emoji | null;
+  // TODO: Revise after discord-api-types.
+  public animationType: 0 | 1 | null;
+  public animationId: number | null;
 }
 
 export class VoiceRegion {
