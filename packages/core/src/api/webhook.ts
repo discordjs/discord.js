@@ -1,6 +1,7 @@
 import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
 import {
-	Routes,
+	type RESTGetAPIWebhookWithTokenMessageQuery,
 	type RESTGetAPIChannelMessageResult,
 	type RESTGetAPIWebhookResult,
 	type RESTPatchAPIWebhookJSONBody,
@@ -213,7 +214,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		query: { thread_id?: string } = {},
+		query: RESTGetAPIWebhookWithTokenMessageQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
