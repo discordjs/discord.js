@@ -13,13 +13,13 @@ pids
 
 # Env
 .env
+.env*.local
 
 # Dist
 dist/
 typings/
 .cache/
 build/
-api/
 src/styles/unocss.css
 .next/
 
@@ -28,4 +28,6 @@ src/styles/unocss.css
 coverage/
 .vercel
 public/searchIndex
+.vscode
 lighthouse-results/
+.contentlayer

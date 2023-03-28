@@ -64,7 +64,7 @@ export function addPackageToModel(model: ApiModel, data: any) {
  * @param item - The API item to resolve the summary text for.
  */
 export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
-	if (!item.tsdocComment) {
+	if (!item?.tsdocComment) {
 		return null;
 	}
 

@@ -84,13 +84,12 @@ function resolveIcon(item: string) {
 
 export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 	const pathname = usePathname();
-	const asPathWithoutQueryAndAnchor = `/${pathname?.split('/').splice(-1) ?? ''}`;
 	const { setOpened } = useNav();
 
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
 	return (
-		<div className="flex flex-col gap-3 p-3 pb-32 lg:pb-12">
+		<div className="flex flex-col gap-3 p-3">
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
@@ -98,7 +97,7 @@ export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 						{groupItems[group].map((member, index) => (
 							<ItemLink
 								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-									asPathWithoutQueryAndAnchor === member.href
+									pathname === member.href
 										? 'bg-blurple text-white'
 										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 								}`}

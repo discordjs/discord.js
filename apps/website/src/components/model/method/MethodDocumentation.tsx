@@ -4,18 +4,16 @@ import type {
 	ApiMethod,
 	ApiMethodSignature,
 } from '@microsoft/api-extractor-model';
-import type { DocSection } from '@microsoft/tsdoc';
-import { InheritanceText } from '~/components/InheritanceText';
-import { ParameterTable } from '~/components/ParameterTable';
-import { TSDoc } from '~/components/documentation/tsdoc/TSDoc';
+import { InheritanceText } from '../../InheritanceText';
+import { ParameterTable } from '../../ParameterTable';
+import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 
 export interface MethodDocumentationProps {
-	fallbackSummary?: DocSection;
 	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
 	method: ApiMethod | ApiMethodSignature;
 }
 
-export function MethodDocumentation({ method, fallbackSummary, inheritedFrom }: MethodDocumentationProps) {
+export function MethodDocumentation({ method, inheritedFrom }: MethodDocumentationProps) {
 	const parent = method.parent as ApiDeclaredItem;
 
 	if (!(method.tsdocComment?.summarySection || method.parameters.length > 0)) {

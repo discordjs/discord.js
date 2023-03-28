@@ -65,7 +65,7 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 					(member): member is TableOfContentsSerializedProperty =>
 						member.kind === 'Property' || member.kind === 'PropertySignature',
 				)
-				.map((prop) => <TableOfContentsPropertyItem key={`${prop.name}-${prop.kind}`} property={prop} />),
+				.map((prop, idx) => <TableOfContentsPropertyItem key={`${prop.name}-${prop.kind}-${idx}`} property={prop} />),
 		[serializedMembers],
 	);
 
@@ -76,9 +76,9 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 					(member): member is TableOfContentsSerializedMethod =>
 						member.kind === 'Method' || member.kind === 'MethodSignature',
 				)
-				.map((member) => (
+				.map((member, idx) => (
 					<TableOfContentsMethodItem
-						key={`${member.name}${member.overloadIndex ? `:${member.overloadIndex}` : ''}`}
+						key={`${member.name}${member.overloadIndex ? `:${member.overloadIndex}` : ''}-${idx}`}
 						method={member}
 					/>
 				)),

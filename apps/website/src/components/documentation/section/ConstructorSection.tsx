@@ -1,9 +1,9 @@
 import type { ApiConstructor } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useCallback } from 'react';
+import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../tsdoc/TSDoc';
 import { DocumentationSection } from './DocumentationSection';
-import { ParameterTable } from '~/components/ParameterTable';
 
 export function ConstructorSection({ item }: { item: ApiConstructor }) {
 	const getShorthandName = useCallback(

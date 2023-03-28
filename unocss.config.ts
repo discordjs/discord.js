@@ -1,4 +1,4 @@
-import { defineConfig, presetTypography, presetUno, presetWebFonts } from 'unocss';
+import { defineConfig, presetTypography, presetUno } from 'unocss';
 
 export default defineConfig({
 	theme: {
@@ -16,31 +16,28 @@ export default defineConfig({
 				900: '#020208',
 			},
 		},
+		fontFamily: {
+			sans: 'var(--font-inter)',
+			mono: 'var(--font-mono)',
+		},
 	},
+	// safelist: [
+	// 	'sr-only',
+	// 	'relative',
+	// 	'inline-flex',
+	// 	'w-6',
+	// 	'h-6',
+	// 	'place-items-center',
+	// 	'place-content-center',
+	// 	'outline-0',
+	// 	'text-black',
+	// 	'dark:text-white',
+	// 	'ml-2',
+	// 	'inline-block',
+	// 	'm-0',
+	// ],
 	presets: [
 		presetUno({ dark: 'class' }),
-		presetWebFonts({
-			provider: 'bunny',
-			fonts: {
-				mono: ['JetBrains Mono:400,600,700'],
-				'source-sans-pro': [
-					'Source Sans Pro:300,400,500,600',
-					{ name: 'ui-sans-serif', provider: 'none' },
-					{ name: 'system-ui', provider: 'none' },
-					{ name: '-apple-system', provider: 'none' },
-					{ name: 'BlinkMacSystemFont', provider: 'none' },
-					{ name: 'Segoe UI', provider: 'none' },
-					{ name: 'Roboto', provider: 'none' },
-					{ name: 'Helvetica Neue', provider: 'none' },
-					{ name: 'Arial', provider: 'none' },
-					{ name: 'sans-serif', provider: 'none' },
-					{ name: 'Apple Color Emoji', provider: 'none' },
-					{ name: 'Segoe UI Emoji', provider: 'none' },
-					{ name: 'Segoe UI Symbol', provider: 'none' },
-					{ name: 'Noto Color Emoji', provider: 'none' },
-				],
-			},
-		}),
 		presetTypography({
 			cssExtend: {
 				pre: {

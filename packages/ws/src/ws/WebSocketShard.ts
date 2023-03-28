@@ -279,16 +279,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			await promise;
 			return { ok: true };
 		} catch (error) {
+			const isAbortError = error instanceof Error && error.name === 'AbortError';
+
 			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
 			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
-			if (error instanceof Error && error.name === 'AbortError') {
-				this.emit(WebSocketShardEvents.Error, { error });
+			if (isAbortError) {
+				this.emit(WebSocketShardEvents.Error, { error: error as Error });
 			}
 
 			// As stated previously, any other error would have been caused by us emitting the error event, which looks
 			// like { error: unknown }
 			// eslint-disable-next-line no-ex-assign
-			error = (error as { error: unknown }).error;
+			error = error instanceof Error ? error : (error as { error: unknown }).error;
 
 			// If the user has no handling on their end (error event) simply throw.
 			// We also want to throw if we're still in the initial `connect()` call, since that's the only time
@@ -298,7 +300,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			// If the error is handled, we can just try to reconnect
-			await this.destroy({
+			void this.destroy({
 				code: CloseCodes.Normal,
 				reason: 'Something timed out or went wrong while waiting for an event',
 				recover: WebSocketShardDestroyRecovery.Reconnect,

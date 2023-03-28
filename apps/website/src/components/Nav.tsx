@@ -1,23 +1,26 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { PackageSelect } from './PackageSelect';
 import { Sidebar } from './Sidebar';
 import type { SidebarSectionItemData } from './Sidebar';
-import { VersionSelect } from './VersionSelect';
 import { useNav } from '~/contexts/nav';
+
+const PackageSelect = dynamic(async () => import('./PackageSelect'));
+const VersionSelect = dynamic(async () => import('./VersionSelect'));
 
 export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 	const { opened } = useNav();
 
 	return (
 		<nav
-			className={`dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 h-[calc(100vh_-_73px)] w-full border-r bg-white ${
+			className={`dark:bg-dark/75 dark:border-dark-100 border-light-900 top-22 fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-5xl rounded-md border bg-white/75 shadow backdrop-blur-md ${
 				opened ? 'block' : 'hidden'
-			} lg:w-76 lg:max-w-76 lg:block`}
+			} lg:min-w-xs lg:sticky lg:block lg:h-full lg:w-full lg:max-w-xs`}
 		>
 			<Scrollbars
 				autoHide
+				className="[&>div]:overscroll-none"
 				hideTracksWhenNotNeeded
 				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 				renderTrackVertical={(props) => (
@@ -25,7 +28,7 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 				)}
 				universal
 			>
-				<div className="flex flex-col gap-3 px-3 pt-3">
+				<div className="flex flex-col gap-4 p-3">
 					<PackageSelect />
 					<VersionSelect />
 				</div>

@@ -1,7 +1,7 @@
 import type { ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
 import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
+import { TypeParamTable } from '../../TypeParamTable';
 import { DocumentationSection } from './DocumentationSection';
-import { TypeParamTable } from '~/components/TypeParamTable';
 
 export function TypeParameterSection({ item }: { item: ApiTypeParameterListMixin }) {
 	return (
