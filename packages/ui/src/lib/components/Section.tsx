@@ -22,7 +22,7 @@ export function Section({
 	background = false,
 	gutter = false,
 	children,
-	className,
+	className = '',
 }: PropsWithChildren<SectionOptions>) {
 	const disclosure = useDisclosureState({ defaultOpen: !defaultClosed });
 

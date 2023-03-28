@@ -3,7 +3,7 @@ import vercelLogo from '~/assets/powered-by-vercel.svg';
 
 export default function Footer() {
 	return (
-		<footer className="dark:bg-dark-800 h-76 lg:pl-84 bg-light-600 xl:pr-84 fixed bottom-0 left-0 right-0 md:h-52 md:pl-4 md:pr-16">
+		<footer className="dark:bg-dark-800 bg-light-600 md:pl-12 md:pr-12">
 			<div className="mx-auto flex max-w-6xl flex-col place-items-center gap-12 pt-12 lg:place-content-center">
 				<div className="flex w-full flex-col place-content-between place-items-center gap-12 md:flex-row md:gap-0">
 					<a

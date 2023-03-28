@@ -8,7 +8,7 @@ export function DocumentationSection(opts: PropsWithChildren<SectionOptions & { 
 	return (
 		<Section {...props}>
 			{children}
-			{separator ? <div className="border-light-900 dark:border-dark-100 -mx-8 mt-6 border-t-2" /> : null}
+			{separator ? <div className="border-light-900 dark:border-dark-100 mt-6 border-t-2" /> : null}
 		</Section>
 	);
 }

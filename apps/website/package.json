@@ -15,7 +15,7 @@
 		"build:analyze": "yarn run --top-level docs --force && cross-env-shell ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
 		"preview": "next start",
 		"dev": "yarn run --top-level docs && concurrently 'yarn dev:css' 'yarn dev:next'",
-		"dev:next": "next dev",
+		"dev:next": "yarn workspaces foreach -ptR run build && next dev",
 		"dev:css": "yarn generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --format=pretty",
