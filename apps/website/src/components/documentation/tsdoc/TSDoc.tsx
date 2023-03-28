@@ -74,7 +74,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 
 				case DocNodeKind.FencedCode: {
 					const { language, code } = tsdoc as DocFencedCode;
-					return <SyntaxHighlighter code={code} key={idx} lang={language ?? 'typescript'} />;
+					return <SyntaxHighlighter code={code.trim()} key={idx} lang={language ?? 'typescript'} />;
 				}
 
 				case DocNodeKind.Comment: {
