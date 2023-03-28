@@ -6,7 +6,7 @@
 class VoiceChannelEffect {
   constructor(data, guild) {
     /**
-     * The guild where this effect was sent from.
+     * The guild where the effect was sent from.
      * @type {Guild}
      */
     this.guild = guild;
