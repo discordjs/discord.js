@@ -1,13 +1,14 @@
+import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next/types';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';
-import { inter } from '~/util/fonts';
+import { inter, jetBrainsMono } from '~/util/fonts';
 
 import '@unocss/reset/tailwind-compat.css';
-import '../styles/unocss.css';
-import '../styles/cmdk.css';
-import '../styles/main.css';
+import '~/styles/unocss.css';
+import '~/styles/cmdk.css';
+import '~/styles/main.css';
 
 export const metadata: Metadata = {
 	title: 'discord.js',
@@ -41,7 +42,10 @@ export const metadata: Metadata = {
 
 	manifest: '/site.webmanifest',
 
-	themeColor: '#5865f2',
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
+		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+	],
 	colorScheme: 'light dark',
 
 	appleWebApp: {
@@ -70,9 +74,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={inter.variable} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-800 bg-white">
+		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
+			<body className="dark:bg-dark-800 bg-light-600">
 				<Providers>{children}</Providers>
+				<Analytics />
 			</body>
 		</html>
 	);

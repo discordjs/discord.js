@@ -27,11 +27,9 @@ export default async function Page({ params }: { params: VersionRouteParams }) {
 	const readmeSource = await loadREADME(packageName);
 
 	return (
-		<article className="dark:bg-dark-600 bg-white p-10">
-			<div className="prose max-w-none">
-				{/* @ts-expect-error async component */}
-				<MDXRemote components={{ pre: SyntaxHighlighter }} options={mdxOptions} source={readmeSource} />
-			</div>
-		</article>
+		<div className="prose max-w-none">
+			{/* @ts-expect-error async component */}
+			<MDXRemote components={{ pre: SyntaxHighlighter }} options={mdxOptions} source={readmeSource} />
+		</div>
 	);
 }

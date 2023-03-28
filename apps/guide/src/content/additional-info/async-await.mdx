@@ -1,11 +1,7 @@
 ---
-layout: '../../layouts/SidebarLayout.astro'
 title: Understanding async/await
 category: Additional info
 ---
-
-import { CH } from '@code-hike/mdx/components';
-import { Alert } from '@discordjs/ui';
 
 # Understanding async/await
 
@@ -30,7 +26,7 @@ One important thing to know is that a Promise can only have one state simultaneo
 	[here](/additional-info/es6-syntax.md).
 </Alert>
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 function deleteMessages(amount) {
@@ -63,7 +59,7 @@ The following information is essential to know before working with async/await. 
 
 A simple example would be:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 async function declaredAsAsync() {
@@ -75,7 +71,7 @@ async function declaredAsAsync() {
 
 or
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 const declaredAsAsync = async () => {
@@ -87,7 +83,7 @@ const declaredAsAsync = async () => {
 
 You can use that as well if you use the arrow function as an event listener.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 client.on('event', async (first, last) => {
@@ -103,7 +99,7 @@ An important thing to know is that a function declared as _`async`_ will always 
 
 Now that you know how Promises work and what they are used for, let's look at an example that handles multiple Promises. Let's say you want to react with letters (regional indicators) in a specific order. For this example, here's a basic template for a discord.js bot with some ES6 adjustments.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 const { Client, GatewayIntentBits } = require('discord.js');
@@ -129,7 +125,7 @@ client.login('your-token-goes-here');
 
 If you don't know how Node.js asynchronous execution works, you would probably try something like this:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=4:7
 client.on('interactionCreate', (interaction) => {
@@ -147,7 +143,7 @@ client.on('interactionCreate', (interaction) => {
 
 But since all of these methods are started at the same time, it would just be a race to which server request finished first, so there would be no guarantee that it would react at all (if the message isn't fetched) or in the order you wanted it to. In order to make sure it reacts after the message is sent and in order (a, b, c), you'd need to use the _`.then()`_ callback from the Promises that these methods return. The code would look like this:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=4:12
 client.on('interactionCreate', (interaction) => {
@@ -170,7 +166,7 @@ client.on('interactionCreate', (interaction) => {
 
 In this piece of code, the Promises are [chain resolved](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#Chaining) with each other, and if one of the Promises gets rejected, the function passed to _`.catch()`_ gets called. Here's the same code but with async/await:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=1,4:7
 client.on('interactionCreate', async (interaction) => {
@@ -188,7 +184,7 @@ client.on('interactionCreate', async (interaction) => {
 
 It's mostly the same code, but how would you catch Promise rejections now since _`.catch()`_ isn't there anymore? That is also a useful feature with async/await; the error will be thrown if you await it so that you can wrap the awaited Promises inside a try/catch, and you're good to go.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=1,4:11
 client.on('interactionCreate', async (interaction) => {
@@ -213,7 +209,7 @@ So you may be asking, "How would I get the value the Promise resolved with?".
 
 Let's look at an example where you want to delete a sent reply.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=3:10
 client.on('interactionCreate', (interaction) => {
@@ -233,7 +229,7 @@ client.on('interactionCreate', (interaction) => {
 
 The return value of a _`.reply()`_ with the _`fetchReply`_ option set to _`true`_ is a Promise which resolves with the reply when it has been sent, but how would the same code with async/await look?
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=1,4:10
 client.on('interactionCreate', async (interaction) => {

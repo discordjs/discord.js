@@ -1,11 +1,7 @@
 ---
-layout: '../../layouts/SidebarLayout.astro'
 title: Collections
 category: Additional info
 ---
-
-import { CH } from '@code-hike/mdx/components';
-import { Alert } from '@discordjs/ui';
 
 # Collections
 
@@ -28,7 +24,7 @@ This is the point of the _`Collection`_ class!
 
 Many of the methods on _`Collection`_ correspond to their namesake in _`Array`_. One of them is _`find`_:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 // Assume we have an array of users and a collection of the same users.
@@ -58,7 +54,7 @@ Methods that follow this philosophy of staying close to the _`Array`_ interface 
 
 Since _`Collection`_ extends _`Map`_, it is an [iterable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols), and can be converted to an _`Array`_ through either _`Array.from()`_ or spread syntax (_`...collection`_).
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 // For values.
@@ -86,7 +82,7 @@ Array.from(collection);
 
 Some methods are not from _`Array`_ and are instead entirely new to standard JavaScript.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 // A random value.
@@ -112,7 +108,7 @@ collection.sweep((user) => user.username === 'Bob');
 A more complicated method is _`partition`_, which splits a single Collection into two new Collections based on the provided function.
 You can think of it as two \_`filter`\_s, but done at the same time:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 // `bots` is a Collection of users where their `bot` property was true.
