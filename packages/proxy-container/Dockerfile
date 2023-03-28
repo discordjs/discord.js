@@ -9,7 +9,6 @@ COPY manifests .
 
 RUN yarn install --immutable
 RUN rm -rf .yarn/cache
-RUN yarn workspace @discordjs/proxy-container build
 
 FROM node:16-alpine AS runner
 
