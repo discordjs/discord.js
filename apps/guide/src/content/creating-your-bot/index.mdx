@@ -1,13 +1,7 @@
 ---
-layout: '../../layouts/SidebarLayout.astro'
 title: Initial files
 category: Creating your bot
 ---
-
-import { CH } from '@code-hike/mdx/components';
-import { Alert, Section } from '@discordjs/ui';
-import { DocsLink } from '../../components/DocsLink.jsx';
-import { ResultingCode } from '../../components/ResultingCode.jsx';
 
 # Initial files
 
@@ -23,7 +17,7 @@ Open your application in the [Discord Developer Portal](https://discord.com/deve
 
 Storing data in a _`config.json`_ file is a common way of keeping your sensitive values safe. Create a _`config.json`_ file in your project directory and paste in your token. You can access your token inside other files by using _`require()`_.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```json config.json
 {
@@ -54,7 +48,7 @@ One way to pass in environment variables is via the command line interface. When
 
 You can access the set values in your code via the _`process.env`_ global variable, accessible in any file. Note that values passed this way will always be strings and that you might need to parse them to a number, if using them to do calculations.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```shellscript Command line
 A=123 B=456 DISCORD_TOKEN=your-token-goes-here node index.js
@@ -76,7 +70,7 @@ Another common approach is storing these values in a _`.env`_ file. This spares 
 
 You can use the [_`dotenv`_ package](https://www.npmjs.com/package/dotenv) for this. Once installed, require and use the package to load your _`.env`_ file and attach the variables to _`process.env`_:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```sh npm
 npm install dotenv
@@ -117,7 +111,7 @@ console.log(process.env.DISCORD_TOKEN);
 	_`.gitignore`_](/creating-your-bot/#git-and-gitignore).
 </Alert>
 
-<Section client:load title="Online editors (Glitch, Heroku, Replit, etc.)" defaultClosed padded background gutter>
+<Section title="Online editors (Glitch, Heroku, Replit, etc.)" defaultClosed padded background gutter>
 While we generally do not recommend using online editors as hosting solutions, but rather invest in a proper virtual private server, these services do offer ways to keep your credentials safe as well! Please see the respective service's documentation and help articles for more information on how to keep sensitive values safe:
 
 - Glitch: [Storing secrets in .env](https://glitch.happyfox.com/kb/article/18)
@@ -132,7 +126,7 @@ Git is a fantastic tool to keep track of your code changes and allows you to upl
 
 You can specify files that Git should ignore in its versioning systems with a _`.gitignore`_ file. Create a _`.gitignore`_ file in your project directory and add the names of the files and folders you want to ignore:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```
 node_modules
@@ -155,7 +149,7 @@ Open your code editor and create a new file. We suggest that you save the file a
 
 Here's the base code to get you started:
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js
 // Require the necessary discord.js classes

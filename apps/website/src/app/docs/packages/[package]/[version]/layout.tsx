@@ -69,14 +69,18 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 
 	return (
 		<Providers>
-			<main>
+			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
-				<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
-				<article className="pt-18 lg:pl-76">
-					<div className="relative z-10 min-h-[calc(100vh_-_70px)]">{children}</div>
-					<div className="h-76 md:h-52" />
-				</article>
-				<Footer />
+				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:flex lg:max-w-full">
+					<div className="lg:top-23 lg:sticky lg:h-[calc(100vh_-_100px)]">
+						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
+					</div>
+
+					<div className="min-w-xs mx-auto w-full max-w-5xl pb-10">
+						{children}
+						<Footer />
+					</div>
+				</div>
 			</main>
 			<CmdKDialog />
 		</Providers>

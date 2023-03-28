@@ -2,9 +2,9 @@
 
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
-import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit';
+import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import type { PropsWithChildren, ReactNode } from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export interface OverloadSwitcherProps {
 	overloads: ReactNode[];
@@ -14,6 +14,20 @@ export default function OverloadSwitcher({ overloads, children }: PropsWithChild
 	const [overloadIndex, setOverloadIndex] = useState(1);
 	const overloadedNode = overloads[overloadIndex - 1]!;
 	const menu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
+
+	const menuItems = useMemo(
+		() =>
+			overloads.map((_, idx) => (
+				<MenuItem
+					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 cursor-pointer rounded bg-white p-3 text-sm outline-0 focus:ring"
+					key={idx}
+					onClick={() => setOverloadIndex(idx + 1)}
+				>
+					{`Overload ${idx + 1}`}
+				</MenuItem>
+			)),
+		[overloads],
+	);
 
 	return (
 		<div className="flex flex-col place-items-start gap-2">
@@ -37,15 +51,7 @@ export default function OverloadSwitcher({ overloads, children }: PropsWithChild
 				className="dark:bg-dark-600 border-light-800 dark:border-dark-100 focus:ring-width-2 focus:ring-blurple z-20 flex flex-col rounded border bg-white p-1 outline-0 focus:ring"
 				state={menu}
 			>
-				{overloads.map((_, idx) => (
-					<MenuItem
-						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 cursor-pointer rounded bg-white p-3 text-sm outline-0 focus:ring"
-						key={idx}
-						onClick={() => setOverloadIndex(idx + 1)}
-					>
-						{`Overload ${idx + 1}`}
-					</MenuItem>
-				))}
+				{menuItems}
 			</Menu>
 			{children}
 			{overloadedNode}

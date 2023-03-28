@@ -1,13 +1,7 @@
 ---
-layout: '../../layouts/SidebarLayout.astro'
 title: Creating commands
 category: Creating your bot
 ---
-
-import { CH } from '@code-hike/mdx/components';
-import { Alert, DiscordMessages, DiscordMessage } from '@discordjs/ui';
-import { DocsLink } from '../../components/DocsLink.jsx';
-import { ResultingCode } from '../../components/ResultingCode.jsx';
 
 # Creating commands
 
@@ -62,7 +56,7 @@ Below is a deployment script you can use. Focus on these variables:
 	user's profile, etc.
 </Alert>
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js deploy-commands.js mark=4,6:10
 const { REST, SlashCommandBuilder, Routes } = require('discord.js');
@@ -107,7 +101,7 @@ Once you've registered your commands, you can listen for interactions via <DocsL
 
 You should first check if an interaction is a chat input command via <DocsLink path="class/Interaction?scrollTo=isChatInputCommand" type="method">_`.isChatInputCommand()`_</DocsLink>, and then check the <DocsLink path="class/CommandInteraction?scrollTo=commandName">_`.commandName`_</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink path="class/CommandInteraction?scrollTo=reply">_`.reply()`_</DocsLink>.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js mark=5:16
 client.once('ready', () => {
@@ -134,7 +128,7 @@ client.login(token);
 
 Note that servers are referred to as "guilds" in the Discord API and discord.js library. _`interaction.guild`_ refers to the guild the interaction was sent in (a <DocsLink path="class/Guild" /> instance), which exposes properties such as _`.name`_ or _`.memberCount`_.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js focus=7
 client.on('interactionCreate', async (interaction) => {
@@ -184,7 +178,7 @@ You could also display the date the server was created, or the server's verifica
 
 A "user" refers to a Discord user. _`interaction.user`_ refers to the user the interaction was sent by (a <DocsLink path="class/User" /> instance), which exposes properties such as _`.tag`_ or _`.id`_.
 
-<CH.Code client:load>
+<CH.Code>
 
 ```js focus=9
 client.on('interactionCreate', async (interaction) => {
