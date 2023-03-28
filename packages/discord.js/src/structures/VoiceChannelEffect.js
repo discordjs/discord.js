@@ -44,6 +44,15 @@ class VoiceChannelEffect {
      */
     this.animationId = data.animation_id ?? null;
   }
+
+  /**
+   * The channel the effect was sent in.
+   * @type {?VoiceChannel}
+   * @readonly
+   */
+  get channel() {
+    return this.guild.channels.resolve(this.channelId);
+  }
 }
 
 module.exports = VoiceChannelEffect;
