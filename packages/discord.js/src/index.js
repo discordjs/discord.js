@@ -195,6 +195,7 @@ exports.ThreadMember = require('./structures/ThreadMember');
 exports.Typing = require('./structures/Typing');
 exports.User = require('./structures/User');
 exports.UserContextMenuCommandInteraction = require('./structures/UserContextMenuCommandInteraction');
+exports.VoiceChannelEffect = require('./structures/VoiceChannelEffect');
 exports.VoiceChannel = require('./structures/VoiceChannel');
 exports.VoiceRegion = require('./structures/VoiceRegion');
 exports.VoiceState = require('./structures/VoiceState');

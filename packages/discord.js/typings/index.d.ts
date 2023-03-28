@@ -3195,6 +3195,11 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public type: ChannelType.GuildVoice;
 }
 
+export class VoiceChannelEffect {
+  private constructor(data: unknown, guild: Guild);
+  public guild: Guild;
+}
+
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
@@ -4802,6 +4807,7 @@ export interface ClientEvents {
   threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
+  voiceChannelEffectSend: [something: any];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
@@ -5002,6 +5008,7 @@ export enum Events {
   ThreadMembersUpdate = 'threadMembersUpdate',
   UserUpdate = 'userUpdate',
   PresenceUpdate = 'presenceUpdate',
+  voiceChannelEffectSend = 'voiceChannelEffectSend',
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   TypingStart = 'typingStart',
