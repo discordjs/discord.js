@@ -4807,7 +4807,7 @@ export interface ClientEvents {
   threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
-  voiceChannelEffectSend: [something: any];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
