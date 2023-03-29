@@ -185,8 +185,9 @@ class WebSocketManager extends EventEmitter {
 
     this.gateway = `${gatewayURL}/`;
 
-    this.totalShards = this.client.options.shardCount = await this._ws.getShardCount();
+    this.client.options.shardCount = await this._ws.getShardCount();
     this.client.options.shards = await this._ws.getShardIds();
+    this.totalShards = this.client.options.shards.length;
     for (const id of this.client.options.shards) {
       if (!this.shards.has(id)) {
         const shard = new WebSocketShard(this, id);
