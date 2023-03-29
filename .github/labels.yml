@@ -106,6 +106,8 @@
   color: e8be8b
 - name: sharding
   color: 80c042
+- name: stale
+  color: ffffff
 - name: tests
   color: f06dff
 - name: threads
