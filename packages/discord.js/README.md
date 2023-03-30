@@ -30,7 +30,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install discord.js
 yarn add discord.js
 pnpm add discord.js
@@ -48,7 +48,7 @@ pnpm add discord.js
 
 Install discord.js:
 
-```sh-session
+```sh
 npm install discord.js
 yarn add discord.js
 pnpm add discord.js

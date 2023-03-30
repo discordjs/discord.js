@@ -1,3 +1,82 @@
-.ch-frame-buttons {
-	display: none;
+:root {
+	--shiki-color-text: #24292eff;
+	--shiki-color-background: #ffffff;
+	--shiki-token-constant: #1976d2;
+	--shiki-token-string: #6f42c1;
+	--shiki-token-comment: #c2c3c5;
+	--shiki-token-keyword: #d32f2f;
+	--shiki-token-parameter: #ff9800;
+	--shiki-token-function: #6f42c1;
+	--shiki-token-string-expression: #22863a;
+	--shiki-token-punctuation: #212121;
+	--shiki-token-link: #22863a;
+
+	--ch-tabs-bg: #f6f6f6;
+	--ch-tab-border: #f6f6f6;
+	--ch-tab-active-border: #fff;
+	--ch-tab-active-bg: #24292eff;
+	--ch-tab-inactive-color: #bdbdbd;
+	--ch-tab-inactive-bg: #f6f6f6;
+	--ch-icon-text: #24292eff;
+}
+
+.ch-code,
+.ch-inline-code > code {
+	background: var(--shiki-color-background) !important;
+}
+
+.ch-code {
+	color-scheme: light !important;
+}
+
+.ch-code-multiline-mark {
+	background: rgba(253, 255, 0, 0.2) !important;
+}
+
+.ch-codegroup .ch-editor-button,
+.ch-codeblock .ch-code-button {
+	color: var(--ch-icon-text) !important;
+}
+
+div.ch-editor-tab-active {
+	color: var(--ch-tab-active-color) !important;
+}
+
+html.dark {
+	--shiki-color-text: #adbac7;
+	--shiki-color-background: #22272e;
+	--shiki-token-constant: #f47067;
+	--shiki-token-string: #96d0ff;
+	--shiki-token-comment: #768390;
+	--shiki-token-keyword: #f47067;
+	--shiki-token-parameter: #adbac7;
+	--shiki-token-function: #dcbdfb;
+	--shiki-token-string-expression: #8ddb8c;
+	--shiki-token-punctuation: #adbac7;
+	--shiki-token-link: #adbac7;
+
+	--ch-tabs-bg: #1c2128;
+	--ch-tab-border: #444c56;
+	--ch-tab-active-border: #22272e;
+	--ch-tab-active-bg: #22272e;
+	--ch-tab-inactive-color: #768390;
+	--ch-tab-inactive-bg: #1c2128;
+	--ch-icon-text: #768390;
+}
+
+.dark .ch-codegroup .ch-editor-button,
+.ch-codeblock .ch-code-button {
+	color: var(--ch-icon-text) !important;
+}
+
+.dark div.ch-editor-tab-active {
+	color: var(--ch-tab-active-color) !important;
+}
+
+.dark .ch-code {
+	color-scheme: dark !important;
+}
+
+.dark .ch-code-multiline-mark {
+	background: rgba(255, 255, 255, 0.043) !important;
 }

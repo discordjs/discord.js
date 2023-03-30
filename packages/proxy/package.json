@@ -58,23 +58,23 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"tslib": "^2.5.0",
-		"undici": "^5.20.0"
+		"undici": "^5.21.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.10.0",
+		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.13",
+		"@types/node": "16.18.21",
 		"@types/supertest": "^2.0.12",
-		"@vitest/coverage-c8": "^0.29.1",
+		"@vitest/coverage-c8": "^0.29.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.35.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.4",
+		"eslint": "^8.36.0",
+		"eslint-config-neon": "^0.1.41",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.7",
 		"supertest": "^6.3.3",
-		"tsup": "^6.6.3",
-		"typescript": "^4.9.5",
-		"vitest": "^0.29.1"
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.2",
+		"vitest": "^0.29.8"
 	},
 	"engines": {
 		"node": ">=16.9.0"

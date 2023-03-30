@@ -24,7 +24,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
@@ -39,7 +39,7 @@ pnpm add @discordjs/ws
 ## Example usage
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents, CompressionMethod } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -48,6 +48,8 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
 	rest,
+	// uncomment if you have zlib-sync installed and want to use compression
+	// compression: CompressionMethod.ZlibStream,
 });
 
 manager.on(WebSocketShardEvents.Dispatch, (event) => {

@@ -7,7 +7,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn test && yarn build"
+		"prepack": "yarn lint && yarn build"
 	},
 	"type": "module",
 	"module": "./dist/index.js",
@@ -48,14 +48,14 @@
 		"tslib": "^2.5.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.13",
+		"@types/node": "16.18.21",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.35.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.4",
-		"tsup": "^6.6.3",
-		"typescript": "^4.9.5"
+		"eslint": "^8.36.0",
+		"eslint-config-neon": "^0.1.41",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.7",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.2"
 	},
 	"engines": {
 		"node": ">=16.9.0"
