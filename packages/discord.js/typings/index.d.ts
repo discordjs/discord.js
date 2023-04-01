@@ -1306,6 +1306,7 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
+  public maxStageVideoChannelUsers: number | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;

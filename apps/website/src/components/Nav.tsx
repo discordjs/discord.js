@@ -24,7 +24,7 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 				hideTracksWhenNotNeeded
 				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 				renderTrackVertical={(props) => (
-					<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+					<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 				)}
 				universal
 			>
