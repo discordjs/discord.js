@@ -1519,7 +1519,7 @@ exports.ForumLayoutTypes = createEnum(['NOT_SET', 'LIST_VIEW', 'GALLERY_VIEW']);
  * * PREMIUM
  * * BASIC
  * @typedef {string} AnimationType
- * @see {@link https://discord.com/developers/docs/topics/gateway-events#voice-channel-effect-send-animation-type}
+ * @see {@link https://discord.com/developers/docs/topics/gateway-events#voice-channel-effect-send-animation-types}
  */
 exports.AnimationTypes = createEnum(['PREMIUM', 'BASIC']);
 
