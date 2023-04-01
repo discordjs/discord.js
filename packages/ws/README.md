@@ -24,7 +24,7 @@
 
 **Node.js 16.9.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
@@ -39,7 +39,7 @@ pnpm add @discordjs/ws
 ## Example usage
 
 ```ts
-import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
+import { WebSocketManager, WebSocketShardEvents, CompressionMethod } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
@@ -48,6 +48,8 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
 	rest,
+	// uncomment if you have zlib-sync installed and want to use compression
+	// compression: CompressionMethod.ZlibStream,
 });
 
 manager.on(WebSocketShardEvents.Dispatch, (event) => {
@@ -162,7 +164,7 @@ void bootstrapper.bootstrap({
 - [Website][website] ([source][website-source])
 - [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
-  See also the [Update Guide][guide-update], including updated and removed items in the library.
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
 - [Discord API Discord server][discord-api]
 - [GitHub][source]
@@ -177,12 +179,11 @@ See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
-[website]: https://discord.js.org/
+[website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs/ws
+[documentation]: https://discord.js.org/docs/packages/ws/stable
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html

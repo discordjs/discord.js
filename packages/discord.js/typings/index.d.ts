@@ -1030,6 +1030,7 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
+  private static userAgentAppendix: string;
   public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
   public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
@@ -1060,6 +1061,8 @@ export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmi
 
   public readonly client: Client;
   public collected: Collection<K, V>;
+  public lastCollectedTimestamp: number | null;
+  public get lastCollectedAt(): Date | null;
   public ended: boolean;
   public get endReason(): string | null;
   public filter: CollectorFilter<[V, ...F]>;
@@ -1303,6 +1306,7 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
+  public maxStageVideoChannelUsers: number | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;
@@ -3476,6 +3480,7 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
+  GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
@@ -4107,8 +4112,12 @@ export class ThreadManager<Forum extends boolean = boolean> extends CachedManage
   protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
   public channel: If<Forum, ForumChannel, TextChannel | NewsChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
+  public fetch(
+    options: FetchThreadsOptions & { archived: FetchArchivedThreadOptions },
+    cacheOptions?: { cache?: boolean },
+  ): Promise<FetchedThreadsMore>;
   public fetch(options?: FetchThreadsOptions, cacheOptions?: { cache?: boolean }): Promise<FetchedThreads>;
-  public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
+  public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreadsMore>;
   public fetchActive(cache?: boolean): Promise<FetchedThreads>;
 }
 
@@ -5146,7 +5155,11 @@ export interface FetchChannelOptions extends BaseFetchOptions {
 
 export interface FetchedThreads {
   threads: Collection<Snowflake, AnyThreadChannel>;
-  hasMore?: boolean;
+  members: Collection<Snowflake, ThreadMember>;
+}
+
+export interface FetchedThreadsMore extends FetchedThreads {
+  hasMore: boolean;
 }
 
 export interface FetchGuildOptions extends BaseFetchOptions {
@@ -5237,7 +5250,6 @@ export type FetchThreadMembersOptions =
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
-  active?: boolean;
 }
 
 export interface AttachmentPayload {
@@ -6203,6 +6215,8 @@ export type TextBasedChannel = Exclude<
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
+
+export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM>;
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 

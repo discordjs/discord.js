@@ -95,6 +95,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private sendRateLimitState: SendRateLimitState = getInitialSendRateLimitState();
 
+	private initialHeartbeatTimeoutController: AbortController | null = null;
+
 	private heartbeatInterval: NodeJS.Timer | null = null;
 
 	private lastHeartbeatAt = -1;
@@ -203,6 +205,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			clearInterval(this.heartbeatInterval);
 		}
 
+		if (this.initialHeartbeatTimeoutController) {
+			this.initialHeartbeatTimeoutController.abort();
+			this.initialHeartbeatTimeoutController = null;
+		}
+
 		this.lastHeartbeatAt = -1;
 
 		// Clear session state if applicable
@@ -217,8 +224,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// Prevent a reconnection loop by unbinding the main close event
 			this.connection.removeAllListeners('close');
 
-			const shouldClose =
-				this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING;
+			const shouldClose = this.connection.readyState === WebSocket.OPEN;
 
 			this.debug([
 				'Connection status during destroy',
@@ -273,16 +279,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			await promise;
 			return { ok: true };
 		} catch (error) {
+			const isAbortError = error instanceof Error && error.name === 'AbortError';
+
 			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
 			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
-			if (error instanceof Error && error.name === 'AbortError') {
-				this.emit(WebSocketShardEvents.Error, { error });
+			if (isAbortError) {
+				this.emit(WebSocketShardEvents.Error, { error: error as Error });
 			}
 
 			// As stated previously, any other error would have been caused by us emitting the error event, which looks
 			// like { error: unknown }
 			// eslint-disable-next-line no-ex-assign
-			error = (error as { error: unknown }).error;
+			error = error instanceof Error ? error : (error as { error: unknown }).error;
 
 			// If the user has no handling on their end (error event) simply throw.
 			// We also want to throw if we're still in the initial `connect()` call, since that's the only time
@@ -292,9 +300,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			// If the error is handled, we can just try to reconnect
-			await this.destroy({
+			void this.destroy({
 				code: CloseCodes.Normal,
-				reason: 'Something timed out',
+				reason: 'Something timed out or went wrong while waiting for an event',
 				recover: WebSocketShardDestroyRecovery.Reconnect,
 			});
 
@@ -352,6 +360,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async identify() {
+		this.debug(['Waiting for identify throttle']);
+
+		await this.strategy.waitForIdentify();
+
 		this.debug([
 			'Identifying',
 			`shard id: ${this.id.toString()}`,
@@ -359,8 +371,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`intents: ${this.strategy.options.intents}`,
 			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
 		]);
-
-		await this.strategy.waitForIdentify();
 
 		const d: GatewayIdentifyData = {
 			token: this.strategy.options.token,
@@ -383,14 +393,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		const { ok } = await this.bubbleWaitForEventError(
+		await this.bubbleWaitForEventError(
 			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
 		);
-		if (!ok) {
-			return;
-		}
-
-		this.#status = WebSocketShardStatus.Ready;
 	}
 
 	private async resume(session: SessionInfo) {
@@ -499,7 +504,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.#status = WebSocketShardStatus.Ready;
 
 						this.session ??= {
 							sequence: payload.s,
@@ -510,6 +515,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);
+
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 						break;
 					}
 
@@ -567,7 +574,24 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
-				this.debug([`Starting to heartbeat every ${payload.d.heartbeat_interval}ms`]);
+				const jitter = Math.random();
+				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
+				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
+
+				try {
+					const controller = new AbortController();
+					this.initialHeartbeatTimeoutController = controller;
+					await sleep(firstWait, undefined, { signal: controller.signal });
+				} catch {
+					this.debug(['Cancelled initial heartbeat due to #destroy being called']);
+					return;
+				} finally {
+					this.initialHeartbeatTimeoutController = null;
+				}
+
+				await this.heartbeat();
+
+				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
 				this.heartbeatInterval = setInterval(() => void this.heartbeat(), payload.d.heartbeat_interval);
 				break;
 			}

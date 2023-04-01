@@ -25,7 +25,7 @@ export function DiscordMessageEmbed({
 		<div className="py-0.5" id="outer-embed-wrapper">
 			<div className="border-l-blurple grid max-w-max rounded border-l-4 bg-[rgb(47_49_54)]" id="embed-wrapper">
 				<div className="max-w-128">
-					<div className="pt-2 pr-4 pb-4 pl-3">
+					<div className="pb-4 pl-3 pr-4 pt-2">
 						{author ? <DiscordMessageEmbedAuthor {...author} /> : authorNode ?? null}
 						{title ? <DiscordMessageEmbedTitle {...title} /> : titleNode ?? null}
 						{children ? <div className="mt-2 text-sm">{children}</div> : null}

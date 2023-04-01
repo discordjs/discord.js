@@ -184,6 +184,6 @@ export function deleteAudioPlayer(player: AudioPlayer) {
 	audioPlayers.splice(index, 1);
 	if (audioPlayers.length === 0) {
 		nextTime = -1;
-		if (typeof audioCycleInterval !== 'undefined') clearTimeout(audioCycleInterval);
+		if (audioCycleInterval !== undefined) clearTimeout(audioCycleInterval);
 	}
 }

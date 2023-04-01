@@ -258,7 +258,7 @@ export function createAudioResource<T>(
 	// string inputs can only be used with FFmpeg
 	if (typeof input === 'string') {
 		inputType = StreamType.Arbitrary;
-	} else if (typeof inputType === 'undefined') {
+	} else if (inputType === undefined) {
 		const analysis = inferStreamType(input);
 		inputType = analysis.streamType;
 		needsInlineVolume = needsInlineVolume && !analysis.hasVolume;

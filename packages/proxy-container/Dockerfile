@@ -5,30 +5,10 @@ RUN apk add --no-cache libc6-compat
 
 WORKDIR /usr/proxy
 
-COPY . .
-RUN yarn dlx turbo prune --scope=@discordjs/proxy-container --docker
+COPY manifests .
 
-FROM node:16-alpine AS installer
-
-RUN apk update
-RUN apk add --no-cache libc6-compat
-
-WORKDIR /usr/proxy
-
-COPY .gitignore .gitignore
-COPY .yarn/ .yarn/
-COPY .yarnrc.yml .yarnrc.yml
-COPY --from=builder /usr/proxy/out/json/ .
-COPY --from=builder /usr/proxy/out/yarn.lock ./yarn.lock
-RUN yarn install
-
-COPY --from=builder /usr/proxy/out/full/ .
-COPY tsup.config.js tsup.config.js
-COPY turbo.json turbo.json
-COPY tsconfig.json tsconfig.json
-RUN yarn dlx turbo run build --filter=@discordjs/proxy-container...
-
-RUN yarn workspaces focus @discordjs/proxy-container --production
+RUN yarn install --immutable
+RUN rm -rf .yarn/cache
 
 FROM node:16-alpine AS runner
 
@@ -39,5 +19,6 @@ RUN adduser --system --uid 1001 proxy
 USER proxy
 
 COPY --from=installer /usr/proxy .
+COPY packs .
 
-CMD ["node", "--enable-source-maps", "packages/proxy-container/dist/index.js"]
+CMD ["node", "--enable-source-maps", "dist/index.js"]

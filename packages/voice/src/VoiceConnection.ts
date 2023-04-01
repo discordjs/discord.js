@@ -354,8 +354,8 @@ export class VoiceConnection extends EventEmitter {
 	private addStatePacket(packet: GatewayVoiceStateUpdateDispatchData) {
 		this.packets.state = packet;
 
-		if (typeof packet.self_deaf !== 'undefined') this.joinConfig.selfDeaf = packet.self_deaf;
-		if (typeof packet.self_mute !== 'undefined') this.joinConfig.selfMute = packet.self_mute;
+		if (packet.self_deaf !== undefined) this.joinConfig.selfDeaf = packet.self_deaf;
+		if (packet.self_mute !== undefined) this.joinConfig.selfMute = packet.self_mute;
 		if (packet.channel_id) this.joinConfig.channelId = packet.channel_id;
 		/*
 			the channel_id being null doesn't necessarily mean it was intended for the client to leave the voice channel

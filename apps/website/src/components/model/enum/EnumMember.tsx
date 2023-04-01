@@ -1,8 +1,8 @@
 import type { ApiEnumMember } from '@microsoft/api-extractor-model';
-import { Anchor } from '~/components/Anchor';
-import { NameText } from '~/components/NameText';
-import { SignatureText } from '~/components/SignatureText';
-import { TSDoc } from '~/components/documentation/tsdoc/TSDoc';
+import { Anchor } from '../../Anchor';
+import { NameText } from '../../NameText';
+import { SignatureText } from '../../SignatureText';
+import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 
 export function EnumMember({ member }: { member: ApiEnumMember }) {
 	return (

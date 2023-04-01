@@ -18,8 +18,8 @@ export function Navbar({ pages }: { pages?: MDXPage[] | undefined }) {
 
 	return (
 		<>
-			<header className="dark:bg-dark-600 dark:border-dark-100 bg-light-600 border-light-800 fixed top-0 left-0 z-20 w-full border-b">
-				<div className="h-18 block px-6">
+			<header className="dark:bg-dark-400 dark:border-dark-100 bg-light-600 border-light-800 fixed left-0 top-0 z-20 w-full border-b">
+				<div className="block h-16 px-6">
 					<div className="flex h-full flex-row place-content-between place-items-center">
 						<Button
 							aria-label="Menu"
@@ -55,7 +55,7 @@ export function Navbar({ pages }: { pages?: MDXPage[] | undefined }) {
 							</Button>
 							<Button
 								aria-label="Toggle theme"
-								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded-full rounded border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
+								className="focus:ring-width-2 focus:ring-blurple flex h-6 w-6 transform-gpu cursor-pointer select-none appearance-none place-items-center rounded rounded-full border-0 bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 focus:ring active:translate-y-px"
 								// onClick={() => toggleTheme()}
 							>
 								<VscColorMode size={24} />

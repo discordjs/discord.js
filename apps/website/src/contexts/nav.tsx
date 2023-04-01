@@ -1,6 +1,14 @@
 'use client';
 
-import { type PropsWithChildren, type Dispatch, type SetStateAction, createContext, useContext, useState } from 'react';
+import {
+	type PropsWithChildren,
+	type Dispatch,
+	type SetStateAction,
+	createContext,
+	useContext,
+	useState,
+	useMemo,
+} from 'react';
 
 export const NavContext = createContext<{ opened: boolean; setOpened: Dispatch<SetStateAction<boolean>> }>({
 	opened: false,
@@ -9,9 +17,9 @@ export const NavContext = createContext<{ opened: boolean; setOpened: Dispatch<S
 
 export const NavProvider = ({ children }: PropsWithChildren) => {
 	const [opened, setOpened] = useState(false);
+	const value = useMemo(() => ({ opened, setOpened }), [opened]);
 
-	// eslint-disable-next-line react/jsx-no-constructed-context-values
-	return <NavContext.Provider value={{ opened, setOpened }}>{children}</NavContext.Provider>;
+	return <NavContext.Provider value={value}>{children}</NavContext.Provider>;
 };
 
 export function useNav() {
