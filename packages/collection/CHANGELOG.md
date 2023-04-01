@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.4.0...@discordjs/collection@1.5.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+## Refactor
+
+- **collection:** Fix/silence linter warnings (#9266) ([d6f4e60](https://github.com/discordjs/discord.js/commit/d6f4e60efd1a1796fc84dbbfbac4f9790e480a1c))
+
 # [@discordjs/collection@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.3.0...@discordjs/collection@1.4.0) - (2023-03-12)
 
 ## Documentation
