@@ -60,25 +60,25 @@
 		"ws": "^8.13.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.21.3",
-		"@babel/preset-env": "^7.20.2",
-		"@babel/preset-typescript": "^7.21.0",
+		"@babel/core": "^7.21.4",
+		"@babel/preset-env": "^7.21.4",
+		"@babel/preset-typescript": "^7.21.4",
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
 		"@types/jest": "^29.5.0",
-		"@types/node": "16.18.18",
+		"@types/node": "16.18.23",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.36.0",
+		"eslint": "^8.37.0",
 		"eslint-config-neon": "^0.1.41",
 		"eslint-formatter-pretty": "^5.0.0",
 		"jest": "^29.5.0",
 		"jest-websocket-mock": "^2.4.0",
 		"mock-socket": "^9.2.1",
-		"prettier": "^2.8.6",
+		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
 		"tweetnacl": "^1.0.3",
-		"typescript": "^5.0.2"
+		"typescript": "^5.0.3"
 	},
 	"engines": {
 		"node": ">=16.9.0"

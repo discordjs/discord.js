@@ -6,6 +6,11 @@ import type { RESTOptions } from '../REST.js';
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
 
+/**
+ * The default string to append onto the user agent.
+ */
+export const DefaultUserAgentAppendix = process.release?.name === 'node' ? `Node.js/${process.version}` : '';
+
 export const DefaultRestOptions = {
 	get agent() {
 		return new Agent({
@@ -24,7 +29,7 @@ export const DefaultRestOptions = {
 	rejectOnRateLimit: null,
 	retries: 3,
 	timeout: 15_000,
-	userAgentAppendix: `Node.js ${process.version}`,
+	userAgentAppendix: DefaultUserAgentAppendix,
 	version: APIVersion,
 	hashSweepInterval: 14_400_000, // 4 Hours
 	hashLifetime: 86_400_000, // 24 Hours
@@ -55,3 +60,5 @@ export const OverwrittenMimeTypes = {
 	// https://github.com/discordjs/discord.js/issues/8557
 	'image/apng': 'image/png',
 } as const satisfies Readonly<Record<string, string>>;
+
+export const BurstHandlerMajorIdKey = 'burst';

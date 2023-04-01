@@ -1030,6 +1030,7 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
+  private static userAgentAppendix: string;
   public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
   public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
@@ -1305,6 +1306,7 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
+  public maxStageVideoChannelUsers: number | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;

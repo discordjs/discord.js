@@ -1,16 +1,12 @@
 name: Lock Ancient Issues
-
 on:
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
-
 permissions:
   issues: write
-
 concurrency:
   group: lock
-
 jobs:
   action:
     runs-on: ubuntu-latest

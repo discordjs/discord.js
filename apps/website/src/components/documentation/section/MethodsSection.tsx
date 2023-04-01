@@ -8,8 +8,8 @@ import type {
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useMemo, Fragment } from 'react';
+import { Method } from '../../model/method/Method';
 import { DocumentationSection } from './DocumentationSection';
-import { Method } from '~/components/model/method/Method';
 import { resolveMembers } from '~/util/members';
 
 function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
@@ -31,7 +31,7 @@ export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 					}`}
 				>
 					<Method inheritedFrom={inherited as ApiDeclaredItem & ApiItemContainerMixin} method={method} />
-					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
+					<div className="border-light-900 dark:border-dark-100 border-t-2" />
 				</Fragment>
 			)),
 		[members],
