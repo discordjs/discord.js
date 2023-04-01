@@ -58,9 +58,9 @@ Please read through our [contribution guidelines][contributing] before starting 
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][discord].
 
-[website]: https://discordjs.dev/
+[website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discordjs.dev/docs/packages
+[documentation]: https://discord.js.org/docs
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html

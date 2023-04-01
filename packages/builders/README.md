@@ -57,9 +57,9 @@ See [the contribution guide][contributing] if you'd like to submit a PR.
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
 [example]: https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md
-[website]: https://discordjs.dev/
+[website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discordjs.dev/docs/packages/builders
+[documentation]: https://discord.js.org/docs/packages/builders/stable
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
