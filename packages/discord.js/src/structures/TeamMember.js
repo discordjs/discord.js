@@ -46,15 +46,6 @@ class TeamMember extends Base {
   }
 
   /**
-   * The Team Member's id
-   * @type {Snowflake}
-   * @readonly
-   */
-  get id() {
-    return this.user.id;
-  }
-
-  /**
    * When concatenated with a string, this automatically returns the team member's mention instead of the
    * TeamMember object.
    * @returns {string}

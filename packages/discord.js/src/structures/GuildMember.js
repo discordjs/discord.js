@@ -213,15 +213,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * The member's id
-   * @type {Snowflake}
-   * @readonly
-   */
-  get id() {
-    return this.user.id;
-  }
-
-  /**
    * The DM between the client's user and this member
    * @type {?DMChannel}
    * @readonly
