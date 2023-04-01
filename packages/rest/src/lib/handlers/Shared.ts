@@ -68,7 +68,7 @@ export async function makeNetworkRequest(
 	const timeout = setTimeout(() => controller.abort(), manager.options.timeout).unref();
 	if (requestData.signal) {
 		// The type polyfill is required because Node.js's types are incomplete.
-		const signal = requestData.signal as PolyFillAbortSignal;
+		const signal = requestData.signal as unknown as PolyFillAbortSignal;
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.

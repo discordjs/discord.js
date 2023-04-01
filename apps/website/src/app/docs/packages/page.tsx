@@ -10,7 +10,7 @@ export const runtime: ServerRuntime = 'edge';
 
 export default function Page() {
 	return (
-		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-col gap-8 py-6 px-4 lg:py-6 lg:px-6">
+		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-col gap-8 px-4 py-6 lg:px-6 lg:py-6">
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
 				<a
