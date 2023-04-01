@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.6.0...@discordjs/rest@1.7.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **handlers:** Create burst handler for interaction callbacks (#8996) ([db8df10](https://github.com/discordjs/discord.js/commit/db8df104c5e70a12f35b54e5f3f7c897068dde6f))
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+- **rest:** Remove `const enum`s in favour of regular enums (#9243) ([229ad07](https://github.com/discordjs/discord.js/commit/229ad077ff52d8706d68ed4d31983619a32eba45))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/rest@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.5.0...@discordjs/rest@1.6.0) - (2023-03-12)
 
 ## Bug Fixes
