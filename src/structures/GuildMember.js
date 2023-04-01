@@ -62,6 +62,11 @@ class GuildMember extends Base {
      */
     this.communicationDisabledUntilTimestamp = null;
 
+    /**
+     * The role ids of the member
+     * @type {Snowflake[]}
+     * @private
+     */
     this._roles = [];
     if (data) this._patch(data);
   }
