@@ -112,7 +112,7 @@ class Options extends null {
    *    MessageManager: 200,
    *    GuildMemberManager: {
    *      maxSize: 200,
-   *      keepOverLimit: (member) => member.id === client.user.id,
+   *      keepOverLimit: (member) => member.user.id === client.user.id,
    *    },
    *  });
    */

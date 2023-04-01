@@ -177,7 +177,7 @@ class GuildChannel extends BaseChannel {
         everyoneOverwrites = overwrite;
       } else if (roles.has(overwrite.id)) {
         roleOverwrites.push(overwrite);
-      } else if (overwrite.id === member.id) {
+      } else if (overwrite.id === member.user.id) {
         memberOverwrites = overwrite;
       }
     }
@@ -198,7 +198,7 @@ class GuildChannel extends BaseChannel {
    * @private
    */
   memberPermissions(member, checkAdmin) {
-    if (checkAdmin && member.id === this.guild.ownerId) {
+    if (checkAdmin && member.user.id === this.guild.ownerId) {
       return new PermissionsBitField(PermissionsBitField.All).freeze();
     }
 

@@ -252,7 +252,7 @@ class GuildMemberManager extends CachedManager {
         timeout.refresh();
         i++;
         for (const member of members.values()) {
-          fetchedMembers.set(member.id, member);
+          fetchedMembers.set(member.user.id, member);
         }
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
           clearTimeout(timeout);

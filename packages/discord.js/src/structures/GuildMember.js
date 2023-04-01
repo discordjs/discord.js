@@ -434,7 +434,7 @@ class GuildMember extends Base {
 
   /**
    * Whether this guild member equals another guild member. It compares all properties, so for most
-   * comparison it is advisable to just compare `member.id === member2.id` as it is significantly faster
+   * comparison it is advisable to just compare `member.user.id === member2.user.id` as it is significantly faster
    * and is often what most users need.
    * @param {GuildMember} member The member to compare with
    * @returns {boolean}
@@ -442,7 +442,7 @@ class GuildMember extends Base {
   equals(member) {
     return (
       member instanceof this.constructor &&
-      this.id === member.id &&
+      this.user.id === member.user.id &&
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&

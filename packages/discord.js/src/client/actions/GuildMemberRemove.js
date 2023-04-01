@@ -13,7 +13,7 @@ class GuildMemberRemoveAction extends Action {
       member = this.getMember({ user: data.user }, guild);
       guild.memberCount--;
       if (member) {
-        guild.members.cache.delete(member.id);
+        guild.members.cache.delete(member.user.id);
         /**
          * Emitted whenever a member leaves a guild, or is kicked.
          * @event Client#guildMemberRemove

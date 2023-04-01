@@ -123,7 +123,7 @@ export class Documentation {
 
 					case 'Method': {
 						const event = prop?.groups?.find((group) => group.title === 'Events');
-						if ((event?.children as unknown as number[])?.includes(member.id)) {
+						if ((event?.children as unknown as number[])?.includes(member.user.id)) {
 							item = new DocumentedEvent(member, this.config);
 							break;
 						}

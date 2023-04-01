@@ -61,7 +61,7 @@ class InviteStageInstance extends Base {
     this.members.clear();
     for (const rawMember of data.members) {
       const member = this.guild.members._add(rawMember);
-      this.members.set(member.id, member);
+      this.members.set(member.user.id, member);
     }
   }
 
