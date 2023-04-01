@@ -165,7 +165,9 @@ class GuildMemberRoleManager extends DataManager {
         );
       }
 
-      await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, this.member.user.id, roleOrRoles), { reason });
+      await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, this.member.user.id, roleOrRoles), {
+        reason,
+      });
 
       const clone = this.member._clone();
       const newRoles = this.cache.filter(role => role.id !== roleOrRoles);
