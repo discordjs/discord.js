@@ -487,11 +487,21 @@ class GuildMember extends Base {
     json.displayAvatarURL = this.displayAvatarURL();
     return json;
   }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
 }
+
+/**
+ * Sends a message to this user.
+ * @method send
+ * @memberof GuildMember
+ * @instance
+ * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+ * @returns {Promise<Message>}
+ * @example
+ * // Send a direct message
+ * guildMember.send('Hello!')
+ *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
+ *   .catch(console.error);
+ */
 
 TextBasedChannel.applyToClass(GuildMember);
 
