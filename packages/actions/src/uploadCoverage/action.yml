@@ -39,6 +39,12 @@ runs:
         files: ./packages/discord.js/coverage/cobertura-coverage.xml
         flags: discord.js
 
+    - name: Upload Next Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./packages/next/coverage/cobertura-coverage.xml
+        flags: next
+
     - name: Upload Proxy Coverage
       uses: codecov/codecov-action@v3
       with:

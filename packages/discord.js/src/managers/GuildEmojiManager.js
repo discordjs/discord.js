@@ -124,19 +124,19 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   /**
    * Edits an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to edit
-   * @param {GuildEmojiEditData} data The new data for the emoji
+   * @param {GuildEmojiEditOptions} options The options to provide
    * @returns {Promise<GuildEmoji>}
    */
-  async edit(emoji, data) {
+  async edit(emoji, options) {
     const id = this.resolveId(emoji);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
-    const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
+    const roles = options.roles?.map(r => this.guild.roles.resolveId(r));
     const newData = await this.client.rest.patch(Routes.guildEmoji(this.guild.id, id), {
       body: {
-        name: data.name,
+        name: options.name,
         roles,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
     const existing = this.cache.get(id);
     if (existing) {

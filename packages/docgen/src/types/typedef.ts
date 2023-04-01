@@ -86,7 +86,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 							child.signatures?.[0]?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() ||
 							undefined,
-						optional: child.flags.isOptional || typeof child.defaultValue !== 'undefined',
+						optional: child.flags.isOptional || child.defaultValue !== undefined,
 						default:
 							(child.defaultValue === '...' ? undefined : child.defaultValue) ??
 							(child.comment?.blockTags
@@ -131,7 +131,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						name: param.name,
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 						description: param.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
-						optional: param.flags.isOptional || typeof param.defaultValue !== 'undefined',
+						optional: param.flags.isOptional || param.defaultValue !== undefined,
 						default:
 							(param.defaultValue === '...' ? undefined : param.defaultValue) ??
 							(param.comment?.blockTags

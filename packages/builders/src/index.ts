@@ -1,6 +1,7 @@
 export * as EmbedAssertions from './messages/embed/Assertions.js';
 export * from './messages/embed/Embed.js';
-export * from './messages/formatters.js';
+// TODO: Consider removing this dep in the next major version
+export * from '@discordjs/formatters';
 
 export * as ComponentAssertions from './components/Assertions.js';
 export * from './components/ActionRow.js';
@@ -65,5 +66,4 @@ export * from '@discordjs/util';
  * that you are currently using.
  */
 // This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
-export const version: string = '[VI]{{inject}}[/VI]';
+export const version = '[VI]{{inject}}[/VI]' as string;

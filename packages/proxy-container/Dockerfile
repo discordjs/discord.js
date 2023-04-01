@@ -1,18 +1,24 @@
-FROM node:16-alpine
+FROM node:16-alpine as builder
+
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /usr/proxy
 
-# First copy over dependencies separate from src for better caching
-COPY package.json yarn.lock tsconfig.json .yarnrc.yml tsup.config.js ./
-COPY .yarn ./.yarn
-COPY ./packages/proxy-container/package.json ./packages/proxy-container/
+COPY manifests .
 
-WORKDIR /usr/proxy/packages/proxy-container
+RUN yarn install --immutable
+RUN rm -rf .yarn/cache
 
-RUN yarn workspaces focus
+FROM node:16-alpine AS runner
 
-# Next up, copy over our src and build it, then prune deps for prod
-COPY ./packages/proxy-container ./
-RUN yarn build && yarn workspaces focus --production
+WORKDIR /usr/proxy
 
-CMD ["node", "--enable-source-maps", "./dist/index.js"]
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 proxy
+USER proxy
+
+COPY --from=installer /usr/proxy .
+COPY packs .
+
+CMD ["node", "--enable-source-maps", "dist/index.js"]

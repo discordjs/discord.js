@@ -23,15 +23,18 @@ import {
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
-import { ImportantGatewayOpcodes } from '../utils/constants.js';
+import { getInitialSendRateLimitState, ImportantGatewayOpcodes } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
 const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
 
 export enum WebSocketShardEvents {
+	Closed = 'closed',
 	Debug = 'debug',
 	Dispatch = 'dispatch',
+	Error = 'error',
+	HeartbeatComplete = 'heartbeat',
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
@@ -51,11 +54,14 @@ export enum WebSocketShardDestroyRecovery {
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type WebSocketShardEventsMap = {
+	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
+	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
+	[WebSocketShardEvents.Error]: [payload: { error: Error }];
 	[WebSocketShardEvents.Hello]: [];
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
+	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
 };
 
 export interface WebSocketShardDestroyOptions {
@@ -69,10 +75,13 @@ export enum CloseCodes {
 	Resuming = 4_200,
 }
 
+export interface SendRateLimitState {
+	remaining: number;
+	resetAt: number;
+}
+
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
-
-	private readonly id: number;
 
 	private useIdentifyCompress = false;
 
@@ -80,16 +89,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private readonly textDecoder = new TextDecoder();
 
-	private status: WebSocketShardStatus = WebSocketShardStatus.Idle;
-
 	private replayedEvents = 0;
 
 	private isAck = true;
 
-	private sendRateLimitState = {
-		remaining: 120,
-		resetAt: Date.now(),
-	};
+	private sendRateLimitState: SendRateLimitState = getInitialSendRateLimitState();
+
+	private initialHeartbeatTimeoutController: AbortController | null = null;
 
 	private heartbeatInterval: NodeJS.Timer | null = null;
 
@@ -97,11 +103,22 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private session: SessionInfo | null = null;
 
+	// Indicates whether the shard has already resolved its original connect() call
+	private initialConnectResolved = false;
+
 	private readonly sendQueue = new AsyncQueue();
 
 	private readonly timeouts = new Collection<WebSocketShardEvents, NodeJS.Timeout>();
 
-	public readonly strategy: IContextFetchingStrategy;
+	private readonly strategy: IContextFetchingStrategy;
+
+	public readonly id: number;
+
+	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
+
+	public get status(): WebSocketShardStatus {
+		return this.#status;
+	}
 
 	public constructor(strategy: IContextFetchingStrategy, id: number) {
 		super();
@@ -110,7 +127,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async connect() {
-		if (this.status !== WebSocketShardStatus.Idle) {
+		if (this.#status !== WebSocketShardStatus.Idle) {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
@@ -144,9 +161,16 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		connection.binaryType = 'arraybuffer';
 		this.connection = connection;
 
-		this.status = WebSocketShardStatus.Connecting;
+		this.#status = WebSocketShardStatus.Connecting;
 
-		await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
+		this.sendRateLimitState = getInitialSendRateLimitState();
+
+		const { ok } = await this.bubbleWaitForEventError(
+			this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout),
+		);
+		if (!ok) {
+			return;
+		}
 
 		if (session?.shardCount === this.strategy.options.shardCount) {
 			this.session = session;
@@ -154,10 +178,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		} else {
 			await this.identify();
 		}
+
+		this.initialConnectResolved = true;
 	}
 
 	public async destroy(options: WebSocketShardDestroyOptions = {}) {
-		if (this.status === WebSocketShardStatus.Idle) {
+		if (this.#status === WebSocketShardStatus.Idle) {
 			this.debug(['Tried to destroy a shard that was idle']);
 			return;
 		}
@@ -179,6 +205,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			clearInterval(this.heartbeatInterval);
 		}
 
+		if (this.initialHeartbeatTimeoutController) {
+			this.initialHeartbeatTimeoutController.abort();
+			this.initialHeartbeatTimeoutController = null;
+		}
+
 		this.lastHeartbeatAt = -1;
 
 		// Clear session state if applicable
@@ -187,66 +218,141 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
-		if (
-			this.connection &&
-			(this.connection.readyState === WebSocket.OPEN || this.connection.readyState === WebSocket.CONNECTING)
-		) {
+		if (this.connection) {
 			// No longer need to listen to messages
 			this.connection.removeAllListeners('message');
 			// Prevent a reconnection loop by unbinding the main close event
 			this.connection.removeAllListeners('close');
-			this.connection.close(options.code, options.reason);
 
-			// Actually wait for the connection to close
-			await once(this.connection, 'close');
+			const shouldClose = this.connection.readyState === WebSocket.OPEN;
+
+			this.debug([
+				'Connection status during destroy',
+				`Needs closing: ${shouldClose}`,
+				`Ready state: ${this.connection.readyState}`,
+			]);
+
+			if (shouldClose) {
+				this.connection.close(options.code, options.reason);
+				await once(this.connection, 'close');
+				this.emit(WebSocketShardEvents.Closed, { code: options.code });
+			}
 
 			// Lastly, remove the error event.
 			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
 			this.connection.removeAllListeners('error');
+		} else {
+			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
 
-		this.status = WebSocketShardStatus.Idle;
+		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
 			return this.connect();
 		}
 	}
 
-	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null) {
-		this.debug([`Waiting for event ${event} for ${timeoutDuration ? `${timeoutDuration}ms` : 'indefinitely'}`]);
+	private async waitForEvent(event: WebSocketShardEvents, timeoutDuration?: number | null): Promise<void> {
+		this.debug([`Waiting for event ${event} ${timeoutDuration ? `for ${timeoutDuration}ms` : 'indefinitely'}`]);
 		const controller = new AbortController();
 		const timeout = timeoutDuration ? setTimeout(() => controller.abort(), timeoutDuration).unref() : null;
 		if (timeout) {
 			this.timeouts.set(event, timeout);
 		}
 
-		await once(this, event, { signal: controller.signal });
-		if (timeout) {
-			clearTimeout(timeout);
-			this.timeouts.delete(event);
+		await once(this, event, { signal: controller.signal }).finally(() => {
+			if (timeout) {
+				clearTimeout(timeout);
+				this.timeouts.delete(event);
+			}
+		});
+	}
+
+	/**
+	 * Does special error handling for waitForEvent calls, depending on the current state of the connection lifecycle
+	 * (i.e. whether or not the original connect() call has resolved or if the user has an error listener)
+	 */
+	private async bubbleWaitForEventError(
+		promise: Promise<unknown>,
+	): Promise<{ error: unknown; ok: false } | { ok: true }> {
+		try {
+			await promise;
+			return { ok: true };
+		} catch (error) {
+			const isAbortError = error instanceof Error && error.name === 'AbortError';
+
+			// Any error that isn't an abort error would have been caused by us emitting an error event in the first place
+			// See https://nodejs.org/api/events.html#eventsonceemitter-name-options for `once()` behavior
+			if (isAbortError) {
+				this.emit(WebSocketShardEvents.Error, { error: error as Error });
+			}
+
+			// As stated previously, any other error would have been caused by us emitting the error event, which looks
+			// like { error: unknown }
+			// eslint-disable-next-line no-ex-assign
+			error = error instanceof Error ? error : (error as { error: unknown }).error;
+
+			// If the user has no handling on their end (error event) simply throw.
+			// We also want to throw if we're still in the initial `connect()` call, since that's the only time
+			// the user can catch the error "normally"
+			if (this.listenerCount(WebSocketShardEvents.Error) === 0 || !this.initialConnectResolved) {
+				throw error;
+			}
+
+			// If the error is handled, we can just try to reconnect
+			void this.destroy({
+				code: CloseCodes.Normal,
+				reason: 'Something timed out or went wrong while waiting for an event',
+				recover: WebSocketShardDestroyRecovery.Reconnect,
+			});
+
+			return { ok: false, error };
 		}
 	}
 
-	public async send(payload: GatewaySendPayload) {
+	public async send(payload: GatewaySendPayload): Promise<void> {
 		if (!this.connection) {
 			throw new Error("WebSocketShard wasn't connected");
 		}
 
-		if (this.status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
-			await once(this, WebSocketShardEvents.Ready);
+		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
+			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
+			// This will throw if the shard throws an error event in the meantime, just requeue the payload
+			try {
+				await once(this, WebSocketShardEvents.Ready);
+			} catch {
+				return this.send(payload);
+			}
 		}
 
 		await this.sendQueue.wait();
 
 		if (--this.sendRateLimitState.remaining <= 0) {
-			if (this.sendRateLimitState.resetAt < Date.now()) {
-				await sleep(Date.now() - this.sendRateLimitState.resetAt);
+			const now = Date.now();
+
+			if (this.sendRateLimitState.resetAt > now) {
+				const sleepFor = this.sendRateLimitState.resetAt - now;
+
+				this.debug([`Was about to hit the send rate limit, sleeping for ${sleepFor}ms`]);
+				const controller = new AbortController();
+
+				// Sleep for the remaining time, but if the connection closes in the meantime, we shouldn't wait the remainder to avoid blocking the new conn
+				const interrupted = await Promise.race([
+					sleep(sleepFor).then(() => false),
+					once(this, WebSocketShardEvents.Closed, { signal: controller.signal }).then(() => true),
+				]);
+
+				if (interrupted) {
+					this.debug(['Connection closed while waiting for the send rate limit to reset, re-queueing payload']);
+					this.sendQueue.shift();
+					return this.send(payload);
+				}
+
+				// This is so the listener from the `once` call is removed
+				controller.abort();
 			}
 
-			this.sendRateLimitState = {
-				remaining: 119,
-				resetAt: Date.now() + 60_000,
-			};
+			this.sendRateLimitState = getInitialSendRateLimitState();
 		}
 
 		this.sendQueue.shift();
@@ -254,6 +360,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async identify() {
+		this.debug(['Waiting for identify throttle']);
+
+		await this.strategy.waitForIdentify();
+
 		this.debug([
 			'Identifying',
 			`shard id: ${this.id.toString()}`,
@@ -261,6 +371,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`intents: ${this.strategy.options.intents}`,
 			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
 		]);
+
 		const d: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
@@ -282,13 +393,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			d,
 		});
 
-		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
-		this.status = WebSocketShardStatus.Ready;
+		await this.bubbleWaitForEventError(
+			this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout),
+		);
 	}
 
 	private async resume(session: SessionInfo) {
 		this.debug(['Resuming session']);
-		this.status = WebSocketShardStatus.Resuming;
+		this.#status = WebSocketShardStatus.Resuming;
 		this.replayedEvents = 0;
 		return this.send({
 			op: GatewayOpcodes.Resume,
@@ -350,7 +462,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.inflate.push(Buffer.from(decompressable), flush ? zlib.Z_SYNC_FLUSH : zlib.Z_NO_FLUSH);
 
 			if (this.inflate.err) {
-				this.emit('error', `${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`);
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error(`${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`),
+				});
 			}
 
 			if (!flush) {
@@ -383,14 +497,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		switch (payload.op) {
 			case GatewayOpcodes.Dispatch: {
-				if (this.status === WebSocketShardStatus.Resuming) {
+				if (this.#status === WebSocketShardStatus.Resuming) {
 					this.replayedEvents++;
 				}
 
 				// eslint-disable-next-line sonarjs/no-nested-switch
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.#status = WebSocketShardStatus.Ready;
 
 						this.session ??= {
 							sequence: payload.s,
@@ -401,11 +515,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						};
 
 						await this.strategy.updateSessionInfo(this.id, this.session);
+
+						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
 						break;
 					}
 
 					case GatewayDispatchEvents.Resumed: {
-						this.status = WebSocketShardStatus.Ready;
+						this.#status = WebSocketShardStatus.Ready;
 						this.debug([`Resumed and replayed ${this.replayedEvents} events`]);
 						this.emit(WebSocketShardEvents.Resumed);
 						break;
@@ -458,27 +574,52 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			case GatewayOpcodes.Hello: {
 				this.emit(WebSocketShardEvents.Hello);
-				this.debug([`Starting to heartbeat every ${payload.d.heartbeat_interval}ms`]);
+				const jitter = Math.random();
+				const firstWait = Math.floor(payload.d.heartbeat_interval * jitter);
+				this.debug([`Preparing first heartbeat of the connection with a jitter of ${jitter}; waiting ${firstWait}ms`]);
+
+				try {
+					const controller = new AbortController();
+					this.initialHeartbeatTimeoutController = controller;
+					await sleep(firstWait, undefined, { signal: controller.signal });
+				} catch {
+					this.debug(['Cancelled initial heartbeat due to #destroy being called']);
+					return;
+				} finally {
+					this.initialHeartbeatTimeoutController = null;
+				}
+
+				await this.heartbeat();
+
+				this.debug([`First heartbeat sent, starting to beat every ${payload.d.heartbeat_interval}ms`]);
 				this.heartbeatInterval = setInterval(() => void this.heartbeat(), payload.d.heartbeat_interval);
 				break;
 			}
 
 			case GatewayOpcodes.HeartbeatAck: {
 				this.isAck = true;
-				this.debug([`Got heartbeat ack after ${Date.now() - this.lastHeartbeatAt}ms`]);
+
+				const ackAt = Date.now();
+				this.emit(WebSocketShardEvents.HeartbeatComplete, {
+					ackAt,
+					heartbeatAt: this.lastHeartbeatAt,
+					latency: ackAt - this.lastHeartbeatAt,
+				});
+
 				break;
 			}
 		}
 	}
 
-	private onError(err: Error) {
-		this.emit('error', err);
+	private onError(error: Error) {
+		this.emit(WebSocketShardEvents.Error, { error });
 	}
 
 	private async onClose(code: number) {
+		this.emit(WebSocketShardEvents.Closed, { code });
+
 		switch (code) {
 			case CloseCodes.Normal: {
-				this.debug([`Disconnected normally from code ${code}`]);
 				return this.destroy({
 					code,
 					reason: 'Got disconnected by Discord',
@@ -487,12 +628,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case CloseCodes.Resuming: {
-				this.debug([`Disconnected normally from code ${code}`]);
 				break;
 			}
 
 			case GatewayCloseCodes.UnknownError: {
-				this.debug([`An unknown error occured: ${code}`]);
+				this.debug([`An unknown error occurred: ${code}`]);
 				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
 			}
 

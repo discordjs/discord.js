@@ -1,37 +1,138 @@
 {
-	"$schema": "https://turborepo.org/schema.json",
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": ["yarn.lock"],
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
+			"inputs": ["../../tsconfig.json", "../../tsup.config.ts", "src/**/*.ts", "tsconfig.json", "tsup.config.ts"],
+			"outputs": ["dist/**"]
+		},
+		"@discordjs/ui#build": {
+			"dependsOn": ["^build"],
+			"inputs": ["../../tsconfig.json", "src/**/*.ts", "tsconfig.json", "vite.config.ts"],
 			"outputs": ["dist/**"]
 		},
 		"@discordjs/guide#build:prod": {
 			"dependsOn": ["^build"],
-			"outputs": ["dist/**"]
+			"inputs": [
+				"../../tsconfig.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"src/**/*.mdx",
+				"src/assets/**/*.svg",
+				"next-env.d.ts",
+				"next.config.js",
+				"tsconfig.json",
+				"types.d.ts"
+			],
+			"outputs": [".next/**"]
 		},
 		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build"],
+			"env": ["NEXT_PUBLIC_LOCAL_DEV"],
+			"inputs": [
+				"../../tsconfig.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"src/assets/**/*.ttf",
+				"src/assets/**/*.svg",
+				"scripts/**.js",
+				"next-env.d.ts",
+				"next.config.js",
+				"tsconfig.json",
+				"types.d.ts"
+			],
 			"outputs": [".next/**"]
 		},
 		"test": {
 			"dependsOn": ["^build"],
+			"inputs": [
+				"../../codecov.yml",
+				"../../tsconfig.json",
+				"../../vitest.config.ts",
+				"__tests_/**/*.ts",
+				"src/**/*.ts",
+				"src/**/*.js",
+				"tsconfig.json"
+			],
+			"outputs": ["coverage/**"]
+		},
+		"@discordjs/voice#test": {
+			"dependsOn": ["^build"],
+			"inputs": [
+				"../../tsconfig.json",
+				"__tests_/**/*.ts",
+				"__mocks__/**/*.ts",
+				"__mocks__/**/*.js",
+				"src/**/*.ts",
+				"src/**/*.js",
+				"babel.config.js",
+				"jest.config.js",
+				"tsconfig.json"
+			],
 			"outputs": ["coverage/**"]
 		},
 		"lint": {
 			"dependsOn": ["^build"],
+			"inputs": [
+				"../../.eslintrc.json",
+				"../../.prettierrc.json",
+				"../../tsconfig.json",
+				"../../tsconfig.eslint.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"src/**/*.mdx",
+				"scripts/**.js",
+				"scripts/**.mjs",
+				".eslintignore",
+				".eslintrc.json",
+				".prettierignore",
+				".prettierrc.js",
+				".prettierrc.cjs",
+				".prettierrc.json",
+				"tsconfig.json",
+				"tsconfig.eslint.json",
+				"next.config.js",
+				"tsup.config.ts",
+				"vite.config.ts"
+			],
 			"outputs": []
 		},
 		"format": {
 			"dependsOn": ["^build"],
+			"inputs": [
+				"../../.eslintrc.json",
+				"../../.prettierrc.json",
+				"../../tsconfig.json",
+				"../../tsconfig.eslint.json",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"src/**/*.mdx",
+				"scripts/**.js",
+				"scripts/**.mjs",
+				".eslintignore",
+				".eslintrc.json",
+				".prettierignore",
+				".prettierrc.js",
+				".prettierrc.cjs",
+				".prettierrc.json",
+				"tsconfig.json",
+				"tsconfig.eslint.json",
+				"next.config.js",
+				"tsup.config.ts",
+				"vite.config.ts"
+			],
 			"outputs": []
 		},
 		"docs": {
-			"dependsOn": ["^build"],
-			"outputs": ["docs/docs.json", "docs/docs.api.json"]
+			"outputs": ["../../api-extractor.json", "api-extractor.json", "docs/**", "tsconfig.json", "dist-docs"]
 		},
 		"changelog": {
-			"dependsOn": ["^build"],
-			"outputs": ["CHANGELOG.md"]
+			"outputs": ["cliff.toml", "CHANGELOG.md"]
 		}
 	}
 }

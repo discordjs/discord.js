@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.3.0...@discordjs/collection@1.4.0) - (2023-03-12)
+
+## Documentation
+
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+## Refactor
+
+- Compare with `undefined` directly (#9191) ([869153c](https://github.com/discordjs/discord.js/commit/869153c3fdf155783e7c0ecebd3627b087c3a026))
+
+# [@discordjs/collection@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.2.0...@discordjs/collection@1.3.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- Add `Collection#subtract()` (#8393) ([291f36c](https://github.com/discordjs/discord.js/commit/291f36cd736b5dea058145a1335bf7c78ec1d81d))
+
 # [@discordjs/collection@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.1.0...@discordjs/collection@1.2.0) - (2022-10-08)
 
 ## Bug Fixes

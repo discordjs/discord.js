@@ -1,0 +1,25 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+# [@discordjs/formatters@0.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.1.0...@discordjs/formatters@0.2.0) - (2023-03-12)
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+## Refactor
+
+- Compare with `undefined` directly (#9191) ([869153c](https://github.com/discordjs/discord.js/commit/869153c3fdf155783e7c0ecebd3627b087c3a026))
+- Moved the escapeX functions from discord.js to @discord.js/formatters (#8957) ([13ce78a](https://github.com/discordjs/discord.js/commit/13ce78af6e3aedc793f53a099a6a615df44311f7))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
+# [@discordjs/formatters@0.1.0](https://github.com/discordjs/discord.js/tree/@discordjs/formatters@0.1.0) - (2022-12-16)
+
+## Features
+
+- Add `@discordjs/formatters` (#8889) ([3fca638](https://github.com/discordjs/discord.js/commit/3fca638a8470dcea2f79ddb9f18526dbc0017c88))
+

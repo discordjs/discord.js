@@ -11,14 +11,18 @@ body:
   - type: dropdown
     id: package
     attributes:
-      label: Which package is the feature request for?
+      label: Which package is this feature request for?
       options:
         - discord.js
+        - brokers
         - builders
         - collection
-        - rest
+        - core
+        - formatters
+        - next
         - proxy
         - proxy-container
+        - rest
         - voice
         - ws
     validations:

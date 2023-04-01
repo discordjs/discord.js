@@ -1,33 +1,15 @@
-import { findPackage, ApiNodeJSONEncoder } from '@discordjs/api-extractor-utils';
-import type { ApiEntryPoint, ApiModel } from '@microsoft/api-extractor-model';
+import type { ApiEntryPoint, ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 
-export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string, version: string) {
-	const pkg = findPackage(model, packageName)!;
-	const member = (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
-
-	if (!member) {
-		return undefined;
-	}
-
-	return ApiNodeJSONEncoder.encode(model, member, version);
+export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
+	const pkg = model.tryGetPackageByName(`@discordjs/${packageName}`)!;
+	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
 }
 
-export function findMember(
-	model: ApiModel,
-	packageName: string,
-	memberName: string | undefined,
-	version: string,
-): ReturnType<typeof ApiNodeJSONEncoder['encode']> | undefined {
+export function findMember(model: ApiModel, packageName: string, memberName: string | undefined): ApiItem | undefined {
 	if (!memberName) {
 		return undefined;
 	}
 
-	const pkg = findPackage(model, packageName)!;
-	const member = (pkg.members[0] as ApiEntryPoint).findMembersByName(memberName)[0];
-
-	if (!member) {
-		return undefined;
-	}
-
-	return ApiNodeJSONEncoder.encode(model, member, version);
+	const pkg = model.tryGetPackageByName(`@discordjs/${packageName}`)!;
+	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
 }

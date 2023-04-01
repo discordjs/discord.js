@@ -9,10 +9,17 @@
 		"allowJs": false,
 		"incremental": true,
 		"skipLibCheck": true,
+		"sourceMap": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
 			"~/*": ["./src/*"]
-		}
+		},
+		"strictNullChecks": true
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
 }

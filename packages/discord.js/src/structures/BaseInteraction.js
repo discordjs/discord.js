@@ -270,12 +270,10 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
-  // TODO: Get rid of this in the next major
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
-   *
-   * @deprecated Use {@link Interaction#isStringSelectMenu} instead
+   * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
   isSelectMenu() {
     return this.isStringSelectMenu();
@@ -322,7 +320,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link MentionableSelectMenuInteraction}
    * @returns {boolean}
    */
   isMentionableSelectMenu() {

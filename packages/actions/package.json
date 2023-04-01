@@ -40,19 +40,22 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@actions/core": "^1.10.0",
-		"tslib": "^2.4.1"
+		"@actions/glob": "^0.4.0",
+		"@planetscale/database": "^1.6.0",
+		"tslib": "^2.5.0",
+		"undici": "^5.21.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.3",
-		"@vitest/coverage-c8": "^0.25.3",
+		"@types/node": "16.18.23",
+		"@vitest/coverage-c8": "^0.29.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.28.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.0",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.3",
-		"vitest": "^0.25.3"
+		"eslint": "^8.37.0",
+		"eslint-config-neon": "^0.1.41",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.7",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.3",
+		"vitest": "^0.29.8"
 	},
 	"engines": {
 		"node": ">=16.9.0"

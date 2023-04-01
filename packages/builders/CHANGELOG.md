@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.4.0...@discordjs/builders@1.5.0) - (2023-03-12)
+
+## Documentation
+
+- **EmbedBuilder#spliceFields:** Fix a typo (#9159) ([4367ab9](https://github.com/discordjs/discord.js/commit/4367ab930227048868db3ed8437f6c4507ff32e1))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+- **StringSelectMenu:** Add `spliceOptions()` (#8937) ([a6941d5](https://github.com/discordjs/discord.js/commit/a6941d536ce24ed2b5446a154cbc886b2b97c63a))
+- Add support for nsfw commands (#7976) ([7a51344](https://github.com/discordjs/discord.js/commit/7a5134459c5f06864bf74631d83b96d9c21b72d8))
+- Add `@discordjs/formatters` (#8889) ([3fca638](https://github.com/discordjs/discord.js/commit/3fca638a8470dcea2f79ddb9f18526dbc0017c88))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
+# [@discordjs/builders@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.3.0...@discordjs/builders@1.4.0) - (2022-11-28)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+- Allow punctuation characters in context menus (#8783) ([b521366](https://github.com/discordjs/discord.js/commit/b5213664fa66746daab1673ebe2adf2db3d1522c))
+
+## Typings
+
+- **Formatters:** Allow boolean in `formatEmoji` (#8823) ([ec37f13](https://github.com/discordjs/discord.js/commit/ec37f137fd4fca0fdbdb8a5c83abf32362a8f285))
+
 # [@discordjs/builders@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.2.0...@discordjs/builders@1.3.0) - (2022-10-08)
 
 ## Bug Fixes

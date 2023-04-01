@@ -1,14 +1,15 @@
-import type { ApiTypeAliasJSON } from '@discordjs/api-extractor-utils';
-import { DocContainer } from '../DocContainer';
+import type { ApiTypeAlias } from '@microsoft/api-extractor-model';
+import { SyntaxHighlighter } from '../SyntaxHighlighter';
+import { Documentation } from '../documentation/Documentation';
+import { Header } from '../documentation/Header';
+import { SummarySection } from '../documentation/section/SummarySection';
 
-export function TypeAlias({ data }: { data: ApiTypeAliasJSON }) {
+export function TypeAlias({ item }: { item: ApiTypeAlias }) {
 	return (
-		<DocContainer
-			excerpt={data.excerpt}
-			kind={data.kind}
-			name={data.name}
-			summary={data.summary}
-			typeParams={data.typeParameters}
-		/>
+		<Documentation>
+			<Header kind={item.kind} name={item.displayName} sourceURL={item.sourceLocation.fileUrl} />
+			<SyntaxHighlighter code={item.excerpt.text} />
+			<SummarySection item={item} />
+		</Documentation>
 	);
 }

@@ -1,0 +1,85 @@
+{
+	"name": "@discordjs/next",
+	"version": "0.1.0",
+	"description": "A powerful TypeScript library for interacting with the Discord API",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"docs": "yarn build:docs && api-extractor run --local",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/next/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./*": {
+			"import": "./dist/exports/*.mjs",
+			"require": "./dist/exports/*.js",
+			"types": "./dist/exports/*.d.ts"
+		}
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/builders": "workspace:^",
+		"@discordjs/collection": "workspace:^",
+		"@discordjs/core": "workspace:^",
+		"@discordjs/formatters": "workspace:^",
+		"@discordjs/rest": "workspace:^",
+		"@discordjs/util": "workspace:^",
+		"@discordjs/ws": "workspace:^",
+		"discord-api-types": "^0.37.37"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^2.0.0",
+		"@microsoft/api-extractor": "^7.34.4",
+		"@types/node": "18.15.11",
+		"@vitest/coverage-c8": "^0.29.8",
+		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.1.0",
+		"eslint": "^8.37.0",
+		"eslint-config-neon": "^0.1.41",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.7",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.3",
+		"vitest": "^0.29.8"
+	},
+	"engines": {
+		"node": ">=18.13.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

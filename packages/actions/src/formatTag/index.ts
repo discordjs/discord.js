@@ -5,6 +5,7 @@ const tag = getInput('tag', { required: true });
 const parsed = formatTag(tag);
 
 if (parsed) {
+	setOutput('subpackage', parsed.isSubpackage);
 	setOutput('package', parsed.package);
 	setOutput('semver', parsed.semver);
 }

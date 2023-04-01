@@ -29,29 +29,32 @@ class ShardClientUtil {
      */
     this.parentPort = null;
 
-    if (mode === 'process') {
-      process.on('message', this._handleMessage.bind(this));
-      client.on('ready', () => {
-        process.send({ _ready: true });
-      });
-      client.on('disconnect', () => {
-        process.send({ _disconnect: true });
-      });
-      client.on('reconnecting', () => {
-        process.send({ _reconnecting: true });
-      });
-    } else if (mode === 'worker') {
-      this.parentPort = require('node:worker_threads').parentPort;
-      this.parentPort.on('message', this._handleMessage.bind(this));
-      client.on('ready', () => {
-        this.parentPort.postMessage({ _ready: true });
-      });
-      client.on('disconnect', () => {
-        this.parentPort.postMessage({ _disconnect: true });
-      });
-      client.on('reconnecting', () => {
-        this.parentPort.postMessage({ _reconnecting: true });
-      });
+    switch (mode) {
+      case 'process':
+        process.on('message', this._handleMessage.bind(this));
+        client.on('ready', () => {
+          process.send({ _ready: true });
+        });
+        client.on('disconnect', () => {
+          process.send({ _disconnect: true });
+        });
+        client.on('reconnecting', () => {
+          process.send({ _reconnecting: true });
+        });
+        break;
+      case 'worker':
+        this.parentPort = require('node:worker_threads').parentPort;
+        this.parentPort.on('message', this._handleMessage.bind(this));
+        client.on('ready', () => {
+          this.parentPort.postMessage({ _ready: true });
+        });
+        client.on('disconnect', () => {
+          this.parentPort.postMessage({ _disconnect: true });
+        });
+        client.on('reconnecting', () => {
+          this.parentPort.postMessage({ _reconnecting: true });
+        });
+        break;
     }
   }
 
@@ -81,14 +84,17 @@ class ShardClientUtil {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      if (this.mode === 'process') {
-        process.send(message, err => {
-          if (err) reject(err);
-          else resolve();
-        });
-      } else if (this.mode === 'worker') {
-        this.parentPort.postMessage(message);
-        resolve();
+      switch (this.mode) {
+        case 'process':
+          process.send(message, err => {
+            if (err) reject(err);
+            else resolve();
+          });
+          break;
+        case 'worker':
+          this.parentPort.postMessage(message);
+          resolve();
+          break;
       }
     });
   }

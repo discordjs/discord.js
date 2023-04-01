@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-	plugins: [react(), dts(), Unocss()],
+	plugins: [dts(), react(), Unocss()],
 	build: {
 		lib: {
 			entry: resolve(__dirname, 'src/lib/index.ts'),
@@ -14,7 +14,15 @@ export default defineConfig({
 			fileName: 'ui',
 		},
 		rollupOptions: {
-			external: ['react', 'react-dom', 'ariakit/disclosure', 'react-icons/vsc'],
+			external: [
+				'react',
+				'react-dom',
+				'ariakit/disclosure',
+				'@react-icons/all-files/vsc/VscFlame',
+				'@react-icons/all-files/vsc/VscInfo',
+				'@react-icons/all-files/vsc/VscWarning',
+				'@react-icons/all-files/vsc/VscChevronDown',
+			],
 		},
 	},
 });

@@ -81,7 +81,7 @@ class TextBasedChannel {
    * @property {ReplyOptions} [reply] The options for replying to a message
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.SuppressEmbeds` can be set.</info>
+   * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
    */
 
   /**
@@ -127,25 +127,6 @@ class TextBasedChannel {
    * @example
    * // Send a local file
    * channel.send({
-   *   files: [{
-   *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
-   * // Send an embed with a local image inside
-   * channel.send({
-   *   content: 'This is an embed',
-   *   embeds: [
-   *     {
-   *       thumbnail: {
-   *         url: 'attachment://file.jpg'
-   *       }
-   *     }
-   *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg',
@@ -346,7 +327,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Options used to create a {@link Webhook} in a {@link TextChannel} or a {@link NewsChannel}.
+   * Options used to create a {@link Webhook}.
    * @typedef {Object} ChannelWebhookCreateOptions
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook

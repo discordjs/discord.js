@@ -100,7 +100,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Options used to create a new role.
-   * @typedef {Object} CreateRoleOptions
+   * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
    * @property {ColorResolvable} [color] The data to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
@@ -117,7 +117,7 @@ class RoleManager extends CachedManager {
   /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
-   * @param {CreateRoleOptions} [options] Options for creating the new role
+   * @param {RoleCreateOptions} [options] Options for creating the new role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
@@ -137,7 +137,7 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
-    if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
+    if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
@@ -166,14 +166,14 @@ class RoleManager extends CachedManager {
 
   /**
    * Options for editing a role
-   * @typedef {RoleData} EditRoleOptions
+   * @typedef {RoleData} RoleEditOptions
    * @property {string} [reason] The reason for editing this role
    */
 
   /**
    * Edits a role of the guild.
    * @param {RoleResolvable} role The role to edit
-   * @param {EditRoleOptions} data The new data for the role
+   * @param {RoleEditOptions} options The options to provide
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -181,15 +181,15 @@ class RoleManager extends CachedManager {
    *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
-  async edit(role, data) {
+  async edit(role, options) {
     role = this.resolve(role);
     if (!role) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
 
-    if (typeof data.position === 'number') {
-      await this.setPosition(role, data.position, { reason: data.reason });
+    if (typeof options.position === 'number') {
+      await this.setPosition(role, options.position, { reason: options.reason });
     }
 
-    let icon = data.icon;
+    let icon = options.icon;
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
       icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
@@ -197,16 +197,16 @@ class RoleManager extends CachedManager {
     }
 
     const body = {
-      name: data.name,
-      color: typeof data.color === 'undefined' ? undefined : resolveColor(data.color),
-      hoist: data.hoist,
-      permissions: typeof data.permissions === 'undefined' ? undefined : new PermissionsBitField(data.permissions),
-      mentionable: data.mentionable,
+      name: options.name,
+      color: options.color === undefined ? undefined : resolveColor(options.color),
+      hoist: options.hoist,
+      permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
+      mentionable: options.mentionable,
       icon,
-      unicode_emoji: data.unicodeEmoji,
+      unicode_emoji: options.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: data.reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: options.reason });
 
     const clone = role._clone();
     clone._patch(d);

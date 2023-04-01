@@ -15,9 +15,12 @@ body:
         - brokers
         - builders
         - collection
-        - rest
+        - core
+        - formatters
+        - next
         - proxy
         - proxy-container
+        - rest
         - voice
         - ws
     validations:
@@ -117,7 +120,7 @@ body:
         - No Intents
         - Guilds
         - GuildMembers
-        - GuildBans
+        - GuildModeration
         - GuildEmojisAndStickers
         - GuildIntegrations
         - GuildWebhooks

@@ -20,6 +20,30 @@ class AutoModerationRuleManager extends CachedManager {
     this.guild = guild;
   }
 
+  /**
+   * The cache of this manager
+   * @type {Collection<Snowflake, AutoModerationRule>}
+   * @name AutoModerationRuleManager#cache
+   */
+
+  /**
+   * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
+   * @method resolve
+   * @memberof AutoModerationRuleManager
+   * @instance
+   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+   * @returns {?AutoModerationRule}
+   */
+
+  /**
+   * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
+   * @method resolveId
+   * @memberof AutoModerationRuleManager
+   * @instance
+   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+   * @returns {?Snowflake}
+   */
+
   _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
   }
@@ -51,6 +75,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @typedef {Object} AutoModerationActionMetadataOptions
    * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
+   * @property {string} [customMessage] The custom message that is shown whenever a message is blocked
    */
 
   /**
@@ -106,6 +131,7 @@ class AutoModerationRuleManager extends CachedManager {
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
             channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            custom_message: action.metadata?.customMessage,
           },
         })),
         enabled,
@@ -162,6 +188,7 @@ class AutoModerationRuleManager extends CachedManager {
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
             channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            custom_message: action.metadata?.customMessage,
           },
         })),
         enabled,
@@ -253,24 +280,6 @@ class AutoModerationRuleManager extends CachedManager {
     const autoModerationRuleId = this.resolveId(autoModerationRule);
     await this.client.rest.delete(Routes.guildAutoModerationRule(this.guild.id, autoModerationRuleId), { reason });
   }
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
-   * @method resolve
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?AutoModerationRule}
-   */
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
-   * @method resolveId
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
 module.exports = AutoModerationRuleManager;

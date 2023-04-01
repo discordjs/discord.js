@@ -54,233 +54,6 @@ function flatten(obj, ...props) {
 }
 
 /**
- * Options used to escape markdown.
- * @typedef {Object} EscapeMarkdownOptions
- * @property {boolean} [codeBlock=true] Whether to escape code blocks
- * @property {boolean} [inlineCode=true] Whether to escape inline code
- * @property {boolean} [bold=true] Whether to escape bolds
- * @property {boolean} [italic=true] Whether to escape italics
- * @property {boolean} [underline=true] Whether to escape underlines
- * @property {boolean} [strikethrough=true] Whether to escape strikethroughs
- * @property {boolean} [spoiler=true] Whether to escape spoilers
- * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks
- * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code
- * @property {boolean} [escape=true] Whether to escape escape characters
- * @property {boolean} [heading=false] Whether to escape headings
- * @property {boolean} [bulletedList=false] Whether to escape bulleted lists
- * @property {boolean} [numberedList=false] Whether to escape numbered lists
- * @property {boolean} [maskedLink=false] Whether to escape masked links
- */
-
-/**
- * Escapes any Discord-flavour markdown in a string.
- * @param {string} text Content to escape
- * @param {EscapeMarkdownOptions} [options={}] Options for escaping the markdown
- * @returns {string}
- */
-function escapeMarkdown(
-  text,
-  {
-    codeBlock = true,
-    inlineCode = true,
-    bold = true,
-    italic = true,
-    underline = true,
-    strikethrough = true,
-    spoiler = true,
-    codeBlockContent = true,
-    inlineCodeContent = true,
-    escape = true,
-    heading = false,
-    bulletedList = false,
-    numberedList = false,
-    maskedLink = false,
-  } = {},
-) {
-  if (!codeBlockContent) {
-    return text
-      .split('```')
-      .map((subString, index, array) => {
-        if (index % 2 && index !== array.length - 1) return subString;
-        return escapeMarkdown(subString, {
-          inlineCode,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-          inlineCodeContent,
-          escape,
-          heading,
-          bulletedList,
-          numberedList,
-          maskedLink,
-        });
-      })
-      .join(codeBlock ? '\\`\\`\\`' : '```');
-  }
-  if (!inlineCodeContent) {
-    return text
-      .split(/(?<=^|[^`])`(?=[^`]|$)/g)
-      .map((subString, index, array) => {
-        if (index % 2 && index !== array.length - 1) return subString;
-        return escapeMarkdown(subString, {
-          codeBlock,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-          escape,
-          heading,
-          bulletedList,
-          numberedList,
-          maskedLink,
-        });
-      })
-      .join(inlineCode ? '\\`' : '`');
-  }
-  if (escape) text = escapeEscape(text);
-  if (inlineCode) text = escapeInlineCode(text);
-  if (codeBlock) text = escapeCodeBlock(text);
-  if (italic) text = escapeItalic(text);
-  if (bold) text = escapeBold(text);
-  if (underline) text = escapeUnderline(text);
-  if (strikethrough) text = escapeStrikethrough(text);
-  if (spoiler) text = escapeSpoiler(text);
-  if (heading) text = escapeHeading(text);
-  if (bulletedList) text = escapeBulletedList(text);
-  if (numberedList) text = escapeNumberedList(text);
-  if (maskedLink) text = escapeMaskedLink(text);
-  return text;
-}
-
-/**
- * Escapes code block markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeCodeBlock(text) {
-  return text.replaceAll('```', '\\`\\`\\`');
-}
-
-/**
- * Escapes inline code markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeInlineCode(text) {
-  return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
-}
-
-/**
- * Escapes italic markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeItalic(text) {
-  let i = 0;
-  text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
-    if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
-    return `\\*${match}`;
-  });
-  i = 0;
-  return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
-    if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
-    return `\\_${match}`;
-  });
-}
-
-/**
- * Escapes bold markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeBold(text) {
-  let i = 0;
-  return text.replace(/\*\*(\*)?/g, (_, match) => {
-    if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
-    return '\\*\\*';
-  });
-}
-
-/**
- * Escapes underline markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeUnderline(text) {
-  let i = 0;
-  return text.replace(/__(_)?/g, (_, match) => {
-    if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
-    return '\\_\\_';
-  });
-}
-
-/**
- * Escapes strikethrough markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeStrikethrough(text) {
-  return text.replaceAll('~~', '\\~\\~');
-}
-
-/**
- * Escapes spoiler markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeSpoiler(text) {
-  return text.replaceAll('||', '\\|\\|');
-}
-
-/**
- * Escapes escape characters in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeEscape(text) {
-  return text.replaceAll('\\', '\\\\');
-}
-
-/**
- * Escapes heading characters in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeHeading(text) {
-  return text.replaceAll(/^( {0,2}[*-] +)?(#{1,3} )/gm, '$1\\$2');
-}
-
-/**
- * Escapes bulleted list characters in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeBulletedList(text) {
-  return text.replaceAll(/^( *)[*-]( +)/gm, '$1\\-$2');
-}
-
-/**
- * Escapes numbered list characters in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeNumberedList(text) {
-  return text.replaceAll(/^( *\d+)\./gm, '$1\\.');
-}
-
-/**
- * Escapes masked link characters in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeMaskedLink(text) {
-  return text.replaceAll(/\[.+\]\(.+\)/gm, '\\$&');
-}
-
-/**
  * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
@@ -477,13 +250,14 @@ function resolveColor(color) {
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
+    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    color = Colors[color];
   } else if (Array.isArray(color)) {
     color = (color[0] << 16) + (color[1] << 8) + color[2];
   }
 
   if (color < 0 || color > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
-  else if (Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
+  if (typeof color !== 'number' || Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
 
   return color;
 }
@@ -599,14 +373,6 @@ function parseWebhookURL(url) {
 
 module.exports = {
   flatten,
-  escapeMarkdown,
-  escapeCodeBlock,
-  escapeInlineCode,
-  escapeItalic,
-  escapeBold,
-  escapeUnderline,
-  escapeStrikethrough,
-  escapeSpoiler,
   fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,
