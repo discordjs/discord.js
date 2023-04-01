@@ -1511,7 +1511,6 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public get displayHexColor(): HexColorString;
   public get displayName(): string;
   public guild: Guild;
-  public get id(): Snowflake;
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
@@ -2907,7 +2906,6 @@ export class Team extends Base {
 export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
-  public get id(): Snowflake;
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
