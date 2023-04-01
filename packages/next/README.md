@@ -46,6 +46,7 @@ If you don't understand something in the documentation, you are experiencing pro
 
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[documentation]: https://discord.js.org/docs/packages/next/stable
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
