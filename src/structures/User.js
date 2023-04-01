@@ -310,11 +310,21 @@ class User extends Base {
     json.bannerURL = this.banner ? this.bannerURL() : this.banner;
     return json;
   }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
 }
+
+/**
+ * Sends a message to this user.
+ * @method send
+ * @memberof User
+ * @instance
+ * @param {string|MessagePayload|MessageOptions} options The options to provide
+ * @returns {Promise<Message>}
+ * @example
+ * // Send a direct message
+ * user.send('Hello!')
+ *   .then(message => console.log(`Sent message: ${message.content} to ${user.tag}`))
+ *   .catch(console.error);
+ */
 
 TextBasedChannel.applyToClass(User);
 
