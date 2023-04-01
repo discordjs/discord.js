@@ -97,6 +97,7 @@ import {
   SortOrderType,
   ForumLayoutType,
   ApplicationRoleConnectionMetadataTypes,
+  AnimationTypes,
 } from './enums';
 import {
   APIApplicationRoleConnectionMetadata,
@@ -2809,6 +2810,17 @@ export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, [
   public setVideoQualityMode(videoQualityMode: VideoQualityMode | number, reason?: string): Promise<VoiceChannel>;
 }
 
+export class VoiceChannelEffect {
+  private constructor(data: unknown, guild: Guild);
+  public guild: Guild;
+  public channelId: Snowflake;
+  public userId: Snowflake;
+  public emoji: Emoji | null;
+  public animationType: AnimationTypes | null;
+  public animationId: number | null;
+  public get channel(): VoiceChannel | null;
+}
+
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
@@ -3154,6 +3166,7 @@ export const Constants: {
   DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
   VerificationLevels: EnumHolder<typeof VerificationLevels>;
   MembershipStates: EnumHolder<typeof MembershipStates>;
+  AnimationTypes: EnumHolder<typeof AnimationTypes>;
   AutoModerationRuleTriggerTypes: EnumHolder<typeof AutoModerationRuleTriggerTypes>;
   AutoModerationRuleKeywordPresetTypes: EnumHolder<typeof AutoModerationRuleKeywordPresetTypes>;
   AutoModerationActionTypes: EnumHolder<typeof AutoModerationActionTypes>;
@@ -4569,6 +4582,7 @@ export interface ClientEvents extends BaseClientEvents {
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   /** @deprecated Use interactionCreate instead */
@@ -4827,6 +4841,7 @@ export interface ConstantsEvents {
   THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
   USER_UPDATE: 'userUpdate';
   PRESENCE_UPDATE: 'presenceUpdate';
+  VOICE_CHANNEL_EFFECT_SEND: 'voiceChaannelEffectSend';
   VOICE_SERVER_UPDATE: 'voiceServerUpdate';
   VOICE_STATE_UPDATE: 'voiceStateUpdate';
   TYPING_START: 'typingStart';

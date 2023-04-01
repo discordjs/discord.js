@@ -10,6 +10,11 @@ export const enum ActivityTypes {
   COMPETING = 5,
 }
 
+export const enum AnimationTypes {
+  PREMIUM = 0,
+  BASIC = 1,
+}
+
 export const enum ApplicationCommandTypes {
   CHAT_INPUT = 1,
   USER = 2,

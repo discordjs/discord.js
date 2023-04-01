@@ -221,6 +221,7 @@ exports.Opcodes = {
  * * THREAD_MEMBERS_UPDATE: threadMembersUpdate
  * * USER_UPDATE: userUpdate
  * * PRESENCE_UPDATE: presenceUpdate
+ * * VOICE_CHANNEL_EFFECT_SEND: voiceChannelEffectSend
  * * VOICE_SERVER_UPDATE: voiceServerUpdate
  * * VOICE_STATE_UPDATE: voiceStateUpdate
  * * TYPING_START: typingStart
@@ -305,6 +306,7 @@ exports.Events = {
   THREAD_MEMBERS_UPDATE: 'threadMembersUpdate',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
+  VOICE_CHANNEL_EFFECT_SEND: 'voiceChannelEffectSend',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -417,6 +419,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * USER_UPDATE
  * * PRESENCE_UPDATE
  * * TYPING_START
+ * * VOICE_CHANNEL_EFFECT_SEND
  * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
@@ -482,6 +485,7 @@ exports.WSEvents = keyMirror([
   'USER_UPDATE',
   'PRESENCE_UPDATE',
   'TYPING_START',
+  'VOICE_CHANNEL_EFFECT_SEND',
   'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
@@ -1510,6 +1514,15 @@ exports.SortOrderTypes = createEnum([null, 'LATEST_ACTIVITY', 'CREATION_DATE']);
  */
 exports.ForumLayoutTypes = createEnum(['NOT_SET', 'LIST_VIEW', 'GALLERY_VIEW']);
 
+/**
+ * The animation type of the voice channel effect
+ * * PREMIUM
+ * * BASIC
+ * @typedef {string} AnimationType
+ * @see {@link https://discord.com/developers/docs/topics/gateway-events#voice-channel-effect-send-animation-type}
+ */
+exports.AnimationTypes = createEnum(['PREMIUM', 'BASIC']);
+
 exports._cleanupSymbol = Symbol('djsCleanup');
 
 function keyMirror(arr) {
@@ -1531,6 +1544,7 @@ function createEnum(keys) {
 /**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {Object<ActivityType, number>} ActivityTypes The type of an activity of a users presence.
+ * @property {Object<AnimationType, number>} AnimationTypes The animation type of the voice channel effect.
  * @property {Object<APIError, number>} APIErrors An error encountered while performing an API request.
  * @property {Object<ApplicationCommandOptionType, number>} ApplicationCommandOptionTypes
  * The type of an {@link ApplicationCommandOption} object.
