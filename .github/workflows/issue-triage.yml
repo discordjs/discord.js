@@ -2,7 +2,6 @@ name: 'Issue Labeler'
 on:
   issues:
     types: [opened]
-
 jobs:
   issue-triage:
     runs-on: ubuntu-latest

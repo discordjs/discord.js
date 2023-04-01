@@ -1,7 +1,9 @@
 import type { ApiFunction } from '@microsoft/api-extractor-model';
-import { OverloadSwitcher } from '../../OverloadSwitcher';
+import dynamic from 'next/dynamic';
+import { Header } from '../../documentation/Header';
 import { FunctionBody } from './FunctionBody';
-import { Header } from '~/components/documentation/Header';
+
+const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 
 export function Function({ item }: { item: ApiFunction }) {
 	const header = <Header kind={item.kind} name={item.name} />;
@@ -9,7 +11,7 @@ export function Function({ item }: { item: ApiFunction }) {
 	if (item.getMergedSiblings().length > 1) {
 		const overloads = item
 			.getMergedSiblings()
-			.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={idx} />);
+			.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={`${sibling.displayName}-${idx}`} />);
 
 		return (
 			<div>

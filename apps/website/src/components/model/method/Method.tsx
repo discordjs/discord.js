@@ -4,9 +4,11 @@ import type {
 	ApiMethod,
 	ApiMethodSignature,
 } from '@microsoft/api-extractor-model';
-import { OverloadSwitcher } from '../../OverloadSwitcher';
+import dynamic from 'next/dynamic';
 import { MethodDocumentation } from './MethodDocumentation';
 import { MethodHeader } from './MethodHeader';
+
+const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 
 export function Method({
 	method,
@@ -20,7 +22,9 @@ export function Method({
 		// each overload node on the server.
 		const overloads = method
 			.getMergedSiblings()
-			.map((sibling, idx) => <MethodDocumentation key={idx} method={sibling as ApiMethod | ApiMethodSignature} />);
+			.map((sibling, idx) => (
+				<MethodDocumentation key={`${sibling.displayName}-${idx}`} method={sibling as ApiMethod | ApiMethodSignature} />
+			));
 
 		return (
 			<OverloadSwitcher overloads={overloads}>

@@ -18,96 +18,28 @@
 
 ## About
 
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
-[Discord API](https://discord.com/developers/docs/intro).
+This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`discord.js`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
 
-- Object-oriented
-- Predictable abstractions
-- Performant
-- 100% coverage of the Discord API
+## Packages
 
-## Installation
-
-**Node.js 16.9.0 or newer is required.**
-
-```sh-session
-npm install discord.js
-yarn add discord.js
-pnpm add discord.js
-```
-
-### Optional packages
-
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
-- [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
-- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
-- [@discordjs/voice](https://www.npmjs.com/package/@discordjs/voice) for interacting with the Discord Voice API (`npm install @discordjs/voice`)
-
-## Example usage
-
-Install discord.js:
-
-```sh-session
-npm install discord.js
-yarn add discord.js
-pnpm add discord.js
-```
-
-Register a slash command against the Discord API:
-
-```js
-const { REST, Routes } = require('discord.js');
-
-const commands = [
-	{
-		name: 'ping',
-		description: 'Replies with Pong!',
-	},
-];
-
-const rest = new REST({ version: '10' }).setToken(TOKEN);
-
-(async () => {
-	try {
-		console.log('Started refreshing application (/) commands.');
-
-		await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-
-		console.log('Successfully reloaded application (/) commands.');
-	} catch (error) {
-		console.error(error);
-	}
-})();
-```
-
-Afterwards we can create a quite simple example bot:
-
-```js
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on('ready', () => {
-	console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isChatInputCommand()) return;
-
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-});
-
-client.login(TOKEN);
-```
+- `discord.js` ([source][source]) - A powerful Node.js module for interacting with the Discord API
+- `@discordjs/brokers` ([source][brokers-source]) - A collection of brokers for use with discord.js
+- `@discordjs/builders` ([source][builders-source]) - A utility package for easily building Discord API payloads
+- `@discordjs/collection` ([source][collection-source]) - A powerful utility data structure
+- `@discordjs/core` ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
+- `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
+- `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
+- `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
+- `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
+- `@discordjs/util` ([source][util-source]) - A collection of utility functions
+- `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
 
 ## Links
 
 - [Website][website] ([source][website-source])
 - [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
-  See also the [Update Guide][guide-update], including updated and removed items in the library.
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
 - [Discord API Discord server][discord-api]
 - [GitHub][source]
@@ -120,18 +52,15 @@ client.login(TOKEN);
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
-See [the contribution guide][contributing] if you'd like to submit a PR.
+Please read through our [contribution guidelines][contributing] before starting a pull request. We welcome contributions of all kinds, not just code! If you're stuck for ideas, look for the [good first issue][good-first-issue] label on issues in the repository. If you have any questions about the project, feel free to ask them on [Discord][discord]. Before creating your own issue or pull request, always check to see if one already exists! Don't rush contributions, take your time and ensure you're doing it correctly.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][discord].
 
-[website]: https://discord.js.org/
+[website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs
+[documentation]: https://discord.js.org/docs
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
@@ -143,3 +72,15 @@ nudge in the right direction, please don't hesitate to join our official [discor
 [rpc]: https://www.npmjs.com/package/discord-rpc
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
+[github-releases]: https://github.com/discordjs/discord.js/releases
+[brokers-source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
+[builders-source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
+[collection-source]: https://github.com/discordjs/discord.js/tree/main/packages/collection
+[core-source]: https://github.com/discordjs/discord.js/tree/main/packages/core
+[formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
+[proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
+[rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
+[voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
+[util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
+[ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
+[good-first-issue]: https://github.com/discordjs/discord.js/contribute

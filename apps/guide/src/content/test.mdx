@@ -1,0 +1,100 @@
+---
+title: Test
+category: Test
+---
+
+<DiscordMessages>
+	<DiscordMessage
+		reply={{
+			author: {
+				avatar:
+					'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar:
+				'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		1234
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar:
+				'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+		followUp
+		time="21:02"
+	>
+		1234
+	</DiscordMessage>
+</DiscordMessages>
+
+<DiscordMessages>
+	<DiscordMessage
+		reply={{
+			author: {
+				avatar:
+					'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar:
+				'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		1234
+	</DiscordMessage>
+</DiscordMessages>
+
+<DiscordMessages>
+	<DiscordMessage
+		reply={{
+			author: {
+				avatar:
+					'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+				username: 'Crawl',
+			},
+			content: 'Test',
+		}}
+		author={{
+			avatar:
+				'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+			username: 'Crawl',
+			time: 'Today at 21:00',
+		}}
+	>
+		<>
+			<DiscordMessageEmbed
+				author={{
+					avatar:
+						'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+					username: 'Crawl',
+				}}
+			/>
+			<DiscordMessageEmbed title={{ title: 'Title' }} />
+			<DiscordMessageEmbed footer={{ content: 'Footer' }} />
+			<DiscordMessageEmbed
+				author={{
+					avatar:
+						'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
+					username: 'Crawl',
+				}}
+				title={{ title: 'Title' }}
+				footer={{ content: 'Footer' }}
+			>
+				Test
+			</DiscordMessageEmbed>
+		</>
+	</DiscordMessage>
+</DiscordMessages>
