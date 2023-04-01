@@ -50,7 +50,16 @@ class VoiceChannelEffect {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.resolve(this.channelId);
+    return this.guild.channels.cache.get(this.channelId) ?? null;
+  }
+
+  /**
+   * The member that sent the effect.
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild.members.cache.get(this.userId) ?? null;
   }
 }
 

@@ -2812,13 +2812,14 @@ export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, [
 
 export class VoiceChannelEffect {
   private constructor(data: unknown, guild: Guild);
-  public guild: Guild;
-  public channelId: Snowflake;
-  public userId: Snowflake;
-  public emoji: Emoji | null;
   public animationType: AnimationTypes | null;
   public animationId: number | null;
-  public get channel(): VoiceChannel | null;
+  public readonly channel: VoiceChannel | null;
+  public channelId: Snowflake;
+  public emoji: Emoji | null;
+  public guild: Guild;
+  public readonly member: GuildMember | null;
+  public userId: Snowflake;
 }
 
 export class VoiceRegion {

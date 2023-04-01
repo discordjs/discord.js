@@ -15,7 +15,7 @@ class VoiceChannelEffectSendAction extends Action {
      * @event Client#voiceChannelEffectSend
      * @param {VoiceChannelEffect} voiceChannelEffect The sent voice channel effect
      */
-    client.emit(Events.VOICE_CHANNEL_EFFECT_SEND, new VoiceChannelEffect(data, guild););
+    client.emit(Events.VOICE_CHANNEL_EFFECT_SEND, new VoiceChannelEffect(data, guild));
   }
 }
 
