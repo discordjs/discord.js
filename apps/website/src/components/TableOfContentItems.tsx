@@ -87,7 +87,7 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 
 	return (
 		<div className="flex flex-col break-all p-3 pb-8">
-			<div className="mt-4 ml-2 flex flex-row gap-2">
+			<div className="ml-2 mt-4 flex flex-row gap-2">
 				<VscListSelection size={25} />
 				<span className="font-semibold">Contents</span>
 			</div>

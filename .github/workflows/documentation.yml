@@ -143,6 +143,15 @@ jobs:
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
           fi
 
+      - name: Upload documentation to database
+        if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        uses: ./packages/actions/src/uploadDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
       - name: Move docs to correct directory
         if: ${{ github.ref_type == 'branch' }}
         env:
@@ -155,6 +164,14 @@ jobs:
           if [[ $PACKAGE != "discord.js" ]]; then
             mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${GITHUB_REF_NAME}.api.json
           fi
+
+      - name: Upload documentation to database
+        if: ${{ github.ref_type == 'branch' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        uses: ./packages/actions/src/uploadDocumentation
+        with:
+          package: ${{ matrix.package }}
 
       - name: Commit and push
         run: |
