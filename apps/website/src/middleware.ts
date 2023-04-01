@@ -19,7 +19,7 @@ export default async function middleware(request: NextRequest) {
 	}
 
 	if (request.nextUrl.pathname.includes('discord.js')) {
-		return NextResponse.redirect('https://discord.js.org/#/docs/discord.js');
+		return NextResponse.redirect('https://old.discordjs.dev/#/docs/discord.js');
 	}
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {

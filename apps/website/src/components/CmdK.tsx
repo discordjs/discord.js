@@ -112,7 +112,7 @@ export function CmdKDialog() {
 	}, [search]);
 
 	return (
-		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog!}>
+		<Dialog className="fixed left-1/2 top-1/4 z-50 -translate-x-1/2" state={dialog!}>
 			<Command
 				className="dark:bg-dark/50 min-w-xs sm:min-w-lg dark:border-dark-100 border-light-900 max-w-xs rounded border bg-white/50 shadow backdrop-blur-md sm:max-w-lg"
 				label="Command Menu"

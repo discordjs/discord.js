@@ -84,6 +84,9 @@ function resolveMemberSearchParams(packageName: string, member: ApiItem): URLSea
 	return params;
 }
 
+// eslint-disable-next-line unicorn/numeric-separators-style
+export const revalidate = 3600;
+
 export async function generateMetadata({ params }: { params: ItemRouteParams }) {
 	const member = (await fetchHeadMember(params))!;
 	const name = `discord.js${member?.displayName ? ` | ${member.displayName}` : ''}`;

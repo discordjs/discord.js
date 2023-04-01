@@ -26,3 +26,9 @@ export interface IHandler {
 		requestData: HandlerRequestData,
 	): Promise<Dispatcher.ResponseData>;
 }
+
+export interface PolyFillAbortSignal {
+	readonly aborted: boolean;
+	addEventListener(type: 'abort', listener: () => void): void;
+	removeEventListener(type: 'abort', listener: () => void): void;
+}
