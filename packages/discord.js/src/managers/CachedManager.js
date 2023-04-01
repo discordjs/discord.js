@@ -11,6 +11,13 @@ class CachedManager extends DataManager {
   constructor(client, holds, iterable) {
     super(client, holds);
 
+    /**
+     * The private cache of items for this manager.
+     * @type {Collection}
+     * @private
+     * @readonly
+     * @name CachedManager#_cache
+     */
     Object.defineProperty(this, '_cache', { value: this.client.options.makeCache(this.constructor, this.holds) });
 
     if (iterable) {
