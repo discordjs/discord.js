@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/builders",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"description": "A set of builders that you can use when creating your bot",
 	"scripts": {
 		"test": "vitest run",
