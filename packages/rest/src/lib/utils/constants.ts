@@ -55,3 +55,5 @@ export const OverwrittenMimeTypes = {
 	// https://github.com/discordjs/discord.js/issues/8557
 	'image/apng': 'image/png',
 } as const satisfies Readonly<Record<string, string>>;
+
+export const BurstHandlerMajorIdKey = 'burst';
