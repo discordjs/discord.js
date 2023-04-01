@@ -46,22 +46,24 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.4.4",
+		"@commitlint/cli": "^17.5.1",
 		"@commitlint/config-angular": "^17.4.4",
-		"@favware/cliff-jumper": "^1.10.0",
+		"@favware/cliff-jumper": "^2.0.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^13.1.2",
-		"tsup": "^6.6.3",
-		"turbo": "^1.8.3",
-		"typescript": "^4.9.5",
-		"unocss": "^0.50.1",
-		"vitest": "^0.29.1"
+		"lint-staged": "^13.2.0",
+		"tsup": "^6.7.0",
+		"turbo": "^1.8.8",
+		"typescript": "^5.0.3",
+		"unocss": "^0.50.6",
+		"vercel": "^28.18.3",
+		"vitest": "^0.29.8"
 	},
 	"resolutions": {
-		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch"
+		"@microsoft/tsdoc-config@~0.16.1": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
+		"@microsoft/tsdoc-config@0.16.2": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -70,5 +72,5 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.4.1"
+	"packageManager": "yarn@3.5.0"
 }

@@ -26,12 +26,11 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 
 	return (
 		<div className="scroll-mt-30 flex flex-col" id={key}>
-			<div className="flex flex-col gap-2 md:-ml-9 md:flex-row md:place-items-center">
-				<Anchor href={`#${key}`} />
+			<div className="flex flex-col gap-2 md:-ml-9">
 				{isDeprecated ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isProtected) ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isStatic) ? (
-					<div className="flex flex-row gap-1">
+					<div className="flex flex-row gap-1 md:ml-7">
 						{isDeprecated ? (
 							<div className="flex h-5 flex-row place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated
@@ -49,7 +48,8 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap gap-1">
+				<div className="flex flex-row flex-wrap place-items-center gap-1">
+					<Anchor href={`#${key}`} />
 					<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(method)}</h4>
 					<h4 className="font-mono text-lg font-bold">:</h4>
 					<h4 className="break-all font-mono text-lg font-bold">

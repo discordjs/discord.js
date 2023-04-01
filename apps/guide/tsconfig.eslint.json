@@ -10,7 +10,6 @@
 		"**/*.cjs",
 		"**/*.mjs",
 		"**/*.jsx",
-		"**/*.astro",
 		"**/*.test.ts",
 		"**/*.test.js",
 		"**/*.test.mjs",

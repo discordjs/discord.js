@@ -19,6 +19,7 @@ function createTestCollection(): TestCollection<number> {
 
 function expectInvalidFunctionError(cb: () => unknown, val?: unknown): void {
 	expect(() => {
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
 		cb();
 	}).toThrowError(new TypeError(`${val} is not a function`));
 }

@@ -4,6 +4,7 @@ import type { LinkProps } from 'next/link';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
+import { useCurrentPathMeta } from '~/hooks/useCurrentPathMeta';
 
 export interface ItemLinkProps
 	extends Omit<LinkProps, 'href'>,
@@ -15,6 +16,11 @@ export interface ItemLinkProps
 	 * The URI of the api item to link to. (e.g. `/RestManager`)
 	 */
 	itemURI: string;
+
+	/**
+	 * The name of the package the item belongs to.
+	 */
+	packageName?: string | undefined;
 }
 
 /**
@@ -25,18 +31,14 @@ export interface ItemLinkProps
  * generate the full path to the item client-side.
  */
 export function ItemLink(props: PropsWithChildren<ItemLinkProps>) {
-	const path = usePathname();
+	const pathname = usePathname();
+	const { packageName, version } = useCurrentPathMeta();
 
-	if (!path) {
+	if (!pathname) {
 		throw new Error('ItemLink must be used inside a Next.js page. (e.g. /docs/packages/foo/main)');
 	}
 
-	// Check if the item is already in the current path, if so keep the current path
-	const end = path?.split('/')?.length < 6 ? path?.length : -1;
+	const { itemURI, packageName: pkgName, ...linkProps } = props;
 
-	const pathPrefix = path?.split('/').slice(0, end).join('/');
-
-	const { itemURI, ...linkProps } = props;
-
-	return <Link href={`${pathPrefix}${itemURI}`} {...linkProps} />;
+	return <Link href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} {...linkProps} />;
 }

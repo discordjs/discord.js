@@ -451,7 +451,14 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Obtains all active thread channels in the guild from Discord
+   * Data returned from fetching threads.
+   * @typedef {Object} FetchedThreads
+   * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched
+   * @property {Collection<Snowflake, ThreadMember>} members The thread members in the received threads
+   */
+
+  /**
+   * Obtains all active thread channels in the guild.
    * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    * @example

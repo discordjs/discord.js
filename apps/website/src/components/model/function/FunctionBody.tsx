@@ -1,10 +1,9 @@
 import type { ApiFunction } from '@microsoft/api-extractor-model';
-import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
-import { Documentation } from '~/components/documentation/Documentation';
-import { Header } from '~/components/documentation/Header';
-import { ParameterSection } from '~/components/documentation/section/ParametersSection';
-import { SummarySection } from '~/components/documentation/section/SummarySection';
-import { TypeParameterSection } from '~/components/documentation/section/TypeParametersSection';
+import { SyntaxHighlighter } from '../../SyntaxHighlighter';
+import { Documentation } from '../../documentation/Documentation';
+import { ParameterSection } from '../../documentation/section/ParametersSection';
+import { SummarySection } from '../../documentation/section/SummarySection';
+import { TypeParameterSection } from '../../documentation/section/TypeParametersSection';
 
 export interface FunctionBodyProps {
 	mergedSiblingCount: number;
@@ -13,7 +12,7 @@ export interface FunctionBodyProps {
 
 export function FunctionBody({ item }: { item: ApiFunction }) {
 	return (
-		<Documentation item={item} showHeader={false}>
+		<Documentation>
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />
 			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
