@@ -716,9 +716,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes('VANITY_URL')) {
-      throw new Error('VANITY_URL');
-    }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();
     this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
