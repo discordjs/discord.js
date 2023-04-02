@@ -56,7 +56,7 @@ class ClientUser extends User {
   async edit({ username, avatar }) {
     const data = await this.client.api
       .users('@me')
-      .patch({ username, avatar: avatar && (await DataResolver.resolveImage(avatar)) });
+      .patch({ data: { username, avatar: avatar && (await DataResolver.resolveImage(avatar)) } });
 
     this.client.token = data.token;
     const { updated } = this.client.actions.UserUpdate.handle(data);
