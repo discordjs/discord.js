@@ -138,7 +138,7 @@ export class InteractionsAPI {
 	public async getOriginalReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.webhooks.getMessage(
 			applicationId,
