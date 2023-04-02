@@ -59,14 +59,23 @@ const { version } = require('../../package.json');
  */
 
 /**
+ * A function to determine what strategy to use for sharding internally.
+ * ```js
+ * (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 })
+ * ```
+ * @typedef {Function} BuildStrategyFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {IShardingStrategy} The strategy to use for sharding
+ */
+
+/**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
- * @property {Function} [buildStrategy] Builds the strategy to use for sharding;
- * example: `(manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 })`
+ * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
  */
 
 /**
@@ -204,10 +213,10 @@ module.exports = Options;
 
 /**
  * @external WSWebSocketManager
- * @see {@link https://discord.js.org/#/docs/ws/main/class/WebSocketManager}
+ * @see {@link https://discord.js.org/docs/packages/ws/main/WebSocketManager:Class}
  */
 
 /**
  * @external IShardingStrategy
- * @see {@link https://discord.js.org/#/docs/ws/main/typedef/IShardingStrategy}
+ * @see {@link https://discord.js.org/docs/packages/ws/main/IShardingStrategy:Interface}
  */
