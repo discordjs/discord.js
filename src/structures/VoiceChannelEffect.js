@@ -1,7 +1,7 @@
 'use strict';
 
-const { AnimationTypes } = require('../util/Constants');
 const { Emoji } = require('./Emoji');
+const { AnimationTypes } = require('../util/Constants');
 
 /**
  * Represents an effect used in a {@link VoiceChannel}.
