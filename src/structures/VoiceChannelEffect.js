@@ -1,5 +1,6 @@
 'use strict';
 
+const { AnimationTypes } = require('../util/Constants');
 const { Emoji } = require('./Emoji');
 
 /**
@@ -35,7 +36,7 @@ class VoiceChannelEffect {
      * The animation type of the effect.
      * @type {?AnimationType}
      */
-    this.animationType = data.animation_type ?? null;
+    this.animationType = data.animation_type ? AnimationTypes[data.animation_type] : null;
 
     /**
      * The animation id of the effect.

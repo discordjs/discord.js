@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const VoiceChannelEffect = require('../../../structures/VoiceChannelEffect');
-const Events = require('../../../util/Events');
+const VoiceChannelEffect = require('../../structures/VoiceChannelEffect');
+const { Events } = require('../../util/Constants');
 
 class VoiceChannelEffectSendAction extends Action {
   handle(data) {

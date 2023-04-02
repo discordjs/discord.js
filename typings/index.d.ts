@@ -161,6 +161,7 @@ import {
   RawWelcomeScreenData,
   RawWidgetData,
   RawWidgetMemberData,
+  VoiceChannelEffectData,
 } from './rawDataTypes';
 
 //#region Classes
@@ -2811,7 +2812,7 @@ export class VoiceChannel extends TextBasedChannelMixin(BaseGuildVoiceChannel, [
 }
 
 export class VoiceChannelEffect {
-  private constructor(data: unknown, guild: Guild);
+  private constructor(data: VoiceChannelEffectData, guild: Guild);
   public animationType: AnimationTypes | null;
   public animationId: number | null;
   public readonly channel: VoiceChannel | null;
@@ -6562,6 +6563,7 @@ export type WSEventType =
   | 'USER_UPDATE'
   | 'PRESENCE_UPDATE'
   | 'TYPING_START'
+  | 'VOICE_CHANNEL_EFFECT_SEND'
   | 'VOICE_STATE_UPDATE'
   | 'VOICE_SERVER_UPDATE'
   | 'WEBHOOKS_UPDATE'
