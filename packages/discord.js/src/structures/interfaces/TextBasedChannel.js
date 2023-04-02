@@ -135,25 +135,6 @@ class TextBasedChannel {
    * })
    *   .then(console.log)
    *   .catch(console.error);
-   * @example
-   * // Send an embed with a local image inside
-   * channel.send({
-   *   content: 'This is an embed',
-   *   embeds: [
-   *     {
-   *       thumbnail: {
-   *         url: 'attachment://file.jpg'
-   *       }
-   *     }
-   *   ],
-   *   files: [{
-   *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
    */
   async send(options) {
     const User = require('../User');

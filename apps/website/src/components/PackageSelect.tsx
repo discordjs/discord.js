@@ -14,7 +14,7 @@ export default function PackageSelect() {
 
 	const packageMenuItems = useMemo(
 		() => [
-			<a href="https://discord.js.org/#/docs/discord.js" key="discord.js">
+			<a href="https://old.discordjs.dev/#/docs/discord.js" key="discord.js">
 				<MenuItem
 					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
 					id="discord-js"

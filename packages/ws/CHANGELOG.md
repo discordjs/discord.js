@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.7.0...@discordjs/ws@0.8.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+- **WebSocketShard:** Don't await #destroy in error bubbling logic (#9276) ([519825a](https://github.com/discordjs/discord.js/commit/519825a651fe22042a73046824d12f03f56ca9e2))
+- **WebSocketShard:** Don't close in #destroy when status is connecting (#9254) ([c76b17d](https://github.com/discordjs/discord.js/commit/c76b17d3b327fb55ef76770d4825e02ab8f26ad1))
+- **WebSocketShard:** Cancel initial heartbeat in destroy (#9244) ([9842082](https://github.com/discordjs/discord.js/commit/98420826bc2296fc392f17e8254cf4ad743ff5af))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/ws@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.6.0...@discordjs/ws@0.7.0) - (2023-03-12)
 
 ## Bug Fixes

@@ -10,12 +10,12 @@ export const runtime: ServerRuntime = 'edge';
 
 export default function Page() {
 	return (
-		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-col gap-8 py-6 px-4 lg:py-6 lg:px-6">
+		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-col gap-8 px-4 py-6 lg:px-6 lg:py-6">
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
 				<a
 					className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-white p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white"
-					href="https://discord.js.org/#/docs/discord.js"
+					href="https://old.discordjs.dev/#/docs/discord.js"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">

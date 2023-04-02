@@ -7,9 +7,16 @@ import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
 import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import { BurstHandler } from './handlers/BurstHandler.js';
 import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
-import { DefaultRestOptions, DefaultUserAgent, OverwrittenMimeTypes, RESTEvents } from './utils/constants.js';
+import {
+	BurstHandlerMajorIdKey,
+	DefaultRestOptions,
+	DefaultUserAgent,
+	OverwrittenMimeTypes,
+	RESTEvents,
+} from './utils/constants.js';
 import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
@@ -351,7 +358,10 @@ export class RequestManager extends EventEmitter {
 	 */
 	private createHandler(hash: string, majorParameter: string) {
 		// Create the async request queue to handle requests
-		const queue = new SequentialHandler(this, hash, majorParameter);
+		const queue =
+			majorParameter === BurstHandlerMajorIdKey
+				? new BurstHandler(this, hash, majorParameter)
+				: new SequentialHandler(this, hash, majorParameter);
 		// Save the queue based on its id
 		this.handlers.set(queue.id, queue);
 
@@ -499,6 +509,14 @@ export class RequestManager extends EventEmitter {
 	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
+		if (endpoint.startsWith('/interactions/') && endpoint.endsWith('/callback')) {
+			return {
+				majorParameter: BurstHandlerMajorIdKey,
+				bucketRoute: '/interactions/:id/:token/callback',
+				original: endpoint,
+			};
+		}
+
 		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(endpoint);
 
 		// Get the major id for this route - global otherwise
