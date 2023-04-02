@@ -153,5 +153,5 @@ const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent')
 
 /**
  * @external JSONEncodable
- * @see {@link https://discord.js.org/docs/packages/builders/main/RawFile:Interface}
+ * @see {@link https://discord.js.org/docs/packages/util/main/JSONEncodable:Interface}
  */
