@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/core",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",
@@ -17,9 +17,16 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		".": {
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		},
+		"./http-only": {
+			"import": "./dist/http-only.mjs",
+			"require": "./dist/http-only.js",
+			"types": "./dist/http-only.d.ts"
+		}
 	},
 	"directories": {
 		"lib": "src",
@@ -59,6 +66,7 @@
 		"@types/node": "16.18.23",
 		"@vitest/coverage-c8": "^0.29.8",
 		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.1.0",
 		"eslint": "^8.37.0",
 		"eslint-config-neon": "^0.1.41",
 		"eslint-formatter-pretty": "^5.0.0",

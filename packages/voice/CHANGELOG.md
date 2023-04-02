@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.15.0...@discordjs/voice@0.16.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+## Refactor
+
+- Compare with `undefined` directly (#9191) ([869153c](https://github.com/discordjs/discord.js/commit/869153c3fdf155783e7c0ecebd3627b087c3a026))
+
 # [@discordjs/voice@0.15.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.14.0...@discordjs/voice@0.15.0) - (2023-03-12)
 
 ## Bug Fixes

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.5.0...@discordjs/builders@1.6.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/builders@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.4.0...@discordjs/builders@1.5.0) - (2023-03-12)
 
 ## Documentation
