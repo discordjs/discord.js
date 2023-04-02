@@ -544,7 +544,7 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/docs/packages/collection/main}
+ * @see {@link https://discord.js.org/docs/packages/collection/main/Collection:Class}
  */
 
 /**
