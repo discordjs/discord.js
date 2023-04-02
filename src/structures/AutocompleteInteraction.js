@@ -96,7 +96,7 @@ class AutocompleteInteraction extends Interaction {
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
-        data: { choices: { ...options, name_localizations: options.nameLocalizations } },
+        data: { choices: options.map(choice => ({ ...choice, name_localizations: options.nameLocalizations })) },
       },
       auth: false,
     });
