@@ -34,5 +34,5 @@ module.exports = ActionRowBuilder;
 
 /**
  * @external BuildersActionRow
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ActionRowBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/main/ActionRowBuilder:Class}
  */
