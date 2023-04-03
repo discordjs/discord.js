@@ -142,6 +142,7 @@
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
+ * @property {'InvalidScopeWithPermissions'} InvalidScopeWithPermissions
 
  * @property {'NotImplemented'} NotImplemented
 
@@ -289,6 +290,7 @@ const keys = [
   'ModalSubmitInteractionFieldType',
 
   'InvalidMissingScopes',
+  'InvalidScopeWithPermissions',
 
   'NotImplemented',
 
