@@ -11,11 +11,13 @@ async function fetchLatestVersion(packageName: string) {
 
 export default async function middleware(request: NextRequest) {
 	if (request.nextUrl.pathname === '/docs') {
-		const skip = await get<boolean>('SKIP_PACKAGE_VERSION_SELECTION');
-		if (skip) {
-			const latestVersion = await fetchLatestVersion('builders');
-			return NextResponse.redirect(new URL(`/docs/packages/builders/${latestVersion}`, request.url));
-		}
+		try {
+			const skip = await get<boolean>('SKIP_PACKAGE_VERSION_SELECTION');
+			if (skip) {
+				const latestVersion = await fetchLatestVersion('builders');
+				return NextResponse.redirect(new URL(`/docs/packages/builders/${latestVersion}`, request.url));
+			}
+		} catch {}
 	}
 
 	if (request.nextUrl.pathname.includes('discord.js')) {

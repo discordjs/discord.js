@@ -4,7 +4,7 @@ inputs:
   package:
     description: 'The package string'
     required: true
-  semver:
+  version:
     description: 'The semver string'
 runs:
   using: node16
