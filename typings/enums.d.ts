@@ -111,6 +111,7 @@ export const enum MessageTypes {
   GUILD_INVITE_REMINDER,
   CONTEXT_MENU_COMMAND,
   AUTO_MODERATION_ACTION,
+  ROLE_SUBSCRIPTION_PURCHASE,
 }
 
 export const enum DefaultMessageNotificationLevels {
@@ -222,6 +223,7 @@ export const enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+  GIF = 4,
 }
 
 export const enum StickerTypes {
@@ -251,4 +253,15 @@ export const enum WebhookTypes {
   Incoming = 1,
   'Channel Follower' = 2,
   Application = 3,
+}
+
+export enum ApplicationRoleConnectionMetadataTypes {
+  INTEGER_LESS_THAN_OR_EQUAL = 1,
+  INTEGER_GREATER_THAN_OR_EQUAL,
+  INTEGER_EQUAL,
+  INTEGER_NOT_EQUAL,
+  DATATIME_LESS_THAN_OR_EQUAL,
+  DATATIME_GREATER_THAN_OR_EQUAL,
+  BOOLEAN_EQUAL,
+  BOOLEAN_NOT_EQUAL,
 }

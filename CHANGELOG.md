@@ -2,6 +2,90 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.15.0](https://github.com/discordjs/discord.js/compare/13.14.0...13.15.0) - (2023-04-02)
+
+## Bug Fixes
+
+- **ThreadChannel:** Fetch starter message properly (#9217) ([af6a0e5](https://github.com/discordjs/discord.js/commit/af6a0e5d5136424e7c70dc9813456b7e85874087))
+- **Actions:** Inject built data by using a symbol (#9204) ([df68520](https://github.com/discordjs/discord.js/commit/df685203193faeaa392c4cb7cd9e140a241e3af5))
+
+## Features
+
+- Backport `chatInputApplicationCommandMention` (#9245) ([51c3bf1](https://github.com/discordjs/discord.js/commit/51c3bf1f54332e166dd1ca554d09cb5c197be0e4))
+- Add support for gif stickers (v13) (#9158) ([4bc25c4](https://github.com/discordjs/discord.js/commit/4bc25c40f56f79e4aef970d9b689c4329e968382))
+- V13 support `SUPPRESS_NOTIFICATIONS` flag (#9184) ([120270e](https://github.com/discordjs/discord.js/commit/120270e8dc793f2ff2622d394fcd965ee0656636))
+
+# [13.14.0](https://github.com/discordjs/discord.js/compare/13.13.1...13.14.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **ThreadChannel:** Fetch starter message properly (#9217) ([af6a0e5](https://github.com/discordjs/discord.js/commit/af6a0e5d5136424e7c70dc9813456b7e85874087))
+- **Actions:** Inject built data by using a symbol (#9204) ([df68520](https://github.com/discordjs/discord.js/commit/df685203193faeaa392c4cb7cd9e140a241e3af5))
+
+## Features
+
+- Add support for gif stickers (v13) (#9158) ([4bc25c4](https://github.com/discordjs/discord.js/commit/4bc25c40f56f79e4aef970d9b689c4329e968382))
+- V13 support `SUPPRESS_NOTIFICATIONS` flag (#9184) ([120270e](https://github.com/discordjs/discord.js/commit/120270e8dc793f2ff2622d394fcd965ee0656636))
+
+# [13.13.1](https://github.com/discordjs/discord.js/compare/13.13.0...13.13.1) - (2023-02-21)
+
+## Bug Fixes
+
+- **Constants:** Enum creation error (#9155) ([224f21c](https://github.com/discordjs/discord.js/commit/224f21c9c0eb01985dc8f3752186c16cfce5f2a6))
+
+# [13.13.0](https://github.com/discordjs/discord.js/compare/13.12.0...13.13.0) - (2023-02-21)
+
+## Bug Fixes
+
+- Minor forums cleanup (#9033) ([eed293f](https://github.com/discordjs/discord.js/commit/eed293f893da2ea00cc81c49b636b98066513c4b))
+- **InteractionResponses:** Spell `messages` correctly (#9080) ([123d0f1](https://github.com/discordjs/discord.js/commit/123d0f1aca109a703fd52fcff82b47cc02d57edd))
+- **ThreadChannel:** `reason` as second parameter (#9023) ([a941cb6](https://github.com/discordjs/discord.js/commit/a941cb6ec58d558016ddd19424b45f765b0536ef))
+- Import errors correctly (#9030) ([6457519](https://github.com/discordjs/discord.js/commit/64575195b511fb3e5353a192d4105326b534bcde))
+- **websocketshard:** Backport zombie connection fix (#9003) ([56e6718](https://github.com/discordjs/discord.js/commit/56e67185fc346e04e5d1adad8d7bfb932336cf93))
+- **Util:** Flatten ignoring certain fields (v13) (#8936) ([4ec3355](https://github.com/discordjs/discord.js/commit/4ec3355961b7105a417e8854ae72f4ee302690f9))
+- Backport allow deletion of ephemeral messages to v13 (#8811) ([98846cf](https://github.com/discordjs/discord.js/commit/98846cf863c76348e730e6944d4b7390148aa258))
+- **Activity:** Fix equals() not checking for differing emoji (v13) (#8842) ([eecc50b](https://github.com/discordjs/discord.js/commit/eecc50bfda89cd240dd20539234f7fc2e975daa6))
+- **escapeMarkdown:** Fix double escaping (v13) (#8799) ([caf6f66](https://github.com/discordjs/discord.js/commit/caf6f66073d6681e99dc02af3e0bdd6529366ddb))
+- Fixed TS 4.8 compatibility (#8601) ([e6ee7d8](https://github.com/discordjs/discord.js/commit/e6ee7d8374ddc157037c258b63225384c154a2e6))
+
+## Documentation
+
+- **ThreadEditOptions:** Move info tag back to `invitable` (#9021) ([cf3c7a7](https://github.com/discordjs/discord.js/commit/cf3c7a7c545e692c56f09344d846215fe6692587))
+- Add missing `@extends` (#9028) ([1779e1b](https://github.com/discordjs/discord.js/commit/1779e1ba7e9bf7aad9a853097a841a36416d8ce6))
+- Update UserContextMenu documentation v13 (#8721) ([ea117bf](https://github.com/discordjs/discord.js/commit/ea117bfb7e04e1103eaf24208c06979ce8493129))
+- Update misleading `Client#guildMemberAvailable` event description (v13) (#8627) ([fcd52d7](https://github.com/discordjs/discord.js/commit/fcd52d7fc6b195b50bf6e5eb6e670fbd1ba5fd59))
+
+## Features
+
+- **WebSocketShard:** V13 add resume url (#9078) ([0188e36](https://github.com/discordjs/discord.js/commit/0188e362836bd6350a574595dc61d2c8ab3f256a))
+- V13 `guildAuditLogEntryCreate` event (#9092) ([84d34dc](https://github.com/discordjs/discord.js/commit/84d34dc258ca2a0953f8c2a0212d8459c7c16b84))
+- **Constants:** Add auto moderation events to WSEvents (#9102) ([61fa6f4](https://github.com/discordjs/discord.js/commit/61fa6f45b43ce5dec79b9cac9398b4e619190542))
+- Role subscriptions (#9040) ([0afa405](https://github.com/discordjs/discord.js/commit/0afa405f5a967ed5d82cfeffedc84d444c034924))
+- **GuildChannelManager:** Add `addFollower` (#9050) ([86329ad](https://github.com/discordjs/discord.js/commit/86329ad66fb5055c49893e69bff4c6ba2d412d29))
+- **Guild:** Add `INVITES_DISABLED` feature support (#9051) ([69d71e9](https://github.com/discordjs/discord.js/commit/69d71e967e12b83dd6d9accfb604cdd81d1aac09))
+- **ClientApplication:** Add role connections (#9072) ([a7dc40f](https://github.com/discordjs/discord.js/commit/a7dc40f1a8a587b58c590008d11c5543637d6341))
+- **Webhook:** Add `channel` getter (#9074) ([32cdaff](https://github.com/discordjs/discord.js/commit/32cdaff7eb29cb60a721ee5967875ec64bef0e8a))
+- **GuildMember:** Add `flags` (#9098) ([d69529e](https://github.com/discordjs/discord.js/commit/d69529e3fe4266d14d5d526b95ad6b57030d5b71))
+- `applicationCommandPermissionsUpdate` event (#9121) ([c2968b5](https://github.com/discordjs/discord.js/commit/c2968b58f9c6a176ecdae4e2e5c3a95e9421c23b))
+- Backport automod (#8886) ([4287983](https://github.com/discordjs/discord.js/commit/428798374f4c3c2128b844d476627762dd45edf4))
+- **GuildAuditLogs:** Support `after` (#9012) ([f0d4264](https://github.com/discordjs/discord.js/commit/f0d42644dfeec1594baac7817bb05b0aef2be6f0))
+- Backport guild forum support to v13 (#8651) ([546ac43](https://github.com/discordjs/discord.js/commit/546ac439115f4017f01e0c02dee2ff80b789c28b))
+- Add `Message#bulkDeletable` (v13) (#8761) ([ca662b4](https://github.com/discordjs/discord.js/commit/ca662b4de82d71bf8931e277544465cb3b66062c))
+- **InteractionResponses:** Add message parameter (v13) (#8838) ([0e0851a](https://github.com/discordjs/discord.js/commit/0e0851aa18d873925a3b41c47665a15fde440939))
+- **Util:** Backport `escapeMarkdown` PRs to v13 (#8703) ([8a6588a](https://github.com/discordjs/discord.js/commit/8a6588a13203120b0d185732cd7db7ecdb9f00f7))
+- **GuildBanManager:** Add `deleteMessageSeconds` (#8575) ([ca68fc3](https://github.com/discordjs/discord.js/commit/ca68fc3f6b5dbe8708d065ffea5a89b23d4db757))
+
+## Refactor
+
+- Move `me` and add `fetchMe()` (#9029) ([b01c81d](https://github.com/discordjs/discord.js/commit/b01c81dd72b71e6a5241dc10b72793596c7cbebf))
+
+## Typings
+
+- **ThreadEditOptions:** Add `appliedTags` (#9022) ([6854df4](https://github.com/discordjs/discord.js/commit/6854df42183ba6fccbff3a0366170557e0152e66))
+- **widget:** Add missing `name` (#9031) ([35f6dad](https://github.com/discordjs/discord.js/commit/35f6dadebfce9ad60e360b5317267e256571a0ae))
+- Swap message reaction and emoji identifier types (#8970) ([6490580](https://github.com/discordjs/discord.js/commit/649058055a3159277a19e3173c115a67226f0ee0))
+- **GuildChannelManager:** Correct fetch return type (v13) (#8551) ([f4e8133](https://github.com/discordjs/discord.js/commit/f4e81330bf35bac0d8317dbb170312422df432fa))
+
 # [13.12.0](https://github.com/discordjs/discord.js/compare/13.11.0...13.12.0) - (2022-10-10)
 
 ## Documentation

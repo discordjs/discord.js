@@ -89,6 +89,7 @@ import {
   GuildHubType,
   GuildVerificationLevel,
   GuildFeature,
+  LocalizationMap
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
 import type {
@@ -98,6 +99,7 @@ import type {
   AutoModerationRuleTriggerTypes,
   InteractionTypes,
   MessageComponentTypes,
+  ApplicationRoleConnectionMetadataTypes
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -320,4 +322,13 @@ export interface APIGuild extends APIPartialGuild {
   premium_progress_bar_enabled: boolean;
   hub_type: GuildHubType | null;
   safety_alerts_channel_id: Snowflake | null;
+}
+
+export interface APIApplicationRoleConnectionMetadata {
+  type: ApplicationRoleConnectionMetadataTypes;
+  key: string;
+  name: string;
+  name_localizations?: LocalizationMap;
+  description: string;
+  description_localizations?: LocalizationMap;
 }
