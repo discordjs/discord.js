@@ -39,5 +39,5 @@ module.exports = EmbedBuilder;
 
 /**
  * @external BuildersEmbed
- * @see {@link https://discord.js.org/docs/packages/builders/main/EmbedBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/EmbedBuilder:Class}
  */

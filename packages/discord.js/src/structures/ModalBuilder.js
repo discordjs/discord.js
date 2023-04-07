@@ -32,5 +32,5 @@ module.exports = ModalBuilder;
 
 /**
  * @external BuildersModal
- * @see {@link https://discord.js.org/docs/packages/builders/main/ModalBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ModalBuilder:Class}
  */
