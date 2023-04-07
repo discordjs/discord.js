@@ -2355,7 +2355,7 @@ __metadata:
     "@microsoft/api-extractor-model": 7.26.4
     "@microsoft/tsdoc": 0.14.2
     "@next/bundle-analyzer": ^13.3.0
-    "@planetscale/database": ^1.7.0
+    "@planetscale/database": 1.6.0
     "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
@@ -4227,6 +4227,13 @@ __metadata:
     tiny-glob: ^0.2.9
     tslib: ^2.4.0
   checksum: 118a1971120253740121a1db0a6658c21195b7da962acf9c124b507a3df707cfc97b0b84a16edcbd4352853b182e8337da9fc6e8e3d06c60d75ae4fb42321c75
+  languageName: node
+  linkType: hard
+
+"@planetscale/database@npm:1.6.0":
+  version: 1.6.0
+  resolution: "@planetscale/database@npm:1.6.0"
+  checksum: 8139f81a573bbfe1078159979d383e93c904d78663a964f3185ca26df1ad05b1f96ff94f9573b3baedcc3d6e05a90e8667e01bfba217943ab19f1ba1fa58c846
   languageName: node
   linkType: hard
 

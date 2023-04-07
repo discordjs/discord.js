@@ -50,7 +50,7 @@
 		"@discordjs/ui": "workspace:^",
 		"@microsoft/api-extractor-model": "7.26.4",
 		"@microsoft/tsdoc": "0.14.2",
-		"@planetscale/database": "^1.7.0",
+		"@planetscale/database": "1.6.0",
 		"@react-icons/all-files": "^4.1.0",
 		"@vercel/analytics": "^0.1.11",
 		"@vercel/edge-config": "^0.1.6",
