@@ -47,5 +47,5 @@ module.exports = StringSelectMenuOptionBuilder;
 
 /**
  * @external BuildersSelectMenuOption
- * @see {@link https://discord.js.org/#/docs/builders/main/class/SelectMenuOptionBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/main/SelectMenuOptionBuilder:Class}
  */
