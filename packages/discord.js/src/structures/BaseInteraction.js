@@ -5,6 +5,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { SelectMenuTypes } = require('../util/Constants');
+const Partials = require('../util/Partials');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -46,7 +47,18 @@ class BaseInteraction extends Base {
      * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
-    this.channelId = data.channel_id ?? null;
+    this.channelId = data.channel?.id ?? null;
+
+    /**
+     * The channel this interaction was sent in.
+     * @type {?TextBasedChannels|APIChannel}
+     * @private
+     */
+    this._channel =
+      (this.channelId && client.channels.cache.get(this.channelId)) ??
+      client.options.partials.includes(Partials.Channel)
+        ? data.channel
+        : null;
 
     /**
      * The id of the guild this interaction was sent in
@@ -159,7 +171,7 @@ class BaseInteraction extends Base {
    * @readonly
    */
   get channel() {
-    return this.client.channels.cache.get(this.channelId) ?? null;
+    return this._channel;
   }
 
   /**
