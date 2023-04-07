@@ -52,7 +52,7 @@
 		"@ladle/react": "^2.10.2",
 		"@react-icons/all-files": "^4.1.0",
 		"@types/node": "16.18.23",
-		"@types/react": "^18.0.32",
+		"@types/react": "^18.0.33",
 		"@types/react-dom": "^18.0.11",
 		"@unocss/reset": "^0.50.6",
 		"@vitejs/plugin-react": "^3.1.0",
@@ -65,7 +65,7 @@
 		"typescript": "^5.0.3",
 		"unocss": "^0.50.6",
 		"vite": "^4.2.1",
-		"vite-plugin-dts": "^2.1.0",
+		"vite-plugin-dts": "^2.2.0",
 		"vitest": "^0.29.8"
 	},
 	"engines": {

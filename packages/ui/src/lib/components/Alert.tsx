@@ -1,5 +1,3 @@
-'use client';
-
 import { VscFlame } from '@react-icons/all-files/vsc/VscFlame';
 import { VscInfo } from '@react-icons/all-files/vsc/VscInfo';
 import { VscWarning } from '@react-icons/all-files/vsc/VscWarning';
