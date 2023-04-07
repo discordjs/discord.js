@@ -24,7 +24,7 @@ import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
 import { OVERLOAD_SEPARATOR, PACKAGES } from '~/util/constants';
-import { findMember, findMemberByKey } from '~/util/model.server';
+import { findMember, findMemberByKey } from '~/util/model';
 
 export interface ItemRouteParams {
 	item: string;
