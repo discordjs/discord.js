@@ -9,7 +9,6 @@ import {
   APIAuditLog,
   APIAuditLogEntry,
   APIBan,
-  APIChannel,
   APIEmoji,
   APIExtendedInvite,
   APIGuild,
@@ -80,7 +79,17 @@ import {
   APITextInputComponent,
   APIModalActionRowComponent,
   APIModalSubmitInteraction,
-  LocalizationMap
+  LocalizationMap,
+  APIGroupDMChannel,
+  APIDMChannel,
+  APIGuildCategoryChannel,
+  APIGuildChannel,
+  ThreadAutoArchiveDuration,
+  GuildTextChannelType,
+  ChannelType,
+  VideoQualityMode,
+  APIChannelBase,
+  APIThreadChannel
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
 import type {
@@ -90,7 +99,9 @@ import type {
   AutoModerationRuleTriggerTypes,
   InteractionTypes,
   MessageComponentTypes,
-  ApplicationRoleConnectionMetadataTypes
+  ApplicationRoleConnectionMetadataTypes,
+  SortOrderType,
+  ForumLayoutType
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -279,3 +290,52 @@ export interface APIApplicationRoleConnectionMetadata {
   description: string;
   description_localizations?: LocalizationMap;
 }
+
+export interface APITextBasedChannel<T extends ChannelType> extends APIChannelBase<T> {
+  last_message_id?: Snowflake | null;
+  last_pin_timestamp?: string | null;
+  rate_limit_per_user?: number;
+}
+
+export interface APIGuildTextChannel<T extends GuildTextChannelType>
+  extends Omit<APITextBasedChannel<T>, 'name'>,
+    APIGuildChannel<T> {
+  default_auto_archive_duration?: ThreadAutoArchiveDuration;
+  default_thread_rate_limit_per_user?: number;
+  topic?: string | null;
+}
+
+export interface APIVoiceChannelBase<T extends ChannelType>
+  extends APIGuildChannel<T>,
+    Omit<APITextBasedChannel<T>, 'name' | 'last_pin_timestamp'> {
+  bitrate?: number;
+  user_limit?: number;
+  rtc_region?: string | null;
+  video_quality_mode?: VideoQualityMode;
+}
+
+export interface APIGuildForumDefaultReactionEmoji {
+  emoji_id: Snowflake | null;
+  emoji_name: string | null;
+}
+
+export interface APIGuildForumTag {
+  id: Snowflake;
+  name: string;
+  moderated: boolean;
+  emoji_id: Snowflake | null;
+  emoji_name: string | null;
+}
+
+export interface APIGuildForumChannel extends APIGuildTextChannel<ChannelType.GuildForum> {
+  available_tags: APIGuildForumTag[];
+  default_reaction_emoji: APIGuildForumDefaultReactionEmoji | null;
+  default_sort_order: SortOrderType | null;
+  default_forum_layout: ForumLayoutType;
+}
+
+export type APIGuildVoiceChannel = APIVoiceChannelBase<ChannelType.GuildVoice>;
+export type APIGuildStageVoiceChannel = APIVoiceChannelBase<ChannelType.GuildStageVoice>;
+export type APITextChannel = APIGuildTextChannel<ChannelType.GuildText>;
+export type APINewsChannel = APIGuildTextChannel<ChannelType.GuildNews>;
+export declare type APIChannel = APIGroupDMChannel | APIDMChannel | APITextChannel | APINewsChannel | APIGuildVoiceChannel | APIGuildCategoryChannel | APIThreadChannel | APINewsChannel | APIGuildForumChannel | APIGuildStageVoiceChannel;
