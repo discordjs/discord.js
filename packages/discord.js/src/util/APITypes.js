@@ -44,6 +44,11 @@
  */
 
 /**
+ * @external APIChannelSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIChannelSelectComponent}
+ */
+
+/**
  * @external APIEmbed
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbed}
  */
@@ -99,6 +104,11 @@
  */
 
 /**
+ * @external APIMentionableSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMentionableSelectComponent}
+ */
+
+/**
  * @external APIMessage
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessage}
  */
@@ -139,13 +149,13 @@
  */
 
 /**
- * @external APISelectMenuComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APISelectMenuComponent}
+ * @external APISelectMenuOption
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
  */
 
 /**
- * @external APISelectMenuOption
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
+ * @external APIStringSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIStringSelectComponent}
  */
 
 /**

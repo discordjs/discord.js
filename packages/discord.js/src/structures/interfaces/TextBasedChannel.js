@@ -59,7 +59,7 @@ class TextBasedChannel {
    * @property {Embed[]|APIEmbed[]} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * @property {AttachmentBuilder[]|Attachment[]|AttachmentPayload[]|BufferResolvable[]} [files]
    * The files to send with the message.
    * @property {ActionRow[]|ActionRowBuilder[]} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
