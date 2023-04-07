@@ -1,9 +1,12 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { ServerRuntime } from 'next/types';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import { DESCRIPTION, CODE_EXAMPLE } from '~/util/constants';
+
+export const runtime: ServerRuntime = 'edge';
 
 export default function Page() {
 	return (
