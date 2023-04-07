@@ -82,7 +82,7 @@
 		"mock-socket": "^9.2.1",
 		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
-		"typescript": "^5.0.3",
+		"typescript": "^5.0.4",
 		"undici": "^5.21.0",
 		"vitest": "^0.29.8",
 		"zlib-sync": "^0.1.8"
