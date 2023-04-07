@@ -464,6 +464,7 @@ export class BaseGuildEmoji extends Emoji {
 export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel) {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  public defaultThreadRateLimitPerUser: number | null;
   public rateLimitPerUser: number | null;
   public nsfw: boolean;
   public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForNewsChannel>;
@@ -4433,6 +4434,7 @@ export interface CategoryCreateChannelOptions {
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultSortOrder?: SortOrderType;
   defaultForumLayout?: ForumLayoutType;
+  defaultThreadRateLimitPerUser?: number;
   reason?: string;
 }
 

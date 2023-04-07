@@ -150,6 +150,7 @@ class GuildChannelManager extends CachedManager {
       defaultReactionEmoji,
       defaultSortOrder,
       defaultForumLayout,
+      defaultThreadRateLimitPerUser,
       reason,
     } = {},
   ) {
@@ -191,6 +192,7 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_sort_order: sortMode,
         default_forum_layout: layoutMode,
+        default_thread_rate_limit_per_user: defaultThreadRateLimitPerUser,
       },
       reason,
     });

@@ -49,6 +49,8 @@ class CategoryChannel extends GuildChannel {
    * @property {?DefaultReactionEmoji} [defaultReactionEmoji] The emoji to set as the default reaction emoji
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the new channel
+   * @property {number} [defaultThreadRateLimitPerUser] The initial rate limit per user (slowmode)
+   * to set on newly created threads in a channel.
    * @property {string} [reason] Reason for creating the new channel
    */
 
