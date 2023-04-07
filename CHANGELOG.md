@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+# [13.15.1](https://github.com/discordjs/discord.js/compare/13.15.0...13.15.1) - (2023-04-07)
+
+## Bug Fixes
+
+- **Message:** Fix permissions check in locked threads (#9338) ([a8d5325](https://github.com/discordjs/discord.js/commit/a8d5325defa781ea9df57f6a109c10f8b9b05f99))
+- **ClientUser:** Fix modifying self (#9318) ([09ca243](https://github.com/discordjs/discord.js/commit/09ca243c2f5a194a0e2f5e5baeac64a2ef4ce9dc))
+- Typo in `src/util/MessageFlags.js` (#9312) ([8f12054](https://github.com/discordjs/discord.js/commit/8f12054c06d4b87ea09f10d63341206c4bb23e66))
+- **AutocompleteInteraction:** Fix responding (#9315) ([f79a9b5](https://github.com/discordjs/discord.js/commit/f79a9b5450b6b868710f7c72fa9410123b46ee05))
+
 # [13.15.0](https://github.com/discordjs/discord.js/compare/13.14.0...13.15.0) - (2023-04-02)
 
 ## Bug Fixes
