@@ -42,5 +42,5 @@ module.exports = ButtonBuilder;
 
 /**
  * @external BuildersButton
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ButtonBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/main/ButtonBuilder:Class}
  */
