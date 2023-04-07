@@ -60,7 +60,7 @@
 		"bright": "^0.7.1",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.32.2",
-		"next": "^13.3.0",
+		"next": "^13.2.5-canary.34",
 		"next-mdx-remote": "^4.4.1",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
@@ -71,6 +71,7 @@
 		"rehype-raw": "^6.1.1",
 		"rehype-slug": "^5.1.0",
 		"remark-gfm": "^3.0.1",
+		"server-only": "^0.0.1",
 		"sharp": "^0.32.0",
 		"swr": "^2.1.2"
 	},
