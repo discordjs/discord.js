@@ -37,7 +37,9 @@ describe('Context Menu Commands', () => {
 		});
 
 		test('GIVEN valid required parameters THEN does not throw error', () => {
-			expect(() => ContextMenuCommandAssertions.validateRequiredParameters('owo', 2)).not.toThrowError();
+			expect(() =>
+				ContextMenuCommandAssertions.validateRequiredParameters({ name: 'owo', type: 2 }),
+			).not.toThrowError();
 		});
 
 		test('GIVEN valid default_permission THEN does not throw error', () => {
@@ -112,12 +114,14 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
-				expect(getBuilder().setNameLocalization('en-US', 'foobar').name_localizations).toEqual(expectedSingleLocale);
-				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).name_localizations).toEqual(
+				expect(getBuilder().setNameLocalization('en-US', 'foobar').data.name_localizations).toEqual(
+					expectedSingleLocale,
+				);
+				expect(getBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).data.name_localizations).toEqual(
 					expectedMultipleLocales,
 				);
-				expect(getBuilder().setNameLocalizations(null).name_localizations).toBeNull();
-				expect(getBuilder().setNameLocalization('en-US', null).name_localizations).toEqual({
+				expect(getBuilder().setNameLocalizations(null).data.name_localizations).toBeNull();
+				expect(getBuilder().setNameLocalization('en-US', null).data.name_localizations).toEqual({
 					'en-US': null,
 				});
 			});

@@ -1,6 +1,5 @@
 import type {
 	APIApplicationCommandOption,
-	LocalizationMap,
 	Permissions,
 	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
@@ -19,51 +18,9 @@ import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } fro
 import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
 
-@mix(SharedSlashCommandOptions, SharedNameAndDescription)
+@mix(SharedSlashCommandOptions, SharedNameAndDescription<SlashCommandBuilder>)
 export class SlashCommandBuilder {
-	/**
-	 * The name of this slash command
-	 */
-	public readonly name: string = undefined!;
-
-	/**
-	 * The localized names for this command
-	 */
-	public readonly name_localizations?: LocalizationMap;
-
-	/**
-	 * The description of this slash command
-	 */
-	public readonly description: string = undefined!;
-
-	/**
-	 * The localized descriptions for this command
-	 */
-	public readonly description_localizations?: LocalizationMap;
-
-	/**
-	 * The options of this slash command
-	 */
-	public readonly options: ToAPIApplicationCommandOptions[] = [];
-
-	/**
-	 * Whether the command is enabled by default when the app is added to a guild
-	 *
-	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
-	 */
-	public readonly default_permission: boolean | undefined = undefined;
-
-	/**
-	 * Set of permissions represented as a bit set for the command
-	 */
-	public readonly default_member_permissions: Permissions | null | undefined = undefined;
-
-	/**
-	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
-	 */
-	public readonly dm_permission: boolean | undefined = undefined;
+	public readonly data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody> = {};
 
 	/**
 	 * Whether this command is NSFW
@@ -78,14 +35,15 @@ export class SlashCommandBuilder {
 	 * As such, it may throw an error if the data is invalid.
 	 */
 	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
-		validateRequiredParameters(this.name, this.description, this.options);
+		validateRequiredParameters(this.data);
 
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
+		validateLocalizationMap(this.data.name_localizations);
+		validateLocalizationMap(this.data.description_localizations);
 
 		return {
-			...this,
-			options: this.options.map((option) => option.toJSON()),
+			...this.data,
+			name: this.data.name!,
+			description: this.data.description!,
 		};
 	}
 
@@ -102,7 +60,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDefaultPermission(value);
 
-		Reflect.set(this, 'default_permission', value);
+		this.data.default_permission = value;
 
 		return this;
 	}
@@ -119,7 +77,7 @@ export class SlashCommandBuilder {
 		// Assert the value and parse it
 		const permissionValue = validateDefaultMemberPermissions(permissions);
 
-		Reflect.set(this, 'default_member_permissions', permissionValue);
+		this.data.default_member_permissions = permissionValue;
 
 		return this;
 	}
@@ -135,7 +93,7 @@ export class SlashCommandBuilder {
 		// Assert the value matches the conditions
 		validateDMPermission(enabled);
 
-		Reflect.set(this, 'dm_permission', enabled);
+		this.data.dm_permission = enabled ?? undefined;
 
 		return this;
 	}
@@ -162,7 +120,8 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandGroupBuilder
 			| ((subcommandGroup: SlashCommandSubcommandGroupBuilder) => SlashCommandSubcommandGroupBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
-		const { options } = this;
+		if (!('options' in this.data)) this.data.options = [];
+		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
 		validateMaxOptionsLength(options);
@@ -188,7 +147,8 @@ export class SlashCommandBuilder {
 			| SlashCommandSubcommandBuilder
 			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
 	): SlashCommandSubcommandsOnlyBuilder {
-		const { options } = this;
+		if (!('options' in this.data)) this.data.options = [];
+		const { options } = this.data;
 
 		// First, assert options conditions - we cannot have more than 25 options
 		validateMaxOptionsLength(options);
@@ -205,15 +165,17 @@ export class SlashCommandBuilder {
 	}
 }
 
-export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions {}
+export interface SlashCommandBuilder extends SharedNameAndDescription<SlashCommandBuilder>, SharedSlashCommandOptions {}
 
 export interface SlashCommandSubcommandsOnlyBuilder
 	extends Omit<SlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {}
 
 export interface SlashCommandOptionsOnlyBuilder
-	extends SharedNameAndDescription,
+	extends SharedNameAndDescription<SlashCommandBuilder>,
 		SharedSlashCommandOptions,
-		Pick<SlashCommandBuilder, 'toJSON'> {}
+		Pick<SlashCommandBuilder, 'toJSON'> {
+	data: Partial<RESTPostAPIChatInputApplicationCommandsJSONBody>;
+}
 
 export interface ToAPIApplicationCommandOptions {
 	toJSON(): APIApplicationCommandOption;

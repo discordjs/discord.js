@@ -1,5 +1,9 @@
 import { s } from '@sapphire/shapeshift';
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import {
+	ApplicationCommandType,
+	type RESTPostAPIContextMenuApplicationCommandsJSONBody,
+	type APIApplicationCommandOption,
+} from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
@@ -26,12 +30,14 @@ export function validateType(type: unknown): asserts type is ContextMenuCommandT
 	typePredicate.parse(type);
 }
 
-export function validateRequiredParameters(name: string, type: number) {
+export function validateRequiredParameters(
+	arg: Partial<APIApplicationCommandOption | RESTPostAPIContextMenuApplicationCommandsJSONBody>,
+): asserts arg is typeof arg & { name: string; type: number } {
 	// Assert name matches all conditions
-	validateName(name);
+	validateName(arg.name);
 
 	// Assert type is valid
-	validateType(type);
+	validateType(arg.type);
 }
 
 const dmPermissionPredicate = s.boolean.nullish;
