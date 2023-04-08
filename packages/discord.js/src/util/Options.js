@@ -213,10 +213,10 @@ module.exports = Options;
 
 /**
  * @external WSWebSocketManager
- * @see {@link https://discord.js.org/docs/packages/ws/main/WebSocketManager:Class}
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/WebSocketManager:Class}
  */
 
 /**
  * @external IShardingStrategy
- * @see {@link https://discord.js.org/docs/packages/ws/main/IShardingStrategy:Interface}
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IShardingStrategy:Interface}
  */

@@ -99,7 +99,7 @@ class WebSocketManager extends EventEmitter {
 
     /**
      * @external WSWebSocketManager
-     * @see {@link https://discord.js.org/#/docs/ws/main/class/WebSocketManager}
+     * @see {@link https://discord.js.org/docs/packages/ws/stable/WebSocketManager:Class}
      */
 
     /**
