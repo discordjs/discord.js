@@ -1,7 +1,7 @@
 /* eslint-disable id-length */
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import { setTimeout, clearInterval, clearTimeout, setInterval } from 'node:timers';
+import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
@@ -16,14 +16,14 @@ import {
 	GatewayOpcodes,
 	type GatewayDispatchPayload,
 	type GatewayIdentifyData,
+	type GatewayReadyDispatchData,
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
-	type GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
-import { getInitialSendRateLimitState, ImportantGatewayOpcodes } from '../utils/constants.js';
+import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -103,6 +103,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	// Indicates whether the shard has already resolved its original connect() call
 	private initialConnectResolved = false;
+
+	// Indicates if we failed to connect to the ws url (ECONNREFUSED/ECONNRESET)
+	private failedToConnectDueToNetworkError = false;
 
 	private readonly sendQueue = new AsyncQueue();
 
@@ -613,6 +616,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
+		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
+			this.debug(['Failed to connect to the gateway URL specified']);
+			this.failedToConnectDueToNetworkError = true;
+			return;
+		}
+
 		this.emit(WebSocketShardEvents.Error, { error });
 	}
 
@@ -697,8 +706,17 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			default: {
-				this.debug([`The gateway closed with an unexpected code ${code}, attempting to resume.`]);
-				return this.destroy({ code, recover: WebSocketShardDestroyRecovery.Resume });
+				this.debug([
+					`The gateway closed with an unexpected code ${code}, attempting to ${
+						this.failedToConnectDueToNetworkError ? 'reconnect' : 'resume'
+					}.`,
+				]);
+				return this.destroy({
+					code,
+					recover: this.failedToConnectDueToNetworkError
+						? WebSocketShardDestroyRecovery.Reconnect
+						: WebSocketShardDestroyRecovery.Resume,
+				});
 			}
 		}
 	}
