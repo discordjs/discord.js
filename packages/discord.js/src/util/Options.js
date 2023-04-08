@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
 const { version } = require('../../package.json');
@@ -106,11 +105,6 @@ class Options extends null {
       sweepers: this.DefaultSweeperSettings,
       ws: {
         large_threshold: 50,
-        properties: {
-          os: process.platform,
-          browser: 'discord.js',
-          device: 'discord.js',
-        },
         version: 10,
       },
       rest: {

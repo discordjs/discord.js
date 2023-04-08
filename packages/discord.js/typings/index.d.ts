@@ -6304,15 +6304,8 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 
 export interface WebSocketOptions {
   large_threshold?: number;
-  properties?: WebSocketProperties;
   version?: number;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
-}
-
-export interface WebSocketProperties {
-  os?: string;
-  browser?: string;
-  device?: string;
 }
 
 export interface WidgetActivity {
