@@ -8,6 +8,7 @@ import type {
 	ApiPropertySignature,
 } from '@microsoft/api-extractor-model';
 import type { TableOfContentsSerialized } from '../TableOfContentItems';
+import { METHOD_SEPARATOR, OVERLOAD_SEPARATOR } from '~/util/constants';
 import { resolveMembers } from '~/util/members';
 
 export function hasProperties(item: ApiItemContainerMixin) {
@@ -23,7 +24,11 @@ export function hasMethods(item: ApiItemContainerMixin) {
 }
 
 export function resolveItemURI(item: ApiItem): string {
-	return `${item.displayName}:${item.kind}`;
+	return item.parent?.kind === ApiItemKind.EntryPoint
+		? `${item.displayName}${OVERLOAD_SEPARATOR}${item.kind}`
+		: `${item.parent?.displayName ?? 'Unknown'}${OVERLOAD_SEPARATOR}${
+				item.parent?.kind ?? 'Unknown'
+		  }${METHOD_SEPARATOR}${item.displayName}`;
 }
 
 function memberPredicate(item: ApiItem): item is ApiMethod | ApiMethodSignature | ApiProperty | ApiPropertySignature {
