@@ -933,7 +933,7 @@ export class Collection<K, V> extends Map<K, V> {
 
 	public toJSON() {
 		// toJSON is called recursively by JSON.stringify.
-		return [...this.values()];
+		return [...this.entries()];
 	}
 
 	private static defaultSort<V>(firstValue: V, secondValue: V): number {
