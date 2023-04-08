@@ -13,15 +13,13 @@ class MentionableSelectMenuBuilder extends BuildersMentionableSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {MentionableSelectMenuBuilder|MentionableSelectMenuComponent|APIMentionableSelectComponent} other
+   * The other data
    * @returns {MentionableSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

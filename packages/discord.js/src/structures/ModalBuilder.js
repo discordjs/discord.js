@@ -17,14 +17,11 @@ class ModalBuilder extends BuildersModal {
 
   /**
    * Creates a new modal builder from JSON data
-   * @param {JSONEncodable<APIModalComponent>|APIModalComponent} other The other data
+   * @param {ModalBuilder|APIModalComponent} other The other data
    * @returns {ModalBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

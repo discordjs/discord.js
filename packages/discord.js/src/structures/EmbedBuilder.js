@@ -24,14 +24,11 @@ class EmbedBuilder extends BuildersEmbed {
 
   /**
    * Creates a new embed builder from JSON data
-   * @param {JSONEncodable<APIEmbed>|APIEmbed} other The other data
+   * @param {EmbedBuilder|Embed|APIEmbed} other The other data
    * @returns {EmbedBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

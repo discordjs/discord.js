@@ -32,14 +32,11 @@ class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
 
   /**
    * Creates a new select menu option builder from JSON data
-   * @param {JSONEncodable<APISelectMenuOption>|APISelectMenuOption} other The other data
+   * @param {StringSelectMenuOptionBuilder|APISelectMenuOption} other The other data
    * @returns {StringSelectMenuOptionBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
