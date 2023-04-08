@@ -13,7 +13,7 @@ import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js
 /**
  * Represents a folder for subcommands
  *
- * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 @mix(SharedNameAndDescription)
 export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationCommandOptions {
@@ -79,7 +79,7 @@ export interface SlashCommandSubcommandGroupBuilder extends SharedNameAndDescrip
 /**
  * Represents a subcommand
  *
- * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 @mix(SharedNameAndDescription, SharedSlashCommandOptions)
 export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOptions {
