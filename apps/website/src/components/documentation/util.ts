@@ -23,7 +23,7 @@ export function hasMethods(item: ApiItemContainerMixin) {
 }
 
 export function resolveItemURI(item: ApiItem): string {
-	return `/${item.displayName}:${item.kind}`;
+	return `${item.displayName}:${item.kind}`;
 }
 
 function memberPredicate(item: ApiItem): item is ApiMethod | ApiMethodSignature | ApiProperty | ApiPropertySignature {

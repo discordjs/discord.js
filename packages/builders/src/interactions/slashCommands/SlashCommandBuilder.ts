@@ -95,7 +95,7 @@ export class SlashCommandBuilder {
 	 * @remarks
 	 * If set to `false`, you will have to later `PUT` the permissions for this command.
 	 * @param value - Whether or not to enable this command by default
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
@@ -113,7 +113,7 @@ export class SlashCommandBuilder {
 	 * @remarks
 	 * You can set this to `'0'` to disable the command by default.
 	 * @param permissions - The permissions bit field to set
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
 		// Assert the value and parse it
@@ -129,7 +129,7 @@ export class SlashCommandBuilder {
 	 * By default, commands are visible.
 	 *
 	 * @param enabled - If the command should be enabled in DMs
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
