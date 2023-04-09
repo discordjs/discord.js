@@ -50,7 +50,7 @@ export class SlashCommandBuilder {
 	 * Whether the command is enabled by default when the app is added to a guild
 	 *
 	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
+	 * You should use {@link SlashCommandBuilder.setDefaultMemberPermissions} or {@link SlashCommandBuilder.setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
@@ -96,7 +96,7 @@ export class SlashCommandBuilder {
 	 * If set to `false`, you will have to later `PUT` the permissions for this command.
 	 * @param value - Whether or not to enable this command by default
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
-	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
+	 * @deprecated Use {@link SlashCommandBuilder.setDefaultMemberPermissions} or {@link SlashCommandBuilder.setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
