@@ -1,7 +1,7 @@
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { ApiClass, ApiDeclaredItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
-import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
+import { ApiItemKind, ExcerptTokenKind } from '@microsoft/api-extractor-model';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { memberPredicate } from '~/components/documentation/util';
@@ -50,31 +50,34 @@ export async function GET(_: NextRequest, { params }: { params: { item: string; 
 				.filter(Boolean) ?? null,
 		summary: tryResolveSummaryText(member as ApiDeclaredItem) ?? '',
 		path: generatePath(member.getHierarchy(), params.version),
-		members: resolveMembers(member as ApiItemContainerMixin, memberPredicate).map((member) => {
-			const isDeprecated = Boolean(member.item.tsdocComment?.deprecatedBlock);
+		members:
+			member.kind === ApiItemKind.Class || member.kind === ApiItemKind.Interface
+				? resolveMembers(member as ApiItemContainerMixin, memberPredicate).map((member) => {
+						const isDeprecated = Boolean(member.item.tsdocComment?.deprecatedBlock);
 
-			return {
-				inheritedFrom: member.inherited
-					? {
-							name: member.inherited.displayName,
-							kind: member.inherited.kind,
-							summary: tryResolveSummaryText(member.inherited as unknown as ApiDeclaredItem) ?? '',
-							path: generatePath(member.inherited.getHierarchy(), params.version),
-					  }
-					: null,
-				name: member.item.displayName,
-				kind: member.item.kind,
-				deprecated: isDeprecated,
-				// @ts-expect-error: Typings
-				readonly: member.item.isReadonly ?? false,
-				optional: member.item.isOptional,
-				// @ts-expect-error: Typings
-				static: member.item.isStatic ?? false,
-				// @ts-expect-error: Typings
-				protected: member.item.isProtected ?? false,
-				summary: tryResolveSummaryText(member.item as ApiDeclaredItem) ?? '',
-				path: generatePath(member.item.getHierarchy(), params.version),
-			};
-		}),
+						return {
+							inheritedFrom: member.inherited
+								? {
+										name: member.inherited.displayName,
+										kind: member.inherited.kind,
+										summary: tryResolveSummaryText(member.inherited as unknown as ApiDeclaredItem) ?? '',
+										path: generatePath(member.inherited.getHierarchy(), params.version),
+								  }
+								: null,
+							name: member.item.displayName,
+							kind: member.item.kind,
+							deprecated: isDeprecated,
+							// @ts-expect-error: Typings
+							readonly: member.item.isReadonly ?? false,
+							optional: member.item.isOptional,
+							// @ts-expect-error: Typings
+							static: member.item.isStatic ?? false,
+							// @ts-expect-error: Typings
+							protected: member.item.isProtected ?? false,
+							summary: tryResolveSummaryText(member.item as ApiDeclaredItem) ?? '',
+							path: generatePath(member.item.getHierarchy(), params.version),
+						};
+				  })
+				: null,
 	});
 }
