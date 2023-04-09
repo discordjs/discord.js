@@ -140,7 +140,7 @@ class BitField {
 
   *[Symbol.iterator](...hasParams) {
     for (const bitName of Object.keys(this.constructor.Flags)) {
-      if (typeof bitName === 'string' && this.has(bitName, ...hasParams)) yield bitName;
+      if (isNaN(bitName) && this.has(bitName, ...hasParams)) yield bitName;
     }
   }
 
