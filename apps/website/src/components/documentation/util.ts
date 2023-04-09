@@ -24,7 +24,7 @@ export function hasMethods(item: ApiItemContainerMixin) {
 }
 
 export function resolveItemURI(item: ApiItem): string {
-	return !item.parent || item.parent?.kind === ApiItemKind.EntryPoint
+	return !item.parent || item.parent.kind === ApiItemKind.EntryPoint
 		? `${item.displayName}${OVERLOAD_SEPARATOR}${item.kind}`
 		: `${item.parent.displayName}${OVERLOAD_SEPARATOR}${item.parent.kind}${METHOD_SEPARATOR}${item.displayName}`;
 }
