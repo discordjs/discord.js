@@ -29,7 +29,9 @@ export function resolveItemURI(item: ApiItem): string {
 		: `${item.parent.displayName}${OVERLOAD_SEPARATOR}${item.parent.kind}${METHOD_SEPARATOR}${item.displayName}`;
 }
 
-function memberPredicate(item: ApiItem): item is ApiMethod | ApiMethodSignature | ApiProperty | ApiPropertySignature {
+export function memberPredicate(
+	item: ApiItem,
+): item is ApiMethod | ApiMethodSignature | ApiProperty | ApiPropertySignature {
 	return (
 		item.kind === ApiItemKind.Property ||
 		item.kind === ApiItemKind.PropertySignature ||

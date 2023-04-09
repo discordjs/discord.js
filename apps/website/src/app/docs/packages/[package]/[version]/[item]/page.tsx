@@ -12,8 +12,9 @@ import type {
 	ApiPropertySignature,
 	ApiTypeAlias,
 	ApiVariable,
+	ApiFunction,
 } from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
+import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next/types';
 import { fetchModelJSON } from '~/app/docAPI';
@@ -23,14 +24,10 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import { OVERLOAD_SEPARATOR, PACKAGES } from '~/util/constants';
-import { findMember, findMemberByKey } from '~/util/model';
-
-export interface ItemRouteParams {
-	item: string;
-	package: string;
-	version: string;
-}
+import { OVERLOAD_SEPARATOR } from '~/util/constants';
+import type { ItemRouteParams } from '~/util/fetchMember';
+import { fetchMember } from '~/util/fetchMember';
+import { findMember } from '~/util/model';
 
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams): Promise<ApiItem | undefined> {
 	const modelJSON = await fetchModelJSON(packageName, version);
@@ -122,35 +119,6 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	return entry.members.map((member: ApiItem) => ({
 		item: member.displayName,
 	}));
-}
-
-async function fetchMember({ package: packageName, version: branchName = 'main', item }: ItemRouteParams) {
-	if (!PACKAGES.includes(packageName)) {
-		notFound();
-	}
-
-	const model = new ApiModel();
-
-	if (branchName === 'main') {
-		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
-
-		for (const modelJSONFile of modelJSONFiles) {
-			addPackageToModel(model, modelJSONFile);
-		}
-	} else {
-		const modelJSON = await fetchModelJSON(packageName, branchName);
-		addPackageToModel(model, modelJSON);
-	}
-
-	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
-
-	// eslint-disable-next-line prefer-const
-	let { containerKey, displayName: name } = findMember(model, packageName, memberName) ?? {};
-	if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
-		containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
-	}
-
-	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
 }
 
 function Member({ member }: { member?: ApiItem }) {
