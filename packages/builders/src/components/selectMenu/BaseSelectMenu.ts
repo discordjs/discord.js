@@ -2,7 +2,7 @@ import type { APISelectMenuComponent } from 'discord-api-types/v10';
 import { customIdValidator, disabledValidator, minMaxValidator, placeholderValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 
-export class BaseSelectMenuBuilder<
+export abstract class BaseSelectMenuBuilder<
 	SelectMenuType extends APISelectMenuComponent,
 > extends ComponentBuilder<SelectMenuType> {
 	/**
