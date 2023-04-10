@@ -40,7 +40,8 @@ export const DefaultWebSocketManagerOptions = {
 	},
 	version: APIVersion,
 	encoding: Encoding.JSON,
-	compression: null,
+	transportCompression: null,
+	useIdentifyCompression: false,
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;
