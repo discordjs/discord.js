@@ -476,22 +476,24 @@ export const TimestampStyles = {
  */
 export type TimestampStylesString = (typeof TimestampStyles)[keyof typeof TimestampStyles];
 
+// prettier-ignore
 /**
  * All the available faces from Discord's native slash commands.
  */
 export enum Faces {
 	/**
-	 * ¯\\_(ツ)\\_/¯
+	 * `¯\_(ツ)_/¯`
 	 */
-	Shrug = '¯\\_(ツ)\\_/¯',
+	// eslint-disable-next-line no-useless-escape
+	Shrug = '¯\_(ツ)_/¯',
 
 	/**
-	 * (╯°□°）╯︵ ┻━┻
+	 * `(╯°□°)╯︵ ┻━┻`
 	 */
-	Tableflip = '(╯°□°）╯︵ ┻━┻',
+	Tableflip = '(╯°□°)╯︵ ┻━┻',
 
 	/**
-	 * ┬─┬ ノ( ゜-゜ノ)
+	 * `┬─┬ノ( º _ ºノ)`
 	 */
-	Unflip = '┬─┬ ノ( ゜-゜ノ)',
+	Unflip = '┬─┬ノ( º _ ºノ)',
 }
