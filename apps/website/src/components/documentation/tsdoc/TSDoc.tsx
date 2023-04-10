@@ -98,7 +98,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 							{defaultValueBlock ? (
 								<DefaultValueBlock>{createNode(defaultValueBlock.content)}</DefaultValueBlock>
 							) : null}
-              {comment.returnsBlock ? <ReturnsBlock>{createNode(comment.returnsBlock.content)}</ReturnsBlock> : null}
+							{comment.returnsBlock ? <ReturnsBlock>{createNode(comment.returnsBlock.content)}</ReturnsBlock> : null}
 							{exampleBlocks.length
 								? exampleBlocks.map((block, idx) => <ExampleBlock key={idx}>{createNode(block.content)}</ExampleBlock>)
 								: null}
