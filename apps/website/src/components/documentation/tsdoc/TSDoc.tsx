@@ -94,10 +94,10 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 								<DeprecatedBlock>{createNode(comment.deprecatedBlock.content)}</DeprecatedBlock>
 							) : null}
 							{comment.summarySection ? createNode(comment.summarySection) : null}
+							{comment.remarksBlock ? <RemarksBlock>{createNode(comment.remarksBlock.content)}</RemarksBlock> : null}
 							{defaultValueBlock ? (
 								<DefaultValueBlock>{createNode(defaultValueBlock.content)}</DefaultValueBlock>
 							) : null}
-							{comment.remarksBlock ? <RemarksBlock>{createNode(comment.remarksBlock.content)}</RemarksBlock> : null}
 							{exampleBlocks.length
 								? exampleBlocks.map((block, idx) => <ExampleBlock key={idx}>{createNode(block.content)}</ExampleBlock>)
 								: null}
