@@ -6,7 +6,7 @@ import { Fragment, useCallback, type ReactNode } from 'react';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
-import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, SeeBlock } from './BlockComment';
+import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
 export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
@@ -98,6 +98,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 							{defaultValueBlock ? (
 								<DefaultValueBlock>{createNode(defaultValueBlock.content)}</DefaultValueBlock>
 							) : null}
+							{comment.returnsBlock ? <ReturnsBlock>{createNode(comment.returnsBlock.content)}</ReturnsBlock> : null}
 							{exampleBlocks.length
 								? exampleBlocks.map((block, idx) => <ExampleBlock key={idx}>{createNode(block.content)}</ExampleBlock>)
 								: null}
