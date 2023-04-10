@@ -4,7 +4,12 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { connect } from '@planetscale/database';
 
-const sql = connect({ url: process.env.DATABASE_URL! });
+const sql = connect({
+	async fetch(input, init) {
+		return fetch(input, { ...init, next: { revalidate: 3_600 } });
+	},
+	url: process.env.DATABASE_URL!,
+});
 
 export async function fetchVersions(packageName: string): Promise<string[]> {
 	const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {

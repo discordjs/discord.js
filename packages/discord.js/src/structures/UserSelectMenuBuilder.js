@@ -26,5 +26,5 @@ module.exports = UserSelectMenuBuilder;
 
 /**
  * @external BuildersUserSelectMenu
- * @see {@link https://discord.js.org/docs/packages/rest/main/UserSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/UserSelectMenuBuilder:Class}
  */
