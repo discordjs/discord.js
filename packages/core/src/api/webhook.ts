@@ -238,7 +238,11 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		{ thread_id, ...body }: RESTPatchAPIWebhookWithTokenMessageJSONBody & { thread_id?: string },
+		{
+			thread_id,
+			files,
+			...body
+		}: RESTPatchAPIWebhookWithTokenMessageJSONBody & { files?: RawFile[]; thread_id?: string },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
@@ -246,6 +250,7 @@ export class WebhooksAPI {
 			auth: false,
 			body,
 			signal,
+			files,
 		}) as Promise<RESTPatchAPIWebhookWithTokenMessageResult>;
 	}
 
