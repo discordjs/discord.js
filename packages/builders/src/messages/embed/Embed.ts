@@ -13,59 +13,91 @@ import {
 	validateFieldLength,
 } from './Assertions.js';
 
+/**
+ * A tuple satisfying the RGB color model.
+ *
+ * @see {@link https://developer.mozilla.org/docs/Glossary/RGB}
+ */
 export type RGBTuple = [red: number, green: number, blue: number];
 
+/**
+ * The base icon data typically used in payloads.
+ */
 export interface IconData {
 	/**
-	 * The URL of the icon
+	 * The URL of the icon.
 	 */
 	iconURL?: string;
 	/**
-	 * The proxy URL of the icon
+	 * The proxy URL of the icon.
 	 */
 	proxyIconURL?: string;
 }
 
+/**
+ * Represents the author data of an embed.
+ */
 export type EmbedAuthorData = IconData & Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>;
 
+/**
+ * Represents the author options of an embed.
+ */
 export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
 
+/**
+ * Represents the footer data of an embed.
+ */
 export type EmbedFooterData = IconData & Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>;
 
+/**
+ * Represents the footer options of an embed.
+ */
 export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
 
+/**
+ * Represents the image data of an embed.
+ */
 export interface EmbedImageData extends Omit<APIEmbedImage, 'proxy_url'> {
 	/**
-	 * The proxy URL for the image
+	 * The proxy URL for the image.
 	 */
 	proxyURL?: string;
 }
+
 /**
- * Represents a embed in a message (image/video preview, rich embed, etc.)
+ * A builder that creates API-compatible JSON data for embeds.
  */
 export class EmbedBuilder {
+	/**
+	 * The API data associated with this embed.
+	 */
 	public readonly data: APIEmbed;
 
+	/**
+	 * Creates a new embed from API data.
+	 *
+	 * @param data - The API data to create this embed with
+	 */
 	public constructor(data: APIEmbed = {}) {
 		this.data = { ...data };
 		if (data.timestamp) this.data.timestamp = new Date(data.timestamp).toISOString();
 	}
 
 	/**
-	 * Appends fields to the embed
+	 * Appends fields to the embed.
 	 *
 	 * @remarks
 	 * This method accepts either an array of fields or a variable number of field parameters.
 	 * The maximum amount of fields that can be added is 25.
 	 * @example
-	 * Using an array
+	 * Using an array:
 	 * ```ts
 	 * const fields: APIEmbedField[] = ...;
 	 * const embed = new EmbedBuilder()
 	 * 	.addFields(fields);
 	 * ```
 	 * @example
-	 * Using rest parameters (variadic)
+	 * Using rest parameters (variadic):
 	 * ```ts
 	 * const embed = new EmbedBuilder()
 	 * 	.addFields(
@@ -76,21 +108,20 @@ export class EmbedBuilder {
 	 * @param fields - The fields to add
 	 */
 	public addFields(...fields: RestOrArray<APIEmbedField>): this {
-		// eslint-disable-next-line no-param-reassign
-		fields = normalizeArray(fields);
+		const normalizedFields = normalizeArray(fields);
 		// Ensure adding these fields won't exceed the 25 field limit
-		validateFieldLength(fields.length, this.data.fields);
+		validateFieldLength(normalizedFields.length, this.data.fields);
 
 		// Data assertions
-		embedFieldsArrayPredicate.parse(fields);
+		embedFieldsArrayPredicate.parse(normalizedFields);
 
-		if (this.data.fields) this.data.fields.push(...fields);
-		else this.data.fields = fields;
+		if (this.data.fields) this.data.fields.push(...normalizedFields);
+		else this.data.fields = normalizedFields;
 		return this;
 	}
 
 	/**
-	 * Removes, replaces, or inserts fields in the embed.
+	 * Removes, replaces, or inserts fields for this embed.
 	 *
 	 * @remarks
 	 * This method behaves similarly
@@ -99,18 +130,18 @@ export class EmbedBuilder {
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing fields of an embed.
 	 * @example
-	 * Remove the first field
+	 * Remove the first field:
 	 * ```ts
 	 * embed.spliceFields(0, 1);
 	 * ```
 	 * @example
-	 * Remove the first n fields
+	 * Remove the first n fields:
 	 * ```ts
-	 * const n = 4
+	 * const n = 4;
 	 * embed.spliceFields(0, n);
 	 * ```
 	 * @example
-	 * Remove the last field
+	 * Remove the last field:
 	 * ```ts
 	 * embed.spliceFields(-1, 1);
 	 * ```
@@ -130,7 +161,7 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the embed's fields
+	 * Sets the fields for this embed.
 	 *
 	 * @remarks
 	 * This method is an alias for {@link EmbedBuilder.spliceFields}. More specifically,
@@ -145,9 +176,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the author of this embed
+	 * Sets the author of this embed.
 	 *
-	 * @param options - The options for the author
+	 * @param options - The options to use
 	 */
 
 	public setAuthor(options: EmbedAuthorOptions | null): this {
@@ -164,9 +195,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the color of this embed
+	 * Sets the color of this embed.
 	 *
-	 * @param color - The color of the embed
+	 * @param color - The color to use
 	 */
 	public setColor(color: RGBTuple | number | null): this {
 		// Data assertions
@@ -183,9 +214,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the description of this embed
+	 * Sets the description of this embed.
 	 *
-	 * @param description - The description
+	 * @param description - The description to use
 	 */
 	public setDescription(description: string | null): this {
 		// Data assertions
@@ -196,9 +227,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the footer of this embed
+	 * Sets the footer of this embed.
 	 *
-	 * @param options - The options for the footer
+	 * @param options - The footer to use
 	 */
 	public setFooter(options: EmbedFooterOptions | null): this {
 		if (options === null) {
@@ -214,9 +245,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the image of this embed
+	 * Sets the image of this embed.
 	 *
-	 * @param url - The URL of the image
+	 * @param url - The image URL to use
 	 */
 	public setImage(url: string | null): this {
 		// Data assertions
@@ -227,9 +258,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the thumbnail of this embed
+	 * Sets the thumbnail of this embed.
 	 *
-	 * @param url - The URL of the thumbnail
+	 * @param url - The thumbnail URL to use
 	 */
 	public setThumbnail(url: string | null): this {
 		// Data assertions
@@ -240,9 +271,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the timestamp of this embed
+	 * Sets the timestamp of this embed.
 	 *
-	 * @param timestamp - The timestamp or date
+	 * @param timestamp - The timestamp or date to use
 	 */
 	public setTimestamp(timestamp: Date | number | null = Date.now()): this {
 		// Data assertions
@@ -253,9 +284,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the title of this embed
+	 * Sets the title for this embed.
 	 *
-	 * @param title - The title
+	 * @param title - The title to use
 	 */
 	public setTitle(title: string | null): this {
 		// Data assertions
@@ -266,9 +297,9 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Sets the URL of this embed
+	 * Sets the URL of this embed.
 	 *
-	 * @param url - The URL
+	 * @param url - The URL to use
 	 */
 	public setURL(url: string | null): this {
 		// Data assertions
@@ -279,7 +310,11 @@ export class EmbedBuilder {
 	}
 
 	/**
-	 * Transforms the embed to a plain object
+	 * Serializes this builder to API-compatible JSON data.
+	 *
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
 	 */
 	public toJSON(): APIEmbed {
 		return { ...this.data };
