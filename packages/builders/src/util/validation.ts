@@ -2,6 +2,8 @@ let validate = true;
 
 /**
  * Enables validators.
+ *
+ * @returns Whether validation is occurring.
  */
 export function enableValidators() {
 	return (validate = true);
@@ -9,6 +11,8 @@ export function enableValidators() {
 
 /**
  * Disables validators.
+ *
+ * @returns Whether validation is occurring.
  */
 export function disableValidators() {
 	return (validate = false);
