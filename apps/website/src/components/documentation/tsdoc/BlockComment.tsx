@@ -18,7 +18,7 @@ export function ExampleBlock({
 }
 
 export function DefaultValueBlock({ children }: PropsWithChildren): JSX.Element {
-	return <Block title="Default Value">{children}</Block>;
+	return <Block title="Default value">{children}</Block>;
 }
 
 export function RemarksBlock({ children }: PropsWithChildren): JSX.Element {
