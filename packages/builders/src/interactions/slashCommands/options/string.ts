@@ -7,12 +7,24 @@ import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixi
 const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6_000);
 const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000);
 
+/**
+ * A slash command string option.
+ */
 @mix(ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.String as const;
 
+	/**
+	 * The maximum length of this option.
+	 */
 	public readonly max_length?: number;
 
+	/**
+	 * The minimum length of this option.
+	 */
 	public readonly min_length?: number;
 
 	/**
@@ -41,6 +53,9 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandStringOption {
 		this.runRequiredValidations();
 
