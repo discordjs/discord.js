@@ -20,9 +20,6 @@ export interface VersionRouteParams {
 	version: string;
 }
 
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
-
 export async function generateStaticParams() {
 	const params: VersionRouteParams[] = [];
 

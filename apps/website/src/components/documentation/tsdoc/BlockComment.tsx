@@ -36,3 +36,7 @@ export function DeprecatedBlock({ children }: PropsWithChildren): JSX.Element {
 export function SeeBlock({ children }: PropsWithChildren): JSX.Element {
 	return <Block title="See Also">{children}</Block>;
 }
+
+export function ReturnsBlock({ children }: PropsWithChildren): JSX.Element {
+	return <Block title="Returns">{children}</Block>;
+}
