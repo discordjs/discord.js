@@ -150,8 +150,3 @@ const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');
 const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
 const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');
-
-/**
- * @external JSONEncodable
- * @see {@link https://discord.js.org/docs/packages/util/stable/JSONEncodable:Interface}
- */

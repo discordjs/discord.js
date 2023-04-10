@@ -18,15 +18,11 @@ class ActionRowBuilder extends BuildersActionRow {
 
   /**
    * Creates a new action row builder from JSON data
-   * @param {JSONEncodable<APIActionRowComponent<APIActionRowComponentTypes>>
-   * |APIActionRowComponent<APIActionRowComponentTypes>} other The other data
+   * @param {ActionRow|ActionRowBuilder|APIActionRowComponent} other The other data
    * @returns {ActionRowBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

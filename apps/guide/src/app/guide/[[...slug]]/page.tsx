@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Mdx } from '~/components/Mdx';
 
 export async function generateStaticParams() {
-	return allContents.map((content) => ({ slug: content.slug }));
+	return allContents.map((content) => ({ slug: [content.slug] }));
 }
 
 export default function Page({ params }: { params: { slug: string[] } }) {
@@ -14,7 +14,7 @@ export default function Page({ params }: { params: { slug: string[] } }) {
 	}
 
 	return (
-		<article className="prose mx-auto max-w-4xl py-8">
+		<article className="prose max-w-none">
 			<Mdx code={content?.body.code ?? ''} />
 		</article>
 	);

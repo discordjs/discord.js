@@ -13,15 +13,12 @@ class UserSelectMenuBuilder extends BuildersUserSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {UserSelectMenuBuilder|UserSelectMenuComponent|APIUserSelectComponent} other The other data
    * @returns {UserSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

@@ -6,6 +6,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 // import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import codeHikeThemeDarkPlus from './src/styles/code-hike-theme-dark-plus.json';
 
 export const Content = defineDocumentType(() => ({
 	name: 'Content',
@@ -30,7 +31,7 @@ export const Content = defineDocumentType(() => ({
 		},
 		url: {
 			type: 'string',
-			resolve: (post) => `/posts/${post._raw.flattenedPath}`,
+			resolve: (post) => `/guide/${post._raw.flattenedPath}`,
 		},
 	},
 }));
@@ -67,7 +68,7 @@ export default makeSource({
 	contentDirPath: 'src/content',
 	documentTypes: [Content],
 	mdx: {
-		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: 'css-variables', lineNumbers: true }]],
+		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: codeHikeThemeDarkPlus, lineNumbers: true }]],
 		rehypePlugins: [
 			rehypeSlug,
 			// [
