@@ -544,15 +544,15 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/docs/packages/collection/main/Collection:Class}
+ * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
  */
 
 /**
  * @external ImageURLOptions
- * @see {@link https://discord.js.org/docs/packages/rest/main/ImageURLOptions:Interface}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
  */
 
 /**
  * @external BaseImageURLOptions
- * @see {@link https://discord.js.org/docs/packages/rest/main/BaseImageURLOptions:Interface}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

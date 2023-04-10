@@ -77,5 +77,5 @@ module.exports = BaseClient;
 
 /**
  * @external REST
- * @see {@link https://discord.js.org/docs/packages/rest/main/REST:Class}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/REST:Class}
  */

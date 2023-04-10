@@ -26,5 +26,5 @@ module.exports = RoleSelectMenuBuilder;
 
 /**
  * @external BuildersRoleSelectMenu
- * @see {@link https://discord.js.org/docs/packages/builders/main/RoleSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/RoleSelectMenuBuilder:Class}
  */

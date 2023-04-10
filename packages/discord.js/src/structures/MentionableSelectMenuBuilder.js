@@ -27,5 +27,5 @@ module.exports = MentionableSelectMenuBuilder;
 
 /**
  * @external BuildersMentionableSelectMenu
- * @see {@link https://discord.js.org/docs/packages/builders/main/MentionableSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/MentionableSelectMenuBuilder:Class}
  */
