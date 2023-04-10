@@ -222,6 +222,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.timeoutAbortControllers.clear();
 
+		this.failedToConnectDueToNetworkError = false;
+
 		// Clear session state if applicable
 		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
 			await this.strategy.updateSessionInfo(this.id, null);
@@ -617,7 +619,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private onError(error: Error) {
 		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
-			this.debug(['Failed to connect to the gateway URL specified']);
+			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
 			this.failedToConnectDueToNetworkError = true;
 			return;
 		}
