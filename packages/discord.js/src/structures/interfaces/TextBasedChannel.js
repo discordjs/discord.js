@@ -72,16 +72,21 @@ class TextBasedChannel {
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
    */
-
+  
   /**
    * The options for sending a message.
-   * @typedef {BaseMessageOptions} MessageCreateOptions
+   * @typedef {BaseMessageOptions} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {ReplyOptions} [reply] The options for replying to a message
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
+   */
+
+  /**
+   * The options for sending a message.
+   * @typedef {BaseMessageCreateOptions} MessageCreateOptions
+   * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
   /**
