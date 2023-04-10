@@ -3,14 +3,20 @@ let validate = true;
 /**
  * Enables validators.
  */
-export const enableValidators = () => (validate = true);
+export function enableValidators() {
+	return (validate = true);
+}
 
 /**
  * Disables validators.
  */
-export const disableValidators = () => (validate = false);
+export function disableValidators() {
+	return (validate = false);
+}
 
 /**
  * Checks whether validation is occurring.
  */
-export const isValidationEnabled = () => validate;
+export function isValidationEnabled() {
+	return validate;
+}
