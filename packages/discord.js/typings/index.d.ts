@@ -6104,7 +6104,7 @@ export interface RoleTagData {
   premiumSubscriberRole?: true;
   subscriptionListingId?: Snowflake;
   availableForPurchase?: true;
-  guildConnections?:true;
+  guildConnections?: true;
 }
 
 export interface SetChannelPositionOptions {
