@@ -17,7 +17,7 @@ const sql = connect({
 	url: process.env.DATABASE_URL!,
 });
 
-const globber = await create(`docs/*/${pkg}/docs/docs.api.json`);
+const globber = await create(`docs/${pkg}/docs/docs.api.json`);
 for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {
