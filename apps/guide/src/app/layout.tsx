@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-600 bg-light-600">
+			<body className="dark:bg-dark-600 bg-light-600 dark:text-light-900">
 				<Providers>{children}</Providers>
 				<Analytics />
 			</body>
