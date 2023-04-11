@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { PACKAGES } from './util/constants';
 
 async function fetchLatestVersion(packageName: string) {
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`);
+	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, { cache: 'no-store' });
 	const data: string[] = await res.json();
 
 	return data.at(-2);
