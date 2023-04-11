@@ -114,7 +114,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	}
 
 	return entry.members.map((member: ApiItem) => ({
-		item: member.displayName,
+		item: `${member.displayName}${OVERLOAD_SEPARATOR}${member.kind}`,
 	}));
 }
 
