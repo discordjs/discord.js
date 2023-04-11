@@ -140,5 +140,13 @@ function Member({ member }: { member?: ApiItem }) {
 export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
 
-	return <div className="relative top-6">{member ? <Member member={member} /> : null}</div>;
+	if (!member) {
+		notFound();
+	}
+
+	return (
+		<div className="relative top-6">
+			<Member member={member} />
+		</div>
+	);
 }
