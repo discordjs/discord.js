@@ -10,7 +10,7 @@ export default function Layout({ children }: PropsWithChildren) {
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
 				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:flex lg:max-w-full">
-					<div className="lg:top-23 lg:sticky lg:h-[calc(100vh_-_100px)]">
+					<div className="lg:top-23 lg:sticky lg:h-[calc(100vh_-_105px)]">
 						<Nav />
 					</div>
 

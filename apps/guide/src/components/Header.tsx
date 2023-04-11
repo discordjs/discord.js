@@ -60,7 +60,7 @@ export default function Header() {
 	);
 
 	return (
-		<header className="dark:bg-dark/50 dark:border-dark-100 border-light-900 sticky top-4 z-20 rounded-md border bg-white/50 shadow backdrop-blur-md">
+		<header className="dark:bg-dark-600/75 dark:border-dark-100 border-light-900 sticky top-4 z-20 rounded-md border bg-white/75 shadow backdrop-blur-md">
 			<div className="block h-16 px-6">
 				<div className="flex h-full flex-row place-content-between place-items-center gap-8">
 					<Button
