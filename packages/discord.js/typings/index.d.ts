@@ -236,6 +236,7 @@ declare module 'node:events' {
 
 export class Activity {
   private constructor(presence: Presence, data?: RawActivityData);
+  public readonly presence: Presence;
   public applicationId: Snowflake | null;
   public assets: RichPresenceAssets | null;
   public buttons: string[];
@@ -1030,6 +1031,7 @@ export class ClientUser extends User {
 
 export class Options extends null {
   private constructor();
+  private static userAgentAppendix: string;
   public static get DefaultMakeCacheSettings(): CacheWithLimitsOptions;
   public static get DefaultSweeperSettings(): SweeperOptions;
   public static createDefault(): ClientOptions;
@@ -1305,6 +1307,7 @@ export class Guild extends AnonymousGuild {
   public large: boolean;
   public maximumMembers: number | null;
   public maximumPresences: number | null;
+  public maxStageVideoChannelUsers: number | null;
   public memberCount: number;
   public members: GuildMemberManager;
   public mfaLevel: GuildMFALevel;
@@ -1503,6 +1506,7 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
 
 export class GuildMember extends PartialTextBasedChannel(Base) {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
+  private _roles: Snowflake[];
   public avatar: string | null;
   public get bannable(): boolean;
   public get dmChannel(): DMChannel | null;
@@ -2440,6 +2444,7 @@ export class ReactionEmoji extends Emoji {
 
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
+  public readonly activity: Activity;
   public largeImage: Snowflake | null;
   public largeText: string | null;
   public smallImage: Snowflake | null;
@@ -3676,6 +3681,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
 
 export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
   protected constructor(client: Client<true>, holds: Constructable<Holds>);
+  private readonly _cache: Collection<K, Holds>;
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
 

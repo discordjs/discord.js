@@ -34,6 +34,7 @@ export const PACKAGES = [
 	'collection',
 	'core',
 	'formatters',
+	'next',
 	'proxy',
 	'rest',
 	'util',
@@ -114,7 +115,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 			continue;
 		}
 
-		if (member.kind === ApiItemKind.Constructor) {
+		if (member.kind === ApiItemKind.Constructor || member.kind === ApiItemKind.Namespace) {
 			continue;
 		}
 

@@ -14,20 +14,21 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 
 	return (
 		<nav
-			className={`dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[65px] left-0 bottom-0 z-20 h-[calc(100vh_-_65px)] w-full border-r bg-white ${
+			className={`dark:bg-dark-600/75 dark:border-dark-100 border-light-900 top-22 fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-5xl rounded-md border bg-white/75 shadow backdrop-blur-md ${
 				opened ? 'block' : 'hidden'
-			} lg:w-76 lg:max-w-76 lg:block`}
+			} lg:min-w-xs lg:sticky lg:block lg:h-full lg:w-full lg:max-w-xs`}
 		>
 			<Scrollbars
 				autoHide
+				className="[&>div]:overscroll-none"
 				hideTracksWhenNotNeeded
 				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 				renderTrackVertical={(props) => (
-					<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+					<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 				)}
 				universal
 			>
-				<div className="flex flex-col gap-3 px-3 pt-3">
+				<div className="flex flex-col gap-4 p-3">
 					<PackageSelect />
 					<VersionSelect />
 				</div>

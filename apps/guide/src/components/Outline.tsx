@@ -45,16 +45,16 @@ export function Outline({ headings }: { headings: MarkdownHeading[] }) {
 			hideTracksWhenNotNeeded
 			renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
 			renderTrackVertical={(props) => (
-				<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+				<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 			)}
 			universal
 		>
 			<div className="flex flex-col break-all p-3 pb-8">
-				<div className="mt-4 ml-2 flex flex-row gap-2">
+				<div className="ml-2 mt-4 flex flex-row gap-2">
 					<VscListSelection size={25} />
 					<span className="font-semibold">Contents</span>
 				</div>
-				<div className="mt-4 ml-2 flex flex-col gap-2">
+				<div className="ml-2 mt-4 flex flex-col gap-2">
 					<div className="relative flex flex-col">
 						<div
 							className="bg-blurple absolute h-[10px] w-[10px] rounded-full border-2 border-black dark:border-white"

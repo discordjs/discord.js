@@ -50,7 +50,7 @@ export function CmdKDialog() {
 		() =>
 			searchResults?.map((item, idx) => (
 				<Command.Item
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-4 my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white [&[aria-selected]]:ring"
+					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-2 my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white [&[aria-selected]]:ring"
 					key={`${item.id}-${idx}`}
 					onSelect={() => {
 						router.push(item.path);
@@ -112,14 +112,14 @@ export function CmdKDialog() {
 	}, [search]);
 
 	return (
-		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog!}>
+		<Dialog className="fixed left-1/2 top-1/4 z-50 -translate-x-1/2" state={dialog!}>
 			<Command
-				className="dark:bg-dark-300 min-w-xs sm:min-w-lg max-w-xs rounded bg-white sm:max-w-lg"
+				className="dark:bg-dark/50 min-w-xs sm:min-w-lg dark:border-dark-100 border-light-900 max-w-xs rounded border bg-white/50 shadow backdrop-blur-md sm:max-w-lg"
 				label="Command Menu"
 				shouldFilter={false}
 			>
 				<Command.Input
-					className="dark:bg-dark-300 caret-blurple placeholder:text-dark-300/75 focus:ring-width-2 focus:ring-blurple w-full rounded border-0 bg-white p-4 text-lg outline-0 outline-0 focus:ring dark:placeholder:text-white/75"
+					className="dark:bg-dark/50 caret-blurple placeholder:text-dark-300/75 dark:border-dark-100 border-light-900 rounded-b-0 w-full rounded border-0 border-b bg-white/50 p-4 text-lg outline-0 dark:placeholder:text-white/75"
 					onValueChange={setSearch}
 					placeholder="Quick search..."
 					value={search}
