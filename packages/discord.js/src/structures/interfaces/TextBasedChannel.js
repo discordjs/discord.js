@@ -72,7 +72,6 @@ class TextBasedChannel {
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
    */
-  
   /**
    * The options for sending a message.
    * @typedef {BaseMessageOptions} BaseMessageCreateOptions
