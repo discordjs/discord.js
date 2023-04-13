@@ -131,11 +131,13 @@ class ThreadMemberManager extends CachedManager {
     });
     return raw.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
   }
+
   /**
    * Options used to fetch a thread member.
    * @typedef {BaseFetchOptions} FetchThreadMemberOptions
    * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
    */
+
   /**
    * Options used to fetch multiple thread members with guild member data.
    * <info>With `withMember` set to `true`, pagination is enabled.</info>
@@ -160,7 +162,7 @@ class ThreadMemberManager extends CachedManager {
    */
 
   /**
-   * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
+   * Fetches member(s) for the thread from Discord.
    * @param {UserResolvable|FetchThreadMembersOptions|boolean} [member] The member to fetch. If `undefined`, all members
    * in the thread are fetched, and will be cached based on `options.cache`.
    * @param {FetchThreadMemberOptions|FetchThreadMembersOptions} [options] Additional options for this fetch

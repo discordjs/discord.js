@@ -2607,7 +2607,7 @@ export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhook
   public unpin(reason?: string): Promise<ThreadChannel>;
 }
 
-export class ThreadMember <HasMemberData extends boolean = boolean> extends Base {
+export class ThreadMember<HasMemberData extends boolean = boolean> extends Base {
   private constructor(thread: ThreadChannel, data?: RawThreadMemberData, extra?: unknown);
   public flags: ThreadMemberFlags;
   public readonly guildMember: HasMemberData extends true ? GuildMember : GuildMember | null;
@@ -4877,9 +4877,11 @@ export interface FetchReactionUsersOptions {
   limit?: number;
   after?: Snowflake;
 }
+
 export interface FetchThreadMemberOptions extends BaseFetchOptions {
   withMember?: boolean;
 }
+
 export interface FetchThreadMembersWithGuildMemberDataOptions {
   withMember: true;
   after?: Snowflake;
