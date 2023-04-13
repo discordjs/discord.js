@@ -56,7 +56,7 @@ export interface RequiredWebSocketManagerOptions {
 	/**
 	 * The intents to request
 	 */
-	intents: GatewayIntentBits;
+	intents: GatewayIntentBits | 0;
 	/**
 	 * The REST instance to use for fetching gateway information
 	 */

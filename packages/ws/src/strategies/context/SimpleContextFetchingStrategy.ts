@@ -29,8 +29,8 @@ export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 		return this.manager.options.updateSessionInfo(shardId, sessionInfo);
 	}
 
-	public async waitForIdentify(shardId: number): Promise<void> {
+	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
 		const throttler = await SimpleContextFetchingStrategy.ensureThrottler(this.manager);
-		await throttler.waitForIdentify(shardId);
+		await throttler.waitForIdentify(shardId, signal);
 	}
 }

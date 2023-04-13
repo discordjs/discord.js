@@ -22,7 +22,7 @@ export class SimpleIdentifyThrottler implements IIdentifyThrottler {
 	/**
 	 * {@inheritDoc IIdentifyThrottler.waitForIdentify}
 	 */
-	public async waitForIdentify(shardId: number): Promise<void> {
+	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
 		const key = shardId % this.maxConcurrency;
 
 		const state = this.states.ensure(key, () => {
@@ -32,7 +32,7 @@ export class SimpleIdentifyThrottler implements IIdentifyThrottler {
 			};
 		});
 
-		await state.queue.wait();
+		await state.queue.wait({ signal });
 
 		try {
 			const diff = state.resetsAt - Date.now();

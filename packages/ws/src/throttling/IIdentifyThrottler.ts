@@ -5,7 +5,7 @@
  */
 export interface IIdentifyThrottler {
 	/**
-	 * Resolves once the given shard should be allowed to identify.
+	 * Resolves once the given shard should be allowed to identify, or rejects if the operation was aborted.
 	 */
-	waitForIdentify(shardId: number): Promise<void>;
+	waitForIdentify(shardId: number, signal: AbortSignal): Promise<void>;
 }

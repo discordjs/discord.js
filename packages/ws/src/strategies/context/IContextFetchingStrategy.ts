@@ -24,7 +24,10 @@ export interface IContextFetchingStrategy {
 	readonly options: FetchingStrategyOptions;
 	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
-	waitForIdentify(shardId: number): Promise<void>;
+	/**
+	 * Resolves once the given shard should be allowed to identify, or rejects if the operation was aborted
+	 */
+	waitForIdentify(shardId: number, signal: AbortSignal): Promise<void>;
 }
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
