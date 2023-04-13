@@ -55,11 +55,11 @@ export default function Footer() {
 								</a>
 								<a
 									className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
-									href="https://discordjs.guide"
+									href="https://discord.js.org/docs/"
 									rel="noopener noreferrer"
 									target="_blank"
 								>
-									discord.js guide
+									discord.js documentation
 								</a>
 								<a
 									className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
