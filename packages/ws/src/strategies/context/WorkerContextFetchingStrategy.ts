@@ -82,15 +82,21 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 		parentPort!.postMessage(payload);
 
-		(signal as unknown as PolyFillAbortSignal).addEventListener('abort', () => {
+		const listener = () => {
 			const payload: WorkerReceivePayload = {
 				op: WorkerReceivePayloadOp.CancelIdentify,
 				nonce,
 			};
 
 			parentPort!.postMessage(payload);
-		});
+		};
 
-		return promise;
+		(signal as unknown as PolyFillAbortSignal).addEventListener('abort', listener);
+
+		try {
+			await promise;
+		} finally {
+			(signal as unknown as PolyFillAbortSignal).removeEventListener('abort', listener);
+		}
 	}
 }
