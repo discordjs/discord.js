@@ -46,7 +46,7 @@ export type WorkerReceivePayload =
 	| { data: any; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
 	| { nonce: number; op: WorkerReceivePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerReceivePayloadOp.RetrieveSessionInfo; shardId: number }
-	| { nonce: number; op: WorkerReceivePayloadOp.WaitForIdentify }
+	| { nonce: number; op: WorkerReceivePayloadOp.WaitForIdentify; shardId: number }
 	| { op: WorkerReceivePayloadOp.Connected; shardId: number }
 	| { op: WorkerReceivePayloadOp.Destroyed; shardId: number }
 	| { op: WorkerReceivePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number }
@@ -297,7 +297,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.WaitForIdentify: {
-				await this.throttler.waitForIdentify();
+				await this.throttler.waitForIdentify(payload.shardId);
 				const response: WorkerSendPayload = {
 					op: WorkerSendPayloadOp.ShardCanIdentify,
 					nonce: payload.nonce,

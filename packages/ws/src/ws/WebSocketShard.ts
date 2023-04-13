@@ -358,7 +358,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private async identify() {
 		this.debug(['Waiting for identify throttle']);
 
-		await this.strategy.waitForIdentify();
+		await this.strategy.waitForIdentify(this.id);
 
 		this.debug([
 			'Identifying',

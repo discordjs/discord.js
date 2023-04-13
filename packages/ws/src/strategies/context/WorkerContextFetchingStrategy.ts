@@ -54,11 +54,12 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 		parentPort!.postMessage(payload);
 	}
 
-	public async waitForIdentify(): Promise<void> {
+	public async waitForIdentify(shardId: number): Promise<void> {
 		const nonce = Math.random();
 		const payload = {
 			op: WorkerReceivePayloadOp.WaitForIdentify,
 			nonce,
+			shardId,
 		} satisfies WorkerReceivePayload;
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(nonce, resolve));

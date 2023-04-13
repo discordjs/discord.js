@@ -18,7 +18,7 @@ export interface IContextFetchingStrategy {
 	readonly options: FetchingStrategyOptions;
 	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
-	waitForIdentify(): Promise<void>;
+	waitForIdentify(shardId: number): Promise<void>;
 }
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
