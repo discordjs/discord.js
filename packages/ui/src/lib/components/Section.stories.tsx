@@ -4,6 +4,7 @@ import { Section } from './Section.jsx';
 export default {
 	title: 'Section',
 	component: Section,
+	tags: ['autodocs'],
 } satisfies Meta<typeof Section>;
 
 type Story = StoryObj<typeof Section>;
