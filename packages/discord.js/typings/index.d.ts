@@ -1530,7 +1530,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
   public get presence(): Presence | null;
-  public get roles(): GuildMemberRoleManager;
+  public readonly roles: GuildMemberRoleManager;
   public user: User;
   public get voice(): VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
