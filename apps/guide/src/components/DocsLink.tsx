@@ -1,3 +1,4 @@
+import { FiExternalLink } from 'react-icons/fi';
 import { BASE_URL, BASE_URL_LEGACY, PACKAGES, VERSION } from '~/util/constants';
 
 interface DocsLinkOptions {
@@ -71,6 +72,7 @@ export function DocsLink({
 	return (
 		<a href={url} rel="noopener noreferrer" target="_blank">
 			{text}
+			<FiExternalLink className="inline-block" size={18} />
 		</a>
 	);
 }
