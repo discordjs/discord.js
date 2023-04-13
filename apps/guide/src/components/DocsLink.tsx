@@ -1,20 +1,4 @@
-const BASE_URL = 'https://discord.js.org/docs/packages' as const;
-const BASE_URL_LEGACY = 'https://old.discordjs.dev/#/docs/discord.js' as const;
-const VERSION = '14.9.0' as const;
-
-const PACKAGES = [
-	'discord.js',
-	'brokers',
-	'builders',
-	'collection',
-	'core',
-	'formatters',
-	'proxy',
-	'rest',
-	'util',
-	'voice',
-	'ws',
-] as const;
+import { BASE_URL, BASE_URL_LEGACY, PACKAGES, VERSION } from '~/util/constants';
 
 interface DocsLinkOptions {
 	/**
@@ -84,5 +68,9 @@ export function DocsLink({
 		text = `${parent}${trimmedSymbol ? `${staticReference ? '.' : '#'}${trimmedSymbol}` : ''}${bracketText}`;
 	}
 
-	return <a href={url}>{text}</a>;
+	return (
+		<a href={url} rel="noopener noreferrer" target="_blank">
+			{text}
+		</a>
+	);
 }
