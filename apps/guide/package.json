@@ -58,7 +58,6 @@
 		"react": "^18.2.0",
 		"react-custom-scrollbars-2": "^4.5.0",
 		"react-dom": "^18.2.0",
-		"react-icons": "^4.8.0",
 		"react-use": "^17.4.0",
 		"rehype-autolink-headings": "^6.1.1",
 		"rehype-ignore": "^1.0.5",
