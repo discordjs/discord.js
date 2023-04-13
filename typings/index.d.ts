@@ -4267,6 +4267,7 @@ export interface AutoModerationAction {
 export interface AutoModerationActionMetadata {
   channelId: Snowflake | null;
   durationSeconds: number | null;
+  customMessage: string | null;
 }
 
 export interface AutoModerationTriggerMetadata {
