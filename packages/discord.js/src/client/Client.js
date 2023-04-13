@@ -518,6 +518,17 @@ class Client extends BaseClient {
 module.exports = Client;
 
 /**
+ * @class SnowflakeUtil
+ * @classdesc This class is an alias for {@link https://www.npmjs.com/package/@sapphire/snowflake @sapphire/snowflake}'s
+ * `DiscordSnowflake` class.
+ *
+ * Check their documentation
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/snowflake_src.Snowflake here}
+ * to see what you can do.
+ * @hideconstructor
+ */
+
+/**
  * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
  * except the epoch is 2015-01-01T00:00:00.000Z.
  *
