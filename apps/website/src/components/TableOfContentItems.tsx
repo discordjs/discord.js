@@ -25,7 +25,7 @@ export interface TableOfContentsItemProps {
 export function TableOfContentsPropertyItem({ property }: { property: TableOfContentsSerializedProperty }) {
 	return (
 		<a
-			className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] border-l p-[5px] text-sm outline-0 focus:rounded focus:border-0 focus:ring"
+			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-0 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${property.name}`}
 			key={`${property.name}-${property.kind}`}
 			title={property.name}
@@ -44,7 +44,7 @@ export function TableOfContentsMethodItem({ method }: { method: TableOfContentsS
 
 	return (
 		<a
-			className="dark:border-dark-100 border-light-800 dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] flex flex-row place-items-center gap-2 border-l p-[5px] text-sm outline-0 focus:rounded focus:border-0 focus:ring"
+			className="ml-[10px] flex flex-row place-items-center gap-2 border-l border-light-800 p-[5px] pl-6.5 text-sm outline-0 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${key}`}
 			key={key}
 			title={method.name}
@@ -91,7 +91,7 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 				<VscListSelection size={25} />
 				<span className="font-semibold">Contents</span>
 			</div>
-			<div className="mt-5.5 ml-2 flex flex-col gap-2">
+			<div className="ml-2 mt-5.5 flex flex-col gap-2">
 				{propertyItems.length ? (
 					<div className="flex flex-col">
 						<div className="flex flex-row place-items-center gap-4">

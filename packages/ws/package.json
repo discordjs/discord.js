@@ -65,7 +65,7 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.4",
 		"@vladfrangu/async_event_emitter": "^2.2.1",
-		"discord-api-types": "^0.37.37",
+		"discord-api-types": "^0.37.38",
 		"tslib": "^2.5.0",
 		"ws": "^8.13.0"
 	},
@@ -73,7 +73,7 @@
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
 		"@types/node": "16.18.23",
-		"@vitest/coverage-c8": "^0.29.8",
+		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
 		"eslint": "^8.38.0",

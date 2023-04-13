@@ -13,7 +13,7 @@ export function Table({
 		() =>
 			columns.map((column, idx) => (
 				<th
-					className="border-light-900 dark:border-dark-100 break-normal border-b px-3 py-2 text-left text-sm"
+					className="break-normal border-b border-light-900 px-3 py-2 text-left text-sm dark:border-dark-100"
 					key={`${column}-${idx}`}
 				>
 					{column}
