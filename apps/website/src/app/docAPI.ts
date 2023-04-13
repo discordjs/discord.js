@@ -6,7 +6,7 @@ import { connect } from '@planetscale/database';
 
 const sql = connect({
 	async fetch(input, init) {
-		return fetch(input, { ...init, next: { revalidate: 3_600 } });
+		return fetch(input, { ...init, cache: undefined, next: { revalidate: 3_600 } });
 	},
 	url: process.env.DATABASE_URL!,
 });

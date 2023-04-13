@@ -5,7 +5,7 @@ export function findMemberByKey(model: ApiModel, packageName: string, containerK
 	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
 }
 
-export function findMember(model: ApiModel, packageName: string, memberName: string | undefined): ApiItem | undefined {
+export function findMember(model: ApiModel, packageName: string, memberName: string | undefined) {
 	if (!memberName) {
 		return undefined;
 	}

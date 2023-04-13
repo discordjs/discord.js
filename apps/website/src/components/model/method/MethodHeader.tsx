@@ -1,8 +1,18 @@
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Anchor } from '~/components/Anchor';
 import { ExcerptText } from '~/components/ExcerptText';
+
+function getShorthandName(method: ApiMethod | ApiMethodSignature) {
+	return `${method.name}${method.isOptional ? '?' : ''}(${method.parameters.reduce((prev, cur, index) => {
+		if (index === 0) {
+			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
+		}
+
+		return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
+	}, '')})`;
+}
 
 export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignature }) {
 	const isDeprecated = Boolean(method.tsdocComment?.deprecatedBlock);
@@ -10,18 +20,6 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 	const key = useMemo(
 		() => `${method.displayName}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`,
 		[method.displayName, method.overloadIndex],
-	);
-
-	const getShorthandName = useCallback(
-		(method: ApiMethod | ApiMethodSignature) =>
-			`${method.name}${method.isOptional ? '?' : ''}(${method.parameters.reduce((prev, cur, index) => {
-				if (index === 0) {
-					return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
-				}
-
-				return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
-			}, '')})`,
-		[],
 	);
 
 	return (
