@@ -50,7 +50,7 @@
 		"commander": "^10.0.0",
 		"fs-extra": "^11.1.1",
 		"tslib": "^2.5.0",
-		"undici": "^5.21.0",
+		"undici": "^5.21.2",
 		"yaml": "^2.2.1"
 	},
 	"devDependencies": {
@@ -58,12 +58,12 @@
 		"@types/node": "16.18.23",
 		"@vitest/coverage-c8": "^0.29.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.37.0",
-		"eslint-config-neon": "^0.1.41",
+		"eslint": "^8.38.0",
+		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
-		"typescript": "^5.0.3",
+		"typescript": "^5.0.4",
 		"vitest": "^0.29.8"
 	},
 	"engines": {

@@ -57,7 +57,7 @@
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.4.0",
-		"@vladfrangu/async_event_emitter": "^2.1.4",
+		"@vladfrangu/async_event_emitter": "^2.2.1",
 		"discord-api-types": "^0.37.37"
 	},
 	"devDependencies": {
@@ -67,12 +67,12 @@
 		"@vitest/coverage-c8": "^0.29.8",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.37.0",
-		"eslint-config-neon": "^0.1.41",
+		"eslint": "^8.38.0",
+		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
-		"typescript": "^5.0.3",
+		"typescript": "^5.0.4",
 		"vitest": "^0.29.8"
 	},
 	"engines": {

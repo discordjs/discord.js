@@ -518,6 +518,17 @@ class Client extends BaseClient {
 module.exports = Client;
 
 /**
+ * @class SnowflakeUtil
+ * @classdesc This class is an alias for {@link https://www.npmjs.com/package/@sapphire/snowflake @sapphire/snowflake}'s
+ * `DiscordSnowflake` class.
+ *
+ * Check their documentation
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/snowflake_src.Snowflake here}
+ * to see what you can do.
+ * @hideconstructor
+ */
+
+/**
  * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
  * except the epoch is 2015-01-01T00:00:00.000Z.
  *
@@ -544,15 +555,15 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
+ * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
  */
 
 /**
  * @external ImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/ImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
  */
 
 /**
  * @external BaseImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/BaseImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

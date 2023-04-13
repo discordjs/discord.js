@@ -9,14 +9,13 @@ category: Home
 	<DiscordMessage
 		interaction={{
 			author: {
-				avatar:
-					'https://cdn.discordapp.com/guilds/222078108977594368/users/81440962496172032/avatars/c059c5d04d717ea05790f7a6447e4843.webp?size=160',
-				username: 'Crawl',
+				avatar: '/assets/old-guide.png',
+				username: 'discord.js',
 			},
-			command: 'upgrade',
+			command: '/upgrade',
 		}}
 		author={{
-			avatar: 'https://cdn.discordapp.com/avatars/474807795183648809/7f239a0776ff928b2182906a2b3743c9.webp?size=160',
+			avatar: '/assets/discordjs.png',
 			bot: true,
 			username: 'Guide Bot',
 			time: 'Today at 21:00',
@@ -30,14 +29,11 @@ category: Home
 
 ## Site
 
-- Upgraded to [VuePress v2](https://v2.vuepress.vuejs.org/)
-- New theme made to match the [discord.js documentation site](https://discord.js.org/)
-- Discord message components upgraded to [@discord-message-components/vue](https://github.com/Danktuary/discord-message-components/blob/main/packages/vue/README.md)
-- Many fixes in code blocks, grammar, consistency, etc.
+We have moved from VuePress to [Next.js](https://nextjs.org/)! The source can be found [here](https://github.com/discordjs/discord.js/tree/main/apps/guide).
 
 ## Pages
 
-All content has been updated to use discord.js v14 syntax. The v13 version of the guide can be found at [https://v13.discordjs.guide/](https://v13.discordjs.guide/).
+All content has been updated to use discord.js v14 syntax. The v13 version of the guide can be found at https://v13.discordjs.guide.
 
 ### New
 
@@ -54,13 +50,13 @@ All content has been updated to use discord.js v14 syntax. The v13 version of th
 - [Voice](/voice/): Rewritten to use the [_`@discordjs/voice`_](https://github.com/discordjs/discord.js/tree/main/packages/voice) package
 - [Command handling](/creating-your-bot/command-handling.md/): Updated to use slash commands
   - Obsolete sections removed
-- _`client.on('message')`_ snippets updated to _`client.on('interactionCreate')`_
-  - [Message content will become a new privileged intent on August 31, 2022](https://support-dev.discord.com/hc/en-us/articles/4404772028055)
+- _`client.on('message')`_ snippets updated to _`client.on(Events.InteractionCreate)`_
+  - [Message content became a privileged intent on August 31, 2022](https://support-dev.discord.com/hc/articles/4404772028055)
 
 <DiscordMessages rounded>
 	<DiscordMessage
 		author={{
-			avatar: 'https://cdn.discordapp.com/avatars/474807795183648809/7f239a0776ff928b2182906a2b3743c9.webp?size=160',
+			avatar: '/assets/discordjs.png',
 			bot: true,
 			username: 'Guide Bot',
 			time: 'Today at 21:00',

@@ -6,6 +6,7 @@ import { defineDocumentType, makeSource } from 'contentlayer/source-files';
 // import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import codeHikeThemeDarkPlus from './src/styles/code-hike-theme-dark-plus.json';
 
 export const Content = defineDocumentType(() => ({
 	name: 'Content',
@@ -16,21 +17,21 @@ export const Content = defineDocumentType(() => ({
 			type: 'string',
 			required: true,
 		},
-		summary: {
+		category: {
 			type: 'string',
-		},
-		image: {
-			type: 'string',
+			required: true,
 		},
 	},
 	computedFields: {
 		slug: {
 			type: 'string',
-			resolve: (doc) => doc._raw.flattenedPath,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => doc._raw.flattenedPath.replace(/\d+-/g, ''),
 		},
 		url: {
 			type: 'string',
-			resolve: (post) => `/posts/${post._raw.flattenedPath}`,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => `/guide/${doc._raw.flattenedPath.replace(/\d+-/g, '')}`,
 		},
 	},
 }));
@@ -67,7 +68,7 @@ export default makeSource({
 	contentDirPath: 'src/content',
 	documentTypes: [Content],
 	mdx: {
-		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: 'css-variables', lineNumbers: true }]],
+		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: codeHikeThemeDarkPlus, lineNumbers: true }]],
 		rehypePlugins: [
 			rehypeSlug,
 			// [

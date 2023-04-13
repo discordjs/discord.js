@@ -51,10 +51,14 @@ export function Property({
 						{item.displayName}
 						{item.isOptional ? '?' : ''}
 					</h4>
-					<h4 className="font-mono text-lg font-bold">{separator}</h4>
-					<h4 className="break-all font-mono text-lg font-bold">
-						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
-					</h4>
+					{item.propertyTypeExcerpt.text ? (
+						<>
+							<h4 className="font-mono text-lg font-bold">{separator}</h4>
+							<h4 className="break-all font-mono text-lg font-bold">
+								<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
+							</h4>
+						</>
+					) : null}
 				</div>
 			</div>
 			{hasSummary || inheritedFrom ? (
