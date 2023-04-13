@@ -65,7 +65,7 @@
 		"@microsoft/api-extractor": "^7.34.4",
 		"@types/node": "16.18.23",
 		"@types/supertest": "^2.0.12",
-		"@vitest/coverage-c8": "^0.29.8",
+		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.38.0",
 		"eslint-config-neon": "^0.1.42",
