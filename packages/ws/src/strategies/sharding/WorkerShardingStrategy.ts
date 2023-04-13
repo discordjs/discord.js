@@ -86,9 +86,9 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 	private readonly throttler: IdentifyThrottler;
 
-	public constructor(manager: WebSocketManager, options: WorkerShardingStrategyOptions) {
+	public constructor(manager: WebSocketManager, options: WorkerShardingStrategyOptions, maxConcurrency: number) {
 		this.manager = manager;
-		this.throttler = new IdentifyThrottler(manager);
+		this.throttler = new IdentifyThrottler(maxConcurrency);
 		this.options = options;
 	}
 

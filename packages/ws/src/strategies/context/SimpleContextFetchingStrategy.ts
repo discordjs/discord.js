@@ -7,21 +7,25 @@ export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 	// IdentifyThrottler per manager.
 	private static throttlerCache = new WeakMap<WebSocketManager, IdentifyThrottler>();
 
-	private static ensureThrottler(manager: WebSocketManager): IdentifyThrottler {
+	private static ensureThrottler(manager: WebSocketManager, maxConcurrency: number): IdentifyThrottler {
 		const existing = SimpleContextFetchingStrategy.throttlerCache.get(manager);
 		if (existing) {
 			return existing;
 		}
 
-		const throttler = new IdentifyThrottler(manager);
+		const throttler = new IdentifyThrottler(maxConcurrency);
 		SimpleContextFetchingStrategy.throttlerCache.set(manager, throttler);
 		return throttler;
 	}
 
 	private readonly throttler: IdentifyThrottler;
 
-	public constructor(private readonly manager: WebSocketManager, public readonly options: FetchingStrategyOptions) {
-		this.throttler = SimpleContextFetchingStrategy.ensureThrottler(manager);
+	public constructor(
+		private readonly manager: WebSocketManager,
+		public readonly options: FetchingStrategyOptions,
+		maxConcurrency: number,
+	) {
+		this.throttler = SimpleContextFetchingStrategy.ensureThrottler(manager, maxConcurrency);
 	}
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
