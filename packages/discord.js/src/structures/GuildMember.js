@@ -55,10 +55,10 @@ class GuildMember extends Base {
     this.communicationDisabledUntilTimestamp = null;
 
     /**
-      * A manager for the roles belonging to this member
-      * @type {GuildMemberRoleManager}
-      * @readonly
-      */
+     * A manager for the roles belonging to this member
+     * @type {GuildMemberRoleManager}
+     * @readonly
+     */
     this.roles = new GuildMemberRoleManager(this);
     if (data) this._patch(data);
   }
@@ -127,10 +127,10 @@ class GuildMember extends Base {
   }
 
   /**
-    * The role ids of the member
-    * @type {Snowflake[]}
-    * @private
-    */
+   * The role ids of the member
+   * @type {Snowflake[]}
+   * @private
+   */
   get _roles() {
     return [];
   }
