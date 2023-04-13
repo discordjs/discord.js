@@ -319,13 +319,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 	}
 
 	private async ensureThrottler(): Promise<IIdentifyThrottler> {
-		if (this.throttler) {
-			return this.throttler;
-		}
-
-		const throttler = await this.manager.options.buildIdentifyThrottler(this.manager);
-		this.throttler = throttler;
-
-		return throttler;
+		this.throttler ??= await this.manager.options.buildIdentifyThrottler(this.manager);
+		return this.throttler;
 	}
 }
