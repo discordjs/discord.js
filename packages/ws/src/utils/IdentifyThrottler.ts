@@ -4,7 +4,7 @@ import { AsyncQueue } from '@sapphire/async-queue';
 import type { WebSocketManager } from '../ws/WebSocketManager.js';
 import { WebSocketShardEvents } from '../ws/WebSocketShard.js';
 
-interface SessionState {
+export interface SessionState {
 	queue: AsyncQueue;
 	resetsAt: number;
 }
