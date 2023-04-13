@@ -39,7 +39,6 @@ export class SimpleIdentifyThrottler implements IIdentifyThrottler {
 			if (diff <= 5_000) {
 				// To account for the latency the IDENTIFY payload goes through, we add a bit more wait time
 				const time = diff + Math.random() * 1_500;
-				console.log(`[IDENTIFY] Shard ${shardId} is waiting ${time}ms for the rate limit to expire.`);
 				await sleep(time);
 			}
 
