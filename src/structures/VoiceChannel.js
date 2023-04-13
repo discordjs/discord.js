@@ -2,7 +2,6 @@
 
 const process = require('node:process');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Permissions = require('../util/Permissions');
 
 let deprecationEmittedForEditable = false;
@@ -10,7 +9,6 @@ let deprecationEmittedForEditable = false;
 /**
  * Represents a guild voice channel on Discord.
  * @extends {BaseGuildVoiceChannel}
- * @implements {TextBasedChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   /**
@@ -59,6 +57,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
       permissions.has(Permissions.FLAGS.SPEAK, false)
     );
   }
+
   /**
    * Sets the bitrate of the channel.
    * @name VoiceChannel#setBitrate
@@ -85,6 +84,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * // Remove a fixed region for this channel - let Discord decide automatically
    * voiceChannel.setRTCRegion(null, 'We want to let Discord decide.');
    */
+
   /**
    * Sets the user limit of the channel.
    * @name VoiceChannel#setUserLimit
@@ -106,7 +106,5 @@ class VoiceChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<VoiceChannel>}
    */
 }
-
-TextBasedChannel.applyToClass(VoiceChannel, true, ['lastPinAt']);
 
 module.exports = VoiceChannel;

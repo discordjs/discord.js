@@ -1,7 +1,6 @@
 'use strict';
 
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
 
 /**
  * Represents a guild stage channel on Discord.
@@ -52,6 +51,7 @@ class StageChannel extends BaseGuildVoiceChannel {
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
   }
+
   /**
    * Sets the bitrate of the channel.
    * @name StageChannel#setBitrate
@@ -100,7 +100,5 @@ class StageChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<StageChannel>}
    */
 }
-
-TextBasedChannel.applyToClass(StageChannel, true, ['lastPinAt']);
 
 module.exports = StageChannel;
