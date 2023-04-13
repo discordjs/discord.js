@@ -56,7 +56,7 @@ export function Alert({ title, type, children }: PropsWithChildren<IAlert>) {
 					<div className={`relative border-b-2 ${border}`}>
 						<div className={`-translate-y-50% pointer-events-auto flex place-items-center gap-2 px-2 ${text}`}>
 							{icon}
-							<span className={`font-semibold ${text}`}>{title}</span>
+							{title ? <span className={`font-semibold ${text}`}>{title}</span> : null}
 						</div>
 					</div>
 					<div className={`rounded-tr-1.5 rounded-br-1.5 flex-1 border-b-2 border-r-2 border-t-2 ${border}`} />

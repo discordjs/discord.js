@@ -10,5 +10,9 @@ export default {
 type Story = StoryObj<typeof Section>;
 
 export const Default = {
-	render: () => <Section title="Test">Test Content</Section>,
+	render: ({ children, ...args }) => <Section {...args}>{children}</Section>,
+	args: {
+		title: 'Test',
+		children: 'Test Content',
+	},
 } satisfies Story;
