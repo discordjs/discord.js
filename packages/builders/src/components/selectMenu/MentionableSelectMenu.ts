@@ -2,13 +2,16 @@ import type { APIMentionableSelectComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
+/**
+ * A builder that creates API-compatible JSON data for mentionable select menus.
+ */
 export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMentionableSelectComponent> {
 	/**
-	 * Creates a new select menu from API data
+	 * Creates a new select menu from API data.
 	 *
 	 * @param data - The API data to create this select menu with
 	 * @example
-	 * Creating a select menu from an API data object
+	 * Creating a select menu from an API data object:
 	 * ```ts
 	 * const selectMenu = new MentionableSelectMenuBuilder({
 	 * 	custom_id: 'a cool select menu',
@@ -17,12 +20,12 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * });
 	 * ```
 	 * @example
-	 * Creating a select menu using setters and API data
+	 * Creating a select menu using setters and API data:
 	 * ```ts
 	 * const selectMenu = new MentionableSelectMenuBuilder({
 	 * 	custom_id: 'a cool select menu',
 	 * })
-	 * 	.setMinValues(1)
+	 * 	.setMinValues(1);
 	 * ```
 	 */
 	public constructor(data?: Partial<APIMentionableSelectComponent>) {

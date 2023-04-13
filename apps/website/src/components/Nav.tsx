@@ -14,7 +14,7 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 
 	return (
 		<nav
-			className={`dark:bg-dark/75 dark:border-dark-100 border-light-900 top-22 fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-5xl rounded-md border bg-white/75 shadow backdrop-blur-md ${
+			className={`dark:bg-dark-600/75 dark:border-dark-100 border-light-900 top-22 fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-5xl rounded-md border bg-white/75 shadow backdrop-blur-md ${
 				opened ? 'block' : 'hidden'
 			} lg:min-w-xs lg:sticky lg:block lg:h-full lg:w-full lg:max-w-xs`}
 		>

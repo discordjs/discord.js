@@ -16,7 +16,7 @@ export function FunctionBody({ item }: { item: ApiFunction }) {
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />
 			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}
-			<ParameterSection item={item} />
+			{item.parameters.length ? <ParameterSection item={item} /> : null}
 		</Documentation>
 	);
 }

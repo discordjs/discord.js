@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
-import { CODE_EXAMPLE } from '~/util/constants';
+import { DESCRIPTION, CODE_EXAMPLE } from '~/util/constants';
 
 export default function Page() {
 	return (
@@ -14,11 +14,7 @@ export default function Page() {
 						The <span className="bg-blurple relative rounded px-3 py-1 text-white">most popular</span> way to build
 						Discord <br /> bots.
 					</h1>
-					<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">
-						discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It
-						takes a much more object-oriented approach than most other JS Discord libraries, making your bot&apos;s code
-						significantly tidier and easier to comprehend.
-					</p>
+					<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
 					<div className="flex flex-row gap-4">
 						<Link
 							className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center rounded border-0 px-6 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
