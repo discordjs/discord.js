@@ -1,24 +1,36 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { Collection } from '@discordjs/collection';
 import { AsyncQueue } from '@sapphire/async-queue';
+import type { IIdentifyThrottler } from './IIdentifyThrottler';
 
-export interface SessionState {
+/**
+ * The state of a rate limit key's identify queue.
+ */
+export interface IdentifyState {
 	queue: AsyncQueue;
 	resetsAt: number;
 }
 
-export class IdentifyThrottler {
-	private readonly states = new Collection<number, SessionState>();
+/**
+ * Local, in-memory identify throttler.
+ */
+export class SimpleIdentifyThrottler implements IIdentifyThrottler {
+	private readonly states = new Collection<number, IdentifyState>();
 
 	public constructor(private readonly maxConcurrency: number) {}
 
+	/**
+	 * {@inheritDoc IIdentifyThrottler.waitForIdentify}
+	 */
 	public async waitForIdentify(shardId: number): Promise<void> {
 		const key = shardId % this.maxConcurrency;
 
-		const state = this.states.ensure(key, () => ({
-			queue: new AsyncQueue(),
-			resetsAt: Number.POSITIVE_INFINITY,
-		}));
+		const state = this.states.ensure(key, () => {
+			return {
+				queue: new AsyncQueue(),
+				resetsAt: Number.POSITIVE_INFINITY,
+			};
+		});
 
 		await state.queue.wait();
 
@@ -27,6 +39,7 @@ export class IdentifyThrottler {
 			if (diff <= 5_000) {
 				// To account for the latency the IDENTIFY payload goes through, we add a bit more wait time
 				const time = diff + Math.random() * 1_500;
+				console.log(`[IDENTIFY] Shard ${shardId} is waiting ${time}ms for the rate limit to expire.`);
 				await sleep(time);
 			}
 

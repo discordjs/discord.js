@@ -3,7 +3,7 @@ import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
+import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from '../../ws/WebSocketShard';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
@@ -84,11 +84,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 	private readonly fetchStatusPromises = new Collection<number, (status: WebSocketShardStatus) => void>();
 
-	private readonly throttler: IdentifyThrottler;
+	private throttler?: IIdentifyThrottler;
 
-	public constructor(manager: WebSocketManager, options: WorkerShardingStrategyOptions, maxConcurrency: number) {
+	public constructor(manager: WebSocketManager, options: WorkerShardingStrategyOptions) {
 		this.manager = manager;
-		this.throttler = new IdentifyThrottler(maxConcurrency);
 		this.options = options;
 	}
 
@@ -297,7 +296,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.WaitForIdentify: {
-				await this.throttler.waitForIdentify(payload.shardId);
+				const throttler = await this.ensureThrottler();
+				await throttler.waitForIdentify(payload.shardId);
 				const response: WorkerSendPayload = {
 					op: WorkerSendPayloadOp.ShardCanIdentify,
 					nonce: payload.nonce,
@@ -316,5 +316,16 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				break;
 			}
 		}
+	}
+
+	private async ensureThrottler(): Promise<IIdentifyThrottler> {
+		if (this.throttler) {
+			return this.throttler;
+		}
+
+		const throttler = await this.manager.options.buildIdentifyThrottler(this.manager);
+		this.throttler = throttler;
+
+		return throttler;
 	}
 }

@@ -25,11 +25,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
 
 		for (const shardId of shardIds) {
-			const strategy = new SimpleContextFetchingStrategy(
-				this.manager,
-				strategyOptions,
-				strategyOptions.gatewayInformation.session_start_limit.max_concurrency,
-			);
+			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
 			for (const event of Object.values(WebSocketShardEvents)) {
 				// @ts-expect-error: Intentional
