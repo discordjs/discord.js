@@ -358,7 +358,20 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private async identify() {
 		this.debug(['Waiting for identify throttle']);
 
-		await this.strategy.waitForIdentify(this.id);
+		const controller = new AbortController();
+
+		const interrupted = await Promise.race<boolean>([
+			this.strategy.waitForIdentify(this.id).then(() => false),
+			once(this, WebSocketShardEvents.Closed, { signal: controller.signal }).then(() => true),
+		]);
+
+		if (interrupted) {
+			this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
+			return;
+		}
+
+		// clean up the once listener
+		controller.abort();
 
 		this.debug([
 			'Identifying',
