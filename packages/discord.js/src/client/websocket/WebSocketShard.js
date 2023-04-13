@@ -7,6 +7,7 @@ const { GatewayIntentBits } = require('discord-api-types/v10');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
 
+let deprecationEmittedForImportant = false;
 /**
  * Represents a Shard's WebSocket connection
  * @extends {EventEmitter}
@@ -216,11 +217,12 @@ class WebSocketShard extends EventEmitter {
    * <warn>This parameter is **deprecated**. Important payloads are determined by their opcode instead.</warn>
    */
   send(data, important = false) {
-    if (important) {
+    if (important && !deprecationEmittedForImportant) {
       process.emitWarning(
         'Sending important payloads explicitly is deprecated. They are determined by their opcode implicitly now.',
         'DeprecationWarning',
       );
+      deprecationEmittedForImportant = true;
     }
     this.manager._ws.send(this.id, data);
   }
