@@ -70,9 +70,9 @@ export function DocsLink({
 	}
 
 	return (
-		<a href={url} rel="noopener noreferrer" target="_blank">
+		<a className="inline-flex flex-row place-items-center gap-1" href={url} rel="noopener noreferrer" target="_blank">
 			{text}
-			<FiExternalLink className="inline-block" size={18} />
+			<FiExternalLink size={18} />
 		</a>
 	);
 }
