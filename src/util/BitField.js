@@ -111,7 +111,7 @@ class BitField {
    * @returns {string[]}
    */
   toArray(...hasParams) {
-    return Object.keys(this.constructor.FLAGS).filter(bit => this.has(bit, ...hasParams));
+    return Object.keys(this.constructor.FLAGS).filter(bit => isNaN(bit) && this.has(bit, ...hasParams));
   }
 
   toJSON() {
