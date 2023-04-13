@@ -2,15 +2,12 @@
 
 import { ThemeProvider } from 'next-themes';
 import type { PropsWithChildren } from 'react';
-import { ServiceWorker } from '~/components/ServiceWorker';
-import { SystemThemeFallback } from '~/components/SystemThemeFallback';
+import { useSystemThemeFallback } from '~/hooks/useSystemThemeFallback';
+import { useUnregisterServiceWorker } from '~/hooks/useUnregisterServiceWorker';
 
 export function Providers({ children }: PropsWithChildren) {
-	return (
-		<>
-			<ThemeProvider attribute="class">{children}</ThemeProvider>
-			<ServiceWorker />
-			<SystemThemeFallback />
-		</>
-	);
+	useUnregisterServiceWorker();
+	useSystemThemeFallback();
+
+	return <ThemeProvider attribute="class">{children}</ThemeProvider>;
 }

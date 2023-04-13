@@ -16,7 +16,7 @@ export default function PackageSelect() {
 		() => [
 			<a href="https://old.discordjs.dev/#/docs/discord.js" key="discord.js">
 				<MenuItem
-					className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
+					className="my-0.5 rounded bg-white p-3 text-sm outline-0 active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 					id="discord-js"
 					onClick={() => packageMenu.setOpen(false)}
 					state={packageMenu}
@@ -27,7 +27,7 @@ export default function PackageSelect() {
 			...PACKAGES.map((pkg, idx) => (
 				<Link href={`/docs/packages/${pkg}/main`} key={`${pkg}-${idx}`}>
 					<MenuItem
-						className="hover:bg-light-700 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple my-0.5 rounded bg-white p-3 text-sm outline-0 focus:ring"
+						className="my-0.5 rounded bg-white p-3 text-sm outline-0 active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 						id={pkg}
 						onClick={() => packageMenu.setOpen(false)}
 						state={packageMenu}
@@ -43,7 +43,7 @@ export default function PackageSelect() {
 	return (
 		<>
 			<MenuButton
-				className="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+				className="rounded bg-light-600 p-3 outline-0 active:bg-light-800 dark:bg-dark-400 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-300"
 				state={packageMenu}
 			>
 				<div className="flex flex-row place-content-between place-items-center">
@@ -58,7 +58,7 @@ export default function PackageSelect() {
 				</div>
 			</MenuButton>
 			<Menu
-				className="dark:bg-dark-600 border-light-800 dark:border-dark-100 focus:ring-width-2 focus:ring-blurple z-20 flex flex-col rounded border bg-white p-1 outline-0 focus:ring"
+				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-0 dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
 				state={packageMenu}
 			>
 				{packageMenuItems}

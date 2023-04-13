@@ -44,7 +44,10 @@ export const metadata: Metadata = {
 
 	manifest: '/site.webmanifest',
 
-	themeColor: '#5865f2',
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
+		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+	],
 	colorScheme: 'light dark',
 
 	appleWebApp: {
@@ -74,7 +77,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-800 bg-light-600">
+			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
 				<Providers>{children}</Providers>
 				<Analytics />
 			</body>

@@ -23,6 +23,7 @@ build/
 src/styles/unocss.css
 .next/
 src/assets/readme/
+static/
 
 # Miscellaneous
 .tmp/
