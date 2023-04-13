@@ -1,4 +1,4 @@
-import { FiExternalLink } from 'react-icons/fi';
+import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import { BASE_URL, BASE_URL_LEGACY, PACKAGES, VERSION } from '~/util/constants';
 
 interface DocsLinkOptions {
@@ -61,6 +61,7 @@ export function DocsLink({
 		if (trimmedSymbol) url += `?scrollTo=${trimmedSymbol}`;
 
 		text = `${parent}${trimmedSymbol ? (trimmedSymbol.startsWith('s-') ? '.' : '#') : ''}${
+			// eslint-disable-next-line prefer-named-capture-group
 			trimmedSymbol ? `${trimmedSymbol.replace(/(e|s)-/, '')}` : ''
 		}${bracketText}`;
 	} else {

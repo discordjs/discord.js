@@ -1,4 +1,4 @@
-import { FiExternalLink } from 'react-icons/fi';
+import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 
 export function ExternalLink({ href, title }: { href: string; title: string }) {
 	return (
