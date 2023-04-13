@@ -17,7 +17,7 @@ export function DiscordMessageAuthor({ avatar, username, bot, time }: IDiscordMe
 				<span className="mr-1" id="username">
 					<span className="cursor-pointer text-base font-medium text-white hover:underline">{username}</span>
 					{bot ? (
-						<span className="relative top-1 ml-1 rounded bg-blurple px-1 vertical-top text-xs" id="bot">
+						<span className="relative top-1 ml-1 rounded bg-blurple px-1 vertical-top text-xs text-white" id="bot">
 							BOT
 						</span>
 					) : null}
