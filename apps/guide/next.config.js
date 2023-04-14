@@ -1,7 +1,7 @@
-// import { fileURLToPath } from 'node:url';
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 // import bundleAnalyzer from '@next/bundle-analyzer';
 // import { withContentlayer } from 'next-contentlayer';
-const { fileURLToPath } = require('node:url');
 const bundleAnalyzer = require('@next/bundle-analyzer');
 const { withContentlayer } = require('next-contentlayer');
 
@@ -9,8 +9,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 	enabled: process.env.ANALYZE === 'true',
 });
 
-module.exports = withContentlayer(
-	withBundleAnalyzer({
+module.exports = withBundleAnalyzer(
+	withContentlayer({
 		reactStrictMode: true,
 		eslint: {
 			ignoreDuringBuilds: true,

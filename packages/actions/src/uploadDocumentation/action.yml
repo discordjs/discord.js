@@ -1,0 +1,11 @@
+name: 'Upload documentation'
+description: 'Uploads the docs.api.json file to a planetscale database'
+inputs:
+  package:
+    description: 'The package string'
+    required: true
+  version:
+    description: 'The semver string'
+runs:
+  using: node16
+  main: ../../dist/uploadDocumentation/index.mjs

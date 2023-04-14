@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/brokers",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Powerful set of message brokers",
 	"scripts": {
 		"test": "vitest run",
@@ -58,21 +58,21 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@msgpack/msgpack": "^3.0.0-beta2",
-		"@vladfrangu/async_event_emitter": "^2.1.4",
+		"@vladfrangu/async_event_emitter": "^2.2.1",
 		"ioredis": "^5.3.1"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.21",
-		"@vitest/coverage-c8": "^0.29.8",
+		"@types/node": "16.18.23",
+		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.36.0",
-		"eslint-config-neon": "^0.1.41",
+		"eslint": "^8.38.0",
+		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.7",
 		"tsup": "^6.7.0",
-		"typescript": "^5.0.2",
+		"typescript": "^5.0.4",
 		"vitest": "^0.29.8"
 	},
 	"engines": {

@@ -19,75 +19,60 @@ import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } fro
 import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for slash commands.
+ */
 @mix(SharedSlashCommandOptions, SharedNameAndDescription)
 export class SlashCommandBuilder {
 	/**
-	 * The name of this slash command
+	 * The name of this command.
 	 */
 	public readonly name: string = undefined!;
 
 	/**
-	 * The localized names for this command
+	 * The name localizations of this command.
 	 */
 	public readonly name_localizations?: LocalizationMap;
 
 	/**
-	 * The description of this slash command
+	 * The description of this command.
 	 */
 	public readonly description: string = undefined!;
 
 	/**
-	 * The localized descriptions for this command
+	 * The description localizations of this command.
 	 */
 	public readonly description_localizations?: LocalizationMap;
 
 	/**
-	 * The options of this slash command
+	 * The options of this command.
 	 */
 	public readonly options: ToAPIApplicationCommandOptions[] = [];
 
 	/**
-	 * Whether the command is enabled by default when the app is added to a guild
+	 * Whether this command is enabled by default when the application is added to a guild.
 	 *
-	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
+	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
 	/**
-	 * Set of permissions represented as a bit set for the command
+	 * The set of permissions represented as a bit set for the command.
 	 */
 	public readonly default_member_permissions: Permissions | null | undefined = undefined;
 
 	/**
-	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
+	 * Indicates whether the command is available in direct messages with the application.
+	 *
+	 * @remarks
+	 * By default, commands are visible. This property is only for global commands.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
 	/**
-	 * Whether this command is NSFW
+	 * Whether this command is NSFW.
 	 */
 	public readonly nsfw: boolean | undefined = undefined;
-
-	/**
-	 * Returns the final data that should be sent to Discord.
-	 *
-	 * @remarks
-	 * This method runs validations on the data before serializing it.
-	 * As such, it may throw an error if the data is invalid.
-	 */
-	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
-		validateRequiredParameters(this.name, this.description, this.options);
-
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
-
-		return {
-			...this,
-			options: this.options.map((option) => option.toJSON()),
-		};
-	}
 
 	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.
@@ -95,8 +80,8 @@ export class SlashCommandBuilder {
 	 * @remarks
 	 * If set to `false`, you will have to later `PUT` the permissions for this command.
 	 * @param value - Whether or not to enable this command by default
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use {@link (SlashCommandBuilder:class).setDefaultMemberPermissions} or {@link (SlashCommandBuilder:class).setDMPermission} instead.
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
+	 * @deprecated Use {@link SlashCommandBuilder.setDefaultMemberPermissions} or {@link SlashCommandBuilder.setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
@@ -113,7 +98,7 @@ export class SlashCommandBuilder {
 	 * @remarks
 	 * You can set this to `'0'` to disable the command by default.
 	 * @param permissions - The permissions bit field to set
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
 		// Assert the value and parse it
@@ -125,11 +110,12 @@ export class SlashCommandBuilder {
 	}
 
 	/**
-	 * Sets if the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
+	 * Sets if the command is available in direct messages with the application.
 	 *
-	 * @param enabled - If the command should be enabled in DMs
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @remarks
+	 * By default, commands are visible. This method is only for global commands.
+	 * @param enabled - Whether the command should be enabled in direct messages
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
@@ -141,7 +127,7 @@ export class SlashCommandBuilder {
 	}
 
 	/**
-	 * Sets whether this command is NSFW
+	 * Sets whether this command is NSFW.
 	 *
 	 * @param nsfw - Whether this command is NSFW
 	 */
@@ -153,9 +139,9 @@ export class SlashCommandBuilder {
 	}
 
 	/**
-	 * Adds a new subcommand group to this command
+	 * Adds a new subcommand group to this command.
 	 *
-	 * @param input - A function that returns a subcommand group builder, or an already built builder
+	 * @param input - A function that returns a subcommand group builder or an already built builder
 	 */
 	public addSubcommandGroup(
 		input:
@@ -179,9 +165,9 @@ export class SlashCommandBuilder {
 	}
 
 	/**
-	 * Adds a new subcommand to this command
+	 * Adds a new subcommand to this command.
 	 *
-	 * @param input - A function that returns a subcommand builder, or an already built builder
+	 * @param input - A function that returns a subcommand builder or an already built builder
 	 */
 	public addSubcommand(
 		input:
@@ -203,18 +189,47 @@ export class SlashCommandBuilder {
 
 		return this;
 	}
+
+	/**
+	 * Serializes this builder to API-compatible JSON data.
+	 *
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
+	 */
+	public toJSON(): RESTPostAPIChatInputApplicationCommandsJSONBody {
+		validateRequiredParameters(this.name, this.description, this.options);
+
+		validateLocalizationMap(this.name_localizations);
+		validateLocalizationMap(this.description_localizations);
+
+		return {
+			...this,
+			options: this.options.map((option) => option.toJSON()),
+		};
+	}
 }
 
 export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions {}
 
+/**
+ * An interface specifically for slash command subcommands.
+ */
 export interface SlashCommandSubcommandsOnlyBuilder
 	extends Omit<SlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {}
 
+/**
+ * An interface specifically for slash command options.
+ */
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
 		SharedSlashCommandOptions,
 		Pick<SlashCommandBuilder, 'toJSON'> {}
 
+/**
+ * An interface that ensures the `toJSON()` call will return something
+ * that can be serialized into API-compatible data.
+ */
 export interface ToAPIApplicationCommandOptions {
 	toJSON(): APIApplicationCommandOption;
 }

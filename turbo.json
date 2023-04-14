@@ -16,16 +16,17 @@
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../tsconfig.json",
-				"src/**/*.astro",
 				"src/**/*.tsx",
 				"src/**/*.ts",
 				"src/**/*.css",
 				"src/**/*.mdx",
-				"astro.config.ts",
+				"src/assets/**/*.svg",
+				"next-env.d.ts",
+				"next.config.js",
 				"tsconfig.json",
-				"vite.config.ts"
+				"types.d.ts"
 			],
-			"outputs": ["dist/**"]
+			"outputs": [".next/**"]
 		},
 		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build"],
@@ -80,7 +81,6 @@
 				"../../.prettierrc.json",
 				"../../tsconfig.json",
 				"../../tsconfig.eslint.json",
-				"src/**/*.astro",
 				"src/**/*.tsx",
 				"src/**/*.ts",
 				"src/**/*.css",
@@ -89,13 +89,13 @@
 				"scripts/**.mjs",
 				".eslintignore",
 				".eslintrc.json",
-				"astro.config.ts",
 				".prettierignore",
 				".prettierrc.js",
 				".prettierrc.cjs",
 				".prettierrc.json",
 				"tsconfig.json",
 				"tsconfig.eslint.json",
+				"next.config.js",
 				"tsup.config.ts",
 				"vite.config.ts"
 			],
@@ -108,7 +108,6 @@
 				"../../.prettierrc.json",
 				"../../tsconfig.json",
 				"../../tsconfig.eslint.json",
-				"src/**/*.astro",
 				"src/**/*.tsx",
 				"src/**/*.ts",
 				"src/**/*.css",
@@ -117,13 +116,13 @@
 				"scripts/**.mjs",
 				".eslintignore",
 				".eslintrc.json",
-				"astro.config.ts",
 				".prettierignore",
 				".prettierrc.js",
 				".prettierrc.cjs",
 				".prettierrc.json",
 				"tsconfig.json",
 				"tsconfig.eslint.json",
+				"next.config.js",
 				"tsup.config.ts",
 				"vite.config.ts"
 			],

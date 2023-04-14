@@ -1,8 +1,9 @@
 'use strict';
 
 const process = require('node:process');
-const { DefaultRestOptions } = require('@discordjs/rest');
+const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
+const { version } = require('../../package.json');
 
 /**
  * @typedef {Function} CacheFactory
@@ -71,6 +72,14 @@ const { toSnakeCase } = require('./Transformers');
  */
 class Options extends null {
   /**
+   * The default user agent appendix.
+   * @type {string}
+   * @memberof Options
+   * @private
+   */
+  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
+
+  /**
    * The default client options.
    * @returns {ClientOptions}
    */
@@ -94,7 +103,10 @@ class Options extends null {
         },
         version: 10,
       },
-      rest: DefaultRestOptions,
+      rest: {
+        ...DefaultRestOptions,
+        userAgentAppendix: this.userAgentAppendix,
+      },
       jsonTransformer: toSnakeCase,
     };
   }
@@ -186,5 +198,5 @@ module.exports = Options;
 
 /**
  * @external RESTOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/RESTOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RESTOptions:Interface}
  */

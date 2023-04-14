@@ -57,9 +57,9 @@ vi.mock('node:worker_threads', async () => {
 				this.emit('online');
 				// same deal here
 				setImmediate(() => {
-					const message = {
+					const message: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.WorkerReady,
-					} satisfies WorkerReceivePayload;
+					};
 					this.emit('message', message);
 				});
 			});
@@ -68,39 +68,39 @@ vi.mock('node:worker_threads', async () => {
 		public postMessage(message: WorkerSendPayload) {
 			switch (message.op) {
 				case WorkerSendPayloadOp.Connect: {
-					const response = {
+					const response: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.Connected,
 						shardId: message.shardId,
-					} satisfies WorkerReceivePayload;
+					};
 					this.emit('message', response);
 					break;
 				}
 
 				case WorkerSendPayloadOp.Destroy: {
-					const response = {
+					const response: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.Destroyed,
 						shardId: message.shardId,
-					} satisfies WorkerReceivePayload;
+					};
 					this.emit('message', response);
 					break;
 				}
 
 				case WorkerSendPayloadOp.Send: {
 					if (message.payload.op === GatewayOpcodes.RequestGuildMembers) {
-						const response = {
+						const response: WorkerReceivePayload = {
 							op: WorkerReceivePayloadOp.Event,
 							shardId: message.shardId,
 							event: WebSocketShardEvents.Dispatch,
 							data: memberChunkData,
-						} satisfies WorkerReceivePayload;
+						};
 						this.emit('message', response);
 
 						// Fetch session info
-						const sessionFetch = {
+						const sessionFetch: WorkerReceivePayload = {
 							op: WorkerReceivePayloadOp.RetrieveSessionInfo,
 							shardId: message.shardId,
 							nonce: Math.random(),
-						} satisfies WorkerReceivePayload;
+						};
 						this.emit('message', sessionFetch);
 					}
 
@@ -111,16 +111,16 @@ vi.mock('node:worker_threads', async () => {
 				case WorkerSendPayloadOp.SessionInfoResponse: {
 					message.session ??= sessionInfo;
 
-					const session = {
+					const session: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.UpdateSessionInfo,
 						shardId: message.session.shardId,
 						session: { ...message.session, sequence: message.session.sequence + 1 },
-					} satisfies WorkerReceivePayload;
+					};
 					this.emit('message', session);
 					break;
 				}
 
-				case WorkerSendPayloadOp.ShardCanIdentify: {
+				case WorkerSendPayloadOp.ShardIdentifyResponse: {
 					break;
 				}
 
@@ -198,10 +198,10 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),
 	);
 
-	const payload = {
+	const payload: GatewaySendPayload = {
 		op: GatewayOpcodes.RequestGuildMembers,
 		d: { guild_id: '123', limit: 0, query: '' },
-	} satisfies GatewaySendPayload;
+	};
 	await manager.send(0, payload);
 	expect(mockSend).toHaveBeenCalledWith(0, payload);
 	expect(managerEmitSpy).toHaveBeenCalledWith(WebSocketShardEvents.Dispatch, {

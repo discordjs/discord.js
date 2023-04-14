@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@0.4.0...@discordjs/core@0.5.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **core:** Include data for defer (#9284) ([9d69bba](https://github.com/discordjs/discord.js/commit/9d69bba47c73b756086992bc14e57c40fadb34d1))
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **core:** Http-only wrapper (#9281) ([11e682c](https://github.com/discordjs/discord.js/commit/11e682cfe388b9a3070388f73ebef3c27555c0dd))
+- **core:** Add `AbortSignal` support. (#9042) ([907eb1b](https://github.com/discordjs/discord.js/commit/907eb1b4708bdaf30f4e59f4016ef8a717f47a4c))
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/core@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@0.3.0...@discordjs/core@0.4.0) - (2023-03-12)
 
 ## Bug Fixes

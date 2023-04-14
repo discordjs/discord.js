@@ -50,7 +50,7 @@ export function CmdKDialog() {
 		() =>
 			searchResults?.map((item, idx) => (
 				<Command.Item
-					className="dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 [&[aria-selected]]:ring-blurple [&[aria-selected]]:ring-width-2 my-1 flex transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 active:translate-y-px active:bg-neutral-200 dark:text-white [&[aria-selected]]:ring"
+					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 					key={`${item.id}-${idx}`}
 					onSelect={() => {
 						router.push(item.path);
@@ -60,10 +60,10 @@ export function CmdKDialog() {
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-items-center gap-4">
 							{resolveIcon(item.kind)}
-							<div className="w-50 sm:w-100 flex flex-col">
+							<div className="w-50 flex flex-col sm:w-100">
 								<h2 className="font-semibold">{item.name}</h2>
 								<div className="line-clamp-1 text-sm font-normal">{item.summary}</div>
-								<div className="line-clamp-1 hidden text-xs font-light opacity-75 dark:opacity-50 sm:block">
+								<div className="line-clamp-1 hidden text-xs font-light opacity-75 sm:block dark:opacity-50">
 									{item.path}
 								</div>
 							</div>
@@ -112,14 +112,14 @@ export function CmdKDialog() {
 	}, [search]);
 
 	return (
-		<Dialog className="fixed top-1/4 left-1/2 z-50 -translate-x-1/2" state={dialog!}>
+		<Dialog className="fixed left-1/2 top-1/4 z-50 -translate-x-1/2" state={dialog!}>
 			<Command
-				className="dark:bg-dark/50 min-w-xs sm:min-w-lg dark:border-dark-100 border-light-900 max-w-xs rounded border bg-white/50 shadow backdrop-blur-md sm:max-w-lg"
+				className="max-w-xs min-w-xs border border-light-900 rounded bg-white/50 shadow backdrop-blur-md sm:max-w-lg sm:min-w-lg dark:border-dark-100 dark:bg-dark/50"
 				label="Command Menu"
 				shouldFilter={false}
 			>
 				<Command.Input
-					className="dark:bg-dark/50 caret-blurple placeholder:text-dark-300/75 dark:border-dark-100 border-light-900 rounded-b-0 w-full rounded border-0 border-b bg-white/50 p-4 text-lg outline-0 dark:placeholder:text-white/75"
+					className="w-full border-0 border-b border-light-900 rounded rounded-b-0 bg-white/50 p-4 text-lg caret-blurple outline-0 dark:border-dark-100 dark:bg-dark/50 placeholder:text-dark-300/75 dark:placeholder:text-white/75"
 					onValueChange={setSearch}
 					placeholder="Quick search..."
 					value={search}

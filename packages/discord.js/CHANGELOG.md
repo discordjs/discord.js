@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.9.0](https://github.com/discordjs/discord.js/compare/14.8.0...14.9.0) - (2023-04-01)
+
+## Bug Fixes
+
+- Add support for new guild feature `GUILD_WEB_PAGE_VANITY_URL` (#9219) ([de1aac6](https://github.com/discordjs/discord.js/commit/de1aac674acb3830124646fcd52cdd98cdb71ba5))
+- Resolving string bitfield (#9262) ([7987565](https://github.com/discordjs/discord.js/commit/79875658cf4a8daa25210c2c620c73a710ca22de))
+- **AutocompleteInteraction:** Send `name_localizations` correctly (#9238) ([1864d37](https://github.com/discordjs/discord.js/commit/1864d37d36e53d127e74b6969a5f542193bfc3c7))
+- Keep symbols in actions manager (#9293) ([984bd55](https://github.com/discordjs/discord.js/commit/984bd55b437507e7ebfdf09ac944c8eba0340d27))
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+- **ClientUser:** No mutation on edit (#9259) ([abd6ae9](https://github.com/discordjs/discord.js/commit/abd6ae9fc8ea03722e8b36e29c3fdc1c2cfc93e8))
+- **Message#editable:** Update editable check in threads locked (#9216) ([22e880a](https://github.com/discordjs/discord.js/commit/22e880aaa0d8c644fc8d16a524d17f4f53a056f6))
+- **ThreadManager:** Add `members` and conditionally include `hasMore` (#9164) ([e9a8eb3](https://github.com/discordjs/discord.js/commit/e9a8eb323f3a554dc8f9dab361cd1bac7b88e1cc))
+- **ThreadManager:** Respect `cache` and `force` in fetching (#9239) ([cc57563](https://github.com/discordjs/discord.js/commit/cc57563e73d78a0d71d1444d1ee8215a26a81fa8))
+- **TextBasedChannelTypes:** Add `GuildStageVoice` (#9232) ([51edba7](https://github.com/discordjs/discord.js/commit/51edba78bc4d4cb44b4dd2b79e4bbc515dc46f5b))
+
+## Documentation
+
+- Describe private properties (#8879) ([2792e48](https://github.com/discordjs/discord.js/commit/2792e48119f1cf5fa7d5e6b63369457b0719d4e4))
+- Differ `User#send` (#9251) ([384b4d1](https://github.com/discordjs/discord.js/commit/384b4d10e8642f0f280ea1651f33cd378c341333))
+- Fix compare position example (#9272) ([d16114c](https://github.com/discordjs/discord.js/commit/d16114c52646ca92c53f9b44a0dd10af98dbddcd))
+- **Role:** Fix example for `comparePositionTo()` (#9270) ([bc641fa](https://github.com/discordjs/discord.js/commit/bc641fa9360b851642bc51839cef6bd5600d71f7))
+- Add more examples (#9252) ([bf507ab](https://github.com/discordjs/discord.js/commit/bf507ab2659d95e2991e83293b3834f21283ff33))
+- **FetchArchivedThreadOptions:** `before` respects `archive_timestamp`, not creation timestamp (#9240) ([178c8dc](https://github.com/discordjs/discord.js/commit/178c8dcfeea1c4a6a32835baea389f25feefbac7))
+- Update `APISelectMenuComponent` (#9235) ([56cf138](https://github.com/discordjs/discord.js/commit/56cf138e029e7884a4e7efb606055687ca67b4ac))
+
+## Features
+
+- **Guild:** Add `max_stage_video_channel_users` (#8422) ([34bc36a](https://github.com/discordjs/discord.js/commit/34bc36ac4b04ad033d0dcc3d2701fcf2e682743c))
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+- Add GuildBasedTextChannelTypes (#9234) ([5f93dcc](https://github.com/discordjs/discord.js/commit/5f93dcce466286f0fdead8faf4131e98d1c9db55))
+
+## Refactor
+
+- Call `GuildBanManager#create()` directly (#9263) ([f340f3b](https://github.com/discordjs/discord.js/commit/f340f3b1fd719e8f7cf6fa28a41835bc16039fc7))
+- **FetchThreadsOptions:** Remove `active` (#9241) ([519e163](https://github.com/discordjs/discord.js/commit/519e163f8aa3b55420f86d2d60c2584b3a2eb327))
+
 # [14.8.0](https://github.com/discordjs/discord.js/compare/14.7.1...14.8.0) - (2023-03-12)
 
 ## Bug Fixes

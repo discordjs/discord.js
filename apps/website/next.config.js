@@ -10,10 +10,6 @@ export default withBundleAnalyzer({
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
-	// Until Next.js fixes their type issues
-	typescript: {
-		ignoreBuildErrors: true,
-	},
 	outputFileTracing: true,
 	experimental: {
 		appDir: true,
@@ -25,5 +21,14 @@ export default withBundleAnalyzer({
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
+	},
+	async redirects() {
+		return [
+			{
+				source: '/static/logo.svg',
+				destination: '/logo.svg',
+				permanent: true,
+			},
+		];
 	},
 });

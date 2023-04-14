@@ -1,5 +1,16 @@
+import 'server-only';
+
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { connect } from '@planetscale/database';
+
+const sql = connect({
+	async fetch(input, init) {
+		// @ts-expect-error: Deleting cache or setting as undefined, same thing
+		return fetch(input, { ...init, cache: undefined, next: { revalidate: 3_600 } });
+	},
+	url: process.env.DATABASE_URL!,
+});
 
 export async function fetchVersions(packageName: string): Promise<string[]> {
 	const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
@@ -24,9 +35,11 @@ export async function fetchModelJSON(packageName: string, version: string): Prom
 		}
 	}
 
-	const response = await fetch(`https://docs.discordjs.dev/docs/${packageName}/${version}.api.json`, {
-		next: { revalidate: 3_600 },
-	});
+	const { rows } = await sql.execute('select data from documentation where name = ? and version = ?', [
+		packageName,
+		version,
+	]);
 
-	return response.json();
+	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
+	return rows[0].data;
 }

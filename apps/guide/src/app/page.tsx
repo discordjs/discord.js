@@ -3,10 +3,10 @@ import vercelLogo from '~/assets/powered-by-vercel.svg';
 
 export default function Page() {
 	return (
-		<div className="mx-auto flex min-h-screen max-w-6xl flex-col place-items-center gap-12 py-16 px-8 lg:place-content-center lg:py-0 lg:px-8">
+		<div className="mx-auto max-w-6xl min-h-screen flex flex-col place-items-center gap-12 px-8 py-16 lg:place-content-center lg:px-8 lg:py-0">
 			<div className="flex flex-row place-content-center">
 				<a
-					className="focus:ring-width-2 focus:ring-blurple rounded outline-0 focus:ring"
+					className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 					rel="noopener noreferrer"
 					target="_blank"

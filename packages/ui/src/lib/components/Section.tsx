@@ -1,9 +1,12 @@
+'use client';
+
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { Disclosure, DisclosureContent, useDisclosureState } from 'ariakit/disclosure';
 import type { PropsWithChildren } from 'react';
 
 export interface SectionOptions {
 	background?: boolean | undefined;
+	buttonClassName?: string;
 	className?: string;
 	defaultClosed?: boolean | undefined;
 	dense?: boolean | undefined;
@@ -23,13 +26,18 @@ export function Section({
 	gutter = false,
 	children,
 	className = '',
+	buttonClassName = '',
 }: PropsWithChildren<SectionOptions>) {
 	const disclosure = useDisclosureState({ defaultOpen: !defaultClosed });
 
 	return (
 		<div className={`flex flex-col ${className}`}>
 			<Disclosure
-				className="hover:bg-light-800 active:bg-light-800 dark:bg-dark-600 dark:hover:bg-dark-500 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded bg-white p-3 outline-0 focus:ring"
+				className={
+					buttonClassName
+						? buttonClassName
+						: 'hover:bg-light-800 active:bg-light-900 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple rounded bg-white p-3 outline-0 focus:ring'
+				}
 				state={disclosure}
 			>
 				<div className="flex flex-row place-content-between place-items-center">
