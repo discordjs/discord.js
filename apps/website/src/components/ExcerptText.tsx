@@ -1,8 +1,8 @@
 import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
 import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
-import Link from 'next/link';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
+import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 
 export interface ExcerptTextProps {
 	/**
@@ -26,14 +26,16 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 					const source = token.canonicalReference?.source;
 
 					if (source && 'packageName' in source && source.packageName === 'discord-api-types') {
-						const base = 'https://discord-api-types.dev/api/discord-api-types-v10';
 						const meaning = token.canonicalReference.symbol?.meaning;
-						const href = meaning === 'type' ? `${base}#${token.text}` : `${base}/${meaning}/${token.text}`;
+						const href =
+							meaning === 'type'
+								? `${DISCORD_API_TYPES_DOCS_URL}#${token.text}`
+								: `${DISCORD_API_TYPES_DOCS_URL}/${meaning}/${token.text}`;
 
 						return (
-							<Link className="text-blurple" href={href} key={idx}>
+							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
 								{token.text}
-							</Link>
+							</a>
 						);
 					}
 
