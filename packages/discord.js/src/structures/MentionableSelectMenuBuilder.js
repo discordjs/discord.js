@@ -13,15 +13,13 @@ class MentionableSelectMenuBuilder extends BuildersMentionableSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {MentionableSelectMenuBuilder|MentionableSelectMenuComponent|APIMentionableSelectComponent} other
+   * The other data
    * @returns {MentionableSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -29,5 +27,5 @@ module.exports = MentionableSelectMenuBuilder;
 
 /**
  * @external BuildersMentionableSelectMenu
- * @see {@link https://discord.js.org/docs/packages/builders/main/MentionableSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/MentionableSelectMenuBuilder:Class}
  */

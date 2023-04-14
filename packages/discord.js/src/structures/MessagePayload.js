@@ -227,8 +227,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} fileLike Something that could
-   * be resolved to a file
+   * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {
@@ -297,5 +296,5 @@ module.exports = MessagePayload;
 
 /**
  * @external RawFile
- * @see {@link https://discord.js.org/docs/packages/rest/main/RawFile:Interface}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RawFile:Interface}
  */

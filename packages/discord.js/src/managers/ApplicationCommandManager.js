@@ -66,12 +66,10 @@ class ApplicationCommandManager extends CachedManager {
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
 
-  /* eslint-disable max-len */
   /**
    * Data that resolves to the data of an ApplicationCommand
-   * @typedef {ApplicationCommandData|APIApplicationCommand|JSONEncodable<APIApplicationCommand>} ApplicationCommandDataResolvable
+   * @typedef {ApplicationCommandData|APIApplicationCommand} ApplicationCommandDataResolvable
    */
-  /* eslint-enable max-len */
 
   /**
    * Options used to fetch data from Discord

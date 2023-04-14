@@ -23,7 +23,7 @@ class StringSelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Normalizes a select menu option emoji
-   * @param {SelectMenuOptionData|JSONEncodable<APISelectMenuOption>} selectMenuOption The option to normalize
+   * @param {SelectMenuOptionData|APISelectMenuOption} selectMenuOption The option to normalize
    * @returns {SelectMenuOptionBuilder|APISelectMenuOption}
    * @private
    */
@@ -59,7 +59,7 @@ class StringSelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * @param {StringSelectMenuBuilder|StringSelectMenuComponent|APIStringSelectComponent} other The other data
    * @returns {StringSelectMenuBuilder}
    */
   static from(other) {
@@ -74,5 +74,5 @@ module.exports = StringSelectMenuBuilder;
 
 /**
  * @external BuildersSelectMenu
- * @see {@link https://discord.js.org/docs/packages/builders/main/StringSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/StringSelectMenuBuilder:Class}
  */

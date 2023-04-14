@@ -1,8 +1,7 @@
 import { get } from '@vercel/edge-config';
 import { NextResponse } from 'next/server';
-import type { ServerRuntime } from 'next/types';
 
-export const runtime: ServerRuntime = 'edge';
+export const runtime = 'edge';
 
 export async function GET() {
 	try {
