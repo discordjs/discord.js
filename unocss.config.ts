@@ -21,21 +21,6 @@ export default defineConfig({
 			mono: 'var(--font-mono)',
 		},
 	},
-	// safelist: [
-	// 	'sr-only',
-	// 	'relative',
-	// 	'inline-flex',
-	// 	'w-6',
-	// 	'h-6',
-	// 	'place-items-center',
-	// 	'place-content-center',
-	// 	'outline-0',
-	// 	'text-black',
-	// 	'dark:text-white',
-	// 	'ml-2',
-	// 	'inline-block',
-	// 	'm-0',
-	// ],
 	presets: [
 		presetUno({ dark: 'class' }),
 		presetTypography({
@@ -97,14 +82,8 @@ export default defineConfig({
 		}),
 	],
 	include: [
-		/.vue$/,
-		/.vue?vue/,
-		/.svelte$/,
 		/.[jt]sx$/,
 		/.mdx?$/,
-		/.astro$/,
-		/.elm$/,
-		/.html$/,
 		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
 		/.*\/ui\.js(.*)?$/,
 		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex

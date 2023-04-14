@@ -46,8 +46,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.6.0",
-		"@commitlint/config-angular": "^17.6.0",
+		"@commitlint/cli": "^17.6.1",
+		"@commitlint/config-angular": "^17.6.1",
 		"@favware/cliff-jumper": "^2.0.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"conventional-changelog-cli": "^2.2.2",
