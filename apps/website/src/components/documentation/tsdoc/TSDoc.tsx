@@ -74,6 +74,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 
 				case DocNodeKind.FencedCode: {
 					const { language, code } = tsdoc as DocFencedCode;
+					// @ts-expect-error async component
 					return <SyntaxHighlighter code={code.trim()} key={idx} lang={language ?? 'typescript'} />;
 				}
 

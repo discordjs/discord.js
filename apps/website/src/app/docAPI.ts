@@ -6,6 +6,7 @@ import { connect } from '@planetscale/database';
 
 const sql = connect({
 	async fetch(input, init) {
+		// @ts-expect-error: Deleting cache or setting as undefined, same thing
 		return fetch(input, { ...init, cache: undefined, next: { revalidate: 3_600 } });
 	},
 	url: process.env.DATABASE_URL!,

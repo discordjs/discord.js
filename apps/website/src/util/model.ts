@@ -1,4 +1,4 @@
-import type { ApiEntryPoint, ApiItem, ApiModel } from '@microsoft/api-extractor-model';
+import type { ApiEntryPoint, ApiModel } from '@microsoft/api-extractor-model';
 
 export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
 	const pkg = model.tryGetPackageByName(`@discordjs/${packageName}`)!;

@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import type { Metadata } from 'next/types';
+import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';

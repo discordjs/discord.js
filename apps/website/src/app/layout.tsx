@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import type { Metadata } from 'next/types';
+import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 
 	themeColor: [
 		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+		{ media: '(prefers-color-scheme: dark)', color: '#1c1c1e' },
 	],
 	colorScheme: 'light dark',
 
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
 	},
 
 	other: {
-		'msapplication-TileColor': '#090a16',
+		'msapplication-TileColor': '#1c1c1e',
 	},
 };
 
