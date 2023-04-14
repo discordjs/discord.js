@@ -7,11 +7,17 @@ import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixi
 
 const numberValidator = s.number.int;
 
+/**
+ * A slash command integer option.
+ */
 @mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandIntegerOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.Integer as const;
 
 	/**
@@ -36,6 +42,9 @@ export class SlashCommandIntegerOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandIntegerOption {
 		this.runRequiredValidations();
 

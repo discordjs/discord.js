@@ -7,8 +7,5 @@
 	"rules": {
 		"@typescript-eslint/consistent-type-definitions": ["error", "interface"]
 	},
-	"ignorePatterns": ["**/dist/*"],
-	"env": {
-		"jest": true
-	}
+	"ignorePatterns": ["**/dist/*"]
 }

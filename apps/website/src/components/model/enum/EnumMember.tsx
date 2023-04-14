@@ -6,8 +6,8 @@ import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 
 export function EnumMember({ member }: { member: ApiEnumMember }) {
 	return (
-		<div className="scroll-mt-30 flex flex-col" id={member.displayName}>
-			<div className="md:-ml-8.5 flex flex-col gap-2 md:flex-row md:place-items-center">
+		<div className="flex flex-col scroll-mt-30" id={member.displayName}>
+			<div className="flex flex-col gap-2 md:flex-row md:place-items-center md:-ml-8.5">
 				<Anchor href={`#${member.displayName}`} />
 				<NameText name={member.name} />
 				{member.initializerExcerpt ? (

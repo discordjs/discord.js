@@ -608,7 +608,7 @@ class Message extends Base {
     if (this.channel?.isThread()) {
       if (this.channel.archived) return false;
       if (this.channel.locked) {
-        const permissions = this.permissionsFor(this.client.user);
+        const permissions = this.channel.permissionsFor(this.client.user);
         if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
       }
     }
@@ -822,7 +822,6 @@ class Message extends Base {
    * @typedef {BaseMessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**
