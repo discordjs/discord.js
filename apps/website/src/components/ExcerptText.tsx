@@ -2,6 +2,7 @@ import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
 import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
+import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 
 export interface ExcerptTextProps {
 	/**
@@ -20,8 +21,24 @@ export interface ExcerptTextProps {
 export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 	return (
 		<>
-			{excerpt.spannedTokens.map((token) => {
+			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
+					const source = token.canonicalReference?.source;
+
+					if (source && 'packageName' in source && source.packageName === 'discord-api-types') {
+						const meaning = token.canonicalReference.symbol?.meaning;
+						const href =
+							meaning === 'type'
+								? `${DISCORD_API_TYPES_DOCS_URL}#${token.text}`
+								: `${DISCORD_API_TYPES_DOCS_URL}/${meaning}/${token.text}`;
+
+						return (
+							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
+								{token.text}
+							</a>
+						);
+					}
+
 					const item = model.resolveDeclarationReference(token.canonicalReference!, model).resolvedApiItem;
 
 					if (!item) {
