@@ -6016,7 +6016,9 @@ export type PermissionString =
   | 'SEND_MESSAGES_IN_THREADS'
   | 'START_EMBEDDED_ACTIVITIES'
   | 'MODERATE_MEMBERS'
-  | 'MANAGE_EVENTS';
+  | 'MANAGE_EVENTS'
+  | 'VIEW_CREATOR_MONETIZATION_ANALYTICS'
+  | 'USE_SOUNDBOARD';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
