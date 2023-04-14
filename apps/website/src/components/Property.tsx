@@ -38,6 +38,11 @@ export function Property({
 								Deprecated
 							</div>
 						) : null}
+						{(item as ApiProperty).isStatic ? (
+							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
+								Static
+							</div>
+						) : null}
 						{item.isReadonly ? (
 							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
 								Readonly
@@ -46,11 +51,6 @@ export function Property({
 						{item.isOptional ? (
 							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
 								Optional
-							</div>
-						) : null}
-						{(item as ApiProperty).isStatic ? (
-							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
-								Static
 							</div>
 						) : null}
 					</div>
