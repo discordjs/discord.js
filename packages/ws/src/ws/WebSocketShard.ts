@@ -374,9 +374,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			this.off(WebSocketShardEvents.Closed, closeHandler);
 		}
 
-		// clean up the once listener
-		controller.abort();
-
 		this.debug([
 			'Identifying',
 			`shard id: ${this.id.toString()}`,
