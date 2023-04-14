@@ -61,7 +61,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
-		{ signal }: Pick<RequestData, 'signal'>,
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
 			files,

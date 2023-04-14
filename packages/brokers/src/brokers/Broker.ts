@@ -26,7 +26,9 @@ export interface BaseBrokerOptions {
 	 */
 	maxChunk?: number;
 	/**
-	 * Unique consumer name. See: https://redis.io/commands/xreadgroup/
+	 * Unique consumer name.
+	 *
+	 * @see {@link https://redis.io/commands/xreadgroup/}
 	 */
 	name?: string;
 }

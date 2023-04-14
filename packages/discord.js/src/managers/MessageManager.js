@@ -151,7 +151,7 @@ class MessageManager extends CachedManager {
   /**
    * Options that can be passed to edit a message.
    * @typedef {BaseMessageOptions} MessageEditOptions
-   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] An array of attachments to keep,
+   * @property {AttachmentPayload[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {MessageFlags} [flags] Which flags to set for the message
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>

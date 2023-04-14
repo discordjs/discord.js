@@ -1,10 +1,10 @@
 name: 'Upload documentation'
-description: 'Uploads the docs.json file to a planetscale database'
+description: 'Uploads the docs.api.json file to a planetscale database'
 inputs:
   package:
     description: 'The package string'
     required: true
-  semver:
+  version:
     description: 'The semver string'
 runs:
   using: node16

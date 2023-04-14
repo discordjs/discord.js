@@ -31,7 +31,7 @@ export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 					}`}
 				>
 					<Method inheritedFrom={inherited as ApiDeclaredItem & ApiItemContainerMixin} method={method} />
-					<div className="border-light-900 dark:border-dark-100 border-t-2" />
+					<div className="border-t-2 border-light-900 dark:border-dark-100" />
 				</Fragment>
 			)),
 		[members],

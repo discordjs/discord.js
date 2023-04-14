@@ -3,7 +3,6 @@ import type {
 	ApiItem,
 	ApiItemContainerMixin,
 	ApiProperty,
-	ApiPropertyItem,
 	ApiPropertySignature,
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
@@ -25,10 +24,10 @@ export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
 					<Fragment key={`${prop.item.displayName}-${idx}`}>
 						<Property
 							inheritedFrom={prop.inherited as ApiDeclaredItem & ApiItemContainerMixin}
-							item={prop.item as ApiPropertyItem}
+							item={prop.item as ApiProperty}
 							separator={PropertySeparatorType.Type}
 						/>
-						<div className="border-light-900 dark:border-dark-100 border-t-2" />
+						<div className="border-t-2 border-light-900 dark:border-dark-100" />
 					</Fragment>
 				);
 			}),

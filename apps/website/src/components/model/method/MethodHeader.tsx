@@ -1,8 +1,18 @@
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Anchor } from '~/components/Anchor';
 import { ExcerptText } from '~/components/ExcerptText';
+
+function getShorthandName(method: ApiMethod | ApiMethodSignature) {
+	return `${method.name}${method.isOptional ? '?' : ''}(${method.parameters.reduce((prev, cur, index) => {
+		if (index === 0) {
+			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
+		}
+
+		return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
+	}, '')})`;
+}
 
 export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignature }) {
 	const isDeprecated = Boolean(method.tsdocComment?.deprecatedBlock);
@@ -12,37 +22,25 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 		[method.displayName, method.overloadIndex],
 	);
 
-	const getShorthandName = useCallback(
-		(method: ApiMethod | ApiMethodSignature) =>
-			`${method.name}${method.isOptional ? '?' : ''}(${method.parameters.reduce((prev, cur, index) => {
-				if (index === 0) {
-					return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
-				}
-
-				return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
-			}, '')})`,
-		[],
-	);
-
 	return (
-		<div className="scroll-mt-30 flex flex-col" id={key}>
+		<div className="flex flex-col scroll-mt-30" id={key}>
 			<div className="flex flex-col gap-2 md:-ml-9">
 				{isDeprecated ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isProtected) ||
 				(method.kind === ApiItemKind.Method && (method as ApiMethod).isStatic) ? (
 					<div className="flex flex-row gap-1 md:ml-7">
 						{isDeprecated ? (
-							<div className="flex h-5 flex-row place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-red-500 px-3 text-center text-xs font-semibold uppercase text-white">
 								Deprecated
 							</div>
 						) : null}
 						{method.kind === ApiItemKind.Method && (method as ApiMethod).isProtected ? (
-							<div className="bg-blurple flex h-5 flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
 								Protected
 							</div>
 						) : null}
 						{method.kind === ApiItemKind.Method && (method as ApiMethod).isStatic ? (
-							<div className="bg-blurple flex h-5 flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white">
+							<div className="h-5 flex flex-row place-content-center place-items-center rounded-full bg-blurple px-3 text-center text-xs font-semibold uppercase text-white">
 								Static
 							</div>
 						) : null}

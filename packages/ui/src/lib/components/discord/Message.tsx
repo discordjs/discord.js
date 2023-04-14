@@ -40,7 +40,7 @@ export function DiscordMessage({
 				<div className="static" id="content-wrapper">
 					{followUp ? (
 						<span
-							className="h-5.5 absolute left-0 mr-1 hidden w-[56px] cursor-default select-none text-right text-xs leading-loose text-[rgb(163_166_170)] group-hover:inline-block"
+							className="absolute left-0 mr-1 hidden h-5.5 w-[56px] cursor-default select-none text-right text-xs leading-loose text-[rgb(163_166_170)] group-hover:inline-block"
 							id="time"
 						>
 							{time}
