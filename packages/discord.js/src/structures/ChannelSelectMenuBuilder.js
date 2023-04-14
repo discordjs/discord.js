@@ -13,15 +13,12 @@ class ChannelSelectMenuBuilder extends BuildersChannelSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {ChannelSelectMenuBuilder|ChannelSelectMenuComponent|APIChannelSelectComponent} other The other data
    * @returns {ChannelSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -29,5 +26,5 @@ module.exports = ChannelSelectMenuBuilder;
 
 /**
  * @external BuildersChannelSelectMenu
- * @see {@link https://discord.js.org/docs/packages/builders/main/ChannelSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ChannelSelectMenuBuilder:Class}
  */

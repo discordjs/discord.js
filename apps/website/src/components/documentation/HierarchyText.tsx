@@ -41,7 +41,7 @@ export function HierarchyText({ item, type }: { item: ApiClass | ApiInterface; t
 	return (
 		<div className="flex flex-row place-items-center gap-4">
 			<h3 className="text-xl font-bold">{type}</h3>
-			<span className="space-y-2 break-all font-mono">
+			<span className="break-all font-mono space-y-2">
 				{excerpts.map((excerpt, idx) => (
 					<ExcerptText excerpt={excerpt} key={idx} model={model} />
 				))}
