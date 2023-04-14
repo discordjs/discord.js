@@ -1,0 +1,177 @@
+---
+title: How to contribute
+category: Home
+---
+
+# How to contribute
+
+Since this guide is made specifically for the discord.js community, we want to be sure to provide the most relevant and up-to-date content. We will, of course, make additions to the current pages and add new ones as we see fit, but fulfilling requests is how we know we're providing content you all want the most.
+
+Requests may be as simple as "add an example to the [frequently asked questions](/popular-topics/faq.html) page", or as elaborate as "add a page regarding [sharding](/sharding/)". We'll do our best to fulfill all requests, as long as they're reasonable.
+
+To make a request, simply head over to [the repository's issue tracker](https://github.com/discordjs/discord.js/issues) and [create a new issue](https://github.com/discordjs/discord.js/issues/new)! Title it appropriately, and let us know exactly what you mean inside the issue description. Make sure that you've looked around the site before making a request; what you want to request might already exist!
+
+<Alert title="Tip" type="success">
+	Remember that you can always [fork the repository](https://github.com/discordjs/discord.js/fork) and [make a pull
+	request](https://github.com/discordjs/discord.js/pulls) if you want to add anything to the guide yourself!
+</Alert>
+
+We'll also get into some of the more advanced features this guide does below.
+
+## Components
+
+Throughout the guide, you'll see some components from the _`@discordjs/ui`_ package:
+
+- _`Alert`_
+- _`Section`_
+- _`DiscordMessages`_, _`DiscordMessage`_, and _`DiscordMessageEmbed`_
+
+Check the source of this page to see them in action!
+
+### Alert
+
+This component may take a _`title`_ and a _`type`_ of _`'danger' | 'info' | 'success' | 'warning'`_.
+
+This uses _`title="Alert" type="info"`_:
+
+<Alert title="Alert" type="info">
+	Use these appropriately!
+</Alert>
+
+### Section
+
+<Section title="Expand me!" padding defaultClosed background gutter>
+Well, hello there!
+
+Whenever some text does not need to be in the main body, you can put it here.
+
+- _`title`_: The title that'll appear.
+- _`padding`_: Adds padding.
+  - _`dense`_: When _`padding`_ is specified, _`dense`_ could make it appear, well, dense.
+- _`defaultClosed`_ Whether the section is closed by default. This one was.
+- _`background`_ Adds background to the content.
+- _`gutter`_: This adds a very small appealing space between the expansion of the section and its content.
+
+</Section>
+
+### DiscordMessages, DiscordMessage, and DiscordMessageEmbed
+
+<DiscordMessages>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:00',
+			username: 'Guide Bot',
+		}}
+	>
+		A _`DiscordMessage`_ must be within _`DiscordMessages`_.
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:01',
+			username: 'Guide Bot',
+		}}
+		reply={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				bot: true,
+				username: 'Guide Bot',
+			},
+			content: 'A _`DiscordMessage`_ must be within _`DiscordMessages`_.',
+		}}
+		time="21:02"
+	>
+		It's much better to see the source code of this page to replicate and learn!
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:02',
+			username: 'Guide Bot',
+		}}
+	>
+		This message depicts the use of embeds.
+		<>
+			<DiscordMessageEmbed
+				author={{
+					avatar: '/assets/discordjs.png',
+					username: 'Guide Bot',
+				}}
+				footer={{ content: 'Sometimes, titles just have to be.' }}
+				title={{ title: 'An amazing title' }}
+			>
+				This is a description. You can put a description here. It must be descriptive!
+			</DiscordMessageEmbed>
+			<DiscordMessageEmbed
+				author={{
+					avatar: '/assets/discordjs.png',
+					username: 'Guide Bot',
+				}}
+				footer={{ content: "When one amazing title just wasn't enough." }}
+				title={{ title: 'Another amazing title' }}
+			>
+				Multiple embeds!
+			</DiscordMessageEmbed>
+		</>
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:03',
+			username: 'Guide Bot',
+		}}
+		interaction={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				bot: true,
+				username: 'Guide Bot',
+			},
+			command: '/interaction',
+		}}
+	>
+		Interactions are supported! I definitely used a command.
+	</DiscordMessage>
+</DiscordMessages>
+
+## Code blocks
+
+We use [Code Hike](https://codehike.org). Here are some example code blocks, which should be easy to grasp and learn upon reading the source code of this page:
+
+<CH.Code>
+
+```ts
+const HELLO = 'hello' as const;
+console.log(HELLO);
+// "ts" is the language of the code block.
+```
+
+</CH.Code>
+
+<CH.Code>
+
+```ts fileName
+const FILE_NAME = 'fileName' as const;
+if (FILE_NAME.includes(' ')) throw new Error('Spaces cannot be used in file names.');
+```
+
+```ts anotherFileName
+const FILE_NAME_2 = 'anotherFileName' as const;
+// Putting code blocks together makes them appear in tabs, just like in your editor.
+```
+
+---
+
+```ts requiredName
+const FILE_NAME_3 = 'requiredName' as const;
+if (!FILE_NAME) throw new Error('There must be a file name to use panels!');
+// The --- divider was used to create a panel.
+```
+
+</CH.Code>
+
+For more information, be sure to check out the [documentation](https://codehike.org/docs/ch-code).

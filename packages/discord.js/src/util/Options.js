@@ -198,5 +198,5 @@ module.exports = Options;
 
 /**
  * @external RESTOptions
- * @see {@link https://discord.js.org/docs/packages/rest/main/RESTOptions:Interface}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RESTOptions:Interface}
  */

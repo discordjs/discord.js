@@ -1,3 +1,4 @@
+import type { Options } from 'tsup';
 import { defineConfig } from 'tsup';
 
 export function createTsupConfig({
@@ -16,7 +17,7 @@ export function createTsupConfig({
 	dts = true,
 	sourcemap = true,
 	esbuildPlugins = [],
-} = {}) {
+}: Options = {}) {
 	return defineConfig({
 		entry,
 		external,

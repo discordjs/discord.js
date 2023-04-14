@@ -602,5 +602,5 @@ module.exports = ApplicationCommand;
 
 /**
  * @external ApplicationCommandOptionAllowedChannelTypes
- * @see {@link https://discord.js.org/docs/packages/builders/main/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
  */

@@ -18,10 +18,21 @@ import type { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import type { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import type { TextInputBuilder } from './textInput/TextInput.js';
 
+/**
+ * The builders that may be used for messages.
+ */
 export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>
 	| MessageActionRowComponentBuilder;
+
+/**
+ * The builders that may be used for modals.
+ */
 export type ModalComponentBuilder = ActionRowBuilder<ModalActionRowComponentBuilder> | ModalActionRowComponentBuilder;
+
+/**
+ * The builders that may be used within an action row for messages.
+ */
 export type MessageActionRowComponentBuilder =
 	| ButtonBuilder
 	| ChannelSelectMenuBuilder
@@ -29,11 +40,19 @@ export type MessageActionRowComponentBuilder =
 	| RoleSelectMenuBuilder
 	| StringSelectMenuBuilder
 	| UserSelectMenuBuilder;
+
+/**
+ * The builders that may be used within an action row for modals.
+ */
 export type ModalActionRowComponentBuilder = TextInputBuilder;
+
+/**
+ * Any builder.
+ */
 export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
 /**
- * Represents an action row component
+ * A builder that creates API-compatible JSON data for action rows.
  *
  * @typeParam T - The types of components this action row holds
  */
@@ -41,16 +60,16 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
 > {
 	/**
-	 * The components within this action row
+	 * The components within this action row.
 	 */
 	public readonly components: T[];
 
 	/**
-	 * Creates a new action row from API data
+	 * Creates a new action row from API data.
 	 *
 	 * @param data - The API data to create this action row with
 	 * @example
-	 * Creating an action row from an API data object
+	 * Creating an action row from an API data object:
 	 * ```ts
 	 * const actionRow = new ActionRowBuilder({
 	 * 	components: [
@@ -64,7 +83,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 * });
 	 * ```
 	 * @example
-	 * Creating an action row using setters and API data
+	 * Creating an action row using setters and API data:
 	 * ```ts
 	 * const actionRow = new ActionRowBuilder({
 	 * 	components: [
@@ -87,7 +106,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	/**
 	 * Adds components to this action row.
 	 *
-	 * @param components - The components to add to this action row.
+	 * @param components - The components to add
 	 */
 	public addComponents(...components: RestOrArray<T>) {
 		this.components.push(...normalizeArray(components));
@@ -95,9 +114,9 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	}
 
 	/**
-	 * Sets the components in this action row
+	 * Sets components for this action row.
 	 *
-	 * @param components - The components to set this row to
+	 * @param components - The components to set
 	 */
 	public setComponents(...components: RestOrArray<T>) {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));

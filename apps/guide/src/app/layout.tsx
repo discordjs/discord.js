@@ -1,5 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
-import type { Metadata } from 'next/types';
+import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="dark:bg-dark-800 bg-light-600">
+			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
 				<Providers>{children}</Providers>
 				<Analytics />
 			</body>

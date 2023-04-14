@@ -97,9 +97,9 @@ Once you fill in these values, run _`node deploy-commands.js`_ in your project d
 
 ## Replying to commands
 
-Once you've registered your commands, you can listen for interactions via <DocsLink path="class/Client?scrollTo=e-interactionCreate" /> in your _`index.js`_ file.
+Once you've registered your commands, you can listen for interactions via <DocsLink type="class" parent="Client" symbol="e-interactionCreate" /> in your _`index.js`_ file.
 
-You should first check if an interaction is a chat input command via <DocsLink path="class/Interaction?scrollTo=isChatInputCommand" type="method">_`.isChatInputCommand()`_</DocsLink>, and then check the <DocsLink path="class/CommandInteraction?scrollTo=commandName">_`.commandName`_</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink path="class/CommandInteraction?scrollTo=reply">_`.reply()`_</DocsLink>.
+You should first check if an interaction is a chat input command via <DocsLink type="class" parent="BaseInteraction" symbol="isChatInputCommand" brackets>_`.isChatInputCommand()`_</DocsLink>, and then check the <DocsLink type="class" parent="CommandInteraction" symbol="commandName">_`.commandName`_</DocsLink> property to know which command it is. You can respond to interactions with <DocsLink type="class" parent="CommandInteraction" symbol="reply" brackets>_`.reply()`_</DocsLink>.
 
 <CH.Code>
 
@@ -126,7 +126,7 @@ client.login(token);
 
 ### Server info command
 
-Note that servers are referred to as "guilds" in the Discord API and discord.js library. _`interaction.guild`_ refers to the guild the interaction was sent in (a <DocsLink path="class/Guild" /> instance), which exposes properties such as _`.name`_ or _`.memberCount`_.
+Note that servers are referred to as "guilds" in the Discord API and discord.js library. _`interaction.guild`_ refers to the guild the interaction was sent in (a <DocsLink type="class" parent="Guild" /> instance), which exposes properties such as _`.name`_ or _`.memberCount`_.
 
 <CH.Code>
 
@@ -171,12 +171,13 @@ client.on('interactionCreate', async (interaction) => {
 You could also display the date the server was created, or the server's verification level. You would do those in the same manner – use _`interaction.guild.createdAt`_ or _`interaction.guild.verificationLevel`_, respectively.
 
 <Alert title="Tip" type="success">
-	Refer to the <DocsLink path="class/Guild" /> documentation for a list of all the available properties and methods!
+	Refer to the <DocsLink type="class" parent="Guild" /> documentation for a list of all the available properties and
+	methods!
 </Alert>
 
 ### User info command
 
-A "user" refers to a Discord user. _`interaction.user`_ refers to the user the interaction was sent by (a <DocsLink path="class/User" /> instance), which exposes properties such as _`.tag`_ or _`.id`_.
+A "user" refers to a Discord user. _`interaction.user`_ refers to the user the interaction was sent by (a <DocsLink type="class" parent="User" /> instance), which exposes properties such as _`.tag`_ or _`.id`_.
 
 <CH.Code>
 
@@ -219,7 +220,8 @@ client.on('interactionCreate', async (interaction) => {
 </DiscordMessages>
 
 <Alert title="Tip" type="success">
-	Refer to the <DocsLink path="class/User" /> documentation for a list of all the available properties and methods!
+	Refer to the <DocsLink type="class" parent="User" /> documentation for a list of all the available properties and
+	methods!
 </Alert>
 
 And there you have it!
