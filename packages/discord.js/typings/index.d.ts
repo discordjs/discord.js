@@ -892,6 +892,8 @@ export type CategoryChannelType = Exclude<
 export class CategoryChannel extends GuildChannel {
   public get children(): CategoryChannelChildManager;
   public type: ChannelType.GuildCategory;
+  public get parent(): null;
+  public parentId: null;
 }
 
 export type CategoryChannelResolvable = Snowflake | CategoryChannel;
@@ -6229,7 +6231,7 @@ export type CategoryChildChannel = Exclude<Extract<Channel, { parent: CategoryCh
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
-export type GuildTextBasedChannel = Exclude<Extract<GuildBasedChannel, TextBasedChannel>, ForumChannel>;
+export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 

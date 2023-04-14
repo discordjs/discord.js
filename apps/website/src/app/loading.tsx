@@ -1,6 +1,6 @@
 export default function Loading() {
 	return (
-		<div className="mx-4 flex min-h-screen flex-col items-center justify-center gap-4">
+		<div className="mx-4 min-h-screen flex flex-col items-center justify-center gap-4">
 			<svg
 				className="h-9 w-9 animate-spin text-black dark:text-white"
 				fill="none"

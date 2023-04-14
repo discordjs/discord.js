@@ -27,14 +27,11 @@ class ButtonBuilder extends BuildersButton {
 
   /**
    * Creates a new button builder from JSON data
-   * @param {JSONEncodable<APIButtonComponent>|APIButtonComponent} other The other data
+   * @param {ButtonBuilder|ButtonComponent|APIButtonComponent} other The other data
    * @returns {ButtonBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -42,5 +39,5 @@ module.exports = ButtonBuilder;
 
 /**
  * @external BuildersButton
- * @see {@link https://discord.js.org/docs/packages/builders/main/ButtonBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ButtonBuilder:Class}
  */

@@ -43,7 +43,7 @@ export function Outline({ headings }: { headings: MarkdownHeading[] }) {
 		<Scrollbars
 			autoHide
 			hideTracksWhenNotNeeded
-			renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+			renderThumbVertical={(props) => <div {...props} className="z-30 rounded bg-light-900 dark:bg-dark-100" />}
 			renderTrackVertical={(props) => (
 				<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 			)}
@@ -57,7 +57,7 @@ export function Outline({ headings }: { headings: MarkdownHeading[] }) {
 				<div className="ml-2 mt-4 flex flex-col gap-2">
 					<div className="relative flex flex-col">
 						<div
-							className="bg-blurple absolute h-[10px] w-[10px] rounded-full border-2 border-black dark:border-white"
+							className="absolute h-[10px] w-[10px] border-2 border-black rounded-full bg-blurple dark:border-white"
 							style={{
 								left: INDICATOR_SIZE / 2 + 0.5,
 								transform: `translateY(${active * LINK_HEIGHT + INDICATOR_OFFSET}px)`,

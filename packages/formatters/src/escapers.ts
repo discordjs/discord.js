@@ -1,106 +1,109 @@
 /* eslint-disable prefer-named-capture-group */
 
+/**
+ * The options that affect what will be escaped.
+ */
 export interface EscapeMarkdownOptions {
 	/**
-	 * Whether to escape bolds
+	 * Whether to escape bold text.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	bold?: boolean;
 
 	/**
-	 * Whether to escape bulleted lists
+	 * Whether to escape bulleted lists.
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	bulletedList?: boolean;
 
 	/**
-	 * Whether to escape code blocks
+	 * Whether to escape code blocks.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	codeBlock?: boolean;
 
 	/**
-	 * Whether to escape text inside code blocks
+	 * Whether to escape text inside code blocks.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	codeBlockContent?: boolean;
 
 	/**
-	 * Whether to escape escape characters
+	 * Whether to escape `\`.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	escape?: boolean;
 
 	/**
-	 * Whether to escape headings
+	 * Whether to escape headings.
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	heading?: boolean;
 
 	/**
-	 * Whether to escape inline code
+	 * Whether to escape inline code.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	inlineCode?: boolean;
 
 	/**
-	 * Whether to escape text inside inline code
+	 * Whether to escape text inside inline code.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	inlineCodeContent?: boolean;
 	/**
-	 * Whether to escape italics
+	 * Whether to escape italics.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	italic?: boolean;
 
 	/**
-	 * Whether to escape masked links
+	 * Whether to escape masked links.
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	maskedLink?: boolean;
 
 	/**
-	 * Whether to escape numbered lists
+	 * Whether to escape numbered lists.
 	 *
-	 * @defaultValue false
+	 * @defaultValue `false`
 	 */
 	numberedList?: boolean;
 
 	/**
-	 * Whether to escape spoilers
+	 * Whether to escape spoilers.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	spoiler?: boolean;
 
 	/**
-	 * Whether to escape strikethroughs
+	 * Whether to escape strikethroughs.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	strikethrough?: boolean;
 
 	/**
-	 * Whether to escape underlines
+	 * Whether to escape underlines.
 	 *
-	 * @defaultValue true
+	 * @defaultValue `true`
 	 */
 	underline?: boolean;
 }
 
 /**
- * Escapes any Discord-flavour markdown in a string.
+ * Escapes any Discord-flavored markdown in a string.
  *
  * @param text - Content to escape
  * @param options - Options for escaping the markdown
