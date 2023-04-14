@@ -17,21 +17,21 @@ export const Content = defineDocumentType(() => ({
 			type: 'string',
 			required: true,
 		},
-		summary: {
+		category: {
 			type: 'string',
-		},
-		image: {
-			type: 'string',
+			required: true,
 		},
 	},
 	computedFields: {
 		slug: {
 			type: 'string',
-			resolve: (doc) => doc._raw.flattenedPath,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => doc._raw.flattenedPath.replace(/\d+-/g, ''),
 		},
 		url: {
 			type: 'string',
-			resolve: (post) => `/guide/${post._raw.flattenedPath}`,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => `/guide/${doc._raw.flattenedPath.replace(/\d+-/g, '')}`,
 		},
 	},
 }));

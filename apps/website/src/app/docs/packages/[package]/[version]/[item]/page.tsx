@@ -15,8 +15,8 @@ import type {
 	ApiFunction,
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next/types';
 import { fetchModelJSON } from '~/app/docAPI';
 import { Class } from '~/components/model/Class';
 import { Interface } from '~/components/model/Interface';
@@ -29,26 +29,24 @@ import type { ItemRouteParams } from '~/util/fetchMember';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
 
-async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams): Promise<ApiItem | undefined> {
+async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams) {
 	const modelJSON = await fetchModelJSON(packageName, version);
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
-
 	if (!entry) {
 		return undefined;
 	}
 
 	const [memberName] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
-
 	return findMember(model, packageName, memberName);
 }
 
-function resolveMemberSearchParams(packageName: string, member: ApiItem): URLSearchParams {
+function resolveMemberSearchParams(packageName: string, member?: ApiItem) {
 	const params = new URLSearchParams({
 		pkg: packageName,
-		kind: member?.kind,
-		name: member?.displayName,
+		kind: member?.kind ?? '',
+		name: member?.displayName ?? '',
 	});
 
 	switch (member?.kind) {
@@ -82,7 +80,7 @@ function resolveMemberSearchParams(packageName: string, member: ApiItem): URLSea
 }
 
 export async function generateMetadata({ params }: { params: ItemRouteParams }) {
-	const member = (await fetchHeadMember(params))!;
+	const member = await fetchHeadMember(params);
 	const name = `discord.js${member?.displayName ? ` | ${member.displayName}` : ''}`;
 	const ogTitle = `${params.package ?? 'discord.js'}${member?.displayName ? ` | ${member.displayName}` : ''}`;
 	const url = new URL('https://discordjs.dev/api/dynamic-open-graph.png');
@@ -114,7 +112,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	}
 
 	return entry.members.map((member: ApiItem) => ({
-		item: member.displayName,
+		item: `${member.displayName}${OVERLOAD_SEPARATOR}${member.kind}`,
 	}));
 }
 
@@ -140,5 +138,13 @@ function Member({ member }: { member?: ApiItem }) {
 export default async function Page({ params }: { params: ItemRouteParams }) {
 	const member = await fetchMember(params);
 
-	return <div className="relative top-6">{member ? <Member member={member} /> : null}</div>;
+	if (!member) {
+		notFound();
+	}
+
+	return (
+		<div className="relative top-6">
+			<Member member={member} />
+		</div>
+	);
 }

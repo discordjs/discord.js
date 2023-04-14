@@ -20,6 +20,7 @@ typings/
 docs/**/*
 !docs/index.json
 !docs/README.md
+storybook-static/
 
 # Miscellaneous
 .tmp/
