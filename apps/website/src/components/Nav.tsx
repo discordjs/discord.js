@@ -22,7 +22,7 @@ export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 				autoHide
 				className="[&>div]:overscroll-none"
 				hideTracksWhenNotNeeded
-				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+				renderThumbVertical={(props) => <div {...props} className="z-30 rounded bg-light-900 dark:bg-dark-100" />}
 				renderTrackVertical={(props) => (
 					<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 				)}

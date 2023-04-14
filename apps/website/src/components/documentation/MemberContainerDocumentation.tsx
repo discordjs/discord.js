@@ -1,13 +1,13 @@
 import type { ApiDeclaredItem, ApiItemContainerMixin, ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
 import type { ReactNode } from 'react';
-import { Outline } from '../Outline';
+// import { Outline } from '../Outline';
 import { SyntaxHighlighter } from '../SyntaxHighlighter';
 import { Documentation } from './Documentation';
 import { MethodsSection } from './section/MethodsSection';
 import { PropertiesSection } from './section/PropertiesSection';
 import { SummarySection } from './section/SummarySection';
 import { TypeParameterSection } from './section/TypeParametersSection';
-import { hasProperties, hasMethods, serializeMembers } from './util';
+import { hasProperties, hasMethods /* , serializeMembers */ } from './util';
 
 export function MemberContainerDocumentation({
 	item,
@@ -19,6 +19,7 @@ export function MemberContainerDocumentation({
 	return (
 		<Documentation>
 			{subheading}
+			{/* @ts-expect-error async component */}
 			<SyntaxHighlighter code={item.excerpt.text} />
 			<SummarySection item={item} />
 			{item.typeParameters.length ? <TypeParameterSection item={item} /> : null}

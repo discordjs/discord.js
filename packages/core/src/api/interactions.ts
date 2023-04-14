@@ -51,7 +51,7 @@ export class InteractionsAPI {
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
-		data: APIInteractionResponseDeferredChannelMessageWithSource['data'],
+		data?: APIInteractionResponseDeferredChannelMessageWithSource['data'],
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
