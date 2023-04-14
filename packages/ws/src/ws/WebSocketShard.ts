@@ -358,7 +358,21 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private async identify() {
 		this.debug(['Waiting for identify throttle']);
 
-		await this.strategy.waitForIdentify();
+		const controller = new AbortController();
+		const closeHandler = () => {
+			controller.abort();
+		};
+
+		this.on(WebSocketShardEvents.Closed, closeHandler);
+
+		try {
+			await this.strategy.waitForIdentify(this.id, controller.signal);
+		} catch {
+			this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
+			return;
+		} finally {
+			this.off(WebSocketShardEvents.Closed, closeHandler);
+		}
 
 		this.debug([
 			'Identifying',
