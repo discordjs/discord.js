@@ -1,5 +1,6 @@
 import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
 import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
+import Link from 'next/link';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
 
@@ -20,8 +21,22 @@ export interface ExcerptTextProps {
 export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 	return (
 		<>
-			{excerpt.spannedTokens.map((token) => {
+			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
+					const source = token.canonicalReference?.source;
+
+					if (source && 'packageName' in source && source.packageName === 'discord-api-types') {
+						const base = 'https://discord-api-types.dev/api/discord-api-types-v10';
+						const meaning = token.canonicalReference.symbol?.meaning;
+						const href = meaning === 'type' ? `${base}#${token.text}` : `${base}/${meaning}/${token.text}`;
+
+						return (
+							<Link className="text-blurple" href={href} key={idx}>
+								{token.text}
+							</Link>
+						);
+					}
+
 					const item = model.resolveDeclarationReference(token.canonicalReference!, model).resolvedApiItem;
 
 					if (!item) {
