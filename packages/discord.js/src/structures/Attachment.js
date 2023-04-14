@@ -99,6 +99,26 @@ class Attachment {
      * @type {boolean}
      */
     this.ephemeral = data.ephemeral ?? false;
+
+    if ('duration_secs' in data) {
+      /**
+       * The duration of this attachment in seconds (if an audio)
+       * @type {?number}
+       */
+      this.duration = data.duration_secs;
+    } else {
+      this.duration ??= null;
+    }
+
+    if ('waveform' in data) {
+      /**
+       * The base64 encoded bytearray representing a sampled waveform (if an audio)
+       * @type {?string}
+       */
+      this.waveform = data.waveform;
+    } else {
+      this.waveform ??= null;
+    }
   }
 
   /**

@@ -2014,6 +2014,7 @@ export class Attachment {
   private attachment: BufferResolvable | Stream;
   public contentType: string | null;
   public description: string | null;
+  public duration: number | null;
   public ephemeral: boolean;
   public height: number | null;
   public id: Snowflake;
@@ -2022,6 +2023,7 @@ export class Attachment {
   public size: number;
   public get spoiler(): boolean;
   public url: string;
+  public waveform: string | null;
   public width: number | null;
   public toJSON(): unknown;
 }
