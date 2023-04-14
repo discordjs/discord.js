@@ -1,28 +1,25 @@
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
+import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager.js';
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';
 
 export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 	// This strategy assumes every shard is running under the same process - therefore we need a single
 	// IdentifyThrottler per manager.
-	private static throttlerCache = new WeakMap<WebSocketManager, IdentifyThrottler>();
+	private static throttlerCache = new WeakMap<WebSocketManager, IIdentifyThrottler>();
 
-	private static ensureThrottler(manager: WebSocketManager): IdentifyThrottler {
-		const existing = SimpleContextFetchingStrategy.throttlerCache.get(manager);
-		if (existing) {
-			return existing;
+	private static async ensureThrottler(manager: WebSocketManager): Promise<IIdentifyThrottler> {
+		const throttler = SimpleContextFetchingStrategy.throttlerCache.get(manager);
+		if (throttler) {
+			return throttler;
 		}
 
-		const throttler = new IdentifyThrottler(manager);
-		SimpleContextFetchingStrategy.throttlerCache.set(manager, throttler);
-		return throttler;
+		const newThrottler = await manager.options.buildIdentifyThrottler(manager);
+		SimpleContextFetchingStrategy.throttlerCache.set(manager, newThrottler);
+
+		return newThrottler;
 	}
 
-	private readonly throttler: IdentifyThrottler;
-
-	public constructor(private readonly manager: WebSocketManager, public readonly options: FetchingStrategyOptions) {
-		this.throttler = SimpleContextFetchingStrategy.ensureThrottler(manager);
-	}
+	public constructor(private readonly manager: WebSocketManager, public readonly options: FetchingStrategyOptions) {}
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		return this.manager.options.retrieveSessionInfo(shardId);
@@ -32,7 +29,8 @@ export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 		return this.manager.options.updateSessionInfo(shardId, sessionInfo);
 	}
 
-	public async waitForIdentify(): Promise<void> {
-		await this.throttler.waitForIdentify();
+	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
+		const throttler = await SimpleContextFetchingStrategy.ensureThrottler(this.manager);
+		await throttler.waitForIdentify(shardId, signal);
 	}
 }
