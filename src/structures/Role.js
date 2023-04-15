@@ -119,6 +119,7 @@ class Role extends Base {
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
      * @property {Snowflake} [subscriptionListingId] The id of this role's subscription SKU and listing
      * @property {true} [availableForPurchase] Whether this role is available for purchase
+     * @property {true} [guildConnections] Whether this role is a guild's linked role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -136,6 +137,9 @@ class Role extends Base {
       }
       if ('available_for_purchase' in data.tags) {
         this.tags.availableForPurchase = true;
+      }
+      if ('guild_connections' in data.tags) {
+        this.tags.guildConnections = true;
       }
     }
   }
