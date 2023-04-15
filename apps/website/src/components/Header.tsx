@@ -74,7 +74,7 @@ export default function Header() {
 					>
 						<VscMenu size={24} />
 					</Button>
-					<div className="hidden lg:flex lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
+					<div className="hidden lg:flex lg:grow lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
 					<Button
 						as="div"
 						className="w-56 grow rounded bg-white px-4 py-2.5 outline-0 sm:grow-0 dark:bg-dark-800 focus:ring focus:ring-width-2 focus:ring-blurple"
