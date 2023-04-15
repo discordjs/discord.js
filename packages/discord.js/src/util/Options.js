@@ -163,7 +163,7 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.cacheWithLimits}.
+   * The default settings passed to {@link ClientOptions.makeCache}.
    * The caches that this changes are:
    * * `MessageManager` - Limit to 200 messages
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
@@ -177,11 +177,11 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.sweepers} (for v14).
+   * The default settings passed to {@link ClientOptions.sweepers}.
    * The sweepers that this changes are:
    * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
-   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
+   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } }`</info>
    * @type {SweeperOptions}
    */
   static get DefaultSweeperSettings() {
