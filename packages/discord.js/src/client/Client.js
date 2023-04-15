@@ -518,13 +518,13 @@ class Client extends BaseClient {
     if (options.allowedMentions && typeof options.allowedMentions !== 'object') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
     }
-    if (typeof options.presence !== 'object') {
+    if (typeof options.presence !== 'object' || options.presence === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
     }
-    if (typeof options.ws !== 'object') {
+    if (typeof options.ws !== 'object' || options.ws === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
-    if (typeof options.rest !== 'object') {
+    if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
     }
     if (typeof options.jsonTransformer !== 'function') {
