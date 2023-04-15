@@ -55,7 +55,7 @@ export function Property({
 						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap place-items-center gap-1">
+				<div className="group flex flex-row flex-wrap place-items-center gap-1">
 					<Anchor href={`#${item.displayName}`} />
 					<h4 className="break-all font-mono text-lg font-bold">
 						{item.displayName}

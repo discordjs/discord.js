@@ -46,7 +46,7 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap place-items-center gap-1">
+				<div className="group flex flex-row flex-wrap place-items-center gap-1">
 					<Anchor href={`#${key}`} />
 					<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(method)}</h4>
 					<h4 className="font-mono text-lg font-bold">:</h4>
