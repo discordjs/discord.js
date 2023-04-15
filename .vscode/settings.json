@@ -1,6 +1,6 @@
 {
 	"eslint.workingDirectories": [{ "pattern": "./apps/*" }, { "pattern": "./packages/*" }],
-	"eslint.validate": ["javascript", "javascriptreact", "astro", "typescript", "typescriptreact"],
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
