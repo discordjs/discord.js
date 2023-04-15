@@ -515,7 +515,7 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
-    if (options.allowedMentions && typeof options.allowedMentions !== 'object') {
+    if (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
     }
     if (typeof options.presence !== 'object' || options.presence === null) {
