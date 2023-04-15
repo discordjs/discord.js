@@ -93,7 +93,7 @@
 		"eslint": "^8.38.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"happy-dom": "^9.7.0",
+		"happy-dom": "^9.7.1",
 		"lighthouse": "^10.1.1",
 		"prettier": "^2.8.7",
 		"typescript": "^5.0.4",
