@@ -8,7 +8,7 @@ export default function Page() {
 				<a
 					className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
-					rel="noopener noreferrer"
+					rel="external noopener noreferrer"
 					target="_blank"
 					title="Vercel"
 				>

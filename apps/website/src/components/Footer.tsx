@@ -9,7 +9,7 @@ export default function Footer() {
 					<a
 						className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 						href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
-						rel="noopener noreferrer"
+						rel="external noopener noreferrer"
 						target="_blank"
 						title="Vercel"
 					>
@@ -27,7 +27,7 @@ export default function Footer() {
 								<a
 									className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 									href="https://discord.gg/djs"
-									rel="noopener noreferrer"
+									rel="external noopener noreferrer"
 									target="_blank"
 								>
 									Discord
@@ -35,7 +35,7 @@ export default function Footer() {
 								<a
 									className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 									href="https://github.com/discordjs/discord.js/discussions"
-									rel="noopener noreferrer"
+									rel="external noopener noreferrer"
 									target="_blank"
 								>
 									GitHub discussions
@@ -48,7 +48,7 @@ export default function Footer() {
 								<a
 									className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 									href="https://github.com/discordjs/discord.js"
-									rel="noopener noreferrer"
+									rel="external noopener noreferrer"
 									target="_blank"
 								>
 									discord.js
@@ -64,7 +64,7 @@ export default function Footer() {
 								<a
 									className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
 									href="https://discord-api-types.dev"
-									rel="noopener noreferrer"
+									rel="external noopener noreferrer"
 									target="_blank"
 								>
 									discord-api-types
