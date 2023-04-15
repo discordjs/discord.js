@@ -77,7 +77,7 @@ export default function Header() {
 					<div className="hidden lg:flex lg:grow lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
 					<Button
 						as="div"
-						className="w-56 grow rounded bg-white px-4 py-2.5 outline-0 sm:grow-0 dark:bg-dark-800 focus:ring focus:ring-width-2 focus:ring-blurple"
+						className="hidden w-56 grow rounded bg-white px-4 py-2.5 outline-0 md:block sm:grow-0 dark:bg-dark-800 focus:ring focus:ring-width-2 focus:ring-blurple"
 						onClick={() => dialog?.toggle()}
 					>
 						<div className="flex flex-row place-items-center gap-4 md:justify-between">
@@ -89,6 +89,13 @@ export default function Header() {
 						</div>
 					</Button>
 					<div className="flex flex-row place-items-center gap-4">
+						<Button
+							as="div"
+							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+							onClick={() => dialog?.toggle()}
+						>
+							<VscSearch size={24} />
+						</Button>
 						<Button
 							aria-label="GitHub"
 							as="a"

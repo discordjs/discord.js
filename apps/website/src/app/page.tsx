@@ -10,7 +10,7 @@ export default function Page() {
 	return (
 		<div className="min-h-screen">
 			<Banner />
-			<div className="mx-auto max-w-6xl flex flex-col place-items-center gap-12 px-8 py-16 lg:min-h-[calc(100vh_-_40px)] lg:place-content-center lg:py-0">
+			<div className="mx-auto max-w-6xl flex flex-col place-items-center gap-12 px-8 py-16 lg:min-h-[calc(100vh_-_40px)] lg:place-content-center lg:py-10">
 				<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
 					<div className="max-w-lg flex flex-col gap-3 lg:mr-8">
 						<h1 className="text-3xl font-black leading-tight sm:text-5xl sm:leading-tight">
