@@ -14,8 +14,8 @@ export default async function middleware(request: NextRequest) {
 		try {
 			const skip = await get<boolean>('SKIP_PACKAGE_VERSION_SELECTION');
 			if (skip) {
-				const latestVersion = await fetchLatestVersion('builders');
-				return NextResponse.redirect(new URL(`/docs/packages/builders/${latestVersion}`, request.url));
+				const latestVersion = await fetchLatestVersion('core');
+				return NextResponse.redirect(new URL(`/docs/packages/core/${latestVersion}`, request.url));
 			}
 		} catch {}
 	}
@@ -26,7 +26,7 @@ export default async function middleware(request: NextRequest) {
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {
 		// eslint-disable-next-line prefer-named-capture-group
-		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'builders';
+		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'core';
 		const latestVersion = await fetchLatestVersion(packageName);
 		return NextResponse.redirect(
 			new URL(request.nextUrl.pathname.replace('stable', latestVersion ?? 'main'), request.url),
