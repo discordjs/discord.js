@@ -2944,7 +2944,7 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
   'createWebhook',
   'setNSFW',
 ]) {
-  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>, fromInteraction?: boolean);
+  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
   public archiveTimestamp: number | null;
@@ -3138,7 +3138,6 @@ export interface MappedComponentTypes {
 
 export interface ChannelCreateOptions {
   allowFromUnknownGuild?: boolean;
-  fromInteraction?: boolean;
 }
 
 export function createChannel(client: Client<true>, data: APIChannel, options?: ChannelCreateOptions): Channel;
@@ -6106,6 +6105,7 @@ export interface RoleTagData {
   premiumSubscriberRole?: true;
   subscriptionListingId?: Snowflake;
   availableForPurchase?: true;
+  guildConnections?: true;
 }
 
 export interface SetChannelPositionOptions {

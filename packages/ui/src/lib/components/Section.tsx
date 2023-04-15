@@ -9,7 +9,6 @@ export interface SectionOptions {
 	buttonClassName?: string;
 	className?: string;
 	defaultClosed?: boolean | undefined;
-	dense?: boolean | undefined;
 	gutter?: boolean | undefined;
 	icon?: JSX.Element | undefined;
 	padded?: boolean | undefined;
@@ -20,7 +19,6 @@ export function Section({
 	title,
 	icon,
 	padded = false,
-	dense = false,
 	defaultClosed = false,
 	background = false,
 	gutter = false,
@@ -55,7 +53,7 @@ export function Section({
 				className={`${background ? 'bg-light-700 dark:bg-dark-500 rounded' : ''} ${gutter ? 'mt-2' : ''}`}
 				state={disclosure}
 			>
-				{padded ? <div className={`py-5 ${dense ? 'mx-2 px-0' : 'px-4.5 mx-6.5'}`}>{children}</div> : children}
+				{padded ? <div className="mx-2 px-0 py-5 md:mx-6.5 md:px-4.5">{children}</div> : children}
 			</DisclosureContent>
 		</div>
 	);

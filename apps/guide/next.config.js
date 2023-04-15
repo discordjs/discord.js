@@ -12,16 +12,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 module.exports = withBundleAnalyzer(
 	withContentlayer({
 		reactStrictMode: true,
-		eslint: {
-			ignoreDuringBuilds: true,
-		},
-		// Until Next.js fixes their type issues
-		typescript: {
-			ignoreBuildErrors: true,
-		},
 		experimental: {
 			appDir: true,
-			fallbackNodePolyfills: false,
 		},
 		images: {
 			dangerouslyAllowSVG: true,

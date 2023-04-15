@@ -77,7 +77,7 @@ export default function Header() {
 							as="a"
 							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded rounded-full bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
 							href="https://github.com/discordjs/discord.js"
-							rel="noopener noreferrer"
+							rel="external noopener noreferrer"
 							target="_blank"
 						>
 							<VscGithubInverted size={24} />
