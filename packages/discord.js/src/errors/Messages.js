@@ -155,7 +155,7 @@ const Messages = {
     `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
 
   [DjsErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
-  [DjsErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope',
+  [DjsErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',
 
   [DjsErrorCodes.NotImplemented]: (what, name) => `Method ${what} not implemented on ${name}.`,
 
