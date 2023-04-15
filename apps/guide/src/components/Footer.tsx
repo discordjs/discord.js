@@ -16,8 +16,10 @@ export default function Footer() {
 						<Image
 							alt="Vercel"
 							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
+							height={44}
 							placeholder="blur"
 							src={vercelLogo}
+							width={212}
 						/>
 					</a>
 					<div className="flex flex-row gap-6 md:gap-12">

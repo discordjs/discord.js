@@ -59,7 +59,7 @@
 	"dependencies": {
 		"@msgpack/msgpack": "^3.0.0-beta2",
 		"@vladfrangu/async_event_emitter": "^2.2.1",
-		"ioredis": "^5.3.1"
+		"ioredis": "^5.3.2"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",

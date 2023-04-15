@@ -59,9 +59,11 @@ export default function Page() {
 						<Image
 							alt="Vercel"
 							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
+							height={44}
 							placeholder="blur"
 							priority
 							src={vercelLogo}
+							width={212}
 						/>
 					</a>
 				</div>

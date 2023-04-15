@@ -7,14 +7,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 export default withBundleAnalyzer({
 	reactStrictMode: true,
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	outputFileTracing: true,
 	experimental: {
 		appDir: true,
-		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
-		fallbackNodePolyfills: false,
 		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
