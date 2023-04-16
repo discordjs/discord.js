@@ -96,7 +96,9 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
-        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : 'png'}`,
+        `${root}/stickers/${stickerId}.${
+          stickerFormat === 'LOTTIE' ? 'json' : stickerFormat === 'GIF' ? 'gif' : 'png'
+        }`,
       RoleIcon: (roleId, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
       guildScheduledEventCover: (scheduledEventId, coverHash, format, size) =>
@@ -174,6 +176,11 @@ exports.Opcodes = {
  * * APPLICATION_COMMAND_CREATE: applicationCommandCreate (deprecated)
  * * APPLICATION_COMMAND_DELETE: applicationCommandDelete (deprecated)
  * * APPLICATION_COMMAND_UPDATE: applicationCommandUpdate (deprecated)
+ * * APPLICATION_COMMAND_PERMISSIONS_UPDATE: applicationCommandPermissionsUpdate
+ * * AUTO_MODERATION_ACTION_EXECUTION: autoModerationActionExecution
+ * * AUTO_MODERATION_RULE_CREATE: autoModerationRuleCreate
+ * * AUTO_MODERATION_RULE_DELETE: autoModerationRuleDelete
+ * * AUTO_MODERATION_RULE_UPDATE: autoModerationRuleUpdate
  * * GUILD_CREATE: guildCreate
  * * GUILD_DELETE: guildDelete
  * * GUILD_UPDATE: guildUpdate
@@ -241,6 +248,7 @@ exports.Opcodes = {
  * * GUILD_SCHEDULED_EVENT_DELETE: guildScheduledEventDelete
  * * GUILD_SCHEDULED_EVENT_USER_ADD: guildScheduledEventUserAdd
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE: guildScheduledEventUserRemove
+ * * GUILD_AUDIT_LOG_ENTRY_CREATE: guildAuditLogEntryCreate
  * @typedef {Object<string, string>} Events
  */
 exports.Events = {
@@ -252,6 +260,11 @@ exports.Events = {
   APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
   APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
   APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
+  APPLICATION_COMMAND_PERMISSIONS_UPDATE: 'applicationCommandPermissionsUpdate',
+  AUTO_MODERATION_ACTION_EXECUTION: 'autoModerationActionExecution',
+  AUTO_MODERATION_RULE_CREATE: 'autoModerationRuleCreate',
+  AUTO_MODERATION_RULE_DELETE: 'autoModerationRuleDelete',
+  AUTO_MODERATION_RULE_UPDATE: 'autoModerationRuleUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -319,6 +332,7 @@ exports.Events = {
   GUILD_SCHEDULED_EVENT_DELETE: 'guildScheduledEventDelete',
   GUILD_SCHEDULED_EVENT_USER_ADD: 'guildScheduledEventUserAdd',
   GUILD_SCHEDULED_EVENT_USER_REMOVE: 'guildScheduledEventUserRemove',
+  GUILD_AUDIT_LOG_ENTRY_CREATE: 'guildAuditLogEntryCreate',
 };
 
 /**
@@ -360,7 +374,12 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * RESUMED
  * * APPLICATION_COMMAND_CREATE (deprecated)
  * * APPLICATION_COMMAND_DELETE (deprecated)
+ * * APPLICATION_COMMAND_PERMISSIONS_UPDATE
  * * APPLICATION_COMMAND_UPDATE (deprecated)
+ * * AUTO_MODERATION_ACTION_EXECUTION
+ * * AUTO_MODERATION_RULE_CREATE
+ * * AUTO_MODERATION_RULE_DELETE
+ * * AUTO_MODERATION_RULE_UPDATE
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -411,6 +430,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_DELETE
  * * GUILD_SCHEDULED_EVENT_USER_ADD
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE
+ * * GUILD_AUDIT_LOG_ENTRY_CREATE
  * @typedef {string} WSEventType
  * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
  */
@@ -420,6 +440,11 @@ exports.WSEvents = keyMirror([
   'APPLICATION_COMMAND_CREATE',
   'APPLICATION_COMMAND_DELETE',
   'APPLICATION_COMMAND_UPDATE',
+  'APPLICATION_COMMAND_PERMISSIONS_UPDATE',
+  'AUTO_MODERATION_ACTION_EXECUTION',
+  'AUTO_MODERATION_RULE_CREATE',
+  'AUTO_MODERATION_RULE_DELETE',
+  'AUTO_MODERATION_RULE_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
@@ -470,6 +495,7 @@ exports.WSEvents = keyMirror([
   'GUILD_SCHEDULED_EVENT_DELETE',
   'GUILD_SCHEDULED_EVENT_USER_ADD',
   'GUILD_SCHEDULED_EVENT_USER_REMOVE',
+  'GUILD_AUDIT_LOG_ENTRY_CREATE',
 ]);
 
 /**
@@ -487,6 +513,7 @@ exports.WSEvents = keyMirror([
  * * `guilds.join`: allows the bot to join the user to any guild it is in using Guild#addMember
  * * `gdm.join`: allows joining the user to a group dm
  * * `webhook.incoming`: generates a webhook to a channel
+ * * `role_connections.write`: allows your app to update a user's connection and metadata for the app
  * @typedef {string} InviteScope
  * @see {@link https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes}
  */
@@ -503,6 +530,7 @@ exports.InviteScopes = [
   'guilds.join',
   'gdm.join',
   'webhook.incoming',
+  'role_connections.write',
 ];
 
 // TODO: change Integration#expireBehavior to this and clean up Integration
@@ -540,6 +568,8 @@ exports.IntegrationExpireBehaviors = createEnum(['REMOVE_ROLE', 'KICK']);
  * * THREAD_STARTER_MESSAGE
  * * GUILD_INVITE_REMINDER
  * * CONTEXT_MENU_COMMAND
+ * * AUTO_MODERATION_ACTION
+ * * ROLE_SUBSCRIPTION_PURCHASE
  * @typedef {string} MessageType
  * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-types}
  */
@@ -568,11 +598,14 @@ exports.MessageTypes = [
   'THREAD_STARTER_MESSAGE',
   'GUILD_INVITE_REMINDER',
   'CONTEXT_MENU_COMMAND',
+  'AUTO_MODERATION_ACTION',
+  'ROLE_SUBSCRIPTION_PURCHASE',
 ];
 
 /**
  * The name of an item to be swept in Sweepers
  * * `applicationCommands` - both global and guild commands
+ * * `autoModerationRules`
  * * `bans`
  * * `emojis`
  * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
@@ -590,6 +623,7 @@ exports.MessageTypes = [
  */
 exports.SweeperKeys = [
   'applicationCommands',
+  'autoModerationRules',
   'bans',
   'emojis',
   'invites',
@@ -678,7 +712,8 @@ exports.ChannelTypes = createEnum([
  * * NewsChannel
  * * ThreadChannel
  * * VoiceChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
+ * * StageChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel|StageChannel} TextBasedChannels
  */
 
 /**
@@ -697,6 +732,7 @@ exports.ChannelTypes = createEnum([
  * * GUILD_PUBLIC_THREAD
  * * GUILD_PRIVATE_THREAD
  * * GUILD_VOICE
+ * * GUILD_STAGE_VOICE
  * @typedef {string} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -707,6 +743,7 @@ exports.TextBasedChannelTypes = [
   'GUILD_PUBLIC_THREAD',
   'GUILD_PRIVATE_THREAD',
   'GUILD_VOICE',
+  'GUILD_STAGE_VOICE',
 ];
 
 /**
@@ -1049,6 +1086,7 @@ exports.APIErrors = {
   MAXIMUM_NUMBER_OF_STICKERS_REACHED: 30039,
   MAXIMUM_PRUNE_REQUESTS: 30040,
   MAXIMUM_GUILD_WIDGET_SETTINGS_UPDATE: 30042,
+  MAXIMUM_NUMBER_OF_PREMIUM_EMOJIS: 30056,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
   DIRECT_MESSAGES_TOO_FAST: 40003,
@@ -1101,6 +1139,8 @@ exports.APIErrors = {
   GUILD_MONETIZATION_REQUIRED: 50097,
   INSUFFICIENT_BOOSTS: 50101,
   INVALID_JSON: 50109,
+  CANNOT_MIX_SUBSCRIPTION_AND_NON_SUBSCRIPTION_ROLES_FOR_EMOJI: 50144,
+  CANNOT_CONVERT_PREMIUM_EMOJI_TO_NORMAL_EMOJI: 50145,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
@@ -1164,10 +1204,11 @@ exports.StickerTypes = createEnum([null, 'STANDARD', 'GUILD']);
  * * PNG
  * * APNG
  * * LOTTIE
+ * * GIF
  * @typedef {string} StickerFormatType
  * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object-sticker-format-types}
  */
-exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
+exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE', 'GIF']);
 
 /**
  * An overwrite type:
@@ -1229,6 +1270,74 @@ exports.ApplicationCommandOptionTypes = createEnum([
  */
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
+/**
+ * Each metadata type offers a comparison operation that allows
+ * guilds to configure role requirements based on metadata values stored by the bot.
+ * Bots specify a metadata value for each user and guilds specify
+ * the required guild's configured value within the guild role settings.
+ * All available channel types:
+ * * INTEGER_LESS_THAN_OR_EQUAL
+ * * INTEGER_GREATER_THAN_OR_EQUAL
+ * * INTEGER_EQUAL
+ * * INTEGER_NOT_EQUAL
+ * * DATATIME_LESS_THAN_OR_EQUAL
+ * * DATATIME_GREATER_THAN_OR_EQUAL
+ * * BOOLEAN_EQUAL
+ * * BOOLEAN_NOT_EQUAL
+ * @typedef {string} ApplicationRoleConnectionMetadataType
+ * @see{@link https://discord.com/developers/docs/resources/application-role-connection-metadata#application-role-connection-metadata-object-application-role-connection-metadata-type}
+ */
+exports.ApplicationRoleConnectionMetadataTypes = createEnum([
+  null,
+  'INTEGER_LESS_THAN_OR_EQUAL',
+  'INTEGER_GREATER_THAN_OR_EQUAL',
+  'INTEGER_EQUAL',
+  'INTEGER_NOT_EQUAL',
+  'DATATIME_LESS_THAN_OR_EQUAL',
+  'DATATIME_GREATER_THAN_OR_EQUAL',
+  'BOOLEAN_EQUAL',
+  'BOOLEAN_NOT_EQUAL',
+]);
+
+/**
+ * The type of an {@link AutoModerationRuleTriggerTypes} object:
+ * * KEYWORD
+ * * SPAM
+ * * KEYWORD_PRESET
+ * * MENTION_SPAM
+ * @typedef {string} AutoModerationRuleTriggerType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types}
+ */
+exports.AutoModerationRuleTriggerTypes = createEnum([null, 'KEYWORD', null, 'SPAM', 'KEYWORD_PRESET', 'MENTION_SPAM']);
+
+/**
+ * The type of an {@link AutoModerationRuleKeywordPresetTypes} object:
+ * * KEYWORD
+ * * SPAM
+ * * KEYWORD_PRESET
+ * * MENTION_SPAM
+ * @typedef {string} AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types}
+ */
+exports.AutoModerationRuleKeywordPresetTypes = createEnum([null, 'PROFANITY', 'SEXUAL_CONTENT', 'SLURS']);
+/**
+ * The type of an {@link AutoModerationActionTypes} object:
+ * * BLOCK_MESSAGE
+ * * SEND_ALERT_MESSAGE
+ * * TIMEOUT
+ * @typedef {string} AutoModerationActionType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-action-object-action-types}
+ */
+exports.AutoModerationActionTypes = createEnum([null, 'BLOCK_MESSAGE', 'SEND_ALERT_MESSAGE', 'TIMEOUT']);
+
+/**
+ * The type of an {@link AutoModerationRuleEventTypes} object:
+ * * MESSAGE_SEND
+ * @typedef {string} AutoModerationRuleEventType
+ * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-event-types}
+ */
+
+exports.AutoModerationRuleEventTypes = createEnum([null, 'MESSAGE_SEND']);
 /**
  * The type of an {@link Interaction} object:
  * * PING
@@ -1432,6 +1541,15 @@ function createEnum(keys) {
  * The type of an {@link ApplicationCommandPermissions} object.
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
+ * @property {Object<ApplicationRoleConnectionMetadataType, number>} ApplicationRoleConnectionMetadataTypes
+ * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
+ * of content which can trigger the rule.
+ * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
+ * A type of an action which executes whenever a rule is triggered.
+ * @property {Object<AutoModerationRuleKeywordPresetType, number>} AutoModerationRuleKeywordPresetTypes
+ * The internally pre-defined wordsetswhich will be searched for in content
+ * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
+ *  a rule should be checked.
  * @property {Object<ChannelType, number>} ChannelTypes All available channel types.
  * @property {ClientApplicationAssetTypes} ClientApplicationAssetTypes The types of an {@link ApplicationAsset} object.
  * @property {Object<Color, number>} Colors An object with regularly used colors.

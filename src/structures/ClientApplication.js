@@ -1,9 +1,11 @@
 'use strict';
 
+const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationFlags = require('../util/ApplicationFlags');
+const { ApplicationRoleConnectionMetadataTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 /**
@@ -135,6 +137,48 @@ class ClientApplication extends Application {
     const app = await this.client.api.oauth2.applications('@me').get();
     this._patch(app);
     return this;
+  }
+
+  /**
+   * Gets this application's role connection metadata records
+   * @returns {Promise<ApplicationRoleConnectionMetadata[]>}
+   */
+  async fetchRoleConnectionMetadataRecords() {
+    const metadata = await this.client.api.applications(this.client.user.id)('role-connections').metadata.get();
+    return metadata.map(data => new ApplicationRoleConnectionMetadata(data));
+  }
+
+  /**
+   * Data for creating or editing an application role connection metadata.
+   * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
+   * @property {string} name The name of the metadata field
+   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {string} description The description of the metadata field
+   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {string} key The dictionary key of the metadata field
+   * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
+   */
+
+  /**
+   * Updates this application's role connection metadata records
+   * @param {ApplicationRoleConnectionMetadataEditOptions[]} records The new role connection metadata records
+   * @returns {Promise<ApplicationRoleConnectionMetadata[]>}
+   */
+  async editRoleConnectionMetadataRecords(records) {
+    const newRecords = await this.client.api
+      .applications(this.client.user.id)('role-connections')
+      .metadata.put({
+        data: records.map(record => ({
+          type: typeof record.type === 'string' ? ApplicationRoleConnectionMetadataTypes[record.type] : record.type,
+          key: record.key,
+          name: record.name,
+          name_localizations: record.nameLocalizations,
+          description: record.description,
+          description_localizations: record.descriptionLocalizations,
+        })),
+      });
+
+    return newRecords.map(data => new ApplicationRoleConnectionMetadata(data));
   }
 }
 

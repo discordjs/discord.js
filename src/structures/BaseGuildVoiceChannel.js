@@ -2,23 +2,36 @@
 
 const { Collection } = require('@discordjs/collection');
 const GuildChannel = require('./GuildChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
+const { VideoQualityModes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 /**
  * Represents a voice-based guild channel on Discord.
  * @extends {GuildChannel}
+ * @implements {TextBasedChannel}
  */
 class BaseGuildVoiceChannel extends GuildChannel {
+  constructor(guild, data, client) {
+    super(guild, data, client, false);
+    /**
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
+     */
+    this.messages = new MessageManager(this);
+
+    /**
+     * If the guild considers this channel NSFW
+     * @type {boolean}
+     */
+    this.nsfw = Boolean(data.nsfw);
+
+    this._patch(data);
+  }
+
   _patch(data) {
     super._patch(data);
-
-    if ('rtc_region' in data) {
-      /**
-       * The RTC region for this voice-based channel. This region is automatically selected if `null`.
-       * @type {?string}
-       */
-      this.rtcRegion = data.rtc_region;
-    }
 
     if ('bitrate' in data) {
       /**
@@ -28,12 +41,54 @@ class BaseGuildVoiceChannel extends GuildChannel {
       this.bitrate = data.bitrate;
     }
 
+    if ('rtc_region' in data) {
+      /**
+       * The RTC region for this voice-based channel. This region is automatically selected if `null`.
+       * @type {?string}
+       */
+      this.rtcRegion = data.rtc_region;
+    }
+
     if ('user_limit' in data) {
       /**
        * The maximum amount of users allowed in this channel.
        * @type {number}
        */
       this.userLimit = data.user_limit;
+    }
+
+    if ('video_quality_mode' in data) {
+      /**
+       * The camera video quality mode of the channel.
+       * @type {?VideoQualityMode}
+       */
+      this.videoQualityMode = VideoQualityModes[data.video_quality_mode];
+    } else {
+      this.videoQualityMode ??= null;
+    }
+
+    if ('last_message_id' in data) {
+      /**
+       * The last message id sent in the channel, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    }
+
+    if ('messages' in data) {
+      for (const message of data.messages) this.messages._add(message);
+    }
+
+    if ('rate_limit_per_user' in data) {
+      /**
+       * The rate limit per user (slowmode) for this channel in seconds
+       * @type {number}
+       */
+      this.rateLimitPerUser = data.rate_limit_per_user;
+    }
+
+    if ('nsfw' in data) {
+      this.nsfw = data.nsfw;
     }
   }
 
@@ -81,22 +136,6 @@ class BaseGuildVoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the RTC region of the channel.
-   * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
-   * @param {string} [reason] The reason for modifying this region.
-   * @returns {Promise<BaseGuildVoiceChannel>}
-   * @example
-   * // Set the RTC region to sydney
-   * channel.setRTCRegion('sydney');
-   * @example
-   * // Remove a fixed region for this channel - let Discord decide automatically
-   * channel.setRTCRegion(null, 'We want to let Discord decide.');
-   */
-  setRTCRegion(rtcRegion, reason) {
-    return this.edit({ rtcRegion }, reason);
-  }
-
-  /**
    * Creates an invite to this guild channel.
    * @param {CreateInviteOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
@@ -119,6 +158,79 @@ class BaseGuildVoiceChannel extends GuildChannel {
   fetchInvites(cache = true) {
     return this.guild.invites.fetch({ channelId: this.id, cache });
   }
+
+  /**
+   * Sets the bitrate of the channel.
+   * @param {number} bitrate The new bitrate
+   * @param {string} [reason] Reason for changing the channel's bitrate
+   * @returns {Promise<BaseGuildVoiceChannel>}
+   * @example
+   * // Set the bitrate of a voice channel
+   * channel.setBitrate(48_000)
+   *   .then(channel => console.log(`Set bitrate to ${channel.bitrate}bps for ${channel.name}`))
+   *   .catch(console.error);
+   */
+  setBitrate(bitrate, reason) {
+    return this.edit({ bitrate }, reason);
+  }
+
+  /**
+   * Sets the RTC region of the channel.
+   * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @param {string} [reason] The reason for modifying this region.
+   * @returns {Promise<BaseGuildVoiceChannel>}
+   * @example
+   * // Set the RTC region to sydney
+   * channel.setRTCRegion('sydney');
+   * @example
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * channel.setRTCRegion(null, 'We want to let Discord decide.');
+   */
+  setRTCRegion(rtcRegion, reason) {
+    return this.edit({ rtcRegion }, reason);
+  }
+
+  /**
+   * Sets the user limit of the channel.
+   * @param {number} userLimit The new user limit
+   * @param {string} [reason] Reason for changing the user limit
+   * @returns {Promise<BaseGuildVoiceChannel>}
+   * @example
+   * // Set the user limit of a voice channel
+   * channel.setUserLimit(42)
+   *   .then(channel => console.log(`Set user limit to ${channel.userLimit} for ${channel.name}`))
+   *   .catch(console.error);
+   */
+  setUserLimit(userLimit, reason) {
+    return this.edit({ userLimit }, reason);
+  }
+
+  /**
+   * Sets the camera video quality mode of the channel.
+   * @param {VideoQualityMode|number} videoQualityMode The new camera video quality mode.
+   * @param {string} [reason] Reason for changing the camera video quality mode.
+   * @returns {Promise<BaseGuildVoiceChannel>}
+   */
+  setVideoQualityMode(videoQualityMode, reason) {
+    return this.edit({ videoQualityMode }, reason);
+  }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  get lastMessage() {}
+  send() {}
+  sendTyping() {}
+  createMessageCollector() {}
+  awaitMessages() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
+  bulkDelete() {}
+  fetchWebhooks() {}
+  createWebhook() {}
+  setRateLimitPerUser() {}
+  setNSFW() {}
 }
+
+TextBasedChannel.applyToClass(BaseGuildVoiceChannel, true, ['lastPinAt']);
 
 module.exports = BaseGuildVoiceChannel;

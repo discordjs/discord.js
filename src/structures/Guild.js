@@ -10,6 +10,7 @@ const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const WelcomeScreen = require('./WelcomeScreen');
 const { Error } = require('../errors');
+const AutoModerationRuleManager = require('../managers/AutoModerationRuleManager');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
@@ -117,6 +118,12 @@ class Guild extends AnonymousGuild {
      */
     this.scheduledEvents = new GuildScheduledEventManager(this);
 
+    /**
+     * A manager of the auto moderation rules of this guild.
+     * @type {AutoModerationRuleManager}
+     */
+    this.autoModerationRules = new AutoModerationRuleManager(this);
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -221,11 +228,15 @@ class Guild extends AnonymousGuild {
     /**
      * An array of enabled guild features, here are the possible values:
      * * ANIMATED_ICON
+     * * AUTO_MODERATION
      * * BANNER
      * * COMMERCE
      * * COMMUNITY
+     * * CREATOR_MONETIZABLE_PROVISIONAL
+     * * CREATOR_STORE_PAGE
      * * DISCOVERABLE
      * * FEATURABLE
+     * * INVITES_DISABLED
      * * INVITE_SPLASH
      * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
@@ -237,11 +248,15 @@ class Guild extends AnonymousGuild {
      * * WELCOME_SCREEN_ENABLED
      * * TICKETED_EVENTS_ENABLED
      * * MONETIZATION_ENABLED
+     * <warn>`MONETIZATION_ENABLED` has been replaced.
+     * See [this pull request](https://github.com/discord/discord-api-docs/pull/5724) for more information.</warn>
      * * MORE_STICKERS
      * * THREE_DAY_THREAD_ARCHIVE
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * PRIVATE_THREADS
      * * ROLE_ICONS
+     * * ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE
+     * * ROLE_SUBSCRIPTIONS_ENABLED
      * @typedef {string} Features
      * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-features}
      */
@@ -701,9 +716,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes('VANITY_URL')) {
-      throw new Error('VANITY_URL');
-    }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();
     this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
@@ -1310,12 +1322,23 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Sets whether this guild's invites are disabled.
+   * @param {boolean} [disabled=true] Whether the invites are disabled
+   * @returns {Promise<Guild>}
+   */
+  disableInvites(disabled = true) {
+    const features = this.features.filter(feature => feature !== 'INVITES_DISABLED');
+    if (disabled) features.push('INVITES_DISABLED');
+    return this.edit({ features });
+  }
+
+  /**
    * Leaves the guild.
    * @returns {Promise<Guild>}
    * @example
    * // Leave a guild
    * guild.leave()
-   *   .then(g => console.log(`Left the guild ${g}`))
+   *   .then(guild => console.log(`Left the guild: ${guild.name}`))
    *   .catch(console.error);
    */
   async leave() {

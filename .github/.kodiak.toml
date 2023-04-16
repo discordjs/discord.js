@@ -1,0 +1,11 @@
+version = 1
+
+[merge]
+require_automerge_label = false
+blocking_labels = ['blocked']
+method = 'squash'
+
+[merge.message]
+title = 'pull_request_title'
+strip_html_comments = true
+include_coauthors = true

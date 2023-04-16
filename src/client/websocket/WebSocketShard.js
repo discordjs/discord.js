@@ -36,6 +36,13 @@ class WebSocketShard extends EventEmitter {
     this.id = id;
 
     /**
+     * The resume URL for this shard
+     * @type {?string}
+     * @private
+     */
+    this.resumeURL = null;
+
+    /**
      * The current status of the shard
      * @type {Status}
      */
@@ -191,11 +198,13 @@ class WebSocketShard extends EventEmitter {
    * or reject if we couldn't connect
    */
   connect() {
-    const { gateway, client } = this.manager;
+    const { client } = this.manager;
 
     if (this.connection?.readyState === WebSocket.OPEN && this.status === Status.READY) {
       return Promise.resolve();
     }
+
+    const gateway = this.resumeURL ?? this.manager.gateway;
 
     return new Promise((resolve, reject) => {
       const cleanup = () => {
@@ -418,10 +427,11 @@ class WebSocketShard extends EventEmitter {
          */
         this.emit(ShardEvents.READY);
 
+        this.resumeURL = packet.d.resume_gateway_url;
         this.sessionId = packet.d.session_id;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WAITING_FOR_GUILDS;
-        this.debug(`[READY] Session ${this.sessionId}.`);
+        this.debug(`[READY] Session ${this.sessionId} | Resume url ${this.resumeURL}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
         break;
@@ -840,8 +850,9 @@ class WebSocketShard extends EventEmitter {
     // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
 
-    // Step 5: Reset the sequence and session id if requested
+    // Step 5: Reset the sequence, resume URL and session id if requested
     if (reset) {
+      this.resumeURL = null;
       this.sequence = -1;
       this.sessionId = null;
     }

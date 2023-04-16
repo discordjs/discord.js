@@ -80,9 +80,8 @@ class GuildChannelManager extends CachedManager {
    * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
    * * A ThreadChannel object
-   * * A ForumChannel object
    * * A Snowflake
-   * @typedef {GuildChannel|ThreadChannel|ForumChannel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
@@ -227,6 +226,24 @@ class GuildChannelManager extends CachedManager {
       reason,
     });
     return new Webhook(this.client, data);
+  }
+
+  /**
+   * Adds the target channel to a channel's followers.
+   * @param {NewsChannel|Snowflake} channel The channel to follow
+   * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
+   * @param {string} [reason] Reason for creating the webhook
+   * @returns {Promise<Snowflake>} Returns created target webhook id.
+   */
+  async addFollower(channel, targetChannel, reason) {
+    const channelId = this.resolveId(channel);
+    const targetChannelId = this.resolveId(targetChannel);
+    if (!channelId || !targetChannelId) throw new Error('GUILD_CHANNEL_RESOLVE');
+    const { webhook_id } = await this.client.api.channels[channelId].followers.post({
+      data: { webhook_channel_id: targetChannelId },
+      reason,
+    });
+    return webhook_id;
   }
 
   /**

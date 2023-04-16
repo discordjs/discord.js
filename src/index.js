@@ -18,6 +18,7 @@ exports.Constants = require('./util/Constants');
 exports.DataResolver = require('./util/DataResolver');
 exports.DiscordAPIError = require('./rest/DiscordAPIError');
 exports.Formatters = require('./util/Formatters');
+exports.GuildMemberFlags = require('./util/GuildMemberFlags');
 exports.HTTPError = require('./rest/HTTPError');
 exports.Intents = require('./util/Intents');
 exports.LimitedCollection = require('./util/LimitedCollection');
@@ -36,6 +37,7 @@ exports.version = require('../package.json').version;
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
+exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
@@ -71,7 +73,11 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationRoleConnectionMetadata =
+  require('./structures/ApplicationRoleConnectionMetadata').ApplicationRoleConnectionMetadata;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
+exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
+exports.AutoModerationRule = require('./structures/AutoModerationRule');
 exports.Base = require('./structures/Base');
 exports.BaseCommandInteraction = require('./structures/BaseCommandInteraction');
 exports.BaseGuild = require('./structures/BaseGuild');
