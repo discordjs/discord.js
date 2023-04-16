@@ -154,19 +154,19 @@ console.log(HELLO);
 
 <CH.Code>
 
-```ts fileName
+```ts fileName.ts
 const FILE_NAME = 'fileName' as const;
 if (FILE_NAME.includes(' ')) throw new Error('Spaces cannot be used in file names.');
 ```
 
-```ts anotherFileName
+```ts anotherFileName.ts
 const FILE_NAME_2 = 'anotherFileName' as const;
 // Putting code blocks together makes them appear in tabs, just like in your editor.
 ```
 
 ---
 
-```ts requiredName
+```ts requiredName.ts
 const FILE_NAME_3 = 'requiredName' as const;
 if (!FILE_NAME) throw new Error('There must be a file name to use panels!');
 // The --- divider was used to create a panel.
