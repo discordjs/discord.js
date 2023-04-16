@@ -76,7 +76,7 @@ export default makeSource({
 			// 	{
 			// 		properties: {
 			// 			class:
-			// 				'relative inline-flex w-6 h-6 place-items-center place-content-center outline-0 text-black dark:text-white ml-2',
+			// 				'relative inline-flex w-6 h-6 place-items-center place-content-center outline-none text-black dark:text-white ml-2',
 			// 		},
 			// 		behavior: 'after',
 			// 		group: async ({ tagName }: { tagName: string }) =>

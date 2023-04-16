@@ -23,7 +23,7 @@ export default function VersionSelect() {
 				?.map((item, idx) => (
 					<Link href={`/docs/packages/${packageName}/${item}`} key={`${item}-${idx}`}>
 						<MenuItem
-							className="my-0.5 rounded bg-white p-3 text-sm outline-0 active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
+							className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 							onClick={() => versionMenu.setOpen(false)}
 							state={versionMenu}
 						>
@@ -38,7 +38,7 @@ export default function VersionSelect() {
 	return (
 		<>
 			<MenuButton
-				className="rounded bg-light-600 p-3 outline-0 active:bg-light-800 dark:bg-dark-400 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-300"
+				className="rounded bg-light-600 p-3 outline-none active:bg-light-800 dark:bg-dark-400 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-300"
 				state={versionMenu}
 			>
 				<div className="flex flex-row place-content-between place-items-center">
@@ -53,7 +53,7 @@ export default function VersionSelect() {
 				</div>
 			</MenuButton>
 			<Menu
-				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-0 dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
+				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-none dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
 				state={versionMenu}
 			>
 				{versionMenuItems}

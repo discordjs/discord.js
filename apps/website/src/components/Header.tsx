@@ -26,7 +26,7 @@ export default function Header() {
 				.slice(1)
 				.map((path, idx, original) => (
 					<Link
-						className="rounded outline-0 hover:underline focus:ring focus:ring-width-2 focus:ring-blurple"
+						className="rounded outline-none hover:underline focus:ring focus:ring-width-2 focus:ring-blurple"
 						href={`/${original.slice(0, idx + 1).join('/')}`}
 						key={`${path}-${idx}`}
 					>
@@ -43,7 +43,7 @@ export default function Header() {
 					return (
 						<Fragment key={`${el.key}-${idx}`}>
 							<div className="mx-2">/</div>
-							{el}
+							<div>{el}</div>
 							<div className="mx-2">/</div>
 						</Fragment>
 					);
@@ -52,13 +52,13 @@ export default function Header() {
 				if (idx !== array.length - 1) {
 					return (
 						<Fragment key={`${el.key}-${idx}`}>
-							{el}
+							<div>{el}</div>
 							<div className="mx-2">/</div>
 						</Fragment>
 					);
 				}
 
-				return <Fragment key={`${el.key}-${idx}`}>{el}</Fragment>;
+				return <div key={`${el.key}-${idx}`}>{el}</div>;
 			}),
 		[pathElements],
 	);
@@ -69,7 +69,7 @@ export default function Header() {
 				<div className="h-full flex flex-row place-content-between place-items-center gap-8">
 					<Button
 						aria-label="Menu"
-						className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+						className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
 						onClick={() => setOpened((open) => !open)}
 					>
 						<VscMenu size={24} />
@@ -77,7 +77,7 @@ export default function Header() {
 					<div className="hidden lg:flex lg:grow lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
 					<Button
 						as="div"
-						className="hidden w-56 grow rounded bg-white px-4 py-2.5 outline-0 md:block sm:grow-0 dark:bg-dark-800 focus:ring focus:ring-width-2 focus:ring-blurple"
+						className="hidden w-56 grow rounded bg-white px-4 py-2.5 outline-none md:block sm:grow-0 dark:bg-dark-800 focus:ring focus:ring-width-2 focus:ring-blurple"
 						onClick={() => dialog?.toggle()}
 					>
 						<div className="flex flex-row place-items-center gap-4 md:justify-between">
@@ -91,7 +91,7 @@ export default function Header() {
 					<div className="flex flex-row place-items-center gap-4">
 						<Button
 							as="div"
-							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 md:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none md:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
 							onClick={() => dialog?.toggle()}
 						>
 							<VscSearch size={24} />
@@ -99,7 +99,7 @@ export default function Header() {
 						<Button
 							aria-label="GitHub"
 							as="a"
-							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded rounded-full bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-0 active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded rounded-full bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
 							href="https://github.com/discordjs/discord.js"
 							rel="external noopener noreferrer"
 							target="_blank"

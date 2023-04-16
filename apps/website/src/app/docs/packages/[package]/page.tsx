@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 			<div className="flex flex-col gap-4">
 				{data.map((version, idx) => (
 					<Link
-						className="h-11 flex flex-col transform-gpu cursor-pointer select-none appearance-none place-content-center border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+						className="h-11 flex flex-col transform-gpu cursor-pointer select-none appearance-none place-content-center border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 						href={`/docs/packages/${params.package}/${version}`}
 						key={`${version}-${idx}`}
 					>
@@ -46,7 +46,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 				)) ?? null}
 			</div>
 			<Link
-				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center place-self-center gap-2 border-0 rounded bg-blurple px-4 text-base font-semibold leading-none text-white no-underline outline-0 active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
+				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center place-self-center gap-2 border-0 rounded bg-blurple px-4 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
 				href="/docs/packages"
 			>
 				<VscArrowLeft size={20} /> Go back
