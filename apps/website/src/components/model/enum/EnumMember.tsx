@@ -10,6 +10,7 @@ export function EnumMember({ member }: { member: ApiEnumMember }) {
 			<div className="flex flex-col gap-2 md:flex-row md:place-items-center md:-ml-8.5">
 				<Anchor href={`#${member.displayName}`} />
 				<NameText name={member.name} />
+				<h4 className="font-bold">=</h4>
 				{member.initializerExcerpt ? (
 					<SignatureText excerpt={member.initializerExcerpt} model={member.getAssociatedModel()!} />
 				) : null}
