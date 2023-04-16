@@ -70,7 +70,7 @@ export default function Header() {
 					>
 						<VscMenu size={24} />
 					</Button>
-					<div className="hidden lg:flex lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
+					<div className="hidden lg:flex lg:grow lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
 					<div className="flex flex-row place-items-center gap-4">
 						<Button
 							aria-label="GitHub"
