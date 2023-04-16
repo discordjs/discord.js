@@ -39,7 +39,7 @@ export default function Header() {
 					return (
 						<Fragment key={`${el.key}-${idx}`}>
 							<div className="mx-2">/</div>
-							{el}
+							<div>{el}</div>
 							<div className="mx-2">/</div>
 						</Fragment>
 					);
@@ -48,13 +48,13 @@ export default function Header() {
 				if (idx !== array.length - 1) {
 					return (
 						<Fragment key={`${el.key}-${idx}`}>
-							{el}
+							<div>{el}</div>
 							<div className="mx-2">/</div>
 						</Fragment>
 					);
 				}
 
-				return <Fragment key={`${el.key}-${idx}`}>{el}</Fragment>;
+				return <div key={`${el.key}-${idx}`}>{el}</div>;
 			}),
 		[pathElements],
 	);
