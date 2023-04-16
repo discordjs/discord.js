@@ -6,7 +6,7 @@ export default function Page() {
 		<div className="mx-auto max-w-6xl min-h-screen flex flex-col place-items-center gap-12 px-8 py-16 lg:place-content-center lg:px-8 lg:py-0">
 			<div className="flex flex-row place-content-center">
 				<a
-					className="rounded outline-0 focus:ring focus:ring-width-2 focus:ring-blurple"
+					className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 					rel="external noopener noreferrer"
 					target="_blank"

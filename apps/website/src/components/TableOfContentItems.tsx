@@ -25,7 +25,7 @@ export interface TableOfContentsItemProps {
 export function TableOfContentsPropertyItem({ property }: { property: TableOfContentsSerializedProperty }) {
 	return (
 		<a
-			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-0 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
+			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${property.name}`}
 			key={`${property.name}-${property.kind}`}
 			title={property.name}
@@ -44,7 +44,7 @@ export function TableOfContentsMethodItem({ method }: { method: TableOfContentsS
 
 	return (
 		<a
-			className="ml-[10px] flex flex-row place-items-center gap-2 border-l border-light-800 p-[5px] pl-6.5 text-sm outline-0 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
+			className="ml-[10px] flex flex-row place-items-center gap-2 border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${key}`}
 			key={key}
 			title={method.name}

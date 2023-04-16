@@ -50,7 +50,7 @@ export function CmdKDialog() {
 		() =>
 			searchResults?.map((item, idx) => (
 				<Command.Item
-					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 					key={`${item.id}-${idx}`}
 					onSelect={() => {
 						router.push(item.path);
@@ -119,7 +119,7 @@ export function CmdKDialog() {
 				shouldFilter={false}
 			>
 				<Command.Input
-					className="w-full border-0 border-b border-light-900 rounded rounded-b-0 bg-white/50 p-4 text-lg caret-blurple outline-0 dark:border-dark-100 dark:bg-dark/50 placeholder:text-dark-300/75 dark:placeholder:text-white/75"
+					className="w-full border-0 border-b border-light-900 rounded rounded-b-0 bg-white/50 p-4 text-lg caret-blurple outline-none dark:border-dark-100 dark:bg-dark/50 placeholder:text-dark-300/75 dark:placeholder:text-white/75"
 					onValueChange={setSearch}
 					placeholder="Quick search..."
 					value={search}

@@ -19,7 +19,7 @@ export default function OverloadSwitcher({ overloads, children }: PropsWithChild
 		() =>
 			overloads.map((_, idx) => (
 				<MenuItem
-					className="my-0.5 cursor-pointer rounded bg-white p-3 text-sm outline-0 active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
+					className="my-0.5 cursor-pointer rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 					key={idx}
 					onClick={() => setOverloadIndex(idx + 1)}
 				>
@@ -32,7 +32,7 @@ export default function OverloadSwitcher({ overloads, children }: PropsWithChild
 	return (
 		<div className="flex flex-col place-items-start gap-2">
 			<MenuButton
-				className="mb-2 rounded bg-white p-3 outline-0 active:bg-light-900 dark:bg-dark-400 hover:bg-light-800 focus:ring focus:ring-width-2 focus:ring-blurple md:-ml-2 dark:active:bg-dark-200 dark:hover:bg-dark-300"
+				className="mb-2 rounded bg-white p-3 outline-none active:bg-light-900 dark:bg-dark-400 hover:bg-light-800 focus:ring focus:ring-width-2 focus:ring-blurple md:-ml-2 dark:active:bg-dark-200 dark:hover:bg-dark-300"
 				state={menu}
 			>
 				<div className="flex flex-row place-content-between place-items-center gap-2">
@@ -48,7 +48,7 @@ export default function OverloadSwitcher({ overloads, children }: PropsWithChild
 				</div>
 			</MenuButton>
 			<Menu
-				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-0 dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
+				className="z-20 flex flex-col border border-light-800 rounded bg-white p-1 outline-none dark:border-dark-100 dark:bg-dark-600 focus:ring focus:ring-width-2 focus:ring-blurple"
 				state={menu}
 			>
 				{menuItems}
