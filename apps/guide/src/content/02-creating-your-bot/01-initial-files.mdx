@@ -9,7 +9,7 @@ Once you [add your bot to a server](preparations/adding-your-bot-to-servers.md),
 
 ## Creating package.json
 
-This command creates a _`package.json`_ file for you, which will keep track of the dependencies your project uses, as well as other information.
+We'll start by creating a _`package.json`_ file. This file will keep track of the dependencies your project uses as well as other information. This can be done by running the following command in your project directory:
 
 <CH.Code>
 
@@ -18,8 +18,7 @@ npm init -y; npm pkg set type="module"
 ```
 
 ```sh yarn
-yarn add dotenv
-# You must go into your package.json file and add "type": "module"
+yarn init -y # You must go into your package.json file and add "type": "module"
 ```
 
 ```sh pnpm
@@ -28,9 +27,9 @@ pnpm init; pnpm pkg set type="module"
 
 </CH.Code>
 
-Once you're done with that, onto the next step!
+Once you're done with that, on to the next step!
 
-## Using config.json
+## Using a config.json file
 
 As explained in the ["What is a token, anyway?"](preparations/setting-up-a-bot-application.md#what-is-a-token-anyway) section, your token is essentially your bot's password, and you should protect it as best as possible. This can be done through a _`config.json`_ file or by using environment variables.
 
@@ -61,17 +60,17 @@ console.log(config.token);
 </CH.Code>
 
 <Alert title="Caution" type="danger">
-	If you're using Git, you should not commit this file and should [ignore it via
+	If you're using Git, don't commit this file and instead [ignore it via
 	_`.gitignore`_](/creating-your-bot/#git-and-gitignore).
 </Alert>
 
-### Using environment variables
+## Using environment variables
 
-Environment variables are special values for your environment (e.g., terminal session, Docker container, or environment variable file). You can pass these values into your code's scope so that you can use them.
+Environment variables are special values for your environment (e.g., a terminal session, a Docker container, or an environment variable file). You can pass these values into your code's scope so that you can use them.
 
-One way to pass in environment variables is via the command line interface. When starting your app, instead of _`node index.js`_, use _`TOKEN=your-token-goes-here node index.js`_. You can repeat this pattern to expose other values as well.
+One way to pass in environment variables is via the command-line interface. When starting your app, instead of _`node index.js`_, use _`TOKEN=your-token-goes-here node index.js`_. You can repeat this pattern to expose other values as well.
 
-You can access the set values in your code via the _`process.env`_ global variable, accessible in any file. Note that values passed this way will always be strings and that you might need to parse them to a number, if using them to do calculations.
+You can access the set values in your code via the _`process.env`_ global variable, accessible in any file. Note that values passed this way will always be strings, and you might need to parse them to a number if using them to do calculations.
 
 <CH.Code>
 
@@ -180,13 +179,13 @@ config.json
 <Alert title="Tip" type="success">
 	Aside from keeping credentials safe, _`node_modules`_ should be included here. Since this directory can be restored
 	based on the entries in your _`package.json`_ and _`package-lock.json`_ files by running _`npm install`_, it does not
-	need to be included in Git. You can specify quite intricate patterns in _`.gitignore`_ files, check out the [Git
+	need to be included in Git. You can specify quite intricate patterns in _`.gitignore`_ files; check out the [Git
 	documentation on _`.gitignore`_](https://git-scm.com/docs/gitignore) for more information!
 </Alert>
 
 ## Creating the main file
 
-Open your code editor and create a new file. We suggest that you save the file as _`index.ts`_, or _`index.js`_, depending on whether you use TypeScript. You may name it whatever you wish, however.
+Open your code editor and create a new file. We suggest that you save the file as _`index.ts`_ or _`index.js`_, depending on whether you use TypeScript. However, you are free to name it whatever you want.
 
 Here's the base code to get you started:
 
@@ -211,7 +210,7 @@ client.login(config.token);
 
 </CH.Code>
 
-This is how you create a client instance for your Discord bot and login to Discord. The _`GatewayIntentBits.Guilds`_ intents option is necessary for your client to work properly, as it ensures that the caches for guilds, channels and roles are populated and available for internal use.
+This is how you create a client instance for your Discord bot and login to Discord. The _`GatewayIntentBits.Guilds`_ intents option is necessary for your client to work properly, as it ensures that the caches for guilds, channels, and roles are populated and available for internal use.
 
 Intents also define which events Discord should send to your bot, and you may wish to enable more than just the minimum. You can read more about the other intents on the [Intents topic](popular-topics/intents).
 
