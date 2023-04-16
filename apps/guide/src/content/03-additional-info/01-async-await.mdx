@@ -102,15 +102,15 @@ Now that you know how Promises work and what they are used for, let's look at an
 <CH.Code>
 
 ```js
-const { Client, GatewayIntentBits } = require('discord.js');
+import { Client, Events, GatewayIntentBits } from 'discord.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
 	console.log('I am ready!');
 });
 
-client.on('interactionCreate', (interaction) => {
+client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	if (interaction.commandName === 'react') {
