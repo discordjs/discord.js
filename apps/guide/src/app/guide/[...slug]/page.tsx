@@ -1,5 +1,5 @@
 import { allContents } from 'contentlayer/generated';
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Mdx } from '~/components/Mdx';
 
 export async function generateStaticParams() {
@@ -10,7 +10,7 @@ export default function Page({ params }: { params: { slug: string[] } }) {
 	const content = allContents.find((content) => content.slug === params.slug?.join('/'));
 
 	if (!content) {
-		redirect('/guide/home/introduction');
+		notFound();
 	}
 
 	return (
