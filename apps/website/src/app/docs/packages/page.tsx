@@ -13,7 +13,7 @@ export default function Page() {
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
 				<a
-					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 					href="https://old.discordjs.dev/#/docs/discord.js"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -28,7 +28,7 @@ export default function Page() {
 				</a>
 				{PACKAGES.map((pkg, idx) => (
 					<Link
-						className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+						className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 						href={`/docs/packages/${pkg}`}
 						key={`${pkg}-${idx}`}
 					>
@@ -40,7 +40,7 @@ export default function Page() {
 								</div>
 								{/* <Link href={`/docs/packages/${pkg}`}>
 									<div
-										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-0 focus:ring focus:ring-white active:translate-y-px"
+										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-none focus:ring focus:ring-white active:translate-y-px"
 										role="link"
 									>
 										Select version
@@ -52,7 +52,7 @@ export default function Page() {
 					</Link>
 				))}
 				<a
-					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-0 active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 					href="https://discord-api-types.dev/"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -67,7 +67,7 @@ export default function Page() {
 				</a>
 			</div>
 			<Link
-				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center place-self-center gap-2 border-0 rounded bg-blurple px-4 text-base font-semibold leading-none text-white no-underline outline-0 active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
+				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center place-self-center gap-2 border-0 rounded bg-blurple px-4 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
 				href="/"
 			>
 				<VscArrowLeft size={20} /> Go back

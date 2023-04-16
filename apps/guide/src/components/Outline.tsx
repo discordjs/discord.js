@@ -13,7 +13,7 @@ export function Outline({ headings }: { headings: any[] }) {
 		() =>
 			headings.map((heading, idx) => (
 				<a
-					className={`dark:border-dark-100 border-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] border-l p-[5px] text-sm outline-0 focus:rounded focus:border-0 focus:ring ${
+					className={`dark:border-dark-100 border-light-800 pl-6.5 focus:ring-width-2 focus:ring-blurple ml-[10px] border-l p-[5px] text-sm outline-none focus:rounded focus:border-0 focus:ring ${
 						idx === active
 							? 'bg-blurple text-white'
 							: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
