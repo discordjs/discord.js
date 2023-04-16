@@ -94,14 +94,14 @@ export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section
-						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-0 focus:ring"
+						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring"
 						icon={resolveIcon(group)}
 						key={`${group}-${idx}`}
 						title={group}
 					>
 						{groupItems[group].map((member, index) => (
 							<ItemLink
-								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
+								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-none focus:rounded focus:border-0 focus:ring ${
 									decodeURIComponent(segment ?? '') === member.href
 										? 'bg-blurple text-white'
 										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'

@@ -502,12 +502,11 @@ This REST event has been removed as discord.js now uses [Undici](https://github.
 
 <CH.Code>
 
-```ts TypeScript
+```js JavaScript
 import diagnosticsChannel from 'node:diagnostics_channel';
-import { type DiagnosticsChannel } from 'undici';
 
-diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
-	const { request } = data as DiagnosticsChannel.RequestCreateMessage;
+diagnosticsChannel.channel('undici:request:create').subscribe(({ request }) => {
+	const { request } = data;
 	console.log(request.method); // Log the method
 	console.log(request.path); // Log the path
 	console.log(request.headers); // Log the headers
@@ -515,11 +514,12 @@ diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
 });
 ```
 
-```js JavaScript
+```ts TypeScript
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { type DiagnosticsChannel } from 'undici';
 
-diagnosticsChannel.channel('undici:request:create').subscribe(({ request }) => {
-	const { request } = data;
+diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
+	const { request } = data as DiagnosticsChannel.RequestCreateMessage;
 	console.log(request.method); // Log the method
 	console.log(request.path); // Log the path
 	console.log(request.headers); // Log the headers
