@@ -46,7 +46,7 @@ class BaseInteraction extends Base {
      * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
-    this.channelId = data.channel_id ?? null;
+    this.channelId = data.channel?.id ?? null;
 
     /**
      * The id of the guild this interaction was sent in
