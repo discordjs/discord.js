@@ -13,6 +13,7 @@ import {
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
 	type RESTGetAPIChannelWebhooksResult,
+	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelJSONBody,
 	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
@@ -60,7 +61,7 @@ export class ChannelsAPI {
 	public async editMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: RESTPatchAPIChannelMessageJSONBody & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
