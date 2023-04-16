@@ -16,7 +16,7 @@ export function InstallButton() {
 
 	return (
 		<button
-			className="cursor-copy select-none bg-transparent px-4 py-2 text-sm text-dark-50"
+			className="cursor-copy select-none bg-transparent px-4 py-2 text-sm text-dark-50 dark:text-light-900"
 			onClick={() => {
 				setInteracted(true);
 				copyToClipboard('npm install discord.js');
