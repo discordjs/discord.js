@@ -2224,7 +2224,7 @@ export type ModalData = TextInputModalData | ActionRowModalData;
 
 export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);
-  public components: ActionRow<ModalActionRowComponent>;
+  public components: ActionRow<ModalActionRowComponent>[];
   public fields: Collection<string, ModalActionRowComponent>;
   public getField<T extends ComponentType>(customId: string, type: T): { type: T } & ModalData;
   public getField(customId: string, type?: ComponentType): ModalData;
