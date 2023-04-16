@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/core",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",

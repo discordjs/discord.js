@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@0.5.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@0.5.0...@discordjs/core@0.5.1) - (2023-04-16)
+
+## Bug Fixes
+
+- **interactions:** Make `data` parameter optional (#9379) ([66dc401](https://github.com/discordjs/discord.js/commit/66dc4014fe4553f1dd73aaa7c32fd83e10bde263))
+- **core:** Support attachment editing on interactions (#9356) ([676307f](https://github.com/discordjs/discord.js/commit/676307ff5c6c4ef56a353b6fc74501a1080da869))
+- **core:** Missed optional options (#9311) ([6912faa](https://github.com/discordjs/discord.js/commit/6912faa9b3852adbacc7d0b002aae81be041f529))
+
+## Typings
+
+- **ChannelsAPI:** Use correct type for `editMessage` (#9399) ([0a1701b](https://github.com/discordjs/discord.js/commit/0a1701b0463919a895c518e5daa9836760d9b6cf))
+
 # [@discordjs/core@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@0.4.0...@discordjs/core@0.5.0) - (2023-04-01)
 
 ## Bug Fixes
