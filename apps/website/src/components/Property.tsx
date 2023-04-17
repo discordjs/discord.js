@@ -5,7 +5,7 @@ import type {
 	ApiPropertySignature,
 } from '@microsoft/api-extractor-model';
 import type { PropsWithChildren } from 'react';
-import { Anchor } from './Anchor';
+import { CodeHeading } from './CodeHeading';
 import { ExcerptText } from './ExcerptText';
 import { InheritanceText } from './InheritanceText';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
@@ -55,21 +55,13 @@ export function Property({
 						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap place-items-center gap-1">
-					<Anchor href={`#${item.displayName}`} />
-					<h4 className="break-all font-mono text-lg font-bold">
-						{item.displayName}
-						{item.isOptional ? '?' : ''}
-					</h4>
+				<CodeHeading href={`#${item.displayName}`}>
+					{`${item.displayName}${item.isOptional ? '?' : ''}`}
+					<span>{separator}</span>
 					{item.propertyTypeExcerpt.text ? (
-						<>
-							<h4 className="font-mono text-lg font-bold">{separator}</h4>
-							<h4 className="break-all font-mono text-lg font-bold">
-								<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
-							</h4>
-						</>
+						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
 					) : null}
-				</div>
+				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (
 				<div className="mb-4 flex flex-col gap-4">

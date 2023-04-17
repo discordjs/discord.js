@@ -1,7 +1,7 @@
 import type { ApiMethod, ApiMethodSignature } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
-import { Anchor } from '~/components/Anchor';
+import { CodeHeading } from '~/components/CodeHeading';
 import { ExcerptText } from '~/components/ExcerptText';
 import { resolveParameters } from '~/util/model';
 
@@ -49,14 +49,11 @@ export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignatur
 						) : null}
 					</div>
 				) : null}
-				<div className="flex flex-row flex-wrap place-items-center gap-1">
-					<Anchor href={`#${key}`} />
-					<h4 className="break-all font-mono text-lg font-bold">{getShorthandName(method)}</h4>
-					<h4 className="font-mono text-lg font-bold">:</h4>
-					<h4 className="break-all font-mono text-lg font-bold">
-						<ExcerptText excerpt={method.returnTypeExcerpt} model={method.getAssociatedModel()!} />
-					</h4>
-				</div>
+				<CodeHeading href={`#${key}`}>
+					{getShorthandName(method)}
+					<span>:</span>
+					<ExcerptText excerpt={method.returnTypeExcerpt} model={method.getAssociatedModel()!} />
+				</CodeHeading>
 			</div>
 		</div>
 	);
