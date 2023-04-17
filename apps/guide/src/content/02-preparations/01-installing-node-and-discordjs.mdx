@@ -1,0 +1,98 @@
+---
+title: Installing Node.js and Discord.js
+category: Preparations
+---
+
+# Installing Node.js and Discord.js
+
+In order to use discord.js, you need to have Node.js v16.9.0 or higher installed on your system. This guide will show you how to install Node.js and discord.js.
+
+## Installing Node.js
+
+<Alert title="Tip" type="success">
+	To check if you already have Node installed on your machine (e.g., if you're using a VPS), run `node -v` in your
+	terminal. If it outputs `v16.9.0` or higher, then you're good to go! Otherwise, continue reading.
+</Alert>
+
+### Windows
+
+To install Node.js on Windows, simply download the latest version from the [Node.js website](https://nodejs.org/en/download/). The installer will guide you through the installation process.
+
+### MacOS
+
+On MacOS systems, you can either:
+
+- Download the latest version from the [Node.js website](https://nodejs.org/en/download/). The installer will guide you through the installation process.
+- Use [Homebrew](https://brew.sh/) to install Node.js. Run `brew install node` in your terminal.
+
+### Linux
+
+On Linux systems, you can use your system's package manager to install Node.js. For example, on Debian-based systems, run `sudo apt install nodejs` in your terminal. For more information, see the [Node.js website](https://nodejs.org/en/download/package-manager/).
+
+## Preparing your project
+
+Now that you have Node.js installed, you can create a new project. Create a new folder for your project, and open a terminal in that folder. You can do this in a few different ways depending on your operating system:
+
+#### Windows
+
+- Use the shortcut <kbd>Shift</kbd> + <kbd>Right Click</kbd> to open a context menu in the folder you want to create your project in. Select `Open PowerShell window here` or `Open command window here` to open your terminal.
+
+#### MacOS
+
+- Open Launchpad or Spotlight and search for `Terminal`. Open the application.
+- In your "Applications" folder, right-click on the "Utilities" folder and select `Open Terminal`.
+
+#### Linux
+
+- Use the shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd> to open a terminal in your home directory.
+
+<Alert title="Tip" type="success">
+	You can use the `cd` command to change your current directory. For example, `cd Desktop` will change your current
+	directory to your Desktop. You can check out [this Github
+	Gist](https://gist.github.com/bradtraversy/cc180de0edee05075a6139e42d5f28ce) for a list of useful terminal commands.
+</Alert>
+
+Now, you can run `node -v` to check if Node.js is installed correctly. If it outputs `v16.9.0` or higher, you're good to go!
+
+### Creating a package.json file
+
+This command creates a _`package.json`_ file for you, which will keep track of the dependencies your project uses, as well as other information.
+
+<CH.Code>
+
+```sh npm
+npm init -y; npm pkg set type="module"
+```
+
+```sh yarn
+yarn add dotenv
+# You must go into your package.json file and add "type": "module"
+```
+
+```sh pnpm
+pnpm init; pnpm pkg set type="module"
+```
+
+</CH.Code>
+
+### Installing discord.js
+
+Now that you have a `package.json` file, you can install discord.js. You can do that by running the following command:
+
+<CH.Code>
+
+```sh npm
+npm install discord.js
+```
+
+```sh yarn
+yarn add discord.js
+```
+
+```sh pnpm
+pnpm add discord.js
+```
+
+### Installing a linter
+
+A linter is a tool that helps you find and fix problems in your code. It's a good idea to use one, as it will help you write better code and enforce styling. You should follow the guide on [setting up a linter](/preparations/setting-up-a-linter) to set one up for your project.

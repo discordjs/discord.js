@@ -1,0 +1,181 @@
+---
+title: Setting up a linter
+category: Preparations
+---
+
+# Setting up a linter
+
+In this guide, we'll be setting up a linter for your project. A linter is a tool that helps you find and fix problems in your code. It's a great way to keep your code clean and consistent. We'll be using ESLint, which is a popular linter for JavaScript.
+
+## Installing a code editor
+
+Before we start, you'll need a code editor. A code editor is a program that you can use to write code. There are many different code editors out there, but we recommend using one of the two editors below:
+
+- [Visual Studio Code](https://code.visualstudio.com/), undoubtedly the most popular code editor. It's fast, powerful, includes intelliSense, and much more other awesome features.
+- [Sublime Text](https://www.sublimetext.com/), another lightweight code editor that's easy to use. It's also very customizable, and has a lot of useful plugins.
+
+<Alert title="Warning" type="warning">
+	Programs like Notepad are inefficient and should not be used for projects like these.
+</Alert>
+
+## Installing ESLint
+
+Now that you have a code editor, you can install ESLint. You can do that by running the following command:
+
+<CH.Code>
+
+```sh npm
+npm install eslint
+```
+
+```sh yarn
+yarn add eslint
+```
+
+```sh pnpm
+pnpm add eslint
+```
+
+</CH.Code>
+
+We'll also intergrate ESLint in our code editor. Install the ESLint extension for your code editor:
+
+- [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Sublime Text](https://packagecontrol.io/packages/ESLint)
+
+Or by searching for `ESLint` in your code editor's extension marketplace. You can open the marketplace by using the shortcut <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>X</kbd> in Visual Studio Code and <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> in Sublime Text.
+
+## Configuring ESLint with rules
+
+Now that you have ESLint installed, you can configure it. Start by creating a file named `.eslintrc.json` in your project's root directory. Then, add the following code to it:
+
+<CH.Code>
+
+```json
+{
+	"extends": "eslint:recommended",
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2021
+	},
+	"rules": {}
+}
+```
+
+</CH.Code>
+
+Notice that we have an empty `rules` object. You can add rules to this object to customize ESLint's behavior. You can find a list of rules [here](https://eslint.org/docs/rules/). Since there are a lot of rules, you might be overwhelmed by the amount of options. To help you out, you can copy paste the following rules into your `.eslintrc.json` file:
+
+<CH.Code>
+
+```json mark=11:47
+{
+	"extends": "eslint:recommended",
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2021
+	},
+	"rules": {
+		"arrow-spacing": ["warn", { "before": true, "after": true }],
+		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+		"comma-dangle": ["error", "always-multiline"],
+		"comma-spacing": "error",
+		"comma-style": "error",
+		"curly": ["error", "multi-line", "consistent"],
+		"dot-location": ["error", "property"],
+		"handle-callback-err": "off",
+		"indent": ["error", "tab"],
+		"keyword-spacing": "error",
+		"max-nested-callbacks": ["error", { "max": 4 }],
+		"max-statements-per-line": ["error", { "max": 2 }],
+		"no-console": "off",
+		"no-empty-function": "error",
+		"no-floating-decimal": "error",
+		"no-inline-comments": "error",
+		"no-lonely-if": "error",
+		"no-multi-spaces": "error",
+		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
+		"no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
+		"no-trailing-spaces": ["error"],
+		"no-var": "error",
+		"object-curly-spacing": ["error", "always"],
+		"prefer-const": "error",
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"],
+		"space-before-blocks": "error",
+		"space-before-function-paren": [
+			"error",
+			{
+				"anonymous": "never",
+				"named": "never",
+				"asyncArrow": "always"
+			}
+		],
+		"space-in-parens": "error",
+		"space-infix-ops": "error",
+		"space-unary-ops": "error",
+		"spaced-comment": "error",
+		"yoda": "error"
+	}
+}
+```
+
+</CH.Code>
+
+Summarized, these rules do the following:
+
+- Allowing you to debug with console.log();
+- Prefer using const over let or var, as well as disallow var;
+- Disapproving of variables with the same name in callbacks;
+- Requiring single quotes over double quotes;
+- Requiring semicolons. While not required in JavaScript, it's considered one of the most common best practices to follow;
+- Requiring accessing properties to be on the same line;
+- Requiring indenting to be done with tabs;
+- Limiting nested callbacks to 4. If you hit this error, it is a good idea to consider refactoring your code.
+
+## Using a preset for ESLint
+
+Presets are a pre-defined list of rules to use in your project, by adding eslint will automatically use it for your rules. For this example, we'll use [eslint-config-neon](https://github.com/iCrawl/eslint-config-neon) as a preset. But feel free to download any other preset to your liking. Install it by running the following command:
+
+<CH.Code>
+
+```sh npm
+npm install eslint-config-neon
+```
+
+```sh yarn
+yarn add eslint-config-neon
+```
+
+```sh pnpm
+pnpm add eslint-config-neon
+```
+
+</CH.Code>
+
+We'll then add the following code to our `.eslintrc.json` file:
+
+<CH.Code>
+
+```json mark=2
+{
+	"extends": ["neon/common", "neon/node"],
+	"env": {
+		"node": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 2021
+	}
+}
+```
+
+</CH.Code>
+
+This will add the rules from the preset to our `.eslintrc.json` file. If you're using TypeScript and Prettier you can use _`"neon/typescript"`_ and _`"neon/prettier"`_ respectively.

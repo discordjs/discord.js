@@ -3,32 +3,14 @@ title: Initial files
 category: Creating your bot
 ---
 
+<Alert title="Tip" type="success">
+	This page assumes you have followed the [preparations](preparations) section. If you haven't, please do so before
+	continuing. Most of the steps in this page will not work if you haven't completed the preparations.
+</Alert>
+
 # Initial files
 
-Once you [add your bot to a server](preparations/adding-your-bot-to-servers.md), the next step is to start coding and get it online! Let's start by initializing your package.json, creating a config file for your client token, and a main file for your bot application.
-
-## Creating package.json
-
-This command creates a _`package.json`_ file for you, which will keep track of the dependencies your project uses, as well as other information.
-
-<CH.Code>
-
-```sh npm
-npm init -y; npm pkg set type="module"
-```
-
-```sh yarn
-yarn add dotenv
-# You must go into your package.json file and add "type": "module"
-```
-
-```sh pnpm
-pnpm init; pnpm pkg set type="module"
-```
-
-</CH.Code>
-
-Once you're done with that, onto the next step!
+Once you [add your bot to a server](preparations/adding-your-bot-to-servers.md), the next step is to start coding and get it online! Let's make a config file for your client token, and a main file for your bot application.
 
 ## Using config.json
 
@@ -50,7 +32,7 @@ Storing data in a _`config.json`_ file is a common way of keeping your sensitive
 
 You can then access your token inside other files by using _`import`_.
 
- <CH.Code>
+<CH.Code>
 
 ```ts
 import config from './config.json' assert { type: 'json' };
