@@ -164,8 +164,9 @@ client.user.setActivity('activity', { type: ActivityType.Competing });
 </CH.Code>
 
 <Alert title="Tip" type="info">
-	If you would like to set your activity upon startup, you can use the _`ClientOptions`_ object to set the appropriate
-	_`Presence`_ data.
+	If you would like to set your activity upon startup, you can use the{' '}
+	<DocsLink type="typedef" parent="ClientOptions" /> object to set the appropriate
+	<DocsLink type="typedef" parent="PresenceData" />.
 </Alert>
 
 ### How do I make my bot display online/idle/dnd/invisible?
@@ -260,7 +261,7 @@ await interaction.followUp(`Hi, <@${user.id}>.`);
 
 Controlling which mentions will send a ping is done via the _`allowedMentions`_ option, which replaces _`disableMentions`_.
 
-This can be set as a default in _`ClientOptions`_, and controlled per-message sent by your bot.
+This can be set as a default in <DocsLink type="typedef" parent="ClientOptions" />, and controlled per-message sent by your bot.
 
 <CH.Code>
 
