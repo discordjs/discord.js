@@ -79,7 +79,7 @@
 		"typescript": "^5.0.4",
 		"unocss": "^0.51.4",
 		"vite": "^4.2.1",
-		"vite-plugin-dts": "^2.2.0",
+		"vite-plugin-dts": "^2.3.0",
 		"vitest": "^0.29.8"
 	},
 	"engines": {
