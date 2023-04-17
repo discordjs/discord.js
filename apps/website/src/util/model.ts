@@ -34,7 +34,9 @@ interface ResolvedParameter {
  * @remarks
  * This is different from accessing `Parameter#name` or `Parameter.tsdocBlockComment` as this method cross-references the associated tsdoc
  * parameter names and descriptions and uses them as a higher precedence to the source code.
+ *
  * @param item - The api item to resolve parameter data for
+ *
  * @returns An array of parameters
  */
 export function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin): ResolvedParameter[] {
