@@ -45,7 +45,7 @@ export default function Footer() {
 							</div>
 						</div>
 						<div className="flex flex-col gap-2">
-							<div className="text-lg font-semibold">Project</div>
+							<div className="text-lg font-semibold">Projects</div>
 							<div className="flex flex-col gap-1">
 								<a
 									className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
