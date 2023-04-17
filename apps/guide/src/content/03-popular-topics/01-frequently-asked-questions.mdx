@@ -29,7 +29,7 @@ For a more detailed explanation of the notations commonly used in this guide, th
 
 ```js
 const user = interaction.options.getUser('target');
-guild.members.ban(user);
+await guild.members.ban(user);
 ```
 
 </CH.Code>
@@ -40,7 +40,7 @@ guild.members.ban(user);
 
 ```js
 const user = interaction.options.getUser('target');
-guild.members.unban(user);
+await guild.members.unban(user);
 ```
 
 </CH.Code>
@@ -57,7 +57,7 @@ guild.members.unban(user);
 
 ```js
 const member = interaction.options.getMember('target');
-member.kick();
+await member.kick();
 ```
 
 </CH.Code>
@@ -68,7 +68,7 @@ member.kick();
 
 ```js
 const member = interaction.options.getMember('target');
-member.timeout(60_000); // Timeout for one minute
+await member.timeout(60_000); // Timeout for one minute
 ```
 
 </CH.Code>
@@ -85,7 +85,7 @@ member.timeout(60_000); // Timeout for one minute
 ```js
 const role = interaction.options.getRole('role');
 const member = interaction.options.getMember('target');
-member.roles.add(role);
+await member.roles.add(role);
 ```
 
 </CH.Code>
@@ -123,7 +123,7 @@ if (interaction.user.id === 'id') {
 <CH.Code>
 
 ```js
-client.user.setUsername('username');
+await client.user.setUsername('username');
 ```
 
 </CH.Code>
@@ -133,7 +133,7 @@ client.user.setUsername('username');
 <CH.Code>
 
 ```js
-client.user.setAvatar('URL or path');
+await client.user.setAvatar('URL or path');
 ```
 
 </CH.Code>
@@ -198,7 +198,7 @@ client.user.setPresence({ activities: [{ name: 'activity' }], status: 'idle' });
 
 ```js
 const channel = client.channels.cache.get('id');
-channel.send('content');
+await channel.send('content');
 ```
 
 </CH.Code>
@@ -215,7 +215,7 @@ channel.send('content');
 ```js
 const channel = client.channels.cache.get('id');
 
-channel.threads.create({
+await channel.threads.create({
 	name: 'Post name',
 	message: { content: 'Message content' },
 	appliedTags: ['tagId', 'anotherTagId'],
@@ -229,7 +229,7 @@ channel.threads.create({
 <CH.Code>
 
 ```js
-client.users.send('id', 'content');
+await client.users.send('id', 'content');
 ```
 
 </CH.Code>
@@ -274,7 +274,7 @@ Even more control can be achieved by listing specific _`users`_ or _`roles`_ to 
 <CH.Code>
 
 ```js
-channel.send({
+await channel.send({
 	content: '<@123456789012345678> <@987654321098765432> <@&102938475665748392>',
 	allowedMentions: { users: ['123456789012345678'], roles: ['102938475665748392'] },
 });
@@ -287,18 +287,15 @@ channel.send({
 <CH.Code>
 
 ```js
-interaction.reply('Please enter more input.').then(() => {
-	const filter = (m) => interaction.user.id === m.author.id;
+await interaction.reply('Please enter more input.');
+const filter = (m) => interaction.user.id === m.author.id;
 
-	interaction.channel
-		.awaitMessages({ filter, time: 60000, max: 1, errors: ['time'] })
-		.then((messages) => {
-			interaction.followUp(`You've entered: ${messages.first().content}`);
-		})
-		.catch(() => {
-			interaction.followUp('You did not enter any input!');
-		});
-});
+try {
+	const messages = await interaction.channel.awaitMessages({ filter, time: 60000, max: 1, errors: ['time'] });
+	await interaction.followUp(`You've entered: ${messages.first().content}`);
+} catch {
+	await interaction.followUp('You did not enter any input!');
+}
 ```
 
 </CH.Code>
@@ -344,17 +341,16 @@ Note that this is just a showcase of how you could do such a check.
 <CH.Code>
 
 ```js
-interaction.channel.send('My message to react to.').then((sentMessage) => {
-	// Unicode emoji
-	sentMessage.react('👍');
+const sentMessage = await interaction.channel.send('My message to react to.');
+// Unicode emoji
+await sentMessage.react('👍');
 
-	// Custom emoji
-	sentMessage.react('123456789012345678');
-	sentMessage.react('<emoji:123456789012345678>');
-	sentMessage.react('<a:emoji:123456789012345678>');
-	sentMessage.react('emoji:123456789012345678');
-	sentMessage.react('a:emoji:123456789012345678');
-});
+// Custom emoji
+await sentMessage.react('123456789012345678');
+await sentMessage.react('<emoji:123456789012345678>');
+await sentMessage.react('<a:emoji:123456789012345678>');
+await sentMessage.react('emoji:123456789012345678');
+await sentMessage.react('a:emoji:123456789012345678');
 ```
 
 </CH.Code>
@@ -389,11 +385,10 @@ A User represents a global Discord user, and a GuildMember represents a Discord 
 
 ```js
 // First use guild.members.fetch to make sure all members are cached
-guild.members.fetch({ withPresences: true }).then((fetchedMembers) => {
-	const totalOnline = fetchedMembers.filter((member) => member.presence?.status === 'online');
-	// Now you have a collection with all online member objects in the totalOnline variable
-	console.log(`There are currently ${totalOnline.size} members online in this guild!`);
-});
+const fetchedMembers = await guild.members.fetch({ withPresences: true });
+const totalOnline = fetchedMembers.filter((member) => member.presence?.status === 'online');
+// Now you have a collection with all online member objects in the totalOnline variable
+console.log(`There are currently ${totalOnline.size} members online in this guild!`);
 ```
 
 </CH.Code>
@@ -436,7 +431,7 @@ There are two common measurements for bot pings. The first, **websocket heartbea
 <CH.Code>
 
 ```js
-interaction.reply(`Websocket heartbeat: ${client.ws.ping}ms.`);
+await interaction.reply(`Websocket heartbeat: ${client.ws.ping}ms.`);
 ```
 
 </CH.Code>
@@ -452,7 +447,7 @@ The second, **Roundtrip Latency**, describes the amount of time a full API round
 
 ```js
 const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true });
-interaction.editReply(`Roundtrip latency: ${sent.createdTimestamp - interaction.createdTimestamp}ms`);
+await interaction.editReply(`Roundtrip latency: ${sent.createdTimestamp - interaction.createdTimestamp}ms`);
 ```
 
 </CH.Code>
