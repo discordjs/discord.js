@@ -11,7 +11,3 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           sync-labels: true
-
-      - name: Automatically assign reviewers
-        if: github.event.action == 'opened'
-        uses: kentaro-m/auto-assign-action@v1.2.3
