@@ -31,7 +31,7 @@ In your _`index.js`_ file, make these additions to the base template:
 ```js index.js focus=1:2,8
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
-// focus[18:27]
+// focus[18:28]
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import config from './config.json';
 
@@ -49,9 +49,9 @@ We recommend attaching a _`.commands`_ property to your client instance so that 
 	read the _`commands`_ directory and identify our command files. - The [_`path`_](https://nodejs.org/api/path.html)
 	module is Node's native path utility module. _`join`_ helps construct paths to access files and directories. One of
 	the advantages of _`path.join`_ is that it automatically detects the operating system and uses the appropriate
-	joiners. - The <DocsLink type="class" parent="Collection" /> class extends JavaScript's native
-	[_`Map`_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes
-	more extensive, useful functionality. _`Collection`_ is used to store and efficiently retrieve commands for execution.
+	joiners.
+	- The <DocsLink type="class" parent="Collection" /> class extends JavaScript's native
+	[_`Map`_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes more extensive, useful functionality. _`Collection`_ is used to store and efficiently retrieve commands for execution.
 </Alert>
 
 Next, using the modules imported above, dynamically retrieve your command files with a few more additions to the _`index.js`_ file:
@@ -96,7 +96,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 </CH.Code>
 
-Not every interaction is a slash command (e.g. _`MessageComponent`_ interactions). Make sure to only handle slash commands in this function by making use of the <DocsLink type="class" parent="BaseInteraction" symbol="isChatInputCommand" /> method to exit the handler if another type is encountered. This method also provides typeguarding for TypeScript users, narrowing the type from _`BaseInteraction`_ to <DocsLink type="class" parent="ChatInputCommandInteraction" />.
+Not every interaction is a slash command (e.g. _`MessageComponent`_ interactions). Make sure to only handle slash commands in this function by making use of the <DocsLink type="class" parent="BaseInteraction" symbol="isChatInputCommand" brackets /> method to exit the handler if another type is encountered. This method also provides type guarding for TypeScript users, narrowing the type from _`BaseInteraction`_ to <DocsLink type="class" parent="ChatInputCommandInteraction" />.
 
 <CH.Code>
 
