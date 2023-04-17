@@ -899,7 +899,14 @@ declare const categoryChannel: CategoryChannel;
 
 declare const guildChannelManager: GuildChannelManager;
 {
-  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | ForumChannel;
+  type AnyChannel =
+    | TextChannel
+    | VoiceChannel
+    | CategoryChannel
+    | NewsChannel
+    | StoreChannel
+    | StageChannel
+    | ForumChannel;
 
   expectType<Promise<TextChannel>>(guildChannelManager.create('name'));
   expectType<Promise<TextChannel>>(guildChannelManager.create('name', {}));
@@ -1324,7 +1331,9 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(TextBasedChannel);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(
+  TextBasedChannel,
+);
 expectType<
   | 'DM'
   | 'GUILD_NEWS'
@@ -1336,14 +1345,19 @@ expectType<
   | 'GUILD_STAGE_VOICE'
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel | ForumChannel>(
-  GuildBasedChannel,
-);
+expectType<
+  | CategoryChannel
+  | NewsChannel
+  | StageChannel
+  | StoreChannel
+  | TextChannel
+  | ThreadChannel
+  | VoiceChannel
+  | ForumChannel
+>(GuildBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel | ForumChannel>(
   NonThreadGuildBasedChannel,
 );
-
-expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
 
 declare const threadMemberWithGuildMember: ThreadMember<true>;
 declare const threadMemberManager: ThreadMemberManager;
@@ -1360,9 +1374,7 @@ declare const threadMemberManager: ThreadMemberManager;
     threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
   );
 
-  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
-    threadMemberManager.fetch(undefined,  { cache: true })
-  )
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch(undefined, { cache: true }));
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(
     threadMemberManager.fetch({ cache: true, withMember: false }),
   );
