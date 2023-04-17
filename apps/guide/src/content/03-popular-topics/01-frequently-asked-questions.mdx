@@ -95,9 +95,10 @@ await member.roles.add(role);
 <CH.Code>
 
 ```js
+const role = interaction.options.getRole('role');
 const member = interaction.options.getMember('target');
 
-if (member.roles.cache.some((role) => role.name === 'role name')) {
+if (member.roles.cache.has(role.id) {
 	// ...
 }
 ```
