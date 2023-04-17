@@ -11,6 +11,7 @@ export interface DescriptiveRawFile extends RawFile {
  * @param files - The files to create a form data payload for
  * @param options - The additional options for the form data payload
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function withFiles(files: DescriptiveRawFile[], options: APIInteractionResponseCallbackData) {
 	const body = {
 		...options,

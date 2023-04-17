@@ -30,7 +30,11 @@ export class WebhooksAPI {
 	 * @param token - The token of the webhook
 	 * @param options - The options to use when fetching the webhook
 	 */
-	public async get(id: Snowflake, token?: string, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(
+		id: Snowflake,
+		token?: string,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPIWebhookResult> {
 		return this.rest.get(Routes.webhook(id, token), { signal }) as Promise<RESTGetAPIWebhookResult>;
 	}
 
@@ -46,7 +50,7 @@ export class WebhooksAPI {
 		channelId: Snowflake,
 		body: RESTPostAPIChannelWebhookJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
-	) {
+	): Promise<RESTPostAPIWebhookWithTokenResult> {
 		return this.rest.post(Routes.channelWebhooks(channelId), {
 			reason,
 			body,
@@ -67,7 +71,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		body: RESTPatchAPIWebhookJSONBody,
 		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
-	) {
+	): Promise<RESTPatchAPIWebhookResult> {
 		return this.rest.patch(Routes.webhook(id, token), {
 			reason,
 			body,
@@ -86,7 +90,7 @@ export class WebhooksAPI {
 	public async delete(
 		id: Snowflake,
 		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
-	) {
+	): Promise<void> {
 		await this.rest.delete(Routes.webhook(id, token), { reason, signal });
 	}
 
@@ -141,7 +145,8 @@ export class WebhooksAPI {
 			...body
 		}: RESTPostAPIWebhookWithTokenJSONBody & RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+		// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+	): Promise<RESTPostAPIWebhookWithTokenWaitResult | void> {
 		return this.rest.post(Routes.webhook(id, token), {
 			query: makeURLSearchParams({ wait, thread_id }),
 			files,
@@ -167,7 +172,7 @@ export class WebhooksAPI {
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenSlackQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'slack'), {
 			query: makeURLSearchParams(query),
 			body,
@@ -191,7 +196,7 @@ export class WebhooksAPI {
 		body: unknown,
 		query: RESTPostAPIWebhookWithTokenGitHubQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.webhookPlatform(id, token, 'github'), {
 			query: makeURLSearchParams(query),
 			body,
@@ -216,7 +221,7 @@ export class WebhooksAPI {
 		messageId: Snowflake,
 		query: RESTGetAPIWebhookWithTokenMessageQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIChannelMessageResult> {
 		return this.rest.get(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(query),
 			auth: false,
@@ -244,7 +249,7 @@ export class WebhooksAPI {
 			...body
 		}: RESTPatchAPIWebhookWithTokenMessageJSONBody & { files?: RawFile[]; thread_id?: string },
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPatchAPIWebhookWithTokenMessageResult> {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams({ thread_id }),
 			auth: false,
@@ -270,7 +275,7 @@ export class WebhooksAPI {
 		messageId: Snowflake,
 		query: { thread_id?: string } = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
 			query: makeURLSearchParams(query),
 			auth: false,

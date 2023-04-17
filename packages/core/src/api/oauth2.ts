@@ -23,7 +23,7 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-authorization-url-example}
 	 * @param options - The options for creating the authorization URL
 	 */
-	public generateAuthorizationURL(options: RESTOAuth2AuthorizationQuery) {
+	public generateAuthorizationURL(options: RESTOAuth2AuthorizationQuery): string {
 		const url = new URL(`${RouteBases.api}${Routes.oauth2Authorization()}`);
 		url.search = makeURLSearchParams(options).toString();
 		return url.toString();
@@ -39,7 +39,7 @@ export class OAuth2API {
 	public async tokenExchange(
 		body: RESTPostOAuth2AccessTokenURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostOAuth2AccessTokenResult> {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
@@ -60,7 +60,7 @@ export class OAuth2API {
 	public async refreshToken(
 		body: RESTPostOAuth2RefreshTokenURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostOAuth2RefreshTokenResult> {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
@@ -83,7 +83,7 @@ export class OAuth2API {
 	public async getToken(
 		body: RESTPostOAuth2ClientCredentialsURLEncodedData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostOAuth2ClientCredentialsResult> {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
 			body: makeURLSearchParams(body),
 			passThroughBody: true,
@@ -100,7 +100,9 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-bot-application-information}
 	 * @param options - The options for the current bot application information request
 	 */
-	public async getCurrentBotApplicationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getCurrentBotApplicationInformation({
+		signal,
+	}: Pick<RequestData, 'signal'> = {}): Promise<RESTGetAPIOAuth2CurrentApplicationResult> {
 		return this.rest.get(Routes.oauth2CurrentApplication(), {
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentApplicationResult>;
@@ -112,7 +114,9 @@ export class OAuth2API {
 	 * @see {@link https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information}
 	 * @param options - The options for the current authorization information request
 	 */
-	public async getCurrentAuthorizationInformation({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getCurrentAuthorizationInformation({
+		signal,
+	}: Pick<RequestData, 'signal'> = {}): Promise<RESTGetAPIOAuth2CurrentAuthorizationResult> {
 		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;

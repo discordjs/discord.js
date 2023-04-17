@@ -194,7 +194,10 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param options - The options for the request
 	 * @param timeout - The timeout for waiting for each guild members chunk event
 	 */
-	public async requestGuildMembers(options: GatewayRequestGuildMembersData, timeout = 10_000) {
+	public async requestGuildMembers(
+		options: GatewayRequestGuildMembersData,
+		timeout = 10_000,
+	): Promise<APIGuildMember[]> {
 		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
 		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
 
@@ -205,7 +208,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 				reject(new Error('Request timed out'));
 			}, timeout);
 
-			const handler = ({ data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]) => {
+			const handler = ({ data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]): void => {
 				timer.refresh();
 
 				if (data.nonce !== nonce) return;
@@ -239,7 +242,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#update-voice-state}
 	 * @param options - The options for updating the voice state
 	 */
-	public async updateVoiceState(options: GatewayVoiceStateUpdateData) {
+	public async updateVoiceState(options: GatewayVoiceStateUpdateData): Promise<void> {
 		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
 
 		await this.ws.send(shardId, {
@@ -255,7 +258,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param shardId - The id of the shard to update the presence in
 	 * @param options - The options for updating the presence
 	 */
-	public async updatePresence(shardId: number, options: GatewayPresenceUpdateData) {
+	public async updatePresence(shardId: number, options: GatewayPresenceUpdateData): Promise<void> {
 		await this.ws.send(shardId, {
 			op: GatewayOpcodes.PresenceUpdate,
 			// eslint-disable-next-line id-length

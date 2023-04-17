@@ -33,7 +33,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		query: RESTGetAPIApplicationCommandsQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIApplicationCommandsResult> {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
 			query: makeURLSearchParams(query),
 			signal,
@@ -52,7 +52,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostAPIApplicationCommandsResult> {
 		return this.rest.post(Routes.applicationCommands(applicationId), {
 			body,
 			signal,
@@ -71,7 +71,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIApplicationCommandResult> {
 		return this.rest.get(Routes.applicationCommand(applicationId, commandId), {
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandResult>;
@@ -91,7 +91,7 @@ export class ApplicationCommandsAPI {
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPatchAPIApplicationCommandResult> {
 		return this.rest.patch(Routes.applicationCommand(applicationId, commandId), {
 			body,
 			signal,
@@ -110,7 +110,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		commandId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.delete(Routes.applicationCommand(applicationId, commandId), { signal });
 	}
 
@@ -126,7 +126,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPutAPIApplicationCommandsResult> {
 		return this.rest.put(Routes.applicationCommands(applicationId), {
 			body,
 			signal,
@@ -147,7 +147,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		query: RESTGetAPIApplicationGuildCommandsQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIApplicationCommandsResult> {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			query: makeURLSearchParams(query),
 			signal,
@@ -168,7 +168,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		body: RESTPostAPIApplicationCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostAPIApplicationCommandsResult> {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
@@ -189,7 +189,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIApplicationCommandResult> {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandResult>;
@@ -211,7 +211,7 @@ export class ApplicationCommandsAPI {
 		commandId: Snowflake,
 		body: RESTPatchAPIApplicationCommandJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPatchAPIApplicationCommandResult> {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body,
 			signal,
@@ -232,7 +232,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.delete(Routes.applicationGuildCommand(applicationId, guildId, commandId), { signal });
 	}
 
@@ -250,7 +250,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		body: RESTPutAPIApplicationCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPutAPIApplicationCommandsResult> {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
@@ -271,7 +271,7 @@ export class ApplicationCommandsAPI {
 		guildId: Snowflake,
 		commandId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIApplicationCommandPermissionsResult> {
 		return this.rest.get(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			signal,
 		}) as Promise<RESTGetAPIApplicationCommandPermissionsResult>;
@@ -289,7 +289,7 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTGetAPIGuildApplicationCommandsPermissionsResult> {
 		return this.rest.get(Routes.guildApplicationCommandsPermissions(applicationId, guildId), {
 			signal,
 		}) as Promise<RESTGetAPIGuildApplicationCommandsPermissionsResult>;
@@ -313,7 +313,7 @@ export class ApplicationCommandsAPI {
 		commandId: Snowflake,
 		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPutAPIApplicationCommandPermissionsResult> {
 		return this.rest.put(Routes.applicationCommandPermissions(applicationId, guildId, commandId), {
 			headers: { Authorization: `Bearer ${userToken.replace('Bearer ', '')}` },
 			auth: false,

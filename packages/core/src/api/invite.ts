@@ -12,7 +12,11 @@ export class InvitesAPI {
 	 * @param query - The options to use when fetching the invite
 	 * @param options - The options to use when fetching the invite
 	 */
-	public async get(code: string, query: RESTGetAPIInviteQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(
+		code: string,
+		query: RESTGetAPIInviteQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPIInviteResult> {
 		return this.rest.get(Routes.invite(code), {
 			query: makeURLSearchParams(query),
 			signal,
@@ -26,7 +30,7 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param options - The options to use when deleting the invite
 	 */
-	public async delete(code: string, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
+	public async delete(code: string, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}): Promise<void> {
 		await this.rest.delete(Routes.invite(code), { reason, signal });
 	}
 }

@@ -7,6 +7,7 @@ import type {
 	RESTGetAPIWebhookWithTokenMessageResult,
 	Snowflake,
 	APIInteractionResponseDeferredChannelMessageWithSource,
+	RESTPatchAPIWebhookWithTokenMessageResult,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 
@@ -27,7 +28,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
 			auth: false,
@@ -53,7 +54,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		data?: APIInteractionResponseDeferredChannelMessageWithSource['data'],
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {
@@ -76,7 +77,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {
@@ -100,7 +101,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.webhooks.execute(applicationId, interactionToken, body, { signal });
 	}
 
@@ -121,7 +122,7 @@ export class InteractionsAPI {
 		callbackData: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		messageId?: Snowflake | '@original',
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPatchAPIWebhookWithTokenMessageResult> {
 		return this.webhooks.editMessage(applicationId, interactionToken, messageId ?? '@original', callbackData, {
 			signal,
 		});
@@ -139,14 +140,8 @@ export class InteractionsAPI {
 		applicationId: Snowflake,
 		interactionToken: string,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		return this.webhooks.getMessage(
-			applicationId,
-			interactionToken,
-			'@original',
-			{},
-			{ signal },
-		) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
+	): Promise<RESTGetAPIWebhookWithTokenMessageResult> {
+		return this.webhooks.getMessage(applicationId, interactionToken, '@original', {}, { signal });
 	}
 
 	/**
@@ -164,7 +159,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		messageId?: Snowflake | '@original',
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.webhooks.deleteMessage(applicationId, interactionToken, messageId ?? '@original', {}, { signal });
 	}
 
@@ -182,7 +177,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		{ files, ...data }: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			files,
 			auth: false,
@@ -208,7 +203,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: APICommandAutocompleteInteractionResponseCallbackData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {
@@ -233,7 +228,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: APIModalInteractionResponseCallbackData,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<void> {
 		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
 			auth: false,
 			body: {

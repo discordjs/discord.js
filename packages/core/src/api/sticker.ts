@@ -15,7 +15,7 @@ export class StickersAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/sticker#list-nitro-sticker-packs}
 	 * @param options - The options to use when fetching the sticker packs
 	 */
-	public async getNitroStickers({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getNitroStickers({ signal }: Pick<RequestData, 'signal'> = {}): Promise<RESTGetNitroStickerPacksResult> {
 		return this.rest.get(Routes.nitroStickerPacks(), { signal }) as Promise<RESTGetNitroStickerPacksResult>;
 	}
 
@@ -26,7 +26,10 @@ export class StickersAPI {
 	 * @param stickerId - The id of the sticker
 	 * @param options - The options to use when fetching the sticker
 	 */
-	public async get(stickerId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(
+		stickerId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPIStickerResult> {
 		return this.rest.get(Routes.sticker(stickerId), { signal }) as Promise<RESTGetAPIStickerResult>;
 	}
 }

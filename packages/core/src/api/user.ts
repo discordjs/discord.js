@@ -28,7 +28,7 @@ export class UsersAPI {
 	 * @param userId - The id of the user to fetch
 	 * @param options - The options to use when fetching the user
 	 */
-	public async get(userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}): Promise<RESTGetAPIUserResult> {
 		return this.rest.get(Routes.user(userId), { signal }) as Promise<RESTGetAPIUserResult>;
 	}
 
@@ -38,7 +38,7 @@ export class UsersAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user}
 	 * @param options - The options to use when fetching the current user
 	 */
-	public async getCurrent({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getCurrent({ signal }: Pick<RequestData, 'signal'> = {}): Promise<RESTGetAPICurrentUserResult> {
 		return this.rest.get(Routes.user('@me'), { signal }) as Promise<RESTGetAPICurrentUserResult>;
 	}
 
@@ -49,7 +49,10 @@ export class UsersAPI {
 	 * @param query - The query options to use when fetching the current user's guilds
 	 * @param options - The options to use when fetching the guilds
 	 */
-	public async getGuilds(query: RESTGetAPICurrentUserGuildsQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getGuilds(
+		query: RESTGetAPICurrentUserGuildsQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPICurrentUserGuildsResult> {
 		return this.rest.get(Routes.userGuilds(), {
 			query: makeURLSearchParams(query),
 			signal,
@@ -63,7 +66,7 @@ export class UsersAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for leaving the guild
 	 */
-	public async leaveGuild(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async leaveGuild(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}): Promise<void> {
 		await this.rest.delete(Routes.userGuild(guildId), { signal });
 	}
 
@@ -74,7 +77,10 @@ export class UsersAPI {
 	 * @param body - The new data for the current user
 	 * @param options - The options for editing the user
 	 */
-	public async edit(body: RESTPatchAPICurrentUserJSONBody, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async edit(
+		body: RESTPatchAPICurrentUserJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTPatchAPICurrentUserResult> {
 		return this.rest.patch(Routes.user('@me'), { body, signal }) as Promise<RESTPatchAPICurrentUserResult>;
 	}
 
@@ -85,7 +91,10 @@ export class UsersAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild member
 	 */
-	public async getGuildMember(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getGuildMember(
+		guildId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetCurrentUserGuildMemberResult> {
 		return this.rest.get(Routes.userGuildMember(guildId), { signal }) as Promise<RESTGetCurrentUserGuildMemberResult>;
 	}
 
@@ -101,7 +110,7 @@ export class UsersAPI {
 		guildId: Snowflake,
 		body: RESTPatchAPIGuildMemberJSONBody = {},
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
-	) {
+	): Promise<RESTPatchAPIGuildMemberResult> {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
 			reason,
 			body,
@@ -116,7 +125,10 @@ export class UsersAPI {
 	 * @param userId - The id of the user to open a DM channel with
 	 * @param options - The options for opening the DM
 	 */
-	public async createDM(userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async createDM(
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTPostAPICurrentUserCreateDMChannelResult> {
 		return this.rest.post(Routes.userChannels(), {
 			body: { recipient_id: userId },
 			signal,
@@ -129,7 +141,9 @@ export class UsersAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-user-connections}
 	 * @param options - The options for fetching the user's connections
 	 */
-	public async getConnections({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getConnections({
+		signal,
+	}: Pick<RequestData, 'signal'> = {}): Promise<RESTGetAPICurrentUserConnectionsResult> {
 		return this.rest.get(Routes.userConnections(), { signal }) as Promise<RESTGetAPICurrentUserConnectionsResult>;
 	}
 
@@ -140,7 +154,10 @@ export class UsersAPI {
 	 * @param applicationId - The id of the application
 	 * @param options - The options for fetching the role connections
 	 */
-	public async getApplicationRoleConnection(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getApplicationRoleConnection(
+		applicationId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPICurrentUserApplicationRoleConnectionResult> {
 		return this.rest.get(Routes.userApplicationRoleConnection(applicationId), {
 			signal,
 		}) as Promise<RESTGetAPICurrentUserApplicationRoleConnectionResult>;
@@ -158,7 +175,7 @@ export class UsersAPI {
 		applicationId: Snowflake,
 		body: RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPutAPICurrentUserApplicationRoleConnectionResult> {
 		return this.rest.put(Routes.userApplicationRoleConnection(applicationId), {
 			body,
 			signal,

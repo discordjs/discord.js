@@ -24,7 +24,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread
 	 * @param options - The options to use when fetching the thread
 	 */
-	public async get(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}): Promise<APIThreadChannel> {
 		return this.rest.get(Routes.channel(threadId), { signal }) as Promise<APIThreadChannel>;
 	}
 
@@ -43,7 +43,7 @@ export class ThreadsAPI {
 		body: RESTPostAPIChannelThreadsJSONBody,
 		messageId?: Snowflake,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<RESTPostAPIChannelThreadsResult> {
 		return this.rest.post(Routes.threads(channelId, messageId), {
 			body,
 			signal,
@@ -62,7 +62,7 @@ export class ThreadsAPI {
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	): Promise<APIThreadChannel> {
 		const { files, ...messageBody } = message;
 
 		const body = {
@@ -80,7 +80,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to join
 	 * @param options - The options to use when joining the thread
 	 */
-	public async join(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async join(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}): Promise<void> {
 		await this.rest.put(Routes.threadMembers(threadId, '@me'), { signal });
 	}
 
@@ -92,7 +92,11 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to add to the thread
 	 * @param options - The options to use when adding the member to the thread
 	 */
-	public async addMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async addMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<void> {
 		await this.rest.put(Routes.threadMembers(threadId, userId), { signal });
 	}
 
@@ -103,7 +107,7 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to leave
 	 * @param options - The options to use when leaving the thread
 	 */
-	public async leave(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async leave(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}): Promise<void> {
 		await this.rest.delete(Routes.threadMembers(threadId, '@me'), { signal });
 	}
 
@@ -115,7 +119,11 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user to remove from the thread
 	 * @param options - The options to use when removing the member from the thread
 	 */
-	public async removeMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async removeMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<void> {
 		await this.rest.delete(Routes.threadMembers(threadId, userId), { signal });
 	}
 
@@ -127,7 +135,11 @@ export class ThreadsAPI {
 	 * @param userId - The id of the user
 	 * @param options - The options to use when fetching the member
 	 */
-	public async getMember(threadId: Snowflake, userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<APIThreadMember> {
 		return this.rest.get(Routes.threadMembers(threadId, userId), { signal }) as Promise<APIThreadMember>;
 	}
 
@@ -138,7 +150,10 @@ export class ThreadsAPI {
 	 * @param threadId - The id of the thread to fetch the members from
 	 * @param options - The options to use when fetching the members
 	 */
-	public async getAllMembers(threadId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getAllMembers(
+		threadId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	): Promise<RESTGetAPIChannelThreadMembersResult> {
 		return this.rest.get(Routes.threadMembers(threadId), { signal }) as Promise<RESTGetAPIChannelThreadMembersResult>;
 	}
 }

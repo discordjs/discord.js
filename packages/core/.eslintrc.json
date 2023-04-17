@@ -1,6 +1,7 @@
 {
 	"extends": "../../.eslintrc.json",
 	"rules": {
-		"jsdoc/check-param-names": "off"
+		"jsdoc/check-param-names": "off",
+		"@typescript-eslint/explicit-function-return-type": "error"
 	}
 }
