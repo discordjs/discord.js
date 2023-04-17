@@ -19,7 +19,7 @@ export function ParameterTable({ item }: { item: ApiDocumentedItem & ApiParamete
 				Name: param.name,
 				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} model={item.getAssociatedModel()!} />,
 				Optional: param.isOptional ? 'Yes' : 'No',
-				Description: param.description ? <TSDoc item={item} tsdoc={param.description!} /> : 'None',
+				Description: param.description ? <TSDoc item={item} tsdoc={param.description} /> : 'None',
 			})),
 		[item, params],
 	);
