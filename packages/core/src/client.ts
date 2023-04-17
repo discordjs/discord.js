@@ -1,7 +1,7 @@
 import { setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { calculateShardId } from '@discordjs/util';
-import { WebSocketShardEvents, type WebSocketManager } from '@discordjs/ws';
+import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -71,6 +71,7 @@ import {
 	type GatewayVoiceStateUpdateDispatchData,
 	type GatewayWebhooksUpdateDispatchData,
 } from 'discord-api-types/v10';
+import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
 
 export interface IntrinsicProps {
@@ -164,24 +165,24 @@ export type ManagerShardEventsMap = {
 };
 
 export interface ClientOptions {
+	gateway: Gateway;
 	rest: REST;
-	ws: WebSocketManager;
 }
 
 export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	public readonly rest: REST;
 
-	public readonly ws: WebSocketManager;
+	public readonly gateway: Gateway;
 
 	public readonly api: API;
 
-	public constructor({ rest, ws }: ClientOptions) {
+	public constructor({ rest, gateway }: ClientOptions) {
 		super();
 		this.rest = rest;
-		this.ws = ws;
+		this.gateway = gateway;
 		this.api = new API(rest);
 
-		this.ws.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
+		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 			// @ts-expect-error event props can't be resolved properly, but they are correct
 			this.emit(dispatch.t, this.wrapIntrinsicProps(dispatch.d, shardId));
 		});
@@ -195,7 +196,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param timeout - The timeout for waiting for each guild members chunk event
 	 */
 	public async requestGuildMembers(options: GatewayRequestGuildMembersData, timeout = 10_000) {
-		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
+		const shardId = calculateShardId(options.guild_id, await this.gateway.getShardCount());
 		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
 
 		const promise = new Promise<APIGuildMember[]>((resolve, reject) => {
@@ -221,7 +222,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 			this.on(GatewayDispatchEvents.GuildMembersChunk, handler);
 		});
 
-		await this.ws.send(shardId, {
+		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length
 			d: {
@@ -240,9 +241,9 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param options - The options for updating the voice state
 	 */
 	public async updateVoiceState(options: GatewayVoiceStateUpdateData) {
-		const shardId = calculateShardId(options.guild_id, await this.ws.getShardCount());
+		const shardId = calculateShardId(options.guild_id, await this.gateway.getShardCount());
 
-		await this.ws.send(shardId, {
+		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.VoiceStateUpdate,
 			// eslint-disable-next-line id-length
 			d: options,
@@ -256,7 +257,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 * @param options - The options for updating the presence
 	 */
 	public async updatePresence(shardId: number, options: GatewayPresenceUpdateData) {
-		await this.ws.send(shardId, {
+		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.PresenceUpdate,
 			// eslint-disable-next-line id-length
 			d: options,
