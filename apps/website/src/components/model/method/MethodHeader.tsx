@@ -3,9 +3,12 @@ import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
 import { Anchor } from '~/components/Anchor';
 import { ExcerptText } from '~/components/ExcerptText';
+import { resolveParameters } from '~/util/model';
 
 function getShorthandName(method: ApiMethod | ApiMethodSignature) {
-	return `${method.name}${method.isOptional ? '?' : ''}(${method.parameters.reduce((prev, cur, index) => {
+	const params = resolveParameters(method);
+
+	return `${method.name}${method.isOptional ? '?' : ''}(${params.reduce((prev, cur, index) => {
 		if (index === 0) {
 			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 		}
