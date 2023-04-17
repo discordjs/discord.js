@@ -26,50 +26,95 @@ Now that your command files have been created, your bot needs to load these file
 
 In your _`index.js`_ file, make these additions to the base template:
 
-<CH.Code>
+<CH.Code rows={14}>
 
-```js index.js focus=1:2,8
+```js JavaScript focus=1:3,9
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 // focus[18:28]
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 import config from './config.json';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.commands = new Collection();
+const commands = new Collection();
+
+client.once(Events.ClientReady, () => {
+	console.log('Ready!');
+});
+```
+
+```ts TypeScript focus=1:3,9:14
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+// focus[18:28]
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
+import config from './config.json';
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+interface CommandModule {
+	data: RESTPostAPIChatInputApplicationCommandsJSONBody;
+	execute(interaction: ChatInputCommandInteraction): Promise<void>;
+}
+
+const commands = new Collection<string, CommandModule>();
+
+client.once(Events.ClientReady, () => {
+	console.log('Ready!');
+});
 ```
 
 </CH.Code>
 
-We recommend attaching a _`.commands`_ property to your client instance so that you can access your commands in other files. The rest of the examples in this guide will follow this convention. For TypeScript users, we recommend extending the base Client class to add this property, [casting](https://www.typescripttutorial.net/typescript-tutorial/type-casting/), or [augmenting the module type](https://www.typescriptlang.org/docs/handbook/modules.html#ambient-modules).
-
-<Alert title="Tip" type="success">
-	- The [_`fs`_](https://nodejs.org/api/fs.html) module is Node's native file system module. _`readdirSync`_ is used to
-	read the _`commands`_ directory and identify our command files. - The [_`path`_](https://nodejs.org/api/path.html)
+<Alert title="Tip" type="info">
+	- The [`fs`](https://nodejs.org/api/fs.html) module is Node's native file system module. _`readdirSync`_ is used to
+	read the _`commands`_ directory and identify our command files. - The [`path`](https://nodejs.org/api/path.html)
 	module is Node's native path utility module. _`join`_ helps construct paths to access files and directories. One of
 	the advantages of _`path.join`_ is that it automatically detects the operating system and uses the appropriate
-	joiners.
-	- The <DocsLink type="class" parent="Collection" /> class extends JavaScript's native
-	[_`Map`_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes more extensive, useful functionality. _`Collection`_ is used to store and efficiently retrieve commands for execution.
+	joiners. - The [`url`](https://nodejs.org/api/url.html) module provides utilities for URL resolution and parsing.
+	_`fileURLToPath`_ ensuring a cross-platform valid absolute path string. - The{' '}
+	<DocsLink type="class" parent="Collection" /> class extends JavaScript's native
+	[_`Map`_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes
+	more extensive, useful functionality. _`Collection`_ is used to store and efficiently retrieve commands for execution.
 </Alert>
 
 Next, using the modules imported above, dynamically retrieve your command files with a few more additions to the _`index.js`_ file:
 
 <CH.Code>
 
-```js index.js mark=3:15 focus=3:15
-client.commands = new Collection();
+```js JavaScript focus=3:15
+const commands = new Collection();
 
-const commandsPath = join(__dirname, 'commands');
+const commandsPath = fileURLToPath(new URL('commands', import.meta.url));
 const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
 	const filePath = join(commandsPath, file);
-	const command = require(filePath);
+	const command = await import(filePath);
 	// Set a new item in the Collection with the key as the command name and the value as the exported module
 	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
+		commands.set(command.data.name, command);
+	} else {
+		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+	}
+}
+```
+
+```ts TypeScript focus=3:15
+const commands = new Collection<string, CommandModule>();
+
+const commandsPath = fileURLToPath(new URL('commands', import.meta.url));
+const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const filePath = join(commandsPath, file);
+	const command = await import(filePath);
+	// Set a new item in the Collection with the key as the command name and the value as the exported module
+	if ('data' in command && 'execute' in command) {
+		commands.set(command.data.name, command);
 	} else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}
@@ -78,9 +123,9 @@ for (const file of commandFiles) {
 
 </CH.Code>
 
-First, [_`path.join()`_](https://nodejs.org/api/path.html) helps to construct a path to the _`commands`_ directory. The [_`fs.readdirSync()`_](https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options) method then reads the path to the directory and returns an array of all the file names it contains, currently _`['ping.js', 'server.js', 'user.js']`_. To ensure only command files get processed, _`Array.filter()`_ removes any non-JavaScript files from the array.
+First, [`url.fileURLToPath()`](https://nodejs.org/api/url.html) helps to construct a path to the _`commands`_ directory. The [`fs.readdirSync()`](https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options) method then reads the path to the directory and returns an array of all the file names it contains, currently _`['ping.js', 'server.js', 'user.js']`_. To ensure only command files get processed, _`Array.filter()`_ removes any non-JavaScript files from the array.
 
-With the correct files identified, the last step is to loop over the array and dynamically set each command into the _`client.commands`_ Collection. For each file being loaded, check that it has at least the _`data`_ and _`execute`_ properties. This helps to prevent errors resulting from loading empty, unfinished or otherwise incorrect command files while you're still developing.
+With the correct files identified, the last step is to loop over the array and dynamically set each command into the _`commands`_ Collection. For each file being loaded, check that it has at least the _`data`_ and _`execute`_ properties. This helps to prevent errors resulting from loading empty, unfinished or otherwise incorrect command files while you're still developing.
 
 ## Receiving command interactions
 
@@ -88,7 +133,7 @@ Every slash command is an _`interaction`_, so to respond to a command, you need 
 
 <CH.Code>
 
-```js index.js
+```js
 client.on(Events.InteractionCreate, (interaction) => {
 	console.log(interaction);
 });
@@ -100,7 +145,7 @@ Not every interaction is a slash command (e.g. _`MessageComponent`_ interactions
 
 <CH.Code>
 
-```js index.js focus=2
+```js focus=2
 client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 	console.log(interaction);
@@ -117,29 +162,33 @@ Let's take a look at the _`ping`_ command again. Note the _`execute()`_ function
 
 <CH.Code>
 
-```js ping.js
-module.exports = {
-	data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!'),
-	async execute(interaction) {
-		await interaction.reply('Pong!');
-	},
+```js
+const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
 };
+
+const execute = async (interaction) => {
+	await interaction.reply('Pong!');
+};
+
+export { data, execute };
 ```
 
 </CH.Code>
 
-First, you need to get the matching command from the _`client.commands`_ Collection based on the _`interaction.commandName`_. Your <DocsLink type="class" parent="Client"/> instance is always available via _`interaction.client`_. If no matching command is found, log an error to the console and ignore the event.
+First, you need to get the matching command from the _`commands`_ Collection based on the _`interaction.commandName`_. If no matching command is found, log an error to the console and ignore the event.
 
 With the right command identified, all that's left to do is call the command's _`.execute()`_ method and pass in the _`interaction`_ variable as its argument. Note that the event listener has been made _`async`_, allowing Promises to be awaited. In case something goes wrong and the Promise rejects, catch and log any error to the console.
 
 <CH.Code>
 
-```js index.js focus=4:20
+```js focus=4:20
 // focus[37:42]
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
-	const command = interaction.client.commands.get(interaction.commandName);
+	const command = commands.get(interaction.commandName);
 
 	if (!command) {
 		console.error(`No command matching ${interaction.commandName} was found.`);
@@ -173,7 +222,7 @@ After moving your commands into subfolders, it will look something like this:
 
 ![Project structure after sorting](./images/after-sorting.png)
 
-<Alert title="Warning" type="success">
+<Alert title="Warning" type="warning">
 	Make sure you put every command file you have inside one of the new subfolders. Leaving a command file directly under
 	the _`commands`_ folder will create problems.
 </Alert>
@@ -184,9 +233,10 @@ Back in your _`index.js`_ file, where the code to [dynamically read command file
 
 <CH.Code>
 
-```js index.js mark=2:3,5:7,17
-client.commands = new Collection();
-const foldersPath = join(__dirname, 'commands');
+```js JavaScript mark=3:7,19
+const commands = new Collection();
+
+const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
 const commandFolders = readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
@@ -194,10 +244,32 @@ for (const folder of commandFolders) {
 	const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 	for (const file of commandFiles) {
 		const filePath = join(commandsPath, file);
-		const command = require(filePath);
+		const command = await import(filePath);
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
-			client.commands.set(command.data.name, command);
+			commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
+```
+
+```ts Typescript mark=3:7,19
+const commands = new Collection<string, CommandModule>();
+
+const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
+const commandFolders = readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+	const commandsPath = join(foldersPath, folder);
+	const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = join(commandsPath, file);
+		const command = await import(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			commands.set(command.data.name, command);
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
