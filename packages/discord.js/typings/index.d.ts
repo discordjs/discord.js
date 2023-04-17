@@ -3636,6 +3636,7 @@ export enum DiscordjsErrorCodes {
   ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
 
   InvalidMissingScopes = 'InvalidMissingScopes',
+  InvalidScopesWithPermissions = 'InvalidScopesWithPermissions',
 
   NotImplemented = 'NotImplemented',
 
