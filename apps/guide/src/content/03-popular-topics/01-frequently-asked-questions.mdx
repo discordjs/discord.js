@@ -325,8 +325,9 @@ client.on(Events.InteractionCreate, (interaction) => {
 </Alert>
 
 <CH.Code>
+
 ```js
-client.on(Events.InteractionCreate, async interaction => {
+client.on(Events.InteractionCreate, async (interaction) => {
 	const blockedUsers = await database.query('SELECT user_id FROM blocked_users;');
 	if (blockedUsers.includes(interaction.user.id)) return;
 });
