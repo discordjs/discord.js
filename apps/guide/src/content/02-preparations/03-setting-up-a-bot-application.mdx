@@ -1,0 +1,56 @@
+---
+title: Setting up a bot application
+category: Preparations
+---
+
+# Setting up a bot application
+
+## Creating a bot application
+
+Now that you've installed Node, discord.js, and hopefully a linter, you're almost ready to start coding! The next step you need to take is setting up an actual Discord bot application via Discord's Developer Portal. This is where you'll be able to configure your bot's settings, such as its name, description, and profile picture. You'll also be able to add your bot to servers, and generate an invite URL that you can use to invite your bot to servers.
+
+To create a bot application, follow these 3 simple steps below:
+
+1. Open the [Discord Developer Portal](https://discord.com/developers/applications) and log into your Discord account.
+2. Click on the "New Application" button.
+3. Enter a name and confirm the pop-up window by clicking the "Create" button.
+
+![Creating a bot application](/assets/new-application.png)
+
+Once you're done exploring the page, select the "Bot" tab on the left side of your screen. Then click "Add Bot" and confirm the pop-up window by clicking "Yes, do it!".
+
+![Creating a bot](/assets/add-bot.png)
+
+## Your bot's token
+
+<Alert title="Caution" type="danger">
+	This section is very important! It explains what a token is and the security risks that come with sharing it. If you
+	don't understand what a token is, or how to keep it safe, please read this section carefully.
+</Alert>
+
+Once you've created your bot, you will see a blue button with "Reset token" on it. This button will generate a new token for your bot. You should never share your token with anyone, and you should keep it safe. If you accidentally share your token, you can always reset it by clicking the button. Once you do this, the old token will no longer work and the sessions with the old token will be terminated.
+
+### What is a token, anyway?
+
+A token is a string that allows your bot to access the Discord API. It is essentially your bot's password, and you should protect it as best as possible. This can be done through a _`config.json`_ file or by using environment variables.
+
+Tokens look like this: `NzkyNzE1NDU0MTk2MDg4ODQy.X-hvzA.Ovy4MCQywSkoMRRclStW4xAYK7I` (don't worry, this one isn't real!). If it's any shorter and looks more like this: `kxbsDRU5UfAaiO7ar9GFMHSlmTwYaIYn`, you copied your client secret instead. Make sure to copy the token if you want your bot to work!
+
+### What if my token gets leaked?
+
+Let's imagine that you have a bot on over 1,000 servers, and it took you many, many months of coding and patience to get it on that amount. Your bot's token gets leaked somewhere, and now someone else has it. That person can:
+
+- Spam every server your bot is on;
+- DM spam as many users as possible;
+- Delete as many channels as possible;
+- Kick or ban as many server members as possible;
+- Make your bot leave all of the servers it has joined;
+
+All that and much, much more. Sounds pretty terrible, right? So make sure to keep your bot's token as safe as possible! If you're not sure how to do that, check out the [Initial Files](/creating-your-bot/initial-files) page.
+
+<Alert title="Info" type="info">
+	If your bot token has been compromised by committing it to a public repository, posting it in discord.js support, etc.
+	or otherwise see your bot's token in danger, return to the Discord Developer Portal and press "Reset Token". This will
+	invalidate all old tokens belonging to your bot. Keep in mind that you will need to update your bot's token where you
+	used it before.
+</Alert>

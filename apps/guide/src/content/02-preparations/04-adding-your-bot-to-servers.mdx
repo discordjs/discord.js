@@ -1,0 +1,64 @@
+---
+title: Adding your bot to servers
+category: Preparations
+---
+
+# Adding your bot to servers
+
+After [setting up your bot application](/preparations/setting-up-a-bot-application), you'll need to invite it to servers in order to use it.
+
+## Sample invite URL
+
+Here's an example invite URL:
+
+```url
+https://discord.com/api/oauth2/authorize?client_id=123456789012345678&permissions=0&scope=bot%20applications.commands
+```
+
+Let's break down the URL:
+
+- `https://discord.com/api/oauth2/authorize` is the base URL for the OAuth2 flow.
+- `client_id=...` is used to specify the client ID of your application.
+- `permissions=...` describes the permissions that your bot will have upon joining the server.
+- `scope=...` is used to specify the scopes that your bot will have upon joining the server. In this case, we're using the `bot` scope, which identifies your application as a bot, and the `applications.commands` scope, which will allow your bot to [register slash commands](/slash-commands/register-slash-commands).
+
+## Creating an invite URL for your bot
+
+### Using the Discord Developer Portal
+
+To make this easy, Discord provides an interactive URL generator that you can use to create an invite URL for your bot. Follow the steps below to create an invite URL for your bot:
+
+1. Go to the [Discord Developer Portal](https://discord.com/developers/applications) and select your application.
+2. Go to the OAuth2 tab and select the `URL Generator` section.
+3. Select the `bot` and `applications.commands` scopes.
+4. Select the permissions that you want your bot to have.
+5. Copy the generated URL and paste it into your browser.
+6. Select the server that you want to add your bot to.
+
+<Alert title="Warning" type="warning">
+	You must have the _`Manage Server`_ permission in the server that you're adding your bot to.
+</Alert>
+
+### Generating an invite URL programmatically
+
+If you want to generate an invite URL programmatically, you can use the `generateInvite` method on the `Client` class. This method takes an object with the following properties:
+
+- `scopes`: An array of [Oauth2 scopes](https://discord-api-types.dev/api/discord-api-types-v10/enum/OAuth2Scopes).
+- `permissions`: An optional [PermissionResolvable](https://old.discordjs.dev/#/docs/discord.js/main/typedef/PermissionResolvable) object that describes the permissions that your bot will have upon joining the server.
+- `guild`: An optional [GuildResolvable](https://old.discordjs.dev/#/docs/discord.js/main/typedef/GuildResolvable) object that describes the guild that you want to pre-select in the invite popup.
+- `disableGuildSelect`: An optional boolean that indicates whether or not to disable the guild select in the invite popup.
+
+Here's an example of how you can use the `generateInvite` method:
+
+<CH.Code>
+
+```js
+import { OAuth2Scopes, PermissionFlagsBits } from 'discord.js';
+
+const invite = client.generateInvite({
+	scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationCommands],
+	permissions: [PermissionFlagsBits.Administrator],
+});
+
+console.log(invite); // https://discord.com/api/oauth2/authorize?client_id=123456789012345678&permissions=8&scope=bot%20applications.commands
+```
