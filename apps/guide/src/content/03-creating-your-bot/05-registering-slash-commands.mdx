@@ -1,0 +1,141 @@
+---
+title: Registering slash commands
+category: Creating your bot
+---
+
+# Registering slash commands
+
+<Alert title="Tip" type="success">
+For fully functional slash commands, you need three important pieces of code:
+
+1. The [individual command files](slash-commands), containing their definitions and functionality.
+2. The [command handler](command-handling), which dynamically reads the files and executes the commands.
+3. The command deployment script, to register your slash commands with Discord so they appear in the interface.
+
+These steps can be done in any order, but **all are required** before the commands are fully functional.
+
+This page details how to complete **Step 3**. Make sure to also complete the other pages linked above!
+
+</Alert>
+
+## Command registration
+
+Slash commands can be registered in two ways; in one specific guild, or for every guild the bot is in. We're going to look at single-guild registration first, as this is a good way to develop and test your commands before a global deployment.
+
+Your application will need the _`applications.commands`_ scope authorized in a guild for any of its slash commands to appear, and to be able to register them in a specific guild without error.
+
+Slash commands only need to be registered once, and updated when the definition (description, options etc) is changed. As there is a daily limit on command creations, it's not necessary nor desirable to connect a whole client to the gateway or do this on every _`ClientReady`_ event. As such, a standalone script using the lighter REST manager is preferred.
+
+This script is intended to be run separately, only when you need to make changes to your slash command **definitions** - you're free to modify parts such as the execute function as much as you like without redeployment.
+
+### Guild commands
+
+Create a _`deploy-commands.js`_ file in your project directory. This file will be used to register and update the slash commands for your bot application.
+
+Add two more properties to your _`config.json`_ file, which we'll need in the deployment script:
+
+- _`clientId`_: Your application's client id ([Discord Developer Portal](https://discord.com/developers/applications) > "General Information" > application id)
+- _`guildId`_: Your development server's id ([Enable developer mode](https://support.discord.com/hc/en-us/articles/206346498) > Right-click the server title > "Copy ID")
+
+<CH.Code lineNumbers={false}>
+
+```json
+{
+	"token": "your-token-goes-here",
+	"clientId": "your-application-id-goes-here",
+	"guildId": "your-server-id-goes-here"
+}
+```
+
+</CH.Code>
+
+With these defined, you can use the deployment script below:
+
+<CH.Code>
+
+```js deploy-commands.js
+import { REST, Routes } from 'discord.js';
+import { clientId, guildId, token } from './config.json';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const commands = [];
+
+// Grab all the command files from the commands directory you created earlier
+const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
+const commandFolders = readdirSync(foldersPath);
+
+for (const folder of commandFolders) {
+	// Grab all the command files from the commands directory you created earlier
+	const commandsPath = join(foldersPath, folder);
+	const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+	// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
+	for (const file of commandFiles) {
+		const filePath = join(commandsPath, file);
+		const command = await import(filePath);
+		if ('data' in command && 'execute' in command) {
+			commands.push(command.data.toJSON());
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
+	}
+}
+
+// Construct and prepare an instance of the REST module
+const rest = new REST().setToken(token);
+
+try {
+	console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+	// The put method is used to fully refresh all commands in the guild with the current set
+	const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
+
+	console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+} catch (error) {
+	// And of course, make sure you catch and log any errors!
+	console.error(error);
+}
+```
+
+</CH.Code>
+
+Once you fill in these values, run _`node deploy-commands.js`_ in your project directory to register your commands to the guild specified. If you see the success message, check for the commands in the server by typing `/`! If all goes well, you should be able to run them and see your bot's response in Discord!
+
+### Global commands
+
+Global application commands will be available in all the guilds your application has the _`applications.commands`_ scope authorized in, and in direct messages by default.
+
+To deploy global commands, you can use the same script from the [guild commands](#guild-commands) section and simply adjust the route in the script to `.applicationCommands(clientId)`
+
+<CH.Code>
+
+```js focus=2
+await rest.put(Routes.applicationCommands(clientId), { body: commands });
+```
+
+</CH.Code>
+
+### Where to deploy
+
+<Alert title="Tip" type="success">
+Guild-based deployment of commands is best suited for development and testing in your own personal server. Once you're satisfied that it's ready, deploy the command globally to publish it to all guilds that your bot is in.
+
+You may wish to have a separate application and token in the Discord Dev Portal for your dev application, to avoid duplication between your guild-based commands and the global deployment.
+
+</Alert>
+
+#### Further reading
+
+You've successfully sent a response to a slash command! However, this is only the most basic of command event and response functionality. Much more is available to enhance the user experience including:
+
+- applying this same dynamic, modular handling approach to events with an [Event handler](/creating-your-bot/event-handling.md).
+- utilising the different [Response methods](/slash-commands/response-methods.md) that can be used for slash commands.
+- expanding on these examples with additional validated option types in [Advanced command creation](/slash-commands/advanced-creation.md).
+- adding formatted [Embeds](/popular-topics/embeds.md) to your responses.
+- enhancing the command functionality with [Buttons](/interactions/buttons) and [Select Menus](/interactions/select-menus.md).
+- prompting the user for more information with [Modals](/interactions/modals.md).
+
+#### Resulting code
+
+<ResultingCode path="creating-your-bot/command-deployment" />
