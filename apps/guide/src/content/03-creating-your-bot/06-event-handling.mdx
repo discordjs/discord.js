@@ -19,7 +19,7 @@ At this point, your `index.js` file has code for loading commands, and listeners
 const commands = new Collection();
 
 const commandsPath = fileURLToPath(new URL('commands', import.meta.url));
-const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 
 for (const file of commandFiles) {
 	const filePath = join(commandsPath, file);
@@ -94,7 +94,7 @@ export async function execute(client) {
 ```
 
 ```js events/interactionCreate.js
-import { readdirSync } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Collection, Events } from 'discord.js';
@@ -102,11 +102,11 @@ import { Collection, Events } from 'discord.js';
 const commands = new Collection();
 
 const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
-const commandFolders = readdirSync(foldersPath);
+const commandFolders = await readdir(foldersPath);
 
 for (const folder of commandFolders) {
 	const commandsPath = join(foldersPath, folder);
-	const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+	const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 	for (const file of commandFiles) {
 		const filePath = join(commandsPath, file);
 		const command = await import(filePath);
@@ -140,7 +140,7 @@ export async function execute(interaction) {
 ```
 
 ```js index.js
-import { readdirSync } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
@@ -159,12 +159,12 @@ The _`name`_ property states which event this file is for, and the _`once`_ prop
 
 Next, let's write the code for dynamically retrieving all the event files in the _`events`_ folder. We'll be taking a similar approach to our [command handler](/creating-your-bot/command-handling.md). Place the new code highlighted below in your _`index.js`_.
 
-_`fs.readdirSync().filter()`_ returns an array of all the file names in the given directory and filters for only _`.js`_ files, i.e. `['ready.js', 'interactionCreate.js']`.
+_`fs.readdir()`_ combined with _`array.filter()`_ returns an array of all the file names in the given directory and filters for only _`.js`_ files, i.e. `['ready.js', 'interactionCreate.js']`.
 
 <CH.Code>
 
 ```js focus=26:37
-import { readdirSync } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
@@ -173,7 +173,7 @@ import config from './config.json' assert { type: 'json' };
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 const eventsPath = fileURLToPath(new URL('events', import.meta.url));
-const eventFiles = readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+const eventFiles = await readdir(eventsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 
 for (const file of eventFiles) {
 	const filePath = join(eventsPath, file);

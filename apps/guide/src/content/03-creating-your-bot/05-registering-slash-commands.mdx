@@ -55,7 +55,7 @@ With these defined, you can use the deployment script below:
 
 ```js deploy-commands.js
 import { REST, Routes } from 'discord.js';
-import { readdirSync } from 'node:fs';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import config from './config.json' assert { type: 'json' };
@@ -66,12 +66,12 @@ const commands = [];
 
 // Grab all the command files from the commands directory you created earlier
 const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
-const commandFolders = readdirSync(foldersPath);
+const commandFolders = await readdir(foldersPath);
 
 for (const folder of commandFolders) {
 	// Grab all the command files from the commands directory you created earlier
 	const commandsPath = join(foldersPath, folder);
-	const commandFiles = readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+	const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 	// Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
 	for (const file of commandFiles) {
 		const filePath = join(commandsPath, file);
