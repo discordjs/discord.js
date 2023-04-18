@@ -1,0 +1,48 @@
+---
+title: Adding your bot to servers
+category: Installations and preparations
+---
+
+# Adding your bot to servers
+
+After you [set up a bot application](/preparations/setting-up-a-bot-application.md), you'll notice that it's not in any servers yet. So how does that work?
+
+Before you're able to see your bot in your own (or other) servers, you'll need to add it by creating and using a unique invite link using your bot application's client id.
+
+## Bot invite links
+
+The basic version of one such link looks like this:
+
+```
+https://discord.com/api/oauth2/authorize?client_id=123456789012345678&permissions=0&scope=bot%20applications.commands
+```
+
+The structure of the URL is quite simple:
+
+- _`https://discord.com/api/oauth2/authorize`_ is Discord's standard structure for authorizing an OAuth2 application (such as your bot application) for entry to a Discord server.
+- _`client_id=...`_ is to specify _which_ application you want to authorize. You'll need to replace this part with your client's id to create a valid invite link.
+- _`permissions=...`_ describes what permissions your bot will have on the server you are adding it to.
+- _`scope=bot%20applications.commands`_ specifies that you want to add this application as a Discord bot, with the ability to create slash commands.
+
+<Alert title="Warning" type="warning">
+	If you get an error message saying "Bot requires a code grant", head over to your application's settings and disable
+	the "Require OAuth2 Code Grant" option. You shouldn't enable this option unless you know why you need to.
+</Alert>
+
+## Creating and using your invite link
+
+To create an invite link, head back to the [My Apps](https://discord.com/developers/applications/me) page under the "Applications" section, click on your bot application, and open the OAuth2 page.
+
+In the sidebar, you'll find the OAuth2 URL generator. Select the _`bot`_ and _`applications.commands`_ options. Once you select the _`bot`_ option, a list of permissions will appear, allowing you to configure the permissions your bot needs.
+
+Grab the link via the "Copy" button and enter it in your browser. You should see something like this (with your bot's username and avatar):
+
+![Bot Authorization page](./images/bot-auth-page.png)
+
+Choose the server you want to add it to and click "Authorize". Do note that you'll need the "Manage Server" permission on a server to add your bot there. This should then present you a nice confirmation message:
+
+![Bot authorized](./images/bot-authorized.png)
+
+Congratulations! You've successfully added your bot to your Discord server. It should show up in your server's member list somewhat like this:
+
+![Bot in server's member list](./images/bot-in-memberlist.png)
