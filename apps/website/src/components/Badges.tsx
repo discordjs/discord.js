@@ -1,32 +1,17 @@
 import type { ApiDocumentedItem } from '@microsoft/api-extractor-model';
 import { ApiAbstractMixin, ApiProtectedMixin, ApiReadonlyMixin, ApiStaticMixin } from '@microsoft/api-extractor-model';
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 
-const mappedBadgeColors = {
-	danger: 'bg-red-500',
-	warning: 'bg-yellow-500',
-	primary: 'bg-blurple',
-} as const;
-
-export type BadgeColor = keyof typeof mappedBadgeColors;
-
-export interface BadgeProps {
-	/**
-	 * The content of the badge.
-	 */
-	children?: ReactNode | undefined;
-	/**
-	 * The color of the badge.
-	 *
-	 * @defaultValue "primary"
-	 */
-	color?: BadgeColor;
+export enum BadgeColor {
+	Danger = 'bg-red-500',
+	Primary = 'bg-blurple',
+	Warning = 'bg-yellow-500',
 }
 
-export function Badge({ children, color = 'primary' }: BadgeProps) {
+export function Badge({ children, color = BadgeColor.Primary }: PropsWithChildren<{ color?: BadgeColor | undefined }>) {
 	return (
 		<span
-			className={`h-5 flex flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white ${mappedBadgeColors[color]}`}
+			className={`h-5 flex flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white ${color}`}
 		>
 			{children}
 		</span>
@@ -42,7 +27,7 @@ export function Badges({ item }: { item: ApiDocumentedItem }) {
 
 	return (
 		<div className="flex flex-row gap-1 md:ml-7">
-			{isDeprecated ? <Badge color="danger">Deprecated</Badge> : null}
+			{isDeprecated ? <Badge color={BadgeColor.Primary}>Deprecated</Badge> : null}
 			{isProtected ? <Badge>Protected</Badge> : null}
 			{isStatic ? <Badge>Static</Badge> : null}
 			{isAbstract ? <Badge>Abstract</Badge> : null}
