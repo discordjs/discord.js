@@ -23,7 +23,7 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 18.12.0 or newer is required.**
 
 ```sh
 npm install @discordjs/proxy

@@ -2102,7 +2102,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.8
     "@sapphire/snowflake": ^3.4.2
-    "@types/node": 16.18.25
+    "@types/node": 18.15.11
     "@vitest/coverage-c8": ^0.31.0
     "@vladfrangu/async_event_emitter": ^2.2.1
     cross-env: ^7.0.3
@@ -2274,7 +2274,7 @@ __metadata:
   dependencies:
     "@discordjs/proxy": "workspace:^"
     "@discordjs/rest": "workspace:^"
-    "@types/node": 16.18.25
+    "@types/node": 18.15.11
     cross-env: ^7.0.3
     eslint: ^8.39.0
     eslint-config-neon: ^0.1.46
@@ -2295,7 +2295,7 @@ __metadata:
     "@discordjs/util": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.8
-    "@types/node": 16.18.25
+    "@types/node": 18.15.11
     "@types/supertest": ^2.0.12
     "@vitest/coverage-c8": ^0.31.0
     cross-env: ^7.0.3
@@ -2313,7 +2313,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
+"@discordjs/rest@^1.7.1, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
@@ -2323,7 +2323,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.34.8
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.4.2
-    "@types/node": 16.18.25
+    "@types/node": 18.15.11
     "@vitest/coverage-c8": ^0.31.0
     cross-env: ^7.0.3
     discord-api-types: ^0.37.41
@@ -2533,7 +2533,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.8
     "@sapphire/async-queue": ^1.5.0
-    "@types/node": 16.18.25
+    "@types/node": 18.15.11
     "@types/ws": ^8.5.4
     "@vitest/coverage-c8": ^0.31.0
     "@vladfrangu/async_event_emitter": ^2.2.1
@@ -6654,6 +6654,13 @@ __metadata:
   version: 16.18.25
   resolution: "@types/node@npm:16.18.25"
   checksum: 181760ad6b54fcc498dfeb249e98bbf0be51d7c35e92e760e1a82004fa42b86e8c33a8f8dd7743b5ef872bda0753d9e6a5b8e3f0aed63e9eb79b4e65760c1fbe
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:18.15.11":
+  version: 18.15.11
+  resolution: "@types/node@npm:18.15.11"
+  checksum: 977b4ad04708897ff0eb049ecf82246d210939c82461922d20f7d2dcfd81bbc661582ba3af28869210f7e8b1934529dcd46bff7d448551400f9d48b9d3bddec3
   languageName: node
   linkType: hard
 
@@ -11335,7 +11342,7 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@discordjs/formatters": "workspace:^"
-    "@discordjs/rest": "workspace:^"
+    "@discordjs/rest": ^1.7.1
     "@discordjs/util": "workspace:^"
     "@discordjs/ws": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
