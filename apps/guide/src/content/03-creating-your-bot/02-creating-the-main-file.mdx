@@ -19,7 +19,7 @@ Here's the base code to get you started:
 ```js
 // Require the necessary discord.js classes
 import { Client, Events, GatewayIntentBits } from 'discord.js';
-import { token } from './config.json';
+import config from './config.json' assert { type: 'json' };
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -31,7 +31,7 @@ client.once(Events.ClientReady, (c) => {
 });
 
 // Log in to Discord with your client's token
-client.login(token);
+client.login(config.token);
 ```
 
 </CH.Code>

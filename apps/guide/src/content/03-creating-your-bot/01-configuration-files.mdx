@@ -24,9 +24,9 @@ Storing data in a _`config.json`_ file is a common way of keeping your sensitive
 ```
 
 ```js index.js
-import { token } from './config.json';
+import config from './config.json' assert { type: 'json' };
 
-console.log(token);
+console.log(config.token);
 ```
 
 </CH.Code>

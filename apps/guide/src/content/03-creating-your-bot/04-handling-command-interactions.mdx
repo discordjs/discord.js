@@ -34,7 +34,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 // focus[18:28]
 import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
-import config from './config.json';
+import config from './config.json' assert { type: 'json' };
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

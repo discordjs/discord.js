@@ -55,10 +55,12 @@ With these defined, you can use the deployment script below:
 
 ```js deploy-commands.js
 import { REST, Routes } from 'discord.js';
-import { clientId, guildId, token } from './config.json';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import config from './config.json' assert { type: 'json' };
+
+const { clientId, guildId, token } = config;
 
 const commands = [];
 

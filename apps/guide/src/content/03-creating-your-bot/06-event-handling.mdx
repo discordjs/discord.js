@@ -68,7 +68,7 @@ Moving the event listener code into individual files is simple, and we'll be tak
 
 Your project directory should look something like this:
 
-```:no-line-numbers
+```
 discord-bot/
 ├── commands/
 ├── node_modules/
@@ -144,11 +144,11 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
-import { token } from './config.json';
+import config from './config.json' assert { type: 'json' };
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.login(token);
+client.login(config.token);
 ```
 
 </CH.Code>
@@ -168,7 +168,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
-import { token } from './config.json';
+import config from './config.json' assert { type: 'json' };
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -185,7 +185,7 @@ for (const file of eventFiles) {
 	}
 }
 
-client.login(token);
+client.login(config.token);
 ```
 
 </CH.Code>
