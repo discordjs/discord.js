@@ -89,7 +89,9 @@ import {
   ChannelType,
   VideoQualityMode,
   APIChannelBase,
-  APIThreadChannel
+  APIThreadChannel,
+  APIVoiceChannel,
+  APIGuildForumChannel
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
 import type {
@@ -304,38 +306,6 @@ export interface APIGuildTextChannel<T extends GuildTextChannelType>
   default_thread_rate_limit_per_user?: number;
   topic?: string | null;
 }
-
-export interface APIVoiceChannelBase<T extends ChannelType>
-  extends APIGuildChannel<T>,
-    Omit<APITextBasedChannel<T>, 'name' | 'last_pin_timestamp'> {
-  bitrate?: number;
-  user_limit?: number;
-  rtc_region?: string | null;
-  video_quality_mode?: VideoQualityMode;
-}
-
-export interface APIGuildForumDefaultReactionEmoji {
-  emoji_id: Snowflake | null;
-  emoji_name: string | null;
-}
-
-export interface APIGuildForumTag {
-  id: Snowflake;
-  name: string;
-  moderated: boolean;
-  emoji_id: Snowflake | null;
-  emoji_name: string | null;
-}
-
-export interface APIGuildForumChannel extends APIGuildTextChannel<ChannelType.GuildForum> {
-  available_tags: APIGuildForumTag[];
-  default_reaction_emoji: APIGuildForumDefaultReactionEmoji | null;
-  default_sort_order: SortOrderType | null;
-  default_forum_layout: ForumLayoutType;
-}
-
-export type APIGuildVoiceChannel = APIVoiceChannelBase<ChannelType.GuildVoice>;
-export type APIGuildStageVoiceChannel = APIVoiceChannelBase<ChannelType.GuildStageVoice>;
 export type APITextChannel = APIGuildTextChannel<ChannelType.GuildText>;
 export type APINewsChannel = APIGuildTextChannel<ChannelType.GuildNews>;
-export declare type APIChannel = APIGroupDMChannel | APIDMChannel | APITextChannel | APINewsChannel | APIGuildVoiceChannel | APIGuildCategoryChannel | APIThreadChannel | APINewsChannel | APIGuildForumChannel | APIGuildStageVoiceChannel;
+export declare type APIChannel = APIGroupDMChannel | APIDMChannel | APITextChannel | APINewsChannel | APIVoiceChannel | APIGuildCategoryChannel | APIThreadChannel | APIGuildForumChannel;
