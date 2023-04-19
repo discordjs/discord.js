@@ -20,7 +20,7 @@ export interface ExcerptTextProps {
  */
 export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 	return (
-		<>
+		<span>
 			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
 					const source = token.canonicalReference?.source;
@@ -59,6 +59,6 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 
 				return token.text;
 			})}
-		</>
+		</span>
 	);
 }
