@@ -4,7 +4,7 @@
 	"description": "A simple way to create a startup Discord bot.",
 	"keywords": [
 		"discord",
-		"discord api",
+		"discord-api",
 		"discord.js",
 		"create-bot",
 		"init-bot",
