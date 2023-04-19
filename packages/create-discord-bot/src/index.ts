@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 // eslint-disable-next-line n/shebang
+import { execSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -31,4 +32,11 @@ console.log(`Creating ${name} in ${chalk.green(root)}.`);
 
 // Copy template!
 cpSync(new URL('../template', import.meta.url), root, { recursive: true });
-chalk.green('All done! Be sure to check out the discord.js guide too!');
+
+// Install dependencies, because we're so nice.
+console.log('Installing dependencies...');
+process.chdir(root);
+execSync('npm install');
+
+// Completion feedback.
+console.log(chalk.green('All done! Be sure to check out the discord.js guide too!'));
