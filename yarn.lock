@@ -7083,6 +7083,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/validate-npm-package-name@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@types/validate-npm-package-name@npm:4.0.0"
+  checksum: 09efd659f4cce362931a57c7ee6d645855c7ecb346c6496ef31bab638e578472f779c77233adad8502e90a7d7a146a40a5029ff9c4739a38a4187ef1fe7187c3
+  languageName: node
+  linkType: hard
+
 "@types/webpack-env@npm:^1.17.0":
   version: 1.18.0
   resolution: "@types/webpack-env@npm:1.18.0"
@@ -10795,6 +10802,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.34.4
     "@types/node": 16.18.23
+    "@types/validate-npm-package-name": ^4.0.0
     "@vitest/coverage-c8": ^0.30.1
     chalk: ^5.2.0
     commander: ^10.0.1
@@ -10805,6 +10813,7 @@ __metadata:
     prettier: ^2.8.7
     tsup: ^6.7.0
     typescript: ^5.0.4
+    validate-npm-package-name: ^5.0.0
     vitest: ^0.29.8
   bin:
     create-discord-bot: ./dist/index.mjs
