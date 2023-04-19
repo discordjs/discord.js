@@ -27,7 +27,7 @@ export function Badges({ item }: { item: ApiDocumentedItem }) {
 
 	return (
 		<div className="flex flex-row gap-1 md:ml-7">
-			{isDeprecated ? <Badge color={BadgeColor.Primary}>Deprecated</Badge> : null}
+			{isDeprecated ? <Badge color={BadgeColor.Danger}>Deprecated</Badge> : null}
 			{isProtected ? <Badge>Protected</Badge> : null}
 			{isStatic ? <Badge>Static</Badge> : null}
 			{isAbstract ? <Badge>Abstract</Badge> : null}
