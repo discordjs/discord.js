@@ -38,7 +38,7 @@ export function Header({
 					{name}
 				</span>
 				{sourceURL ? (
-					<a className="text-blurple" href={sourceURL}>
+					<a className="text-blurple" href={sourceURL} rel="external noopener noreferrer" target="_blank">
 						<VscFileCode />
 					</a>
 				) : null}
