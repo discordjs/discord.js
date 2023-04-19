@@ -44,12 +44,14 @@
 	},
 	"dependencies": {
 		"chalk": "^5.2.0",
-		"commander": "^10.0.1"
+		"commander": "^10.0.1",
+		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
 		"@types/node": "16.18.23",
+		"@types/validate-npm-package-name": "^4.0.0",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.38.0",
