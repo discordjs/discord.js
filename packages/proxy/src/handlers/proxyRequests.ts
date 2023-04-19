@@ -38,7 +38,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 				fullRoute,
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
-				// We forward the auth header anwyay
+				// We forward the auth header anyway
 				auth: false,
 				passThroughBody: true,
 				query: parsedUrl.searchParams,
