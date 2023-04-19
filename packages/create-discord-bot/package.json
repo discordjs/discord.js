@@ -8,7 +8,8 @@
 		"discord.js",
 		"create-bot",
 		"init-bot",
-		"init-discord"
+		"init-discord",
+		"boilerplate"
 	],
 	"homepage": "https://discord.js.org",
 	"bugs": {
