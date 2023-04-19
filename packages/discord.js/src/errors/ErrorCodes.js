@@ -108,7 +108,7 @@
  * @property {'EmojiManaged'} EmojiManaged
  * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
- * <warn>This property is deprecated.</warn>
+ * <warn>This property is deprecated. Use `MissingManageGuildExpressionsPermission` instead.</warn>
  *
  * @property {'NotGuildSticker'} NotGuildSticker
 
