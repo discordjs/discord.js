@@ -85,7 +85,7 @@
 		"eslint": "^8.38.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"happy-dom": "^9.8.0",
+		"happy-dom": "^9.8.1",
 		"hast-util-to-string": "^2.0.0",
 		"hastscript": "^7.2.0",
 		"html-escaper": "^3.0.3",
