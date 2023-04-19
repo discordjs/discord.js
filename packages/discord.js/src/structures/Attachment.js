@@ -102,7 +102,8 @@ class Attachment {
 
     if ('duration_secs' in data) {
       /**
-       * The duration of this attachment in seconds (if an audio)
+       * The duration of this attachment in seconds
+       * <info>This will only be available if the attachment is an audio file.</info>
        * @type {?number}
        */
       this.duration = data.duration_secs;
@@ -112,7 +113,8 @@ class Attachment {
 
     if ('waveform' in data) {
       /**
-       * The base64 encoded bytearray representing a sampled waveform (if an audio)
+       * The base64 encoded byte array representing a sampled waveform
+       * <info>This will only be available if the attachment is an audio file.</info>
        * @type {?string}
        */
       this.waveform = data.waveform;
