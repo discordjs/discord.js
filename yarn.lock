@@ -9605,7 +9605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:5.2.0":
+"chalk@npm:5.2.0, chalk@npm:^5.2.0":
   version: 5.2.0
   resolution: "chalk@npm:5.2.0"
   checksum: 03d8060277de6cf2fd567dc25fcf770593eb5bb85f460ce443e49255a30ff1242edd0c90a06a03803b0466ff0687a939b41db1757bec987113e83de89a003caa
@@ -10787,6 +10787,29 @@ __metadata:
   checksum: 5139dfc07d181caefe3ec62c956340a1d02c4afeb794f8c199ddfc7e0cb0bdf5f5e4989ec08d6c07984be119bbb07eb323f21e8edb0733051ddf125a1084b565
   languageName: node
   linkType: hard
+
+"create-discord-bot@workspace:packages/create-discord-bot":
+  version: 0.0.0-use.local
+  resolution: "create-discord-bot@workspace:packages/create-discord-bot"
+  dependencies:
+    "@favware/cliff-jumper": ^2.0.0
+    "@microsoft/api-extractor": ^7.34.4
+    "@types/node": 16.18.23
+    "@vitest/coverage-c8": ^0.30.1
+    chalk: ^5.2.0
+    commander: ^10.0.1
+    cross-env: ^7.0.3
+    eslint: ^8.38.0
+    eslint-config-neon: ^0.1.42
+    eslint-formatter-pretty: ^5.0.0
+    prettier: ^2.8.7
+    tsup: ^6.7.0
+    typescript: ^5.0.4
+    vitest: ^0.29.8
+  bin:
+    create-discord-bot: ./dist/index.mjs
+  languageName: unknown
+  linkType: soft
 
 "create-require@npm:^1.1.0":
   version: 1.1.1
