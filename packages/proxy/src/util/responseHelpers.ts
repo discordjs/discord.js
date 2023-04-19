@@ -1,6 +1,6 @@
 import type { ServerResponse } from 'node:http';
 import { pipeline } from 'node:stream/promises';
-import type { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
+import { DiscordAPIError, HTTPError, RateLimitError } from '@discordjs/rest';
 import type { Dispatcher } from 'undici';
 
 /**
@@ -58,4 +58,25 @@ export function populateRatelimitErrorResponse(res: ServerResponse, error: RateL
 export function populateAbortErrorResponse(res: ServerResponse): void {
 	res.statusCode = 504;
 	res.statusMessage = 'Upstream timed out';
+}
+
+/**
+ * Tries to populate a server response from an error object
+ *
+ * @param res - The server response to populate
+ * @param error - The error to check and use
+ * @returns - True if the error is known and the response object was populated, otherwise false
+ */
+export async function populateErrorResponse(res: ServerResponse, error: unknown): Promise<boolean> {
+	if (error instanceof DiscordAPIError || error instanceof HTTPError) {
+		populateGeneralErrorResponse(res, error);
+	} else if (error instanceof RateLimitError) {
+		populateRatelimitErrorResponse(res, error);
+	} else if (error instanceof Error && error.name === 'AbortError') {
+		populateAbortErrorResponse(res);
+	} else {
+		return false;
+	}
+
+	return true;
 }

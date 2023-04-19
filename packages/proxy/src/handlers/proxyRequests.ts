@@ -1,18 +1,6 @@
 import { URL } from 'node:url';
-import {
-	DiscordAPIError,
-	HTTPError,
-	RateLimitError,
-	type RequestMethod,
-	type REST,
-	type RouteLike,
-} from '@discordjs/rest';
-import {
-	populateAbortErrorResponse,
-	populateGeneralErrorResponse,
-	populateSuccessfulResponse,
-	populateRatelimitErrorResponse,
-} from '../util/responseHelpers.js';
+import type { RequestMethod, REST, RouteLike } from '@discordjs/rest';
+import { populateSuccessfulResponse, populateErrorResponse } from '../util/responseHelpers.js';
 import type { RequestHandler } from '../util/util';
 
 /**
@@ -36,29 +24,33 @@ export function proxyRequests(rest: REST): RequestHandler {
 		// eslint-disable-next-line unicorn/no-unsafe-regex, prefer-named-capture-group
 		const fullRoute = parsedUrl.pathname.replace(/^\/api(\/v\d+)?/, '') as RouteLike;
 
+		const headers: Record<string, string> = {
+			'Content-Type': req.headers['content-type']!,
+		};
+
+		if (req.headers.authorization) {
+			headers.authorization = req.headers.authorization;
+		}
+
 		try {
 			const discordResponse = await rest.raw({
 				body: req,
 				fullRoute,
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
 				method: method as RequestMethod,
+				// We forward the auth header anwyay
+				auth: false,
 				passThroughBody: true,
 				query: parsedUrl.searchParams,
-				headers: {
-					'Content-Type': req.headers['content-type']!,
-				},
+				headers,
 			});
 
 			await populateSuccessfulResponse(res, discordResponse);
 		} catch (error) {
-			if (error instanceof DiscordAPIError || error instanceof HTTPError) {
-				populateGeneralErrorResponse(res, error);
-			} else if (error instanceof RateLimitError) {
-				populateRatelimitErrorResponse(res, error);
-			} else if (error instanceof Error && error.name === 'AbortError') {
-				populateAbortErrorResponse(res);
-			} else {
-				// Unclear if there's better course of action here for unknown errors. Any web framework allows to pass in an error handler for something like this
+			const knownError = await populateErrorResponse(res, error);
+			if (!knownError) {
+				// Unclear if there's better course of action here for unknown errors.
+				// Any web framework allows to pass in an error handler for something like this
 				// at which point the user could dictate what to do with the error - otherwise we could just 500
 				throw error;
 			}
