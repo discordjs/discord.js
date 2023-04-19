@@ -12,9 +12,11 @@ import { program } from 'commander';
 // A directory must be specified.
 program
 	.description('Create a template bot.')
+	.option('--typescript', 'Whether to use a TypeScript template.')
 	.argument('<directory>', 'The directory where this will be created.')
 	.parse();
 
+const { typescript } = program.opts();
 const [directory] = program.args;
 
 if (!directory) {
@@ -31,7 +33,7 @@ if (!existsSync(root)) mkdirSync(root, { recursive: true });
 console.log(`Creating ${name} in ${chalk.green(root)}.`);
 
 // Copy template!
-cpSync(new URL('../template', import.meta.url), root, { recursive: true });
+cpSync(new URL(`../template/${typescript ? 'TypeScript' : 'ESM'}`, import.meta.url), root, { recursive: true });
 
 // Install dependencies, because we're so nice.
 console.log('Installing dependencies...');
