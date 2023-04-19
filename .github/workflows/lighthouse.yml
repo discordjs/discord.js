@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Get Vercel preview URL
         id: get_preview_url
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             const comment = context.payload.comment;
@@ -53,7 +53,7 @@ jobs:
       - name: Format lighthouse score
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: format_lighthouse_score
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
