@@ -18,7 +18,7 @@
 
 ## About
 
-`@discord.js/builders` is a utility package for easily building Discord API payloads.
+`@discordjs/builders` is a utility package for easily building Discord API payloads.
 
 ## Installation
 
