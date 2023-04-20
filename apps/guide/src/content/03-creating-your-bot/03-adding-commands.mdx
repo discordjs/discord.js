@@ -18,19 +18,6 @@ Slash commands provide a huge number of benefits over manual message parsing, in
 
 ...and many more!
 
-## Before you continue
-
-Assuming you've followed the guide so far, your project directory should look something like this:
-
-```:no-line-numbers
-discord-bot/
-├── node_modules
-├── config.json
-├── index.js
-├── package-lock.json
-└── package.json
-```
-
 <Alert title="Read first!" type="info">
 For fully functional slash commands, there are three important pieces of code that need to be written. They are:
 
@@ -43,6 +30,19 @@ These steps can be done in any order, but **all are required** before the comman
 On this page, you'll complete Step 1. Make sure to also complete the other pages linked above!
 
 </Alert>
+
+## Before you continue
+
+Assuming you've followed the guide so far, your project directory should look something like this:
+
+```:no-line-numbers
+discord-bot/
+├── node_modules
+├── config.json
+├── index.js
+├── package-lock.json
+└── package.json
+```
 
 ## Individual command files
 
@@ -129,10 +129,11 @@ export const data = {
 	description: 'Provides information about the server.',
 };
 
-export async ffunction execute(interaction) {
+export async function execute(interaction) {
 	// interaction.guild is the object representing the Guild in which the command was run
-	await interaction.reply(`This server is ${interaction.guild.name} and has ${interaction.guild.memberCount} members.`);
-};
+	await interaction.reply(`This server is ${interaction.guild.name} and has 
+		${interaction.guild.memberCount} members.`);
+}
 ```
 
 </CH.Code>

@@ -108,12 +108,24 @@ Once you fill in these values, run _`node deploy-commands.js`_ in your project d
 
 Global application commands will be available in all the guilds your application has the _`applications.commands`_ scope authorized in, and in direct messages by default.
 
-To deploy global commands, you can use the same script from the [guild commands](#guild-commands) section and simply adjust the route in the script to `.applicationCommands(clientId)`
+To deploy global commands, you can use the same script from the [guild commands](#guild-commands) section and simply adjust the route in the script to _`.applicationCommands(clientId)`_
 
-<CH.Code>
+Test
 
-```js focus=2
-await rest.put(Routes.applicationCommands(clientId), { body: commands });
+<CH.Code rows="focus">
+
+```js focus=5
+try {
+	console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+	// The put method is used to fully refresh all commands in the guild with the current set
+	const data = await rest.put(Routes.applicationCommands(clientId), { body: commands });
+
+	console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+} catch (error) {
+	// And of course, make sure you catch and log any errors!
+	console.error(error);
+}
 ```
 
 </CH.Code>

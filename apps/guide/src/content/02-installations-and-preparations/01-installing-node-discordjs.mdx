@@ -21,7 +21,7 @@ On macOS, either:
 - Download the latest version from [the Node.js website](https://nodejs.org/), open the package installer, and follow the instructions
 - Use a package manager like [Homebrew](https://brew.sh/) with the command _`brew install node`_
 
-On Linux, you can consult [this page](https://nodejs.org/en/download/package-manager/) to determine how you should install Node. Native package managers often default to outdated versions of Node, so make sure you follow the recommended approach for your chosen Linu distribution carefully.
+On Linux, you can consult [this page](https://nodejs.org/en/download/package-manager/) to determine how you should install Node. Native package managers often default to outdated versions of Node, so make sure you follow the recommended approach for your chosen Linux distribution carefully.
 
 ## Preparing the essentials
 
@@ -54,16 +54,16 @@ With the terminal open, run the _`node -v`_ command to make sure you've successf
 
 <CH.Code lineNumbers={false}>
 
-```sh
-npm init -y; npm pkg set type="module"
+```sh npm
+npm init; npm pkg set type="module"
 ```
 
-```sh
+```sh yarn
 yarn init
 # You must go into your package.json file and add "type": "module"
 ```
 
-```sh
+```sh pnpm
 pnpm init; pnpm pkg set type="module"
 ```
 
@@ -71,7 +71,7 @@ pnpm init; pnpm pkg set type="module"
 
 This is the next command you'll be running. This command creates a _`package.json`_ file for you, which will keep track of the dependencies your project uses, as well as other info.
 
-This command will ask you a sequence of questions–you should fill them out as you see fit. If you're not sure of something or want to skip it as a whole, leave it blank and press enter.
+This command will ask you a sequence of questions–you should fill them out as you see fit. If you're not sure of something or want to skip it as a whole, leave it blank and press enter. Setting the package type as _`module`_ tells Node that you'll be writing this project using ESM \(ECMAScript modules\), supporting the latest JavaScript syntax and features.
 
 Once you're done with that, you're ready to install discord.js!
 
@@ -81,15 +81,15 @@ Now that you've installed Node.js and know how to open your console and run comm
 
 <CH.Code lineNumbers={false}>
 
-```sh
+```sh npm
 npm install discord.js
 ```
 
-```sh
+```sh yarn
 yarn add discord.js
 ```
 
-```sh
+```sh pnpm
 pnpm add discord.js
 ```
 

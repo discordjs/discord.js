@@ -15,20 +15,24 @@ At this point, your `index.js` file has code for loading commands, and listeners
 
 <CH.Code>
 
-```js Command loading
+```js Commands
 const commands = new Collection();
 
-const commandsPath = fileURLToPath(new URL('commands', import.meta.url));
-const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
+const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
+const commandFolders = await readdir(foldersPath);
 
-for (const file of commandFiles) {
-	const filePath = join(commandsPath, file);
-	const command = await import(filePath);
-	// Set a new item in the Collection with the key as the command name and the value as the exported module
-	if ('data' in command && 'execute' in command) {
-		commands.set(command.data.name, command);
-	} else {
-		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+for (const folder of commandFolders) {
+	const commandsPath = join(foldersPath, folder);
+	const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
+	for (const file of commandFiles) {
+		const filePath = join(commandsPath, file);
+		const command = await import(filePath);
+		// Set a new item in the Collection with the key as the command name and the value as the exported module
+		if ('data' in command && 'execute' in command) {
+			commands.set(command.data.name, command);
+		} else {
+			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+		}
 	}
 }
 ```
@@ -83,16 +87,6 @@ Create an _`events`_ folder in the same directory. You can then move the code fr
 
 <CH.Code>
 
-```js events/ready.js
-import { Events } from 'discord.js';
-
-export const name = Events.ClientReady;
-export const once = true;
-export async function execute(client) {
-	console.log(`Ready! Logged in as ${client.user.tag}`);
-}
-```
-
 ```js events/interactionCreate.js
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -119,7 +113,10 @@ for (const folder of commandFolders) {
 	}
 }
 
-export const name = Events.InteractionCreate;
+export const data = {
+	name: Events.InteractionCreate,
+};
+
 export async function execute(interaction) {
 	if (!interaction.isChatInputCommand()) return;
 
@@ -136,6 +133,18 @@ export async function execute(interaction) {
 		console.error(`Error executing ${interaction.commandName}`);
 		console.error(error);
 	}
+}
+```
+
+```js events/ready.js
+import { Events } from 'discord.js';
+
+export const data = {
+	name: Events.ClientReady,
+	once = true,
+};
+export async function execute(client) {
+	console.log(`Ready! Logged in as ${client.user.tag}`);
 }
 ```
 
@@ -159,11 +168,11 @@ The _`name`_ property states which event this file is for, and the _`once`_ prop
 
 Next, let's write the code for dynamically retrieving all the event files in the _`events`_ folder. We'll be taking a similar approach to our [command handler](/creating-your-bot/command-handling.md). Place the new code highlighted below in your _`index.js`_.
 
-_`fs.readdir()`_ combined with _`array.filter()`_ returns an array of all the file names in the given directory and filters for only _`.js`_ files, i.e. `['ready.js', 'interactionCreate.js']`.
+_`fs.readdir()`_ combined with _`array.filter()`_ returns an array of all the file names in the given directory and filters for only _`.js`_ files, i.e. _`['ready.js', 'interactionCreate.js']`_.
 
 <CH.Code>
 
-```js focus=26:37
+```js focus=9:20
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -178,10 +187,10 @@ const eventFiles = await readdir(eventsPath).then((files) => files.filter((file)
 for (const file of eventFiles) {
 	const filePath = join(eventsPath, file);
 	const event = await import(filePath);
-	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
+	if (event.data.once) {
+		client.once(event.data.name, (...args) => event.execute(...args));
 	} else {
-		client.on(event.name, (...args) => event.execute(...args));
+		client.on(event.data.name, (...args) => event.execute(...args));
 	}
 }
 

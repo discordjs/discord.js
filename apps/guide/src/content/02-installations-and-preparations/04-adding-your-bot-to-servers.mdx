@@ -13,9 +13,13 @@ Before you're able to see your bot in your own (or other) servers, you'll need t
 
 The basic version of one such link looks like this:
 
+<CH.Code lineNumbers={false}>
+
 ```
 https://discord.com/api/oauth2/authorize?client_id=123456789012345678&permissions=0&scope=bot%20applications.commands
 ```
+
+</CH.Code>
 
 The structure of the URL is quite simple:
 
@@ -37,12 +41,12 @@ In the sidebar, you'll find the OAuth2 URL generator. Select the _`bot`_ and _`a
 
 Grab the link via the "Copy" button and enter it in your browser. You should see something like this (with your bot's username and avatar):
 
-![Bot Authorization page](./images/bot-auth-page.png)
+![Bot Authorization page](/assets/bot-auth-page.png)
 
 Choose the server you want to add it to and click "Authorize". Do note that you'll need the "Manage Server" permission on a server to add your bot there. This should then present you a nice confirmation message:
 
-![Bot authorized](./images/bot-authorized.png)
+![Bot authorized](/assets/bot-authorized.png)
 
 Congratulations! You've successfully added your bot to your Discord server. It should show up in your server's member list somewhat like this:
 
-![Bot in server's member list](./images/bot-in-memberlist.png)
+![Bot in server's member list](/assets/bot-in-memberlist.png)

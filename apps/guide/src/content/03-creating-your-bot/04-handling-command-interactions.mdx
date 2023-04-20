@@ -1,6 +1,6 @@
 ---
-title: Command handling
-category: Handling command interactions
+title: Handling command interactions
+category: Creating your bot
 ---
 
 # Command handling
@@ -163,16 +163,14 @@ Let's take a look at the _`ping`_ command again. Note the _`execute()`_ function
 <CH.Code>
 
 ```js
-const data = {
+export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
 };
 
-const execute = async (interaction) => {
+export async function execute(interaction) {
 	await interaction.reply('Pong!');
-};
-
-export { data, execute };
+}
 ```
 
 </CH.Code>
@@ -216,11 +214,11 @@ So far, all of your command files are in a single _`commands`_ folder. This is f
 
 If you've been following along, your project structure should look something like this:
 
-![Project structure before sorting](./images/before-sorting.png)
+![Project structure before sorting](/assets/before-sorting.png)
 
 After moving your commands into subfolders, it will look something like this:
 
-![Project structure after sorting](./images/after-sorting.png)
+![Project structure after sorting](/assets/after-sorting.png)
 
 <Alert title="Warning" type="warning">
 	Make sure you put every command file you have inside one of the new subfolders. Leaving a command file directly under
@@ -233,7 +231,7 @@ Back in your _`index.js`_ file, where the code to [dynamically read command file
 
 <CH.Code>
 
-```js JavaScript mark=3:7,19
+```js JavaScript focus=3:7,19
 const commands = new Collection();
 
 const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
