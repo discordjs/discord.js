@@ -122,13 +122,13 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	if (action !== AuditLogEvent.MemberKick) return;
 
 	// Ensure the executor is cached.
-	const user = await client.users.fetch(executorId);
+	const executor = await client.users.fetch(executorId);
 
 	// Ensure the kicked guild member is cached.
 	const kickedUser = await client.users.fetch(targetId);
 
 	// Now you can log the output!
-	console.log(`${kickedUser.tag} was kicked by ${user.tag}.`);
+	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
 });
 ```
 
@@ -143,13 +143,13 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	if (action !== AuditLogEvent.MemberKick) return;
 
 	// Ensure the executor is cached. The id definitely exists.
-	const user = await client.users.fetch(executorId!);
+	const executor = await client.users.fetch(executorId!);
 
 	// Ensure the kicked guild member is cached. The id definitely exists.
 	const kickedUser = await client.users.fetch(targetId!);
 
 	// Now you can log the output!
-	console.log(`${kickedUser.tag} was kicked by ${user.tag}.`);
+	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
 });
 ```
 
