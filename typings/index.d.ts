@@ -6440,7 +6440,8 @@ export type UserFlagsString =
   | 'VERIFIED_BOT'
   | 'EARLY_VERIFIED_BOT_DEVELOPER'
   | 'DISCORD_CERTIFIED_MODERATOR'
-  | 'BOT_HTTP_INTERACTIONS';
+  | 'BOT_HTTP_INTERACTIONS'
+  | 'ACTIVE_DEVELOPER';
 
 export type UserMention = `<@${Snowflake}>`;
 
