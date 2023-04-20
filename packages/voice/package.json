@@ -9,7 +9,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "yarn build:docs && api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/voice/*'",
 		"release": "cliff-jumper"
@@ -54,7 +54,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@types/ws": "^8.5.4",
-		"discord-api-types": "^0.37.38",
+		"discord-api-types": "^0.37.39",
 		"prism-media": "^1.3.5",
 		"tslib": "^2.5.0",
 		"ws": "^8.13.0"

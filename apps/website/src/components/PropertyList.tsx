@@ -7,7 +7,7 @@ import type {
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { Property, PropertySeparatorType } from './Property';
+import { Property } from './Property';
 import { resolveMembers } from '~/util/members';
 
 export function isPropertyLike(item: ApiItem): item is ApiProperty | ApiPropertySignature {
@@ -25,7 +25,6 @@ export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
 						<Property
 							inheritedFrom={prop.inherited as ApiDeclaredItem & ApiItemContainerMixin}
 							item={prop.item as ApiProperty}
-							separator={PropertySeparatorType.Type}
 						/>
 						<div className="border-t-2 border-light-900 dark:border-dark-100" />
 					</Fragment>
