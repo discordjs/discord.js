@@ -149,6 +149,11 @@
  */
 
 /**
+ * @external APIRoleSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIRoleSelectComponent}
+ */
+
+/**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
  */
@@ -166,6 +171,11 @@
 /**
  * @external APIUser
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUser}
+ */
+
+/**
+ * @external APIUserSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIUserSelectComponent}
  */
 
 /**
