@@ -69,13 +69,13 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	if (action !== AuditLogEvent.MessageDelete) return;
 
 	// Ensure the executor is cached.
-	const user = await client.users.fetch(executorId);
+	const executor = await client.users.fetch(executorId);
 
 	// Ensure the author whose message was deleted is cached.
 	const target = await client.users.fetch(targetId);
 
 	// Log the output.
-	console.log(`A message by ${target.tag} was deleted by ${user.tag} in ${channel}.`);
+	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
 });
 ```
 
@@ -91,13 +91,13 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	if (action !== AuditLogEvent.MessageDelete) return;
 
 	// Ensure the executor is cached. The id definitely exists.
-	const user = await client.users.fetch(executorId!);
+	const executor = await client.users.fetch(executorId!);
 
 	// Ensure the author whose message was deleted is cached. The id definitely exists.
 	const target = await client.users.fetch(targetId!);
 
 	// Log the output.
-	console.log(`A message by ${target.tag} was deleted by ${user.tag} in ${channel}.`);
+	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
 });
 ```
 
