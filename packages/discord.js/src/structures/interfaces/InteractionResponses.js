@@ -245,7 +245,7 @@ class InteractionResponses {
 
   /**
    * Shows a modal component
-   * @param {APIModal|ModalData|Modal} modal The modal to show
+   * @param {APIModalInteractionResponseCallbackData|ModalBuilder} modal The modal to show
    * @returns {Promise<void>}
    */
   async showModal(modal) {
