@@ -49,7 +49,10 @@ This will return the first entry where an invite was created. You used _`limit: 
 
 ## Receiving Audit Logs
 
-Audit logs may be received via the gateway event <DocsLink type="class" parent="Client" symbol="e-guildAuditLogEntryCreate"/>. This is the best way to receive audit logs if you want to monitor them. As soon as a message is deleted, or an invite or emoji is created, your application will receive an instance of this event. A common use case is to find out _who_ did the action that caused the audit log event to happen.
+Audit logs may be received via the gateway event <DocsLink type="class" parent="Client" symbol="e-guildAuditLogEntryCreate"/>.
+This is the best way to receive audit logs if you want to monitor them. As soon as an audit log entry is created,
+your application will receive an instance of this event. A common use case is to find out _who_ did the action that
+caused the audit log event to happen.
 
 ### Who deleted a message?
 
