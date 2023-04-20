@@ -8,16 +8,15 @@ category: Creating your bot
 Unless your bot project is small, it's not a very good idea to have a single file with a giant _`if`_/_`else if`_ chain for commands. If you want to implement features into your bot and make your development process a lot less painful, you'll want to implement a command handler. Let's get started on that!
 
 <Alert title="Read first!" type="info">
-For fully functional slash commands, there are three important pieces of code that need to be written. They are:
+	For fully functional slash commands, there are three important pieces of code that need to be written. They are:
 
-1. The [individual command files](slash-commands), containing their definitions and functionality.
-2. The command handler, which dynamically reads the files and executes the commands.
-3. The [command deployment script](command-deployment), to register your slash commands with Discord so they appear in the interface.
+	1. The [individual command files](slash-commands), containing their definitions and functionality.
+	2. The command handler, which dynamically reads the files and executes the commands.
+	3. The [command deployment script](command-deployment), to register your slash commands with Discord so they appear in the interface.
 
-These steps can be done in any order, but **all are required** before the commands are fully functional.
+	These steps can be done in any order, but **all are required** before the commands are fully functional.
 
-This page details how to complete **Step 2**. Make sure to also complete the other pages linked above!
-
+	This page details how to complete **Step 2**. Make sure to also complete the other pages linked above!
 </Alert>
 
 ## Loading command files
@@ -75,10 +74,12 @@ client.once(Events.ClientReady, () => {
 	Node's native path utility module. _`join`_ helps construct paths to access files and directories. One of the
 	advantages of _`path.join`_ is that it automatically detects the operating system and uses the appropriate joiners. -
 	The [`url`](https://nodejs.org/api/url.html) module provides utilities for URL resolution and parsing.
-	_`fileURLToPath`_ ensuring a cross-platform valid absolute path string. - The{' '}
+	_`fileURLToPath`_ ensuring a cross-platform valid absolute path string.
+	- The{' '}
 	<DocsLink type="class" parent="Collection" /> class extends JavaScript's native
 	[_`Map`_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes
 	more extensive, useful functionality. _`Collection`_ is used to store and efficiently retrieve commands for execution.
+
 </Alert>
 
 Next, using the modules imported above, dynamically retrieve your command files with a few more additions to the _`index.js`_ file:
