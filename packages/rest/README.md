@@ -18,7 +18,7 @@
 
 ## About
 
-`@discord.js/rest` is a module that allows you to easily make REST requests to the Discord API.
+`@discordjs/rest` is a module that allows you to easily make REST requests to the Discord API.
 
 ## Installation
 
