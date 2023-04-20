@@ -49,7 +49,7 @@ const rest = new REST({
 ```
 
 **Do note that you should not use the same proxy with multiple bots. We cannot guarantee you won't hit rate limits.
-Webhooks or things that don't include the Authorization header are okay, though!**
+Webhooks with tokens or other requests that don't include the Authorization header are okay, though!**
 
 ## Links
 
