@@ -12,6 +12,12 @@ interface LabelerData {
 	name: string;
 }
 
+function sortYAMLObject(yaml: Record<string, string[]>) {
+	const sortedYAML: typeof yaml = {};
+	for (const key of Object.keys(yaml).sort((a, b) => a.localeCompare(b))) sortedYAML[key] = yaml[key]!;
+	return sortedYAML;
+}
+
 export async function createPackage(packageName: string, packageDescription?: string) {
 	const packageDir = join('packages', packageName);
 
@@ -75,19 +81,14 @@ export async function createPackage(packageName: string, packageDescription?: st
 	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
 	labelerYAML[`packages:${packageName}`] = [`packages/${packageName}/*`, `packages/${packageName}/**/*`];
 
-	const sortedLabelerYAML: Record<string, string[]> = {};
-	for (const key of Object.keys(labelerYAML).sort((a, b) => a.localeCompare(b))) {
-		sortedLabelerYAML[key] = labelerYAML[key]!;
-	}
-
-	await writeFile('labeler.yml', stringifyYAML(sortedLabelerYAML));
+	await writeFile('labeler.yml', stringifyYAML(sortYAMLObject(labelerYAML)));
 
 	const issueLabelerYAML = parseYAML(await readFile('issue-labeler.yml', 'utf8')) as Record<string, string[]>;
 	issueLabelerYAML[`packages:${packageName}`] = [
 		`### Which package is this (bug report|feature request) for\\?\\n\\n${packageName}`,
 	];
 
-	await writeFile('issue-labeler.yml', stringifyYAML(issueLabelerYAML));
+	await writeFile('issue-labeler.yml', stringifyYAML(sortYAMLObject(issueLabelerYAML)));
 
 	// Move back to root
 	chdir('..');
