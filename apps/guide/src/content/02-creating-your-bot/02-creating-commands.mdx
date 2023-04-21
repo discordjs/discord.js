@@ -102,7 +102,7 @@ You should first check if an interaction is a chat input command via <DocsLink t
 
 <CH.Code>
 
-```js mark=5:16
+```js mark=5:17
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -132,7 +132,7 @@ Note that servers are referred to as "guilds" in the Discord API and discord.js 
 
 <CH.Code>
 
-```js focus=7
+```js focus=9
 client.on('interactionCreate', async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
@@ -185,7 +185,7 @@ A "user" refers to a Discord user. _`interaction.user`_ refers to the user the i
 
 <CH.Code>
 
-```js focus=9
+```js focus=11
 client.on('interactionCreate', async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
