@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 /**
  * @external ActivityFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
@@ -131,6 +133,11 @@
 /**
  * @external APIModalInteractionResponse
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponse}
+ */
+
+/**
+ * @external APIModalInteractionResponseCallbackData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData}
  */
 
 /**
