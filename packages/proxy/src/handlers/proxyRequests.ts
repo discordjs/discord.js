@@ -47,7 +47,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 
 			await populateSuccessfulResponse(res, discordResponse);
 		} catch (error) {
-			const knownError = await populateErrorResponse(res, error);
+			const knownError = populateErrorResponse(res, error);
 			if (!knownError) {
 				// Unclear if there's better course of action here for unknown errors.
 				// Any web framework allows to pass in an error handler for something like this
