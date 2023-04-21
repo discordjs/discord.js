@@ -67,7 +67,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 </CH.Code>
 
 Currently, all of this code is in the _`index.js`_ file. <DocsLink type="class" parent="Client" symbol="e-ready" /> emits once when the _`Client`_ becomes ready for use, and <DocsLink type="class" parent="Client" symbol="e-interactionCreate" /> emits whenever an interaction is received.
-Moving the event listener code into individual files is simple, and we'll be taking a similar approach to the [command handler](/creating-your-bot/command-handling.md).
+Moving the event listener code into individual files is simple, and we'll be taking a similar approach to the [command handler](./handling-command-interactions).
 
 ## Individual event files
 
@@ -167,7 +167,7 @@ The _`name`_ property states which event this file is for, and the _`once`_ prop
 
 ## Reading event files
 
-Next, let's write the code for dynamically retrieving all the event files in the _`events`_ folder. We'll be taking a similar approach to our [command handler](/creating-your-bot/command-handling.md). Place the new code highlighted below in your _`index.js`_.
+Next, let's write the code for dynamically retrieving all the event files in the _`events`_ folder. We'll be taking a similar approach to our [command handler](./handling-command-interactions). Place the new code highlighted below in your _`index.js`_.
 
 _`fs.readdir()`_ combined with _`array.filter()`_ returns an array of all the file names in the given directory and filters for only _`.js`_ files, i.e. _`['ready.js', 'interactionCreate.js']`_.
 

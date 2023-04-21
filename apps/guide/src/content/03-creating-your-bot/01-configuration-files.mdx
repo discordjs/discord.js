@@ -5,9 +5,9 @@ category: Creating your bot
 
 # Configuration files
 
-Once you [add your bot to a server](/preparations/adding-your-bot-to-servers.md), the next step is to start coding and get it online! Let's start by creating a config file to prepare the necesssary values your client will need.
+Once you [add your bot to a server](../installations-and-preparations/adding-your-bot-to-servers), the next step is to start coding and get it online! Let's start by creating a config file to prepare the necessary values your client will need.
 
-As explained in the ["What is a token, anyway?"](/preparations/setting-up-a-bot-application.md#what-is-a-token-anyway) section, your token is essentially your bot's password, and you should protect it as best as possible. This can be done through a _`config.json`_ file or by using environment variables.
+As explained in the ["What is a token, anyway?"](../installations-and-preparations/setting-up-a-bot-application.md#what-is-a-token-anyway) section, your token is essentially your bot's password, and you should protect it as best as possible. This can be done through a _`config.json`_ file or by using environment variables.
 
 Open your application in the [Discord Developer Portal](https://discord.com/developers/applications) and go to the "Bot" page to copy your token.
 
@@ -33,7 +33,7 @@ console.log(config.token);
 
 <Alert title="Danger" type="danger">
 	If you're using Git, you should not commit this file and should [ignore it via
-	`.gitignore`](/creating-your-bot/#git-and-gitignore).
+	`.gitignore`](#git-and-gitignore).
 </Alert>
 
 ## Using environment variables
@@ -102,7 +102,7 @@ console.log(process.env.DISCORD_TOKEN);
 
 <Alert title="Danger" type="danger">
 	If you're using Git, you should not commit this file and should [ignore it via
-	`.gitignore`](/creating-your-bot/#git-and-gitignore).
+	`.gitignore`](#git-and-gitignore).
 </Alert>
 
 <Alert title="Online editors (Glitch, Heroku, Replit, etc.)" type="info">
@@ -114,7 +114,7 @@ While we generally do not recommend using online editors as hosting solutions, b
 
 </Alert>
 
-## Git and _`.gitignore`_
+## Git and .gitignore
 
 Git is a fantastic tool to keep track of your code changes and allows you to upload progress to services like [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org/product). While this is super useful to share code with other developers, it also bears the risk of uploading your configuration files with sensitive values!
 
