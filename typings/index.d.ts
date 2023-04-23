@@ -2592,7 +2592,7 @@ export class TextInputComponent extends BaseMessageComponent {
 }
 
 export class ThreadChannel extends TextBasedChannelMixin(Channel, ['fetchWebhooks', 'createWebhook', 'setNSFW']) {
-  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client, fromInteraction?: boolean);
+  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client);
   public archived: boolean | null;
   public readonly archivedAt: Date | null;
   public archiveTimestamp: number | null;
