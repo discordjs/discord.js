@@ -25,7 +25,7 @@ The structure of the URL is quite simple:
 
 - _`https://discord.com/api/oauth2/authorize`_ is Discord's standard structure for authorizing an OAuth2 application (such as your bot application) for entry to a Discord server.
 - _`client_id=...`_ is to specify _which_ application you want to authorize. You'll need to replace this part with your client's id to create a valid invite link.
-- _`permissions=...`_ describes what permissions your bot will have on the server you are adding it to.
+- _`permissions=...`_ describes the permissions that your bot will request to be granted by default upon joining the server you are adding it to.
 - _`scope=bot%20applications.commands`_ specifies that you want to add this application as a Discord bot, with the ability to create slash commands.
 
 <Alert title="Warning" type="warning">
