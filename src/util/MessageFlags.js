@@ -45,6 +45,7 @@ MessageFlags.FLAGS = {
   EPHEMERAL: 1 << 6,
   LOADING: 1 << 7,
   SUPPRESS_NOTIFICATIONS: 1 << 12,
+  IS_VOICE_MESSAGE: 1 << 13,
 };
 
 module.exports = MessageFlags;
