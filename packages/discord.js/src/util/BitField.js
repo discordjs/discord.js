@@ -117,7 +117,9 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const [flag, bit] of Object.entries(this.constructor.Flags)) serialized[flag] = this.has(bit, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
+      if (isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
+    }
     return serialized;
   }
 
