@@ -573,6 +573,8 @@ export type CategoryChannelTypes = ExcludeEnum<
 
 export class CategoryChannel extends GuildChannel {
   public readonly children: Collection<Snowflake, Exclude<NonThreadGuildBasedChannel, CategoryChannel>>;
+  public static parent: null;
+  public parentId: null;
   public type: 'GUILD_CATEGORY';
 
   public createChannel<T extends Exclude<CategoryChannelTypes, 'GUILD_STORE' | ChannelTypes.GUILD_STORE>>(
