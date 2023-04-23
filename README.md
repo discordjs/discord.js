@@ -116,7 +116,7 @@ client.login('token');
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/docs).  
+[documentation](https://old.discord.js.org/#/docs).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
