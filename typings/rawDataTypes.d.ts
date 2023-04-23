@@ -5,7 +5,6 @@ import {
   APIApplication,
   APIApplicationCommand,
   APIApplicationCommandInteraction,
-  APIAttachment,
   APIAuditLog,
   APIAuditLogEntry,
   APIBan,
@@ -169,7 +168,20 @@ export type RawInviteStageInstance = APIInviteStageInstance;
 export type RawMessageData = APIMessage;
 export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 
-export type RawMessageAttachmentData = APIAttachment;
+export interface RawMessageAttachmentData {
+	id: Snowflake;
+	filename: string;
+	description?: string;
+	content_type?: string;
+	size: number;
+	url: string;
+	proxy_url: string;
+	height?: number | null;
+	width?: number | null;
+	ephemeral?: boolean;
+	duration_secs?: number;
+	waveform?: string;
+}
 
 export type RawMessagePayloadData =
   | RESTPostAPIChannelMessageJSONBody

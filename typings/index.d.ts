@@ -1705,6 +1705,7 @@ export class MessageAttachment {
   public attachment: BufferResolvable | Stream;
   public contentType: string | null;
   public description: string | null;
+  public duration: number | null;
   public ephemeral: boolean;
   public height: number | null;
   public id: Snowflake;
@@ -1713,6 +1714,7 @@ export class MessageAttachment {
   public size: number;
   public readonly spoiler: boolean;
   public url: string;
+  public waveform: string | null;
   public width: number | null;
   public setDescription(description: string): this;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
@@ -3933,6 +3935,12 @@ export interface APIErrors {
   INSUFFICIENT_BOOSTS: 50101;
   INVALID_JSON: 50109;
   CANNOT_MIX_SUBSCRIPTION_AND_NON_SUBSCRIPTION_ROLES_FOR_EMOJI: 50144;
+  VOICE_MESSAGES_DO_NOT_SUPPORT_ADDITIONAL_CONTENT: 50159;
+  VOICE_MESSAGES_MUST_HAVE_A_SINGLE_AUDIO_ATTACHMENT: 50160;
+  VOICE_MESSAGES_MUST_HAVE_SUPPORTING_METADATA: 50161;
+  VOICE_MESSAGES_CANNOT_BE_EDITED: 50162;
+  CANNOT_DELETE_GUILD_SUBSCRIPTION_INTEGRATION: 50163;
+  YOU_CANNOT_SEND_VOICE_MESSAGES_IN_THIS_CHANNEL: 50173;
   CANNOT_CONVERT_PREMIUM_EMOJI_TO_NORMAL_EMOJI: 50145;
   TWO_FACTOR_REQUIRED: 60003;
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004;
@@ -5864,7 +5872,8 @@ export type MessageFlagsString =
   | 'HAS_THREAD'
   | 'EPHEMERAL'
   | 'LOADING'
-  | 'SUPPRESS_NOTIFICATIONS';
+  | 'SUPPRESS_NOTIFICATIONS'
+  | 'IS_VOICE_MESSAGE';
 
 export interface MessageInteraction {
   id: Snowflake;
@@ -6056,7 +6065,8 @@ export type PermissionString =
   | 'MODERATE_MEMBERS'
   | 'MANAGE_EVENTS'
   | 'VIEW_CREATOR_MONETIZATION_ANALYTICS'
-  | 'USE_SOUNDBOARD';
+  | 'USE_SOUNDBOARD'
+  | 'SEND_VOICE_MESSAGES';
 
 export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
