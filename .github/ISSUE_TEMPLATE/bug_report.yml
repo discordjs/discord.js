@@ -16,6 +16,7 @@ body:
         - builders
         - collection
         - core
+        - create-discord-bot
         - formatters
         - next
         - proxy

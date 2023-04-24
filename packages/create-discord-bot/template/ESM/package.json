@@ -1,0 +1,14 @@
+{
+	"name": "[REPLACE-NAME]",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"start": "node --require dotenv/config ."
+	},
+	"main": "index.js",
+	"dependencies": {
+		"discord.js": "^14.9.0",
+		"dotenv": "^16.0.3"
+	}
+}
