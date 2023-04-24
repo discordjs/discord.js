@@ -1,0 +1,161 @@
+---
+title: Audit logs
+category: Popular topics
+---
+
+# Audit logs
+
+## A Quick Background
+
+Audit logs are an excellent moderation tool offered by Discord to know what happened in a server and usually by whom. Making use of audit logs requires the _`ViewAuditLog`_ permission. Audit logs may be fetched on a server, or they may be received via the gateway event <DocsLink type="class" parent="Client" symbol="e-guildAuditLogEntryCreate"/> which requires the _`GuildModeration`_ intent.
+
+There are quite a few cases where you may use audit logs. This guide will limit itself to the most common use cases. Feel free to consult the [relevant Discord API page](https://discord.com/developers/docs/resources/audit-log) for more information.
+
+Keep in mind that these examples explore a straightforward case and are by no means exhaustive. Their purpose is to teach you how audit logs work, and expansion of these examples is likely needed to suit your specific use case.
+
+## Fetching Audit Logs
+
+Let's start by glancing at the <DocsLink type="class" parent="Guild" symbol="fetchAuditLogs" brackets /> method and how to work with it. Like many discord.js methods, it returns a [Promise](../additional-info/understanding-async-await) containing the <DocsLink type="class" parent="GuildAuditLogs"/> object. This object has one property, _`entries`_, which holds a [Collection](../additional-info/collections) of <DocsLink type="class" parent="GuildAuditLogsEntry"/> objects, and consequently, the information you want to retrieve.
+
+Here is the most basic fetch to look at some entries.
+
+<CH.Code>
+
+```js
+const fetchedLogs = await guild.fetchAuditLogs();
+const firstEntry = fetchedLogs.entries.first();
+```
+
+</CH.Code>
+
+Simple, right? Now, let's look at utilizing its options:
+
+<CH.Code>
+
+```js
+import { AuditLogEvent } from 'discord.js';
+
+const fetchedLogs = await guild.fetchAuditLogs({
+	type: AuditLogEvent.InviteCreate,
+	limit: 1,
+});
+
+const firstEntry = fetchedLogs.entries.first();
+```
+
+</CH.Code>
+
+This will return the first entry where an invite was created. You used _`limit: 1`_ here to specify only one entry.
+
+## Receiving Audit Logs
+
+Audit logs may be received via the gateway event <DocsLink type="class" parent="Client" symbol="e-guildAuditLogEntryCreate"/>.
+This is the best way to receive audit logs if you want to monitor them. As soon as an audit log entry is created,
+your application will receive an instance of this event. A common use case is to find out _who_ did the action that
+caused the audit log event to happen.
+
+### Who deleted a message?
+
+One of the most common use cases for audit logs is understanding who deleted a message in a Discord server. If a user deleted another user's message, you can find out who did that as soon as you receive the corresponding audit log event.
+
+<CH.Code>
+
+```js JavaScript
+import { AuditLogEvent, Events } from 'discord.js';
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	// The extra information here will be the channel.
+	const { action, extra: channel, executorId, targetId } = auditLog;
+
+	// Check only for deleted messages.
+	if (action !== AuditLogEvent.MessageDelete) return;
+
+	// Ensure the executor is cached.
+	const executor = await client.users.fetch(executorId);
+
+	// Ensure the author whose message was deleted is cached.
+	const target = await client.users.fetch(targetId);
+
+	// Log the output.
+	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
+});
+```
+
+```ts TypeScript
+import { AuditLogEvent, Events } from 'discord.js';
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	// The extra information here will be the channel.
+	const { action, extra: channel, executorId, targetId } = auditLog;
+
+	// Check only for deleted messages.
+	if (action !== AuditLogEvent.MessageDelete) return;
+
+	// Ensure the executor is cached. The id definitely exists.
+	const executor = await client.users.fetch(executorId!);
+
+	// Ensure the author whose message was deleted is cached. The id definitely exists.
+	const target = await client.users.fetch(targetId!);
+
+	// Log the output.
+	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
+});
+```
+
+</CH.Code>
+
+With this, you now have a very simple logger telling you who deleted a message authored by another person.
+
+### Who kicked a user?
+
+This is very similar to the example above.
+
+<CH.Code>
+
+```js JavaScript
+import { AuditLogEvent, Events } from 'discord.js';
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	const { action, executorId, targetId } = auditLog;
+
+	// Check only for kicked users.
+	if (action !== AuditLogEvent.MemberKick) return;
+
+	// Ensure the executor is cached.
+	const executor = await client.users.fetch(executorId);
+
+	// Ensure the kicked guild member is cached.
+	const kickedUser = await client.users.fetch(targetId);
+
+	// Now you can log the output!
+	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
+});
+```
+
+```ts TypeScript
+import { AuditLogEvent, Events } from 'discord.js';
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	const { action, executorId, targetId } = auditLog;
+
+	// Check only for kicked users.
+	if (action !== AuditLogEvent.MemberKick) return;
+
+	// Ensure the executor is cached. The id definitely exists.
+	const executor = await client.users.fetch(executorId!);
+
+	// Ensure the kicked guild member is cached. The id definitely exists.
+	const kickedUser = await client.users.fetch(targetId!);
+
+	// Now you can log the output!
+	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
+});
+```
+
+</CH.Code>
+
+If you want to check who banned a user, it's actually the same example as above except for the _`action`_. You need to provide _`AuditLogEvent.MemberBanAdd`_ for this case.
