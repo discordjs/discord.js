@@ -1,0 +1,57 @@
+Documentación de GitHub
+Solicitudes de incorporación de cambios/Colaboración con solicitudes de incorporación de cambios/Proponer cambios/Acerca de las solicitudes de incorporación de cambios
+Acerca de las solicitudes de incorporación de cambios
+En este artículo
+Acerca de las solicitudes de incorporación de cambios
+Borrador de solicitudes de incorporación de cambios
+Diferencias entre confirmaciones en las páginas de comparación y de solicitudes de cambios
+Información adicional
+Las solicitudes de incorporación de cambios te permiten comentarle a otros acerca de los cambios que has insertado en una rama de un repositorio en GitHub. Una vez que se abre una solicitud de incorporación de cambios, puedes debatir y revisar los posibles cambios con los colaboradores y agregar confirmaciones de seguimiento antes de que los cambios se fusionen en la rama base.
+
+Mac
+Windows
+Linux
+Acerca de las solicitudes de incorporación de cambios
+Nota: Cuando trabaje con solicitudes de incorporación de cambios, tenga en cuenta lo siguiente:
+
+Si trabaja en el modelo de repositorio compartido, se recomienda usar una rama de tema para la solicitud de incorporación de cambios. Si bien puedes enviar solicitudes de extracción desde cualquier rama o confirmación, con una rama de tema puedes subir confirmaciones de seguimiento para actualizar tus cambios propuestos.
+Ten cuidado cuando subas confirmaciones forzadamente a una solicitud de cambios. El subir información forzadamente cambia el historial del repositorio y puede corromper tu solicitud de cambios. Si otros colaboradores ramifican el proyecto antes de una subida forzada, dicha subida forzada podría sobrescribir las confirmaciones en las cuales estos colaboradores basaron su trabajo.
+Puedes crear solicitudes de incorporación de cambios en GitHub.com, con GitHub Desktop, en GitHub Codespaces, en GitHub Mobile y cuando se usa la CLI de GitHub.
+
+Después de inicializar una solicitud de extracción, verás una página de revisión que muestra una descripción general de alto nivel de los cambios entre tu rama (la rama de comparación) y la rama base del repositorio. Puede agregar un resumen de los cambios propuestos, revisar los cambios realizados por las confirmaciones, agregar etiquetas, hitos y usuarios asignados, y @mention a equipos o colaboradores individuales. Para obtener más información, vea «Crear una solicitud de incorporación de cambios».
+
+Una vez que has creado una solicitud de extracción, puedes subir confirmaciones desde tu rama de tema para agregarlas a tu solicitud de extracción existente. Estas confirmaciones aparecerán en orden cronológico dentro de tu solicitud de extracción y los cambios serán visibles en la pestaña "Archivos modificados".
+
+Otros colaboradores pueden revisar tus cambios propuestos, agregar comentarios de revisión, contribuir con el debate sobre la solicitud de extracción e incluso agregar confirmaciones a la solicitud de extracción. Predeterminadamente, en los repositorios públicos, cualquier usuario puede emitir revisiones que aprueben o soliciten cambios a una solicitud de cambios. Los propietarios de la organización y los administradores del repositorio pueden limitar quién puede dar revisiones de solicitudes de incorporación de cambios aprobadas o cambios de solicitud. Para obtener más información, vea «Administración de revisiones de solicitudes de incorporación de cambios en la organización» y «Administración de revisiones de solicitudes de incorporación de cambios en el repositorio».
+
+Puedes ver información sobre el estado de implementación actual y la actividad de implementación anterior de la rama en la pestaña "Conversación". Para más información, consulta "Ver la actividad de implementación de tu repositorio".
+
+Una vez que estás conforme con los cambios propuestos, puedes fusionar la solicitud de extracción. Si estás trabajando en un modelo de repositorio compartido, creas una solicitud de extracción y tú o alguien más fusionará tus cambios desde tu rama de característica en la rama base que especificaste en tu solicitud de extracción. Para obtener más información, vea «Combinación de una solicitud de incorporación de cambios».
+
+Si un repositorio requiere verificaciones de estado, éstas deben pasar antes de que fusiones tu rama con la rama protegida. Para obtener más información, vea «About protected branches».
+
+Puedes vincular una solicitud de incorporación de cambios a una incidencia para mostrar que una corrección está en curso y para cerrar automáticamente la incidencia cuando un usuario fusione mediante combinación dicha solicitud. Para obtener más información, vea «Vincular una solicitud de cambios a una propuesta».
+
+Sugerencias:
+
+Para alternar entre contraer y expandir todos los comentarios de revisión obsoletos en una solicitud de incorporación de cambios, mantenga presionada la tecla Alt y haga clic en Show outdated (Mostrar obsoleto) o Hide outdated (Ocultar obsoleto). Para más métodos abreviados de teclado, consulta "Accesos directos del teclado".
+Puedes combinar confirmaciones cuando fusionas una solicitud de extracción para obtener una visión optimizada de los cambios. Para obtener más información, vea «Acerca de las fusiones de las solicitudes de extracción».
+Puedes visitar tu tablero para encontrar de forma rápida los enlaces a las solicitudes de extracción recientemente actualizadas en las que estás trabajando o estás suscripto. Para obtener más información, vea «Acerca de tu tablero personal».
+
+Borrador de solicitudes de incorporación de cambios
+Los borradores de solicitudes de incorporación de cambios están disponibles en los repositorios públicos con GitHub Free para organizaciones y en los planes de facturación por repositorio heredados, así como en los repositorios públicos y privados con GitHub Team, GitHub Enterprise Server, y GitHub Enterprise Cloud. Para más información, consulta "Productos de GitHub".
+
+Cuando creas una solicitud de extracción, puedes elegir crear una solicitud de extracción que está lista para revisión o una solicitud de extracción en borrador. Las solicitudes de extracción en borrador no se pueden fusionar y no se les solicita automáticamentes a los propietarios del código que revisen las solicitudes de extracción en borrador. Para más información sobre cómo crear el borrador de una solicitud de incorporación de cambios, consulta "Crear una solicitud de incorporación de cambios" y "Crear una solicitud de extracción desde una bifurcación".
+
+Cuando estés listo para obtener retroalimentación sobre tu solicitud de extracción, puedes marcar tu borrador de solicitud de extracción como listo para revisión. Con esto, solicitarás las revisiones de cualquier propietario de código en cuestión. Puedes convertir una solicitud de extracción en borrador cuando lo desees. Para obtener más información, vea «Cambiar la etapa de una solicitud de extracción».
+
+Diferencias entre confirmaciones en las páginas de comparación y de solicitudes de cambios
+Las páginas de comparación y de solicitudes de cambios utilizan métodos diferentes para calcular el diff de los archivos que cambiaron:
+
+Las páginas de comparación muestran el diff entre la punta de la ref de encabezado y el actual ancestro en común (es decir, la base de fusión) del encabezado y de la ref base.
+Las páginas de solicitud de cambios muestran el diff entre la punta de la ref de encabezado y el ancestro común del encabezado y la ref base en el momento en el que la solicitud de cambios se crea. Por consecuencia, la base de fusión que se utilizó para la comparación puede ser diferente.
+Información adicional
+"Glosario de GitHub" en el glosario de GitHub
+"Acerca de las ramas"
+"Comentar en una solicitud de extracción"
+"Cerrar una solicitud de extracción"
