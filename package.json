@@ -57,8 +57,8 @@
 		"tsup": "^6.7.0",
 		"turbo": "^1.9.3",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.4",
-		"vercel": "^28.18.5",
+		"unocss": "^0.51.8",
+		"vercel": "^28.20.0",
 		"vitest": "^0.29.8"
 	},
 	"resolutions": {
