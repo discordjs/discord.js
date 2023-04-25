@@ -24,20 +24,28 @@ const FFMPEG_OPUS_ARGUMENTS = [
 
 /**
  * The different types of stream that can exist within the pipeline.
- *
- * @remarks
- * - `Arbitrary` - the type of the stream at this point is unknown.
- * - `Raw` - the stream at this point is s16le PCM.
- * - `OggOpus` - the stream at this point is Opus audio encoded in an Ogg wrapper.
- * - `WebmOpus` - the stream at this point is Opus audio encoded in a WebM wrapper.
- * - `Opus` - the stream at this point is Opus audio, and the stream is in object-mode. This is ready to play.
  */
 export enum StreamType {
+	/**
+	 * The type of the stream at this point is unknown.
+	 */
 	Arbitrary = 'arbitrary',
-	OggOpus = 'ogg/opus',
-	Opus = 'opus',
+	/**
+	 * The stream at this point is s16le PCM.
+	 */
 	Raw = 'raw',
+	/**
+	 * The stream at this point is Opus audio encoded in an Ogg wrapper.
+	 */
+	OggOpus = 'ogg/opus',
+	/**
+	 * The stream at this point is Opus audio encoded in a WebM wrapper.
+	 */
 	WebmOpus = 'webm/opus',
+	/**
+	 * The stream at this point is Opus audio, and the stream is in object-mode. This is ready to play.
+	 */
+	Opus = 'opus',
 }
 
 /**
