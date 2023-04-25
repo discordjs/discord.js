@@ -25,7 +25,9 @@
 		"lib": "src",
 		"test": "__tests__"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
@@ -36,7 +38,8 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/{name}"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
