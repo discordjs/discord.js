@@ -24,7 +24,8 @@
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/api-extractor-utils"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"

@@ -38,7 +38,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "apps/website"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"

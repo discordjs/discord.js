@@ -38,7 +38,8 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/ui"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
