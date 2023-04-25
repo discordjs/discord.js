@@ -5,6 +5,8 @@ inputs:
     description: 'The input tag'
     required: true
 outputs:
+  subpackage:
+    description: 'Whether this tag is a subpackage tag'
   package:
     description: 'The package string that was extracted from this tag'
   semver:
