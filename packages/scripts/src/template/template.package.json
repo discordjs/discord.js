@@ -25,9 +25,7 @@
 		"lib": "src",
 		"test": "__tests__"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist"],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
