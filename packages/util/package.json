@@ -9,7 +9,7 @@
 		"lint": "prettier --check . && TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "yarn build:docs && api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/util/*'",
 		"release": "cliff-jumper"
@@ -45,7 +45,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/util"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -54,13 +55,13 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.23",
+		"@types/node": "16.18.24",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.38.0",
+		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.7",
+		"prettier": "^2.8.8",
 		"tsd": "^0.28.1",
 		"tsup": "^6.7.0",
 		"typescript": "^5.0.4",

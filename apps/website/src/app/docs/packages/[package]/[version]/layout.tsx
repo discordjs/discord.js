@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
+import { Banner } from '~/components/Banner';
 import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
@@ -69,10 +70,11 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 
 	return (
 		<Providers>
+			<Banner className="mb-6" />
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
-				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
-					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
+				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
+					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_145px)]">
 						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
 					</div>
 

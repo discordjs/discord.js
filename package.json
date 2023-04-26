@@ -46,8 +46,8 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.6.0",
-		"@commitlint/config-angular": "^17.6.0",
+		"@commitlint/cli": "^17.6.1",
+		"@commitlint/config-angular": "^17.6.1",
 		"@favware/cliff-jumper": "^2.0.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"conventional-changelog-cli": "^2.2.2",
@@ -55,10 +55,10 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.2.1",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.1",
+		"turbo": "^1.9.3",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.4",
-		"vercel": "^28.18.5",
+		"unocss": "^0.51.8",
+		"vercel": "^28.20.0",
 		"vitest": "^0.29.8"
 	},
 	"resolutions": {

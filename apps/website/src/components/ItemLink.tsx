@@ -3,13 +3,13 @@
 import type { LinkProps } from 'next/link';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { PropsWithChildren } from 'react';
+import type { AnchorHTMLAttributes, PropsWithChildren, RefAttributes } from 'react';
 import { useCurrentPathMeta } from '~/hooks/useCurrentPathMeta';
 
 export interface ItemLinkProps
 	extends Omit<LinkProps, 'href'>,
-		React.RefAttributes<HTMLAnchorElement>,
-		Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> {
+		RefAttributes<HTMLAnchorElement>,
+		Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> {
 	className?: string;
 
 	/**

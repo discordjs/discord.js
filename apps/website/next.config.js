@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url';
 import bundleAnalyzer from '@next/bundle-analyzer';
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -7,18 +6,8 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 export default withBundleAnalyzer({
 	reactStrictMode: true,
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	// Until Next.js fixes their type issues
-	typescript: {
-		ignoreBuildErrors: true,
-	},
-	outputFileTracing: true,
 	experimental: {
 		appDir: true,
-		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
-		fallbackNodePolyfills: false,
 		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
@@ -31,6 +20,11 @@ export default withBundleAnalyzer({
 			{
 				source: '/static/logo.svg',
 				destination: '/logo.svg',
+				permanent: true,
+			},
+			{
+				source: '/guide/:path*',
+				destination: 'https://next.discordjs.guide/guide/:path*',
 				permanent: true,
 			},
 		];

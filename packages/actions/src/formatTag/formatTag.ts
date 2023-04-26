@@ -1,12 +1,17 @@
 export function formatTag(tag: string) {
-	// eslint-disable-next-line unicorn/no-unsafe-regex, prefer-named-capture-group
-	const parsed = /(^@.*\/(?<package>.*)@v?)?(?<semver>\d+.\d+.\d+)-?.*/.exec(tag);
+	// eslint-disable-next-line unicorn/no-unsafe-regex
+	const parsed = /(?:^@.*\/(?<package>.*)@v?)?(?<semver>\d+.\d+.\d+)-?.*/.exec(tag);
+	const parsedPackage = /(?<package>.*)@v?-?.*/.exec(tag);
 
 	if (parsed?.groups) {
+		const isSubpackage = typeof parsed.groups.package === 'string';
+		const pkg = isSubpackage ? parsed.groups.package : parsedPackage?.groups?.package ?? 'discord.js';
+		const semver = parsed.groups.semver;
+
 		return {
-			isSubpackage: typeof parsed.groups.package === 'string',
-			package: parsed.groups.package ?? 'discord.js',
-			semver: parsed.groups.semver,
+			isSubpackage,
+			package: pkg,
+			semver,
 		};
 	}
 

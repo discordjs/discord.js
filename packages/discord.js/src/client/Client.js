@@ -420,6 +420,9 @@ class Client extends BaseClient {
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
+    if (scopes.some(scope => ![OAuth2Scopes.Bot].includes(scope)) && options.permissions) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidScopeWithPermissions);
+    }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
     if (invalidScope) {
@@ -511,6 +514,24 @@ class Client extends BaseClient {
     }
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
+    }
+    if (
+      (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
+      options.allowedMentions === null
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
+    }
+    if (typeof options.presence !== 'object' || options.presence === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    }
+    if (typeof options.ws !== 'object' || options.ws === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (typeof options.rest !== 'object' || options.rest === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
+    }
+    if (typeof options.jsonTransformer !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
     }
   }
 }

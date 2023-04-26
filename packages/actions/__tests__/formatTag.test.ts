@@ -21,6 +21,11 @@ describe('Format Tag', () => {
 	test('GIVEN tag with no prefix THEN return tag', () => {
 		expect(formatTag('13.5.1')).toEqual({ isSubpackage: false, package: 'discord.js', semver: '13.5.1' });
 		expect(formatTag('13.7.0')).toEqual({ isSubpackage: false, package: 'discord.js', semver: '13.7.0' });
+		expect(formatTag('create-discord-bot@1.0.0')).toEqual({
+			isSubpackage: false,
+			package: 'create-discord-bot',
+			semver: '1.0.0',
+		});
 	});
 
 	test('GIVEN no or invalid tag THEN return null', () => {

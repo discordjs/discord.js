@@ -419,7 +419,7 @@ The base interaction class is now <DocsLink type="class" parent="BaseInteraction
 
 ### MessageManager
 
-The second paramter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
+The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
 
 <CH.Code>
 
@@ -502,12 +502,11 @@ This REST event has been removed as discord.js now uses [Undici](https://github.
 
 <CH.Code>
 
-```ts TypeScript
+```js JavaScript
 import diagnosticsChannel from 'node:diagnostics_channel';
-import { type DiagnosticsChannel } from 'undici';
 
-diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
-	const { request } = data as DiagnosticsChannel.RequestCreateMessage;
+diagnosticsChannel.channel('undici:request:create').subscribe(({ request }) => {
+	const { request } = data;
 	console.log(request.method); // Log the method
 	console.log(request.path); // Log the path
 	console.log(request.headers); // Log the headers
@@ -515,11 +514,12 @@ diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
 });
 ```
 
-```js JavaScript
+```ts TypeScript
 import diagnosticsChannel from 'node:diagnostics_channel';
+import { type DiagnosticsChannel } from 'undici';
 
-diagnosticsChannel.channel('undici:request:create').subscribe(({ request }) => {
-	const { request } = data;
+diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
+	const { request } = data as DiagnosticsChannel.RequestCreateMessage;
 	console.log(request.method); // Log the method
 	console.log(request.path); // Log the path
 	console.log(request.headers); // Log the headers

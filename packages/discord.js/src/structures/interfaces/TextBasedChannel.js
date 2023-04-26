@@ -56,12 +56,12 @@ class TextBasedChannel {
    * The base message options for messages.
    * @typedef {Object} BaseMessageOptions
    * @property {string|null} [content=''] The content for the message. This can only be `null` when editing a message.
-   * @property {Embed[]|APIEmbed[]} [embeds] The embeds for the message
+   * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {AttachmentBuilder[]|Attachment[]|AttachmentPayload[]|BufferResolvable[]} [files]
+   * @property {Array<(AttachmentBuilder|Attachment|AttachmentPayload|BufferResolvable)>} [files]
    * The files to send with the message.
-   * @property {ActionRow[]|ActionRowBuilder[]} [components]
+   * @property {Array<(ActionRowBuilder|ActionRow|APIActionRowComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
@@ -75,13 +75,18 @@ class TextBasedChannel {
 
   /**
    * The options for sending a message.
-   * @typedef {BaseMessageOptions} MessageCreateOptions
+   * @typedef {BaseMessageOptions} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {ReplyOptions} [reply] The options for replying to a message
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
+   */
+
+  /**
+   * The options for sending a message.
+   * @typedef {BaseMessageCreateOptions} MessageCreateOptions
+   * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
   /**

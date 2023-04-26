@@ -15,8 +15,8 @@ import type {
 	ApiFunction,
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import type { Metadata } from 'next/types';
 import { fetchModelJSON } from '~/app/docAPI';
 import { Class } from '~/components/model/Class';
 import { Interface } from '~/components/model/Interface';
@@ -42,11 +42,11 @@ async function fetchHeadMember({ package: packageName, version, item }: ItemRout
 	return findMember(model, packageName, memberName);
 }
 
-function resolveMemberSearchParams(packageName: string, member: ApiItem) {
+function resolveMemberSearchParams(packageName: string, member?: ApiItem) {
 	const params = new URLSearchParams({
 		pkg: packageName,
-		kind: member?.kind,
-		name: member?.displayName,
+		kind: member?.kind ?? '',
+		name: member?.displayName ?? '',
 	});
 
 	switch (member?.kind) {
