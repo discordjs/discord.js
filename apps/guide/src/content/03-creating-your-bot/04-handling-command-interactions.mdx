@@ -44,11 +44,18 @@ client.once(Events.ClientReady, () => {
 });
 ```
 
-```ts TypeScript mark=1:4,9:14
+```ts TypeScript mark=1:11,9:14
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
+import {
+	Client,
+	Collection,
+	Events,
+	GatewayIntentBits,
+	type RESTPostAPIChatInputApplicationCommandsJSONBody,
+	type ChatInputCommandInteraction,
+} from 'discord.js';
 import config from './config.json';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
