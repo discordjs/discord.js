@@ -247,8 +247,8 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt roles for this auto moderation rule.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] The roles this auto moderation rule does not 
-   * apply to
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] 
+   * The roles that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -259,7 +259,7 @@ class AutoModerationRule extends Base {
   /**
    * Sets the exempt channels for this auto moderation rule.
    * @param {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
-   * The channels this auto moderation rule does not apply to
+   * The channels that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt channels of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
