@@ -124,7 +124,7 @@ for (const file of commandFiles) {
 
 </CH.Code>
 
-First, [`url.fileURLToPath()`](https://nodejs.org/api/url.html) helps to construct a path to the _`commands`_ directory. The [`fs.readdir()`](https://nodejs.org/api/fs.html#fspromisesreaddirpath-options) method then reads the path to the directory and returns a Promise which resolves to an array of all the file names it contains, currently _`['ping.js', 'server.js', 'user.js']`_. To ensure only command files get processed, _`Array.filter()`_ removes any non-JavaScript files from the array.
+First, [url.fileURLToPath()](https://nodejs.org/api/url.html) helps to construct a path to the _`commands`_ directory. The [fs.readdir()](https://nodejs.org/api/fs.html#fspromisesreaddirpath-options) method then reads the path to the directory and returns a Promise which resolves to an array of all the file names it contains, currently _`['ping.js', 'server.js', 'user.js']`_. To ensure only command files get processed, _`Array.filter()`_ removes any non-JavaScript files from the array.
 
 With the correct files identified, the last step is to loop over the array and dynamically set each command into the _`commands`_ Collection. For each file being loaded, check that it has at least the _`data`_ and _`execute`_ properties. This helps to prevent errors resulting from loading empty, unfinished or otherwise incorrect command files while you're still developing.
 
