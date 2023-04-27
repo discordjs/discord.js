@@ -1,0 +1,147 @@
+---
+title: Adding commands
+category: Creating your bot
+---
+
+# Creating slash commands
+
+Discord allows developers to register [slash commands](https://discord.com/developers/docs/interactions/application-commands), which provide users a first-class way of interacting directly with your application.
+
+Slash commands provide a huge number of benefits over manual message parsing, including:
+
+- Integration with the Discord client interface.
+- Automatic command detection and parsing of the associated options/arguments.
+- Typed argument inputs for command options, e.g. "String", "User", or "Role".
+- Validated or dynamic choices for command options.
+- In-channel private responses (ephemeral messages).
+- Pop-up form-style inputs for capturing additional information.
+
+...and many more!
+
+<Alert title="Read first!" type="info">
+	For fully functional slash commands, there are three important pieces of code that need to be written. They are:
+
+    1. The individual command files, containing their definitions and functionality.
+    2. The [command handler](command-handling.html), which dynamically reads the files and executes the commands.
+    3. The [command deployment script](command-deployment.html), to register your slash commands with Discord so they appear in the interface.
+
+    These steps can be done in any order, but **all are required** before the commands are fully functional.
+
+    On this page, you'll complete Step 1. Make sure to also complete the other pages linked above!
+
+</Alert>
+
+## Before you continue
+
+Assuming you've followed the guide so far, your project directory should look something like this:
+
+```:no-line-numbers
+discord-bot/
+├── node_modules
+├── config.json
+├── index.js
+├── package-lock.json
+└── package.json
+```
+
+## Individual command files
+
+Create a new folder named _`commands`_, which is where you'll store all of your command files.
+
+At a minimum, the definition of a slash command must have a name and a description. Slash command names must be between 1-32 characters and contain no capital letters, spaces, or symbols other than _`-`_ and _`_`_. Using the builder, a simple _`ping`\_ command definition would look like this:
+
+<CH.Code>
+
+```js
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+```
+
+</CH.Code>
+
+A slash command also requires a function to run when the command is used, to respond to the interaction. Using an interaction response method confirms to Discord that your bot successfully received the interaction, and has responded to the user. Discord enforces this to ensure that all slash commands provide a good user experience (UX). Failing to respond will cause Discord to show that the command failed, even if your bot is performing other actions as a result.
+
+The simplest way to acknowledge and respond to an interaction is the _`interaction.reply()`_ method. Other methods of replying are covered on the [Response methods](../slash-commands/response-methods) page later in this section.
+
+<CH.Code>
+
+```js
+export async function execute(interaction) {
+	await interaction.reply('Pong!');
+}
+```
+
+</CH.Code>
+
+Put these two together by creating a `commands/ping.js` file for your first command. Inside this file, you're going to define and export two items.
+
+- The `data` property, which will provide the command definition shown above for registering to Discord.
+- The `execute` method, which will contain the functionality to run from our event handler when the command is used.
+
+The _`export`_ keyword ensures these values can be imported and read by other files; namely the command loader and command deployment scripts mentioned earlier.
+
+<CH.Code>
+
+```js commands/ping.js
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.reply('Pong!');
+}
+```
+
+</CH.Code>
+
+<Alert title="Tip" type="success">
+	[`module.exports`](https://nodejs.org/api/modules.html#modules_module_exports) is how you export data in Node.js so that you can [`require()`](https://nodejs.org/api/modules.html#modules_require_id) it in other files.
+
+    If you need to access your client instance from inside a command file, you can access it via `interaction.client`. If you need to access external files, packages, etc., you should `require()` them at the top of the file.
+
+</Alert>
+
+That's it for your basic ping command. Below are examples of two more commands we're going to build upon throughout the guide, so create two more files for these before you continue reading.
+
+<CH.Code>
+
+```js commands/user.js
+export const data = {
+	name: 'user',
+	description: 'Provides information about the user.',
+};
+
+export async function execute(interaction) {
+	// interaction.user is the object representing the User who ran the command
+	// interaction.member is the GuildMember object, which represents the user in the specific guild
+	await interaction.reply(
+		`This command was run by ${interaction.user.username}, who joined on ${interaction.member.joinedAt}.`,
+	);
+}
+```
+
+```js commands/server.js
+export const data = {
+	name: 'server',
+	description: 'Provides information about the server.',
+};
+
+export async function execute(interaction) {
+	// interaction.guild is the object representing the Guild in which the command was run
+	await interaction.reply(`This server is ${interaction.guild.name} and has 
+		${interaction.guild.memberCount} members.`);
+}
+```
+
+</CH.Code>
+
+#### Next steps
+
+You can implement additional commands by creating additional files in the _`commands`_ folder, but these three are the ones we're going to use for the examples as we go on. For now let's move on to the code you'll need for command handling, to load the files and respond to incoming interactions.
+
+#### Resulting code
+
+<ResultingCode />
