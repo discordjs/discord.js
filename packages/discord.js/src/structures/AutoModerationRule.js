@@ -217,7 +217,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the mention total limit for this auto moderation rule.
-   * @param {number} mentionTotalLimit The number of unique user and role mentions allowed per message
+   * @param {number} mentionTotalLimit The total number of unique role and user mentions allowed per message
    * @param {string} [reason] The reason for changing the mention total limit of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
