@@ -58,7 +58,11 @@ export const Default = {
 							avatar: '/assets/discordjs.png',
 							username: 'Guide Bot',
 						}}
-						footer={{ content: 'Sometimes, titles just have to be.' }}
+						footer={{
+							content: 'Sometimes, titles just have to be.',
+							icon: '/assets/discordjs.png',
+							timestamp: 'Today at 21:02',
+						}}
 						title={{ title: 'An amazing title' }}
 					>
 						This is a description. You can put a description here. It must be descriptive!
@@ -73,6 +77,35 @@ export const Default = {
 					>
 						Multiple embeds!
 					</DiscordMessageEmbed>
+					<DiscordMessageEmbed
+						author={{
+							avatar: '/assets/discordjs.png',
+							username: 'Guide Bot',
+						}}
+						fields={[
+							{
+								name: 'First field',
+								value: 'Some value',
+							},
+							{
+								name: 'Another field',
+								value: 'Another value',
+								inline: true,
+							},
+							{
+								name: 'A third field',
+								value: 'That is inline',
+								inline: true,
+							},
+							{
+								name: 'At last',
+								value: 'This is the last field',
+								inline: true,
+							},
+						]}
+						footer={{ timestamp: 'Today at 21:02' }}
+						title={{ title: 'Fields are also supported!' }}
+					/>
 				</>
 			</DiscordMessage>
 			<DiscordMessage

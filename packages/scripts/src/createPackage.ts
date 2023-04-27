@@ -46,6 +46,9 @@ export async function createPackage(packageName: string, packageDescription?: st
 	// Edit changelog script
 	packageJSON.scripts.changelog = packageJSON.scripts.changelog.replace('{name}', packageName);
 
+	// Edit repository directory
+	packageJSON.repository.directory = packageJSON.repository.directory.replace('{name}', packageName);
+
 	// Create package.json
 	await writeFile(`package.json`, JSON.stringify(packageJSON, null, 2));
 
