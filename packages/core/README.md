@@ -39,14 +39,15 @@ import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
-const ws = new WebSocketManager({
+
+const gateway = new WebSocketManager({
 	token,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
 	rest,
 });
 
 // Create a client to emit relevant events.
-const client = new Client({ rest, ws });
+const client = new Client({ rest, gateway });
 
 // Listen for interactions
 // Each event contains an `api` prop along with the event data that allows you to interface with the Discord REST API
@@ -62,7 +63,7 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-ws.connect();
+gateway.connect();
 ```
 
 ## Independent REST API Usage
