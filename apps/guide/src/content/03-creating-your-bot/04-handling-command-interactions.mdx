@@ -264,11 +264,11 @@ for (const folder of commandFolders) {
 const commands = new Collection<string, CommandModule>();
 
 const foldersPath = fileURLToPath(new URL('commands', import.meta.url));
-const commandFolders = readdir(foldersPath);
+const commandFolders = await readdir(foldersPath);
 
 for (const folder of commandFolders) {
 	const commandsPath = join(foldersPath, folder);
-	const commandFiles = readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
+	const commandFiles = await readdir(commandsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 	for (const file of commandFiles) {
 		const filePath = join(commandsPath, file);
 		const command = await import(filePath);
