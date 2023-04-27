@@ -31,21 +31,21 @@ export enum StreamType {
 	 */
 	Arbitrary = 'arbitrary',
 	/**
-	 * The stream at this point is s16le PCM.
-	 */
-	Raw = 'raw',
-	/**
 	 * The stream at this point is Opus audio encoded in an Ogg wrapper.
 	 */
 	OggOpus = 'ogg/opus',
 	/**
-	 * The stream at this point is Opus audio encoded in a WebM wrapper.
-	 */
-	WebmOpus = 'webm/opus',
-	/**
 	 * The stream at this point is Opus audio, and the stream is in object-mode. This is ready to play.
 	 */
 	Opus = 'opus',
+	/**
+	 * The stream at this point is s16le PCM.
+	 */
+	Raw = 'raw',
+	/**
+	 * The stream at this point is Opus audio encoded in a WebM wrapper.
+	 */
+	WebmOpus = 'webm/opus',
 }
 
 /**
