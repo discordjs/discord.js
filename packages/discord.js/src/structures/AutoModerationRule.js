@@ -247,7 +247,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt roles for this auto moderation rule.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] 
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles]
    * The roles that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
