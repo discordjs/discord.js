@@ -20,21 +20,9 @@ export default function Page() {
 						</h1>
 						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
 						<div className="flex flex-row gap-4">
-							{/* <Link
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-blurple px-6 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-								href="/docs"
-							>
-								Docs
-							</Link> */}
 							<Link className={button()} href="/docs">
 								Docs
 							</Link>
-							{/* <Link
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-blurple px-6 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-								href="/guide"
-							>
-								Guide
-							</Link> */}
 							<a
 								className={button({ intent: 'secondary' })}
 								href="https://discordjs.guide"
