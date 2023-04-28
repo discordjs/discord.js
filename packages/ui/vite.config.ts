@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-	plugins: [dts(), react(), Unocss()],
+	plugins: [dts(), react(), Unocss({ include: ['.storybook/preview.ts'] })],
 	build: {
 		lib: {
 			entry: resolve(__dirname, 'src/lib/index.ts'),

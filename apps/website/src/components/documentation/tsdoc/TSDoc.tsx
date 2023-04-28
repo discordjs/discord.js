@@ -6,7 +6,7 @@ import { Fragment, useCallback, type ReactNode } from 'react';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
-import { DeprecatedBlock, ExampleBlock, RemarksBlock, SeeBlock } from './BlockComment';
+import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
 export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
@@ -39,7 +39,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 
 						return (
 							<ItemLink
-								className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
+								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								itemURI={resolveItemURI(foundItem)}
 								key={idx}
 							>
@@ -51,7 +51,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 					if (urlDestination) {
 						return (
 							<Link
-								className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
+								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								href={urlDestination}
 								key={idx}
 							>
@@ -74,6 +74,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 
 				case DocNodeKind.FencedCode: {
 					const { language, code } = tsdoc as DocFencedCode;
+					// @ts-expect-error async component
 					return <SyntaxHighlighter code={code.trim()} key={idx} lang={language ?? 'typescript'} />;
 				}
 
@@ -84,6 +85,10 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 						(block) => block.blockTag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
 					);
 
+					const defaultValueBlock = comment.customBlocks.find(
+						(block) => block.blockTag.tagName.toUpperCase() === StandardTags.defaultValue.tagNameWithUpperCase,
+					);
+
 					return (
 						<div className="flex flex-col space-y-2">
 							{comment.deprecatedBlock ? (
@@ -91,6 +96,10 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 							) : null}
 							{comment.summarySection ? createNode(comment.summarySection) : null}
 							{comment.remarksBlock ? <RemarksBlock>{createNode(comment.remarksBlock.content)}</RemarksBlock> : null}
+							{defaultValueBlock ? (
+								<DefaultValueBlock>{createNode(defaultValueBlock.content)}</DefaultValueBlock>
+							) : null}
+							{comment.returnsBlock ? <ReturnsBlock>{createNode(comment.returnsBlock.content)}</ReturnsBlock> : null}
 							{exampleBlocks.length
 								? exampleBlocks.map((block, idx) => <ExampleBlock key={idx}>{createNode(block.content)}</ExampleBlock>)
 								: null}

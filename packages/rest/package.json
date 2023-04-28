@@ -9,7 +9,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"docs": "yarn build:docs && api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
@@ -46,7 +46,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/rest"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -56,23 +57,23 @@
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
-		"@sapphire/snowflake": "^3.4.0",
-		"discord-api-types": "^0.37.37",
+		"@sapphire/snowflake": "^3.4.2",
+		"discord-api-types": "^0.37.40",
 		"file-type": "^18.2.1",
 		"tslib": "^2.5.0",
-		"undici": "^5.21.2"
+		"undici": "^5.22.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.23",
-		"@vitest/coverage-c8": "^0.29.8",
+		"@types/node": "16.18.24",
+		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.38.0",
+		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.7",
+		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
 		"typescript": "^5.0.4",
 		"vitest": "^0.29.8"

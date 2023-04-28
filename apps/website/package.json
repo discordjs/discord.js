@@ -38,7 +38,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "apps/website"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -50,17 +51,17 @@
 		"@discordjs/ui": "workspace:^",
 		"@microsoft/api-extractor-model": "7.26.4",
 		"@microsoft/tsdoc": "0.14.2",
-		"@planetscale/database": "1.6.0",
+		"@planetscale/database": "1.7.0",
 		"@react-icons/all-files": "^4.1.0",
-		"@vercel/analytics": "^0.1.11",
-		"@vercel/edge-config": "^0.1.6",
-		"@vercel/og": "^0.5.1",
+		"@vercel/analytics": "^1.0.0",
+		"@vercel/edge-config": "^0.1.7",
+		"@vercel/og": "^0.5.3",
 		"@vscode/codicons": "^0.0.32",
-		"ariakit": "^2.0.0-next.43",
-		"bright": "^0.7.1",
+		"ariakit": "^2.0.0-next.44",
+		"bright": "^0.7.2",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.32.3",
-		"next": "^13.3.1-canary.3",
+		"next": "^13.3.1",
 		"next-mdx-remote": "^4.4.1",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
@@ -73,40 +74,35 @@
 		"remark-gfm": "^3.0.1",
 		"server-only": "^0.0.1",
 		"sharp": "^0.32.0",
-		"swr": "^2.1.2"
+		"swr": "^2.1.4"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "^13.3.0",
+		"@next/bundle-analyzer": "^13.3.1",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.4.3",
-		"@types/node": "18.15.11",
-		"@types/react": "^18.0.33",
+		"@types/node": "18.16.0",
+		"@types/react": "^18.0.38",
 		"@types/react-dom": "^18.0.11",
-		"@unocss/cli": "^0.51.0",
-		"@unocss/reset": "^0.51.0",
-		"@vitejs/plugin-react": "^3.1.0",
-		"@vitest/coverage-c8": "^0.29.8",
+		"@unocss/cli": "^0.51.8",
+		"@unocss/eslint-config": "^0.51.8",
+		"@unocss/reset": "^0.51.8",
+		"@vitejs/plugin-react": "^4.0.0",
+		"@vitest/coverage-c8": "^0.30.1",
 		"concurrently": "^8.0.1",
 		"cpy-cli": "^4.2.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.38.0",
+		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"happy-dom": "^9.1.9",
-		"lighthouse": "^10.1.0",
-		"prettier": "^2.8.7",
-		"prettier-plugin-tailwindcss": "^0.2.7",
+		"happy-dom": "^9.9.2",
+		"lighthouse": "^10.1.1",
+		"prettier": "^2.8.8",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.0",
-		"vercel": "^28.18.4",
+		"unocss": "^0.51.8",
+		"vercel": "^28.20.0",
 		"vitest": "^0.29.8"
 	},
 	"engines": {
 		"node": ">=18.13.0"
-	},
-	"nextBundleAnalysis": {
-		"budget": 358400,
-		"budgetPercentIncreaseRed": 20,
-		"showDetails": true
 	}
 }

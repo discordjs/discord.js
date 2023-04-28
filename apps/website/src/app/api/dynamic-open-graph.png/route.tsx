@@ -3,9 +3,8 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { ImageResponse } from '@vercel/og';
 import type { NextRequest } from 'next/server';
-import type { ServerRuntime } from 'next/types';
 
-export const runtime: ServerRuntime = 'edge';
+export const runtime = 'edge';
 
 const fonts = Promise.all([
 	fetch(new URL('../../../assets/fonts/Inter-Regular.ttf', import.meta.url)).then(async (res) => res.arrayBuffer()),

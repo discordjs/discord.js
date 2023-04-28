@@ -12,7 +12,7 @@ export function resolveMembers<T extends ApiItem>(
 ) {
 	const seenItems = new Set<string>();
 	const inheritedMembers = parent.findMembersWithInheritance().items.reduce((acc, item) => {
-		if (predicate(item)) {
+		if (predicate(item) && !seenItems.has(item.displayName)) {
 			acc.push({
 				item,
 				inherited:
@@ -20,7 +20,8 @@ export function resolveMembers<T extends ApiItem>(
 						? undefined
 						: (item.parent as ApiItemContainerMixin | undefined),
 			});
-			seenItems.add(item.containerKey);
+
+			seenItems.add(item.displayName);
 		}
 
 		return acc;

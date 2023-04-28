@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 import { Providers } from './providers';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
+import { Banner } from '~/components/Banner';
 import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
@@ -19,9 +20,6 @@ export interface VersionRouteParams {
 	package: string;
 	version: string;
 }
-
-// eslint-disable-next-line unicorn/numeric-separators-style
-export const revalidate = 3600;
 
 export async function generateStaticParams() {
 	const params: VersionRouteParams[] = [];
@@ -72,14 +70,15 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 
 	return (
 		<Providers>
+			<Banner className="mb-6" />
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
-				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:flex lg:max-w-full">
-					<div className="lg:top-23 lg:sticky lg:h-[calc(100vh_-_100px)]">
+				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
+					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_145px)]">
 						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
 					</div>
 
-					<div className="min-w-xs mx-auto w-full max-w-5xl pb-10">
+					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">
 						{children}
 						<Footer />
 					</div>

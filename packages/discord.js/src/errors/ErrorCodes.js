@@ -106,7 +106,10 @@
 
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
+ * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
+ * <warn>This property is deprecated. Use `MissingManageGuildExpressionsPermission` instead.</warn>
+ *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
@@ -142,6 +145,7 @@
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
+ * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
 
  * @property {'NotImplemented'} NotImplemented
 
@@ -254,7 +258,9 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
+  'MissingManageGuildExpressionsPermission',
   'MissingManageEmojisAndStickersPermission',
+
   'NotGuildSticker',
 
   'ReactionResolveUser',
@@ -289,6 +295,7 @@ const keys = [
   'ModalSubmitInteractionFieldType',
 
   'InvalidMissingScopes',
+  'InvalidScopesWithPermissions',
 
   'NotImplemented',
 

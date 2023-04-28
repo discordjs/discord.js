@@ -7,7 +7,7 @@ export function InheritanceText({ parent }: { parent: ApiDeclaredItem }) {
 		<span className="font-semibold">
 			Inherited from{' '}
 			<ItemLink
-				className="text-blurple focus:ring-width-2 focus:ring-blurple rounded font-mono outline-0 focus:ring"
+				className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 				itemURI={resolveItemURI(parent)}
 			>
 				{parent.displayName}

@@ -181,7 +181,7 @@
 		/**
 		 * (REQUIRED) Whether to generate the .d.ts rollup file.
 		 */
-		"enabled": false
+		"enabled": true,
 
 		/**
 		 * Specifies the output path for a .d.ts rollup file to be generated without any trimming.
@@ -195,7 +195,7 @@
 		 * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
 		 * DEFAULT VALUE: "<projectFolder>/dist/<unscopedPackageName>.d.ts"
 		 */
-		// "untrimmedFilePath": "<projectFolder>/dist/<unscopedPackageName>.d.ts",
+		"untrimmedFilePath": "<projectFolder>/dist-docs/index.d.ts"
 
 		/**
 		 * Specifies the output path for a .d.ts rollup file to be generated with trimming for an "alpha" release.

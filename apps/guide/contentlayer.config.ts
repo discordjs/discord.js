@@ -17,21 +17,21 @@ export const Content = defineDocumentType(() => ({
 			type: 'string',
 			required: true,
 		},
-		summary: {
+		category: {
 			type: 'string',
-		},
-		image: {
-			type: 'string',
+			required: true,
 		},
 	},
 	computedFields: {
 		slug: {
 			type: 'string',
-			resolve: (doc) => doc._raw.flattenedPath,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => doc._raw.flattenedPath.replace(/\d+-/g, ''),
 		},
 		url: {
 			type: 'string',
-			resolve: (post) => `/guide/${post._raw.flattenedPath}`,
+			// eslint-disable-next-line unicorn/prefer-string-replace-all
+			resolve: (doc) => `/guide/${doc._raw.flattenedPath.replace(/\d+-/g, '')}`,
 		},
 	},
 }));
@@ -76,7 +76,7 @@ export default makeSource({
 			// 	{
 			// 		properties: {
 			// 			class:
-			// 				'relative inline-flex w-6 h-6 place-items-center place-content-center outline-0 text-black dark:text-white ml-2',
+			// 				'relative inline-flex w-6 h-6 place-items-center place-content-center outline-none text-black dark:text-white ml-2',
 			// 		},
 			// 		behavior: 'after',
 			// 		group: async ({ tagName }: { tagName: string }) =>

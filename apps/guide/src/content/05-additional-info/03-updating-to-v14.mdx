@@ -1,0 +1,805 @@
+---
+title: Updating to v14
+category: Additional info
+---
+
+# Updating to v14
+
+## Before you start
+
+v14 requires Node 16.9 or higher to use, so make sure you're up to date. To check your Node.js version, use _`node --version`_ in your terminal or command prompt, and if it's not high enough, update it! There are many resources online to help you with this step based on your host system.
+
+### Various packages are now included in v14
+
+If you previously had _`@discordjs/builders`_, _`@discordjs/formatters`_, _`@discordjs/rest`_, or _`discord-api-types`_ manually installed, it's _highly_ recommended that you uninstall the packages to avoid package version conflicts.
+
+<CH.Code>
+
+```sh npm
+npm uninstall @discordjs/builders @discordjs/formatters @discordjs/rest discord-api-types
+```
+
+```sh yarn
+yarn remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-api-types
+```
+
+```sh pnpm
+pnpm remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-api-types
+```
+
+</CH.Code>
+
+## Breaking Changes
+
+### API version
+
+discord.js v14 makes the switch to Discord API v10!
+
+### Common Breakages
+
+### Enum Values
+
+Any areas that used to accept a _`string`_ or _`number`_ type for an enum parameter will now only accept a _`number`_.
+
+In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from [discord-api-types](https://discord-api-types.dev/api/discord-api-types-v10).
+
+#### New enum differences
+
+Most of the difference between enums from discord.js and discord-api-types can be summarized as so:
+
+1. Enums are singular, i.e., _`ApplicationCommandOptionTypes`_ -> _`ApplicationCommandOptionType`_
+2. Enums that are prefixed with _`Message`_ no longer have the _`Message`_ prefix, i.e., _`MessageButtonStyles`_ -> _`ButtonStyle`_
+3. Enum values are _`PascalCase`_ rather than `SCREAMING_SNAKE_CASE`, i.e., `.CHAT_INPUT` -> `.ChatInput`
+
+<Alert title="Magic Numbers Warning" type="danger">
+	You might be inclined to a raw _`number`_ (most commonly referred to as [magic
+	numbers](https://en.wikipedia.org/wiki/Magic_number_(programming))) instead of enum values. This is highly
+	discouraged. Enums provide more readability and are more resistant to changes in the API. Magic numbers can obscure
+	the meaning of your code in many ways. Check out this [blog
+	post](https://blog.webdevsimplified.com/2020-02/magic-numbers) if you want more context on as to why they shouldn't be
+	used.
+</Alert>
+
+#### Common enum breakages
+
+Areas like _`Client`_ initialization, JSON slash commands and JSON message components will likely need to be modified to accommodate these changes:
+
+##### Common Client Initialization Changes
+
+<CH.Code>
+
+```diff
+- import { Client, Intents } = from 'discord.js';
++ import { Client, GatewayIntentBits, Partials } = from 'discord.js';
+
+- const client = new Client({ intents: [Intents.FLAGS.GUILDS], partials: ['CHANNEL'] });
++ const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] });
+```
+
+</CH.Code>
+
+##### Common Application Command Data changes
+
+<CH.Code>
+
+```diff
++ import { ApplicationCommandType, ApplicationCommandOptionType } = from 'discord.js';
+
+  const command = {
+    name: 'ping',
+-   type: 'CHAT_INPUT',
++   type: ApplicationCommandType.ChatInput,
+    options: [{
+      name: 'option',
+      description: 'A sample option',
+-     type: 'STRING',
++     type: ApplicationCommandOptionType.String,
+    }],
+  };
+```
+
+</CH.Code>
+
+##### Common Button Data changes
+
+<CH.Code>
+
+```diff
++ import { ButtonStyle } = from 'discord.js';
+
+  const button = {
+    label: 'test',
+-   style: 'PRIMARY',
++   style: ButtonStyle.Primary,
+    customId: '1234'
+  }
+```
+
+</CH.Code>
+
+### Removal of method-based type guards
+
+#### Channels
+
+Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the _`type`_ property against a [ChannelType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType) enum member to narrow channels.
+
+<CH.Code>
+
+```diff
+- channel.isText();
++ channel.type === ChannelType.GuildText;
+
+- channel.isVoice();
++ channel.type === ChannelType.GuildVoice;
+
+- channel.isDM();
++ channel.type === ChannelType.DM;
+```
+
+</CH.Code>
+
+### Builders
+
+Builders are no longer returned by the API like they were previously. For example, you send the API an <DocsLink type="class" parent="EmbedBuilder"/> but you receive an <DocsLink type="class" parent="Embed"/> of the same data. This may affect how your code handles received structures such as components. Refer to [message component changes section](#messagecomponent) for more details.
+
+Added <DocsLink package="builders" type="Function" parent="disableValidators" /> and <DocsLink package="builders" type="Function" parent="enableValidators" /> as top-level exports which disable or enable validation (enabled by default).
+
+### Consolidation of create & edit parameters
+
+Various _`create()`_ and _`edit()`_ methods on managers and objects have had their parameters consolidated. The changes are below:
+
+- <DocsLink type="class" parent="Guild" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="GuildChannel" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="GuildEmoji" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="Role" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="Sticker" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="ThreadChannel" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
+- <DocsLink type="class" parent="GuildChannelManager" symbol="create" brackets /> now takes _`name`_ in the _`options`_ parameter
+- <DocsLink type="class" parent="GuildChannelManager" symbol="createWebhook" brackets /> (and other text-based channels)
+  now takes _`channel`_ and _`name`_ in the _`options`_ parameter
+- <DocsLink type="class" parent="GuildChannelManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildEmojiManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildManager" symbol="create" brackets /> now takes _`name`_ as a part of _`options`_
+- <DocsLink type="class" parent="GuildMemberManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildMember" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="RoleManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
+- <DocsLink type="class" parent="Webhook" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
+- <DocsLink type="class" parent="GuildEmojiManager" symbol="create" brackets /> now takes _`attachment`_ and _`name`_ as
+  a part of _`options`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="create" brackets /> now takes _`file`_, _`name`_, and _`tags`_
+  as a part of _`options`_
+
+### Activity
+
+The following properties have been removed as they are not supported by the API:
+
+- _`Activity#id`_
+- _`Activity#platform`_
+- _`Activity#sessionId`_
+- _`Activity#syncId`_
+
+### Application
+
+_`Application#fetchAssets()`_ has been removed as it is no longer supported by the API.
+
+### BitField
+
+- BitField constituents now have a _`BitField`_ suffix to avoid naming conflicts with the enum names:
+
+```diff
+- new Permissions();
++ new PermissionsBitField();
+
+- new MessageFlags();
++ new MessageFlagsBitField();
+
+- new ThreadMemberFlags();
++ new ThreadMemberFlagsBitField();
+
+- new UserFlags();
++ new UserFlagsBitField();
+
+- new SystemChannelFlags();
++ new SystemChannelFlagsBitField();
+
+- new ApplicationFlags();
++ new ApplicationFlagsBitField();
+
+- new Intents();
++ new IntentsBitField();
+
+- new ActivityFlags();
++ new ActivityFlagsBitField();
+```
+
+- _`#FLAGS`_ has been renamed to _`#Flags`_
+
+### CDN
+
+The methods that return CDN URLs have changed. Here is an example on a `User`:
+
+<CH.Code>
+
+```diff
+- const url = user.displayAvatarURL({ dynamic: true, format: "png", size: 1024 });
++ const url = user.displayAvatarURL({ extension: "png", size: 1024 });
+```
+
+</CH.Code>
+
+Dynamic URLs use <DocsLink package="rest" type="Interface" parent="ImageURLOptions"/> and static URLs use <DocsLink package="rest" type="Interface" parent="BaseImageURLOptions"/>. Since dynamic URLs are returned by default, this option has been renamed to _`forceStatic`_ which forces the return of a static URL. Additionally, _`format`_ has been renamed to _`extension`_.
+
+### CategoryChannel
+
+<DocsLink type="class" parent="CategoryChannel" symbol="children" /> is no longer a _`Collection`_ of channels the category
+contains. It is now a <DocsLink type="class" parent="CategoryChannelChildManager" />. This also means
+_`CategoryChannel#createChannel()`_ has been moved to the <DocsLink type="class" parent="CategoryChannelChildManager" />.
+
+### Channel
+
+The following type guards have been removed:
+
+- _`Channel#isText()`_
+- _`Channel#isVoice()`_
+- _`Channel#isDirectory()`_
+- _`Channel#isDM()`_
+- _`Channel#isGroupDM()`_
+- _`Channel#isCategory()`_
+- _`Channel#isNews()`_
+
+Refer to [this section](#channels) for more context.
+
+The base channel class is now <DocsLink type="class" parent="BaseChannel"/>.
+
+### Client
+
+The _`restWsBridgeTimeout`_ client option has been removed.
+
+### CommandInteractionOptionResolver
+
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getMember" brackets /> no longer has a parameter
+for _`required`_.[^1]
+
+### Constants
+
+- Many constant objects and key arrays are now top-level exports. For example:
+
+<CH.Code>
+
+```diff
+- import { Constants } = from 'discord.js';
+- const { Colors } = Constants;
++ import { Colors } = from 'discord.js';
+```
+
+</CH.Code>
+
+- The refactored constants structures have _`PascalCase`_ member names as opposed to _`SCREAMING_SNAKE_CASE`_ member names.
+
+- Many of the exported constants structures have been replaced and renamed:
+
+<CH.Code>
+
+```diff
+- Opcodes
++ GatewayOpcodes
+
+- WSEvents
++ GatewayDispatchEvents
+
+- WSCodes
++ GatewayCloseCodes
+
+- InviteScopes
++ OAuth2Scopes
+```
+
+</CH.Code>
+
+### Events
+
+The _`message`_ and _`interaction`_ events are now removed. Use <DocsLink type="class" parent="Client" symbol="e-messageCreate"/> and <DocsLink type="class" parent="Client" symbol="e-interactionCreate"/> instead.
+
+_`Client#applicationCommandCreate`_, _`Client#applicationCommandDelete`_, and _`Client#applicationCommandUpdate`_ have all been removed.[^2]
+
+The <DocsLink type="class" parent="Client" symbol="e-threadMembersUpdate"/> event now emits the users that were added, the users that were removed, and the thread respectively.
+
+### GuildBanManager
+
+Developers should utilise _`deleteMessageSeconds`_ instead of _`days`_ and _`deleteMessageDays`_:
+
+<CH.Code>
+
+```diff
+<GuildBanManager>.create('123456789', {
+-  days: 3
+-  deleteMessageDays: 3
++  deleteMessageSeconds: 3 * 24 * 60 * 60
+});
+```
+
+</CH.Code>
+
+_`deleteMessageDays`_ and _`days`_ are both deprecated and will be removed in the future.
+
+### Guild
+
+<DocsLink type="class" parent="Guild" symbol="setRolePositions" brackets /> and <DocsLink
+	type="class"
+	parent="Guild"
+	symbol="setChannelPositions"
+	brackets
+/> have been removed. Use <DocsLink type="class" parent="RoleManager" symbol="setPositions" brackets /> and <DocsLink
+	type="class"
+	parent="GuildChannelManager"
+	symbol="setPositions"
+	brackets
+/> instead respectively.
+
+<DocsLink type="class" parent="Guild" symbol="maximumPresences" /> no longer has a default value of 25,000.
+
+_`Guild#me`_ has been moved to <DocsLink type="class" parent="GuildMemberManager" symbol="me" />.[^3]
+
+### GuildAuditLogs & GuildAuditLogsEntry
+
+_`GuildAuditLogs.build()`_ has been removed as it has been deemed defunct. There is no alternative.
+
+The following properties & methods have been moved to the <DocsLink type="class" parent="GuildAuditLogsEntry" /> class:
+
+- `GuildAuditLogs.Targets`
+- `GuildAuditLogs.actionType()`
+- `GuildAuditLogs.targetType()`
+
+### GuildMember
+
+<DocsLink type="class" parent="GuildMember" symbol="pending" /> is now nullable to account for partial guild members.[^4]
+
+### IntegrationApplication
+
+_`IntegrationApplication#summary`_ has been removed as it is no longer supported by the API.
+
+### Interaction
+
+Whenever an interaction is replied to and one fetches the reply, it could possibly give an [APIMessage](https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessage) if the guild was not cached. However, interaction replies now always return a discord.js <DocsLink type="class" parent="Message"/> object with _`fetchReply`_ as _`true`_.
+
+The base interaction class is now <DocsLink type="class" parent="BaseInteraction"/>.
+
+### Invite
+
+<DocsLink type="class" parent="Invite" symbol="inviter" /> is now a getter and resolves structures from the cache.
+
+### MessageAttachment
+
+- _`MessageAttachment`_ has now been renamed to <DocsLink type="class" parent="AttachmentBuilder" />.
+
+<CH.Code>
+
+```diff
+- new MessageAttachment(buffer, 'image.png');
++ new AttachmentBuilder(buffer, { name: 'image.png' });
+```
+
+</CH.Code>
+
+### MessageComponent
+
+- MessageComponents have been renamed as well. They no longer have the _`Message`_ prefix, and now have a _`Builder`_ suffix:
+
+<CH.Code>
+
+```diff
+- const button = new MessageButton();
++ const button = new ButtonBuilder();
+
+- const selectMenu = new MessageSelectMenu();
++ const selectMenu = new StringSelectMenuBuilder();
+
+- const actionRow = new MessageActionRow();
++ const actionRow = new ActionRowBuilder();
+
+- const textInput = new TextInputComponent();
++ const textInput = new TextInputBuilder();
+```
+
+</CH.Code>
+
+- Components received from the API are no longer directly mutable. If you wish to mutate a component from the API, use _`ComponentBuilder#from()`_. For example, if you want to make a button mutable:
+
+<CH.Code>
+
+```diff
+- const editedButton = receivedButton.setDisabled(true);
+
++ import { ButtonBuilder } = from 'discord.js';
++ const editedButton = ButtonBuilder.from(receivedButton).setDisabled(true);
+```
+
+</CH.Code>
+
+### MessageManager
+
+The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
+
+<CH.Code>
+
+```diff
+- messageManager.fetch('1234567890', { cache: false, force: true });
++ messageManager.fetch({ message: '1234567890', cache: false, force: true });
+```
+
+</CH.Code>
+
+### MessageSelectMenu
+
+- _`MessageSelectMenu`_ has been renamed to <DocsLink type="class" parent="StringSelectMenuBuilder" />.
+
+- _`StringSelectMenuBuilder#addOption()`_ has been removed. Use <DocsLink type="class" parent="StringSelectMenuBuilder" symbol="addOptions" brackets /> instead.
+
+### MessageEmbed
+
+- _`MessageEmbed`_ has now been renamed to <DocsLink type="class" parent="EmbedBuilder" />.
+
+- <DocsLink package="builders" type="Class" parent="EmbedBuilder" symbol="setAuthor" brackets /> now accepts a sole <DocsLink
+  	package="builders"
+  	type="TypeAlias"
+  	parent="EmbedAuthorOptions"
+  /> object.
+
+- <DocsLink package="builders" type="Class" parent="EmbedBuilder" symbol="setFooter" brackets /> now accepts a sole <DocsLink
+  	package="builders"
+  	type="TypeAlias"
+  	parent="EmbedFooterOptions"
+  /> object.
+
+- _`EmbedBuilder#addField()`_ has been removed. Use <DocsLink package="builders" type="Class" parent="EmbedBuilder" symbol="addFields" brackets/> instead.
+
+<CH.Code>
+
+```diff
+- new MessageEmbed().addField('Inline field title', 'Some value here', true);
+
++ new EmbedBuilder().addFields([
++  { name: 'one', value: 'one', inline: true },
++  { name: 'two', value: 'two', inline: true },
++]);
+```
+
+</CH.Code>
+
+### Modal
+
+- _`Modal`_ has been renamed <DocsLink type="class" parent="ModalBuilder" />.
+
+<CH.Code>
+
+```diff
+- const modal = new Modal();
++ const modal = new ModalBuilder();
+```
+
+</CH.Code>
+
+### PartialTypes
+
+The _`PartialTypes`_ string array has been removed. Use the <DocsLink type="typedef" parent="Partials" /> enum instead.
+
+In addition to this, there is now a new partial: _`Partials.ThreadMember`_.
+
+### Permissions
+
+The thread permissions _`USE_PUBLIC_THREADS`_ and _`USE_PRIVATE_THREADS`_ have been removed as they are deprecated in the API. Use _`CREATE_PUBLIC_THREADS`_ and _`CREATE_PRIVATE_THREADS`_ respectively.
+
+### PermissionOverwritesManager
+
+Overwrites are now keyed by the _`PascalCase`_ permission key rather than the _`SCREAMING_SNAKE_CASE`_ permission key.
+
+### REST Events
+
+#### apiRequest
+
+This REST event has been removed as discord.js now uses [Undici](https://github.com/nodejs/undici) as the underlying request handler. You must now use a [Diagnostics Channel](https://undici.nodejs.org/#/docs/api/DiagnosticsChannel). Here is a simple example:
+
+<CH.Code>
+
+```js JavaScript
+import diagnosticsChannel from 'node:diagnostics_channel';
+
+diagnosticsChannel.channel('undici:request:create').subscribe(({ request }) => {
+	const { request } = data;
+	console.log(request.method); // Log the method
+	console.log(request.path); // Log the path
+	console.log(request.headers); // Log the headers
+	console.log(request); // Or just log everything!
+});
+```
+
+```ts TypeScript
+import diagnosticsChannel from 'node:diagnostics_channel';
+import { type DiagnosticsChannel } from 'undici';
+
+diagnosticsChannel.channel('undici:request:create').subscribe((data) => {
+	const { request } = data as DiagnosticsChannel.RequestCreateMessage;
+	console.log(request.method); // Log the method
+	console.log(request.path); // Log the path
+	console.log(request.headers); // Log the headers
+	console.log(request); // Or just log everything!
+});
+```
+
+</CH.Code>
+
+You can find further examples at the [Undici Diagnostics Channel documentation](https://undici.nodejs.org/#/docs/api/DiagnosticsChannel).
+
+#### apiResponse
+
+This REST event has been renamed to _`response`_ and moved to <DocsLink type="class" parent="Client" symbol="rest"/>:
+
+<CH.Code>
+
+```diff
+- client.on('apiResponse', ...);
++ client.rest.on('response', ...);
+```
+
+</CH.Code>
+
+#### invalidRequestWarning
+
+This REST event has been moved to <DocsLink type="class" parent="Client" symbol="rest"/>:
+
+<CH.Code>
+
+```diff
+- client.on('invalidRequestWarning', ...);
++ client.rest.on('invalidRequestWarning', ...);
+```
+
+</CH.Code>
+
+#### rateLimit
+
+This REST event has been renamed to _`rateLimited`_ and moved to <DocsLink type="class" parent="Client" symbol="rest"/>:
+
+<CH.Code>
+
+```diff
+- client.on('rateLimit', ...);
++ client.rest.on('rateLimited', ...);
+```
+
+</CH.Code>
+
+### RoleManager
+
+_`Role.comparePositions()`_ has been removed. Use <DocsLink type="class" parent="RoleManager" symbol="comparePositions" brackets/> instead.
+
+### Sticker
+
+<DocsLink type="class" parent="Sticker" symbol="tags" /> is now a nullable string (_`string | null`_). Previously, it was
+a nullable array of strings (_`string[] | null`_).[^5]
+
+### ThreadChannel
+
+The _`MAX`_ helper used in _`ThreadAutoArchiveDuration`_ has been removed. Discord has since allowed any guild to use any auto archive time which makes this helper redundant.
+
+### ThreadMemberManager
+
+The second parameter of <DocsLink type="class" parent="ThreadMemberManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter. In addition, the boolean helper to specify _`cache`_ has been removed.
+
+Usage is now as follows:
+
+<CH.Code>
+
+```diff
+  // The second parameter is merged into the first parameter.
+- threadMemberManager.fetch('1234567890', { cache: false, force: true });
++ threadMemberManager.fetch({ member: '1234567890', cache: false, force: true });
+
+  // The lone boolean has been removed. One must be explicit here.
+- threadMemberManager.fetch(false);
++ threadMemberManager.fetch({ cache: false });
+```
+
+</CH.Code>
+
+### Util
+
+_`Util.removeMentions()`_ has been removed. To control mentions, you should use _`allowedMentions`_ on <DocsLink type="typedef" parent="BaseMessageOptions" /> instead.
+
+_`Util.splitMessage()`_ has been removed. This utility method is something the developer themselves should do.
+
+_`Util.resolveAutoArchiveMaxLimit()`_ has been removed. Discord has since allowed any guild to use any auto archive time which makes this method redundant.
+
+Other functions in _`Util`_ have been moved to top-level exports so you can directly import them from discord.js.
+
+<CH.Code>
+
+```diff
+- import { Util } from 'discord.js';
+- Util.escapeMarkdown(message);
+
++ import { escapeMarkdown } from 'discord.js';
++ escapeMarkdown(message);
+```
+
+</CH.Code>
+
+### .deleted fields have been removed
+
+You can no longer use the _`deleted`_ property to check if a structure was deleted.[^6]
+
+### VoiceChannel
+
+_`VoiceChannel#editable`_ has been removed. You should use <DocsLink type="class" parent="GuildChannel" symbol="manageable"/> instead.
+
+### VoiceRegion
+
+_`VoiceRegion#vip`_ has been removed as it is no longer part of the API.
+
+### Webhook
+
+The second parameter of <DocsLink type="class" parent="Webhook" symbol="fetchMessage" brackets/> no longer allows a boolean to be passed. The _`cache`_ option in <DocsLink type="typedef" parent="WebhookFetchMessageOptions"/> should be used instead.
+
+## Features
+
+### ApplicationCommand
+
+NFSW commands are supported.
+
+### AutocompleteInteraction
+
+<DocsLink type="class" parent="AutocompleteInteraction" symbol="commandGuildId" /> has been added which is the id of the
+guild the invoked application command is registered to.
+
+### BaseChannel
+
+Added support for <DocsLink type="class" parent="BaseChannel" symbol="flags" />.
+
+Store channels have been removed as they are no longer part of the API.
+
+<DocsLink type="class" parent="BaseChannel" symbol="url" /> has been added which is a link to a channel, just like in the
+client.
+
+Additionally, new typeguards have been added:
+
+- <DocsLink type="class" parent="BaseChannel" symbol="isDMBased" brackets />
+- <DocsLink type="class" parent="BaseChannel" symbol="isTextBased" brackets />
+- <DocsLink type="class" parent="BaseChannel" symbol="isVoiceBased" brackets />
+
+### BaseInteraction
+
+Added <DocsLink type="class" parent="BaseInteraction" symbol="isRepliable" brackets /> to check whether a given interaction can be replied to.
+
+### ClientApplication
+
+Added support for role connection metadata.
+
+### Collection
+
+- Added <DocsLink package="collection" type="Class" parent="Collection" symbol="merge" brackets/> and <DocsLink package="collection" type="Class" parent="Collection" symbol="combineEntries" brackets/>.
+- Added <DocsLink package="collection" type="TypeAlias" parent="ReadonlyCollection"/> which indicates an immutable _`Collection`_.
+
+### Collector
+
+A new <DocsLink type="class" parent="Collector" symbol="e-ignore"/> event has been added which is emitted whenever an element is not collected by the collector.
+
+Component collector options now use the [ComponentType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType) enum values:
+
+<CH.Code>
+
+```diff
++ import { ComponentType } from 'discord.js';
+
+  const collector = interaction.channel.createMessageComponentCollector({
+	  filter,
+-	  componentType: 'BUTTON',
++	  componentType: ComponentType.Button,
+	  time: 20000
+  });
+```
+
+</CH.Code>
+
+### CommandInteraction
+
+<DocsLink type="class" parent="CommandInteraction" symbol="commandGuildId" /> has been added which is the id of the guild
+the invoked application command is registered to.
+
+### CommandInteractionOptionResolver
+
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getChannel" brackets /> now has a third parameter
+which narrows the channel type.
+
+### Events
+
+Added support for <DocsLink type="class" parent="Client" symbol="e-guildAuditLogEntryCreate" /> event.
+
+### ForumChannel
+
+Added support for forum channels.
+
+Added support for <DocsLink type="class" parent="ForumChannel" symbol="defaultForumLayout" />.
+
+### Guild
+
+Added support for <DocsLink type="class" parent="Guild" symbol="setMFALevel" brackets /> which sets the guild's MFA level.
+
+Added support for <DocsLink type="class" parent="Guild" symbol="maxVideoChannelUsers"/>. which indicates the maximum number of video channel users.
+
+Added support for <DocsLink type="class" parent="Guild" symbol="maxStageVideoChannelUsers" />. which indicates the maximum number of video channel users for stage channels.
+
+Added support for <DocsLink type="class" parent="Guild" symbol="disableInvites" brackets />. which disables the guild's invites.
+
+Added support for the _`after`_ parameter in <DocsLink type="class" parent="Guild" symbol="fetchAuditLogs" brackets />.
+
+### GuildChannelManager
+
+_`videoQualityMode`_ may be used whilst creating a channel to initially set the camera video quality mode.
+
+### GuildEmojiManager
+
+Added <DocsLink type="class" parent="GuildEmojiManager" symbol="delete" brackets /> and <DocsLink type="class" parent="GuildEmojiManager" symbol="edit" brackets /> for managing existing guild emojis.
+
+### GuildForumThreadManager
+
+Added <DocsLink type="class" parent="GuildForumThreadManager" /> as manager for threads in forum channels.
+
+### GuildMember
+
+Added support for <DocsLink type="class" parent="GuildMember" symbol="flags"/>.
+
+### GuildMembersChunk
+
+This object now supports the _`notFound`_ property.
+
+### GuildMemberManager
+
+Added <DocsLink type="class" parent="GuildMemberManager" symbol="fetchMe" brackets /> to fetch the client user in the guild.
+
+Added <DocsLink type="class" parent="GuildMemberManager" symbol="addRole" brackets /> and <DocsLink type="class" parent="GuildMemberManager" symbol="removeRole" brackets />. These methods allow a single addition or removal of a role respectively to a guild member, even if uncached.
+
+### GuildTextThreadManager
+
+Added <DocsLink type="class" parent="GuildTextThreadManager" /> as manager for threads in text channels and announcement channels.
+
+### Message
+
+<DocsLink type="class" parent="Message" symbol="position" /> has been added as an approximate position in a thread.
+
+Added support for role subscription data.
+
+### MessageReaction
+
+Added <DocsLink type="class" parent="MessageReaction" symbol="react" brackets /> to make the client user react with the reaction the class belongs to.
+
+### Role
+
+Added support for role subscriptions.
+
+### StageChannel
+
+Stage channels now allow messages to be sent in them, much like voice channels.
+
+### Sticker
+
+Added support for GIF stickers.
+
+### ThreadMemberManager
+
+The new _`withMember`_ options returns the associated guild member with the thread member.
+
+When fetching multiple thread members alongside _`withMember`_, paginated results will be returned. The _`after`_ and _`limit`_ option are supported in this scenario.
+
+### Webhook
+
+Added <DocsLink type="class" parent="Webhook" symbol="applicationId" />.
+
+Added the _`threadName`_ property in <DocsLink type="typedef" parent="WebhookMessageCreateOptions"/> which allows a webhook to create a post in a forum channel.
+
+[^1]: https://github.com/discordjs/discord.js/pull/7188
+[^2]: https://github.com/discordjs/discord.js/pull/6492
+[^3]: https://github.com/discordjs/discord.js/pull/7669
+[^4]: https://github.com/discordjs/discord.js/issues/6546
+[^5]: https://github.com/discordjs/discord.js/pull/8010
+[^6]: https://github.com/discordjs/discord.js/issues/7091

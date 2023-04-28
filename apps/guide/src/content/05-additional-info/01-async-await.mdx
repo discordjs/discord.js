@@ -1,0 +1,249 @@
+---
+title: Understanding async/await
+category: Additional info
+---
+
+# Understanding async/await
+
+If you aren't very familiar with ECMAScript 2017, you may not know about async/await. It's a useful way to handle Promises in a hoisted manner. It's also slightly faster and increases overall readability.
+
+## How do Promises work?
+
+Before we can get into async/await, you should know what Promises are and how they work because async/await is just a way to handle Promises. If you know what Promises are and how to deal with them, you can skip this part.
+
+Promises are a way to handle asynchronous tasks in JavaScript; they are the newer alternative to callbacks. A Promise has many similarities to a progress bar; they represent an unfinished and ongoing process. An excellent example of this is a request to a server (e.g., discord.js sends requests to Discord's API).
+
+A Promise can have three states; pending, resolved, and rejected
+
+The **pending** state means that the Promise still is ongoing and neither resolved nor rejected.
+The **resolved** state means that the Promise is done and executed without any errors.
+The **rejected** state means that the Promise encountered an error and could not execute correctly.
+
+One important thing to know is that a Promise can only have one state simultaneously; it can never be pending and resolved, rejected and resolved, or pending and rejected. You may be asking, "How would that look in code?". Here is a small example:
+
+<Alert title="Tip" type="success">
+	This example uses ES6 code. If you do not know what that is, you should read up on that
+	[here](/additional-info/es6-syntax.md).
+</Alert>
+
+<CH.Code>
+
+```js
+function deleteMessages(amount) {
+	return new Promise((resolve) => {
+		if (amount > 10) throw new Error("You can't delete more than 10 Messages at a time.");
+		setTimeout(() => resolve('Deleted 10 messages.'), 2000);
+	});
+}
+
+deleteMessages(5)
+	.then((value) => {
+		// `deleteMessages` is complete and has not encountered any errors
+		// the resolved value will be the string "Deleted 10 messages"
+	})
+	.catch((error) => {
+		// `deleteMessages` encountered an error
+		// the error will be an Error Object
+	});
+```
+
+</CH.Code>
+
+In this scenario, the _`deleteMessages`_ function returns a Promise. The _`.then()`_ method will trigger if the Promise resolves, and the _`.catch()`_ method if the Promise rejects. In the _`deleteMessages`_ function, the Promise is resolved after 2 seconds with the string "Deleted 10 messages.", so the _`.catch()`_ method will never be executed. You can also pass the _`.catch()`_ function as the second parameter of _`.then()`_.
+
+## How to implement async/await
+
+### Theory
+
+The following information is essential to know before working with async/await. You can only use the _`await`_ keyword inside a function declared as _`async`_ (you put the _`async`_ keyword before the _`function`_ keyword or before the parameters when using a callback function).
+
+A simple example would be:
+
+<CH.Code>
+
+```js
+async function declaredAsAsync() {
+	// ...
+}
+```
+
+</CH.Code>
+
+or
+
+<CH.Code>
+
+```js
+const declaredAsAsync = async () => {
+	// ...
+};
+```
+
+</CH.Code>
+
+You can use that as well if you use the arrow function as an event listener.
+
+<CH.Code>
+
+```js
+client.on('event', async (first, last) => {
+	// ...
+});
+```
+
+</CH.Code>
+
+An important thing to know is that a function declared as _`async`_ will always return a Promise. In addition to this, if you return something, the Promise will resolve with that value, and if you throw an error, it will reject the Promise with that error.
+
+### Execution with discord.js code
+
+Now that you know how Promises work and what they are used for, let's look at an example that handles multiple Promises. Let's say you want to react with letters (regional indicators) in a specific order. For this example, here's a basic template for a discord.js bot with some ES6 adjustments.
+
+<CH.Code>
+
+```js
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+client.once(Events.ClientReady, () => {
+	console.log('I am ready!');
+});
+
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	if (interaction.commandName === 'react') {
+		// ...
+	}
+});
+
+client.login('your-token-goes-here');
+```
+
+</CH.Code>
+
+If you don't know how Node.js asynchronous execution works, you would probably try something like this:
+
+<CH.Code>
+
+```js mark=4:7
+client.on('interactionCreate', (interaction) => {
+	// ...
+	if (commandName === 'react') {
+		const message = interaction.reply({ content: 'Reacting!', fetchReply: true });
+		message.react('🇦');
+		message.react('🇧');
+		message.react('🇨');
+	}
+});
+```
+
+</CH.Code>
+
+But since all of these methods are started at the same time, it would just be a race to which server request finished first, so there would be no guarantee that it would react at all (if the message isn't fetched) or in the order you wanted it to. In order to make sure it reacts after the message is sent and in order (a, b, c), you'd need to use the _`.then()`_ callback from the Promises that these methods return. The code would look like this:
+
+<CH.Code>
+
+```js mark=4:12
+client.on('interactionCreate', (interaction) => {
+	// ...
+	if (commandName === 'react') {
+		interaction.reply({ content: 'Reacting!', fetchReply: true }).then((message) => {
+			message
+				.react('🇦')
+				.then(() => message.react('🇧'))
+				.then(() => message.react('🇨'))
+				.catch((error) => {
+					// handle failure of any Promise rejection inside here
+				});
+		});
+	}
+});
+```
+
+</CH.Code>
+
+In this piece of code, the Promises are [chain resolved](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#Chaining) with each other, and if one of the Promises gets rejected, the function passed to _`.catch()`_ gets called. Here's the same code but with async/await:
+
+<CH.Code>
+
+```js mark=1,4:7
+client.on('interactionCreate', async (interaction) => {
+	// ...
+	if (commandName === 'react') {
+		const message = await interaction.reply({ content: 'Reacting!', fetchReply: true });
+		await message.react('🇦');
+		await message.react('🇧');
+		await message.react('🇨');
+	}
+});
+```
+
+</CH.Code>
+
+It's mostly the same code, but how would you catch Promise rejections now since _`.catch()`_ isn't there anymore? That is also a useful feature with async/await; the error will be thrown if you await it so that you can wrap the awaited Promises inside a try/catch, and you're good to go.
+
+<CH.Code>
+
+```js mark=1,4:11
+client.on('interactionCreate', async (interaction) => {
+	if (commandName === 'react') {
+		try {
+			const message = await interaction.reply({ content: 'Reacting!', fetchReply: true });
+			await message.react('🇦');
+			await message.react('🇧');
+			await message.react('🇨');
+		} catch (error) {
+			// handle failure of any Promise rejection inside here
+		}
+	}
+});
+```
+
+</CH.Code>
+
+This code looks clean and is also easy to read.
+
+So you may be asking, "How would I get the value the Promise resolved with?".
+
+Let's look at an example where you want to delete a sent reply.
+
+<CH.Code>
+
+```js mark=3:10
+client.on('interactionCreate', (interaction) => {
+	// ...
+	if (commandName === 'delete') {
+		interaction
+			.reply({ content: 'This message will be deleted.', fetchReply: true })
+			.then((replyMessage) => setTimeout(() => replyMessage.delete(), 10000))
+			.catch((error) => {
+				// handle error
+			});
+	}
+});
+```
+
+</CH.Code>
+
+The return value of a _`.reply()`_ with the _`fetchReply`_ option set to _`true`_ is a Promise which resolves with the reply when it has been sent, but how would the same code with async/await look?
+
+<CH.Code>
+
+```js mark=1,4:10
+client.on('interactionCreate', async (interaction) => {
+	if (commandName === 'delete') {
+		try {
+			const replyMessage = await interaction.reply({ content: 'This message will be deleted.', fetchReply: true });
+			setTimeout(() => replyMessage.delete(), 10000);
+		} catch (error) {
+			// handle error
+		}
+	}
+});
+```
+
+</CH.Code>
+
+With async/await, you can assign the awaited function to a variable representing the returned value. Now you know how you use async/await.
