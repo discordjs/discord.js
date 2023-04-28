@@ -20,6 +20,10 @@ packages:proxy-container:
   - '### Which package is this (bug report|feature request) for\?\n\nproxy-container'
 packages:rest:
   - '### Which package is this (bug report|feature request) for\?\n\nrest'
+packages:ui:
+  - '### Which package is this (bug report|feature request) for\?\n\ui'
+packages:util:
+  - '### Which package is this (bug report|feature request) for\?\n\util'
 packages:voice:
   - '### Which package is this (bug report|feature request) for\?\n\nvoice'
 apps:website:
