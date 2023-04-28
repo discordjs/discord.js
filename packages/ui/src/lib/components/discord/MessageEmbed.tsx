@@ -1,13 +1,17 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import { DiscordMessageEmbedAuthor, type IDiscordMessageEmbedAuthor } from './MessageEmbedAuthor.jsx';
+import type { IDiscordMessageEmbedField } from './MessageEmbedField.jsx';
+import { DiscordMessageEmbedFields } from './MessageEmbedFields.jsx';
 import { DiscordMessageEmbedFooter, type IDiscordMessageEmbedFooter } from './MessageEmbedFooter.jsx';
 import { DiscordMessageEmbedTitle, type IDiscordMessageEmbedTitle } from './MessageEmbedTitle.jsx';
 
 export interface IDiscordMessageEmbed {
 	author?: IDiscordMessageEmbedAuthor | undefined;
 	authorNode?: ReactNode | undefined;
+	fields?: IDiscordMessageEmbedField[];
 	footer?: IDiscordMessageEmbedFooter | undefined;
 	footerNode?: ReactNode | undefined;
+	timestamp?: string;
 	title?: IDiscordMessageEmbedTitle | undefined;
 	titleNode?: ReactNode | undefined;
 }
@@ -15,6 +19,7 @@ export interface IDiscordMessageEmbed {
 export function DiscordMessageEmbed({
 	author,
 	authorNode,
+	fields,
 	title,
 	titleNode,
 	children,
@@ -29,6 +34,7 @@ export function DiscordMessageEmbed({
 						{author ? <DiscordMessageEmbedAuthor {...author} /> : authorNode ?? null}
 						{title ? <DiscordMessageEmbedTitle {...title} /> : titleNode ?? null}
 						{children ? <div className="mt-2 text-sm">{children}</div> : null}
+						{fields ? <DiscordMessageEmbedFields fields={fields} /> : null}
 						{footer ? <DiscordMessageEmbedFooter {...footer} /> : footerNode ?? null}
 					</div>
 				</div>

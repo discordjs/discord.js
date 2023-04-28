@@ -45,7 +45,8 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/next"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -59,19 +60,19 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "^0.37.39"
+		"discord-api-types": "^0.37.40"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "18.15.11",
+		"@types/node": "18.16.0",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.38.0",
+		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.42",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.7",
+		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
 		"typescript": "^5.0.4",
 		"vitest": "^0.29.8"
