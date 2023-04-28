@@ -88,7 +88,7 @@ export async function createPackage(packageName: string, packageDescription?: st
 
 	const issueLabelerYAML = parseYAML(await readFile('issue-labeler.yml', 'utf8')) as Record<string, string[]>;
 	issueLabelerYAML[`packages:${packageName}`] = [
-		`### Which package is this (bug report|feature request) for\\?\\n\\n${packageName}`,
+		`### Which (application|package|application or package) is this (bug report|feature request) for\\?\\n\\n${packageName}\\n`,
 	];
 
 	await writeFile('issue-labeler.yml', stringifyYAML(sortYAMLObject(issueLabelerYAML)));

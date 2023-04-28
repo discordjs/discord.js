@@ -9,11 +9,13 @@ body:
         We do not implement unreleased features.
         Use Discord for questions: https://discord.gg/djs
   - type: dropdown
-    id: package
+    id: application_or_package
     attributes:
-      label: Which package is this feature request for?
+      label: Which application or package is this feature request for?
       options:
         - discord.js
+        - Documentation
+        - Guide
         - brokers
         - builders
         - collection
@@ -48,7 +50,7 @@ body:
       label: Alternative solutions or implementations
       description: A clear and concise description of any alternative solutions or features you have considered.
   - type: textarea
-    id: additional-context
+    id: additional_context
     attributes:
       label: Other context
       description: Any other context, screenshots, or file uploads that help us understand your feature request.
