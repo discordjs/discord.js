@@ -1,24 +1,42 @@
+apps:guide:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nGuide\\n"
+apps:website:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nDocumentation\\n"
 packages:brokers:
-  - '### Which package is this (bug report|feature request) for\?\n\nbrokers'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nbrokers\\n"
 packages:builders:
-  - '### Which package is this (bug report|feature request) for\?\n\nbuilders'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nbuilders\\n"
 packages:collection:
-  - '### Which package is this (bug report|feature request) for\?\n\ncollection'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncollection\\n"
 packages:core:
-  - '### Which package is this (bug report|feature request) for\?\n\ncore'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncore\\n"
 packages:discord.js:
-  - '### Which package is this (bug report|feature request) for\?\n\ndiscord.js'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ndiscord.js\\n"
 packages:formatters:
-  - '### Which package is this (bug report|feature request) for\?\n\nformatters'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nformatters\\n"
 packages:next:
-  - '### Which package is this (bug report|feature request) for\?\n\nnext'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nnext\\n"
 packages:proxy:
-  - '### Which package is this (bug report|feature request) for\?\n\nproxy'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nproxy\\n"
 packages:proxy-container:
-  - '### Which package is this (bug report|feature request) for\?\n\nproxy-container'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nproxy-container\\n"
 packages:rest:
-  - '### Which package is this (bug report|feature request) for\?\n\nrest'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nrest\\n"
 packages:voice:
-  - '### Which package is this (bug report|feature request) for\?\n\nvoice'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nvoice\\n"
 packages:ws:
-  - '### Which package is this (bug report|feature request) for\?\n\nws'
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nws\\n"
