@@ -10,6 +10,8 @@ packages:discord.js:
   - '### Which package is this (bug report|feature request) for\?\n\ndiscord.js'
 packages:formatters:
   - '### Which package is this (bug report|feature request) for\?\n\nformatters'
+apps:guide:
+  - '### Which package is this (bug report|feature request) for\?\n\guide'
 packages:next:
   - '### Which package is this (bug report|feature request) for\?\n\nnext'
 packages:proxy:
@@ -20,5 +22,7 @@ packages:rest:
   - '### Which package is this (bug report|feature request) for\?\n\nrest'
 packages:voice:
   - '### Which package is this (bug report|feature request) for\?\n\nvoice'
+apps:website:
+  - '### Which package is this (bug report|feature request) for\?\n\nwebsite'
 packages:ws:
   - '### Which package is this (bug report|feature request) for\?\n\nws'

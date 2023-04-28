@@ -19,11 +19,13 @@ body:
         - collection
         - core
         - formatters
+        - guide
         - next
         - proxy
         - proxy-container
         - rest
         - voice
+        - website
         - ws
     validations:
       required: true
