@@ -432,7 +432,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE
  * * GUILD_AUDIT_LOG_ENTRY_CREATE
  * @typedef {string} WSEventType
- * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
+ * @see {@link https://discord.com/developers/docs/topics/gateway-events#receive-events}
  */
 exports.WSEvents = keyMirror([
   'READY',

@@ -2787,10 +2787,21 @@ export class Formatters extends null {
   public static blockQuote: typeof blockQuote;
   public static bold: typeof bold;
   public static channelMention: typeof channelMention;
-  public static chatInputApplicationCommandMention
-    <N extends string, G extends string, S extends string, I extends Snowflake>(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
-  public static chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(commandName: N, subcommandName: S, commandId: I): `</${N} ${S}:${I}>`;
-  public static chatInputApplicationCommandMention<N extends string, I extends Snowflake>(commandName: N, commandId: I): `</${N}:${I}>`;
+  public static chatInputApplicationCommandMention<
+    N extends string,
+    G extends string,
+    S extends string,
+    I extends Snowflake,
+  >(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
+  public static chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(
+    commandName: N,
+    subcommandName: S,
+    commandId: I,
+  ): `</${N} ${S}:${I}>`;
+  public static chatInputApplicationCommandMention<N extends string, I extends Snowflake>(
+    commandName: N,
+    commandId: I,
+  ): `</${N}:${I}>`;
   public static codeBlock: typeof codeBlock;
   public static formatEmoji: typeof formatEmoji;
   public static hideLinkEmbed: typeof hideLinkEmbed;
@@ -3436,7 +3447,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-  public addRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>;
+  public addRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
   public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
   public fetch(
@@ -3448,7 +3459,11 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   public list(options?: GuildListMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
-  public removeRole(user: UserResolvable, role: RoleResolvable, reason?: string): Promise<GuildMember|User|Snowflake>;
+  public removeRole(
+    user: UserResolvable,
+    role: RoleResolvable,
+    reason?: string,
+  ): Promise<GuildMember | User | Snowflake>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public unban(user: UserResolvable, reason?: string): Promise<User | null>;
 }
@@ -3645,24 +3660,27 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   public get me(): ThreadMember | null;
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
   public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
-  public fetch(
-    member: ThreadMember<true>,
-    options?: FetchMemberOptions
-    ): Promise<ThreadMember<true>>;
+  public fetch(member: ThreadMember<true>, options?: FetchMemberOptions): Promise<ThreadMember<true>>;
   public fetch(
     member: Snowflake,
-    options: (FetchThreadMemberOptions & { withMember: true }),
+    options: FetchThreadMemberOptions & { withMember: true },
   ): Promise<ThreadMember<true>>;
   public fetch(
     options: FetchThreadMembersWithGuildMemberDataOptions,
-    ): Promise<Collection<Snowflake, ThreadMember<true>>>;
+  ): Promise<Collection<Snowflake, ThreadMember<true>>>;
   public fetch(member: UserResolvable, options?: FetchThreadMemberOptions): Promise<ThreadMember>;
 
   /** @deprecated Use `fetch(options)` instead. */
   public fetch(cache: boolean, options?: FetchThreadMembersOptions): Promise<Collection<Snowflake, ThreadMember>>;
 
-  public fetch(x: undefined, options: FetchThreadMembersWithGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember<true>>>;
-  public fetch(x: undefined, options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
+  public fetch(
+    x: undefined,
+    options: FetchThreadMembersWithGuildMemberDataOptions,
+  ): Promise<Collection<Snowflake, ThreadMember<true>>>;
+  public fetch(
+    x: undefined,
+    options?: FetchThreadMembersWithoutGuildMemberDataOptions,
+  ): Promise<Collection<Snowflake, ThreadMember>>;
 
   public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
   public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
@@ -4266,6 +4284,7 @@ export type ApplicationCommandPermissionType = keyof typeof ApplicationCommandPe
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
 export type ApplicationFlagsString =
+  | 'APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE'
   | 'GATEWAY_PRESENCE'
   | 'GATEWAY_PRESENCE_LIMITED'
   | 'GATEWAY_GUILD_MEMBERS'
@@ -4273,7 +4292,8 @@ export type ApplicationFlagsString =
   | 'VERIFICATION_PENDING_GUILD_LIMIT'
   | 'EMBEDDED'
   | 'GATEWAY_MESSAGE_CONTENT'
-  | 'GATEWAY_MESSAGE_CONTENT_LIMITED';
+  | 'GATEWAY_MESSAGE_CONTENT_LIMITED'
+  | 'APPLICATION_COMMAND_BADGE';
 
 export interface ApplicationRoleConnectionMetadataEditOptions {
   name: string;
@@ -4427,8 +4447,8 @@ export type CacheConstructors = {
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
 export type CacheFactory = (
   manager: CacheConstructors[keyof Caches],
-  holds: Caches[typeof manager['name']][1],
-) => typeof manager['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
+  holds: Caches[(typeof manager)['name']][1],
+) => (typeof manager)['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>
@@ -5466,7 +5486,11 @@ export interface GuildMemberEditData {
   flags?: GuildMemberFlagsResolvable;
 }
 
-export type GuildMemberFlagsString = 'DID_REJOIN' | 'COMPLETED_ONBOARDING' | 'BYPASSES_VERIFICATION' | 'STARTED_ONBOARDING';
+export type GuildMemberFlagsString =
+  | 'DID_REJOIN'
+  | 'COMPLETED_ONBOARDING'
+  | 'BYPASSES_VERIFICATION'
+  | 'STARTED_ONBOARDING';
 
 export type GuildMemberFlagsResolvable = BitFieldResolvable<GuildMemberFlagsString, number>;
 
@@ -5871,6 +5895,7 @@ export type MessageFlagsString =
   | 'HAS_THREAD'
   | 'EPHEMERAL'
   | 'LOADING'
+  | 'FAILED_TO_MENTION_SOME_ROLES_IN_THREAD'
   | 'SUPPRESS_NOTIFICATIONS'
   | 'IS_VOICE_MESSAGE';
 
@@ -6285,7 +6310,9 @@ export type SystemChannelFlagsString =
   | 'SUPPRESS_JOIN_NOTIFICATIONS'
   | 'SUPPRESS_PREMIUM_SUBSCRIPTIONS'
   | 'SUPPRESS_GUILD_REMINDER_NOTIFICATIONS'
-  | 'SUPPRESS_JOIN_NOTIFICATION_REPLIES';
+  | 'SUPPRESS_JOIN_NOTIFICATION_REPLIES'
+  | 'SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATIONS'
+  | 'SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATION_REPLIES';
 
 export type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
