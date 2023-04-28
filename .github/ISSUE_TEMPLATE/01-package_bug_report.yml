@@ -1,11 +1,13 @@
 name: Bug report
-description: Report incorrect or unexpected behavior of a package
+description: Report an issue with discord.js or another package.
 labels: [bug, need repro]
 body:
   - type: markdown
     attributes:
       value: |
-        Use Discord for questions: https://discord.gg/djs
+        Thank you for filing an issue! If you are here to ask a question, use Discord instead: https://discord.gg/djs
+
+        This issue form is for discord.js, including other packages.
   - type: dropdown
     id: package
     attributes:
@@ -29,57 +31,44 @@ body:
     id: description
     attributes:
       label: Issue description
-      description: |
-        Describe the issue in as much detail as possible.
-
-        Tip: You can attach images or log files by clicking this area to highlight it and then dragging files into it.
+      description: Describe the issue in as much detail as possible.
       placeholder: |
         Steps to reproduce with below code sample:
-        1. do thing
-        2. do thing in Discord client
-        3. observe behavior
-        4. see error logs below
+        1. Do thing
+        2. Do thing in Discord client
+        3. Observe behavior
+        4. See error logs below
     validations:
       required: true
   - type: textarea
-    id: codesample
+    id: code_sample
     attributes:
       label: Code sample
-      description: Include a reproducible, minimal code sample. This will be automatically formatted into code, so no need for backticks.
-      render: typescript
-      placeholder: |
-        Your code sample should be...
-        ... Minimal - Use as little code as possible that still produces the same problem (and is understandable)
-        ... Complete - Provide all parts someone else needs to reproduce your problem
-        ... Reproducible - Test the code you're about to provide to make sure it reproduces the problem
-  - type: input
-    id: djs-version
-    attributes:
-      label: Package version
-      description: Which version of the package are you using? Run `npm list <package>` in your project directory and paste the output.
-      placeholder: We no longer support version 12 or earlier of discord.js
-    validations:
-      required: true
-  - type: input
-    id: node-version
-    attributes:
-      label: Node.js version
       description: |
-        Which version of Node.js are you using? Run `node --version` in your project directory and paste the output.
-        If you are using TypeScript, please include its version (`npm list typescript`) as well.
-      placeholder: Node.js version 16.9+ is required for version 14.0.0+
+        Your code sample should be:
+        1. Minimal - Use as little code as possible that still produces the same problem (and is understandable)
+        2. Complete - Provide all parts someone else needs to reproduce your problem
+        3. Reproducible - Test the code you're about to provide to make sure it reproduces the problem
+
+        This will be automatically formatted into code, so no need for backticks.
+      render: typescript
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: List necessary versions here. This includes your package version, runtime version, operating system etc.
+      placeholder: |
+        - discord.js 14.9.0 (`npm ls discord.js` or another package)
+        - Node.js 16.9.0 (`node --version`)
+        - TypeScript 5.0.4 (`npm ls typescript` if you use it)
+        - macOS Ventura 13.3.1
     validations:
       required: true
-  - type: input
-    id: os
-    attributes:
-      label: Operating system
-      description: Which OS does your application run on?
   - type: dropdown
     id: priority
     attributes:
-      label: Priority this issue should have
-      description: Please be realistic. If you need to elaborate on your reasoning, please use the Issue description field above.
+      label: Issue priority
+      description: Please be realistic. If you need to elaborate on your reasoning, please use the issue description field above.
       options:
         - Low (slightly annoying)
         - Medium (should be fixed soon)
@@ -90,12 +79,9 @@ body:
     id: partials
     attributes:
       label: Which partials do you have configured?
-      description: |
-        Check your Client constructor for the `partials` key.
-
-        Tip: you can select multiple items
+      description: Check your `Client` constructor for the `partials` key.
       options:
-        - Not applicable (subpackage bug)
+        - Not applicable
         - No Partials
         - User
         - Channel
@@ -111,12 +97,9 @@ body:
     id: intents
     attributes:
       label: Which gateway intents are you subscribing to?
-      description: |
-        Check your Client constructor options for the `intents` key.
-
-        Tip: you can select multiple items
+      description: Check your `Client` constructor for the `intents` key.
       options:
-        - Not applicable (subpackage bug)
+        - Not applicable
         - No Intents
         - Guilds
         - GuildMembers
@@ -141,7 +124,7 @@ body:
     validations:
       required: true
   - type: input
-    id: dev-release
+    id: dev_release
     attributes:
       label: I have tested this issue on a development release
       placeholder: d23280c (commit hash)
