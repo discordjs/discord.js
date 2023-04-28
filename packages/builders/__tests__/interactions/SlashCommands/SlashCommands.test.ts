@@ -116,12 +116,12 @@ describe('Slash Commands', () => {
 
 		test('GIVEN missing required parameters THEN throw error', () => {
 			expect(() => SlashCommandAssertions.validateRequiredParameters(null, 'My name is missing', [])).toThrowError(
-				'Expected a string primitive',
+				'Required parameter "name" is missing',
 			);
 
 			expect(() =>
 				SlashCommandAssertions.validateRequiredParameters('my-description-is-missing', null, []),
-			).toThrowError('Expected a string primitive');
+			).toThrowError('Required parameter "description" is missing');
 		});
 	});
 
