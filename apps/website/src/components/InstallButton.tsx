@@ -4,7 +4,7 @@ import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
-import { button } from '~/styles/button';
+import { buttonVariants } from '~/styles/Button';
 
 export function InstallButton() {
 	const [interacted, setInteracted] = useState(false);
@@ -17,7 +17,7 @@ export function InstallButton() {
 
 	return (
 		<button
-			className={button({ intent: 'secondary', className: 'cursor-copy font-mono' })}
+			className={buttonVariants({ variant: 'secondary', className: 'cursor-copy font-mono' })}
 			onClick={() => {
 				setInteracted(true);
 				copyToClipboard('npm install discord.js');

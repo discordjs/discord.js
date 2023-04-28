@@ -3,7 +3,7 @@ import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { button } from '~/styles/button';
+import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
 export const runtime = 'edge';
@@ -32,7 +32,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 			<div className="flex flex-col gap-4">
 				{data.map((version, idx) => (
 					<Link
-						className={button({ intent: 'secondary' })}
+						className={buttonVariants({ variant: 'secondary' })}
 						href={`/docs/packages/${params.package}/${version}`}
 						key={`${version}-${idx}`}
 					>
@@ -46,7 +46,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 					</Link>
 				)) ?? null}
 			</div>
-			<Link className={button({ className: 'place-self-center' })} href="/docs/packages">
+			<Link className={buttonVariants({ className: 'place-self-center' })} href="/docs/packages">
 				<VscArrowLeft size={20} /> Go back
 			</Link>
 		</div>

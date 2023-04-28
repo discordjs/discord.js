@@ -3,7 +3,7 @@ import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
-import { button } from '~/styles/button';
+import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
 export const runtime = 'edge';
@@ -28,7 +28,11 @@ export default function Page() {
 					</div>
 				</a>
 				{PACKAGES.map((pkg, idx) => (
-					<Link className={button({ intent: 'secondary' })} href={`/docs/packages/${pkg}`} key={`${pkg}-${idx}`}>
+					<Link
+						className={buttonVariants({ variant: 'secondary' })}
+						href={`/docs/packages/${pkg}`}
+						key={`${pkg}-${idx}`}
+					>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex grow flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
@@ -48,7 +52,7 @@ export default function Page() {
 						</div>
 					</Link>
 				))}
-				<a className={button({ intent: 'secondary' })} href="https://discord-api-types.dev/">
+				<a className={buttonVariants({ variant: 'secondary' })} href="https://discord-api-types.dev/">
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
@@ -60,7 +64,7 @@ export default function Page() {
 					</div>
 				</a>
 			</div>
-			<Link className={button({ className: 'place-self-center' })} href="/">
+			<Link className={buttonVariants({ className: 'place-self-center' })} href="/">
 				<VscArrowLeft size={20} /> Go back
 			</Link>
 		</div>
