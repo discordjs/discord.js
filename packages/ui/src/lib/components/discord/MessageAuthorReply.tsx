@@ -19,8 +19,9 @@ export function DiscordMessageAuthorReply({ avatar, bot, color, username }: IDis
 				</div>
 			) : null}
 			<span
-				className="mr-1 cursor-pointer select-none text-sm font-medium leading-snug text-white hover:underline"
-				{...(color && { className: `text-${color}` })}
+				className={`mr-1 cursor-pointer select-none text-sm font-medium leading-snug text-white ${
+					color && `text-${color}`
+				}`}
 			>
 				{username}
 			</span>

@@ -20,10 +20,7 @@ export function DiscordMessageAuthor({ avatar, bot, color, time, username }: IDi
 			/>
 			<h2 className="m-0 text-size-inherit font-medium leading-snug" id="user-info">
 				<span className="mr-1" id="username">
-					<span
-						className="cursor-pointer text-base font-medium hover:underline"
-						{...(color && { className: `text-${color}` })}
-					>
+					<span className={`cursor-pointer text-base font-medium hover:underline ${color && `text-${color}-500`}`}>
 						{username}
 					</span>
 					{bot ? (
