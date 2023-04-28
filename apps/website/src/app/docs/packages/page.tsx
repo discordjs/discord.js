@@ -3,6 +3,7 @@ import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
+import { button } from '~/styles/button';
 import { PACKAGES } from '~/util/constants';
 
 export const runtime = 'edge';
@@ -27,11 +28,7 @@ export default function Page() {
 					</div>
 				</a>
 				{PACKAGES.map((pkg, idx) => (
-					<Link
-						className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
-						href={`/docs/packages/${pkg}`}
-						key={`${pkg}-${idx}`}
-					>
+					<Link className={button({ intent: 'secondary' })} href={`/docs/packages/${pkg}`} key={`${pkg}-${idx}`}>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex grow flex-row place-content-between place-items-center gap-4">
 								<div className="flex flex-row place-content-between place-items-center gap-4">
@@ -51,10 +48,7 @@ export default function Page() {
 						</div>
 					</Link>
 				))}
-				<a
-					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
-					href="https://discord-api-types.dev/"
-				>
+				<a className={button({ intent: 'secondary' })} href="https://discord-api-types.dev/">
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
@@ -66,10 +60,7 @@ export default function Page() {
 					</div>
 				</a>
 			</div>
-			<Link
-				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center place-self-center gap-2 border-0 rounded bg-blurple px-4 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-				href="/"
-			>
+			<Link className={button({ className: 'place-self-center' })} href="/">
 				<VscArrowLeft size={20} /> Go back
 			</Link>
 		</div>
