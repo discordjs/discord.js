@@ -126,6 +126,28 @@ export const Default = {
 			>
 				Interactions are supported! I definitely used a command.
 			</DiscordMessage>
+			<DiscordMessage
+				author={{
+					avatar: '/assets/discordjs.png',
+					bot: true,
+					verified: true,
+					color: 'text-red-500',
+					time: 'Today at 21:04',
+					username: 'Guide Bot',
+				}}
+				reply={{
+					author: {
+						avatar: '/assets/snek-bot.jpeg',
+						bot: true,
+						verified: true,
+						color: 'text-blue-500',
+						username: 'Snek Bot',
+					},
+					content: 'You can also have verified bots, like me!',
+				}}
+			>
+				Display colors are supported as well!
+			</DiscordMessage>
 		</DiscordMessages>
 	),
 	args: {

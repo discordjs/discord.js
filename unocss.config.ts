@@ -48,31 +48,27 @@ export default defineConfig({
 					display: 'inline-block',
 				},
 				h1: {
+					display: 'flex',
+					'place-items': 'center',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h1': {
-					margin: '1rem 0',
 				},
 				h2: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h2': {
-					margin: '1.25em 0',
 				},
 				h3: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h3': {
-					margin: '1.25em 0',
 				},
 				h4: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h4': {
-					margin: '1.25em 0',
 				},
 				// eslint-disable-next-line id-length
 				p: {
