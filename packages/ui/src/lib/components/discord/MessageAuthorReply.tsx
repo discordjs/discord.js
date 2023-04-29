@@ -1,3 +1,5 @@
+import { FiCheck } from 'react-icons/fi';
+
 export interface IDiscordMessageAuthorReply {
 	avatar: string;
 	bot?: boolean;
@@ -12,7 +14,7 @@ export function DiscordMessageAuthorReply({ avatar, bot, verified, color, userna
 			<img alt={`${username}'s avatar`} className="mr-1 h-4 w-4 select-none rounded-full" src={avatar} />
 			{bot ? (
 				<div className="mr-1 rounded bg-blurple px-1 vertical-top text-xs text-white" id="bot">
-					{verified ? '✓ BOT' : 'BOT'}
+					{verified ? <FiCheck className="mr-1 inline-block" /> : null}BOT
 				</div>
 			) : null}
 			<span className={`mr-1 cursor-pointer select-none text-sm font-medium leading-snug ${color ?? 'text-white'}`}>

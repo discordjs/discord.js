@@ -48,7 +48,8 @@
 	"dependencies": {
 		"ariakit": "^2.0.0-next.44",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"react-icons": "^4.8.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
