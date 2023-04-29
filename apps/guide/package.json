@@ -16,7 +16,7 @@
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
 		"dev:contentlayer": "contentlayer dev",
-		"generate:css": "unocss 'src/**/*.tsx' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
+		"generate:css": "unocss 'src/**/*.tsx' 'contentlayer.config.ts' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.cjs,.ts,.tsx --fix --format=pretty",
 		"fmt": "yarn format"
@@ -73,6 +73,7 @@
 		"@next/bundle-analyzer": "^13.3.1",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.4.3",
+		"@types/html-escaper": "^3.0.0",
 		"@types/node": "18.16.0",
 		"@types/react": "^18.0.38",
 		"@types/react-dom": "^18.0.11",

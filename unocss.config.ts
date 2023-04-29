@@ -48,6 +48,8 @@ export default defineConfig({
 					display: 'inline-block',
 				},
 				h1: {
+					display: 'flex',
+					'place-items': 'center',
 					'scroll-margin-top': '6.5rem',
 				},
 				'.level-h1': {
