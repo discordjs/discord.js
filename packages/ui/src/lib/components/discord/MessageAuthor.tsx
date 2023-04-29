@@ -17,9 +17,7 @@ export function DiscordMessageAuthor({ avatar, bot, verified, color, time, usern
 			/>
 			<h2 className="m-0 text-size-inherit font-medium leading-snug" id="user-info">
 				<span className="mr-1" id="username">
-					<span
-						className={`cursor-pointer text-base font-medium hover:underline ${color ? `text-${color}` : 'text-white'}`}
-					>
+					<span className={`cursor-pointer text-base font-medium hover:underline ${color ?? 'text-white'}`}>
 						{username}
 					</span>
 					{bot ? (

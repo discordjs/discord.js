@@ -15,11 +15,7 @@ export function DiscordMessageAuthorReply({ avatar, bot, verified, color, userna
 					{verified ? '✓ BOT' : 'BOT'}
 				</div>
 			) : null}
-			<span
-				className={`mr-1 cursor-pointer select-none text-sm font-medium leading-snug ${
-					color ? `text-${color}` : 'text-white'
-				}`}
-			>
+			<span className={`mr-1 cursor-pointer select-none text-sm font-medium leading-snug ${color ?? 'text-white'}`}>
 				{username}
 			</span>
 		</>
