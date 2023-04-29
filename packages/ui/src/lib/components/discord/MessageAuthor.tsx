@@ -1,11 +1,15 @@
+import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
+
 export interface IDiscordMessageAuthor {
 	avatar: string;
 	bot?: boolean;
+	color?: string;
 	time: string;
 	username: string;
+	verified?: boolean;
 }
 
-export function DiscordMessageAuthor({ avatar, username, bot, time }: IDiscordMessageAuthor) {
+export function DiscordMessageAuthor({ avatar, bot, verified, color, time, username }: IDiscordMessageAuthor) {
 	return (
 		<>
 			<img
@@ -15,10 +19,12 @@ export function DiscordMessageAuthor({ avatar, username, bot, time }: IDiscordMe
 			/>
 			<h2 className="m-0 text-size-inherit font-medium leading-snug" id="user-info">
 				<span className="mr-1" id="username">
-					<span className="cursor-pointer text-base font-medium text-white hover:underline">{username}</span>
+					<span className={`cursor-pointer text-base font-medium hover:underline ${color ?? 'text-white'}`}>
+						{username}
+					</span>
 					{bot ? (
 						<span className="relative top-1 ml-1 rounded bg-blurple px-1 vertical-top text-xs text-white" id="bot">
-							BOT
+							{verified ? <FiCheck className="mr-1 inline-block" /> : null}BOT
 						</span>
 					) : null}
 				</span>
