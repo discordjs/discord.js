@@ -58,6 +58,10 @@ caused the audit log event to happen.
 
 One of the most common use cases for audit logs is understanding who deleted a message in a Discord server. If a user deleted another user's message, you can find out who did that as soon as you receive the corresponding audit log event.
 
+<Alert title="Tip" type="info">
+	Messages deleted by their author or bots (excluding bulk deletes) do not generate audit log entries.
+</Alert>
+
 <CH.Code>
 
 ```js JavaScript
