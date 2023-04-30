@@ -4,7 +4,7 @@ import type { IDiscordMessageEmbedField } from './MessageEmbedField.jsx';
 import { DiscordMessageEmbedFields } from './MessageEmbedFields.jsx';
 import { DiscordMessageEmbedFooter, type IDiscordMessageEmbedFooter } from './MessageEmbedFooter.jsx';
 import { DiscordMessageEmbedImage, type IDiscordMessageEmbedImage } from './MessageEmbedImage.jsx';
-import { DiscordMessageEmbedThumbnail } from './MessageEmbedThumbnail.jsx';
+import { DiscordMessageEmbedThumbnail, type IDiscordMessageEmbedThumbnail } from './MessageEmbedThumbnail.jsx';
 import { DiscordMessageEmbedTitle, type IDiscordMessageEmbedTitle } from './MessageEmbedTitle.jsx';
 
 export interface IDiscordMessageEmbed {
@@ -14,7 +14,7 @@ export interface IDiscordMessageEmbed {
 	footer?: IDiscordMessageEmbedFooter | undefined;
 	footerNode?: ReactNode | undefined;
 	image?: IDiscordMessageEmbedImage;
-	thumbnail?: string;
+	thumbnail?: IDiscordMessageEmbedThumbnail;
 	title?: IDiscordMessageEmbedTitle | undefined;
 	titleNode?: ReactNode | undefined;
 }
@@ -44,7 +44,7 @@ export function DiscordMessageEmbed({
 						{footer ? <DiscordMessageEmbedFooter {...footer} /> : footerNode ?? null}
 					</div>
 
-					{thumbnail ? <DiscordMessageEmbedThumbnail image={thumbnail} /> : null}
+					{thumbnail ? <DiscordMessageEmbedThumbnail {...thumbnail} /> : null}
 				</div>
 			</div>
 		</div>

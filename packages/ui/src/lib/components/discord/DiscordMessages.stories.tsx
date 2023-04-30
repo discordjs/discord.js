@@ -74,7 +74,7 @@ export const Default = {
 							username: 'Guide Bot',
 						}}
 						footer={{ content: "When one amazing title just wasn't enough." }}
-						thumbnail="/assets/discordjs.png"
+						thumbnail={{ alt: 'discord.js logo', image: '/assets/discordjs.png' }}
 						title={{ title: 'Another amazing title' }}
 					>
 						Multiple embeds!
@@ -107,11 +107,12 @@ export const Default = {
 						]}
 						footer={{ timestamp: 'Today at 21:02' }}
 						image={{
+							alt: 'discord.js logo',
 							url: '/assets/discordjs.png',
 							width: 300,
 							height: 300,
 						}}
-						thumbnail="/assets/discordjs.png"
+						thumbnail={{ alt: 'discord.js logo', image: '/assets/discordjs.png' }}
 						title={{ title: 'Fields are also supported!' }}
 					/>
 				</>
