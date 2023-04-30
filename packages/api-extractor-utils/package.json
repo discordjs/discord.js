@@ -32,11 +32,11 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@microsoft/api-extractor-model": "7.26.4",
+		"@microsoft/api-extractor-model": "7.26.6",
 		"@microsoft/tsdoc": "0.14.2"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.24",
+		"@types/node": "16.18.25",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.42",

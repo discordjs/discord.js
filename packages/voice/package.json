@@ -61,13 +61,13 @@
 		"ws": "^8.13.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.21.4",
-		"@babel/preset-env": "^7.21.4",
-		"@babel/preset-typescript": "^7.21.4",
+		"@babel/core": "^7.21.5",
+		"@babel/preset-env": "^7.21.5",
+		"@babel/preset-typescript": "^7.21.5",
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
+		"@microsoft/api-extractor": "^7.34.6",
 		"@types/jest": "^29.5.1",
-		"@types/node": "16.18.24",
+		"@types/node": "16.18.25",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
 		"eslint": "^8.39.0",
