@@ -45,7 +45,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
-		"@microsoft/api-extractor-model": "7.26.4",
+		"@microsoft/api-extractor-model": "7.26.6",
 		"@microsoft/tsdoc": "0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
 		"commander": "^10.0.1",
@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^11.0.1",
-		"@types/node": "16.18.24",
+		"@types/node": "16.18.25",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",

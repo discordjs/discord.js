@@ -66,8 +66,8 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.24",
+		"@microsoft/api-extractor": "^7.34.6",
+		"@types/node": "16.18.25",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"downlevel-dts": "^0.11.0",

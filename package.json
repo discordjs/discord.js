@@ -53,12 +53,12 @@
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^13.2.1",
+		"lint-staged": "^13.2.2",
 		"tsup": "^6.7.0",
 		"turbo": "^1.9.3",
 		"typescript": "^5.0.4",
 		"unocss": "^0.51.8",
-		"vercel": "^28.20.0",
+		"vercel": "^29.0.1",
 		"vitest": "^0.29.8"
 	},
 	"resolutions": {
