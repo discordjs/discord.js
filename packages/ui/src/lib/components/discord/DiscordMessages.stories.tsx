@@ -57,13 +57,14 @@ export const Default = {
 						author={{
 							avatar: '/assets/discordjs.png',
 							username: 'Guide Bot',
+							url: 'https://discord.js.org',
 						}}
 						footer={{
 							content: 'Sometimes, titles just have to be.',
 							icon: '/assets/discordjs.png',
 							timestamp: 'Today at 21:02',
 						}}
-						title={{ title: 'An amazing title' }}
+						title={{ title: 'An amazing title', url: 'https://discord.js.org' }}
 					>
 						This is a description. You can put a description here. It must be descriptive!
 					</DiscordMessageEmbed>
@@ -73,6 +74,7 @@ export const Default = {
 							username: 'Guide Bot',
 						}}
 						footer={{ content: "When one amazing title just wasn't enough." }}
+						thumbnail={{ alt: 'discord.js logo', image: '/assets/discordjs.png' }}
 						title={{ title: 'Another amazing title' }}
 					>
 						Multiple embeds!
@@ -104,6 +106,13 @@ export const Default = {
 							},
 						]}
 						footer={{ timestamp: 'Today at 21:02' }}
+						image={{
+							alt: 'discord.js logo',
+							url: '/assets/discordjs.png',
+							width: 300,
+							height: 300,
+						}}
+						thumbnail={{ alt: 'discord.js logo', image: '/assets/discordjs.png' }}
 						title={{ title: 'Fields are also supported!' }}
 					/>
 				</>
