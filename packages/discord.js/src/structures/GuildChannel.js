@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
@@ -145,8 +145,20 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedChannels(this);
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    const selfIsCategory = this.type === ChannelType.GuildCategory;
+    const movableTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
+    const movableSelf = movableTypes.includes(this.type);
+    return this.guild.channels.cache.reduce(
+      (acc, channel) =>
+        acc +
+        ((movableSelf ? movableTypes.includes(channel.type) : channel.type === this.type) &&
+          (selfIsCategory || channel.parent === this.parent))
+          ? this.rawPosition === channel.rawPosition
+            ? BigInt(this.id) < BigInt(channel.id)
+            : this.rawPosition > channel.rawPosition
+          : 0,
+      0,
+    );
   }
 
   /**

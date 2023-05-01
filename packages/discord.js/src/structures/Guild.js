@@ -1304,13 +1304,14 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedChannels(channel) {
-    const category = channel.type === ChannelType.GuildCategory;
-    const channelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
+    const channelIsCategory = channel.type === ChannelType.GuildCategory;
+    const movableTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
+    const movableChannel = movableTypes.includes(channel.type);
     return discordSort(
       this.channels.cache.filter(
         c =>
-          (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&
-          (category || c.parent === channel.parent),
+          (movableChannel ? movableTypes.includes(c.type) : c.type === channel.type) &&
+          (channelIsCategory || c.parent === channel.parent),
       ),
     );
   }
