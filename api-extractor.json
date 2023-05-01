@@ -89,7 +89,42 @@
 		 * DEFAULT VALUE: no overrideTsconfig section
 		 */
 		"overrideTsconfig": {
-			"moduleResolution": "node"
+			// Type Checking
+			"allowUnreachableCode": false,
+			"allowUnusedLabels": false,
+			"exactOptionalPropertyTypes": true,
+			"noFallthroughCasesInSwitch": true,
+			"noImplicitOverride": true,
+			"noImplicitReturns": true,
+			"noUnusedLocals": true,
+			"noUnusedParameters": true,
+			"strict": true,
+			"useUnknownInCatchVariables": true,
+			"noUncheckedIndexedAccess": true,
+
+			// Modules
+			"module": "ESNext",
+			"moduleResolution": "node",
+			"resolveJsonModule": true,
+
+			// Emit
+			"declaration": true,
+			"declarationMap": true,
+			"importHelpers": true,
+			"inlineSources": true,
+			"newLine": "lf",
+			"noEmitHelpers": true,
+			"outDir": "dist",
+			"removeComments": false,
+			"sourceMap": true,
+			"esModuleInterop": true,
+			"forceConsistentCasingInFileNames": true,
+
+			// Language and Environment
+			"experimentalDecorators": true,
+			"lib": ["ESNext"],
+			"target": "ES2021",
+			"useDefineForClassFields": true
 		}
 		/**
 		 * This option causes the compiler to be invoked with the --skipLibCheck option. This option is not recommended
