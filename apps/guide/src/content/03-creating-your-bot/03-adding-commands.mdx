@@ -53,7 +53,9 @@ At a minimum, the definition of a slash command must have a name and a descripti
 <CH.Code>
 
 ```js
-// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+/**
+ * @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+ */
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
@@ -92,7 +94,6 @@ The _`export`_ keyword ensures these values can be imported and read by other fi
 <CH.Code>
 
 ```js commands/ping.js
-// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
@@ -117,7 +118,9 @@ That's it for your basic ping command. Below are examples of two more commands w
 <CH.Code>
 
 ```js commands/user.js
-// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+/**
+ * @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+ */
 export const data = {
 	name: 'user',
 	description: 'Provides information about the user.',
@@ -133,7 +136,9 @@ export async function execute(interaction) {
 ```
 
 ```js commands/server.js
-// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+/**
+ * @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
+ */
 export const data = {
 	name: 'server',
 	description: 'Provides information about the server.',
