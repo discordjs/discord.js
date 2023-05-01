@@ -189,16 +189,13 @@ class Role extends Base {
    */
   get position() {
     const sorted = this.guild._sortedRoles();
-    let positionIndex;
-    let ind = 0;
-    for (let roleId of sorted.keys()) {
-      if (roleId === this.id) {
-        positionIndex = ind;
-        break;
-      }
-      ind++;
+    let index = 0;
+    for (const roleId of sorted.keys()) {
+      if (roleId === this.id) return index;
+      index++;
     }
-    return positionIndex;
+
+    return -1;
   }
 
   /**
