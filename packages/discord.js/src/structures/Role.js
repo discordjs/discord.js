@@ -177,7 +177,7 @@ class Role extends Base {
    */
   get editable() {
     if (this.managed) return false;
-    const clientMember = this.guild.members.me;
+    const clientMember = this.guild.members.resolve(this.client.user);
     if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
