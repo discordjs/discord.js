@@ -91,13 +91,9 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         uses: ./packages/actions/src/uploadDocumentation
-        with:
-          package: ${{ steps.extract-tag.outputs.package }}
 
       - name: Move docs to correct directory
         if: ${{ github.ref_type == 'branch' }}
-        env:
-          PACKAGE: ${{ steps.extract-tag.outputs.package }}
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "next" "formatters" "proxy" "rest" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
