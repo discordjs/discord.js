@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/util@0.3.1](https://github.com/discordjs/discord.js/compare/@discordjs/util@0.3.0...@discordjs/util@0.3.1) - (2023-05-01)
+
+## Refactor
+
+- **ShardClientUtil:** Logic de-duplication (#9491) ([a9f2bff](https://github.com/discordjs/discord.js/commit/a9f2bff82a18c6a3afdee99e5830e1d7b4da65dc))
+
+# [@discordjs/util@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/util@0.2.0...@discordjs/util@0.3.0) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/util@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/util@0.2.0...@discordjs/util@0.3.0) - (2023-05-01)
 
 ## Bug Fixes
