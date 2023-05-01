@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.10.0](https://github.com/discordjs/discord.js/compare/14.9.0...14.10.0) - (2023-05-01)
+
+## Bug Fixes
+
+- **ShardClientUtil:** Fix client event names (#9474) ([ad217cc](https://github.com/discordjs/discord.js/commit/ad217cc7604dda6a33df73db82799fd5bb4e85a9))
+- **BaseClient:** Prevent user agent mutation (#9425) ([217e5d8](https://github.com/discordjs/discord.js/commit/217e5d81005a2506c96335f7fb96fa21d7dbb04c))
+- **BitField:** Use only enum names in iterating (#9357) ([40d07fb](https://github.com/discordjs/discord.js/commit/40d07fbbbd51d62793d9ea541f41f157b5dad224))
+- Use new permission name (#9274) ([d2d27ce](https://github.com/discordjs/discord.js/commit/d2d27ce7346bc37b34938c84bd3b106a4fa51f53))
+- **Message#editable:** Fix permissions check in locked threads (#9319) ([d4c1fec](https://github.com/discordjs/discord.js/commit/d4c1fecbe264bc52a70aaf0ec303d35e2f15bbcd))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- **AutoModerationRule:** Update docs (#9464) ([1b15d31](https://github.com/discordjs/discord.js/commit/1b15d31b5ae1b1739716fab00b18083c1d7d389a))
+- **APITypes:** Document role & user select menu components (#9435) ([c6ca5a8](https://github.com/discordjs/discord.js/commit/c6ca5a83e7b72613f95c2145606a1330f64ae894))
+- **BaseMessageOptions:** Fix embeds and components (#9437) ([5c52bb9](https://github.com/discordjs/discord.js/commit/5c52bb95906250518a8813820d543f43dd7abdf9))
+- **InteractionResponses:** ShowModal docs change (#9434) ([7d34100](https://github.com/discordjs/discord.js/commit/7d341000d44b762a2fe0434a6b518f7d63539d34))
+- Use ESM code in examples (#9427) ([ce287f2](https://github.com/discordjs/discord.js/commit/ce287f21d1540da7f17cac8a57dc33a67f391ef3))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **Options:** Fix links and invalid syntax (#9322) ([86e5f5a](https://github.com/discordjs/discord.js/commit/86e5f5a119c6d2588b988a33236d358ded357847))
+- Cleanup MessageCreateOptions and MessageReplyOptions (#9283) ([300059c](https://github.com/discordjs/discord.js/commit/300059cb266e6cca42c30ee7f997c48ab2cc565e))
+- **Events:** Document auto moderation events (#9342) ([79bcdfa](https://github.com/discordjs/discord.js/commit/79bcdfa767e7e842164e1174b6f4834ed731d329))
+- Add `SnowflakeUtil` (#9371) ([8ffcf77](https://github.com/discordjs/discord.js/commit/8ffcf77840b62590fcb4731380d28b22d0b98741))
+- Use stable tag (#9343) ([c0f2dd7](https://github.com/discordjs/discord.js/commit/c0f2dd713151a29c98e1eebad66721a208be1fc0))
+- Remove `JSONEncondable` (#9344) ([b2eec5f](https://github.com/discordjs/discord.js/commit/b2eec5f9fcf37ebb3b7f87a67a6ee3160c182183))
+
+## Features
+
+- **Attachment:** Voice messages (#9392) ([3e01f91](https://github.com/discordjs/discord.js/commit/3e01f91bbba2cbacacc6c921ed664752f679960b))
+- **BaseInteraction:** Support new channel payload (#9337) ([29389e3](https://github.com/discordjs/discord.js/commit/29389e39f479b832e54c7cb3ddd363aebe99674f))
+- **RoleTagData:** Add guildConnections (#9366) ([2dddbe1](https://github.com/discordjs/discord.js/commit/2dddbe1f321f2e2722dba4a28f7d18384cf50353))
+
+## Performance
+
+- **RoleManager:** Dont call Role#position getter twice per role (#9352) ([bfee6c8](https://github.com/discordjs/discord.js/commit/bfee6c8d889502ea39ad919dd9b1e6253a2af571))
+
+## Refactor
+
+- **WebSocketManager:** Use /ws package internally (#9099) ([a9e0de4](https://github.com/discordjs/discord.js/commit/a9e0de4288ea39a6a089b8379dcd44ac0053dac7))
+- Remove `fromInteraction` in internal channel creation (#9335) ([794abe8](https://github.com/discordjs/discord.js/commit/794abe8450bae000cd0544922cdf53e7b3e4c59c))
+
+## Typings
+
+- **AutoModerationActionMetadataOptions:** Make channel property optional (#9460) ([d26df5f](https://github.com/discordjs/discord.js/commit/d26df5fabaf227fb9d10ba5cc1ab326de55aadbc))
+- **CategoryChannel:** Ensure `parent` and `parentId` are `null` (#9327) ([8218ffc](https://github.com/discordjs/discord.js/commit/8218ffc78d23234b32c05a97fde2f4bea64d7aa6))
+- **GuildTextBasedChannel:** Remove unnecessary exclusion of forum channels (#9326) ([7ff3d52](https://github.com/discordjs/discord.js/commit/7ff3d528d942a0daa990194915ff8328dec99149))
+
 # [14.9.0](https://github.com/discordjs/discord.js/compare/14.8.0...14.9.0) - (2023-04-01)
 
 ## Bug Fixes
@@ -405,7 +452,7 @@ All notable changes to this project will be documented in this file.
 
 - **DataResolver#resolveImage:** Adjust to updated resolveFile (#8308) ([3a7e93d](https://github.com/discordjs/discord.js/commit/3a7e93df576172c797f1d8bd6483234bb6af2d00))
 
-# [14.0.0](https://github.com/discordjs/discord.js/compare/13.12.0...14.0.0) - (2022-07-17)
+# [14.0.0](https://github.com/discordjs/discord.js/compare/9.3.1...14.0.0) - (2022-07-17)
 
 ## Bug Fixes
 
