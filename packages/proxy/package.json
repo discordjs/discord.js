@@ -18,9 +18,9 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
+		"types": "./dist/index.d.ts",
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		"require": "./dist/index.js"
 	},
 	"directories": {
 		"lib": "src",
@@ -63,8 +63,8 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.24",
+		"@microsoft/api-extractor": "^7.34.6",
+		"@types/node": "16.18.25",
 		"@types/supertest": "^2.0.12",
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",

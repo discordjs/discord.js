@@ -57,7 +57,7 @@
     "@discordjs/util": "workspace:^",
     "@sapphire/snowflake": "^3.4.2",
     "@types/ws": "^8.5.4",
-    "discord-api-types": "^0.37.40",
+    "discord-api-types": "^0.37.41",
     "fast-deep-equal": "^3.1.3",
     "lodash.snakecase": "^4.1.1",
     "tslib": "^2.5.0",
@@ -67,7 +67,7 @@
   "devDependencies": {
     "@discordjs/docgen": "workspace:^",
     "@favware/cliff-jumper": "^2.0.0",
-    "@types/node": "16.18.24",
+    "@types/node": "16.18.25",
     "dtslint": "^4.2.1",
     "eslint": "^8.39.0",
     "eslint-formatter-pretty": "^5.0.0",

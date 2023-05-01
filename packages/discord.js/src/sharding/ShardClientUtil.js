@@ -32,26 +32,26 @@ class ShardClientUtil {
     switch (mode) {
       case 'process':
         process.on('message', this._handleMessage.bind(this));
-        client.on('ready', () => {
+        client.on(Events.ShardReady, () => {
           process.send({ _ready: true });
         });
-        client.on('disconnect', () => {
+        client.on(Events.ShardDisconnect, () => {
           process.send({ _disconnect: true });
         });
-        client.on('reconnecting', () => {
+        client.on(Events.ShardReconnecting, () => {
           process.send({ _reconnecting: true });
         });
         break;
       case 'worker':
         this.parentPort = require('node:worker_threads').parentPort;
         this.parentPort.on('message', this._handleMessage.bind(this));
-        client.on('ready', () => {
+        client.on(Events.ShardReady, () => {
           this.parentPort.postMessage({ _ready: true });
         });
-        client.on('disconnect', () => {
+        client.on(Events.ShardDisconnect, () => {
           this.parentPort.postMessage({ _disconnect: true });
         });
-        client.on('reconnecting', () => {
+        client.on(Events.ShardReconnecting, () => {
           this.parentPort.postMessage({ _reconnecting: true });
         });
         break;

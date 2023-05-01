@@ -19,7 +19,8 @@
 			"~/*": ["./src/*"],
 			"contentlayer/generated": ["./.contentlayer/generated"]
 		},
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"moduleResolution": "node"
 	},
 	"include": [
 		"src/**/*.ts",

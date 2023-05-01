@@ -1,4 +1,4 @@
-import { DiscordMessageEmbedField, type IDiscordMessageEmbedField } from './MessageEmbedField.js';
+import { DiscordMessageEmbedField, type IDiscordMessageEmbedField } from './MessageEmbedField.jsx';
 
 export interface IDiscordMessageEmbedFields {
 	fields: IDiscordMessageEmbedField[];

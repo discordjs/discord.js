@@ -22,7 +22,7 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
