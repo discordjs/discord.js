@@ -89,7 +89,8 @@ import type {
   AutoModerationRuleTriggerTypes,
   InteractionTypes,
   MessageComponentTypes,
-  ApplicationRoleConnectionMetadataTypes
+  ApplicationRoleConnectionMetadataTypes,
+  AnimationTypes
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -291,4 +292,13 @@ export interface APIApplicationRoleConnectionMetadata {
   name_localizations?: LocalizationMap;
   description: string;
   description_localizations?: LocalizationMap;
+}
+
+export interface VoiceChannelEffectData {
+	channel_id: Snowflake;
+	guild_id: Snowflake;
+	user_id: Snowflake;
+	emoji?: APIEmoji | null;
+	animation_type?: AnimationTypes;
+	animation_id?: number;
 }

@@ -97,6 +97,7 @@ import {
   SortOrderType,
   ForumLayoutType,
   ApplicationRoleConnectionMetadataTypes,
+  AnimationTypes,
 } from './enums';
 import {
   APIApplicationRoleConnectionMetadata,
@@ -160,6 +161,7 @@ import {
   RawWelcomeScreenData,
   RawWidgetData,
   RawWidgetMemberData,
+  VoiceChannelEffectData,
 } from './rawDataTypes';
 
 //#region Classes
@@ -2828,6 +2830,18 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public type: 'GUILD_VOICE';
 }
 
+export class VoiceChannelEffect {
+  private constructor(data: VoiceChannelEffectData, guild: Guild);
+  public animationType: AnimationTypes | null;
+  public animationId: number | null;
+  public readonly channel: VoiceChannel | null;
+  public channelId: Snowflake;
+  public emoji: Emoji | null;
+  public guild: Guild;
+  public readonly member: GuildMember | null;
+  public userId: Snowflake;
+}
+
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
@@ -3173,6 +3187,7 @@ export const Constants: {
   DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
   VerificationLevels: EnumHolder<typeof VerificationLevels>;
   MembershipStates: EnumHolder<typeof MembershipStates>;
+  AnimationTypes: EnumHolder<typeof AnimationTypes>;
   AutoModerationRuleTriggerTypes: EnumHolder<typeof AutoModerationRuleTriggerTypes>;
   AutoModerationRuleKeywordPresetTypes: EnumHolder<typeof AutoModerationRuleKeywordPresetTypes>;
   AutoModerationActionTypes: EnumHolder<typeof AutoModerationActionTypes>;
@@ -4621,6 +4636,7 @@ export interface ClientEvents extends BaseClientEvents {
   threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | StageChannel];
   /** @deprecated Use interactionCreate instead */
@@ -4879,6 +4895,7 @@ export interface ConstantsEvents {
   THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
   USER_UPDATE: 'userUpdate';
   PRESENCE_UPDATE: 'presenceUpdate';
+  VOICE_CHANNEL_EFFECT_SEND: 'voiceChaannelEffectSend';
   VOICE_SERVER_UPDATE: 'voiceServerUpdate';
   VOICE_STATE_UPDATE: 'voiceStateUpdate';
   TYPING_START: 'typingStart';
@@ -6630,6 +6647,7 @@ export type WSEventType =
   | 'USER_UPDATE'
   | 'PRESENCE_UPDATE'
   | 'TYPING_START'
+  | 'VOICE_CHANNEL_EFFECT_SEND'
   | 'VOICE_STATE_UPDATE'
   | 'VOICE_SERVER_UPDATE'
   | 'WEBHOOKS_UPDATE'
