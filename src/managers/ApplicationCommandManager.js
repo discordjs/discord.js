@@ -255,10 +255,10 @@ module.exports = ApplicationCommandManager;
 
 /**
  * @external SlashCommandBuilder
- * @see {@link https://discord.js.org/docs/packages/builders/main/SlashCommandBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/SlashCommandBuilder:Class}
  */
 
 /**
  * @external ContextMenuCommandBuilder
- * @see {@link https://discord.js.org/docs/packages/builders/main/ContextMenuCommandBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ContextMenuCommandBuilder:Class}
  */
