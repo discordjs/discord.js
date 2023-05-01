@@ -421,7 +421,7 @@ class Client extends BaseClient {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (scopes.some(scope => ![OAuth2Scopes.Bot].includes(scope)) && options.permissions) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidScopeWithPermissions);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
