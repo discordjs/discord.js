@@ -7,4 +7,4 @@ inputs:
     description: 'The semver string'
 runs:
   using: node16
-  main: ../../dist/uploadDocumentation/index.mjs
+  main: ../../dist/uploadDocumentation/index.js
