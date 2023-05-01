@@ -69,7 +69,7 @@ The simplest way to acknowledge and respond to an interaction is the _`interacti
 <CH.Code>
 
 ```js
-/** @param {import('discord.js').Interaction} interaction */
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
@@ -100,7 +100,7 @@ export const data = {
 	description: 'Replies with Pong!',
 };
 
-/** @param {import('discord.js').Interaction} interaction */
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
@@ -126,6 +126,7 @@ export const data = {
 	description: 'Provides information about the user.',
 };
 
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	// interaction.user is the object representing the User who ran the command
 	// interaction.member is the GuildMember object, which represents the user in the specific guild
@@ -142,6 +143,7 @@ export const data = {
 	description: 'Provides information about the server.',
 };
 
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	// interaction.guild is the object representing the Guild in which the command was run
 	await interaction.reply(`This server is ${interaction.guild.name} and has 
