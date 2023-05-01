@@ -81,9 +81,9 @@ jobs:
         run: |
           mkdir -p "out/${PACKAGE}"
           if [[ "${PACKAGE}" == "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
+            mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${SEMVER}.json"
           else
-            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
+            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
           fi
 
       - name: Upload documentation to database
@@ -103,10 +103,10 @@ jobs:
           for PACKAGE in "${PACKAGES[@]}"; do
             if [[ "${PACKAGE}" == "discord.js" ]]; then
               mkdir -p "out/${PACKAGE}"
-              mv "docs/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
+              mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
             else
               mkdir -p "out/${PACKAGE}"
-              mv "docs/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
+              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
             fi
           done
 
