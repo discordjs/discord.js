@@ -59,7 +59,7 @@
 		"@discordjs/formatters": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@sapphire/shapeshift": "^3.8.2",
-		"discord-api-types": "^0.37.40",
+		"discord-api-types": "^0.37.41",
 		"fast-deep-equal": "^3.1.3",
 		"ts-mixer": "^6.0.3",
 		"tslib": "^2.5.0"
