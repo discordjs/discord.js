@@ -53,6 +53,7 @@ At a minimum, the definition of a slash command must have a name and a descripti
 <CH.Code>
 
 ```js
+// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
@@ -60,6 +61,12 @@ export const data = {
 ```
 
 </CH.Code>
+
+<Alert title="@type Comments" type="info">
+	[`@type`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) comments are a way to annotate type
+	information, we use them here to improve the in-editor experience. They are not required for your code to run, but
+	they provide autocomplete for and types for fields which is useful.
+</Alert>
 
 A slash command also requires a function to run when the command is used, to respond to the interaction. Using an interaction response method confirms to Discord that your bot successfully received the interaction, and has responded to the user. Discord enforces this to ensure that all slash commands provide a good user experience (UX). Failing to respond will cause Discord to show that the command failed, even if your bot is performing other actions as a result.
 
@@ -85,6 +92,7 @@ The _`export`_ keyword ensures these values can be imported and read by other fi
 <CH.Code>
 
 ```js commands/ping.js
+// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
@@ -109,6 +117,7 @@ That's it for your basic ping command. Below are examples of two more commands w
 <CH.Code>
 
 ```js commands/user.js
+// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
 export const data = {
 	name: 'user',
 	description: 'Provides information about the user.',
@@ -124,6 +133,7 @@ export async function execute(interaction) {
 ```
 
 ```js commands/server.js
+// @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody}
 export const data = {
 	name: 'server',
 	description: 'Provides information about the server.',
