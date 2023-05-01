@@ -177,7 +177,7 @@ class Role extends Base {
    */
   get editable() {
     if (this.managed) return false;
-    const clientMember = this.guild.members.resolve(this.client.user);
+    const clientMember = this.guild.members.me;
     if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
@@ -189,7 +189,15 @@ class Role extends Base {
    */
   get position() {
     const sorted = this.guild._sortedRoles();
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    let positionIndex;
+    for (let roleId of sorted.keys()) {
+      if (roleId === this.id) {
+        positionIndex = positionIndex;
+        break;
+      }
+      positionIndex++;
+    }
+    return positionIndex;
   }
 
   /**
