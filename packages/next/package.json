@@ -18,14 +18,14 @@
 	"typings": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.js"
 		},
 		"./*": {
+			"types": "./dist/exports/*.d.ts",
 			"import": "./dist/exports/*.mjs",
-			"require": "./dist/exports/*.js",
-			"types": "./dist/exports/*.d.ts"
+			"require": "./dist/exports/*.js"
 		}
 	},
 	"directories": {

@@ -10,6 +10,7 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format"
 	},
+	"type": "module",
 	"main": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"directories": {

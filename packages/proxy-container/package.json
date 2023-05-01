@@ -10,7 +10,7 @@
 		"prepack": "yarn lint && yarn build"
 	},
 	"type": "module",
-	"module": "./dist/index.js",
+	"main": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},

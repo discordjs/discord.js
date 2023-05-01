@@ -13,9 +13,9 @@
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"exports": {
+		"types": "./dist/index.d.ts",
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		"require": "./dist/index.js"
 	},
 	"directories": {
 		"lib": "src"
@@ -52,7 +52,7 @@
 		"fs-extra": "^11.1.1",
 		"tslib": "^2.5.0",
 		"undici": "^5.22.0",
-		"yaml": "^2.2.2"
+		"yaml": "2.2.2"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^11.0.1",

@@ -18,14 +18,14 @@
 	"typings": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.js"
 		},
 		"./http-only": {
+			"types": "./dist/http-only.d.ts",
 			"import": "./dist/http-only.mjs",
-			"require": "./dist/http-only.js",
-			"types": "./dist/http-only.d.ts"
+			"require": "./dist/http-only.js"
 		}
 	},
 	"directories": {

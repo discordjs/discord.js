@@ -1,6 +1,6 @@
 import type { Awaitable } from '@discordjs/util';
 import type { APIGatewayBotInfo } from 'discord-api-types/v10';
-import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../../ws/WebSocketManager';
+import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../../ws/WebSocketManager.js';
 
 export interface FetchingStrategyOptions
 	extends Omit<

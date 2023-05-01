@@ -4,7 +4,7 @@ import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import { DiscordAPIError, HTTPError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
+import { DiscordAPIError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';
 

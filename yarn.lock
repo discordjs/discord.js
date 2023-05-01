@@ -2356,7 +2356,7 @@ __metadata:
     typescript: ^5.0.4
     undici: ^5.22.0
     vitest: ^0.29.8
-    yaml: ^2.2.2
+    yaml: 2.2.2
   languageName: unknown
   linkType: soft
 
@@ -26052,6 +26052,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yaml@npm:2.2.2, yaml@npm:^2.1.1":
+  version: 2.2.2
+  resolution: "yaml@npm:2.2.2"
+  checksum: d90c235e099e30094dcff61ba3350437aef53325db4a6bcd04ca96e1bfe7e348b191f6a7a52b5211e2dbc4eeedb22a00b291527da030de7c189728ef3f2b4eb3
+  languageName: node
+  linkType: hard
+
 "yaml@npm:^1.10.2":
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
@@ -26059,10 +26066,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.1.1, yaml@npm:^2.2.2":
+"yaml@patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch::locator=%40discordjs%2Fdiscord.js%40workspace%3A.":
   version: 2.2.2
-  resolution: "yaml@npm:2.2.2"
-  checksum: d90c235e099e30094dcff61ba3350437aef53325db4a6bcd04ca96e1bfe7e348b191f6a7a52b5211e2dbc4eeedb22a00b291527da030de7c189728ef3f2b4eb3
+  resolution: "yaml@patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch::version=2.2.2&hash=2af928&locator=%40discordjs%2Fdiscord.js%40workspace%3A."
+  checksum: 3ef8fd54fae7a810ea323a9d183b37698aaf7c0ab03334a4740a919489361ef7014c8ffefe561f21086cd697ec7c3643cb0551c9f729f24ce9d1c2904a213727
   languageName: node
   linkType: hard
 
