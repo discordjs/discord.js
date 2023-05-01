@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('node:process');
+const { calculateShardId } = require('@discordjs/util');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Events = require('../util/Events');
 const { makeError, makePlainError } = require('../util/Util');
@@ -251,7 +252,7 @@ class ShardClientUtil {
    * @returns {number}
    */
   static shardIdForGuildId(guildId, shardCount) {
-    const shard = Number(BigInt(guildId) >> 22n) % shardCount;
+    const shard = calculateShardId(guildId, shardCount);
     if (shard < 0) throw new DiscordjsError(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
     return shard;
   }
