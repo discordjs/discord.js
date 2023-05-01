@@ -62,7 +62,7 @@
 		"class-variance-authority": "^0.6.0",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.32.3",
-		"next": "^13.3.2",
+		"next": "^13.3.3",
 		"next-mdx-remote": "^4.4.1",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
@@ -78,7 +78,7 @@
 		"swr": "^2.1.5"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "^13.3.2",
+		"@next/bundle-analyzer": "^13.3.3",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.4.3",
 		"@types/node": "18.16.3",
@@ -100,7 +100,7 @@
 		"prettier": "^2.8.8",
 		"typescript": "^5.0.4",
 		"unocss": "^0.51.8",
-		"vercel": "^29.0.1",
+		"vercel": "^29.0.3",
 		"vitest": "^0.29.8"
 	},
 	"engines": {

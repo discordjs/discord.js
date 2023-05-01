@@ -2129,7 +2129,7 @@ __metadata:
     turbo: ^1.9.3
     typescript: ^5.0.4
     unocss: ^0.51.8
-    vercel: ^29.0.1
+    vercel: ^29.0.3
     vitest: ^0.29.8
   languageName: unknown
   linkType: soft
@@ -2183,7 +2183,7 @@ __metadata:
   dependencies:
     "@code-hike/mdx": ^0.8.2
     "@discordjs/ui": "workspace:^"
-    "@next/bundle-analyzer": ^13.3.2
+    "@next/bundle-analyzer": ^13.3.3
     "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.4.3
@@ -2212,7 +2212,7 @@ __metadata:
     hastscript: ^7.2.0
     html-escaper: ^3.0.3
     lighthouse: ^10.1.1
-    next: ^13.3.2
+    next: ^13.3.3
     next-contentlayer: ^0.3.2
     next-themes: ^0.2.1
     prettier: ^2.8.8
@@ -2229,7 +2229,7 @@ __metadata:
     sharp: ^0.32.1
     typescript: ^5.0.4
     unocss: ^0.51.8
-    vercel: ^29.0.1
+    vercel: ^29.0.3
     vitest: ^0.29.8
   languageName: unknown
   linkType: soft
@@ -2461,7 +2461,7 @@ __metadata:
     "@discordjs/ui": "workspace:^"
     "@microsoft/api-extractor-model": 7.26.6
     "@microsoft/tsdoc": 0.14.2
-    "@next/bundle-analyzer": ^13.3.2
+    "@next/bundle-analyzer": ^13.3.3
     "@planetscale/database": 1.7.0
     "@react-icons/all-files": ^4.1.0
     "@testing-library/react": ^14.0.0
@@ -2491,7 +2491,7 @@ __metadata:
     happy-dom: ^9.10.1
     lighthouse: ^10.1.1
     meilisearch: ^0.32.3
-    next: ^13.3.2
+    next: ^13.3.3
     next-mdx-remote: ^4.4.1
     next-themes: ^0.2.1
     prettier: ^2.8.8
@@ -2508,7 +2508,7 @@ __metadata:
     swr: ^2.1.5
     typescript: ^5.0.4
     unocss: ^0.51.8
-    vercel: ^29.0.1
+    vercel: ^29.0.3
     vitest: ^0.29.8
   languageName: unknown
   linkType: soft
@@ -3918,19 +3918,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/bundle-analyzer@npm:^13.3.2":
-  version: 13.3.2
-  resolution: "@next/bundle-analyzer@npm:13.3.2"
+"@next/bundle-analyzer@npm:^13.3.3":
+  version: 13.3.3
+  resolution: "@next/bundle-analyzer@npm:13.3.3"
   dependencies:
     webpack-bundle-analyzer: 4.7.0
-  checksum: 517855bffbe90eac1b7a6d259374dce03e7caa99932f170cfe09c93da0f250aa546da8e5c9faacc91851c50a26dcfdbe22e9a4d7b18f18017e742ba7eb70c183
+  checksum: a51e5a1e586a767fee241176d776a5e19c5d9d8dcc724aa9ffcc8183b4a841a988192e470b4991c7d8d7c67f67a35eb76a4abb8ac357accbffd30e8533119737
   languageName: node
   linkType: hard
 
-"@next/env@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/env@npm:13.3.2"
-  checksum: 4921cccfb966ea6da284164906485ac0013be18d957b8b83c98e2b4f7897eb81c07b151a3e6ed2a2508b5a5d329174efe5fa8b57163ad26db3c39001e66a4012
+"@next/env@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/env@npm:13.3.3"
+  checksum: 5b86a62c196719d07db11d1357392d967cc3874e28f1e96e7f6bcf33c8450b6dc8579b72decc6b291753318ec72cff5cf4e959ce6895bda6f5d990322ceebd51
   languageName: node
   linkType: hard
 
@@ -3943,65 +3943,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-darwin-arm64@npm:13.3.2"
+"@next/swc-darwin-arm64@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-darwin-arm64@npm:13.3.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-darwin-x64@npm:13.3.2"
+"@next/swc-darwin-x64@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-darwin-x64@npm:13.3.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-linux-arm64-gnu@npm:13.3.2"
+"@next/swc-linux-arm64-gnu@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-linux-arm64-gnu@npm:13.3.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-linux-arm64-musl@npm:13.3.2"
+"@next/swc-linux-arm64-musl@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-linux-arm64-musl@npm:13.3.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-linux-x64-gnu@npm:13.3.2"
+"@next/swc-linux-x64-gnu@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-linux-x64-gnu@npm:13.3.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-linux-x64-musl@npm:13.3.2"
+"@next/swc-linux-x64-musl@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-linux-x64-musl@npm:13.3.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-win32-arm64-msvc@npm:13.3.2"
+"@next/swc-win32-arm64-msvc@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-win32-arm64-msvc@npm:13.3.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-win32-ia32-msvc@npm:13.3.2"
+"@next/swc-win32-ia32-msvc@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-win32-ia32-msvc@npm:13.3.3"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:13.3.2":
-  version: 13.3.2
-  resolution: "@next/swc-win32-x64-msvc@npm:13.3.2"
+"@next/swc-win32-x64-msvc@npm:13.3.3":
+  version: 13.3.3
+  resolution: "@next/swc-win32-x64-msvc@npm:13.3.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -7592,10 +7592,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/next@npm:3.8.0":
-  version: 3.8.0
-  resolution: "@vercel/next@npm:3.8.0"
-  checksum: 414c451c664225abe00b5a5cd5069dca971d9ab95d526d17654b31bc49ab2fdc8125cecd1f84ffd15046fe6d55c58970b7ea20bcbd498ee0cbe700ecd054a83c
+"@vercel/next@npm:3.8.2":
+  version: 3.8.2
+  resolution: "@vercel/next@npm:3.8.2"
+  checksum: 05fca09c85266fcd98fdb6b2f9dadc86991fd1f74c34becc2dcdd41ea8018955768d953804068c57f77e7fecd062715e0ba5b10f1b260f35dc6b303f4e3c51e4
   languageName: node
   linkType: hard
 
@@ -19241,20 +19241,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^13.3.2":
-  version: 13.3.2
-  resolution: "next@npm:13.3.2"
+"next@npm:^13.3.3":
+  version: 13.3.3
+  resolution: "next@npm:13.3.3"
   dependencies:
-    "@next/env": 13.3.2
-    "@next/swc-darwin-arm64": 13.3.2
-    "@next/swc-darwin-x64": 13.3.2
-    "@next/swc-linux-arm64-gnu": 13.3.2
-    "@next/swc-linux-arm64-musl": 13.3.2
-    "@next/swc-linux-x64-gnu": 13.3.2
-    "@next/swc-linux-x64-musl": 13.3.2
-    "@next/swc-win32-arm64-msvc": 13.3.2
-    "@next/swc-win32-ia32-msvc": 13.3.2
-    "@next/swc-win32-x64-msvc": 13.3.2
+    "@next/env": 13.3.3
+    "@next/swc-darwin-arm64": 13.3.3
+    "@next/swc-darwin-x64": 13.3.3
+    "@next/swc-linux-arm64-gnu": 13.3.3
+    "@next/swc-linux-arm64-musl": 13.3.3
+    "@next/swc-linux-x64-gnu": 13.3.3
+    "@next/swc-linux-x64-musl": 13.3.3
+    "@next/swc-win32-arm64-msvc": 13.3.3
+    "@next/swc-win32-ia32-msvc": 13.3.3
+    "@next/swc-win32-x64-msvc": 13.3.3
     "@swc/helpers": 0.5.1
     busboy: 1.6.0
     caniuse-lite: ^1.0.30001406
@@ -19297,7 +19297,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: dad2469eda0b5dff1d5eddf1fdc473c7e25daf7821c4779edc8d804f972c2b81403ca0c9ec1765f617487cd661fd0647a9c7651db7c1fcbb76f0039f4dae5ca5
+  checksum: 42eed0e3e44d81d518a3539f738365746a88f1697d3eef9237d6ec7aa457fb758c60d68a890dcdb8caba13a38ce1b90dc03e67a0c45ab4981c734fe10754655a
   languageName: node
   linkType: hard
 
@@ -25314,14 +25314,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^29.0.1":
-  version: 29.0.1
-  resolution: "vercel@npm:29.0.1"
+"vercel@npm:^29.0.3":
+  version: 29.0.3
+  resolution: "vercel@npm:29.0.3"
   dependencies:
     "@vercel/build-utils": 6.7.2
     "@vercel/go": 2.5.1
     "@vercel/hydrogen": 0.0.64
-    "@vercel/next": 3.8.0
+    "@vercel/next": 3.8.2
     "@vercel/node": 2.14.0
     "@vercel/python": 3.1.60
     "@vercel/redwood": 1.1.15
@@ -25331,7 +25331,7 @@ __metadata:
   bin:
     vc: dist/index.js
     vercel: dist/index.js
-  checksum: 6349c71f0311f83d11db20d71105f84ed15da412aabcee5a48789ede838b2f8c06d77ed3effa554d94350f9b069fee423c8df44bcd55e630b8545b4075d77f00
+  checksum: 6ad64beffd3627c89b2930ff50e1a9b586c751c917c807f93448d27aec3ba23f1fdbca264dba0d50f3d54ba85573cb3abef8bc0264c8c8be23b71834cfa806cd
   languageName: node
   linkType: hard
 
