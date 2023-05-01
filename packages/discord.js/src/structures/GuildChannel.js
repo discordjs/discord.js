@@ -152,11 +152,11 @@ class GuildChannel extends BaseChannel {
       (acc, channel) =>
         acc +
         ((movableSelf ? movableTypes.includes(channel.type) : channel.type === this.type) &&
-          (selfIsCategory || channel.parent === this.parent))
+        (selfIsCategory || channel.parent === this.parent)
           ? this.rawPosition === channel.rawPosition
             ? BigInt(this.id) < BigInt(channel.id)
             : this.rawPosition > channel.rawPosition
-          : 0,
+          : 0),
       0,
     );
   }
