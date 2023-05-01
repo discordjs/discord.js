@@ -62,12 +62,6 @@ export const data = {
 
 </CH.Code>
 
-<Alert title="@type Comments" type="info">
-	[`@type`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) comments are a way to annotate type
-	information, we use them here to improve the in-editor experience. They are not required for your code to run, but
-	they provide autocomplete and types for fields which is useful.
-</Alert>
-
 A slash command also requires a function to run when the command is used, to respond to the interaction. Using an interaction response method confirms to Discord that your bot successfully received the interaction, and has responded to the user. Discord enforces this to ensure that all slash commands provide a good user experience (UX). Failing to respond will cause Discord to show that the command failed, even if your bot is performing other actions as a result.
 
 The simplest way to acknowledge and respond to an interaction is the _`interaction.reply()`_ method. Other methods of replying are covered on the [Response methods](../slash-commands/response-methods) page later in this section.
@@ -75,12 +69,20 @@ The simplest way to acknowledge and respond to an interaction is the _`interacti
 <CH.Code>
 
 ```js
+/** @param {import('discord.js').Interaction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
 ```
 
 </CH.Code>
+
+<Alert title="@type and @param tags" type="info">
+	[`@type`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#type) and
+	[`@param`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#param-and-returns) tags are a way
+	to annotate type information, we use them here to improve the in-editor experience. They are not required for your
+	code to run, but they provide autocomplete and types for fields and parameters which is useful.
+</Alert>
 
 Put these two together by creating a `commands/ping.js` file for your first command. Inside this file, you're going to define and export two items.
 
@@ -92,11 +94,13 @@ The _`export`_ keyword ensures these values can be imported and read by other fi
 <CH.Code>
 
 ```js commands/ping.js
+/** @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} */
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
 };
 
+/** @param {import('discord.js').Interaction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
