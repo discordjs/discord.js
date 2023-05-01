@@ -36,10 +36,10 @@ jobs:
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install dependencies
         uses: ./packages/actions/src/yarnCache
