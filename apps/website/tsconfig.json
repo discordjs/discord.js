@@ -18,7 +18,8 @@
 		"paths": {
 			"~/*": ["./src/*"]
 		},
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"moduleResolution": "node"
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
