@@ -55,6 +55,7 @@
     "@discordjs/formatters": "workspace:^",
     "@discordjs/rest": "workspace:^",
     "@discordjs/util": "workspace:^",
+    "@discordjs/ws": "workspace:^",
     "@sapphire/snowflake": "^3.4.2",
     "@types/ws": "^8.5.4",
     "discord-api-types": "^0.37.41",
