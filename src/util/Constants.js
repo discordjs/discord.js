@@ -1547,14 +1547,15 @@ function createEnum(keys) {
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
  * @property {Object<ApplicationRoleConnectionMetadataType, number>} ApplicationRoleConnectionMetadataTypes
- * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
- * of content which can trigger the rule.
+ * The type of an {@link ApplicationRoleConnectionMetadata} object.
  * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
  * A type of an action which executes whenever a rule is triggered.
+ * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
+ * a rule should be checked.
  * @property {Object<AutoModerationRuleKeywordPresetType, number>} AutoModerationRuleKeywordPresetTypes
  * The internally pre-defined wordsetswhich will be searched for in content
- * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
- *  a rule should be checked.
+ * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
+ * of content which can trigger the rule.
  * @property {Object<ChannelType, number>} ChannelTypes All available channel types.
  * @property {ClientApplicationAssetTypes} ClientApplicationAssetTypes The types of an {@link ApplicationAsset} object.
  * @property {Object<Color, number>} Colors An object with regularly used colors.
@@ -1575,9 +1576,11 @@ function createEnum(keys) {
  * @property {Object<InteractionResponseType, number>} InteractionResponseTypes The type of an interaction response.
  * @property {Object<InteractionType, number>} InteractionTypes The type of an {@link Interaction} object.
  * @property {InviteScope[]} InviteScopes The scopes of an invite.
+ * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {Object<MembershipState, number>} MembershipStates The value set for a team members membership state.
  * @property {Object<MessageButtonStyle, number>} MessageButtonStyles The style of a message button.
  * @property {Object<MessageComponentType, number>} MessageComponentTypes The type of a message component.
+ * @property {MessageType[]} MessageTypes The type of a {@link Message} object.
  * @property {Object<MFALevel, number>} MFALevels The required MFA level for a guild.
  * @property {Object<NSFWLevel, number>} NSFWLevels NSFW level of a guild.
  * @property {Opcodes} Opcodes The types of Opcodes sent to the Gateway.
@@ -1593,7 +1596,7 @@ function createEnum(keys) {
  * @property {SweeperKey[]} SweeperKeys The name of an item to be swept in Sweepers.
  * @property {SystemMessageType[]} SystemMessageTypes The types of messages that are `System`.
  * @property {Object<TextInputStyle, number>} TextInputStyles The style of a text input component.
- * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
+ * @property {ThreadChannelTypes[]} ThreadChannelTypes The type of a {@link ThreadChannel} object.
  * @property {string} UserAgent The user agent used for requests.
  * @property {Object<VerificationLevel, number>} VerificationLevels
  * The value set for the verification levels for a guild.
