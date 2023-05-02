@@ -17,6 +17,7 @@ export function resolvePackageManager(): PackageManager {
 	// If this is not present, return the default package manager.
 	if (!npmConfigUserAgent) return DEFAULT_PACKAGE_MANAGER;
 
+	if (npmConfigUserAgent.startsWith('npm')) return 'npm';
 	if (npmConfigUserAgent.startsWith('yarn')) return 'yarn';
 	if (npmConfigUserAgent.startsWith('pnpm')) return 'pnpm';
 
