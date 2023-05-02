@@ -1,11 +1,14 @@
 'use strict';
 
+const { Snowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
+
+const TextMovableChannelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
 
 /**
  * Represents a guild channel from any of the following:
@@ -146,19 +149,20 @@ class GuildChannel extends BaseChannel {
    */
   get position() {
     const selfIsCategory = this.type === ChannelType.GuildCategory;
-    const movableTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
-    const movableSelf = movableTypes.includes(this.type);
-    return this.guild.channels.cache.reduce(
-      (acc, channel) =>
-        acc +
-        ((movableSelf ? movableTypes.includes(channel.type) : channel.type === this.type) &&
-        (selfIsCategory || channel.parent === this.parent)
-          ? this.rawPosition === channel.rawPosition
-            ? BigInt(this.id) < BigInt(channel.id)
-            : this.rawPosition > channel.rawPosition
-          : 0),
-      0,
-    );
+    const movableSelf = TextMovableChannelTypes.includes(this.type);
+    const types = movableSelf ? TextMovableChannelTypes : [this.type];
+
+    let count = 0;
+    for (const channel of this.guild.channels.cache.values()) {
+      if (!types.includes(channel.type) || !(selfIsCategory || channel.parentId === this.parentId)) continue;
+      if (this.rawPosition === channel.rawPosition) {
+        if (Snowflake.compare(channel.id, this.id) === -1) count++;
+      } else if (this.rawPosition > channel.rawPosition) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**
