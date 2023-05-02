@@ -13,6 +13,8 @@ pids
 
 # Env
 .env
+!template/JavaScript/.env
+!template/TypeScript/.env
 
 # Dist
 dist/
