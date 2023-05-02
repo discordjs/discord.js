@@ -79,7 +79,6 @@ import {
   MessageButtonStyles,
   MessageComponentTypes,
   MessageTypes,
-  ModalComponentTypes,
   MFALevels,
   NSFWLevels,
   OverwriteTypes,
@@ -3056,146 +3055,140 @@ export type EnumHolder<T> = { [P in keyof T]: T[P] };
 export type ExcludeEnum<T, K extends keyof T> = Exclude<keyof T | T[keyof T], K | T[K]>;
 
 export const Constants: {
-  Package: {
-    name: string;
-    version: string;
-    description: string;
-    license: string;
-    main: string;
-    types: string;
-    homepage: string;
-    keywords: string[];
-    bugs: { url: string };
-    repository: { type: string; url: string };
-    scripts: Record<string, string>;
-    engines: Record<string, string>;
-    dependencies: Record<string, string>;
-    devDependencies: Record<string, string>;
-    [key: string]: unknown;
-  };
-  MaxBulkDeletableMessageAge: 1_209_600_000;
-  UserAgent: string;
+  ActivityTypes: EnumHolder<typeof ActivityTypes>;
+  APIErrors: APIErrors;
+  ApplicationCommandOptionTypes: EnumHolder<typeof ApplicationCommandOptionTypes>;
+  ApplicationCommandPermissionTypes: EnumHolder<typeof ApplicationCommandPermissionTypes>;
+  ApplicationCommandTypes: EnumHolder<typeof ApplicationCommandTypes>;
+  ApplicationRoleConnectionMetadataTypes: EnumHolder<typeof ApplicationRoleConnectionMetadataTypes>;
+  AutoModerationActionTypes: EnumHolder<typeof AutoModerationActionTypes>;
+  AutoModerationRuleEventTypes: EnumHolder<typeof AutoModerationRuleEventTypes>;
+  AutoModerationRuleKeywordPresetTypes: EnumHolder<typeof AutoModerationRuleKeywordPresetTypes>;
+  AutoModerationRuleTriggerTypes: EnumHolder<typeof AutoModerationRuleTriggerTypes>;
+  ChannelTypes: EnumHolder<typeof ChannelTypes>;
+  ClientApplicationAssetTypes: ConstantsClientApplicationAssetTypes;
+  Colors: ConstantsColors;
+  DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
   Endpoints: {
-    botGateway: string;
-    invite: (root: string, code: string, eventId?: Snowflake) => string;
-    scheduledEvent: (root: string, guildId: Snowflake, eventId: Snowflake) => string;
-    CDN: (root: string) => {
-      Emoji: (emojiId: Snowflake, format: DynamicImageFormat) => string;
-      Asset: (name: string) => string;
-      DefaultAvatar: (discriminator: number) => string;
-      Avatar: (
+    CDN(root: string): {
+      AppAsset(
+        appId: Snowflake,
+        hash: string,
+        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
+      ): string;
+      AppIcon(
+        appId: Snowflake,
+        hash: string,
+        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
+      ): string;
+      Asset(name: string): string;
+      Avatar(
         userId: Snowflake,
         hash: string,
         format: DynamicImageFormat,
         size: AllowedImageSize,
         dynamic: boolean,
-      ) => string;
-      Banner: (
-        id: Snowflake,
-        hash: string,
-        format: DynamicImageFormat,
-        size: AllowedImageSize,
-        dynamic: boolean,
-      ) => string;
-      GuildMemberAvatar: (
+      ): string;
+      Banner(id: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize, dynamic: boolean): string;
+      DefaultAvatar(discriminator: number): string;
+      DiscoverySplash(guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
+      Emoji(emojiId: Snowflake, format: DynamicImageFormat): string;
+      GDMIcon(channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
+      GuildMemberAvatar(
         guildId: Snowflake,
         memberId: Snowflake,
         hash: string,
         format?: DynamicImageFormat,
         size?: AllowedImageSize,
         dynamic?: boolean,
-      ) => string;
-      Icon: (
+      ): string;
+      Icon(
         guildId: Snowflake,
         hash: string,
         format: DynamicImageFormat,
         size: AllowedImageSize,
         dynamic: boolean,
-      ) => string;
-      AppIcon: (
-        appId: Snowflake,
-        hash: string,
-        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      AppAsset: (
-        appId: Snowflake,
-        hash: string,
-        { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      StickerPackBanner: (bannerId: Snowflake, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      GDMIcon: (channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      Splash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      DiscoverySplash: (guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
-      TeamIcon: (
+      ): string;
+      RoleIcon(roleId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
+      Splash(guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
+      Sticker(stickerId: Snowflake, stickerFormat: StickerFormatType): string;
+      StickerPackBanner(bannerId: Snowflake, format: AllowedImageFormat, size: AllowedImageSize): string;
+      TeamIcon(
         teamId: Snowflake,
         hash: string,
         { format, size }: { format: AllowedImageFormat; size: AllowedImageSize },
-      ) => string;
-      Sticker: (stickerId: Snowflake, stickerFormat: StickerFormatType) => string;
-      RoleIcon: (roleId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize) => string;
+      ): string;
     };
-  };
-  WSCodes: {
-    1000: 'WS_CLOSE_REQUESTED';
-    1011: 'INTERNAL_ERROR';
-    4004: 'TOKEN_INVALID';
-    4010: 'SHARDING_INVALID';
-    4011: 'SHARDING_REQUIRED';
-    4013: 'INVALID_INTENTS';
-    4014: 'DISALLOWED_INTENTS';
+    botGateway: string;
+    invite(root: string, code: string, eventId?: Snowflake): string;
+    scheduledEvent(root: string, guildId: Snowflake, eventId: Snowflake): string;
   };
   Events: ConstantsEvents;
-  ShardEvents: ConstantsShardEvents;
+  ExplicitContentFilterLevels: EnumHolder<typeof ExplicitContentFilterLevels>;
+  GuildScheduledEventEntityTypes: EnumHolder<typeof GuildScheduledEventEntityTypes>;
+  GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
+  GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
+  IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
+  InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
+  InteractionTypes: EnumHolder<typeof InteractionTypes>;
+  InviteScopes: InviteScope[];
+  MaxBulkDeletableMessageAge: 1_209_600_000;
+  MembershipStates: EnumHolder<typeof MembershipStates>;
+  MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
+  MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
+  MessageTypes: MessageType[];
+  MFALevels: EnumHolder<typeof MFALevels>;
+  NSFWLevels: EnumHolder<typeof NSFWLevels>;
+  Opcodes: ConstantsOpcodes;
+  OverwriteTypes: EnumHolder<typeof OverwriteTypes>;
+  Package: {
+    [key: string]: unknown;
+    bugs: { url: string };
+    dependencies: Record<string, string>;
+    description: string;
+    devDependencies: Record<string, string>;
+    engines: Record<string, string>;
+    homepage: string;
+    keywords: string[];
+    license: string;
+    main: string;
+    name: string;
+    repository: { type: string; url: string };
+    scripts: Record<string, string>;
+    types: string;
+    version: string;
+  };
   PartialTypes: {
     [K in PartialTypes]: K;
+  };
+  PremiumTiers: EnumHolder<typeof PremiumTiers>;
+  PrivacyLevels: EnumHolder<typeof PrivacyLevels>;
+  ShardEvents: ConstantsShardEvents;
+  Status: ConstantsStatus;
+  StickerFormatTypes: EnumHolder<typeof StickerFormatTypes>;
+  StickerTypes: EnumHolder<typeof StickerTypes>;
+  SweeperKeys: SweeperKey[];
+  SystemMessageTypes: SystemMessageType[];
+  TextBasedChannelTypes: TextBasedChannelTypes[];
+  TextInputStyles: EnumHolder<typeof TextInputStyles>;
+  ThreadChannelTypes: ThreadChannelTypes[];
+  UserAgent: string;
+  VerificationLevels: EnumHolder<typeof VerificationLevels>;
+  VideoQualityModes: EnumHolder<typeof VideoQualityModes>;
+  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
+  WebhookTypes: EnumHolder<typeof WebhookTypes>;
+  WSCodes: {
+    1_000: 'WS_CLOSE_REQUESTED';
+    1_011: 'INTERNAL_ERROR';
+    4_004: 'TOKEN_INVALID';
+    4_010: 'SHARDING_INVALID';
+    4_011: 'SHARDING_REQUIRED';
+    4_013: 'INVALID_INTENTS';
+    4_014: 'DISALLOWED_INTENTS';
   };
   WSEvents: {
     [K in WSEventType]: K;
   };
-  Colors: ConstantsColors;
-  Status: ConstantsStatus;
-  Opcodes: ConstantsOpcodes;
-  APIErrors: APIErrors;
-  ChannelTypes: EnumHolder<typeof ChannelTypes>;
-  ThreadChannelTypes: ThreadChannelTypes[];
-  TextBasedChannelTypes: TextBasedChannelTypes[];
-  VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
-  ClientApplicationAssetTypes: ConstantsClientApplicationAssetTypes;
-  IntegrationExpireBehaviors: IntegrationExpireBehaviors[];
-  InviteScopes: InviteScope[];
-  MessageTypes: MessageType[];
-  SystemMessageTypes: SystemMessageType[];
-  ActivityTypes: EnumHolder<typeof ActivityTypes>;
-  StickerTypes: EnumHolder<typeof StickerTypes>;
-  StickerFormatTypes: EnumHolder<typeof StickerFormatTypes>;
-  OverwriteTypes: EnumHolder<typeof OverwriteTypes>;
-  ExplicitContentFilterLevels: EnumHolder<typeof ExplicitContentFilterLevels>;
-  DefaultMessageNotificationLevels: EnumHolder<typeof DefaultMessageNotificationLevels>;
-  VerificationLevels: EnumHolder<typeof VerificationLevels>;
-  MembershipStates: EnumHolder<typeof MembershipStates>;
-  AutoModerationRuleTriggerTypes: EnumHolder<typeof AutoModerationRuleTriggerTypes>;
-  AutoModerationRuleKeywordPresetTypes: EnumHolder<typeof AutoModerationRuleKeywordPresetTypes>;
-  AutoModerationActionTypes: EnumHolder<typeof AutoModerationActionTypes>;
-  AutoModerationRuleEventTypes: EnumHolder<typeof AutoModerationRuleEventTypes>;
-
-  ApplicationCommandPermissionTypes: EnumHolder<typeof ApplicationCommandPermissionTypes>;
-  InteractionTypes: EnumHolder<typeof InteractionTypes>;
-  InteractionResponseTypes: EnumHolder<typeof InteractionResponseTypes>;
-  MessageComponentTypes: EnumHolder<typeof MessageComponentTypes>;
-  MessageButtonStyles: EnumHolder<typeof MessageButtonStyles>;
-  ModalComponentTypes: EnumHolder<typeof ModalComponentTypes>;
-  TextInputStyles: EnumHolder<typeof TextInputStyles>;
-  MFALevels: EnumHolder<typeof MFALevels>;
-  NSFWLevels: EnumHolder<typeof NSFWLevels>;
-  PrivacyLevels: EnumHolder<typeof PrivacyLevels>;
-  WebhookTypes: EnumHolder<typeof WebhookTypes>;
-  PremiumTiers: EnumHolder<typeof PremiumTiers>;
-  ApplicationCommandTypes: EnumHolder<typeof ApplicationCommandTypes>;
-  GuildScheduledEventEntityTypes: EnumHolder<typeof GuildScheduledEventEntityTypes>;
-  GuildScheduledEventStatuses: EnumHolder<typeof GuildScheduledEventStatuses>;
-  GuildScheduledEventPrivacyLevels: EnumHolder<typeof GuildScheduledEventPrivacyLevels>;
-  VideoQualityModes: EnumHolder<typeof VideoQualityModes>;
-  SweeperKeys: SweeperKey[];
 };
 
 export const version: string;
