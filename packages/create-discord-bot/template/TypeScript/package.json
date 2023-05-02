@@ -13,6 +13,7 @@
 		"dotenv": "^16.0.3"
 	},
 	"devDependencies": {
+		"@sapphire/ts-config": "^4.0.0",
 		"typescript": "^5.0.4"
 	}
 }
