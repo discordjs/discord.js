@@ -1,4 +1,3 @@
 {
-	"root": true,
-	"extends": ["neon/common", "neon/node", "neon/prettier"]
+	"extends": "../../.eslintrc.json"
 }
