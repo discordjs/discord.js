@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.7.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.7.0...@discordjs/rest@1.7.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
 # [@discordjs/rest@1.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.6.0...@discordjs/rest@1.7.0) - (2023-04-01)
 
 ## Bug Fixes

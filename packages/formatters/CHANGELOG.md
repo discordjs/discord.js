@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/formatters@0.3.1](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.3.0...@discordjs/formatters@0.3.1) - (2023-05-01)
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **formatters:** Enhance the documentation (#9364) ([23e0ac5](https://github.com/discordjs/discord.js/commit/23e0ac56f456c39d925e2644ec3ca209d4410a99))
+
 # [@discordjs/formatters@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.2.0...@discordjs/formatters@0.3.0) - (2023-04-01)
 
 ## Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "14.9.0",
+  "version": "14.10.2",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "yarn docs:test && yarn test:typescript",
@@ -55,6 +55,7 @@
     "@discordjs/formatters": "workspace:^",
     "@discordjs/rest": "workspace:^",
     "@discordjs/util": "workspace:^",
+    "@discordjs/ws": "workspace:^",
     "@sapphire/snowflake": "^3.4.2",
     "@types/ws": "^8.5.4",
     "discord-api-types": "^0.37.41",
