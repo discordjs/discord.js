@@ -233,6 +233,7 @@ class WebSocketManager extends EventEmitter {
     this._ws.on(WSWebSocketShardEvents.Debug, ({ message, shardId }) => this.debug(message, shardId));
     this._ws.on(WSWebSocketShardEvents.Dispatch, ({ data, shardId }) => {
       this.client.emit(Events.Raw, data, shardId);
+      this.emit(data.t, data.d, shardId);
       const shard = this.shards.get(shardId);
       this.handlePacket(data, shard);
       if (shard.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(data.t)) {
