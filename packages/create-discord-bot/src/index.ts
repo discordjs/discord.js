@@ -36,7 +36,7 @@ const validationResult = validateProjectName(directoryName);
 if (!validationResult.validForNewPackages) {
 	console.error(
 		chalk.red(
-			`Cannot create a project named ${chalk.cyan(`"${directoryName}"`)} due to npm naming restrictions.\n\nErrors:`,
+			`Cannot create a project named ${chalk.yellow(`"${directoryName}"`)} due to npm naming restrictions.\n\nErrors:`,
 		),
 	);
 
