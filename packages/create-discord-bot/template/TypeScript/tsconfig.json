@@ -23,6 +23,7 @@
 		"newLine": "lf",
 		"outDir": "dist",
 		"esModuleInterop": true,
+		"verbatimModuleSyntax": true,
 		"forceConsistentCasingInFileNames": true,
 
 		// Language and Environment
