@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import { program } from 'commander';
 import validateProjectName from 'validate-npm-package-name';
 import { install, resolvePackageManager } from './helpers/packageManager.js';
+import { GUIDE_URL } from './util/constants.js';
 
 // A directory must be specified.
 program
@@ -67,4 +68,5 @@ const packageManager = resolvePackageManager();
 install(packageManager);
 
 // Completion feedback.
-console.log(chalk.green('All done! Be sure to check out the discord.js guide too!'));
+console.log(chalk.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
+console.log(`Link: ${chalk.cyan(GUIDE_URL)}`);
