@@ -10716,8 +10716,8 @@ __metadata:
   resolution: "create-discord-bot@workspace:packages/create-discord-bot"
   dependencies:
     "@favware/cliff-jumper": ^2.0.0
-    "@microsoft/api-extractor": ^7.34.4
-    "@types/node": 16.18.24
+    "@microsoft/api-extractor": ^7.34.6
+    "@types/node": 16.18.25
     "@types/validate-npm-package-name": ^4.0.0
     "@vitest/coverage-c8": ^0.30.1
     chalk: ^5.2.0
