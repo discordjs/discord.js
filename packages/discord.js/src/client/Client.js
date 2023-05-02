@@ -544,7 +544,8 @@ module.exports = Client;
  * `DiscordSnowflake` class.
  *
  * Check their documentation
- * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/snowflake_src.Snowflake here}
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_snowflake.Snowflake here}
+ * ({@link https://www.sapphirejs.dev/docs/Guide/utilities/snowflake guide})
  * to see what you can do.
  * @hideconstructor
  */
