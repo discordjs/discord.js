@@ -10732,7 +10732,7 @@ __metadata:
     validate-npm-package-name: ^5.0.0
     vitest: ^0.29.8
   bin:
-    create-discord-bot: ./dist/index.mjs
+    create-discord-bot: ./dist/create-discord-bot.mjs
   languageName: unknown
   linkType: soft
 
