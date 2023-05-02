@@ -7,8 +7,7 @@ const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
-
-const TextMovableChannelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
+const { getSortableGroupTypes } = require('../util/Util');
 
 /**
  * Represents a guild channel from any of the following:
@@ -149,8 +148,7 @@ class GuildChannel extends BaseChannel {
    */
   get position() {
     const selfIsCategory = this.type === ChannelType.GuildCategory;
-    const movableSelf = TextMovableChannelTypes.includes(this.type);
-    const types = movableSelf ? TextMovableChannelTypes : [this.type];
+    const types = getSortableGroupTypes(this.type);
 
     let count = 0;
     for (const channel of this.guild.channels.cache.values()) {

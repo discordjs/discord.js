@@ -163,6 +163,32 @@ function makePlainError(err) {
   };
 }
 
+const TextSortableGroupTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
+const CategorySortableGroupTypes = [ChannelType.GuildCategory];
+
+/**
+ * Gets an array of the channel types that can be moved in the channel group. For example, a GuildText channel would
+ * return an array containing the types that can be ordered within the text channels (always at the top), and a voice
+ * channel would return an array containing the types that can be ordered within the voice channels (always at the
+ * bottom).
+ * @param {ChannelType} type The type of the channel
+ * @returns {ChannelType[]}
+ * @private
+ */
+function getSortableGroupTypes(type) {
+  switch (type) {
+    case ChannelType.GuildText:
+    case ChannelType.GuildAnnouncement:
+    case ChannelType.GuildForum:
+      return TextSortableGroupTypes;
+    // TODO(kyranet): Add GuildVoice and GuildStageVoice in a follow-up PR
+    case ChannelType.GuildCategory:
+      return CategorySortableGroupTypes;
+    default:
+      return [type];
+  }
+}
+
 /**
  * Moves an element in an array *in place*.
  * @param {Array<*>} array Array to modify
@@ -379,6 +405,7 @@ module.exports = {
   mergeDefault,
   makeError,
   makePlainError,
+  getSortableGroupTypes,
   moveElementInArray,
   verifyString,
   resolveColor,
