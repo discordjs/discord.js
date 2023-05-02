@@ -54,7 +54,7 @@ if (!existsSync(root)) mkdirSync(root, { recursive: true });
 console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
 
 // Copy template!
-cpSync(new URL(`../template/${typescript ? 'TypeScript' : 'ESM'}`, import.meta.url), root, { recursive: true });
+cpSync(new URL(`../template/${typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, { recursive: true });
 
 // Move to the pasted directory.
 process.chdir(root);

@@ -27,7 +27,7 @@
 		"Aura Román <kyradiscord@gmail.com>",
 		"Jiralite <jiralite@live.co.uk>"
 	],
-	"bin": "./dist/index.mjs",
+	"bin": "./dist/create-discord-bot.mjs",
 	"directories": {
 		"lib": "src"
 	},
