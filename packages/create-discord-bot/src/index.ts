@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 // eslint-disable-next-line n/shebang
-import { execSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -9,6 +8,7 @@ import { URL } from 'node:url';
 import chalk from 'chalk';
 import { program } from 'commander';
 import validateProjectName from 'validate-npm-package-name';
+import { install, resolvePackageManager } from './helpers/packageManager.js';
 
 // A directory must be specified.
 program
@@ -63,8 +63,8 @@ const newPackageJSON = readFileSync('./package.json', { encoding: 'utf8' }).repl
 writeFileSync('./package.json', newPackageJSON);
 
 // Install dependencies, because we're so nice.
-console.log('Installing dependencies...');
-execSync('npm install');
+const packageManager = resolvePackageManager();
+install(packageManager);
 
 // Completion feedback.
 console.log(chalk.green('All done! Be sure to check out the discord.js guide too!'));
