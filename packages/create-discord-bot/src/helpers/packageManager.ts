@@ -30,6 +30,11 @@ export function resolvePackageManager(): PackageManager {
 	return DEFAULT_PACKAGE_MANAGER;
 }
 
+/**
+ * Installs with a provided package manager.
+ *
+ * @param packageManager - The package manager to use
+ */
 export function install(packageManager: PackageManager) {
 	let installCommand;
 
