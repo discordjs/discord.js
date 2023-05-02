@@ -8,7 +8,7 @@
 	},
 	"main": "index.js",
 	"dependencies": {
-		"discord.js": "^14.9.0",
+		"discord.js": "^14.10.2",
 		"dotenv": "^16.0.3"
 	}
 }
