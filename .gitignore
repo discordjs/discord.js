@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -15,20 +15,20 @@ pids
 .env
 
 # Dist
-dist/
-dist-docs/
+dist
+dist-docs
 
 # Miscellaneous
-.tmp/
-.vscode/*
+.tmp
+.vscode
 !.vscode/extensions.json
 !.vscode/settings.json
-.idea/
+.idea
 .DS_Store
 .turbo
 tsconfig.tsbuildinfo
-coverage/
-out/
+coverage
+out
 
 # yarn
 .pnp.*
