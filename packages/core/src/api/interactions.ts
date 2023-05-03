@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import type { RawFile, RequestData, REST } from '@discordjs/rest';
 import { InteractionResponseType, Routes } from 'discord-api-types/v10';
 import type {

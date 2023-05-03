@@ -34,6 +34,12 @@ packages:proxy-container:
 packages:rest:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nrest\\n"
+packages:ui:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ui\\n"
+packages:util:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\util\\n"
 packages:voice:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nvoice\\n"
