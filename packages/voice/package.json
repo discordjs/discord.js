@@ -1,7 +1,7 @@
 {
 	"name": "@discordjs/voice",
 	"version": "0.16.0",
-	"description": "Implementation of the Discord Voice API for node.js",
+	"description": "Implementation of the Discord Voice API for Node.js",
 	"scripts": {
 		"build": "tsup && node scripts/postbuild.mjs",
 		"build:docs": "tsc -p tsconfig.docs.json",
