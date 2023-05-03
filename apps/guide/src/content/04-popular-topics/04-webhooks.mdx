@@ -157,7 +157,8 @@ Try to find a webhook your bot knows the token for. This makes sure your bot can
 
 ```js
 import { Client, EmbedBuilder, Events, GatewayIntentBits } from 'discord.js';
-import { token } from './config.json' assert { type: "json" };
+import config from './config.json' assert { type: "json" }
+import { token } from config;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const embed = new EmbedBuilder().setTitle('Some Title').setColor(0x00ffff);
