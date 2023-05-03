@@ -34,6 +34,8 @@ class ShardingManager extends EventEmitter {
    * @property {string|number[]} [shardList='auto'] List of shards to spawn or "auto"
    * @property {ShardingManagerMode} [mode='process'] Which mode to use for shards
    * @property {boolean} [respawn=true] Whether shards should automatically respawn upon exiting
+   * @property {boolean} [silent=false] Whether to pass the silent flag to child process
+   * (only available when mode is set to 'process')
    * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
    * (only available when mode is set to 'process')
    * @property {string[]} [execArgv=[]] Arguments to pass to the shard script executable when spawning
@@ -52,6 +54,7 @@ class ShardingManager extends EventEmitter {
         totalShards: 'auto',
         mode: 'process',
         respawn: true,
+        silent: false,
         shardArgs: [],
         execArgv: [],
         token: process.env.DISCORD_TOKEN,
@@ -122,6 +125,12 @@ class ShardingManager extends EventEmitter {
      * @type {boolean}
      */
     this.respawn = options.respawn;
+
+    /**
+     * Whether to pass the silent flag to child process (only when {@link ShardingManager#mode} is `process`)
+     * @type {boolean}
+     */
+    this.silent = options.silent;
 
     /**
      * An array of arguments to pass to shards (only when {@link ShardingManager#mode} is `process`)
