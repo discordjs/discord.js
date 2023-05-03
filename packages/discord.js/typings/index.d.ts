@@ -6108,6 +6108,7 @@ export interface ShardingManagerOptions {
   shardList?: number[] | 'auto';
   mode?: ShardingManagerMode;
   respawn?: boolean;
+  silent?: boolean;
   shardArgs?: string[];
   token?: string;
   execArgv?: string[];
