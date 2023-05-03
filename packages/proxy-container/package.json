@@ -10,7 +10,7 @@
 		"prepack": "yarn lint && yarn build"
 	},
 	"type": "module",
-	"module": "./dist/index.js",
+	"main": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},
@@ -52,10 +52,11 @@
 		"@types/node": "16.18.25",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint-config-neon": "^0.1.46",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.7",
 		"typescript": "^5.0.4"
 	},
 	"engines": {

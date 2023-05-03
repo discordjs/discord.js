@@ -2,10 +2,10 @@
 
 import { Alert, Section, DiscordMessages, DiscordMessage, DiscordMessageEmbed } from '@discordjs/ui';
 import { useMDXComponent } from 'next-contentlayer/hooks';
-import H1 from './H1';
-import H2 from './H2';
-import H3 from './H3';
-import H4 from './H4';
+import { H1 } from './H1';
+import { H2 } from './H2';
+import { H3 } from './H3';
+import { H4 } from './H4';
 import { DocsLink } from '~/components/DocsLink';
 import { ResultingCode } from '~/components/ResultingCode';
 

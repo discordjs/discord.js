@@ -10,6 +10,7 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format"
 	},
+	"type": "module",
 	"main": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"directories": {
@@ -51,12 +52,13 @@
 		"@vitest/coverage-c8": "^0.30.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint-config-neon": "^0.1.46",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.7",
 		"typescript": "^5.0.4",
-		"vitest": "^0.29.8"
+		"vitest": "^0.30.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"

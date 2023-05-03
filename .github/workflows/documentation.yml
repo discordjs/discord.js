@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    name: Build documentation
+    name: Build & upload documentation
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -36,10 +36,10 @@ jobs:
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install dependencies
         uses: ./packages/actions/src/yarnCache
@@ -49,71 +49,6 @@ jobs:
 
       - name: Build docs
         run: yarn docs
-
-      - name: Upload docgen artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: docgen
-          path: packages/*/docs/docs.json
-
-      - name: Upload api-extractor artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: api-extractor
-          path: packages/*/docs/docs.api.json
-
-  upload:
-    name: Upload Documentation
-    needs: build
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        package:
-          [
-            'brokers',
-            'builders',
-            'collection',
-            'core',
-            'discord.js',
-            'next',
-            'formatters',
-            'proxy',
-            'rest',
-            'util',
-            'voice',
-            'ws',
-          ]
-    runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install node.js v16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
-
-      - name: Build actions
-        run: yarn workspace @discordjs/actions build
-
-      - name: Download docgen artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: docgen
-          path: docs
-
-      - name: Download api-extractor artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: api-extractor
-          path: docs
 
       - name: Checkout docs repository
         uses: actions/checkout@v3
@@ -130,7 +65,7 @@ jobs:
           tag: ${{ github.ref_name }}
 
       - name: Upload documentation to database
-        if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ github.ref_type == 'tag' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         uses: ./packages/actions/src/uploadDocumentation
@@ -139,17 +74,16 @@ jobs:
           version: ${{ steps.extract-tag.outputs.semver }}
 
       - name: Move docs to correct directory
-        if: ${{ github.ref_type == 'tag' && matrix.package == steps.extract-tag.outputs.package }}
+        if: ${{ github.ref_type == 'tag' }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
         run: |
-          mkdir -p out/${PACKAGE}
-          if [[ $PACKAGE == "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${SEMVER}.json
-          fi
-          if [[ $PACKAGE != "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${SEMVER}.api.json
+          mkdir -p "out/${PACKAGE}"
+          if [[ "${PACKAGE}" == "discord.js" ]]; then
+            mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${SEMVER}.json"
+          else
+            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
           fi
 
       - name: Upload documentation to database
@@ -157,21 +91,20 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         uses: ./packages/actions/src/uploadDocumentation
-        with:
-          package: ${{ matrix.package }}
 
       - name: Move docs to correct directory
         if: ${{ github.ref_type == 'branch' }}
-        env:
-          PACKAGE: ${{ matrix.package }}
         run: |
-          mkdir -p out/${PACKAGE}
-          if [[ $PACKAGE == "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.json out/${PACKAGE}/${GITHUB_REF_NAME}.json
-          fi
-          if [[ $PACKAGE != "discord.js" ]]; then
-            mv docs/${PACKAGE}/docs/docs.api.json out/${PACKAGE}/${GITHUB_REF_NAME}.api.json
-          fi
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "next" "formatters" "proxy" "rest" "util" "voice" "ws")
+          for PACKAGE in "${PACKAGES[@]}"; do
+            if [[ "${PACKAGE}" == "discord.js" ]]; then
+              mkdir -p "out/${PACKAGE}"
+              mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
+            else
+              mkdir -p "out/${PACKAGE}"
+              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
+            fi
+          done
 
       - name: Commit and push
         run: |

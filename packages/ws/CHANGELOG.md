@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@0.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.1...@discordjs/ws@0.8.2) - (2023-05-01)
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+# [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Refactor
+
+- Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
+- **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
+
 # [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
 
 ## Bug Fixes

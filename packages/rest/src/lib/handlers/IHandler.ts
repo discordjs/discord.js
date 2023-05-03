@@ -1,5 +1,5 @@
 import type { Dispatcher } from 'undici';
-import type { RequestOptions } from '../REST';
+import type { RequestOptions } from '../REST.js';
 import type { HandlerRequestData, RouteData } from '../RequestManager.js';
 
 export interface IHandler {

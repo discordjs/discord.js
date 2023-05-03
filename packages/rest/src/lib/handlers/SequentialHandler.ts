@@ -1,8 +1,8 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { Dispatcher } from 'undici';
-import type { RateLimitData, RequestOptions } from '../REST';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager';
+import type { RateLimitData, RequestOptions } from '../REST.js';
+import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
 import { RESTEvents } from '../utils/constants.js';
 import { hasSublimit, onRateLimit, parseHeader } from '../utils/utils.js';
 import type { IHandler } from './IHandler.js';

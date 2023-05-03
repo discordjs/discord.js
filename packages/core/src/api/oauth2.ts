@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import { URL } from 'node:url';
 import { type RequestData, type REST, makeURLSearchParams } from '@discordjs/rest';
 import {

@@ -77,12 +77,4 @@ export default defineConfig({
 			},
 		}),
 	],
-	include: [
-		/.[jt]sx$/,
-		/.mdx?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.js(.*)?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.mjs(.*)?$/,
-	],
 });

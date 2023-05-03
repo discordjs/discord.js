@@ -9,10 +9,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install dependencies
         uses: ./packages/actions/src/yarnCache
@@ -27,10 +27,7 @@ jobs:
         run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Build docker image
-        run: yarn docker build @discordjs/proxy-container -t discordjs/proxy:latest
-
-      - name: Tag image with major
-        run: docker tag discordjs/proxy discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json))
+        run: yarn docker build --buildkit @discordjs/proxy-container -t discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json))
 
       - name: Push image to DockerHub
         run: docker push --all-tags discordjs/proxy

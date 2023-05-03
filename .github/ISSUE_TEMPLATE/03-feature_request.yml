@@ -25,6 +25,8 @@ body:
         - proxy
         - proxy-container
         - rest
+        - ui
+        - util
         - voice
         - ws
     validations:

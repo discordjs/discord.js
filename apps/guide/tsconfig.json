@@ -19,15 +19,9 @@
 			"~/*": ["./src/*"],
 			"contentlayer/generated": ["./.contentlayer/generated"]
 		},
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"moduleResolution": "node"
 	},
-	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
-		"next-env.d.ts",
-		"types.d.ts",
-		".next/types/**/*.ts",
-		".contentlayer/generated"
-	],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
 	"exclude": ["node_modules"]
 }

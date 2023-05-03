@@ -15,11 +15,11 @@
 		"chromatic": "chromatic"
 	},
 	"type": "module",
-	"module": "./dist/ui.js",
+	"main": "./dist/ui.js",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/ui.js",
-		"types": "./dist/index.d.ts"
+		"types": "./dist/index.d.ts",
+		"import": "./dist/ui.js"
 	},
 	"sideEffects": false,
 	"directories": {
@@ -72,17 +72,18 @@
 		"chromatic": "^6.17.3",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint-config-neon": "^0.1.46",
 		"eslint-formatter-pretty": "^5.0.0",
 		"eslint-plugin-storybook": "^0.6.11",
 		"prettier": "^2.8.8",
 		"prop-types": "^15.8.1",
 		"storybook": "^7.0.7",
+		"turbo": "^1.9.4-canary.7",
 		"typescript": "^5.0.4",
 		"unocss": "^0.51.8",
-		"vite": "^4.3.3",
+		"vite": "^4.3.4",
 		"vite-plugin-dts": "^2.3.0",
-		"vitest": "^0.29.8"
+		"vitest": "^0.30.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
