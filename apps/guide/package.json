@@ -80,7 +80,7 @@
 		"concurrently": "^8.0.1",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.45",
+		"eslint-config-neon": "^0.1.46",
 		"eslint-formatter-pretty": "^5.0.0",
 		"happy-dom": "^9.10.6",
 		"hast-util-to-string": "^2.0.0",
