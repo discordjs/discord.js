@@ -203,7 +203,11 @@ class User extends Base {
    * @readonly
    */
   get tag() {
-    return typeof this.username === 'string' ? `${this.username}#${this.discriminator}` : null;
+    return typeof this.username === 'string'
+      ? this.hasNewUsername
+        ? `@${this.username}`
+        : `${this.username}#${this.discriminator}`
+      : null;
   }
 
   /**
