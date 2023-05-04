@@ -198,7 +198,8 @@ class User extends Base {
   }
 
   /**
-   * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
+   * The tag of this user
+   * <info>`hydrabolt#0001`, or `@hydrabolt` if they have been migrated to the new username system</info>
    * @type {?string}
    * @readonly
    */
