@@ -212,7 +212,7 @@ class User extends Base {
    * @readonly
    */
   get hasNewUsername() {
-    return this.tag === '0';
+    return this.discriminator === '0';
   }
 
   /**
