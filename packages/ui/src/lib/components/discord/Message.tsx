@@ -1,7 +1,7 @@
 import type { PropsWithChildren, ReactNode } from 'react';
-import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAuthor.jsx';
-import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.jsx';
-import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.jsx';
+import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAuthor.js';
+import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.js';
+import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';
 
 export function DiscordMessage({
 	reply,

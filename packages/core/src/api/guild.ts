@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import type {
@@ -1035,6 +1037,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#delete-auto-moderation-rule}
 	 * @param guildId - The id of the guild to delete the auto moderation rule from
+	 * @param ruleId - The id of the auto moderation rule to delete
 	 * @param options - The options for deleting the auto moderation rule
 	 */
 	public async deleteAutoModerationRule(
