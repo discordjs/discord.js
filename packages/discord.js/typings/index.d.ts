@@ -3060,7 +3060,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public discriminator: string;
-  public get displayName(): string | null;
+  public get displayName(): string;
   public get defaultAvatarURL(): string;
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
