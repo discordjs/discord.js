@@ -243,7 +243,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayName() {
-    return this.nickname ?? this.user.displayName;
+    return this.nickname ?? this.user.discriminator === '0' ? this.user.globalName : this.user.username;
   }
 
   /**

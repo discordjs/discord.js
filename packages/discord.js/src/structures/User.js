@@ -164,7 +164,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    const remainder = this.usingLegacyUsername ? this.discriminator % 5 : this.createdTimestamp % 5;
+    const remainder = this.discriminator === '0' ? this.createdTimestamp % 5 : this.discriminator % 5;
     return this.client.rest.cdn.defaultAvatar(remainder);
   }
 
@@ -206,28 +206,10 @@ class User extends Base {
    */
   get tag() {
     return typeof this.username === 'string'
-      ? this.usingLegacyUsername
-        ? `${this.username}#${this.discriminator}`
-        : `@${this.username}`
+      ? this.discriminator === '0'
+        ? `@${this.username}`
+        : `${this.username}#${this.discriminator}`
       : null;
-  }
-
-  /**
-   * Indicates whether the user is using the legacy username system
-   * @type {boolean}
-   * @readonly
-   */
-  get usingLegacyUsername() {
-    return this.discriminator !== '0';
-  }
-
-  /**
-   * The global name of this user, or their username if they're using the legacy username system
-   * @type {?string}
-   * @readonly
-   */
-  get displayName() {
-    return this.usingLegacyUsername ? this.username : this.globalName;
   }
 
   /**
