@@ -11,8 +11,8 @@ export async function generateStaticParams() {
 
 export default function Page({ params }: { params: { slug: string[] } }) {
 	const content = allContents.find((content) => content.slug === params.slug?.join('/'));
-	const next = content ? allContents[allContents.indexOf(content) + 1] : null;
-	const previous = content ? allContents[allContents.indexOf(content) - 1] : null;
+	const next = content ? allContents[(allContents.indexOf(content) as number) + 1] : null;
+	const previous = content ? allContents[(allContents.indexOf(content) as number) - 1] : null;
 
 	if (!content) {
 		notFound();
