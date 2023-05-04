@@ -41,6 +41,16 @@ class User extends Base {
       this.username ??= null;
     }
 
+    if ('global_name' in data) {
+      /**
+       * The global username of the user
+       * @type {?string}
+       */
+      this.globalName = data.global_name;
+    } else {
+      this.globalName ??= null;
+    }
+
     if ('bot' in data) {
       /**
        * Whether or not the user is a bot
@@ -194,6 +204,24 @@ class User extends Base {
    */
   get tag() {
     return typeof this.username === 'string' ? `${this.username}#${this.discriminator}` : null;
+  }
+
+  /**
+   * Indicates whether the user has a new username
+   * @type {boolean}
+   * @readonly
+   */
+  get hasNewUsername() {
+    return this.tag === '0';
+  }
+
+  /**
+   * The username of this user, or their global name if they have been migrated to the new username system
+   * @type {?string}
+   * @readonly
+   */
+  get displayName() {
+    return this.hasNewUsername ? this.globalName : this.username;
   }
 
   /**
