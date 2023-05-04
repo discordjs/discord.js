@@ -212,7 +212,7 @@ class User extends Base {
   }
 
   /**
-   * Indicates whether the user has a new username
+   * Indicates whether the user has been migrated to the new username system
    * @type {boolean}
    * @readonly
    */
