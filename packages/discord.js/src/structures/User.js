@@ -199,34 +199,34 @@ class User extends Base {
 
   /**
    * The tag of this user
-   * <info>`hydrabolt#0001`, or `@hydrabolt` if they have been migrated to the new username system</info>
+   * <info>`@hydrabolt`, or `hydrabolt#0001` if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
    */
   get tag() {
     return typeof this.username === 'string'
-      ? this.hasNewUsername
-        ? `@${this.username}`
-        : `${this.username}#${this.discriminator}`
+      ? this.usingLegacyUsername
+        ? `${this.username}#${this.discriminator}`
+        : `@${this.username}`
       : null;
   }
 
   /**
-   * Indicates whether the user has been migrated to the new username system
+   * Indicates whether the user is using the legacy username system
    * @type {boolean}
    * @readonly
    */
-  get hasNewUsername() {
-    return this.discriminator === '0';
+  get usingLegacyUsername() {
+    return this.discriminator !== '0';
   }
 
   /**
-   * The username of this user, or their global name if they have been migrated to the new username system
+   * The global name of this user, or their username if they're using the legacy username system
    * @type {?string}
    * @readonly
    */
   get displayName() {
-    return this.hasNewUsername ? this.globalName : this.username;
+    return this.usingLegacyUsername ? this.username : this.globalName;
   }
 
   /**

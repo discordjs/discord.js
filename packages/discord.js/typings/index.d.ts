@@ -3065,13 +3065,13 @@ export class User extends PartialTextBasedChannel(Base) {
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
   public get globalName(): string | null;
-  public get hasNewUsername(): boolean;
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
   public get tag(): string;
   public username: string;
+  public get usingLegacyUsername(): boolean;
   public avatarURL(options?: ImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
