@@ -63,7 +63,8 @@ class User extends Base {
 
     if ('discriminator' in data) {
       /**
-       * A discriminator based on username for the user
+       * The discriminator of this user
+       * <info>`'0'`, or a 4-digits stringified number if they're using the legacy username system</info>
        * @type {?string}
        */
       this.discriminator = data.discriminator;
