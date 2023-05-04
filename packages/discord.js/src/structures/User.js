@@ -1,6 +1,7 @@
 'use strict';
 
 const { userMention } = require('@discordjs/builders');
+const { calculateUserDefaultAvatarId } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -165,7 +166,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    const remainder = this.discriminator === '0' ? this.createdTimestamp % 5 : this.discriminator % 5;
+    const remainder = this.discriminator === '0' ? calculateUserDefaultAvatarId(this.id) : this.discriminator % 5;
     return this.client.rest.cdn.defaultAvatar(remainder);
   }
 

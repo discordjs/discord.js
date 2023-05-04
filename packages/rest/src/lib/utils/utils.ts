@@ -112,3 +112,12 @@ export async function onRateLimit(manager: RequestManager, rateLimitData: RateLi
 		throw new RateLimitError(rateLimitData);
 	}
 }
+
+/**
+ * Calculates the default avatar id for a given user id.
+ *
+ * @param userId - The user id to calculate the default avatar id for
+ */
+export function calculateUserDefaultAvatarId(userId: string) {
+	return Number(BigInt(userId) >> 22n) % 5;
+}
