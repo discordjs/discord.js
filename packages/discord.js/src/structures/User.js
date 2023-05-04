@@ -214,6 +214,15 @@ class User extends Base {
   }
 
   /**
+   * The global name of this user, or their username if they don't have one
+   * @type {?string}
+   * @readonly
+   */
+  get displayName() {
+    return this.globalName ?? this.username;
+  }
+
+  /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
    * @readonly
