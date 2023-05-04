@@ -164,7 +164,8 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    return this.client.rest.cdn.defaultAvatar(this.discriminator % 5);
+    const remainder = this.usingLegacyUsername ? this.discriminator % 5 : this.createdTimestamp % 5;
+    return this.client.rest.cdn.defaultAvatar(remainder);
   }
 
   /**
