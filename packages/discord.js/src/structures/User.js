@@ -43,7 +43,7 @@ class User extends Base {
 
     if ('global_name' in data) {
       /**
-       * The global username of the user
+       * The global name of this user
        * @type {?string}
        */
       this.globalName = data.global_name;
