@@ -48,6 +48,7 @@
 	"dependencies": {
 		"@react-icons/all-files": "^4.1.0",
 		"ariakit": "^2.0.0-next.44",
+		"class-variance-authority": "^0.6.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},

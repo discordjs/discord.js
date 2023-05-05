@@ -12,3 +12,4 @@ export * from './components/discord/MessageEmbedTitle.js';
 export * from './components/discord/MessageInteraction.js';
 export * from './components/discord/MessageReply.js';
 export * from './components/discord/Messages.js';
+export * from './styles/Test.jsx';
