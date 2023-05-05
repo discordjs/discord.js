@@ -1,13 +1,27 @@
-export function PageButton({ url, title, direction }: { direction: 'next' | 'prev'; title: string; url: string }) {
+import { CgChevronLeft } from '@react-icons/all-files/cg/CgChevronLeft';
+import { CgChevronRight } from '@react-icons/all-files/cg/CgChevronRight';
+import Link from 'next/link';
+
+export interface PageButtonProps {
+	direction: 'next' | 'prev';
+	href: string;
+	title: string;
+}
+
+export function PageButton({ href, title, direction }: PageButtonProps) {
+	const isNext = direction === 'next';
+	const textAlignStyle = isNext ? 'text-right' : 'text-left';
 	return (
-		<a
-			className="flex flex-row flex-col transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 rounded bg-light-600 px-4 py-3 leading-none no-underline outline-none active:translate-y-px active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
-			href={url}
+		<Link
+			className="flex flex-row items-center rounded-lg bg-gray-200 px-3 py-2 text-black space-x-2 dark:bg-dark-200 hover-bg-gray-300 dark:text-white dark:hover:bg-dark-100"
+			href={href}
 		>
-			<h3 className="text-md font-semibold">{title}</h3>
-			<p className={`${direction === 'next' ? 'ml-auto' : 'mr-auto'} text-sm text-gray-600 dark:text-gray-400`}>
-				{direction === 'next' ? 'Next Page' : 'Previous Page'}
-			</p>
-		</a>
+			{isNext ? null : <CgChevronLeft size={28} />}
+			<div className="flex flex-col">
+				<p className={`m-0 ${textAlignStyle} text-lg font-bold`}>{isNext ? 'Next' : 'Previous'}</p>
+				<p className={`m-0 ${textAlignStyle} text-gray-5 dark:text-gray-4`}>{title}</p>
+			</div>
+			{isNext ? <CgChevronRight size={28} /> : null}
+		</Link>
 	);
 }
