@@ -24,4 +24,4 @@ export const PACKAGES = [
 /**
  * The stable version of discord.js.
  */
-export const VERSION = '14.10.0' as const;
+export const VERSION = '14.10.2' as const;
