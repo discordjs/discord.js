@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import type { RawFile, RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
