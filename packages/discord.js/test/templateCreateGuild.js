@@ -20,7 +20,7 @@ client
     } catch (error) {
       console.error(error);
     } finally {
-      client.destroy();
+      await client.destroy();
     }
   })
   .login(token)
