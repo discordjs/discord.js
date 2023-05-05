@@ -5,7 +5,7 @@ import {
 	Routes,
 	type RESTGetAPIApplicationRoleConnectionMetadataResult,
 	type RESTPutAPIApplicationRoleConnectionMetadataResult,
-	type RESTPutAPIApplicationCommandPermissionsJSONBody,
+	type RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -35,7 +35,7 @@ export class RoleConnectionsAPI {
 	 */
 	public async updateMetadataRecords(
 		applicationId: Snowflake,
-		body: RESTPutAPIApplicationCommandPermissionsJSONBody,
+		body: RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationRoleConnectionMetadata(applicationId), {
