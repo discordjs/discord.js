@@ -5857,7 +5857,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
-  options?: SelectMenuComponentOptionData[];
+  options: SelectMenuComponentOptionData[];
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
