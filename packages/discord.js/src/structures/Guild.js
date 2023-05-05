@@ -370,6 +370,16 @@ class Guild extends AnonymousGuild {
       this.preferredLocale = data.preferred_locale;
     }
 
+    if ('safety_alerts_channel_id' in data) {
+      /**
+       * The safety alerts channel's id for the guild
+       * @type {?Snowflake}
+       */
+      this.safetyAlertsChannelId = data.safety_alerts_channel_id;
+    } else {
+      this.safetyAlertsChannelId ??= null;
+    }
+
     if (data.channels) {
       this.channels.cache.clear();
       for (const rawChannel of data.channels) {
@@ -532,6 +542,15 @@ class Guild extends AnonymousGuild {
    */
   get publicUpdatesChannel() {
     return this.client.channels.resolve(this.publicUpdatesChannelId);
+  }
+
+  /**
+   * Safety alerts channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get safetyAlertsChannel() {
+    return this.client.channels.resolve(this.safetyAlertsChannelId);
   }
 
   /**
@@ -760,6 +779,7 @@ class Guild extends AnonymousGuild {
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {?TextChannelResolvable} [safetyAlertsChannel] The safety alerts channel of the guild
    * @property {?string} [preferredLocale] The preferred locale of the guild
    * @property {GuildFeature[]} [features] The features of the guild
    * @property {?string} [description] The discovery description of the guild
@@ -810,6 +830,7 @@ class Guild extends AnonymousGuild {
     publicUpdatesChannel,
     preferredLocale,
     premiumProgressBarEnabled,
+    safetyAlertsChannel,
     ...options
   }) {
     const data = await this.client.rest.patch(Routes.guild(this.id), {
@@ -832,6 +853,7 @@ class Guild extends AnonymousGuild {
         public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,
         premium_progress_bar_enabled: premiumProgressBarEnabled,
+        safety_alerts_channel_id: safetyAlertsChannel && this.client.channels.resolveId(safetyAlertsChannel),
       },
       reason: options.reason,
     });
@@ -1143,6 +1165,21 @@ class Guild extends AnonymousGuild {
    */
   setPremiumProgressBarEnabled(enabled = true, reason) {
     return this.edit({ premiumProgressBarEnabled: enabled, reason });
+  }
+
+  /**
+   * Edits the safety alerts channel of the guild.
+   * @param {?TextChannelResolvable} safetyAlertsChannel The new safety alerts channel
+   * @param {string} [reason] Reason for changing the guild's safety alerts channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild safety alerts channel
+   * guild.setSafetyAlertsChannel(channel)
+   *  .then(updated => console.log(`Updated guild safety alerts channel to ${updated.safetyAlertsChannel.name}`))
+   *  .catch(console.error);
+   */
+  setSafetyAlertsChannel(safetyAlertsChannel, reason) {
+    return this.edit({ safetyAlertsChannel, reason });
   }
 
   /**
