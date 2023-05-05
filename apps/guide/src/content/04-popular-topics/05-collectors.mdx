@@ -22,16 +22,15 @@ For now, let's take the example that they have provided us:
 <CH.Code>
 
 ```js
-// `m` is a message object that will be passed through the filter function
-const collectorFilter = (m) => m.content.includes('discord');
+const collectorFilter = (message) => message.content.includes('discord');
 const collector = interaction.channel.createMessageCollector({ filter: collectorFilter, time: 15000 });
 
-collector.on('collect', (m) => {
-	console.log(`Collected ${m.content}`);
+collector.on('collect', (message) => {
+	console.log(`Collected ${message.content}`);
 });
 
 collector.on('end', (collected) => {
-	console.log(`Collected ${collected.size} items`);
+	console.log(`Collected ${collected.size} messages`);
 });
 ```
 
@@ -53,7 +52,7 @@ The benefit of using an event-based collector over _`awaitMessages()`_ (its prom
 
 ### Await messages
 
-Using <DocsLink type="class" parent="TextChannel" symbol="awaitMessages" brackets /> can be easier if you understand Promises, and it allows you to have cleaner code overall. It is essentially identical to <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />, except promisified. However, the drawback of using this method is that you cannot do things before the Promise is resolved or rejected, either by an error or completion. However, it should do for most purposes, such as awaiting the correct response in a quiz. Instead of taking their example, let's set up a basic quiz command using the _`.awaitMessages()`_ feature.
+Using <DocsLink type="class" parent="TextChannel" symbol="awaitMessages" brackets /> can be easier if you understand [Promises](../05-additional-info/01-understanding-async-await.mdx), and it allows you to have cleaner code overall. It is essentially identical to <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />, except promisified. However, the drawback of using this method is that you cannot do things before the Promise is resolved or rejected, either by an error or completion. However, it should do for most purposes, such as awaiting the correct response in a quiz. Instead of taking their example, let's set up a basic quiz command using the _`.awaitMessages()`_ feature.
 
 First, you'll need some questions and answers to choose from, so here's a basic set:
 
