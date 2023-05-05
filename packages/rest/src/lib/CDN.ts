@@ -119,7 +119,7 @@ export class CDN {
 	}
 
 	/**
-	 * Generates the default avatar URL for a user id.
+	 * Generates the default avatar URL for an user id.
 	 *
 	 * @param userId - The user id modulo 5
 	 */
