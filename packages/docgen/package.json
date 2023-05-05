@@ -56,7 +56,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.7",
+		"turbo": "^1.9.4-canary.9",
 		"typescript": "^5.0.4"
 	},
 	"engines": {
