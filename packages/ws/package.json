@@ -23,6 +23,7 @@
 			"require": "./dist/index.js"
 		},
 		"./defaultWorker": {
+			"types": null,
 			"import": "./dist/defaultWorker.mjs",
 			"require": "./dist/defaultWorker.js"
 		}
