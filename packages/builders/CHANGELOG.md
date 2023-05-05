@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.6.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.2...@discordjs/builders@1.6.3) - (2023-05-01)
+
+## Refactor
+
+- Remove `@discordjs/util` re-export (#9488) ([54ceedf](https://github.com/discordjs/discord.js/commit/54ceedf6c535d4641643d4106b6286cbef09de4a))
+
+# [@discordjs/builders@1.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.1...@discordjs/builders@1.6.2) - (2023-05-01)
+
+## Bug Fixes
+
+- **BaseSelectMenuBuilder:** Modify class to be `abstract` (#9358) ([ca4de2d](https://github.com/discordjs/discord.js/commit/ca4de2d9c6bc204e85d1b7eae7eabd23dbeb4475))
+- Correct `@link` tags that involve parents (#9351) ([fbbce3e](https://github.com/discordjs/discord.js/commit/fbbce3eb4ba20bc0c4806ca2259d1f86001594be))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **builders:** Add some basic documentation (#9359) ([8073561](https://github.com/discordjs/discord.js/commit/8073561824f911d1a18d0b4f1de39f452bc69fa9))
+- Use `@link` in `@see` (#9348) ([d66d113](https://github.com/discordjs/discord.js/commit/d66d1133331b81563588db4500c63a18c3c3dfae))
+
 # [@discordjs/builders@1.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.1...@discordjs/builders@1.6.2) - (2023-05-01)
 
 ## Bug Fixes

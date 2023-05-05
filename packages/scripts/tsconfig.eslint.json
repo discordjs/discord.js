@@ -15,6 +15,5 @@
 		"**/*.spec.ts",
 		"**/*.spec.js",
 		"**/*.spec.mjs"
-	],
-	"exclude": []
+	]
 }

@@ -419,7 +419,7 @@ The base interaction class is now <DocsLink type="class" parent="BaseInteraction
 
 ### MessageManager
 
-The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
+The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="typedef" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
 
 <CH.Code>
 
@@ -489,6 +489,8 @@ In addition to this, there is now a new partial: _`Partials.ThreadMember`_.
 ### Permissions
 
 The thread permissions _`USE_PUBLIC_THREADS`_ and _`USE_PRIVATE_THREADS`_ have been removed as they are deprecated in the API. Use _`CREATE_PUBLIC_THREADS`_ and _`CREATE_PRIVATE_THREADS`_ respectively.
+
+_`ManageEmojisAndStickers`_ has been deprecated due to API changes. Its replacement is _`ManageGuildExpressions`_.[^7]
 
 ### PermissionOverwritesManager
 
@@ -647,6 +649,10 @@ The second parameter of <DocsLink type="class" parent="Webhook" symbol="fetchMes
 
 NFSW commands are supported.
 
+### Attachment
+
+Added support for voice message metadata fields.
+
 ### AutocompleteInteraction
 
 <DocsLink type="class" parent="AutocompleteInteraction" symbol="commandGuildId" /> has been added which is the id of the
@@ -777,6 +783,8 @@ Added <DocsLink type="class" parent="MessageReaction" symbol="react" brackets />
 
 Added support for role subscriptions.
 
+Added support for _`Role#tags#guildConnections`_.
+
 ### StageChannel
 
 Stage channels now allow messages to be sent in them, much like voice channels.
@@ -797,9 +805,14 @@ Added <DocsLink type="class" parent="Webhook" symbol="applicationId" />.
 
 Added the _`threadName`_ property in <DocsLink type="typedef" parent="WebhookMessageCreateOptions"/> which allows a webhook to create a post in a forum channel.
 
+### WebSocketManager
+
+discord.js uses <DocsLink package="ws" /> internally.
+
 [^1]: https://github.com/discordjs/discord.js/pull/7188
 [^2]: https://github.com/discordjs/discord.js/pull/6492
 [^3]: https://github.com/discordjs/discord.js/pull/7669
 [^4]: https://github.com/discordjs/discord.js/issues/6546
 [^5]: https://github.com/discordjs/discord.js/pull/8010
 [^6]: https://github.com/discordjs/discord.js/issues/7091
+[^7]: https://github.com/discord/discord-api-docs/pull/6017

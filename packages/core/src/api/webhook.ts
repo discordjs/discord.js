@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '@discordjs/rest';
 import {
 	Routes,
@@ -158,6 +160,7 @@ export class WebhooksAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-slackcompatible-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
+	 * @param body - The data to use when executing the webhook
 	 * @param query - The query options to use when executing the webhook
 	 * @param options - The options to use when executing the webhook
 	 */
@@ -182,6 +185,7 @@ export class WebhooksAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook}
 	 * @param id - The id of the webhook
 	 * @param token - The token of the webhook
+	 * @param body - The data to use when executing the webhook
 	 * @param query - The options to use when executing the webhook
 	 * @param options - The options to use when executing the webhook
 	 */
