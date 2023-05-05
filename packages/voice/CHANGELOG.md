@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.15.0...@discordjs/voice@0.16.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+## Refactor
+
+- Compare with `undefined` directly (#9191) ([869153c](https://github.com/discordjs/discord.js/commit/869153c3fdf155783e7c0ecebd3627b087c3a026))
+
+# [@discordjs/voice@0.15.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.14.0...@discordjs/voice@0.15.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **Voice:** Send keep alives without awaiting a response (#9202) ([c6d98fa](https://github.com/discordjs/discord.js/commit/c6d98fa0c55a482cd4a81abd6f08290c29839b1b))
+
+## Documentation
+
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
 # [@discordjs/voice@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.13.0...@discordjs/voice@0.14.0) - (2022-11-28)
 
 ## Bug Fixes

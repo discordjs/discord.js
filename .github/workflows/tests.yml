@@ -3,7 +3,8 @@ on:
   push:
   pull_request:
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  # Group based on workflow name and PR if it exists, if no PR, let it run so carryforward flags work
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 jobs:
   tests:
@@ -18,10 +19,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install dependencies
         uses: ./packages/actions/src/yarnCache

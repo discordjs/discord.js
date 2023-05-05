@@ -147,7 +147,7 @@ class Webhook {
 
   /**
    * The channel the webhook belongs to
-   * @type {?(TextChannel|VoiceChannel|NewsChannel|ForumChannel)}
+   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel)}
    * @readonly
    */
   get channel() {

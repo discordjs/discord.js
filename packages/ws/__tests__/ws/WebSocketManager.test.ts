@@ -177,14 +177,21 @@ test('strategies', async () => {
 		public destroy = vi.fn();
 
 		public send = vi.fn();
+
+		public fetchStatus = vi.fn();
 	}
+
+	const strategy = new MockStrategy();
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = [0, 1, 2];
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
-
-	const strategy = new MockStrategy();
-	manager.setStrategy(strategy);
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		rest,
+		shardIds,
+		buildStrategy: () => strategy,
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,

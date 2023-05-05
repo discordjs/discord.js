@@ -11,6 +11,7 @@ const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const Events = require('../util/Events');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const Partials = require('../util/Partials');
 
 /**
@@ -158,20 +159,18 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used to fetch multiple members from a guild.
    * @typedef {Object} FetchMembersOptions
-   * @property {UserResolvable|UserResolvable[]} user The user(s) to fetch
-   * @property {?string} query Limit fetch to members with similar usernames
+   * @property {UserResolvable|UserResolvable[]} [user] The user(s) to fetch
+   * @property {?string} [query] Limit fetch to members with similar usernames
    * @property {number} [limit=0] Maximum number of members to request
-   * @property {boolean} [withPresences=false] Whether or not to include the presences
+   * @property {boolean} [withPresences=false] Whether to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
-   * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
-   * @property {boolean} [force=false] Whether to skip the cache check and request the API
+   * @property {?string} [nonce] Nonce for this request (32 characters max - default to base 16 now timestamp)
    */
 
   /**
-   * Fetches member(s) from Discord, even if they're offline.
-   * @param {UserResolvable|FetchMemberOptions|FetchMembersOptions} [options] If a UserResolvable, the user to fetch.
-   * If undefined, fetches all members.
-   * If a query, it limits the results to users with similar usernames.
+   * Fetches member(s) from a guild.
+   * @param {UserResolvable|FetchMemberOptions|FetchMembersOptions} [options] Options for fetching member(s).
+   * Omitting the parameter or providing `undefined` will fetch all members.
    * @returns {Promise<GuildMember|Collection<Snowflake, GuildMember>>}
    * @example
    * // Fetch all members from a guild
@@ -206,18 +205,70 @@ class GuildMemberManager extends CachedManager {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.users.resolveId(options);
-    if (user) return this._fetchSingle({ user, cache: true });
-    if (options.user) {
-      if (Array.isArray(options.user)) {
-        options.user = options.user.map(u => this.client.users.resolveId(u));
-        return this._fetchMany(options);
-      } else {
-        options.user = this.client.users.resolveId(options.user);
-      }
-      if (!options.limit && !options.withPresences) return this._fetchSingle(options);
+    const { user: users, limit, withPresences, cache, force } = options;
+    const resolvedUser = this.client.users.resolveId(users ?? options);
+    if (resolvedUser && !limit && !withPresences) return this._fetchSingle({ user: resolvedUser, cache, force });
+    const resolvedUsers = users?.map?.(user => this.client.users.resolveId(user)) ?? resolvedUser ?? undefined;
+    return this._fetchMany({ ...options, users: resolvedUsers });
+  }
+
+  async _fetchSingle({ user, cache, force = false }) {
+    if (!force) {
+      const existing = this.cache.get(user);
+      if (existing && !existing.partial) return existing;
     }
-    return this._fetchMany(options);
+
+    const data = await this.client.rest.get(Routes.guildMember(this.guild.id, user));
+    return this._add(data, cache);
+  }
+
+  _fetchMany({
+    limit = 0,
+    withPresences: presences,
+    users,
+    query,
+    time = 120e3,
+    nonce = DiscordSnowflake.generate().toString(),
+  } = {}) {
+    if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
+
+    return new Promise((resolve, reject) => {
+      if (!query && !users) query = '';
+      this.guild.shard.send({
+        op: GatewayOpcodes.RequestGuildMembers,
+        d: {
+          guild_id: this.guild.id,
+          presences,
+          user_ids: users,
+          query,
+          nonce,
+          limit,
+        },
+      });
+      const fetchedMembers = new Collection();
+      let i = 0;
+      const handler = (members, _, chunk) => {
+        if (chunk.nonce !== nonce) return;
+        timeout.refresh();
+        i++;
+        for (const member of members.values()) {
+          fetchedMembers.set(member.id, member);
+        }
+        if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
+          clearTimeout(timeout);
+          this.client.removeListener(Events.GuildMembersChunk, handler);
+          this.client.decrementMaxListeners();
+          resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
+        }
+      };
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.GuildMembersChunk, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
+      }, time).unref();
+      this.client.incrementMaxListeners();
+      this.client.on(Events.GuildMembersChunk, handler);
+    });
   }
 
   /**
@@ -279,6 +330,7 @@ class GuildMemberManager extends CachedManager {
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
    * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
+   * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    * @property {string} [reason] Reason for editing this user
    */
 
@@ -306,12 +358,16 @@ class GuildMemberManager extends CachedManager {
     }
     options.roles &&= options.roles.map(role => (role instanceof Role ? role.id : role));
 
-    if (typeof options.communicationDisabledUntil !== 'undefined') {
+    if (options.communicationDisabledUntil !== undefined) {
       options.communication_disabled_until =
         // eslint-disable-next-line eqeqeq
         options.communicationDisabledUntil != null
           ? new Date(options.communicationDisabledUntil).toISOString()
           : options.communicationDisabledUntil;
+    }
+
+    if (options.flags !== undefined) {
+      options.flags = GuildMemberFlagsBitField.resolve(options.flags);
     }
 
     let endpoint;
@@ -478,66 +534,6 @@ class GuildMemberManager extends CachedManager {
     await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
 
     return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
-  }
-
-  async _fetchSingle({ user, cache, force = false }) {
-    if (!force) {
-      const existing = this.cache.get(user);
-      if (existing && !existing.partial) return existing;
-    }
-
-    const data = await this.client.rest.get(Routes.guildMember(this.guild.id, user));
-    return this._add(data, cache);
-  }
-
-  _fetchMany({
-    limit = 0,
-    withPresences: presences = false,
-    user: user_ids,
-    query,
-    time = 120e3,
-    nonce = DiscordSnowflake.generate().toString(),
-  } = {}) {
-    return new Promise((resolve, reject) => {
-      if (!query && !user_ids) query = '';
-      if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
-      this.guild.shard.send({
-        op: GatewayOpcodes.RequestGuildMembers,
-        d: {
-          guild_id: this.guild.id,
-          presences,
-          user_ids,
-          query,
-          nonce,
-          limit,
-        },
-      });
-      const fetchedMembers = new Collection();
-      let i = 0;
-      const handler = (members, _, chunk) => {
-        timeout.refresh();
-        if (chunk.nonce !== nonce) return;
-        i++;
-        for (const member of members.values()) {
-          fetchedMembers.set(member.id, member);
-        }
-        if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || i === chunk.count) {
-          clearTimeout(timeout);
-          this.client.removeListener(Events.GuildMembersChunk, handler);
-          this.client.decrementMaxListeners();
-          let fetched = fetchedMembers;
-          if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
-          resolve(fetched);
-        }
-      };
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildMembersChunk, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
-      }, time).unref();
-      this.client.incrementMaxListeners();
-      this.client.on(Events.GuildMembersChunk, handler);
-    });
   }
 }
 

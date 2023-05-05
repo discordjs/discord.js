@@ -389,7 +389,7 @@ class ApplicationCommand extends Base {
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
-      (typeof dmPermission !== 'undefined' && dmPermission !== this.dmPermission) ||
+      (dmPermission !== undefined && dmPermission !== this.dmPermission) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
@@ -518,7 +518,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
-   * @property {ChannelType[]} [channelTypes] When the option type is channel,
+   * @property {ApplicationCommandOptionAllowedChannelTypes[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -598,4 +598,9 @@ module.exports = ApplicationCommand;
 /**
  * @external APIApplicationCommandOption
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
+ */
+
+/**
+ * @external ApplicationCommandOptionAllowedChannelTypes
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
  */

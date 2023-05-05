@@ -54,12 +54,14 @@ class ClientUser extends User {
    * @param {ClientUserEditOptions} options The options to provide
    * @returns {Promise<ClientUser>}
    */
-  async edit(options) {
-    if (typeof options.avatar !== 'undefined') options.avatar = await DataResolver.resolveImage(options.avatar);
-    const newData = await this.client.rest.patch(Routes.user(), { body: options });
-    this.client.token = newData.token;
-    this.client.rest.setToken(newData.token);
-    const { updated } = this.client.actions.UserUpdate.handle(newData);
+  async edit({ username, avatar }) {
+    const data = await this.client.rest.patch(Routes.user(), {
+      body: { username, avatar: avatar && (await DataResolver.resolveImage(avatar)) },
+    });
+
+    this.client.token = data.token;
+    this.client.rest.setToken(data.token);
+    const { updated } = this.client.actions.UserUpdate.handle(data);
     return updated ?? this;
   }
 

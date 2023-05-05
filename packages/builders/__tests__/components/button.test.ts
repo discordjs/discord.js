@@ -101,6 +101,7 @@ describe('Button Components', () => {
 				button.toJSON();
 			}).toThrowError();
 
+			// @ts-expect-error: Invalid style
 			expect(() => buttonComponent().setStyle(24)).toThrowError();
 			expect(() => buttonComponent().setLabel(longStr)).toThrowError();
 			// @ts-expect-error: Invalid parameter for disabled

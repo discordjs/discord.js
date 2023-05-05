@@ -15,6 +15,8 @@ export default defineConfig({
 				'**/*.{interface,type,d}.ts',
 				// All index files that *should* only contain exports from other files
 				'**/index.{js,ts}',
+				// All exports files that make subpackages available as submodules
+				'**/exports/*.{js,ts}',
 			],
 		},
 	},

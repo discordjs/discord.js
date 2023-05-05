@@ -56,7 +56,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
+    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
   }
 
   /**

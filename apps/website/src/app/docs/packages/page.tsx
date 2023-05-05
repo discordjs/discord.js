@@ -3,33 +3,19 @@ import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
 import Link from 'next/link';
+import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
-async function getData() {
-	return Promise.all(
-		PACKAGES.map(async (pkg) => {
-			const response = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, {
-				next: { revalidate: 3_600 },
-			});
-			const versions = await response.json();
-			const latestVersion = versions.at(-2) ?? 'main';
-			return { packageName: pkg, version: latestVersion };
-		}),
-	);
-}
+export const runtime = 'edge';
 
-export default async function Page() {
-	const data = await getData();
-
-	const findLatestVersion = (pkg: string) => data.find((version) => version.packageName === pkg);
-
+export default function Page() {
 	return (
-		<div className="min-w-xs sm:w-md mx-auto flex min-h-screen flex-row place-content-center place-items-center gap-8 py-0 px-4 lg:py-0 lg:px-6">
-			<div className="flex grow flex-col place-content-center gap-4">
-				<h1 className="text-2xl font-semibold">Select a package:</h1>
+		<div className="mx-auto min-h-screen min-w-xs flex flex-col gap-8 px-4 py-6 sm:w-md lg:px-6 lg:py-6">
+			<h1 className="text-2xl font-semibold">Select a package:</h1>
+			<div className="flex flex-col gap-4">
 				<a
-					className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white"
-					href="https://discord.js.org/#/docs/discord.js"
+					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					href="https://old.discordjs.dev/#/docs/discord.js"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -41,11 +27,11 @@ export default async function Page() {
 						<VscArrowRight size={20} />
 					</div>
 				</a>
-				{PACKAGES.map((pkg) => (
+				{PACKAGES.map((pkg, idx) => (
 					<Link
-						className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white"
-						href={`/docs/packages/${pkg}/${findLatestVersion(pkg)?.version ?? 'main'}`}
-						key={pkg}
+						className={buttonVariants({ variant: 'secondary' })}
+						href={`/docs/packages/${pkg}`}
+						key={`${pkg}-${idx}`}
 					>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -55,7 +41,7 @@ export default async function Page() {
 								</div>
 								{/* <Link href={`/docs/packages/${pkg}`}>
 									<div
-										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-0 focus:ring focus:ring-white active:translate-y-px"
+										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-none focus:ring focus:ring-white active:translate-y-px"
 										role="link"
 									>
 										Select version
@@ -66,10 +52,7 @@ export default async function Page() {
 						</div>
 					</Link>
 				))}
-				<a
-					className="dark:bg-dark-400 dark:border-dark-100 dark:hover:bg-dark-300 dark:active:bg-dark-200 focus:ring-width-2 focus:ring-blurple flex h-11 transform-gpu cursor-pointer select-none appearance-none place-content-between rounded border border-neutral-300 bg-transparent p-4 text-base font-semibold leading-none text-black outline-0 hover:bg-neutral-100 focus:ring active:translate-y-px active:bg-neutral-200 dark:text-white"
-					href="https://discord-api-types.dev/"
-				>
+				<a className={buttonVariants({ variant: 'secondary' })} href="https://discord-api-types.dev/">
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
@@ -80,13 +63,10 @@ export default async function Page() {
 						<FiExternalLink size={20} />
 					</div>
 				</a>
-				<Link
-					className="bg-blurple focus:ring-width-2 flex h-11 transform-gpu cursor-pointer select-none appearance-none flex-row place-items-center gap-2 place-self-center rounded border-0 px-4 text-base font-semibold leading-none text-white no-underline outline-0 focus:ring focus:ring-white active:translate-y-px"
-					href="/"
-				>
-					<VscArrowLeft size={20} /> Go back
-				</Link>
 			</div>
+			<Link className={buttonVariants({ className: 'place-self-center' })} href="/">
+				<VscArrowLeft size={20} /> Go back
+			</Link>
 		</div>
 	);
 }

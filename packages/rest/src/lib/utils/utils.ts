@@ -3,8 +3,9 @@ import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
 import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
 import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import type { RequestOptions } from '../REST.js';
-import { RequestMethod } from '../RequestManager.js';
+import type { RateLimitData, RequestOptions } from '../REST.js';
+import { type RequestManager, RequestMethod } from '../RequestManager.js';
+import { RateLimitError } from '../errors/RateLimitError.js';
 
 export function parseHeader(header: string[] | string | undefined): string | undefined {
 	if (header === undefined || typeof header === 'string') {
@@ -147,4 +148,22 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
 	if (error.name === 'AbortError') return true;
 	// Downlevel ECONNRESET to retry as it may be recoverable
 	return ('code' in error && error.code === 'ECONNRESET') || error.message.includes('ECONNRESET');
+}
+
+/**
+ * Determines whether the request should be queued or whether a RateLimitError should be thrown
+ *
+ * @internal
+ */
+export async function onRateLimit(manager: RequestManager, rateLimitData: RateLimitData) {
+	const { options } = manager;
+	if (!options.rejectOnRateLimit) return;
+
+	const shouldThrow =
+		typeof options.rejectOnRateLimit === 'function'
+			? await options.rejectOnRateLimit(rateLimitData)
+			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
+	if (shouldThrow) {
+		throw new RateLimitError(rateLimitData);
+	}
 }

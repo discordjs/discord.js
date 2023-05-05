@@ -30,7 +30,7 @@ class DMChannel extends BaseChannel {
     super._patch(data);
 
     if (data.recipients) {
-      const recipient = data.recipients.find(user => user.id !== this.client.user.id);
+      const recipient = data.recipients[0];
 
       /**
        * The recipient's id
@@ -68,7 +68,7 @@ class DMChannel extends BaseChannel {
    * @readonly
    */
   get partial() {
-    return typeof this.lastMessageId === 'undefined';
+    return this.lastMessageId === undefined;
   }
 
   /**

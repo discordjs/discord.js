@@ -5,7 +5,6 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -306,6 +305,16 @@ class Guild extends AnonymousGuild {
       this.maxVideoChannelUsers = data.max_video_channel_users;
     } else {
       this.maxVideoChannelUsers ??= null;
+    }
+
+    if ('max_stage_video_channel_users' in data) {
+      /**
+       * The maximum amount of users allowed in a stage video channel.
+       * @type {?number}
+       */
+      this.maxStageVideoChannelUsers = data.max_stage_video_channel_users;
+    } else {
+      this.maxStageVideoChannelUsers ??= null;
     }
 
     if ('approximate_member_count' in data) {
@@ -643,9 +652,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async fetchVanityData() {
-    if (!this.features.includes(GuildFeature.VanityURL)) {
-      throw new DiscordjsError(ErrorCodes.VanityURL);
-    }
     const data = await this.client.rest.get(Routes.guildVanityUrl(this.id));
     this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
@@ -719,7 +725,8 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to fetch audit logs.
    * @typedef {Object} GuildAuditLogsFetchOptions
-   * @property {Snowflake|GuildAuditLogsEntry} [before] Only return entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
+   * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
    * @property {number} [limit] The number of entries to return
    * @property {UserResolvable} [user] Only return entries for actions made by this user
    * @property {?AuditLogEvent} [type] Only return entries for this action type
@@ -735,19 +742,18 @@ class Guild extends AnonymousGuild {
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
-  async fetchAuditLogs(options = {}) {
-    if (options.before && options.before instanceof GuildAuditLogsEntry) options.before = options.before.id;
-
+  async fetchAuditLogs({ before, after, limit, user, type } = {}) {
     const query = makeURLSearchParams({
-      before: options.before,
-      limit: options.limit,
-      action_type: options.type,
+      before: before?.id ?? before,
+      after: after?.id ?? after,
+      limit,
+      action_type: type,
     });
 
-    if (options.user) {
-      const id = this.client.users.resolveId(options.user);
-      if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
-      query.set('user_id', id);
+    if (user) {
+      const userId = this.client.users.resolveId(user);
+      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      query.set('user_id', userId);
     }
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
@@ -842,9 +848,7 @@ class Guild extends AnonymousGuild {
         banner: banner && (await DataResolver.resolveImage(banner)),
         system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
         system_channel_flags:
-          typeof systemChannelFlags === 'undefined'
-            ? undefined
-            : SystemChannelFlagsBitField.resolve(systemChannelFlags),
+          systemChannelFlags === undefined ? undefined : SystemChannelFlagsBitField.resolve(systemChannelFlags),
         rules_channel_id: rulesChannel && this.client.channels.resolveId(rulesChannel),
         public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,
@@ -1197,9 +1201,15 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets the guild's MFA level
+   * <info>An elevated MFA level requires guild moderators to have 2FA enabled.</info>
    * @param {GuildMFALevel} level The MFA level
    * @param {string} [reason] Reason for changing the guild's MFA level
    * @returns {Promise<Guild>}
+   * @example
+   * // Set the MFA level of the guild to Elevated
+   * guild.setMFALevel(GuildMFALevel.Elevated)
+   *   .then(guild => console.log("Set guild's MFA level to Elevated"))
+   *   .catch(console.error);
    */
   async setMFALevel(level, reason) {
     await this.client.rest.post(Routes.guildMFA(this.id), {
@@ -1217,7 +1227,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Leave a guild
    * guild.leave()
-   *   .then(g => console.log(`Left the guild ${g}`))
+   *   .then(guild => console.log(`Left the guild: ${guild.name}`))
    *   .catch(console.error);
    */
   async leave() {

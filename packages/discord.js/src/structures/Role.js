@@ -107,6 +107,9 @@ class Role extends Base {
      * @property {Snowflake} [botId] The id of the bot this role belongs to
      * @property {Snowflake|string} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
+     * @property {Snowflake} [subscriptionListingId] The id of this role's subscription SKU and listing
+     * @property {true} [availableForPurchase] Whether this role is available for purchase
+     * @property {true} [guildConnections] Whether this role is a guild's linked role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -118,6 +121,15 @@ class Role extends Base {
       }
       if ('premium_subscriber' in data.tags) {
         this.tags.premiumSubscriberRole = true;
+      }
+      if ('subscription_listing_id' in data.tags) {
+        this.tags.subscriptionListingId = data.tags.subscription_listing_id;
+      }
+      if ('available_for_purchase' in data.tags) {
+        this.tags.availableForPurchase = true;
+      }
+      if ('guild_connections' in data.tags) {
+        this.tags.guildConnections = true;
       }
     }
   }
@@ -176,8 +188,14 @@ class Role extends Base {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedRoles();
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    return this.guild.roles.cache.reduce(
+      (acc, role) =>
+        acc +
+        (this.rawPosition === role.rawPosition
+          ? BigInt(this.id) > BigInt(role.id)
+          : this.rawPosition > role.rawPosition),
+      0,
+    );
   }
 
   /**
@@ -185,6 +203,10 @@ class Role extends Base {
    * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if this role's position is lower (other role's is higher),
    * positive number if this one is higher (other's is lower), 0 if equal
+   * @example
+   * // Compare the position of a role to another
+   * const roleCompare = role.comparePositionTo(otherRole);
+   * if (roleCompare >= 1) console.log(`${role.name} is higher than ${otherRole.name}`);
    */
   comparePositionTo(role) {
     return this.guild.roles.comparePositions(this, role);

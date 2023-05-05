@@ -1,6 +1,7 @@
 'use strict';
 
 const process = require('node:process');
+const { calculateShardId } = require('@discordjs/util');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Events = require('../util/Events');
 const { makeError, makePlainError } = require('../util/Util');
@@ -32,26 +33,26 @@ class ShardClientUtil {
     switch (mode) {
       case 'process':
         process.on('message', this._handleMessage.bind(this));
-        client.on('ready', () => {
+        client.on(Events.ShardReady, () => {
           process.send({ _ready: true });
         });
-        client.on('disconnect', () => {
+        client.on(Events.ShardDisconnect, () => {
           process.send({ _disconnect: true });
         });
-        client.on('reconnecting', () => {
+        client.on(Events.ShardReconnecting, () => {
           process.send({ _reconnecting: true });
         });
         break;
       case 'worker':
         this.parentPort = require('node:worker_threads').parentPort;
         this.parentPort.on('message', this._handleMessage.bind(this));
-        client.on('ready', () => {
+        client.on(Events.ShardReady, () => {
           this.parentPort.postMessage({ _ready: true });
         });
-        client.on('disconnect', () => {
+        client.on(Events.ShardDisconnect, () => {
           this.parentPort.postMessage({ _disconnect: true });
         });
-        client.on('reconnecting', () => {
+        client.on(Events.ShardReconnecting, () => {
           this.parentPort.postMessage({ _reconnecting: true });
         });
         break;
@@ -251,7 +252,7 @@ class ShardClientUtil {
    * @returns {number}
    */
   static shardIdForGuildId(guildId, shardCount) {
-    const shard = Number(BigInt(guildId) >> 22n) % shardCount;
+    const shard = calculateShardId(guildId, shardCount);
     if (shard < 0) throw new DiscordjsError(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
     return shard;
   }

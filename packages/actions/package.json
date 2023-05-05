@@ -10,6 +10,7 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format"
 	},
+	"type": "module",
 	"main": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"directories": {
@@ -32,7 +33,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/actions"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -40,19 +42,23 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@actions/core": "^1.10.0",
-		"tslib": "^2.4.1"
+		"@actions/glob": "^0.4.0",
+		"@planetscale/database": "^1.7.0",
+		"tslib": "^2.5.0",
+		"undici": "^5.22.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.4",
-		"@vitest/coverage-c8": "^0.25.3",
+		"@types/node": "16.18.25",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.28.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.0",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.3",
-		"vitest": "^0.25.3"
+		"eslint": "^8.39.0",
+		"eslint-config-neon": "^0.1.46",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.9",
+		"typescript": "^5.0.4",
+		"vitest": "^0.31.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

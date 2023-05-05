@@ -1,8 +1,8 @@
 'use strict';
 
-const process = require('node:process');
-const { DefaultRestOptions } = require('@discordjs/rest');
+const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
+const { version } = require('../../package.json');
 
 /**
  * @typedef {Function} CacheFactory
@@ -58,18 +58,37 @@ const { toSnakeCase } = require('./Transformers');
  */
 
 /**
+ * A function to determine what strategy to use for sharding internally.
+ * ```js
+ * (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 })
+ * ```
+ * @typedef {Function} BuildStrategyFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {IShardingStrategy} The strategy to use for sharding
+ */
+
+/**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
+ * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
  */
 
 /**
  * Contains various utilities for client options.
  */
 class Options extends null {
+  /**
+   * The default user agent appendix.
+   * @type {string}
+   * @memberof Options
+   * @private
+   */
+  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
+
   /**
    * The default client options.
    * @returns {ClientOptions}
@@ -86,15 +105,12 @@ class Options extends null {
       sweepers: this.DefaultSweeperSettings,
       ws: {
         large_threshold: 50,
-        compress: false,
-        properties: {
-          os: process.platform,
-          browser: 'discord.js',
-          device: 'discord.js',
-        },
         version: 10,
       },
-      rest: DefaultRestOptions,
+      rest: {
+        ...DefaultRestOptions,
+        userAgentAppendix: this.userAgentAppendix,
+      },
       jsonTransformer: toSnakeCase,
     };
   }
@@ -151,7 +167,7 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.cacheWithLimits}.
+   * The default settings passed to {@link ClientOptions.makeCache}.
    * The caches that this changes are:
    * * `MessageManager` - Limit to 200 messages
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
@@ -165,11 +181,11 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.sweepers} (for v14).
+   * The default settings passed to {@link ClientOptions.sweepers}.
    * The sweepers that this changes are:
    * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
-   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
+   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } }`</info>
    * @type {SweeperOptions}
    */
   static get DefaultSweeperSettings() {
@@ -186,5 +202,15 @@ module.exports = Options;
 
 /**
  * @external RESTOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/RESTOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RESTOptions:Interface}
+ */
+
+/**
+ * @external WSWebSocketManager
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/WebSocketManager:Class}
+ */
+
+/**
+ * @external IShardingStrategy
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IShardingStrategy:Interface}
  */

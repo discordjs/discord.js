@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
+
 import { URL } from 'node:url';
 import {
 	ALLOWED_EXTENSIONS,
@@ -219,12 +220,11 @@ export class CDN {
 	 *
 	 * @param stickerId - The sticker id
 	 * @param extension - The extension of the sticker
+	 * @privateRemarks
+	 * Stickers cannot have a `.webp` extension, so we default to a `.png`
 	 */
-	public sticker(stickerId: string, extension?: StickerExtension): string {
-		return this.makeURL(`/stickers/${stickerId}`, {
-			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
-			extension: extension ?? 'png', // Stickers cannot have a `.webp` extension, so we default to a `.png`
-		});
+	public sticker(stickerId: string, extension: StickerExtension = 'png'): string {
+		return this.makeURL(`/stickers/${stickerId}`, { allowedExtensions: ALLOWED_STICKER_EXTENSIONS, extension });
 	}
 
 	/**

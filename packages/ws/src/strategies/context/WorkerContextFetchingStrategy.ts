@@ -2,17 +2,24 @@ import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { SessionInfo } from '../../ws/WebSocketManager.js';
 import {
-	WorkerRecievePayloadOp,
+	WorkerReceivePayloadOp,
 	WorkerSendPayloadOp,
-	type WorkerRecievePayload,
+	type WorkerReceivePayload,
 	type WorkerSendPayload,
 } from '../sharding/WorkerShardingStrategy.js';
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';
 
+// Because the global types are incomplete for whatever reason
+interface PolyFillAbortSignal {
+	readonly aborted: boolean;
+	addEventListener(type: 'abort', listener: () => void): void;
+	removeEventListener(type: 'abort', listener: () => void): void;
+}
+
 export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	private readonly sessionPromises = new Collection<number, (session: SessionInfo | null) => void>();
 
-	private readonly waitForIdentifyPromises = new Collection<number, () => void>();
+	private readonly waitForIdentifyPromises = new Collection<number, { reject(): void; resolve(): void }>();
 
 	public constructor(public readonly options: FetchingStrategyOptions) {
 		if (isMainThread) {
@@ -25,8 +32,14 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 				this.sessionPromises.delete(payload.nonce);
 			}
 
-			if (payload.op === WorkerSendPayloadOp.ShardCanIdentify) {
-				this.waitForIdentifyPromises.get(payload.nonce)?.();
+			if (payload.op === WorkerSendPayloadOp.ShardIdentifyResponse) {
+				const promise = this.waitForIdentifyPromises.get(payload.nonce);
+				if (payload.ok) {
+					promise?.resolve();
+				} else {
+					promise?.reject();
+				}
+
 				this.waitForIdentifyPromises.delete(payload.nonce);
 			}
 		});
@@ -34,11 +47,11 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		const nonce = Math.random();
-		const payload = {
-			op: WorkerRecievePayloadOp.RetrieveSessionInfo,
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.RetrieveSessionInfo,
 			shardId,
 			nonce,
-		} satisfies WorkerRecievePayload;
+		};
 		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
@@ -46,23 +59,44 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	}
 
 	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
-		const payload = {
-			op: WorkerRecievePayloadOp.UpdateSessionInfo,
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.UpdateSessionInfo,
 			shardId,
 			session: sessionInfo,
-		} satisfies WorkerRecievePayload;
+		};
 		parentPort!.postMessage(payload);
 	}
 
-	public async waitForIdentify(): Promise<void> {
+	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
 		const nonce = Math.random();
-		const payload = {
-			op: WorkerRecievePayloadOp.WaitForIdentify,
+
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.WaitForIdentify,
 			nonce,
-		} satisfies WorkerRecievePayload;
-		// eslint-disable-next-line no-promise-executor-return
-		const promise = new Promise<void>((resolve) => this.waitForIdentifyPromises.set(nonce, resolve));
+			shardId,
+		};
+		const promise = new Promise<void>((resolve, reject) =>
+			// eslint-disable-next-line no-promise-executor-return
+			this.waitForIdentifyPromises.set(nonce, { resolve, reject }),
+		);
+
 		parentPort!.postMessage(payload);
-		return promise;
+
+		const listener = () => {
+			const payload: WorkerReceivePayload = {
+				op: WorkerReceivePayloadOp.CancelIdentify,
+				nonce,
+			};
+
+			parentPort!.postMessage(payload);
+		};
+
+		(signal as unknown as PolyFillAbortSignal).addEventListener('abort', listener);
+
+		try {
+			await promise;
+		} finally {
+			(signal as unknown as PolyFillAbortSignal).removeEventListener('abort', listener);
+		}
 	}
 }

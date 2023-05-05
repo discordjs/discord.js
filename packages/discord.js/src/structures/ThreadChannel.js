@@ -14,7 +14,7 @@ const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends BaseChannel {
-  constructor(guild, data, client, fromInteraction = false) {
+  constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -40,11 +40,13 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data, fromInteraction);
+    if (data) this._patch(data);
   }
 
-  _patch(data, partial = false) {
+  _patch(data) {
     super._patch(data);
+
+    if ('message' in data) this.messages._add(data.message);
 
     if ('name' in data) {
       /**
@@ -147,7 +149,7 @@ class ThreadChannel extends BaseChannel {
       this.lastPinTimestamp ??= null;
     }
 
-    if ('rate_limit_per_user' in data || !partial) {
+    if ('rate_limit_per_user' in data) {
       /**
        * The rate limit per user (slowmode) for this thread in seconds
        * @type {?number}
@@ -324,10 +326,10 @@ class ThreadChannel extends BaseChannel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing the thread
-   * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
 
   /**

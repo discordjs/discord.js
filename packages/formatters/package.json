@@ -1,13 +1,14 @@
 {
 	"name": "@discordjs/formatters",
-	"version": "0.1.0",
+	"version": "0.3.1",
 	"description": "A set of functions to format strings for Discord.",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "api-extractor run --local",
+		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
 		"release": "cliff-jumper"
@@ -16,9 +17,9 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
+		"types": "./dist/index.d.ts",
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		"require": "./dist/index.js"
 	},
 	"directories": {
 		"lib": "src",
@@ -37,28 +38,30 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/formatters"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"discord-api-types": "^0.37.20"
+		"discord-api-types": "^0.37.41"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.8.8",
-		"@microsoft/api-extractor": "^7.32.0",
-		"@types/node": "^16.18.3",
-		"@vitest/coverage-c8": "^0.25.3",
+		"@favware/cliff-jumper": "^2.0.0",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "16.18.25",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.28.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.0",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.3",
-		"vitest": "^0.25.3"
+		"eslint": "^8.39.0",
+		"eslint-config-neon": "^0.1.46",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.9",
+		"typescript": "^5.0.4",
+		"vitest": "^0.31.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

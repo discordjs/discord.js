@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
  * Represents an auto moderation rule.
@@ -97,19 +98,14 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
+       * @property {?string} customMessage The custom message that is shown whenever a message is blocked
        */
 
       /**
        * The actions of this auto moderation rule.
        * @type {AutoModerationAction[]}
        */
-      this.actions = data.actions.map(action => ({
-        type: action.type,
-        metadata: {
-          durationSeconds: action.metadata.duration_seconds ?? null,
-          channelId: action.metadata.channel_id ?? null,
-        },
-      }));
+      this.actions = data.actions.map(action => _transformAPIAutoModerationAction(action));
     }
 
     if ('enabled' in data) {
@@ -212,7 +208,8 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the allow list for this auto moderation rule.
-   * @param {string[]} allowList The allow list of this auto moderation rule
+   * @param {string[]} allowList The substrings that will be exempt from triggering
+   * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
    * @param {string} [reason] The reason for changing the allow list of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -222,7 +219,7 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the mention total limit for this auto moderation rule.
-   * @param {number} mentionTotalLimit The mention total limit of this auto moderation rule
+   * @param {number} mentionTotalLimit The total number of unique role and user mentions allowed per message
    * @param {string} [reason] The reason for changing the mention total limit of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -263,7 +260,8 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt roles for this auto moderation rule.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] The exempt roles of this auto moderation rule
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles]
+   * The roles that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -274,7 +272,7 @@ class AutoModerationRule extends Base {
   /**
    * Sets the exempt channels for this auto moderation rule.
    * @param {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
-   * The exempt channels of this auto moderation rule
+   * The channels that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt channels of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

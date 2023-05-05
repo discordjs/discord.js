@@ -1,8 +1,11 @@
-'use client';
+import type { ApiVariable } from '@microsoft/api-extractor-model';
+import { Documentation } from '../documentation/Documentation';
+import { ObjectHeader } from '../documentation/ObjectHeader';
 
-import type { ApiVariableJSON } from '@discordjs/api-extractor-utils';
-import { DocContainer } from '../DocContainer';
-
-export function Variable({ data }: { data: ApiVariableJSON }) {
-	return <DocContainer excerpt={data.excerpt} kind={data.kind} name={data.name} summary={data.summary} />;
+export function Variable({ item }: { item: ApiVariable }) {
+	return (
+		<Documentation>
+			<ObjectHeader item={item} />
+		</Documentation>
+	);
 }

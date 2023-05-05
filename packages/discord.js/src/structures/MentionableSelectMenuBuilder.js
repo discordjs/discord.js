@@ -1,6 +1,7 @@
 'use strict';
 
-const { MentionableSelectMenuBuilder: BuildersMentionableSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const { MentionableSelectMenuBuilder: BuildersMentionableSelectMenu } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
 /**
@@ -13,15 +14,13 @@ class MentionableSelectMenuBuilder extends BuildersMentionableSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {MentionableSelectMenuBuilder|MentionableSelectMenuComponent|APIMentionableSelectComponent} other
+   * The other data
    * @returns {MentionableSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -29,5 +28,5 @@ module.exports = MentionableSelectMenuBuilder;
 
 /**
  * @external BuildersMentionableSelectMenu
- * @see {@link https://discord.js.org/#/docs/builders/main/class/MentionableSelectMenuBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/MentionableSelectMenuBuilder:Class}
  */

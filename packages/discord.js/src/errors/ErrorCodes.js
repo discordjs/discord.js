@@ -13,16 +13,23 @@
  * @property {'ApplicationCommandPermissionsTokenMissing'} ApplicationCommandPermissionsTokenMissing
 
  * @property {'WSCloseRequested'} WSCloseRequested
+ * <warn>This property is deprecated.</warn>
  * @property {'WSConnectionExists'} WSConnectionExists
+ * <warn>This property is deprecated.</warn>
  * @property {'WSNotOpen'} WSNotOpen
+ * <warn>This property is deprecated.</warn>
  * @property {'ManagerDestroyed'} ManagerDestroyed
 
  * @property {'BitFieldInvalid'} BitFieldInvalid
 
  * @property {'ShardingInvalid'} ShardingInvalid
+ * <warn>This property is deprecated.</warn>
  * @property {'ShardingRequired'} ShardingRequired
+ * <warn>This property is deprecated.</warn>
  * @property {'InvalidIntents'} InvalidIntents
+ * <warn>This property is deprecated.</warn>
  * @property {'DisallowedIntents'} DisallowedIntents
+ * <warn>This property is deprecated.</warn>
  * @property {'ShardingNoShards'} ShardingNoShards
  * @property {'ShardingInProcess'} ShardingInProcess
  * @property {'ShardingInvalidEvalBroadcast'} ShardingInvalidEvalBroadcast
@@ -106,7 +113,10 @@
 
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
+ * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
+ * <warn>This property is deprecated. Use `MissingManageGuildExpressionsPermission` instead.</warn>
+ *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
@@ -142,6 +152,7 @@
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
+ * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
 
  * @property {'NotImplemented'} NotImplemented
 
@@ -254,7 +265,9 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
+  'MissingManageGuildExpressionsPermission',
   'MissingManageEmojisAndStickersPermission',
+
   'NotGuildSticker',
 
   'ReactionResolveUser',
@@ -289,6 +302,7 @@ const keys = [
   'ModalSubmitInteractionFieldType',
 
   'InvalidMissingScopes',
+  'InvalidScopesWithPermissions',
 
   'NotImplemented',
 

@@ -1,24 +1,62 @@
-import { Scrollbars } from 'react-custom-scrollbars-2';
-import type { MDXPage } from './SidebarItems.jsx';
+'use client';
 
-export function Sidebar({ pages, opened }: { opened: boolean; pages?: MDXPage[] | undefined }) {
+import { allContents } from 'contentlayer/generated';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Section } from './Section';
+import { useNav } from '~/contexts/nav';
+
+const items = allContents.map((content) => ({
+	title: content.title,
+	category: content.category,
+	slug: content.slug,
+	href: content.url,
+}));
+
+function transformItemsByCategory(allContents: typeof items) {
+	return allContents.reduce<Record<string, typeof items>>((accumulator: any, content) => {
+		if (!accumulator[content.category]) {
+			accumulator[content.category] = [];
+		}
+
+		accumulator[content.category].push(content);
+		return accumulator;
+	}, {});
+}
+
+const itemsByCategory = transformItemsByCategory(items);
+
+export function Sidebar() {
+	const pathname = usePathname();
+	const { setOpened } = useNav();
+
 	return (
-		<nav
-			className={`h-[calc(100vh - 73px)] dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 w-full border-r bg-white ${
-				opened ? 'block' : 'hidden'
-			} lg:w-76 lg:max-w-76 lg:block`}
-		>
-			<Scrollbars
-				autoHide
-				hideTracksWhenNotNeeded
-				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
-				renderTrackVertical={(props) => (
-					<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
-				)}
-				universal
-			>
-				{pages ?? null}
-			</Scrollbars>
-		</nav>
+		<div className="flex flex-col gap-3 p-3">
+			{Object.keys(itemsByCategory).map((category, idx) => (
+				<Section
+					buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring"
+					key={`${category}-${idx}`}
+					title={category}
+				>
+					{itemsByCategory[category]?.map((member, index) => (
+						<Link
+							className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-none focus:rounded focus:border-0 focus:ring ${
+								decodeURIComponent(pathname ?? '') === member.href
+									? 'bg-blurple text-white'
+									: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
+							}`}
+							href={member.href}
+							key={`${member.title}-${index}`}
+							onClick={() => setOpened(false)}
+							title={member.title}
+						>
+							<div className="flex flex-row place-items-center gap-2 lg:text-sm">
+								<span className="truncate">{member.title}</span>
+							</div>
+						</Link>
+					))}
+				</Section>
+			))}
+		</div>
 	);
 }

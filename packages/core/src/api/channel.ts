@@ -1,4 +1,6 @@
-import { makeURLSearchParams, type RawFile, type REST } from '@discordjs/rest';
+/* eslint-disable jsdoc/check-param-names */
+
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTDeleteAPIChannelResult,
@@ -12,6 +14,8 @@ import {
 	type RESTGetAPIChannelResult,
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
+	type RESTGetAPIChannelWebhooksResult,
+	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelJSONBody,
 	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
@@ -32,15 +36,18 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-message}
 	 * @param channelId - The id of the channel to send the message in
-	 * @param data - The data to use when sending the message
+	 * @param body - The data to use when sending the message
+	 * @param options - The options to use when sending the message
 	 */
 	public async createMessage(
 		channelId: Snowflake,
 		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessages(channelId), {
 			files,
 			body,
+			signal,
 		}) as Promise<RESTPostAPIChannelMessageResult>;
 	}
 
@@ -50,16 +57,19 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#edit-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
-	 * @param data - The data to use when editing the message
+	 * @param body - The data to use when editing the message
+	 * @param options - The options to use when editing the message
 	 */
 	public async editMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: RESTPatchAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
 			files,
 			body,
+			signal,
 		}) as Promise<RESTPatchAPIChannelMessageResult>;
 	}
 
@@ -70,16 +80,19 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
 	 * @param emoji - The emoji to get the reactions for
-	 * @param options - The options to use when fetching the reactions
+	 * @param query - The query options to use when fetching the reactions
+	 * @param options - The options for fetching the message reactions
 	 */
 	public async getMessageReactions(
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		options: RESTGetAPIChannelMessageReactionUsersQuery = {},
+		query: RESTGetAPIChannelMessageReactionUsersQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(query),
+			signal,
 		}) as Promise<RESTGetAPIChannelMessageReactionUsersResult>;
 	}
 
@@ -90,9 +103,17 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
+	 * @param options - The options for deleting the reaction
 	 */
-	public async deleteOwnMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)));
+	public async deleteOwnMessageReaction(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		emoji: string,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), {
+			signal,
+		});
 	}
 
 	/**
@@ -103,9 +124,18 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for
 	 * @param userId - The id of the user to delete the reaction for
+	 * @param options - The options for deleting the reaction
 	 */
-	public async deleteUserMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string, userId: Snowflake) {
-		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, encodeURIComponent(emoji), userId));
+	public async deleteUserMessageReaction(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		emoji: string,
+		userId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, encodeURIComponent(emoji), userId), {
+			signal,
+		});
 	}
 
 	/**
@@ -114,9 +144,14 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-all-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
+	 * @param options - The options for deleting the reactions
 	 */
-	public async deleteAllMessageReactions(channelId: Snowflake, messageId: Snowflake) {
-		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId));
+	public async deleteAllMessageReactions(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId), { signal });
 	}
 
 	/**
@@ -126,9 +161,15 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
 	 * @param emoji - The emoji to delete the reactions for
+	 * @param options - The options for deleting the reactions
 	 */
-	public async deleteAllMessageReactionsForEmoji(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)));
+	public async deleteAllMessageReactionsForEmoji(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		emoji: string,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
 	}
 
 	/**
@@ -138,9 +179,15 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
 	 * @param emoji - The emoji to add the reaction with
+	 * @param options - The options for adding the reaction
 	 */
-	public async addMessageReaction(channelId: Snowflake, messageId: Snowflake, emoji: string) {
-		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)));
+	public async addMessageReaction(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		emoji: string,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
 	}
 
 	/**
@@ -148,9 +195,10 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel}
 	 * @param channelId - The id of the channel
+	 * @param options - The options for fetching the channel
 	 */
-	public async get(channelId: Snowflake) {
-		return this.rest.get(Routes.channel(channelId)) as Promise<RESTGetAPIChannelResult>;
+	public async get(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.channel(channelId), { signal }) as Promise<RESTGetAPIChannelResult>;
 	}
 
 	/**
@@ -158,10 +206,15 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#modify-channel}
 	 * @param channelId - The id of the channel to edit
-	 * @param data - The new channel data
+	 * @param body - The new channel data
+	 * @param options - The options for editing the channel
 	 */
-	public async edit(channelId: Snowflake, data: RESTPatchAPIChannelJSONBody) {
-		return this.rest.patch(Routes.channel(channelId), { body: data }) as Promise<RESTPatchAPIChannelResult>;
+	public async edit(
+		channelId: Snowflake,
+		body: RESTPatchAPIChannelJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.patch(Routes.channel(channelId), { body, signal }) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
@@ -169,9 +222,10 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#deleteclose-channel}
 	 * @param channelId - The id of the channel to delete
+	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake) {
-		return this.rest.delete(Routes.channel(channelId)) as Promise<RESTDeleteAPIChannelResult>;
+	public async delete(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.delete(Routes.channel(channelId), { signal }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
 	/**
@@ -179,11 +233,17 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-messages}
 	 * @param channelId - The id of the channel to fetch messages from
-	 * @param options - The options to use when fetching messages
+	 * @param query - The query options to use when fetching messages
+	 * @param options - The options for fetching the messages
 	 */
-	public async getMessages(channelId: Snowflake, options: RESTGetAPIChannelMessagesQuery = {}) {
+	public async getMessages(
+		channelId: Snowflake,
+		query: RESTGetAPIChannelMessagesQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
 		return this.rest.get(Routes.channelMessages(channelId), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(query),
+			signal,
 		}) as Promise<RESTGetAPIChannelMessagesResult>;
 	}
 
@@ -192,9 +252,10 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#trigger-typing-indicator}
 	 * @param channelId - The id of the channel to show the typing indicator in
+	 * @param options - The options for showing the typing indicator
 	 */
-	public async showTyping(channelId: Snowflake) {
-		await this.rest.post(Routes.channelTyping(channelId));
+	public async showTyping(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		await this.rest.post(Routes.channelTyping(channelId), { signal });
 	}
 
 	/**
@@ -202,9 +263,10 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-pinned-messages}
 	 * @param channelId - The id of the channel to fetch pinned messages from
+	 * @param options - The options for fetching the pinned messages
 	 */
-	public async getPins(channelId: Snowflake) {
-		return this.rest.get(Routes.channelPins(channelId)) as Promise<RESTGetAPIChannelPinsResult>;
+	public async getPins(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.channelPins(channelId), { signal }) as Promise<RESTGetAPIChannelPinsResult>;
 	}
 
 	/**
@@ -213,10 +275,14 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#pin-message}
 	 * @param channelId - The id of the channel to pin the message in
 	 * @param messageId - The id of the message to pin
-	 * @param reason - The reason for pinning the message
+	 * @param options - The options for pinning the message
 	 */
-	public async pinMessage(channelId: Snowflake, messageId: Snowflake, reason?: string) {
-		await this.rest.put(Routes.channelPin(channelId, messageId), { reason });
+	public async pinMessage(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelPin(channelId, messageId), { reason, signal });
 	}
 
 	/**
@@ -225,10 +291,14 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete
-	 * @param reason - The reason for deleting the message
+	 * @param options - The options for deleting the message
 	 */
-	public async deleteMessage(channelId: Snowflake, messageId: Snowflake, reason?: string) {
-		await this.rest.delete(Routes.channelMessage(channelId, messageId), { reason });
+	public async deleteMessage(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelMessage(channelId, messageId), { reason, signal });
 	}
 
 	/**
@@ -237,9 +307,14 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#bulk-delete-messages}
 	 * @param channelId - The id of the channel the messages are in
 	 * @param messageIds - The ids of the messages to delete
+	 * @param options - The options for deleting the messages
 	 */
-	public async bulkDeleteMessages(channelId: Snowflake, messageIds: Snowflake[], reason?: string): Promise<void> {
-		await this.rest.post(Routes.channelBulkDelete(channelId), { reason, body: { messages: messageIds } });
+	public async bulkDeleteMessages(
+		channelId: Snowflake,
+		messageIds: Snowflake[],
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	): Promise<void> {
+		await this.rest.post(Routes.channelBulkDelete(channelId), { reason, body: { messages: messageIds }, signal });
 	}
 
 	/**
@@ -248,9 +323,12 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to fetch
+	 * @param options - The options for fetching the message
 	 */
-	public async getMessage(channelId: Snowflake, messageId: Snowflake) {
-		return this.rest.get(Routes.channelMessage(channelId, messageId)) as Promise<RESTGetAPIChannelMessageResult>;
+	public async getMessage(channelId: Snowflake, messageId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.channelMessage(channelId, messageId), {
+			signal,
+		}) as Promise<RESTGetAPIChannelMessageResult>;
 	}
 
 	/**
@@ -259,11 +337,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#crosspost-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to crosspost
+	 * @param options - The options for crossposting the message
 	 */
-	public async crosspostMessage(channelId: Snowflake, messageId: Snowflake) {
-		return this.rest.post(
-			Routes.channelMessageCrosspost(channelId, messageId),
-		) as Promise<RESTPostAPIChannelMessageCrosspostResult>;
+	public async crosspostMessage(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.post(Routes.channelMessageCrosspost(channelId, messageId), {
+			signal,
+		}) as Promise<RESTPostAPIChannelMessageCrosspostResult>;
 	}
 
 	/**
@@ -272,10 +355,14 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#unpin-message}
 	 * @param channelId - The id of the channel to unpin the message in
 	 * @param messageId - The id of the message to unpin
-	 * @param reason - The reason for unpinning the message
+	 * @param options - The options for unpinning the message
 	 */
-	public async unpinMessage(channelId: Snowflake, messageId: Snowflake, reason?: string) {
-		await this.rest.delete(Routes.channelPin(channelId, messageId), { reason });
+	public async unpinMessage(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelPin(channelId, messageId), { reason, signal });
 	}
 
 	/**
@@ -284,10 +371,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#follow-announcement-channel}
 	 * @param channelId - The id of the announcement channel to follow
 	 * @param webhookChannelId - The id of the webhook channel to follow the announcements in
+	 * @param options - The options for following the announcement channel
 	 */
-	public async followAnnouncements(channelId: Snowflake, webhookChannelId: Snowflake) {
+	public async followAnnouncements(
+		channelId: Snowflake,
+		webhookChannelId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
 		return this.rest.post(Routes.channelFollowers(channelId), {
 			body: { webhook_channel_id: webhookChannelId },
+			signal,
 		}) as Promise<RESTPostAPIChannelFollowersResult>;
 	}
 
@@ -296,12 +389,18 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-channel-invite}
 	 * @param channelId - The id of the channel to create an invite for
-	 * @param data - The data to use when creating the invite
+	 * @param body - The data to use when creating the invite
+	 * @param options - The options for creating the invite
 	 */
-	public async createInvite(channelId: Snowflake, data: RESTPostAPIChannelInviteJSONBody, reason?: string) {
+	public async createInvite(
+		channelId: Snowflake,
+		body: RESTPostAPIChannelInviteJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			reason,
-			body: data,
+			body,
+			signal,
 		}) as Promise<RESTPostAPIChannelInviteResult>;
 	}
 
@@ -310,9 +409,10 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-invites}
 	 * @param channelId - The id of the channel to fetch invites from
+	 * @param options - The options for fetching the invites
 	 */
-	public async getInvites(channelId: Snowflake) {
-		return this.rest.get(Routes.channelInvites(channelId)) as Promise<RESTGetAPIChannelInvitesResult>;
+	public async getInvites(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.channelInvites(channelId), { signal }) as Promise<RESTGetAPIChannelInvitesResult>;
 	}
 
 	/**
@@ -322,15 +422,18 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#list-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch archived threads from
 	 * @param archivedStatus - The archived status of the threads to fetch
-	 * @param options - The options to use when fetching archived threads
+	 * @param query - The options to use when fetching archived threads
+	 * @param options - The options for fetching archived threads
 	 */
 	public async getArchivedThreads(
 		channelId: Snowflake,
 		archivedStatus: 'private' | 'public',
-		options: RESTGetAPIChannelThreadsArchivedQuery = {},
+		query: RESTGetAPIChannelThreadsArchivedQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(query),
+			signal,
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
 	}
 
@@ -339,14 +442,27 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#list-joined-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch joined archived threads from
-	 * @param options - The options to use when fetching joined archived threads
+	 * @param query - The options to use when fetching joined archived threads
+	 * @param options - The options for fetching joined archived threads
 	 */
 	public async getJoinedPrivateArchivedThreads(
 		channelId: Snowflake,
-		options: RESTGetAPIChannelThreadsArchivedQuery = {},
+		query: RESTGetAPIChannelThreadsArchivedQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
-			query: makeURLSearchParams(options),
+			query: makeURLSearchParams(query),
+			signal,
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
+	}
+
+	/**
+	 * Fetches the webhooks of a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
+	 * @param id - The id of the channel
+	 */
+	public async getWebhooks(id: Snowflake) {
+		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIChannelWebhooksResult>;
 	}
 }

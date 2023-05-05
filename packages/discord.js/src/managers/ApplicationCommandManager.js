@@ -1,8 +1,8 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
@@ -66,12 +66,10 @@ class ApplicationCommandManager extends CachedManager {
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
 
-  /* eslint-disable max-len */
   /**
    * Data that resolves to the data of an ApplicationCommand
-   * @typedef {ApplicationCommandData|APIApplicationCommand|JSONEncodable<APIApplicationCommand>} ApplicationCommandDataResolvable
+   * @typedef {ApplicationCommandData|APIApplicationCommand} ApplicationCommandDataResolvable
    */
-  /* eslint-enable max-len */
 
   /**
    * Options used to fetch data from Discord

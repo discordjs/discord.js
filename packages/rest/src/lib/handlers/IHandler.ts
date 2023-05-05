@@ -1,5 +1,5 @@
 import type { Dispatcher } from 'undici';
-import type { RequestOptions } from '../REST';
+import type { RequestOptions } from '../REST.js';
 import type { HandlerRequestData, RouteData } from '../RequestManager.js';
 
 export interface IHandler {
@@ -25,4 +25,10 @@ export interface IHandler {
 		options: RequestOptions,
 		requestData: HandlerRequestData,
 	): Promise<Dispatcher.ResponseData>;
+}
+
+export interface PolyFillAbortSignal {
+	readonly aborted: boolean;
+	addEventListener(type: 'abort', listener: () => void): void;
+	removeEventListener(type: 'abort', listener: () => void): void;
 }

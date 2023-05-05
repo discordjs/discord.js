@@ -10,14 +10,16 @@
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ui/*'",
 		"release": "cliff-jumper",
-		"storybook": "ladle serve"
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build",
+		"chromatic": "chromatic"
 	},
 	"type": "module",
-	"module": "./dist/ui.js",
+	"main": "./dist/ui.js",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/ui.js",
-		"types": "./dist/index.d.ts"
+		"types": "./dist/index.d.ts",
+		"import": "./dist/ui.js"
 	},
 	"sideEffects": false,
 	"directories": {
@@ -36,37 +38,52 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/ui"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"ariakit": "^2.0.0-next.41",
+		"@react-icons/all-files": "^4.1.0",
+		"ariakit": "^2.0.0-next.44",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.9.0",
-		"@ladle/react": "^2.4.5",
+		"@favware/cliff-jumper": "^2.0.0",
 		"@react-icons/all-files": "^4.1.0",
-		"@types/node": "16.18.4",
-		"@types/react": "^18.0.25",
-		"@types/react-dom": "^18.0.9",
-		"@unocss/reset": "^0.47.5",
-		"@vitejs/plugin-react": "^2.2.0",
-		"@vitest/coverage-c8": "^0.25.3",
+		"@storybook/addon-essentials": "^7.0.8",
+		"@storybook/addon-interactions": "^7.0.8",
+		"@storybook/addon-links": "^7.0.8",
+		"@storybook/addon-styling": "^1.0.6",
+		"@storybook/blocks": "^7.0.8",
+		"@storybook/react": "^7.0.8",
+		"@storybook/react-vite": "^7.0.8",
+		"@storybook/testing-library": "^0.1.0",
+		"@types/node": "16.18.25",
+		"@types/react": "^18.2.5",
+		"@types/react-dom": "^18.2.3",
+		"@unocss/eslint-config": "^0.51.8",
+		"@unocss/reset": "^0.51.8",
+		"@vitejs/plugin-react": "^4.0.0",
+		"@vitest/coverage-c8": "^0.31.0",
+		"chromatic": "^6.17.4",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.28.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.0",
-		"typescript": "^4.9.3",
-		"unocss": "^0.47.5",
-		"vite": "^3.2.4",
-		"vite-plugin-dts": "^1.7.1",
-		"vitest": "^0.25.3"
+		"eslint": "^8.39.0",
+		"eslint-config-neon": "^0.1.46",
+		"eslint-formatter-pretty": "^5.0.0",
+		"eslint-plugin-storybook": "^0.6.12",
+		"prettier": "^2.8.8",
+		"prop-types": "^15.8.1",
+		"storybook": "^7.0.8",
+		"turbo": "^1.9.4-canary.9",
+		"typescript": "^5.0.4",
+		"unocss": "^0.51.8",
+		"vite": "^4.3.5",
+		"vite-plugin-dts": "^2.3.0",
+		"vitest": "^0.31.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

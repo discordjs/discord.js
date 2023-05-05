@@ -158,6 +158,11 @@ import {
   AutoModerationRuleManager,
   PrivateThreadChannel,
   PublicThreadChannel,
+  GuildMemberManager,
+  GuildMemberFlagsBitField,
+  ThreadManager,
+  FetchedThreads,
+  FetchedThreadsMore,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1155,7 +1160,7 @@ client.on('guildCreate', async g => {
         new ButtonBuilder(),
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.StringSelect, customId: 'foo' },
+        { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
         new StringSelectMenuBuilder(),
         // @ts-expect-error
         { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
@@ -1169,7 +1174,7 @@ client.on('guildCreate', async g => {
       components: [
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.StringSelect, customId: 'foo' },
+        { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
       ],
     });
 
@@ -1477,6 +1482,18 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<null>(message.mentions.members);
 }
 
+declare const threadManager: ThreadManager;
+{
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567'));
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567', { cache: true, force: false }));
+  expectType<Promise<FetchedThreads>>(threadManager.fetch());
+  expectType<Promise<FetchedThreads>>(threadManager.fetch({}));
+  expectType<Promise<FetchedThreadsMore>>(threadManager.fetch({ archived: { limit: 4 } }));
+
+  // @ts-expect-error The force option has no effect here.
+  threadManager.fetch({ archived: {} }, { force: true });
+}
+
 declare const guildForumThreadManager: GuildForumThreadManager;
 expectType<ForumChannel>(guildForumThreadManager.channel);
 
@@ -1484,6 +1501,28 @@ declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
 >;
 expectType<TextChannel | NewsChannel>(guildTextThreadManager.channel);
+
+declare const guildMemberManager: GuildMemberManager;
+{
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch('12345678901234567'));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567' }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch());
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ user: ['12345678901234567'] }));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ withPresences: false }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', withPresences: true }));
+
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(
+    guildMemberManager.fetch({ query: 'test', user: ['12345678901234567'], nonce: 'test' }),
+  );
+
+  // @ts-expect-error The cache & force options have no effect here.
+  guildMemberManager.fetch({ cache: true, force: false });
+  // @ts-expect-error The force option has no effect here.
+  guildMemberManager.fetch({ user: ['12345678901234567'], cache: true, force: false });
+}
 
 declare const messageManager: MessageManager;
 {
@@ -1525,17 +1564,29 @@ declare const guildBanManager: GuildBanManager;
   guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
 }
 
+declare const threadMemberWithGuildMember: ThreadMember<true>;
 declare const threadMemberManager: ThreadMemberManager;
 {
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false }));
   expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', force: true }));
-  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false, force: true }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: threadMemberWithGuildMember }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: '12345678901234567', withMember: true }));
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
   expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
-  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({ cache: true }));
+
+  expectType<Promise<Collection<Snowflake, ThreadMember<true>>>>(
+    threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
+  );
+
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
+    threadMemberManager.fetch({ cache: true, withMember: false }),
+  );
+
   // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
   threadMemberManager.fetch({ cache: true, force: false });
+  // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
+  threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
 }
 
 declare const typing: Typing;
@@ -1943,7 +1994,12 @@ declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
 expectType<TextBasedChannel>(TextBasedChannel);
 expectType<
-  ChannelType.GuildText | ChannelType.DM | ChannelType.GuildAnnouncement | ChannelType.GuildVoice | ThreadChannelType
+  | ChannelType.GuildText
+  | ChannelType.DM
+  | ChannelType.GuildAnnouncement
+  | ChannelType.GuildVoice
+  | ChannelType.GuildStageVoice
+  | ThreadChannelType
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
@@ -2138,3 +2194,10 @@ if (anySelectMenu.isStringSelectMenu()) {
 } else if (anySelectMenu.isMentionableSelectMenu()) {
   expectType<MentionableSelectMenuInteraction>(anySelectMenu);
 }
+
+client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
+  expectType<GuildAuditLogsEntry>(auditLogEntry);
+  expectType<Guild>(guild);
+});
+
+expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);

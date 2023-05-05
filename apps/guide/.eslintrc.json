@@ -1,11 +1,12 @@
 {
-	"extends": ["../../.eslintrc.json", "neon/react", "neon/astro", "neon/prettier"],
+	"extends": ["../../.eslintrc.json", "neon/react", "neon/next", "neon/edge", "@unocss", "neon/prettier"],
 	"settings": {
 		"react": {
 			"version": "detect"
 		}
 	},
 	"rules": {
-		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".astro"] }]
+		"react/react-in-jsx-scope": 0,
+		"react/jsx-filename-extension": [1, { "extensions": [".tsx"] }]
 	}
 }

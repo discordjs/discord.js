@@ -307,7 +307,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: token === undefined });
     return new Webhook(this, { token, ...data });
   }
 
@@ -411,7 +411,7 @@ class Client extends BaseClient {
     if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
 
     const { scopes } = options;
-    if (typeof scopes === 'undefined') {
+    if (scopes === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (!Array.isArray(scopes)) {
@@ -419,6 +419,9 @@ class Client extends BaseClient {
     }
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
+    }
+    if (!scopes.includes(OAuth2Scopes.Bot) && options.permissions) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
@@ -485,7 +488,7 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
+    if (options.intents === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
       options.intents = new IntentsBitField(options.intents).freeze();
@@ -512,10 +515,40 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
+    if (
+      (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
+      options.allowedMentions === null
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
+    }
+    if (typeof options.presence !== 'object' || options.presence === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    }
+    if (typeof options.ws !== 'object' || options.ws === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (typeof options.rest !== 'object' || options.rest === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
+    }
+    if (typeof options.jsonTransformer !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
+    }
   }
 }
 
 module.exports = Client;
+
+/**
+ * @class SnowflakeUtil
+ * @classdesc This class is an alias for {@link https://www.npmjs.com/package/@sapphire/snowflake @sapphire/snowflake}'s
+ * `DiscordSnowflake` class.
+ *
+ * Check their documentation
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_snowflake.Snowflake here}
+ * ({@link https://www.sapphirejs.dev/docs/Guide/utilities/snowflake guide})
+ * to see what you can do.
+ * @hideconstructor
+ */
 
 /**
  * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
@@ -544,15 +577,15 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
+ * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
  */
 
 /**
  * @external ImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/ImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
  */
 
 /**
  * @external BaseImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/BaseImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

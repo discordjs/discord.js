@@ -46,7 +46,7 @@ class BaseInteraction extends Base {
      * The id of the channel this interaction was sent in
      * @type {?Snowflake}
      */
-    this.channelId = data.channel_id ?? null;
+    this.channelId = data.channel?.id ?? null;
 
     /**
      * The id of the guild this interaction was sent in
@@ -270,11 +270,9 @@ class BaseInteraction extends Base {
     return this.type === InteractionType.MessageComponent && this.componentType === ComponentType.Button;
   }
 
-  // TODO: Get rid of this in the next major
   /**
    * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
    * @returns {boolean}
-   *
    * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
    */
   isSelectMenu() {
@@ -322,7 +320,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link MenionableSelectMenuInteraction}
+   * Indicates whether this interaction is a {@link MentionableSelectMenuInteraction}
    * @returns {boolean}
    */
   isMentionableSelectMenu() {

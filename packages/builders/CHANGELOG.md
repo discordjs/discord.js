@@ -2,6 +2,70 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.6.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.2...@discordjs/builders@1.6.3) - (2023-05-01)
+
+## Refactor
+
+- Remove `@discordjs/util` re-export (#9488) ([54ceedf](https://github.com/discordjs/discord.js/commit/54ceedf6c535d4641643d4106b6286cbef09de4a))
+
+# [@discordjs/builders@1.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.1...@discordjs/builders@1.6.2) - (2023-05-01)
+
+## Bug Fixes
+
+- **BaseSelectMenuBuilder:** Modify class to be `abstract` (#9358) ([ca4de2d](https://github.com/discordjs/discord.js/commit/ca4de2d9c6bc204e85d1b7eae7eabd23dbeb4475))
+- Correct `@link` tags that involve parents (#9351) ([fbbce3e](https://github.com/discordjs/discord.js/commit/fbbce3eb4ba20bc0c4806ca2259d1f86001594be))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **builders:** Add some basic documentation (#9359) ([8073561](https://github.com/discordjs/discord.js/commit/8073561824f911d1a18d0b4f1de39f452bc69fa9))
+- Use `@link` in `@see` (#9348) ([d66d113](https://github.com/discordjs/discord.js/commit/d66d1133331b81563588db4500c63a18c3c3dfae))
+
+# [@discordjs/builders@1.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.1...@discordjs/builders@1.6.2) - (2023-05-01)
+
+## Bug Fixes
+
+- **BaseSelectMenuBuilder:** Modify class to be `abstract` (#9358) ([ca4de2d](https://github.com/discordjs/discord.js/commit/ca4de2d9c6bc204e85d1b7eae7eabd23dbeb4475))
+- Correct `@link` tags that involve parents (#9351) ([fbbce3e](https://github.com/discordjs/discord.js/commit/fbbce3eb4ba20bc0c4806ca2259d1f86001594be))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **builders:** Add some basic documentation (#9359) ([8073561](https://github.com/discordjs/discord.js/commit/8073561824f911d1a18d0b4f1de39f452bc69fa9))
+- Use `@link` in `@see` (#9348) ([d66d113](https://github.com/discordjs/discord.js/commit/d66d1133331b81563588db4500c63a18c3c3dfae))
+
+# [@discordjs/builders@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.5.0...@discordjs/builders@1.6.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+# [@discordjs/builders@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.4.0...@discordjs/builders@1.5.0) - (2023-03-12)
+
+## Documentation
+
+- **EmbedBuilder#spliceFields:** Fix a typo (#9159) ([4367ab9](https://github.com/discordjs/discord.js/commit/4367ab930227048868db3ed8437f6c4507ff32e1))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+- **StringSelectMenu:** Add `spliceOptions()` (#8937) ([a6941d5](https://github.com/discordjs/discord.js/commit/a6941d536ce24ed2b5446a154cbc886b2b97c63a))
+- Add support for nsfw commands (#7976) ([7a51344](https://github.com/discordjs/discord.js/commit/7a5134459c5f06864bf74631d83b96d9c21b72d8))
+- Add `@discordjs/formatters` (#8889) ([3fca638](https://github.com/discordjs/discord.js/commit/3fca638a8470dcea2f79ddb9f18526dbc0017c88))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
 # [@discordjs/builders@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.3.0...@discordjs/builders@1.4.0) - (2022-11-28)
 
 ## Bug Fixes

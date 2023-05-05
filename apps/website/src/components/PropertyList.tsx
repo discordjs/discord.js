@@ -1,28 +1,36 @@
-'use client';
-
-import type { ApiPropertyItemJSON } from '@discordjs/api-extractor-utils';
+import type {
+	ApiDeclaredItem,
+	ApiItem,
+	ApiItemContainerMixin,
+	ApiProperty,
+	ApiPropertySignature,
+} from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { CodeListing } from './CodeListing';
+import { Property } from './Property';
+import { resolveMembers } from '~/util/members';
 
-export function PropertyList({ data }: { data: ApiPropertyItemJSON[] }) {
+export function isPropertyLike(item: ApiItem): item is ApiProperty | ApiPropertySignature {
+	return item.kind === ApiItemKind.Property || item.kind === ApiItemKind.PropertySignature;
+}
+
+export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
+	const members = resolveMembers(item, isPropertyLike);
+
 	const propertyItems = useMemo(
 		() =>
-			data.map((prop) => (
-				<Fragment key={prop.name}>
-					<CodeListing
-						comment={prop.comment}
-						deprecation={prop.deprecated}
-						inheritanceData={prop.inheritanceData}
-						name={prop.name}
-						optional={prop.optional}
-						readonly={prop.readonly}
-						summary={prop.summary}
-						typeTokens={prop.propertyTypeTokens}
-					/>
-					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
-				</Fragment>
-			)),
-		[data],
+			members.map((prop, idx) => {
+				return (
+					<Fragment key={`${prop.item.displayName}-${idx}`}>
+						<Property
+							inheritedFrom={prop.inherited as ApiDeclaredItem & ApiItemContainerMixin}
+							item={prop.item as ApiProperty}
+						/>
+						<div className="border-t-2 border-light-900 dark:border-dark-100" />
+					</Fragment>
+				);
+			}),
+		[members],
 	);
 
 	return <div className="flex flex-col gap-4">{propertyItems}</div>;

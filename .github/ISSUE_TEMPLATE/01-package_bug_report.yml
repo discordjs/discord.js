@@ -1,0 +1,136 @@
+name: Bug report
+description: Report an issue with discord.js or another package.
+labels: [bug, need repro]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for filing an issue! If you are here to ask a question, use Discord instead: https://discord.gg/djs
+
+        This issue form is for discord.js, including other packages.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Which package is this bug report for?
+      options:
+        - discord.js
+        - brokers
+        - builders
+        - collection
+        - core
+        - formatters
+        - next
+        - proxy
+        - proxy-container
+        - rest
+        - ui
+        - util
+        - voice
+        - ws
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue description
+      description: Describe the issue in as much detail as possible.
+      placeholder: |
+        Steps to reproduce with below code sample:
+        1. Do thing
+        2. Do thing in Discord client
+        3. Observe behavior
+        4. See error logs below
+    validations:
+      required: true
+  - type: textarea
+    id: code_sample
+    attributes:
+      label: Code sample
+      description: |
+        Your code sample should be:
+        1. Minimal - Use as little code as possible that still produces the same problem (and is understandable)
+        2. Complete - Provide all parts someone else needs to reproduce your problem
+        3. Reproducible - Test the code you're about to provide to make sure it reproduces the problem
+
+        This will be automatically formatted into code, so no need for backticks.
+      render: typescript
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: List necessary versions here. This includes your package version, runtime version, operating system etc.
+      placeholder: |
+        - discord.js 14.9.0 (`npm ls discord.js` or another package)
+        - Node.js 16.9.0 (`node --version`)
+        - TypeScript 5.0.4 (`npm ls typescript` if you use it)
+        - macOS Ventura 13.3.1
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Issue priority
+      description: Please be realistic. If you need to elaborate on your reasoning, please use the issue description field above.
+      options:
+        - Low (slightly annoying)
+        - Medium (should be fixed soon)
+        - High (immediate attention needed)
+    validations:
+      required: true
+  - type: dropdown
+    id: partials
+    attributes:
+      label: Which partials do you have configured?
+      description: Check your `Client` constructor for the `partials` key.
+      options:
+        - Not applicable
+        - No Partials
+        - User
+        - Channel
+        - GuildMember
+        - Message
+        - Reaction
+        - GuildScheduledEvent
+        - ThreadMember
+      multiple: true
+    validations:
+      required: true
+  - type: dropdown
+    id: intents
+    attributes:
+      label: Which gateway intents are you subscribing to?
+      description: Check your `Client` constructor for the `intents` key.
+      options:
+        - Not applicable
+        - No Intents
+        - Guilds
+        - GuildMembers
+        - GuildModeration
+        - GuildEmojisAndStickers
+        - GuildIntegrations
+        - GuildWebhooks
+        - GuildInvites
+        - GuildVoiceStates
+        - GuildPresences
+        - GuildMessages
+        - GuildMessageReactions
+        - GuildMessageTyping
+        - DirectMessages
+        - DirectMessageReactions
+        - DirectMessageTyping
+        - MessageContent
+        - GuildScheduledEvents
+        - AutoModerationConfiguration
+        - AutoModerationExecution
+      multiple: true
+    validations:
+      required: true
+  - type: input
+    id: dev_release
+    attributes:
+      label: I have tested this issue on a development release
+      placeholder: d23280c (commit hash)
+      description: |
+        The issue might already be fixed in a development release or main. This is not required, but helps us greatly.
+        [discord.js only] To install the latest development release run `npm i discord.js@dev` in your project directory.
+        Run `npm list discord.js` and use the last part of the printed information (`d23280c` for `discord.js@xx.x.x-dev.1530234593.d23280c`)
