@@ -119,12 +119,12 @@ export class CDN {
 	}
 
 	/**
-	 * Generates the default avatar URL for a discriminator.
+	 * Generates the default avatar URL for a user id.
 	 *
-	 * @param discriminator - The discriminator modulo 5
+	 * @param userId - The user id modulo 5
 	 */
-	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
+	public defaultAvatar(userId: number): string {
+		return this.makeURL(`/embed/avatars/${userId}`, { extension: 'png' });
 	}
 
 	/**
