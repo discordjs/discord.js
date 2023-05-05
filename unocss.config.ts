@@ -47,6 +47,9 @@ export default defineConfig({
 				'a > img': {
 					display: 'inline-block',
 				},
+				'a > img[height="44"]': {
+					height: '44px',
+				},
 				h1: {
 					display: 'flex',
 					'place-items': 'center',
