@@ -114,10 +114,10 @@ export async function onRateLimit(manager: RequestManager, rateLimitData: RateLi
 }
 
 /**
- * Calculates the default avatar id for a given user id.
+ * Calculates the default avatar type for a given user id.
  *
- * @param userId - The user id to calculate the default avatar id for
+ * @param userId - The user id to calculate the default avatar type for
  */
-export function calculateUserDefaultAvatarId(userId: string) {
+export function calculateUserDefaultAvatarType(userId: string) {
 	return Number(BigInt(userId) >> 22n) % 5;
 }

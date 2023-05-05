@@ -119,12 +119,15 @@ export class CDN {
 	}
 
 	/**
-	 * Generates the default avatar URL for an user id.
+	 * Generates a default avatar URL
 	 *
-	 * @param userId - The user id modulo 5
+	 * @param type - The default avatar type
+	 * @remarks
+	 * To calculate the type for a user do `(userId >> 22) % 5`,
+	 * or `discriminator % 5` if they're using the legacy username system.
 	 */
-	public defaultAvatar(userId: number): string {
-		return this.makeURL(`/embed/avatars/${userId}`, { extension: 'png' });
+	public defaultAvatar(type: number): string {
+		return this.makeURL(`/embed/avatars/${type}`, { extension: 'png' });
 	}
 
 	/**
