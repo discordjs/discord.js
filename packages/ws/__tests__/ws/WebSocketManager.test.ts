@@ -229,7 +229,6 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
-	// eslint-disable-next-line id-length
 	const send: GatewaySendPayload = {
 		op: GatewayOpcodes.RequestGuildMembers,
 		// eslint-disable-next-line id-length
