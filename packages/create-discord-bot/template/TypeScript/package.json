@@ -3,9 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"main": "index.js",
 	"scripts": {
-		"start": "node --require dotenv/config .",
+		"start": "node --require dotenv/config dist/index.js",
 		"test": "tsc"
 	},
 	"dependencies": {
