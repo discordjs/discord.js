@@ -5312,14 +5312,17 @@ export interface GuildAuditLogsEntryExtraField {
   AUTO_MODERATION_BLOCK_MESSAGE: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AutoModerationRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
   AUTO_MODERATION_FLAG_TO_CHANNEL: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AutoModerationRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
   AUTO_MODERATION_USER_COMMUNICATIONDISABLED: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AutoModerationRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
 }
 
