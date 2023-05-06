@@ -228,8 +228,13 @@ class Role extends Base {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedRoles();
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    let count = 0;
+    for (const role of this.guild.roles.cache.values()) {
+      if (this.rawPosition > role.rawPosition) count++;
+      else if (this.rawPosition === role.rawPosition && BigInt(this.id) > BigInt(role.id)) count++;
+    }
+
+    return count;
   }
 
   /**
