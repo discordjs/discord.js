@@ -23,7 +23,7 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 18.12.0 or newer is required.**
 
 ```sh
 npm install @discordjs/rest
@@ -73,6 +73,25 @@ try {
 		body: {
 			name: 'Thread',
 			auto_archive_duration: 60,
+		},
+	});
+} catch (error) {
+	console.error(error);
+}
+```
+
+Send a basic message in an edge environment:
+
+```js
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v10';
+
+const rest = new REST({ version: '10', makeRequest: fetch }).setToken(TOKEN);
+
+try {
+	await rest.post(Routes.channelMessages(CHANNEL_ID), {
+		body: {
+			content: 'A message via REST from the edge!',
 		},
 	});
 } catch (error) {
