@@ -378,6 +378,10 @@ export class AutoModerationRule extends Base {
   public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
+  public setMentionRaidProtectionEnabled(
+    mentionRaidProtectionEnabled: boolean,
+    reason?: string,
+  ): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
@@ -1324,6 +1328,8 @@ export class Guild extends AnonymousGuild {
   public roles: RoleManager;
   public get rulesChannel(): TextChannel | null;
   public rulesChannelId: Snowflake | null;
+  public get safetyAlertsChannel(): TextChannel | null;
+  public safetyAlertsChannelId: Snowflake | null;
   public scheduledEvents: GuildScheduledEventManager;
   public get shard(): WebSocketShard;
   public shardId: number;
@@ -1380,6 +1386,7 @@ export class Guild extends AnonymousGuild {
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setSafetyAlertsChannel(safetyAlertsChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
@@ -4570,6 +4577,7 @@ export interface AutoModerationTriggerMetadata {
   presets: AutoModerationRuleKeywordPresetType[];
   allowList: string[];
   mentionTotalLimit: number | null;
+  mentionRaidProtectionEnabled: boolean;
 }
 
 export type AwaitMessageComponentOptions<T extends CollectedMessageInteraction> = Omit<
@@ -5484,6 +5492,7 @@ export interface GuildEditOptions {
   systemChannelFlags?: SystemChannelFlagsResolvable;
   rulesChannel?: TextChannelResolvable | null;
   publicUpdatesChannel?: TextChannelResolvable | null;
+  safetyAlertsChannel?: TextChannelResolvable | null;
   preferredLocale?: Locale | null;
   features?: `${GuildFeature}`[];
   description?: string | null;
@@ -5857,7 +5866,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
-  options?: SelectMenuComponentOptionData[];
+  options: SelectMenuComponentOptionData[];
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
