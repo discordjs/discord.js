@@ -37,6 +37,9 @@ packages:proxy:
 packages:proxy-container:
   - packages/proxy-container/*
   - packages/proxy-container/**/*
+packages:redis-gateway:
+  - packages/redis-gateway/*
+  - packages/redis-gateway/**/*
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*

@@ -2313,6 +2313,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@discordjs/redis-gateway@workspace:packages/redis-gateway":
+  version: 0.0.0-use.local
+  resolution: "@discordjs/redis-gateway@workspace:packages/redis-gateway"
+  dependencies:
+    "@types/node": 16.18.25
+    cross-env: ^7.0.3
+    eslint: ^8.39.0
+    eslint-config-neon: ^0.1.46
+    eslint-formatter-pretty: ^5.0.0
+    prettier: ^2.8.8
+    tslib: ^2.5.0
+    tsup: ^6.7.0
+    turbo: ^1.9.4-canary.9
+    typescript: ^5.0.4
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/rest@^1.7.1, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
@@ -6647,6 +6664,13 @@ __metadata:
   version: 14.18.33
   resolution: "@types/node@npm:14.18.33"
   checksum: 4e23f95186d8ae1d38c999bc6b46fe94e790da88744b0a3bfeedcbd0d9ffe2cb0ff39e85f43014f6739e5270292c1a1f6f97a1fc606fd573a0c17fda9a1d42de
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:16.18.25":
+  version: 16.18.25
+  resolution: "@types/node@npm:16.18.25"
+  checksum: 181760ad6b54fcc498dfeb249e98bbf0be51d7c35e92e760e1a82004fa42b86e8c33a8f8dd7743b5ef872bda0753d9e6a5b8e3f0aed63e9eb79b4e65760c1fbe
   languageName: node
   linkType: hard
 
@@ -12246,7 +12270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-neon@npm:^0.1.47":
+"eslint-config-neon@npm:^0.1.46, eslint-config-neon@npm:^0.1.47":
   version: 0.1.47
   resolution: "eslint-config-neon@npm:0.1.47"
   dependencies:
@@ -12838,7 +12862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.40.0":
+"eslint@npm:^8.39.0, eslint@npm:^8.40.0":
   version: 8.40.0
   resolution: "eslint@npm:8.40.0"
   dependencies:
@@ -24609,7 +24633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:^1.9.4-canary.10":
+"turbo@npm:^1.9.4-canary.10, turbo@npm:^1.9.4-canary.9":
   version: 1.9.4-canary.10
   resolution: "turbo@npm:1.9.4-canary.10"
   dependencies:

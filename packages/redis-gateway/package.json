@@ -1,0 +1,66 @@
+{
+	"name": "@discordjs/redis-gateway",
+	"version": "0.1.0",
+	"description": "Discord gateway running behind Redis as a message broker",
+	"scripts": {
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"fmt": "yarn format",
+		"prepack": "yarn build && yarn lint"
+	},
+	"type": "module",
+	"main": "./dist/index.js",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"DD <didinele.dev@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"ws",
+		"brokers",
+		"gateway",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/redis-gateway"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"tslib": "^2.5.0"
+	},
+	"devDependencies": {
+		"@types/node": "16.18.25",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.39.0",
+		"eslint-config-neon": "^0.1.46",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.9",
+		"typescript": "^5.0.4"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

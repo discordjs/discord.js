@@ -74,6 +74,8 @@
   color: fbca04
 - name: packages:proxy-container
   color: fbca04
+- name: packages:redis-gateway
+  color: fbca04
 - name: packages:rest
   color: fbca04
 - name: packages:ui

@@ -34,6 +34,9 @@ packages:proxy:
 packages:proxy-container:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nproxy-container\\n"
+packages:redis-gateway:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nredis-gateway\\n"
 packages:rest:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nrest\\n"
