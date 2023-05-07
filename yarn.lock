@@ -24441,7 +24441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^6.7.0":
+"tsup@npm:6.7.0":
   version: 6.7.0
   resolution: "tsup@npm:6.7.0"
   dependencies:
@@ -24474,6 +24474,42 @@ __metadata:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
   checksum: 91ff179f0b9828a6880b6decaa8603fd7af0311f46a38d3a93647a2497298750d676810aeff533a335443a01a7b340dbba7c76523bcd7a87d7b05b7677742901
+  languageName: node
+  linkType: hard
+
+"tsup@patch:tsup@npm%3A6.7.0#./.yarn/patches/tsup-npm-6.7.0-5093540b93.patch::locator=%40discordjs%2Fdiscord.js%40workspace%3A.":
+  version: 6.7.0
+  resolution: "tsup@patch:tsup@npm%3A6.7.0#./.yarn/patches/tsup-npm-6.7.0-5093540b93.patch::version=6.7.0&hash=73ff1a&locator=%40discordjs%2Fdiscord.js%40workspace%3A."
+  dependencies:
+    bundle-require: ^4.0.0
+    cac: ^6.7.12
+    chokidar: ^3.5.1
+    debug: ^4.3.1
+    esbuild: ^0.17.6
+    execa: ^5.0.0
+    globby: ^11.0.3
+    joycon: ^3.0.1
+    postcss-load-config: ^3.0.1
+    resolve-from: ^5.0.0
+    rollup: ^3.2.5
+    source-map: 0.8.0-beta.0
+    sucrase: ^3.20.3
+    tree-kill: ^1.2.2
+  peerDependencies:
+    "@swc/core": ^1
+    postcss: ^8.4.12
+    typescript: ">=4.1.0"
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    postcss:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    tsup: dist/cli-default.js
+    tsup-node: dist/cli-node.js
+  checksum: 7c0a4c50725dd359f2841f0f499bc6155c350a4d8292c26ca65910be90273c19a3d644d9b7e29463400012bf9f2cd74c714b3677765fcaca64bd63b11c11e578
   languageName: node
   linkType: hard
 
