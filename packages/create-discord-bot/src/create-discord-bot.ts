@@ -53,6 +53,7 @@ if (!validationResult.validForNewPackages) {
 if (!existsSync(root)) {
 	mkdirSync(root, { recursive: true });
 }
+
 console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
 
 // Copy template!

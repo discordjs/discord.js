@@ -22,9 +22,11 @@ export function resolvePackageManager(): PackageManager {
 	if (npmConfigUserAgent.startsWith('npm')) {
 		return 'npm';
 	}
+
 	if (npmConfigUserAgent.startsWith('yarn')) {
 		return 'yarn';
 	}
+
 	if (npmConfigUserAgent.startsWith('pnpm')) {
 		return 'pnpm';
 	}
