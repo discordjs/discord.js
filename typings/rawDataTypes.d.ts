@@ -74,9 +74,7 @@ import {
   RESTPostAPIWebhookWithTokenJSONBody,
   Snowflake,
   APIGuildScheduledEvent,
-  APIActionRowComponent,
   APITextInputComponent,
-  APIModalActionRowComponent,
   APIModalSubmitInteraction,
   Permissions,
   GuildDefaultMessageNotifications,
@@ -88,17 +86,15 @@ import {
   GuildHubType,
   GuildVerificationLevel,
   GuildFeature,
-  LocalizationMap
+  LocalizationMap,
 } from 'discord-api-types/v9';
-import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
+import { GuildChannel, Guild, PermissionOverwrites } from '.';
 import type {
   AutoModerationActionTypes,
   AutoModerationRuleEventTypes,
   AutoModerationRuleKeywordPresetTypes,
   AutoModerationRuleTriggerTypes,
-  InteractionTypes,
-  MessageComponentTypes,
-  ApplicationRoleConnectionMetadataTypes
+  ApplicationRoleConnectionMetadataTypes,
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -178,18 +174,18 @@ export type RawMessageData = APIMessage;
 export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 
 export interface RawMessageAttachmentData {
-	id: Snowflake;
-	filename: string;
-	description?: string;
-	content_type?: string;
-	size: number;
-	url: string;
-	proxy_url: string;
-	height?: number | null;
-	width?: number | null;
-	ephemeral?: boolean;
-	duration_secs?: number;
-	waveform?: string;
+  id: Snowflake;
+  filename: string;
+  description?: string;
+  content_type?: string;
+  size: number;
+  url: string;
+  proxy_url: string;
+  height?: number | null;
+  width?: number | null;
+  ephemeral?: boolean;
+  duration_secs?: number;
+  waveform?: string;
 }
 
 export type RawMessagePayloadData =
