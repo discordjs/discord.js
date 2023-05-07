@@ -1,0 +1,23 @@
+# Packages
+node_modules/
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Env
+.env
+!template/JavaScript/.env
+!template/TypeScript/.env
+
+# Dist
+dist/
+
+# Miscellaneous
+.tmp/
