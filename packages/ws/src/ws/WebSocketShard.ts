@@ -259,6 +259,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
+			// There's cases (like no internet connection) where we immediately fail to connect,
+			// causing a very fast and draining reconnection loop.
+			await sleep(500);
 			return this.internalConnect();
 		}
 	}

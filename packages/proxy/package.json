@@ -63,10 +63,10 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.7",
-		"@types/node": "16.18.25",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "18.15.11",
 		"@types/supertest": "^2.0.12",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",
 		"eslint-config-neon": "^0.1.46",
@@ -74,12 +74,12 @@
 		"prettier": "^2.8.8",
 		"supertest": "^6.3.3",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.7",
+		"turbo": "^1.9.4-canary.9",
 		"typescript": "^5.0.4",
-		"vitest": "^0.30.1"
+		"vitest": "^0.31.0"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.12.0"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -1,22 +1,37 @@
 import { Blob, Buffer } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
-import { test, expect } from 'vitest';
-import { resolveBody, parseHeader } from '../src/lib/utils/utils.js';
+import { MockAgent, setGlobalDispatcher } from 'undici';
+import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
+import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
+import { REST } from '../src/index.js';
+import { makeRequest, resolveBody } from '../src/strategies/undiciRequest.js';
+import { genPath } from './util.js';
 
-test('GIVEN string parseHeader returns string', () => {
-	const header = 'application/json';
+const makeRequestMock = vitest.fn(makeRequest);
 
-	expect(parseHeader(header)).toEqual(header);
+const api = new REST({ makeRequest: makeRequestMock }).setToken('A-Very-Fake-Token');
+
+// @discordjs/rest uses the `content-type` header to detect whether to parse
+// the response as JSON or as an ArrayBuffer.
+const responseOptions: MockInterceptor.MockResponseOptions = {
+	headers: {
+		'content-type': 'application/json',
+	},
+};
+
+let mockAgent: MockAgent;
+let mockPool: Interceptable;
+
+beforeEach(() => {
+	mockAgent = new MockAgent();
+	mockAgent.disableNetConnect(); // prevent actual requests to Discord
+	setGlobalDispatcher(mockAgent); // enabled the mock client to intercept requests
+
+	mockPool = mockAgent.get('https://discord.com');
 });
 
-test('GIVEN string[] parseHeader returns string', () => {
-	const header = ['application/json', 'wait sorry I meant text/html'];
-
-	expect(parseHeader(header)).toEqual(header.join(';'));
-});
-
-test('GIVEN undefined parseHeader return undefined', () => {
-	expect(parseHeader(undefined)).toBeUndefined();
+afterEach(async () => {
+	await mockAgent.close();
 });
 
 test('resolveBody', async () => {
@@ -43,7 +58,7 @@ test('resolveBody', async () => {
 			}
 		},
 	};
-	await expect(resolveBody(iterable)).resolves.toStrictEqual(new Uint8Array([1, 2, 3, 1, 2, 3, 1, 2, 3]));
+	await expect(resolveBody(iterable)).resolves.toStrictEqual(Buffer.from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
 
 	const asyncIterable: AsyncIterable<Uint8Array> = {
 		[Symbol.asyncIterator]() {
@@ -65,4 +80,20 @@ test('resolveBody', async () => {
 	// Unknown type
 	// @ts-expect-error: This test is ensuring that this throws
 	await expect(resolveBody(true)).rejects.toThrow(TypeError);
+});
+
+test('use passed undici request', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/simplePost'),
+			method: 'POST',
+		})
+		.reply(() => ({
+			data: { test: true },
+			statusCode: 200,
+			responseOptions,
+		}));
+
+	expect(await api.post('/simplePost')).toStrictEqual({ test: true });
+	expect(makeRequestMock).toHaveBeenCalledTimes(1);
 });

@@ -65,7 +65,7 @@
 		"@babel/preset-env": "^7.21.5",
 		"@babel/preset-typescript": "^7.21.5",
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.7",
+		"@microsoft/api-extractor": "^7.34.8",
 		"@types/jest": "^29.5.1",
 		"@types/node": "16.18.25",
 		"cross-env": "^7.0.3",
@@ -78,7 +78,7 @@
 		"mock-socket": "^9.2.1",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.7",
+		"turbo": "^1.9.4-canary.9",
 		"tweetnacl": "^1.0.3",
 		"typescript": "^5.0.4"
 	},
