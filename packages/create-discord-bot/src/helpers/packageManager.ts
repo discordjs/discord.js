@@ -60,5 +60,8 @@ export function install(packageManager: PackageManager) {
 	}
 
 	console.log(`Installing dependencies with ${packageManager}...`);
-	execSync(installCommand);
+
+	execSync(installCommand, {
+		stdio: 'inherit',
+	});
 }
