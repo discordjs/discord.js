@@ -2,6 +2,30 @@
 	"name": "create-discord-bot",
 	"version": "0.1.0",
 	"description": "A simple way to create a startup Discord bot.",
+	"scripts": {
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
+		"release": "cliff-jumper"
+	},
+	"bin": "./dist/create-discord-bot.mjs",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist",
+		"template"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Jiralite <jiralite@live.co.uk>"
+	],
+	"license": "Apache-2.0",
 	"keywords": [
 		"discord",
 		"discord-api",
@@ -11,38 +35,14 @@
 		"init-discord",
 		"boilerplate"
 	],
-	"homepage": "https://discord.js.org",
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/discordjs/discord.js.git"
 	},
-	"license": "Apache-2.0",
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>",
-		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
-		"Aura Román <kyradiscord@gmail.com>",
-		"Jiralite <jiralite@live.co.uk>"
-	],
-	"bin": "./dist/create-discord-bot.mjs",
-	"directories": {
-		"lib": "src"
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"files": [
-		"dist",
-		"template"
-	],
-	"scripts": {
-		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
-		"prepack": "yarn build && yarn lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
-		"release": "cliff-jumper"
-	},
+	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"chalk": "^5.2.0",
 		"commander": "^10.0.1",
