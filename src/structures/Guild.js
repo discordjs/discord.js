@@ -255,6 +255,7 @@ class Guild extends AnonymousGuild {
      * * SEVEN_DAY_THREAD_ARCHIVE
      * * PRIVATE_THREADS
      * * ROLE_ICONS
+     * * RAID_ALERTS_DISABLED
      * * ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE
      * * ROLE_SUBSCRIPTIONS_ENABLED
      * @typedef {string} Features
