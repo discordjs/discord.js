@@ -11,7 +11,6 @@ import validateProjectName from 'validate-npm-package-name';
 import { install, resolvePackageManager } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
 
-// A directory must be specified.
 program
 	.description('Create a basic discord.js bot.')
 	.option('--typescript', 'Whether to use the TypeScript template.')
@@ -21,17 +20,15 @@ program
 const { typescript } = program.opts();
 const [directory] = program.args;
 
-// Is there a specified directory?
 if (!directory) {
 	console.error(chalk.red('Please specify the project directory.'));
 	process.exit(1);
 }
 
-// Resolve the root of the project.
 const root = path.resolve(directory);
 const directoryName = path.basename(root);
 
-// We'll use the directory name as the project name. Is it a valid npm name?
+// We'll use the directory name as the project name. Check npm name validity.
 const validationResult = validateProjectName(directoryName);
 
 if (!validationResult.validForNewPackages) {
@@ -49,27 +46,19 @@ if (!validationResult.validForNewPackages) {
 	process.exit(1);
 }
 
-// Ensure the directory exists.
 if (!existsSync(root)) {
 	mkdirSync(root, { recursive: true });
 }
 
 console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
-
-// Copy template!
 cpSync(new URL(`../template/${typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, { recursive: true });
 
-// Move to the pasted directory.
 process.chdir(root);
 
-// Replace the name in the package.json.
 const newPackageJSON = readFileSync('./package.json', { encoding: 'utf8' }).replace('[REPLACE-NAME]', directoryName);
 writeFileSync('./package.json', newPackageJSON);
 
-// Install dependencies, because we're so nice.
 const packageManager = resolvePackageManager();
 install(packageManager);
-
-// Completion feedback.
 console.log(chalk.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
 console.log(`Link: ${chalk.cyan(GUIDE_URL)}`);
