@@ -11,7 +11,6 @@ import {
   APIChannel,
   APIEmoji,
   APIExtendedInvite,
-  APIGuild,
   APIGuildIntegration,
   APIGuildIntegrationApplication,
   APIGuildMember,
@@ -79,6 +78,16 @@ import {
   APITextInputComponent,
   APIModalActionRowComponent,
   APIModalSubmitInteraction,
+  Permissions,
+  GuildDefaultMessageNotifications,
+  GuildExplicitContentFilter,
+  GuildMFALevel,
+  GuildSystemChannelFlags,
+  GuildPremiumTier,
+  GuildNSFWLevel,
+  GuildHubType,
+  GuildVerificationLevel,
+  GuildFeature,
   LocalizationMap
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites, InteractionType } from '.';
@@ -282,6 +291,50 @@ export interface APIAutoModerationRuleTriggerMetadata {
   allow_list?: string[];
   regex_patterns?: string[];
   mention_total_limit?: number;
+  mention_raid_protection_enabled?: boolean;
+}
+
+
+export interface APIGuild extends APIPartialGuild {
+  icon_hash?: string | null;
+  discovery_splash: string | null;
+  owner?: boolean;
+  owner_id: Snowflake;
+  permissions?: Permissions;
+  region: string;
+  afk_channel_id: Snowflake | null;
+  afk_timeout: number;
+  widget_enabled?: boolean;
+  widget_channel_id?: Snowflake | null;
+  verification_level: GuildVerificationLevel;
+  default_message_notifications: GuildDefaultMessageNotifications;
+  explicit_content_filter: GuildExplicitContentFilter;
+  roles: APIRole[];
+  emojis: APIEmoji[];
+  features: GuildFeature[];
+  mfa_level: GuildMFALevel;
+  application_id: Snowflake | null;
+  system_channel_id: Snowflake | null;
+  system_channel_flags: GuildSystemChannelFlags;
+  rules_channel_id: Snowflake | null;
+  max_presences?: number | null;
+  max_members?: number;
+  vanity_url_code: string | null;
+  description: string | null;
+  banner: string | null;
+  premium_tier: GuildPremiumTier;
+  premium_subscription_count?: number;
+  preferred_locale: string;
+  public_updates_channel_id: Snowflake | null;
+  max_video_channel_users?: number;
+  approximate_member_count?: number;
+  approximate_presence_count?: number;
+  welcome_screen?: APIGuildWelcomeScreen;
+  nsfw_level: GuildNSFWLevel;
+  stickers: APISticker[];
+  premium_progress_bar_enabled: boolean;
+  hub_type: GuildHubType | null;
+  safety_alerts_channel_id: Snowflake | null;
 }
 
 export interface APIApplicationRoleConnectionMetadata {
