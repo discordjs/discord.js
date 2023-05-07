@@ -46,7 +46,7 @@ import { PubSubRedisBroker } from '@discordjs/brokers';
 import { GatewayDispatchEvents, InteractionType, GatewayOpcodes } from 'discord-api-types/v10';
 
 const redis = new Redis();
-const broker = new PubSubRedisBroker({ redisClient: redis, encode, decode });
+const broker = new PubSubRedisBroker({ redisClient: redis });
 
 broker.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, ack }) => {
 	if (interaction.type !== InteractionType.ApplicationCommand) {
@@ -77,12 +77,11 @@ refer to [this container's implementation](https://github.com/discordjs/discord.
 
 Also note that [core](https://github.com/discordjs/discord.js/tree/main/packages/core) supports an
 abstract `gateway` property that can be easily implemented, making this pretty comfortable to
-use in conjunction. Refer to the [Gateway documentation](https://discord.js.org/docs/packages/core/main/Gateway:Interface)
+use in conjunction. Refer to the [Gateway documentation](https://discord.js.org/docs/packages/core/main/Gateway:Interface).
 
 ## Links
 
 - [Website][website] ([source][website-source])
-- [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
   Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
