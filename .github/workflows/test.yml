@@ -2,7 +2,7 @@ name: Tests
 on: [push, pull_request]
 jobs:
   lint:
-    name: ESLint
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
+      - name: Run ESLint and Prettier
         run: npm run lint
 
   typings:
