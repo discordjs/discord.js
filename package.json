@@ -55,9 +55,9 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.2.2",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.9",
+		"turbo": "^1.9.4-canary.10",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.8",
+		"unocss": "^0.51.12",
 		"vercel": "^29.1.1",
 		"vitest": "^0.31.0"
 	},
