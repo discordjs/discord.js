@@ -71,7 +71,7 @@ class AutoModerationRule extends Base {
        * @property {AutoModerationRuleKeywordPresetType[]} presets
        * The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering
-       * {@link AutoModerationRuleTriggerTypes.KEYWORD} and {@link AutoModerationRuleTriggerTypes.KEYWORD_PRESET}
+       * {@link AutoModerationRuleTriggerType.KEYWORD} and {@link AutoModerationRuleTriggerType.KEYWORD_PRESET}
        * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
        */
 
