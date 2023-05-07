@@ -1,4 +1,4 @@
 {
 	"root": true,
-	"extends": ["neon/common", "neon/node", "neon/typescript", "neon/prettier"]
+	"extends": ["neon/common", "neon/node", "neon/prettier"]
 }
