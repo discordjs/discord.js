@@ -5,8 +5,8 @@
   "scripts": {
     "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:typescript",
     "test:typescript": "tsc --noEmit && tsd",
-    "lint": "eslint src && prettier --check src/**/*.js typings/**/*.ts",
-    "lint:fix": "eslint src --fix && npm run format",
+    "lint": "prettier --check src/**/*.js typings/**/*.ts && eslint src",
+    "lint:fix": "npm run format && eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
     "format": "prettier --write src/**/*.js typings/**/*.ts",
     "prepare": "is-ci || husky install",
