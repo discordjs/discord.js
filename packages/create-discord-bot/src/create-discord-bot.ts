@@ -23,7 +23,7 @@ const [directory] = program.args;
 
 // Is there a specified directory?
 if (!directory) {
-	console.error(chalk.red('Please specify the project directory!'));
+	console.error(chalk.red('Please specify the project directory.'));
 	process.exit(1);
 }
 
@@ -50,7 +50,9 @@ if (!validationResult.validForNewPackages) {
 }
 
 // Ensure the directory exists.
-if (!existsSync(root)) mkdirSync(root, { recursive: true });
+if (!existsSync(root)) {
+	mkdirSync(root, { recursive: true });
+}
 console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
 
 // Copy template!

@@ -15,11 +15,19 @@ export function resolvePackageManager(): PackageManager {
 	const npmConfigUserAgent = process.env.npm_config_user_agent;
 
 	// If this is not present, return the default package manager.
-	if (!npmConfigUserAgent) return DEFAULT_PACKAGE_MANAGER;
+	if (!npmConfigUserAgent) {
+		return DEFAULT_PACKAGE_MANAGER;
+	}
 
-	if (npmConfigUserAgent.startsWith('npm')) return 'npm';
-	if (npmConfigUserAgent.startsWith('yarn')) return 'yarn';
-	if (npmConfigUserAgent.startsWith('pnpm')) return 'pnpm';
+	if (npmConfigUserAgent.startsWith('npm')) {
+		return 'npm';
+	}
+	if (npmConfigUserAgent.startsWith('yarn')) {
+		return 'yarn';
+	}
+	if (npmConfigUserAgent.startsWith('pnpm')) {
+		return 'pnpm';
+	}
 
 	console.error(
 		chalk.yellow(
