@@ -85,9 +85,11 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationRuleEventType} eventType The event type of the auto moderation rule
    * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
-   * <info>This property is required if using a `triggerType` of
-   * {@link AutoModerationRuleTriggerTypes.KEYWORD}, {@link AutoModerationRuleTriggerTypes.KEYWORD_PRESET},
-   * or {@link AutoModerationRuleTriggerTypes.MENTION_SPAM}.</info>
+   * <info>This property is required if the following `triggerType`s are used:
+   * * {@link AutoModerationRuleTriggerType.KEYWORD KEYWORD}
+   * * {@link AutoModerationRuleTriggerType.KEYWORD_PRESET KEYWORD_PRESET}
+   * * {@link AutoModerationRuleTriggerType.MENTION_SPAM MENTION_SPAM}
+   * </info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
