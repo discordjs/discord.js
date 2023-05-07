@@ -6,7 +6,10 @@ import type { Event } from './events/index.js';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const eventsPath = fileURLToPath(new URL('events', import.meta.url));
-const eventFiles = await readdir(eventsPath).then((files) => files.filter((file) => file.endsWith('.js')));
+
+const eventFiles = await readdir(eventsPath).then((files) =>
+	files.filter((file) => file.endsWith('.js') && file !== 'index.js'),
+);
 
 for (const file of eventFiles) {
 	const event: Event = (await import(join(eventsPath, file))).default;
