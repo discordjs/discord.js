@@ -9,7 +9,7 @@ const eventFiles = await readdir(eventsPath).then((files) => files.filter((file)
 
 for (const file of eventFiles) {
 	const event = (await import(join(eventsPath, file))).default;
-	client[event.data.once ? 'once' : 'on'](event.data.name, async (...args) => event.data.execute(...args));
+	client[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
 }
 
 void client.login();
