@@ -1936,7 +1936,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public activity: MessageActivity | null;
   public applicationId: Snowflake | null;
   public attachments: Collection<Snowflake, Attachment>;
-  public author: User;
+  public author: User | null;
   public get bulkDeletable(): boolean;
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
