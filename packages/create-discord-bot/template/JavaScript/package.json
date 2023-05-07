@@ -7,7 +7,7 @@
 		"start": "node --require dotenv/config index.js"
 	},
 	"dependencies": {
-		"discord.js": "^14.10.2",
+		"discord.js": "^14.11.0",
 		"dotenv": "^16.0.3"
 	}
 }
