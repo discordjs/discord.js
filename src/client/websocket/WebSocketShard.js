@@ -735,7 +735,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Adds a packet to the queue to be sent to the gateway.
    * <warn>If you use this method, make sure you understand that you need to provide
-   * a full [Payload](https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
+   * a full [Payload](https://discord.com/developers/docs/topics/gateway-events#payload-structure).
    * Do not use this method if you don't know what you're doing.</warn>
    * @param {Object} data The full packet to send
    * @param {boolean} [important=false] If this packet should be added first in queue
