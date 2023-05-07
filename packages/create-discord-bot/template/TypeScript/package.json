@@ -5,8 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"test": "tsc",
-		"lint": "prettier --check src && eslint ./src --ext .ts --format=pretty",
-		"format": "prettier --write src && eslint ./src --ext .ts --fix --format=pretty",
+		"lint": "prettier --check . && eslint ./src --ext .ts --format=pretty",
+		"format": "prettier --write . && eslint ./src --ext .ts --fix --format=pretty",
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {
