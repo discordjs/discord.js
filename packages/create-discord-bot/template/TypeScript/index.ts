@@ -9,7 +9,7 @@ const eventsPath = fileURLToPath(new URL('events', import.meta.url));
 const eventFiles = await readdir(eventsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 
 for (const file of eventFiles) {
-	const event: Event = (await import(join(eventsPath, file))).data;
+	const event: Event = (await import(join(eventsPath, file))).default;
 	client[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
 }
 
