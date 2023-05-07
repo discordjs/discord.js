@@ -1,4 +1,5 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
+import type { PropsWithChildren } from 'react';
 import { BASE_URL, BASE_URL_LEGACY, PACKAGES, VERSION } from '~/util/constants';
 
 interface DocsLinkOptions {
@@ -50,7 +51,8 @@ export function DocsLink({
 	symbol,
 	brackets,
 	static: staticReference,
-}: DocsLinkOptions) {
+	children,
+}: PropsWithChildren<DocsLinkOptions>) {
 	// In the case of no type and no parent, this will default to the entry point of the respective documentation.
 	let url = docs === PACKAGES[0] ? `${BASE_URL_LEGACY}/${VERSION}/general/welcome` : `${BASE_URL}/${docs}/stable`;
 	let text = `${docs === PACKAGES[0] ? '' : '@discordjs/'}${docs}`;
@@ -77,7 +79,7 @@ export function DocsLink({
 
 	return (
 		<a className="inline-flex flex-row place-items-center gap-1" href={url} rel="noopener noreferrer" target="_blank">
-			{text}
+			{children ?? text}
 			<FiExternalLink size={18} />
 		</a>
 	);
