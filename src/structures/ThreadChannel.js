@@ -15,7 +15,7 @@ const { resolveAutoArchiveMaxLimit } = require('../util/Util');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends Channel {
-  constructor(guild, data, client, fromInteraction = false) {
+  constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -41,7 +41,7 @@ class ThreadChannel extends Channel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data, fromInteraction);
+    if (data) this._patch(data);
   }
 
   _patch(data, partial = false) {
@@ -310,7 +310,7 @@ class ThreadChannel extends Channel {
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
     const channel = this.parent?.type === 'GUILD_FORUM' ? this : this.parent;
-    return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
+    return channel?.messages.fetch(this.id, options) ?? null;
   }
 
   /**
@@ -323,8 +323,9 @@ class ThreadChannel extends Channel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
-   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * <info>Can only be edited on `GUILD_PRIVATE_THREAD`</info>
+   * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
+   * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    */
 
   /**
@@ -451,7 +452,7 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   pin(reason) {
-    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.add(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
@@ -460,17 +461,17 @@ class ThreadChannel extends Channel {
    * @returns {Promise<ThreadChannel>}
    */
   unpin(reason) {
-    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED), reason });
+    return this.edit({ flags: this.flags.remove(ChannelFlags.FLAGS.PINNED) }, reason);
   }
 
   /**
    * Set the applied tags for this channel (only applicable to forum threads)
    * @param {Snowflake[]} appliedTags The tags to set for this channel
    * @param {string} [reason] Reason for changing the thread's applied tags
-   * @returns {Promise<GuildForumThreadChannel>}
+   * @returns {Promise<ThreadChannel>}
    */
   setAppliedTags(appliedTags, reason) {
-    return this.edit({ appliedTags, reason });
+    return this.edit({ appliedTags }, reason);
   }
 
   /**
@@ -521,7 +522,7 @@ class ThreadChannel extends Channel {
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR, false)) return true;
 
     return (
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now() &&
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(Permissions.FLAGS.MANAGE_THREADS, false)
     );
   }
@@ -553,7 +554,7 @@ class ThreadChannel extends Channel {
       !(this.archived && this.locked && !this.manageable) &&
       (this.type !== 'GUILD_PRIVATE_THREAD' || this.joined || this.manageable) &&
       permissions.has(Permissions.FLAGS.SEND_MESSAGES_IN_THREADS, false) &&
-      this.guild.me.communicationDisabledUntilTimestamp < Date.now()
+      this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()
     );
   }
 

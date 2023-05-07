@@ -1,6 +1,7 @@
 'use strict';
 
 const CachedManager = require('./CachedManager');
+const { Error } = require('../errors');
 const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');

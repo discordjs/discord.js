@@ -98,6 +98,7 @@ import {
   GuildBan,
   GuildBanManager,
   ForumChannel,
+  ThreadMemberManager,
 } from '.';
 import type { ApplicationCommandOptionTypes } from './enums';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -898,7 +899,14 @@ declare const categoryChannel: CategoryChannel;
 
 declare const guildChannelManager: GuildChannelManager;
 {
-  type AnyChannel = TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | StageChannel | ForumChannel;
+  type AnyChannel =
+    | TextChannel
+    | VoiceChannel
+    | CategoryChannel
+    | NewsChannel
+    | StoreChannel
+    | StageChannel
+    | ForumChannel;
 
   expectType<Promise<TextChannel>>(guildChannelManager.create('name'));
   expectType<Promise<TextChannel>>(guildChannelManager.create('name', {}));
@@ -1323,7 +1331,9 @@ declare const GuildBasedChannel: GuildBasedChannel;
 declare const NonThreadGuildBasedChannel: NonThreadGuildBasedChannel;
 declare const GuildTextBasedChannel: GuildTextBasedChannel;
 
-expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(TextBasedChannel);
+expectType<DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(
+  TextBasedChannel,
+);
 expectType<
   | 'DM'
   | 'GUILD_NEWS'
@@ -1332,12 +1342,45 @@ expectType<
   | 'GUILD_PRIVATE_THREAD'
   | 'GUILD_NEWS_THREAD'
   | 'GUILD_VOICE'
+  | 'GUILD_STAGE_VOICE'
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | ThreadChannel | VoiceChannel | ForumChannel>(
-  GuildBasedChannel,
-);
+expectType<
+  | CategoryChannel
+  | NewsChannel
+  | StageChannel
+  | StoreChannel
+  | TextChannel
+  | ThreadChannel
+  | VoiceChannel
+  | ForumChannel
+>(GuildBasedChannel);
 expectType<CategoryChannel | NewsChannel | StageChannel | StoreChannel | TextChannel | VoiceChannel | ForumChannel>(
   NonThreadGuildBasedChannel,
 );
-expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel>(GuildTextBasedChannel);
+
+declare const threadMemberWithGuildMember: ThreadMember<true>;
+declare const threadMemberManager: ThreadMemberManager;
+{
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678', { cache: false }));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678', { force: true }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch(threadMemberWithGuildMember));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch('12345678901234567', { withMember: true }));
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
+
+  expectType<Promise<Collection<Snowflake, ThreadMember<true>>>>(
+    threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
+  );
+
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch(undefined, { cache: true }));
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
+    threadMemberManager.fetch({ cache: true, withMember: false }),
+  );
+
+  // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
+  threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
+}
+
+expectType<NewsChannel | TextChannel | ThreadChannel | VoiceChannel | StageChannel>(GuildTextBasedChannel);

@@ -1,3 +1,4 @@
+/* eslint-disable newline-per-chained-call */
 'use strict';
 
 const { Buffer } = require('node:buffer');
@@ -9,6 +10,8 @@ const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
 const { Events, Opcodes } = require('../util/Constants');
+const { PartialTypes } = require('../util/Constants');
+const GuildMemberFlags = require('../util/GuildMemberFlags');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
@@ -119,6 +122,20 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * The client user as a GuildMember of this guild
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get me() {
+    return (
+      this.resolve(this.client.user.id) ??
+      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
+        ? this._add({ user: { id: this.client.user.id } }, true)
+        : null)
+    );
+  }
+
+  /**
    * Options used to fetch a single member from a guild.
    * @typedef {BaseFetchOptions} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
@@ -190,6 +207,15 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
+   * Fetches the client user as a GuildMember of the guild.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMe(options) {
+    return this.fetch({ ...options, user: this.client.user.id });
+  }
+
+  /**
    * Options used for searching guild members.
    * @typedef {Object} GuildSearchMembersOptions
    * @property {string} query Filter members whose username or nickname start with this query
@@ -236,6 +262,7 @@ class GuildMemberManager extends CachedManager {
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
    * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
+   * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    */
 
   /**
@@ -267,6 +294,8 @@ class GuildMemberManager extends CachedManager {
 
     _data.communication_disabled_until =
       _data.communicationDisabledUntil && new Date(_data.communicationDisabledUntil).toISOString();
+
+    _data.flags = _data.flags && GuildMemberFlags.resolve(_data.flags);
 
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {
@@ -406,6 +435,38 @@ class GuildMemberManager extends CachedManager {
 
     const data = await this.client.api.guilds(this.guild.id).members(user).get();
     return this._add(data, cache);
+  }
+
+  /**
+   * Adds a role to a member.
+   * @param {GuildMemberResolvable} user The user to add the role from
+   * @param {RoleResolvable} role The role to add
+   * @param {string} [reason] Reason for adding the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async addRole(user, role, reason) {
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+
+    await this.client.api.guilds(this.guild.id).members(userId).roles(roleId).put({ reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
+  }
+
+  /**
+   * Removes a role from a member.
+   * @param {UserResolvable} user The user to remove the role from
+   * @param {RoleResolvable} role The role to remove
+   * @param {string} [reason] Reason for removing the role
+   * @returns {Promise<GuildMember|User|Snowflake>}
+   */
+  async removeRole(user, role, reason) {
+    const userId = this.guild.members.resolveId(user);
+    const roleId = this.guild.roles.resolveId(role);
+
+    await this.client.api.guilds(this.guild.id).members(userId).roles(roleId).delete({ reason });
+
+    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
 
   _fetchMany({

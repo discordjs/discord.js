@@ -1,9 +1,12 @@
 'use strict';
+const process = require('node:process');
 
 const { Collection } = require('@discordjs/collection');
 const CachedManager = require('./CachedManager');
 const { TypeError } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
+
+let deprecationEmittedForPassingBoolean = false;
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -28,12 +31,30 @@ class ThreadMemberManager extends CachedManager {
 
   _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
-    if (cache) existing?._patch(data);
+    if (cache) existing?._patch(data, { cache });
     if (existing) return existing;
 
-    const member = new ThreadMember(this.thread, data);
+    const member = new ThreadMember(this.thread, data, { cache });
     if (cache) this.cache.set(data.user_id, member);
     return member;
+  }
+
+  /**
+   * Fetches the client user as a ThreadMember of the thread.
+   * @param {BaseFetchOptions} [options] The options for fetching the member
+   * @returns {Promise<ThreadMember>}
+   */
+  fetchMe(options) {
+    return this.fetch(this.client.user.id, options);
+  }
+
+  /**
+   * The client user as a ThreadMember of this ThreadChannel
+   * @type {?ThreadMember}
+   * @readonly
+   */
+  get me() {
+    return this.resolve(this.client.user.id);
   }
 
   /**
@@ -92,32 +113,73 @@ class ThreadMemberManager extends CachedManager {
     return id;
   }
 
-  async _fetchOne(memberId, cache, force) {
+  async _fetchOne(memberId, { cache, force = false, withMember }) {
     if (!force) {
       const existing = this.cache.get(memberId);
       if (existing) return existing;
     }
 
-    const data = await this.client.api.channels(this.thread.id, 'thread-members', memberId).get();
+    const data = await this.client.api.channels(this.thread.id, 'thread-members', memberId).get({
+      query: { with_member: withMember },
+    });
     return this._add(data, cache);
   }
 
-  async _fetchMany(cache) {
-    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get();
+  async _fetchMany({ cache, limit, after, withMember } = {}) {
+    const raw = await this.client.api.channels(this.thread.id, 'thread-members').get({
+      query: { with_member: withMember, limit, after },
+    });
     return raw.reduce((col, member) => col.set(member.user_id, this._add(member, cache)), new Collection());
   }
 
   /**
-   * Fetches member(s) for the thread from Discord, requires access to the `GUILD_MEMBERS` gateway intent.
-   * @param {UserResolvable|boolean} [member] The member to fetch. If `undefined`, all members
-   * in the thread are fetched, and will be cached based on `options.cache`. If boolean, this serves
-   * the purpose of `options.cache`.
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * Options used to fetch a thread member.
+   * @typedef {BaseFetchOptions} FetchThreadMemberOptions
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
+   */
+
+  /**
+   * Options used to fetch multiple thread members with guild member data.
+   * <info>With `withMember` set to `true`, pagination is enabled.</info>
+   * @typedef {Object} FetchThreadMembersWithGuildMemberDataOptions
+   * @property {true} withMember Whether to also return the guild member data
+   * @property {Snowflake} [after] Consider only thread members after this id
+   * @property {number} [limit] The maximum number of thread members to return
+   * @property {boolean} [cache] Whether to cache the fetched thread members and guild members
+   */
+
+  /**
+   * Options used to fetch multiple thread members without guild member data.
+   * @typedef {Object} FetchThreadMembersWithoutGuildMemberDataOptions
+   * @property {false} [withMember] Whether to also return the guild member data
+   * @property {boolean} [cache] Whether to cache the fetched thread members
+   */
+
+  /**
+   * Options used to fetch multiple thread members.
+   * @typedef {FetchThreadMembersWithGuildMemberDataOptions|
+   * FetchThreadMembersWithoutGuildMemberDataOptions} FetchThreadMembersOptions
+   */
+
+  /**
+   * Fetches member(s) for the thread from Discord.
+   * @param {UserResolvable|FetchThreadMembersOptions|boolean} [member] The member to fetch. If `undefined`, all members
+   * in the thread are fetched, and will be cached based on `options.cache`.
+   * @param {FetchThreadMemberOptions|FetchThreadMembersOptions} [options] Additional options for this fetch
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
-  fetch(member, { cache = true, force = false } = {}) {
+  fetch(member, options = { cache: true, force: false }) {
+    if (typeof member === 'boolean' && !deprecationEmittedForPassingBoolean) {
+      process.emitWarning(
+        'Passing boolean to member option is deprecated, use cache property instead.',
+        'DeprecationWarning',
+      );
+      deprecationEmittedForPassingBoolean = true;
+    }
     const id = this.resolveId(member);
-    return id ? this._fetchOne(id, cache, force) : this._fetchMany(member ?? cache);
+    return id
+      ? this._fetchOne(id, options)
+      : this._fetchMany(typeof member === 'boolean' ? { ...options, cache: member } : options);
   }
 }
 

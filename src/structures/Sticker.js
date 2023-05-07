@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const Base = require('./Base');
+const { Error } = require('../errors');
 const { StickerFormatTypes, StickerTypes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 

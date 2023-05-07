@@ -60,5 +60,5 @@ filter_commits = true
 tag_pattern = "[0-9]*"
 skip_tags = "v[0-9]*|@discordjs"
 ignore_tags = ""
-date_order = true
+topo_order = true
 sort_commits = "newest"

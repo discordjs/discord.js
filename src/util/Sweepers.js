@@ -7,7 +7,7 @@ const { TypeError } = require('../errors/DJSError.js');
 /**
  * @typedef {Function} GlobalSweepFilter
  * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/main/class/Collection?scrollTo=sweep)}
+ * See {@link [Collection#sweep](https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep)}
  * for the definition of this function.
  */
 
@@ -75,6 +75,16 @@ class Sweepers {
       `Swept ${globalCommands} global application commands and ${guildCommands} guild commands in ${guilds} guilds.`,
     );
     return guildCommands + globalCommands;
+  }
+
+  /**
+   * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine
+   * which auto moderation rules will be removed from the caches
+   * @returns {number} Amount of auto moderation rules that were removed from the caches
+   */
+  sweepAutoModerationRules(filter) {
+    return this._sweepGuildDirectProp('autoModerationRules', filter).items;
   }
 
   /**
