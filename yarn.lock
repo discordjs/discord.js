@@ -2523,7 +2523,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/ws@workspace:^, @discordjs/ws@workspace:packages/ws":
+"@discordjs/ws@^0.8.3, @discordjs/ws@workspace:^, @discordjs/ws@workspace:packages/ws":
   version: 0.0.0-use.local
   resolution: "@discordjs/ws@workspace:packages/ws"
   dependencies:
@@ -11376,7 +11376,7 @@ __metadata:
     "@discordjs/formatters": "workspace:^"
     "@discordjs/rest": ^1.7.1
     "@discordjs/util": "workspace:^"
-    "@discordjs/ws": "workspace:^"
+    "@discordjs/ws": ^0.8.3
     "@favware/cliff-jumper": ^2.0.0
     "@sapphire/snowflake": ^3.4.2
     "@types/node": 16.18.25
