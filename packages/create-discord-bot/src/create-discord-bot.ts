@@ -14,7 +14,7 @@ import { GUIDE_URL } from './util/constants.js';
 // A directory must be specified.
 program
 	.description('Create a basic discord.js bot.')
-	.option('--typescript', 'Whether to use a TypeScript template.')
+	.option('--typescript', 'Whether to use the TypeScript template.')
 	.argument('<directory>', 'The directory where this will be created.')
 	.parse();
 
