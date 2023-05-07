@@ -58,6 +58,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {string[]} [allowList] The substrings that will be exempt from triggering
    * {@link AutoModerationRuleTriggerType.KEYWORD} and {@link AutoModerationRuleTriggerType.KEYWORD_PRESET}
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
+   * @property {boolean} [mentionRaidProtectionEnabled] Whether to automatically detect mention raids
    */
 
   /**
@@ -84,9 +85,11 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationRuleEventType} eventType The event type of the auto moderation rule
    * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
-   * <info>This property is required if using a `triggerType` of
-   * {@link AutoModerationRuleTriggerTypes.KEYWORD}, {@link AutoModerationRuleTriggerTypes.KEYWORD_PRESET},
-   * or {@link AutoModerationRuleTriggerTypes.MENTION_SPAM}.</info>
+   * <info>This property is required if the following `triggerType`s are used:
+   * * {@link AutoModerationRuleTriggerType.KEYWORD KEYWORD}
+   * * {@link AutoModerationRuleTriggerType.KEYWORD_PRESET KEYWORD_PRESET}
+   * * {@link AutoModerationRuleTriggerType.MENTION_SPAM MENTION_SPAM}
+   * </info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
@@ -126,6 +129,7 @@ class AutoModerationRuleManager extends CachedManager {
           ),
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
+          mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
         },
         actions: actions.map(action => ({
           type: typeof action.type === 'number' ? action.type : AutoModerationActionTypes[action.type],
@@ -188,6 +192,7 @@ class AutoModerationRuleManager extends CachedManager {
             ),
             allow_list: triggerMetadata.allowList,
             mention_total_limit: triggerMetadata.mentionTotalLimit,
+            mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
           },
           actions: actions?.map(action => ({
             type: typeof action.type === 'number' ? action.type : AutoModerationActionTypes[action.type],
