@@ -43,7 +43,7 @@ Use it:
 ```js
 import Redis from 'ioredis';
 import { PubSubRedisBroker } from '@discordjs/brokers';
-import { GatewayDispatchEvents } from 'discord-api-types/v10';
+import { GatewayDispatchEvents, InteractionType, GatewayOpcodes } from 'discord-api-types/v10';
 
 const redis = new Redis();
 const broker = new PubSubRedisBroker({ redisClient: redis, encode, decode });
@@ -58,6 +58,17 @@ broker.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 	}
 
 	await ack();
+});
+
+// you can also use the broker to send payloads to the gateway
+await broker.publish('gateway_send', {
+	op: GatewayOpcodes.PresenceUpdate,
+	d: {
+		activities: [{ type: ActivityType.Playing, name: 'meow :3' }],
+		afk: false,
+		since: null,
+		status: PresenceUpdateStatus.Online,
+	},
 });
 ```
 
