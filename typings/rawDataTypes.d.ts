@@ -290,7 +290,6 @@ export interface APIAutoModerationRuleTriggerMetadata {
   mention_raid_protection_enabled?: boolean;
 }
 
-
 export interface APIGuild extends APIPartialGuild {
   icon_hash?: string | null;
   discovery_splash: string | null;
