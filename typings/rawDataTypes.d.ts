@@ -82,11 +82,10 @@ import {
   ThreadAutoArchiveDuration,
   GuildTextChannelType,
   ChannelType,
-  VideoQualityMode,
   APIChannelBase,
   APIThreadChannel,
   APIVoiceChannel,
-  APIGuildForumChannel
+  APIGuildForumChannel,
   Permissions,
   GuildDefaultMessageNotifications,
   GuildExplicitContentFilter,
@@ -101,16 +100,11 @@ import {
 } from 'discord-api-types/v9';
 import { GuildChannel, Guild, PermissionOverwrites } from '.';
 import type {
-  ApplicationRoleConnectionMetadataTypes,
   AutoModerationActionTypes,
   AutoModerationRuleEventTypes,
   AutoModerationRuleKeywordPresetTypes,
   AutoModerationRuleTriggerTypes,
-  InteractionTypes,
-  MessageComponentTypes,
   ApplicationRoleConnectionMetadataTypes,
-  SortOrderType,
-  ForumLayoutType,
 } from './enums';
 
 export type RawActivityData = GatewayActivity;
@@ -372,4 +366,12 @@ export interface APIGuildTextChannel<T extends GuildTextChannelType>
 }
 export type APITextChannel = APIGuildTextChannel<ChannelType.GuildText>;
 export type APINewsChannel = APIGuildTextChannel<ChannelType.GuildNews>;
-export declare type APIChannel = APIGroupDMChannel | APIDMChannel | APITextChannel | APINewsChannel | APIVoiceChannel | APIGuildCategoryChannel | APIThreadChannel | APIGuildForumChannel;
+export declare type APIChannel =
+  | APIGroupDMChannel
+  | APIDMChannel
+  | APITextChannel
+  | APINewsChannel
+  | APIVoiceChannel
+  | APIGuildCategoryChannel
+  | APIThreadChannel
+  | APIGuildForumChannel;
