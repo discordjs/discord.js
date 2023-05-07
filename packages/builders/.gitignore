@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -15,15 +15,15 @@ pids
 .env
 
 # Dist
-dist/
-typings/
+dist
+dist-docs
 
+# Docs
 docs/**/*
-!docs/index.json
 !docs/README.md
-!docs/examples/
-!docs/examples/*.md
+!docs/examples/**/*
 
 # Miscellaneous
-.tmp/
-coverage/
+.turbo
+.tmp
+coverage

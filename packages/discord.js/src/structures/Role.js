@@ -167,7 +167,7 @@ class Role extends Base {
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => m.roles.cache.has(this.id));
+    return this.guild.members.cache.filter(m => m._roles.includes(this.id));
   }
 
   /**
@@ -188,8 +188,14 @@ class Role extends Base {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedRoles();
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    return this.guild.roles.cache.reduce(
+      (acc, role) =>
+        acc +
+        (this.rawPosition === role.rawPosition
+          ? BigInt(this.id) > BigInt(role.id)
+          : this.rawPosition > role.rawPosition),
+      0,
+    );
   }
 
   /**

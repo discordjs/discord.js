@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -16,18 +16,13 @@ pids
 .env*.local
 
 # Dist
-dist/
-typings/
-.cache/
-build/
+.contentlayer
+.next
+public/searchIndex
 src/styles/unocss.css
-.next/
 
 # Miscellaneous
-.tmp/
-coverage/
-.vercel
-public/searchIndex
+.tmp
 .vscode
-lighthouse-results/
-.contentlayer
+lighthouse-results
+

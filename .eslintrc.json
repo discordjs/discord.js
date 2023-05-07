@@ -2,7 +2,7 @@
 	"root": true,
 	"extends": ["neon/common", "neon/node", "neon/typescript", "neon/prettier"],
 	"parserOptions": {
-		"project": "./tsconfig.eslint.json"
+		"project": ["./tsconfig.eslint.json", "./apps/*/tsconfig.eslint.json", "./packages/*/tsconfig.eslint.json"]
 	},
 	"rules": {
 		"@typescript-eslint/consistent-type-definitions": ["error", "interface"]

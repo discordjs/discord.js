@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/ws",
-	"version": "0.8.2",
+	"version": "0.8.3",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run",
@@ -23,6 +23,7 @@
 			"require": "./dist/index.js"
 		},
 		"./defaultWorker": {
+			"types": null,
 			"import": "./dist/defaultWorker.mjs",
 			"require": "./dist/defaultWorker.js"
 		}
@@ -72,24 +73,25 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.6",
-		"@types/node": "16.18.25",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "18.15.11",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
 		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint-config-neon": "^0.1.46",
 		"eslint-formatter-pretty": "^5.0.0",
 		"mock-socket": "^9.2.1",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.9",
 		"typescript": "^5.0.4",
 		"undici": "^5.22.0",
-		"vitest": "^0.29.8",
+		"vitest": "^0.31.0",
 		"zlib-sync": "^0.1.8"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.12.0"
 	},
 	"publishConfig": {
 		"access": "public"
