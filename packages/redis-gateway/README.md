@@ -22,17 +22,51 @@
 
 ## Usage
 
+Set up an `.env` file:
+
+```
+REDIS_URL=redis://localhost:6379
+DISCORD_TOKEN=your-token-here
+DISCORD_PROXY_URL=htt://localhost:8080 # if you want to use an HTTP proxy for DAPI calls (optional)
+INTENTS=0 # intents to use (optional, defaults to none)
+SHARD_COUNT=1 # number of total shards your bot should be running (optional, defaults to Discord recommended count)
+SHARD_IDS=0 # comma-separated list of shard IDs to run (optional, defaults to all shards)
+SHARDS_PER_WORKER=2 # number of shards per worker_thread or "all" (optional, if not specified, all shards will be run in the main thread)
+```
+
 Quickly spin up an instance:
 
-<!-- TODO: args -->
-
-`docker run -d --restart unless-stopped --name gateway discordjs/redis-gateway`
+`docker run -d --restart unless-stopped --env-file .env --name gateway discordjs/redis-gateway`
 
 Use it:
 
-```ts
-// TODO
+```js
+import Redis from 'ioredis';
+import { PubSubRedisBroker } from '@discordjs/brokers';
+import { GatewayDispatchEvents } from 'discord-api-types/v10';
+
+const redis = new Redis();
+const broker = new PubSubRedisBroker({ redisClient: redis, encode, decode });
+
+broker.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, ack }) => {
+	if (interaction.type !== InteractionType.ApplicationCommand) {
+		return;
+	}
+
+	if (interaction.data.name === 'ping') {
+		// reply with pong using your favorite Discord API library
+	}
+
+	await ack();
+});
 ```
+
+For TypeScript usage, you can pass in a gereric type to the `PubSubRedisBroker` to map out all the events,
+refer to [this container's implementation](https://github.com/discordjs/discord.js/tree/main/packages/redis-gateway/src/index.ts#L15) for reference.
+
+Also note that [core](https://github.com/discordjs/discord.js/tree/main/packages/core) supports an
+abstract `gateway` property that can be easily implemented, making this pretty comfortable to
+use in conjunction. Refer to the [Gateway documentation](https://discord.js.org/docs/packages/core/main/Gateway:Interface)
 
 ## Links
 
