@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -17,7 +17,7 @@ pids
 !template/TypeScript/.env
 
 # Dist
-dist/
+dist
 
 # Miscellaneous
-.tmp/
+.tmp
