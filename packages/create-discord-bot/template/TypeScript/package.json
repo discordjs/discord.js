@@ -13,6 +13,7 @@
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^4.0.0",
+		"@types/node": "^18.15.3",
 		"typescript": "^5.0.4"
 	}
 }
