@@ -605,7 +605,7 @@ class Message extends Base {
     if (this.channel?.isThread()) {
       if (this.channel.archived) return false;
       if (this.channel.locked) {
-        const permissions = this.permissionsFor(this.client.user);
+        const permissions = this.channel.permissionsFor(this.client.user);
         if (!permissions?.has(Permissions.FLAGS.MANAGE_THREADS, true)) return false;
       }
     }

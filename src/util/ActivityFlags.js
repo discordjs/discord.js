@@ -27,7 +27,7 @@ class ActivityFlags extends BitField {}
  * * `PARTY_PRIVACY_VOICE_CHANNEL`
  * * `EMBEDDED`
  * @type {Object}
- * @see {@link https://discord.com/developers/docs/topics/gateway#activity-object-activity-flags}
+ * @see {@link https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-flags}
  */
 ActivityFlags.FLAGS = {
   INSTANCE: 1 << 0,

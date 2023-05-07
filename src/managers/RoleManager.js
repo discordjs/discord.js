@@ -299,11 +299,14 @@ class RoleManager extends CachedManager {
     const resolvedRole2 = this.resolve(role2);
     if (!resolvedRole1 || !resolvedRole2) throw new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake');
 
-    if (resolvedRole1.position === resolvedRole2.position) {
+    const role1Position = resolvedRole1.position;
+    const role2Position = resolvedRole2.position;
+
+    if (role1Position === role2Position) {
       return Number(BigInt(resolvedRole2.id) - BigInt(resolvedRole1.id));
     }
 
-    return resolvedRole1.position - resolvedRole2.position;
+    return role1Position - role2Position;
   }
 
   /**

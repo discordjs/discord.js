@@ -147,6 +147,28 @@ class MessageAttachment {
      * @type {boolean}
      */
     this.ephemeral = data.ephemeral ?? false;
+
+    if ('duration_secs' in data) {
+      /**
+       * The duration of this attachment in seconds
+       * <info>This will only be available if the attachment is an audio file.</info>
+       * @type {?number}
+       */
+      this.duration = data.duration_secs;
+    } else {
+      this.duration ??= null;
+    }
+
+    if ('waveform' in data) {
+      /**
+       * The base64 encoded byte array representing a sampled waveform
+       * <info>This will only be available if the attachment is an audio file.</info>
+       * @type {?string}
+       */
+      this.waveform = data.waveform;
+    } else {
+      this.waveform ??= null;
+    }
   }
 
   /**

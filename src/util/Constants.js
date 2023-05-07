@@ -432,7 +432,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * GUILD_SCHEDULED_EVENT_USER_REMOVE
  * * GUILD_AUDIT_LOG_ENTRY_CREATE
  * @typedef {string} WSEventType
- * @see {@link https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-events}
+ * @see {@link https://discord.com/developers/docs/topics/gateway-events#receive-events}
  */
 exports.WSEvents = keyMirror([
   'READY',
@@ -712,7 +712,8 @@ exports.ChannelTypes = createEnum([
  * * NewsChannel
  * * ThreadChannel
  * * VoiceChannel
- * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel} TextBasedChannels
+ * * StageChannel
+ * @typedef {DMChannel|TextChannel|NewsChannel|ThreadChannel|VoiceChannel|StageChannel} TextBasedChannels
  */
 
 /**
@@ -731,6 +732,7 @@ exports.ChannelTypes = createEnum([
  * * GUILD_PUBLIC_THREAD
  * * GUILD_PRIVATE_THREAD
  * * GUILD_VOICE
+ * * GUILD_STAGE_VOICE
  * @typedef {string} TextBasedChannelTypes
  */
 exports.TextBasedChannelTypes = [
@@ -741,6 +743,7 @@ exports.TextBasedChannelTypes = [
   'GUILD_PUBLIC_THREAD',
   'GUILD_PRIVATE_THREAD',
   'GUILD_VOICE',
+  'GUILD_STAGE_VOICE',
 ];
 
 /**
@@ -1138,6 +1141,11 @@ exports.APIErrors = {
   INVALID_JSON: 50109,
   CANNOT_MIX_SUBSCRIPTION_AND_NON_SUBSCRIPTION_ROLES_FOR_EMOJI: 50144,
   CANNOT_CONVERT_PREMIUM_EMOJI_TO_NORMAL_EMOJI: 50145,
+  VOICE_MESSAGES_DO_NOT_SUPPORT_ADDITIONAL_CONTENT: 50159,
+  VOICE_MESSAGES_MUST_HAVE_A_SINGLE_AUDIO_ATTACHMENT: 50160,
+  VOICE_MESSAGES_MUST_HAVE_SUPPORTING_METADATA: 50161,
+  VOICE_MESSAGES_CANNOT_BE_EDITED: 50162,
+  YOU_CANNOT_SEND_VOICE_MESSAGES_IN_THIS_CHANNEL: 50173,
   TWO_FACTOR_REQUIRED: 60003,
   NO_USERS_WITH_DISCORDTAG_EXIST: 80004,
   REACTION_BLOCKED: 90001,
@@ -1539,14 +1547,15 @@ function createEnum(keys) {
  * @property {Object<ApplicationCommandType, number>} ApplicationCommandTypes
  * The type of an {@link ApplicationCommand} object.
  * @property {Object<ApplicationRoleConnectionMetadataType, number>} ApplicationRoleConnectionMetadataTypes
- * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
- * of content which can trigger the rule.
+ * The type of an {@link ApplicationRoleConnectionMetadata} object.
  * @property {Object<AutoModerationActionType, number>} AutoModerationActionTypes
  * A type of an action which executes whenever a rule is triggered.
+ * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
+ * a rule should be checked.
  * @property {Object<AutoModerationRuleKeywordPresetType, number>} AutoModerationRuleKeywordPresetTypes
  * The internally pre-defined wordsetswhich will be searched for in content
- * @property {Object<AutoModerationRuleEventType, number>} AutoModerationRuleEventTypes Indicates in what event context
- *  a rule should be checked.
+ * @property {Object<AutoModerationRuleTriggerType, number>} AutoModerationRuleTriggerTypes Characterizes the type
+ * of content which can trigger the rule.
  * @property {Object<ChannelType, number>} ChannelTypes All available channel types.
  * @property {ClientApplicationAssetTypes} ClientApplicationAssetTypes The types of an {@link ApplicationAsset} object.
  * @property {Object<Color, number>} Colors An object with regularly used colors.
@@ -1567,9 +1576,11 @@ function createEnum(keys) {
  * @property {Object<InteractionResponseType, number>} InteractionResponseTypes The type of an interaction response.
  * @property {Object<InteractionType, number>} InteractionTypes The type of an {@link Interaction} object.
  * @property {InviteScope[]} InviteScopes The scopes of an invite.
+ * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {Object<MembershipState, number>} MembershipStates The value set for a team members membership state.
  * @property {Object<MessageButtonStyle, number>} MessageButtonStyles The style of a message button.
  * @property {Object<MessageComponentType, number>} MessageComponentTypes The type of a message component.
+ * @property {MessageType[]} MessageTypes The type of a {@link Message} object.
  * @property {Object<MFALevel, number>} MFALevels The required MFA level for a guild.
  * @property {Object<NSFWLevel, number>} NSFWLevels NSFW level of a guild.
  * @property {Opcodes} Opcodes The types of Opcodes sent to the Gateway.
@@ -1585,7 +1596,7 @@ function createEnum(keys) {
  * @property {SweeperKey[]} SweeperKeys The name of an item to be swept in Sweepers.
  * @property {SystemMessageType[]} SystemMessageTypes The types of messages that are `System`.
  * @property {Object<TextInputStyle, number>} TextInputStyles The style of a text input component.
- * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
+ * @property {ThreadChannelTypes[]} ThreadChannelTypes The type of a {@link ThreadChannel} object.
  * @property {string} UserAgent The user agent used for requests.
  * @property {Object<VerificationLevel, number>} VerificationLevels
  * The value set for the verification levels for a guild.
