@@ -1255,7 +1255,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Edit the guild safety alerts channel
    * guild.setSafetyAlertsChannel(channel)
-   *  .then(updated => console.log(`Updated guild safety alerts channel to ${guild.safetyAlertsChannel.name}`))
+   *  .then(updated => console.log(`Updated guild safety alerts channel to ${updated.safetyAlertsChannel.name}`))
    *  .catch(console.error);
    */
   setSafetyAlertsChannel(safetyAlertsChannel, reason) {
