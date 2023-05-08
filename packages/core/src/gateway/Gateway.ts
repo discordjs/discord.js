@@ -3,7 +3,7 @@ import type { ManagerShardEventsMap, WebSocketShardEvents } from '@discordjs/ws'
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 
 /**
- * A Discord gateway-like interface that can be used to send & recieve events.
+ * A Discord gateway-like interface that can be used to send & receive events.
  */
 export interface Gateway {
 	getShardCount(): Awaitable<number>;
