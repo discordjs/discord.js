@@ -27,7 +27,7 @@ Set up an `.env` file:
 ```
 REDIS_URL=redis://localhost:6379
 DISCORD_TOKEN=your-token-here
-DISCORD_PROXY_URL=htt://localhost:8080 # if you want to use an HTTP proxy for DAPI calls (optional)
+DISCORD_PROXY_URL=http://localhost:8080 # if you want to use an HTTP proxy for Discord API calls (optional)
 INTENTS=0 # intents to use (optional, defaults to none)
 SHARD_COUNT=1 # number of total shards your bot should be running (optional, defaults to Discord recommended count)
 SHARD_IDS=0 # comma-separated list of shard IDs to run (optional, defaults to all shards)
