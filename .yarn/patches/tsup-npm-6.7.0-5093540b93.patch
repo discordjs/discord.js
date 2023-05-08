@@ -1,0 +1,22 @@
+diff --git a/dist/index.js b/dist/index.js
+index 9c71a74b4dd0280cb9480d43305f6b5ffbe91d8d..f67f125eebb770169ead49196a78e3211b5dd10a 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1215,7 +1214,7 @@ var nodeProtocolPlugin = () => {
+ 
+ // src/esbuild/external.ts
+ 
+-var NON_NODE_MODULE_RE = /^[^.\/]|^\.[^.\/]|^\.\.[^\/]/;
++var NON_NODE_MODULE_RE = /^[A-Z]:[\\\/]|^\.{0,2}[\/]|^\.{1,2}$/;
+ var externalPlugin = ({
+   external,
+   noExternal,
+@@ -1239,7 +1238,7 @@ var externalPlugin = ({
+           if (_bundlerequire.match.call(void 0, args.path, external)) {
+             return { external: true };
+           }
+-          if (NON_NODE_MODULE_RE.test(args.path)) {
++          if (!NON_NODE_MODULE_RE.test(args.path)) {
+             return {
+               path: args.path,
+               external: true

@@ -1,0 +1,21 @@
+{
+	"name": "[REPLACE-NAME]",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "prettier --check . && eslint src --ext .js,.cjs --format=pretty",
+		"format": "prettier --write . && eslint src --ext .js,.cjs --fix --format=pretty",
+		"start": "node --require dotenv/config src/index.js"
+	},
+	"dependencies": {
+		"discord.js": "^14.11.0",
+		"dotenv": "^16.0.3"
+	},
+	"devDependencies": {
+		"eslint": "^8.40.0",
+		"eslint-config-neon": "^0.1.47",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8"
+	}
+}
