@@ -48,7 +48,7 @@ import { GatewayDispatchEvents, InteractionType, GatewayOpcodes } from 'discord-
 const redis = new Redis();
 const broker = new PubSubRedisBroker({ redisClient: redis });
 
-broker.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, ack }) => {
+broker.on(GatewayDispatchEvents.InteractionCreate, async ({ data: { payload: interaction }, ack }) => {
 	if (interaction.type !== InteractionType.ApplicationCommand) {
 		return;
 	}
