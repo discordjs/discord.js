@@ -5,11 +5,11 @@ import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
+import type { RequestInit, BodyInit, Dispatcher, Agent } from 'undici';
+import type { RESTOptions, ResponseLike, RestEvents } from './REST.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
-import type { IHandler } from './handlers/IHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
+import type { IHandler } from './interfaces/Handler.js';
 import {
 	BurstHandlerMajorIdKey,
 	DefaultRestOptions,
@@ -17,7 +17,6 @@ import {
 	OverwrittenMimeTypes,
 	RESTEvents,
 } from './utils/constants.js';
-import { resolveBody } from './utils/utils.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
 const getFileType = lazy(async () => import('file-type'));
@@ -323,7 +322,7 @@ export class RequestManager extends EventEmitter {
 	 * @param request - All the information needed to make a request
 	 * @returns The response from the api request
 	 */
-	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
+	public async queueRequest(request: InternalRequest): Promise<ResponseLike> {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
@@ -373,7 +372,7 @@ export class RequestManager extends EventEmitter {
 	 *
 	 * @param request - The request data
 	 */
-	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestOptions; url: string }> {
+	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestInit; url: string }> {
 		const { options } = this;
 
 		let query = '';
@@ -470,19 +469,17 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		finalBody = await resolveBody(finalBody);
+		const method = request.method.toUpperCase();
 
-		const fetchOptions: RequestOptions = {
+		// The non null assertions in the following block are due to exactOptionalPropertyTypes, they have been tested to work with undefined
+		const fetchOptions: RequestInit = {
+			// Set body to null on get / head requests. This does not follow fetch spec (likely because it causes subtle bugs) but is aligned with what request was doing
+			body: ['GET', 'HEAD'].includes(method) ? null : finalBody!,
 			headers: { ...request.headers, ...additionalHeaders, ...headers } as Record<string, string>,
-			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
+			method,
+			// Prioritize setting an agent per request, use the agent for this instance otherwise.
+			dispatcher: request.dispatcher ?? this.agent ?? undefined!,
 		};
-
-		if (finalBody !== undefined) {
-			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
-		}
-
-		// Prioritize setting an agent per request, use the agent for this instance otherwise.
-		fetchOptions.dispatcher = request.dispatcher ?? this.agent ?? undefined!;
 
 		return { url, fetchOptions };
 	}

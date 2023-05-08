@@ -48,17 +48,17 @@
 		"undici": "^5.22.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.25",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@types/node": "16.18.26",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.46",
+		"eslint": "^8.40.0",
+		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.7",
+		"turbo": "^1.9.4-canary.10",
 		"typescript": "^5.0.4",
-		"vitest": "^0.30.1"
+		"vitest": "^0.31.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"
