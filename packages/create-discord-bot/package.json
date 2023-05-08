@@ -37,7 +37,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "git+https://github.com/discordjs/discord.js.git",
+		"directory": "packages/create-discord-bot"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
