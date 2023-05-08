@@ -20,7 +20,7 @@
 /packages/next/ @discordjs/core
 /packages/proxy/ @discordjs/proxy
 /packages/proxy-container/ @discordjs/proxy
-/packages/redis-gateway/ @discordjs/brokers @discordjs/ws
+/packages/redis-gateway/ @discordjs/brokers @discordjs/core @discordjs/ws
 /packages/rest/ @discordjs/rest
 /packages/scripts/ @discordjs/scripts
 /packages/ui/ @discordjs/ui
