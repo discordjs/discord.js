@@ -137,8 +137,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				once(this, WebSocketShardEvents.Ready, { signal: controller.signal }),
 				once(this, WebSocketShardEvents.Resumed, { signal: controller.signal }),
 			]);
-
-			controller.abort();
 		}
 
 		void this.internalConnect();
