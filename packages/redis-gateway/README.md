@@ -99,8 +99,8 @@ const rest = new REST({ version: '10' }).setToken(token);
 const redis = new Redis();
 // you can get retrieve your shard count however you want, it's used for some calculations and should be your bot's TOTAL shard count
 // across "clusters" or anything else.
-const broker = new PubSubRedisBroker({ redisClient: redis }, Number(process.env.SHARD_COUNT!));
-const gateway = new RedisGateway(broker);
+const broker = new PubSubRedisBroker({ redisClient: redis });
+const gateway = new RedisGateway(broker, Number(process.env.SHARD_COUNT!));
 
 const client = new Client({ rest, gateway });
 
