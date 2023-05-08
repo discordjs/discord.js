@@ -30,7 +30,7 @@ const directoryName = path.basename(root);
 
 if (existsSync(root) && readdirSync(root).length > 0) {
 	console.error(chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is not empty.`));
-	console.error(chalk.red(`Please specify a non-empty directory.`));
+	console.error(chalk.red(`Please specify an empty directory.`));
 	process.exit(1);
 }
 
