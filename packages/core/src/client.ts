@@ -4,75 +4,16 @@ import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import {
-	GatewayDispatchEvents,
-	GatewayOpcodes,
-	type APIGuildMember,
-	type GatewayAutoModerationActionExecutionDispatchData,
-	type GatewayAutoModerationRuleCreateDispatchData,
-	type GatewayAutoModerationRuleDeleteDispatchData,
-	type GatewayAutoModerationRuleUpdateDispatchData,
-	type GatewayChannelCreateDispatchData,
-	type GatewayChannelDeleteDispatchData,
-	type GatewayChannelPinsUpdateDispatchData,
-	type GatewayChannelUpdateDispatchData,
-	type GatewayGuildAuditLogEntryCreateDispatchData,
-	type GatewayGuildBanAddDispatchData,
-	type GatewayGuildBanRemoveDispatchData,
-	type GatewayGuildCreateDispatchData,
-	type GatewayGuildDeleteDispatchData,
-	type GatewayGuildEmojisUpdateDispatchData,
-	type GatewayGuildIntegrationsUpdateDispatchData,
-	type GatewayGuildMemberAddDispatchData,
-	type GatewayGuildMemberRemoveDispatchData,
-	type GatewayGuildMemberUpdateDispatchData,
-	type GatewayGuildMembersChunkDispatchData,
-	type GatewayGuildRoleCreateDispatchData,
-	type GatewayGuildRoleDeleteDispatchData,
-	type GatewayGuildRoleUpdateDispatchData,
-	type GatewayGuildScheduledEventCreateDispatchData,
-	type GatewayGuildScheduledEventDeleteDispatchData,
-	type GatewayGuildScheduledEventUpdateDispatchData,
-	type GatewayGuildScheduledEventUserAddDispatchData,
-	type GatewayGuildScheduledEventUserRemoveDispatchData,
-	type GatewayGuildStickersUpdateDispatchData,
-	type GatewayGuildUpdateDispatchData,
-	type GatewayIntegrationCreateDispatchData,
-	type GatewayIntegrationDeleteDispatchData,
-	type GatewayIntegrationUpdateDispatchData,
-	type GatewayInteractionCreateDispatchData,
-	type GatewayInviteCreateDispatchData,
-	type GatewayInviteDeleteDispatchData,
-	type GatewayMessageCreateDispatchData,
-	type GatewayMessageDeleteBulkDispatchData,
-	type GatewayMessageDeleteDispatchData,
-	type GatewayMessageReactionAddDispatchData,
-	type GatewayMessageReactionRemoveAllDispatchData,
-	type GatewayMessageReactionRemoveDispatchData,
-	type GatewayMessageReactionRemoveEmojiDispatchData,
-	type GatewayMessageUpdateDispatchData,
-	type GatewayPresenceUpdateData,
-	type GatewayPresenceUpdateDispatchData,
-	type GatewayReadyDispatchData,
-	type GatewayRequestGuildMembersData,
-	type GatewayStageInstanceCreateDispatchData,
-	type GatewayStageInstanceDeleteDispatchData,
-	type GatewayStageInstanceUpdateDispatchData,
-	type GatewayThreadCreateDispatchData,
-	type GatewayThreadDeleteDispatchData,
-	type GatewayThreadListSyncDispatchData,
-	type GatewayThreadMemberUpdateDispatchData,
-	type GatewayThreadMembersUpdateDispatchData,
-	type GatewayThreadUpdateDispatchData,
-	type GatewayTypingStartDispatchData,
-	type GatewayUserUpdateDispatchData,
-	type GatewayVoiceServerUpdateDispatchData,
-	type GatewayVoiceStateUpdateData,
-	type GatewayVoiceStateUpdateDispatchData,
-	type GatewayWebhooksUpdateDispatchData,
+import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
+import type {
+	GatewayDispatchPayload,
+	APIGuildMember,
+	GatewayRequestGuildMembersData,
+	GatewayPresenceUpdateData,
+	GatewayVoiceStateUpdateData,
 } from 'discord-api-types/v10';
-import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
+import type { Gateway } from './gateway/Gateway.js';
 
 export interface IntrinsicProps {
 	/**
@@ -89,79 +30,20 @@ export interface WithIntrinsicProps<T> extends IntrinsicProps {
 	data: T;
 }
 
-export interface MappedEvents {
-	[GatewayDispatchEvents.AutoModerationActionExecution]: [
-		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
-	];
-	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
-	[GatewayDispatchEvents.ChannelCreate]: [WithIntrinsicProps<GatewayChannelCreateDispatchData>];
-	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
-	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
-	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
-	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
-	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
-	[GatewayDispatchEvents.GuildCreate]: [WithIntrinsicProps<GatewayGuildCreateDispatchData>];
-	[GatewayDispatchEvents.GuildDelete]: [WithIntrinsicProps<GatewayGuildDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildEmojisUpdate]: [WithIntrinsicProps<GatewayGuildEmojisUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildIntegrationsUpdate]: [WithIntrinsicProps<GatewayGuildIntegrationsUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildMemberAdd]: [WithIntrinsicProps<GatewayGuildMemberAddDispatchData>];
-	[GatewayDispatchEvents.GuildMemberRemove]: [WithIntrinsicProps<GatewayGuildMemberRemoveDispatchData>];
-	[GatewayDispatchEvents.GuildMemberUpdate]: [WithIntrinsicProps<GatewayGuildMemberUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildMembersChunk]: [WithIntrinsicProps<GatewayGuildMembersChunkDispatchData>];
-	[GatewayDispatchEvents.GuildRoleCreate]: [WithIntrinsicProps<GatewayGuildRoleCreateDispatchData>];
-	[GatewayDispatchEvents.GuildRoleDelete]: [WithIntrinsicProps<GatewayGuildRoleDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildRoleUpdate]: [WithIntrinsicProps<GatewayGuildRoleUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventCreate]: [WithIntrinsicProps<GatewayGuildScheduledEventCreateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventDelete]: [WithIntrinsicProps<GatewayGuildScheduledEventDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventUpdate]: [WithIntrinsicProps<GatewayGuildScheduledEventUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventUserAdd]: [
-		WithIntrinsicProps<GatewayGuildScheduledEventUserAddDispatchData>,
-	];
-	[GatewayDispatchEvents.GuildScheduledEventUserRemove]: [
-		WithIntrinsicProps<GatewayGuildScheduledEventUserRemoveDispatchData>,
-	];
-	[GatewayDispatchEvents.GuildStickersUpdate]: [WithIntrinsicProps<GatewayGuildStickersUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildUpdate]: [WithIntrinsicProps<GatewayGuildUpdateDispatchData>];
-	[GatewayDispatchEvents.IntegrationCreate]: [WithIntrinsicProps<GatewayIntegrationCreateDispatchData>];
-	[GatewayDispatchEvents.IntegrationDelete]: [WithIntrinsicProps<GatewayIntegrationDeleteDispatchData>];
-	[GatewayDispatchEvents.IntegrationUpdate]: [WithIntrinsicProps<GatewayIntegrationUpdateDispatchData>];
-	[GatewayDispatchEvents.InteractionCreate]: [WithIntrinsicProps<GatewayInteractionCreateDispatchData>];
-	[GatewayDispatchEvents.InviteCreate]: [WithIntrinsicProps<GatewayInviteCreateDispatchData>];
-	[GatewayDispatchEvents.InviteDelete]: [WithIntrinsicProps<GatewayInviteDeleteDispatchData>];
-	[GatewayDispatchEvents.MessageCreate]: [WithIntrinsicProps<GatewayMessageCreateDispatchData>];
-	[GatewayDispatchEvents.MessageDelete]: [WithIntrinsicProps<GatewayMessageDeleteDispatchData>];
-	[GatewayDispatchEvents.MessageDeleteBulk]: [WithIntrinsicProps<GatewayMessageDeleteBulkDispatchData>];
-	[GatewayDispatchEvents.MessageReactionAdd]: [WithIntrinsicProps<GatewayMessageReactionAddDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemove]: [WithIntrinsicProps<GatewayMessageReactionRemoveDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemoveAll]: [WithIntrinsicProps<GatewayMessageReactionRemoveAllDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [
-		WithIntrinsicProps<GatewayMessageReactionRemoveEmojiDispatchData>,
-	];
-	[GatewayDispatchEvents.MessageUpdate]: [WithIntrinsicProps<GatewayMessageUpdateDispatchData>];
-	[GatewayDispatchEvents.PresenceUpdate]: [WithIntrinsicProps<GatewayPresenceUpdateDispatchData>];
-	[GatewayDispatchEvents.Ready]: [WithIntrinsicProps<GatewayReadyDispatchData>];
-	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<never>];
-	[GatewayDispatchEvents.StageInstanceCreate]: [WithIntrinsicProps<GatewayStageInstanceCreateDispatchData>];
-	[GatewayDispatchEvents.StageInstanceDelete]: [WithIntrinsicProps<GatewayStageInstanceDeleteDispatchData>];
-	[GatewayDispatchEvents.StageInstanceUpdate]: [WithIntrinsicProps<GatewayStageInstanceUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadCreate]: [WithIntrinsicProps<GatewayThreadCreateDispatchData>];
-	[GatewayDispatchEvents.ThreadDelete]: [WithIntrinsicProps<GatewayThreadDeleteDispatchData>];
-	[GatewayDispatchEvents.ThreadListSync]: [WithIntrinsicProps<GatewayThreadListSyncDispatchData>];
-	[GatewayDispatchEvents.ThreadMemberUpdate]: [WithIntrinsicProps<GatewayThreadMemberUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadMembersUpdate]: [WithIntrinsicProps<GatewayThreadMembersUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadUpdate]: [WithIntrinsicProps<GatewayThreadUpdateDispatchData>];
-	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
-	[GatewayDispatchEvents.UserUpdate]: [WithIntrinsicProps<GatewayUserUpdateDispatchData>];
-	[GatewayDispatchEvents.VoiceServerUpdate]: [WithIntrinsicProps<GatewayVoiceServerUpdateDispatchData>];
-	[GatewayDispatchEvents.VoiceStateUpdate]: [WithIntrinsicProps<GatewayVoiceStateUpdateDispatchData>];
-	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
-}
+// need this to be its own type for some reason, the compiler doesn't behave the same way if we in-line it
+type _DiscordEvents = {
+	[K in GatewayDispatchEvents]: GatewayDispatchPayload & {
+		t: K;
+	};
+};
 
-export type ManagerShardEventsMap = {
-	[K in keyof MappedEvents]: MappedEvents[K];
+export type DiscordEvents = {
+	// @ts-expect-error - unclear why this is an error, this behaves as expected
+	[K in keyof _DiscordEvents]: _DiscordEvents[K]['d'];
+};
+
+export type MappedEvents = {
+	[K in keyof DiscordEvents]: [WithIntrinsicProps<DiscordEvents[K]>];
 };
 
 export interface ClientOptions {
@@ -169,7 +51,7 @@ export interface ClientOptions {
 	rest: REST;
 }
 
-export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class Client extends AsyncEventEmitter<MappedEvents> {
 	public readonly rest: REST;
 
 	public readonly gateway: Gateway;

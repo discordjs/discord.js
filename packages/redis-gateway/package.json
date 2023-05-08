@@ -53,6 +53,7 @@
 		"undici": "^5.22.0"
 	},
 	"devDependencies": {
+		"@discordjs/core": "workspace:^",
 		"@types/node": "16.18.25",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.39.0",

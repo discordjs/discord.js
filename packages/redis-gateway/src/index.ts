@@ -1,18 +1,18 @@
 import { randomBytes } from 'node:crypto';
 import { PubSubRedisBroker } from '@discordjs/brokers';
+import type { RedisBrokerDiscordEvents } from '@discordjs/core';
 import type { RESTOptions } from '@discordjs/rest';
 import { REST } from '@discordjs/rest';
 import type { OptionalWebSocketManagerOptions, RequiredWebSocketManagerOptions } from '@discordjs/ws';
 import { WorkerShardingStrategy, CompressionMethod, WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import Redis from 'ioredis';
 import { ProxyAgent } from 'undici';
-import type { DiscordEvents } from './discordEvents.js';
 import { Env } from './env.js';
 
 const env = new Env();
 
 const redisClient = new Redis(env.redisUrl);
-const broker = new PubSubRedisBroker<DiscordEvents>({
+const broker = new PubSubRedisBroker<RedisBrokerDiscordEvents>({
 	redisClient,
 });
 
@@ -46,13 +46,11 @@ gateway
 	.on(WebSocketShardEvents.Hello, ({ shardId }) => console.log(`[WS Shard ${shardId}] [HELLO]`))
 	.on(WebSocketShardEvents.Ready, ({ shardId }) => console.log(`[WS Shard ${shardId}] [READY]`))
 	.on(WebSocketShardEvents.Resumed, ({ shardId }) => console.log(`[WS Shard ${shardId}] [RESUMED]`))
-	.on(WebSocketShardEvents.Dispatch, ({ data }) => void broker.publish(data.t, data.d));
+	// @ts-expect-error - Union shenanigans
+	.on(WebSocketShardEvents.Dispatch, ({ data, shardId }) => void broker.publish(data.t, { shardId, payload: data.d }));
 
-broker.on('gateway_send', async ({ data, ack }) => {
-	for (const shardId of await gateway.getShardIds()) {
-		await gateway.send(shardId, data);
-	}
-
+broker.on('gateway_send', async ({ data: { payload, shardId }, ack }) => {
+	await gateway.send(shardId, payload);
 	await ack();
 });
 

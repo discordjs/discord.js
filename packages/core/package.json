@@ -54,6 +54,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@discordjs/brokers": "workspace:^",
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",

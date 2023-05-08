@@ -70,14 +70,50 @@ await broker.publish('gateway_send', {
 		status: PresenceUpdateStatus.Online,
 	},
 });
+
+// if you were to start this process multiple times (e.g. multiple apps using 'work_balancing_group'),
+// they would automatically work balance those interaction create events
+await broker.subscribe('work_balancing_group', [GatewayDispatchEvents.InteractionCreate]);
 ```
 
-For TypeScript usage, you can pass in a gereric type to the `PubSubRedisBroker` to map out all the events,
-refer to [this container's implementation](https://github.com/discordjs/discord.js/tree/main/packages/redis-gateway/src/index.ts#L15) for reference.
+For TypeScript usage, you can pass in a gereric type to the `PubSubRedisBroker` to map out all the events, a mapped
+interface is available in `@discordjs/core` as `RedisBrokerDiscordEvents`.
 
-Also note that [core](https://github.com/discordjs/discord.js/tree/main/packages/core) supports an
-abstract `gateway` property that can be easily implemented, making this pretty comfortable to
-use in conjunction. Refer to the [Gateway documentation](https://discord.js.org/docs/packages/core/main/Gateway:Interface).
+If you wish, you can also just use `@discordjs/core`:
+
+```ts
+import { REST } from '@discordjs/rest';
+import Redis from 'ioredis';
+import { PubSubRedisBroker } from '@discordjs/brokers';
+import {
+	GatewayDispatchEvents,
+	GatewayIntentBits,
+	InteractionType,
+	MessageFlags,
+	Client,
+	RedisGateway,
+} from '@discordjs/core';
+
+const rest = new REST({ version: '10' }).setToken(token);
+
+const redis = new Redis();
+// you can get retrieve your shard count however you want, it's used for some calculations and should be your bot's TOTAL shard count
+// across "clusters" or anything else.
+const broker = new PubSubRedisBroker({ redisClient: redis }, Number(process.env.SHARD_COUNT!));
+const gateway = new RedisGateway(broker);
+
+const client = new Client({ rest, gateway });
+
+client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, api }) => {
+	if (interaction.type !== InteractionType.ApplicationCommand || interaction.data.name !== 'ping') {
+		return;
+	}
+
+	await api.interactions.reply(interaction.id, interaction.token, { content: 'Pong!', flags: MessageFlags.Ephemeral });
+});
+
+await gateway.init('work_balancing_group', [GatewayDispatchEvents.InteractionCreate]);
+```
 
 ## Links
 

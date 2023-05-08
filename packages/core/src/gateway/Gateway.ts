@@ -6,9 +6,6 @@ import type { GatewaySendPayload } from 'discord-api-types/v10';
  * A Discord gateway-like interface that can be used to send & recieve events.
  */
 export interface Gateway {
-	/**
-	 * Gets how many shards your bot is running.
-	 */
 	getShardCount(): Awaitable<number>;
 	on(
 		event: WebSocketShardEvents.Dispatch,

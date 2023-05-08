@@ -2096,6 +2096,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/core@workspace:packages/core"
   dependencies:
+    "@discordjs/brokers": "workspace:^"
     "@discordjs/rest": "workspace:^"
     "@discordjs/util": "workspace:^"
     "@discordjs/ws": "workspace:^"
@@ -2318,6 +2319,7 @@ __metadata:
   resolution: "@discordjs/redis-gateway@workspace:packages/redis-gateway"
   dependencies:
     "@discordjs/brokers": "workspace:^"
+    "@discordjs/core": "workspace:^"
     "@discordjs/rest": "workspace:^"
     "@discordjs/ws": "workspace:^"
     "@types/node": 16.18.25
