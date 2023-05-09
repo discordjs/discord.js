@@ -41,7 +41,7 @@ discord.js v14 makes the switch to Discord API v10!
 
 Any areas that used to accept a _`string`_ or _`number`_ type for an enum parameter will now only accept a _`number`_.
 
-In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from [discord-api-types](https://discord-api-types.dev/api/discord-api-types-v10).
+In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from <DiscordAPITypesLink />.
 
 #### New enum differences
 
@@ -121,7 +121,7 @@ Areas like _`Client`_ initialization, JSON slash commands and JSON message compo
 
 #### Channels
 
-Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the _`type`_ property against a [ChannelType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType) enum member to narrow channels.
+Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the _`type`_ property against a <DiscordAPITypesLink type="enum" parent="ChannelType" /> enum member to narrow channels.
 
 <CH.Code>
 
@@ -361,7 +361,7 @@ _`IntegrationApplication#summary`_ has been removed as it is no longer supported
 
 ### Interaction
 
-Whenever an interaction is replied to and one fetches the reply, it could possibly give an [APIMessage](https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessage) if the guild was not cached. However, interaction replies now always return a discord.js <DocsLink type="class" parent="Message"/> object with _`fetchReply`_ as _`true`_.
+Whenever an interaction is replied to and one fetches the reply, it could possibly give an <DiscordAPITypesLink type="interface" parent="APIMessage" /> if the guild was not cached. However, interaction replies now always return a discord.js <DocsLink type="class" parent="Message"/> object with _`fetchReply`_ as _`true`_.
 
 The base interaction class is now <DocsLink type="class" parent="BaseInteraction"/>.
 
@@ -690,7 +690,7 @@ Added support for role connection metadata.
 
 A new <DocsLink type="class" parent="Collector" symbol="e-ignore"/> event has been added which is emitted whenever an element is not collected by the collector.
 
-Component collector options now use the [ComponentType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType) enum values:
+Component collector options now use the <DiscordAPITypesLink type="enum" parent="ComponentType" /> enum values:
 
 <CH.Code>
 
