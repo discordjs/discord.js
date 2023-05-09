@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // eslint-disable-next-line n/shebang
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
@@ -27,6 +27,12 @@ if (!directory) {
 
 const root = path.resolve(directory);
 const directoryName = path.basename(root);
+
+if (existsSync(root) && readdirSync(root).length > 0) {
+	console.error(chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is not empty.`));
+	console.error(chalk.red(`Please specify an empty directory.`));
+	process.exit(1);
+}
 
 // We'll use the directory name as the project name. Check npm name validity.
 const validationResult = validateProjectName(directoryName);
