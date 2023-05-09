@@ -1,12 +1,12 @@
-import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
-import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
-import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
-import { VscPackage } from '@react-icons/all-files/vsc/VscPackage';
-import Link from 'next/link';
-import { buttonVariants } from '~/styles/Button';
-import { PACKAGES } from '~/util/constants';
+import { FiExternalLink } from "@react-icons/all-files/fi/FiExternalLink";
+import { VscArrowLeft } from "@react-icons/all-files/vsc/VscArrowLeft";
+import { VscArrowRight } from "@react-icons/all-files/vsc/VscArrowRight";
+import { VscPackage } from "@react-icons/all-files/vsc/VscPackage";
+import Link from "next/link";
+import { buttonVariants } from "~/styles/Button";
+import { PACKAGES } from "~/util/constants";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export default function Page() {
 	return (
@@ -14,7 +14,7 @@ export default function Page() {
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
 				<a
-					className={buttonVariants({ variant: 'secondary' })}
+					className={buttonVariants({ variant: "secondary" })}
 					href="https://old.discordjs.dev/#/docs/discord.js"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
@@ -27,7 +27,7 @@ export default function Page() {
 				</a>
 				{PACKAGES.map((pkg, idx) => (
 					<Link
-						className={buttonVariants({ variant: 'secondary' })}
+						className={buttonVariants({ variant: "secondary" })}
 						href={`/docs/packages/${pkg}`}
 						key={`${pkg}-${idx}`}
 					>
@@ -48,7 +48,10 @@ export default function Page() {
 						</div>
 					</Link>
 				))}
-				<a className={buttonVariants({ variant: 'secondary' })} href="https://discord-api-types.dev/">
+				<a
+					className={buttonVariants({ variant: "secondary" })}
+					href="https://discord-api-types.dev/"
+				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-content-between place-items-center gap-4">
 							<VscPackage size={25} />
@@ -58,7 +61,10 @@ export default function Page() {
 					</div>
 				</a>
 			</div>
-			<Link className={buttonVariants({ className: 'place-self-center' })} href="/">
+			<Link
+				className={buttonVariants({ className: "place-self-center" })}
+				href="/"
+			>
 				<VscArrowLeft size={20} /> Go back
 			</Link>
 		</div>
