@@ -80,16 +80,19 @@ const collectorFilter = (response) => {
 	return item.answers.some((answer) => answer.toLowerCase() === response.content.toLowerCase());
 };
 
-interaction.reply({ content: item.question, fetchReply: true }).then(() => {
-	interaction.channel
-		.awaitMessages({ filter: collectorFilter, max: 1, time: 30000, errors: ['time'] })
-		.then((collected) => {
-			interaction.followUp(`${collected.first().author} got the correct answer!`);
-		})
-		.catch((collected) => {
-			interaction.followUp('Looks like nobody got the answer this time.');
-		});
-});
+await interaction.reply({ content: item.question });
+
+try {
+	const collected = await interaction.channel.awaitMessages({
+		filter: collectorFilter,
+		max: 1,
+		time: 30000,
+		errors: ['time'],
+	});
+	interaction.followUp(`${collected.first().author} got the correct answer!`);
+} catch {
+	interaction.followUp('Looks like nobody got the answer this time.');
+}
 ```
 
 </CH.Code>
@@ -137,12 +140,12 @@ const collectorFilter = (reaction, user) => {
 	return reaction.emoji.name === '👍' && user.id === message.author.id;
 };
 
-message
-	.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] })
-	.then((collected) => console.log(collected.size))
-	.catch((collected) => {
-		console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
-	});
+try {
+	const collected = message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
+	console.log(collected.size);
+} catch (collected) {
+	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
+}
 ```
 
 ## Interaction collectors
@@ -187,9 +190,12 @@ const collectorFilter = i => {
 	return i.user.id === interaction.user.id;
 };
 
-message.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 60000 })
-	.then(interaction => interaction.editReply(`You selected ${interaction.values.join(', ')}!`))
-	.catch(err => console.log('No interactions were collected.'));
+try {
+	const interaction = await message.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 60000 });
+	interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
+} catch (error) {
+	console.log('No interactions were collected.')
+}
 ```
 
 ### Await modal submit
@@ -199,10 +205,12 @@ If you want to wait for the submission of a modal within the context of another 
 As Discord does not inform you if the user dismisses the modal, supplying a maximum _`time`_ to wait for is crucial:
 
 ```js
-initialInteraction
-	.awaitModalSubmit({ time: 60_000, filter })
-	.then((interaction) => interaction.editReply('Thank you for your submission!'))
-	.catch((err) => console.log('No modal submit interaction was collected'));
+try {
+	const interaction = initialInteraction.awaitModalSubmit({ time: 60_000, filter });
+	interaction.editReply('Thank you for your submission!');
+} catch (error) {
+	console.log('No modal submit interaction was collected');
+}
 ```
 
 For more information on working with modals, see the [modals section of this guide](/interactions/modals.md).
