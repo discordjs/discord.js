@@ -73,7 +73,7 @@ The provided set allows for responder error with an array of answers permitted. 
 <CH.Code>
 
 ```js
-const quiz = (await import('./quiz.json')).default;
+import quiz from './quiz.json' assert { type: 'json' };
 // ...
 const item = quiz[Math.floor(Math.random() * quiz.length)];
 const collectorFilter = (response) => {
@@ -159,11 +159,11 @@ Collecting interactions from message components works similarly to reaction coll
 One important difference to note with interaction collectors is that Discord expects a response to _all_ interactions within 3 seconds - even ones that you don't want to collect. For this reason, you may wish to _`.deferUpdate()`_ all interactions in your filter, or not use a filter at all and handle this behavior in the _`collect`_ event.
 
 ```js
-import { ComponentType } = from 'discord.js';
+import { ComponentType } from 'discord.js';
 
 const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 15000 });
 
-collector.on('collect', i => {
+collector.on('collect', (i) => {
 	if (i.user.id === interaction.user.id) {
 		i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
 	} else {
@@ -171,7 +171,7 @@ collector.on('collect', i => {
 	}
 });
 
-collector.on('end', collected => {
+collector.on('end', (collected) => {
 	console.log(`Collected ${collected.size} interactions.`);
 });
 ```
@@ -183,18 +183,22 @@ As before, this works similarly to the message component collector, except it is
 Unlike other Promise-based collectors, this method will only ever collect one interaction that passes the filter. If no interactions are collected before the time runs out, the Promise will reject. This behavior aligns with Discord's requirement that actions should immediately receive a response. In this example, you will use _`.deferUpdate()`_ on all interactions in the filter.
 
 ```js
-import { ComponentType } = from 'discord.js';
+import { ComponentType } from 'discord.js';
 
-const collectorFilter = i => {
+const collectorFilter = (i) => {
 	i.deferUpdate();
 	return i.user.id === interaction.user.id;
 };
 
 try {
-	const interaction = await message.awaitMessageComponent({ filter: collectorFilter, componentType: ComponentType.StringSelect, time: 60000 });
+	const interaction = await message.awaitMessageComponent({
+		filter: collectorFilter,
+		componentType: ComponentType.StringSelect,
+		time: 60000,
+	});
 	interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
 } catch (error) {
-	console.log('No interactions were collected.')
+	console.log('No interactions were collected.');
 }
 ```
 
