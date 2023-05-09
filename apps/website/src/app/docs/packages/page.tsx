@@ -14,15 +14,13 @@ export default function Page() {
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
 				<a
-					className="h-11 flex transform-gpu cursor-pointer select-none appearance-none place-content-between border border-neutral-300 rounded bg-white p-4 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 dark:bg-dark-400 hover:bg-neutral-100 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					className={buttonVariants({ variant: 'secondary' })}
 					href="https://old.discordjs.dev/#/docs/discord.js"
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
-						<div className="flex grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex flex-row place-content-between place-items-center gap-4">
-								<VscPackage size={25} />
-								<h2 className="font-semibold">discord.js</h2>
-							</div>
+						<div className="flex flex-row place-content-between place-items-center gap-4">
+							<VscPackage size={25} />
+							<h2 className="font-semibold">discord.js</h2>
 						</div>
 						<VscArrowRight size={20} />
 					</div>
@@ -34,31 +32,27 @@ export default function Page() {
 						key={`${pkg}-${idx}`}
 					>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex grow flex-row place-content-between place-items-center gap-4">
-								<div className="flex flex-row place-content-between place-items-center gap-4">
-									<VscPackage size={25} />
-									<h2 className="font-semibold">{pkg}</h2>
-								</div>
-								{/* <Link href={`/docs/packages/${pkg}`}>
-									<div
-										className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-none focus:ring focus:ring-white active:translate-y-px"
-										role="link"
-									>
-										Select version
-									</div>
-								</Link> */}
+							<div className="flex flex-row place-content-between place-items-center gap-4">
+								<VscPackage size={25} />
+								<h2 className="font-semibold">{pkg}</h2>
 							</div>
+							{/* <Link href={`/docs/packages/${pkg}`}>
+								<div
+									className="bg-blurple focus:ring-width-2 flex h-6 transform-gpu cursor-pointer select-none appearance-none flex-row place-content-center place-items-center rounded border-0 px-2 text-xs font-semibold leading-none text-white outline-none focus:ring focus:ring-white active:translate-y-px"
+									role="link"
+								>
+									Select version
+								</div>
+							</Link> */}
 							<VscArrowRight size={20} />
 						</div>
 					</Link>
 				))}
 				<a className={buttonVariants({ variant: 'secondary' })} href="https://discord-api-types.dev/">
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
-						<div className="flex grow flex-row place-content-between place-items-center gap-4">
-							<div className="flex flex-row place-content-between place-items-center gap-4">
-								<VscPackage size={25} />
-								<h2 className="font-semibold">discord-api-types</h2>
-							</div>
+						<div className="flex flex-row place-content-between place-items-center gap-4">
+							<VscPackage size={25} />
+							<h2 className="font-semibold">discord-api-types</h2>
 						</div>
 						<FiExternalLink size={20} />
 					</div>
