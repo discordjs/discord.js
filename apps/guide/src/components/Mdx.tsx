@@ -2,6 +2,7 @@
 
 import { Alert, Section, DiscordMessages, DiscordMessage, DiscordMessageEmbed } from '@discordjs/ui';
 import { useMDXComponent } from 'next-contentlayer/hooks';
+import { DiscordAPITypesLink } from './DiscordAPITypesLink';
 import { H1 } from './H1';
 import { H2 } from './H2';
 import { H3 } from './H3';
@@ -20,6 +21,7 @@ export function Mdx({ code }: { code: string }) {
 				DiscordMessages,
 				DiscordMessage,
 				DiscordMessageEmbed,
+				DiscordAPITypesLink,
 				DocsLink,
 				ResultingCode,
 				h1: H1,
