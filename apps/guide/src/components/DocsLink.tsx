@@ -1,4 +1,5 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
+import type { PropsWithChildren } from 'react';
 import { BASE_URL, BASE_URL_LEGACY, PACKAGES, VERSION } from '~/util/constants';
 
 interface DocsLinkOptions {
@@ -19,7 +20,7 @@ interface DocsLinkOptions {
 	 *
 	 * @example `'Client'`
 	 */
-	parent: string;
+	parent?: string;
 	/**
 	 * Whether to reference a static property.
 	 *
@@ -40,7 +41,7 @@ interface DocsLinkOptions {
 	 * @example `'class'`
 	 * @example `'Function'`
 	 */
-	type: string;
+	type?: string;
 }
 
 export function DocsLink({
@@ -50,29 +51,35 @@ export function DocsLink({
 	symbol,
 	brackets,
 	static: staticReference,
-}: DocsLinkOptions) {
-	const bracketText = brackets || type.toUpperCase() === 'FUNCTION' ? '()' : '';
-	const trimmedSymbol = symbol;
-	let url;
-	let text;
+	children,
+}: PropsWithChildren<DocsLinkOptions>) {
+	// In the case of no type and no parent, this will default to the entry point of the respective documentation.
+	let url = docs === PACKAGES[0] ? `${BASE_URL_LEGACY}/${VERSION}/general/welcome` : `${BASE_URL}/${docs}/stable`;
+	let text = `${docs === PACKAGES[0] ? '' : '@discordjs/'}${docs}`;
 
-	if (docs === PACKAGES[0]) {
-		url = `${BASE_URL_LEGACY}/${VERSION}/${type}/${parent}`;
-		if (trimmedSymbol) url += `?scrollTo=${trimmedSymbol}`;
+	// If there is a type and parent, we need to do some parsing.
+	if (type && parent) {
+		const bracketText = brackets || type?.toUpperCase() === 'FUNCTION' ? '()' : '';
 
-		text = `${parent}${trimmedSymbol ? (trimmedSymbol.startsWith('s-') ? '.' : '#') : ''}${
-			// eslint-disable-next-line prefer-named-capture-group
-			trimmedSymbol ? `${trimmedSymbol.replace(/(e|s)-/, '')}` : ''
-		}${bracketText}`;
-	} else {
-		url = `${BASE_URL}/${docs}/stable/${parent}:${type}`;
-		if (trimmedSymbol) url += `#${trimmedSymbol}`;
-		text = `${parent}${trimmedSymbol ? `${staticReference ? '.' : '#'}${trimmedSymbol}` : ''}${bracketText}`;
+		// Legacy discord.js documentation parsing.
+		if (docs === PACKAGES[0]) {
+			url = `${BASE_URL_LEGACY}/${VERSION}/${type}/${parent}`;
+			if (symbol) url += `?scrollTo=${symbol}`;
+
+			text = `${parent}${symbol ? (symbol.startsWith('s-') ? '.' : '#') : ''}${
+				// eslint-disable-next-line prefer-named-capture-group
+				symbol ? `${symbol.replace(/(e|s)-/, '')}` : ''
+			}${bracketText}`;
+		} else {
+			url += `/${parent}:${type}`;
+			if (symbol) url += `#${symbol}`;
+			text = `${parent}${symbol ? `${staticReference ? '.' : '#'}${symbol}` : ''}${bracketText}`;
+		}
 	}
 
 	return (
 		<a className="inline-flex flex-row place-items-center gap-1" href={url} rel="noopener noreferrer" target="_blank">
-			{text}
+			{children ?? text}
 			<FiExternalLink size={18} />
 		</a>
 	);

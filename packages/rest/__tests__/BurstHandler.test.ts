@@ -3,8 +3,8 @@
 import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
-import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
-import { DiscordAPIError, HTTPError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
+import { beforeEach, afterEach, test, expect } from 'vitest';
+import { DiscordAPIError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';
 
@@ -46,6 +46,7 @@ test('Interaction callback creates burst handler', async () => {
 			auth: false,
 			body: { type: 4, data: { content: 'Reply' } },
 		}),
+		// TODO: This should be ArrayBuffer, there is a bug in undici request
 	).toBeInstanceOf(Uint8Array);
 	expect(api.requestManager.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
 });

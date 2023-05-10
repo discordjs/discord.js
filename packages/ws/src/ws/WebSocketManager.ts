@@ -10,8 +10,8 @@ import {
 	type GatewayIntentBits,
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
-import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler';
+import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
+import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 

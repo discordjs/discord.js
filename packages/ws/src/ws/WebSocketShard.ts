@@ -22,7 +22,7 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type RawData } from 'ws';
 import type { Inflate } from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
@@ -259,6 +259,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
+			// There's cases (like no internet connection) where we immediately fail to connect,
+			// causing a very fast and draining reconnection loop.
+			await sleep(500);
 			return this.internalConnect();
 		}
 	}

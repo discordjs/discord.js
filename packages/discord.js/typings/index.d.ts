@@ -40,6 +40,7 @@ import {
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { WebSocketManager as WSWebSocketManager, IShardingStrategy, SessionInfo } from '@discordjs/ws';
 import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
@@ -377,6 +378,10 @@ export class AutoModerationRule extends Base {
   public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
   public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
+  public setMentionRaidProtectionEnabled(
+    mentionRaidProtectionEnabled: boolean,
+    reason?: string,
+  ): Promise<AutoModerationRule>;
   public setActions(actions: AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
@@ -1323,6 +1328,8 @@ export class Guild extends AnonymousGuild {
   public roles: RoleManager;
   public get rulesChannel(): TextChannel | null;
   public rulesChannelId: Snowflake | null;
+  public get safetyAlertsChannel(): TextChannel | null;
+  public safetyAlertsChannelId: Snowflake | null;
   public scheduledEvents: GuildScheduledEventManager;
   public get shard(): WebSocketShard;
   public shardId: number;
@@ -1379,6 +1386,7 @@ export class Guild extends AnonymousGuild {
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
+  public setSafetyAlertsChannel(safetyAlertsChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSplash(splash: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannel(systemChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
@@ -3302,11 +3310,8 @@ export class WebhookClient extends WebhookMixin(BaseClient) {
 
 export class WebSocketManager extends EventEmitter {
   private constructor(client: Client);
-  private totalShards: number | string;
-  private shardQueue: Set<WebSocketShard>;
   private readonly packetQueue: unknown[];
   private destroyed: boolean;
-  private reconnecting: boolean;
 
   public readonly client: Client;
   public gateway: string | null;
@@ -3317,10 +3322,8 @@ export class WebSocketManager extends EventEmitter {
   public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
   public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
-  private debug(message: string, shard?: WebSocketShard): void;
+  private debug(message: string, shardId?: number): void;
   private connect(): Promise<void>;
-  private createShards(): Promise<void>;
-  private reconnect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): void;
   private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
@@ -3339,26 +3342,11 @@ export interface WebSocketShardEventTypes {
 
 export class WebSocketShard extends EventEmitter {
   private constructor(manager: WebSocketManager, id: number);
-  private sequence: number;
   private closeSequence: number;
-  private sessionId: string | null;
-  private resumeURL: string | null;
+  private sessionInfo: SessionInfo | null;
   public lastPingTimestamp: number;
-  private lastHeartbeatAcked: boolean;
-  private readonly ratelimit: {
-    queue: unknown[];
-    total: number;
-    remaining: number;
-    time: 60e3;
-    timer: NodeJS.Timeout | null;
-  };
-  private connection: WebSocket | null;
-  private helloTimeout: NodeJS.Timeout | null;
-  private eventsAttached: boolean;
   private expectedGuilds: Set<Snowflake> | null;
   private readyTimeout: NodeJS.Timeout | null;
-  private closeEmitted: boolean;
-  private wsCloseTimeout: NodeJS.Timeout | null;
 
   public manager: WebSocketManager;
   public id: number;
@@ -3366,27 +3354,10 @@ export class WebSocketShard extends EventEmitter {
   public ping: number;
 
   private debug(message: string): void;
-  private connect(): Promise<void>;
-  private onOpen(): void;
-  private onMessage(event: MessageEvent): void;
-  private onError(error: ErrorEvent | unknown): void;
-  private onClose(event: CloseEvent): void;
-  private onPacket(packet: unknown): void;
+  private onReadyPacket(packet: unknown): void;
+  private gotGuild(guildId: Snowflake): void;
   private checkReady(): void;
-  private setHelloTimeout(time?: number): void;
-  private setWsCloseTimeout(time?: number): void;
-  private setHeartbeatTimer(time: number): void;
-  private sendHeartbeat(): void;
-  private ackHeartbeat(): void;
-  private identify(): void;
-  private identifyNew(): void;
-  private identifyResume(): void;
-  private _send(data: unknown): void;
-  private processQueue(): void;
-  private destroy(destroyOptions?: { closeCode?: number; reset?: boolean; emit?: boolean; log?: boolean }): void;
   private emitClose(event?: CloseEvent): void;
-  private _cleanupConnection(): void;
-  private _emitDestroyed(): void;
 
   public send(data: unknown, important?: boolean): void;
 
@@ -3509,16 +3480,23 @@ export enum DiscordjsErrorCodes {
   TokenMissing = 'TokenMissing',
   ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
+  /** @deprecated */
   WSCloseRequested = 'WSCloseRequested',
+  /** @deprecated */
   WSConnectionExists = 'WSConnectionExists',
+  /** @deprecated */
   WSNotOpen = 'WSNotOpen',
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
 
+  /** @deprecated */
   ShardingInvalid = 'ShardingInvalid',
+  /** @deprecated */
   ShardingRequired = 'ShardingRequired',
+  /** @deprecated */
   InvalidIntents = 'InvalidIntents',
+  /** @deprecated */
   DisallowedIntents = 'DisallowedIntents',
   ShardingNoShards = 'ShardingNoShards',
   ShardingInProcess = 'ShardingInProcess',
@@ -4599,6 +4577,7 @@ export interface AutoModerationTriggerMetadata {
   presets: AutoModerationRuleKeywordPresetType[];
   allowList: string[];
   mentionTotalLimit: number | null;
+  mentionRaidProtectionEnabled: boolean;
 }
 
 export type AwaitMessageComponentOptions<T extends CollectedMessageInteraction> = Omit<
@@ -4874,10 +4853,11 @@ export interface ClientUserEditOptions {
 }
 
 export interface CloseEvent {
+  /** @deprecated */
   wasClean: boolean;
   code: number;
+  /** @deprecated */
   reason: string;
-  target: WebSocket;
 }
 
 export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;
@@ -5360,14 +5340,17 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.AutoModerationBlockMessage]: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
   [AuditLogEvent.AutoModerationFlagToChannel]: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
   [AuditLogEvent.AutoModerationUserCommunicationDisabled]: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AuditLogRuleTriggerType;
+    channel: GuildTextBasedChannel | { id: Snowflake };
   };
 }
 
@@ -5429,7 +5412,7 @@ export interface AutoModerationActionOptions {
 }
 
 export interface AutoModerationActionMetadataOptions extends Partial<Omit<AutoModerationActionMetadata, 'channelId'>> {
-  channel: GuildTextChannelResolvable | ThreadChannel;
+  channel?: GuildTextChannelResolvable | ThreadChannel;
 }
 
 export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
@@ -5512,6 +5495,7 @@ export interface GuildEditOptions {
   systemChannelFlags?: SystemChannelFlagsResolvable;
   rulesChannel?: TextChannelResolvable | null;
   publicUpdatesChannel?: TextChannelResolvable | null;
+  safetyAlertsChannel?: TextChannelResolvable | null;
   preferredLocale?: Locale | null;
   features?: `${GuildFeature}`[];
   description?: string | null;
@@ -5885,7 +5869,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
-  options?: SelectMenuComponentOptionData[];
+  options: SelectMenuComponentOptionData[];
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
@@ -6332,15 +6316,8 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 
 export interface WebSocketOptions {
   large_threshold?: number;
-  compress?: boolean;
-  properties?: WebSocketProperties;
   version?: number;
-}
-
-export interface WebSocketProperties {
-  os?: string;
-  browser?: string;
-  device?: string;
+  buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
 }
 
 export interface WidgetActivity {
@@ -6418,3 +6395,4 @@ export * from '@discordjs/builders';
 export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
+export * from '@discordjs/ws';

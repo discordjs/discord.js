@@ -1,7 +1,7 @@
 import { URL } from 'node:url';
 import type { RequestMethod, REST, RouteLike } from '@discordjs/rest';
 import { populateSuccessfulResponse, populateErrorResponse } from '../util/responseHelpers.js';
-import type { RequestHandler } from '../util/util';
+import type { RequestHandler } from '../util/util.js';
 
 /**
  * Creates an HTTP handler used to forward requests to Discord

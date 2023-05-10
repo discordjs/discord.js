@@ -1,0 +1,73 @@
+{
+	"name": "create-discord-bot",
+	"version": "0.1.0",
+	"description": "A simple way to create a startup Discord bot.",
+	"scripts": {
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
+		"release": "cliff-jumper"
+	},
+	"bin": "./dist/create-discord-bot.mjs",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist",
+		"template"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Jiralite <jiralite@live.co.uk>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"discord-api",
+		"discord.js",
+		"create-bot",
+		"init-bot",
+		"init-discord",
+		"boilerplate"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git",
+		"directory": "packages/create-discord-bot"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"chalk": "^5.2.0",
+		"commander": "^10.0.1",
+		"validate-npm-package-name": "^5.0.0"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^2.0.0",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "16.18.26",
+		"@types/validate-npm-package-name": "^4.0.0",
+		"@vitest/coverage-c8": "^0.31.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.40.0",
+		"eslint-config-neon": "^0.1.47",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"typescript": "^5.0.4",
+		"vitest": "^0.31.0"
+	},
+	"engines": {
+		"node": ">=18.16.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

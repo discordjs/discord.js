@@ -117,7 +117,9 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const [flag, bit] of Object.entries(this.constructor.Flags)) serialized[flag] = this.has(bit, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
+      if (isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
+    }
     return serialized;
   }
 
@@ -140,7 +142,7 @@ class BitField {
 
   *[Symbol.iterator](...hasParams) {
     for (const bitName of Object.keys(this.constructor.Flags)) {
-      if (this.has(bitName, ...hasParams)) yield bitName;
+      if (isNaN(bitName) && this.has(bitName, ...hasParams)) yield bitName;
     }
   }
 

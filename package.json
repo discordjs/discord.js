@@ -46,24 +46,30 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.6.1",
-		"@commitlint/config-angular": "^17.6.1",
+		"@commitlint/cli": "^17.6.3",
+		"@commitlint/config-angular": "^17.6.3",
 		"@favware/cliff-jumper": "^2.0.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"conventional-changelog-cli": "^2.2.2",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^13.2.1",
+		"lint-staged": "^13.2.2",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.3",
+		"turbo": "^1.9.4-canary.10",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.8",
-		"vercel": "^28.20.0",
-		"vitest": "^0.29.8"
+		"unocss": "^0.51.12",
+		"vercel": "^29.1.1",
+		"vitest": "^0.31.0"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config@~0.16.1": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
-		"@microsoft/tsdoc-config@0.16.2": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch"
+		"@microsoft/tsdoc-config@0.16.2": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
+		"yaml@2.2.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
+		"yaml@^2.2.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
+		"yaml@^1.10.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
+		"yaml@^1.10.0": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
+		"yaml@^2.1.1": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
+		"tsup@^6.7.0": "patch:tsup@npm%3A6.7.0#./.yarn/patches/tsup-npm-6.7.0-5093540b93.patch"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -72,5 +78,5 @@
 		"apps/*",
 		"packages/*"
 	],
-	"packageManager": "yarn@3.5.0"
+	"packageManager": "yarn@3.5.1"
 }

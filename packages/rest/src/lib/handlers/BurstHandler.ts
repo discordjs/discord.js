@@ -1,10 +1,10 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import type { Dispatcher } from 'undici';
-import type { RequestOptions } from '../REST.js';
+import type { RequestInit } from 'undici';
+import type { ResponseLike } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { onRateLimit, parseHeader } from '../utils/utils.js';
-import type { IHandler } from './IHandler.js';
+import { onRateLimit } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 /**
@@ -54,9 +54,9 @@ export class BurstHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestOptions,
+		options: RequestInit,
 		requestData: HandlerRequestData,
-	): Promise<Dispatcher.ResponseData> {
+	): Promise<ResponseLike> {
 		return this.runRequest(routeId, url, options, requestData);
 	}
 
@@ -72,10 +72,10 @@ export class BurstHandler implements IHandler {
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestOptions,
+		options: RequestInit,
 		requestData: HandlerRequestData,
 		retries = 0,
-	): Promise<Dispatcher.ResponseData> {
+	): Promise<ResponseLike> {
 		const method = options.method ?? 'get';
 
 		const res = await makeNetworkRequest(this.manager, routeId, url, options, requestData, retries);
@@ -86,9 +86,9 @@ export class BurstHandler implements IHandler {
 			return this.runRequest(routeId, url, options, requestData, ++retries);
 		}
 
-		const status = res.statusCode;
+		const status = res.status;
 		let retryAfter = 0;
-		const retry = parseHeader(res.headers['retry-after']);
+		const retry = res.headers.get('Retry-After');
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
 		if (retry) retryAfter = Number(retry) * 1_000 + this.manager.options.offset;
@@ -102,7 +102,7 @@ export class BurstHandler implements IHandler {
 			return res;
 		} else if (status === 429) {
 			// Unexpected ratelimit
-			const isGlobal = res.headers['x-ratelimit-global'] !== undefined;
+			const isGlobal = res.headers.has('X-RateLimit-Global');
 			await onRateLimit(this.manager, {
 				timeToReset: retryAfter,
 				limit: Number.POSITIVE_INFINITY,

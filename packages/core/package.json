@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/core",
-	"version": "0.5.2",
+	"version": "0.6.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",
@@ -18,14 +18,14 @@
 	"typings": "./dist/index.d.ts",
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": "./dist/index.js"
 		},
 		"./http-only": {
+			"types": "./dist/http-only.d.ts",
 			"import": "./dist/http-only.mjs",
-			"require": "./dist/http-only.js",
-			"types": "./dist/http-only.d.ts"
+			"require": "./dist/http-only.js"
 		}
 	},
 	"directories": {
@@ -59,25 +59,26 @@
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.4.2",
 		"@vladfrangu/async_event_emitter": "^2.2.1",
-		"discord-api-types": "^0.37.40"
+		"discord-api-types": "^0.37.41"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.24",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "18.16.5",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint": "^8.40.0",
+		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.10",
 		"typescript": "^5.0.4",
-		"vitest": "^0.29.8"
+		"vitest": "^0.31.0"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.12.0"
 	},
 	"publishConfig": {
 		"access": "public"

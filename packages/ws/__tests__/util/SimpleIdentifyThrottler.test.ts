@@ -1,5 +1,5 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-import { expect, test, vi, type Mock } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { SimpleIdentifyThrottler } from '../../src/index.js';
 
 vi.mock('node:timers/promises', () => ({

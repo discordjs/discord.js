@@ -13,6 +13,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -22,7 +23,7 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 18.12.0 or newer is required.**
 
 ```sh
 npm install @discordjs/core
@@ -39,14 +40,15 @@ import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
-const ws = new WebSocketManager({
+
+const gateway = new WebSocketManager({
 	token,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
 	rest,
 });
 
 // Create a client to emit relevant events.
-const client = new Client({ rest, ws });
+const client = new Client({ rest, gateway });
 
 // Listen for interactions
 // Each event contains an `api` prop along with the event data that allows you to interface with the Discord REST API
@@ -62,7 +64,7 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-ws.connect();
+gateway.connect();
 ```
 
 ## Independent REST API Usage

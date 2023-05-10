@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/brokers",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Powerful set of message brokers",
 	"scripts": {
 		"test": "vitest run",
@@ -18,9 +18,9 @@
 	"module": "./dist/index.mjs",
 	"typings": "./dist/index.d.ts",
 	"exports": {
+		"types": "./dist/index.d.ts",
 		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		"require": "./dist/index.js"
 	},
 	"directories": {
 		"lib": "src",
@@ -64,17 +64,18 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.24",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@microsoft/api-extractor": "^7.34.8",
+		"@types/node": "16.18.26",
+		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.39.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint": "^8.40.0",
+		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
+		"turbo": "^1.9.4-canary.10",
 		"typescript": "^5.0.4",
-		"vitest": "^0.29.8"
+		"vitest": "^0.31.0"
 	},
 	"engines": {
 		"node": ">=16.9.0"

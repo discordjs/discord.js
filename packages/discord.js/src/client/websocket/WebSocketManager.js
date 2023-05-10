@@ -1,16 +1,28 @@
 'use strict';
 
 const EventEmitter = require('node:events');
+const process = require('node:process');
 const { setImmediate } = require('node:timers');
-const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
-const { GatewayCloseCodes, GatewayDispatchEvents, Routes } = require('discord-api-types/v10');
+const {
+  WebSocketManager: WSWebSocketManager,
+  WebSocketShardEvents: WSWebSocketShardEvents,
+  CompressionMethod,
+  CloseCodes,
+} = require('@discordjs/ws');
+const { GatewayCloseCodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const WebSocketShard = require('./WebSocketShard');
 const PacketHandlers = require('./handlers');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
 const Events = require('../../util/Events');
 const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
+
+let zlib;
+
+try {
+  zlib = require('zlib-sync');
+} catch {} // eslint-disable-line no-empty
 
 const BeforeReadyWhitelist = [
   GatewayDispatchEvents.Ready,
@@ -22,15 +34,17 @@ const BeforeReadyWhitelist = [
   GatewayDispatchEvents.GuildMemberRemove,
 ];
 
-const unrecoverableErrorCodeMap = {
-  [GatewayCloseCodes.AuthenticationFailed]: ErrorCodes.TokenInvalid,
-  [GatewayCloseCodes.InvalidShard]: ErrorCodes.ShardingInvalid,
-  [GatewayCloseCodes.ShardingRequired]: ErrorCodes.ShardingRequired,
-  [GatewayCloseCodes.InvalidIntents]: ErrorCodes.InvalidIntents,
-  [GatewayCloseCodes.DisallowedIntents]: ErrorCodes.DisallowedIntents,
-};
+const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 
-const UNRESUMABLE_CLOSE_CODES = [1000, GatewayCloseCodes.AlreadyAuthenticated, GatewayCloseCodes.InvalidSeq];
+const UNRESUMABLE_CLOSE_CODES = [
+  CloseCodes.Normal,
+  GatewayCloseCodes.AlreadyAuthenticated,
+  GatewayCloseCodes.InvalidSeq,
+];
+
+const reasonIsDeprecated = 'the reason property is deprecated, use the code property to determine the reason';
+let deprecationEmittedForInvalidSessionEvent = false;
+let deprecationEmittedForDestroyedEvent = false;
 
 /**
  * The WebSocket manager for this client.
@@ -57,25 +71,10 @@ class WebSocketManager extends EventEmitter {
     this.gateway = null;
 
     /**
-     * The amount of shards this manager handles
-     * @private
-     * @type {number}
-     */
-    this.totalShards = this.client.options.shards.length;
-
-    /**
      * A collection of all shards this manager handles
      * @type {Collection<number, WebSocketShard>}
      */
     this.shards = new Collection();
-
-    /**
-     * An array of shards to be connected or that need to reconnect
-     * @type {Set<WebSocketShard>}
-     * @private
-     * @name WebSocketManager#shardQueue
-     */
-    Object.defineProperty(this, 'shardQueue', { value: new Set(), writable: true });
 
     /**
      * An array of queued events before this WebSocketManager became ready
@@ -99,11 +98,11 @@ class WebSocketManager extends EventEmitter {
     this.destroyed = false;
 
     /**
-     * If this manager is currently reconnecting one or multiple shards
-     * @type {boolean}
+     * The internal WebSocketManager from `@discordjs/ws`.
+     * @type {WSWebSocketManager}
      * @private
      */
-    this.reconnecting = false;
+    this._ws = null;
   }
 
   /**
@@ -119,11 +118,14 @@ class WebSocketManager extends EventEmitter {
   /**
    * Emits a debug message.
    * @param {string} message The debug message
-   * @param {?WebSocketShard} [shard] The shard that emitted this message, if any
+   * @param {?number} [shardId] The id of the shard that emitted this message, if any
    * @private
    */
-  debug(message, shard) {
-    this.client.emit(Events.Debug, `[WS => ${shard ? `Shard ${shard.id}` : 'Manager'}] ${message}`);
+  debug(message, shardId) {
+    this.client.emit(
+      Events.Debug,
+      `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${message}`,
+    );
   }
 
   /**
@@ -132,11 +134,37 @@ class WebSocketManager extends EventEmitter {
    */
   async connect() {
     const invalidToken = new DiscordjsError(ErrorCodes.TokenInvalid);
+    const { shards, shardCount, intents, ws } = this.client.options;
+    if (this._ws && this._ws.options.token !== this.client.token) {
+      await this._ws.destroy({ code: CloseCodes.Normal, reason: 'Login with differing token requested' });
+      this._ws = null;
+    }
+    if (!this._ws) {
+      const wsOptions = {
+        intents: intents.bitfield,
+        rest: this.client.rest,
+        token: this.client.token,
+        largeThreshold: ws.large_threshold,
+        version: ws.version,
+        shardIds: shards === 'auto' ? null : shards,
+        shardCount: shards === 'auto' ? null : shardCount,
+        initialPresence: ws.presence,
+        retrieveSessionInfo: shardId => this.shards.get(shardId).sessionInfo,
+        updateSessionInfo: (shardId, sessionInfo) => {
+          this.shards.get(shardId).sessionInfo = sessionInfo;
+        },
+        compression: zlib ? CompressionMethod.ZlibStream : null,
+      };
+      if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;
+      this._ws = new WSWebSocketManager(wsOptions);
+      this.attachEvents();
+    }
+
     const {
       url: gatewayURL,
       shards: recommendedShards,
       session_start_limit: sessionStartLimit,
-    } = await this.client.rest.get(Routes.gatewayBot()).catch(error => {
+    } = await this._ws.fetchGatewayInformation().catch(error => {
       throw error.status === 401 ? invalidToken : error;
     });
 
@@ -152,156 +180,131 @@ class WebSocketManager extends EventEmitter {
 
     this.gateway = `${gatewayURL}/`;
 
-    let { shards } = this.client.options;
+    this.client.options.shardCount = await this._ws.getShardCount();
+    this.client.options.shards = await this._ws.getShardIds();
+    this.totalShards = this.client.options.shards.length;
+    for (const id of this.client.options.shards) {
+      if (!this.shards.has(id)) {
+        const shard = new WebSocketShard(this, id);
+        this.shards.set(id, shard);
 
-    if (shards === 'auto') {
-      this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
-      this.totalShards = this.client.options.shardCount = recommendedShards;
-      shards = this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
-    }
-
-    this.totalShards = shards.length;
-    this.debug(`Spawning shards: ${shards.join(', ')}`);
-    this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
-
-    return this.createShards();
-  }
-
-  /**
-   * Handles the creation of a shard.
-   * @returns {Promise<boolean>}
-   * @private
-   */
-  async createShards() {
-    // If we don't have any shards to handle, return
-    if (!this.shardQueue.size) return false;
-
-    const [shard] = this.shardQueue;
-
-    this.shardQueue.delete(shard);
-
-    if (!shard.eventsAttached) {
-      shard.on(WebSocketShardEvents.AllReady, unavailableGuilds => {
-        /**
-         * Emitted when a shard turns ready.
-         * @event Client#shardReady
-         * @param {number} id The shard id that turned ready
-         * @param {?Set<Snowflake>} unavailableGuilds Set of unavailable guild ids, if any
-         */
-        this.client.emit(Events.ShardReady, shard.id, unavailableGuilds);
-
-        if (!this.shardQueue.size) this.reconnecting = false;
-        this.checkShardsReady();
-      });
-
-      shard.on(WebSocketShardEvents.Close, event => {
-        if (event.code === 1_000 ? this.destroyed : event.code in unrecoverableErrorCodeMap) {
+        shard.on(WebSocketShardEvents.AllReady, unavailableGuilds => {
           /**
-           * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
-           * @event Client#shardDisconnect
-           * @param {CloseEvent} event The WebSocket close event
-           * @param {number} id The shard id that disconnected
+           * Emitted when a shard turns ready.
+           * @event Client#shardReady
+           * @param {number} id The shard id that turned ready
+           * @param {?Set<Snowflake>} unavailableGuilds Set of unavailable guild ids, if any
            */
-          this.client.emit(Events.ShardDisconnect, event, shard.id);
-          this.debug(GatewayCloseCodes[event.code], shard);
-          return;
-        }
+          this.client.emit(Events.ShardReady, shard.id, unavailableGuilds);
 
-        if (UNRESUMABLE_CLOSE_CODES.includes(event.code)) {
-          // These event codes cannot be resumed
-          shard.sessionId = null;
-        }
-
-        /**
-         * Emitted when a shard is attempting to reconnect or re-identify.
-         * @event Client#shardReconnecting
-         * @param {number} id The shard id that is attempting to reconnect
-         */
-        this.client.emit(Events.ShardReconnecting, shard.id);
-
-        this.shardQueue.add(shard);
-
-        if (shard.sessionId) this.debug(`Session id is present, attempting an immediate reconnect...`, shard);
-        this.reconnect();
-      });
-
-      shard.on(WebSocketShardEvents.InvalidSession, () => {
-        this.client.emit(Events.ShardReconnecting, shard.id);
-      });
-
-      shard.on(WebSocketShardEvents.Destroyed, () => {
-        this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
-
-        this.client.emit(Events.ShardReconnecting, shard.id);
-
-        this.shardQueue.add(shard);
-        this.reconnect();
-      });
-
-      shard.eventsAttached = true;
-    }
-
-    this.shards.set(shard.id, shard);
-
-    try {
-      await shard.connect();
-    } catch (error) {
-      if (error?.code && error.code in unrecoverableErrorCodeMap) {
-        throw new DiscordjsError(unrecoverableErrorCodeMap[error.code]);
-        // Undefined if session is invalid, error event for regular closes
-      } else if (!error || error.code) {
-        this.debug('Failed to connect to the gateway, requeueing...', shard);
-        this.shardQueue.add(shard);
-      } else {
-        throw error;
+          this.checkShardsReady();
+        });
+        shard.status = Status.Connecting;
       }
     }
-    // If we have more shards, add a 5s delay
-    if (this.shardQueue.size) {
-      this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
-      await sleep(5_000);
-      return this.createShards();
-    }
 
-    return true;
+    await this._ws.connect();
+
+    this.shards.forEach(shard => {
+      if (shard.listenerCount(WebSocketShardEvents.InvalidSession) > 0 && !deprecationEmittedForInvalidSessionEvent) {
+        process.emitWarning(
+          'The WebSocketShard#invalidSession event is deprecated and will never emit.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForInvalidSessionEvent = true;
+      }
+      if (shard.listenerCount(WebSocketShardEvents.Destroyed) > 0 && !deprecationEmittedForDestroyedEvent) {
+        process.emitWarning(
+          'The WebSocketShard#destroyed event is deprecated and will never emit.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForDestroyedEvent = true;
+      }
+    });
   }
 
   /**
-   * Handles reconnects for this manager.
+   * Attaches event handlers to the internal WebSocketShardManager from `@discordjs/ws`.
    * @private
-   * @returns {Promise<boolean>}
    */
-  async reconnect() {
-    if (this.reconnecting || this.status !== Status.Ready) return false;
-    this.reconnecting = true;
-    try {
-      await this.createShards();
-    } catch (error) {
-      this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
-      if (error.httpStatus !== 401) {
-        this.debug(`Possible network error occurred. Retrying in 5s...`);
-        await sleep(5_000);
-        this.reconnecting = false;
-        return this.reconnect();
+  attachEvents() {
+    this._ws.on(WSWebSocketShardEvents.Debug, ({ message, shardId }) => this.debug(message, shardId));
+    this._ws.on(WSWebSocketShardEvents.Dispatch, ({ data, shardId }) => {
+      this.client.emit(Events.Raw, data, shardId);
+      this.emit(data.t, data.d, shardId);
+      const shard = this.shards.get(shardId);
+      this.handlePacket(data, shard);
+      if (shard.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(data.t)) {
+        shard.gotGuild(data.d.id);
       }
-      // If we get an error at this point, it means we cannot reconnect anymore
-      if (this.client.listenerCount(Events.Invalidated)) {
+    });
+
+    this._ws.on(WSWebSocketShardEvents.Ready, ({ data, shardId }) => {
+      this.shards.get(shardId).onReadyPacket(data);
+    });
+
+    this._ws.on(WSWebSocketShardEvents.Closed, ({ code, shardId }) => {
+      const shard = this.shards.get(shardId);
+      shard.emit(WebSocketShardEvents.Close, { code, reason: reasonIsDeprecated, wasClean: true });
+      if (UNRESUMABLE_CLOSE_CODES.includes(code) && this.destroyed) {
+        shard.status = Status.Disconnected;
         /**
-         * Emitted when the client's session becomes invalidated.
-         * You are expected to handle closing the process gracefully and preventing a boot loop
-         * if you are listening to this event.
-         * @event Client#invalidated
+         * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
+         * @event Client#shardDisconnect
+         * @param {CloseEvent} event The WebSocket close event
+         * @param {number} id The shard id that disconnected
          */
-        this.client.emit(Events.Invalidated);
-        // Destroy just the shards. This means you have to handle the cleanup yourself
-        this.destroy();
-      } else {
-        this.client.destroy();
+        this.client.emit(Events.ShardDisconnect, { code, reason: reasonIsDeprecated, wasClean: true }, shardId);
+        this.debug(GatewayCloseCodes[code], shardId);
+        return;
       }
-    } finally {
-      this.reconnecting = false;
-    }
-    return true;
+
+      this.shards.get(shardId).status = Status.Connecting;
+      /**
+       * Emitted when a shard is attempting to reconnect or re-identify.
+       * @event Client#shardReconnecting
+       * @param {number} id The shard id that is attempting to reconnect
+       */
+      this.client.emit(Events.ShardReconnecting, shardId);
+    });
+    this._ws.on(WSWebSocketShardEvents.Hello, ({ shardId }) => {
+      const shard = this.shards.get(shardId);
+      if (shard.sessionInfo) {
+        shard.closeSequence = shard.sessionInfo.sequence;
+        shard.status = Status.Resuming;
+      } else {
+        shard.status = Status.Identifying;
+      }
+    });
+
+    this._ws.on(WSWebSocketShardEvents.Resumed, ({ shardId }) => {
+      const shard = this.shards.get(shardId);
+      shard.status = Status.Ready;
+      /**
+       * Emitted when the shard resumes successfully
+       * @event WebSocketShard#resumed
+       */
+      shard.emit(WebSocketShardEvents.Resumed);
+    });
+
+    this._ws.on(WSWebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency, shardId }) => {
+      this.debug(`Heartbeat acknowledged, latency of ${latency}ms.`, shardId);
+      const shard = this.shards.get(shardId);
+      shard.lastPingTimestamp = heartbeatAt;
+      shard.ping = latency;
+    });
+
+    this._ws.on(WSWebSocketShardEvents.Error, ({ error, shardId }) => {
+      /**
+       * Emitted whenever a shard's WebSocket encounters a connection error.
+       * @event Client#shardError
+       * @param {Error} error The encountered error
+       * @param {number} shardId The shard that encountered this error
+       */
+      this.client.emit(Events.ShardError, error, shardId);
+    });
   }
 
   /**
@@ -310,7 +313,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   broadcast(packet) {
-    for (const shard of this.shards.values()) shard.send(packet);
+    for (const shardId of this.shards.keys()) this._ws.send(shardId, packet);
   }
 
   /**
@@ -322,8 +325,7 @@ class WebSocketManager extends EventEmitter {
     // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
     this.destroyed = true;
-    this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1_000, reset: true, emit: false, log: false });
+    this._ws.destroy({ code: CloseCodes.Normal });
   }
 
   /**

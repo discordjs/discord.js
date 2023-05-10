@@ -47,32 +47,31 @@ export default defineConfig({
 				'a > img': {
 					display: 'inline-block',
 				},
-				h1: {
-					'scroll-margin-top': '6.5rem',
+				'a > img[height="44"]': {
+					height: '44px',
 				},
-				'.level-h1': {
-					margin: '1rem 0',
+				h1: {
+					display: 'flex',
+					'place-items': 'center',
+					'scroll-margin-top': '6.5rem',
 				},
 				h2: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h2': {
-					margin: '1.25em 0',
 				},
 				h3: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h3': {
-					margin: '1.25em 0',
 				},
 				h4: {
+					display: 'flex',
+					'place-items': 'center',
 					'margin-top': '1.25em',
 					'scroll-margin-top': '6.5rem',
-				},
-				'.level-h4': {
-					margin: '1.25em 0',
 				},
 				// eslint-disable-next-line id-length
 				p: {
@@ -80,13 +79,5 @@ export default defineConfig({
 				},
 			},
 		}),
-	],
-	include: [
-		/.[jt]sx$/,
-		/.mdx?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.js(.*)?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.mjs(.*)?$/,
 	],
 });
