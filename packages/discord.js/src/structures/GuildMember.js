@@ -56,10 +56,12 @@ class GuildMember extends Base {
 
     /**
      * The role ids of the member
+     * @name GuildMember#_roles
      * @type {Snowflake[]}
      * @private
      */
-    this._roles = [];
+    Object.defineProperty(this, '_roles', { value: [] });
+
     if (data) this._patch(data);
   }
 
