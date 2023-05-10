@@ -89,9 +89,10 @@ try {
 		time: 30000,
 		errors: ['time'],
 	});
+
 	interaction.followUp(`${collected.first().author} got the correct answer!`);
 } catch {
-	interaction.followUp('Looks like nobody got the answer this time.');
+	await interaction.followUp('Looks like nobody got the answer this time.');
 }
 ```
 
@@ -141,7 +142,7 @@ const collectorFilter = (reaction, user) => {
 };
 
 try {
-	const collected = message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
+	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
 	console.log(collected.size);
 } catch (collected) {
 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
@@ -165,9 +166,9 @@ const collector = message.createMessageComponentCollector({ componentType: Compo
 
 collector.on('collect', (i) => {
 	if (i.user.id === interaction.user.id) {
-		i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
+		await i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
 	} else {
-		i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+		await i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
 	}
 });
 
@@ -196,7 +197,8 @@ try {
 		componentType: ComponentType.StringSelect,
 		time: 60000,
 	});
-	interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
+
+	await interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
 } catch (error) {
 	console.log('No interactions were collected.');
 }
@@ -210,11 +212,11 @@ As Discord does not inform you if the user dismisses the modal, supplying a maxi
 
 ```js
 try {
-	const interaction = initialInteraction.awaitModalSubmit({ time: 60_000, filter });
-	interaction.editReply('Thank you for your submission!');
+	const interaction = await initialInteraction.awaitModalSubmit({ time: 60_000, filter });
+	await interaction.editReply('Thank you for your submission!');
 } catch (error) {
 	console.log('No modal submit interaction was collected');
 }
 ```
 
-For more information on working with modals, see the [modals section of this guide](/interactions/modals.md).
+For more information on working with modals, see the [modals section of this guide](../interactions/modals).
