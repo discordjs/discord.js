@@ -90,7 +90,7 @@ try {
 		errors: ['time'],
 	});
 
-	interaction.followUp(`${collected.first().author} got the correct answer!`);
+	await interaction.followUp(`${collected.first().author} got the correct answer!`);
 } catch {
 	await interaction.followUp('Looks like nobody got the answer this time.');
 }
