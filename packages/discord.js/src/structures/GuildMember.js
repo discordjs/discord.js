@@ -60,7 +60,7 @@ class GuildMember extends Base {
      * @type {Snowflake[]}
      * @private
      */
-    Object.defineProperty(this, '_roles', { value: [] });
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
 
     if (data) this._patch(data);
   }
