@@ -63,7 +63,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandStringOption;
 	}
 }
 
