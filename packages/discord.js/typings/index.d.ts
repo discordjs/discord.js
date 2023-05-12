@@ -156,6 +156,7 @@ import {
   APIApplicationRoleConnectionMetadata,
   ImageFormat,
   GuildMemberFlags,
+  RESTGetAPIGuildThreadsResult,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3860,6 +3861,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   ): Promise<GuildChannel>;
   public setPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
   public fetchActiveThreads(cache?: boolean): Promise<FetchedThreads>;
+  private rawFetchGuildActiveThreads(): Promise<RESTGetAPIGuildThreadsResult>;
   public delete(channel: GuildChannelResolvable, reason?: string): Promise<void>;
 }
 
