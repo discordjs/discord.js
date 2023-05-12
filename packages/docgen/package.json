@@ -44,19 +44,19 @@
 		"commander": "^10.0.1",
 		"jsdoc-to-markdown": "^8.0.0",
 		"tslib": "^2.5.0",
-		"typedoc": "^0.24.6"
+		"typedoc": "^0.24.7"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.18.26",
+		"@types/node": "16.18.29",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.40.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.10",
+		"turbo": "^1.9.4",
 		"typescript": "^5.0.4"
 	},
 	"engines": {
