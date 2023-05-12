@@ -15,11 +15,11 @@
 		"chromatic": "chromatic"
 	},
 	"type": "module",
-	"main": "./dist/ui.js",
+	"main": "./dist/index.js",
 	"typings": "./dist/index.d.ts",
 	"exports": {
 		"types": "./dist/index.d.ts",
-		"import": "./dist/ui.js"
+		"import": "./dist/index.js"
 	},
 	"sideEffects": false,
 	"directories": {
