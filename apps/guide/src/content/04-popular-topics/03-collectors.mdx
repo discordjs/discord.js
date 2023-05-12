@@ -1,0 +1,207 @@
+---
+title: Collectors
+category: Popular topics
+---
+
+# Collectors
+
+## Message collectors
+
+{/* prettier-ignore */}
+<DocsLink type="class" parent="Collector">Collectors</DocsLink> are useful to enable your bot to obtain _additional_ input after the first command was sent. An example would be initiating a quiz, where the bot will "await" a correct response from somebody.
+
+### Basic message collector
+
+Let's take a look at a basic message collector:
+
+<CH.Code>
+
+```js
+const collectorFilter = (message) => message.content.includes('discord');
+const collector = interaction.channel.createMessageCollector({ filter: collectorFilter, time: 15000 });
+collector.on('collect', (message) => {
+	console.log(`Collected ${message.content}`);
+});
+collector.on('end', (collected) => {
+	console.log(`Collected ${collected.size} messages`);
+});
+```
+
+</CH.Code>
+
+You can provide a _`filter`_ key to the object parameter of <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />. The value to this key should be a function that returns a boolean value to indicate if this message should be collected or not. To check for multiple conditions in your filter you can connect them using [logical operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#logical_operators). If you don't provide a filter all messages in the channel the collector was started on will be collected.
+
+Note that the above example uses [implicit return](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body) for the filter function and passes it to the options object using the [object property shorthand](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#property_definitions) notation.
+
+If a message passes through the filter, it will trigger the <DocsLink type="class" parent="Collector" symbol="e-collect" /> event for the _`collector`_ you've created. This message is then passed into the event listener as _`collected`_ and the provided function is executed. In the above example, you simply log the message. Once the collector finishes collecting based on the provided end conditions the <DocsLink type="class" parent="Collector" symbol="e-end" /> event emits.
+
+You can control when a collector ends by supplying additional option keys when creating a collector:
+
+- _`time`_: Amount of time in milliseconds the collector should run for
+- _`max`_: Number of messages to successfully pass the filter
+- _`maxProcessed`_: Number of messages encountered (no matter the filter result)
+
+The benefit of using an event-based collector over _`awaitMessages()`_ (its promise-based counterpart) is that you can do something directly after each message is collected, rather than just after the collector ended. You can also stop the collector manually by calling <DocsLink type="class" parent="Collector" symbol="stop" brackets />.
+
+### Await messages
+
+Using <DocsLink type="class" parent="TextChannel" symbol="awaitMessages" brackets /> can be easier if you understand [Promises](../05-additional-info/01-understanding-async-await.mdx), and it allows you to have cleaner code overall. It is essentially identical to <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />, except promisified. However, the drawback of using this method is that you cannot do things before the Promise is resolved or rejected, either by an error or completion. However, it should do for most purposes, such as awaiting the correct response in a quiz. Instead of taking their example, let's set up a basic quiz command using the _`.awaitMessages()`_ feature.
+
+First, you'll need some questions and answers to choose from, so here's a basic set:
+
+<CH.Code>
+
+```json
+[
+	{
+		"question": "What color is the sky?",
+		"answers": ["blue"]
+	},
+	{
+		"question": "How many letters are there in the alphabet?",
+		"answers": ["26", "twenty-six", "twenty six", "twentysix"]
+	}
+]
+```
+
+</CH.Code>
+
+The provided set allows for responder error with an array of answers permitted. Ideally, it would be best to place this in a JSON file, which you can call _`quiz.json`_ for simplicity.
+
+<CH.Code>
+
+```js
+import quiz from './quiz.json' assert { type: 'json' };
+// ...
+const item = quiz[Math.floor(Math.random() * quiz.length)];
+const collectorFilter = (response) => {
+	return item.answers.some((answer) => answer.toLowerCase() === response.content.toLowerCase());
+};
+await interaction.reply({ content: item.question });
+try {
+	const collected = await interaction.channel.awaitMessages({
+		filter: collectorFilter,
+		max: 1,
+		time: 30000,
+		errors: ['time'],
+	});
+	await interaction.followUp(`${collected.first().author} got the correct answer!`);
+} catch {
+	await interaction.followUp('Looks like nobody got the answer this time.');
+}
+```
+
+</CH.Code>
+
+<Alert title="Tip" type="info">
+	If you don't understand how _`.some()`_ works, you can read about it in more detail
+	[here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+</Alert>
+
+In this filter, you iterate through the answers to find what you want. You would like to ignore the case because simple typos can happen, so you convert each answer to its lowercase form and check if it's equal to the response in lowercase form as well. In the options section, you only want to allow one answer to pass through, hence the _`max: 1`_ setting.
+
+The filter looks for messages that match one of the answers in the array of possible answers to pass through the collector. The options (the second parameter) specifies that only a maximum of one message can go through the filter successfully before the Promise successfully resolves. The errors section specifies that time will cause it to error out, which will cause the Promise to reject if one correct answer is not received within the time limit of one minute. As you can see, there is no _`collect`_ event, so you are limited in that regard.
+
+## Reaction collectors
+
+### Basic reaction collector
+
+These work quite similarly to message collectors, except that you apply them on a message rather than a channel. This example uses the <DocsLink type="class" parent="Message" symbol="createReactionCollector" brackets /> method. The filter will check for the 👍 emoji–in the default skin tone specifically, so be wary of that. It will also check that the person who reacted shares the same id as the author of the original message that the collector was assigned to.
+
+```js
+const collectorFilter = (reaction, user) => {
+	return reaction.emoji.name === '👍' && user.id === message.author.id;
+};
+const collector = message.createReactionCollector({ filter: collectorFilter, time: 15000 });
+collector.on('collect', (reaction, user) => {
+	console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
+});
+collector.on('end', (collected) => {
+	console.log(`Collected ${collected.size} items`);
+});
+```
+
+### Await reactions
+
+<p>
+	<DocsLink type="class" parent="Message" symbol="awaitReactions" brackets /> works almost the same as a reaction
+	collector, except it is Promise-based. The same differences apply as with channel collectors.
+</p>
+
+```js
+const collectorFilter = (reaction, user) => {
+	return reaction.emoji.name === '👍' && user.id === message.author.id;
+};
+try {
+	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
+	console.log(collected.size);
+} catch (collected) {
+	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
+}
+```
+
+## Interaction collectors
+
+The third type of collector allows you to collect interactions; such as when users activate a slash command or click on a button in a message.
+
+### Basic message component collector
+
+Collecting interactions from message components works similarly to reaction collectors. In the following example, you will check that the interaction came from a button, and that the user clicking the button is the same user that initiated the command.
+
+One important difference to note with interaction collectors is that Discord expects a response to _all_ interactions within 3 seconds - even ones that you don't want to collect. For this reason, you may wish to _`.deferUpdate()`_ all interactions in your filter, or not use a filter at all and handle this behavior in the _`collect`_ event.
+
+```js
+import { ComponentType } from 'discord.js';
+const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 15000 });
+collector.on('collect', (i) => {
+	if (i.user.id === interaction.user.id) {
+		await i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
+	} else {
+		await i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
+	}
+});
+collector.on('end', (collected) => {
+	console.log(`Collected ${collected.size} interactions.`);
+});
+```
+
+### Await message component
+
+As before, this works similarly to the message component collector, except it is Promise-based.
+
+Unlike other Promise-based collectors, this method will only ever collect one interaction that passes the filter. If no interactions are collected before the time runs out, the Promise will reject. This behavior aligns with Discord's requirement that actions should immediately receive a response. In this example, you will use _`.deferUpdate()`_ on all interactions in the filter.
+
+```js
+import { ComponentType } from 'discord.js';
+const collectorFilter = (i) => {
+	i.deferUpdate();
+	return i.user.id === interaction.user.id;
+};
+try {
+	const interaction = await message.awaitMessageComponent({
+		filter: collectorFilter,
+		componentType: ComponentType.StringSelect,
+		time: 60000,
+	});
+	await interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
+} catch (error) {
+	console.log('No interactions were collected.');
+}
+```
+
+### Await modal submit
+
+If you want to wait for the submission of a modal within the context of another command or button execution, you may find the promisified collector <DocsLink type="class" parent="CommandInteraction" symbol="awaitModalSubmit" brackets /> useful.
+
+As Discord does not inform you if the user dismisses the modal, supplying a maximum _`time`_ to wait for is crucial:
+
+```js
+try {
+	const interaction = await initialInteraction.awaitModalSubmit({ time: 60_000, filter });
+	await interaction.editReply('Thank you for your submission!');
+} catch (error) {
+	console.log('No modal submit interaction was collected');
+}
+```
+
+For more information on working with modals, see the [modals section of this guide](../interactions/modals).
