@@ -52,7 +52,7 @@ export class SlashCommandIntegerOption
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandIntegerOption;
 	}
 }
 

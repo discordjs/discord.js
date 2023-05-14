@@ -49,14 +49,14 @@
 		"tslib": "^2.5.0"
 	},
 	"devDependencies": {
-		"@types/node": "18.16.5",
+		"@types/node": "18.16.8",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.40.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.10",
+		"turbo": "^1.9.4",
 		"typescript": "^5.0.4"
 	},
 	"engines": {

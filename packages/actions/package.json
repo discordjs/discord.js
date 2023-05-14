@@ -45,10 +45,10 @@
 		"@actions/glob": "^0.4.0",
 		"@planetscale/database": "^1.7.0",
 		"tslib": "^2.5.0",
-		"undici": "^5.22.0"
+		"undici": "^5.22.1"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.26",
+		"@types/node": "16.18.29",
 		"@vitest/coverage-c8": "^0.31.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.40.0",
@@ -56,7 +56,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.10",
+		"turbo": "^1.9.4",
 		"typescript": "^5.0.4",
 		"vitest": "^0.31.0"
 	},
