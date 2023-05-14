@@ -19,9 +19,11 @@ Let's take a look at a basic message collector:
 ```js
 const collectorFilter = (message) => message.content.includes('discord');
 const collector = interaction.channel.createMessageCollector({ filter: collectorFilter, time: 15000 });
+
 collector.on('collect', (message) => {
 	console.log(`Collected ${message.content}`);
 });
+
 collector.on('end', (collected) => {
 	console.log(`Collected ${collected.size} messages`);
 });
@@ -45,7 +47,7 @@ The benefit of using an event-based collector over _`awaitMessages()`_ (its prom
 
 ### Await messages
 
-Using <DocsLink type="class" parent="TextChannel" symbol="awaitMessages" brackets /> can be easier if you understand [Promises](../05-additional-info/01-understanding-async-await.mdx), and it allows you to have cleaner code overall. It is essentially identical to <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />, except promisified. However, the drawback of using this method is that you cannot do things before the Promise is resolved or rejected, either by an error or completion. However, it should do for most purposes, such as awaiting the correct response in a quiz. Instead of taking their example, let's set up a basic quiz command using the _`.awaitMessages()`_ feature.
+Using <DocsLink type="class" parent="TextChannel" symbol="awaitMessages" brackets /> can be easier if you understand [Promises](../additional-info/understanding-async-await), and it allows you to have cleaner code overall. It is essentially identical to <DocsLink type="class" parent="TextChannel" symbol="createMessageCollector" brackets />, except promisified. However, the drawback of using this method is that you cannot do things before the Promise is resolved or rejected, either by an error or completion. However, it should do for most purposes, such as awaiting the correct response in a quiz. Instead of taking their example, let's set up a basic quiz command using the _`.awaitMessages()`_ feature.
 
 First, you'll need some questions and answers to choose from, so here's a basic set:
 
@@ -72,12 +74,17 @@ The provided set allows for responder error with an array of answers permitted. 
 
 ```js
 import quiz from './quiz.json' assert { type: 'json' };
+
 // ...
+
 const item = quiz[Math.floor(Math.random() * quiz.length)];
+
 const collectorFilter = (response) => {
 	return item.answers.some((answer) => answer.toLowerCase() === response.content.toLowerCase());
 };
+
 await interaction.reply({ content: item.question });
+
 try {
 	const collected = await interaction.channel.awaitMessages({
 		filter: collectorFilter,
@@ -85,6 +92,7 @@ try {
 		time: 30000,
 		errors: ['time'],
 	});
+
 	await interaction.followUp(`${collected.first().author} got the correct answer!`);
 } catch {
 	await interaction.followUp('Looks like nobody got the answer this time.');
@@ -112,10 +120,13 @@ These work quite similarly to message collectors, except that you apply them on 
 const collectorFilter = (reaction, user) => {
 	return reaction.emoji.name === '👍' && user.id === message.author.id;
 };
+
 const collector = message.createReactionCollector({ filter: collectorFilter, time: 15000 });
+
 collector.on('collect', (reaction, user) => {
 	console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
 });
+
 collector.on('end', (collected) => {
 	console.log(`Collected ${collected.size} items`);
 });
@@ -123,15 +134,14 @@ collector.on('end', (collected) => {
 
 ### Await reactions
 
-<p>
-	<DocsLink type="class" parent="Message" symbol="awaitReactions" brackets /> works almost the same as a reaction
-	collector, except it is Promise-based. The same differences apply as with channel collectors.
-</p>
+<DocsLink type="class" parent="Message" symbol="awaitReactions" brackets /> works almost the same as a reaction collector,
+except it is Promise-based. The same differences apply as with channel collectors.
 
 ```js
 const collectorFilter = (reaction, user) => {
 	return reaction.emoji.name === '👍' && user.id === message.author.id;
 };
+
 try {
 	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
 	console.log(collected.size);
@@ -152,7 +162,9 @@ One important difference to note with interaction collectors is that Discord exp
 
 ```js
 import { ComponentType } from 'discord.js';
+
 const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 15000 });
+
 collector.on('collect', (i) => {
 	if (i.user.id === interaction.user.id) {
 		await i.reply(`${i.user.id} clicked on the ${i.customId} button.`);
@@ -160,6 +172,7 @@ collector.on('collect', (i) => {
 		await i.reply({ content: `These buttons aren't for you!`, ephemeral: true });
 	}
 });
+
 collector.on('end', (collected) => {
 	console.log(`Collected ${collected.size} interactions.`);
 });
@@ -173,16 +186,19 @@ Unlike other Promise-based collectors, this method will only ever collect one in
 
 ```js
 import { ComponentType } from 'discord.js';
+
 const collectorFilter = (i) => {
 	i.deferUpdate();
 	return i.user.id === interaction.user.id;
 };
+
 try {
 	const interaction = await message.awaitMessageComponent({
 		filter: collectorFilter,
 		componentType: ComponentType.StringSelect,
 		time: 60000,
 	});
+
 	await interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
 } catch (error) {
 	console.log('No interactions were collected.');
