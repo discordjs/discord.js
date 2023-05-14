@@ -18,7 +18,7 @@ Let's take a look at a basic message collector:
 
 ```js
 const collectorFilter = (message) => message.content.includes('discord');
-const collector = interaction.channel.createMessageCollector({ filter: collectorFilter, time: 15000 });
+const collector = interaction.channel.createMessageCollector({ filter: collectorFilter, time: 15_000 });
 
 collector.on('collect', (message) => {
 	console.log(`Collected ${message.content}`);
@@ -89,7 +89,7 @@ try {
 	const collected = await interaction.channel.awaitMessages({
 		filter: collectorFilter,
 		max: 1,
-		time: 30000,
+		time: 30_000,
 		errors: ['time'],
 	});
 
@@ -108,7 +108,7 @@ try {
 
 In this filter, you iterate through the answers to find what you want. You would like to ignore the case because simple typos can happen, so you convert each answer to its lowercase form and check if it's equal to the response in lowercase form as well. In the options section, you only want to allow one answer to pass through, hence the _`max: 1`_ setting.
 
-The filter looks for messages that match one of the answers in the array of possible answers to pass through the collector. The options (the second parameter) specifies that only a maximum of one message can go through the filter successfully before the Promise successfully resolves. The errors section specifies that time will cause it to error out, which will cause the Promise to reject if one correct answer is not received within the time limit of one minute. As you can see, there is no _`collect`_ event, so you are limited in that regard.
+The filter looks for messages that match one of the answers in the array of possible answers to pass through the collector. The _`max`_ option (the second parameter) specifies that only a maximum of one message can go through the filter successfully before the Promise successfully resolves. The _`errors`_ section specifies that time will cause it to error out, which will cause the Promise to reject if one correct answer is not received within the time limit of one minute. As you can see, there is no _`collect`_ event, so you are limited in that regard.
 
 ## Reaction collectors
 
@@ -121,7 +121,7 @@ const collectorFilter = (reaction, user) => {
 	return reaction.emoji.name === '👍' && user.id === message.author.id;
 };
 
-const collector = message.createReactionCollector({ filter: collectorFilter, time: 15000 });
+const collector = message.createReactionCollector({ filter: collectorFilter, time: 15_000 });
 
 collector.on('collect', (reaction, user) => {
 	console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
@@ -143,7 +143,7 @@ const collectorFilter = (reaction, user) => {
 };
 
 try {
-	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60000, errors: ['time'] });
+	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60_000, errors: ['time'] });
 	console.log(collected.size);
 } catch (collected) {
 	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
@@ -163,7 +163,7 @@ One important difference to note with interaction collectors is that Discord exp
 ```js
 import { ComponentType } from 'discord.js';
 
-const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 15000 });
+const collector = message.createMessageComponentCollector({ componentType: ComponentType.Button, time: 15_000 });
 
 collector.on('collect', (i) => {
 	if (i.user.id === interaction.user.id) {
@@ -196,7 +196,7 @@ try {
 	const interaction = await message.awaitMessageComponent({
 		filter: collectorFilter,
 		componentType: ComponentType.StringSelect,
-		time: 60000,
+		time: 60_000,
 	});
 
 	await interaction.editReply(`You selected ${interaction.values.join(', ')}!`);
