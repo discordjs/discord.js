@@ -1,14 +1,17 @@
-import { readdir } from 'node:fs/promises';
 import { URL } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
+import { loadCommands, loadEvents } from './util/loaders.js';
+import { registerEvents } from './util/registerEvents.js';
 
+// Initialize the client
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-const eventsPath = new URL('events/', import.meta.url);
-const eventFiles = await readdir(eventsPath).then((files) => files.filter((file) => file.endsWith('.js')));
 
-for (const file of eventFiles) {
-	const event = (await import(new URL(file, eventsPath).toString())).default;
-	client[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
-}
+// Load the events and commands
+const events = await loadEvents(new URL('events/', import.meta.url));
+const commands = await loadCommands(new URL('commands/', import.meta.url));
 
+// Register the event handlers
+registerEvents(commands, events, client);
+
+// Login to the client
 void client.login();

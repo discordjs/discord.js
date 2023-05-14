@@ -6,9 +6,11 @@
 	"scripts": {
 		"lint": "prettier --check . && eslint src --ext .js,.cjs --format=pretty",
 		"format": "prettier --write . && eslint src --ext .js,.cjs --fix --format=pretty",
-		"start": "node --require dotenv/config src/index.js"
+		"start": "node --require dotenv/config src/index.js",
+		"deploy": "node --require dotenv/config src/util/deploy.js"
 	},
 	"dependencies": {
+		"@discordjs/core": "^0.6.0",
 		"discord.js": "^14.11.0",
 		"dotenv": "^16.0.3"
 	},

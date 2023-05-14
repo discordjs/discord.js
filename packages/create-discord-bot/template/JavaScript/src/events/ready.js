@@ -1,5 +1,6 @@
 import { Events } from 'discord.js';
 
+/** @type {import('./index.js').Event<'ready'>} */
 export default {
 	name: Events.ClientReady,
 	once: true,

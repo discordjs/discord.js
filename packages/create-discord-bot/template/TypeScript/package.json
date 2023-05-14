@@ -1,15 +1,17 @@
 {
-	"name": "[REPLACE-NAME]",
+	"name": "my-bot",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"test": "tsc",
 		"lint": "prettier --check . && eslint ./src --ext .ts --format=pretty",
+		"deploy": "node --require dotenv/config dist/util/deploy.js",
 		"format": "prettier --write . && eslint ./src --ext .ts --fix --format=pretty",
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {
+		"@discordjs/core": "^0.6.0",
 		"discord.js": "^14.11.0",
 		"dotenv": "^16.0.3"
 	},
