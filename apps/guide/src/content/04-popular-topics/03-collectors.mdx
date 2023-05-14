@@ -143,10 +143,10 @@ const collectorFilter = (reaction, user) => {
 };
 
 try {
-	const collected = await message.awaitReactions({ filter: collectorFilter, max: 4, time: 60_000, errors: ['time'] });
+	const collected = await message.awaitReactions({ filter: collectorFilter, max: 1, time: 60_000, errors: ['time'] });
 	console.log(collected.size);
 } catch (collected) {
-	console.log(`After a minute, only ${collected.size} out of 4 reacted.`);
+	console.log(`After a minute, the user did not react.`);
 }
 ```
 
