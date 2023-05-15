@@ -275,6 +275,60 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Searches for a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
+	 *
+	 * @param fn - The function to test with (should return boolean)
+	 * @param thisArg - Value to use as `this` when executing function
+	 */
+	public findLast<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown): V | undefined;
+	public findLast<This, V2 extends V>(
+		fn: (this: This, value: V, key: K, collection: this) => value is V2,
+		thisArg: This,
+	): V2 | undefined;
+	public findLast<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): V | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): V | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()].reverse();
+		for (const [key, val] of entries) {
+			if (fn(val, key, this)) return val;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Searches for the key of a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
+	 * but returns the key rather than the positional index.
+	 *
+	 * @param fn - The function to test with (should return boolean)
+	 * @param thisArg - Value to use as `this` when executing function
+	 */
+	public findLastKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown): K | undefined;
+	public findLastKey<This, K2 extends K>(
+		fn: (this: This, value: V, key: K, collection: this) => key is K2,
+		thisArg: This,
+	): K2 | undefined;
+	public findLastKey<This>(
+		fn: (this: This, value: V, key: K, collection: this) => unknown,
+		thisArg: This,
+	): K | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): K | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()].reverse();
+		for (const [key, val] of entries) {
+			if (fn(val, key, this)) return key;
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Removes items that satisfy the provided filter function.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
@@ -526,6 +580,44 @@ export class Collection<K, V> extends Map<K, V> {
 
 		let first = true;
 		for (const [key, val] of this) {
+			if (first) {
+				accumulator = val as unknown as T;
+				first = false;
+				continue;
+			}
+
+			accumulator = fn(accumulator, val, key, this);
+		}
+
+		// No items iterated.
+		if (first) {
+			throw new TypeError('Reduce of empty collection with no initial value');
+		}
+
+		return accumulator;
+	}
+
+	/**
+	 * Applies a function to produce a single value. Identical in behavior to
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
+	 *
+	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
+	 * and `collection`
+	 * @param initialValue - Starting value for the accumulator
+	 */
+	public reduceRight<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		const entries = [...this.entries()].reverse();
+		let accumulator!: T;
+
+		if (initialValue !== undefined) {
+			accumulator = initialValue;
+			for (const [key, val] of entries) accumulator = fn(accumulator, val, key, this);
+			return accumulator;
+		}
+
+		let first = true;
+		for (const [key, val] of entries) {
 			if (first) {
 				accumulator = val as unknown as T;
 				first = false;
