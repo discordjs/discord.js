@@ -2,7 +2,6 @@ import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscFileCode } from '@react-icons/all-files/vsc/VscFileCode';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
@@ -20,7 +19,6 @@ function generateIcon(kind: ApiItemKind) {
 		case ApiItemKind.Interface:
 			return <VscSymbolInterface />;
 		case ApiItemKind.TypeAlias:
-			return <VscSymbolField />;
 		case ApiItemKind.Variable:
 			return <VscSymbolVariable />;
 		default:
