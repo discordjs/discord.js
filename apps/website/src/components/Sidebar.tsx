@@ -74,7 +74,6 @@ function resolveIcon(item: string) {
 		case 'Interfaces':
 			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
 		default:
