@@ -4,6 +4,7 @@ import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import type { PropsWithChildren } from 'react';
 
@@ -19,6 +20,8 @@ function generateIcon(kind: ApiItemKind) {
 		case ApiItemKind.Interface:
 			return <VscSymbolInterface />;
 		case ApiItemKind.TypeAlias:
+			return <VscSymbolField />;
+		case ApiItemKind.Variable:
 			return <VscSymbolVariable />;
 		default:
 			return <VscSymbolMethod />;
