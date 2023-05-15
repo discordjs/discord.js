@@ -19,7 +19,7 @@
 			"~/*": ["./src/*"]
 		},
 		"strictNullChecks": true,
-		"moduleResolution": "node"
+		"moduleResolution": "bundler"
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]

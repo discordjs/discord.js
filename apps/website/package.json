@@ -58,7 +58,6 @@
 		"@vercel/og": "^0.5.4",
 		"ariakit": "^2.0.0-next.44",
 		"bright": "^0.8.2",
-		"class-variance-authority": "^0.6.0",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.32.3",
 		"next": "^13.4.2",

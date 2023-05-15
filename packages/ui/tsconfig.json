@@ -11,7 +11,8 @@
 		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./src/*"]
-		}
+		},
+		"moduleResolution": "node"
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", ".ladle/**/*.tsx", "types.d.ts"],
 	"exclude": ["node_modules"]

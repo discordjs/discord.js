@@ -1,9 +1,9 @@
+import { buttonVariants } from '@discordjs/ui/Button';
 import { VscArrowLeft } from '@react-icons/all-files/vsc/VscArrowLeft';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
 export const runtime = 'edge';

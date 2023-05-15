@@ -18,8 +18,14 @@
 	"main": "./dist/index.js",
 	"typings": "./dist/index.d.ts",
 	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.js"
+		"./*": {
+			"import": "./dist/*.js",
+			"types": "./dist/index.d.ts"
+		},
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
 	},
 	"sideEffects": false,
 	"directories": {
@@ -48,6 +54,7 @@
 	"dependencies": {
 		"@react-icons/all-files": "^4.1.0",
 		"ariakit": "^2.0.0-next.44",
+		"class-variance-authority": "^0.6.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0"
 	},

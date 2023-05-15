@@ -1,3 +1,4 @@
+import { buttonVariants } from '@discordjs/ui';
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -5,7 +6,6 @@ import vercelLogo from '~/assets/powered-by-vercel.svg';
 import workersLogo from '~/assets/powered-by-workers.png';
 import { Banner } from '~/components/Banner';
 import { InstallButton } from '~/components/InstallButton';
-import { buttonVariants } from '~/styles/Button';
 import { DESCRIPTION } from '~/util/constants';
 
 export default function Page() {

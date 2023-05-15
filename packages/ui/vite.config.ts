@@ -10,6 +10,7 @@ export default defineConfig({
 		lib: {
 			entry: [
 				'src/lib/index.ts',
+				'src/lib/styles/Button.ts',
 				'src/lib/components/Alert.tsx',
 				'src/lib/components/Section.tsx',
 				'src/lib/components/discord/Message.tsx',

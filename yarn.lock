@@ -2393,6 +2393,7 @@ __metadata:
     "@vitest/coverage-c8": ^0.31.0
     ariakit: ^2.0.0-next.44
     chromatic: ^6.17.4
+    class-variance-authority: ^0.6.0
     cross-env: ^7.0.3
     eslint: ^8.40.0
     eslint-config-neon: ^0.1.47
@@ -2492,7 +2493,6 @@ __metadata:
     "@vitest/coverage-c8": ^0.31.0
     ariakit: ^2.0.0-next.44
     bright: ^0.8.2
-    class-variance-authority: ^0.6.0
     cmdk: ^0.2.0
     concurrently: ^8.0.1
     cpy-cli: ^4.2.0

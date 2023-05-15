@@ -1,10 +1,10 @@
 'use client';
 
+import { buttonVariants } from '@discordjs/ui';
 import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
 import { FiCopy } from '@react-icons/all-files/fi/FiCopy';
 import { useEffect, useState } from 'react';
 import { useCopyToClipboard } from 'react-use';
-import { buttonVariants } from '~/styles/Button';
 
 export function InstallButton() {
 	const [interacted, setInteracted] = useState(false);
