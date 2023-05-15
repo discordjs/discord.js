@@ -26,9 +26,8 @@ export type Event<T extends keyof ClientEvents = keyof ClientEvents> = {
 // Defines the predicate to check if an object is a valid Event type.
 export const predicate: StructurePredicate<Event> = (structure): structure is Event =>
 	Boolean(structure) &&
-	structure !== null &&
 	typeof structure === 'object' &&
-	'name' in structure &&
+	'name' in structure! &&
 	'execute' in structure &&
 	typeof structure.name === 'string' &&
 	typeof structure.execute === 'function';

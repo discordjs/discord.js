@@ -53,9 +53,9 @@ export async function loadStructures(dir, predicate, recursive = true) {
 		}
 
 		// Import the structure dynamically from the file
-		const structure = await import(`${dir}/${file}`).then((mod) => mod.default);
+		const structure = (await import(`${dir}/${file}`)).default;
 
-		// If the structure is not a valid structure, skip the file
+		// If the structure is a valid structure, add it
 		if (predicate(structure)) structures.push(structure);
 	}
 

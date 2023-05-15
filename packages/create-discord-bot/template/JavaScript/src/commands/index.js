@@ -13,7 +13,6 @@
  */
 export const predicate = (structure) =>
 	Boolean(structure) &&
-	structure !== null &&
 	typeof structure === 'object' &&
 	'data' in structure &&
 	'execute' in structure &&
