@@ -2,9 +2,9 @@ import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscFileCode } from '@react-icons/all-files/vsc/VscFileCode';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import type { PropsWithChildren } from 'react';
 
