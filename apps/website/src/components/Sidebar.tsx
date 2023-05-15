@@ -3,7 +3,6 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
