@@ -1,13 +1,13 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { type RequestData, type REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v10';
-import type {
-	RESTPatchAPIStageInstanceJSONBody,
-	RESTPostAPIStageInstanceJSONBody,
-	RESTPatchAPIStageInstanceResult,
-	RESTGetAPIStageInstanceResult,
-	RESTPostAPIStageInstanceResult,
+import {
+	type RESTGetAPIStageInstanceResult,
+	type RESTPatchAPIStageInstanceJSONBody,
+	type RESTPatchAPIStageInstanceResult,
+	type RESTPostAPIStageInstanceJSONBody,
+	type RESTPostAPIStageInstanceResult,
+	Routes,
 } from 'discord-api-types/v10';
 
 export class StageInstancesAPI {
