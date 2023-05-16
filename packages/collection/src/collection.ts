@@ -291,8 +291,10 @@ export class Collection<K, V> extends Map<K, V> {
 	public findLast(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): V | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		const entries = [...this.entries()].reverse();
-		for (const [key, val] of entries) {
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const val = entries[index]![1];
+			const key = entries[index]![0];
 			if (fn(val, key, this)) return val;
 		}
 
@@ -320,8 +322,10 @@ export class Collection<K, V> extends Map<K, V> {
 	public findLastKey(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): K | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		const entries = [...this.entries()].reverse();
-		for (const [key, val] of entries) {
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const key = entries[index]![0];
+			const val = entries[index]![1];
 			if (fn(val, key, this)) return key;
 		}
 
@@ -607,17 +611,24 @@ export class Collection<K, V> extends Map<K, V> {
 	 */
 	public reduceRight<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
-		const entries = [...this.entries()].reverse();
+		const entries = [...this.entries()];
 		let accumulator!: T;
 
 		if (initialValue !== undefined) {
 			accumulator = initialValue;
-			for (const [key, val] of entries) accumulator = fn(accumulator, val, key, this);
+			for (let index = entries.length - 1; index >= 0; index--) {
+				const val = entries[index]![1];
+				const key = entries[index]![0];
+				accumulator = fn(accumulator, val, key, this);
+			}
+
 			return accumulator;
 		}
 
 		let first = true;
-		for (const [key, val] of entries) {
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const val = entries[index]![1];
+			const key = entries[index]![0];
 			if (first) {
 				accumulator = val as unknown as T;
 				first = false;

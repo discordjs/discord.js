@@ -903,3 +903,73 @@ describe('random thisArg tests', () => {
 		}, array);
 	});
 });
+
+describe('findLast() tests', () => {
+	const coll = createTestCollection();
+	test('it returns last matched element', () => {
+		expect(coll.findLast((value) => value % 2 === 1)).toStrictEqual(3);
+	});
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLast());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLast(123), 123);
+	});
+
+	test('binds the thisArg', () => {
+		coll.findLast(function findLast() {
+			expect(this).toBeNull();
+			return true;
+		}, null);
+	});
+});
+
+describe('findLastKey() tests', () => {
+	const coll = createTestCollection();
+	test('it returns last matched element', () => {
+		expect(coll.findLastKey((value) => value % 2 === 1)).toStrictEqual('c');
+	});
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLastKey());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLastKey(123), 123);
+	});
+
+	test('binds the thisArg', () => {
+		coll.findLastKey(function findLastKey() {
+			expect(this).toBeNull();
+			return true;
+		}, null);
+	});
+});
+
+describe('reduceRight() tests', () => {
+	const coll = createTestCollection();
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
+	});
+
+	test('reduce collection into a single value with initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x, 0);
+		expect(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value without initial value', () => {
+		const sum = coll.reduceRight<number>((a, x) => a + x);
+		expect(sum).toStrictEqual(6);
+	});
+
+	test('reduce empty collection without initial value', () => {
+		const coll = createCollection();
+		expect(() => coll.reduceRight((a: number, x) => a + x)).toThrowError(
+			new TypeError('Reduce of empty collection with no initial value'),
+		);
+	});
+});
