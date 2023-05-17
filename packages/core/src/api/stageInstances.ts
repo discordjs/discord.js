@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { type RequestData, type REST } from '@discordjs/rest';
+import type { RequestData, REST } from '@discordjs/rest';
 import {
 	type RESTGetAPIStageInstanceResult,
 	type RESTPatchAPIStageInstanceJSONBody,
@@ -32,7 +32,7 @@ export class StageInstancesAPI {
 	}
 
 	/**
-	 * Gets a stage instance
+	 * Fetches a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
 	 * @param stageInstanceId - The id of the stage instance
