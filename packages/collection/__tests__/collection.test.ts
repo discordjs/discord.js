@@ -710,7 +710,7 @@ describe('reduce() tests', () => {
 
 	test('reduce empty collection with initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
+		expect(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
 	});
 
 	test('reduce empty collection without initial value', () => {
