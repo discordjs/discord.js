@@ -79,6 +79,7 @@ import type {
 	RESTPostAPIGuildEmojiJSONBody,
 	RESTPostAPIGuildEmojiResult,
 	RESTPostAPIGuildPruneJSONBody,
+	RESTPostAPIGuildPruneResult,
 	RESTPostAPIGuildRoleJSONBody,
 	RESTPostAPIGuildRoleResult,
 	RESTPostAPIGuildScheduledEventJSONBody,
@@ -447,7 +448,7 @@ export class GuildsAPI {
 			body,
 			reason,
 			signal,
-		}) as Promise<RESTGetAPIGuildPruneCountResult>;
+		}) as Promise<RESTPostAPIGuildPruneResult>;
 	}
 
 	/**
