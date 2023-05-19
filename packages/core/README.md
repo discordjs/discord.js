@@ -37,6 +37,7 @@ pnpm add @discordjs/core
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
 import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
+import { token } from './configuration.js';
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(token);
