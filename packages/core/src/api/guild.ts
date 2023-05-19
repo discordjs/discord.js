@@ -102,7 +102,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild
 	 */
-	public async get(guildId: string, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async get(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.guild(guildId), { signal }) as Promise<RESTGetAPIGuildResult>;
 	}
 
@@ -406,7 +406,7 @@ export class GuildsAPI {
 		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
 			signal,
-			body: { mfa_level: level },
+			body: { level },
 		}) as Promise<RESTPostAPIGuildsMFAResult>;
 	}
 
