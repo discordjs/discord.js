@@ -50,6 +50,7 @@ import type {
 	RESTGetAPIGuildWidgetSettingsResult,
 	RESTGetAPITemplateResult,
 	RESTPatchAPIAutoModerationRuleJSONBody,
+	RESTPatchAPIAutoModerationRuleResult,
 	RESTPatchAPIGuildChannelPositionsJSONBody,
 	RESTPatchAPIGuildEmojiJSONBody,
 	RESTPatchAPIGuildEmojiResult,
@@ -1055,7 +1056,7 @@ export class GuildsAPI {
 			reason,
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIAutoModerationRuleJSONBody>;
+		}) as Promise<RESTPatchAPIAutoModerationRuleResult>;
 	}
 
 	/**
