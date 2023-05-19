@@ -614,33 +614,20 @@ export class Collection<K, V> extends Map<K, V> {
 		const entries = [...this.entries()];
 		let accumulator!: T;
 
-		if (initialValue !== undefined) {
+		let index: number;
+		if (initialValue === undefined) {
+			if (entries.length === 0) throw new TypeError('Reduce of empty collection with no initial value');
+			accumulator = entries[entries.length - 1]![1] as unknown as T;
+			index = entries.length - 1;
+		} else {
 			accumulator = initialValue;
-			for (let index = entries.length - 1; index >= 0; index--) {
-				const val = entries[index]![1];
-				const key = entries[index]![0];
-				accumulator = fn(accumulator, val, key, this);
-			}
-
-			return accumulator;
+			index = entries.length;
 		}
 
-		let first = true;
-		for (let index = entries.length - 1; index >= 0; index--) {
-			const val = entries[index]![1];
+		while (index-- > 0) {
 			const key = entries[index]![0];
-			if (first) {
-				accumulator = val as unknown as T;
-				first = false;
-				continue;
-			}
-
+			const val = entries[index]![1];
 			accumulator = fn(accumulator, val, key, this);
-		}
-
-		// No items iterated.
-		if (first) {
-			throw new TypeError('Reduce of empty collection with no initial value');
 		}
 
 		return accumulator;
