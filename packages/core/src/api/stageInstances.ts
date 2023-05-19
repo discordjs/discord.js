@@ -2,6 +2,7 @@
 
 import type { RequestData, REST } from '@discordjs/rest';
 import {
+	type Snowflake,
 	type RESTGetAPIStageInstanceResult,
 	type RESTPatchAPIStageInstanceJSONBody,
 	type RESTPatchAPIStageInstanceResult,
@@ -18,7 +19,7 @@ export class StageInstancesAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
 	 * @param body - The data to use when creating a new stage instance
-	 * @param options - The options to use when creating a new stage instance
+	 * @param options - The options for creating a new stage instance
 	 */
 	public async create(
 		body: RESTPostAPIStageInstanceJSONBody,
@@ -35,27 +36,27 @@ export class StageInstancesAPI {
 	 * Fetches a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
-	 * @param stageInstanceId - The id of the stage instance
-	 * @param options - The options to use when fetching the stage instance
+	 * @param channelId- The id of the channel
+	 * @param options - The options for fetching the stage instance
 	 */
-	public async get(stageInstanceId: string, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.stageInstance(stageInstanceId), { signal }) as Promise<RESTGetAPIStageInstanceResult>;
+	public async get(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.stageInstance(channelId), { signal }) as Promise<RESTGetAPIStageInstanceResult>;
 	}
 
 	/**
 	 * Edits a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#modify-stage-instance}
-	 * @param stageInstanceId - The id of the stage instance to edit
+	 * @param channelId- The id of the channel
 	 * @param body - The new stage instance data
-	 * @param options - The options to use when editing the stage instance
+	 * @param options - The options for editing the stage instance
 	 */
 	public async edit(
-		stageInstanceId: string,
+		channelId: Snowflake,
 		body: RESTPatchAPIStageInstanceJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.stageInstance(stageInstanceId), {
+		return this.rest.patch(Routes.stageInstance(channelId), {
 			body,
 			reason,
 			signal,
@@ -66,10 +67,10 @@ export class StageInstancesAPI {
 	 * Deletes a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#delete-stage-instance}
-	 * @param stageInstanceId - The id of the stage instance to delete
-	 * @param options - The options to use when deleting the stage instance
+	 * @param channelId- The id of the channel
+	 * @param options - The options for deleting the stage instance
 	 */
-	public async delete(stageInstanceId: string, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
-		await this.rest.delete(Routes.stageInstance(stageInstanceId), { reason, signal });
+	public async delete(channelId: Snowflake, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
+		await this.rest.delete(Routes.stageInstance(channelId), { reason, signal });
 	}
 }
