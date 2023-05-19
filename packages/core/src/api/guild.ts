@@ -47,6 +47,7 @@ import type {
 	RESTGetAPIGuildWelcomeScreenResult,
 	RESTGetAPIGuildWidgetImageResult,
 	RESTGetAPIGuildWidgetJSONResult,
+	RESTGetAPIGuildWidgetSettingsResult,
 	RESTGetAPITemplateResult,
 	RESTPatchAPIAutoModerationRuleJSONBody,
 	RESTPatchAPIGuildChannelPositionsJSONBody,
@@ -506,7 +507,9 @@ export class GuildsAPI {
 	 * @param options - The options for fetching the widget settings
 	 */
 	public async getWidgetSettings(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.guildWidgetSettings(guildId), { signal }) as Promise<RESTGetAPIGuildWidgetImageResult>;
+		return this.rest.get(Routes.guildWidgetSettings(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildWidgetSettingsResult>;
 	}
 
 	/**
