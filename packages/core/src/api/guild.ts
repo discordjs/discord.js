@@ -88,8 +88,8 @@ import type {
 	RESTPostAPIGuildsJSONBody,
 	RESTPostAPIGuildsMFAResult,
 	RESTPostAPIGuildsResult,
+	RESTPostAPIGuildTemplatesJSONBody,
 	RESTPostAPIGuildTemplatesResult,
-	RESTPostAPITemplateCreateGuildJSONBody,
 	RESTPutAPIGuildBanJSONBody,
 	RESTPutAPIGuildTemplateSyncResult,
 	Snowflake,
@@ -1201,7 +1201,7 @@ export class GuildsAPI {
 	 */
 	public async createTemplate(
 		templateCode: string,
-		body: RESTPostAPITemplateCreateGuildJSONBody,
+		body: RESTPostAPIGuildTemplatesJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.template(templateCode), { body, signal }) as Promise<RESTPostAPIGuildTemplatesResult>;
