@@ -514,30 +514,20 @@ export class Collection<K, V> extends Map<K, V> {
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
 	 * ```
 	 */
-	public reduce<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
+	public reduce<T = V>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		let accumulator!: T;
 
-		if (initialValue !== undefined) {
+		const iterator = this.entries();
+		if (initialValue === undefined) {
+			if (this.size === 0) throw new TypeError('Reduce of empty collection with no initial value');
+			accumulator = iterator.next().value[1];
+		} else {
 			accumulator = initialValue;
-			for (const [key, val] of this) accumulator = fn(accumulator, val, key, this);
-			return accumulator;
 		}
 
-		let first = true;
-		for (const [key, val] of this) {
-			if (first) {
-				accumulator = val as unknown as T;
-				first = false;
-				continue;
-			}
-
-			accumulator = fn(accumulator, val, key, this);
-		}
-
-		// No items iterated.
-		if (first) {
-			throw new TypeError('Reduce of empty collection with no initial value');
+		for (const [key, value] of iterator) {
+			accumulator = fn(accumulator, value, key, this);
 		}
 
 		return accumulator;
