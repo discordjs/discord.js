@@ -406,7 +406,7 @@ export class GuildsAPI {
 		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
 			signal,
-			body: { mfa_level: level },
+			body: { level },
 		}) as Promise<RESTPostAPIGuildsMFAResult>;
 	}
 
@@ -1121,6 +1121,22 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPatchAPIGuildMemberResult>;
+	}
+
+	/**
+	 * Removes a member from a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#remove-guild-member}
+	 * @param guildId - The id of the guild
+	 * @param userId - The id of the user
+	 * @param options - The options for removing the guild member
+	 */
+	public async removeMember(
+		guildId: Snowflake,
+		userId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.delete(Routes.guildMember(guildId, userId), { reason, signal });
 	}
 
 	/**
