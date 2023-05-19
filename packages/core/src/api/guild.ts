@@ -406,7 +406,7 @@ export class GuildsAPI {
 		return this.rest.post(Routes.guildMFA(guildId), {
 			reason,
 			signal,
-			body: { mfa_level: level },
+			body: { level },
 		}) as Promise<RESTPostAPIGuildsMFAResult>;
 	}
 
