@@ -18,8 +18,8 @@ export class StageInstancesAPI {
 	 * Creates a new stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
-	 * @param body - The data to use when creating a new stage instance
-	 * @param options - The options for creating a new stage instance
+	 * @param body - The data to use when creating the new stage instance
+	 * @param options - The options for creating the new stage instance
 	 */
 	public async create(
 		body: RESTPostAPIStageInstanceJSONBody,
@@ -36,7 +36,7 @@ export class StageInstancesAPI {
 	 * Fetches a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
-	 * @param channelId- The id of the channel
+	 * @param channelId - The id of the channel
 	 * @param options - The options for fetching the stage instance
 	 */
 	public async get(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
@@ -47,7 +47,7 @@ export class StageInstancesAPI {
 	 * Edits a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#modify-stage-instance}
-	 * @param channelId- The id of the channel
+	 * @param channelId - The id of the channel
 	 * @param body - The new stage instance data
 	 * @param options - The options for editing the stage instance
 	 */
@@ -67,7 +67,7 @@ export class StageInstancesAPI {
 	 * Deletes a stage instance
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#delete-stage-instance}
-	 * @param channelId- The id of the channel
+	 * @param channelId - The id of the channel
 	 * @param options - The options for deleting the stage instance
 	 */
 	public async delete(channelId: Snowflake, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
