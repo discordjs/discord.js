@@ -272,7 +272,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		query: { thread_id?: string } = {},
+		query: { thread_id?: Snowflake } = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {
