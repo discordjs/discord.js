@@ -42,7 +42,7 @@ import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 const gateway = new WebSocketManager({
-	token,
+	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
 	rest,
 });
