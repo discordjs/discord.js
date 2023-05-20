@@ -123,8 +123,7 @@ export class CDN {
 	 *
 	 * @param type - The default avatar type
 	 * @remarks
-	 * To calculate the type for a user do `(userId >> 22) % 5`,
-	 * or `discriminator % 5` if they're using the legacy username system.
+	 * `type` is calculated via `(userId >> 22) % 5` or `discriminator % 5` with the legacy username system.
 	 */
 	public defaultAvatar(type: number): string {
 		return this.makeURL(`/embed/avatars/${type}`, { extension: 'png' });
