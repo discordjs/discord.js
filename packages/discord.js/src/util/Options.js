@@ -35,7 +35,7 @@ const { version } = require('../../package.json');
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that clients with the
  * {@link GatewayIntentBits.Guilds} gateway intent should wait for missing guilds to be received before being ready.
- * @property {SweeperOptions} [sweepers=DefaultSweeperSettings] Options for cache sweeping
+ * @property {SweeperOptions} [sweepers=this.DefaultSweeperSettings] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
  * @property {Function} [jsonTransformer] A function used to transform outgoing json data
