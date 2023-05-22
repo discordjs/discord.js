@@ -22,16 +22,4 @@ export function registerEvents(commands: Map<string, Command>, events: Event[], 
 	for (const event of [...events, interactionCreateEvent]) {
 		client[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
 	}
-
-	client.on('interactionCreate', async (interaction) => {
-		if (interaction.isCommand()) {
-			const command = commands.get(interaction.commandName);
-
-			if (!command) {
-				throw new Error(`Command '${interaction.commandName}' not found.`);
-			}
-
-			await command.execute(interaction);
-		}
-	});
 }
