@@ -7,16 +7,16 @@ import type { Event } from '../events/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
 /**
- * A predicate to check if the structure is valid.
+ * A predicate to check if the structure is valid
  */
 export type StructurePredicate<T> = (structure: unknown) => structure is T;
 
 /**
- * Loads all the structures in the provided directory.
+ * Loads all the structures in the provided directory
  *
- * @param dir - The directory to load the structures from.
- * @param predicate - The predicate to check if the structure is valid.
- * @param recursive - Whether to recursively load the structures in the directory.
+ * @param dir - The directory to load the structures from
+ * @param predicate - The predicate to check if the structure is valid
+ * @param recursive - Whether to recursively load the structures in the directory
  * @returns
  */
 export async function loadStructures<T>(

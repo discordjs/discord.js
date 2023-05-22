@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/no-undefined-types */
 import { readdir, stat } from 'node:fs/promises';
 import { URL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
@@ -15,9 +14,9 @@ import { predicate as eventPredicate } from '../events/index.js';
  * Loads all the structures in the provided directory.
  *
  * @template T
- * @param {import('node:fs').PathLike} dir - The directory to load the structures from.
- * @param {StructurePredicate<T>} predicate - The predicate to check if the structure is valid.
- * @param {boolean} recursive - Whether to recursively load the structures in the directory.
+ * @param {import('node:fs').PathLike} dir - The directory to load the structures from
+ * @param {StructurePredicate<T>} predicate - The predicate to check if the structure is valid
+ * @param {boolean} recursive - Whether to recursively load the structures in the directory
  * @returns {Promise<T[]>}
  */
 export async function loadStructures(dir, predicate, recursive = true) {

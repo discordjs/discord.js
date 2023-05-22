@@ -2,22 +2,22 @@ import type { RESTPostAPIApplicationCommandsJSONBody, CommandInteraction } from 
 import type { StructurePredicate } from '../util/loaders.js';
 
 /**
- * Defines the structure of a command.
+ * Defines the structure of a command
  */
 export type Command = {
 	/**
-	 * The data for the command.
+	 * The data for the command
 	 */
 	data: RESTPostAPIApplicationCommandsJSONBody;
 	/**
-	 * The function to execute when the command is called.
+	 * The function to execute when the command is called
 	 *
-	 * @param interaction - The interaction of the command.
+	 * @param interaction - The interaction of the command
 	 */
 	execute(interaction: CommandInteraction): Promise<void> | void;
 };
 
-// Defines the predicate to check if an object is a valid Command type.
+// Defines the predicate to check if an object is a valid Command type
 export const predicate: StructurePredicate<Command> = (structure): structure is Command =>
 	Boolean(structure) &&
 	typeof structure === 'object' &&
