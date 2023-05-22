@@ -4,17 +4,17 @@ import { makeURLSearchParams, type RequestData, type RawFile, type REST } from '
 import {
 	Routes,
 	type RESTGetAPIWebhookWithTokenMessageQuery,
-	type RESTGetAPIChannelMessageResult,
+	type RESTGetAPIWebhookWithTokenMessageResult,
 	type RESTGetAPIWebhookResult,
 	type RESTPatchAPIWebhookJSONBody,
 	type RESTPatchAPIWebhookResult,
 	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
 	type RESTPatchAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIChannelWebhookResult,
 	type RESTPostAPIWebhookWithTokenGitHubQuery,
 	type RESTPostAPIWebhookWithTokenJSONBody,
 	type RESTPostAPIWebhookWithTokenQuery,
-	type RESTPostAPIWebhookWithTokenResult,
 	type RESTPostAPIWebhookWithTokenSlackQuery,
 	type RESTPostAPIWebhookWithTokenWaitResult,
 	type Snowflake,
@@ -53,7 +53,7 @@ export class WebhooksAPI {
 			reason,
 			body,
 			signal,
-		}) as Promise<RESTPostAPIWebhookWithTokenResult>;
+		}) as Promise<RESTPostAPIChannelWebhookResult>;
 	}
 
 	/**
@@ -225,7 +225,7 @@ export class WebhooksAPI {
 			query: makeURLSearchParams(query),
 			auth: false,
 			signal,
-		}) as Promise<RESTGetAPIChannelMessageResult>;
+		}) as Promise<RESTGetAPIWebhookWithTokenMessageResult>;
 	}
 
 	/**

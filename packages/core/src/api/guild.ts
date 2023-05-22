@@ -47,8 +47,10 @@ import type {
 	RESTGetAPIGuildWelcomeScreenResult,
 	RESTGetAPIGuildWidgetImageResult,
 	RESTGetAPIGuildWidgetJSONResult,
+	RESTGetAPIGuildWidgetSettingsResult,
 	RESTGetAPITemplateResult,
 	RESTPatchAPIAutoModerationRuleJSONBody,
+	RESTPatchAPIAutoModerationRuleResult,
 	RESTPatchAPIGuildChannelPositionsJSONBody,
 	RESTPatchAPIGuildEmojiJSONBody,
 	RESTPatchAPIGuildEmojiResult,
@@ -78,6 +80,7 @@ import type {
 	RESTPostAPIGuildEmojiJSONBody,
 	RESTPostAPIGuildEmojiResult,
 	RESTPostAPIGuildPruneJSONBody,
+	RESTPostAPIGuildPruneResult,
 	RESTPostAPIGuildRoleJSONBody,
 	RESTPostAPIGuildRoleResult,
 	RESTPostAPIGuildScheduledEventJSONBody,
@@ -85,8 +88,8 @@ import type {
 	RESTPostAPIGuildsJSONBody,
 	RESTPostAPIGuildsMFAResult,
 	RESTPostAPIGuildsResult,
+	RESTPostAPIGuildTemplatesJSONBody,
 	RESTPostAPIGuildTemplatesResult,
-	RESTPostAPITemplateCreateGuildJSONBody,
 	RESTPutAPIGuildBanJSONBody,
 	RESTPutAPIGuildTemplateSyncResult,
 	Snowflake,
@@ -446,7 +449,7 @@ export class GuildsAPI {
 			body,
 			reason,
 			signal,
-		}) as Promise<RESTGetAPIGuildPruneCountResult>;
+		}) as Promise<RESTPostAPIGuildPruneResult>;
 	}
 
 	/**
@@ -506,7 +509,9 @@ export class GuildsAPI {
 	 * @param options - The options for fetching the widget settings
 	 */
 	public async getWidgetSettings(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.guildWidgetSettings(guildId), { signal }) as Promise<RESTGetAPIGuildWidgetImageResult>;
+		return this.rest.get(Routes.guildWidgetSettings(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildWidgetSettingsResult>;
 	}
 
 	/**
@@ -1051,7 +1056,7 @@ export class GuildsAPI {
 			reason,
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIAutoModerationRuleJSONBody>;
+		}) as Promise<RESTPatchAPIAutoModerationRuleResult>;
 	}
 
 	/**
@@ -1196,7 +1201,7 @@ export class GuildsAPI {
 	 */
 	public async createTemplate(
 		templateCode: string,
-		body: RESTPostAPITemplateCreateGuildJSONBody,
+		body: RESTPostAPIGuildTemplatesJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.template(templateCode), { body, signal }) as Promise<RESTPostAPIGuildTemplatesResult>;
