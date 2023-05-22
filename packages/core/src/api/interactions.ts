@@ -103,7 +103,7 @@ export class InteractionsAPI {
 		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		await this.webhooks.execute(applicationId, interactionToken, body, { signal });
+		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, { signal });
 	}
 
 	/**
