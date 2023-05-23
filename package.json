@@ -55,11 +55,11 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.2.2",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.5",
+		"turbo": "^1.9.8",
 		"typescript": "^5.0.4",
-		"unocss": "^0.51.13",
-		"vercel": "^29.3.0",
-		"vitest": "^0.31.0"
+		"unocss": "^0.52.3",
+		"vercel": "^29.4.0",
+		"vitest": "^0.31.1"
 	},
 	"resolutions": {
 		"@microsoft/tsdoc-config@~0.16.1": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
