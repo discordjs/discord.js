@@ -5,18 +5,26 @@ import {
 	Routes,
 	type RESTGetAPIApplicationCommandPermissionsResult,
 	type RESTGetAPIApplicationCommandResult,
+	type RESTGetAPIApplicationCommandsQuery,
 	type RESTGetAPIApplicationCommandsResult,
+	type RESTGetAPIApplicationGuildCommandResult,
+	type RESTGetAPIApplicationGuildCommandsQuery,
+	type RESTGetAPIApplicationGuildCommandsResult,
 	type RESTGetAPIGuildApplicationCommandsPermissionsResult,
 	type RESTPatchAPIApplicationCommandJSONBody,
 	type RESTPatchAPIApplicationCommandResult,
+	type RESTPatchAPIApplicationGuildCommandJSONBody,
+	type RESTPatchAPIApplicationGuildCommandResult,
 	type RESTPostAPIApplicationCommandsJSONBody,
 	type RESTPostAPIApplicationCommandsResult,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	type RESTPostAPIApplicationGuildCommandsResult,
 	type RESTPutAPIApplicationCommandPermissionsJSONBody,
 	type RESTPutAPIApplicationCommandPermissionsResult,
 	type RESTPutAPIApplicationCommandsJSONBody,
-	type RESTGetAPIApplicationCommandsQuery,
 	type RESTPutAPIApplicationCommandsResult,
-	type RESTGetAPIApplicationGuildCommandsQuery,
+	type RESTPutAPIApplicationGuildCommandsJSONBody,
+	type RESTPutAPIApplicationGuildCommandsResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -153,7 +161,7 @@ export class ApplicationCommandsAPI {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			query: makeURLSearchParams(query),
 			signal,
-		}) as Promise<RESTGetAPIApplicationCommandsResult>;
+		}) as Promise<RESTGetAPIApplicationGuildCommandsResult>;
 	}
 
 	/**
@@ -168,13 +176,13 @@ export class ApplicationCommandsAPI {
 	public async createGuildCommand(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		body: RESTPostAPIApplicationCommandsJSONBody,
+		body: RESTPostAPIApplicationGuildCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
-		}) as Promise<RESTPostAPIApplicationCommandsResult>;
+		}) as Promise<RESTPostAPIApplicationGuildCommandsResult>;
 	}
 
 	/**
@@ -194,7 +202,7 @@ export class ApplicationCommandsAPI {
 	) {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			signal,
-		}) as Promise<RESTGetAPIApplicationCommandResult>;
+		}) as Promise<RESTGetAPIApplicationGuildCommandResult>;
 	}
 
 	/**
@@ -211,13 +219,13 @@ export class ApplicationCommandsAPI {
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		body: RESTPatchAPIApplicationCommandJSONBody,
+		body: RESTPatchAPIApplicationGuildCommandJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIApplicationCommandResult>;
+		}) as Promise<RESTPatchAPIApplicationGuildCommandResult>;
 	}
 
 	/**
@@ -250,13 +258,13 @@ export class ApplicationCommandsAPI {
 	public async bulkOverwriteGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		body: RESTPutAPIApplicationCommandsJSONBody,
+		body: RESTPutAPIApplicationGuildCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
-		}) as Promise<RESTPutAPIApplicationCommandsResult>;
+		}) as Promise<RESTPutAPIApplicationGuildCommandsResult>;
 	}
 
 	/**

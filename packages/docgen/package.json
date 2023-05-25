@@ -43,20 +43,20 @@
 	"dependencies": {
 		"commander": "^10.0.1",
 		"jsdoc-to-markdown": "^8.0.0",
-		"tslib": "^2.5.0",
+		"tslib": "^2.5.2",
 		"typedoc": "^0.24.7"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.18.30",
+		"@types/node": "16.18.32",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.40.0",
+		"eslint": "^8.41.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.5",
+		"turbo": "^1.9.8",
 		"typescript": "^5.0.4"
 	},
 	"engines": {
