@@ -468,8 +468,17 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetchActiveThreads(cache = true) {
-    const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
-    return GuildTextThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    const data = await this.rawFetchGuildActiveThreads();
+    return GuildTextThreadManager._mapThreads(data, this.client, { guild: this.guild, cache });
+  }
+
+  /**
+   * `GET /guilds/{guild.id}/threads/active`
+   * @private
+   * @returns {Promise<RESTGetAPIGuildThreadsResult>}
+   */
+  rawFetchGuildActiveThreads() {
+    return this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
   }
 
   /**

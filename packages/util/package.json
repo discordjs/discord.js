@@ -54,19 +54,19 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.8",
-		"@types/node": "16.18.26",
-		"@vitest/coverage-c8": "^0.31.0",
+		"@microsoft/api-extractor": "^7.35.0",
+		"@types/node": "16.18.32",
+		"@vitest/coverage-c8": "^0.31.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.40.0",
+		"eslint": "^8.41.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsd": "^0.28.1",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.4-canary.10",
+		"turbo": "^1.9.8",
 		"typescript": "^5.0.4",
-		"vitest": "^0.31.0"
+		"vitest": "^0.31.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
