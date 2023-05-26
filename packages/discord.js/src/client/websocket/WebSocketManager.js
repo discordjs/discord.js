@@ -325,7 +325,7 @@ class WebSocketManager extends EventEmitter {
     // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
     this.destroyed = true;
-    this._ws.destroy({ code: CloseCodes.Normal });
+    this._ws?.destroy({ code: CloseCodes.Normal });
   }
 
   /**
