@@ -25,14 +25,14 @@ export function serializeHeadings(headings: HeadingData[]): HeadingNode[] {
 			children: [],
 		};
 
-		while (stack.length > 0 && stack[stack.length - 1]!.level >= node.level) {
+		while (stack.length > 0 && stack.at(-1)!.level >= node.level) {
 			stack.pop();
 		}
 
 		if (stack.length === 0) {
 			tree.push(node);
 		} else {
-			stack[stack.length - 1]!.children.push(node);
+			stack.at(-1)!.children.push(node);
 		}
 
 		stack.push(node);
