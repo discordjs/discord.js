@@ -45,28 +45,28 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@discordjs/api-extractor-utils": "workspace:^",
-		"@microsoft/api-extractor-model": "7.26.9",
+		"@microsoft/api-extractor-model": "7.27.0",
 		"@microsoft/tsdoc": "0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
 		"commander": "^10.0.1",
 		"fs-extra": "^11.1.1",
-		"tslib": "^2.5.0",
+		"tslib": "^2.5.2",
 		"undici": "^5.22.1",
-		"yaml": "2.2.2"
+		"yaml": "2.3.0"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "^11.0.1",
-		"@types/node": "16.18.30",
-		"@vitest/coverage-c8": "^0.31.0",
+		"@types/node": "16.18.32",
+		"@vitest/coverage-c8": "^0.31.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.40.0",
+		"eslint": "^8.41.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
 		"tsup": "^6.7.0",
-		"turbo": "^1.9.5",
+		"turbo": "^1.9.8",
 		"typescript": "^5.0.4",
-		"vitest": "^0.31.0"
+		"vitest": "^0.31.1"
 	},
 	"engines": {
 		"node": ">=16.9.0"
