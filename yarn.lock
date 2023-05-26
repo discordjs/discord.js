@@ -2215,6 +2215,7 @@ __metadata:
     eslint: ^8.40.0
     eslint-config-neon: ^0.1.47
     eslint-formatter-pretty: ^5.0.0
+    github-slugger: ^2.0.0
     happy-dom: ^9.18.3
     hast-util-to-string: ^2.0.0
     hastscript: ^7.2.0

@@ -1,5 +1,6 @@
 import { remarkCodeHike } from '@code-hike/mdx';
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import GithubSlugger from 'github-slugger';
 import { type Node, toString } from 'hast-util-to-string';
 import { h } from 'hastscript';
 import { escape } from 'html-escaper';
@@ -32,6 +33,23 @@ export const Content = defineDocumentType(() => ({
 			type: 'string',
 			// eslint-disable-next-line unicorn/prefer-string-replace-all
 			resolve: (doc) => `/guide/${doc._raw.flattenedPath.replace(/\d+-/g, '')}`,
+		},
+		headings: {
+			type: 'json',
+			resolve: async (doc) => {
+				const regXHeader = /\n(?<flag>#{1,6})\s+(?<content>.+)/g;
+				const slugger = new GithubSlugger();
+				// @ts-expect-error TypeScript can't infer
+				return Array.from(doc.body.raw.matchAll(regXHeader)).map(({ groups }) => {
+					const flag = groups?.flag;
+					const content = groups?.content;
+					return {
+						level: flag?.length,
+						text: content,
+						slug: content ? slugger.slug(content) : undefined,
+					};
+				});
+			},
 		},
 	},
 }));
