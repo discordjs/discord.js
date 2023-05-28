@@ -7,4 +7,4 @@ export default {
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},
-} satisfies Event<'ready'>;
+} satisfies Event<Events.ClientReady>;

@@ -14,10 +14,11 @@ import { GUIDE_URL } from './util/constants.js';
 program
 	.description('Create a basic discord.js bot.')
 	.option('--typescript', 'Whether to use the TypeScript template.')
+	.option('--no-install', 'Whether to not automatically install the packages.')
 	.argument('<directory>', 'The directory where this will be created.')
 	.parse();
 
-const { typescript } = program.opts();
+const { typescript, 'no-install': noInstall } = program.opts();
 const [directory] = program.args;
 
 if (!directory) {
@@ -64,7 +65,10 @@ process.chdir(root);
 const newPackageJSON = readFileSync('./package.json', { encoding: 'utf8' }).replace('[REPLACE-NAME]', directoryName);
 writeFileSync('./package.json', newPackageJSON);
 
-const packageManager = resolvePackageManager();
-install(packageManager);
+if (!noInstall) {
+	const packageManager = resolvePackageManager();
+	install(packageManager);
+}
+
 console.log(chalk.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
 console.log(`Link: ${chalk.cyan(GUIDE_URL)}`);
