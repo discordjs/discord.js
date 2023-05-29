@@ -186,6 +186,19 @@ class MessageManager extends CachedManager {
   }
 
   /**
+   * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
+   * @param {MessageResolvable} message The message to publish
+   * @returns {Promise<Message>}
+   */
+  async crosspost(message) {
+    message = this.resolveId(message);
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+
+    const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
+    return this.cache.get(data.id) ?? this._add(data);
+  }
+
+  /**
    * Pins a message to the channel's pinned messages, even if it's not cached.
    * @param {MessageResolvable} message The message to pin
    * @param {string} [reason] Reason for pinning
