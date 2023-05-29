@@ -374,6 +374,76 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 }
 
 /**
+ * Formats the content into a heading level one.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function headingLevelOne<C extends string>(content: C): `# ${C}` {
+	return `# ${content}`;
+}
+
+/**
+ * Formats the content into a heading level two.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function headingLevelTwo<C extends string>(content: C): `## ${C}` {
+	return `## ${content}`;
+}
+
+/**
+ * Formats the content into a heading level three.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function headingLevelThree<C extends string>(content: C): `### ${C}` {
+	return `### ${content}`;
+}
+
+/**
+ * Formats the elements in the array to an ordered list.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param array - The array of elements to list
+ */
+export function orderedList<C extends string[]>(...array: C) {
+	return array.map((element, index) => `${index + 1}. ${element}`).join('\n');
+}
+
+/**
+ * Formats the elements in the array to an indented ordered list.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param array - The array of elements to list
+ */
+export function indentedOrderedList<C extends string[]>(...array: C) {
+	return array.map((element, index) => ` ${index + 1} ${element}`).join('\n');
+}
+
+/**
+ * Formats the elements in the array to an unordered list.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param array - The array of elements to list
+ */
+export function unorderedList<C extends string[]>(...array: C) {
+	return array.map((element) => `- ${element}`).join('\n');
+}
+
+/**
+ * Formats the elements in the array to an indented unordered list.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param array - The array of elements to list
+ */
+export function indentedUnorderedList<C extends string[]>(...array: C) {
+	return array.map((element) => ` - ${element}`).join('\n');
+}
+
+/**
  * Formats a date into a short date-time string.
  *
  * @param date - The date to format. Defaults to the current time
