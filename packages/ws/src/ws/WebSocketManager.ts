@@ -234,7 +234,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
-		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
+		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
 		return this.gatewayInformation.data;
 	}
 
