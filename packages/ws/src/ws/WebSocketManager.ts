@@ -234,6 +234,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
+		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
 		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
 		return this.gatewayInformation.data;
 	}
