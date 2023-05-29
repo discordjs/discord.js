@@ -5,7 +5,7 @@ const MessageManager = require('./MessageManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
- * Manages API methods for Messages and holds their cache.
+ * Manages API methods for messages in a guild and holds their cache.
  * @extends {MessageManager}
  */
 class GuildMessageManager extends MessageManager {
