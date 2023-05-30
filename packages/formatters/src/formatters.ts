@@ -429,8 +429,8 @@ export function indentedOrderedList<C extends string[]>(...array: C) {
  * @typeParam C - This is inferred by the supplied content
  * @param array - The array of elements to list
  */
-export function unorderedList<C extends string[]>(...array: C) {
-	return array.map((element) => `- ${element}`).join('\n');
+export function unorderedList<C extends string[]>(...items: C) {
+	return items.map((item) => `- ${item}`).join('\n');
 }
 
 /**
