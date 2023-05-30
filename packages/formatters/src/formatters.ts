@@ -420,7 +420,7 @@ export function orderedList<C extends string[]>(...array: C) {
  * @param array - The array of elements to list
  */
 export function indentedOrderedList<C extends string[]>(...array: C) {
-	return array.map((element, index) => ` ${index + 1} ${element}`).join('\n');
+	return array.map((element, index) => ` ${index + 1}. ${element}`).join('\n');
 }
 
 /**
