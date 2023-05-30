@@ -409,8 +409,8 @@ export function headingLevelThree<C extends string>(content: C): `### ${C}` {
  * @typeParam C - This is inferred by the supplied content
  * @param array - The array of elements to list
  */
-export function orderedList<C extends string[]>(...array: C) {
-	return array.map((element, index) => `${index + 1}. ${element}`).join('\n');
+export function orderedList<C extends string[]>(...items: C) {
+	return items.map((item) => `1. ${item}`).join('\n');
 }
 
 /**
