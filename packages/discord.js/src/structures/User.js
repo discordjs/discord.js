@@ -110,6 +110,26 @@ class User extends Base {
        */
       this.flags = new UserFlagsBitField(data.public_flags);
     }
+    
+    if ('global_name' in data) {
+      /**
+       * The global username for this user
+       * @type {?string}
+       */
+      this.globalName = data.global_name;
+    } else if (this.globalName !== null) {
+      this.globalName ??= undefined;
+    }
+    
+    if ('display_name' in data) {
+      /**
+       * The display name for this user
+       * @type {?string}
+       */
+      this.displayName = data.display_name;
+    } else if (this.displayName !== null) {
+      this.displayName ??= undefined;
+    }
   }
 
   /**
