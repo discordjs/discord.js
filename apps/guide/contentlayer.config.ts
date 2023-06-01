@@ -41,12 +41,11 @@ export const Content = defineDocumentType(() => ({
 				const slugger = new GithubSlugger();
 				// @ts-expect-error TypeScript can't infer
 				return Array.from(doc.body.raw.matchAll(regXHeader)).map(({ groups }) => {
-					const flag = groups?.flag;
 					const content = groups?.content;
 					return {
-						level: flag?.length,
+						level: groups?.flag?.length,
 						text: content,
-						slug: content ? slugger.slug(content) : undefined,
+						slug: content && slugger.slug(content),
 					};
 				});
 			},
