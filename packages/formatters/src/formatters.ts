@@ -373,13 +373,19 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 	return `${guildId === undefined ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
+enum HeadingLevel {
+	One = 1,
+	Two,
+	Three,
+}
+
 /**
  * Formats the content into a heading level one.
  *
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function heading<C extends string>(content: C, level?: 1): `# ${C}`;
+export function heading<C extends string>(content: C, level?: HeadingLevel.One): `# ${C}`;
 
 /**
  * Formats the content into a heading level two.
@@ -387,7 +393,7 @@ export function heading<C extends string>(content: C, level?: 1): `# ${C}`;
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function heading<C extends string>(content: C, level: 2): `## ${C}`;
+export function heading<C extends string>(content: C, level: HeadingLevel.Two): `## ${C}`;
 
 /**
  * Formats the content into a heading level three.
@@ -395,18 +401,17 @@ export function heading<C extends string>(content: C, level: 2): `## ${C}`;
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function heading<C extends string>(content: C, level: 3): `### ${C}`;
+export function heading<C extends string>(content: C, level: HeadingLevel.Three): `### ${C}`;
 
-export function heading(content: string, level?: 1 | 2 | 3) {
-	if (level === 3) {
-		return `### ${content}`;
+export function heading(content: string, level?: HeadingLevel) {
+	switch (level) {
+		case HeadingLevel.Three:
+			return `### ${content}`;
+		case HeadingLevel.Two:
+			return `## ${content} `;
+		default:
+			return `# ${content}`;
 	}
-
-	if (level === 2) {
-		return `## ${content}`;
-	}
-
-	return `# ${content}`;
 }
 
 /**
