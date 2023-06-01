@@ -9,7 +9,7 @@ export interface HeadingNode extends HeadingData {
 }
 
 /**
- * Serialize heading data into a hierarchial tree structure where lower level headings are children of higher level headings.
+ * Serialize heading data into a hierarchical tree structure where lower level headings are children of higher level headings.
  *
  * @param headings - An array of heading data
  */
