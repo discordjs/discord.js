@@ -379,9 +379,7 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function headingLevelOne<C extends string>(content: C): `# ${C}` {
-	return `# ${content}`;
-}
+export function heading<C extends string>(content: C, level?: 1): `# ${C}`;
 
 /**
  * Formats the content into a heading level two.
@@ -389,9 +387,7 @@ export function headingLevelOne<C extends string>(content: C): `# ${C}` {
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function headingLevelTwo<C extends string>(content: C): `## ${C}` {
-	return `## ${content}`;
-}
+export function heading<C extends string>(content: C, level: 2): `## ${C}`;
 
 /**
  * Formats the content into a heading level three.
@@ -399,15 +395,25 @@ export function headingLevelTwo<C extends string>(content: C): `## ${C}` {
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function headingLevelThree<C extends string>(content: C): `### ${C}` {
-	return `### ${content}`;
+export function heading<C extends string>(content: C, level: 3): `### ${C}`;
+
+export function heading(content: string, level?: 1 | 2 | 3) {
+	if (level === 3) {
+		return `### ${content}`;
+	}
+
+	if (level === 2) {
+		return `## ${content}`;
+	}
+
+	return `# ${content}`;
 }
 
 /**
  * Formats the elements in the array to an ordered list.
  *
  * @typeParam C - This is inferred by the supplied content
- * @param array - The array of elements to list
+ * @param items - The array of elements to list
  */
 export function orderedList<C extends string[]>(...items: C) {
 	return items.map((item) => `1. ${item}`).join('\n');
@@ -417,17 +423,17 @@ export function orderedList<C extends string[]>(...items: C) {
  * Formats the elements in the array to an indented ordered list.
  *
  * @typeParam C - This is inferred by the supplied content
- * @param array - The array of elements to list
+ * @param items - The array of elements to list
  */
-export function indentedOrderedList<C extends string[]>(...array: C) {
-	return array.map((element, index) => ` ${index + 1}. ${element}`).join('\n');
+export function indentedOrderedList<C extends string[]>(...items: C) {
+	return items.map((element, index) => ` ${index + 1}. ${element}`).join('\n');
 }
 
 /**
  * Formats the elements in the array to an unordered list.
  *
  * @typeParam C - This is inferred by the supplied content
- * @param array - The array of elements to list
+ * @param items - The array of elements to list
  */
 export function unorderedList<C extends string[]>(...items: C) {
 	return items.map((item) => `- ${item}`).join('\n');
@@ -437,10 +443,10 @@ export function unorderedList<C extends string[]>(...items: C) {
  * Formats the elements in the array to an indented unordered list.
  *
  * @typeParam C - This is inferred by the supplied content
- * @param array - The array of elements to list
+ * @param items - The array of elements to list
  */
-export function indentedUnorderedList<C extends string[]>(...array: C) {
-	return array.map((element) => ` - ${element}`).join('\n');
+export function indentedUnorderedList<C extends string[]>(...items: C) {
+	return items.map((element) => ` - ${element}`).join('\n');
 }
 
 /**
