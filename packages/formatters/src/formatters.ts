@@ -373,7 +373,7 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 	return `${guildId === undefined ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
-enum HeadingLevel {
+export enum HeadingLevel {
 	One = 1,
 	Two,
 	Three,
