@@ -68,7 +68,7 @@ class User extends Base {
     if ('discriminator' in data) {
       /**
        * The discriminator of this user
-       * <info>`'0'`, or a 4-digits stringified number if they're using the legacy username system</info>
+       * <info>`'0'`, or a 4-digit stringified number if they're using the legacy username system</info>
        * @type {?string}
        */
       this.discriminator = data.discriminator;
@@ -205,7 +205,7 @@ class User extends Base {
 
   /**
    * The tag of this user
-   * <info>This user's username, or `hydrabolt#0001` if they're using the legacy username system</info>
+   * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`) if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
    * @deprecated Use {@link User#username} instead.
