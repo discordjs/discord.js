@@ -243,6 +243,7 @@ class WebSocketManager extends EventEmitter {
 
     this._ws.on(WSWebSocketShardEvents.Ready, ({ data, shardId }) => {
       this.shards.get(shardId).onReadyPacket(data);
+      this.client.emit(Events.ShardReady, shardId);
     });
 
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, shardId }) => {
