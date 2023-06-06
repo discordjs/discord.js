@@ -243,7 +243,6 @@ class WebSocketManager extends EventEmitter {
 
     this._ws.on(WSWebSocketShardEvents.Ready, ({ data, shardId }) => {
       this.shards.get(shardId).onReadyPacket(data);
-      this.client.emit(Events.ShardReady, shardId);
     });
 
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, shardId }) => {
@@ -288,6 +287,7 @@ class WebSocketManager extends EventEmitter {
        * @event WebSocketShard#resumed
        */
       shard.emit(WebSocketShardEvents.Resumed);
+      this.client.emit(Events.ShardReady, shardId);
     });
 
     this._ws.on(WSWebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency, shardId }) => {
