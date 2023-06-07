@@ -121,12 +121,13 @@ export class CDN {
 	/**
 	 * Generates a default avatar URL
 	 *
-	 * @param type - The default avatar type
+	 * @param index - The default avatar index
 	 * @remarks
-	 * `type` is calculated via `(userId >> 22) % 5` or `discriminator % 5` with the legacy username system.
+	 * To calculate the index for a user do `(userId >> 22) % 6`,
+	 * or `discriminator % 5` if they're using the legacy username system.
 	 */
-	public defaultAvatar(type: number): string {
-		return this.makeURL(`/embed/avatars/${type}`, { extension: 'png' });
+	public defaultAvatar(index: number): string {
+		return this.makeURL(`/embed/avatars/${index}`, { extension: 'png' });
 	}
 
 	/**

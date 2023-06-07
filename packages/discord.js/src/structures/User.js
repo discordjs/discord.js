@@ -2,7 +2,7 @@
 
 const process = require('node:process');
 const { userMention } = require('@discordjs/builders');
-const { calculateUserDefaultAvatarType } = require('@discordjs/rest');
+const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -169,8 +169,8 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    const type = this.discriminator === '0' ? calculateUserDefaultAvatarType(this.id) : this.discriminator % 5;
-    return this.client.rest.cdn.defaultAvatar(type);
+    const index = this.discriminator === '0' ? calculateUserDefaultAvatarIndex(this.id) : this.discriminator % 5;
+    return this.client.rest.cdn.defaultAvatar(index);
   }
 
   /**
@@ -205,7 +205,8 @@ class User extends Base {
 
   /**
    * The tag of this user
-   * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`) if they're using the legacy username system</info>
+   * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
+   * if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
    * @deprecated Use {@link User#username} instead.
