@@ -3060,13 +3060,16 @@ export class User extends PartialTextBasedChannel(Base) {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public discriminator: string;
+  public get displayName(): string;
   public get defaultAvatarURL(): string;
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
+  public globalName: string | null;
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
+  /** @deprecated Use {@link User#username} instead. */
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
