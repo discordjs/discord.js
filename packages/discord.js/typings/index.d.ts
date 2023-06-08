@@ -3064,7 +3064,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get defaultAvatarURL(): string;
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
-  public get globalName(): string | null;
+  public globalName: string | null;
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
