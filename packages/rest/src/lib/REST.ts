@@ -41,7 +41,7 @@ export interface RESTOptions {
 	/**
 	 * The cdn path
 	 *
-	 * @defaultValue 'https://cdn.discordapp.com'
+	 * @defaultValue `'https://cdn.discordapp.com'`
 	 */
 	cdn: string;
 	/**
