@@ -312,7 +312,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public async delete(fullRoute: RouteLike, options: RequestData = {}) {
+	public async delete<T = unknown>(fullRoute: RouteLike, options: RequestData<T> = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Delete });
 	}
 
@@ -322,7 +322,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public async post(fullRoute: RouteLike, options: RequestData = {}) {
+	public async post<T = unknown>(fullRoute: RouteLike, options: RequestData<T> = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Post });
 	}
 
@@ -332,7 +332,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public async put(fullRoute: RouteLike, options: RequestData = {}) {
+	public async put<T = unknown>(fullRoute: RouteLike, options: RequestData<T> = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Put });
 	}
 
@@ -342,7 +342,7 @@ export class REST extends EventEmitter {
 	 * @param fullRoute - The full route to query
 	 * @param options - Optional request options
 	 */
-	public async patch(fullRoute: RouteLike, options: RequestData = {}) {
+	public async patch<T = unknown>(fullRoute: RouteLike, options: RequestData<T> = {}) {
 		return this.request({ ...options, fullRoute, method: RequestMethod.Patch });
 	}
 
