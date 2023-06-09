@@ -956,7 +956,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public users: UserManager;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
-  public destroy(): void;
+  public destroy(): Promise<void>;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
   public fetchInvite(invite: InviteResolvable, options?: ClientFetchInviteOptions): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
@@ -3060,13 +3060,16 @@ export class User extends PartialTextBasedChannel(Base) {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public discriminator: string;
+  public get displayName(): string;
   public get defaultAvatarURL(): string;
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
+  public globalName: string | null;
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
+  /** @deprecated Use {@link User#username} instead. */
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -3326,7 +3329,7 @@ export class WebSocketManager extends EventEmitter {
   private debug(message: string, shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
-  private destroy(): void;
+  private destroy(): Promise<void>;
   private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
   private checkShardsReady(): void;
   private triggerClientReady(): void;
