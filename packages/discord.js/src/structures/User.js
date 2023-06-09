@@ -272,6 +272,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
+      this.globalName === user.globalName &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
@@ -291,6 +292,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
+      this.globalName === user.global_name &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.public_flags &&
       ('banner' in user ? this.banner === user.banner : true) &&
