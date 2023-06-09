@@ -401,6 +401,11 @@
  */
 
 /**
+ * @external RESTGetAPIGuildThreadsResult
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
+ */
+
+/**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
  */
