@@ -48,7 +48,7 @@ export interface RawFile {
 /**
  * Represents possible data to be given to an endpoint
  */
-export interface RequestData {
+export interface RequestData<T = unknown> {
 	/**
 	 * Whether to append JSON data to form data instead of `payload_json` when sending files
 	 */
@@ -69,7 +69,7 @@ export interface RequestData {
 	 * The body to send to this request.
 	 * If providing as BodyInit, set `passThroughBody: true`
 	 */
-	body?: BodyInit | unknown;
+	body?: T | BodyInit;
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} to use for the request.
 	 */
