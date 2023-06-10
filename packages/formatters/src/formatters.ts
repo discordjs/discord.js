@@ -384,6 +384,7 @@ export enum HeadingLevel {
  *
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
+ * @param level - The heading level
  */
 export function heading<C extends string>(content: C, level?: HeadingLevel.One): `# ${C}`;
 
@@ -392,6 +393,7 @@ export function heading<C extends string>(content: C, level?: HeadingLevel.One):
  *
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
+ * @param level - The heading level
  */
 export function heading<C extends string>(content: C, level: HeadingLevel.Two): `## ${C}`;
 
@@ -400,6 +402,7 @@ export function heading<C extends string>(content: C, level: HeadingLevel.Two): 
  *
  * @typeParam C - This is inferred by the supplied content
  * @param content - The content to wrap
+ * @param level - The heading level
  */
 export function heading<C extends string>(content: C, level: HeadingLevel.Three): `### ${C}`;
 
