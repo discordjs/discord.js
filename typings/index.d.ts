@@ -2703,13 +2703,16 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public discriminator: string;
+  public get displayName(): string;
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
+  public globalName: string | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
   public system: boolean;
+  /** @deprecated Use {@link User#username} instead. */
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -3093,7 +3096,7 @@ export const Constants: {
         dynamic: boolean,
       ): string;
       Banner(id: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize, dynamic: boolean): string;
-      DefaultAvatar(discriminator: number): string;
+      DefaultAvatar(index: number): string;
       DiscoverySplash(guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
       Emoji(emojiId: Snowflake, format: DynamicImageFormat): string;
       GDMIcon(channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;

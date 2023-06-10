@@ -741,6 +741,16 @@ class Util extends null {
       emoji_name: defaultReaction.name,
     };
   }
+
+  /**
+   * Calculates the default avatar index for a given user id.
+   * @param {Snowflake} userId - The user id to calculate the default avatar index for
+   * @returns {number}
+   * @ignore
+   */
+  static calculateUserDefaultAvatarIndex(userId) {
+    return Number(BigInt(userId) >> 22n) % 6;
+  }
 }
 
 module.exports = Util;
