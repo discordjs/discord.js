@@ -69,7 +69,7 @@ export interface RequestData<T = unknown> {
 	 * The body to send to this request.
 	 * If providing as BodyInit, set `passThroughBody: true`
 	 */
-	body?: T | BodyInit;
+	body?: BodyInit | T;
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} to use for the request.
 	 */
