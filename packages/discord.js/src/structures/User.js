@@ -271,6 +271,7 @@ class User extends Base {
       user &&
       this.id === user.id &&
       this.username === user.username &&
+      this.globalName == user.globalName &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.flags?.bitfield &&
@@ -290,6 +291,7 @@ class User extends Base {
       user &&
       this.id === user.id &&
       this.username === user.username &&
+      this.globalName === user.globalName &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.public_flags &&
