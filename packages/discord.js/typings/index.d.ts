@@ -956,7 +956,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public users: UserManager;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
-  public destroy(): void;
+  public destroy(): Promise<void>;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
   public fetchInvite(invite: InviteResolvable, options?: ClientFetchInviteOptions): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
@@ -1764,7 +1764,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public type: InteractionType;
   public user: User;
   public version: number;
-  public appPermissions: Readonly<PermissionsBitField> | null;
+  public appPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
@@ -3329,7 +3329,7 @@ export class WebSocketManager extends EventEmitter {
   private debug(message: string, shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
-  private destroy(): void;
+  private destroy(): Promise<void>;
   private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
   private checkShardsReady(): void;
   private triggerClientReady(): void;
