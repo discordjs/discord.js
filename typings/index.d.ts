@@ -2788,6 +2788,7 @@ export class Util extends null {
   public static splitMessage(text: string, options?: SplitOptions): string[];
   /** @deprecated This will be removed in the next major version. */
   public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
+  public static calculateUserDefaultAvatarIndex(userId: Snowflake): number;
 }
 
 export class Formatters extends null {
