@@ -119,12 +119,15 @@ export class CDN {
 	}
 
 	/**
-	 * Generates the default avatar URL for a discriminator.
+	 * Generates a default avatar URL
 	 *
-	 * @param discriminator - The discriminator modulo 5
+	 * @param index - The default avatar index
+	 * @remarks
+	 * To calculate the index for a user do `(userId >> 22) % 6`,
+	 * or `discriminator % 5` if they're using the legacy username system.
 	 */
-	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
+	public defaultAvatar(index: number): string {
+		return this.makeURL(`/embed/avatars/${index}`, { extension: 'png' });
 	}
 
 	/**

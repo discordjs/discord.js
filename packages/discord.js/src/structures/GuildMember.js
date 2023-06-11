@@ -238,12 +238,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * The nickname of this member, or their username if they don't have one
+   * The nickname of this member, or their user display name if they don't have one
    * @type {?string}
    * @readonly
    */
   get displayName() {
-    return this.nickname ?? this.user.username;
+    return this.nickname ?? this.user.displayName;
   }
 
   /**
