@@ -1377,6 +1377,14 @@ declare const applicationCommandManager: ApplicationCommandManager;
   }
 }
 
+declare const applicationCommandChannelOptionData: ApplicationCommandChannelOptionData;
+declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
+{
+  applicationCommandChannelOptionData.channelTypes = [] as const;
+  applicationCommandChannelOptionData.channel_types = [] as const;
+  applicationCommandChannelOption.channelTypes = [] as const;
+}
+
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
@@ -1814,6 +1822,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel>(
         interaction.options.getChannel('test', true, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText] as const));
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
