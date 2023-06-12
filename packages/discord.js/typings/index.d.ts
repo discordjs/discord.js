@@ -1165,7 +1165,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getChannel<T extends ChannelType = ChannelType>(
     name: string,
     required: true,
-    channelTypes?: T[],
+    channelTypes?: Readonly<T[]>,
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
@@ -1180,7 +1180,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getChannel<T extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
-    channelTypes?: T[],
+    channelTypes?: Readonly<T[]>,
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
@@ -4331,13 +4331,13 @@ export type ApplicationCommandData =
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
-  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
-  channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: Readonly<ApplicationCommandOptionAllowedChannelTypes[]>;
+  channel_types?: Readonly<ApplicationCommandOptionAllowedChannelTypes[]>;
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Channel;
-  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: Readonly<ApplicationCommandOptionAllowedChannelTypes[]>;
 }
 
 export interface ApplicationCommandRoleOptionData extends BaseApplicationCommandOptionsData {
