@@ -1162,7 +1162,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel<T extends ChannelType = ChannelType>(
+  public getChannel<const T extends ChannelType = ChannelType>(
     name: string,
     required: true,
     channelTypes?: readonly T[],
@@ -1177,7 +1177,7 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
         : T;
     }
   >;
-  public getChannel<T extends ChannelType = ChannelType>(
+  public getChannel<const T extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
     channelTypes?: readonly T[],
