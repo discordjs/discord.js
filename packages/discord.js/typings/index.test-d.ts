@@ -165,6 +165,14 @@ import {
   FetchedThreadsMore,
   DMMessageManager,
   GuildMessageManager,
+  ApplicationCommandChannelOptionData,
+  ApplicationCommandChannelOption,
+  ApplicationCommandChoicesOption,
+  ApplicationCommandChoicesData,
+  ApplicationCommandSubGroup,
+  ApplicationCommandSubCommand,
+  ChatInputApplicationCommandData,
+  ApplicationCommandPermissionsManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1370,7 +1378,7 @@ declare const applicationCommandManager: ApplicationCommandManager;
     applicationCommandManager.set([applicationCommandData]),
   );
   expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
-    applicationCommandManager.set([applicationCommandData], '0'),
+    applicationCommandManager.set([applicationCommandData] as const, '0'),
   );
 
   // Test inference of choice values.
@@ -1392,6 +1400,41 @@ declare const applicationCommandManager: ApplicationCommandManager;
   }
 }
 
+declare const applicationCommandPermissionsManager: ApplicationCommandPermissionsManager<
+  {},
+  {},
+  Guild | null,
+  Snowflake
+>;
+{
+  applicationCommandPermissionsManager.add({ permissions: [], token: '' });
+  applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
+  applicationCommandPermissionsManager.set({ permissions: [], token: '' });
+  applicationCommandPermissionsManager.set({ permissions: [] as const, token: '' });
+  applicationCommandPermissionsManager.remove({ channels: [], roles: [], users: [], token: '' });
+
+  applicationCommandPermissionsManager.remove({
+    channels: [] as const,
+    roles: [] as const,
+    users: [] as const,
+    token: '',
+  });
+}
+
+declare const chatInputApplicationCommandData: ChatInputApplicationCommandData;
+{
+  chatInputApplicationCommandData.options = [];
+  chatInputApplicationCommandData.options = [] as const;
+}
+
+declare const applicationCommandChannelOptionData: ApplicationCommandChannelOptionData;
+declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
+{
+  applicationCommandChannelOptionData.channelTypes = [] as const;
+  applicationCommandChannelOptionData.channel_types = [] as const;
+  applicationCommandChannelOption.channelTypes = [] as const;
+}
+
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
@@ -1402,10 +1445,32 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   applicationNonChoiceOptionData.choices;
 }
 
+declare const applicationCommandChoicesData: ApplicationCommandChoicesData;
+declare const applicationCommandChoicesOption: ApplicationCommandChoicesOption;
+{
+  applicationCommandChoicesData.choices = [];
+  applicationCommandChoicesData.choices = [] as const;
+  applicationCommandChoicesOption.choices = [];
+  applicationCommandChoicesOption.choices = [] as const;
+}
+
+declare const applicationCommandSubCommandData: ApplicationCommandSubCommandData;
+declare const applicationCommandSubCommand: ApplicationCommandSubCommand;
+{
+  applicationCommandSubCommandData.options = [];
+  applicationCommandSubCommandData.options = [] as const;
+  applicationCommandSubCommand.options = [];
+  applicationCommandSubCommand.options = [] as const;
+}
+
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
+declare const applicationCommandSubGroup: ApplicationCommandSubGroup;
 {
   expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
-  expectType<ApplicationCommandSubCommandData[]>(applicationSubGroupCommandData.options);
+  applicationSubGroupCommandData.options = [];
+  applicationSubGroupCommandData.options = [] as const;
+  applicationCommandSubGroup.options = [];
+  applicationCommandSubGroup.options = [] as const;
 }
 
 declare const autoModerationRuleManager: AutoModerationRuleManager;
@@ -1835,6 +1900,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel>(
         interaction.options.getChannel('test', true, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText] as const));
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
