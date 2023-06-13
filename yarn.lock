@@ -2306,7 +2306,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/rest@^1.7.1, @discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
+"@discordjs/rest@workspace:^, @discordjs/rest@workspace:packages/rest":
   version: 0.0.0-use.local
   resolution: "@discordjs/rest@workspace:packages/rest"
   dependencies:
@@ -2516,7 +2516,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@discordjs/ws@^0.8.3, @discordjs/ws@workspace:^, @discordjs/ws@workspace:packages/ws":
+"@discordjs/ws@workspace:^, @discordjs/ws@workspace:packages/ws":
   version: 0.0.0-use.local
   resolution: "@discordjs/ws@workspace:packages/ws"
   dependencies:
@@ -11386,9 +11386,9 @@ __metadata:
     "@discordjs/collection": "workspace:^"
     "@discordjs/docgen": "workspace:^"
     "@discordjs/formatters": "workspace:^"
-    "@discordjs/rest": ^1.7.1
+    "@discordjs/rest": "workspace:^"
     "@discordjs/util": "workspace:^"
-    "@discordjs/ws": ^0.8.3
+    "@discordjs/ws": "workspace:^"
     "@favware/cliff-jumper": ^2.0.0
     "@sapphire/snowflake": ^3.5.1
     "@types/node": 16.18.32
