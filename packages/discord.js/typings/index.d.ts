@@ -2228,17 +2228,15 @@ export interface TextInputModalData extends BaseModalData {
 
 export interface ActionRowModalData {
   type: ComponentType.ActionRow;
-  components: ModalData[];
+  components: TextInputModalData[];
 }
-
-export type ModalData = TextInputModalData | ActionRowModalData;
 
 export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);
-  public components: ActionRow<ModalActionRowComponent>;
+  public components: ActionRowModalData[];
   public fields: Collection<string, ModalActionRowComponent>;
-  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & ModalData;
-  public getField(customId: string, type?: ComponentType): ModalData;
+  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & TextInputModalData;
+  public getField(customId: string, type?: ComponentType): TextInputModalData;
   public getTextInputValue(customId: string): string;
 }
 
