@@ -5,6 +5,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const { GuildOnboarding } = require('./GuildOnboarding');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -758,6 +759,15 @@ class Guild extends AnonymousGuild {
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
     return new GuildAuditLogs(this, data);
+  }
+
+  /**
+   * Fetches the guild onboarding data for this guild.
+   * @returns {Promise<GuildOnboarding>}
+   */
+  async fetchOnboarding() {
+    const data = await this.client.rest.get(`/guilds/${this.id}/onboarding`);
+    return new GuildOnboarding(this.client, data);
   }
 
   /**
