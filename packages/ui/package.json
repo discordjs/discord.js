@@ -81,7 +81,7 @@
 		"turbo": "^1.9.8",
 		"typescript": "^5.0.4",
 		"unocss": "^0.52.3",
-		"vite": "^4.3.8",
+		"vite": "^4.3.9",
 		"vite-plugin-dts": "^2.3.0",
 		"vitest": "^0.31.1"
 	},

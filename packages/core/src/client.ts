@@ -7,6 +7,7 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayDispatchEvents,
 	GatewayOpcodes,
+	type GatewayApplicationCommandPermissionsUpdateDispatchData,
 	type GatewayAutoModerationActionExecutionDispatchData,
 	type GatewayAutoModerationRuleCreateDispatchData,
 	type GatewayAutoModerationRuleDeleteDispatchData,
@@ -89,6 +90,9 @@ export interface WithIntrinsicProps<T> extends IntrinsicProps {
 }
 
 export interface MappedEvents {
+	[GatewayDispatchEvents.ApplicationCommandPermissionsUpdate]: [
+		WithIntrinsicProps<GatewayApplicationCommandPermissionsUpdateDispatchData>,
+	];
 	[GatewayDispatchEvents.AutoModerationActionExecution]: [
 		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
 	];
