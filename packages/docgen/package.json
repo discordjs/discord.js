@@ -33,29 +33,31 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/docgen"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"commander": "^9.4.1",
-		"jsdoc-to-markdown": "^7.1.1",
-		"tslib": "^2.4.0",
-		"typedoc": "^0.23.17"
+		"commander": "^10.0.1",
+		"jsdoc-to-markdown": "^8.0.0",
+		"tslib": "^2.5.2",
+		"typedoc": "^0.24.7"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.8.8",
+		"@favware/cliff-jumper": "^2.0.0",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.11.68",
+		"@types/node": "16.18.32",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.39",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.7.1",
-		"tsup": "^6.3.0",
-		"typescript": "^4.8.4"
+		"eslint": "^8.41.0",
+		"eslint-config-neon": "^0.1.47",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.8",
+		"typescript": "^5.0.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -111,8 +111,11 @@ const Messages = {
 
   [DjsErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [DjsErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
+  [DjsErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
+    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
   [DjsErrorCodes.MissingManageEmojisAndStickersPermission]: guild =>
     `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+
   [DjsErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
@@ -145,6 +148,8 @@ const Messages = {
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   [DjsErrorCodes.CommandInteractionOptionNoSubcommand]: 'No subcommand specified for interaction.',
   [DjsErrorCodes.CommandInteractionOptionNoSubcommandGroup]: 'No subcommand group specified for interaction.',
+  [DjsErrorCodes.CommandInteractionOptionInvalidChannelType]: (name, type, expected) =>
+    `The type of channel of the option "${name}" is: ${type}; expected ${expected}.`,
   [DjsErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
   [DjsErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>
@@ -153,6 +158,7 @@ const Messages = {
     `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
 
   [DjsErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
+  [DjsErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',
 
   [DjsErrorCodes.NotImplemented]: (what, name) => `Method ${what} not implemented on ${name}.`,
 

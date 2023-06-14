@@ -23,7 +23,7 @@ const getForumChannel = lazy(() => require('../structures/ForumChannel'));
  * @returns {Channel} Any kind of channel.
  * @ignore
  */
-function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
+function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
   let channel;
   if (!data.guild_id && !guild) {
     if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
@@ -59,7 +59,7 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
         case ChannelType.AnnouncementThread:
         case ChannelType.PublicThread:
         case ChannelType.PrivateThread: {
-          channel = new (getThreadChannel())(guild, data, client, fromInteraction);
+          channel = new (getThreadChannel())(guild, data, client);
           if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
           break;
         }

@@ -20,7 +20,7 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  */
 class GuildChannel extends BaseChannel {
   constructor(guild, data, client, immediatePatch = true) {
-    super(guild?.client ?? client, data, false);
+    super(client, data, false);
 
     /**
      * The guild the channel is in
@@ -33,8 +33,6 @@ class GuildChannel extends BaseChannel {
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
-
-    this.parentId = this.parentId ?? null;
     /**
      * A manager of permission overwrites that belong to this channel
      * @type {PermissionOverwriteManager}
@@ -73,6 +71,8 @@ class GuildChannel extends BaseChannel {
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
+    } else {
+      this.parentId ??= null;
     }
 
     if ('permission_overwrites' in data) {
@@ -131,8 +131,8 @@ class GuildChannel extends BaseChannel {
 
       // Compare overwrites
       return (
-        typeof channelVal !== 'undefined' &&
-        typeof parentVal !== 'undefined' &&
+        channelVal !== undefined &&
+        parentVal !== undefined &&
         channelVal.deny.bitfield === parentVal.deny.bitfield &&
         channelVal.allow.bitfield === parentVal.allow.bitfield
       );
@@ -268,7 +268,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Edits the channel.
-   * @param {GuildChannelEditOptions} data The new data for the channel
+   * @param {GuildChannelEditOptions} options The options to provide
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -276,8 +276,8 @@ class GuildChannel extends BaseChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.channels.edit(this, data);
+  edit(options) {
+    return this.guild.channels.edit(this, options);
   }
 
   /**

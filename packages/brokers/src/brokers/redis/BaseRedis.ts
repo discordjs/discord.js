@@ -32,7 +32,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	implements IBaseBroker<TEvents>
 {
 	/**
-	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd }
+	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd}
 	 */
 	public static readonly STREAM_DATA_KEY = 'data';
 

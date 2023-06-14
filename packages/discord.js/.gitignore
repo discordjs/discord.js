@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -16,12 +16,12 @@ pids
 test/auth.json
 test/auth.js
 
-# Dist
-dist/
+# Docs
 docs/**/*
 !docs/index.json
+!docs/logo.svg
+!docs/README.md
 
 # Miscellaneous
-.tmp/
-coverage/
-tsconfig.tsbuildinfo
+.turbo
+.tmp

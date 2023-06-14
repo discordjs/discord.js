@@ -1,7 +1,6 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
-import type { WebSocketManager } from '../../ws/WebSocketManager';
+import type { WebSocketManager } from '../../ws/WebSocketManager.js';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';
@@ -15,11 +14,8 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 
 	private readonly shards = new Collection<number, WebSocketShard>();
 
-	private readonly throttler: IdentifyThrottler;
-
 	public constructor(manager: WebSocketManager) {
 		this.manager = manager;
-		this.throttler = new IdentifyThrottler(manager);
 	}
 
 	/**
@@ -27,6 +23,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	 */
 	public async spawn(shardIds: number[]) {
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
+
 		for (const shardId of shardIds) {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
@@ -46,7 +43,6 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const shard of this.shards.values()) {
-			await this.throttler.waitForIdentify();
 			promises.push(shard.connect());
 		}
 
@@ -72,7 +68,17 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	 */
 	public async send(shardId: number, payload: GatewaySendPayload) {
 		const shard = this.shards.get(shardId);
-		if (!shard) throw new Error(`Shard ${shardId} not found`);
+		if (!shard) {
+			throw new RangeError(`Shard ${shardId} not found`);
+		}
+
 		return shard.send(payload);
+	}
+
+	/**
+	 * {@inheritDoc IShardingStrategy.fetchStatus}
+	 */
+	public async fetchStatus() {
+		return this.shards.mapValues((shard) => shard.status);
 	}
 }

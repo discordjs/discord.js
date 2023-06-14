@@ -2,6 +2,7 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
+const AutoModerationRule = require('./AutoModerationRule');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
@@ -27,6 +28,7 @@ const Targets = {
   Sticker: 'Sticker',
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
+  AutoModeration: 'AutoModeration',
   Unknown: 'Unknown',
 };
 
@@ -46,10 +48,11 @@ const Targets = {
  * * A guild scheduled event
  * * A thread
  * * An application command
+ * * An auto moderation rule
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule)} AuditLogEntryTarget
  */
 
 /**
@@ -91,7 +94,7 @@ class GuildAuditLogsEntry {
    */
   static Targets = Targets;
 
-  constructor(logs, guild, data) {
+  constructor(guild, data, logs) {
     /**
      * The target type of this entry
      * @type {AuditLogTargetType}
@@ -106,7 +109,7 @@ class GuildAuditLogsEntry {
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
-     * The type of action that occured.
+     * The type of action that occurred.
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
@@ -118,13 +121,19 @@ class GuildAuditLogsEntry {
     this.reason = data.reason ?? null;
 
     /**
+     * The id of the user that executed this entry
+     * @type {?Snowflake}
+     */
+    this.executorId = data.user_id;
+
+    /**
      * The user that executed this entry
      * @type {?User}
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id)
+        : guild.client.users.cache.get(data.user_id) ?? null
       : null;
 
     /**
@@ -223,9 +232,25 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.AutoModerationBlockMessage:
+      case AuditLogEvent.AutoModerationFlagToChannel:
+      case AuditLogEvent.AutoModerationUserCommunicationDisabled:
+        this.extra = {
+          autoModerationRuleName: data.options.auto_moderation_rule_name,
+          autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
+        };
+        break;
+
       default:
         break;
     }
+
+    /**
+     * The id of the target of this entry
+     * @type {?Snowflake}
+     */
+    this.targetId = data.target_id;
 
     /**
      * The target of this entry
@@ -242,12 +267,12 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.User && data.target_id) {
       this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id);
+        : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Guild) {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
       this.target =
-        logs.webhooks.get(data.target_id) ??
+        logs?.webhooks.get(data.target_id) ??
         new Webhook(
           guild.client,
           this.changes.reduce(
@@ -282,10 +307,10 @@ class GuildAuditLogsEntry {
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id);
+          : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Integration) {
       this.target =
-        logs.integrations.get(data.target_id) ??
+        logs?.integrations.get(data.target_id) ??
         new Integration(
           guild.client,
           this.changes.reduce(
@@ -351,7 +376,21 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.ApplicationCommand) {
-      this.target = logs.applicationCommands.get(data.target_id) ?? { id: data.target_id };
+      this.target = logs?.applicationCommands.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.AutoModeration) {
+      this.target =
+        guild.autoModerationRules.cache.get(data.target_id) ??
+        new AutoModerationRule(
+          guild.client,
+          this.changes.reduce(
+            (o, c) => {
+              o[c.key] = c.new ?? c.old;
+              return o;
+            },
+            { id: data.target_id, guild_id: guild.id },
+          ),
+          guild,
+        );
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
@@ -377,6 +416,7 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
+    if (target >= 140 && target < 150) return Targets.AutoModeration;
     return Targets.Unknown;
   }
 
@@ -402,6 +442,8 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.AutoModerationRuleCreate,
+        AuditLogEvent.AutoModerationBlockMessage,
       ].includes(action)
     ) {
       return 'Create';
@@ -427,6 +469,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.AutoModerationRuleDelete,
       ].includes(action)
     ) {
       return 'Delete';
@@ -450,6 +493,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.AutoModerationRuleUpdate,
       ].includes(action)
     ) {
       return 'Update';

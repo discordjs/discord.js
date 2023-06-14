@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@1.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.0...@discordjs/proxy@1.4.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Refactor
+
+- **proxy:** Rely on auth header instead (#9422) ([a49ed0a](https://github.com/discordjs/discord.js/commit/a49ed0a2d5934ad7af2e9cfbf7c5ccf171599591))
+
+# [@discordjs/proxy@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.3.0...@discordjs/proxy@1.4.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+# [@discordjs/proxy@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.2.1...@discordjs/proxy@1.3.0) - (2023-03-12)
+
+## Documentation
+
+- Fix typos (#9127) ([1ba1f23](https://github.com/discordjs/discord.js/commit/1ba1f238f04221ec890fc921678909b5b7d92c26))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+# [@discordjs/proxy@1.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.2.0...@discordjs/proxy@1.2.1) - (2022-11-25)
+
+## Bug Fixes
+
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
 # [@discordjs/proxy@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.1.0...@discordjs/proxy@1.2.0) - (2022-10-07)
 
 ## Bug Fixes

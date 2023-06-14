@@ -3,6 +3,10 @@
 /**
  * @typedef {Object} Events
  * @property {string} ApplicationCommandPermissionsUpdate applicationCommandPermissionsUpdate
+ * @property {string} AutoModerationActionExecution autoModerationActionExecution
+ * @property {string} AutoModerationRuleCreate autoModerationRuleCreate
+ * @property {string} AutoModerationRuleDelete autoModerationRuleDelete
+ * @property {string} AutoModerationRuleUpdate autoModerationRuleUpdate
  * @property {string} CacheSweep cacheSweep
  * @property {string} ChannelCreate channelCreate
  * @property {string} ChannelDelete channelDelete
@@ -11,6 +15,7 @@
  * @property {string} ClientReady ready
  * @property {string} Debug debug
  * @property {string} Error error
+ * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
  * @property {string} GuildBanAdd guildBanAdd
  * @property {string} GuildBanRemove guildBanRemove
  * @property {string} GuildCreate guildCreate
@@ -79,6 +84,10 @@
  */
 module.exports = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
+  AutoModerationActionExecution: 'autoModerationActionExecution',
+  AutoModerationRuleCreate: 'autoModerationRuleCreate',
+  AutoModerationRuleDelete: 'autoModerationRuleDelete',
+  AutoModerationRuleUpdate: 'autoModerationRuleUpdate',
   CacheSweep: 'cacheSweep',
   ChannelCreate: 'channelCreate',
   ChannelDelete: 'channelDelete',
@@ -87,6 +96,7 @@ module.exports = {
   ClientReady: 'ready',
   Debug: 'debug',
   Error: 'error',
+  GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildBanAdd: 'guildBanAdd',
   GuildBanRemove: 'guildBanRemove',
   GuildCreate: 'guildCreate',

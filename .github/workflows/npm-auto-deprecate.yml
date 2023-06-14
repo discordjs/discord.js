@@ -12,15 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
       - name: Install dependencies
         uses: ./packages/actions/src/yarnCache
 
       - name: Deprecate versions
-        run: 'yarn npm-deprecate --name "*dev*" --package @discordjs/brokers @discordjs/builders @discordjs/collection discord.js @discordjs/proxy @discordjs/rest @discordjs/util @discordjs/voice @discordjs/ws'
+        run: 'yarn npm-deprecate --name "*dev*" --package @discordjs/brokers @discordjs/builders @discordjs/collection @discordjs/core @discordjs/formatters discord.js @discordjs/next @discordjs/proxy @discordjs/rest @discordjs/util @discordjs/voice @discordjs/ws'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

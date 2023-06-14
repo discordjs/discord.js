@@ -49,6 +49,7 @@ class MessageManager extends CachedManager {
 
   /**
    * Options used to fetch multiple messages.
+   * <info>The `before`, `after`, and `around` parameters are mutually exclusive.</info>
    * @typedef {Object} FetchMessagesOptions
    * @property {number} [limit] The maximum number of messages to return
    * @property {Snowflake} [before] Consider only messages before this id
@@ -150,7 +151,7 @@ class MessageManager extends CachedManager {
   /**
    * Options that can be passed to edit a message.
    * @typedef {BaseMessageOptions} MessageEditOptions
-   * @property {Array<JSONEncodable<AttachmentPayload>>} [attachments] An array of attachments to keep,
+   * @property {AttachmentPayload[]} [attachments] An array of attachments to keep,
    * all attachments will be kept if omitted
    * @property {MessageFlags} [flags] Which flags to set for the message
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>

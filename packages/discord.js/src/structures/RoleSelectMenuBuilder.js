@@ -1,6 +1,7 @@
 'use strict';
 
-const { RoleSelectMenuBuilder: BuildersRoleSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const { RoleSelectMenuBuilder: BuildersRoleSelectMenu } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
 /**
@@ -13,15 +14,12 @@ class RoleSelectMenuBuilder extends BuildersRoleSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {RoleSelectMenuBuilder|RoleSelectMenuComponent|APIRoleSelectComponent} other The other data
    * @returns {RoleSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -29,5 +27,5 @@ module.exports = RoleSelectMenuBuilder;
 
 /**
  * @external BuildersRoleSelectMenu
- * @see {@link https://discord.js.org/#/docs/builders/main/class/RoleSelectMenuBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/RoleSelectMenuBuilder:Class}
  */

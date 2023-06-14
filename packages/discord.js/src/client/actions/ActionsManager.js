@@ -1,13 +1,25 @@
 'use strict';
 
 class ActionsManager {
+  // These symbols represent fully built data that we inject at times when calling actions manually.
+  // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)
+  // instead of trying to make it from provided data
+  injectedUser = Symbol('djs.actions.injectedUser');
+  injectedChannel = Symbol('djs.actions.injectedChannel');
+  injectedMessage = Symbol('djs.actions.injectedMessage');
+
   constructor(client) {
     this.client = client;
 
     this.register(require('./ApplicationCommandPermissionsUpdate'));
+    this.register(require('./AutoModerationActionExecution'));
+    this.register(require('./AutoModerationRuleCreate'));
+    this.register(require('./AutoModerationRuleDelete'));
+    this.register(require('./AutoModerationRuleUpdate'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
+    this.register(require('./GuildAuditLogEntryCreate'));
     this.register(require('./GuildBanAdd'));
     this.register(require('./GuildBanRemove'));
     this.register(require('./GuildChannelsPositionUpdate'));

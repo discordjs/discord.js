@@ -14,7 +14,7 @@ const Events = require('../util/Events');
  * @property {number} [maxComponents] The maximum number of components to collect
  * @property {number} [maxUsers] The maximum number of users to interact
  * @property {Message|APIMessage} [message] The message to listen to interactions from
- * @property {InteractionResponse} interactionResponse The interaction response to listen
+ * @property {InteractionResponse} [interactionResponse] The interaction response to listen
  * to message component interactions from
  */
 

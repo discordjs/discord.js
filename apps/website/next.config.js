@@ -1,22 +1,32 @@
-/* eslint-disable tsdoc/syntax */
-import { URL, fileURLToPath } from 'node:url';
+import bundleAnalyzer from '@next/bundle-analyzer';
 
-/**
- * @type {import('next').NextConfig}
- */
-export default {
+const withBundleAnalyzer = bundleAnalyzer({
+	enabled: process.env.ANALYZE === 'true',
+});
+
+export default withBundleAnalyzer({
 	reactStrictMode: true,
-	swcMinify: true,
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	cleanDistDir: true,
 	experimental: {
-		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
-		fallbackNodePolyfills: false,
+		appDir: true,
+		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
 		dangerouslyAllowSVG: true,
-		contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+		contentDispositionType: 'attachment',
+		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
-};
+	async redirects() {
+		return [
+			{
+				source: '/static/logo.svg',
+				destination: '/logo.svg',
+				permanent: true,
+			},
+			{
+				source: '/guide/:path*',
+				destination: 'https://next.discordjs.guide/guide/:path*',
+				permanent: true,
+			},
+		];
+	},
+});

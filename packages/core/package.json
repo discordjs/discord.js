@@ -1,0 +1,86 @@
+{
+	"name": "@discordjs/core",
+	"version": "0.6.0",
+	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
+		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
+		"prepack": "yarn build && yarn lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
+		"release": "cliff-jumper"
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"typings": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		},
+		"./http-only": {
+			"types": "./dist/http-only.d.ts",
+			"import": "./dist/http-only.mjs",
+			"require": "./dist/http-only.js"
+		}
+	},
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Suneet Tipirneni <suneettipirneni@icloud.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/core"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/rest": "workspace:^",
+		"@discordjs/util": "workspace:^",
+		"@discordjs/ws": "workspace:^",
+		"@sapphire/snowflake": "^3.5.1",
+		"@vladfrangu/async_event_emitter": "^2.2.2",
+		"discord-api-types": "^0.37.42"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^2.0.0",
+		"@microsoft/api-extractor": "^7.35.0",
+		"@types/node": "18.16.14",
+		"@vitest/coverage-c8": "^0.31.1",
+		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.1.0",
+		"eslint": "^8.41.0",
+		"eslint-config-neon": "^0.1.47",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.8",
+		"typescript": "^5.0.4",
+		"vitest": "^0.31.1"
+	},
+	"engines": {
+		"node": ">=16.9.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

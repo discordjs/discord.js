@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.jsx';
-import { DiscordMessageBaseReply } from './MessageBaseReply.jsx';
+import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.js';
+import { DiscordMessageBaseReply } from './MessageBaseReply.js';
 
 export interface IDiscordMessageReply {
 	author?: IDiscordMessageAuthorReply | undefined;

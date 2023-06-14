@@ -1,5 +1,6 @@
 'use strict';
 
+const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
 
 /**
@@ -10,8 +11,26 @@ const snakeCase = require('lodash.snakecase');
 function toSnakeCase(obj) {
   if (typeof obj !== 'object' || !obj) return obj;
   if (obj instanceof Date) return obj;
+  if (isJSONEncodable(obj)) return toSnakeCase(obj.toJSON());
   if (Array.isArray(obj)) return obj.map(toSnakeCase);
   return Object.fromEntries(Object.entries(obj).map(([key, value]) => [snakeCase(key), toSnakeCase(value)]));
 }
 
-module.exports = { toSnakeCase };
+/**
+ * Transforms an API auto moderation action object to a camel-cased variant.
+ * @param {APIAutoModerationAction} autoModerationAction The action to transform
+ * @returns {AutoModerationAction}
+ * @ignore
+ */
+function _transformAPIAutoModerationAction(autoModerationAction) {
+  return {
+    type: autoModerationAction.type,
+    metadata: {
+      durationSeconds: autoModerationAction.metadata.duration_seconds ?? null,
+      channelId: autoModerationAction.metadata.channel_id ?? null,
+      customMessage: autoModerationAction.metadata.custom_message ?? null,
+    },
+  };
+}
+
+module.exports = { toSnakeCase, _transformAPIAutoModerationAction };
