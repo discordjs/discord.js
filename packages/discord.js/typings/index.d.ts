@@ -956,7 +956,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public users: UserManager;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
-  public destroy(): void;
+  public destroy(): Promise<void>;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
   public fetchInvite(invite: InviteResolvable, options?: ClientFetchInviteOptions): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
@@ -1162,10 +1162,10 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel<T extends ChannelType = ChannelType>(
+  public getChannel<const T extends ChannelType = ChannelType>(
     name: string,
     required: true,
-    channelTypes?: T[],
+    channelTypes?: readonly T[],
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
@@ -1177,10 +1177,10 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
         : T;
     }
   >;
-  public getChannel<T extends ChannelType = ChannelType>(
+  public getChannel<const T extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
-    channelTypes?: T[],
+    channelTypes?: readonly T[],
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
@@ -1764,7 +1764,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public type: InteractionType;
   public user: User;
   public version: number;
-  public appPermissions: Readonly<PermissionsBitField> | null;
+  public appPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
@@ -2228,17 +2228,15 @@ export interface TextInputModalData extends BaseModalData {
 
 export interface ActionRowModalData {
   type: ComponentType.ActionRow;
-  components: ModalData[];
+  components: TextInputModalData[];
 }
-
-export type ModalData = TextInputModalData | ActionRowModalData;
 
 export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);
-  public components: ActionRow<ModalActionRowComponent>;
+  public components: ActionRowModalData[];
   public fields: Collection<string, ModalActionRowComponent>;
-  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & ModalData;
-  public getField(customId: string, type?: ComponentType): ModalData;
+  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & TextInputModalData;
+  public getField(customId: string, type?: ComponentType): TextInputModalData;
   public getTextInputValue(customId: string): string;
 }
 
@@ -3329,7 +3327,7 @@ export class WebSocketManager extends EventEmitter {
   private debug(message: string, shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
-  private destroy(): void;
+  private destroy(): Promise<void>;
   private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
   private checkShardsReady(): void;
   private triggerClientReady(): void;
@@ -3713,9 +3711,11 @@ export class ApplicationCommandManager<
     id?: Snowflake,
     options?: FetchApplicationCommandOptions,
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
-  public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
-    commands: ApplicationCommandDataResolvable[],
+    commands: readonly ApplicationCommandDataResolvable[],
+  ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  public set(
+    commands: readonly ApplicationCommandDataResolvable[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   private static transformCommand(command: ApplicationCommandDataResolvable): RESTPostAPIApplicationCommandsJSONBody;
@@ -3748,21 +3748,21 @@ export class ApplicationCommandPermissionsManager<
     options:
       | (FetchSingleOptions & {
           token: string;
-          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: (RoleResolvable | RolePermissionConstant)[];
-          users: UserResolvable[];
+          channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles?: readonly (RoleResolvable | RolePermissionConstant)[];
+          users: readonly UserResolvable[];
         })
       | (FetchSingleOptions & {
           token: string;
-          channels?: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles: (RoleResolvable | RolePermissionConstant)[];
-          users?: UserResolvable[];
+          channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles: readonly (RoleResolvable | RolePermissionConstant)[];
+          users?: readonly UserResolvable[];
         })
       | (FetchSingleOptions & {
           token: string;
-          channels: (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: (RoleResolvable | RolePermissionConstant)[];
-          users?: UserResolvable[];
+          channels: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+          roles?: readonly (RoleResolvable | RolePermissionConstant)[];
+          users?: readonly UserResolvable[];
         }),
   ): Promise<ApplicationCommandPermissions[]>;
   public set(
@@ -4321,7 +4321,7 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   description: string;
   descriptionLocalizations?: LocalizationMap;
   type?: ApplicationCommandType.ChatInput;
-  options?: ApplicationCommandOptionData[];
+  options?: readonly ApplicationCommandOptionData[];
 }
 
 export type ApplicationCommandData =
@@ -4331,13 +4331,13 @@ export type ApplicationCommandData =
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;
-  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
-  channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[];
+  channel_types?: readonly ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
   type: ApplicationCommandOptionType.Channel;
-  channelTypes?: ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[];
 }
 
 export interface ApplicationCommandRoleOptionData extends BaseApplicationCommandOptionsData {
@@ -4407,14 +4407,14 @@ export interface ApplicationCommandAutocompleteStringOptionData
 export interface ApplicationCommandChoicesData<Type extends string | number = string | number>
   extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData<Type>[];
+  choices?: readonly ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
 export interface ApplicationCommandChoicesOption<Type extends string | number = string | number>
   extends Omit<BaseApplicationCommandOptionsData, 'autocomplete'> {
   type: CommandOptionChoiceResolvableType;
-  choices?: ApplicationCommandOptionChoiceData<Type>[];
+  choices?: readonly ApplicationCommandOptionChoiceData<Type>[];
   autocomplete?: false;
 }
 
@@ -4456,22 +4456,25 @@ export interface ApplicationCommandBooleanOption extends BaseApplicationCommandO
 
 export interface ApplicationCommandSubGroupData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.SubcommandGroup;
-  options: ApplicationCommandSubCommandData[];
+  options: readonly ApplicationCommandSubCommandData[];
 }
 
 export interface ApplicationCommandSubGroup extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.SubcommandGroup;
-  options?: ApplicationCommandSubCommand[];
+  options?: readonly ApplicationCommandSubCommand[];
 }
 
 export interface ApplicationCommandSubCommandData extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: Exclude<ApplicationCommandOptionData, ApplicationCommandSubGroupData | ApplicationCommandSubCommandData>[];
+  options?: readonly Exclude<
+    ApplicationCommandOptionData,
+    ApplicationCommandSubGroupData | ApplicationCommandSubCommandData
+  >[];
 }
 
 export interface ApplicationCommandSubCommand extends Omit<BaseApplicationCommandOptionsData, 'required'> {
   type: ApplicationCommandOptionType.Subcommand;
-  options?: Exclude<ApplicationCommandOption, ApplicationCommandSubGroup | ApplicationCommandSubCommand>[];
+  options?: readonly Exclude<ApplicationCommandOption, ApplicationCommandSubGroup | ApplicationCommandSubCommand>[];
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
@@ -4527,11 +4530,11 @@ export interface ApplicationCommandPermissionsUpdateData {
   id: Snowflake;
   guildId: Snowflake;
   applicationId: Snowflake;
-  permissions: ApplicationCommandPermissions[];
+  permissions: readonly ApplicationCommandPermissions[];
 }
 
 export interface EditApplicationCommandPermissionsMixin {
-  permissions: ApplicationCommandPermissions[];
+  permissions: readonly ApplicationCommandPermissions[];
   token: string;
 }
 
