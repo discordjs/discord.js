@@ -1,0 +1,132 @@
+---
+title: Configuration files
+category: Creating your bot
+---
+
+# Configuration files
+
+Once you [add your bot to a server](../installations-and-preparations/adding-your-bot-to-servers), the next step is to start coding and get it online! Let's start by creating a config file to prepare the necessary values your client will need.
+
+As explained in the ["What is a token, anyway?"](../installations-and-preparations/setting-up-a-bot-application.md#what-is-a-token-anyway) section, your token is essentially your bot's password, and you should protect it as best as possible. This can be done through a _`config.json`_ file or by using environment variables.
+
+Open your application in the [Discord Developer Portal](https://discord.com/developers/applications) and go to the "Bot" page to copy your token.
+
+## Using config.json
+
+Storing data in a _`config.json`_ file is a common way of keeping your sensitive values safe. Create a _`config.json`_ file in your project directory and paste in your token. You can access your token inside other files by importing this file.
+
+<CH.Code lineNumbers={false}>
+
+```json config.json
+{
+	"token": "your-token-goes-here"
+}
+```
+
+```js index.js
+import config from './config.json' assert { type: 'json' };
+
+console.log(config.token);
+```
+
+</CH.Code>
+
+<Alert title="Danger" type="danger">
+	If you're using Git, you should not commit this file and should [ignore it via `.gitignore`](#git-and-gitignore).
+</Alert>
+
+## Using environment variables
+
+Environment variables are special values for your environment (e.g., terminal session, Docker container, or environment variable file). You can pass these values into your code's scope so that you can use them.
+
+One way to pass in environment variables is via the command line interface. When starting your app, instead of _`node index.js`_, use _`TOKEN=your-token-goes-here node index.js`_. You can repeat this pattern to expose other values as well.
+
+You can access the set values in your code via the _`process.env`_ global variable, accessible in any file. Note that values passed this way will always be strings and that you might need to parse them to a number, if using them to do calculations.
+
+<CH.Code lineNumbers={false} rows={3}>
+
+```sh Shell
+A=123 B=456 DISCORD_TOKEN=your-token-goes-here node index.js
+```
+
+```js index.js
+console.log(process.env.A);
+console.log(process.env.B);
+console.log(process.env.DISCORD_TOKEN);
+```
+
+</CH.Code>
+
+### Using dotenv
+
+Another common approach is storing these values in a _`.env`_ file. This spares you from always copying your token into the command line. Each line in a _`.env`_ file should hold a _`KEY=value`_ pair.
+
+You can use the [`dotenv` package](https://www.npmjs.com/package/dotenv) for this. Once installed, require and use the package to load your _`.env`_ file and attach the variables to _`process.env`_:
+
+<CH.Code lineNumbers={false}>
+
+```sh npm
+npm install dotenv
+```
+
+```sh yarn
+yarn add dotenv
+```
+
+```sh pnpm
+pnpm add dotenv
+```
+
+</CH.Code>
+
+<CH.Code lineNumbers={false} rows={7}>
+
+```sh .env
+A=123
+B=456
+DISCORD_TOKEN=your-token-goes-here
+```
+
+```js index.js
+import { config } from 'dotenv';
+
+config();
+
+console.log(process.env.A);
+console.log(process.env.B);
+console.log(process.env.DISCORD_TOKEN);
+```
+
+</CH.Code>
+
+<Alert title="Danger" type="danger">
+	If you're using Git, you should not commit this file and should [ignore it via `.gitignore`](#git-and-gitignore).
+</Alert>
+
+<Alert title="Online editors (Glitch, Heroku, Replit, etc.)" type="info">
+While we generally do not recommend using online editors as hosting solutions, but rather invest in a proper virtual private server, these services do offer ways to keep your credentials safe as well! Please see the respective service's documentation and help articles for more information on how to keep sensitive values safe:
+
+- Glitch: [Storing secrets in .env](https://glitch.happyfox.com/kb/article/18)
+- Heroku: [Configuration variables](https://devcenter.heroku.com/articles/config-vars)
+- Replit: [Secrets and environment variables](https://docs.replit.com/repls/secrets-environment-variables)
+
+</Alert>
+
+## Git and .gitignore
+
+Git is a fantastic tool to keep track of your code changes and allows you to upload progress to services like [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org/product). While this is super useful to share code with other developers, it also bears the risk of uploading your configuration files with sensitive values!
+
+You can specify files that Git should ignore in its versioning systems with a*`.gitignore`* file. Create a _`.gitignore`_ file in your project directory and add the names of the files and folders you want to ignore:
+
+```
+node_modules
+.env
+config.json
+```
+
+<Alert title="Tip" type="success">
+	Aside from keeping credentials safe, _`node_modules`_ should be included here. Since this directory can be restored based on the entries in your _`package.json`_ and _`package-lock.json`_ files by running _`npm install`_, it does not need to be included in Git.
+
+    You can specify quite intricate patterns in _`.gitignore`_ files, check out the [Git documentation on `.gitignore`](https://git-scm.com/docs/gitignore) for more information!
+
+</Alert>

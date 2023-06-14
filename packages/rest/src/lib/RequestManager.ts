@@ -5,12 +5,18 @@ import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { FormData, type RequestInit, type BodyInit, type Dispatcher, type Agent } from 'undici';
-import type { RESTOptions, RestEvents, RequestOptions } from './REST.js';
-import type { IHandler } from './handlers/IHandler.js';
+import type { RequestInit, BodyInit, Dispatcher, Agent } from 'undici';
+import type { RESTOptions, ResponseLike, RestEvents } from './REST.js';
+import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
-import { DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants.js';
-import { resolveBody } from './utils/utils.js';
+import type { IHandler } from './interfaces/Handler.js';
+import {
+	BurstHandlerMajorIdKey,
+	DefaultRestOptions,
+	DefaultUserAgent,
+	OverwrittenMimeTypes,
+	RESTEvents,
+} from './utils/constants.js';
 
 // Make this a lazy dynamic import as file-type is a pure ESM package
 const getFileType = lazy(async () => import('file-type'));
@@ -88,7 +94,7 @@ export interface RequestData {
 	/**
 	 * Reason to show in the audit logs
 	 */
-	reason?: string;
+	reason?: string | undefined;
 	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
@@ -113,7 +119,7 @@ export interface RequestHeaders {
 /**
  * Possible API methods to be used when doing requests
  */
-export const enum RequestMethod {
+export enum RequestMethod {
 	Delete = 'DELETE',
 	Get = 'GET',
 	Patch = 'PATCH',
@@ -316,7 +322,7 @@ export class RequestManager extends EventEmitter {
 	 * @param request - All the information needed to make a request
 	 * @returns The response from the api request
 	 */
-	public async queueRequest(request: InternalRequest): Promise<Dispatcher.ResponseData> {
+	public async queueRequest(request: InternalRequest): Promise<ResponseLike> {
 		// Generalize the endpoint to its route data
 		const routeId = RequestManager.generateRouteData(request.fullRoute, request.method);
 		// Get the bucket hash for the generic route, or point to a global route otherwise
@@ -351,7 +357,10 @@ export class RequestManager extends EventEmitter {
 	 */
 	private createHandler(hash: string, majorParameter: string) {
 		// Create the async request queue to handle requests
-		const queue = new SequentialHandler(this, hash, majorParameter);
+		const queue =
+			majorParameter === BurstHandlerMajorIdKey
+				? new BurstHandler(this, hash, majorParameter)
+				: new SequentialHandler(this, hash, majorParameter);
 		// Save the queue based on its id
 		this.handlers.set(queue.id, queue);
 
@@ -363,7 +372,7 @@ export class RequestManager extends EventEmitter {
 	 *
 	 * @param request - The request data
 	 */
-	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestOptions; url: string }> {
+	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestInit; url: string }> {
 		const { options } = this;
 
 		let query = '';
@@ -419,7 +428,14 @@ export class RequestManager extends EventEmitter {
 				if (Buffer.isBuffer(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed
 					const { fileTypeFromBuffer } = await getFileType();
-					const contentType = file.contentType ?? (await fileTypeFromBuffer(file.data))?.mime;
+					let contentType = file.contentType;
+					if (!contentType) {
+						const parsedType = (await fileTypeFromBuffer(file.data))?.mime;
+						if (parsedType) {
+							contentType = OverwrittenMimeTypes[parsedType as keyof typeof OverwrittenMimeTypes] ?? parsedType;
+						}
+					}
+
 					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
 				} else {
 					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
@@ -453,19 +469,17 @@ export class RequestManager extends EventEmitter {
 			}
 		}
 
-		finalBody = await resolveBody(finalBody);
+		const method = request.method.toUpperCase();
 
-		const fetchOptions: RequestOptions = {
+		// The non null assertions in the following block are due to exactOptionalPropertyTypes, they have been tested to work with undefined
+		const fetchOptions: RequestInit = {
+			// Set body to null on get / head requests. This does not follow fetch spec (likely because it causes subtle bugs) but is aligned with what request was doing
+			body: ['GET', 'HEAD'].includes(method) ? null : finalBody!,
 			headers: { ...request.headers, ...additionalHeaders, ...headers } as Record<string, string>,
-			method: request.method.toUpperCase() as Dispatcher.HttpMethod,
+			method,
+			// Prioritize setting an agent per request, use the agent for this instance otherwise.
+			dispatcher: request.dispatcher ?? this.agent ?? undefined!,
 		};
-
-		if (finalBody !== undefined) {
-			fetchOptions.body = finalBody as Exclude<RequestOptions['body'], undefined>;
-		}
-
-		// Prioritize setting an agent per request, use the agent for this instance otherwise.
-		fetchOptions.dispatcher = request.dispatcher ?? this.agent ?? undefined!;
 
 		return { url, fetchOptions };
 	}
@@ -492,14 +506,22 @@ export class RequestManager extends EventEmitter {
 	 * @internal
 	 */
 	private static generateRouteData(endpoint: RouteLike, method: RequestMethod): RouteData {
-		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{16,19})/.exec(endpoint);
+		if (endpoint.startsWith('/interactions/') && endpoint.endsWith('/callback')) {
+			return {
+				majorParameter: BurstHandlerMajorIdKey,
+				bucketRoute: '/interactions/:id/:token/callback',
+				original: endpoint,
+			};
+		}
+
+		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(endpoint);
 
 		// Get the major id for this route - global otherwise
 		const majorId = majorIdMatch?.[1] ?? 'global';
 
 		const baseRoute = endpoint
 			// Strip out all ids
-			.replace(/\d{16,19}/g, ':id')
+			.replaceAll(/\d{17,19}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
 			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
 
@@ -508,7 +530,7 @@ export class RequestManager extends EventEmitter {
 		// Hard-Code Old Message Deletion Exception (2 week+ old messages are a different bucket)
 		// https://github.com/discord/discord-api-docs/issues/1295
 		if (method === RequestMethod.Delete && baseRoute === '/channels/:id/messages/:id') {
-			const id = /\d{16,19}$/.exec(endpoint)![0]!;
+			const id = /\d{17,19}$/.exec(endpoint)![0]!;
 			const timestamp = DiscordSnowflake.timestampFrom(id);
 			if (Date.now() - timestamp > 1_000 * 60 * 60 * 24 * 14) {
 				exceptions += '/Delete Old Message';

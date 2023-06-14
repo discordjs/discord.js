@@ -7,10 +7,10 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
 		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn test && yarn build"
+		"prepack": "yarn lint && yarn build"
 	},
 	"type": "module",
-	"module": "./dist/index.js",
+	"main": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},
@@ -36,26 +36,28 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/proxy-container"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"@discordjs/proxy": "^1.2.0",
-		"@discordjs/rest": "^1.3.0",
-		"tslib": "^2.4.0"
+		"@discordjs/proxy": "workspace:^",
+		"@discordjs/rest": "workspace:^",
+		"tslib": "^2.5.2"
 	},
 	"devDependencies": {
-		"@types/node": "16.11.68",
+		"@types/node": "18.16.14",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.39",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.7.1",
-		"tsup": "^6.3.0",
-		"typescript": "^4.8.4"
+		"eslint": "^8.41.0",
+		"eslint-config-neon": "^0.1.47",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^2.8.8",
+		"tsup": "^6.7.0",
+		"turbo": "^1.9.8",
+		"typescript": "^5.0.4"
 	},
 	"engines": {
 		"node": ">=16.9.0"

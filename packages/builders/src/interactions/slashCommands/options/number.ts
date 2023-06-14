@@ -7,11 +7,17 @@ import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixi
 
 const numberValidator = s.number;
 
+/**
+ * A slash command number option.
+ */
 @mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
 export class SlashCommandNumberOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.Number as const;
 
 	/**
@@ -36,6 +42,9 @@ export class SlashCommandNumberOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandNumberOption {
 		this.runRequiredValidations();
 
@@ -43,7 +52,7 @@ export class SlashCommandNumberOption
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandNumberOption;
 	}
 }
 

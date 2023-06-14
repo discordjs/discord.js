@@ -1,23 +1,30 @@
-import type { ApiClassJSON } from '@discordjs/api-extractor-utils';
-import { DocContainer } from '../DocContainer';
-import { ConstructorSection, MethodsSection, PropertiesSection } from '../Sections';
+import type { ApiClass, ApiConstructor } from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@microsoft/api-extractor-model';
+// import { Outline } from '../Outline';
+import { Badges } from '../Badges';
+import { Documentation } from '../documentation/Documentation';
+import { HierarchyText } from '../documentation/HierarchyText';
+import { Members } from '../documentation/Members';
+import { ObjectHeader } from '../documentation/ObjectHeader';
+import { ConstructorSection } from '../documentation/section/ConstructorSection';
+import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
+// import { serializeMembers } from '../documentation/util';
 
-export function Class({ data }: { data: ApiClassJSON }) {
+export function Class({ clazz }: { clazz: ApiClass }) {
+	const constructor = clazz.members.find((member) => member.kind === ApiItemKind.Constructor) as
+		| ApiConstructor
+		| undefined;
+
 	return (
-		<DocContainer
-			excerpt={data.excerpt}
-			extendsTokens={data.extendsTokens}
-			implementsTokens={data.implementsTokens}
-			kind={data.kind}
-			methods={data.methods}
-			name={data.name}
-			properties={data.properties}
-			summary={data.summary}
-			typeParams={data.typeParameters}
-		>
-			{data.constructor ? <ConstructorSection data={data.constructor} /> : null}
-			<PropertiesSection data={data.properties} />
-			<MethodsSection data={data.methods} />
-		</DocContainer>
+		<Documentation>
+			<Badges item={clazz} />
+			<ObjectHeader item={clazz} />
+			<HierarchyText item={clazz} type="Extends" />
+			<HierarchyText item={clazz} type="Implements" />
+			{clazz.typeParameters.length ? <TypeParameterSection item={clazz} /> : null}
+			{constructor ? <ConstructorSection item={constructor} /> : null}
+			<Members item={clazz} />
+			{/* <Outline members={serializeMembers(clazz)} /> */}
+		</Documentation>
 	);
 }

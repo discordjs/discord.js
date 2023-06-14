@@ -1,7 +1,18 @@
 import type { PropsWithChildren, ReactNode } from 'react';
-import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAuthor.jsx';
-import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.jsx';
-import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.jsx';
+import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAuthor.js';
+import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.js';
+import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';
+
+export interface IDiscordMessage {
+	author?: IDiscordMessageAuthor | undefined;
+	authorNode?: ReactNode | undefined;
+	followUp?: boolean;
+	interaction?: IDiscordMessageInteraction | undefined;
+	interactionNode?: ReactNode | undefined;
+	reply?: IDiscordMessageReply | undefined;
+	replyNode?: ReactNode | undefined;
+	time?: string | undefined;
+}
 
 export function DiscordMessage({
 	reply,
@@ -13,16 +24,7 @@ export function DiscordMessage({
 	followUp,
 	time,
 	children,
-}: PropsWithChildren<{
-	author?: IDiscordMessageAuthor | undefined;
-	authorNode?: ReactNode | undefined;
-	followUp?: boolean;
-	interaction?: IDiscordMessageInteraction | undefined;
-	interactionNode?: ReactNode | undefined;
-	reply?: IDiscordMessageReply | undefined;
-	replyNode?: ReactNode | undefined;
-	time?: string | undefined;
-}>) {
+}: PropsWithChildren<IDiscordMessage>) {
 	return (
 		<div className="relative" id="outer-message-wrapper">
 			<div
@@ -40,7 +42,7 @@ export function DiscordMessage({
 				<div className="static" id="content-wrapper">
 					{followUp ? (
 						<span
-							className="h-5.5 absolute left-0 mr-1 hidden w-[56px] cursor-default select-none text-right text-xs leading-loose text-[rgb(163_166_170)] group-hover:inline-block"
+							className="absolute left-0 mr-1 hidden h-5.5 w-[56px] cursor-default select-none text-right text-xs leading-loose text-[rgb(163_166_170)] group-hover:inline-block"
 							id="time"
 						>
 							{time}
@@ -50,7 +52,7 @@ export function DiscordMessage({
 					) : (
 						authorNode
 					)}
-					<div className="[&>p]:m-0 [&>p]:leading-snug text-white" id="message-content">
+					<div className="text-white [&>p]:m-0 [&>p]:leading-snug" id="message-content">
 						{children}
 					</div>
 				</div>

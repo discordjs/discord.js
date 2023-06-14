@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { DiscordjsRangeError, ErrorCodes } = require('../errors');
@@ -14,7 +14,7 @@ const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends BaseChannel {
-  constructor(guild, data, client, fromInteraction = false) {
+  constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -40,11 +40,13 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data, fromInteraction);
+    if (data) this._patch(data);
   }
 
-  _patch(data, partial = false) {
+  _patch(data) {
     super._patch(data);
+
+    if ('message' in data) this.messages._add(data.message);
 
     if ('name' in data) {
       /**
@@ -147,7 +149,7 @@ class ThreadChannel extends BaseChannel {
       this.lastPinTimestamp ??= null;
     }
 
-    if ('rate_limit_per_user' in data || !partial) {
+    if ('rate_limit_per_user' in data) {
       /**
        * The rate limit per user (slowmode) for this thread in seconds
        * @type {?number}
@@ -316,7 +318,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The options used to edit a thread channel
-   * @typedef {Object} ThreadEditData
+   * @typedef {Object} ThreadEditOptions
    * @property {string} [name] The new name for the thread
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time after which the thread
@@ -324,15 +326,15 @@ class ThreadChannel extends BaseChannel {
    * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) for the thread in seconds
    * @property {boolean} [locked] Whether the thread is locked
    * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to a thread
+   * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {string} [reason] Reason for editing the thread
-   * <info>Can only be edited on {@link ChannelType.PrivateThread}</info>
    */
 
   /**
    * Edits this thread.
-   * @param {ThreadEditData} data The new data for this thread
+   * @param {ThreadEditOptions} options The options to provide
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Edit a thread
@@ -340,19 +342,19 @@ class ThreadChannel extends BaseChannel {
    *   .then(editedThread => console.log(editedThread))
    *   .catch(console.error);
    */
-  async edit(data) {
+  async edit(options) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
-        name: (data.name ?? this.name).trim(),
-        archived: data.archived,
-        auto_archive_duration: data.autoArchiveDuration,
-        rate_limit_per_user: data.rateLimitPerUser,
-        locked: data.locked,
-        invitable: this.type === ChannelType.PrivateThread ? data.invitable : undefined,
-        applied_tags: data.appliedTags,
-        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
+        name: (options.name ?? this.name).trim(),
+        archived: options.archived,
+        auto_archive_duration: options.autoArchiveDuration,
+        rate_limit_per_user: options.rateLimitPerUser,
+        locked: options.locked,
+        invitable: this.type === ChannelType.PrivateThread ? options.invitable : undefined,
+        applied_tags: options.appliedTags,
+        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;
@@ -455,6 +457,24 @@ class ThreadChannel extends BaseChannel {
    */
   setAppliedTags(appliedTags, reason) {
     return this.edit({ appliedTags, reason });
+  }
+
+  /**
+   * Pins this thread from the forum channel (only applicable to forum threads).
+   * @param {string} [reason] Reason for pinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  pin(reason) {
+    return this.edit({ flags: this.flags.add(ChannelFlags.Pinned), reason });
+  }
+
+  /**
+   * Unpins this thread from the forum channel (only applicable to forum threads).
+   * @param {string} [reason] Reason for unpinning
+   * @returns {Promise<ThreadChannel>}
+   */
+  unpin(reason) {
+    return this.edit({ flags: this.flags.remove(ChannelFlags.Pinned), reason });
   }
 
   /**

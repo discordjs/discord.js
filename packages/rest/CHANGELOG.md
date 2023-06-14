@@ -2,6 +2,73 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@1.7.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.7.0...@discordjs/rest@1.7.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+# [@discordjs/rest@1.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.6.0...@discordjs/rest@1.7.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **handlers:** Create burst handler for interaction callbacks (#8996) ([db8df10](https://github.com/discordjs/discord.js/commit/db8df104c5e70a12f35b54e5f3f7c897068dde6f))
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+- **rest:** Remove `const enum`s in favour of regular enums (#9243) ([229ad07](https://github.com/discordjs/discord.js/commit/229ad077ff52d8706d68ed4d31983619a32eba45))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+# [@discordjs/rest@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.5.0...@discordjs/rest@1.6.0) - (2023-03-12)
+
+## Bug Fixes
+
+- **snowflake:** Snowflakes length (#9144) ([955e8fe](https://github.com/discordjs/discord.js/commit/955e8fe312c42ad4937cc1994d1d81e517c413c8))
+- **RequestManager:** Inference of image/apng (#9014) ([ecb4281](https://github.com/discordjs/discord.js/commit/ecb4281d1e2d9a0a427605f75352cbf74ffb2d7c))
+
+## Documentation
+
+- Fix typos (#9127) ([1ba1f23](https://github.com/discordjs/discord.js/commit/1ba1f238f04221ec890fc921678909b5b7d92c26))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **Sticker:** Add support for gif stickers (#9038) ([6a9875d](https://github.com/discordjs/discord.js/commit/6a9875da054a875a4711394547d47439bbe66fb6))
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
+# [@discordjs/rest@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.4.0...@discordjs/rest@1.5.0) - (2022-12-16)
+
+## Features
+
+- **core:** Add support for role connections (#8930) ([3d6fa24](https://github.com/discordjs/discord.js/commit/3d6fa248c07b2278504bbe8bafa17a3294971fd9))
+
+# [@discordjs/rest@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.3.0...@discordjs/rest@1.4.0) - (2022-11-28)
+
+## Bug Fixes
+
+- **SequentialHandler:** Downlevel ECONNRESET errors (#8785) ([5a70057](https://github.com/discordjs/discord.js/commit/5a70057826b47fb8251f3d836a536de689444ca1))
+- Make ratelimit timeout require event loop to be active (#8779) ([68d5712](https://github.com/discordjs/discord.js/commit/68d5712deae85532604d93b4505f0953d664cde7))
+- Pin @types/node version ([9d8179c](https://github.com/discordjs/discord.js/commit/9d8179c6a78e1c7f9976f852804055964d5385d4))
+
+## Features
+
+- Add `@discordjs/core` (#8736) ([2127b32](https://github.com/discordjs/discord.js/commit/2127b32d26dedeb44ec43d16ec2e2046919f9bb0))
+- New select menus (#8793) ([5152abf](https://github.com/discordjs/discord.js/commit/5152abf7285581abf7689e9050fdc56c4abb1e2b))
+
+## Refactor
+
+- Update `makeURLSearchParams` to accept readonly non-`Record`s (#8868) ([8376e2d](https://github.com/discordjs/discord.js/commit/8376e2dbcd38697ce62615d9a539fd198fbc4713))
+
 # [@discordjs/rest@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.2.0...@discordjs/rest@1.3.0) - (2022-10-08)
 
 ## Bug Fixes

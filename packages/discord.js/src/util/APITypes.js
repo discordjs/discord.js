@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 /**
  * @external ActivityFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
@@ -29,6 +31,11 @@
  */
 
 /**
+ * @external APIAutoModerationAction
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIAutoModerationAction}
+ */
+
+/**
  * @external APIButtonComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIButtonComponent}
  */
@@ -36,6 +43,11 @@
 /**
  * @external APIChannel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIChannel}
+ */
+
+/**
+ * @external APIChannelSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIChannelSelectComponent}
  */
 
 /**
@@ -94,8 +106,18 @@
  */
 
 /**
+ * @external APIMentionableSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMentionableSelectComponent}
+ */
+
+/**
  * @external APIMessage
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessage}
+ */
+
+/**
+ * @external APIMessageActionRowComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageActionRowComponent}
  */
 
 /**
@@ -114,6 +136,11 @@
  */
 
 /**
+ * @external APIModalInteractionResponseCallbackData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData}
+ */
+
+/**
  * @external APIModalComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIModalComponent}
  */
@@ -129,13 +156,18 @@
  */
 
 /**
- * @external APISelectMenuComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuComponent}
+ * @external APIRoleSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIRoleSelectComponent}
  */
 
 /**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
+ */
+
+/**
+ * @external APIStringSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIStringSelectComponent}
  */
 
 /**
@@ -146,6 +178,11 @@
 /**
  * @external APIUser
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUser}
+ */
+
+/**
+ * @external APIUserSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIUserSelectComponent}
  */
 
 /**
@@ -166,6 +203,31 @@
 /**
  * @external ApplicationFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationFlags}
+ */
+
+/**
+ * @external ApplicationRoleConnectionMetadataType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationRoleConnectionMetadataType}
+ */
+
+/**
+ * @external AutoModerationActionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
+ */
+
+/**
+ * @external AutoModerationRuleEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleEventType}
+ */
+
+/**
+ * @external AutoModerationRuleTriggerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleTriggerType}
+ */
+
+/**
+ * @external AutoModerationRuleKeywordPresetType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationRuleKeywordPresetType}
  */
 
 /**
@@ -191,6 +253,11 @@
 /**
  * @external ComponentType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType}
+ */
+
+/**
+ * @external ForumLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
  */
 
 /**
@@ -231,6 +298,11 @@
 /**
  * @external GuildMFALevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildMFALevel}
+ */
+
+/**
+ * @external GuildMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildMemberFlags}
  */
 
 /**
@@ -326,6 +398,11 @@
 /**
  * @external PermissionFlagsBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ */
+
+/**
+ * @external RESTGetAPIGuildThreadsResult
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
  */
 
 /**

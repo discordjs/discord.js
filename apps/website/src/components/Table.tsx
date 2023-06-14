@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo, type ReactNode } from 'react';
 
 export function Table({
@@ -11,10 +13,10 @@ export function Table({
 }) {
 	const cols = useMemo(
 		() =>
-			columns.map((column) => (
+			columns.map((column, idx) => (
 				<th
-					className="border-light-900 dark:border-dark-100 break-normal border-b px-3 py-2 text-left text-sm"
-					key={column}
+					className="break-normal border-b border-light-900 px-3 py-2 text-left text-sm dark:border-dark-100"
+					key={`${column}-${idx}`}
 				>
 					{column}
 				</th>
@@ -26,12 +28,12 @@ export function Table({
 		() =>
 			rows.map((row, idx) => (
 				<tr className="[&>td]:last-of-type:border-0" key={idx}>
-					{Object.entries(row).map(([colName, val]) => (
+					{Object.entries(row).map(([colName, val], index) => (
 						<td
 							className={`border-light-900 dark:border-dark-100 border-b px-3 py-2 text-left text-sm ${
 								columnStyles?.[colName] ?? ''
 							}`}
-							key={colName}
+							key={`${colName}-${index}`}
 						>
 							{val}
 						</td>

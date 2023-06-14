@@ -1,18 +1,8 @@
-import { Blob, Buffer } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
-import { types } from 'node:util';
-import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
-import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import type { RequestOptions } from '../REST.js';
-import { RequestMethod } from '../RequestManager.js';
-
-export function parseHeader(header: string[] | string | undefined): string | undefined {
-	if (header === undefined || typeof header === 'string') {
-		return header;
-	}
-
-	return header.join(';');
-}
+import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
+import type { RateLimitData, ResponseLike } from '../REST.js';
+import { type RequestManager, RequestMethod } from '../RequestManager.js';
+import { RateLimitError } from '../errors/RateLimitError.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -43,7 +33,7 @@ function serializeSearchParam(value: unknown): string | null {
  * @param options - The options to use
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams(options?: Record<string, unknown>) {
+export function makeURLSearchParams<T extends object>(options?: Readonly<T>) {
 	const params = new URLSearchParams();
 	if (!options) return params;
 
@@ -60,13 +50,12 @@ export function makeURLSearchParams(options?: Record<string, unknown>) {
  *
  * @param res - The fetch response
  */
-export async function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
-	const header = parseHeader(res.headers['content-type']);
-	if (header?.startsWith('application/json')) {
-		return res.body.json();
+export async function parseResponse(res: ResponseLike): Promise<unknown> {
+	if (res.headers.get('Content-Type')?.startsWith('application/json')) {
+		return res.json();
 	}
 
-	return res.body.arrayBuffer();
+	return res.arrayBuffer();
 }
 
 /**
@@ -93,49 +82,6 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 	return true;
 }
 
-export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body']> {
-	// eslint-disable-next-line no-eq-null, eqeqeq
-	if (body == null) {
-		return null;
-	} else if (typeof body === 'string') {
-		return body;
-	} else if (types.isUint8Array(body)) {
-		return body;
-	} else if (types.isArrayBuffer(body)) {
-		return new Uint8Array(body);
-	} else if (body instanceof URLSearchParams) {
-		return body.toString();
-	} else if (body instanceof DataView) {
-		return new Uint8Array(body.buffer);
-	} else if (body instanceof Blob) {
-		return new Uint8Array(await body.arrayBuffer());
-	} else if (body instanceof FormData) {
-		return body;
-	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
-		const chunks = [...(body as Iterable<Uint8Array>)];
-		const length = chunks.reduce((a, b) => a + b.length, 0);
-
-		const uint8 = new Uint8Array(length);
-		let lengthUsed = 0;
-
-		return chunks.reduce((a, b) => {
-			a.set(b, lengthUsed);
-			lengthUsed += b.length;
-			return a;
-		}, uint8);
-	} else if ((body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator]) {
-		const chunks: Uint8Array[] = [];
-
-		for await (const chunk of body as AsyncIterable<Uint8Array>) {
-			chunks.push(chunk);
-		}
-
-		return Buffer.concat(chunks);
-	}
-
-	throw new TypeError(`Unable to resolve body.`);
-}
-
 /**
  * Check whether an error indicates that a retry can be attempted
  *
@@ -147,4 +93,31 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
 	if (error.name === 'AbortError') return true;
 	// Downlevel ECONNRESET to retry as it may be recoverable
 	return ('code' in error && error.code === 'ECONNRESET') || error.message.includes('ECONNRESET');
+}
+
+/**
+ * Determines whether the request should be queued or whether a RateLimitError should be thrown
+ *
+ * @internal
+ */
+export async function onRateLimit(manager: RequestManager, rateLimitData: RateLimitData) {
+	const { options } = manager;
+	if (!options.rejectOnRateLimit) return;
+
+	const shouldThrow =
+		typeof options.rejectOnRateLimit === 'function'
+			? await options.rejectOnRateLimit(rateLimitData)
+			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
+	if (shouldThrow) {
+		throw new RateLimitError(rateLimitData);
+	}
+}
+
+/**
+ * Calculates the default avatar index for a given user id.
+ *
+ * @param userId - The user id to calculate the default avatar index for
+ */
+export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
+	return Number(BigInt(userId) >> 22n) % 6;
 }

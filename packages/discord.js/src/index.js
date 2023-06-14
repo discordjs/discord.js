@@ -28,6 +28,7 @@ exports.Colors = require('./util/Colors');
 exports.DataResolver = require('./util/DataResolver');
 exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
+exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField').GuildMemberFlagsBitField;
 exports.IntentsBitField = require('./util/IntentsBitField');
 exports.LimitedCollection = require('./util/LimitedCollection');
 exports.MessageFlagsBitField = require('./util/MessageFlagsBitField');
@@ -48,6 +49,7 @@ exports.version = require('../package.json').version;
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
+exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
@@ -87,7 +89,11 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationRoleConnectionMetadata =
+  require('./structures/ApplicationRoleConnectionMetadata').ApplicationRoleConnectionMetadata;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
+exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
+exports.AutoModerationRule = require('./structures/AutoModerationRule');
 exports.Base = require('./structures/Base');
 exports.BaseGuild = require('./structures/BaseGuild');
 exports.BaseGuildEmoji = require('./structures/BaseGuildEmoji');
@@ -198,10 +204,10 @@ exports.WidgetMember = require('./structures/WidgetMember');
 exports.WelcomeChannel = require('./structures/WelcomeChannel');
 exports.WelcomeScreen = require('./structures/WelcomeScreen');
 
-exports.WebSocket = require('./WebSocket');
-
 // External
 __exportStar(require('discord-api-types/v10'), exports);
 __exportStar(require('@discordjs/builders'), exports);
+__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);
+__exportStar(require('@discordjs/ws'), exports);

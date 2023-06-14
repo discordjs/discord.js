@@ -11,6 +11,13 @@ const Events = require('../util/Events');
 class UserSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
+    const { resolved, values } = data.data;
+
+    /**
+     * An array of the selected user ids
+     * @type {Snowflake[]}
+     */
+    this.values = values ?? [];
 
     /**
      * Collection of the selected users
@@ -24,24 +31,19 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
      */
     this.members = new Collection();
 
-    for (const user of Object.values(data.data.resolved.users)) {
+    for (const user of Object.values(resolved?.users ?? {})) {
       this.users.set(user.id, this.client.users._add(user));
     }
 
-    if (data.data.resolved.members) {
-      for (const [id, member] of Object.entries(data.data.resolved.members)) {
-        const user = data.data.resolved.users[id];
-        if (!user) {
-          this.client.emit(
-            Events.Debug,
-            `[UserSelectMenuInteraction] Received a member without a user, skipping ${id}`,
-          );
+    for (const [id, member] of Object.entries(resolved?.members ?? {})) {
+      const user = resolved.users[id];
 
-          continue;
-        }
-
-        this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
+      if (!user) {
+        this.client.emit(Events.Debug, `[UserSelectMenuInteraction] Received a member without a user, skipping ${id}`);
+        continue;
       }
+
+      this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
     }
   }
 }

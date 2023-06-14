@@ -22,7 +22,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
@@ -196,6 +196,31 @@ class Message extends Base {
       this.position = data.position;
     } else {
       this.position ??= null;
+    }
+
+    if ('role_subscription_data' in data) {
+      /**
+       * Role subscription data found on {@link MessageType.RoleSubscriptionPurchase} messages.
+       * @typedef {Object} RoleSubscriptionData
+       * @property {Snowflake} roleSubscriptionListingId The id of the SKU and listing the user is subscribed to
+       * @property {string} tierName The name of the tier the user is subscribed to
+       * @property {number} totalMonthsSubscribed The total number of months the user has been subscribed for
+       * @property {boolean} isRenewal Whether this notification is a renewal
+       */
+
+      /**
+       * The data of the role subscription purchase or renewal.
+       * <info>This is present on {@link MessageType.RoleSubscriptionPurchase} messages.</info>
+       * @type {?RoleSubscriptionData}
+       */
+      this.roleSubscriptionData = {
+        roleSubscriptionListingId: data.role_subscription_data.role_subscription_listing_id,
+        tierName: data.role_subscription_data.tier_name,
+        totalMonthsSubscribed: data.role_subscription_data.total_months_subscribed,
+        isRenewal: data.role_subscription_data.is_renewal,
+      };
+    } else {
+      this.roleSubscriptionData ??= null;
     }
 
     // Discord sends null if the message has not been edited
@@ -543,7 +568,7 @@ class Message extends Base {
    * @property {ComponentType} [componentType] The type of component interaction to collect
    * @property {number} [idle] Time to wait without another message component interaction before ending the collector
    * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
-   * @property {InteractionResponse} [InteractionResponse] The interaction response to collect interactions from
+   * @property {InteractionResponse} [interactionResponse] The interaction response to collect interactions from
    */
 
   /**
@@ -577,11 +602,17 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+
     // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked.
+    // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
     if (this.channel?.isThread()) {
-      return precheck && !this.channel.locked;
+      if (this.channel.archived) return false;
+      if (this.channel.locked) {
+        const permissions = this.channel.permissionsFor(this.client.user);
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      }
     }
+
     return precheck;
   }
 
@@ -591,6 +622,8 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (!DeletableMessageTypes.includes(this.type)) return false;
+
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
@@ -604,10 +637,10 @@ class Message extends Base {
     // This flag allows deleting even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
-    return Boolean(
-      this.author.id === this.client.user.id ||
-        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
+    // The auto moderation action message author is the reference message author
+    return (
+      (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) ||
+      (permissions.has(PermissionFlagsBits.ManageMessages, false) && !this.guild.members.me.isCommunicationDisabled())
     );
   }
 
@@ -620,12 +653,11 @@ class Message extends Base {
    * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
    */
   get bulkDeletable() {
-    const permissions = this.channel?.permissionsFor(this.client.user);
     return (
       (this.inGuild() &&
         Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
         this.deletable &&
-        permissions?.has(PermissionFlagsBits.ManageMessages, false)) ??
+        this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageMessages, false)) ??
       false
     );
   }
@@ -761,9 +793,9 @@ class Message extends Base {
 
     return this.client.actions.MessageReactionAdd.handle(
       {
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
+        [this.client.actions.injectedUser]: this.client.user,
+        [this.client.actions.injectedChannel]: this.channel,
+        [this.client.actions.injectedMessage]: this,
         emoji: resolvePartialEmoji(emoji),
       },
       true,
@@ -790,7 +822,6 @@ class Message extends Base {
    * @typedef {BaseMessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**

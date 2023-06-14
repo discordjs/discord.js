@@ -50,9 +50,9 @@ class BaseGuildEmojiManager extends CachedManager {
 
   /**
    * Data that can be resolved to give an emoji identifier. This can be:
-   * * The unicode representation of an emoji
-   * * The `<a:name:id>`, `<:name:id>`, `a:name:id` or `name:id` emoji identifier string of an emoji
    * * An EmojiResolvable
+   * * The `<a:name:id>`, `<:name:id>`, `a:name:id` or `name:id` emoji identifier string of an emoji
+   * * The Unicode representation of an emoji
    * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
    */
 
