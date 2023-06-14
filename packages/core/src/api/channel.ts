@@ -25,6 +25,7 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
+	type RESTPutAPIChannelPermissionJSONBody,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -464,5 +465,46 @@ export class ChannelsAPI {
 	 */
 	public async getWebhooks(id: Snowflake) {
 		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIChannelWebhooksResult>;
+	}
+
+	/**
+	 * Edits the permission overwrite for a user or role in a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#edit-channel-permissions}
+	 * @param channelId - The id of the channel to edit the permission overwrite in
+	 * @param overwriteId - The id of the user or role to edit the permission overwrite for
+	 * @param body - The data for editing the permission overwrite
+	 * @param options - The options for editing the permission overwrite
+	 */
+	public async editPermissionOverwrite(
+		channelId: Snowflake,
+		overwriteId: Snowflake,
+		body: RESTPutAPIChannelPermissionJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelPermission(channelId, overwriteId), {
+			reason,
+			body,
+			signal,
+		});
+	}
+
+	/**
+	 * Deletes the permission overwrite for a user or role in a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-channel-permission}
+	 * @param channelId - The id of the channel to delete the permission overwrite in
+	 * @param overwriteId - The id of the user or role to delete the permission overwrite for
+	 * @param options - The options for deleting the permission overwrite
+	 */
+	public async deletePermissionOverwrite(
+		channelId: Snowflake,
+		overwriteId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelPermission(channelId, overwriteId), {
+			reason,
+			signal,
+		});
 	}
 }
