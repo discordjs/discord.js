@@ -346,7 +346,7 @@ export class AutoModerationActionExecution {
   public ruleTriggerType: AutoModerationRuleTriggerType;
   public get user(): User | null;
   public userId: Snowflake;
-  public get channel(): TextBasedChannel | null;
+  public get channel(): GuildTextBasedChannel | ForumChannel | null;
   public channelId: Snowflake | null;
   public get member(): GuildMember | null;
   public messageId: Snowflake | null;
