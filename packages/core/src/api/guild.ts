@@ -23,6 +23,7 @@ import type {
 	RESTGetAPIGuildMembersResult,
 	RESTGetAPIGuildMembersQuery,
 	RESTGetAPIGuildMembersSearchResult,
+	RESTGetAPIGuildOnboardingResult,
 	RESTGetAPIGuildPreviewResult,
 	RESTGetAPIGuildPruneCountResult,
 	RESTGetAPIGuildResult,
@@ -79,6 +80,8 @@ import type {
 	RESTPostAPIGuildChannelResult,
 	RESTPostAPIGuildEmojiJSONBody,
 	RESTPostAPIGuildEmojiResult,
+	RESTPutAPIGuildOnboardingJSONBody,
+	RESTPutAPIGuildOnboardingResult,
 	RESTPostAPIGuildPruneJSONBody,
 	RESTPostAPIGuildPruneResult,
 	RESTPostAPIGuildRoleJSONBody,
@@ -1228,5 +1231,38 @@ export class GuildsAPI {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			body,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	}
+
+	/**
+	 * Fetches a guild onboarding
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-onboarding}
+	 * @param guildId - The id of the guild to fetch the onboarding from
+	 * @param options - The options for fetching the guild onboarding
+	 */
+	public async getOnboarding(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildOnboarding(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildOnboardingResult>;
+	}
+
+	/**
+	 * Edits the widget settings for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-onboarding}
+	 * @param guildId - The id of the guild to edit the onboarding settings from
+	 * @param body - The new guild onboarding settings data
+	 * @param options - The options for editing the guild onboarding
+	 */
+	public async editOnboarding(
+		guildId: Snowflake,
+		body: RESTPutAPIGuildOnboardingJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.patch(Routes.guildOnboarding(guildId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildOnboardingResult>;
 	}
 }
