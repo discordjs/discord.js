@@ -48,7 +48,7 @@ class GuildOnboardingPromptOption extends Base {
      * The data for an emoji of a guilds onboarding prompt option
      * @typedef {Object} GuildOnboardingPromptOptionEmoji
      * @property {?Snowflake} id The id of the emoji
-     * @property {?string} name The name of the emoji
+     * @property {string} name The name of the emoji
      * @property {boolean} animated Whether the emoji is animated
      */
 

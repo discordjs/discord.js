@@ -5680,7 +5680,7 @@ export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
 export interface GuildOnboardingPromptOptionEmoji {
   id: Snowflake | null;
-  name: string | null;
+  name: string;
   animated: boolean;
 }
 
