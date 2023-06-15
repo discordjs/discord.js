@@ -39,7 +39,7 @@ class GenericAction {
         {
           id,
           guild_id: data.guild_id,
-          recipients: [data.author ?? data.user ?? { id: data.user_id }],
+          recipients: data.recipients ?? [data.author ?? data.user ?? { id: data.user_id }],
         },
         this.client.channels,
         id,
