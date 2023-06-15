@@ -766,7 +766,7 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<GuildOnboarding>}
    */
   async fetchOnboarding() {
-    const data = await this.client.rest.get(`/guilds/${this.id}/onboarding`);
+    const data = await this.client.rest.get(Routes.guildOnboarding(this.id));
     return new GuildOnboarding(this.client, data);
   }
 
