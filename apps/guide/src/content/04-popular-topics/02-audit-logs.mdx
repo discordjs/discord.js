@@ -82,7 +82,7 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	const target = await client.users.fetch(targetId);
 
 	// Log the output.
-	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
+	console.log(`A message by ${target.username} was deleted by ${executor.username} in ${channel}.`);
 });
 ```
 
@@ -104,7 +104,7 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	const target = await client.users.fetch(targetId!);
 
 	// Log the output.
-	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
+	console.log(`A message by ${target.username} was deleted by ${executor.username} in ${channel}.`);
 });
 ```
 
@@ -135,7 +135,7 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	const kickedUser = await client.users.fetch(targetId);
 
 	// Now you can log the output!
-	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
+	console.log(`${kickedUser.username} was kicked by ${executor.username}.`);
 });
 ```
 
@@ -156,7 +156,7 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	const kickedUser = await client.users.fetch(targetId!);
 
 	// Now you can log the output!
-	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
+	console.log(`${kickedUser.username} was kicked by ${executor.username}.`);
 });
 ```
 

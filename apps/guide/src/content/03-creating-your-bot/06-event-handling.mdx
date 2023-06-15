@@ -40,7 +40,7 @@ for (const folder of commandFolders) {
 
 ```js ClientReady
 client.once(Events.ClientReady, (c) => {
-	console.log(`Ready! Logged in as ${c.user.tag}`);
+	console.log(`Ready! Logged in as ${c.user.username}`);
 });
 ```
 
@@ -145,7 +145,7 @@ export const data = {
 	once = true,
 };
 export async function execute(client) {
-	console.log(`Ready! Logged in as ${client.user.tag}`);
+	console.log(`Ready! Logged in as ${client.user.username}`);
 }
 ```
 

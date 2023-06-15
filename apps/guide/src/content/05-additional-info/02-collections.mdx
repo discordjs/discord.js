@@ -28,8 +28,8 @@ Many of the methods on _`Collection`_ correspond to their namesake in _`Array`_.
 
 ```js
 // Assume we have an array of users and a collection of the same users.
-array.find((u) => u.discriminator === '1000');
-collection.find((u) => u.discriminator === '1000');
+array.find((user) => user.bot === true);
+collection.find((user) => user.bot === true);
 ```
 
 </CH.Code>
@@ -100,7 +100,7 @@ collection.last(2);
 
 // Removes anything that meets the condition from the collection.
 // Sort of like `filter`, but in-place.
-collection.sweep((user) => user.username === 'Bob');
+collection.sweep((user) => user.displayName === 'Bob');
 ```
 
 </CH.Code>
