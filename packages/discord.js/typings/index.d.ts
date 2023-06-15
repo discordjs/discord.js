@@ -157,6 +157,10 @@ import {
   ImageFormat,
   GuildMemberFlags,
   RESTGetAPIGuildThreadsResult,
+  RESTGetAPIGuildOnboardingResult,
+  APIGuildOnboardingPrompt,
+  APIGuildOnboardingPromptOption,
+  GuildOnboardingPromptType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1568,7 +1572,7 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
 }
 
 export class GuildOnboarding extends Base {
-  private constructor(client: Client, data: any);
+  private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
   public get guild(): Guild;
   public guildId: Snowflake;
   public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
@@ -1577,7 +1581,7 @@ export class GuildOnboarding extends Base {
 }
 
 export class GuildOnboardingPrompt extends Base {
-  private constructor(client: Client, data: any, guildId: Snowflake);
+  private constructor(client: Client, data: APIGuildOnboardingPrompt, guildId: Snowflake);
   public id: Snowflake;
   public get guild(): Guild;
   public guildId: Snowflake;
@@ -1586,11 +1590,11 @@ export class GuildOnboardingPrompt extends Base {
   public singleSelect: boolean;
   public required: boolean;
   public inOnboarding: boolean;
-  public type: any;
+  public type: GuildOnboardingPromptType;
 }
 
 export class GuildOnboardingPromptOption extends Base {
-  private constructor(client: Client, data: any, guildId: Snowflake);
+  private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
   public id: Snowflake;
   public get guild(): Guild;
   public guildId: Snowflake;

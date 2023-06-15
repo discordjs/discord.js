@@ -171,6 +171,7 @@ import {
   ApplicationCommandSubCommand,
   ChatInputApplicationCommandData,
   ApplicationCommandPermissionsManager,
+  GuildOnboarding,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2267,3 +2268,8 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 });
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
+
+{
+  const onboarding = await guild.fetchOnboarding();
+  expectType<GuildOnboarding>(onboarding);
+}
