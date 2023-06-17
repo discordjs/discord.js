@@ -54,7 +54,7 @@ export class SharedNameAndDescription {
 	}
 
 	/**
-	 * SSets a name localization for this command.
+	 * Sets a name localization for this command.
 	 *
 	 * @param locale - The locale to set
 	 * @param localizedName - The localized name for the given `locale`
