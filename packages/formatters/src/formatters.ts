@@ -417,44 +417,43 @@ export function heading(content: string, level?: HeadingLevel) {
 	}
 }
 
+export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
+
 /**
  * Formats the elements in the array to an ordered list.
  *
- * @typeParam C - This is inferred by the supplied content
- * @param items - The array of elements to list
+ * @param list - The array of elements to list
+ * @param {number} [startNumber=1] - The starting number for the list.
  */
-export function orderedList<C extends string[]>(...items: C) {
-	return items.map((item) => `1. ${item}`).join('\n');
-}
+export function orderedList(list: RecursiveArray<string>, startNumber: number = 1): string {
+    if (startNumber < 0) startNumber = 1;
 
-/**
- * Formats the elements in the array to an indented ordered list.
- *
- * @typeParam C - This is inferred by the supplied content
- * @param items - The array of elements to list
- */
-export function indentedOrderedList<C extends string[]>(...items: C) {
-	return items.map((element, index) => ` ${index + 1}. ${element}`).join('\n');
+    const callback = (element: RecursiveArray<string>[number], depth: number = 0): string => {
+        if (Array.isArray(element)) {
+            return element.map((element) => callback(element, depth + 1)).join('\n');
+        }
+
+        return `\n${'  '.repeat(depth - 1)}${startNumber}. ${element}`;
+    }
+
+    return callback(list);
 }
 
 /**
  * Formats the elements in the array to an unordered list.
  *
- * @typeParam C - This is inferred by the supplied content
- * @param items - The array of elements to list
+ * @param list - The array of elements to list
  */
-export function unorderedList<C extends string[]>(...items: C) {
-	return items.map((item) => `- ${item}`).join('\n');
-}
+export function unorderedList(list: RecursiveArray<string>): string {
+    const callback = (element: RecursiveArray<string>[number], depth: number = 0): string => {
+        if (Array.isArray(element)) {
+            return element.map((element) => callback(element, depth + 1)).join('\n');
+        }
 
-/**
- * Formats the elements in the array to an indented unordered list.
- *
- * @typeParam C - This is inferred by the supplied content
- * @param items - The array of elements to list
- */
-export function indentedUnorderedList<C extends string[]>(...items: C) {
-	return items.map((element) => ` - ${element}`).join('\n');
+        return `\n${'  '.repeat(depth - 1)}- ${element}`;
+    }
+
+    return callback(list);
 }
 
 /**
