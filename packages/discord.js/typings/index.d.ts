@@ -2387,7 +2387,7 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
+export class BaseForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'send',
   'lastMessage',
   'lastPinAt',
@@ -2398,7 +2398,8 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'createMessageComponentCollector',
   'awaitMessageComponent',
 ]) {
-  public type: ChannelType.GuildForum;
+  // @ts-expect-error: discord-api-types.
+  public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
   public defaultReactionEmoji: DefaultReactionEmoji | null;
@@ -2408,8 +2409,6 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   public nsfw: boolean;
   public topic: string | null;
   public defaultSortOrder: SortOrderType | null;
-  public defaultForumLayout: ForumLayoutType;
-
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
@@ -2421,7 +2420,17 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
+}
+
+export class ForumChannel extends BaseForumChannel {
+  public type: ChannelType.GuildForum;
+  public defaultForumLayout: ForumLayoutType;
   public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;
+}
+
+export class MediaChannel extends ForumChannel {
+  // @ts-expect-error: discord-api-types.
+  public type: ChannelType.GuildMedia;
 }
 
 export class PermissionOverwrites extends Base {
