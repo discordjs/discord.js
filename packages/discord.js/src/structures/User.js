@@ -7,7 +7,6 @@ const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const UserFlagsBitField = require('../util/UserFlagsBitField');
 
-
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
