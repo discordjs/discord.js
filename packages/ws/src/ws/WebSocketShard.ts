@@ -490,7 +490,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private async unpackMessage(data: Data, isBinary: boolean): Promise<GatewayReceivePayload | null> {
-		console.log({ data, isBinary });
 		// Deal with no compression
 		if (!isBinary) {
 			try {
