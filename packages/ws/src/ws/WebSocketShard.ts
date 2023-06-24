@@ -7,7 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -20,7 +20,7 @@ import {
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { WebSocket, type RawData } from 'ws';
+import { WebSocket, type Data } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
@@ -82,6 +82,10 @@ export interface SendRateLimitState {
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
+
+	private WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+		? (globalThis as any).WebSocket
+		: WebSocket;
 
 	private useIdentifyCompress = false;
 
@@ -177,13 +181,27 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const session = await this.strategy.retrieveSessionInfo(this.id);
 
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
+
 		this.debug([`Connecting to ${url}`]);
-		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
-			.on('message', this.onMessage.bind(this))
-			.on('error', this.onError.bind(this))
-			.on('close', this.onClose.bind(this));
+
+		const connection = new this.WebSocketConstructor(url, {
+			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
+		});
 
 		connection.binaryType = 'arraybuffer';
+
+		connection.onmessage = (event) => {
+			void this.onMessage(event.data, event.data instanceof ArrayBuffer);
+		};
+
+		connection.onerror = (event) => {
+			this.onError(event.error);
+		};
+
+		connection.onclose = (event) => {
+			void this.onClose(event.code);
+		};
+
 		this.connection = connection;
 
 		this.#status = WebSocketShardStatus.Connecting;
@@ -247,9 +265,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		if (this.connection) {
 			// No longer need to listen to messages
-			this.connection.removeAllListeners('message');
+			this.connection.onmessage = null;
 			// Prevent a reconnection loop by unbinding the main close event
-			this.connection.removeAllListeners('close');
+			this.connection.onclose = null;
 
 			const shouldClose = this.connection.readyState === WebSocket.OPEN;
 
@@ -261,13 +279,23 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 			if (shouldClose) {
 				this.connection.close(options.code, options.reason);
-				await once(this.connection, 'close');
+
+				let outerResolve: () => void;
+				const promise = new Promise<void>((resolve) => {
+					outerResolve = resolve;
+				});
+
+				this.connection.onclose = () => {
+					outerResolve();
+				};
+
+				await promise;
 				this.emit(WebSocketShardEvents.Closed, { code: options.code });
 			}
 
 			// Lastly, remove the error event.
 			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
-			this.connection.removeAllListeners('error');
+			this.connection.onerror = null;
 		} else {
 			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
@@ -461,17 +489,24 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = false;
 	}
 
-	private async unpackMessage(data: ArrayBuffer | Buffer, isBinary: boolean): Promise<GatewayReceivePayload | null> {
-		const decompressable = new Uint8Array(data);
-
+	private async unpackMessage(data: Data, isBinary: boolean): Promise<GatewayReceivePayload | null> {
+		console.log({ data, isBinary });
 		// Deal with no compression
 		if (!isBinary) {
-			return JSON.parse(this.textDecoder.decode(decompressable)) as GatewayReceivePayload;
+			try {
+				return JSON.parse(data as string) as GatewayReceivePayload;
+			} catch {
+				// Either bun emulates the rejection as a message event or discord sent us invalid JSON, either way, we can't do anything with it
+				return null;
+			}
 		}
+
+		const decompressable = new Uint8Array(data as ArrayBuffer);
 
 		// Deal with identify compress
 		if (this.useIdentifyCompress) {
 			return new Promise((resolve, reject) => {
+				// eslint-disable-next-line promise/prefer-await-to-callbacks
 				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
@@ -524,8 +559,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		return null;
 	}
 
-	private async onMessage(data: RawData, isBinary: boolean) {
-		const payload = await this.unpackMessage(data as ArrayBuffer | Buffer, isBinary);
+	private async onMessage(data: Data, isBinary: boolean) {
+		const payload = await this.unpackMessage(data, isBinary);
 		if (!payload) {
 			return;
 		}
