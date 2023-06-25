@@ -46,7 +46,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"discord-api-types": "^0.37.42"
+		"discord-api-types": "^0.37.45"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
