@@ -169,7 +169,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    const index = this.discriminator === '0' ? calculateUserDefaultAvatarIndex(this.id) : this.discriminator % 5;
+    const index = this.discriminator === '0' ? (this.id >> 22) % 6 : this.discriminator % 5;
     return this.client.rest.cdn.defaultAvatar(index);
   }
 
