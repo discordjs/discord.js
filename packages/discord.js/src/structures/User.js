@@ -224,8 +224,14 @@ class User extends Base {
       : null;
   }
 
+  /**
+   * Whether the user uses the new username system
+   * <info>Returns true if the user uses the new username system</info>
+   * @type {?boolean}
+   * @readonly
+   */
   get isPomelo() {
-    if(this.tag.endsWith("#0")) return true;
+    if(this.discriminator === "0") return true;
     return false;
   }
 
