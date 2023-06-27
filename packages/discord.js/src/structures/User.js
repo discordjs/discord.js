@@ -224,6 +224,11 @@ class User extends Base {
       : null;
   }
 
+  get isPomelo() {
+    if(this.tag.endsWith("#0")) return true;
+    return false;
+  }
+
   /**
    * The global name of this user, or their username if they don't have one
    * @type {?string}
