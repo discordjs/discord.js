@@ -5834,6 +5834,7 @@ export interface BaseMessageOptions {
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
+    | ActionRowBuilder<AnyComponentBuilder>
   )[];
 }
 
