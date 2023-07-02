@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
+const { ChannelType, GuildPremiumTier, Routes, GuildFeature, GatewayIntentBits } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -25,6 +25,7 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
+const Events = require('../util/Events');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { discordSort } = require('../util/Util');
@@ -400,7 +401,28 @@ class Guild extends AnonymousGuild {
 
     if (data.members) {
       this.members.cache.clear();
-      for (const guildUser of data.members) this.members._add(guildUser);
+      for (const member of data.members) this.members._add(member);
+
+      /*
+        If the GUILD_PRESENCES intent is not present the members sent by GUILD_CREATE and thus to this method,
+        can't be trusted, and may only contain this bot and users in voice channels. Thus we need to fetch the
+        members to refill the cache unless of course the GUILD_MEMBERS intent is not present, in which case,
+        fetching all members is not possible.
+      */
+      if (
+        !this.client.options.intents.has(GatewayIntentBits.GuildPresences) &&
+        this.client.options.intents.has(GatewayIntentBits.GuildMembers)
+      ) {
+        this.members.fetch().catch(err => {
+          this.client.emit(
+            Events.Error,
+            new Error(
+              `Error while fetching guild members to re-validate the members cache ` +
+                `after a guild was made available again or a reconnect occurred:\n${err}`,
+            ),
+          );
+        });
+      }
     }
 
     if ('owner_id' in data) {
