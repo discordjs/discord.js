@@ -3,6 +3,8 @@
 import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIChannelWebhookResult,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -26,6 +28,8 @@ import {
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
 	type Snowflake,
+	type RESTPostAPIChannelThreadsJSONBody,
+	type RESTPostAPIChannelThreadsResult,
 } from 'discord-api-types/v10';
 
 export class ChannelsAPI {
@@ -36,8 +40,8 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-message}
 	 * @param channelId - The id of the channel to send the message in
-	 * @param body - The data to use when sending the message
-	 * @param options - The options to use when sending the message
+	 * @param body - The data for sending the message
+	 * @param options - The options for sending the message
 	 */
 	public async createMessage(
 		channelId: Snowflake,
@@ -57,8 +61,8 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#edit-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
-	 * @param body - The data to use when editing the message
-	 * @param options - The options to use when editing the message
+	 * @param body - The data for editing the message
+	 * @param options - The options for editing the message
 	 */
 	public async editMessage(
 		channelId: Snowflake,
@@ -80,7 +84,7 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
 	 * @param emoji - The emoji to get the reactions for
-	 * @param query - The query options to use when fetching the reactions
+	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
 	 */
 	public async getMessageReactions(
@@ -233,7 +237,7 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-messages}
 	 * @param channelId - The id of the channel to fetch messages from
-	 * @param query - The query options to use when fetching messages
+	 * @param query - The query options for fetching messages
 	 * @param options - The options for fetching the messages
 	 */
 	public async getMessages(
@@ -389,7 +393,7 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-channel-invite}
 	 * @param channelId - The id of the channel to create an invite for
-	 * @param body - The data to use when creating the invite
+	 * @param body - The data for creating the invite
 	 * @param options - The options for creating the invite
 	 */
 	public async createInvite(
@@ -416,13 +420,35 @@ export class ChannelsAPI {
 	}
 
 	/**
+	 * Creates a new thread
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-from-message}
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-without-message}
+	 * @param channelId - The id of the channel to start the thread in
+	 * @param body - The data for starting the thread
+	 * @param messageId - The id of the message to start the thread from
+	 * @param options - The options for starting the thread
+	 */
+	public async createThread(
+		channelId: Snowflake,
+		body: RESTPostAPIChannelThreadsJSONBody,
+		messageId?: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.post(Routes.threads(channelId, messageId), {
+			body,
+			signal,
+		}) as Promise<RESTPostAPIChannelThreadsResult>;
+	}
+
+	/**
 	 * Fetches the archived threads of a channel
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#list-public-archived-threads}
 	 * @see {@link https://discord.com/developers/docs/resources/channel#list-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch archived threads from
 	 * @param archivedStatus - The archived status of the threads to fetch
-	 * @param query - The options to use when fetching archived threads
+	 * @param query - The options for fetching archived threads
 	 * @param options - The options for fetching archived threads
 	 */
 	public async getArchivedThreads(
@@ -442,7 +468,7 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/channel#list-joined-private-archived-threads}
 	 * @param channelId - The id of the channel to fetch joined archived threads from
-	 * @param query - The options to use when fetching joined archived threads
+	 * @param query - The options for fetching joined archived threads
 	 * @param options - The options for fetching joined archived threads
 	 */
 	public async getJoinedPrivateArchivedThreads(
@@ -457,12 +483,32 @@ export class ChannelsAPI {
 	}
 
 	/**
+	 * Creates a new webhook
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/webhook#create-webhook}
+	 * @param channelId - The id of the channel to create the webhook in
+	 * @param body - The data for creating the webhook
+	 * @param options - The options for creating the webhook
+	 */
+	public async create(
+		channelId: Snowflake,
+		body: RESTPostAPIChannelWebhookJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.channelWebhooks(channelId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPostAPIChannelWebhookResult>;
+	}
+
+	/**
 	 * Fetches the webhooks of a channel
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
-	 * @param id - The id of the channel
+	 * @param channelId - The id of the channel
 	 */
-	public async getWebhooks(id: Snowflake) {
-		return this.rest.get(Routes.channelWebhooks(id)) as Promise<RESTGetAPIChannelWebhooksResult>;
+	public async getWebhooks(channelId: Snowflake) {
+		return this.rest.get(Routes.channelWebhooks(channelId)) as Promise<RESTGetAPIChannelWebhooksResult>;
 	}
 }

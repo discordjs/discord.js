@@ -28,7 +28,7 @@ export class UsersAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-user}
 	 * @param userId - The id of the user to fetch
-	 * @param options - The options to use when fetching the user
+	 * @param options - The options for fetching the user
 	 */
 	public async get(userId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.user(userId), { signal }) as Promise<RESTGetAPIUserResult>;
@@ -38,7 +38,7 @@ export class UsersAPI {
 	 * Returns the user object of the requester's account
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user}
-	 * @param options - The options to use when fetching the current user
+	 * @param options - The options for fetching the current user
 	 */
 	public async getCurrent({ signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.user('@me'), { signal }) as Promise<RESTGetAPICurrentUserResult>;
@@ -48,8 +48,8 @@ export class UsersAPI {
 	 * Returns a list of partial guild objects the current user is a member of
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/user#get-current-user-guilds}
-	 * @param query - The query options to use when fetching the current user's guilds
-	 * @param options - The options to use when fetching the guilds
+	 * @param query - The query options for fetching the current user's guilds
+	 * @param options - The options for fetching the guilds
 	 */
 	public async getGuilds(query: RESTGetAPICurrentUserGuildsQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.userGuilds(), {
@@ -153,8 +153,8 @@ export class UsersAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/user#update-user-application-role-connection}
 	 * @param applicationId - The id of the application
-	 * @param body - The data to use when updating the application role connection
-	 * @param options - The options to use when updating the application role connection
+	 * @param body - The data for updating the application role connection
+	 * @param options - The options for updating the application role connection
 	 */
 	public async updateApplicationRoleConnection(
 		applicationId: Snowflake,
