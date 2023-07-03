@@ -2122,7 +2122,6 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.7
     conventional-changelog-cli: ^2.2.2
     husky: ^8.0.3
-    is-apng: ^1.0.1
     is-ci: ^3.0.1
     lint-staged: ^13.2.2
     tsup: ^6.7.0

@@ -127,7 +127,7 @@ export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
  * @param ms - The amount of time (in milliseconds) to sleep for
  */
 export async function sleep(ms: number): Promise<void> {
-	void new Promise<number>((resolve) => {
+	return new Promise<void>((resolve) => {
 		setTimeout(() => resolve, ms);
 	});
 }
