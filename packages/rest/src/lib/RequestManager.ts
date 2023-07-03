@@ -1,25 +1,13 @@
-import { Blob, Buffer } from 'node:buffer';
-import { EventEmitter } from 'node:events';
-import { setInterval, clearInterval } from 'node:timers';
-import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import isAPNG from 'is-apng';
 import type { RequestInit, BodyInit, Dispatcher, Agent } from 'undici';
 import type { RESTOptions, ResponseLike, RestEvents } from './REST.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
 import type { IHandler } from './interfaces/Handler.js';
-import {
-	BurstHandlerMajorIdKey,
-	DefaultRestOptions,
-	DefaultUserAgent,
-	OverwrittenMimeTypes,
-	RESTEvents,
-} from './utils/constants.js';
-
-// Make this a lazy dynamic import as file-type is a pure ESM package
-const getFileType = lazy(async () => import('file-type'));
+import { BurstHandlerMajorIdKey, DefaultRestOptions, DefaultUserAgent, RESTEvents } from './utils/constants.js';
 
 /**
  * Represents a file to be added to the request
@@ -182,7 +170,7 @@ export interface RequestManager {
 /**
  * Represents the class that manages handlers for endpoints
  */
-export class RequestManager extends EventEmitter {
+export class RequestManager extends AsyncEventEmitter {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
@@ -269,7 +257,12 @@ export class RequestManager extends EventEmitter {
 
 				// Fire event
 				this.emit(RESTEvents.HashSweep, sweptHashes);
-			}, this.options.hashSweepInterval).unref();
+			}, this.options.hashSweepInterval);
+
+			// Only unref in node envs
+			if (typeof this.hashTimer !== 'number') {
+				this.hashTimer = this.hashTimer.unref();
+			}
 		}
 
 		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Number.POSITIVE_INFINITY) {
@@ -292,7 +285,12 @@ export class RequestManager extends EventEmitter {
 
 				// Fire event
 				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
-			}, this.options.handlerSweepInterval).unref();
+			}, this.options.handlerSweepInterval);
+
+			// Only unref in node envs
+			if (typeof this.handlerTimer !== 'number') {
+				this.handlerTimer = this.handlerTimer.unref();
+			}
 		}
 	}
 
@@ -425,18 +423,9 @@ export class RequestManager extends EventEmitter {
 				// FormData.append only accepts a string or Blob.
 				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
-				if (Buffer.isBuffer(file.data)) {
-					// Try to infer the content type from the buffer if one isn't passed
-					const { fileTypeFromBuffer } = await getFileType();
-					let contentType = file.contentType;
-					if (!contentType) {
-						const parsedType = (await fileTypeFromBuffer(file.data))?.mime;
-						if (parsedType) {
-							contentType = OverwrittenMimeTypes[parsedType as keyof typeof OverwrittenMimeTypes] ?? parsedType;
-						}
-					}
 
-					formData.append(fileKey, new Blob([file.data], { type: contentType }), file.name);
+				if (typeof Buffer !== 'undefined' && Buffer.isBuffer(file.data) && isAPNG(file.data)) {
+					formData.append(fileKey, new Blob([file.data], { type: 'image/apng' }), file.name);
 				} else {
 					formData.append(fileKey, new Blob([`${file.data}`], { type: file.contentType }), file.name);
 				}

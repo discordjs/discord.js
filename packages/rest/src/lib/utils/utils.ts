@@ -1,4 +1,3 @@
-import { URLSearchParams } from 'node:url';
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
 import type { RateLimitData, ResponseLike } from '../REST.js';
 import { type RequestManager, RequestMethod } from '../RequestManager.js';
@@ -120,4 +119,15 @@ export async function onRateLimit(manager: RequestManager, rateLimitData: RateLi
  */
 export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
 	return Number(BigInt(userId) >> 22n) % 6;
+}
+
+/**
+ * Sleeps for a given amount of time.
+ *
+ * @param ms - The amount of time (in milliseconds) to sleep for
+ */
+export async function sleep(ms: number): Promise<void> {
+	void new Promise<number>((resolve) => {
+		setTimeout(() => resolve, ms);
+	});
 }

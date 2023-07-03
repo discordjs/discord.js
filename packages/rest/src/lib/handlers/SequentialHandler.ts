@@ -1,11 +1,10 @@
-import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
 import type { RateLimitData, ResponseLike } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, onRateLimit } from '../utils/utils.js';
+import { hasSublimit, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 const enum QueueType {

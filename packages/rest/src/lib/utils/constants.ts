@@ -4,7 +4,11 @@ import { APIVersion } from 'discord-api-types/v10';
 import type { RESTOptions, ResponseLike } from '../REST.js';
 
 const getUndiciRequest = lazy(async () => {
-	return import('../../strategies/undiciRequest.js');
+	try {
+		return await import('../../strategies/undiciRequest.js');
+	} catch {
+		return null;
+	}
 });
 
 export const DefaultUserAgent =
@@ -13,7 +17,18 @@ export const DefaultUserAgent =
 /**
  * The default string to append onto the user agent.
  */
-export const DefaultUserAgentAppendix = process.release?.name === 'node' ? `Node.js/${process.version}` : '';
+export const DefaultUserAgentAppendix =
+	// Most (if not all) edge environments will have `process` defined. Withing a web browser we'll extract it using `navigator.userAgent`.
+
+	typeof process === 'object'
+		? process.release?.name === 'node'
+			? `Node.js/${process.version}`
+			: ''
+		: // @ts-expect-error web env
+		typeof window === 'object'
+		? // @ts-expect-error web env
+		  window.navigator.userAgent
+		: '';
 
 export const DefaultRestOptions = {
 	agent: null,
@@ -41,7 +56,12 @@ export const DefaultRestOptions = {
 		}
 
 		const strategy = await getUndiciRequest();
-		return strategy.makeRequest(...args);
+
+		if (strategy === null) {
+			return fetch(...args);
+		} else {
+			return strategy.makeRequest(...args);
+		}
 	},
 } as const satisfies Required<RESTOptions>;
 

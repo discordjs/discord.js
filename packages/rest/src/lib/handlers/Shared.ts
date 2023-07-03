@@ -1,5 +1,3 @@
-import { setTimeout, clearTimeout } from 'node:timers';
-import { Response } from 'undici';
 import type { RequestInit } from 'undici';
 import type { ResponseLike } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
@@ -65,7 +63,7 @@ export async function makeNetworkRequest(
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout).unref();
+	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
 	if (requestData.signal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
@@ -135,7 +133,7 @@ export async function handleErrors(
 		}
 
 		// We are out of retries, throw an error
-		throw new HTTPError(status, method, url, requestData);
+		throw new HTTPError(res.status, res.statusText, method, url, requestData);
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {

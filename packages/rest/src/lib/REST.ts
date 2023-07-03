@@ -1,7 +1,7 @@
-import { EventEmitter } from 'node:events';
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { Dispatcher, RequestInit, Response } from 'undici';
 import { CDN } from './CDN.js';
 import {
@@ -204,7 +204,7 @@ export interface APIRequest {
 }
 
 export interface ResponseLike
-	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'text'> {
+	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'> {
 	body: Readable | ReadableStream | null;
 }
 
@@ -247,7 +247,7 @@ export interface REST {
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
 
-export class REST extends EventEmitter {
+export class REST extends AsyncEventEmitter {
 	public readonly cdn: CDN;
 
 	public readonly requestManager: RequestManager;

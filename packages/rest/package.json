@@ -4,7 +4,7 @@
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsup",
+		"build": "tsup --external=../../strategies/undiciRequest.js",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
 		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
@@ -65,8 +65,9 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.5.1",
+		"@vladfrangu/async_event_emitter": "^2.2.2",
 		"discord-api-types": "^0.37.45",
-		"file-type": "^18.4.0",
+		"is-apng": "^1.0.1",
 		"tslib": "^2.5.2",
 		"undici": "^5.22.1"
 	},
