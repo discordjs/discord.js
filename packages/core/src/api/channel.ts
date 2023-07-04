@@ -30,7 +30,13 @@ import {
 	type Snowflake,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
+	type APIThreadChannel,
+	type RESTPostAPIGuildForumThreadsJSONBody,
 } from 'discord-api-types/v10';
+
+export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
+	message: RESTPostAPIGuildForumThreadsJSONBody['message'] & { files?: RawFile[] };
+}
 
 export class ChannelsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -439,6 +445,29 @@ export class ChannelsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPostAPIChannelThreadsResult>;
+	}
+
+	/**
+	 * Creates a new forum post
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-in-forum-channel}
+	 * @param channelId - The id of the forum channel to start the thread in
+	 * @param body - The data for starting the thread
+	 * @param options - The options for starting the thread
+	 */
+	public async createForumThread(
+		channelId: Snowflake,
+		{ message, ...optionsBody }: StartForumThreadOptions,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		const { files, ...messageBody } = message;
+
+		const body = {
+			...optionsBody,
+			message: messageBody,
+		};
+
+		return this.rest.post(Routes.threads(channelId), { files, body, signal }) as Promise<APIThreadChannel>;
 	}
 
 	/**
