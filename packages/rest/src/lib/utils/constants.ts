@@ -1,4 +1,3 @@
-import process from 'node:process';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
 import type { RESTOptions, ResponseLike } from '../REST.js';
