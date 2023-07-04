@@ -63,7 +63,7 @@ export async function makeNetworkRequest(
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
+	const timeout = setTimeout(() => controller.abort(), manager.options.timeout).unref?.();
 	if (requestData.signal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
