@@ -133,7 +133,7 @@ export async function handleErrors(
 		}
 
 		// We are out of retries, throw an error
-		throw new HTTPError(res.status, res.statusText, method, url, requestData);
+		throw new HTTPError(status, res.statusText, method, url, requestData);
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {

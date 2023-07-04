@@ -230,24 +230,11 @@ export interface RestEvents {
 	restDebug: [info: string];
 }
 
-export interface REST {
-	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
+export type RestEventsMap = {
+	[K in keyof RestEvents]: RestEvents[K];
+};
 
-	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
-		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
-}
-
-export class REST extends AsyncEventEmitter {
+export class REST extends AsyncEventEmitter<RestEventsMap> {
 	public readonly cdn: CDN;
 
 	public readonly requestManager: RequestManager;
@@ -256,9 +243,13 @@ export class REST extends AsyncEventEmitter {
 		super();
 		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
 		this.requestManager = new RequestManager(options)
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.Debug, this.emit.bind(this, RESTEvents.Debug))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.RateLimited, this.emit.bind(this, RESTEvents.RateLimited))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
 
 		this.on('newListener', (name, listener) => {

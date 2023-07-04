@@ -2325,7 +2325,7 @@ __metadata:
     eslint: ^8.41.0
     eslint-config-neon: ^0.1.47
     eslint-formatter-pretty: ^5.0.0
-    is-apng: ^1.0.1
+    magic-bytes.js: ^1.0.14
     prettier: ^2.8.8
     tslib: ^2.5.2
     tsup: ^6.7.0
@@ -15407,13 +15407,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-apng@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "is-apng@npm:1.0.1"
-  checksum: 4dfd439bb50be29659b52441a9387f2030ed0a17dee708eb66ac54a0d9edf49bed9254e37ac924c334c2a55c0020670ff6e6f484e789c1ed5cdfcb82f2ff63b5
-  languageName: node
-  linkType: hard
-
 "is-arguments@npm:^1.0.4, is-arguments@npm:^1.1.1":
   version: 1.1.1
   resolution: "is-arguments@npm:1.1.1"
@@ -17735,6 +17728,13 @@ __metadata:
   bin:
     lz-string: bin/bin.js
   checksum: 1ee98b4580246fd90dd54da6e346fb1caefcf05f677c686d9af237a157fdea3fd7c83a4bc58f858cd5b10a34d27afe0fdcbd0505a47e0590726a873dc8b8f65d
+  languageName: node
+  linkType: hard
+
+"magic-bytes.js@npm:^1.0.14":
+  version: 1.0.14
+  resolution: "magic-bytes.js@npm:1.0.14"
+  checksum: 5431948f5134ea27134a2e9c197ce5fdc89677682d365f275b0193a816a037cb9fc1c5eeeb541920d653e3c44f9022d007ef4b159ec4f1a814945be9f6be8abc
   languageName: node
   linkType: hard
 

@@ -131,3 +131,17 @@ export async function sleep(ms: number): Promise<void> {
 		setTimeout(() => resolve, ms);
 	});
 }
+
+/**
+ * Verifies that a value is a buffer-like object.
+ *
+ * @param value - The value to check
+ */
+export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
+	return (
+		(typeof Buffer !== 'undefined' && Buffer.isBuffer(value)) ||
+		(typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) ||
+		value instanceof Uint8Array ||
+		value instanceof Uint8ClampedArray
+	);
+}
