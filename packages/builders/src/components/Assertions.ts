@@ -8,7 +8,6 @@ export const customIdValidator = s.string
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
 
-// Test
 export const emojiValidator = s
 	.object({
 		id: s.string,
