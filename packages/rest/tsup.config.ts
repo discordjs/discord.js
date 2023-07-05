@@ -2,7 +2,6 @@ import { esbuildPluginVersionInjector } from 'esbuild-plugin-version-injector';
 import { createTsupConfig } from '../../tsup.config.js';
 
 export default createTsupConfig({
-	entry: ['src/index.ts', 'src/strategies/*.ts'],
+	entry: ['src/node.ts', 'src/web.ts'],
 	esbuildPlugins: [esbuildPluginVersionInjector()],
-	external: ['./strategies/*'],
 });

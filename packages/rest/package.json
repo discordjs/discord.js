@@ -14,19 +14,19 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
+	"types": "./dist/node.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
-		},
-		"./*": {
-			"types": "./dist/strategies/*.d.ts",
-			"import": "./dist/strategies/*.mjs",
-			"require": "./dist/strategies/*.js"
+			"node": {
+				"types": "./dist/node.d.ts",
+				"import": "./dist/node.mjs",
+				"require": "./dist/node.js"
+			},
+			"default": {
+				"types": "./dist/web.d.ts",
+				"import": "./dist/web.mjs",
+				"require": "./dist/web.js"
+			}
 		}
 	},
 	"directories": {
