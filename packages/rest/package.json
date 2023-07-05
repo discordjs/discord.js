@@ -27,6 +27,11 @@
 				"import": "./dist/web.mjs",
 				"require": "./dist/web.js"
 			}
+		},
+		"./*": {
+			"types": "./dist/strategies/*.d.ts",
+			"import": "./dist/strategies/*.mjs",
+			"require": "./dist/strategies/*.js"
 		}
 	},
 	"directories": {
