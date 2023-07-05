@@ -519,7 +519,7 @@ export class ChannelsAPI {
 	 * @param body - The data for creating the webhook
 	 * @param options - The options for creating the webhook
 	 */
-	public async create(
+	public async createWebhook(
 		channelId: Snowflake,
 		body: RESTPostAPIChannelWebhookJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
