@@ -18,7 +18,7 @@ export class HTTPError extends Error {
 	 */
 	public constructor(
 		public status: number,
-		public statusText: string,
+		statusText: string,
 		public method: string,
 		public url: string,
 		bodyData: Pick<InternalRequest, 'body' | 'files'>,

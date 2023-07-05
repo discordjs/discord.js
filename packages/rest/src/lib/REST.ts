@@ -223,9 +223,7 @@ export interface RestEvents {
 	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
 	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
-	newListener: [name: string, listener: (...args: any) => void];
 	rateLimited: [rateLimitInfo: RateLimitData];
-	removeListener: [name: string, listener: (...args: any) => void];
 	response: [request: APIRequest, response: ResponseLike];
 	restDebug: [info: string];
 }
