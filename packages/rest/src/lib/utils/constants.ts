@@ -1,6 +1,6 @@
 import { getUserAgentAppendix } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
-import { defaultStrategy } from '../../environment.js';
+import { getDefaultStrategy } from '../../environment.js';
 import type { RESTOptions, ResponseLike } from '../REST.js';
 
 export const DefaultUserAgent =
@@ -29,7 +29,7 @@ export const DefaultRestOptions = {
 	hashLifetime: 86_400_000, // 24 Hours
 	handlerSweepInterval: 3_600_000, // 1 Hour
 	async makeRequest(...args): Promise<ResponseLike> {
-		return defaultStrategy(...args);
+		return getDefaultStrategy()(...args);
 	},
 } as const satisfies Required<RESTOptions>;
 

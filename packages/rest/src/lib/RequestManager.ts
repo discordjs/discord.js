@@ -408,7 +408,7 @@ export class RequestManager extends AsyncEventEmitter<RestEventsMap> {
 					let contentType = file.contentType;
 
 					if (!contentType) {
-						const parsedType = filetypeinfo(file.data)[0];
+						const [parsedType] = filetypeinfo(file.data);
 
 						if (parsedType) {
 							contentType =
