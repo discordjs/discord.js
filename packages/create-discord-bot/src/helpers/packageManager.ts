@@ -32,7 +32,7 @@ export function resolvePackageManager(): PackageManager {
 	}
 
 	console.error(
-		chalk.yellow(
+		chalk.bold.yellow(
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
 		),
 	);
@@ -58,8 +58,6 @@ export function install(packageManager: PackageManager) {
 			installCommand = packageManager;
 			break;
 	}
-
-	console.log(`Installing dependencies with ${packageManager}...`);
 
 	execSync(installCommand, {
 		stdio: 'inherit',

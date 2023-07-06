@@ -45,6 +45,7 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@clack/prompts": "^0.6.3",
 		"chalk": "^5.2.0",
 		"commander": "^10.0.1",
 		"validate-npm-package-name": "^5.0.0"
