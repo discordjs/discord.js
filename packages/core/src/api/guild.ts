@@ -169,7 +169,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#list-guild-members}
 	 * @param guildId - The id of the guild
-	 * @param query - The query to use when fetching the guild members
+	 * @param query - The query for fetching the guild members
 	 * @param options - The options for fetching the guild members
 	 */
 	public async getMembers(
@@ -1112,7 +1112,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-member}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
-	 * @param body - The data to use when editing the guild member
+	 * @param body - The data for editing the guild member
 	 * @param options - The options for editing the guild member
 	 */
 	public async editMember(
@@ -1196,7 +1196,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-template#create-guild-template}
 	 * @param templateCode - The code of the template
-	 * @param body - The data to use when creating the template
+	 * @param body - The data for creating the template
 	 * @param options - The options for creating the template
 	 */
 	public async createTemplate(
@@ -1222,7 +1222,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options to use when setting the voice state
+	 * @param body - The options for setting the voice state
 	 */
 	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
