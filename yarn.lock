@@ -5,6 +5,13 @@ __metadata:
   version: 6
   cacheKey: 8
 
+"@aashutoshrathi/word-wrap@npm:^1.2.3":
+  version: 1.2.6
+  resolution: "@aashutoshrathi/word-wrap@npm:1.2.6"
+  checksum: ada901b9e7c680d190f1d012c84217ce0063d8f5c5a7725bb91ec3c5ed99bb7572680eb2d2938a531ccbaec39a95422fcd8a6b4a13110c7d98dd75402f66a0cd
+  languageName: node
+  linkType: hard
+
 "@actions/core@npm:^1.10.0, @actions/core@npm:^1.9.1":
   version: 1.10.0
   resolution: "@actions/core@npm:1.10.0"
@@ -1576,6 +1583,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@clack/core@npm:^0.3.2":
+  version: 0.3.2
+  resolution: "@clack/core@npm:0.3.2"
+  dependencies:
+    picocolors: ^1.0.0
+    sisteransi: ^1.0.5
+  checksum: a4b6708d47b9df9d2899f5ec60e34b4ae7831e951da136dadb690ccc8d21ba5c8465e24fb6d9c2c510ef388774d509dcf44f3d5ff9a1c28b9474a541ac07efce
+  languageName: node
+  linkType: hard
+
+"@clack/prompts@npm:^0.6.3":
+  version: 0.6.3
+  resolution: "@clack/prompts@npm:0.6.3"
+  dependencies:
+    "@clack/core": ^0.3.2
+    is-unicode-supported: "*"
+    picocolors: ^1.0.0
+    sisteransi: ^1.0.5
+  checksum: 6943e46b4c37c62ca7734459f68b60f819db0c3da6dfdfacfadbf8f4abefc22b177884469c6f2b6a2906ac2d03baff59b72fc9c0802f34255e29ab541111e6d9
+  languageName: node
+  linkType: hard
+
 "@code-hike/lighter@npm:0.6.4":
   version: 0.6.4
   resolution: "@code-hike/lighter@npm:0.6.4"
@@ -3037,10 +3066,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/eslintrc@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@eslint/eslintrc@npm:2.1.0"
+  dependencies:
+    ajv: ^6.12.4
+    debug: ^4.3.2
+    espree: ^9.6.0
+    globals: ^13.19.0
+    ignore: ^5.2.0
+    import-fresh: ^3.2.1
+    js-yaml: ^4.1.0
+    minimatch: ^3.1.2
+    strip-json-comments: ^3.1.1
+  checksum: d5ed0adbe23f6571d8c9bb0ca6edf7618dc6aed4046aa56df7139f65ae7b578874e0d9c796df784c25bda648ceb754b6320277d828c8b004876d7443b8dc018c
+  languageName: node
+  linkType: hard
+
 "@eslint/js@npm:8.41.0":
   version: 8.41.0
   resolution: "@eslint/js@npm:8.41.0"
   checksum: af013d70fe8d0429cdf5cd8b5dcc6fc384ed026c1eccb0cfe30f5849b968ab91645111373fd1b83282b38955b1bdfbe667c1a7dbda3b06cae753521223cad775
+  languageName: node
+  linkType: hard
+
+"@eslint/js@npm:8.44.0":
+  version: 8.44.0
+  resolution: "@eslint/js@npm:8.44.0"
+  checksum: fc539583226a28f5677356e9f00d2789c34253f076643d2e32888250e509a4e13aafe0880cb2425139051de0f3a48d25bfc5afa96b7304f203b706c17340e3cf
   languageName: node
   linkType: hard
 
@@ -3160,6 +3213,17 @@ __metadata:
   bin:
     proto-loader-gen-types: build/bin/proto-loader-gen-types.js
   checksum: 6015d99d36d0451075a53e5c5842e8912235973a515677afca038269969ad84f22a4c9fbc9badf52f034736b3f1bf864739f7c4238ba8a7e6fd3bba75cfce0ee
+  languageName: node
+  linkType: hard
+
+"@humanwhocodes/config-array@npm:^0.11.10":
+  version: 0.11.10
+  resolution: "@humanwhocodes/config-array@npm:0.11.10"
+  dependencies:
+    "@humanwhocodes/object-schema": ^1.2.1
+    debug: ^4.1.1
+    minimatch: ^3.0.5
+  checksum: 1b1302e2403d0e35bc43e66d67a2b36b0ad1119efc704b5faff68c41f791a052355b010fb2d27ef022670f550de24cd6d08d5ecf0821c16326b7dcd0ee5d5d8a
   languageName: node
   linkType: hard
 
@@ -7989,6 +8053,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"acorn@npm:^8.9.0":
+  version: 8.10.0
+  resolution: "acorn@npm:8.10.0"
+  bin:
+    acorn: bin/acorn
+  checksum: 538ba38af0cc9e5ef983aee196c4b8b4d87c0c94532334fa7e065b2c8a1f85863467bb774231aae91613fcda5e68740c15d97b1967ae3394d20faddddd8af61d
+  languageName: node
+  linkType: hard
+
 "add-px-to-style@npm:1.0.0":
   version: 1.0.0
   resolution: "add-px-to-style@npm:1.0.0"
@@ -10710,6 +10783,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "create-discord-bot@workspace:packages/create-discord-bot"
   dependencies:
+    "@clack/prompts": ^0.6.3
     "@favware/cliff-jumper": ^2.0.0
     "@microsoft/api-extractor": ^7.35.0
     "@types/node": 16.18.32
@@ -11378,7 +11452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord.js@workspace:packages/discord.js":
+"discord.js@^14.11.0, discord.js@workspace:packages/discord.js":
   version: 0.0.0-use.local
   resolution: "discord.js@workspace:packages/discord.js"
   dependencies:
@@ -11487,6 +11561,13 @@ __metadata:
   version: 16.0.3
   resolution: "dotenv@npm:16.0.3"
   checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.0.3":
+  version: 16.3.1
+  resolution: "dotenv@npm:16.3.1"
+  checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
   languageName: node
   linkType: hard
 
@@ -12944,6 +13025,55 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint@npm:^8.40.0":
+  version: 8.44.0
+  resolution: "eslint@npm:8.44.0"
+  dependencies:
+    "@eslint-community/eslint-utils": ^4.2.0
+    "@eslint-community/regexpp": ^4.4.0
+    "@eslint/eslintrc": ^2.1.0
+    "@eslint/js": 8.44.0
+    "@humanwhocodes/config-array": ^0.11.10
+    "@humanwhocodes/module-importer": ^1.0.1
+    "@nodelib/fs.walk": ^1.2.8
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.3.2
+    doctrine: ^3.0.0
+    escape-string-regexp: ^4.0.0
+    eslint-scope: ^7.2.0
+    eslint-visitor-keys: ^3.4.1
+    espree: ^9.6.0
+    esquery: ^1.4.2
+    esutils: ^2.0.2
+    fast-deep-equal: ^3.1.3
+    file-entry-cache: ^6.0.1
+    find-up: ^5.0.0
+    glob-parent: ^6.0.2
+    globals: ^13.19.0
+    graphemer: ^1.4.0
+    ignore: ^5.2.0
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    is-path-inside: ^3.0.3
+    js-yaml: ^4.1.0
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash.merge: ^4.6.2
+    minimatch: ^3.1.2
+    natural-compare: ^1.4.0
+    optionator: ^0.9.3
+    strip-ansi: ^6.0.1
+    strip-json-comments: ^3.1.0
+    text-table: ^0.2.0
+  bin:
+    eslint: bin/eslint.js
+  checksum: d06309ce4aafb9d27d558c8e5e5aa5cba3bbec3ce8ceccbc7d4b7a35f2b67fd40189159155553270e2e6febeb69bd8a3b60d6241c8f5ddc2ef1702ccbd328501
+  languageName: node
+  linkType: hard
+
 "eslint@npm:^8.41.0":
   version: 8.41.0
   resolution: "eslint@npm:8.41.0"
@@ -13001,6 +13131,17 @@ __metadata:
     acorn-jsx: ^5.3.2
     eslint-visitor-keys: ^3.4.1
   checksum: 6506289d6eb26471c0b383ee24fee5c8ae9d61ad540be956b3127be5ce3bf687d2ba6538ee5a86769812c7c552a9d8239e8c4d150f9ea056c6d5cbe8399c03c1
+  languageName: node
+  linkType: hard
+
+"espree@npm:^9.6.0":
+  version: 9.6.0
+  resolution: "espree@npm:9.6.0"
+  dependencies:
+    acorn: ^8.9.0
+    acorn-jsx: ^5.3.2
+    eslint-visitor-keys: ^3.4.1
+  checksum: 1287979510efb052a6a97c73067ea5d0a40701b29adde87bbe2d3eb1667e39ca55e8129e20e2517fed3da570150e7ef470585228459a8f3e3755f45007a1c662
   languageName: node
   linkType: hard
 
@@ -15891,6 +16032,13 @@ __metadata:
   version: 1.0.0
   resolution: "is-typedarray@npm:1.0.0"
   checksum: 3508c6cd0a9ee2e0df2fa2e9baabcdc89e911c7bd5cf64604586697212feec525aa21050e48affb5ffc3df20f0f5d2e2cf79b08caa64e1ccc9578e251763aef7
+  languageName: node
+  linkType: hard
+
+"is-unicode-supported@npm:*":
+  version: 1.3.0
+  resolution: "is-unicode-supported@npm:1.3.0"
+  checksum: 20a1fc161afafaf49243551a5ac33b6c4cf0bbcce369fcd8f2951fbdd000c30698ce320de3ee6830497310a8f41880f8066d440aa3eb0a853e2aa4836dd89abc
   languageName: node
   linkType: hard
 
@@ -20058,6 +20206,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"optionator@npm:^0.9.3":
+  version: 0.9.3
+  resolution: "optionator@npm:0.9.3"
+  dependencies:
+    "@aashutoshrathi/word-wrap": ^1.2.3
+    deep-is: ^0.1.3
+    fast-levenshtein: ^2.0.6
+    levn: ^0.4.1
+    prelude-ls: ^1.2.1
+    type-check: ^0.4.0
+  checksum: 09281999441f2fe9c33a5eeab76700795365a061563d66b098923eb719251a42bdbe432790d35064d0816ead9296dbeb1ad51a733edf4167c96bd5d0882e428a
+  languageName: node
+  linkType: hard
+
 "ora@npm:^5.4.1":
   version: 5.4.1
   resolution: "ora@npm:5.4.1"
@@ -24045,6 +24207,19 @@ __metadata:
   checksum: 5bac284cbe4b8e2024f987854952424925ba607c22e0af1b88020484e9d77d6b85e301c61f95f8f27f9eda58e4439d99056318f8b649bbc79f43e125f4f63f0b
   languageName: node
   linkType: hard
+
+"test@workspace:packages/test":
+  version: 0.0.0-use.local
+  resolution: "test@workspace:packages/test"
+  dependencies:
+    discord.js: ^14.11.0
+    dotenv: ^16.0.3
+    eslint: ^8.40.0
+    eslint-config-neon: ^0.1.47
+    eslint-formatter-pretty: ^5.0.0
+    prettier: ^2.8.8
+  languageName: unknown
+  linkType: soft
 
 "text-extensions@npm:^1.0.0":
   version: 1.9.0

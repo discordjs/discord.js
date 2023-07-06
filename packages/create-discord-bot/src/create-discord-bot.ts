@@ -5,6 +5,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync
 import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
+import * as p from '@clack/prompts';
 import chalk from 'chalk';
 import { program } from 'commander';
 import validateProjectName from 'validate-npm-package-name';
@@ -14,57 +15,99 @@ import { GUIDE_URL } from './util/constants.js';
 program
 	.description('Create a basic discord.js bot.')
 	.option('--typescript', 'Whether to use the TypeScript template.')
-	.argument('<directory>', 'The directory where this will be created.')
 	.parse();
 
-const { typescript } = program.opts();
-const [directory] = program.args;
+const main = async () => {
+	p.intro(`${chalk.bgCyan(chalk.black(' Create DiscordJS Bot '))}`);
 
-if (!directory) {
-	console.error(chalk.red('Please specify the project directory.'));
-	process.exit(1);
-}
-
-const root = path.resolve(directory);
-const directoryName = path.basename(root);
-
-if (existsSync(root) && readdirSync(root).length > 0) {
-	console.error(chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is not empty.`));
-	console.error(chalk.red(`Please specify an empty directory.`));
-	process.exit(1);
-}
-
-// We'll use the directory name as the project name. Check npm name validity.
-const validationResult = validateProjectName(directoryName);
-
-if (!validationResult.validForNewPackages) {
-	console.error(
-		chalk.red(
-			`Cannot create a project named ${chalk.yellow(`"${directoryName}"`)} due to npm naming restrictions.\n\nErrors:`,
-		),
+	const project = await p.group(
+		{
+			path: async () =>
+				p.text({
+					message: 'Where should we create your project?',
+					placeholder: './sparkling-solid',
+					validate: (value) => {
+						if (!value) return 'Please enter a path.';
+						if (!value.startsWith('.')) return 'Please enter a relative path.';
+					},
+				}),
+			type: async ({ results }) =>
+				p.select({
+					message: `Pick a project type within "${results.path}"`,
+					initialValue: 'ts',
+					options: [
+						{ value: 'ts', label: 'TypeScript' },
+						{ value: 'js', label: 'JavaScript' },
+					],
+				}),
+			install: async () =>
+				p.confirm({
+					message: 'Install dependencies?',
+					initialValue: false,
+				}),
+		},
+		{
+			onCancel: () => {
+				p.cancel('Operation cancelled.');
+				process.exit(0);
+			},
+		},
 	);
 
-	for (const error of [...(validationResult.errors ?? []), ...(validationResult.warnings ?? [])]) {
-		console.error(chalk.red(`- ${error}`));
+	const root = path.resolve(project.path);
+	const directoryName = path.basename(root);
+
+	if (existsSync(root) && readdirSync(root).length > 0) {
+		console.error(chalk.bold.red(`${chalk.yellow(`"${directoryName}"`)} is not empty.`));
+		console.error(chalk.bold.red(`Please specify an empty directory.`));
+		process.exit(1);
 	}
 
-	console.error(chalk.red('\nSee https://docs.npmjs.com/cli/configuring-npm/package-json for more details.'));
-	process.exit(1);
-}
+	const validationResult = validateProjectName(directoryName);
 
-if (!existsSync(root)) {
-	mkdirSync(root, { recursive: true });
-}
+	if (!validationResult.validForNewPackages) {
+		console.error(
+			chalk.bold.red(
+				`Cannot create a project named ${chalk.bold.yellow(
+					`"${directoryName}"`,
+				)} due to npm naming restrictions.\n\nErrors:`,
+			),
+		);
 
-console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
-cpSync(new URL(`../template/${typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, { recursive: true });
+		for (const error of [...(validationResult.errors ?? []), ...(validationResult.warnings ?? [])]) {
+			console.error(chalk.bold.red(`- ${error}`));
+		}
 
-process.chdir(root);
+		console.error(chalk.bold.red('\nSee https://docs.npmjs.com/cli/configuring-npm/package-json for more details.'));
+		process.exit(1);
+	}
 
-const newPackageJSON = readFileSync('./package.json', { encoding: 'utf8' }).replace('[REPLACE-NAME]', directoryName);
-writeFileSync('./package.json', newPackageJSON);
+	if (!existsSync(root)) {
+		mkdirSync(root, { recursive: true });
+	}
 
-const packageManager = resolvePackageManager();
-install(packageManager);
-console.log(chalk.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
-console.log(`Link: ${chalk.cyan(GUIDE_URL)}`);
+	const spinner = p.spinner();
+
+	spinner.start('Creating project...');
+	cpSync(new URL(`../template/${project.type ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
+		recursive: true,
+	});
+
+	process.chdir(root);
+
+	const newPackageJSON = readFileSync('./package.json', { encoding: 'utf8' }).replace('[REPLACE-NAME]', directoryName);
+	writeFileSync('./package.json', newPackageJSON);
+
+	spinner.stop('Files created.');
+
+	spinner.start('Downloading dependencies... this may take a while.');
+
+	const packageManager = resolvePackageManager();
+	install(packageManager);
+
+	spinner.stop("Downloaded dependencies. You're ready to go!");
+	console.log(chalk.bold.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
+	console.log(`Link: ${chalk.bold.cyan(GUIDE_URL)}`);
+};
+
+await main();
