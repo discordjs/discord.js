@@ -1,4 +1,4 @@
-import { getUserAgent } from '@discordjs/util';
+import { getUserAgentAppendix } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
 import { defaultStrategy } from '../../environment.js';
 import type { RESTOptions, ResponseLike } from '../REST.js';
@@ -9,7 +9,7 @@ export const DefaultUserAgent =
 /**
  * The default string to append onto the user agent.
  */
-export const DefaultUserAgentAppendix = getUserAgent() ?? '';
+export const DefaultUserAgentAppendix = getUserAgentAppendix();
 
 export const DefaultRestOptions = {
 	agent: null,
