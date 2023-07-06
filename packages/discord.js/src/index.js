@@ -19,6 +19,7 @@ exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
 // Utilities
 exports.ActivityFlagsBitField = require('./util/ActivityFlagsBitField');
 exports.ApplicationFlagsBitField = require('./util/ApplicationFlagsBitField');
+exports.AttachmentFlagsBitField = require('./util/AttachmentFlagsBitField');
 exports.BaseManager = require('./managers/BaseManager');
 exports.BitField = require('./util/BitField');
 exports.ChannelFlagsBitField = require('./util/ChannelFlagsBitField');
