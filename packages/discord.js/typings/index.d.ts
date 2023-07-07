@@ -2635,6 +2635,7 @@ export interface ShardEventTypes {
   message: [message: any];
   ready: [];
   reconnecting: [];
+  resume: [];
   spawn: [process: ChildProcess | Worker];
 }
 
@@ -5038,6 +5039,7 @@ export enum ShardEvents {
   Message = 'message',
   Ready = 'ready',
   Reconnecting = 'reconnecting',
+  Resume = 'resume',
   Spawn = 'spawn',
 }
 

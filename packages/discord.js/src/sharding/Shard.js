@@ -370,6 +370,11 @@ class Shard extends EventEmitter {
       // Shard has resumed
       if (message._resume) {
         this.ready = true;
+        /**
+         * Emitted upon the shard's {@link Client#event:shardResume} event.
+         * @event Shard#resume
+         */
+        this.emit(ShardEvents.Resume);
         return;
       }
 
