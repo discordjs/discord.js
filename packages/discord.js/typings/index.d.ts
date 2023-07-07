@@ -3068,7 +3068,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
-  /** @deprecated Use {@link User#username} instead. */
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
