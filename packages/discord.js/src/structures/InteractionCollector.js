@@ -40,7 +40,7 @@ class InteractionCollector extends Collector {
      * The message from which to collect interactions, if provided
      * @type {?Snowflake}
      */
-    this.messageId = options.message?.id ?? null;
+    this.messageId = options.message?.id ?? options.interactionResponse?.interaction.message?.id ?? null;
 
     /**
      * The message interaction id from which to collect interactions, if provided
@@ -178,7 +178,13 @@ class InteractionCollector extends Collector {
     if (this.type && interaction.type !== this.type) return null;
     if (this.componentType && interaction.componentType !== this.componentType) return null;
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (this.messageInteractionId && interaction.message?.interaction?.id !== this.messageInteractionId) return null;
+    if (
+      this.messageInteractionId &&
+      interaction.message?.interaction?.id &&
+      interaction.message.interaction.id !== this.messageInteractionId
+    ) {
+      return null;
+    }
     if (this.channelId && interaction.channelId !== this.channelId) return null;
     if (this.guildId && interaction.guildId !== this.guildId) return null;
 

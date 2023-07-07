@@ -59,7 +59,7 @@
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.1",
 		"@vladfrangu/async_event_emitter": "^2.2.2",
-		"discord-api-types": "^0.37.42"
+		"discord-api-types": "^0.37.45"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",

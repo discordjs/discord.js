@@ -346,7 +346,7 @@ export class AutoModerationActionExecution {
   public ruleTriggerType: AutoModerationRuleTriggerType;
   public get user(): User | null;
   public userId: Snowflake;
-  public get channel(): TextBasedChannel | null;
+  public get channel(): GuildTextBasedChannel | ForumChannel | null;
   public channelId: Snowflake | null;
   public get member(): GuildMember | null;
   public messageId: Snowflake | null;
@@ -3067,7 +3067,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
-  /** @deprecated Use {@link User#username} instead. */
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
