@@ -5,18 +5,26 @@ import {
 	Routes,
 	type RESTGetAPIApplicationCommandPermissionsResult,
 	type RESTGetAPIApplicationCommandResult,
+	type RESTGetAPIApplicationCommandsQuery,
 	type RESTGetAPIApplicationCommandsResult,
+	type RESTGetAPIApplicationGuildCommandResult,
+	type RESTGetAPIApplicationGuildCommandsQuery,
+	type RESTGetAPIApplicationGuildCommandsResult,
 	type RESTGetAPIGuildApplicationCommandsPermissionsResult,
 	type RESTPatchAPIApplicationCommandJSONBody,
 	type RESTPatchAPIApplicationCommandResult,
+	type RESTPatchAPIApplicationGuildCommandJSONBody,
+	type RESTPatchAPIApplicationGuildCommandResult,
 	type RESTPostAPIApplicationCommandsJSONBody,
 	type RESTPostAPIApplicationCommandsResult,
+	type RESTPostAPIApplicationGuildCommandsJSONBody,
+	type RESTPostAPIApplicationGuildCommandsResult,
 	type RESTPutAPIApplicationCommandPermissionsJSONBody,
 	type RESTPutAPIApplicationCommandPermissionsResult,
 	type RESTPutAPIApplicationCommandsJSONBody,
-	type RESTGetAPIApplicationCommandsQuery,
 	type RESTPutAPIApplicationCommandsResult,
-	type RESTGetAPIApplicationGuildCommandsQuery,
+	type RESTPutAPIApplicationGuildCommandsJSONBody,
+	type RESTPutAPIApplicationGuildCommandsResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -28,8 +36,8 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands}
 	 * @param applicationId - The application id to fetch commands for
-	 * @param query - The query options to use when fetching commands
-	 * @param options - The options to use when fetching commands
+	 * @param query - The query options for fetching commands
+	 * @param options - The options for fetching commands
 	 */
 	public async getGlobalCommands(
 		applicationId: Snowflake,
@@ -47,8 +55,8 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#create-global-application-command}
 	 * @param applicationId - The application id to create the command for
-	 * @param body - The data to use when creating the command
-	 * @param options - The options to use when creating the command
+	 * @param body - The data for creating the command
+	 * @param options - The options for creating the command
 	 */
 	public async createGlobalCommand(
 		applicationId: Snowflake,
@@ -67,7 +75,7 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-global-application-command}
 	 * @param applicationId - The application id to fetch the command from
 	 * @param commandId - The command id to fetch
-	 * @param options - The options to use when fetching the command
+	 * @param options - The options for fetching the command
 	 */
 	public async getGlobalCommand(
 		applicationId: Snowflake,
@@ -85,7 +93,7 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#edit-global-application-command}
 	 * @param applicationId - The application id of the command
 	 * @param commandId - The id of the command to edit
-	 * @param body - The data to use when editing the command
+	 * @param body - The data for editing the command
 	 * @param options - The options for editing the command
 	 */
 	public async editGlobalCommand(
@@ -121,7 +129,7 @@ export class ApplicationCommandsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands}
 	 * @param applicationId - The application id to overwrite commands for
-	 * @param body - The data to use when overwriting commands
+	 * @param body - The data for overwriting commands
 	 * @param options - The options for overwriting commands
 	 */
 	public async bulkOverwriteGlobalCommands(
@@ -141,8 +149,8 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-guild-application-commands}
 	 * @param applicationId - The application id to fetch commands for
 	 * @param guildId - The guild id to fetch commands for
-	 * @param query - The data to use when fetching commands
-	 * @param options - The options to use when fetching commands
+	 * @param query - The data for fetching commands
+	 * @param options - The options for fetching commands
 	 */
 	public async getGuildCommands(
 		applicationId: Snowflake,
@@ -153,7 +161,7 @@ export class ApplicationCommandsAPI {
 		return this.rest.get(Routes.applicationGuildCommands(applicationId, guildId), {
 			query: makeURLSearchParams(query),
 			signal,
-		}) as Promise<RESTGetAPIApplicationCommandsResult>;
+		}) as Promise<RESTGetAPIApplicationGuildCommandsResult>;
 	}
 
 	/**
@@ -162,19 +170,19 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command}
 	 * @param applicationId - The application id to create the command for
 	 * @param guildId - The guild id to create the command for
-	 * @param body - The data to use when creating the command
-	 * @param options - The options to use when creating the command
+	 * @param body - The data for creating the command
+	 * @param options - The options for creating the command
 	 */
 	public async createGuildCommand(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		body: RESTPostAPIApplicationCommandsJSONBody,
+		body: RESTPostAPIApplicationGuildCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
-		}) as Promise<RESTPostAPIApplicationCommandsResult>;
+		}) as Promise<RESTPostAPIApplicationGuildCommandsResult>;
 	}
 
 	/**
@@ -184,7 +192,7 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id to fetch the command from
 	 * @param guildId - The guild id to fetch the command from
 	 * @param commandId - The command id to fetch
-	 * @param options - The options to use when fetching the command
+	 * @param options - The options for fetching the command
 	 */
 	public async getGuildCommand(
 		applicationId: Snowflake,
@@ -194,7 +202,7 @@ export class ApplicationCommandsAPI {
 	) {
 		return this.rest.get(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			signal,
-		}) as Promise<RESTGetAPIApplicationCommandResult>;
+		}) as Promise<RESTGetAPIApplicationGuildCommandResult>;
 	}
 
 	/**
@@ -204,20 +212,20 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id of the command
 	 * @param guildId - The guild id of the command
 	 * @param commandId - The command id to edit
-	 * @param body - The data to use when editing the command
-	 * @param options - The options to use when editing the command
+	 * @param body - The data for editing the command
+	 * @param options - The options for editing the command
 	 */
 	public async editGuildCommand(
 		applicationId: Snowflake,
 		guildId: Snowflake,
 		commandId: Snowflake,
-		body: RESTPatchAPIApplicationCommandJSONBody,
+		body: RESTPatchAPIApplicationGuildCommandJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.applicationGuildCommand(applicationId, guildId, commandId), {
 			body,
 			signal,
-		}) as Promise<RESTPatchAPIApplicationCommandResult>;
+		}) as Promise<RESTPatchAPIApplicationGuildCommandResult>;
 	}
 
 	/**
@@ -244,19 +252,19 @@ export class ApplicationCommandsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands}
 	 * @param applicationId - The application id to overwrite commands for
 	 * @param guildId - The guild id to overwrite commands for
-	 * @param body - The data to use when overwriting commands
-	 * @param options - The options to use when overwriting the commands
+	 * @param body - The data for overwriting commands
+	 * @param options - The options for overwriting the commands
 	 */
 	public async bulkOverwriteGuildCommands(
 		applicationId: Snowflake,
 		guildId: Snowflake,
-		body: RESTPutAPIApplicationCommandsJSONBody,
+		body: RESTPutAPIApplicationGuildCommandsJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationGuildCommands(applicationId, guildId), {
 			body,
 			signal,
-		}) as Promise<RESTPutAPIApplicationCommandsResult>;
+		}) as Promise<RESTPutAPIApplicationGuildCommandsResult>;
 	}
 
 	/**
@@ -305,8 +313,8 @@ export class ApplicationCommandsAPI {
 	 * @param applicationId - The application id to edit the permissions for
 	 * @param guildId - The guild id to edit the permissions for
 	 * @param commandId - The id of the command to edit the permissions for
-	 * @param body - The data to use when editing the permissions
-	 * @param options - The options to use when editing the permissions
+	 * @param body - The data for editing the permissions
+	 * @param options - The options for editing the permissions
 	 */
 	public async editGuildCommandPermissions(
 		userToken: string,

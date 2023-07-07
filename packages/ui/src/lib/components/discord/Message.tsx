@@ -3,6 +3,17 @@ import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAutho
 import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.js';
 import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';
 
+export interface IDiscordMessage {
+	author?: IDiscordMessageAuthor | undefined;
+	authorNode?: ReactNode | undefined;
+	followUp?: boolean;
+	interaction?: IDiscordMessageInteraction | undefined;
+	interactionNode?: ReactNode | undefined;
+	reply?: IDiscordMessageReply | undefined;
+	replyNode?: ReactNode | undefined;
+	time?: string | undefined;
+}
+
 export function DiscordMessage({
 	reply,
 	replyNode,
@@ -13,16 +24,7 @@ export function DiscordMessage({
 	followUp,
 	time,
 	children,
-}: PropsWithChildren<{
-	author?: IDiscordMessageAuthor | undefined;
-	authorNode?: ReactNode | undefined;
-	followUp?: boolean;
-	interaction?: IDiscordMessageInteraction | undefined;
-	interactionNode?: ReactNode | undefined;
-	reply?: IDiscordMessageReply | undefined;
-	replyNode?: ReactNode | undefined;
-	time?: string | undefined;
-}>) {
+}: PropsWithChildren<IDiscordMessage>) {
 	return (
 		<div className="relative" id="outer-message-wrapper">
 			<div

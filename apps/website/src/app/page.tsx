@@ -2,6 +2,7 @@ import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
 import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
+import workersLogo from '~/assets/powered-by-workers.png';
 import { Banner } from '~/components/Banner';
 import { InstallButton } from '~/components/InstallButton';
 import { buttonVariants } from '~/styles/Button';
@@ -19,7 +20,7 @@ export default function Page() {
 							Discord bots.
 						</h1>
 						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
-						<div className="flex flex-row gap-4">
+						<div className="flex gap-4 md:flex-row">
 							<Link className={buttonVariants()} href="/docs">
 								Docs
 							</Link>
@@ -43,23 +44,41 @@ export default function Page() {
 						<InstallButton />
 					</div>
 				</div>
-				<a
-					className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
-					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
-					rel="external noopener noreferrer"
-					target="_blank"
-					title="Vercel"
-				>
-					<Image
-						alt="Vercel"
-						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
-						height={44}
-						placeholder="blur"
-						priority
-						src={vercelLogo}
-						width={212}
-					/>
-				</a>
+				<div className="flex flex-col gap-4 md:flex-row">
+					<a
+						className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
+						href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
+						rel="external noopener noreferrer"
+						target="_blank"
+						title="Vercel"
+					>
+						<Image
+							alt="Vercel"
+							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
+							height={44}
+							placeholder="blur"
+							priority
+							src={vercelLogo}
+							width={212}
+						/>
+					</a>
+					<a
+						className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
+						href="https://www.cloudflare.com"
+						rel="external noopener noreferrer"
+						target="_blank"
+						title="Cloudflare Workers"
+					>
+						<Image
+							alt="Cloudflare"
+							blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
+							height={44}
+							placeholder="blur"
+							priority
+							src={workersLogo}
+						/>
+					</a>
+				</div>
 			</div>
 		</div>
 	);

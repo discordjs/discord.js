@@ -16,6 +16,9 @@ packages:collection:
 packages:core:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\ncore\\n"
+packages:create-discord-bot:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncreate-discord-bot\\n"
 packages:discord.js:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\ndiscord.js\\n"

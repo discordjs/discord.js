@@ -34,7 +34,7 @@ export function Sidebar() {
 		<div className="flex flex-col gap-3 p-3">
 			{Object.keys(itemsByCategory).map((category, idx) => (
 				<Section
-					buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring"
+					buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring z-10"
 					key={`${category}-${idx}`}
 					title={category}
 				>

@@ -3,7 +3,6 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
@@ -74,7 +73,6 @@ function resolveIcon(item: string) {
 		case 'Interfaces':
 			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
 		default:
@@ -94,7 +92,7 @@ export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
 					<Section
-						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring"
+						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring z-10"
 						icon={resolveIcon(group)}
 						key={`${group}-${idx}`}
 						title={group}

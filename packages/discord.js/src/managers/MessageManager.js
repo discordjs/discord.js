@@ -12,6 +12,7 @@ const { resolvePartialEmoji } = require('../util/Util');
 /**
  * Manages API methods for Messages and holds their cache.
  * @extends {CachedManager}
+ * @abstract
  */
 class MessageManager extends CachedManager {
   constructor(channel, iterable) {

@@ -19,6 +19,7 @@ function generateIcon(kind: ApiItemKind) {
 		case ApiItemKind.Interface:
 			return <VscSymbolInterface />;
 		case ApiItemKind.TypeAlias:
+		case ApiItemKind.Variable:
 			return <VscSymbolVariable />;
 		default:
 			return <VscSymbolMethod />;

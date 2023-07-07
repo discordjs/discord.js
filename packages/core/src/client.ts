@@ -7,7 +7,7 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	GatewayDispatchEvents,
 	GatewayOpcodes,
-	type APIGuildMember,
+	type GatewayApplicationCommandPermissionsUpdateDispatchData,
 	type GatewayAutoModerationActionExecutionDispatchData,
 	type GatewayAutoModerationRuleCreateDispatchData,
 	type GatewayAutoModerationRuleDeleteDispatchData,
@@ -90,6 +90,9 @@ export interface WithIntrinsicProps<T> extends IntrinsicProps {
 }
 
 export interface MappedEvents {
+	[GatewayDispatchEvents.ApplicationCommandPermissionsUpdate]: [
+		WithIntrinsicProps<GatewayApplicationCommandPermissionsUpdateDispatchData>,
+	];
 	[GatewayDispatchEvents.AutoModerationActionExecution]: [
 		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
 	];
@@ -169,6 +172,13 @@ export interface ClientOptions {
 	rest: REST;
 }
 
+export interface RequestGuildMembersResult {
+	members: GatewayGuildMembersChunkDispatchData['members'];
+	nonce: NonNullable<GatewayGuildMembersChunkDispatchData['nonce']>;
+	notFound: NonNullable<GatewayGuildMembersChunkDispatchData['not_found']>;
+	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
+}
+
 export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	public readonly rest: REST;
 
@@ -199,8 +209,10 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		const shardId = calculateShardId(options.guild_id, await this.gateway.getShardCount());
 		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
 
-		const promise = new Promise<APIGuildMember[]>((resolve, reject) => {
-			const guildMembers: APIGuildMember[] = [];
+		const promise = new Promise<RequestGuildMembersResult>((resolve, reject) => {
+			const members: RequestGuildMembersResult['members'] = [];
+			const notFound: RequestGuildMembersResult['notFound'] = [];
+			const presences: RequestGuildMembersResult['presences'] = [];
 
 			const timer = setTimeout(() => {
 				reject(new Error('Request timed out'));
@@ -211,11 +223,13 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 				if (data.nonce !== nonce) return;
 
-				guildMembers.push(...data.members);
+				members.push(...data.members);
+				if ('presences' in data) presences.push(...data.presences);
+				if ('not_found' in data) notFound.push(...data.not_found);
 
 				if (data.chunk_index >= data.chunk_count - 1) {
 					this.off(GatewayDispatchEvents.GuildMembersChunk, handler);
-					resolve(guildMembers);
+					resolve({ members, nonce, notFound, presences });
 				}
 			};
 

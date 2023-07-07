@@ -8,10 +8,28 @@ export default defineConfig({
 	plugins: [dts(), react(), Unocss({ include: ['.storybook/preview.ts'], configFile: '../../unocss.config.ts' })],
 	build: {
 		lib: {
-			entry: resolve(__dirname, 'src/lib/index.ts'),
+			entry: [
+				'src/lib/index.ts',
+				'src/lib/components/Alert.tsx',
+				'src/lib/components/Section.tsx',
+				'src/lib/components/discord/Message.tsx',
+				'src/lib/components/discord/MessageAuthor.tsx',
+				'src/lib/components/discord/MessageAuthorReply.tsx',
+				'src/lib/components/discord/MessageBaseReply.tsx',
+				'src/lib/components/discord/MessageEmbed.tsx',
+				'src/lib/components/discord/MessageEmbedAuthor.tsx',
+				'src/lib/components/discord/MessageEmbedField.tsx',
+				'src/lib/components/discord/MessageEmbedFields.tsx',
+				'src/lib/components/discord/MessageEmbedFooter.tsx',
+				'src/lib/components/discord/MessageEmbedImage.tsx',
+				'src/lib/components/discord/MessageEmbedThumbnail.tsx',
+				'src/lib/components/discord/MessageEmbedTitle.tsx',
+				'src/lib/components/discord/MessageInteraction.tsx',
+				'src/lib/components/discord/MessageReply.tsx',
+				'src/lib/components/discord/Messages.tsx',
+			],
 			formats: ['es'],
 			name: 'ui',
-			fileName: 'ui',
 		},
 		rollupOptions: {
 			external: [

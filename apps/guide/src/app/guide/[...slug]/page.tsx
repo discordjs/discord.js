@@ -14,7 +14,7 @@ export default function Page({ params }: { params: { slug: string[] } }) {
 	}
 
 	return (
-		<article className="max-w-none prose">
+		<article className="max-w-none px-5 prose">
 			<Mdx code={content?.body.code ?? ''} />
 		</article>
 	);

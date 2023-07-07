@@ -374,6 +374,17 @@ class Shard extends EventEmitter {
         return;
       }
 
+      // Shard has resumed
+      if (message._resume) {
+        this.ready = true;
+        /**
+         * Emitted upon the shard's {@link Client#event:shardResume} event.
+         * @event Shard#resume
+         */
+        this.emit(ShardEvents.Resume);
+        return;
+      }
+
       // Shard is requesting a property fetch
       if (message._sFetchProp) {
         const resp = { _sFetchProp: message._sFetchProp, _sFetchPropShard: message._sFetchPropShard };

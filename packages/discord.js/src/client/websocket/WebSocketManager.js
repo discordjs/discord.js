@@ -296,14 +296,14 @@ class WebSocketManager extends EventEmitter {
       shard.ping = latency;
     });
 
-    this._ws.on(WSWebSocketShardEvents.Error, err => {
+    this._ws.on(WSWebSocketShardEvents.Error, ({ error, shardId }) => {
       /**
        * Emitted whenever a shard's WebSocket encounters a connection error.
        * @event Client#shardError
        * @param {Error} error The encountered error
        * @param {number} shardId The shard that encountered this error
        */
-      this.client.emit(Events.ShardError, err, err.shardId);
+      this.client.emit(Events.ShardError, error, shardId);
     });
   }
 
@@ -320,12 +320,12 @@ class WebSocketManager extends EventEmitter {
    * Destroys this manager and all its shards.
    * @private
    */
-  destroy() {
+  async destroy() {
     if (this.destroyed) return;
     // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
     this.destroyed = true;
-    this._ws.destroy({ code: CloseCodes.Normal });
+    await this._ws?.destroy({ code: CloseCodes.Normal });
   }
 
   /**

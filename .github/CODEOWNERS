@@ -13,6 +13,7 @@
 /packages/builders/ @discordjs/builders
 /packages/collection/ @discordjs/collection
 /packages/core/ @discordjs/core
+/packages/create-discord-bot/ @discordjs/guide
 /packages/discord.js/ @discordjs/core
 /packages/docgen/ @iCrawl
 /packages/formatters/ @discordjs/formatters

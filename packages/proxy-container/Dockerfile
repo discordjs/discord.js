@@ -7,7 +7,9 @@ WORKDIR /usr/proxy
 
 COPY manifests .
 
-RUN yarn install --immutable
+RUN npm install --global is-ci husky
+
+RUN yarn install --immutable --inline-builds
 RUN rm -rf .yarn/cache
 
 FROM node:18-alpine AS runner
