@@ -11,8 +11,6 @@ export const DefaultUserAgent =
  */
 export const DefaultUserAgentAppendix = getUserAgentAppendix();
 
-const strategy = getDefaultStrategy();
-
 export const DefaultRestOptions = {
 	agent: null,
 	api: 'https://discord.com/api',
@@ -31,7 +29,7 @@ export const DefaultRestOptions = {
 	hashLifetime: 86_400_000, // 24 Hours
 	handlerSweepInterval: 3_600_000, // 1 Hour
 	async makeRequest(...args): Promise<ResponseLike> {
-		return strategy(...args);
+		return getDefaultStrategy()(...args);
 	},
 } as const satisfies Required<RESTOptions>;
 

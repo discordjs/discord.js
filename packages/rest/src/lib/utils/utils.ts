@@ -138,9 +138,5 @@ export async function sleep(ms: number): Promise<void> {
  * @param value - The value to check
  */
 export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
-	return (
-		(typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) ||
-		value instanceof Uint8Array ||
-		value instanceof Uint8ClampedArray
-	);
+	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
 }
