@@ -1,14 +1,11 @@
 'use strict';
 
-const process = require('node:process');
 const { userMention } = require('@discordjs/builders');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const UserFlagsBitField = require('../util/UserFlagsBitField');
-
-let tagDeprecationEmitted = false;
 
 /**
  * Represents a user on Discord.
@@ -209,14 +206,8 @@ class User extends Base {
    * if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
-   * @deprecated Use {@link User#username} instead.
    */
   get tag() {
-    if (!tagDeprecationEmitted) {
-      process.emitWarning('User#tag is deprecated. Use User#username instead.', 'DeprecationWarning');
-      tagDeprecationEmitted = true;
-    }
-
     return typeof this.username === 'string'
       ? this.discriminator === '0'
         ? this.username

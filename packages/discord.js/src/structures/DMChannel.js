@@ -4,7 +4,7 @@ const { userMention } = require('@discordjs/builders');
 const { ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const MessageManager = require('../managers/MessageManager');
+const DMMessageManager = require('../managers/DMMessageManager');
 const Partials = require('../util/Partials');
 
 /**
@@ -21,9 +21,9 @@ class DMChannel extends BaseChannel {
 
     /**
      * A manager of the messages belonging to this channel
-     * @type {MessageManager}
+     * @type {DMMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new DMMessageManager(this);
   }
 
   _patch(data) {

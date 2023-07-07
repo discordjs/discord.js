@@ -21,8 +21,8 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param body - The callback data to use when replying
-	 * @param options - The options to use when replying
+	 * @param body - The callback data for replying
+	 * @param options - The options for replying
 	 */
 	public async reply(
 		interactionId: Snowflake,
@@ -47,8 +47,8 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param data - The data to use when deferring the reply
-	 * @param options - The options to use when deferring
+	 * @param data - The data for deferring the reply
+	 * @param options - The options for deferring
 	 */
 	public async defer(
 		interactionId: Snowflake,
@@ -72,7 +72,7 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when deferring
+	 * @param options - The options for deferring
 	 */
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
@@ -94,8 +94,8 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param body - The callback data to use when replying
-	 * @param options - The options to use when replying
+	 * @param body - The callback data for replying
+	 * @param options - The options for replying
 	 */
 	public async followUp(
 		applicationId: Snowflake,
@@ -113,9 +113,9 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#edit-followup-message}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param callbackData - The callback data to use when editing the reply
+	 * @param callbackData - The callback data for editing the reply
 	 * @param messageId - The id of the message to edit. If omitted, the original reply will be edited
-	 * @param options - The options to use when editing the reply
+	 * @param options - The options for editing the reply
 	 */
 	public async editReply(
 		applicationId: Snowflake,
@@ -135,7 +135,7 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response}
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param options - The options to use when fetching the reply
+	 * @param options - The options for fetching the reply
 	 */
 	public async getOriginalReply(
 		applicationId: Snowflake,
@@ -159,7 +159,7 @@ export class InteractionsAPI {
 	 * @param applicationId - The application id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param messageId - The id of the message to delete. If omitted, the original reply will be deleted
-	 * @param options - The options to use when deleting the reply
+	 * @param options - The options for deleting the reply
 	 */
 	public async deleteReply(
 		applicationId: Snowflake,
@@ -176,8 +176,8 @@ export class InteractionsAPI {
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
-	 * @param callbackData - The callback data to use when updating the interaction
-	 * @param options - The options to use when updating the interaction
+	 * @param callbackData - The callback data for updating the interaction
+	 * @param options - The options for updating the interaction
 	 */
 	public async updateMessage(
 		interactionId: Snowflake,
@@ -203,7 +203,7 @@ export class InteractionsAPI {
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param callbackData - The callback data for the autocomplete response
-	 * @param options - The options to use when sending the autocomplete response
+	 * @param options - The options for sending the autocomplete response
 	 */
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
@@ -228,7 +228,7 @@ export class InteractionsAPI {
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param callbackData - The modal callback data to send
-	 * @param options - The options to use when sending the modal
+	 * @param options - The options for sending the modal
 	 */
 	public async createModal(
 		interactionId: Snowflake,
