@@ -157,6 +157,10 @@ import {
   ImageFormat,
   GuildMemberFlags,
   RESTGetAPIGuildThreadsResult,
+  RESTGetAPIGuildOnboardingResult,
+  APIGuildOnboardingPrompt,
+  APIGuildOnboardingPromptOption,
+  GuildOnboardingPromptType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1356,6 +1360,7 @@ export class Guild extends AnonymousGuild {
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
+  public fetchOnboarding(): Promise<GuildOnboarding>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -1564,6 +1569,40 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public toJSON(): unknown;
   public toString(): UserMention;
   public valueOf(): string;
+}
+
+export class GuildOnboarding extends Base {
+  private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
+  public defaultChannels: Collection<Snowflake, GuildChannel>;
+  public enabled: boolean;
+}
+
+export class GuildOnboardingPrompt extends Base {
+  private constructor(client: Client, data: APIGuildOnboardingPrompt, guildId: Snowflake);
+  public id: Snowflake;
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public options: Collection<Snowflake, GuildOnboardingPromptOption>;
+  public title: string;
+  public singleSelect: boolean;
+  public required: boolean;
+  public inOnboarding: boolean;
+  public type: GuildOnboardingPromptType;
+}
+
+export class GuildOnboardingPromptOption extends Base {
+  private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
+  public id: Snowflake;
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public channels: Collection<Snowflake, GuildChannel>;
+  public roles: Collection<Snowflake, Role>;
+  public emoji: GuildOnboardingPromptOptionEmoji | null;
+  public title: string;
+  public description: string | null;
 }
 
 export class GuildPreview extends Base {
@@ -5647,6 +5686,12 @@ export interface GuildScheduledEventUser<T> {
 export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
+
+export interface GuildOnboardingPromptOptionEmoji {
+  id: Snowflake | null;
+  name: string;
+  animated: boolean;
+}
 
 export type HexColorString = `#${string}`;
 
