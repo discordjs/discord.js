@@ -23,7 +23,7 @@ export function getUserAgentAppendix(): string {
 		return 'Netlify-Edge-Functions';
 	}
 
-	// Most (if not all) edge environments will have `process` defined. Withing a web browser we'll extract it using `navigator.userAgent`.
+	// Most (if not all) edge environments will have `process` defined. Within a web browser we'll extract it using `navigator.userAgent`.
 	if (typeof globalThis.process !== 'object') {
 		// @ts-expect-error web env
 		if (typeof globalThis.navigator === 'object') {
