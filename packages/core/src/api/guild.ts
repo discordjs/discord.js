@@ -1,98 +1,99 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v10';
-import type {
-	RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	RESTPatchAPIGuildVoiceStateCurrentMemberResult,
-	GuildMFALevel,
-	GuildWidgetStyle,
-	RESTGetAPIAuditLogQuery,
-	RESTGetAPIAuditLogResult,
-	RESTGetAPIAutoModerationRuleResult,
-	RESTGetAPIAutoModerationRulesResult,
-	RESTGetAPIGuildBanResult,
-	RESTGetAPIGuildBansQuery,
-	RESTGetAPIGuildBansResult,
-	RESTGetAPIGuildChannelsResult,
-	RESTGetAPIGuildEmojiResult,
-	RESTGetAPIGuildEmojisResult,
-	RESTGetAPIGuildIntegrationsResult,
-	RESTGetAPIGuildInvitesResult,
-	RESTGetAPIGuildMemberResult,
-	RESTGetAPIGuildMembersResult,
-	RESTGetAPIGuildMembersQuery,
-	RESTGetAPIGuildMembersSearchResult,
-	RESTGetAPIGuildPreviewResult,
-	RESTGetAPIGuildPruneCountResult,
-	RESTGetAPIGuildResult,
-	RESTGetAPIGuildRolesResult,
-	RESTGetAPIGuildScheduledEventQuery,
-	RESTGetAPIGuildScheduledEventResult,
-	RESTGetAPIGuildScheduledEventsQuery,
-	RESTGetAPIGuildScheduledEventsResult,
-	RESTGetAPIGuildScheduledEventUsersQuery,
-	RESTGetAPIGuildScheduledEventUsersResult,
-	RESTGetAPIGuildStickerResult,
-	RESTGetAPIGuildStickersResult,
-	RESTGetAPIGuildTemplatesResult,
-	RESTGetAPIGuildThreadsResult,
-	RESTGetAPIGuildVanityUrlResult,
-	RESTGetAPIGuildVoiceRegionsResult,
-	RESTGetAPIGuildPruneCountQuery,
-	RESTPostAPIGuildStickerFormDataBody,
-	RESTPostAPIGuildStickerResult,
-	RESTGetAPIGuildMembersSearchQuery,
-	RESTGetAPIGuildWebhooksResult,
-	RESTGetAPIGuildWelcomeScreenResult,
-	RESTGetAPIGuildWidgetImageResult,
-	RESTGetAPIGuildWidgetJSONResult,
-	RESTGetAPIGuildWidgetSettingsResult,
-	RESTGetAPITemplateResult,
-	RESTPatchAPIAutoModerationRuleJSONBody,
-	RESTPatchAPIAutoModerationRuleResult,
-	RESTPatchAPIGuildChannelPositionsJSONBody,
-	RESTPatchAPIGuildEmojiJSONBody,
-	RESTPatchAPIGuildEmojiResult,
-	RESTPatchAPIGuildJSONBody,
-	RESTPatchAPIGuildMemberJSONBody,
-	RESTPatchAPIGuildMemberResult,
-	RESTPatchAPIGuildResult,
-	RESTPatchAPIGuildRoleJSONBody,
-	RESTPatchAPIGuildRolePositionsJSONBody,
-	RESTPatchAPIGuildRolePositionsResult,
-	RESTPatchAPIGuildRoleResult,
-	RESTPatchAPIGuildScheduledEventJSONBody,
-	RESTPatchAPIGuildScheduledEventResult,
-	RESTPatchAPIGuildStickerJSONBody,
-	RESTPatchAPIGuildStickerResult,
-	RESTPatchAPIGuildTemplateJSONBody,
-	RESTPatchAPIGuildTemplateResult,
-	RESTPatchAPIGuildVoiceStateUserJSONBody,
-	RESTPatchAPIGuildWelcomeScreenJSONBody,
-	RESTPatchAPIGuildWelcomeScreenResult,
-	RESTPatchAPIGuildWidgetSettingsJSONBody,
-	RESTPatchAPIGuildWidgetSettingsResult,
-	RESTPostAPIAutoModerationRuleJSONBody,
-	RESTPostAPIAutoModerationRuleResult,
-	RESTPostAPIGuildChannelJSONBody,
-	RESTPostAPIGuildChannelResult,
-	RESTPostAPIGuildEmojiJSONBody,
-	RESTPostAPIGuildEmojiResult,
-	RESTPostAPIGuildPruneJSONBody,
-	RESTPostAPIGuildPruneResult,
-	RESTPostAPIGuildRoleJSONBody,
-	RESTPostAPIGuildRoleResult,
-	RESTPostAPIGuildScheduledEventJSONBody,
-	RESTPostAPIGuildScheduledEventResult,
-	RESTPostAPIGuildsJSONBody,
-	RESTPostAPIGuildsMFAResult,
-	RESTPostAPIGuildsResult,
-	RESTPostAPIGuildTemplatesJSONBody,
-	RESTPostAPIGuildTemplatesResult,
-	RESTPutAPIGuildBanJSONBody,
-	RESTPutAPIGuildTemplateSyncResult,
-	Snowflake,
+import {
+	Routes,
+	type GuildMFALevel,
+	type GuildWidgetStyle,
+	type RESTGetAPIAuditLogQuery,
+	type RESTGetAPIAuditLogResult,
+	type RESTGetAPIAutoModerationRuleResult,
+	type RESTGetAPIAutoModerationRulesResult,
+	type RESTGetAPIGuildBanResult,
+	type RESTGetAPIGuildBansQuery,
+	type RESTGetAPIGuildBansResult,
+	type RESTGetAPIGuildChannelsResult,
+	type RESTGetAPIGuildEmojiResult,
+	type RESTGetAPIGuildEmojisResult,
+	type RESTGetAPIGuildIntegrationsResult,
+	type RESTGetAPIGuildInvitesResult,
+	type RESTGetAPIGuildMemberResult,
+	type RESTGetAPIGuildMembersQuery,
+	type RESTGetAPIGuildMembersResult,
+	type RESTGetAPIGuildMembersSearchQuery,
+	type RESTGetAPIGuildMembersSearchResult,
+	type RESTGetAPIGuildOnboardingResult,
+	type RESTGetAPIGuildPreviewResult,
+	type RESTGetAPIGuildPruneCountQuery,
+	type RESTGetAPIGuildPruneCountResult,
+	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRolesResult,
+	type RESTGetAPIGuildScheduledEventQuery,
+	type RESTGetAPIGuildScheduledEventResult,
+	type RESTGetAPIGuildScheduledEventUsersQuery,
+	type RESTGetAPIGuildScheduledEventUsersResult,
+	type RESTGetAPIGuildScheduledEventsQuery,
+	type RESTGetAPIGuildScheduledEventsResult,
+	type RESTGetAPIGuildStickerResult,
+	type RESTGetAPIGuildStickersResult,
+	type RESTGetAPIGuildTemplatesResult,
+	type RESTGetAPIGuildThreadsResult,
+	type RESTGetAPIGuildVanityUrlResult,
+	type RESTGetAPIGuildVoiceRegionsResult,
+	type RESTGetAPIGuildWebhooksResult,
+	type RESTGetAPIGuildWelcomeScreenResult,
+	type RESTGetAPIGuildWidgetImageResult,
+	type RESTGetAPIGuildWidgetJSONResult,
+	type RESTGetAPIGuildWidgetSettingsResult,
+	type RESTGetAPITemplateResult,
+	type RESTPatchAPIAutoModerationRuleJSONBody,
+	type RESTPatchAPIAutoModerationRuleResult,
+	type RESTPatchAPIGuildChannelPositionsJSONBody,
+	type RESTPatchAPIGuildEmojiJSONBody,
+	type RESTPatchAPIGuildEmojiResult,
+	type RESTPatchAPIGuildJSONBody,
+	type RESTPatchAPIGuildMemberJSONBody,
+	type RESTPatchAPIGuildMemberResult,
+	type RESTPatchAPIGuildResult,
+	type RESTPatchAPIGuildRoleJSONBody,
+	type RESTPatchAPIGuildRolePositionsJSONBody,
+	type RESTPatchAPIGuildRolePositionsResult,
+	type RESTPatchAPIGuildRoleResult,
+	type RESTPatchAPIGuildScheduledEventJSONBody,
+	type RESTPatchAPIGuildScheduledEventResult,
+	type RESTPatchAPIGuildStickerJSONBody,
+	type RESTPatchAPIGuildStickerResult,
+	type RESTPatchAPIGuildTemplateJSONBody,
+	type RESTPatchAPIGuildTemplateResult,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
+	type RESTPatchAPIGuildVoiceStateUserJSONBody,
+	type RESTPatchAPIGuildWelcomeScreenJSONBody,
+	type RESTPatchAPIGuildWelcomeScreenResult,
+	type RESTPatchAPIGuildWidgetSettingsJSONBody,
+	type RESTPatchAPIGuildWidgetSettingsResult,
+	type RESTPostAPIAutoModerationRuleJSONBody,
+	type RESTPostAPIAutoModerationRuleResult,
+	type RESTPostAPIGuildChannelJSONBody,
+	type RESTPostAPIGuildChannelResult,
+	type RESTPostAPIGuildEmojiJSONBody,
+	type RESTPostAPIGuildEmojiResult,
+	type RESTPostAPIGuildPruneJSONBody,
+	type RESTPostAPIGuildPruneResult,
+	type RESTPostAPIGuildRoleJSONBody,
+	type RESTPostAPIGuildRoleResult,
+	type RESTPostAPIGuildScheduledEventJSONBody,
+	type RESTPostAPIGuildScheduledEventResult,
+	type RESTPostAPIGuildStickerFormDataBody,
+	type RESTPostAPIGuildStickerResult,
+	type RESTPostAPIGuildTemplatesJSONBody,
+	type RESTPostAPIGuildTemplatesResult,
+	type RESTPostAPIGuildsJSONBody,
+	type RESTPostAPIGuildsMFAResult,
+	type RESTPostAPIGuildsResult,
+	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildTemplateSyncResult,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class GuildsAPI {
@@ -169,7 +170,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#list-guild-members}
 	 * @param guildId - The id of the guild
-	 * @param query - The query to use when fetching the guild members
+	 * @param query - The query for fetching the guild members
 	 * @param options - The options for fetching the guild members
 	 */
 	public async getMembers(
@@ -1112,7 +1113,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-member}
 	 * @param guildId - The id of the guild
 	 * @param userId - The id of the user
-	 * @param body - The data to use when editing the guild member
+	 * @param body - The data for editing the guild member
 	 * @param options - The options for editing the guild member
 	 */
 	public async editMember(
@@ -1196,7 +1197,7 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-template#create-guild-template}
 	 * @param templateCode - The code of the template
-	 * @param body - The data to use when creating the template
+	 * @param body - The data for creating the template
 	 * @param options - The options for creating the template
 	 */
 	public async createTemplate(
@@ -1222,11 +1223,22 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options to use when setting the voice state
+	 * @param body - The options for setting the voice state
 	 */
 	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			body,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	}
+
+	/**
+	 * Fetches a guild onboarding
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-onboarding}
+	 * @param guildId - The id of the guild
+	 * @param options - The options for fetching the guild onboarding
+	 */
+	public async getOnboarding(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildOnboarding(guildId), { signal }) as Promise<RESTGetAPIGuildOnboardingResult>;
 	}
 }

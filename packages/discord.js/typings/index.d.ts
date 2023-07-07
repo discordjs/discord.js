@@ -157,6 +157,10 @@ import {
   ImageFormat,
   GuildMemberFlags,
   RESTGetAPIGuildThreadsResult,
+  RESTGetAPIGuildOnboardingResult,
+  APIGuildOnboardingPrompt,
+  APIGuildOnboardingPromptOption,
+  GuildOnboardingPromptType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -853,6 +857,7 @@ export class EmbedBuilder extends BuildersEmbed {
   public constructor(data?: EmbedData | APIEmbed);
   public override setColor(color: ColorResolvable | null): this;
   public static from(other: JSONEncodable<APIEmbed> | APIEmbed): EmbedBuilder;
+  public get length(): number;
 }
 
 export class Embed {
@@ -1356,6 +1361,7 @@ export class Guild extends AnonymousGuild {
     options?: GuildAuditLogsFetchOptions<T>,
   ): Promise<GuildAuditLogs<T>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
+  public fetchOnboarding(): Promise<GuildOnboarding>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -1564,6 +1570,40 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public toJSON(): unknown;
   public toString(): UserMention;
   public valueOf(): string;
+}
+
+export class GuildOnboarding extends Base {
+  private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
+  public defaultChannels: Collection<Snowflake, GuildChannel>;
+  public enabled: boolean;
+}
+
+export class GuildOnboardingPrompt extends Base {
+  private constructor(client: Client, data: APIGuildOnboardingPrompt, guildId: Snowflake);
+  public id: Snowflake;
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public options: Collection<Snowflake, GuildOnboardingPromptOption>;
+  public title: string;
+  public singleSelect: boolean;
+  public required: boolean;
+  public inOnboarding: boolean;
+  public type: GuildOnboardingPromptType;
+}
+
+export class GuildOnboardingPromptOption extends Base {
+  private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
+  public id: Snowflake;
+  public get guild(): Guild;
+  public guildId: Snowflake;
+  public channels: Collection<Snowflake, GuildChannel>;
+  public roles: Collection<Snowflake, Role>;
+  public emoji: GuildOnboardingPromptOptionEmoji | null;
+  public title: string;
+  public description: string | null;
 }
 
 export class GuildPreview extends Base {
@@ -2635,6 +2675,7 @@ export interface ShardEventTypes {
   message: [message: any];
   ready: [];
   reconnecting: [];
+  resume: [];
   spawn: [process: ChildProcess | Worker];
 }
 
@@ -2655,6 +2696,7 @@ export class Shard extends EventEmitter {
   public manager: ShardingManager;
   public process: ChildProcess | null;
   public ready: boolean;
+  public silent: boolean;
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
   public eval<T>(fn: (client: Client) => T): Promise<T>;
@@ -2714,6 +2756,7 @@ export class ShardingManager extends EventEmitter {
 
   public file: string;
   public respawn: boolean;
+  public silent: boolean;
   public shardArgs: string[];
   public shards: Collection<number, Shard>;
   public token: string | null;
@@ -3067,7 +3110,6 @@ export class User extends PartialTextBasedChannel(Base) {
   public id: Snowflake;
   public get partial(): false;
   public system: boolean;
-  /** @deprecated Use {@link User#username} instead. */
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -4005,14 +4047,13 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
   ): Promise<GuildMember>;
 }
 
-export class MessageManager<InGuild extends boolean = boolean> extends CachedManager<
+export abstract class MessageManager<InGuild extends boolean = boolean> extends CachedManager<
   Snowflake,
   Message<InGuild>,
   MessageResolvable
 > {
-  private constructor(channel: TextBasedChannel, iterable?: Iterable<RawMessageData>);
-  public channel: If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
-  public crosspost(message: MessageResolvable): Promise<Message<InGuild>>;
+  protected constructor(channel: TextBasedChannel, iterable?: Iterable<RawMessageData>);
+  public channel: TextBasedChannel;
   public delete(message: MessageResolvable): Promise<void>;
   public edit(
     message: MessageResolvable,
@@ -4024,6 +4065,15 @@ export class MessageManager<InGuild extends boolean = boolean> extends CachedMan
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
+}
+
+export class DMMessageManager extends MessageManager {
+  public channel: DMChannel;
+}
+
+export class GuildMessageManager extends MessageManager<true> {
+  public channel: GuildTextBasedChannel;
+  public crosspost(message: MessageResolvable): Promise<Message<true>>;
 }
 
 export class PermissionOverwriteManager extends CachedManager<
@@ -4192,7 +4242,7 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
   get lastPinAt(): Date | null;
-  messages: MessageManager<InGuild>;
+  messages: If<InGuild, GuildMessageManager, DMMessageManager>;
   awaitMessageComponent<T extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<T, true>,
   ): Promise<MappedInteractionTypes[T]>;
@@ -5039,6 +5089,7 @@ export enum ShardEvents {
   Message = 'message',
   Ready = 'ready',
   Reconnecting = 'reconnecting',
+  Resume = 'resume',
   Spawn = 'spawn',
 }
 
@@ -5639,6 +5690,12 @@ export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
+export interface GuildOnboardingPromptOptionEmoji {
+  id: Snowflake | null;
+  name: string;
+  animated: boolean;
+}
+
 export type HexColorString = `#${string}`;
 
 export interface IntegrationAccount {
@@ -6128,6 +6185,7 @@ export interface ShardingManagerOptions {
   shardList?: number[] | 'auto';
   mode?: ShardingManagerMode;
   respawn?: boolean;
+  silent?: boolean;
   shardArgs?: string[];
   token?: string;
   execArgv?: string[];

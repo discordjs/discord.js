@@ -55,7 +55,7 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@types/ws": "^8.5.4",
-		"discord-api-types": "^0.37.42",
+		"discord-api-types": "^0.37.45",
 		"prism-media": "^1.3.5",
 		"tslib": "^2.5.2",
 		"ws": "^8.13.0"
