@@ -1,14 +1,11 @@
 'use strict';
 
-const process = require('node:process');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const UserFlags = require('../util/UserFlags');
 const Util = require('../util/Util');
-
-let tagDeprecationEmitted = false;
 
 /**
  * Represents a user on Discord.
@@ -217,10 +214,6 @@ class User extends Base {
    * @readonly
    */
   get tag() {
-    if (!tagDeprecationEmitted) {
-      process.emitWarning('User#tag is deprecated. Use User#username instead.', 'DeprecationWarning');
-      tagDeprecationEmitted = true;
-    }
     return typeof this.username === 'string'
       ? this.discriminator === '0'
         ? this.username
