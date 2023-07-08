@@ -210,7 +210,6 @@ class User extends Base {
    * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
    * if they're using the legacy username system</info>
    * @type {?string}
-   * @deprecated Use {@link User#username} instead.
    * @readonly
    */
   get tag() {
