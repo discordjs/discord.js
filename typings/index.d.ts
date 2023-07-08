@@ -2703,9 +2703,11 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public discriminator: string;
+  public readonly displayName: string;
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
+  public globalName: string | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
@@ -2785,6 +2787,7 @@ export class Util extends null {
   public static splitMessage(text: string, options?: SplitOptions): string[];
   /** @deprecated This will be removed in the next major version. */
   public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
+  public static calculateUserDefaultAvatarIndex(userId: Snowflake): number;
 }
 
 export class Formatters extends null {
@@ -3093,7 +3096,7 @@ export const Constants: {
         dynamic: boolean,
       ): string;
       Banner(id: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize, dynamic: boolean): string;
-      DefaultAvatar(discriminator: number): string;
+      DefaultAvatar(index: number): string;
       DiscoverySplash(guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
       Emoji(emojiId: Snowflake, format: DynamicImageFormat): string;
       GDMIcon(channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
