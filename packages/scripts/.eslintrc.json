@@ -1,4 +1,3 @@
 {
-	"extends": "../../.eslintrc.json",
-	"ignorePatterns": "src/template/**/*"
+	"extends": "../../.eslintrc.json"
 }

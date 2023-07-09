@@ -1,11 +1,11 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
-import type { Dispatcher } from 'undici';
-import type { RateLimitData, RequestOptions } from '../REST.js';
+import type { RequestInit } from 'undici';
+import type { RateLimitData, ResponseLike } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, onRateLimit, parseHeader } from '../utils/utils.js';
-import type { IHandler } from './IHandler.js';
+import { hasSublimit, onRateLimit } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 const enum QueueType {
@@ -134,9 +134,9 @@ export class SequentialHandler implements IHandler {
 	public async queueRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestOptions,
+		options: RequestInit,
 		requestData: HandlerRequestData,
-	): Promise<Dispatcher.ResponseData> {
+	): Promise<ResponseLike> {
 		let queue = this.#asyncQueue;
 		let queueType = QueueType.Standard;
 		// Separate sublimited requests when already sublimited
@@ -195,10 +195,10 @@ export class SequentialHandler implements IHandler {
 	private async runRequest(
 		routeId: RouteData,
 		url: string,
-		options: RequestOptions,
+		options: RequestInit,
 		requestData: HandlerRequestData,
 		retries = 0,
-	): Promise<Dispatcher.ResponseData> {
+	): Promise<ResponseLike> {
 		/*
 		 * After calculations have been done, pre-emptively stop further requests
 		 * Potentially loop until this task can run if e.g. the global rate limit is hit twice
@@ -270,14 +270,14 @@ export class SequentialHandler implements IHandler {
 			return this.runRequest(routeId, url, options, requestData, ++retries);
 		}
 
-		const status = res.statusCode;
+		const status = res.status;
 		let retryAfter = 0;
 
-		const limit = parseHeader(res.headers['x-ratelimit-limit']);
-		const remaining = parseHeader(res.headers['x-ratelimit-remaining']);
-		const reset = parseHeader(res.headers['x-ratelimit-reset-after']);
-		const hash = parseHeader(res.headers['x-ratelimit-bucket']);
-		const retry = parseHeader(res.headers['retry-after']);
+		const limit = res.headers.get('X-RateLimit-Limit');
+		const remaining = res.headers.get('X-RateLimit-Remaining');
+		const reset = res.headers.get('X-RateLimit-Reset-After');
+		const hash = res.headers.get('X-RateLimit-Bucket');
+		const retry = res.headers.get('Retry-After');
 
 		// Update the total number of requests that can be made before the rate limit resets
 		this.limit = limit ? Number(limit) : Number.POSITIVE_INFINITY;
@@ -309,7 +309,7 @@ export class SequentialHandler implements IHandler {
 		// Handle retryAfter, which means we have actually hit a rate limit
 		let sublimitTimeout: number | null = null;
 		if (retryAfter > 0) {
-			if (res.headers['x-ratelimit-global'] !== undefined) {
+			if (res.headers.has('X-RateLimit-Global')) {
 				this.manager.globalRemaining = 0;
 				this.manager.globalReset = Date.now() + retryAfter;
 			} else if (!this.localLimited) {
@@ -327,7 +327,7 @@ export class SequentialHandler implements IHandler {
 			incrementInvalidCount(this.manager);
 		}
 
-		if (status >= 200 && status < 300) {
+		if (res.ok) {
 			return res;
 		} else if (status === 429) {
 			// A rate limit was hit - this may happen if the route isn't associated with an official bucket hash yet, or when first globally rate limited

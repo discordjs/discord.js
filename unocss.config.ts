@@ -47,6 +47,9 @@ export default defineConfig({
 				'a > img': {
 					display: 'inline-block',
 				},
+				'a > img[height="44"]': {
+					height: '44px',
+				},
 				h1: {
 					display: 'flex',
 					'place-items': 'center',
@@ -76,13 +79,5 @@ export default defineConfig({
 				},
 			},
 		}),
-	],
-	include: [
-		/.[jt]sx$/,
-		/.mdx?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.js(.*)?$/,
-		// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
-		/.*\/ui\.mjs(.*)?$/,
 	],
 });

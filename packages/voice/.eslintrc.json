@@ -1,12 +1,7 @@
 {
 	"extends": "../../.eslintrc.json",
-	"plugins": ["eslint-plugin-tsdoc"],
 	"rules": {
 		"import/extensions": 0,
 		"no-restricted-globals": 0
-	},
-	"parserOptions": {
-		"project": "./tsconfig.eslint.json",
-		"extraFileExtensions": [".mjs"]
 	}
 }

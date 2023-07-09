@@ -53,6 +53,7 @@ At a minimum, the definition of a slash command must have a name and a descripti
 <CH.Code>
 
 ```js
+/** @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} */
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
@@ -68,12 +69,21 @@ The simplest way to acknowledge and respond to an interaction is the _`interacti
 <CH.Code>
 
 ```js
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
 ```
 
 </CH.Code>
+
+<Alert title="@type and @param tags" type="info">
+	[`@type`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#type) and
+	[`@param`](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#param-and-returns) tags allow you
+	to annotate your code with type information. The tags are not required for your code to run but provide autocomplete
+	and type information for fields and parameters, which can majorly improve your developer experience when working with
+	them.
+</Alert>
 
 Put these two together by creating a `commands/ping.js` file for your first command. Inside this file, you're going to define and export two items.
 
@@ -85,11 +95,13 @@ The _`export`_ keyword ensures these values can be imported and read by other fi
 <CH.Code>
 
 ```js commands/ping.js
+/** @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} */
 export const data = {
 	name: 'ping',
 	description: 'Replies with Pong!',
 };
 
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	await interaction.reply('Pong!');
 }
@@ -109,11 +121,13 @@ That's it for your basic ping command. Below are examples of two more commands w
 <CH.Code>
 
 ```js commands/user.js
+/** @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} */
 export const data = {
 	name: 'user',
 	description: 'Provides information about the user.',
 };
 
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	// interaction.user is the object representing the User who ran the command
 	// interaction.member is the GuildMember object, which represents the user in the specific guild
@@ -124,11 +138,13 @@ export async function execute(interaction) {
 ```
 
 ```js commands/server.js
+/** @type {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} */
 export const data = {
 	name: 'server',
 	description: 'Provides information about the server.',
 };
 
+/** @param {import('discord.js').CommandInteraction} interaction */
 export async function execute(interaction) {
 	// interaction.guild is the object representing the Guild in which the command was run
 	await interaction.reply(`This server is ${interaction.guild.name} and has 

@@ -1,7 +1,7 @@
 - name: api changes
-  color: '5663e9'
+  color: 5663e9
 - name: api support
-  color: '5663e9'
+  color: 5663e9
 - name: apps:guide
   color: fbca04
 - name: apps:website
@@ -23,7 +23,7 @@
 - name: dependencies
   color: 276bd1
 - name: discord
-  color: '5663e9'
+  color: 5663e9
 - name: discussion
   color: b6b1f9
 - name: documentation
@@ -41,7 +41,7 @@
 - name: has PR
   color: 4b1f8e
 - name: help wanted
-  color: '008672'
+  color: 008672
 - name: in progress
   color: ffccd7
 - name: in review
@@ -60,13 +60,15 @@
   color: fbca04
 - name: packages:core
   color: fbca04
-- name: packages:discord.js
+- name: packages:create-discord-bot
   color: fbca04
-- name: packages:next
+- name: packages:discord.js
   color: fbca04
 - name: packages:docgen
   color: fbca04
 - name: packages:formatters
+  color: fbca04
+- name: packages:next
   color: fbca04
 - name: packages:proxy
   color: fbca04

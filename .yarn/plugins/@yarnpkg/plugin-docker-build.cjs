@@ -215,7 +215,8 @@ module.exports = {
 												await c({ workspace: e, report: t, destination: u });
 											});
 										}
-										await i.execUtils.pipevp('docker', ['build', ...this.args, '-f', s, '.'], {
+										const h = this.buildKit ? ['buildx', 'build'] : ['build'];
+										await i.execUtils.pipevp('docker', [...h, ...this.args, '-f', s, '.'], {
 											cwd: o,
 											strict: !0,
 											stdin: this.context.stdin,
@@ -241,6 +242,7 @@ module.exports = {
 						'yarn docker build --copy secret.key --copy config.json @foo/bar',
 					],
 					['Install production dependencies only', 'yarn docker build --production @foo/bar'],
+					['Build a Docker image using BuildKit', 'yarn docker build --buildkit @foo/bar'],
 				],
 			})),
 				d([r.Command.String()], f.prototype, 'workspaceName', void 0),
@@ -248,6 +250,7 @@ module.exports = {
 				d([r.Command.String('-f,--file')], f.prototype, 'dockerFilePath', void 0),
 				d([r.Command.Array('--copy')], f.prototype, 'copyFiles', void 0),
 				d([r.Command.Boolean('--production')], f.prototype, 'production', void 0),
+				d([r.Command.Boolean('--buildkit')], f.prototype, 'buildKit', void 0),
 				d([r.Command.Path('docker', 'build')], f.prototype, 'execute', null);
 			const u = { commands: [f] };
 			plugin = e;

@@ -128,10 +128,26 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	public async connect() {
-		const promise = this.initialConnectResolved ? Promise.resolve() : once(this, WebSocketShardEvents.Ready);
+		const controller = new AbortController();
+		let promise;
+
+		if (!this.initialConnectResolved) {
+			// Sleep for the remaining time, but if the connection closes in the meantime, we shouldn't wait the remainder to avoid blocking the new conn
+			promise = Promise.race([
+				once(this, WebSocketShardEvents.Ready, { signal: controller.signal }),
+				once(this, WebSocketShardEvents.Resumed, { signal: controller.signal }),
+			]);
+		}
+
 		void this.internalConnect();
 
-		await promise;
+		try {
+			await promise;
+		} finally {
+			// cleanup hanging listeners
+			controller.abort();
+		}
+
 		this.initialConnectResolved = true;
 	}
 
@@ -259,6 +275,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.#status = WebSocketShardStatus.Idle;
 
 		if (options.recover !== undefined) {
+			// There's cases (like no internet connection) where we immediately fail to connect,
+			// causing a very fast and draining reconnection loop.
+			await sleep(500);
 			return this.internalConnect();
 		}
 	}

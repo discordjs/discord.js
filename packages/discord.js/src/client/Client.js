@@ -226,7 +226,7 @@ class Client extends BaseClient {
       await this.ws.connect();
       return this.token;
     } catch (error) {
-      this.destroy();
+      await this.destroy();
       throw error;
     }
   }
@@ -242,13 +242,13 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  destroy() {
+  async destroy() {
     super.destroy();
 
     this.sweepers.destroy();
-    this.ws.destroy();
+    await this.ws.destroy();
     this.token = null;
     this.rest.setToken(null);
   }
@@ -420,7 +420,7 @@ class Client extends BaseClient {
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
-    if (scopes.some(scope => ![OAuth2Scopes.Bot].includes(scope)) && options.permissions) {
+    if (!scopes.includes(OAuth2Scopes.Bot) && options.permissions) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
     const validScopes = Object.values(OAuth2Scopes);
@@ -544,7 +544,8 @@ module.exports = Client;
  * `DiscordSnowflake` class.
  *
  * Check their documentation
- * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/snowflake_src.Snowflake here}
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_snowflake.Snowflake here}
+ * ({@link https://www.sapphirejs.dev/docs/Guide/utilities/snowflake guide})
  * to see what you can do.
  * @hideconstructor
  */

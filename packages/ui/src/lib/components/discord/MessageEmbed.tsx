@@ -1,11 +1,11 @@
 import type { PropsWithChildren, ReactNode } from 'react';
-import { DiscordMessageEmbedAuthor, type IDiscordMessageEmbedAuthor } from './MessageEmbedAuthor.jsx';
-import type { IDiscordMessageEmbedField } from './MessageEmbedField.jsx';
-import { DiscordMessageEmbedFields } from './MessageEmbedFields.jsx';
-import { DiscordMessageEmbedFooter, type IDiscordMessageEmbedFooter } from './MessageEmbedFooter.jsx';
-import { DiscordMessageEmbedImage, type IDiscordMessageEmbedImage } from './MessageEmbedImage.jsx';
-import { DiscordMessageEmbedThumbnail, type IDiscordMessageEmbedThumbnail } from './MessageEmbedThumbnail.jsx';
-import { DiscordMessageEmbedTitle, type IDiscordMessageEmbedTitle } from './MessageEmbedTitle.jsx';
+import { DiscordMessageEmbedAuthor, type IDiscordMessageEmbedAuthor } from './MessageEmbedAuthor.js';
+import type { IDiscordMessageEmbedField } from './MessageEmbedField.js';
+import { DiscordMessageEmbedFields } from './MessageEmbedFields.js';
+import { DiscordMessageEmbedFooter, type IDiscordMessageEmbedFooter } from './MessageEmbedFooter.js';
+import { DiscordMessageEmbedImage, type IDiscordMessageEmbedImage } from './MessageEmbedImage.js';
+import { DiscordMessageEmbedThumbnail, type IDiscordMessageEmbedThumbnail } from './MessageEmbedThumbnail.js';
+import { DiscordMessageEmbedTitle, type IDiscordMessageEmbedTitle } from './MessageEmbedTitle.js';
 
 export interface IDiscordMessageEmbed {
 	author?: IDiscordMessageEmbedAuthor | undefined;

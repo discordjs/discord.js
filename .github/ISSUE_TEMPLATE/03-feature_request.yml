@@ -20,11 +20,14 @@ body:
         - builders
         - collection
         - core
+        - create-discord-bot
         - formatters
         - next
         - proxy
         - proxy-container
         - rest
+        - ui
+        - util
         - voice
         - ws
     validations:

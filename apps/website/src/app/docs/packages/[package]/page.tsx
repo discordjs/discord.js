@@ -36,7 +36,7 @@ export default async function Page({ params }: { params: { package: string } }) 
 						href={`/docs/packages/${params.package}/${version}`}
 						key={`${version}-${idx}`}
 					>
-						<div className="flex flex-row place-content-between place-items-center gap-4">
+						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex flex-row place-content-between place-items-center gap-4">
 								<VscVersions size={25} />
 								<h2 className="font-semibold">{version}</h2>
