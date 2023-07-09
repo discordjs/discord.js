@@ -152,7 +152,8 @@ class GuildChannel extends BaseChannel {
 
     let count = 0;
     for (const channel of this.guild.channels.cache.values()) {
-      if (!types.includes(channel.type) || !(selfIsCategory || channel.parentId === this.parentId)) continue;
+      if (!types.includes(channel.type)) continue;
+      if (!selfIsCategory && channel.parentId !== this.parentId) continue;
       if (this.rawPosition === channel.rawPosition) {
         if (Snowflake.compare(channel.id, this.id) === -1) count++;
       } else if (this.rawPosition > channel.rawPosition) {
