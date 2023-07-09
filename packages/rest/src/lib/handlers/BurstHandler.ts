@@ -1,10 +1,9 @@
-import { setTimeout as sleep } from 'node:timers/promises';
 import type { RequestInit } from 'undici';
 import type { ResponseLike } from '../REST.js';
 import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { onRateLimit } from '../utils/utils.js';
+import { onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 /**

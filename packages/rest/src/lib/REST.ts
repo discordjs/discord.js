@@ -1,7 +1,7 @@
-import { EventEmitter } from 'node:events';
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { Dispatcher, RequestInit, Response } from 'undici';
 import { CDN } from './CDN.js';
 import {
@@ -204,7 +204,7 @@ export interface APIRequest {
 }
 
 export interface ResponseLike
-	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'text'> {
+	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'> {
 	body: Readable | ReadableStream | null;
 }
 
@@ -223,31 +223,16 @@ export interface RestEvents {
 	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
 	hashSweep: [sweptHashes: Collection<string, HashData>];
 	invalidRequestWarning: [invalidRequestInfo: InvalidRequestWarningData];
-	newListener: [name: string, listener: (...args: any) => void];
 	rateLimited: [rateLimitInfo: RateLimitData];
-	removeListener: [name: string, listener: (...args: any) => void];
 	response: [request: APIRequest, response: ResponseLike];
 	restDebug: [info: string];
 }
 
-export interface REST {
-	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
+export type RestEventsMap = {
+	[K in keyof RestEvents]: RestEvents[K];
+};
 
-	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
-		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
-}
-
-export class REST extends EventEmitter {
+export class REST extends AsyncEventEmitter<RestEventsMap> {
 	public readonly cdn: CDN;
 
 	public readonly requestManager: RequestManager;
@@ -256,9 +241,13 @@ export class REST extends EventEmitter {
 		super();
 		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
 		this.requestManager = new RequestManager(options)
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.Debug, this.emit.bind(this, RESTEvents.Debug))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.RateLimited, this.emit.bind(this, RESTEvents.RateLimited))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.InvalidRequestWarning, this.emit.bind(this, RESTEvents.InvalidRequestWarning))
+			// @ts-expect-error For some reason ts can't infer these types
 			.on(RESTEvents.HashSweep, this.emit.bind(this, RESTEvents.HashSweep));
 
 		this.on('newListener', (name, listener) => {
