@@ -80,14 +80,14 @@ export interface SendRateLimitState {
 	resetAt: number;
 }
 
+// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
+// const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+// 	? (globalThis as any).WebSocket
+// 	: WebSocket;
+const WebSocketConstructor: typeof WebSocket = WebSocket;
+
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
-
-	// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
-	// private WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
-	// 	? (globalThis as any).WebSocket
-	// 	: WebSocket;
-	private WebSocketConstructor: typeof WebSocket = WebSocket;
 
 	private useIdentifyCompress = false;
 
@@ -186,7 +186,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([`Connecting to ${url}`]);
 
-		const connection = new this.WebSocketConstructor(url, {
+		const connection = new WebSocketConstructor(url, {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
 		});
 
@@ -280,16 +280,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			]);
 
 			if (shouldClose) {
-				this.connection.close(options.code, options.reason);
-
 				let outerResolve: () => void;
 				const promise = new Promise<void>((resolve) => {
 					outerResolve = resolve;
 				});
 
-				this.connection.onclose = () => {
-					outerResolve();
-				};
+				this.connection.onclose = outerResolve!;
+
+				this.connection.close(options.code, options.reason);
 
 				await promise;
 				this.emit(WebSocketShardEvents.Closed, { code: options.code });
