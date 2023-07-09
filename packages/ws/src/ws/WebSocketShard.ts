@@ -7,7 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { lazy } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -83,9 +83,11 @@ export interface SendRateLimitState {
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
-		? (globalThis as any).WebSocket
-		: WebSocket;
+	// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
+	// private WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+	// 	? (globalThis as any).WebSocket
+	// 	: WebSocket;
+	private WebSocketConstructor: typeof WebSocket = WebSocket;
 
 	private useIdentifyCompress = false;
 
@@ -495,7 +497,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			try {
 				return JSON.parse(data as string) as GatewayReceivePayload;
 			} catch {
-				// Either bun emulates the rejection as a message event or discord sent us invalid JSON, either way, we can't do anything with it
+				// This is a non-JSON payload / (at the time of writing this comment) emitted by bun wrongly interpreting custom close codes https://github.com/oven-sh/bun/issues/3392
 				return null;
 			}
 		}
