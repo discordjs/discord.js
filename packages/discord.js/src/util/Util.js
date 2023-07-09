@@ -164,6 +164,7 @@ function makePlainError(err) {
 }
 
 const TextSortableGroupTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
+const VoiceSortableGroupTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 const CategorySortableGroupTypes = [ChannelType.GuildCategory];
 
 /**
@@ -181,7 +182,9 @@ function getSortableGroupTypes(type) {
     case ChannelType.GuildAnnouncement:
     case ChannelType.GuildForum:
       return TextSortableGroupTypes;
-    // TODO(kyranet): Add GuildVoice and GuildStageVoice in a follow-up PR
+    case ChannelType.GuildVoice:
+    case ChannelType.GuildStageVoice:
+      return VoiceSortableGroupTypes;
     case ChannelType.GuildCategory:
       return CategorySortableGroupTypes;
     default:
