@@ -247,7 +247,9 @@ export class RequestManager extends AsyncEventEmitter<RestEventsMap> {
 
 				// Fire event
 				this.emit(RESTEvents.HashSweep, sweptHashes);
-			}, this.options.hashSweepInterval).unref?.();
+			}, this.options.hashSweepInterval);
+
+			this.hashTimer.unref?.();
 		}
 
 		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Number.POSITIVE_INFINITY) {
@@ -270,7 +272,9 @@ export class RequestManager extends AsyncEventEmitter<RestEventsMap> {
 
 				// Fire event
 				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
-			}, this.options.handlerSweepInterval).unref?.();
+			}, this.options.handlerSweepInterval);
+
+			this.handlerTimer.unref?.();
 		}
 	}
 
