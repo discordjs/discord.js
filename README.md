@@ -100,9 +100,9 @@ client.login('token');
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
+- [Documentation](https://old.discordjs.dev/#/docs)
+- [Guide](https://v13.discordjs.guide) ([source](https://github.com/discordjs/guide/tree/v13))
+  See also the [Update Guide](https://v13.discordjs.guide/additional-info/changes-in-v13.html), including updated and removed items in the library.
 - [discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)
@@ -116,7 +116,7 @@ client.login('token');
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs).  
+[documentation](https://old.discordjs.dev/#/docs).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help

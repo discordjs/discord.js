@@ -16,7 +16,18 @@ async function writeWebsocketHandlerImports() {
 }
 
 async function writeClientActionImports() {
-  const lines = ["'use strict';\n", 'class ActionsManager {', '  constructor(client) {', '    this.client = client;\n'];
+  const lines = [
+    "'use strict';\n",
+    'class ActionsManager {',
+    '  constructor(client) {',
+    '    this.client = client;\n',
+    '    // These symbols represent fully built data that we inject at times when calling actions manually.',
+    '    // Action#getUser for example, will return the injected data (which is assumed to be a built structure)',
+    '    // instead of trying to make it from provided data',
+    "    this.injectedUser = Symbol('djs.actions.injectedUser');",
+    "    this.injectedChannel = Symbol('djs.actions.injectedChannel');",
+    "    this.injectedMessage = Symbol('djs.actions.injectedMessage');\n",
+  ];
 
   const actionsDirectory = new URL('../src/client/actions', import.meta.url);
   for (const file of (await readdir(actionsDirectory)).sort()) {

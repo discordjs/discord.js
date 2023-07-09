@@ -23,6 +23,7 @@ class ApplicationFlags extends BitField {}
 
 /**
  * Numeric application flags. All available properties:
+ * * `APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE`
  * * `GATEWAY_PRESENCE`
  * * `GATEWAY_PRESENCE_LIMITED`
  * * `GATEWAY_GUILD_MEMBERS`
@@ -31,10 +32,12 @@ class ApplicationFlags extends BitField {}
  * * `EMBEDDED`
  * * `GATEWAY_MESSAGE_CONTENT`
  * * `GATEWAY_MESSAGE_CONTENT_LIMITED`
+ * * `APPLICATION_COMMAND_BADGE`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
  */
 ApplicationFlags.FLAGS = {
+  APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE: 1 << 6,
   GATEWAY_PRESENCE: 1 << 12,
   GATEWAY_PRESENCE_LIMITED: 1 << 13,
   GATEWAY_GUILD_MEMBERS: 1 << 14,
@@ -43,6 +46,7 @@ ApplicationFlags.FLAGS = {
   EMBEDDED: 1 << 17,
   GATEWAY_MESSAGE_CONTENT: 1 << 18,
   GATEWAY_MESSAGE_CONTENT_LIMITED: 1 << 19,
+  APPLICATION_COMMAND_BADGE: 1 << 23,
 };
 
 module.exports = ApplicationFlags;

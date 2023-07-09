@@ -8,6 +8,19 @@ const GuildChannel = require('./GuildChannel');
  */
 class CategoryChannel extends GuildChannel {
   /**
+   * The id of the parent of this channel.
+   * @name CategoryChannel#parentId
+   * @type {null}
+   */
+
+  /**
+   * The parent of this channel.
+   * @name CategoryChannel#parent
+   * @type {null}
+   * @readonly
+   */
+
+  /**
    * Channels that are a part of this category
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
@@ -18,7 +31,7 @@ class CategoryChannel extends GuildChannel {
 
   /**
    * Sets the category parent of this channel.
-   * <warn>It is not currently possible to set the parent of a CategoryChannel.</warn>
+   * <warn>It is not possible to set the parent of a CategoryChannel.</warn>
    * @method setParent
    * @memberof CategoryChannel
    * @instance

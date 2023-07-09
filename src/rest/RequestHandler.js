@@ -11,7 +11,7 @@ const {
 } = require('../util/Constants');
 
 function parseResponse(res) {
-  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
+  if (res.headers.get('content-type')?.startsWith('application/json')) return res.json();
   return res.buffer();
 }
 

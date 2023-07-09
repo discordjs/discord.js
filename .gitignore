@@ -30,3 +30,4 @@ docs/docs.json
 .DS_Store
 .yarn/
 .turbo/
+.vercel/

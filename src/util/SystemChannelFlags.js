@@ -38,6 +38,8 @@ class SystemChannelFlags extends BitField {}
  * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS` (Suppress server boost notifications)
  * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS` (Suppress server setup tips)
  * * `SUPPRESS_JOIN_NOTIFICATION_REPLIES` (Hide member join sticker reply buttons)
+ * * `SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATIONS` (Suppress role subscription purchase and renewal notifications)
+ * * `SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATION_REPLIES` (HHide role subscription sticker reply buttons)
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
  */
@@ -46,6 +48,8 @@ SystemChannelFlags.FLAGS = {
   SUPPRESS_PREMIUM_SUBSCRIPTIONS: 1 << 1,
   SUPPRESS_GUILD_REMINDER_NOTIFICATIONS: 1 << 2,
   SUPPRESS_JOIN_NOTIFICATION_REPLIES: 1 << 3,
+  SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATIONS: 1 << 4,
+  SUPPRESS_ROLE_SUBSCRIPTION_PURCHASE_NOTIFICATION_REPLIES: 1 << 5,
 };
 
 module.exports = SystemChannelFlags;

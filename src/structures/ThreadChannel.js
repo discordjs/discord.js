@@ -15,7 +15,7 @@ const { resolveAutoArchiveMaxLimit } = require('../util/Util');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends Channel {
-  constructor(guild, data, client, fromInteraction = false) {
+  constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -41,7 +41,7 @@ class ThreadChannel extends Channel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data, fromInteraction);
+    if (data) this._patch(data);
   }
 
   _patch(data, partial = false) {
@@ -310,7 +310,7 @@ class ThreadChannel extends Channel {
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
     const channel = this.parent?.type === 'GUILD_FORUM' ? this : this.parent;
-    return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
+    return channel?.messages.fetch(this.id, options) ?? null;
   }
 
   /**

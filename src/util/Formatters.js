@@ -53,6 +53,36 @@ Formatters.bold = bold;
 Formatters.channelMention = channelMention;
 
 /**
+ * Formats an application command name, subcommand group name, subcommand name, and ID
+ * into an application command mention
+ * @method chatInputApplicationCommandMention
+ * @memberof Formatters
+ * @param {string} commandName The name of the application command
+ * @param {string|Snowflake} subcommandGroupOrSubOrId
+ * The subcommand group name, subcommand name, or application command id
+ * @param {?(string|Snowflake)} [subcommandNameOrId] The subcommand name or application command id
+ * @param {?Snowflake} [commandId] The id of the application command
+ * @returns {string}
+ * @static
+ */
+Formatters.chatInputApplicationCommandMention = function chatInputApplicationCommandMention(
+  commandName,
+  subcommandGroupOrSubOrId,
+  subcommandNameOrId,
+  commandId,
+) {
+  if (typeof commandId !== 'undefined') {
+    return `</${commandName} ${subcommandGroupOrSubOrId} ${subcommandNameOrId}:${commandId}>`;
+  }
+
+  if (typeof subcommandNameOrId !== 'undefined') {
+    return `</${commandName} ${subcommandGroupOrSubOrId}:${subcommandNameOrId}>`;
+  }
+
+  return `</${commandName}:${subcommandGroupOrSubOrId}>`;
+};
+
+/**
  * Wraps the content inside a code block with an optional language.
  * @method codeBlock
  * @memberof Formatters

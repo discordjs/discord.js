@@ -201,11 +201,6 @@ export const enum SelectMenuComponentTypes {
   CHANNEL_SELECT = 8,
 }
 
-export const enum ModalComponentTypes {
-  ACTION_ROW = 1,
-  TEXT_INPUT = 4,
-}
-
 export const enum MFALevels {
   NONE = 0,
   ELEVATED = 1,
@@ -239,6 +234,7 @@ export const enum StickerFormatTypes {
   PNG = 1,
   APNG = 2,
   LOTTIE = 3,
+  GIF = 4,
 }
 
 export const enum StickerTypes {

@@ -71,8 +71,9 @@ class AutoModerationRule extends Base {
        * @property {AutoModerationRuleKeywordPresetType[]} presets
        * The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering
-       * {@link AutoModerationRuleTriggerTypes.KEYWORD} and {@link AutoModerationRuleTriggerTypes.KEYWORD_PRESET}
+       * {@link AutoModerationRuleTriggerType.KEYWORD} and {@link AutoModerationRuleTriggerType.KEYWORD_PRESET}
        * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
+       * @property {boolean} mentionRaidProtectionEnabled Whether mention raid protection is enabled
        */
 
       /**
@@ -85,6 +86,7 @@ class AutoModerationRule extends Base {
         presets: data.trigger_metadata.presets?.map(preset => AutoModerationRuleKeywordPresetTypes[preset]) ?? [],
         allowList: data.trigger_metadata.allow_list ?? [],
         mentionTotalLimit: data.trigger_metadata.mention_total_limit ?? null,
+        mentionRaidProtectionEnabled: data.trigger_metadata.mention_raid_protection_enabled ?? false,
       };
     }
 
@@ -101,6 +103,7 @@ class AutoModerationRule extends Base {
        * @typedef {Object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
+       * @property {?string} customMessage The custom message that is shown whenever a message is blocked
        */
 
       /**
@@ -112,6 +115,7 @@ class AutoModerationRule extends Base {
         metadata: {
           durationSeconds: action.metadata.duration_seconds ?? null,
           channelId: action.metadata.channel_id ?? null,
+          customMessage: action.metadata.custom_message ?? null,
         },
       }));
     }
@@ -232,6 +236,17 @@ class AutoModerationRule extends Base {
    */
   setMentionTotalLimit(mentionTotalLimit, reason) {
     return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionTotalLimit }, reason });
+  }
+
+  /**
+   * Sets whether to enable mention raid protection for this auto moderation rule.
+   * @param {boolean} mentionRaidProtectionEnabled
+   * Whether to enable mention raid protection for this auto moderation rule
+   * @param {string} [reason] The reason for changing the mention raid protection of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setMentionRaidProtectionEnabled(mentionRaidProtectionEnabled, reason) {
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionRaidProtectionEnabled }, reason });
   }
 
   /**

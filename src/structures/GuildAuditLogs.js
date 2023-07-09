@@ -542,6 +542,7 @@ class GuildAuditLogsEntry {
         this.extra = {
           autoModerationRuleName: data.options.auto_moderation_rule_name,
           autoModerationRuleTriggerType: AutoModerationRuleTriggerTypes[data.options.auto_moderation_rule_trigger_type],
+          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
       default:

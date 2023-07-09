@@ -119,6 +119,7 @@ class Role extends Base {
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
      * @property {Snowflake} [subscriptionListingId] The id of this role's subscription SKU and listing
      * @property {true} [availableForPurchase] Whether this role is available for purchase
+     * @property {true} [guildConnections] Whether this role is a guild's linked role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -136,6 +137,9 @@ class Role extends Base {
       }
       if ('available_for_purchase' in data.tags) {
         this.tags.availableForPurchase = true;
+      }
+      if ('guild_connections' in data.tags) {
+        this.tags.guildConnections = true;
       }
     }
   }
@@ -233,6 +237,10 @@ class Role extends Base {
    * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if this role's position is lower (other role's is higher),
    * positive number if this one is higher (other's is lower), 0 if equal
+   * @example
+   * // Compare the position of a role to another
+   * const roleCompare = role.comparePositionTo(otherRole);
+   * if (roleCompare >= 1) console.log(`${role.name} is higher than ${otherRole.name}`);
    */
   comparePositionTo(role) {
     return this.guild.roles.comparePositions(this, role);
