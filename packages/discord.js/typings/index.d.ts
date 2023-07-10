@@ -4807,6 +4807,7 @@ export interface ClientEvents {
   guildAuditLogEntryCreate: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
   guildBanAdd: [ban: GuildBan];
   guildBanRemove: [ban: GuildBan];
+  guildAvailable: [guild: Guild];
   guildCreate: [guild: Guild];
   guildDelete: [guild: Guild];
   guildUnavailable: [guild: Guild];
@@ -5013,6 +5014,7 @@ export enum Events {
   AutoModerationRuleUpdate = 'autoModerationRuleUpdate',
   ClientReady = 'ready',
   GuildAuditLogEntryCreate = 'guildAuditLogEntryCreate',
+  GuildAvailable = 'guildAvailable',
   GuildCreate = 'guildCreate',
   GuildDelete = 'guildDelete',
   GuildUpdate = 'guildUpdate',

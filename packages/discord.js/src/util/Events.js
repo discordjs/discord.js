@@ -18,6 +18,7 @@
  * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
  * @property {string} GuildBanAdd guildBanAdd
  * @property {string} GuildBanRemove guildBanRemove
+ * @property {string} GuildAvailable guildAvailable
  * @property {string} GuildCreate guildCreate
  * @property {string} GuildDelete guildDelete
  * @property {string} GuildEmojiCreate emojiCreate
@@ -99,6 +100,7 @@ module.exports = {
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildBanAdd: 'guildBanAdd',
   GuildBanRemove: 'guildBanRemove',
+  GuildAvailable: 'guildAvailable',
   GuildCreate: 'guildCreate',
   GuildDelete: 'guildDelete',
   GuildEmojiCreate: 'emojiCreate',
