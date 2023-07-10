@@ -4805,9 +4805,9 @@ export interface ClientEvents {
   emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
   error: [error: Error];
   guildAuditLogEntryCreate: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
+  guildAvailable: [guild: Guild];
   guildBanAdd: [ban: GuildBan];
   guildBanRemove: [ban: GuildBan];
-  guildAvailable: [guild: Guild];
   guildCreate: [guild: Guild];
   guildDelete: [guild: Guild];
   guildUnavailable: [guild: Guild];
