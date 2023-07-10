@@ -417,26 +417,28 @@ export function heading(content: string, level?: HeadingLevel) {
 	}
 }
 
-export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
+export type RecursiveArray<T> = readonly (RecursiveArray<T> | T)[];
 
 /**
  * Formats the elements in the array to an ordered list.
  *
  * @param list - The array of elements to list
- * @param {number} [startNumber=1] - The starting number for the list.
+ * @param startNumber - The starting number for the list.
  */
 export function orderedList(list: RecursiveArray<string>, startNumber: number = 1): string {
-    if (startNumber < 0) startNumber = 1;
+	let newStartNumber = startNumber;
+	if (startNumber < 0) newStartNumber = 1;
 
-    const callback = (element: RecursiveArray<string>[number], depth: number = 0): string => {
-        if (Array.isArray(element)) {
-            return element.map((element) => callback(element, depth + 1)).join('\n');
-        }
+	const processElement = (element: RecursiveArray<string>, depth: number = 0): string => {
+		if (Array.isArray(element)) {
+			const results = element.map((element) => processElement(element, depth + 1));
+			return results.join('\n');
+		}
 
-        return `\n${'  '.repeat(depth - 1)}${startNumber}. ${element}`;
-    }
+		return `${'  '.repeat(depth - 1)}${newStartNumber}. ${element}`;
+	};
 
-    return callback(list);
+	return processElement(list);
 }
 
 /**
@@ -445,15 +447,16 @@ export function orderedList(list: RecursiveArray<string>, startNumber: number = 
  * @param list - The array of elements to list
  */
 export function unorderedList(list: RecursiveArray<string>): string {
-    const callback = (element: RecursiveArray<string>[number], depth: number = 0): string => {
-        if (Array.isArray(element)) {
-            return element.map((element) => callback(element, depth + 1)).join('\n');
-        }
+	const processElement = (element: RecursiveArray<string>, depth: number = 0): string => {
+		if (Array.isArray(element)) {
+			const results = element.map((element) => processElement(element, depth + 1));
+			return results.join('\n');
+		}
 
-        return `\n${'  '.repeat(depth - 1)}- ${element}`;
-    }
+		return `${'  '.repeat(depth - 1)}- ${element}`;
+	};
 
-    return callback(list);
+	return processElement(list);
 }
 
 /**
