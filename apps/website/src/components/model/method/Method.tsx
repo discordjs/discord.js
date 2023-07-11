@@ -28,7 +28,7 @@ export function Method({
 			</Fragment>
 		));
 
-		return <OverloadSwitcher overloads={overloads} />;
+		return <OverloadSwitcher methodName={method.displayName} overloads={overloads} />;
 	}
 
 	// We have just a single method, render it on the server.
