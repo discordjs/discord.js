@@ -386,8 +386,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await this.strategy.waitForIdentify(this.id, controller.signal);
-		} catch (error) {
-			if (error instanceof Error && error.name === 'AbortError') {
+		} catch {
+			if (controller.signal.aborted) {
 				this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
 				return;
 			}
