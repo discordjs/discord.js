@@ -151,6 +151,15 @@ class User extends Base {
     return new Date(this.createdTimestamp);
   }
 
+   /**
+   * A link to the user's profile
+   * @type {string}
+   * @readonly
+   */
+  get profileURL() {
+    return `https://discord.com/users/${this.id}`;
+  }
+
   /**
    * A link to the user's avatar.
    * @param {ImageURLOptions} [options={}] Options for the image URL
