@@ -387,8 +387,21 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		try {
 			await this.strategy.waitForIdentify(this.id, controller.signal);
 		} catch {
-			this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
-			return;
+			if (controller.signal.aborted) {
+				this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
+				return;
+			}
+
+			this.debug([
+				'IContextFetchingStrategy#waitForIdentify threw an unknown error.',
+				"If you're using a custom strategy, this is probably nothing to worry about.",
+				"If you're not, please open an issue on GitHub.",
+			]);
+
+			await this.destroy({
+				reason: 'Identify throttling logic failed',
+				recover: WebSocketShardDestroyRecovery.Resume,
+			});
 		} finally {
 			this.off(WebSocketShardEvents.Closed, closeHandler);
 		}
