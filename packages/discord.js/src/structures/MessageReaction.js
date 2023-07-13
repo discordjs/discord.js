@@ -117,6 +117,10 @@ class MessageReaction {
     return flatten(this, { emoji: 'emojiId', message: 'messageId' });
   }
 
+  valueOf() {
+    return this._emoji.id ?? this._emoji.name;
+  }
+
   _add(user) {
     if (this.partial) return;
     this.users.cache.set(user.id, user);

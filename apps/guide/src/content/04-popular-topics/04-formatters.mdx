@@ -1,0 +1,95 @@
+---
+title: Formatters
+category: Popular topics
+---
+
+# Formatters
+
+discord.js provides the <DocsLink package="formatters" /> package which contains a variety of utilities you can use when writing your Discord bot.
+
+## Basic Markdown
+
+These functions format strings into all the different markdown styles supported by Discord.
+
+<CH.Code>
+
+```js
+import { bold, italic, strikethrough, underscore, spoiler, quote, blockQuote } from 'discord.js';
+
+const string = 'Hello!';
+const boldString = bold(string);
+const italicString = italic(string);
+const strikethroughString = strikethrough(string);
+const underscoreString = underscore(string);
+const spoilerString = spoiler(string);
+const quoteString = quote(string);
+const blockquoteString = blockQuote(string);
+```
+
+</CH.Code>
+
+## Links
+
+There are also two functions to format hyperlinks. _`hyperlink()`_ will format the URL into a masked markdown link, and _`hideLinkEmbed()`_ will wrap the URL in _`<>`_, preventing it from embedding.
+
+<CH.Code>
+
+```js
+import { hyperlink, hideLinkEmbed } from 'discord.js';
+
+const url = 'https://discord.js.org/';
+const link = hyperlink('discord.js', url);
+const hiddenEmbed = hideLinkEmbed(url);
+```
+
+</CH.Code>
+
+## Code blocks
+
+You can use _`inlineCode()`_ and _`codeBlock()`_ to turn a string into an inline code block or a regular code block with or without syntax highlighting.
+
+<CH.Code>
+
+```js
+import { inlineCode, codeBlock } from 'discord.js';
+
+const jsString = 'const value = true;';
+const inline = inlineCode(jsString);
+const codeblock = codeBlock(jsString);
+const highlighted = codeBlock('js', jsString);
+```
+
+</CH.Code>
+
+## Timestamps
+
+With _`time()`_, you can format Unix timestamps and dates into a Discord time string.
+
+<CH.Code>
+
+```js
+import { time, TimestampStyles } from 'discord.js';
+
+const date = new Date();
+const timeString = time(date);
+const relative = time(date, TimestampStyles.RelativeTime);
+```
+
+</CH.Code>
+
+## Mentions
+
+_`userMention()`_, _`channelMention()`_, and _`roleMention()`_ all exist to format Snowflakes into mentions.
+
+<CH.Code>
+
+```js
+import { channelMention, roleMention, userMention } from 'discord.js';
+
+const id = '123456789012345678';
+const channel = channelMention(id);
+const role = roleMention(id);
+const user = userMention(id);
+```
+
+</CH.Code>

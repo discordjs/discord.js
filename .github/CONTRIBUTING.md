@@ -40,9 +40,9 @@ For example, to automatically recompile the `@discordjs/rest` project when chang
 
 If you'd like to create another package under the `@discordjs` organization run the following command:
 
-```bash
+```sh
 yarn create-package <package-name> [package-description]
 ```
 
 This will create new package directory under `packages/` with the required configuration files. You can
-begin to make changes within the `src/` directory.
+begin to make changes within the `src/` directory. It may also be required to update the CODEOWNERS file.

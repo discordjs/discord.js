@@ -26,6 +26,24 @@ class AutoModerationRuleManager extends CachedManager {
    * @name AutoModerationRuleManager#cache
    */
 
+  /**
+   * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
+   * @method resolve
+   * @memberof AutoModerationRuleManager
+   * @instance
+   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+   * @returns {?AutoModerationRule}
+   */
+
+  /**
+   * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
+   * @method resolveId
+   * @memberof AutoModerationRuleManager
+   * @instance
+   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
+   * @returns {?Snowflake}
+   */
+
   _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
   }
@@ -41,6 +59,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {string[]} [allowList] The substrings that will be exempt from triggering
    * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
+   * @property {boolean} [mentionRaidProtectionEnabled] Whether to automatically detect mention raids
    */
 
   /**
@@ -57,6 +76,7 @@ class AutoModerationRuleManager extends CachedManager {
    * @typedef {Object} AutoModerationActionMetadataOptions
    * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
+   * @property {string} [customMessage] The custom message that is shown whenever a message is blocked
    */
 
   /**
@@ -106,12 +126,14 @@ class AutoModerationRuleManager extends CachedManager {
           presets: triggerMetadata.presets,
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
+          mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
         },
         actions: actions.map(action => ({
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
             channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            custom_message: action.metadata?.customMessage,
           },
         })),
         enabled,
@@ -162,12 +184,14 @@ class AutoModerationRuleManager extends CachedManager {
           presets: triggerMetadata.presets,
           allow_list: triggerMetadata.allowList,
           mention_total_limit: triggerMetadata.mentionTotalLimit,
+          mention_raid_protection_enabled: triggerMetadata.mentionRaidProtectionEnabled,
         },
         actions: actions?.map(action => ({
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
             channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            custom_message: action.metadata?.customMessage,
           },
         })),
         enabled,
@@ -259,24 +283,6 @@ class AutoModerationRuleManager extends CachedManager {
     const autoModerationRuleId = this.resolveId(autoModerationRule);
     await this.client.rest.delete(Routes.guildAutoModerationRule(this.guild.id, autoModerationRuleId), { reason });
   }
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
-   * @method resolve
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?AutoModerationRule}
-   */
-
-  /**
-   * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
-   * @method resolveId
-   * @memberof AutoModerationRuleManager
-   * @instance
-   * @param {AutoModerationRuleResolvable} autoModerationRule The AutoModerationRule resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
 module.exports = AutoModerationRuleManager;

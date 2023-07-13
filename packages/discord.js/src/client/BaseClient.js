@@ -22,7 +22,15 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = mergeDefault(Options.createDefault(), options);
+    this.options = mergeDefault(Options.createDefault(), {
+      ...options,
+      rest: {
+        ...options.rest,
+        userAgentAppendix: options.rest?.userAgentAppendix
+          ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
+          : undefined,
+      },
+    });
 
     /**
      * The REST manager of the client
@@ -71,5 +79,5 @@ module.exports = BaseClient;
 
 /**
  * @external REST
- * @see {@link https://discord.js.org/#/docs/rest/main/class/REST}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/REST:Class}
  */

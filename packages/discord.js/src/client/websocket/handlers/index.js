@@ -10,6 +10,7 @@ const handlers = Object.fromEntries([
   ['CHANNEL_DELETE', require('./CHANNEL_DELETE')],
   ['CHANNEL_PINS_UPDATE', require('./CHANNEL_PINS_UPDATE')],
   ['CHANNEL_UPDATE', require('./CHANNEL_UPDATE')],
+  ['GUILD_AUDIT_LOG_ENTRY_CREATE', require('./GUILD_AUDIT_LOG_ENTRY_CREATE')],
   ['GUILD_BAN_ADD', require('./GUILD_BAN_ADD')],
   ['GUILD_BAN_REMOVE', require('./GUILD_BAN_REMOVE')],
   ['GUILD_CREATE', require('./GUILD_CREATE')],

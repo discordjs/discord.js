@@ -16,6 +16,9 @@ packages:collection:
 packages:core:
   - packages/core/*
   - packages/core/**/*
+packages:create-discord-bot:
+  - packages/create-discord-bot/*
+  - packages/create-discord-bot/**/*
 packages:discord.js:
   - packages/discord.js/*
   - packages/discord.js/**/*
@@ -25,6 +28,9 @@ packages:docgen:
 packages:formatters:
   - packages/formatters/*
   - packages/formatters/**/*
+packages:next:
+  - packages/next/*
+  - packages/next/**/*
 packages:proxy:
   - packages/proxy/*
   - packages/proxy/**/*

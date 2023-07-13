@@ -12,14 +12,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/yarnCache
+
+      - name: Build dependencies
+        run: yarn build
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
         run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Build the image
-        run: docker build -t discordjs/proxy:latest -f packages/proxy-container/Dockerfile .
-
-      - name: Push image to DockerHub
-        run: docker push discordjs/proxy:latest
+      - name: Build & push docker image
+        run: yarn docker build --buildkit @discordjs/proxy-container -t discordjs/proxy:latest --push

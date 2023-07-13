@@ -91,7 +91,7 @@ class AttachmentBuilder {
 
   /**
    * Makes a new builder instance from a preexisting attachment structure.
-   * @param {JSONEncodable<AttachmentPayload>} other The builder to construct a new instance from
+   * @param {AttachmentBuilder|Attachment|AttachmentPayload} other The builder to construct a new instance from
    * @returns {AttachmentBuilder}
    */
   static from(other) {

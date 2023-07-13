@@ -1,24 +1,23 @@
-import type { ApiReturnTypeMixin } from '@microsoft/api-extractor-model';
-import {
-	type ApiModel,
-	ApiDeclaredItem,
-	type ApiPropertyItem,
-	type ApiMethod,
-	type ApiParameterListMixin,
-	type ApiTypeParameterListMixin,
-	type ApiClass,
-	type ApiFunction,
-	ApiItemKind,
-	type ApiTypeAlias,
-	type ApiEnum,
-	type ApiInterface,
-	type ApiMethodSignature,
-	type ApiPropertySignature,
-	type ApiVariable,
-	type ApiItem,
-	type ApiConstructor,
-	type ApiItemContainerMixin,
+import type {
+	ApiModel,
+	ApiPropertyItem,
+	ApiMethod,
+	ApiParameterListMixin,
+	ApiTypeParameterListMixin,
+	ApiClass,
+	ApiFunction,
+	ApiTypeAlias,
+	ApiEnum,
+	ApiInterface,
+	ApiMethodSignature,
+	ApiPropertySignature,
+	ApiVariable,
+	ApiItem,
+	ApiConstructor,
+	ApiItemContainerMixin,
+	ApiReturnTypeMixin,
 } from '@microsoft/api-extractor-model';
+import { ApiDeclaredItem, ApiItemKind } from '@microsoft/api-extractor-model';
 import { generateTypeParamData } from './TypeParameterJSONEncoder.js';
 import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse.js';
 import type { DocBlockJSON } from './tsdoc/CommentBlock.js';

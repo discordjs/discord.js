@@ -1,9 +1,9 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
 import { performance } from 'node:perf_hooks';
-import { setInterval, clearInterval, setTimeout } from 'node:timers';
+import { setInterval, clearInterval } from 'node:timers';
 import { MockAgent, setGlobalDispatcher } from 'undici';
-import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
+import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { DiscordAPIError, HTTPError, RateLimitError, REST, RESTEvents } from '../src/index.js';
 import { genPath } from './util.js';
@@ -360,7 +360,7 @@ test('Handle unexpected 429', async () => {
 	const previous = performance.now();
 	let firstResolvedTime: number;
 	let secondResolvedTime: number;
-	const unexepectedSublimit = api.get('/unexpected').then((res) => {
+	const unexpectedSublimit = api.get('/unexpected').then((res) => {
 		firstResolvedTime = performance.now();
 		return res;
 	});
@@ -369,7 +369,7 @@ test('Handle unexpected 429', async () => {
 		return res;
 	});
 
-	expect(await unexepectedSublimit).toStrictEqual({ test: true });
+	expect(await unexpectedSublimit).toStrictEqual({ test: true });
 	expect(await queuedSublimit).toStrictEqual({ test: true });
 	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
 	// @ts-expect-error: This is intentional
@@ -492,7 +492,7 @@ test('server responding too slow', async () => {
 
 	const promise = api2.get('/slow');
 
-	await expect(promise).rejects.toThrowError('Request aborted');
+	await expect(promise).rejects.toThrowError('aborted');
 }, 1_000);
 
 test('Unauthorized', async () => {
@@ -570,8 +570,8 @@ test('abort', async () => {
 	controller.abort();
 
 	// Abort mid-execution:
-	await expect(bP2).rejects.toThrowError('Request aborted');
+	await expect(bP2).rejects.toThrowError('aborted');
 
 	// Abort scheduled:
-	await expect(cP2).rejects.toThrowError('Request aborted');
+	await expect(cP2).rejects.toThrowError('Request aborted manually');
 });

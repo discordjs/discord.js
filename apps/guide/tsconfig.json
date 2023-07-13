@@ -9,11 +9,19 @@
 		"allowJs": false,
 		"incremental": true,
 		"skipLibCheck": true,
-		"types": ["@astrojs/image/client"],
+		"sourceMap": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
-			"~/*": ["./src/*"]
-		}
+			"~/*": ["./src/*"],
+			"contentlayer/generated": ["./.contentlayer/generated"]
+		},
+		"strictNullChecks": true,
+		"moduleResolution": "node"
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "types.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
 	"exclude": ["node_modules"]
 }

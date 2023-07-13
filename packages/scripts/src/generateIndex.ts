@@ -3,10 +3,10 @@ import { join } from 'node:path';
 import { cwd } from 'node:process';
 import { generatePath } from '@discordjs/api-extractor-utils';
 import {
+	ApiModel,
 	ApiDeclaredItem,
 	ApiItemContainerMixin,
 	ApiItem,
-	ApiModel,
 	type ApiPackage,
 	ApiItemKind,
 } from '@microsoft/api-extractor-model';
@@ -34,6 +34,7 @@ export const PACKAGES = [
 	'collection',
 	'core',
 	'formatters',
+	'next',
 	'proxy',
 	'rest',
 	'util',
@@ -42,8 +43,7 @@ export const PACKAGES = [
 ];
 let idx = 0;
 
-export function createApiModel(data: any) {
-	const model = new ApiModel();
+export function addPackageToModel(model: ApiModel, data: any) {
 	const tsdocConfiguration = new TSDocConfiguration();
 	const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
 	tsdocConfigFile.configureParser(tsdocConfiguration);
@@ -65,7 +65,7 @@ export function createApiModel(data: any) {
  * @param item - The API item to resolve the summary text for.
  */
 export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
-	if (!item.tsdocComment) {
+	if (!item?.tsdocComment) {
 		return null;
 	}
 
@@ -115,7 +115,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 			continue;
 		}
 
-		if (member.kind === ApiItemKind.Constructor) {
+		if (member.kind === ApiItemKind.Constructor || member.kind === ApiItemKind.Namespace) {
 			continue;
 		}
 
@@ -152,7 +152,7 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	);
 }
 
-export async function generateAllIndicies() {
+export async function generateAllIndices() {
 	for (const pkg of PACKAGES) {
 		const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
 		const versions = await response.body.json();
@@ -163,7 +163,7 @@ export async function generateAllIndicies() {
 			const versionRes = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
 			const data = await versionRes.body.json();
 
-			const model = createApiModel(data);
+			const model = addPackageToModel(new ApiModel(), data);
 			await generateIndex(model, pkg, version);
 		}
 	}

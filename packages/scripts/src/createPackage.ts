@@ -4,11 +4,18 @@ import { chdir } from 'node:process';
 import { copy } from 'fs-extra';
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 import cliffJumperJSON from './template/.cliff-jumperrc.json';
+import apiExtractorJSON from './template/api-extractor.json';
 import templateJSON from './template/template.package.json';
 
 interface LabelerData {
 	color: string;
 	name: string;
+}
+
+function sortYAMLObject(yaml: Record<string, string[]>) {
+	const sortedYAML: typeof yaml = {};
+	for (const key of Object.keys(yaml).sort((a, b) => a.localeCompare(b))) sortedYAML[key] = yaml[key]!;
+	return sortedYAML;
 }
 
 export async function createPackage(packageName: string, packageDescription?: string) {
@@ -28,7 +35,10 @@ export async function createPackage(packageName: string, packageDescription?: st
 	// Create files
 	await writeFile(join('src', 'index.ts'), `console.log('Hello, from @discordjs/${packageName}');`);
 	await writeFile('.eslintrc.json', await readFile(join(templateDir, 'template.eslintrc.json'), 'utf8'));
+	await writeFile('.gitignore', await readFile(join(templateDir, 'template.gitignore'), 'utf8'));
 	await writeFile('.lintstagedrc.js', await readFile(join(templateDir, 'template.lintstagedrc.js'), 'utf8'));
+	await writeFile('.prettierignore', await readFile(join(templateDir, 'template.prettierignore'), 'utf8'));
+	await writeFile('.prettierrc.js', await readFile(join(templateDir, 'template.prettierrc.js'), 'utf8'));
 
 	const packageJSON = {
 		...templateJSON,
@@ -38,6 +48,9 @@ export async function createPackage(packageName: string, packageDescription?: st
 
 	// Edit changelog script
 	packageJSON.scripts.changelog = packageJSON.scripts.changelog.replace('{name}', packageName);
+
+	// Edit repository directory
+	packageJSON.repository.directory = packageJSON.repository.directory.replace('{name}', packageName);
 
 	// Create package.json
 	await writeFile(`package.json`, JSON.stringify(packageJSON, null, 2));
@@ -52,6 +65,15 @@ export async function createPackage(packageName: string, packageDescription?: st
 
 	await writeFile('.cliff-jumperrc.json', JSON.stringify(newCliffJumperJSON, null, 2));
 
+	// Update api-extractor.json
+	const newApiExtractorJSON = { ...apiExtractorJSON };
+	newApiExtractorJSON.docModel.projectFolderUrl = newApiExtractorJSON.docModel.projectFolderUrl.replace(
+		'{name}',
+		packageName,
+	);
+
+	await writeFile('api-extractor.json', JSON.stringify(newApiExtractorJSON, null, 2));
+
 	// Move to github directory
 	chdir(join('..', '..', '.github'));
 
@@ -65,12 +87,14 @@ export async function createPackage(packageName: string, packageDescription?: st
 	const labelerYAML = parseYAML(await readFile('labeler.yml', 'utf8')) as Record<string, string[]>;
 	labelerYAML[`packages:${packageName}`] = [`packages/${packageName}/*`, `packages/${packageName}/**/*`];
 
-	const sortedLabelerYAML: Record<string, string[]> = {};
-	for (const key of Object.keys(labelerYAML).sort((a, b) => a.localeCompare(b))) {
-		sortedLabelerYAML[key] = labelerYAML[key]!;
-	}
+	await writeFile('labeler.yml', stringifyYAML(sortYAMLObject(labelerYAML)));
 
-	await writeFile('labeler.yml', stringifyYAML(sortedLabelerYAML));
+	const issueLabelerYAML = parseYAML(await readFile('issue-labeler.yml', 'utf8')) as Record<string, string[]>;
+	issueLabelerYAML[`packages:${packageName}`] = [
+		`### Which (application|package|application or package) is this (bug report|feature request) for\\?\\n\\n${packageName}\\n`,
+	];
+
+	await writeFile('issue-labeler.yml', stringifyYAML(sortYAMLObject(issueLabelerYAML)));
 
 	// Move back to root
 	chdir('..');

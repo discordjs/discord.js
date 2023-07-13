@@ -1,36 +1,38 @@
 'use client';
 
-import type { getMembers } from '@discordjs/api-extractor-utils';
+import dynamic from 'next/dynamic';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { PackageSelect } from './PackageSelect';
-import { SidebarItems } from './SidebarItems';
-import { VersionSelect } from './VersionSelect';
+import { Sidebar } from './Sidebar';
+import type { SidebarSectionItemData } from './Sidebar';
 import { useNav } from '~/contexts/nav';
 
-export function Nav({ members }: { members: ReturnType<typeof getMembers> }) {
-	// eslint-disable-next-line @typescript-eslint/unbound-method
+const PackageSelect = dynamic(async () => import('./PackageSelect'));
+const VersionSelect = dynamic(async () => import('./VersionSelect'));
+
+export function Nav({ members }: { members: SidebarSectionItemData[] }) {
 	const { opened } = useNav();
 
 	return (
 		<nav
-			className={`dark:bg-dark-600 dark:border-dark-100 border-light-800 fixed top-[73px] left-0 bottom-0 z-20 h-[calc(100vh_-_73px)] w-full border-r bg-white ${
+			className={`dark:bg-dark-600/75 dark:border-dark-100 border-light-900 top-22 fixed bottom-4 left-4 right-4 z-20 mx-auto max-w-5xl rounded-md border bg-white/75 shadow backdrop-blur-md ${
 				opened ? 'block' : 'hidden'
-			} lg:w-76 lg:max-w-76 lg:block`}
+			} lg:min-w-xs lg:sticky lg:block lg:h-full lg:w-full lg:max-w-xs`}
 		>
 			<Scrollbars
 				autoHide
+				className="[&>div]:overscroll-none"
 				hideTracksWhenNotNeeded
-				renderThumbVertical={(props) => <div {...props} className="dark:bg-dark-100 bg-light-900 z-30 rounded" />}
+				renderThumbVertical={(props) => <div {...props} className="z-30 rounded bg-light-900 dark:bg-dark-100" />}
 				renderTrackVertical={(props) => (
-					<div {...props} className="absolute top-0.5 right-0.5 bottom-0.5 z-30 w-1.5 rounded" />
+					<div {...props} className="absolute bottom-0.5 right-0.5 top-0.5 z-30 w-1.5 rounded" />
 				)}
 				universal
 			>
-				<div className="flex flex-col gap-3 px-3 pt-3">
+				<div className="flex flex-col gap-4 p-3">
 					<PackageSelect />
 					<VersionSelect />
 				</div>
-				<SidebarItems members={members} />
+				<Sidebar members={members} />
 			</Scrollbars>
 		</nav>
 	);

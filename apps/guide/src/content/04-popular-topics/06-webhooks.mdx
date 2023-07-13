@@ -1,0 +1,227 @@
+---
+title: Webhooks
+category: Popular topics
+---
+
+# Webhooks
+
+Webhooks can send messages to a text channel without having to log in as a bot. They can also fetch, edit, and delete their own messages. There are a variety of methods in discord.js to interact with webhooks. In this section, you will learn how to create, fetch, edit, and use webhooks.
+
+## What is a webhook
+
+Webhooks are a utility used to send messages to text channels without needing a Discord application. Webhooks are useful for allowing something to send messages without requiring a Discord application. You can also directly edit or delete messages you sent through the webhook. There are two structures to make use of this functionality: <DocsLink type="class" parent="Webhook" /> and <DocsLink type="class" parent="WebhookClient" />. _`WebhookClient`_ is an extended version of a _`Webhook`_, which allows you to send messages through it without needing a bot client.
+
+<Alert title="Tip" type="info">
+	If you would like to read about using webhooks through the API without discord.js, you can read about them
+	[here](https://discord.com/developers/docs/resources/webhook).
+</Alert>
+
+## Detecting webhook messages
+
+Bots receive webhook messages in a text channel as usual. You can detect if a webhook sent the message by checking if the _`Message.webhookId`_ is not _`null`_. In this example, we return if a webhook sent the message.
+
+<CH.Code>
+
+```js
+if (message.webhookId) return;
+```
+
+</CH.Code>
+
+If you would like to get the webhook object that sent the message, you can use <DocsLink type="class" parent="Message" symbol="fetchWebhook" brackets />.
+
+## Fetching webhooks
+
+<Alert title="Tip" type="info">
+	Webhook fetching will always make use of collections and promises. If you do not understand either concept, revise
+	them, and then come back to this section. You can read about collections [here](../additional-info/collections), and
+	promises [here](../additional-info/understanding-async-await) and
+	[here](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Using_promises).
+</Alert>
+
+### Fetching all webhooks of a guild
+
+If you would like to get all webhooks of a guild, you can use the <DocsLink type="class" parent="Guild" symbol="fetchWebhooks" brackets /> method. This will return a promise which will resolve into a collection of webhooks.
+
+### Fetching webhooks of a channel
+
+Webhooks belonging to a channel can be fetched using the <DocsLink type="class" parent="TextChannel" symbol="fetchWebhooks" brackets /> method. This will return a promise which will resolve into a collection of webhooks. A collection will be returned even if the channel contains a single webhook. If you are certain the channel contains a single webhook, you can use the <DocsLink package="collection" type="Class" parent="Collection" symbol="first" brackets /> method on the collection to get the webhook.
+
+### Fetching a single webhook
+
+#### Using client
+
+You can fetch a specific webhook using its _`id`_ with the <DocsLink type="class" parent="Client" symbol="fetchWebhook" brackets /> method. You can obtain the webhook id by looking at its URL: the number after _`https://discord.com/api/webhooks/`_ is the _`id`_ and the part after that is the _`token`_.
+
+#### Using the WebhookClient constructor
+
+If you are not using a bot client, you can get a webhook by creating a new instance of _`WebhookClient`_ and passing the _`id`_ and _`token`_ into the constructor. These credentials do not require you to have a bot application, but it also offers limited information instead of fetching it using an authorized client.
+
+<CH.Code>
+
+```js
+const webhookClient = new WebhookClient({ id: 'id', token: 'token' });
+```
+
+</CH.Code>
+
+You can also pass in just a _`url`_:
+
+<CH.Code>
+
+```js
+const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/id/token' });
+```
+
+</CH.Code>
+
+## Creating webhooks
+
+### Creating webhooks through server settings
+
+You can create webhooks directly through the Discord client. Go to Server Settings, and you will see an _`Integrations`_ tab.
+
+![Integrations tab](/assets/integrations-tab.png)
+
+If you already have created a webhook, the webhooks tab will look like this; you will need to click the _`View Webhooks`_ button.
+
+![Integrations tab](/assets/integrations-view-tab.png)
+
+Once you are there, click on the _`Create Webhook`_ / _`New Webhook`_ button; this will create a webhook. From here, you can edit the channel, the name, and the avatar. Copy the link, the first part is the id, and the second is the token.
+
+![Creating a Webhook](/assets/webhook.png)
+
+### Creating webhooks with discord.js
+
+Webhooks can be created with the <DocsLink type="class" parent="TextChannel" symbol="createWebhook" brackets /> method.
+
+<CH.Code>
+
+```js
+channel
+	.createWebhook({ name: 'Username', avatar: 'https://guide.discordjs.dev/assets/discordjs.png' })
+	.then((webhook) => console.log(`Created webhook ${webhook}`))
+	.catch(console.error);
+```
+
+</CH.Code>
+
+## Editing webhooks
+
+You can edit Webhooks and WebhookClients to change their name, avatar, and channel using <DocsLink type="class" parent="Webhook" symbol="edit" brackets />.
+
+<CH.Code>
+
+```js
+webhook
+	.edit({ name: 'Username', avatar: 'https://guide.discordjs.dev/assets/discordjs.png', channel: '123456789012345678' })
+	.then((webhook) => console.log(`Edited webhook ${webhook}`))
+	.catch(console.error);
+```
+
+</CH.Code>
+
+## Using webhooks
+
+Webhooks can send messages to text channels, as well as fetch, edit, and delete their own. These methods are the same for both _`Webhook`_ and _`WebhookClient`_.
+
+### Sending messages
+
+Webhooks, like bots, can send up to 10 embeds per message. They can also send attachments and normal content. The <DocsLink type="class" parent="Webhook" symbol="send" brackets /> method is very similar to the method used for sending a message to a text channel. Webhooks can also choose how the username and avatar will appear when they send the message.
+
+Example using a _`WebhookClient`_:
+
+<CH.Code>
+
+```js
+import { EmbedBuilder, WebhookClient } from 'discord.js';
+import config from './config.json' assert { type: 'json' };
+const { webhookId, webhookToken } = config;
+
+const webhookClient = new WebhookClient({ id: webhookId, token: webhookToken });
+const embed = new EmbedBuilder().setTitle('Some Title').setColor(0x00ffff);
+
+await webhookClient.send({
+	content: 'Webhook test',
+	username: 'some-username',
+	avatarURL: 'https://guide.discordjs.dev/assets/discordjs.png',
+	embeds: [embed],
+});
+```
+
+</CH.Code>
+
+Try to find a webhook your bot knows the token for. This makes sure your bot can execute the webhook later on.
+
+<CH.Code>
+
+```js
+import { Client, EmbedBuilder, Events, GatewayIntentBits } from 'discord.js';
+import config from './config.json' assert { type: 'json' };
+const { token } = config;
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const embed = new EmbedBuilder().setTitle('Some Title').setColor(0x00ffff);
+
+client.once(Events.ClientReady, async () => {
+	const channel = client.channels.cache.get('123456789012345678');
+
+	try {
+		const webhooks = await channel.fetchWebhooks();
+		const webhook = webhooks.find((wh) => wh.token);
+		if (!webhook) return console.log('No webhook was found that I can use!');
+
+		await webhook.send({
+			content: 'Webhook test',
+			username: 'some-username',
+			avatarURL: 'https://guide.discordjs.dev/assets/discordjs.png',
+			embeds: [embed],
+		});
+	} catch (error) {
+		console.error('Error trying to send a message: ', error);
+	}
+});
+
+client.login(token);
+```
+
+</CH.Code>
+
+### Fetching messages
+
+You can use <DocsLink type="class" parent="Webhook" symbol="fetchMessage" brackets /> to fetch messages previously sent by the Webhook.
+
+<CH.Code>
+
+```js
+const message = await webhookClient.fetchMessage('123456789012345678');
+```
+
+</CH.Code>
+
+### Editing messages
+
+You can use <DocsLink type="class" parent="Webhook" symbol="editMessage" brackets /> to edit messages previously sent by the Webhook.
+
+<CH.Code>
+
+```js
+const message = await webhook.editMessage('123456789012345678', {
+	content: 'Edited!',
+	embeds: [embed],
+});
+```
+
+</CH.Code>
+
+### Deleting messages
+
+You can use <DocsLink type="class" parent="Webhook" symbol="deleteMessage" brackets /> to delete messages previously sent by the webhook.
+
+<CH.Code>
+
+```js
+await webhookClient.deleteMessage('123456789012345678');
+```
+
+</CH.Code>

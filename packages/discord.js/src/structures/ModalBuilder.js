@@ -1,6 +1,7 @@
 'use strict';
 
-const { ModalBuilder: BuildersModal, ComponentBuilder, isJSONEncodable } = require('@discordjs/builders');
+const { ModalBuilder: BuildersModal, ComponentBuilder } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
 /**
@@ -17,14 +18,11 @@ class ModalBuilder extends BuildersModal {
 
   /**
    * Creates a new modal builder from JSON data
-   * @param {JSONEncodable<APIModalComponent>|APIModalComponent} other The other data
+   * @param {ModalBuilder|APIModalComponent} other The other data
    * @returns {ModalBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -32,5 +30,5 @@ module.exports = ModalBuilder;
 
 /**
  * @external BuildersModal
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ModalBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ModalBuilder:Class}
  */

@@ -1,5 +1,5 @@
 {
-	"extends": ["../../.eslintrc.json", "neon/react", "neon/prettier"],
+	"extends": ["../../.eslintrc.json", "neon/react", "plugin:storybook/recommended", "@unocss", "neon/prettier"],
 	"settings": {
 		"react": {
 			"version": "detect"
@@ -7,6 +7,11 @@
 	},
 	"rules": {
 		"react/react-in-jsx-scope": 0,
-		"react/jsx-filename-extension": [1, { "extensions": [".tsx"] }]
+		"react/jsx-filename-extension": [
+			1,
+			{
+				"extensions": [".tsx"]
+			}
+		]
 	}
 }

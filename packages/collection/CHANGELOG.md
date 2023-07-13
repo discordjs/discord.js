@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@1.5.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.0...@discordjs/collection@1.5.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+# [@discordjs/collection@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.4.0...@discordjs/collection@1.5.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+## Refactor
+
+- **collection:** Fix/silence linter warnings (#9266) ([d6f4e60](https://github.com/discordjs/discord.js/commit/d6f4e60efd1a1796fc84dbbfbac4f9790e480a1c))
+
+# [@discordjs/collection@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.3.0...@discordjs/collection@1.4.0) - (2023-03-12)
+
+## Documentation
+
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
+## Refactor
+
+- Compare with `undefined` directly (#9191) ([869153c](https://github.com/discordjs/discord.js/commit/869153c3fdf155783e7c0ecebd3627b087c3a026))
+
 # [@discordjs/collection@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.2.0...@discordjs/collection@1.3.0) - (2022-11-28)
 
 ## Bug Fixes

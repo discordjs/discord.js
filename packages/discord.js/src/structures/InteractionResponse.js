@@ -1,5 +1,6 @@
 'use strict';
 
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 
@@ -19,6 +20,24 @@ class InteractionResponse {
      */
     this.id = id ?? interaction.id;
     this.client = interaction.client;
+  }
+
+  /**
+   * The timestamp the interaction response was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return DiscordSnowflake.timestampFrom(this.id);
+  }
+
+  /**
+   * The time the interaction response was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -50,6 +69,31 @@ class InteractionResponse {
       interactionResponse: this,
       interactionType: InteractionType.MessageComponent,
     });
+  }
+
+  /**
+   * Fetches the response as a {@link Message} object.
+   * @returns {Promise<Message>}
+   */
+  fetch() {
+    return this.interaction.fetchReply();
+  }
+
+  /**
+   * Deletes the response.
+   * @returns {Promise<void>}
+   */
+  delete() {
+    return this.interaction.deleteReply();
+  }
+
+  /**
+   * Edits the response.
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The new options for the response.
+   * @returns {Promise<Message>}
+   */
+  edit(options) {
+    return this.interaction.editReply(options);
   }
 }
 

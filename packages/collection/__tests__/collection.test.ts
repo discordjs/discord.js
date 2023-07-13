@@ -19,6 +19,7 @@ function createTestCollection(): TestCollection<number> {
 
 function expectInvalidFunctionError(cb: () => unknown, val?: unknown): void {
 	expect(() => {
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
 		cb();
 	}).toThrowError(new TypeError(`${val} is not a function`));
 }
@@ -699,12 +700,17 @@ describe('reduce() tests', () => {
 
 	test('reduce collection into a single value with initial value', () => {
 		const sum = coll.reduce((a, x) => a + x, 0);
-		expect(sum).toStrictEqual(6);
+		expect<number>(sum).toStrictEqual(6);
 	});
 
 	test('reduce collection into a single value without initial value', () => {
-		const sum = coll.reduce<number>((a, x) => a + x);
-		expect(sum).toStrictEqual(6);
+		const sum = coll.reduce((a, x) => a + x);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce empty collection with initial value', () => {
+		const coll = createCollection();
+		expect(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
 	});
 
 	test('reduce empty collection without initial value', () => {

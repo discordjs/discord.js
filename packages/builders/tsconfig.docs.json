@@ -1,0 +1,8 @@
+{
+	"extends": "../../tsconfig.docs.json",
+	"include": ["src/**/*.ts"],
+	"compilerOptions": {
+		"outDir": "dist-docs",
+		"exactOptionalPropertyTypes": false
+	}
+}

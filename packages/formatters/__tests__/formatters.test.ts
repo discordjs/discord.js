@@ -240,16 +240,19 @@ describe('Message formatters', () => {
 	});
 
 	describe('Faces', () => {
-		test('GIVEN Faces.Shrug THEN returns "¯\\_(ツ)\\_/¯"', () => {
-			expect<'¯\\_(ツ)\\_/¯'>(Faces.Shrug).toEqual('¯\\_(ツ)\\_/¯');
+		// prettier-ignore
+		/* eslint-disable no-useless-escape */
+		test('GIVEN Faces.Shrug THEN returns "¯\_(ツ)_/¯"', () => {
+			expect<'¯\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\_(ツ)_/¯');
+		});
+		/* eslint-enable no-useless-escape */
+
+		test('GIVEN Faces.Tableflip THEN returns "(╯°□°)╯︵ ┻━┻"', () => {
+			expect<'(╯°□°)╯︵ ┻━┻'>(Faces.Tableflip).toEqual('(╯°□°)╯︵ ┻━┻');
 		});
 
-		test('GIVEN Faces.Tableflip THEN returns "(╯°□°）╯︵ ┻━┻"', () => {
-			expect<'(╯°□°）╯︵ ┻━┻'>(Faces.Tableflip).toEqual('(╯°□°）╯︵ ┻━┻');
-		});
-
-		test('GIVEN Faces.Unflip THEN returns "┬─┬ ノ( ゜-゜ノ)"', () => {
-			expect<'┬─┬ ノ( ゜-゜ノ)'>(Faces.Unflip).toEqual('┬─┬ ノ( ゜-゜ノ)');
+		test('GIVEN Faces.Unflip THEN returns "┬─┬ノ( º _ ºノ)"', () => {
+			expect<'┬─┬ノ( º _ ºノ)'>(Faces.Unflip).toEqual('┬─┬ノ( º _ ºノ)');
 		});
 	});
 });

@@ -3,7 +3,7 @@
 const Events = require('../../../util/Events');
 
 module.exports = (client, packet, shard) => {
-  const replayed = shard.sequence - shard.closeSequence;
+  const replayed = shard.sessionInfo.sequence - shard.closeSequence;
   /**
    * Emitted when a shard resumes successfully.
    * @event Client#shardResume

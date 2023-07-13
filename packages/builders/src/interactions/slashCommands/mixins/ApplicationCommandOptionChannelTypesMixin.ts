@@ -1,7 +1,12 @@
 import { s } from '@sapphire/shapeshift';
 import { ChannelType } from 'discord-api-types/v10';
 
-// Only allow valid channel types to be used. (This can't be dynamic because const enums are erased at runtime)
+/**
+ * The allowed channel types used for a channel option in a slash command builder.
+ *
+ * @privateRemarks This can't be dynamic because const enums are erased at runtime.
+ * @internal
+ */
 const allowedChannelTypes = [
 	ChannelType.GuildText,
 	ChannelType.GuildVoice,
@@ -14,17 +19,26 @@ const allowedChannelTypes = [
 	ChannelType.GuildForum,
 ] as const;
 
-export type ApplicationCommandOptionAllowedChannelTypes = typeof allowedChannelTypes[number];
+/**
+ * The type of allowed channel types used for a channel option.
+ */
+export type ApplicationCommandOptionAllowedChannelTypes = (typeof allowedChannelTypes)[number];
 
 const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
 
+/**
+ * This mixin holds channel type symbols used for options.
+ */
 export class ApplicationCommandOptionChannelTypesMixin {
+	/**
+	 * The channel types of this option.
+	 */
 	public readonly channel_types?: ApplicationCommandOptionAllowedChannelTypes[];
 
 	/**
-	 * Adds channel types to this option
+	 * Adds channel types to this option.
 	 *
-	 * @param channelTypes - The channel types to add
+	 * @param channelTypes - The channel types
 	 */
 	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
 		if (this.channel_types === undefined) {

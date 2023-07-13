@@ -161,6 +161,7 @@ class GuildChannelManager extends CachedManager {
     defaultReactionEmoji,
     defaultAutoArchiveDuration,
     defaultSortOrder,
+    defaultForumLayout,
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
@@ -184,6 +185,7 @@ class GuildChannelManager extends CachedManager {
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_auto_archive_duration: defaultAutoArchiveDuration,
         default_sort_order: defaultSortOrder,
+        default_forum_layout: defaultForumLayout,
       },
       reason,
     });
@@ -192,7 +194,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|ForumChannel|Snowflake} channel
+   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake} channel
    * The channel to create the webhook for
    */
 
@@ -252,13 +254,14 @@ class GuildChannelManager extends CachedManager {
    * @property {number} [defaultThreadRateLimitPerUser] The rate limit per user (slowmode) to set on forum posts
    * @property {ChannelFlagsResolvable} [flags] The flags to set on the channel
    * @property {?SortOrderType} [defaultSortOrder] The default sort order mode to set on the channel
+   * @property {ForumLayoutType} [defaultForumLayout] The default forum layout to set on the channel
    * @property {string} [reason] Reason for editing this channel
    */
 
   /**
    * Edits the channel.
    * @param {GuildChannelResolvable} channel The channel to edit
-   * @param {GuildChannelEditOptions} data Options for editing the channel
+   * @param {GuildChannelEditOptions} options Options for editing the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -266,19 +269,19 @@ class GuildChannelManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async edit(channel, data) {
+  async edit(channel, options) {
     channel = this.resolve(channel);
     if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = data.parent && this.client.channels.resolveId(data.parent);
+    const parent = options.parent && this.client.channels.resolveId(options.parent);
 
-    if (typeof data.position !== 'undefined') {
-      await this.setPosition(channel, data.position, { position: data.position, reason: data.reason });
+    if (options.position !== undefined) {
+      await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
     }
 
-    let permission_overwrites = data.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites = options.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
 
-    if (data.lockPermissions) {
+    if (options.lockPermissions) {
       if (parent) {
         const newParent = this.guild.channels.resolve(parent);
         if (newParent?.type === ChannelType.GuildCategory) {
@@ -295,26 +298,28 @@ class GuildChannelManager extends CachedManager {
 
     const newData = await this.client.rest.patch(Routes.channel(channel.id), {
       body: {
-        name: (data.name ?? channel.name).trim(),
-        type: data.type,
-        topic: data.topic,
-        nsfw: data.nsfw,
-        bitrate: data.bitrate ?? channel.bitrate,
-        user_limit: data.userLimit ?? channel.userLimit,
-        rtc_region: 'rtcRegion' in data ? data.rtcRegion : channel.rtcRegion,
-        video_quality_mode: data.videoQualityMode,
+        name: (options.name ?? channel.name).trim(),
+        type: options.type,
+        topic: options.topic,
+        nsfw: options.nsfw,
+        bitrate: options.bitrate ?? channel.bitrate,
+        user_limit: options.userLimit ?? channel.userLimit,
+        rtc_region: 'rtcRegion' in options ? options.rtcRegion : channel.rtcRegion,
+        video_quality_mode: options.videoQualityMode,
         parent_id: parent,
-        lock_permissions: data.lockPermissions,
-        rate_limit_per_user: data.rateLimitPerUser,
-        default_auto_archive_duration: data.defaultAutoArchiveDuration,
+        lock_permissions: options.lockPermissions,
+        rate_limit_per_user: options.rateLimitPerUser,
+        default_auto_archive_duration: options.defaultAutoArchiveDuration,
         permission_overwrites,
-        available_tags: data.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
-        default_reaction_emoji: data.defaultReactionEmoji && transformGuildDefaultReaction(data.defaultReactionEmoji),
-        default_thread_rate_limit_per_user: data.defaultThreadRateLimitPerUser,
-        flags: 'flags' in data ? ChannelFlagsBitField.resolve(data.flags) : undefined,
-        default_sort_order: data.defaultSortOrder,
+        available_tags: options.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
+        default_reaction_emoji:
+          options.defaultReactionEmoji && transformGuildDefaultReaction(options.defaultReactionEmoji),
+        default_thread_rate_limit_per_user: options.defaultThreadRateLimitPerUser,
+        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
+        default_sort_order: options.defaultSortOrder,
+        default_forum_layout: options.defaultForumLayout,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
 
     return this.client.actions.ChannelUpdate.handle(newData).updated;
@@ -435,7 +440,7 @@ class GuildChannelManager extends CachedManager {
       id: this.client.channels.resolveId(r.channel),
       position: r.position,
       lock_permissions: r.lockPermissions,
-      parent_id: typeof r.parent !== 'undefined' ? this.resolveId(r.parent) : undefined,
+      parent_id: r.parent !== undefined ? this.resolveId(r.parent) : undefined,
     }));
 
     await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });
@@ -446,7 +451,14 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Obtains all active thread channels in the guild from Discord
+   * Data returned from fetching threads.
+   * @typedef {Object} FetchedThreads
+   * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched
+   * @property {Collection<Snowflake, ThreadMember>} members The thread members in the received threads
+   */
+
+  /**
+   * Obtains all active thread channels in the guild.
    * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    * @example
@@ -456,8 +468,17 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetchActiveThreads(cache = true) {
-    const raw = await this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
-    return GuildTextThreadManager._mapThreads(raw, this.client, { guild: this.guild, cache });
+    const data = await this.rawFetchGuildActiveThreads();
+    return GuildTextThreadManager._mapThreads(data, this.client, { guild: this.guild, cache });
+  }
+
+  /**
+   * `GET /guilds/{guild.id}/threads/active`
+   * @private
+   * @returns {Promise<RESTGetAPIGuildThreadsResult>}
+   */
+  rawFetchGuildActiveThreads() {
+    return this.client.rest.get(Routes.guildActiveThreads(this.guild.id));
   }
 
   /**

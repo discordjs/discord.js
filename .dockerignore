@@ -1,31 +1,33 @@
 # Packages
-node_modules/
+**/node_modules
 
 # Log files
-logs/
-*.log
-npm-debug.log*
+**/logs
+**/*.log
+**/npm-debug.log*
 
 # Runtime data
-pids
-*.pid
-*.seed
+**/pids
+**/*.pid
+**/*.seed
 
 # Env
-.env
+**/.env
 
 # Dist
-dist/
+**/dist/
+**/dist-docs/
 
 # Miscellaneous
-.tmp/
-.vscode/*
-.idea/
-.DS_Store
-.turbo
-tsconfig.tsbuildinfo
-coverage/
-__tests__/
+**/.tmp
+**/.vscode
+**/.idea
+**/.DS_Store
+**/.turbo
+**/tsconfig.tsbuildinfo
+**/coverage
+**/__tests__
+**/out
 
 # yarn
 .pnp.*
@@ -37,20 +39,29 @@ __tests__/
 !.yarn/versions
 
 # Cache
-.prettiercache
-.eslintcache
+**/.prettiercache
+**/.eslintcache
+**/.vercel
 
 # Docker specific
-.cliff-jumperrc.json
-api-extractor.json
-.eslintrc.json
-.lintstagedrc.cjs
-.lintstagedrc.cjs
-.prettierignore
-.prettierrc.js
-.prettierrc.cjs
-cliff.toml
-CHANGELOG.md
-README.md
-tsconfig.eslint.json
-docs/
+**/.cliff-jumperrc.json
+**/api-extractor.json
+**/api-extractor-docs.json
+**/.eslintignore
+**/.eslintrc.json
+**/.lintstagedrc.js
+**/.lintstagedrc.cjs
+**/.lintstagedrc.json
+**/.prettierignore
+**/.prettierrc.js
+**/.prettierrc.cjs
+**/.prettierrc.json
+**/cliff.toml
+**/CHANGELOG.md
+**/README.md
+**/LICENSE
+**/tsconfig.eslint.json
+**/tsconfig.docs.json
+**/docs/
+**/vitest.config.ts
+

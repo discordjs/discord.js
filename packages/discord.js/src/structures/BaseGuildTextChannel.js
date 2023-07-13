@@ -2,8 +2,8 @@
 
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const GuildMessageManager = require('../managers/GuildMessageManager');
 const GuildTextThreadManager = require('../managers/GuildTextThreadManager');
-const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -16,9 +16,9 @@ class BaseGuildTextChannel extends GuildChannel {
 
     /**
      * A manager of the messages sent to this channel
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the threads belonging to this channel
@@ -125,7 +125,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Options used to create an invite to a guild channel.
-   * @typedef {Object} CreateInviteOptions
+   * @typedef {Object} InviteCreateOptions
    * @property {boolean} [temporary] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @property {number} [maxAge] How long the invite should last (in seconds, 0 for forever)
@@ -142,7 +142,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Creates an invite to this guild channel.
-   * @param {CreateInviteOptions} [options={}] The options for creating the invite
+   * @param {InviteCreateOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel

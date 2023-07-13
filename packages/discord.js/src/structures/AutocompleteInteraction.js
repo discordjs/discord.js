@@ -87,7 +87,10 @@ class AutocompleteInteraction extends BaseInteraction {
       body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
-          choices: options,
+          choices: options.map(({ nameLocalizations, ...option }) => ({
+            ...this.client.options.jsonTransformer(option),
+            name_localizations: nameLocalizations,
+          })),
         },
       },
       auth: false,

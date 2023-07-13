@@ -161,7 +161,7 @@ export class VoiceWebSocket extends EventEmitter {
 	 * @param ms - The interval in milliseconds. If negative, the interval will be unset
 	 */
 	public setHeartbeatInterval(ms: number) {
-		if (typeof this.heartbeatInterval !== 'undefined') clearInterval(this.heartbeatInterval);
+		if (this.heartbeatInterval !== undefined) clearInterval(this.heartbeatInterval);
 		if (ms > 0) {
 			this.heartbeatInterval = setInterval(() => {
 				if (this.lastHeartbeatSend !== 0 && this.missedHeartbeats >= 3) {

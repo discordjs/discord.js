@@ -12,7 +12,7 @@ const { GuildMember } = require('../structures/GuildMember');
 let deprecationEmittedForDeleteMessageDays = false;
 
 /**
- * Manages API methods for GuildBans and stores their cache.
+ * Manages API methods for guild bans and stores their cache.
  * @extends {CachedManager}
  */
 class GuildBanManager extends CachedManager {
@@ -103,7 +103,7 @@ class GuildBanManager extends CachedManager {
     const resolvedUser = this.client.users.resolveId(user ?? options);
     if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
 
-    if (!before && !after && !limit && typeof cache === 'undefined') {
+    if (!before && !after && !limit && cache === undefined) {
       return Promise.reject(new DiscordjsError(ErrorCodes.FetchBanResolveId));
     }
 
@@ -156,7 +156,7 @@ class GuildBanManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId, true);
 
-    if (typeof options.deleteMessageDays !== 'undefined' && !deprecationEmittedForDeleteMessageDays) {
+    if (options.deleteMessageDays !== undefined && !deprecationEmittedForDeleteMessageDays) {
       process.emitWarning(
         // eslint-disable-next-line max-len
         'The deleteMessageDays option for GuildBanManager#create() is deprecated. Use the deleteMessageSeconds option instead.',

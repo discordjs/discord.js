@@ -1,0 +1,20 @@
+name: 'Lighthouse Audit (main)'
+on:
+  workflow_dispatch:
+jobs:
+  lighthouse_audit_main:
+    name: 'Lighthouse Audit (main)'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Audit production URLs with Lighthouse
+        id: lighthouse_audit
+        uses: treosh/lighthouse-ci-action@v9
+        with:
+          urls: |
+            https://discordjs.dev
+            https://guide.discordjs.dev
+          uploadArtifacts: true
+          temporaryPublicStorage: true

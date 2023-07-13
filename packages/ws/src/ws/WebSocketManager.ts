@@ -10,8 +10,8 @@ import {
 	type GatewayIntentBits,
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
-import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
+import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
+import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
 
@@ -56,7 +56,7 @@ export interface RequiredWebSocketManagerOptions {
 	/**
 	 * The intents to request
 	 */
-	intents: GatewayIntentBits;
+	intents: GatewayIntentBits | 0;
 	/**
 	 * The REST instance to use for fetching gateway information
 	 */
@@ -71,6 +71,24 @@ export interface RequiredWebSocketManagerOptions {
  * Optional additional configuration for the WebSocketManager
  */
 export interface OptionalWebSocketManagerOptions {
+	/**
+	 * Builds an identify throttler to use for this manager's shards
+	 */
+	buildIdentifyThrottler(manager: WebSocketManager): Awaitable<IIdentifyThrottler>;
+	/**
+	 * Builds the strategy to use for sharding
+	 *
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 *  token: process.env.DISCORD_TOKEN,
+	 *  intents: 0, // for no intents
+	 *  rest,
+	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
+	 * });
+	 * ```
+	 */
+	buildStrategy(manager: WebSocketManager): IShardingStrategy;
 	/**
 	 * The compression method to use
 	 *
@@ -190,18 +208,14 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	/**
 	 * Strategy used to manage shards
 	 *
-	 * @defaultValue `SimpleManagerToShardStrategy`
+	 * @defaultValue `SimpleShardingStrategy`
 	 */
-	private strategy: IShardingStrategy = new SimpleShardingStrategy(this);
+	private readonly strategy: IShardingStrategy;
 
 	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
-	}
-
-	public setStrategy(strategy: IShardingStrategy) {
-		this.strategy = strategy;
-		return this;
+		this.strategy = this.options.buildStrategy(this);
 	}
 
 	/**
@@ -220,7 +234,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
-		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
+		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
+		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
 		return this.gatewayInformation.data;
 	}
 
@@ -264,11 +279,12 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 			if (Array.isArray(this.options.shardIds)) {
 				shardIds = this.options.shardIds;
 			} else {
-				shardIds = range(this.options.shardIds.start, this.options.shardIds.end);
+				const { start, end } = this.options.shardIds;
+				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
 			const data = await this.fetchGatewayInformation();
-			shardIds = range(0, (this.options.shardCount ?? data.shards) - 1);
+			shardIds = [...range(this.options.shardCount ?? data.shards)];
 		}
 
 		this.shardIds = shardIds;
@@ -298,5 +314,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public send(shardId: number, payload: GatewaySendPayload) {
 		return this.strategy.send(shardId, payload);
+	}
+
+	public fetchStatus() {
+		return this.strategy.fetchStatus();
 	}
 }

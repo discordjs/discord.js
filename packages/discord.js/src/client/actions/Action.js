@@ -24,22 +24,19 @@ class GenericAction {
   }
 
   getPayload(data, manager, id, partialType, cache) {
-    const existing = manager.cache.get(id);
-    if (!existing && this.client.options.partials.includes(partialType)) {
-      return manager._add(data, cache);
-    }
-    return existing;
+    return this.client.options.partials.includes(partialType) ? manager._add(data, cache) : manager.cache.get(id);
   }
 
   getChannel(data) {
     const id = data.channel_id ?? data.id;
     return (
-      data.channel ??
+      data[this.client.actions.injectedChannel] ??
       this.getPayload(
         {
           id,
           guild_id: data.guild_id,
-          recipients: [data.author ?? data.user ?? { id: data.user_id }],
+          recipients: data.recipients ?? [data.author ?? data.user ?? { id: data.user_id }],
+          last_message_id: data.last_message_id,
         },
         this.client.channels,
         id,
@@ -51,7 +48,7 @@ class GenericAction {
   getMessage(data, channel, cache) {
     const id = data.message_id ?? data.id;
     return (
-      data.message ??
+      data[this.client.actions.injectedMessage] ??
       this.getPayload(
         {
           id,
@@ -86,7 +83,7 @@ class GenericAction {
 
   getUser(data) {
     const id = data.user_id;
-    return data.user ?? this.getPayload({ id }, this.client.users, id, Partials.User);
+    return data[this.client.actions.injectedUser] ?? this.getPayload({ id }, this.client.users, id, Partials.User);
   }
 
   getUserFromMember(data) {

@@ -1,6 +1,8 @@
 import { EventEmitter } from 'node:events';
+import type { Readable } from 'node:stream';
+import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
-import type { request, Dispatcher } from 'undici';
+import type { Dispatcher, RequestInit, Response } from 'undici';
 import { CDN } from './CDN.js';
 import {
 	RequestManager,
@@ -11,7 +13,7 @@ import {
 	type RequestData,
 	type RouteLike,
 } from './RequestManager.js';
-import type { IHandler } from './handlers/IHandler.js';
+import type { IHandler } from './interfaces/Handler.js';
 import { DefaultRestOptions, RESTEvents } from './utils/constants.js';
 import { parseResponse } from './utils/utils.js';
 
@@ -22,7 +24,7 @@ export interface RESTOptions {
 	/**
 	 * The agent to set globally
 	 */
-	agent: Dispatcher;
+	agent: Dispatcher | null;
 	/**
 	 * The base api path, without version
 	 *
@@ -39,7 +41,7 @@ export interface RESTOptions {
 	/**
 	 * The cdn path
 	 *
-	 * @defaultValue 'https://cdn.discordapp.com'
+	 * @defaultValue `'https://cdn.discordapp.com'`
 	 */
 	cdn: string;
 	/**
@@ -80,6 +82,13 @@ export interface RESTOptions {
 	 */
 	invalidRequestWarningInterval: number;
 	/**
+	 * The method called to perform the actual HTTP request given a url and web `fetch` options
+	 * For example, to use global fetch, simply provide `makeRequest: fetch`
+	 *
+	 * @defaultValue `undici.request`
+	 */
+	makeRequest(url: string, init: RequestInit): Promise<ResponseLike>;
+	/**
 	 * The extra offset to add to rate limits in milliseconds
 	 *
 	 * @defaultValue `50`
@@ -110,7 +119,7 @@ export interface RESTOptions {
 	/**
 	 * Extra information to add to the user agent
 	 *
-	 * @defaultValue `Node.js ${process.version}`
+	 * @defaultValue DefaultUserAgentAppendix
 	 */
 	userAgentAppendix: string;
 	/**
@@ -179,7 +188,7 @@ export interface APIRequest {
 	/**
 	 * Additional HTTP options for this request
 	 */
-	options: RequestOptions;
+	options: RequestInit;
 	/**
 	 * The full path used to make the request
 	 */
@@ -192,6 +201,11 @@ export interface APIRequest {
 	 * The API route identifying the ratelimit for this request
 	 */
 	route: string;
+}
+
+export interface ResponseLike
+	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'text'> {
+	body: Readable | ReadableStream | null;
 }
 
 export interface InvalidRequestWarningData {
@@ -212,7 +226,7 @@ export interface RestEvents {
 	newListener: [name: string, listener: (...args: any) => void];
 	rateLimited: [rateLimitInfo: RateLimitData];
 	removeListener: [name: string, listener: (...args: any) => void];
-	response: [request: APIRequest, response: Dispatcher.ResponseData];
+	response: [request: APIRequest, response: ResponseLike];
 	restDebug: [info: string];
 }
 
@@ -232,8 +246,6 @@ export interface REST {
 	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
 		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
 }
-
-export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
 export class REST extends EventEmitter {
 	public readonly cdn: CDN;

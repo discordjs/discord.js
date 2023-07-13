@@ -141,6 +141,12 @@ class Presence extends Base {
  */
 class Activity {
   constructor(presence, data) {
+    /**
+     * The presence of the Activity
+     * @type {Presence}
+     * @readonly
+     * @name Activity#presence
+     */
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
@@ -287,6 +293,12 @@ class Activity {
  */
 class RichPresenceAssets {
   constructor(activity, assets) {
+    /**
+     * The activity of the RichPresenceAssets
+     * @type {Activity}
+     * @readonly
+     * @name RichPresenceAssets#activity
+     */
     Object.defineProperty(this, 'activity', { value: activity });
 
     /**
@@ -346,6 +358,12 @@ class RichPresenceAssets {
       switch (platform) {
         case 'mp':
           return `https://media.discordapp.net/${id}`;
+        case 'spotify':
+          return `https://i.scdn.co/image/${id}`;
+        case 'youtube':
+          return `https://i.ytimg.com/vi/${id}/hqdefault_live.jpg`;
+        case 'twitch':
+          return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${id}.png`;
         default:
           return null;
       }

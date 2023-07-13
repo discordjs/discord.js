@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -15,18 +15,8 @@ pids
 .env
 
 # Dist
-dist/
-typings/
-docs/**/*
-!docs/index.yml
-!docs/README.md
+dist
 
 # Miscellaneous
-.tmp/
-coverage/
-tsconfig.tsbuildinfo
 .turbo
-
-# Yarn files
-.yarn/install-state.gz
-.yarn/build-state.yml
+.tmp

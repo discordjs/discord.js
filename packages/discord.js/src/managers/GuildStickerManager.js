@@ -35,7 +35,7 @@ class GuildStickerManager extends CachedManager {
   /**
    * Options used to create a guild sticker.
    * @typedef {Object} GuildStickerCreateOptions
-   * @property {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} file The file for the sticker
+   * @property {AttachmentPayload|BufferResolvable|Stream} file The file for the sticker
    * @property {string} name The name for the sticker
    * @property {string} tags The Discord name of a unicode emoji representing the sticker's expression
    * @property {?string} [description] The description for the sticker
@@ -101,16 +101,16 @@ class GuildStickerManager extends CachedManager {
   /**
    * Edits a sticker.
    * @param {StickerResolvable} sticker The sticker to edit
-   * @param {GuildStickerEditData} [data={}] The new data for the sticker
+   * @param {GuildStickerEditOptions} [options={}] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
-  async edit(sticker, data = {}) {
+  async edit(sticker, options = {}) {
     const stickerId = this.resolveId(sticker);
     if (!stickerId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
 
     const d = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
-      body: data,
-      reason: data.reason,
+      body: options,
+      reason: options.reason,
     });
 
     const existing = this.cache.get(stickerId);
