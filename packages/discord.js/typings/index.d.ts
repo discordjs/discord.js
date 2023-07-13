@@ -3096,6 +3096,7 @@ export class User extends PartialTextBasedChannel(Base) {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
+  public avatarDecoration: string | null;
   public banner: string | null | undefined;
   public bot: boolean;
   public get createdAt(): Date;
@@ -3113,6 +3114,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public avatarDecorationURL(options?: BaseImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
