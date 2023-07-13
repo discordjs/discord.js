@@ -4,7 +4,6 @@ import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
@@ -28,7 +27,7 @@ function resolveIcon(item: keyof typeof ApiItemKind) {
 		case 'Property':
 			return <VscSymbolProperty className="shrink-0" size={25} />;
 		case 'TypeAlias':
-			return <VscSymbolField className="shrink-0" size={25} />;
+			return <VscSymbolVariable className="shrink-0" size={25} />;
 		case 'Variable':
 			return <VscSymbolVariable className="shrink-0" size={25} />;
 		default:
