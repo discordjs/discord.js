@@ -227,7 +227,7 @@ class ClientApplication extends Application {
         description,
         role_connections_verification_url: roleConnectionsVerificationURL,
         install_params: installParams,
-        flags,
+        flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
         icon: icon && (await DataResolver.resolveImage(icon)),
         cover_image: coverImage && (await DataResolver.resolveImage(coverImage)),
         interactions_endpoint_url: interactionsEndpointURL,
