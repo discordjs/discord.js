@@ -220,7 +220,7 @@ class ClientApplication extends Application {
     interactionsEndpointURL,
     tags,
   } = {}) {
-    // TODO: `Routes.oauth2CurrentApplication()` throws bots cannot use this endpoint. Wait for discord-api-types?
+    // TODO: `Routes.currentApplication()` (https://github.com/discordjs/discord-api-types/pull/728)
     const data = await this.client.rest.patch('/applications/@me', {
       body: {
         custom_install_url: customInstallURL,
