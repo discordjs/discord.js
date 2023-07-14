@@ -73,6 +73,8 @@ exports.Endpoints = {
         if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/avatars/${userId}/${hash}`, { format, size });
       },
+      AvatarDecoration: (userId, hash, format = 'png', size) =>
+        makeImageUrl(`${root}/avatar-decorations/${userId}/${hash}`, { format, size }),
       GuildMemberAvatar: (guildId, memberId, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic && hash.startsWith('a_')) format = 'gif';
         return makeImageUrl(`${root}/guilds/${guildId}/users/${memberId}/avatars/${hash}`, { format, size });
@@ -96,8 +98,7 @@ exports.Endpoints = {
         makeImageUrl(`${root}/discovery-splashes/${guildId}/${hash}`, { size, format }),
       TeamIcon: (teamId, hash, options) => makeImageUrl(`${root}/team-icons/${teamId}/${hash}`, options),
       Sticker: (stickerId, stickerFormat) =>
-        `${root}/stickers/${stickerId}.${
-          stickerFormat === 'LOTTIE' ? 'json' : stickerFormat === 'GIF' ? 'gif' : 'png'
+        `${root}/stickers/${stickerId}.${stickerFormat === 'LOTTIE' ? 'json' : stickerFormat === 'GIF' ? 'gif' : 'png'
         }`,
       RoleIcon: (roleId, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/role-icons/${roleId}/${hash}`, { size, format }),
