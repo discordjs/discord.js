@@ -142,9 +142,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		void this.internalConnect();
 
 		try {
-			await promise?.catch(({ error }) => {
-				throw error;
-			});
+			await promise;
+		} catch ({ error }: any) {
+			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();
@@ -712,9 +712,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Authentication failed'),
 				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.AlreadyAuthenticated: {
@@ -738,33 +739,38 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidShard: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Invalid shard'),
 				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.ShardingRequired: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Sharding is required'),
 				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidAPIVersion: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Used an invalid API version'),
 				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Used invalid intents'),
 				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				return this.emit(WebSocketShardEvents.Error, {
+				this.emit(WebSocketShardEvents.Error, {
 					error: new Error('Used disallowed intents'),
 				});
+				return this.destroy({ code });
 			}
 
 			default: {
