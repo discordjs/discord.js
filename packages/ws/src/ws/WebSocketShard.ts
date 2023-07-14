@@ -710,7 +710,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				throw new Error('Authentication failed');
+				this.onError(
+					Object.assign(new Error('Authentication failed'), {
+						name: 'AuthenticationFailed',
+						code: 'AUTHENTICATION_FAILED',
+					}),
+				);
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.AlreadyAuthenticated: {
@@ -746,13 +752,22 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				throw new Error('Used invalid intents');
+				this.onError(
+					Object.assign(new Error('Used invalid intents'), { name: 'InvalidIntents', code: 'INVALID_INTENTS' }),
+				);
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				throw new Error('Used disallowed intents');
+				this.onError(
+					Object.assign(new Error('Used disallowed intents'), {
+						name: 'DisallowedIntents',
+						code: 'DISALLOWED_INTENTS',
+					}),
+				);
+				return this.destroy({ code });
 			}
-
+				
 			default: {
 				this.debug([
 					`The gateway closed with an unexpected code ${code}, attempting to ${
