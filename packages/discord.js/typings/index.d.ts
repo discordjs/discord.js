@@ -1010,12 +1010,16 @@ export class ClientApplication extends Application {
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
   public commands: ApplicationCommandManager;
+  private _owner: User | null;
+  public team: Team | null;
+  public guildId: Snowflake | null;
+  public get guild(): Guild | null;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public customInstallURL: string | null;
-  public owner: User | Team | null;
+  public get owner(): User | Team | null;
   public get partial(): boolean;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];

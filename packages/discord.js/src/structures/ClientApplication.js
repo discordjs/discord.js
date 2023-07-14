@@ -69,6 +69,32 @@ class ClientApplication extends Application {
       this.flags = new ApplicationFlagsBitField(data.flags).freeze();
     }
 
+    if ('owner' in data) {
+      this._owner = this.client.users._add(data.owner);
+    } else {
+      this._owner ??= null;
+    }
+
+    if ('team' in data) {
+      /**
+       * The team that holds this application.
+       * @type {?Team}
+       */
+      this.team = new Team(this.client, data.team);
+    } else {
+      this.team ??= null;
+    }
+
+    if ('guild_id' in data) {
+      /**
+       * The id of the guild associated with this application.
+       * @type {?Snowflake}
+       */
+      this.guildId = data.guild_id;
+    } else {
+      this.guildId ??= null;
+    }
+
     if ('cover_image' in data) {
       /**
        * The hash of the application's cover image
@@ -118,16 +144,24 @@ class ClientApplication extends Application {
     } else {
       this.roleConnectionsVerificationURL ??= null;
     }
+  }
 
-    /**
-     * The owner of this OAuth application
-     * @type {?(User|Team)}
-     */
-    this.owner = data.team
-      ? new Team(this.client, data.team)
-      : data.owner
-      ? this.client.users._add(data.owner)
-      : this.owner ?? null;
+  /**
+   * The owner of this application.
+   * @type {?(User|Team)}
+   * @readonly
+   */
+  get owner() {
+    return this.team ?? this._owner;
+  }
+
+  /**
+   * The guild associated with this application.
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 
   /**
@@ -144,8 +178,14 @@ class ClientApplication extends Application {
    * @returns {Promise<ClientApplication>}
    */
   async fetch() {
-    const app = await this.client.rest.get(Routes.oauth2CurrentApplication());
-    this._patch(app);
+    const [data, authData] = await Promise.all([
+      // TODO: Routes.currentApplication() (discord-api-types)
+      this.client.rest.get('/applications/@me'),
+      this.client.rest.get(Routes.oauth2CurrentApplication()),
+    ]);
+
+    this._patch(data);
+    this._patch(authData);
     return this;
   }
 
