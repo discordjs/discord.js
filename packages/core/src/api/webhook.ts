@@ -27,11 +27,16 @@ export class WebhooksAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-webhook}
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-webhook-with-token}
 	 * @param id - The id of the webhook
-	 * @param token - The token of the webhook
 	 * @param options - The options for fetching the webhook
 	 */
-	public async get(id: Snowflake, token?: string, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.webhook(id, token), { signal }) as Promise<RESTGetAPIWebhookResult>;
+	public async get(
+		id: Snowflake,
+		{ token, signal }: Pick<RequestData, 'signal'> & { token?: string | undefined } = {},
+	) {
+		return this.rest.get(Routes.webhook(id, token), {
+			signal,
+			auth: !token,
+		}) as Promise<RESTGetAPIWebhookResult>;
 	}
 
 	/**
@@ -52,6 +57,7 @@ export class WebhooksAPI {
 			reason,
 			body,
 			signal,
+			auth: !token,
 		}) as Promise<RESTPatchAPIWebhookResult>;
 	}
 
@@ -67,7 +73,11 @@ export class WebhooksAPI {
 		id: Snowflake,
 		{ token, reason, signal }: Pick<RequestData, 'reason' | 'signal'> & { token?: string | undefined } = {},
 	) {
-		await this.rest.delete(Routes.webhook(id, token), { reason, signal });
+		await this.rest.delete(Routes.webhook(id, token), {
+			reason,
+			signal,
+			auth: !token,
+		});
 	}
 
 	/**
