@@ -1,4 +1,4 @@
 module.exports = {
 	...require('../../.lintstagedrc.json'),
-	'src/**.ts': 'vitest related --run',
+	'src/**.ts': 'vitest related --run --config ./vitest.config.ts',
 };
