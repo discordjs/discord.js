@@ -30,6 +30,7 @@ export default function OverloadSwitcher({
 			window.removeEventListener('hashchange', hashChangeHandler);
 		};
 	});
+
 	useEffect(() => {
 		if (hash) {
 			const elementId = hash.replace('#', '');
