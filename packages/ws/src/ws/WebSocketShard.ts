@@ -143,6 +143,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await promise;
+		} catch ({ error }: any) {
+			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();
@@ -710,7 +712,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				throw new Error('Authentication failed');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Authentication failed'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.AlreadyAuthenticated: {
@@ -734,23 +739,38 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidShard: {
-				throw new Error('Invalid shard');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Invalid shard'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.ShardingRequired: {
-				throw new Error('Sharding is required');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Sharding is required'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidAPIVersion: {
-				throw new Error('Used an invalid API version');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used an invalid API version'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				throw new Error('Used invalid intents');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used invalid intents'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				throw new Error('Used disallowed intents');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used disallowed intents'),
+				});
+				return this.destroy({ code });
 			}
 
 			default: {
