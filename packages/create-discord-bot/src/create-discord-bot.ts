@@ -62,8 +62,6 @@ export async function createDiscordBot({ typescript, javascript, directory }: Op
 		process.exit(1);
 	}
 
-	await mkdir(root, { recursive: true });
-
 	console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
 	await cp(new URL(`../template/${typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
 		recursive: true,
