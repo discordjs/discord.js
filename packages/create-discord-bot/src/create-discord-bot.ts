@@ -62,9 +62,7 @@ export async function createDiscordBot({ typescript, javascript, directory }: Op
 		process.exit(1);
 	}
 
-	const rootStats = await stat(root);
-
-	if (!rootStats.isDirectory()) {
+	if (!directoryStats.isDirectory()) {
 		await mkdir(root, { recursive: true });
 	}
 

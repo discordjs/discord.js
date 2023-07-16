@@ -1,6 +1,7 @@
 /**
- * @typedef {object} Command
  * Defines the structure of a command.
+ *
+ * @typedef {object} Command
  * @property {import('discord.js').RESTPostAPIApplicationCommandsJSONBody} data The data for the command.
  * @property {(interaction: import('discord.js').CommandInteraction) => Promise<void> | void} execute The function to execute when the command is called.
  */
@@ -8,7 +9,7 @@
 /**
  * Defines the predicate to check if an object is a valid Command type.
  *
- * @param {import('../util/loaders.js').StructurePredicate<Command>} structure
+ * @type {import('../util/loaders.js').StructurePredicate<Command>}
  * @returns {structure is Command}
  */
 export const predicate = (structure) =>

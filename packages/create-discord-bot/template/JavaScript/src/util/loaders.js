@@ -7,7 +7,7 @@ import { predicate as eventPredicate } from '../events/index.js';
  * A predicate to check if the structure is valid.
  *
  * @template T
- * @typedef {(structure: unknown) => structure is T } StructurePredicate
+ * @typedef {(structure: unknown) => structure is T} StructurePredicate
  */
 
 /**

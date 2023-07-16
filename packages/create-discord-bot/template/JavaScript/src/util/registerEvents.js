@@ -1,3 +1,5 @@
+import { Events } from 'discord.js';
+
 /**
  * @param {Map<string, import('../commands/index.js').Command>} commands
  * @param {import('../events/index.js').Event[]} events
@@ -5,9 +7,9 @@
  */
 export function registerEvents(commands, events, client) {
 	// Create an event to handle command interactions
-	/** @type {import('../events/index.js').Event<'interactionCreate'>} */
+	/** @type {import('../events/index.js').Event<Events.InteractionCreate>} */
 	const interactionCreateEvent = {
-		name: 'interactionCreate',
+		name: Events.InteractionCreate,
 		async execute(interaction) {
 			if (interaction.isCommand()) {
 				const command = commands.get(interaction.commandName);

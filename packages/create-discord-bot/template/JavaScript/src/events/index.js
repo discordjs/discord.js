@@ -12,7 +12,6 @@
 /** @type {import('../util/loaders').StructurePredicate<Event>} */
 export const predicate = (structure) =>
 	Boolean(structure) &&
-	structure !== null &&
 	typeof structure === 'object' &&
 	'name' in structure &&
 	'execute' in structure &&
