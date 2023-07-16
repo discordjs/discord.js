@@ -35,9 +35,11 @@ export async function createDiscordBot({ typescript, javascript, directory }: Op
 		throw error;
 	});
 
-	// If a directory exists and it's not empty, throw an error.
-	if (directoryStats.isDirectory() && (await readdir(root)).length > 0) {
-		console.error(chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is not empty.`));
+	// If the directory is actually a file or if it's not empty, throw an error.
+	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
+		console.error(
+			chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is either not a directory or is not empty.`),
+		);
 		console.error(chalk.red(`Please specify an empty directory.`));
 		process.exit(1);
 	}
