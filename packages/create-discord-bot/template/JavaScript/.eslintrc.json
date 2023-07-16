@@ -2,8 +2,8 @@
 	"root": true,
 	"extends": ["neon/common", "neon/node", "neon/prettier"],
 	"rules": {
-		"jsdoc/valid-types": "off",
-		"jsdoc/check-tag-names": "off",
-		"jsdoc/no-undefined-types": "off"
+		"jsdoc/valid-types": 0,
+		"jsdoc/check-tag-names": 0,
+		"jsdoc/no-undefined-types": 0
 	}
 }
