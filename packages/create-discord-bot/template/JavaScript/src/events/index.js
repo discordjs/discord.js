@@ -8,8 +8,12 @@
  * @property {boolean} [once] Whether or not the event should only be listened to once
  */
 
-// Defines the predicate to check if an object is a valid Event type.
-/** @type {import('../util/loaders').StructurePredicate<Event>} */
+/**
+ * Defines the predicate to check if an object is a valid Event type.
+ *
+ * @type {import('../util/loaders').StructurePredicate<Event>}
+ * @returns {structure is Event}
+ */
 export const predicate = (structure) =>
 	Boolean(structure) &&
 	typeof structure === 'object' &&
