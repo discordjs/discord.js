@@ -1,4 +1,4 @@
-import type { RESTOptions } from './index.js';
+import type { RESTOptions } from './shared.js';
 
 let defaultStrategy: RESTOptions['makeRequest'];
 

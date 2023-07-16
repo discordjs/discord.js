@@ -14,13 +14,13 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
 	},
-	"types": "./dist/agnostic.d.ts",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"node": {
-				"types": "./dist/agnostic.d.ts",
-				"import": "./dist/agnostic.mjs",
-				"require": "./dist/agnostic.js"
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.mjs",
+				"require": "./dist/index.js"
 			},
 			"default": {
 				"types": "./dist/web.d.ts",
