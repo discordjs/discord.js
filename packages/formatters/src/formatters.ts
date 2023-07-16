@@ -2,6 +2,50 @@ import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
+ * Type for code block's languages.
+ */
+export type CodeBlockLanguages =
+	| 'apache'
+	| 'bash'
+	| 'c'
+	| 'cpp'
+	| 'cs'
+	| 'css'
+	| 'diff'
+	| 'fix'
+	| 'glsl'
+	| 'http'
+	| 'ini'
+	| 'java'
+	| 'javascript'
+	| 'js'
+	| 'json'
+	| 'makefile'
+	| 'markdown'
+	| 'ml'
+	| 'nginx'
+	| 'objectivec'
+	| 'perl'
+	| 'php'
+	| 'prolog'
+	| 'ps'
+	| 'py'
+	| 'python'
+	| 'ruby'
+	| 'rust'
+	| 'sh'
+	| 'shell'
+	| 'sql'
+	| 'swift'
+	| 'tex'
+	| 'vbs'
+	| 'wasm'
+	| 'webassembly'
+	| 'xl'
+	| 'xml'
+	| 'yaml';
+
+/**
  * Wraps the content inside a code block with no language.
  *
  * @typeParam C - This is inferred by the supplied content
@@ -12,14 +56,17 @@ export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
 /**
  * Wraps the content inside a code block with the specified language.
  *
- * @typeParam L - This is inferred by the supplied language
+ * @typeParam L - Union of available code block languages
  * @typeParam C - This is inferred by the supplied content
  * @param language - The language for the code block
  * @param content - The content to wrap
  */
-export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
+export function codeBlock<L extends CodeBlockLanguages, C extends string>(
+	language: L,
+	content: C,
+): `\`\`\`${L}\n${C}\n\`\`\``;
 
-export function codeBlock(language: string, content?: string): string {
+export function codeBlock(language: CodeBlockLanguages | string, content?: string): string {
 	return content === undefined ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 

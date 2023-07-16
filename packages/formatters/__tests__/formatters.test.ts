@@ -31,8 +31,28 @@ describe('Message formatters', () => {
 			expect<'```\ndiscord.js\n```'>(codeBlock('discord.js')).toEqual('```\ndiscord.js\n```');
 		});
 
-		test('GIVEN "discord.js" with "js" as language THEN returns "```js\\ndiscord.js```"', () => {
-			expect<'```js\ndiscord.js\n```'>(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js\n```');
+		test('GIVEN "discord.js" with "js" as language THEN returns "```js\ndiscord.js\n```"', () => {
+			expect(codeBlock('js', 'discord.js')).toEqual('```js\ndiscord.js\n```');
+		});
+
+		test('GIVEN "Python code" with "python" as language THEN returns "```python\nPython code\n```"', () => {
+			expect(codeBlock('python', 'Python code')).toEqual('```python\nPython code\n```');
+		});
+
+		test('GIVEN "Python code" with "py" as language THEN returns "```py\nPython code\n```"', () => {
+			expect(codeBlock('py', 'Python code')).toEqual('```py\nPython code\n```');
+		});
+
+		test('GIVEN "C++ code" with "cpp" as language THEN returns "```cpp\nC++ code\n```"', () => {
+			expect(codeBlock('cpp', 'C++ code')).toEqual('```cpp\nC++ code\n```');
+		});
+
+		test('GIVEN "Shell script" with "shell" as language THEN returns "```shell\nShell script\n```"', () => {
+			expect(codeBlock('shell', 'Shell script')).toEqual('```shell\nShell script\n```');
+		});
+
+		test('GIVEN "YAML configuration" with "yaml" as language THEN returns "```yaml\nYAML configuration\n```"', () => {
+			expect(codeBlock('yaml', 'YAML configuration')).toEqual('```yaml\nYAML configuration\n```');
 		});
 	});
 
