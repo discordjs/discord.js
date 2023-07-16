@@ -1,11 +1,13 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { Snowflake } = require('@sapphire/snowflake');
+const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { getSortableGroupTypes } = require('../util/Util');
 
 /**
  * Represents a guild channel from any of the following:
@@ -145,8 +147,21 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedChannels(this);
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    const selfIsCategory = this.type === ChannelType.GuildCategory;
+    const types = getSortableGroupTypes(this.type);
+
+    let count = 0;
+    for (const channel of this.guild.channels.cache.values()) {
+      if (!types.includes(channel.type)) continue;
+      if (!selfIsCategory && channel.parentId !== this.parentId) continue;
+      if (this.rawPosition === channel.rawPosition) {
+        if (Snowflake.compare(channel.id, this.id) === -1) count++;
+      } else if (this.rawPosition > channel.rawPosition) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**

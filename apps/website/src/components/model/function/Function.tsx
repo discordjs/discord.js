@@ -16,7 +16,7 @@ export function Function({ item }: { item: ApiFunction }) {
 		return (
 			<div>
 				{header}
-				<OverloadSwitcher overloads={overloads} />
+				<OverloadSwitcher methodName={item.displayName} overloads={overloads} />
 			</div>
 		);
 	}

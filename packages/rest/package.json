@@ -65,7 +65,7 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.5.1",
-		"discord-api-types": "^0.37.42",
+		"discord-api-types": "^0.37.45",
 		"file-type": "^18.4.0",
 		"tslib": "^2.5.2",
 		"undici": "^5.22.1"
@@ -87,7 +87,7 @@
 		"vitest": "^0.31.1"
 	},
 	"engines": {
-		"node": ">=18.12.0"
+		"node": ">=16.9.0"
 	},
 	"publishConfig": {
 		"access": "public"

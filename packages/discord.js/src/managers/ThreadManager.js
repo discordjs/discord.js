@@ -188,10 +188,10 @@ class ThreadManager extends CachedManager {
     }, new Collection());
 
     // Discord sends the thread id as id in this object
-    const threadMembers = rawThreads.members.reduce(
-      (coll, raw) => coll.set(raw.user_id, threads.get(raw.id).members._add(raw)),
-      new Collection(),
-    );
+    const threadMembers = rawThreads.members.reduce((coll, raw) => {
+      const thread = threads.get(raw.id);
+      return thread ? coll.set(raw.user_id, thread.members._add(raw)) : coll;
+    }, new Collection());
 
     const response = { threads, members: threadMembers };
 

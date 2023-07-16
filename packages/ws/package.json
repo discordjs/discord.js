@@ -67,7 +67,7 @@
 		"@sapphire/async-queue": "^1.5.0",
 		"@types/ws": "^8.5.4",
 		"@vladfrangu/async_event_emitter": "^2.2.2",
-		"discord-api-types": "^0.37.42",
+		"discord-api-types": "^0.37.45",
 		"tslib": "^2.5.2",
 		"ws": "^8.13.0"
 	},
@@ -91,7 +91,7 @@
 		"zlib-sync": "^0.1.8"
 	},
 	"engines": {
-		"node": ">=18.12.0"
+		"node": ">=16.9.0"
 	},
 	"publishConfig": {
 		"access": "public"
