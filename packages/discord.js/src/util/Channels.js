@@ -20,7 +20,7 @@ const getForumChannel = lazy(() => require('../structures/ForumChannel'));
  * @param {APIChannel} data The data of the channel to create
  * @param {Guild} [guild] The guild where this channel belongs
  * @param {Object} [extras] Extra information to supply for creating this channel
- * @returns {Channel} Any kind of channel.
+ * @returns {BaseChannel} Any kind of channel.
  * @ignore
  */
 function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
