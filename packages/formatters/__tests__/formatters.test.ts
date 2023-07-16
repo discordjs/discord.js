@@ -39,7 +39,7 @@ describe('Message formatters', () => {
 			expect(codeBlock('python', 'Python code')).toEqual('```python\nPython code\n```');
 		});
 
-		test('GIVEN "Python code" with "py" as language THEN returns "```python\nPython code\n```"', () => {
+		test('GIVEN "Python code" with "py" as language THEN returns "```py\nPython code\n```"', () => {
 			expect(codeBlock('py', 'Python code')).toEqual('```py\nPython code\n```');
 		});
 
