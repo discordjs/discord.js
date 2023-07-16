@@ -10,7 +10,7 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/create-discord-bot.mjs",
+	"bin": "./dist/index.mjs",
 	"directories": {
 		"lib": "src"
 	},
@@ -47,12 +47,14 @@
 	"dependencies": {
 		"chalk": "^5.2.0",
 		"commander": "^10.0.1",
+		"prompts": "^2.4.2",
 		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.0.0",
 		"@microsoft/api-extractor": "^7.35.0",
 		"@types/node": "16.18.32",
+		"@types/prompts": "^2.4.4",
 		"@types/validate-npm-package-name": "^4.0.0",
 		"@vitest/coverage-c8": "^0.31.1",
 		"cross-env": "^7.0.3",
