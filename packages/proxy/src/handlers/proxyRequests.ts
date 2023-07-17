@@ -33,7 +33,7 @@ export function proxyRequests(rest: REST): RequestHandler {
 		}
 
 		try {
-			const discordResponse = await rest.raw({
+			const discordResponse = await rest.queueRequest({
 				body: req,
 				fullRoute,
 				// This type cast is technically incorrect, but we want Discord to throw Method Not Allowed for us
