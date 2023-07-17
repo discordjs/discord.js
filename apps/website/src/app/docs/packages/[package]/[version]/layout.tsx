@@ -74,11 +74,11 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
 				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
-					<div className="sticky top-23 h-[calc(100vh_-_100px)]">
+					<div className="sticky top-23 z-10 h-[calc(100vh_-_145px)]">
 						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
 					</div>
 
-					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">
+					<div className="mx-auto mt-[calc(-100vh_+_145px)] max-w-5xl min-w-xs w-full pb-10 lg:mt-0">
 						{children}
 						<Footer />
 					</div>
