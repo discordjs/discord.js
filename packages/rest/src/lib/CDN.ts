@@ -1,6 +1,4 @@
 /* eslint-disable jsdoc/check-param-names */
-
-import { URL } from 'node:url';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,

@@ -1,12 +1,9 @@
-import { Blob, Buffer } from 'node:buffer';
-import { EventEmitter } from 'node:events';
-import { setInterval, clearInterval } from 'node:timers';
-import type { URLSearchParams } from 'node:url';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { DiscordSnowflake } from '@sapphire/snowflake';
+import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { filetypeinfo } from 'magic-bytes.js';
 import type { RequestInit, BodyInit, Dispatcher, Agent } from 'undici';
-import type { RESTOptions, ResponseLike, RestEvents } from './REST.js';
+import type { RESTOptions, ResponseLike, RestEventsMap } from './REST.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
 import type { IHandler } from './interfaces/Handler.js';
@@ -17,9 +14,7 @@ import {
 	OverwrittenMimeTypes,
 	RESTEvents,
 } from './utils/constants.js';
-
-// Make this a lazy dynamic import as file-type is a pure ESM package
-const getFileType = lazy(async () => import('file-type'));
+import { isBufferLike } from './utils/utils.js';
 
 /**
  * Represents a file to be added to the request
@@ -32,7 +27,7 @@ export interface RawFile {
 	/**
 	 * The actual data for the file
 	 */
-	data: Buffer | boolean | number | string;
+	data: Buffer | Uint8Array | boolean | number | string;
 	/**
 	 * An explicit key to use for key of the formdata field for this file.
 	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
@@ -162,27 +157,10 @@ export interface HashData {
 	value: string;
 }
 
-export interface RequestManager {
-	emit: (<K extends keyof RestEvents>(event: K, ...args: RestEvents[K]) => boolean) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, ...args: any[]) => boolean);
-
-	off: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	on: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	once: (<K extends keyof RestEvents>(event: K, listener: (...args: RestEvents[K]) => void) => this) &
-		(<S extends string | symbol>(event: Exclude<S, keyof RestEvents>, listener: (...args: any[]) => void) => this);
-
-	removeAllListeners: (<K extends keyof RestEvents>(event?: K) => this) &
-		(<S extends string | symbol>(event?: Exclude<S, keyof RestEvents>) => this);
-}
-
 /**
  * Represents the class that manages handlers for endpoints
  */
-export class RequestManager extends EventEmitter {
+export class RequestManager extends AsyncEventEmitter<RestEventsMap> {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
@@ -216,9 +194,9 @@ export class RequestManager extends EventEmitter {
 
 	#token: string | null = null;
 
-	private hashTimer!: NodeJS.Timer;
+	private hashTimer!: NodeJS.Timer | number;
 
-	private handlerTimer!: NodeJS.Timer;
+	private handlerTimer!: NodeJS.Timer | number;
 
 	public readonly options: RESTOptions;
 
@@ -269,7 +247,9 @@ export class RequestManager extends EventEmitter {
 
 				// Fire event
 				this.emit(RESTEvents.HashSweep, sweptHashes);
-			}, this.options.hashSweepInterval).unref();
+			}, this.options.hashSweepInterval);
+
+			this.hashTimer.unref?.();
 		}
 
 		if (this.options.handlerSweepInterval !== 0 && this.options.handlerSweepInterval !== Number.POSITIVE_INFINITY) {
@@ -292,7 +272,9 @@ export class RequestManager extends EventEmitter {
 
 				// Fire event
 				this.emit(RESTEvents.HandlerSweep, sweptHandlers);
-			}, this.options.handlerSweepInterval).unref();
+			}, this.options.handlerSweepInterval);
+
+			this.handlerTimer.unref?.();
 		}
 	}
 
@@ -425,14 +407,18 @@ export class RequestManager extends EventEmitter {
 				// FormData.append only accepts a string or Blob.
 				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
-				if (Buffer.isBuffer(file.data)) {
+				if (isBufferLike(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed
-					const { fileTypeFromBuffer } = await getFileType();
 					let contentType = file.contentType;
+
 					if (!contentType) {
-						const parsedType = (await fileTypeFromBuffer(file.data))?.mime;
+						const [parsedType] = filetypeinfo(file.data);
+
 						if (parsedType) {
-							contentType = OverwrittenMimeTypes[parsedType as keyof typeof OverwrittenMimeTypes] ?? parsedType;
+							contentType =
+								OverwrittenMimeTypes[parsedType.mime as keyof typeof OverwrittenMimeTypes] ??
+								parsedType.mime ??
+								'application/octet-stream';
 						}
 					}
 

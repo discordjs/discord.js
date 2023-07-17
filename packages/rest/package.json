@@ -14,14 +14,19 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
+			"node": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.mjs",
+				"require": "./dist/index.js"
+			},
+			"default": {
+				"types": "./dist/web.d.ts",
+				"import": "./dist/web.mjs",
+				"require": "./dist/web.js"
+			}
 		},
 		"./*": {
 			"types": "./dist/strategies/*.d.ts",
@@ -65,8 +70,9 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.5.1",
+		"@vladfrangu/async_event_emitter": "^2.2.2",
 		"discord-api-types": "^0.37.45",
-		"file-type": "^18.4.0",
+		"magic-bytes.js": "^1.0.14",
 		"tslib": "^2.5.2",
 		"undici": "^5.22.1"
 	},
