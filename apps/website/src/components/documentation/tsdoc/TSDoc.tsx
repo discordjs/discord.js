@@ -66,7 +66,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 				case DocNodeKind.CodeSpan: {
 					const { code } = tsdoc as DocFencedCode;
 					return (
-						<code className="font-mono text-sm" key={idx}>
+						<code className="text-sm font-mono" key={idx}>
 							{code}
 						</code>
 					);

@@ -71,7 +71,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	 */
 	public async subscribe(group: string, events: (keyof TEvents)[]): Promise<void> {
 		await Promise.all(
-			// eslint-disable-next-line consistent-return
+			// @ts-expect-error: Intended
 			events.map(async (event) => {
 				this.subscribedEvents.add(event as string);
 				try {

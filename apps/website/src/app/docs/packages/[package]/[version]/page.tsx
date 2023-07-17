@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: VersionRouteParams }) {
 
 	return (
 		<div className="max-w-none prose">
-			{/* @ts-expect-error async component */}
+			{/* @ts-expect-error SyntaxHighlighter is assignable */}
 			<MDXRemote components={{ pre: SyntaxHighlighter }} options={mdxOptions} source={readmeSource} />
 		</div>
 	);

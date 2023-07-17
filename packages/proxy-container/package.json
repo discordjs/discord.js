@@ -46,18 +46,18 @@
 	"dependencies": {
 		"@discordjs/proxy": "workspace:^",
 		"@discordjs/rest": "workspace:^",
-		"tslib": "^2.5.2"
+		"tslib": "^2.6.0"
 	},
 	"devDependencies": {
-		"@types/node": "18.16.14",
+		"@types/node": "18.16.19",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.41.0",
+		"eslint": "^8.45.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
-		"tsup": "^6.7.0",
-		"turbo": "^1.9.8",
-		"typescript": "^5.0.4"
+		"tsup": "^7.1.0",
+		"turbo": "^1.10.7",
+		"typescript": "^5.1.6"
 	},
 	"engines": {
 		"node": ">=16.9.0"

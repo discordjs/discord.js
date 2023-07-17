@@ -45,26 +45,26 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"chalk": "^5.2.0",
-		"commander": "^10.0.1",
+		"chalk": "^5.3.0",
+		"commander": "^11.0.0",
 		"prompts": "^2.4.2",
 		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.35.0",
-		"@types/node": "16.18.32",
+		"@favware/cliff-jumper": "^2.1.1",
+		"@microsoft/api-extractor": "^7.36.2",
+		"@types/node": "16.18.38",
 		"@types/prompts": "^2.4.4",
 		"@types/validate-npm-package-name": "^4.0.0",
-		"@vitest/coverage-c8": "^0.31.1",
+		"@vitest/coverage-c8": "^0.33.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.41.0",
+		"eslint": "^8.45.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
-		"tsup": "^6.7.0",
-		"typescript": "^5.0.4",
-		"vitest": "^0.31.1"
+		"tsup": "^7.1.0",
+		"typescript": "^5.1.6",
+		"vitest": "^0.33.0"
 	},
 	"engines": {
 		"node": ">=18.16.0"
