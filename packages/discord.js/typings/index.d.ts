@@ -161,6 +161,7 @@ import {
   APIGuildOnboardingPrompt,
   APIGuildOnboardingPromptOption,
   GuildOnboardingPromptType,
+  AttachmentFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2078,8 +2079,7 @@ export class Attachment {
   public toJSON(): unknown;
 }
 
-export type AttachmentFlagsString = any;
-// export type AttachmentFlagsString = keyof typeof AttachmentFlags;
+export type AttachmentFlagsString = keyof typeof AttachmentFlags;
 
 export class AttachmentFlagsBitField extends BitField<AttachmentFlagsString> {
   public static FLAGS: Record<AttachmentFlagsString, number>;
