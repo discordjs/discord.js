@@ -1378,6 +1378,7 @@ export class Guild extends AnonymousGuild {
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
+  public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
@@ -1596,6 +1597,8 @@ export class GuildMember extends PartialTextBasedChannel(Base) {
   public valueOf(): string;
 }
 
+type GuildOnboardingMode = any;
+
 export class GuildOnboarding extends Base {
   private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
   public get guild(): Guild;
@@ -1603,6 +1606,7 @@ export class GuildOnboarding extends Base {
   public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
   public defaultChannels: Collection<Snowflake, GuildChannel>;
   public enabled: boolean;
+  public mode: GuildOnboardingMode;
 }
 
 export class GuildOnboardingPrompt extends Base {
@@ -5783,6 +5787,31 @@ export interface GuildScheduledEventUser<T> {
 export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
+
+export interface GuildOnboardingEditOptions {
+  prompts: GuildOnboardingPromptData[];
+  defaultChannels: ChannelResolvable[];
+  enabled: boolean;
+  mode: GuildOnboardingMode;
+  reason?: string;
+}
+
+export interface GuildOnboardingPromptData {
+  title: string;
+  singleSelect: boolean;
+  required: boolean;
+  inOnboarding: boolean;
+  type: GuildOnboardingMode;
+  options: GuildOnboardingPromptOptionData[];
+}
+
+export interface GuildOnboardingPromptOptionData {
+  channels: ChannelResolvable[];
+  roles: RoleResolvable[];
+  title: string;
+  description: string;
+  emoji: EmojiIdentifierResolvable;
+}
 
 export interface GuildOnboardingPromptOptionEmoji {
   id: Snowflake | null;

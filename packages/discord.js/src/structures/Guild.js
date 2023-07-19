@@ -882,6 +882,70 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Options used to edit the guild onboarding.
+   * @typedef {Object} GuildOnboardingEditOptions
+   * @property {GuildOnboardingPromptData[]} prompts The prompts shown during onboarding
+   * and in customize community
+   * @property {ChannelResolvable[]} defaultChannels The channels that new members get opted into automatically
+   * @property {boolean} enabled Whether the onboarding is enabled
+   * @property {GuildOnboardingMode} mode The mode to edit the guild onboarding with
+   * @property {string} [reason] The reason for editing the guild onboarding
+   */
+
+  /**
+   * Data for editing a guild onboarding prompt.
+   * @typedef {Object} GuildOnboardingPromptData
+   * @property {string} title The title for the prompt
+   * @property {boolean} singleSelect Whether users are limited to selecting one option for the prompt
+   * @property {boolean} required Whether the prompt is required before a user completes the onboarding flow
+   * @property {boolean} inOnboarding Whether the prompt is present in the onboarding flow
+   * @property {GuildOnboardingPromptType} type The type of the prompt
+   * @property {GuildOnboardingPromptOptionData[]} options The options available within the prompt
+   */
+
+  /**
+   * Data for editing a guild onboarding prompt option.
+   * @typedef {Object} GuildOnboardingPromptOptionData
+   * @property {ChannelResolvable[]} channels The channels a member is added to when the option is selected
+   * @property {RoleResolvable[]} roles The roles assigned to a member when the option is selected
+   * @property {string} title The title of the option
+   * @property {string} description The description of the option
+   * @property {EmojiIdentifierResolvable} emoji The emoji of the option
+   */
+
+  /**
+   * Edits the guild onboarding data for this guild.
+   * @param {GuildOnboardingEditOptions} options The options to provide
+   * @returns {Promise<GuildOnboarding>}
+   */
+  async editOnboarding(options) {
+    const newData = await this.client.rest.put(`/guilds/${this.id}/onboarding`, {
+      body: {
+        prompts: options.prompts.map(prompt => ({
+          title: prompt.title,
+          single_select: prompt.singleSelect,
+          required: prompt.required,
+          in_onboarding: prompt.inOnboarding,
+          type: prompt.type,
+          options: prompt.options.map(option => ({
+            channel_ids: option.channels.map(c => this.channels.resolveId(c)),
+            role_ids: option.roles.map(r => this.roles.resolveId(r)),
+            title: option.title,
+            description: option.description,
+            emoji: this.emojis.resolveIdentifier(option.emoji),
+          })),
+        })),
+        default_channel_ids: options.defaultChannels.map(c => this.channels.resolveId(c)),
+        enabled: options.enabled,
+        mode: options.mode,
+      },
+      reason: options.reason,
+    });
+
+    return new GuildOnboarding(this.client, newData);
+  }
+
+  /**
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
