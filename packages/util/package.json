@@ -54,7 +54,7 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
-		"@microsoft/api-extractor": "^7.36.2",
+		"@microsoft/api-extractor": "^7.36.3",
 		"@types/node": "16.18.38",
 		"@vitest/coverage-c8": "^0.33.0",
 		"cross-env": "^7.0.3",
@@ -64,7 +64,7 @@
 		"prettier": "^2.8.8",
 		"tsd": "^0.28.1",
 		"tsup": "^7.1.0",
-		"turbo": "^1.10.7",
+		"turbo": "^1.10.8",
 		"typescript": "^5.1.6",
 		"vitest": "^0.33.0"
 	},

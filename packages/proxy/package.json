@@ -63,7 +63,7 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
-		"@microsoft/api-extractor": "^7.36.2",
+		"@microsoft/api-extractor": "^7.36.3",
 		"@types/node": "18.16.19",
 		"@types/supertest": "^2.0.12",
 		"@vitest/coverage-c8": "^0.33.0",
@@ -74,7 +74,7 @@
 		"prettier": "^2.8.8",
 		"supertest": "^6.3.3",
 		"tsup": "^7.1.0",
-		"turbo": "^1.10.7",
+		"turbo": "^1.10.8",
 		"typescript": "^5.1.6",
 		"vitest": "^0.33.0"
 	},
