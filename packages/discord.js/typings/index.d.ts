@@ -167,7 +167,7 @@ import {
   APIGuildOnboardingPromptOption,
   GuildOnboardingPromptType,
   AttachmentFlags,
-  // RoleFlags,
+  RoleFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2561,7 +2561,7 @@ export class Role extends Base {
   public toString(): RoleMention;
 }
 
-export type RoleFlagsString = any; // keyof typeof RoleFlags;
+export type RoleFlagsString = keyof typeof RoleFlags;
 
 export class RoleFlagsBitField extends BitField<RoleFlagsString> {
   public static Flags: Record<RoleFlagsString, number>;
