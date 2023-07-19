@@ -2082,7 +2082,7 @@ export class Attachment {
 export type AttachmentFlagsString = keyof typeof AttachmentFlags;
 
 export class AttachmentFlagsBitField extends BitField<AttachmentFlagsString> {
-  public static FLAGS: Record<AttachmentFlagsString, number>;
+  public static Flags: Record<AttachmentFlagsString, number>;
   public static resolve(bit?: BitFieldResolvable<AttachmentFlagsString, number>): number;
 }
 
