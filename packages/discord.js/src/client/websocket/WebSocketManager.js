@@ -155,6 +155,7 @@ class WebSocketManager extends EventEmitter {
         },
         compression: zlib ? CompressionMethod.ZlibStream : null,
       };
+      if (ws.buildIdentifyThrottler) wsOptions.buildIdentifyThrottler = ws.buildIdentifyThrottler;
       if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;
       this._ws = new WSWebSocketManager(wsOptions);
       this.attachEvents();

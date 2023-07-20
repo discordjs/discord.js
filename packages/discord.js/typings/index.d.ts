@@ -40,7 +40,12 @@ import {
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
-import { WebSocketManager as WSWebSocketManager, IShardingStrategy, SessionInfo } from '@discordjs/ws';
+import {
+  WebSocketManager as WSWebSocketManager,
+  IShardingStrategy,
+  IIdentifyThrottler,
+  SessionInfo,
+} from '@discordjs/ws';
 import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
@@ -6388,6 +6393,7 @@ export interface WebSocketOptions {
   large_threshold?: number;
   version?: number;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
+  buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
 }
 
 export interface WidgetActivity {
