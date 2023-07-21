@@ -68,6 +68,17 @@ const { version } = require('../../package.json');
  */
 
 /**
+ * A function to change the concurrency handling for shard identifies of this manager
+ * ```js
+ * const concurrency = 1;
+ * (manager) => new SimpleIdentifyThrottler(concurrency);
+ * ```
+ * @typedef {Function} IdentifyThrottlerFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {Awaitable<IIdentifyThrottler>} The identify throttler that this ws manager will use
+ */
+
+/**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
@@ -75,6 +86,7 @@ const { version } = require('../../package.json');
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
  * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
+ * @property {IdentifyThrottlerFunction} [buildIdentifyThrottler] Builds the identify throttler to use for sharding
  */
 
 /**
@@ -213,4 +225,9 @@ module.exports = Options;
 /**
  * @external IShardingStrategy
  * @see {@link https://discord.js.org/docs/packages/ws/stable/IShardingStrategy:Interface}
+ */
+
+/**
+ * @external IIdentifyThrottler
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IIdentifyThrottler:Interface}
  */
