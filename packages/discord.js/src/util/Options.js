@@ -70,8 +70,10 @@ const { version } = require('../../package.json');
 /**
  * A function to change the concurrency handling for shard identifies of this manager
  * ```js
- * const concurrency = 1;
- * (manager) => new SimpleIdentifyThrottler(concurrency);
+ * async (manager) => {
+ *   const gateway = await manager.fetchGatewayInformation();
+ *   return new SimpleIdentifyThrottler(gateway.session_start_limit.max_concurrency);
+ * }
  * ```
  * @typedef {Function} IdentifyThrottlerFunction
  * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
