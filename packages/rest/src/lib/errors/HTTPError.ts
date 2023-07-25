@@ -1,4 +1,4 @@
-import type { InternalRequest } from '../RequestManager.js';
+import type { InternalRequest } from '../utils/types.js';
 import type { RequestBody } from './DiscordAPIError.js';
 
 /**

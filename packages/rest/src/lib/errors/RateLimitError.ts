@@ -1,4 +1,4 @@
-import type { RateLimitData } from '../REST.js';
+import type { RateLimitData } from '../utils/types.js';
 
 export class RateLimitError extends Error implements RateLimitData {
 	public timeToReset: number;
