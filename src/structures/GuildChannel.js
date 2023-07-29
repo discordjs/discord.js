@@ -3,7 +3,7 @@
 const { Channel } = require('./Channel');
 const { Error } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
-const { VoiceBasedChannelTypes, ChannelTypes } = require('../util/Constants');
+const { VoiceBasedChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -146,12 +146,13 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get position() {
-    const selfIsCategory = this.type === ChannelTypes.GUILD_CATEGORY;
+    const selfIsCategory = this.type === 'GUILD_CATEGORY';
     const types = Util.getSortableGroupTypes(this.type);
 
     let count = 0;
     for (const channel of this.guild.channels.cache.values()) {
-      if (!types.includes(channel.type) || !(selfIsCategory || channel.parentId === this.parentId)) continue;
+      if (!types.includes(channel.type)) continue;
+      if (!selfIsCategory && channel.parentId !== this.parentId) continue;
       if (this.rawPosition === channel.rawPosition) {
         if (BigInt(channel.id) < BigInt(this.id)) count++;
       } else if (this.rawPosition > channel.rawPosition) {

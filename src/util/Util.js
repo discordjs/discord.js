@@ -4,7 +4,7 @@ const { parse } = require('node:path');
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const fetch = require('node-fetch');
-const { Colors, Endpoints, ChannelTypes } = require('./Constants');
+const { Colors, Endpoints } = require('./Constants');
 const Options = require('./Options');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
@@ -14,8 +14,9 @@ let deprecationEmittedForSplitMessage = false;
 let deprecationEmittedForRemoveMentions = false;
 let deprecationEmittedForResolveAutoArchiveMaxLimit = false;
 
-const TextSortableGroupTypes = [ChannelTypes.GUILD_TEXT, ChannelTypes.GUILD_ANNOUCMENT, ChannelTypes.GUILD_FORUM];
-const CategorySortableGroupTypes = [ChannelTypes.GUILD_CATEGORY];
+const TextSortableGroupTypes = ['GUILD_TEXT', 'GUILD_ANNOUCMENT', 'GUILD_FORUM'];
+const VoiceSortableGroupTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
+const CategorySortableGroupTypes = ['GUILD_CATEGORY'];
 
 /**
  * Contains various general-purpose utility methods.
@@ -756,15 +757,27 @@ class Util extends null {
    */
   static getSortableGroupTypes(type) {
     switch (type) {
-      case ChannelTypes.GUILD_TEXT:
-      case ChannelTypes.GUILD_ANNOUNCEMENT:
-      case ChannelTypes.GUILD_FORUM:
+      case 'GUILD_TEXT':
+      case 'GUILD_ANNOUNCEMENT':
+      case 'GUILD_FORUM':
         return TextSortableGroupTypes;
-      case ChannelTypes.GUILD_CATEGORY:
+      case 'GUILD_VOICE':
+      case 'GUILD_STAGE_VOICE':
+        return VoiceSortableGroupTypes;
+      case 'GUILD_CATEGORY':
         return CategorySortableGroupTypes;
       default:
         return [type];
     }
+  }
+
+  /**
+   * Calculates the default avatar index for a given user id.
+   * @param {Snowflake} userId - The user id to calculate the default avatar index for
+   * @returns {number}
+   */
+  static calculateUserDefaultAvatarIndex(userId) {
+    return Number(BigInt(userId) >> 22n) % 6;
   }
 }
 

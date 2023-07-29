@@ -2698,14 +2698,17 @@ export class User extends PartialTextBasedChannel(Base) {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
+  public avatarDecoration: string | null;
   public banner: string | null | undefined;
   public bot: boolean;
   public readonly createdAt: Date;
   public readonly createdTimestamp: number;
   public discriminator: string;
+  public readonly displayName: string;
   public readonly defaultAvatarURL: string;
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
+  public globalName: string | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
@@ -2713,6 +2716,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly tag: string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public avatarDecorationURL(options?: StaticImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
@@ -2785,6 +2789,7 @@ export class Util extends null {
   public static splitMessage(text: string, options?: SplitOptions): string[];
   /** @deprecated This will be removed in the next major version. */
   public static resolveAutoArchiveMaxLimit(guild: Guild): Exclude<ThreadAutoArchiveDuration, 60>;
+  public static calculateUserDefaultAvatarIndex(userId: Snowflake): number;
 }
 
 export class Formatters extends null {
@@ -3092,8 +3097,9 @@ export const Constants: {
         size: AllowedImageSize,
         dynamic: boolean,
       ): string;
+      AvatarDecoration(userId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
       Banner(id: Snowflake, hash: string, format: DynamicImageFormat, size: AllowedImageSize, dynamic: boolean): string;
-      DefaultAvatar(discriminator: number): string;
+      DefaultAvatar(index: number): string;
       DiscoverySplash(guildId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
       Emoji(emojiId: Snowflake, format: DynamicImageFormat): string;
       GDMIcon(channelId: Snowflake, hash: string, format: AllowedImageFormat, size: AllowedImageSize): string;
