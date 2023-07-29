@@ -23,7 +23,7 @@
 
 ## Installation
 
-**Node.js 18.12.0 or newer is required.**
+**Node.js 16.9.0 or newer is required.**
 
 ```sh
 npm install @discordjs/core
@@ -39,10 +39,10 @@ import { WebSocketManager } from '@discordjs/ws';
 import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
 
 // Create REST and WebSocket managers directly
-const rest = new REST({ version: '10' }).setToken(token);
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 const gateway = new WebSocketManager({
-	token,
+	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
 	rest,
 });

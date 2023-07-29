@@ -1,3 +1,11 @@
 {
-	"extends": "../../.eslintrc.json"
+	"extends": "../../.eslintrc.json",
+	"rules": {
+		"n/prefer-global/url": 0,
+		"n/prefer-global/url-search-params": 0,
+		"n/prefer-global/buffer": 0,
+		"n/prefer-global/process": 0,
+		"no-restricted-globals": 0,
+		"unicorn/prefer-node-protocol": 0
+	}
 }
