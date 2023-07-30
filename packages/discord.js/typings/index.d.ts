@@ -2564,7 +2564,7 @@ export class Role extends Base {
 export type RoleFlagsString = keyof typeof RoleFlags;
 
 export class RoleFlagsBitField extends BitField<RoleFlagsString> {
-  public static Flags: Record<RoleFlagsString, number>;
+  public static Flags: typeof RoleFlags;
   public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
