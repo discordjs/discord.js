@@ -87,7 +87,7 @@ class AutoModerationActionExecution {
 
   /**
    * The channel where this action was triggered from.
-   * @type {?TextBasedChannel}
+   * @type {?(GuildTextBasedChannel|ForumChannel)}
    * @readonly
    */
   get channel() {

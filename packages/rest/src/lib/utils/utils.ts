@@ -1,8 +1,7 @@
-import { URLSearchParams } from 'node:url';
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
-import type { RateLimitData, ResponseLike } from '../REST.js';
-import { type RequestManager, RequestMethod } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
+import { RequestMethod, type RateLimitData, type ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -100,7 +99,7 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: RequestManager, rateLimitData: RateLimitData) {
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
 	const { options } = manager;
 	if (!options.rejectOnRateLimit) return;
 
@@ -120,4 +119,24 @@ export async function onRateLimit(manager: RequestManager, rateLimitData: RateLi
  */
 export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
 	return Number(BigInt(userId) >> 22n) % 6;
+}
+
+/**
+ * Sleeps for a given amount of time.
+ *
+ * @param ms - The amount of time (in milliseconds) to sleep for
+ */
+export async function sleep(ms: number): Promise<void> {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => resolve(), ms);
+	});
+}
+
+/**
+ * Verifies that a value is a buffer-like object.
+ *
+ * @param value - The value to check
+ */
+export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
+	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
 }

@@ -1,6 +1,4 @@
 /* eslint-disable jsdoc/check-param-names */
-
-import { URL } from 'node:url';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,
@@ -94,6 +92,21 @@ export class CDN {
 	 */
 	public avatar(id: string, avatarHash: string, options?: Readonly<ImageURLOptions>): string {
 		return this.dynamicMakeURL(`/avatars/${id}/${avatarHash}`, avatarHash, options);
+	}
+
+	/**
+	 * Generates a user avatar decoration URL.
+	 *
+	 * @param userId - The id of the user
+	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
+	 * @param options - Optional options for the avatar decoration
+	 */
+	public avatarDecoration(
+		userId: string,
+		userAvatarDecoration: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
 	}
 
 	/**

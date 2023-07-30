@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder: BuildersEmbed } = require('@discordjs/builders');
+const { EmbedBuilder: BuildersEmbed, embedLength } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 const { resolveColor } = require('../util/Util');
@@ -30,6 +30,14 @@ class EmbedBuilder extends BuildersEmbed {
    */
   static from(other) {
     return new this(isJSONEncodable(other) ? other.toJSON() : other);
+  }
+
+  /**
+   * The accumulated length for the embed title, description, fields, footer text, and author name.
+   * @type {number}
+   */
+  get length() {
+    return embedLength(this.data);
   }
 }
 

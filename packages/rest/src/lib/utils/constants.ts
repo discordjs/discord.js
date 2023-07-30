@@ -1,11 +1,7 @@
-import process from 'node:process';
-import { lazy } from '@discordjs/util';
+import { getUserAgentAppendix } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
-import type { RESTOptions } from '../REST.js';
-
-const getUndiciRequest = lazy(async () => {
-	return import('../../strategies/undiciRequest.js');
-});
+import { getDefaultStrategy } from '../../environment.js';
+import type { RESTOptions, ResponseLike } from './types.js';
 
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
@@ -13,7 +9,7 @@ export const DefaultUserAgent =
 /**
  * The default string to append onto the user agent.
  */
-export const DefaultUserAgentAppendix = process.release?.name === 'node' ? `Node.js/${process.version}` : '';
+export const DefaultUserAgentAppendix = getUserAgentAppendix();
 
 export const DefaultRestOptions = {
 	agent: null,
@@ -32,9 +28,8 @@ export const DefaultRestOptions = {
 	hashSweepInterval: 14_400_000, // 4 Hours
 	hashLifetime: 86_400_000, // 24 Hours
 	handlerSweepInterval: 3_600_000, // 1 Hour
-	async makeRequest(...args) {
-		const strategy = await getUndiciRequest();
-		return strategy.makeRequest(...args);
+	async makeRequest(...args): Promise<ResponseLike> {
+		return getDefaultStrategy()(...args);
 	},
 } as const satisfies Required<RESTOptions>;
 
