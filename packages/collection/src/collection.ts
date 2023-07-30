@@ -624,7 +624,7 @@ export class Collection<K, V> extends Map<K, V> {
 			index = entries.length;
 		}
 
-		while (index-- > 0) {
+		while (--index >= 0) {
 			const key = entries[index]![0];
 			const val = entries[index]![1];
 			accumulator = fn(accumulator, val, key, this);
