@@ -12,26 +12,26 @@ interface DiscordAPITypesLinkOptions {
 	 *
 	 * @example `'RESTJSONErrorCodes'`
 	 */
-	parent?: string;
+	readonly parent?: string;
 	/**
 	 * The scope of where this link lives.
 	 *
 	 * @remarks API does not have a scope.
 	 */
-	scope?: 'gateway' | 'globals' | 'payloads' | 'rest' | 'rpc' | 'utils' | 'voice';
+	readonly scope?: 'gateway' | 'globals' | 'payloads' | 'rest' | 'rpc' | 'utils' | 'voice';
 	/**
 	 * The symbol belonging to the parent.
 	 *
 	 * @example '`MaximumNumberOfGuildsReached'`
 	 */
-	symbol?: string;
+	readonly symbol?: string;
 	/**
 	 * The type of the {@link DiscordAPITypesLinkOptions.parent}.
 	 *
 	 * @example `'enum'`
 	 * @example `'interface'`
 	 */
-	type?: string;
+	readonly type?: string;
 }
 
 export function DiscordAPITypesLink({

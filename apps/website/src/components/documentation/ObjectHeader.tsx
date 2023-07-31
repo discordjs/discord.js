@@ -4,7 +4,7 @@ import { Header } from './Header';
 import { SummarySection } from './section/SummarySection';
 
 export interface ObjectHeaderProps {
-	item: ApiDeclaredItem;
+	readonly item: ApiDeclaredItem;
 }
 
 export function ObjectHeader({ item }: ObjectHeaderProps) {

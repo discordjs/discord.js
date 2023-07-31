@@ -3,7 +3,7 @@
 import { Providers } from './providers';
 import { inter } from '~/util/fonts';
 
-export default function GlobalError({ error }: { error: Error }) {
+export default function GlobalError({ error }: { readonly error: Error }) {
 	console.error(error);
 
 	return (

@@ -6,7 +6,7 @@ import { ObjectHeader } from '../../documentation/ObjectHeader';
 import { DocumentationSection } from '../../documentation/section/DocumentationSection';
 import { EnumMember } from './EnumMember';
 
-export function Enum({ item }: { item: ApiEnum }) {
+export function Enum({ item }: { readonly item: ApiEnum }) {
 	return (
 		<Documentation>
 			<ObjectHeader item={item} />

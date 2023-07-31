@@ -80,7 +80,7 @@ function resolveIcon(item: string) {
 	}
 }
 
-export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
+export function Sidebar({ members }: { readonly members: SidebarSectionItemData[] }) {
 	const segment = useSelectedLayoutSegment();
 	const { setOpened } = useNav();
 

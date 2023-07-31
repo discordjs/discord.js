@@ -1,6 +1,6 @@
 export interface IDiscordMessageEmbedThumbnail {
-	alt: string;
-	image: string;
+	readonly alt: string;
+	readonly image: string;
 }
 
 export function DiscordMessageEmbedThumbnail({ alt, image }: IDiscordMessageEmbedThumbnail) {

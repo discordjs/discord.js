@@ -10,7 +10,7 @@ const columnStyles = {
 	Type: 'font-mono whitespace-pre-wrap break-normal',
 };
 
-export function ParameterTable({ item }: { item: ApiDocumentedItem & ApiParameterListMixin }) {
+export function ParameterTable({ item }: { readonly item: ApiDocumentedItem & ApiParameterListMixin }) {
 	const params = resolveParameters(item);
 
 	const rows = useMemo(

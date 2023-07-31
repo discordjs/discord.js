@@ -8,7 +8,10 @@ export enum BadgeColor {
 	Warning = 'bg-yellow-500',
 }
 
-export function Badge({ children, color = BadgeColor.Primary }: PropsWithChildren<{ color?: BadgeColor | undefined }>) {
+export function Badge({
+	children,
+	color = BadgeColor.Primary,
+}: PropsWithChildren<{ readonly color?: BadgeColor | undefined }>) {
 	return (
 		<span
 			className={`h-5 flex flex-row place-content-center place-items-center rounded-full px-3 text-center text-xs font-semibold uppercase text-white ${color}`}
@@ -18,7 +21,7 @@ export function Badge({ children, color = BadgeColor.Primary }: PropsWithChildre
 	);
 }
 
-export function Badges({ item }: { item: ApiDocumentedItem }) {
+export function Badges({ item }: { readonly item: ApiDocumentedItem }) {
 	const isStatic = ApiStaticMixin.isBaseClassOf(item) && item.isStatic;
 	const isProtected = ApiProtectedMixin.isBaseClassOf(item) && item.isProtected;
 	const isReadonly = ApiReadonlyMixin.isBaseClassOf(item) && item.isReadonly;

@@ -10,7 +10,7 @@ const rowElements = {
 	Default: 'font-mono whitespace-pre break-normal',
 };
 
-export function TypeParamTable({ item }: { item: ApiTypeParameterListMixin }) {
+export function TypeParamTable({ item }: { readonly item: ApiTypeParameterListMixin }) {
 	const model = item.getAssociatedModel()!;
 	const rows = useMemo(
 		() =>
