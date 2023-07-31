@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [create-discord-bot/0.2.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.1.0...create-discord-bot@0.2.0) - (2023-07-31)
+# [create-discord-bot@0.2.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.1.0...create-discord-bot@0.2.0) - (2023-07-31)
 
 ## Bug Fixes
 
@@ -21,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - Check for empty directory (#9539) ([64324a8](https://github.com/discordjs/discord.js/commit/64324a8be13dc2b766636a1042ae13d3d52a5c79))
 - **create-discord-bot:** Inherit stdio when installing deps (#9543) ([c4a3120](https://github.com/discordjs/discord.js/commit/c4a3120354ea3930e010ba011216e42311e29cdb))
 
-# [0.1.0](https://github.com/discordjs/discord.js/tree/0.1.0) - (2023-05-07)
+# [create-discord-bot@0.1.0](https://github.com/discordjs/discord.js/tree/create-discord-bot@0.1.0) - (2023-05-07)
 
 ## Features
 
