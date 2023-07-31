@@ -3,7 +3,7 @@ import { SignatureText } from '../../SignatureText';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 import { CodeHeading } from '~/components/CodeHeading';
 
-export function EnumMember({ member }: { member: ApiEnumMember }) {
+export function EnumMember({ member }: { readonly member: ApiEnumMember }) {
 	return (
 		<div className="flex flex-col scroll-mt-30" id={member.displayName}>
 			<CodeHeading className="md:-ml-8.5" href={`#${member.displayName}`}>

@@ -8,11 +8,11 @@ export interface ExcerptTextProps {
 	/**
 	 * The tokens to render.
 	 */
-	excerpt: Excerpt;
+	readonly excerpt: Excerpt;
 	/**
 	 * The model to resolve item references from.
 	 */
-	model: ApiModel;
+	readonly model: ApiModel;
 }
 
 /**

@@ -5,15 +5,15 @@ export interface CodeListingProps {
 	/**
 	 * The value of this heading.
 	 */
-	children: ReactNode;
+	readonly children: ReactNode;
 	/**
 	 * Additional class names to apply to the root element.
 	 */
-	className?: string | undefined;
+	readonly className?: string | undefined;
 	/**
 	 * The href of this heading.
 	 */
-	href?: string | undefined;
+	readonly href?: string | undefined;
 }
 
 export function CodeHeading({ href, className, children }: CodeListingProps) {

@@ -1,11 +1,10 @@
-import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
-import type { RateLimitData, ResponseLike } from '../REST.js';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, onRateLimit } from '../utils/utils.js';
+import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
+import { hasSublimit, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 const enum QueueType {
@@ -63,7 +62,7 @@ export class SequentialHandler implements IHandler {
 	 * @param majorParameter - The major parameter for this handler
 	 */
 	public constructor(
-		private readonly manager: RequestManager,
+		private readonly manager: REST,
 		private readonly hash: string,
 		private readonly majorParameter: string,
 	) {

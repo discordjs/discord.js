@@ -8,7 +8,7 @@ import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
 import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
-export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
+export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
 		(tsdoc: DocNode, idx?: number): ReactNode => {
 			switch (tsdoc.kind) {
@@ -66,7 +66,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 				case DocNodeKind.CodeSpan: {
 					const { code } = tsdoc as DocFencedCode;
 					return (
-						<code className="font-mono text-sm" key={idx}>
+						<code className="text-sm font-mono" key={idx}>
 							{code}
 						</code>
 					);

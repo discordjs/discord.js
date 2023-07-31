@@ -73,7 +73,7 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function GlobalError({ error }: { error: Error }) {
+export default function GlobalError({ error }: { readonly error: Error }) {
 	console.error(error);
 
 	return (
