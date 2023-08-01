@@ -58,7 +58,7 @@ All notable changes to this project will be documented in this file.
 - **GuildMember:** Make `_roles` property non-enumerable (#9387) ([46167a7](https://github.com/discordjs/discord.js/commit/46167a79d7d0cac5599459a31c33b2bbcf6e06da))
 - **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
   - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
-  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
+  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Response` object.
   - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
   - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
   - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
