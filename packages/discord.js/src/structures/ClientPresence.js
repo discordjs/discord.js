@@ -56,6 +56,7 @@ class ClientPresence extends Presence {
         data.activities.push({
           type: activity.type,
           name: activity.name,
+          state: activity.state,
           url: activity.url,
         });
       }
