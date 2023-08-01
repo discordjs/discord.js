@@ -64,6 +64,7 @@ class ClientPresence extends Presence {
       data.activities.push(
         ...this.activities.map(a => ({
           name: a.name,
+          state: a.state ?? undefined,
           type: a.type,
           url: a.url ?? undefined,
         })),
