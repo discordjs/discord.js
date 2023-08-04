@@ -1,4 +1,4 @@
-name: Publish Release
+name: Publish Release (CyberPurge)
 on:
   push:
   #release:
