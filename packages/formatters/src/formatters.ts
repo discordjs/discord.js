@@ -411,7 +411,7 @@ export function heading(content: string, level?: HeadingLevel) {
 		case HeadingLevel.Three:
 			return `### ${content}`;
 		case HeadingLevel.Two:
-			return `## ${content} `;
+			return `## ${content}`;
 		default:
 			return `# ${content}`;
 	}
