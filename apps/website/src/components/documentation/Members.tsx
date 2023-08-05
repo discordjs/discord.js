@@ -3,7 +3,7 @@ import { MethodsSection } from './section/MethodsSection';
 import { PropertiesSection } from './section/PropertiesSection';
 import { hasProperties, hasMethods } from './util';
 
-export function Members({ item }: { item: ApiDeclaredItem & ApiItemContainerMixin }) {
+export function Members({ item }: { readonly item: ApiDeclaredItem & ApiItemContainerMixin }) {
 	return (
 		<>
 			{hasProperties(item) ? <PropertiesSection item={item} /> : null}

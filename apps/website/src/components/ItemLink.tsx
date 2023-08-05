@@ -10,17 +10,17 @@ export interface ItemLinkProps
 	extends Omit<LinkProps, 'href'>,
 		RefAttributes<HTMLAnchorElement>,
 		Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> {
-	className?: string;
+	readonly className?: string;
 
 	/**
 	 * The URI of the api item to link to. (e.g. `/RestManager`)
 	 */
-	itemURI: string;
+	readonly itemURI: string;
 
 	/**
 	 * The name of the package the item belongs to.
 	 */
-	packageName?: string | undefined;
+	readonly packageName?: string | undefined;
 }
 
 /**

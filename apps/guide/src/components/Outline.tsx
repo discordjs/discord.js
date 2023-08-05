@@ -5,7 +5,7 @@ const LINK_HEIGHT = 30;
 const INDICATOR_SIZE = 10;
 const INDICATOR_OFFSET = (LINK_HEIGHT - INDICATOR_SIZE) / 2;
 
-export function Outline({ headings }: { headings: any[] }) {
+export function Outline({ headings }: { readonly headings: any[] }) {
 	// eslint-disable-next-line react/hook-use-state
 	const [active /* setActive */] = useState(0);
 

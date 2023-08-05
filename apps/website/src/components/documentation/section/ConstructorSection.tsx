@@ -6,7 +6,7 @@ import { parametersString } from '../util';
 import { DocumentationSection } from './DocumentationSection';
 import { CodeHeading } from '~/components/CodeHeading';
 
-export function ConstructorSection({ item }: { item: ApiConstructor }) {
+export function ConstructorSection({ item }: { readonly item: ApiConstructor }) {
 	return (
 		<DocumentationSection icon={<VscSymbolMethod size={20} />} padded title="Constructor">
 			<div className="flex flex-col gap-2">

@@ -1,6 +1,6 @@
 {
 	"name": "create-discord-bot",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
 		"build": "tsup",
@@ -53,12 +53,12 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@microsoft/api-extractor": "^7.36.3",
-		"@types/node": "16.18.38",
+		"@types/node": "16.18.39",
 		"@types/prompts": "^2.4.4",
 		"@types/validate-npm-package-name": "^4.0.0",
 		"@vitest/coverage-c8": "^0.33.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.45.0",
+		"eslint": "^8.46.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",

@@ -1,12 +1,12 @@
 import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
 
 export interface IDiscordMessageAuthor {
-	avatar: string;
-	bot?: boolean;
-	color?: string;
-	time: string;
-	username: string;
-	verified?: boolean;
+	readonly avatar: string;
+	readonly bot?: boolean;
+	readonly color?: string;
+	readonly time: string;
+	readonly username: string;
+	readonly verified?: boolean;
 }
 
 export function DiscordMessageAuthor({ avatar, bot, verified, color, time, username }: IDiscordMessageAuthor) {

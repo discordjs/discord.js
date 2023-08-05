@@ -1,7 +1,7 @@
 import { Alert } from '@discordjs/ui';
 import type { PropsWithChildren } from 'react';
 
-export function Block({ children, title }: PropsWithChildren<{ title: string }>) {
+export function Block({ children, title }: PropsWithChildren<{ readonly title: string }>) {
 	return (
 		<div className="flex flex-col gap-2">
 			<h5 className="font-bold">{title}</h5>
@@ -13,7 +13,7 @@ export function Block({ children, title }: PropsWithChildren<{ title: string }>)
 export function ExampleBlock({
 	children,
 	exampleIndex,
-}: PropsWithChildren<{ exampleIndex?: number | undefined }>): JSX.Element {
+}: PropsWithChildren<{ readonly exampleIndex?: number | undefined }>): JSX.Element {
 	return <Block title={`Example ${exampleIndex ? exampleIndex : ''}`}>{children}</Block>;
 }
 

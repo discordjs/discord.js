@@ -1,7 +1,7 @@
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
-import type { RateLimitData, ResponseLike } from '../REST.js';
-import { type RequestManager, RequestMethod } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
+import { RequestMethod, type RateLimitData, type ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -99,7 +99,7 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: RequestManager, rateLimitData: RateLimitData) {
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
 	const { options } = manager;
 	if (!options.rejectOnRateLimit) return;
 

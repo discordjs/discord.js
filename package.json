@@ -55,10 +55,10 @@
 		"is-ci": "^3.0.1",
 		"lint-staged": "^13.2.3",
 		"tsup": "^7.1.0",
-		"turbo": "^1.10.8",
+		"turbo": "^1.10.12",
 		"typescript": "^5.1.6",
-		"unocss": "^0.53.5",
-		"vercel": "^31.0.4",
+		"unocss": "^0.54.0",
+		"vercel": "^31.2.0",
 		"vitest": "^0.33.0"
 	},
 	"resolutions": {

@@ -16,8 +16,8 @@ export function Property({
 	children,
 	inheritedFrom,
 }: PropsWithChildren<{
-	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
-	item: ApiProperty | ApiPropertySignature;
+	readonly inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
+	readonly item: ApiProperty | ApiPropertySignature;
 }>) {
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 

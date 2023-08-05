@@ -19,7 +19,7 @@ function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	);
 }
 
-export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
+export function MethodsSection({ item }: { readonly item: ApiItemContainerMixin }) {
 	const members = resolveMembers(item, isMethodLike);
 
 	const methodItems = useMemo(

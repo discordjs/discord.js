@@ -8,19 +8,19 @@ interface DocsLinkOptions {
 	 *
 	 * @remarks Functions automatically infer this.
 	 */
-	brackets?: boolean;
+	readonly brackets?: boolean;
 	/**
 	 * The package.
 	 *
 	 * @defaultValue `'discord.js'`
 	 */
-	package?: (typeof PACKAGES)[number];
+	readonly package?: (typeof PACKAGES)[number];
 	/**
 	 * The initial documentation class, function, interface etc.
 	 *
 	 * @example `'Client'`
 	 */
-	parent?: string;
+	readonly parent?: string;
 	/**
 	 * Whether to reference a static property.
 	 *
@@ -28,20 +28,20 @@ interface DocsLinkOptions {
 	 * This should only be used for the https://discord.js.org domain
 	 * as static properties are not identified in the URL.
 	 */
-	static?: boolean;
+	readonly static?: boolean;
 	/**
 	 * The symbol belonging to the parent.
 	 *
 	 * @example '`login'`
 	 */
-	symbol?: string;
+	readonly symbol?: string;
 	/**
 	 * The type of the {@link DocsLinkOptions.parent}.
 	 *
 	 * @example `'class'`
 	 * @example `'Function'`
 	 */
-	type?: string;
+	readonly type?: string;
 }
 
 export function DocsLink({

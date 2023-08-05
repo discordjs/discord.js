@@ -15,8 +15,8 @@ export function Method({
 	method,
 	inheritedFrom,
 }: {
-	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
-	method: ApiMethod | ApiMethodSignature;
+	readonly inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
+	readonly method: ApiMethod | ApiMethodSignature;
 }) {
 	if (method.getMergedSiblings().length > 1) {
 		// We have overloads, use the overload switcher, but render
