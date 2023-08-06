@@ -2387,7 +2387,7 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export class BaseForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
+export class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'send',
   'lastMessage',
   'lastPinAt',
@@ -2422,7 +2422,7 @@ export class BaseForumChannel extends TextBasedChannelMixin(GuildChannel, true, 
   public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
 }
 
-export class ForumChannel extends BaseForumChannel {
+export class ForumChannel extends ThreadOnlyChannel {
   public type: ChannelType.GuildForum;
   public defaultForumLayout: ForumLayoutType;
   public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;

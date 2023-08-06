@@ -40,7 +40,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
-class BaseForumChannel extends GuildChannel {
+class ThreadOnlyChannel extends GuildChannel {
   constructor(guild, data, client) {
     super(guild, data, client, false);
 
@@ -233,7 +233,7 @@ class BaseForumChannel extends GuildChannel {
   setRateLimitPerUser() {}
 }
 
-TextBasedChannel.applyToClass(BaseForumChannel, true, [
+TextBasedChannel.applyToClass(ThreadOnlyChannel, true, [
   'send',
   'lastMessage',
   'lastPinAt',
@@ -245,4 +245,4 @@ TextBasedChannel.applyToClass(BaseForumChannel, true, [
   'awaitMessageComponent',
 ]);
 
-module.exports = BaseForumChannel;
+module.exports = ThreadOnlyChannel;

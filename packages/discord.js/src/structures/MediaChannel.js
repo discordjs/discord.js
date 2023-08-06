@@ -1,11 +1,11 @@
 'use strict';
 
-const BaseForumChannel = require('./BaseForumChannel');
+const ThreadOnlyChannel = require('./ThreadOnlyChannel');
 
 /**
  * Represents a media channel.
- * @extends {BaseForumChannel}
+ * @extends {ThreadOnlyChannel}
  */
-class MediaChannel extends BaseForumChannel {}
+class MediaChannel extends ThreadOnlyChannel {}
 
 module.exports = MediaChannel;

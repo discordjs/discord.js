@@ -1,12 +1,12 @@
 'use strict';
 
-const BaseForumChannel = require('./BaseForumChannel');
+const ThreadOnlyChannel = require('./ThreadOnlyChannel');
 
 /**
  * Represents a forum channel.
- * @extends {BaseForumChannel}
+ * @extends {ThreadOnlyChannel}
  */
-class ForumChannel extends BaseForumChannel {
+class ForumChannel extends ThreadOnlyChannel {
   _patch(data) {
     super._patch(data);
 
