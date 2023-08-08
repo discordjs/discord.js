@@ -178,14 +178,8 @@ class ClientApplication extends Application {
    * @returns {Promise<ClientApplication>}
    */
   async fetch() {
-    const [data, authData] = await Promise.all([
-      // TODO: Routes.currentApplication() (discord-api-types)
-      this.client.rest.get('/applications/@me'),
-      this.client.rest.get(Routes.oauth2CurrentApplication()),
-    ]);
-
+    const data = await this.client.rest.get(Routes.currentApplication());
     this._patch(data);
-    this._patch(authData);
     return this;
   }
 
