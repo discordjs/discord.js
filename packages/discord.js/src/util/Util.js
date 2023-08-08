@@ -235,6 +235,14 @@ function verifyString(
  * ```js
  * [255, 0, 255] // purple
  * ```
+ * or HSV object like:
+ * ```js
+ * { h: 30, s: 100, v: 100 }
+ * ```
+ * or HSL object like:
+ * ```js
+ * { h: 30, s: 100, l: 50 }
+ * ```
  * or one of the following strings:
  * - `Default`
  * - `White`
@@ -279,16 +287,112 @@ function resolveColor(color) {
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    
+    if (/^#?[\da-f]{6}$/i.test(color)) {
+      return parseInt(color.replace('#', ''), 16);
+    }
+    
     color = Colors[color];
   } else if (Array.isArray(color)) {
-    color = (color[0] << 16) + (color[1] << 8) + color[2];
+    if (color.length === 3) {
+      return (color[0] << 16) + (color[1] << 8) + color[2];
+    } else if (color.length === 4) {
+      return (color[0] << 24) + (color[1] << 16) + (color[2] << 8) + color[3];
+    }
+  } else if (typeof color === 'object' && color !== null) {
+    if (color.hasOwnProperty('r') && color.hasOwnProperty('g') && color.hasOwnProperty('b')) {
+      return (color.r << 16) + (color.g << 8) + color.b;
+    }
+    
+    if (color.hasOwnProperty('h') && color.hasOwnProperty('s') && color.hasOwnProperty('l')) {
+      const rgb = hslToRgb(color.h, color.s, color.l);
+      return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+    }
+    
+    if (color.hasOwnProperty('h') && color.hasOwnProperty('s') && color.hasOwnProperty('v')) {
+      const rgb = hsvToRgb(color.h, color.s, color.v);
+      return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+    }
   }
 
   if (color < 0 || color > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
   if (typeof color !== 'number' || Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
 
   return color;
+}
+
+/**
+ * Converts HSL (Hue, Saturation, Lightness) color to RGB color.
+ *
+ * @param {number} h - The hue value in degrees (0-360).
+ * @param {number} s - The saturation value in percentage (0-100).
+ * @param {number} l - The lightness value in percentage (0-100).
+ * @returns {number[]} An array containing RGB values [r, g, b].
+ */
+function hslToRgb(h, s, l) {
+  h /= 360;
+  s /= 100;
+  l /= 100;
+
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+/**
+ * Converts HSV (Hue, Saturation, Value) color to RGB color.
+ *
+ * @param {number} h - The hue value in degrees (0-360).
+ * @param {number} s - The saturation value in percentage (0-100).
+ * @param {number} v - The value (brightness) value in percentage (0-100).
+ * @returns {number[]} An array containing RGB values [r, g, b].
+ */
+function hsvToRgb(h, s, v) {
+  h /= 360;
+  s /= 100;
+  v /= 100;
+
+  const i = Math.floor(h * 6);
+  const f = h * 6 - i;
+  const p = v * (1 - s);
+  const q = v * (1 - f * s);
+  const t = v * (1 - (1 - f) * s);
+
+  switch (i % 6) {
+    case 0:
+      return [Math.round(v * 255), Math.round(t * 255), Math.round(p * 255)];
+    case 1:
+      return [Math.round(q * 255), Math.round(v * 255), Math.round(p * 255)];
+    case 2:
+      return [Math.round(p * 255), Math.round(v * 255), Math.round(t * 255)];
+    case 3:
+      return [Math.round(p * 255), Math.round(q * 255), Math.round(v * 255)];
+    case 4:
+      return [Math.round(t * 255), Math.round(p * 255), Math.round(v * 255)];
+    case 5:
+      return [Math.round(v * 255), Math.round(p * 255), Math.round(q * 255)];
+    default:
+      return [0, 0, 0];
+  }
 }
 
 /**
