@@ -15,7 +15,7 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  */
 
 /**
- * Represents a Client OAuth2 Application.
+ * Represents a client application.
  * @extends {Application}
  */
 class ClientApplication extends Application {
