@@ -92,6 +92,8 @@ import {
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildOnboardingJSONBody,
+	type RESTPutAPIGuildOnboardingResult,
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -1252,15 +1254,13 @@ export class GuildsAPI {
 	 */
 	public async editOnboarding(
 		guildId: Snowflake,
-		body: any,
-		// body: RESTPutAPIGuildOnboardingJSONBody,
+		body: RESTPutAPIGuildOnboardingJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.put(Routes.guildOnboarding(guildId), {
 			reason,
 			body,
 			signal,
-		}) as Promise<any>;
-		// }) as Promise<RESTPutAPIGuildOnboardingResult>;
+		}) as Promise<RESTPutAPIGuildOnboardingResult>;
 	}
 }

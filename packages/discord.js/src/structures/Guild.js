@@ -919,7 +919,7 @@ class Guild extends AnonymousGuild {
    * @returns {Promise<GuildOnboarding>}
    */
   async editOnboarding(options) {
-    const newData = await this.client.rest.put(`/guilds/${this.id}/onboarding`, {
+    const newData = await this.client.rest.put(Routes.guildOnboarding(this.id), {
       body: {
         prompts: options.prompts.map(prompt => ({
           title: prompt.title,
