@@ -4861,7 +4861,7 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  /** @deprecated Use {@link Client#event:webhooksUpdate} instead. */
+  /** @deprecated Use {@link webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
