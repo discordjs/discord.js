@@ -4862,7 +4862,7 @@ export interface ClientEvents {
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   /** @deprecated Use {@link Client#event:webhooksUpdate} instead. */
-  webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
+  webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
