@@ -69,6 +69,16 @@ class ClientApplication extends Application {
       this.flags = new ApplicationFlagsBitField(data.flags).freeze();
     }
 
+    if ('approximate_guild_count' in data) {
+      /**
+       * An approximate amount of guilds this application is in.
+       * @type {?number}
+       */
+      this.approximateGuildCount = data.approximate_guild_count;
+    } else {
+      this.approximateGuildCount ??= null;
+    }
+
     if ('owner' in data) {
       this._owner = this.client.users._add(data.owner);
     } else {
