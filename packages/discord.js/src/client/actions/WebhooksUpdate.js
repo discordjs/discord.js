@@ -25,11 +25,11 @@ class WebhooksUpdate extends Action {
      * @event Client#webhookUpdate
      * @param {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel} channel
      * The channel that had a webhook update
-     * @deprecated Use {@link Client#event:webhooksUpdate} instead
+     * @deprecated Use {@link Client#event:webhooksUpdate} instead.
      */
     if (client.emit('webhookUpdate', channel) && !deprecationEmitted) {
       deprecationEmitted = true;
-      process.emitWarning('The webhookUpdate event is deprecated. Use webhooksUpdate instead', 'DeprecationWarning');
+      process.emitWarning('The webhookUpdate event is deprecated. Use webhooksUpdate instead.', 'DeprecationWarning');
     }
   }
 }
