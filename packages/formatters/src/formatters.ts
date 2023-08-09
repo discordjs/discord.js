@@ -424,14 +424,14 @@ export type RecursiveArray<T> = readonly (RecursiveArray<T> | T)[];
  *
  * @internal
  */
-const listCallback = (element: RecursiveArray<string>, depth: number = 0, startNumber?: number): string => {
+function listCallback(element: RecursiveArray<string>, startNumber?: number, depth: number = 0): string {
 	if (Array.isArray(element)) {
-		const results = element.map((element) => listCallback(element, depth + 1, startNumber));
+		const results = element.map((element) => listCallback(element, startNumber, depth + 1));
 		return results.join('\n');
 	}
 
 	return `${'  '.repeat(depth - 1)}${startNumber ? `${startNumber}.` : '-'} ${element}`;
-};
+}
 
 /**
  * Formats the elements in the array to an ordered list.
@@ -443,7 +443,7 @@ export function orderedList(list: RecursiveArray<string>, startNumber: number = 
 	let newStartNumber = startNumber;
 	if (startNumber <= 0) newStartNumber = 1;
 
-	return listCallback(list, undefined, newStartNumber);
+	return listCallback(list, newStartNumber);
 }
 
 /**
