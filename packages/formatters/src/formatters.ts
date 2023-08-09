@@ -420,25 +420,30 @@ export function heading(content: string, level?: HeadingLevel) {
 export type RecursiveArray<T> = readonly (RecursiveArray<T> | T)[];
 
 /**
+ * Callback function for list formatters.
+ *
+ * @internal
+ */
+const listCallback = (element: RecursiveArray<string>, depth: number = 0, startNumber?: number): string => {
+	if (Array.isArray(element)) {
+		const results = element.map((element) => listCallback(element, depth + 1, startNumber));
+		return results.join('\n');
+	}
+
+	return `${'  '.repeat(depth - 1)}${startNumber ? `${startNumber}.` : '-'} ${element}`;
+};
+
+/**
  * Formats the elements in the array to an ordered list.
  *
  * @param list - The array of elements to list
- * @param startNumber - The starting number for the list.
+ * @param startNumber - The starting number for the list
  */
 export function orderedList(list: RecursiveArray<string>, startNumber: number = 1): string {
 	let newStartNumber = startNumber;
-	if (startNumber < 0) newStartNumber = 1;
+	if (startNumber <= 0) newStartNumber = 1;
 
-	const processElement = (element: RecursiveArray<string>, depth: number = 0): string => {
-		if (Array.isArray(element)) {
-			const results = element.map((element) => processElement(element, depth + 1));
-			return results.join('\n');
-		}
-
-		return `${'  '.repeat(depth - 1)}${newStartNumber}. ${element}`;
-	};
-
-	return processElement(list);
+	return listCallback(list, undefined, newStartNumber);
 }
 
 /**
@@ -447,16 +452,7 @@ export function orderedList(list: RecursiveArray<string>, startNumber: number = 
  * @param list - The array of elements to list
  */
 export function unorderedList(list: RecursiveArray<string>): string {
-	const processElement = (element: RecursiveArray<string>, depth: number = 0): string => {
-		if (Array.isArray(element)) {
-			const results = element.map((element) => processElement(element, depth + 1));
-			return results.join('\n');
-		}
-
-		return `${'  '.repeat(depth - 1)}- ${element}`;
-	};
-
-	return processElement(list);
+	return listCallback(list);
 }
 
 /**
