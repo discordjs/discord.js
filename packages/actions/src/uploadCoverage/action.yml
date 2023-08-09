@@ -39,6 +39,12 @@ runs:
         files: ./packages/discord.js/coverage/cobertura-coverage.xml
         flags: discord.js
 
+    - name: Upload Formatters Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./packages/formatters/coverage/cobertura-coverage.xml
+        flags: formatters
+
     - name: Upload Next Coverage
       uses: codecov/codecov-action@v3
       with:
