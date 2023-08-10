@@ -166,6 +166,7 @@ import {
   APIGuildOnboardingPrompt,
   APIGuildOnboardingPromptOption,
   GuildOnboardingPromptType,
+  AttachmentFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2070,6 +2071,7 @@ export class Attachment {
   public description: string | null;
   public duration: number | null;
   public ephemeral: boolean;
+  public flags: AttachmentFlagsBitField;
   public height: number | null;
   public id: Snowflake;
   public name: string;
@@ -2080,6 +2082,13 @@ export class Attachment {
   public waveform: string | null;
   public width: number | null;
   public toJSON(): unknown;
+}
+
+export type AttachmentFlagsString = keyof typeof AttachmentFlags;
+
+export class AttachmentFlagsBitField extends BitField<AttachmentFlagsString> {
+  public static Flags: Record<AttachmentFlagsString, number>;
+  public static resolve(bit?: BitFieldResolvable<AttachmentFlagsString, number>): number;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
