@@ -373,9 +373,21 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 	return `${guildId === undefined ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
+/**
+ * The heading levels for expanded markdown.
+ */
 export enum HeadingLevel {
+	/**
+	 * The first heading level.
+	 */
 	One = 1,
+	/**
+	 * The second heading level.
+	 */
 	Two,
+	/**
+	 * The third heading level.
+	 */
 	Three,
 }
 
@@ -417,6 +429,9 @@ export function heading(content: string, level?: HeadingLevel) {
 	}
 }
 
+/**
+ * A type that recursively traverses into arrays.
+ */
 export type RecursiveArray<T> = readonly (RecursiveArray<T> | T)[];
 
 /**
