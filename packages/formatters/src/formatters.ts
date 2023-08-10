@@ -454,9 +454,7 @@ function listCallback(element: RecursiveArray<string>, startNumber?: number, dep
  * @param startNumber - The starting number for the list
  */
 export function orderedList(list: RecursiveArray<string>, startNumber = 1): string {
-	let newStartNumber = startNumber;
-	if (startNumber <= 0) newStartNumber = 1;
-	return listCallback(list, newStartNumber);
+	return listCallback(list, Math.max(startNumber, 1));
 }
 
 /**
