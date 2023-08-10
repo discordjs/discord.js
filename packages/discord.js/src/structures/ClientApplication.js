@@ -79,22 +79,6 @@ class ClientApplication extends Application {
       this.approximateGuildCount ??= null;
     }
 
-    if ('owner' in data) {
-      this._owner = this.client.users._add(data.owner);
-    } else {
-      this._owner ??= null;
-    }
-
-    if ('team' in data) {
-      /**
-       * The team that holds this application.
-       * @type {?Team}
-       */
-      this.team = new Team(this.client, data.team);
-    } else {
-      this.team ??= null;
-    }
-
     if ('guild_id' in data) {
       /**
        * The id of the guild associated with this application.
@@ -154,15 +138,16 @@ class ClientApplication extends Application {
     } else {
       this.roleConnectionsVerificationURL ??= null;
     }
-  }
 
-  /**
-   * The owner of this application.
-   * @type {?(User|Team)}
-   * @readonly
-   */
-  get owner() {
-    return this.team ?? this._owner;
+    /**
+     * The owner of this OAuth application
+     * @type {?(User|Team)}
+     */
+    this.owner = data.team
+      ? new Team(this.client, data.team)
+      : data.owner
+      ? this.client.users._add(data.owner)
+      : this.owner ?? null;
   }
 
   /**
