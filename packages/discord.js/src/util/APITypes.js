@@ -411,6 +411,11 @@
  */
 
 /**
+ * @external RoleFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
+ */
+
+/**
  * @external RESTGetAPIGuildThreadsResult
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
  */

@@ -167,6 +167,7 @@ import {
   APIGuildOnboardingPromptOption,
   GuildOnboardingPromptType,
   AttachmentFlags,
+  RoleFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2524,6 +2525,7 @@ export class Role extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get editable(): boolean;
+  public flags: RoleFlagsBitField;
   public guild: Guild;
   public get hexColor(): HexColorString;
   public hoist: boolean;
@@ -2557,6 +2559,13 @@ export class Role extends Base {
   public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
   public toJSON(): unknown;
   public toString(): RoleMention;
+}
+
+export type RoleFlagsString = keyof typeof RoleFlags;
+
+export class RoleFlagsBitField extends BitField<RoleFlagsString> {
+  public static Flags: typeof RoleFlags;
+  public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
 export class StringSelectMenuInteraction<
