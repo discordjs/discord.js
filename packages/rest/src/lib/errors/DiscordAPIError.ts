@@ -1,4 +1,4 @@
-import type { InternalRequest, RawFile } from '../RequestManager.js';
+import type { InternalRequest, RawFile } from '../utils/types.js';
 
 interface DiscordErrorFieldInformation {
 	code: string;

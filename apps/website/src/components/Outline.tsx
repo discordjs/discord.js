@@ -4,7 +4,7 @@ import { Scrollbars } from './Scrollbars';
 import type { TableOfContentsSerialized } from './TableOfContentItems';
 import { TableOfContentItems } from './TableOfContentItems';
 
-export function Outline({ members }: { members: TableOfContentsSerialized[] }) {
+export function Outline({ members }: { readonly members: TableOfContentsSerialized[] }) {
 	return (
 		<aside className="fixed bottom-0 right-0 top-[50px] z-20 hidden h-[calc(100vh_-_65px)] w-64 border-l border-light-800 bg-white pr-2 xl:block dark:border-dark-100 dark:bg-dark-600">
 			<Scrollbars

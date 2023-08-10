@@ -10,7 +10,7 @@ import { ConstructorSection } from '../documentation/section/ConstructorSection'
 import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
 // import { serializeMembers } from '../documentation/util';
 
-export function Class({ clazz }: { clazz: ApiClass }) {
+export function Class({ clazz }: { readonly clazz: ApiClass }) {
 	const constructor = clazz.members.find((member) => member.kind === ApiItemKind.Constructor) as
 		| ApiConstructor
 		| undefined;

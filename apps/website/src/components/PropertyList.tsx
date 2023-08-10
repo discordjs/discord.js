@@ -14,7 +14,7 @@ export function isPropertyLike(item: ApiItem): item is ApiProperty | ApiProperty
 	return item.kind === ApiItemKind.Property || item.kind === ApiItemKind.PropertySignature;
 }
 
-export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
+export function PropertyList({ item }: { readonly item: ApiItemContainerMixin }) {
 	const members = resolveMembers(item, isPropertyLike);
 
 	const propertyItems = useMemo(

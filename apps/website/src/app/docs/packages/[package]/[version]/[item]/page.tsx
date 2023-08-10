@@ -116,7 +116,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	}));
 }
 
-function Member({ member }: { member?: ApiItem }) {
+function Member({ member }: { readonly member?: ApiItem }) {
 	switch (member?.kind) {
 		case 'Class':
 			return <Class clazz={member as ApiClass} />;

@@ -1,7 +1,7 @@
 import { getUserAgentAppendix } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
 import { getDefaultStrategy } from '../../environment.js';
-import type { RESTOptions, ResponseLike } from '../REST.js';
+import type { RESTOptions, ResponseLike } from './types.js';
 
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;

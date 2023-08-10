@@ -5,7 +5,7 @@ import { CodeHeading } from '~/components/CodeHeading';
 import { ExcerptText } from '~/components/ExcerptText';
 import { parametersString } from '~/components/documentation/util';
 
-export function MethodHeader({ method }: { method: ApiMethod | ApiMethodSignature }) {
+export function MethodHeader({ method }: { readonly method: ApiMethod | ApiMethodSignature }) {
 	const key = useMemo(
 		() => `${method.displayName}${method.overloadIndex && method.overloadIndex > 1 ? `:${method.overloadIndex}` : ''}`,
 		[method.displayName, method.overloadIndex],

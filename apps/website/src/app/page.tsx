@@ -20,9 +20,12 @@ export default function Page() {
 							Discord bots.
 						</h1>
 						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
-						<div className="flex gap-4 md:flex-row">
-							<Link className={buttonVariants()} href="/docs">
+						<div className="flex flex-wrap place-content-center gap-4 md:flex-row">
+							<a className={buttonVariants()} href="https://old.discordjs.dev/#/docs" rel="noopener noreferrer">
 								Docs
+							</a>
+							<Link className={buttonVariants()} href="/docs">
+								Module docs
 							</Link>
 							<a
 								className={buttonVariants({ variant: 'secondary' })}

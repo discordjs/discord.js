@@ -7,7 +7,7 @@ import { ObjectHeader } from '../documentation/ObjectHeader';
 import { TypeParameterSection } from '../documentation/section/TypeParametersSection';
 // import { serializeMembers } from '../documentation/util';
 
-export function Interface({ item }: { item: ApiInterface }) {
+export function Interface({ item }: { readonly item: ApiInterface }) {
 	return (
 		<Documentation>
 			<ObjectHeader item={item} />

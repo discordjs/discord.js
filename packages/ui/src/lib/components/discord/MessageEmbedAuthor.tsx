@@ -1,7 +1,7 @@
 export interface IDiscordMessageEmbedAuthor {
-	avatar: string;
-	url?: string;
-	username: string;
+	readonly avatar: string;
+	readonly url?: string;
+	readonly username: string;
 }
 
 export function DiscordMessageEmbedAuthor({ avatar, url, username }: IDiscordMessageEmbedAuthor) {
