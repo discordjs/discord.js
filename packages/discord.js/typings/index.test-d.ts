@@ -1185,7 +1185,7 @@ client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => 
   expectType<Client<true>>(newClient);
 });
 
-client.on('webhookUpdate', ({ client }) => expectType<Client<true>>(client));
+client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));
 
 client.on('guildCreate', async g => {
   expectType<Client<true>>(g.client);

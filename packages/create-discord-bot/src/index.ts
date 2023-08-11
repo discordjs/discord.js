@@ -1,3 +1,6 @@
+#!/usr/bin/env node
+
+// eslint-disable-next-line n/shebang
 import { program } from 'commander';
 import prompts from 'prompts';
 import { createDiscordBot } from './create-discord-bot.js';
