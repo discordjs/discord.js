@@ -28,20 +28,15 @@ class GenericAction {
   }
 
   getChannel(data) {
+    const payloadData = { recipients: data.recipients ?? [data.author ?? data.user ?? { id: data.user_id }] };
     const id = data.channel_id ?? data.id;
+    if (id !== undefined) payloadData.id = id;
+    if ('guild_id' in data) payloadData.guild_id = data.guild_id;
+    if ('last_message_id' in data) payloadData.last_message_id = data.last_message_id;
+
     return (
       data[this.client.actions.injectedChannel] ??
-      this.getPayload(
-        {
-          id,
-          guild_id: data.guild_id,
-          recipients: data.recipients ?? [data.author ?? data.user ?? { id: data.user_id }],
-          last_message_id: data.last_message_id,
-        },
-        this.client.channels,
-        id,
-        Partials.Channel,
-      )
+      this.getPayload(payloadData, this.client.channels, id, Partials.Channel)
     );
   }
 
