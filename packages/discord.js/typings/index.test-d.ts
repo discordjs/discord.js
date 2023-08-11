@@ -174,6 +174,8 @@ import {
   ChatInputApplicationCommandData,
   ApplicationCommandPermissionsManager,
   GuildOnboarding,
+  StringSelectMenuComponentData,
+  ButtonComponentData,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -532,10 +534,10 @@ client.on('messageCreate', async message => {
 
   // Check that both builders and builder data can be sent in messages
   const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-  const buttonsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new ButtonBuilder(),
       { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
       {
         type: ComponentType.Button,
@@ -545,21 +547,34 @@ client.on('messageCreate', async message => {
       },
     ],
   };
-  const selectsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const buttonsRow: ActionRowData<ButtonBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new ButtonBuilder()],
+  };
+
+  const rawStringSelectMenuRow: ActionRowData<StringSelectMenuComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new StringSelectMenuBuilder(),
       {
         type: ComponentType.StringSelect,
-        label: 'select menu',
         options: [{ label: 'test', value: 'test' }],
         customId: 'test',
       },
     ],
   };
 
+  const stringSelectRow: ActionRowData<StringSelectMenuBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new StringSelectMenuBuilder()],
+  };
+
   const embedData = { description: 'test', color: 0xff0000 };
-  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, embedData] });
+
+  channel.send({
+    components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
+    embeds: [embed, embedData],
+  });
 });
 
 client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
@@ -1170,7 +1185,7 @@ client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => 
   expectType<Client<true>>(newClient);
 });
 
-client.on('webhookUpdate', ({ client }) => expectType<Client<true>>(client));
+client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));
 
 client.on('guildCreate', async g => {
   expectType<Client<true>>(g.client);

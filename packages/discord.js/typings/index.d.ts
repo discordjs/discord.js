@@ -166,6 +166,8 @@ import {
   APIGuildOnboardingPrompt,
   APIGuildOnboardingPromptOption,
   GuildOnboardingPromptType,
+  AttachmentFlags,
+  RoleFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1010,8 +1012,11 @@ export class ClientApplication extends Application {
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
   public commands: ApplicationCommandManager;
+  public guildId: Snowflake | null;
+  public get guild(): Guild | null;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
+  public approximateGuildCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public customInstallURL: string | null;
@@ -2070,6 +2075,7 @@ export class Attachment {
   public description: string | null;
   public duration: number | null;
   public ephemeral: boolean;
+  public flags: AttachmentFlagsBitField;
   public height: number | null;
   public id: Snowflake;
   public name: string;
@@ -2080,6 +2086,13 @@ export class Attachment {
   public waveform: string | null;
   public width: number | null;
   public toJSON(): unknown;
+}
+
+export type AttachmentFlagsString = keyof typeof AttachmentFlags;
+
+export class AttachmentFlagsBitField extends BitField<AttachmentFlagsString> {
+  public static Flags: Record<AttachmentFlagsString, number>;
+  public static resolve(bit?: BitFieldResolvable<AttachmentFlagsString, number>): number;
 }
 
 export class MessageCollector extends Collector<Snowflake, Message, [Collection<Snowflake, Message>]> {
@@ -2515,6 +2528,7 @@ export class Role extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get editable(): boolean;
+  public flags: RoleFlagsBitField;
   public guild: Guild;
   public get hexColor(): HexColorString;
   public hoist: boolean;
@@ -2548,6 +2562,13 @@ export class Role extends Base {
   public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
   public toJSON(): unknown;
   public toString(): RoleMention;
+}
+
+export type RoleFlagsString = keyof typeof RoleFlags;
+
+export class RoleFlagsBitField extends BitField<RoleFlagsString> {
+  public static Flags: typeof RoleFlags;
+  public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
 export class StringSelectMenuInteraction<
@@ -4861,7 +4882,9 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  webhookUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
+  /** @deprecated Use {@link webhooksUpdate} instead. */
+  webhookUpdate: ClientEvents['webhooksUpdate'];
+  webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
@@ -5807,6 +5830,7 @@ export interface MessageActivity {
 }
 
 export interface BaseButtonComponentData extends BaseComponentData {
+  type: ComponentType.Button;
   style: ButtonStyle;
   disabled?: boolean;
   emoji?: ComponentEmojiResolvable;

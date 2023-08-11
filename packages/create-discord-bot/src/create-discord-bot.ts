@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-// eslint-disable-next-line n/shebang
 import { cp, stat, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
