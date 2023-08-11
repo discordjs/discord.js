@@ -5830,6 +5830,7 @@ export interface MessageActivity {
 }
 
 export interface BaseButtonComponentData extends BaseComponentData {
+  type: ComponentType.Button;
   style: ButtonStyle;
   disabled?: boolean;
   emoji?: ComponentEmojiResolvable;
