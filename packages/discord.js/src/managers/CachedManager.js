@@ -20,7 +20,11 @@ class CachedManager extends DataManager {
      * @name CachedManager#_cache
      */
     Object.defineProperty(this, '_cache', {
-      value: this.client.options.makeCache(this.constructor[MakeCacheOverrideSymbol] ?? this.constructor, this.holds),
+      value: this.client.options.makeCache(
+        this.constructor[MakeCacheOverrideSymbol] ?? this.constructor,
+        this.holds,
+        this.constructor,
+      ),
     });
 
     if (iterable) {
