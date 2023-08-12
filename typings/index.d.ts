@@ -677,11 +677,14 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
 
 export class ClientApplication extends Application {
   private constructor(client: Client, data: RawClientApplicationData);
+  public approximateGuildCount: number | null;
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
   public commands: ApplicationCommandManager;
   public cover: string | null;
   public flags: Readonly<ApplicationFlags>;
+  public guildId: Snowflake | null;
+  public readonly guild: Guild | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public customInstallURL: string | null;
