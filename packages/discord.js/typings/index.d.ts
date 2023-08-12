@@ -4323,8 +4323,9 @@ export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
 
 export interface ActivityOptions {
   name: string;
+  state?: string;
   url?: string;
-  type?: Exclude<ActivityType, ActivityType.Custom>;
+  type?: ActivityType;
   shardId?: number | readonly number[];
 }
 
