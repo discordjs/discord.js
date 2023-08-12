@@ -49,10 +49,10 @@ class ClientPresence extends Presence {
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {
         if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
-        
+
         activity.type ??= ActivityTypes.PLAYING;
 
-        if (activity.type === ActivityType.CUSTOM && !activity.state) {
+        if (activity.type === ActivityTypes.CUSTOM && !activity.state) {
           activity.state = activity.name;
           activity.name = 'Custom Status';
         }
@@ -69,7 +69,7 @@ class ClientPresence extends Presence {
         ...this.activities.map(a => ({
           name: a.name,
           type: ActivityTypes[a.type],
-          state: activity.state ?? undefined,
+          state: a.state ?? undefined,
           url: a.url ?? undefined,
         })),
       );
