@@ -1,5 +1,6 @@
 'use strict';
 
+const AttachmentFlags = require('../util/AttachmentFlags');
 const Util = require('../util/Util');
 
 /**
@@ -168,6 +169,16 @@ class MessageAttachment {
       this.waveform = data.waveform;
     } else {
       this.waveform ??= null;
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this attachment
+       * @type {Readonly<AttachmentFlags>}
+       */
+      this.flags = new AttachmentFlags(data.flags).freeze();
+    } else {
+      this.flags ??= new AttachmentFlags().freeze();
     }
   }
 
