@@ -49,11 +49,18 @@ class ClientPresence extends Presence {
     if (activities?.length) {
       for (const [i, activity] of activities.entries()) {
         if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
-        activity.type ??= 0;
+        
+        activity.type ??= ActivityTypes.PLAYING;
+
+        if (activity.type === ActivityType.CUSTOM && !activity.state) {
+          activity.state = activity.name;
+          activity.name = 'Custom Status';
+        }
 
         data.activities.push({
           type: typeof activity.type === 'number' ? activity.type : ActivityTypes[activity.type],
           name: activity.name,
+          state: activity.state,
           url: activity.url,
         });
       }
@@ -62,6 +69,7 @@ class ClientPresence extends Presence {
         ...this.activities.map(a => ({
           name: a.name,
           type: ActivityTypes[a.type],
+          state: activity.state ?? undefined,
           url: a.url ?? undefined,
         })),
       );
