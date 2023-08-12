@@ -1012,8 +1012,11 @@ export class ClientApplication extends Application {
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
   public commands: ApplicationCommandManager;
+  public guildId: Snowflake | null;
+  public get guild(): Guild | null;
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
+  public approximateGuildCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public customInstallURL: string | null;
@@ -3734,7 +3737,7 @@ export abstract class DataManager<K, Holds, R> extends BaseManager {
 }
 
 export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
-  protected constructor(client: Client<true>, holds: Constructable<Holds>);
+  protected constructor(client: Client<true>, holds: Constructable<Holds>, iterable?: Iterable<Holds>);
   private readonly _cache: Collection<K, Holds>;
   private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
 }
@@ -5836,6 +5839,7 @@ export interface MessageActivity {
 }
 
 export interface BaseButtonComponentData extends BaseComponentData {
+  type: ComponentType.Button;
   style: ButtonStyle;
   disabled?: boolean;
   emoji?: ComponentEmojiResolvable;
