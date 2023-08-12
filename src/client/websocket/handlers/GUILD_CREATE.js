@@ -8,6 +8,13 @@ module.exports = (client, { d: data }, shard) => {
     if (!guild.available && !data.unavailable) {
       // A newly available guild
       guild._patch(data);
+
+      /**
+       * Emitted whenever a guild becomes available.
+       * @event Client#guildAvailable
+       * @param {Guild} guild The guild that became available
+       */
+      client.emit(Events.GUILD_AVAILABLE, guild);
     }
   } else {
     // A new guild
