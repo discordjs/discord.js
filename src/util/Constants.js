@@ -183,6 +183,7 @@ exports.Opcodes = {
  * * AUTO_MODERATION_RULE_CREATE: autoModerationRuleCreate
  * * AUTO_MODERATION_RULE_DELETE: autoModerationRuleDelete
  * * AUTO_MODERATION_RULE_UPDATE: autoModerationRuleUpdate
+ * * GUILD_AVAILABLE: guildAvailable
  * * GUILD_CREATE: guildCreate
  * * GUILD_DELETE: guildDelete
  * * GUILD_UPDATE: guildUpdate
@@ -267,6 +268,7 @@ exports.Events = {
   AUTO_MODERATION_RULE_CREATE: 'autoModerationRuleCreate',
   AUTO_MODERATION_RULE_DELETE: 'autoModerationRuleDelete',
   AUTO_MODERATION_RULE_UPDATE: 'autoModerationRuleUpdate',
+  GUILD_AVAILABLE: 'guildAvailable',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',

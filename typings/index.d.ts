@@ -4604,6 +4604,7 @@ export interface ClientEvents extends BaseClientEvents {
   emojiDelete: [emoji: GuildEmoji];
   emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
   error: [error: Error];
+  guildAvailable: [guild: Guild];
   guildBanAdd: [ban: GuildBan];
   guildBanRemove: [ban: GuildBan];
   guildCreate: [guild: Guild];
@@ -4870,6 +4871,7 @@ export interface ConstantsEvents {
   AUTO_MODERATION_RULE_CREATE: 'autoModerationRuleCreate';
   AUTO_MODERATION_RULE_DELETE: 'autoModerationRuleDelete';
   AUTO_MODERATION_RULE_UPDATE: 'autoModerationRuleUpdate';
+  GUILD_AVAILABLE: 'guildAvailable';
   GUILD_CREATE: 'guildCreate';
   GUILD_DELETE: 'guildDelete';
   GUILD_UPDATE: 'guildUpdate';
