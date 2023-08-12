@@ -1715,6 +1715,7 @@ export class MessageAttachment {
   public description: string | null;
   public duration: number | null;
   public ephemeral: boolean;
+  public flags: Readonly<AttachmentFlags>;
   public height: number | null;
   public id: Snowflake;
   public name: string | null;
@@ -1730,6 +1731,14 @@ export class MessageAttachment {
   public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
 }
+
+export class AttachmentFlags extends BitField<AttachmentFlagsString> {
+  public static FLAGS: Record<AttachmentFlagsString, number>;
+  public static resolve(bit?: BitFieldResolvable<AttachmentFlagsString, number>): number;
+}
+
+export type AttachmentFlagsString =
+  | 'IS_REMIX';
 
 export class MessageButton extends BaseMessageComponent {
   public constructor(data?: MessageButton | MessageButtonOptions | APIButtonComponent);
