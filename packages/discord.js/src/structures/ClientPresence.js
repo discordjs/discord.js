@@ -1,6 +1,6 @@
 'use strict';
 
-const { GatewayOpcodes } = require('discord-api-types/v10');
+const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
 const { Presence } = require('./Presence');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
@@ -51,7 +51,13 @@ class ClientPresence extends Presence {
         if (typeof activity.name !== 'string') {
           throw new DiscordjsTypeError(ErrorCodes.InvalidType, `activities[${i}].name`, 'string');
         }
-        activity.type ??= 0;
+
+        activity.type ??= ActivityType.Playing;
+
+        if (activity.type === ActivityType.Custom && !activity.state) {
+          activity.state = activity.name;
+          activity.name = 'Custom Status';
+        }
 
         data.activities.push({
           type: activity.type,
