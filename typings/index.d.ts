@@ -5810,6 +5810,7 @@ export interface MessageActivity {
 }
 
 export interface BaseButtonOptions extends BaseMessageComponentOptions {
+  type: 'BUTTON' | MessageComponentTypes.BUTTON;
   disabled?: boolean;
   emoji?: EmojiIdentifierResolvable;
   label?: string;
