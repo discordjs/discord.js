@@ -4,8 +4,8 @@ const process = require('node:process');
 const Base = require('./Base');
 const { Error } = require('../errors');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/SnowflakeUtil');
 const RoleFlags = require('../util/RoleFlags');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 let deprecationEmittedForComparePositions = false;
 

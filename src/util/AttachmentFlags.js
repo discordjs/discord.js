@@ -15,6 +15,7 @@ class AttachmentFlags extends BitField {}
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
+/* eslint-disable max-len */
 /**
  * Numeric guild member flags. All available properties:
  * * `IS_REMIX`
