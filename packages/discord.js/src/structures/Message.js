@@ -2,6 +2,7 @@
 
 const { messageLink } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
   InteractionType,
@@ -26,6 +27,7 @@ const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
+const getMessage = lazy(() => require('./Message').Message);
 
 /**
  * Represents a message on Discord.
@@ -366,7 +368,15 @@ class Message extends Base {
     }
 
     if (data.referenced_message) {
-      this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
+      /**
+       * Message reference
+       * @type {?Message}
+       */
+      this.referencedMessage =
+        this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message }) ??
+        new (getMessage())(this.client, { guild_id: data.message_reference?.guild_id, ...data.referenced_message });
+    } else {
+      this.referencedMessage = null;
     }
 
     /**
