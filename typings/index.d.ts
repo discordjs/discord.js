@@ -2159,6 +2159,7 @@ export class Role extends Base {
   /** @deprecated This will be removed in the next major version, see https://github.com/discordjs/discord.js/issues/7091 */
   public deleted: boolean;
   public readonly editable: boolean;
+  public flags: Readonly<RoleFlags>;
   public guild: Guild;
   public readonly hexColor: HexColorString;
   public hoist: boolean;
@@ -2193,6 +2194,14 @@ export class Role extends Base {
   /** @deprecated Use {@link RoleManager.comparePositions} instead. */
   public static comparePositions(role1: Role, role2: Role): number;
 }
+
+export class RoleFlags extends BitField<RoleFlagsString> {
+  public static FLAGS: Record<RoleFlagsString, number>;
+  public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
+}
+
+export type RoleFlagsString =
+  | 'IN_PROMPT';
 
 export class SelectMenuInteraction<Cached extends CacheType = CacheType> extends MessageComponentInteraction<Cached> {
   public constructor(client: Client, data: RawMessageSelectMenuInteractionData);
