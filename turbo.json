@@ -12,7 +12,7 @@
 			"dependsOn": ["^build"],
 			"inputs": ["src/**/*.ts", "vite.config.ts"],
 			"outputs": ["dist/**"],
-			"outputMode": "hash-only"
+			"outputMode": "errors-only"
 		},
 		"@discordjs/guide#build:local": {
 			"dependsOn": ["^build"],
