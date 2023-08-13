@@ -163,7 +163,8 @@ function makePlainError(err) {
   };
 }
 
-const TextSortableGroupTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum];
+// TODO: ChannelType.GuildMedia
+const TextSortableGroupTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement, ChannelType.GuildForum, 16];
 const VoiceSortableGroupTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
 const CategorySortableGroupTypes = [ChannelType.GuildCategory];
 
@@ -181,6 +182,8 @@ function getSortableGroupTypes(type) {
     case ChannelType.GuildText:
     case ChannelType.GuildAnnouncement:
     case ChannelType.GuildForum:
+    case 16:
+      // TODO: ChannelType.GuildMedia
       return TextSortableGroupTypes;
     case ChannelType.GuildVoice:
     case ChannelType.GuildStageVoice:

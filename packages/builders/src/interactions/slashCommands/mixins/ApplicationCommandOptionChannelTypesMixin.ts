@@ -17,6 +17,8 @@ const allowedChannelTypes = [
 	ChannelType.PrivateThread,
 	ChannelType.GuildStageVoice,
 	ChannelType.GuildForum,
+	// @ts-expect-error: discord-api-types.
+	ChannelType.GuildMedia,
 ] as const;
 
 /**

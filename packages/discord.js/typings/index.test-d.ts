@@ -176,6 +176,7 @@ import {
   GuildOnboarding,
   StringSelectMenuComponentData,
   ButtonComponentData,
+  MediaChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1538,6 +1539,8 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
+  // @ts-expect-error discord-api-types.
+  expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
@@ -1919,6 +1922,10 @@ client.on('interactionCreate', async interaction => {
       expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText] as const));
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
+      );
+      expectType<MediaChannel>(
+        // @ts-expect-error discord-api-types.
+        interaction.options.getChannel('test', true, [ChannelType.MediaChannel]),
       );
     } else {
       // @ts-expect-error

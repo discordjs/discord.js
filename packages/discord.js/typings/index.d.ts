@@ -894,6 +894,8 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
   [ChannelType.GuildForum]: ForumChannel;
+  // @ts-expect-error discord-api-types.
+  [ChannelType.GuildMedia]: MediaChannel;
 }
 
 export type CategoryChannelType = Exclude<
