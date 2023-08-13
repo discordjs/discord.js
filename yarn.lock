@@ -2053,7 +2053,7 @@ __metadata:
     "@actions/glob": ^0.4.0
     "@planetscale/database": ^1.10.0
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     eslint: ^8.46.0
     eslint-config-neon: ^0.1.47
@@ -2064,7 +2064,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     undici: ^5.22.1
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2094,7 +2094,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.36.3
     "@msgpack/msgpack": ^3.0.0-beta2
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
     eslint: ^8.46.0
@@ -2105,7 +2105,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2119,7 +2119,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.36.3
     "@sapphire/shapeshift": ^3.9.2
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
     downlevel-dts: ^0.11.0
@@ -2134,7 +2134,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2145,7 +2145,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.1.1
     "@microsoft/api-extractor": ^7.36.3
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.46.0
@@ -2155,7 +2155,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2170,7 +2170,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.36.3
     "@sapphire/snowflake": ^3.5.1
     "@types/node": 18.17.1
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
@@ -2182,7 +2182,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2203,7 +2203,7 @@ __metadata:
     typescript: ^5.1.6
     unocss: ^0.54.0
     vercel: ^31.2.0
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2238,7 +2238,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.1.1
     "@microsoft/api-extractor": ^7.36.3
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
     eslint: ^8.46.0
@@ -2248,7 +2248,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2273,7 +2273,7 @@ __metadata:
     "@vercel/edge-config": ^0.2.1
     "@vercel/og": ^0.5.9
     "@vitejs/plugin-react": ^4.0.3
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     ariakit: ^2.0.0-next.44
     cmdk: ^0.2.0
     concurrently: ^8.2.0
@@ -2302,7 +2302,7 @@ __metadata:
     typescript: ^5.1.6
     unocss: ^0.54.0
     vercel: ^31.2.0
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2320,7 +2320,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.1.1
     "@microsoft/api-extractor": ^7.36.3
     "@types/node": 18.17.1
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
     esbuild-plugin-version-injector: ^1.2.0
@@ -2331,7 +2331,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2364,7 +2364,7 @@ __metadata:
     "@microsoft/api-extractor": ^7.36.3
     "@types/node": 18.17.1
     "@types/supertest": ^2.0.12
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     eslint: ^8.46.0
     eslint-config-neon: ^0.1.47
@@ -2376,7 +2376,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     undici: ^5.22.1
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2391,7 +2391,7 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@sapphire/snowflake": ^3.5.1
     "@types/node": 18.17.1
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
@@ -2406,7 +2406,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     undici: ^5.22.1
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2420,7 +2420,7 @@ __metadata:
     "@microsoft/tsdoc-config": 0.16.2
     "@types/fs-extra": ^11.0.1
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     commander: ^11.0.0
     cross-env: ^7.0.3
     eslint: ^8.46.0
@@ -2433,7 +2433,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     undici: ^5.22.1
-    vitest: ^0.33.0
+    vitest: ^0.34.1
     yaml: 2.3.1
   languageName: unknown
   linkType: soft
@@ -2474,9 +2474,9 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     unocss: ^0.54.0
-    vite: ^4.4.7
-    vite-plugin-dts: ^3.4.0
-    vitest: ^0.33.0
+    vite: ^4.4.9
+    vite-plugin-dts: ^3.5.2
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2487,7 +2487,7 @@ __metadata:
     "@favware/cliff-jumper": ^2.1.1
     "@microsoft/api-extractor": ^7.36.3
     "@types/node": 16.18.39
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     cross-env: ^7.0.3
     eslint: ^8.46.0
     eslint-config-neon: ^0.1.47
@@ -2497,7 +2497,7 @@ __metadata:
     tsup: ^7.1.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2557,7 +2557,7 @@ __metadata:
     "@vercel/edge-config": ^0.2.1
     "@vercel/og": ^0.5.9
     "@vitejs/plugin-react": ^4.0.3
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     ariakit: ^2.0.0-next.44
     bright: ^0.8.4
     class-variance-authority: ^0.7.0
@@ -2587,7 +2587,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     vercel: ^31.2.0
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   languageName: unknown
   linkType: soft
 
@@ -2603,7 +2603,7 @@ __metadata:
     "@sapphire/async-queue": ^1.5.0
     "@types/node": 18.17.1
     "@types/ws": ^8.5.5
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
     discord-api-types: ^0.37.50
@@ -2618,7 +2618,7 @@ __metadata:
     turbo: ^1.10.12
     typescript: ^5.1.6
     undici: ^5.22.1
-    vitest: ^0.33.0
+    vitest: ^0.34.1
     ws: ^8.13.0
     zlib-sync: ^0.1.8
   languageName: unknown
@@ -7297,56 +7297,77 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/expect@npm:0.33.0":
-  version: 0.33.0
-  resolution: "@vitest/expect@npm:0.33.0"
+"@vitest/coverage-v8@npm:^0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/coverage-v8@npm:0.34.1"
   dependencies:
-    "@vitest/spy": 0.33.0
-    "@vitest/utils": 0.33.0
-    chai: ^4.3.7
-  checksum: da6bf8e4a4f23218088b4e7dcdf6eb9f8d92e82a98a674edf8be2f333625179da6802936a948e7a60e0918da53e7ec548183d1d9d42f0e1c4e2d3f66fd63e11f
+    "@ampproject/remapping": ^2.2.1
+    "@bcoe/v8-coverage": ^0.2.3
+    istanbul-lib-coverage: ^3.2.0
+    istanbul-lib-report: ^3.0.1
+    istanbul-lib-source-maps: ^4.0.1
+    istanbul-reports: ^3.1.5
+    magic-string: ^0.30.1
+    picocolors: ^1.0.0
+    std-env: ^3.3.3
+    test-exclude: ^6.0.0
+    v8-to-istanbul: ^9.1.0
+  peerDependencies:
+    vitest: ">=0.32.0 <1"
+  checksum: 0ba13c758c095991d533de5340a60242c074f456be1abfa3f9c583106de9fd1af1e0abe66aa473c1df42b0cf7332778d67ed60130f8aa93f9dc9ea62638cf19a
   languageName: node
   linkType: hard
 
-"@vitest/runner@npm:0.33.0":
-  version: 0.33.0
-  resolution: "@vitest/runner@npm:0.33.0"
+"@vitest/expect@npm:0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/expect@npm:0.34.1"
   dependencies:
-    "@vitest/utils": 0.33.0
+    "@vitest/spy": 0.34.1
+    "@vitest/utils": 0.34.1
+    chai: ^4.3.7
+  checksum: a2bc76f9242a05987983c6c6ad24091fb34282b0704b844e31d94d4ee2564fbd5e566a1ea8344240770dc8ae619a532e316155785d0ff6bee5e57be6c3e3d028
+  languageName: node
+  linkType: hard
+
+"@vitest/runner@npm:0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/runner@npm:0.34.1"
+  dependencies:
+    "@vitest/utils": 0.34.1
     p-limit: ^4.0.0
     pathe: ^1.1.1
-  checksum: de731aa0687cf15f141e81fb11027ff52860292f6d8957678c9fcd307502e4f9fd679bcaff93b53d29eeeb694d403d6aa52d49d341f998ec2b794e7abe061572
+  checksum: c8108c8f8eb75c9995422689b0c7da6a4793425a673d32d6ce7df99f84be8c2037f0acc46c6f8b55d9bd90a864ff7c5dce2ddc3656b41888b125b9311ae20559
   languageName: node
   linkType: hard
 
-"@vitest/snapshot@npm:0.33.0":
-  version: 0.33.0
-  resolution: "@vitest/snapshot@npm:0.33.0"
+"@vitest/snapshot@npm:0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/snapshot@npm:0.34.1"
   dependencies:
     magic-string: ^0.30.1
     pathe: ^1.1.1
     pretty-format: ^29.5.0
-  checksum: ff2604d5bf09342eab45109df06f4e2e9e78698bf26b0eed1f4871d7757312e43de90ead938698be3e03e9873d4081ebeb69c94928b8065c53d1e9f28742185e
+  checksum: 5f98d38ecdefd899628d253e3283f42f035fd013dcb2084e8060ebfc73884ab6071f5510ff8c75e8af726e3a41901f2a04bafa72786626f9be31f999f7e14a4f
   languageName: node
   linkType: hard
 
-"@vitest/spy@npm:0.33.0":
-  version: 0.33.0
-  resolution: "@vitest/spy@npm:0.33.0"
+"@vitest/spy@npm:0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/spy@npm:0.34.1"
   dependencies:
     tinyspy: ^2.1.1
-  checksum: 501a704a10b411f407fbcedeaf1f469e6fcac4894af11fa89c74e6f64bf3eebbcd006cf86377ae379708c0b8c860243db504f5d4e90d382419aa666458b76800
+  checksum: 7a3f676096fdf201cb057588cfe3ea1199beb29b50581593c2a9c37be0a7d8b11b0986eeec4f67e358a1b8144b1675154ec5f29b339791f97bc5656fc39d8791
   languageName: node
   linkType: hard
 
-"@vitest/utils@npm:0.33.0":
-  version: 0.33.0
-  resolution: "@vitest/utils@npm:0.33.0"
+"@vitest/utils@npm:0.34.1":
+  version: 0.34.1
+  resolution: "@vitest/utils@npm:0.34.1"
   dependencies:
     diff-sequences: ^29.4.3
     loupe: ^2.3.6
     pretty-format: ^29.5.0
-  checksum: 8c5b381f5599ca517bedd0e46805e91b1150564473d37b2b80ef45aa9c16cb59d296513dd34bc2171904beb28be73b89e5333056539d49a0ba9d513ae7672a0a
+  checksum: 0015504f3af725ef84f9759f08bc051071d29b0024d6bbd27276450cdb9dccde367bb86cfede2ccfef803965f29f0ffb76104e92bf569169f87e0e74e5a720f1
   languageName: node
   linkType: hard
 
@@ -10143,7 +10164,7 @@ __metadata:
     "@types/node": 16.18.39
     "@types/prompts": ^2.4.4
     "@types/validate-npm-package-name": ^4.0.0
-    "@vitest/coverage-c8": ^0.33.0
+    "@vitest/coverage-v8": ^0.34.1
     chalk: ^5.3.0
     commander: ^11.0.0
     cross-env: ^7.0.3
@@ -10155,7 +10176,7 @@ __metadata:
     tsup: ^7.1.0
     typescript: ^5.1.6
     validate-npm-package-name: ^5.0.0
-    vitest: ^0.33.0
+    vitest: ^0.34.1
   bin:
     create-discord-bot: ./dist/index.mjs
   languageName: unknown
@@ -15218,7 +15239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-report@npm:^3.0.0":
+"istanbul-lib-report@npm:^3.0.0, istanbul-lib-report@npm:^3.0.1":
   version: 3.0.1
   resolution: "istanbul-lib-report@npm:3.0.1"
   dependencies:
@@ -15229,7 +15250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-source-maps@npm:^4.0.0":
+"istanbul-lib-source-maps@npm:^4.0.0, istanbul-lib-source-maps@npm:^4.0.1":
   version: 4.0.1
   resolution: "istanbul-lib-source-maps@npm:4.0.1"
   dependencies:
@@ -15240,7 +15261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-reports@npm:^3.1.3, istanbul-reports@npm:^3.1.4":
+"istanbul-reports@npm:^3.1.3, istanbul-reports@npm:^3.1.4, istanbul-reports@npm:^3.1.5":
   version: 3.1.6
   resolution: "istanbul-reports@npm:3.1.6"
   dependencies:
@@ -19594,7 +19615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.2.14, postcss@npm:^8.4.14, postcss@npm:^8.4.21, postcss@npm:^8.4.25, postcss@npm:^8.4.26":
+"postcss@npm:^8.2.14, postcss@npm:^8.4.14, postcss@npm:^8.4.21, postcss@npm:^8.4.25, postcss@npm:^8.4.26, postcss@npm:^8.4.27":
   version: 8.4.27
   resolution: "postcss@npm:8.4.27"
   dependencies:
@@ -21066,6 +21087,20 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: f60c2c288d039dc14e1f6e7fd673b7fcb11928b5a781675791b37a741f63b7af110fc5d040d60d603175b6e03ff978bed83db018dd2ac542ef809fe1a5b32dae
+  languageName: node
+  linkType: hard
+
+"rollup@npm:^3.27.1":
+  version: 3.28.0
+  resolution: "rollup@npm:3.28.0"
+  dependencies:
+    fsevents: ~2.3.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: 6ded4a0d3ca531d68e82897d5eebaa9d085014a062620bc328f2859ccf78d6a148a51ed53f1275a5f89b55cc6d7b1440b7cee44e5a9e3a51442f809b4b26f727
   languageName: node
   linkType: hard
 
@@ -22707,10 +22742,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tinypool@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "tinypool@npm:0.6.0"
-  checksum: 996bf3a922993cec568d6b6ddc72531700b2a8aea24623ed6946a8929557b0f17629955d20defda09cb3b12fc94087159f14cb8e06570adce7d1b7d2eef00a91
+"tinypool@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "tinypool@npm:0.7.0"
+  checksum: fdcccd5c750574fce51f8801a877f8284e145d12b79cd5f2d72bfbddfe20c895e915555bc848e122bb6aa968098e7ac4fe1e8e88104904d518dc01cccd18a510
   languageName: node
   linkType: hard
 
@@ -24044,7 +24079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^9.0.0, v8-to-istanbul@npm:^9.0.1":
+"v8-to-istanbul@npm:^9.0.0, v8-to-istanbul@npm:^9.0.1, v8-to-istanbul@npm:^9.1.0":
   version: 9.1.0
   resolution: "v8-to-istanbul@npm:9.1.0"
   dependencies:
@@ -24208,9 +24243,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-node@npm:0.33.0":
-  version: 0.33.0
-  resolution: "vite-node@npm:0.33.0"
+"vite-node@npm:0.34.1":
+  version: 0.34.1
+  resolution: "vite-node@npm:0.34.1"
   dependencies:
     cac: ^6.7.14
     debug: ^4.3.4
@@ -24220,13 +24255,13 @@ __metadata:
     vite: ^3.0.0 || ^4.0.0
   bin:
     vite-node: vite-node.mjs
-  checksum: 7c37911251d3e318fe4ad6b4093207498336ce190a58afb43a9ae701eee7f110ef80920b79061710cf6abcc6335ce58f6ca412ee6b268f25fe10f278c94cc264
+  checksum: 0a95034377027aebd75ee1d1ca95105e6bdbb0896a7a4b52b553a66fafa2adacd38856a5782416cf8725e8f3e9e0a1e5c02a780225822cb5ea501161fefa1482
   languageName: node
   linkType: hard
 
-"vite-plugin-dts@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "vite-plugin-dts@npm:3.4.0"
+"vite-plugin-dts@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "vite-plugin-dts@npm:3.5.2"
   dependencies:
     "@microsoft/api-extractor": ^7.36.3
     "@rollup/pluginutils": ^5.0.2
@@ -24240,11 +24275,11 @@ __metadata:
   peerDependenciesMeta:
     vite:
       optional: true
-  checksum: 47f0b2a1415b870978ba361d2e3cf31715270b7e4534da5046ff23dbb10730ba8e4b6a17d810a6264ce1362256cae67074bd6243ab8da0cd403bfe83a5554f91
+  checksum: 528ccb8ea1063c7a139f02063b7a2287534028ab84e2f0edb4d4bddcba3da58f839c7da888837b9d47c7eb58fe14aa8589b992e0cc9b66ae1c977c9fb97588b3
   languageName: node
   linkType: hard
 
-"vite@npm:^3.0.0 || ^4.0.0, vite@npm:^4.4.7":
+"vite@npm:^3.0.0 || ^4.0.0":
   version: 4.4.7
   resolution: "vite@npm:4.4.7"
   dependencies:
@@ -24284,18 +24319,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^0.33.0":
-  version: 0.33.0
-  resolution: "vitest@npm:0.33.0"
+"vite@npm:^4.4.9":
+  version: 4.4.9
+  resolution: "vite@npm:4.4.9"
+  dependencies:
+    esbuild: ^0.18.10
+    fsevents: ~2.3.2
+    postcss: ^8.4.27
+    rollup: ^3.27.1
+  peerDependencies:
+    "@types/node": ">= 14"
+    less: "*"
+    lightningcss: ^1.21.0
+    sass: "*"
+    stylus: "*"
+    sugarss: "*"
+    terser: ^5.4.0
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: c511024ceae39c68c7dbf2ac4381ee655cd7bb62cf43867a14798bc835d3320b8fa7867a336143c30825c191c1fb4e9aa3348fce831ab617e96203080d3d2908
+  languageName: node
+  linkType: hard
+
+"vitest@npm:^0.34.1":
+  version: 0.34.1
+  resolution: "vitest@npm:0.34.1"
   dependencies:
     "@types/chai": ^4.3.5
     "@types/chai-subset": ^1.3.3
     "@types/node": "*"
-    "@vitest/expect": 0.33.0
-    "@vitest/runner": 0.33.0
-    "@vitest/snapshot": 0.33.0
-    "@vitest/spy": 0.33.0
-    "@vitest/utils": 0.33.0
+    "@vitest/expect": 0.34.1
+    "@vitest/runner": 0.34.1
+    "@vitest/snapshot": 0.34.1
+    "@vitest/spy": 0.34.1
+    "@vitest/utils": 0.34.1
     acorn: ^8.9.0
     acorn-walk: ^8.2.0
     cac: ^6.7.14
@@ -24308,9 +24383,9 @@ __metadata:
     std-env: ^3.3.3
     strip-literal: ^1.0.1
     tinybench: ^2.5.0
-    tinypool: ^0.6.0
+    tinypool: ^0.7.0
     vite: ^3.0.0 || ^4.0.0
-    vite-node: 0.33.0
+    vite-node: 0.34.1
     why-is-node-running: ^2.2.2
   peerDependencies:
     "@edge-runtime/vm": "*"
@@ -24340,7 +24415,7 @@ __metadata:
       optional: true
   bin:
     vitest: vitest.mjs
-  checksum: c1884b2a1a41af81ee54c86a986a32b6a4c69ec3b3f7d2322f92c8fad5532d6a12160e7efb7927e4c53d95806ef4ede9549bdd82c66604e281c71056212f56e7
+  checksum: 39d270e78be0ce06cb348c6c1e92517aa7269ad8c51f5432349849ca1615c18eeaeb635a49d16eedcb9b77a7a19186723f906d286d819368c15d086cecacfb0d
   languageName: node
   linkType: hard
 

@@ -8,7 +8,7 @@ export default defineConfig({
 			enabled: true,
 			all: true,
 			reporter: ['text', 'lcov', 'cobertura'],
-			provider: 'c8',
+			provider: 'v8',
 			include: ['src'],
 			exclude: [
 				// All ts files that only contain types, due to ALL
