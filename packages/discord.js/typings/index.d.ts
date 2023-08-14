@@ -5816,8 +5816,8 @@ export type GuildTemplateResolvable = string;
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
 export interface GuildOnboardingEditOptions {
-  prompts: GuildOnboardingPromptData[];
-  defaultChannels: ChannelResolvable[];
+  prompts: readonly GuildOnboardingPromptData[];
+  defaultChannels: readonly ChannelResolvable[];
   enabled: boolean;
   mode: GuildOnboardingMode;
   reason?: string;
@@ -5829,12 +5829,12 @@ export interface GuildOnboardingPromptData {
   required: boolean;
   inOnboarding: boolean;
   type: GuildOnboardingMode;
-  options: GuildOnboardingPromptOptionData[];
+  options: readonly GuildOnboardingPromptOptionData[];
 }
 
 export interface GuildOnboardingPromptOptionData {
-  channels: ChannelResolvable[];
-  roles: RoleResolvable[];
+  channels: readonly ChannelResolvable[];
+  roles: readonly RoleResolvable[];
   title: string;
   description: string;
   emoji: EmojiIdentifierResolvable;
