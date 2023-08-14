@@ -36,7 +36,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  */
 
 /**
- * Represents base symbols shared between forum-like channels.
+ * Represents symbols utilised by thread-only channels.
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
