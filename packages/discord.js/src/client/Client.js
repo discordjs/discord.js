@@ -267,7 +267,7 @@ class Client extends BaseClient {
    * @returns {Promise<void>}
    */
   async deleteWebhook(id, { token, reason } = {}) {
-    await this.rest.delete(Routes.webhook(id, token), { auth: token === undefined, reason });
+    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
   }
 
   /**
