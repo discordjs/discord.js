@@ -367,11 +367,8 @@ class Webhook {
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise<void>}
    */
-  async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), {
-      reason,
-      auth: !this.token,
-    });
+  delete(reason) {
+    return this.client.deleteWebhook(this.id, { token: this.token, reason });
   }
 
   /**
