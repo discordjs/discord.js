@@ -2,37 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-# [14.13.0](https://github.com/discordjs/discord.js/compare/14.12.1...14.13.0) - (2023-08-17)
-
-## Bug Fixes
-
-- **Action:** Do not add the client user as a recipient (#9774) ([24fbb11](https://github.com/discordjs/discord.js/commit/24fbb11ba2f7e8f8f604752159d2053f2cee16ec))
-- **DMChannel:** Correct partial typo (#9773) ([c1ff545](https://github.com/discordjs/discord.js/commit/c1ff545bf1c018875f5a9ceb828c9f84ed391920))
-- **CachedManager:** Allow overriding constructor for makeCache (#9763) ([346fa57](https://github.com/discordjs/discord.js/commit/346fa57f95a99d5b4e1169bb85706c4c25bf71d0))
-- **types:** Fixed CachedManager constructor arguments in type (#9761) ([b3c85d3](https://github.com/discordjs/discord.js/commit/b3c85d34a6ced8a8e2cd15a6e3879fb2dd5121d0))
-- **Action:** Do not set `undefined` values (#9755) ([d8e3755](https://github.com/discordjs/discord.js/commit/d8e37551ceefe9f82566e3f45edc69bb7f9d1463))
-
-## Documentation
-
-- **EmbedBuilder:** `@readonly` length (#9778) ([8f572a6](https://github.com/discordjs/discord.js/commit/8f572a6badd45b916d3a46dd489653d2d6efb2a8))
-- **WebhookEditOptions:** Add all of the types (#9776) ([d5be424](https://github.com/discordjs/discord.js/commit/d5be4242c6a6f90b90af54e27071ecc0f5422944))
-- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
-
-## Features
-
-- **Client:** Add deleteWebhook method (#9777) ([d90ba8d](https://github.com/discordjs/discord.js/commit/d90ba8dce8de630db14b77764ec35201998c7ce7))
-- **ClientPresence:** Allow setting activity state (#9743) ([9ed1b59](https://github.com/discordjs/discord.js/commit/9ed1b59df6acb6356d5950b43d04885d5e692887))
-- **ClientApplication:** Approximate guild count and new `GET` route (#9713) ([632a9b4](https://github.com/discordjs/discord.js/commit/632a9b4965cd24ffffdf0f88f1a9eedeb6b284f7))
-- **Role:** Add `flags` (#9694) ([3b18e5b](https://github.com/discordjs/discord.js/commit/3b18e5b08dc3ec2aba37d3e6a55e42ce8af7dbab))
-- **Attachment:** Add `flags` (#9686) ([692f0fc](https://github.com/discordjs/discord.js/commit/692f0fc96d9f92161b64fb83f02b71d43d2d7c9c))
-- Add `Client#webhooksUpdate` (#9732) ([0de071d](https://github.com/discordjs/discord.js/commit/0de071d0a5524ba1fbb8cab5d7e74567103f7129))
-
-## Typings
-
-- **GuildInvitableChannelResolvable:** Allow forum channels (#9775) ([727dc09](https://github.com/discordjs/discord.js/commit/727dc094d52a5b169e46917b64308ab87a7144b1))
-- Make activity name required (#9765) ([0a9a3ed](https://github.com/discordjs/discord.js/commit/0a9a3ede292b92235a103b6776477a707da4d84b))
-- **BaseButtonComponentData:** Narrow component type (#9735) ([a30d46c](https://github.com/discordjs/discord.js/commit/a30d46c5f5909eee86704bbb9e34fb7bb09b2c27))
-
 # [14.12.1](https://github.com/discordjs/discord.js/compare/14.12.0...14.12.1) - (2023-08-01)
 
 ## Bug Fixes
