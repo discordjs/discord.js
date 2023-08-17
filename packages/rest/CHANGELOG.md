@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.0.0...@discordjs/rest@2.0.1) - (2023-08-17)
+
+## Documentation
+
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+
+# [@discordjs/rest@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.7.1...@discordjs/rest@2.0.0) - (2023-07-31)
+
+## Features
+
+- No-de-no-de, now with extra buns (#9683) ([386f206](https://github.com/discordjs/discord.js/commit/386f206caf74a04c426799af9796ca96dcb37056))
+  - **BREAKING CHANGE:** The REST and RequestManager classes now extend AsyncEventEmitter
+from `@vladfrangu/async_event_emitter`, which aids in cross-compatibility
+between Node, Deno, Bun, CF Workers, Vercel Functions, etc.
+  - **BREAKING CHANGE:** DefaultUserAgentAppendix has been adapted to support multiple
+different platforms (previously mentioned Deno, Bun, CF Workers, etc)
+  - **BREAKING CHANGE:** the entry point for `@discordjs/rest` will now differ
+in non-node-like environments (CF Workers, etc.)
+  - **Co-authored-by:** Suneet Tipirneni <77477100+suneettipirneni@users.noreply.github.com>
+  - **Co-authored-by:** Jiralite <33201955+Jiralite@users.noreply.github.com>
+  - **Co-authored-by:** suneettipirneni <suneettipirneni@icloud.com>
+- User avatar decorations (#8914) ([8d97017](https://github.com/discordjs/discord.js/commit/8d9701745840e23854e8f0b057d21cb10e7d1d54))
+- Support new username system (#9512) ([1ab60f9](https://github.com/discordjs/discord.js/commit/1ab60f9da4d6b7ea144fa05b97b029a4bfaeede2))
+
+## Refactor
+
+- **REST:** Remove double classing (#9722) ([8f4256d](https://github.com/discordjs/discord.js/commit/8f4256db8a52ac08359d0b3436f41b641ac4e382))
+  - **BREAKING CHANGE:** `REST` and `RequestManager` have been combined, most of the properties, methods, and events from both classes can now be found on `REST`
+  - **BREAKING CHANGE:** `REST#raw` has been removed in favor of `REST#queueRequest`
+  - **BREAKING CHANGE:** `REST#getAgent` has been removed in favor of `REST#agent`
+
+* chore: update for /rest changes
+- **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
+  - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
+  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
+  - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
+  - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
+  - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
+
+# [@discordjs/rest@1.7.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.7.0...@discordjs/rest@1.7.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
 # [@discordjs/rest@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@1.7.1...@discordjs/rest@2.0.0) - (2023-07-31)
 
 ## Features
