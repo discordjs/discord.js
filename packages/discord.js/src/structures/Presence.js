@@ -218,7 +218,7 @@ class Activity {
 
     /**
      * The sync id of the activity
-     * <info>This represents the track id in spotify activities.</info>
+     * <info>This property is not documented by Discord and represents the track id in spotify activities.</info>
      * @type {?string}
      */
     this.syncId = data.sync_id ?? null;
