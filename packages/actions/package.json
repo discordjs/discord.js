@@ -45,7 +45,7 @@
 		"@actions/glob": "^0.4.0",
 		"@planetscale/database": "^1.10.0",
 		"tslib": "^2.6.1",
-		"undici": "5.22.1"
+		"undici": "5.23.0"
 	},
 	"devDependencies": {
 		"@types/node": "16.18.40",

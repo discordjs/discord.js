@@ -74,7 +74,7 @@
 		"discord-api-types": "0.37.54",
 		"magic-bytes.js": "^1.0.15",
 		"tslib": "^2.6.1",
-		"undici": "5.22.1"
+		"undici": "5.23.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",

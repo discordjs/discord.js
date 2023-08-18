@@ -2048,7 +2048,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2360,7 +2360,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2390,7 +2390,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2417,7 +2417,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     vitest: ^0.34.2
     yaml: 2.3.1
   languageName: unknown
@@ -2602,7 +2602,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     vitest: ^0.34.2
     ws: ^8.13.0
     zlib-sync: ^0.1.8
@@ -11420,7 +11420,7 @@ __metadata:
     tslint: ^6.1.3
     turbo: ^1.10.12
     typescript: ^5.1.6
-    undici: 5.22.1
+    undici: 5.23.0
     ws: ^8.13.0
   languageName: unknown
   linkType: soft
@@ -24098,12 +24098,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:5.22.1":
-  version: 5.22.1
-  resolution: "undici@npm:5.22.1"
+"undici@npm:5.23.0":
+  version: 5.23.0
+  resolution: "undici@npm:5.23.0"
   dependencies:
     busboy: ^1.6.0
-  checksum: 048a3365f622be44fb319316cedfaa241c59cf7f3368ae7667a12323447e1822e8cc3d00f6956c852d1478a6fde1cbbe753f49e05f2fdaed229693e716ebaf35
+  checksum: 906ca4fb1d47163d2cee2ecbbc664a1d92508a2cdf1558146621109f525c983a83597910b36e6ba468240e95259be5939cea6babc99fc0c36360b16630f66784
   languageName: node
   linkType: hard
 
