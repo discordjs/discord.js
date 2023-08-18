@@ -264,7 +264,8 @@ class Webhook {
    * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
-   * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
+   * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel} [channel]
+   * The new channel for the webhook
    * @property {string} [reason] Reason for editing the webhook
    */
 
@@ -366,11 +367,8 @@ class Webhook {
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise<void>}
    */
-  async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), {
-      reason,
-      auth: !this.token,
-    });
+  delete(reason) {
+    return this.client.deleteWebhook(this.id, { token: this.token, reason });
   }
 
   /**

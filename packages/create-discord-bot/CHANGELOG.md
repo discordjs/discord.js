@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@0.2.1](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.2.0...create-discord-bot@0.2.1) - (2023-08-17)
+
+## Bug Fixes
+
+- **create-discord-bot:** Add shebang in main file (#9747) ([99194fc](https://github.com/discordjs/discord.js/commit/99194fc2703988693264ef4a7c2d7bb040c39fa8))
+
 # [create-discord-bot@0.2.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.1.0...create-discord-bot@0.2.0) - (2023-07-31)
 
 ## Bug Fixes
