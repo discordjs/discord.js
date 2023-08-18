@@ -351,6 +351,11 @@
  */
 
 /**
+ * @external GuildWidgetStyle
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildWidgetStyle}
+ */
+
+/**
  * @external IntegrationExpireBehavior
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/IntegrationExpireBehavior}
  */
