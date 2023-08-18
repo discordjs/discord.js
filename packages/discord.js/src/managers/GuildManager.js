@@ -281,7 +281,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Returns a URL for the PNG widget of a guild.
-   * @param {WidgetImageURLOptions} guild The guild of the widget image
+   * @param {GuildResolvable} guild The guild of the widget image
    * @param {GuildWidgetStyle} [style] The style for the widget image
    * @returns {string}
    */
