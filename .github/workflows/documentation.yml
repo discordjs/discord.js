@@ -5,6 +5,7 @@ on:
       - 'main'
     paths:
       - 'packages/*/src/**'
+      - '!packages/create-discord-bot/**'
     tags:
       - '**'
   workflow_dispatch:
