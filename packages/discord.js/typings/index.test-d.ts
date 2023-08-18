@@ -1319,8 +1319,8 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test thread channels' parent inference
-expectType<TextChannel | NewsChannel | ForumChannel | null>(threadChannel.parent);
-expectType<ForumChannel | null>(threadChannelFromForum.parent);
+expectType<TextChannel | NewsChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
+expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
@@ -1600,7 +1600,7 @@ declare const threadManager: ThreadManager;
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;
-expectType<ForumChannel>(guildForumThreadManager.channel);
+expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
 
 declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
@@ -2113,7 +2113,7 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel>(
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel>(
   NonThreadGuildBasedChannel,
 );
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
