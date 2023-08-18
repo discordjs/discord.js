@@ -2106,7 +2106,7 @@ __metadata:
     "@types/node": 16.18.40
     "@vitest/coverage-v8": ^0.34.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     downlevel-dts: ^0.11.0
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
@@ -2158,7 +2158,7 @@ __metadata:
     "@vitest/coverage-v8": ^0.34.2
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
@@ -2225,7 +2225,7 @@ __metadata:
     "@types/node": 16.18.40
     "@vitest/coverage-v8": ^0.34.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
     eslint-formatter-pretty: ^5.0.0
@@ -2307,7 +2307,7 @@ __metadata:
     "@types/node": 18.17.5
     "@vitest/coverage-v8": ^0.34.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
@@ -2379,7 +2379,7 @@ __metadata:
     "@vitest/coverage-v8": ^0.34.2
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
@@ -2499,7 +2499,7 @@ __metadata:
     "@types/node": 16.18.40
     "@types/ws": ^8.5.5
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
@@ -2591,7 +2591,7 @@ __metadata:
     "@vitest/coverage-v8": ^0.34.2
     "@vladfrangu/async_event_emitter": ^2.2.2
     cross-env: ^7.0.3
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     esbuild-plugin-version-injector: ^1.2.0
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.47
@@ -11385,10 +11385,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:0.37.50":
-  version: 0.37.50
-  resolution: "discord-api-types@npm:0.37.50"
-  checksum: 08dc5145dbefda5f52b479cd42d96ac2b8110300861855e1f92cc8a0a6525a4059e32724cd5237490c286f5afd86797a86823238cd5eee016198560bb36f6d43
+"discord-api-types@npm:0.37.54":
+  version: 0.37.54
+  resolution: "discord-api-types@npm:0.37.54"
+  checksum: f149961be9129673a0e3764285c8f47da22a30ea3e2466db06ffad44d1823094f7011ffe2d3d89b1b5ddd9940651afc72b3a05f84ce443a59f8480e2578dd1e1
   languageName: node
   linkType: hard
 
@@ -11407,7 +11407,7 @@ __metadata:
     "@sapphire/snowflake": ^3.5.1
     "@types/node": 16.18.40
     "@types/ws": ^8.5.5
-    discord-api-types: 0.37.50
+    discord-api-types: 0.37.54
     dtslint: ^4.2.1
     eslint: ^8.47.0
     eslint-formatter-pretty: ^5.0.0
