@@ -368,6 +368,7 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async delete(reason) {
+    // This doesn't call `Client`'s `deleteWebhook` method because `WebhookClient` lacks it, see #9785.
     await this.client.rest.delete(Routes.webhook(this.id, this.token), {
       reason,
       auth: !this.token,
