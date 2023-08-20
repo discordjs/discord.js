@@ -140,3 +140,17 @@ export async function sleep(ms: number): Promise<void> {
 export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
 	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
 }
+
+/**
+ * Irrespective environment warning.
+ *
+ * @param message - A string the warning will emit with
+ * @internal
+ */
+export function warn(message: string) {
+	if (typeof globalThis.process === 'undefined') {
+		console.warn(message);
+	} else {
+		process.emitWarning(message);
+	}
+}
