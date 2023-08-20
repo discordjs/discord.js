@@ -9,6 +9,8 @@ import {
 	type StickerExtension,
 } from './utils/constants.js';
 
+let deprecationEmittedForEmoji = false;
+
 /**
  * The options used for image URLs
  */
@@ -158,10 +160,39 @@ export class CDN {
 	 * Generates an emoji's URL for an emoji.
 	 *
 	 * @param emojiId - The emoji id
-	 * @param extension - The extension of the emoji
+	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, extension?: ImageExtension): string {
-		return this.makeURL(`/emojis/${emojiId}`, { extension });
+	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
+
+	/**
+	 * Generates an emoji's URL for an emoji.
+	 *
+	 * @param emojiId - The emoji id
+	 * @param extension - The extension of the emoji
+	 * @deprecated This overload is deprecated. Pass an object containing the extension instead.
+	 */
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
+	public emoji(emojiId: string, extension?: ImageExtension): string;
+
+	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
+		let resolvedOptions;
+
+		if (typeof options === 'string') {
+			if (!deprecationEmittedForEmoji) {
+				process.emitWarning(
+					'Passing a string for CDN#emoji() is deprecated. Use an object instead.',
+					'DeprecationWarning',
+				);
+
+				deprecationEmittedForEmoji = true;
+			}
+
+			resolvedOptions = { extension: options };
+		} else {
+			resolvedOptions = options;
+		}
+
+		return this.makeURL(`/emojis/${emojiId}`, resolvedOptions);
 	}
 
 	/**
