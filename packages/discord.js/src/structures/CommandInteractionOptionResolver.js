@@ -294,7 +294,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * Gets the focused option.
-   * @returns {string|AutocompleteFocusedOption}
+   * @returns {AutocompleteFocusedOption}
    * The whole object of the option that is focused
    */
   getFocused() {
