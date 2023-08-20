@@ -8,7 +8,7 @@ import {
 	type ImageSize,
 	type StickerExtension,
 } from './utils/constants.js';
-import { warn } from './utils/utils.js';
+import { deprecationWarning } from './utils/utils.js';
 
 let deprecationEmittedForEmoji = false;
 
@@ -180,7 +180,7 @@ export class CDN {
 
 		if (typeof options === 'string') {
 			if (!deprecationEmittedForEmoji) {
-				warn('DeprecationWarning: Passing a string for CDN#emoji() is deprecated. Use an object instead.');
+				deprecationWarning('Passing a string for CDN#emoji() is deprecated. Use an object instead.');
 				deprecationEmittedForEmoji = true;
 			}
 
