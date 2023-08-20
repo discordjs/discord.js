@@ -3559,6 +3559,7 @@ export enum DiscordjsErrorCodes {
   WSConnectionExists = 'WSConnectionExists',
   /** @deprecated */
   WSNotOpen = 'WSNotOpen',
+  /** @deprecated */
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
@@ -3589,20 +3590,29 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
+  /** @deprecated */
   ButtonLabel = 'ButtonLabel',
+  /** @deprecated */
   ButtonURL = 'ButtonURL',
+  /** @deprecated */
   ButtonCustomId = 'ButtonCustomId',
 
+  /** @deprecated */
   SelectMenuCustomId = 'SelectMenuCustomId',
+  /** @deprecated */
   SelectMenuPlaceholder = 'SelectMenuPlaceholder',
+  /** @deprecated */
   SelectOptionLabel = 'SelectOptionLabel',
+  /** @deprecated */
   SelectOptionValue = 'SelectOptionValue',
+  /** @deprecated */
   SelectOptionDescription = 'SelectOptionDescription',
 
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
+  /** @deprecated */
   UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
@@ -3613,13 +3623,16 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
+  /** @deprecated */
   ImageFormat = 'ImageFormat',
+  /** @deprecated */
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
 
+  /** @deprecated */
   SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
@@ -3662,6 +3675,7 @@ export enum DiscordjsErrorCodes {
 
   ReactionResolveUser = 'ReactionResolveUser',
 
+  /** @deprecated */
   VanityURL = 'VanityURL',
 
   InviteResolveCode = 'InviteResolveCode',
