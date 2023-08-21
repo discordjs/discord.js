@@ -1,0 +1,354 @@
+---
+title: Command response methods
+category: Slash commands
+---
+
+# Command response methods
+
+There are multiple ways of responding to a slash command; each of these are covered in the following segments. Using an interaction response method confirms to Discord that your bot successfully received the interaction, and has responded to the user. Discord enforces this to ensure that all slash commands provide a good user experience (UX). Failing to respond will cause Discord to show that the command failed, even if your bot is performing other actions as a result.
+
+The most common way of sending a response is by using the <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="reply" brackets /> method, as you have done in earlier examples. This method acknowledges the interaction and sends a new message in response.
+
+<CH.Code>
+
+```js focus=7
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.reply('Pong!');
+}
+```
+
+</CH.Code>
+
+<DiscordMessages>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:03',
+			username: 'Guide Bot',
+		}}
+		interaction={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				username: 'User',
+			},
+			command: '/interaction',
+		}}
+	>
+		Pong!
+	</DiscordMessage>
+</DiscordMessages>
+
+<Alert title="Warning" type="warning">
+	Initially an interaction token is only valid for three seconds, so that's the timeframe in which you are able to use
+	the <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="reply" brackets /> method. Responses that
+	require more time ("Deferred Responses") are explained later in this page.
+</Alert>
+
+## Ephemeral responses
+
+You may not always want everyone who has access to the channel to see a slash command's response. Previously, you would have had to DM the user to achieve this, potentially encountering the high rate limits associated with DM messages, or simply being unable to do so, if the user's DMs were disabled.
+
+Thankfully, Discord provides a way to hide response messages from everyone but the executor of the slash command. This type of message is called an _`ephemeral`_ message and can be set by providing _`ephemeral: true`_ in the <DocsLink type="typedef" parent="InteractionReplyOptions" />, as follows:
+
+<CH.Code>
+
+```js focus=7
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.reply({ content: 'Secret Pong!', ephemeral: true });
+}
+```
+
+</CH.Code>
+
+Now when you run your command again, you should see something like this:
+
+<DiscordMessages>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:03',
+			username: 'Guide Bot',
+		}}
+		interaction={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				username: 'User',
+			},
+			command: '/interaction',
+			ephemeral: true,
+		}}
+	>
+		Pong!
+	</DiscordMessage>
+</DiscordMessages>
+
+Ephemeral responses are _only_ available for interaction responses; another great reason to use the new and improved slash command user interface.
+
+## Editing responses
+
+After you've sent an initial response, you may want to edit that response for various reasons. This can be achieved with the <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="editReply" brackets /> method:
+
+<Alert title="Warning" type="warning">
+	After the initial response, an interaction token is valid for 15 minutes, so this is the timeframe in which you can
+	edit the response and send follow-up messages. You also **cannot** edit the ephemeral state of a message, so ensure
+	that your first response sets this correctly.
+</Alert>
+
+<CH.Code>
+
+```js focus=1,10:11
+import { setTimeout as wait } from 'node:timers/promises';
+
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.reply('Pong!');
+	await wait(2000);
+	await interaction.editReply('Pong again!');
+}
+```
+
+</CH.Code>
+
+In fact, editing your interaction response is necessary to [calculate the ping](../popular-topics/frequently-asked-questions#how-do-i-check-the-bots-ping) properly for this command.
+
+## Deferred responses
+
+As previously mentioned, Discord requires an acknowledgement from your bot within three seconds that the interaction was received. Otherwise, Discord considers the interaction to have failed and the token becomes invalid. But what if you have a command that performs a task which takes longer than three seconds before being able to reply, such a querying a database or external API?
+
+In this case, you can make use of the <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="deferReply" brackets /> method, which triggers the "_`<application> is thinking...`_" message. This also acts as the initial response, to confirm to Discord that the interaction was received successfully and gives you a 15-minute timeframe to complete your tasks before responding.
+
+<CH.Code>
+
+```js focus=9:11
+import { setTimeout as wait } from 'node:timers/promises';
+
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.deferReply();
+	await wait(4000);
+	await interaction.editReply('Pong again!');
+}
+```
+
+</CH.Code>
+
+If you have a command that performs longer tasks, be sure to call <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="deferReply" brackets /> as early as possible.
+
+<Alert title="Warning" type="warning">
+	In these examples the _`wait`_ method is used to simulate a four second delay. You should not add uneccessary waits to
+	your actual commands.
+</Alert>
+
+Note that if you want your response to be ephemeral, you must pass an _`ephemeral`_ flag to the <DocsLink type="typedef" parent="InteractionDeferReplyOptions" /> here:
+
+<CH.Code lineNumbers={false}>
+
+```js
+await interaction.deferReply({ ephemeral: true });
+```
+
+</CH.Code>
+
+It is not possible to edit a reply to change its ephemeral state once sent.
+
+<Alert title="Tip" type="success">
+	If you want to make a proper ping command, one is available in our
+	[FAQ](../popular-topics/frequently-asked-questions#how-do-i-check-the-bots-ping).
+</Alert>
+
+## Follow-ups
+
+The <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="reply" brackets /> and <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="deferReply" brackets /> methods are both _initial_ responses, which tell Discord that your bot successfully received the interaction, but cannot be used to send additional messages. This is where follow-up messages come in. After having initially responded to an interaction, you can use <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="followUp" brackets /> to send additional messages:
+
+<Alert title="Warning" type="warning">
+	After the initial response, an interaction token is valid for 15 minutes, so this is the timeframe in which you can
+	edit the response and send follow-up messages.
+</Alert>
+
+<CH.Code>
+
+```js focus=8
+export const data = {
+	name: 'ping',
+	description: 'Replies with Pong!',
+};
+
+export async function execute(interaction) {
+	await interaction.reply('Pong!');
+	await interaction.followUp('Pong again!');
+}
+```
+
+</CH.Code>
+
+If you run this code you should end up having something that looks like this:
+
+<DiscordMessages>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:03',
+			username: 'Guide Bot',
+		}}
+		interaction={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				username: 'User',
+			},
+			command: '/interaction',
+		}}
+	>
+		Pong!
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:01',
+			username: 'Guide Bot',
+		}}
+		reply={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				bot: true,
+				username: 'Guide Bot',
+			},
+			content: 'Pong!',
+		}}
+		time="21:02"
+	>
+		Pong again!
+	</DiscordMessage>
+</DiscordMessages>
+
+You can also pass an `ephemeral` flag to the `InteractionReplyOptions`:
+
+<CH.Code lineNumbers={false}>
+
+```js
+await interaction.followUp({ content: 'Pong again!', ephemeral: true });
+```
+
+</CH.Code>
+
+<DiscordMessages>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:03',
+			username: 'Guide Bot',
+		}}
+		interaction={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				username: 'User',
+			},
+			command: '/interaction',
+		}}
+	>
+		Pong!
+	</DiscordMessage>
+	<DiscordMessage
+		author={{
+			avatar: '/assets/discordjs.png',
+			bot: true,
+			time: 'Today at 21:01',
+			username: 'Guide Bot',
+		}}
+		reply={{
+			author: {
+				avatar: '/assets/discordjs.png',
+				bot: true,
+				username: 'Guide Bot',
+			},
+			content: 'Pong!',
+		}}
+		time="21:02"
+	>
+		Pong again!
+	</DiscordMessage>
+</DiscordMessages>
+
+Note that if you use <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="followUp" brackets /> after a <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="deferReply" brackets />, the first follow-up will edit the "_`<application> is thinking`_" message rather than sending a new one.
+
+That's all, now you know everything there is to know on how to reply to slash commands!
+
+<Alert title="Masked links" type="success">
+	Interaction responses can use masked links (e.g. `[text](https://site.com)`) in the message content.
+</Alert>
+
+## Fetching and deleting responses
+
+In addition to replying to a slash command, you may also want to delete the initial reply. You can use <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="deleteReply" brackets /> for this:
+
+<CH.Code lineNumbers={false}>
+
+```js focus=2
+await interaction.reply('Pong!');
+await interaction.deleteReply();
+```
+
+</CH.Code>
+
+Lastly, you may require the _`Message`_ object of a reply for various reasons, such as adding reactions. You can use the <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="fetchReply" brackets /> method to fetch the _`Message`_ instance of an initial response:
+
+<CH.Code lineNumbers={false}>
+
+```js focus=2:3
+await interaction.reply('Pong!');
+const message = await interaction.fetchReply();
+console.log(message);
+```
+
+</CH.Code>
+
+Or, pass the _`fetchReply: true`_ option when sending the reply:
+
+<CH.Code lineNumbers={false}>
+
+```js
+const message = await interaction.reply(}content: 'Pong!', fetchReply: true });
+console.log(message);
+```
+
+</CH.Code>
+
+## Localized responses
+
+In addition to the ability to provide [localized command definitions](./advanced-command-creation#localizations), you can also localize your responses. To do this, get the locale of the user with <DocsLink type="class" parent="ChatInputCommandInteraction" symbol="locale" /> and respond accordingly:
+
+<CH.Code>
+
+```js
+export async function execute(interaction) {
+	const locales = {
+		pl: 'Witaj Świecie!',
+		de: 'Hallo Welt!',
+	};
+	interaction.reply(locales[interaction.locale] ?? 'Hello World (default is english)');
+}
+```
+
+</CH.Code>

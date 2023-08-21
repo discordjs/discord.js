@@ -1,0 +1,120 @@
+---
+title: Slash command permissions
+category: Slash commands
+---
+
+# Slash command permissions
+
+Slash commands have their own permissions system. This system allows you to set the default level of permissions required for a user to execute a command when it is first deployed, or when your bot is added to a new server.
+
+The slash command permissions for guilds are defaults only and can be altered by guild administrators, allowing them to configure access however best suits their moderation and server roles. Your code should not try to enforce its own permission management, as this can result in a conflict between the server-configured permissions and your bot's code.
+
+<Alert title="Warning" type="warning">
+	It is not possible to prevent users with Administrator permissions from using any commands deployed globally or
+	specifically to their guild. Think twice before creating "dev-only" commands such as `eval`.
+</Alert>
+
+## Member permissions
+
+You can define _`defaultMemberPermissions`_ in your <DocsLink type="typedef" parent="ApplicationCommandData" /> to set the default permissions required for a member to run the command. Setting it to _`0`_ will prohibit anyone in a guild from using the command unless a specific overwrite is configured, or the user has the Administrator permission flag.
+
+For this, we'll introduce two common and simple moderation commands: _`ban`_ and _`kick`_. For a ban command, a sensible default is to ensure that users already have the Discord permission _`BanMembers`_ in order to use it.
+
+<CH.Code>
+
+```js
+import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+
+export const data = {
+	name: 'ban',
+	description: 'Select a member and ban them.',
+	options: [
+		{
+			name: 'target',
+			type: ApplicationCommandOptionType.User,
+			description: 'The member to ban',
+			required: true,
+		},
+		{
+			name: 'reason',
+			type: ApplicationCommandOptionType.String,
+			description: 'The reason for banning',
+		},
+	],
+	defaultMemberPermissions: PermissionFlagsBits.BanMembers,
+};
+```
+
+</CH.Code>
+
+For a kick command however, we can allow members with the _`KickMembers`_ permission to execute the command, so we'll list that flag here.
+
+<Alert title="Tip" type="info">
+You can require the user to have all of multiple permissions by merging them with the _`|`_ bitwise OR operator (for example _`PermissionFlagsBits.BanMembers | PermissionFlagsBits.KickMembers`_).
+You cannot require any of multiple permissions. Discord evaluates against the combined permission bitfield!
+
+If you want to learn more about the _`|`_ bitwise OR operator you can check the [Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR) and [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR) articles on the topic.
+
+</Alert>
+
+<CH.Code>
+
+```js
+import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+
+export const data = {
+	name: 'kick',
+	description: 'Select a member and kick them.',
+	options: [
+		{
+			name: 'target',
+			type: ApplicationCommandOptionType.User,
+			description: 'The member to kick',
+			required: true,
+		},
+		{
+			name: 'reason',
+			description: 'The reason for kicking',
+			type: ApplicationCommandOptionType.String,
+		},
+	],
+	defaultMemberPermissions: PermissionFlagsBits.KickMembers,
+};
+```
+
+</CH.Code>
+
+In reality, you'll probably want to have an additional confirmation step before a ban actually executes. Check out the [message components section](../message-components/interactions) of the guide to see how to add confirmation buttons to your command responses, and listen to button clicks.
+
+## DM permission
+
+By default, globally-deployed commands are also available for use in DMs. It doesn't make much sense for your _`ban`_ command to be available in DMs, so set _`dmPermission: false`_ to disable this behaviour. Commands deployed to specific guilds are not available in DMs.
+
+<CH.Code rows={4}>
+
+```js focus=19
+import { ApplicationCommandOptionType, PermissionFlagsBits } from 'discord.js';
+
+export const data = {
+	name: 'ban',
+	description: 'Select a member and ban them.',
+	options: [
+		{
+			name: 'target',
+			type: ApplicationCommandOptionType.User,
+			description: 'The member to ban',
+			required: true,
+		},
+		{
+			name: 'reason',
+			description: 'The reason for banning',
+		},
+	],
+	defaultMemberPermissions: PermissionFlagsBits.BanMembers,
+	dmPermission: false,
+};
+```
+
+</CH.Code>
+
+And that's all you need to know on slash command permissions!

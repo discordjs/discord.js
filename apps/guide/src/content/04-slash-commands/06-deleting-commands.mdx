@@ -1,0 +1,85 @@
+---
+title: Deleting commands
+category: Slash commands
+---
+
+# Deleting commands
+
+<Alert title="Read first!" type="info">
+	This page is a follow-up to [registering slash commands](../creating-your-bot/registering-slash-commands). To delete
+	commands, you need to register them in the first place.
+</Alert>
+
+You may have decided that you don't need a command anymore and want to remove it from appearing in the Discord interface. Otherwise, users could continue to try to use a command that won't respond.
+
+## Deleting specific commands
+
+To delete a specific command, you will need its id. Head to **Server Settings -> Integrations -> Bots and Apps** and choose your bot. Then, right click a command and click **Copy ID**.
+
+<Alert title="Tip" type="success">
+	You need to have [Developer Mode](https://support.discord.com/hc/articles/206346498) enabled for this to show up!
+</Alert>
+
+![bots-and-apps](/assets/bots-and-apps.png)
+
+![commands-copy-id](/assets/commands-copy-id.png)
+
+Similar to _`deploy-commands.js`_, create a _`delete-commands.js`_ as shown below to clearly discern it from the deploy workflow:
+
+<CH.Code>
+
+```js mark=9:18
+import { REST, Routes } from 'discord.js';
+import config from './config.json' assert { type: 'json' };
+
+const { clientId, guildId, token } = config;
+
+const rest = new REST().setToken(token);
+
+// for guild-based commands
+rest
+	.delete(Routes.applicationGuildCommand(clientId, guildId, 'commandId'))
+	.then(() => console.log('Successfully deleted guild command'))
+	.catch(console.error);
+
+// for global commands
+rest
+	.delete(Routes.applicationCommand(clientId, 'commandId'))
+	.then(() => console.log('Successfully deleted application command'))
+	.catch(console.error);
+```
+
+</CH.Code>
+
+Where _`'commandId'`_ is the id of the command you want to delete. Run your delete script and it will delete the command.
+
+## Deleting all commands
+
+To delete all commands in the respective scope (one guild, all global commands) you can pass an empty array when setting commands.
+
+<CH.Code>
+
+```js mark=9:18
+import { REST, Routes } from 'discord.js';
+import config from './config.json' assert { type: 'json' };
+
+const { clientId, guildId, token } = config;
+
+const rest = new REST().setToken(token);
+
+// for guild-based commands
+rest
+	.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] })
+	.then(() => console.log('Successfully deleted all guild commands.'))
+	.catch(console.error);
+
+// for global commands
+rest
+	.put(Routes.applicationCommands(clientId), { body: [] })
+	.then(() => console.log('Successfully deleted all application commands.'))
+	.catch(console.error);
+```
+
+</CH.Code>
+
+Discord's API doesn't currently provide an easy way to delete guild-based commands that occur on multiple guilds from all places at once. Each will need a call of the above endpoint, while specifying the respective guild and command id. Note, that the same command will have a different id, if deployed to a different guild!

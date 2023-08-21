@@ -1,0 +1,285 @@
+---
+title: Advanced command creation
+category: Slash commands
+---
+
+# Advanced command creation
+
+The examples we've covered so far have all been fairly simple commands, such as _`ping`_, _`server`_, and _`user`_ which all have standard static responses. However, there's much more you can do with the full suite of slash command tools!
+
+## Adding options
+
+Application commands can have additional _`options`_. Think of these options as arguments to a function, and as a way for the user to provide the additional information the command requires.
+
+<Alert title="Tip" type="success">
+	If you've already added options to your commands and need to know how to receive and parse them, refer to the [Parsing
+	options](./parsing-options) page in this section of the guide.
+</Alert>
+
+Options require at minimum a name and description. The same restrictions apply to option names as slash command names - 1-32 characters containing no capital letters, spaces, or symbols other than _`-`_ and _`_`_. You can specify them as shown in the _`echo`_ command below, which prompt the user to enter a String for the _`input`\_ option.
+
+<CH.Code>
+
+```js mark=6:12
+import { ApplicationCommandOptionType } from 'discord.js';
+
+export const data = {
+	name: 'echo',
+	description: 'Replies with your input!',
+	options: [
+		{
+			name: 'input',
+			type: ApplicationCommandOptionType.String,
+			description: 'The input to echo back',
+		},
+	],
+};
+```
+
+</CH.Code>
+
+## Option types
+
+By specifying the _`type`_ of an <DocsLink type="typedef" parent="ApplicationCommandOptionData" /> using the <DocsLink type="typedef" parent="ApplicationCommandOptionType" /> enum you are able to restrict what the user can provide as input, and for some options, leverage the automatic parsing of options into proper objects by Discord.
+
+The example above uses _`ApplicationCommandOptionType.String`_, the simplest form of standard text input with no additional validation. By leveraging additional option types, you could change the behavior of this command in many ways, such as using a Channel option to direct the response to a specific channel, or a Boolean option to give the user control over making the response ephemeral.
+
+<CH.Code rows={8}>
+
+```js Channel focus=12:16
+import { ApplicationCommandOptionType } from 'discord.js';
+
+export const data = {
+	name: 'echo',
+	description: 'Replies with your input!',
+	options: [
+		{
+			name: 'input',
+			type: ApplicationCommandOptionType.String,
+			description :'The input to echo back',
+		},
+		{
+			name: 'channel'
+			type: ApplicationCommandOptionType.Channel,
+			description: 'The channel to echo into',
+		},
+	],
+};
+```
+
+```js Boolean focus=12:16
+import { ApplicationCommandOptionType } from 'discord.js';
+
+export const data = {
+	name: 'echo',
+	description: 'Replies with your input!',
+	options: [
+		{
+			name: 'input',
+			type: ApplicationCommandOptionType.String,
+			description :'The input to echo back',
+		},
+		{
+			name: 'ephemeral'
+			type: ApplicationCommandOptionType.Boolean,
+			description: 'Whether or not the echo should be ephemeral',
+		}
+	],
+};
+```
+
+</CH.Code>
+
+Listed below is a short description of the different types of options that can be added.
+
+- _`String`_, _`Integer`_, _`Number`_ and _`Boolean`_ options all accept primitive values of their associated type.
+  - _`Integer`_ only accepts whole numbers.
+  - _`Number`_ accepts both whole numbers and decimals.
+- _`User`_, _`Channel`_, _`Role`_ and _`Mentionable`_ options will show a selection list in the Discord interface for their associated type, or will accept a Snowflake (id) as input.
+- _`Attachment`_ options prompt the user to make an upload along with the slash command.
+- _`Subcommand`_ and _`SubcommandGroup`_ options allow you to have branching pathways of subsequent options for your commands - more on that later on this page.
+
+<Alert title="Subcommands and Subcommand Groups" type="success">
+	Refer to the Discord API documentation for detailed explanations on the [`SUB_COMMAND` and `SUB_COMMAND_GROUP` option
+	types](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups).
+</Alert>
+
+## Required options
+
+With option types covered, you can start looking at additional forms of validation to ensure the data your bot receives is both complete and accurate. The simplest addition is making options required, to ensure the command cannot be executed without a required value. This validation can be applied to options of any type.
+
+Review the _`echo`_ example again and add _`required: true`_ to mark the _`input`_ option as required.
+
+<CH.Code rows={4}>
+
+```js focus=11
+import { ApplicationCommandOptionType } from 'discord.js';
+
+export const data = {
+	name: 'echo',
+	description: 'Replies with your input!',
+	options: [
+		{
+			name: 'input',
+			type: ApplicationCommandOptionType.String,
+			description: 'The input to echo back',
+			required: true,
+		},
+	],
+};
+```
+
+</CH.Code>
+
+## Choices
+
+The _`String`_, _`Number`_, and _`Integer`_ option types can have _`choices`_. If you would prefer users select from predetermined values rather than free entry, `choices` can help you enforce this. This is particularly useful when dealing with external datasets, APIs, and similar, where specific input formats are required.
+
+<Alert title="Warning" type="warning">
+	If you specify _`choices`_ for an option, they'll be the **only** valid values users can pick!
+</Alert>
+
+Specify choices by adding the _`choices`_ property to the object. Choices must be defined as an array of objects. Each choice contains a _`name`_ which is displayed to the user for selection, and a _`value`_ that your bot will receive when that choice is selected, as if the user had typed it into the option manually.
+
+The _`gif`_ command example below allows users to select from predetermined categories of gifs to send:
+
+<CH.Code>
+
+```js mark=11:15
+import { ApplicationCommandOptionType } = from 'discord.js';
+
+export const data = {
+	name: 'gif',
+	description: 'Sends a random gif!',
+	options: [{
+		name: 'category',
+		type: ApplicationCommandOptionType.String,
+		description: 'The gif category',
+		required: true,
+		choices: [
+			{ name: 'Funny', value: 'gif_funny' },
+			{ name: 'Meme', value: 'gif_meme' },
+			{ name: 'Movie', value: 'gif_movie' },
+		],
+	}]
+};
+```
+
+</CH.Code>
+
+If you have too many choices to display (the maximum is 25), you may prefer to provide dynamic choices based on what the user has typed so far. This can be achieved using [autocomplete](./autocomplete).
+
+## Further validation
+
+Even without predetermined choices, additional restrictions can still be applied on otherwise free inputs.
+
+- For _`String`_ options, _`maxLength`_ and _`minLength`_ can enforce length limitations.
+- For _`Integer`_ and _`Number`_ options, _`maxValue`_ and _`minValue`_ can enforce range limitations on the value.
+- For _`Channel`_ options, _`channelTypes`_ can restrict selection to specific channel types, e.g. _`channelTypes: [ChannelType.GuildText]`_.
+
+We'll use these to show you how to enhance your _`echo`_ command from earlier with extra validation to ensure it won't (or at least shouldn't) break when used:
+
+<CH.Code>
+
+```js mark=1,10:11,16:22
+import { ApplicationCommandOptionType, ChannelType } = from 'discord.js';
+
+export const data = {
+	name: 'echo',
+	description: 'Replies with your input!',
+	options: [{
+		name: 'input',
+		type: ApplicationCommandOptionType.String,
+		description: 'The input to echo back',
+		// Ensure the text will fit in an embed description, if the user chooses that option
+		maxLength: 2000,
+	}, {
+		name: 'channel',
+		type: ApplicationCommandOptionType.Channel,
+		description: 'The channel to echo into',
+		// Ensure the user can only select a TextChannel for output
+		channelTypes: [ChannelType.GuildText],
+	}, {
+		name: 'embed',
+		type: ApplicationCommandOptionType.Boolean,
+		description: 'Whether or not the echo should be embedded',
+	}]
+};
+```
+
+</CH.Code>
+
+## Subcommands
+
+Subcommands are available with the _`Subcommand`_ and _`SubcommandGroup`_ types. This allows you to branch a single command to require different options depending on the subcommand chosen.
+
+With this approach, you could merge the _`user`_ and _`server`_ information commands from the previous section into a single _`info`_ command with two subcommands. Additionally, the _`user`_ subcommand has a _`User`_ type option for targeting other users, while the _`server`_ subcommand has no need for this, and would just show info for the current guild.
+
+<CH.Code>
+
+```js mark=6:19
+import { ApplicationCommandOptionType } = from 'discord.js';
+
+export const data = {
+	name: 'info',
+	description: 'Get info about a user or a server!',
+	options: [{
+		name: 'user',
+		type: ApplicationCommandOptionType.Subcommand,
+		description: 'Info about a user',
+		options: [{
+			name: 'target',
+			type: ApplicationCommandOptionType.User,
+			description: 'The user',
+		}],
+	}, {
+		name: 'server',
+		type: ApplicationCommandOptionType.Subcommand,
+		description: 'Info about the server',
+	}],
+}
+```
+
+</CH.Code>
+
+## Localizations
+
+The names and descriptions of slash commands can be localized to the user's selected language. You can find the list of accepted locales on the [discord API documentation](https://discord.com/developers/docs/reference#locales).
+
+Setting localizations with the _`nameLocalizations`_ and _`descriptionLocalizations`_ properties takes the format of an object, mapping location codes (e.g. _`pl`_ and _`de`_) to their localized strings.
+
+```js mark=5:8,10:13,16:19,21:24
+import { ApplicationCommandOptionType } from 'discord.js';
+
+export const data = {
+	name: 'dog',
+	nameLocalizations: {
+		pl: 'pies',
+		de: 'hund',
+	},
+	description: 'Get a cute picture of a dog!',
+	descriptionLocalizations: {
+		pl: 'Słodkie zdjęcie pieska!',
+		de: 'Poste ein niedliches Hundebild!',
+	},
+	options: [
+		{
+			name: 'breed',
+			nameLocalizations: {
+				pl: 'rasa',
+				de: 'rasse',
+			},
+			description: 'Breed of dog',
+			descriptionLocalizations: {
+				pl: 'Rasa psa',
+				de: 'Hunderasse',
+			},
+			type: ApplicationCommandOptionType.String,
+		},
+	],
+};
+```
+
+#### Next steps
+
+For more information on receiving and parsing the different types of options covered on this page, refer to [Parsing options](./parsing-options), or for more general information on how you can respond to slash commands, check out [Response methods](./command-response-methods).
