@@ -1945,21 +1945,17 @@ export class LimitedCollection<K, V> extends Collection<K, V> {
 
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
-export type MessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
-  | {
-      componentType?: T;
-    } & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+export type MessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
+  componentType?: T;
+} & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
-export type MessageChannelCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
-  | {
-      componentType?: T;
-    } & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+export type MessageChannelCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
+  componentType?: T;
+} & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
 
-export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> =
-  | { componentType?: T } & Pick<
-      InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>,
-      keyof AwaitMessageComponentOptions<any>
-    >;
+export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
+  componentType?: T;
+} & Pick<InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>, keyof AwaitMessageComponentOptions<any>>;
 
 export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
   Button: ButtonInteraction<Cached>;

@@ -13,12 +13,13 @@ module.exports = withBundleAnalyzer(
 	withContentlayer({
 		reactStrictMode: true,
 		experimental: {
-			appDir: true,
+			typedRoutes: true,
 		},
 		images: {
 			dangerouslyAllowSVG: true,
 			contentDispositionType: 'attachment',
 			contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 		},
+		poweredByHeader: false,
 	}),
 );

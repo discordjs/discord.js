@@ -4,6 +4,7 @@
 		"lint": "deno lint",
 		"deploy": "deno run --allow-read --allow-env --allow-net src/util/deploy.ts",
 		"format": "deno fmt",
+		"fmt": "deno fmt",
 		"start": "deno run --allow-read --allow-env --allow-net src/index.ts"
 	},
 	"lint": {

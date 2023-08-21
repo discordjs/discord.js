@@ -2,7 +2,10 @@ import type { DeclarationReflection } from 'typedoc';
 import type { Config, Item } from '../interfaces/index.js';
 
 export class DocumentedItem<T = DeclarationReflection | Item> {
-	public constructor(public readonly data: T, public readonly config: Config) {}
+	public constructor(
+		public readonly data: T,
+		public readonly config: Config,
+	) {}
 
 	public serialize(): unknown {
 		try {

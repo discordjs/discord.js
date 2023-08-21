@@ -1,4 +1,5 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
+import type { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
@@ -24,7 +25,7 @@ export default function Page() {
 							<a className={buttonVariants()} href="https://old.discordjs.dev/#/docs" rel="noopener noreferrer">
 								Docs
 							</a>
-							<Link className={buttonVariants()} href="/docs">
+							<Link className={buttonVariants()} href={'/docs' as Route}>
 								Module docs
 							</Link>
 							<a
