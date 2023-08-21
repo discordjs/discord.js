@@ -7,9 +7,9 @@ import { red, yellow, green } from 'picocolors';
 import prompts from 'prompts';
 import validateProjectName from 'validate-npm-package-name';
 import packageJSON from '../package.json' assert { type: 'json' };
-import { createDiscordBot } from './create-discord-bot.js';
-import { resolvePackageManager } from './helpers/packageManager.js';
-import { DEFAULT_PROJECT_NAME, PACKAGE_MANAGERS } from './util/constants.js';
+import { createDiscordBot } from '../src/create-discord-bot.js';
+import { resolvePackageManager } from '../src/helpers/packageManager.js';
+import { DEFAULT_PROJECT_NAME, PACKAGE_MANAGERS } from '../src/util/constants.js';
 
 let projectDirectory = '';
 

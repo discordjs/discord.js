@@ -3,7 +3,7 @@
 import process from 'node:process';
 import { createCommand } from 'commander';
 import packageFile from '../package.json';
-import { build } from './index.js';
+import { build } from '../src/index.js';
 
 export interface CLIOptions {
 	custom: string;

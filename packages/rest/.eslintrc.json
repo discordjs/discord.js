@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/eslintrc.json",
 	"extends": "../../.eslintrc.json",
 	"rules": {
 		"n/prefer-global/url": 0,

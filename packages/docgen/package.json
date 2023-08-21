@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
@@ -9,7 +10,22 @@
 		"fmt": "yarn format",
 		"prepack": "yarn format && yarn build"
 	},
-	"bin": "./dist/cli.js",
+	"bin": "./dist/bin/index.js",
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/src/index.js"
+			},
+			"import": {
+				"types": "./dist/src/index.d.mts",
+				"default": "./dist/src/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"directories": {
 		"lib": "src"
 	},

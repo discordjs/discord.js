@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/rest",
 	"version": "2.0.1",
 	"description": "The REST API for discord.js",
@@ -14,26 +15,41 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
 	},
-	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"node": {
-				"types": "./dist/index.d.ts",
-				"import": "./dist/index.mjs",
-				"require": "./dist/index.js"
+				"require": {
+					"types": "./dist/index.d.ts",
+					"default": "./dist/index.js"
+				},
+				"import": {
+					"types": "./dist/index.d.mts",
+					"default": "./dist/index.mjs"
+				}
 			},
 			"default": {
-				"types": "./dist/web.d.ts",
-				"import": "./dist/web.mjs",
-				"require": "./dist/web.js"
+				"require": {
+					"types": "./dist/web.d.ts",
+					"default": "./dist/web.js"
+				},
+				"import": {
+					"types": "./dist/web.d.mts",
+					"default": "./dist/web.mjs"
+				}
 			}
 		},
 		"./*": {
-			"types": "./dist/strategies/*.d.ts",
-			"import": "./dist/strategies/*.mjs",
-			"require": "./dist/strategies/*.js"
+			"require": {
+				"types": "./dist/strategies/*.d.ts",
+				"default": "./dist/strategies/*.js"
+			},
+			"import": {
+				"types": "./dist/strategies/*.d.mts",
+				"default": "./dist/strategies/*.mjs"
+			}
 		}
 	},
+	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"

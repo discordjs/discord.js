@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "[REPLACE_ME]",
 	"version": "0.1.0",
 	"private": true,

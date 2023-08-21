@@ -2212,7 +2212,7 @@ __metadata:
     typedoc: ^0.24.8
     typescript: ^5.1.6
   bin:
-    docgen: ./dist/cli.js
+    docgen: ./dist/bin/index.js
   languageName: unknown
   linkType: soft
 
@@ -10620,7 +10620,7 @@ __metadata:
     validate-npm-package-name: ^5.0.0
     vitest: ^0.34.2
   bin:
-    create-discord-bot: ./dist/index.mjs
+    create-discord-bot: ./dist/index.js
   languageName: unknown
   linkType: soft
 

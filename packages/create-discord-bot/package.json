@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "create-discord-bot",
 	"version": "0.2.1",
 	"description": "A simple way to create a startup Discord bot.",
@@ -10,7 +11,8 @@
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/index.mjs",
+	"type": "module",
+	"bin": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},

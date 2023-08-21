@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/guide",
 	"version": "0.1.0",
 	"description": "Imagine a guide... that explores the many possibilities for your discord.js bot",

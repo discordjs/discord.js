@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package.json",
   "name": "discord.js",
   "version": "14.13.0",
   "description": "A powerful library for interacting with the Discord API",
