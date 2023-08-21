@@ -905,6 +905,8 @@ export type CategoryChannelType = Exclude<
   | ChannelType.PrivateThread
   | ChannelType.GuildCategory
   | ChannelType.GuildDirectory
+  // TODO: https://github.com/discordjs/discord.js/pull/9662
+  | ChannelType.GuildMedia
 >;
 
 export class CategoryChannel extends GuildChannel {
