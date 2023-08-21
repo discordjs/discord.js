@@ -70,8 +70,7 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
         case ChannelType.GuildForum:
           channel = new (getForumChannel())(guild, data, client);
           break;
-        // TODO: ChannelType.GuildMedia
-        case 16:
+        case ChannelType.GuildMedia:
           channel = new (getMediaChannel())(guild, data, client);
           break;
       }

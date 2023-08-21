@@ -894,7 +894,6 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
   [ChannelType.GuildForum]: ForumChannel;
-  // @ts-expect-error discord-api-types.
   [ChannelType.GuildMedia]: MediaChannel;
 }
 
@@ -907,8 +906,6 @@ export type CategoryChannelType = Exclude<
   | ChannelType.PrivateThread
   | ChannelType.GuildCategory
   | ChannelType.GuildDirectory
-  // TODO: https://github.com/discordjs/discord.js/pull/9662
-  | ChannelType.GuildMedia
 >;
 
 export class CategoryChannel extends GuildChannel {
@@ -2400,7 +2397,6 @@ export class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true,
   'createMessageComponentCollector',
   'awaitMessageComponent',
 ]) {
-  // @ts-expect-error: discord-api-types.
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
@@ -2430,8 +2426,7 @@ export class ForumChannel extends ThreadOnlyChannel {
   public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;
 }
 
-export class MediaChannel extends ForumChannel {
-  // @ts-expect-error: discord-api-types.
+export class MediaChannel extends ThreadOnlyChannel {
   public type: ChannelType.GuildMedia;
 }
 

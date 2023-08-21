@@ -1539,7 +1539,6 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
-  // @ts-expect-error discord-api-types.
   expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
@@ -1923,10 +1922,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
-      expectType<MediaChannel>(
-        // @ts-expect-error discord-api-types.
-        interaction.options.getChannel('test', true, [ChannelType.MediaChannel]),
-      );
+      expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
