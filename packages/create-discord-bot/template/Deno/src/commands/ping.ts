@@ -1,4 +1,4 @@
-import type { Command } from './index.[REPLACE_IMPORT_EXT]';
+import type { Command } from './index.ts';
 
 export default {
 	data: {
