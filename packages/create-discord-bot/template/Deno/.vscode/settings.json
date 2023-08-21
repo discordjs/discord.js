@@ -1,0 +1,15 @@
+{
+	"editor.defaultFormatter": "denoland.vscode-deno",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": false
+	},
+	"editor.trimAutoWhitespace": false,
+	"files.insertFinalNewline": true,
+	"files.eol": "\n",
+	"npm.packageManager": "[REPLACE_ME]",
+	"deno.enable": "[REPLACE_BOOL]",
+	"deno.lint": "[REPLACE_BOOL]",
+	"deno.unstable": false
+}
