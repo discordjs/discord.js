@@ -30,6 +30,7 @@ dist-docs
 tsconfig.tsbuildinfo
 coverage
 out
+package.tgz
 
 # Deno
 deno.lock
