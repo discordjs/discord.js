@@ -57,7 +57,7 @@ If the target user is still in the guild where the command is being run, you can
 If you want the Snowflake of a structure instead, grab the option via <DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="get" brackets /> and access the Snowflake via the _`value`_ property. Note that you should use _`const { value: name } = ...`_ here to [destructure and rename](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) the value obtained from the <DocsLink type="typedef" parent="CommandInteractionOption" /> structure to avoid identifier name conflicts.
 </Alert>
 
-In the same way as the above examples, you can get values of any type using the corresponding <DocsLink type="class" parent="CommandInteractionOptionResolver" /> \_`get_____()`_ method. _`String`_, _`Integer`_, _`Number`_ and _`Boolean`_ options all provide the respective primitive types, while _`User`_, _`Channel`_, _`Role`_, and _`Mentionable`\_ options will provide either the respective discord.js class instance if your application has a bot user in the guild or a raw API structure for commands-only deployments.
+In the same way as the above examples, you can get values of any type using the corresponding <DocsLink type="class" parent="CommandInteractionOptionResolver" /> \_`get_____()`_ method. _`String`_, _`Integer`_, _`Number`_ and _`Boolean`_ options all provide the respective primitive types, while _`User`_, _`Channel`_, _`Role`_, and _`Mentionable`_ options will provide either the respective discord.js class instance if your application has a bot user in the guild or a raw API structure for commands-only deployments.
 
 ### Choices
 

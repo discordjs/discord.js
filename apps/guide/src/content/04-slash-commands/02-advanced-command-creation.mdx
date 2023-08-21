@@ -59,7 +59,7 @@ export const data = {
 			description :'The input to echo back',
 		},
 		{
-			name: 'channel'
+			name: 'channel',
 			type: ApplicationCommandOptionType.Channel,
 			description: 'The channel to echo into',
 		},
@@ -80,10 +80,10 @@ export const data = {
 			description :'The input to echo back',
 		},
 		{
-			name: 'ephemeral'
+			name: 'ephemeral',
 			type: ApplicationCommandOptionType.Boolean,
 			description: 'Whether or not the echo should be ephemeral',
-		}
+		},
 	],
 };
 ```
@@ -92,10 +92,10 @@ export const data = {
 
 Listed below is a short description of the different types of options that can be added.
 
-- _`String`_, _`Integer`_, _`Number`_ and _`Boolean`_ options all accept primitive values of their associated type.
+- _`String`_, _`Integer`_, _`Number`_, and _`Boolean`_ options all accept primitive values of their associated type.
   - _`Integer`_ only accepts whole numbers.
   - _`Number`_ accepts both whole numbers and decimals.
-- _`User`_, _`Channel`_, _`Role`_ and _`Mentionable`_ options will show a selection list in the Discord interface for their associated type, or will accept a Snowflake (id) as input.
+- _`User`_, _`Channel`_, _`Role`_, and _`Mentionable`_ options will show a selection list in the Discord interface for their associated type, or will accept a Snowflake (id) as input.
 - _`Attachment`_ options prompt the user to make an upload along with the slash command.
 - _`Subcommand`_ and _`SubcommandGroup`_ options allow you to have branching pathways of subsequent options for your commands - more on that later on this page.
 
