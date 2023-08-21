@@ -1,5 +1,5 @@
-import { Events } from 'discord.js';
-import type { Event } from './index.[REPLACE_IMPORT_EXT]';
+import { Events } from 'npm:discord.js@^14.13.0';
+import type { Event } from './index.ts';
 
 export default {
 	name: Events.ClientReady,

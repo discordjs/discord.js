@@ -1,8 +1,8 @@
-import process from 'node:process';
+import 'https://deno.land/std@0.199.0/dotenv/load.ts';
 import { URL } from 'node:url';
-import { Client, GatewayIntentBits } from 'discord.js';
-import { loadCommands, loadEvents } from './util/loaders.js';
-import { registerEvents } from './util/registerEvents.js';
+import { Client, GatewayIntentBits } from 'npm:discord.js@^14.13.0';
+import { loadCommands, loadEvents } from './util/loaders.ts';
+import { registerEvents } from './util/registerEvents.ts';
 
 // Initialize the client
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -15,4 +15,4 @@ const commands = await loadCommands(new URL('commands/', import.meta.url));
 registerEvents(commands, events, client);
 
 // Login to the client
-void client.login(process.env.DISCORD_TOKEN);
+void client.login(Deno.env.get('DISCORD_TOKEN'));

@@ -45,8 +45,9 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"chalk": "^5.3.0",
 		"commander": "^11.0.0",
+		"fast-glob": "^3.3.1",
+		"picocolors": "^1.0.0",
 		"prompts": "^2.4.2",
 		"validate-npm-package-name": "^5.0.0"
 	},
@@ -62,6 +63,7 @@
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^2.8.8",
+		"terser": "^5.19.2",
 		"tsup": "^7.2.0",
 		"typescript": "^5.1.6",
 		"vitest": "^0.34.2"

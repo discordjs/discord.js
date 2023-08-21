@@ -16,5 +16,5 @@
 		"**/*.spec.js",
 		"**/*.spec.mjs"
 	],
-	"exclude": []
+	"exclude": ["template/Deno"]
 }

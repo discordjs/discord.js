@@ -4,9 +4,12 @@
 		"declaration": false,
 		"declarationMap": false,
 		"module": "ESNext",
-		"moduleResolution": "NodeNext",
+		"moduleResolution": "Bundler",
 		"target": "ESNext",
 		"outDir": "dist",
+		"noEmit": true,
+		"allowImportingTsExtensions": true,
+		"types": ["bun-types"],
 		"skipLibCheck": true
 	}
 }
