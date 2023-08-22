@@ -127,12 +127,6 @@ class GuildAuditLogsEntry {
     this.executorId = data.user_id;
 
     /**
-     * The type of integration which performed the action
-     * @type {?Integration.IntegrationType}
-     */
-    this.integrationType = data.integration_type;
-
-    /**
      * The user that executed this entry
      * @type {?User}
      */
