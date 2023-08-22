@@ -220,8 +220,7 @@ class ClientApplication extends Application {
     interactionsEndpointURL,
     tags,
   } = {}) {
-    // TODO: `Routes.currentApplication()` (https://github.com/discordjs/discord-api-types/pull/728)
-    const data = await this.client.rest.patch('/applications/@me', {
+    const data = await this.client.rest.patch(Routes.currentApplication(), {
       body: {
         custom_install_url: customInstallURL,
         description,
