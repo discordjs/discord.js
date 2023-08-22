@@ -122,10 +122,10 @@ class ClientApplication extends Application {
 
     if ('bot' in data) {
       /**
-       * A partial user for the bot associated with this application.
+       * The bot associated with this application.
        * @type {?User}
        */
-      this.bot = data.bot;
+      this.bot = this.client.users._add(data.bot);
     } else {
       this.bot ??= null;
     }

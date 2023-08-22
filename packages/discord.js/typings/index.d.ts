@@ -1020,7 +1020,7 @@ export class ClientApplication extends Application {
   private constructor(client: Client<true>, data: RawClientApplicationData);
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
-  public bot: PartialUser | null;
+  public bot: User | null;
   public commands: ApplicationCommandManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
