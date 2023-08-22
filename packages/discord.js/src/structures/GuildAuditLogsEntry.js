@@ -127,6 +127,12 @@ class GuildAuditLogsEntry {
     this.executorId = data.user_id;
 
     /**
+     * The type of integration which performed the action
+     * @type {?Integration.IntegrationType}
+     */
+    this.integrationType = data.integration_type;
+
+    /**
      * The user that executed this entry
      * @type {?User}
      */
@@ -241,6 +247,16 @@ class GuildAuditLogsEntry {
           channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
+
+      case AuditLogEvent.MemberKick:
+      case AuditLogEvent.MemberRoleUpdate: {
+        if (data.integration_type) {
+          this.extra = {
+            integrationType: data.integration_type,
+          };
+        }
+        break;
+      }
 
       default:
         break;
