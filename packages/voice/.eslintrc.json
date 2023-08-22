@@ -1,8 +1,0 @@
-{
-	"$schema": "https://json.schemastore.org/eslintrc.json",
-	"extends": "../../.eslintrc.json",
-	"rules": {
-		"import/extensions": 0,
-		"no-restricted-globals": 0
-	}
-}

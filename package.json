@@ -5,6 +5,7 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
+		"lint:fast": "eslint .",
 		"build": "turbo run build",
 		"build:affected": "turbo run build --filter='...[origin/main]'",
 		"build:apps": "turbo run build:local --filter='...{apps/*}'",
@@ -23,6 +24,7 @@
 		"update": "yarn upgrade-interactive",
 		"create-package": "node packages/scripts/src/packageScript.mjs"
 	},
+	"type": "module",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
@@ -51,10 +53,14 @@
 		"@commitlint/config-angular": "^17.7.0",
 		"@favware/cliff-jumper": "^2.1.1",
 		"@favware/npm-deprecate": "^1.0.7",
+		"@unocss/eslint-plugin": "^0.55.2",
 		"conventional-changelog-cli": "^3.0.0",
+		"eslint": "^8.47.0",
+		"eslint-config-neon": "^0.1.54",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^14.0.1",
+		"ts-deepmerge": "^6.2.0",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.12",
 		"typescript": "^5.1.6",
