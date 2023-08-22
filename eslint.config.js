@@ -39,6 +39,7 @@ const reactRuleset = Object.freeze(
 			'@unocss': unocss,
 		},
 		rules: {
+			'@unocss/order': 2,
 			'@next/next/no-html-link-for-pages': 0,
 			'react/react-in-jsx-scope': 0,
 			'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],

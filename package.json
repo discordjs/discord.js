@@ -5,7 +5,6 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"lint:fast": "eslint .",
 		"build": "turbo run build",
 		"build:affected": "turbo run build --filter='...[origin/main]'",
 		"build:apps": "turbo run build:local --filter='...{apps/*}'",
