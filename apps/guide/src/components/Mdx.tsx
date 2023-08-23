@@ -10,7 +10,7 @@ import { H4 } from './H4';
 import { DocsLink } from '~/components/DocsLink';
 import { ResultingCode } from '~/components/ResultingCode';
 
-export function Mdx({ code }: { code: string }) {
+export function Mdx({ code }: { readonly code: string }) {
 	const Component = useMDXComponent(code);
 
 	return (

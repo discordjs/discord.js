@@ -7,7 +7,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 export default withBundleAnalyzer({
 	reactStrictMode: true,
 	experimental: {
-		appDir: true,
+		typedRoutes: true,
 		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
@@ -15,6 +15,7 @@ export default withBundleAnalyzer({
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
+	poweredByHeader: false,
 	async redirects() {
 		return [
 			{

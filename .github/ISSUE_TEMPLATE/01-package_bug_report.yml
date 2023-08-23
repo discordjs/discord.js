@@ -61,9 +61,9 @@ body:
       label: Versions
       description: List necessary versions here. This includes your package version, runtime version, operating system etc.
       placeholder: |
-        - discord.js 14.9.0 (`npm ls discord.js` or another package)
-        - Node.js 16.9.0 (`node --version`)
-        - TypeScript 5.0.4 (`npm ls typescript` if you use it)
+        - discord.js 14.12.1 (`npm ls discord.js` or another package)
+        - Node.js 16.11.0 (`node --version`)
+        - TypeScript 5.1.6 (`npm ls typescript` if you use it)
         - macOS Ventura 13.3.1
     validations:
       required: true

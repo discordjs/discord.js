@@ -4,14 +4,14 @@ import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './Me
 import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';
 
 export interface IDiscordMessage {
-	author?: IDiscordMessageAuthor | undefined;
-	authorNode?: ReactNode | undefined;
-	followUp?: boolean;
-	interaction?: IDiscordMessageInteraction | undefined;
-	interactionNode?: ReactNode | undefined;
-	reply?: IDiscordMessageReply | undefined;
-	replyNode?: ReactNode | undefined;
-	time?: string | undefined;
+	readonly author?: IDiscordMessageAuthor | undefined;
+	readonly authorNode?: ReactNode | undefined;
+	readonly followUp?: boolean;
+	readonly interaction?: IDiscordMessageInteraction | undefined;
+	readonly interactionNode?: ReactNode | undefined;
+	readonly reply?: IDiscordMessageReply | undefined;
+	readonly replyNode?: ReactNode | undefined;
+	readonly time?: string | undefined;
 }
 
 export function DiscordMessage({

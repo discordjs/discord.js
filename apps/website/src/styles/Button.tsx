@@ -7,7 +7,7 @@ export const buttonVariants = cva(
 			variant: {
 				primary: 'bg-blurple text-white border-0',
 				secondary:
-					'bg-white text-gray-800 border-gray-400 border border-light-900 text-black transition duration-200 active:translate-y-px dark:border-dark-100 hover:border-black active:bg-light-300 dark:bg-dark-400 hover:bg-light-200 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300',
+					'bg-white text-gray-800 border-gray-400 border border-light-900 text-black transition duration-200 active:translate-y-px dark:border-dark-100 hover:border-black active:bg-light-300 dark:bg-dark-400 hover:bg-light-200 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300 dark:hover:border-white',
 			},
 		},
 		defaultVariants: {

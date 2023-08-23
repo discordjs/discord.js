@@ -6,12 +6,15 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
  * @extends {CachedManager}
  */
 class ThreadManager extends CachedManager {
+  static [MakeCacheOverrideSymbol] = ThreadManager;
+
   constructor(channel, iterable) {
     super(channel.client, ThreadChannel, iterable);
 

@@ -1,7 +1,7 @@
 export interface IDiscordMessageEmbedFooter {
-	content?: string;
-	icon?: string;
-	timestamp?: string;
+	readonly content?: string;
+	readonly icon?: string;
+	readonly timestamp?: string;
 }
 
 export function DiscordMessageEmbedFooter({ content, icon, timestamp }: IDiscordMessageEmbedFooter) {

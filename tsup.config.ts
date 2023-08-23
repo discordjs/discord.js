@@ -17,6 +17,7 @@ export function createTsupConfig({
 	dts = true,
 	sourcemap = true,
 	esbuildPlugins = [],
+	treeshake = false,
 }: Options = {}) {
 	return defineConfig({
 		entry,
@@ -34,5 +35,6 @@ export function createTsupConfig({
 		dts,
 		sourcemap,
 		esbuildPlugins,
+		treeshake,
 	});
 }

@@ -1,4 +1,5 @@
 import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
+import type { Route } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
@@ -20,9 +21,12 @@ export default function Page() {
 							Discord bots.
 						</h1>
 						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
-						<div className="flex gap-4 md:flex-row">
-							<Link className={buttonVariants()} href="/docs">
+						<div className="flex flex-wrap place-content-center gap-4 md:flex-row">
+							<a className={buttonVariants()} href="https://old.discordjs.dev/#/docs" rel="noopener noreferrer">
 								Docs
+							</a>
+							<Link className={buttonVariants()} href={'/docs' as Route}>
+								Module docs
 							</Link>
 							<a
 								className={buttonVariants({ variant: 'secondary' })}
