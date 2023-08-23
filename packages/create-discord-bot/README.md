@@ -16,7 +16,14 @@
 
 ## About
 
-`npx create-discord-bot ./your/chosen/directory/`. It's as easy as that to create a simple Discord bot to begin your journey with the Discord API.
+It's easy to create a simple Discord bot to begin your journey with the Discord API.
+
+```sh
+npm create discord-bot ./your/chosen/directory
+yarn create discord-bot ./your/chosen/directory
+pnpm create discord-bot ./your/chosen/directory
+bunx create-discord-bot ./your/chosen/directory
+```
 
 ## Links
 
