@@ -1,5 +1,4 @@
 /* eslint-disable n/prefer-global/process */
-/* eslint-disable no-restricted-globals */
 
 /**
  * Resolves the user agent appendix string for the current environment.

@@ -1,16 +1,18 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "create-discord-bot",
 	"version": "0.2.1",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/index.mjs",
+	"type": "module",
+	"bin": "./dist/index.js",
 	"directories": {
 		"lib": "src"
 	},
@@ -45,23 +47,25 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
-		"chalk": "^5.3.0",
 		"commander": "^11.0.0",
+		"fast-glob": "^3.3.1",
+		"picocolors": "^1.0.0",
 		"prompts": "^2.4.2",
 		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@microsoft/api-extractor": "^7.36.4",
-		"@types/node": "16.18.40",
+		"@types/node": "16.18.41",
 		"@types/prompts": "^2.4.4",
 		"@types/validate-npm-package-name": "^4.0.0",
 		"@vitest/coverage-v8": "^0.34.2",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
+		"prettier": "^3.0.2",
+		"terser": "^5.19.2",
 		"tsup": "^7.2.0",
 		"typescript": "^5.1.6",
 		"vitest": "^0.34.2"

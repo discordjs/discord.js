@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/actions",
 	"version": "0.1.0",
 	"description": "A set of actions that we use for our workflows",
@@ -6,13 +7,11 @@
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "yarn format"
 	},
 	"type": "module",
-	"main": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -43,18 +42,18 @@
 	"dependencies": {
 		"@actions/core": "^1.10.0",
 		"@actions/glob": "^0.4.0",
-		"@planetscale/database": "^1.10.0",
-		"tslib": "^2.6.1",
-		"undici": "5.22.1"
+		"@planetscale/database": "^1.11.0",
+		"tslib": "^2.6.2",
+		"undici": "5.23.0"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.40",
+		"@types/node": "16.18.41",
 		"@vitest/coverage-v8": "^0.34.2",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
+		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.12",
 		"typescript": "^5.1.6",

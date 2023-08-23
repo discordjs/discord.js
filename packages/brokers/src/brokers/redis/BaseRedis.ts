@@ -113,7 +113,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		}
 
 		this.listening = true;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 		while (true) {
 			try {
 				const data = await this.streamReadClient.xreadgroupBuffer(

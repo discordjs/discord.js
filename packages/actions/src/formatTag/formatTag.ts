@@ -1,5 +1,4 @@
 export function formatTag(tag: string) {
-	// eslint-disable-next-line unicorn/no-unsafe-regex
 	const parsed = /(?:^@.*\/(?<package>.*)@v?)?(?<semver>\d+.\d+.\d+)-?.*/.exec(tag);
 	const parsedPackage = /(?<package>.*)@v?-?.*/.exec(tag);
 

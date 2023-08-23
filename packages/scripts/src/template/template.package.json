@@ -6,8 +6,8 @@
 		"test": "vitest run",
 		"build": "tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn build && yarn lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{name}/*'",
@@ -15,7 +15,7 @@
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		"types": "./dist/index.d.ts",
 		"import": "./dist/index.mjs",
@@ -45,21 +45,21 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.23",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@favware/cliff-jumper": "^2.1.1",
+		"@microsoft/api-extractor": "^7.36.4",
+		"@types/node": "16.18.41",
+		"@vitest/coverage-v8": "^0.34.2",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.38.0",
-		"eslint-config-neon": "^0.1.42",
+		"eslint": "^8.47.0",
+		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.7",
-		"tsup": "^6.7.0",
-		"typescript": "^5.0.4",
-		"vitest": "^0.29.8"
+		"prettier": "^3.0.2",
+		"tsup": "^7.2.0",
+		"typescript": "^5.1.6",
+		"vitest": "^0.34.2"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18.16.0"
 	},
 	"publishConfig": {
 		"access": "public"

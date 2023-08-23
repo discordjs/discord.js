@@ -1,13 +1,26 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/api-extractor-utils",
 	"version": "1.0.0",
 	"description": "Utilities for api-extractor",
 	"private": true,
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "yarn format"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -36,12 +49,12 @@
 		"@microsoft/tsdoc": "0.14.2"
 	},
 	"devDependencies": {
-		"@types/node": "16.18.40",
+		"@types/node": "16.18.41",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
+		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.12",
 		"typescript": "^5.1.6"

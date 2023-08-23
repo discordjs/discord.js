@@ -1,15 +1,31 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "yarn format",
 		"prepack": "yarn format && yarn build"
 	},
-	"bin": "./dist/cli.js",
+	"bin": "./dist/bin/index.js",
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/src/index.js"
+			},
+			"import": {
+				"types": "./dist/src/index.d.mts",
+				"default": "./dist/src/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"directories": {
 		"lib": "src"
 	},
@@ -43,18 +59,18 @@
 	"dependencies": {
 		"commander": "^11.0.0",
 		"jsdoc-to-markdown": "^8.0.0",
-		"tslib": "^2.6.1",
+		"tslib": "^2.6.2",
 		"typedoc": "^0.24.8"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.18.40",
+		"@types/node": "16.18.41",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
+		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.12",
 		"typescript": "^5.1.6"

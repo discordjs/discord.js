@@ -1,6 +1,7 @@
 'use client';
 
 import { allContents } from 'contentlayer/generated';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Section } from './Section';
@@ -45,7 +46,7 @@ export function Sidebar() {
 									? 'bg-blurple text-white'
 									: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 							}`}
-							href={member.href}
+							href={member.href as Route}
 							key={`${member.title}-${index}`}
 							onClick={() => setOpened(false)}
 							title={member.title}

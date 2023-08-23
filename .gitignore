@@ -23,12 +23,20 @@ dist-docs
 .vscode
 !.vscode/extensions.json
 !.vscode/settings.json
+!packages/create-discord-bot/template/**/.vscode
 .idea
 .DS_Store
 .turbo
 tsconfig.tsbuildinfo
 coverage
 out
+package.tgz
+
+# Deno
+deno.lock
+
+# Bun
+bun.lockb
 
 # yarn
 .pnp.*

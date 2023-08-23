@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/collection",
 	"version": "1.5.3",
 	"description": "Utility data structure used in discord.js",
@@ -6,22 +7,29 @@
 		"test": "vitest run",
 		"build": "tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "yarn format",
 		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn lint && yarn test && yarn build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'",
 		"release": "cliff-jumper"
 	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
+	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js"
-	},
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -54,14 +62,14 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@microsoft/api-extractor": "^7.36.4",
-		"@types/node": "16.18.40",
+		"@types/node": "16.18.41",
 		"@vitest/coverage-v8": "^0.34.2",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.0",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
+		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.12",
 		"typescript": "^5.1.6",

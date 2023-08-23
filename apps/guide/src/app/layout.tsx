@@ -13,6 +13,9 @@ import '~/styles/ch.css';
 import '~/styles/main.css';
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
+	),
 	title: 'discord.js',
 	description: DESCRIPTION,
 	viewport: {
