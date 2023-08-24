@@ -1,5 +1,6 @@
 'use strict';
 
+const AttachmentFlagsBitField = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util');
 
 /**
@@ -120,6 +121,16 @@ class Attachment {
       this.waveform = data.waveform;
     } else {
       this.waveform ??= null;
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this attachment
+       * @type {Readonly<AttachmentFlagsBitField>}
+       */
+      this.flags = new AttachmentFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new AttachmentFlagsBitField().freeze();
     }
   }
 

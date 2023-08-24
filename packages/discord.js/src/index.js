@@ -19,6 +19,7 @@ exports.DiscordjsErrorCodes = require('./errors/ErrorCodes');
 // Utilities
 exports.ActivityFlagsBitField = require('./util/ActivityFlagsBitField');
 exports.ApplicationFlagsBitField = require('./util/ApplicationFlagsBitField');
+exports.AttachmentFlagsBitField = require('./util/AttachmentFlagsBitField');
 exports.BaseManager = require('./managers/BaseManager');
 exports.BitField = require('./util/BitField');
 exports.ChannelFlagsBitField = require('./util/ChannelFlagsBitField');
@@ -35,6 +36,7 @@ exports.MessageFlagsBitField = require('./util/MessageFlagsBitField');
 exports.Options = require('./util/Options');
 exports.Partials = require('./util/Partials');
 exports.PermissionsBitField = require('./util/PermissionsBitField');
+exports.RoleFlagsBitField = require('./util/RoleFlagsBitField');
 exports.ShardEvents = require('./util/ShardEvents');
 exports.Status = require('./util/Status');
 exports.SnowflakeUtil = require('@sapphire/snowflake').DiscordSnowflake;

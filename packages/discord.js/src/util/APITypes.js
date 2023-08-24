@@ -211,6 +211,11 @@
  */
 
 /**
+ * @external AttachmentFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
+ */
+
+/**
  * @external AutoModerationActionType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
  */
@@ -403,6 +408,11 @@
 /**
  * @external PermissionFlagsBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ */
+
+/**
+ * @external RoleFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
  */
 
 /**

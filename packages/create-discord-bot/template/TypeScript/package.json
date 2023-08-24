@@ -1,27 +1,28 @@
 {
-	"name": "[REPLACE-NAME]",
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "[REPLACE_ME]",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"test": "tsc",
-		"lint": "prettier --check . && eslint ./src --ext .ts --format=pretty",
+		"build": "tsc",
+		"lint": "prettier --check . && eslint --ext .ts --format=pretty src",
 		"deploy": "node --require dotenv/config dist/util/deploy.js",
-		"format": "prettier --write . && eslint ./src --ext .ts --fix --format=pretty",
+		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^0.6.0",
-		"discord.js": "^14.11.0",
-		"dotenv": "^16.0.3"
+		"@discordjs/core": "^1.0.1",
+		"discord.js": "^14.13.0",
+		"dotenv": "^16.3.1"
 	},
 	"devDependencies": {
-		"@sapphire/ts-config": "^4.0.0",
-		"@types/node": "^18.15.3",
-		"eslint": "^8.40.0",
+		"@sapphire/ts-config": "^4.0.1",
+		"@types/node": "^18.17.6",
+		"eslint": "^8.47.0",
 		"eslint-config-neon": "^0.1.47",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
-		"typescript": "^5.0.4"
+		"prettier": "^3.0.2",
+		"typescript": "^5.1.6"
 	}
 }

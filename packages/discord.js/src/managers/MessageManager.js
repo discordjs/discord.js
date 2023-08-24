@@ -7,6 +7,7 @@ const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 const { resolvePartialEmoji } = require('../util/Util');
 
 /**
@@ -15,6 +16,8 @@ const { resolvePartialEmoji } = require('../util/Util');
  * @abstract
  */
 class MessageManager extends CachedManager {
+  static [MakeCacheOverrideSymbol] = MessageManager;
+
   constructor(channel, iterable) {
     super(channel.client, Message, iterable);
 

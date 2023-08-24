@@ -1,11 +1,14 @@
-import { resolve } from 'node:path';
 import react from '@vitejs/plugin-react';
 import Unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-	plugins: [dts(), react(), Unocss({ include: ['.storybook/preview.ts'], configFile: '../../unocss.config.ts' })],
+	plugins: [
+		dts(),
+		react(),
+		Unocss({ content: { pipeline: { include: ['.storybook/preview.ts'] } }, configFile: '../../unocss.config.ts' }),
+	],
 	build: {
 		lib: {
 			entry: [

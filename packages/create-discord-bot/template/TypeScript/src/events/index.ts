@@ -1,5 +1,5 @@
 import type { ClientEvents } from 'discord.js';
-import type { StructurePredicate } from '../util/loaders.js';
+import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
 
 /**
  * Defines the structure of an event.

@@ -1,9 +1,9 @@
 import { addPackageToModel } from '@discordjs/scripts';
 import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
+import { fetchModelJSON } from '~/app/docAPI';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
-import { fetchModelJSON } from '~/app/docAPI';
 
 export interface ItemRouteParams {
 	item: string;

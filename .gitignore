@@ -20,7 +20,7 @@ dist-docs
 
 # Miscellaneous
 .tmp
-.vscode
+.vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 .idea
@@ -29,6 +29,13 @@ dist-docs
 tsconfig.tsbuildinfo
 coverage
 out
+package.tgz
+
+# Deno
+deno.lock
+
+# Bun
+bun.lockb
 
 # yarn
 .pnp.*

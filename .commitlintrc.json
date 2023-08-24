@@ -1,4 +1,5 @@
 {
+	"$schema": "https://json.schemastore.org/commitlintrc.json",
 	"extends": ["@commitlint/config-angular"],
 	"rules": {
 		"type-enum": [

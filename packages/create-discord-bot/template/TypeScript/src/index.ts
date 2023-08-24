@@ -1,7 +1,8 @@
+import process from 'node:process';
 import { URL } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
-import { loadCommands, loadEvents } from './util/loaders.js';
-import { registerEvents } from './util/registerEvents.js';
+import { loadCommands, loadEvents } from './util/loaders.[REPLACE_IMPORT_EXT]';
+import { registerEvents } from './util/registerEvents.[REPLACE_IMPORT_EXT]';
 
 // Initialize the client
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -14,4 +15,4 @@ const commands = await loadCommands(new URL('commands/', import.meta.url));
 registerEvents(commands, events, client);
 
 // Login to the client
-void client.login();
+void client.login(process.env.DISCORD_TOKEN);

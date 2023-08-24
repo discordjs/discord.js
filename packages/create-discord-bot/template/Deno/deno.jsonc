@@ -1,0 +1,41 @@
+{
+	"$schema": "https://raw.githubusercontent.com/denoland/deno/main/cli/schemas/config-file.v1.json",
+	"tasks": {
+		"lint": "deno lint",
+		"deploy": "deno run --allow-read --allow-env --allow-net src/util/deploy.ts",
+		"format": "deno fmt",
+		"fmt": "deno fmt",
+		"start": "deno run --allow-read --allow-env --allow-net src/index.ts"
+	},
+	"lint": {
+		"include": ["src/"],
+		"rules": {
+			"tags": ["recommended"],
+			"exclude": ["require-await", "no-await-in-sync-fn"]
+		}
+	},
+	"fmt": {
+		"useTabs": true,
+		"lineWidth": 120,
+		"semiColons": true,
+		"singleQuote": true,
+		"proseWrap": "preserve",
+		"include": ["src/"]
+	},
+	"compilerOptions": {
+		"alwaysStrict": true,
+		"emitDecoratorMetadata": true,
+		"verbatimModuleSyntax": true,
+		"lib": ["deno.window"],
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"removeComments": false,
+		"strict": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"exactOptionalPropertyTypes": false,
+		"noImplicitOverride": true
+	}
+}
