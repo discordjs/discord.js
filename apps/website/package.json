@@ -13,7 +13,7 @@
 		"build:next": "next build",
 		"build:css": "yarn generate:css",
 		"build:search_indices": "yarn node scripts/generateAllIndices.js",
-		"build:analyze": "turbo run docs && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
+		"build:analyze": "turbo run docs --concurrency=3 && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true yarn build:prod",
 		"preview": "next start",
 		"dev": "concurrently 'yarn dev:css' 'yarn dev:next'",
 		"dev:next": "next dev",

@@ -3,6 +3,12 @@ description: 'Run yarn install with node_modules linker and cache enabled'
 runs:
   using: 'composite'
   steps:
+    - name: Set up swap space
+      if: runner.os == 'Linux'
+      uses: pierotofy/set-swap-space@v1.0
+      with:
+        swap-size-gb: 10
+
     - name: Expose yarn config as "$GITHUB_OUTPUT"
       id: yarn-config
       shell: bash
