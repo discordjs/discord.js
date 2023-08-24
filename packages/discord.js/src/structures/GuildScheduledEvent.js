@@ -165,6 +165,15 @@ class GuildScheduledEvent extends Base {
   }
 
   /**
+   * Whether this GuildScheduledEvent is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.name !== 'string';
+  }
+
+  /**
    * The URL of this scheduled event's cover image
    * @param {BaseImageURLOptions} [options={}] Options for image URL
    * @returns {?string}
@@ -390,6 +399,15 @@ class GuildScheduledEvent extends Base {
    */
   fetchSubscribers(options) {
     return this.guild.scheduledEvents.fetchSubscribers(this.id, options);
+  }
+
+  /**
+   * Fetches this scheduled event.
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  fetch(force = true) {
+    return this.guild.scheduledEvents.fetch({ guildScheduledEvent: this.id, force: force });
   }
 
   /**
