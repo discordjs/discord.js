@@ -497,3 +497,21 @@ export enum Faces {
 	 */
 	Unflip = '┬─┬ノ( º _ ºノ)',
 }
+
+/**
+ * All the available guild navigation mentions.
+ */
+export enum GuildNavigationMentions {
+	/**
+	 * _Browse Channels_ tab.
+	 */
+	Browse = '<id:browse>',
+	/**
+	 * _Customize_ tab with the server's {@link https://discord.com/developers/docs/resources/guild#guild-onboarding-object | onboarding prompts}.
+	 */
+	Customize = '<id:customize>',
+	/**
+	 * {@link https://support.discord.com/hc/en-us/articles/13497665141655 | Server Guide} tab.
+	 */
+	Guide = '<id:guide>',
+}
