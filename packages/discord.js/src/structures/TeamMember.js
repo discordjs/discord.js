@@ -24,6 +24,7 @@ class TeamMember extends Base {
       /**
        * The permissions this Team Member has with regard to the team
        * @type {string[]}
+       * @deprecated
        */
       this.permissions = data.permissions;
     }
