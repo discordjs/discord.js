@@ -1,5 +1,5 @@
-import { allContents } from 'contentlayer/generated';
 import { notFound } from 'next/navigation';
+import { allContents } from 'contentlayer/generated';
 import { Mdx } from '~/components/Mdx';
 
 export async function generateStaticParams() {

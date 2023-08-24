@@ -1,11 +1,13 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"eslint.useESLintClass": false,
 	"eslint.experimental.useFlatConfig": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll": true,
-		"source.organizeImports": false
+		"source.organizeImports": false,
+		"source.fixAll.eslint": true,
+		"source.fixAll": true
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {

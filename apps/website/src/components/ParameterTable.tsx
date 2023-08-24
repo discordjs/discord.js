@@ -1,9 +1,9 @@
 import type { ApiDocumentedItem, ApiParameterListMixin } from '@microsoft/api-extractor-model';
 import { useMemo } from 'react';
+import { resolveParameters } from '~/util/model';
 import { ExcerptText } from './ExcerptText';
 import { Table } from './Table';
 import { TSDoc } from './documentation/tsdoc/TSDoc';
-import { resolveParameters } from '~/util/model';
 
 const columnStyles = {
 	Name: 'font-mono whitespace-nowrap',

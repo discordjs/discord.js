@@ -8,9 +8,9 @@ import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { useMemo } from 'react';
+import { useNav } from '~/contexts/nav';
 import { ItemLink } from './ItemLink';
 import { Section } from './Section';
-import { useNav } from '~/contexts/nav';
 
 export interface SidebarSectionItemData {
 	href: string;

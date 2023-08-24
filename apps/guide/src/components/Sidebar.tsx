@@ -1,11 +1,11 @@
 'use client';
 
-import { allContents } from 'contentlayer/generated';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Section } from './Section';
+import { allContents } from 'contentlayer/generated';
 import { useNav } from '~/contexts/nav';
+import { Section } from './Section';
 
 const items = allContents.map((content) => ({
 	title: content.title,

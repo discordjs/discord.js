@@ -1,7 +1,7 @@
 import type { ApiEnumMember } from '@microsoft/api-extractor-model';
+import { CodeHeading } from '~/components/CodeHeading';
 import { SignatureText } from '../../SignatureText';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
-import { CodeHeading } from '~/components/CodeHeading';
 
 export function EnumMember({ member }: { readonly member: ApiEnumMember }) {
 	return (
