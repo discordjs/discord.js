@@ -24,8 +24,7 @@ const typeScriptRuleset = merge(...typescript, {
 	languageOptions: {
 		parserOptions: {
 			allowAutomaticSingleRunInference: true,
-			tsconfigRootDir: __dirname,
-			project: ['./tsconfig.eslint.json', './apps/*/tsconfig.eslint.json', './packages/*/tsconfig.eslint.json'],
+			project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 		},
 	},
 	rules: {
@@ -34,7 +33,7 @@ const typeScriptRuleset = merge(...typescript, {
 	settings: {
 		'import/resolver': {
 			typescript: {
-				project: ['./tsconfig.eslint.json', './apps/*/tsconfig.eslint.json', './packages/*/tsconfig.eslint.json'],
+				project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 			},
 		},
 	},
