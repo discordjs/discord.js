@@ -374,6 +374,99 @@ export function messageLink<C extends Snowflake, M extends Snowflake, G extends 
 }
 
 /**
+ * The heading levels for expanded markdown.
+ */
+export enum HeadingLevel {
+	/**
+	 * The first heading level.
+	 */
+	One = 1,
+	/**
+	 * The second heading level.
+	 */
+	Two,
+	/**
+	 * The third heading level.
+	 */
+	Three,
+}
+
+/**
+ * Formats the content into a heading level.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<C extends string>(content: C, level?: HeadingLevel.One): `# ${C}`;
+
+/**
+ * Formats the content into a heading level.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<C extends string>(content: C, level: HeadingLevel.Two): `## ${C}`;
+
+/**
+ * Formats the content into a heading level.
+ *
+ * @typeParam C - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<C extends string>(content: C, level: HeadingLevel.Three): `### ${C}`;
+
+export function heading(content: string, level?: HeadingLevel) {
+	switch (level) {
+		case HeadingLevel.Three:
+			return `### ${content}`;
+		case HeadingLevel.Two:
+			return `## ${content}`;
+		default:
+			return `# ${content}`;
+	}
+}
+
+/**
+ * A type that recursively traverses into arrays.
+ */
+export type RecursiveArray<T> = readonly (RecursiveArray<T> | T)[];
+
+/**
+ * Callback function for list formatters.
+ *
+ * @internal
+ */
+function listCallback(element: RecursiveArray<string>, startNumber?: number, depth = 0): string {
+	if (Array.isArray(element)) {
+		return element.map((element) => listCallback(element, startNumber, depth + 1)).join('\n');
+	}
+
+	return `${'  '.repeat(depth - 1)}${startNumber ? `${startNumber}.` : '-'} ${element}`;
+}
+
+/**
+ * Formats the elements in the array to an ordered list.
+ *
+ * @param list - The array of elements to list
+ * @param startNumber - The starting number for the list
+ */
+export function orderedList(list: RecursiveArray<string>, startNumber = 1): string {
+	return listCallback(list, Math.max(startNumber, 1));
+}
+
+/**
+ * Formats the elements in the array to an unordered list.
+ *
+ * @param list - The array of elements to list
+ */
+export function unorderedList(list: RecursiveArray<string>): string {
+	return listCallback(list);
+}
+
+/**
  * Formats a date into a short date-time string.
  *
  * @param date - The date to format. Defaults to the current time

@@ -1,7 +1,8 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.useESLintClass": false,
+	"eslint.useESLintClass": true,
 	"eslint.experimental.useFlatConfig": true,
+	"eslint.workingDirectories": [{ "mode": "auto" }],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {

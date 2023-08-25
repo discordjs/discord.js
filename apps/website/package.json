@@ -97,8 +97,8 @@
 		"lighthouse": "^11.0.0",
 		"prettier": "^3.0.2",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6",
-		"vercel": "^32.0.1",
+		"typescript": "^5.2.2",
+		"vercel": "^32.0.2",
 		"vitest": "^0.34.2"
 	},
 	"engines": {

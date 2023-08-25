@@ -173,7 +173,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.12, @babel/core@npm:^7.22.10, @babel/core@npm:^7.22.9, @babel/core@npm:^7.7.5":
+"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.13.16, @babel/core@npm:^7.20.12, @babel/core@npm:^7.22.9, @babel/core@npm:^7.7.5":
   version: 7.22.10
   resolution: "@babel/core@npm:7.22.10"
   dependencies:
@@ -193,6 +193,29 @@ __metadata:
     json5: ^2.2.2
     semver: ^6.3.1
   checksum: cc4efa09209fe1f733cf512e9e4bb50870b191ab2dee8014e34cd6e731f204e48476cc53b4bbd0825d4d342304d577ae43ff5fd8ab3896080673c343321acb32
+  languageName: node
+  linkType: hard
+
+"@babel/core@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/core@npm:7.22.11"
+  dependencies:
+    "@ampproject/remapping": ^2.2.0
+    "@babel/code-frame": ^7.22.10
+    "@babel/generator": ^7.22.10
+    "@babel/helper-compilation-targets": ^7.22.10
+    "@babel/helper-module-transforms": ^7.22.9
+    "@babel/helpers": ^7.22.11
+    "@babel/parser": ^7.22.11
+    "@babel/template": ^7.22.5
+    "@babel/traverse": ^7.22.11
+    "@babel/types": ^7.22.11
+    convert-source-map: ^1.7.0
+    debug: ^4.1.0
+    gensync: ^1.0.0-beta.2
+    json5: ^2.2.3
+    semver: ^6.3.1
+  checksum: f258b2539ea2e5bfe55a708c2f3e1093a1b4744f12becc35abeb896037b66210de9a8ad6296a706046d5dc3a24e564362b73a9b814e5bfe500c8baab60c22d2e
   languageName: node
   linkType: hard
 
@@ -255,6 +278,25 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0
   checksum: 9683edbf73889abce183b06eac29524448aaab1dba7bdccdd6c26cf03e5ade3903b581b4d681da88fbff824fa117b840cc945bebf7db3c1f8c745f3c5a8a2595
+  languageName: node
+  linkType: hard
+
+"@babel/helper-create-class-features-plugin@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/helper-create-class-features-plugin@npm:7.22.11"
+  dependencies:
+    "@babel/helper-annotate-as-pure": ^7.22.5
+    "@babel/helper-environment-visitor": ^7.22.5
+    "@babel/helper-function-name": ^7.22.5
+    "@babel/helper-member-expression-to-functions": ^7.22.5
+    "@babel/helper-optimise-call-expression": ^7.22.5
+    "@babel/helper-replace-supers": ^7.22.9
+    "@babel/helper-skip-transparent-expression-wrappers": ^7.22.5
+    "@babel/helper-split-export-declaration": ^7.22.6
+    semver: ^6.3.1
+  peerDependencies:
+    "@babel/core": ^7.0.0
+  checksum: b7aeb22e29aba5327616328576363522b3b186918faeda605e300822af4a5f29416eb34b5bd825d07ab496550e271d02d7634f0022a62b5b8cbf0eb6389bc3fa
   languageName: node
   linkType: hard
 
@@ -457,6 +499,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helpers@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/helpers@npm:7.22.11"
+  dependencies:
+    "@babel/template": ^7.22.5
+    "@babel/traverse": ^7.22.11
+    "@babel/types": ^7.22.11
+  checksum: 93186544228b5e371486466ec3b86a77cce91beeff24a5670ca8ec46d50328f7700dab82d532351286e9d68624dc51d6d71589b051dd9535e44be077a43ec013
+  languageName: node
+  linkType: hard
+
 "@babel/highlight@npm:^7.22.10":
   version: 7.22.10
   resolution: "@babel/highlight@npm:7.22.10"
@@ -474,6 +527,15 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: af51567b7d3cdf523bc608eae057397486c7fa6c2e5753027c01fe5c36f0767b2d01ce3049b222841326cc5b8c7fda1d810ac1a01af0a97bb04679e2ef9f7049
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/parser@npm:7.22.11"
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: 332079ed09794d3685343e9fc39c6a12dcb6ea589119f2135952cdef2424296786bb609a33f6dfa9be271797bbf8339f1865118418ea50b32a0c701734c96664
   languageName: node
   linkType: hard
 
@@ -1083,6 +1145,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-modules-commonjs@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/plugin-transform-modules-commonjs@npm:7.22.11"
+  dependencies:
+    "@babel/helper-module-transforms": ^7.22.9
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/helper-simple-access": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: c15ad7f1234a930cab214224bb85f6b3a3f301fa1d4d15bef193e5c11c614ce369551e5cbb708fde8d3f7e1cb84b05e9798a3647a11b56c3d67580e362a712d4
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-modules-systemjs@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/plugin-transform-modules-systemjs@npm:7.22.5"
@@ -1357,6 +1432,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-typescript@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/plugin-transform-typescript@npm:7.22.11"
+  dependencies:
+    "@babel/helper-annotate-as-pure": ^7.22.5
+    "@babel/helper-create-class-features-plugin": ^7.22.11
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/plugin-syntax-typescript": ^7.22.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: a0dc3c2427b55602944705c9a91b4c074524badd5ea87edb603ddeabe7fae531bcbe68475106d7a00079b67bb422dbf2e9f50e15c25ac24d7e9fe77f37ebcfb4
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-typescript@npm:^7.22.5":
   version: 7.22.10
   resolution: "@babel/plugin-transform-typescript@npm:7.22.10"
@@ -1534,7 +1623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.13.0, @babel/preset-typescript@npm:^7.22.5":
+"@babel/preset-typescript@npm:^7.13.0":
   version: 7.22.5
   resolution: "@babel/preset-typescript@npm:7.22.5"
   dependencies:
@@ -1546,6 +1635,21 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 7be1670cb4404797d3a473bd72d66eb2b3e0f2f8a672a5e40bdb0812cc66085ec84bcd7b896709764cabf042fdc6b7f2d4755ac7cce10515eb596ff61dab5154
+  languageName: node
+  linkType: hard
+
+"@babel/preset-typescript@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/preset-typescript@npm:7.22.11"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.22.5
+    "@babel/helper-validator-option": ^7.22.5
+    "@babel/plugin-syntax-jsx": ^7.22.5
+    "@babel/plugin-transform-modules-commonjs": ^7.22.11
+    "@babel/plugin-transform-typescript": ^7.22.11
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 8ae7162c31db896f5eeecd6f67ab2e58555fdc06fe84e95fe4a3f60b64cd6f782d2d7dfbde0c0eac04b55dac18222752d91dd8786245cccedd7e42f080e07233
   languageName: node
   linkType: hard
 
@@ -1628,6 +1732,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/traverse@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/traverse@npm:7.22.11"
+  dependencies:
+    "@babel/code-frame": ^7.22.10
+    "@babel/generator": ^7.22.10
+    "@babel/helper-environment-visitor": ^7.22.5
+    "@babel/helper-function-name": ^7.22.5
+    "@babel/helper-hoist-variables": ^7.22.5
+    "@babel/helper-split-export-declaration": ^7.22.6
+    "@babel/parser": ^7.22.11
+    "@babel/types": ^7.22.11
+    debug: ^4.1.0
+    globals: ^11.1.0
+  checksum: 4ad62d548ca8b95dbf45bae16cc167428f174f3c837d55a5878b1f17bdbc8b384d6df741dc7c461b62c04d881cf25644d3ab885909ba46e3ac43224e2b15b504
+  languageName: node
+  linkType: hard
+
 "@babel/types@npm:^7.0.0, @babel/types@npm:^7.10.3, @babel/types@npm:^7.2.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.21.5, @babel/types@npm:^7.22.10, @babel/types@npm:^7.22.5, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.22.10
   resolution: "@babel/types@npm:7.22.10"
@@ -1636,6 +1758,17 @@ __metadata:
     "@babel/helper-validator-identifier": ^7.22.5
     to-fast-properties: ^2.0.0
   checksum: 095c4f4b7503fa816e4094113f0ec2351ef96ff32012010b771693066ff628c7c664b21c6bd3fb93aeb46fe7c61f6b3a3c9e4ed0034d6a2481201c417371c8af
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.22.11":
+  version: 7.22.11
+  resolution: "@babel/types@npm:7.22.11"
+  dependencies:
+    "@babel/helper-string-parser": ^7.22.5
+    "@babel/helper-validator-identifier": ^7.22.5
+    to-fast-properties: ^2.0.0
+  checksum: 431a6446896adb62c876d0fe75263835735d3c974aae05356a87eb55f087c20a777028cf08eadcace7993e058bbafe3b21ce2119363222c6cef9eedd7a204810
   languageName: node
   linkType: hard
 
@@ -2064,7 +2197,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
@@ -2084,7 +2217,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
   languageName: unknown
   linkType: soft
 
@@ -2106,7 +2239,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2135,7 +2268,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2156,7 +2289,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2183,7 +2316,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2207,9 +2340,9 @@ __metadata:
     lodash.merge: ^4.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     unocss: ^0.55.2
-    vercel: ^32.0.1
+    vercel: ^32.0.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2232,7 +2365,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.13
     typedoc: ^0.24.8
-    typescript: ^5.1.6
+    typescript: ^5.2.2
   bin:
     docgen: ./dist/bin/index.js
   languageName: unknown
@@ -2254,7 +2387,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2306,9 +2439,9 @@ __metadata:
     remark-gfm: ^3.0.1
     sharp: ^0.32.5
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     unocss: ^0.55.2
-    vercel: ^32.0.1
+    vercel: ^32.0.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2337,7 +2470,7 @@ __metadata:
     prettier: ^3.0.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2357,7 +2490,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
   languageName: unknown
   linkType: soft
 
@@ -2381,7 +2514,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
@@ -2411,7 +2544,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     undici: 5.23.0
     vitest: ^0.34.2
   languageName: unknown
@@ -2436,7 +2569,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     undici: 5.23.0
     vitest: ^0.34.2
     yaml: 2.3.1
@@ -2465,7 +2598,7 @@ __metadata:
     "@vitejs/plugin-react": ^4.0.4
     "@vitest/coverage-c8": ^0.33.0
     ariakit: ^2.0.0-next.44
-    chromatic: ^6.23.0
+    chromatic: ^6.24.0
     cross-env: ^7.0.3
     eslint: ^8.47.0
     eslint-config-neon: ^0.1.56
@@ -2476,7 +2609,7 @@ __metadata:
     react-dom: ^18.2.0
     storybook: ^7.3.2
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     unocss: ^0.55.2
     vite: ^4.4.9
     vite-plugin-dts: ^3.5.2
@@ -2500,7 +2633,7 @@ __metadata:
     tsd: ^0.28.1
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2509,9 +2642,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@discordjs/voice@workspace:packages/voice"
   dependencies:
-    "@babel/core": ^7.22.10
+    "@babel/core": ^7.22.11
     "@babel/preset-env": ^7.22.10
-    "@babel/preset-typescript": ^7.22.5
+    "@babel/preset-typescript": ^7.22.11
     "@favware/cliff-jumper": ^2.1.1
     "@microsoft/api-extractor": ^7.36.4
     "@types/jest": ^29.5.4
@@ -2532,7 +2665,7 @@ __metadata:
     tsup: ^7.2.0
     turbo: ^1.10.13
     tweetnacl: ^1.0.3
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     ws: ^8.13.0
   languageName: unknown
   linkType: soft
@@ -2589,8 +2722,8 @@ __metadata:
     sharp: ^0.32.5
     swr: ^2.2.1
     turbo: ^1.10.13
-    typescript: ^5.1.6
-    vercel: ^32.0.1
+    typescript: ^5.2.2
+    vercel: ^32.0.2
     vitest: ^0.34.2
   languageName: unknown
   linkType: soft
@@ -2620,7 +2753,7 @@ __metadata:
     tslib: ^2.6.2
     tsup: ^7.2.0
     turbo: ^1.10.13
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     undici: 5.23.0
     vitest: ^0.34.2
     ws: ^8.13.0
@@ -2635,56 +2768,42 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@edge-runtime/format@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@edge-runtime/format@npm:2.1.0"
-  checksum: 6425124e27d4591497a6c629a0b4849d3c5eb3133f9f01dd6f5855e22a2f45e84925a936a699c93d7aaa234155053f4d1b9c23e6a2d738edb03dd54b3868e52a
+"@edge-runtime/cookies@npm:3.4.0":
+  version: 3.4.0
+  resolution: "@edge-runtime/cookies@npm:3.4.0"
+  checksum: a40befbf4dfaf308d6cd3f742dcc704ab9b278221d2bc71821a0957b773bea3c49cccf93aee2a1c3af62a341974538093a611582c5c642c62c1931cb951d10dc
   languageName: node
   linkType: hard
 
-"@edge-runtime/node-utils@npm:2.0.3":
-  version: 2.0.3
-  resolution: "@edge-runtime/node-utils@npm:2.0.3"
-  checksum: dd409eb4fc3305b29082c3678f412aaf6d2cca2aef9bef4986e5d135dce032195f73a347c64723fd16e18cfcccdcea104378390f56b9104b5cc4bbc1280aa406
+"@edge-runtime/format@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@edge-runtime/format@npm:2.2.0"
+  checksum: cfe6e009264b8676de4b1ec8f6ddc64efdea2f801a600af02ca487dc88cde35f4396d288a1bc5efc75a9ac1d6d5130b285c8ea80a13125d225daf2e803a68925
   languageName: node
   linkType: hard
 
-"@edge-runtime/primitives@npm:2.1.2":
-  version: 2.1.2
-  resolution: "@edge-runtime/primitives@npm:2.1.2"
-  checksum: 23863c517ef9dd9a8ff8fbaa739833ab417b80f2e4e8b3cb1723fd6b52e038ad22209a9744e53d066c1ad7ebeea5a00c7c6cee03c6f248bc351d0e4bde4bc96f
-  languageName: node
-  linkType: hard
-
-"@edge-runtime/primitives@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@edge-runtime/primitives@npm:3.0.1"
-  checksum: e8f1157043242695bf8ab06f8fe63b2fd641247970a1923445820354fbcf437004f87b5c5b307d7b70cf687b85fa3dd44922c066f42612c5c264f5ec9de68fd8
-  languageName: node
-  linkType: hard
-
-"@edge-runtime/primitives@npm:3.0.3":
-  version: 3.0.3
-  resolution: "@edge-runtime/primitives@npm:3.0.3"
-  checksum: 19e93f895c81832c94d327b080c849148bba105e1d70f3f526bd01cb791c970be6c0a7599e0a6ad2b99bbaa331b8d629994d401c18d441eb1d752c2c1ceb3131
-  languageName: node
-  linkType: hard
-
-"@edge-runtime/vm@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@edge-runtime/vm@npm:3.0.1"
+"@edge-runtime/node-utils@npm:2.2.0":
+  version: 2.2.0
+  resolution: "@edge-runtime/node-utils@npm:2.2.0"
   dependencies:
-    "@edge-runtime/primitives": 3.0.1
-  checksum: d36191290a09faeda7501148771ec8b6056276321c7c8dc4054a9d01583e6cef115e8a481661f8bc6c2edee06e32bd78aa33a84529b7425d4cb7f33acfced216
+    "@edge-runtime/cookies": 3.4.0
+  checksum: 42bde09a17b4015020a35bc4b9bf9877a5f26b36b905e537353e60c5687f09b56b354cf45a5a5a7df2165b66bc083c147fda6a59764ebdb00f6abb813bb052e3
   languageName: node
   linkType: hard
 
-"@edge-runtime/vm@npm:3.0.3":
-  version: 3.0.3
-  resolution: "@edge-runtime/vm@npm:3.0.3"
+"@edge-runtime/primitives@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@edge-runtime/primitives@npm:3.1.0"
+  checksum: 00dfa743e064a32ec8ce8f61fe9a7b026e7900cbcefde1d642d0b7408026f90d38b8d7f0114e1b827e250aee7a52ea668889d9dfa81bf0340610e85f7d505763
+  languageName: node
+  linkType: hard
+
+"@edge-runtime/vm@npm:3.1.0":
+  version: 3.1.0
+  resolution: "@edge-runtime/vm@npm:3.1.0"
   dependencies:
-    "@edge-runtime/primitives": 3.0.3
-  checksum: ce1b1de2dde80ec8e27f2927638bd622907e54c626db61e320f6829d8b252156c0943a0ae63f350946bb38ac2d6aa24e49b452b703128f30b0e155730f2dc83c
+    "@edge-runtime/primitives": 3.1.0
+  checksum: 1244a620128ecd918332e0637e0fb4cc69c5131b1b17216d81f7a10e882de2e280c6d3bb2f56221e92ca2f323c344c135a6e261478230726d7c4fe43bdb74485
   languageName: node
   linkType: hard
 
@@ -6821,16 +6940,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-fetch@npm:2.6.3":
-  version: 2.6.3
-  resolution: "@types/node-fetch@npm:2.6.3"
-  dependencies:
-    "@types/node": "*"
-    form-data: ^3.0.0
-  checksum: b68cda58e91535a42dd5337932443c37f8e198ca1e8deeb95bd92a64a9a84d92071867b91c5eb84ee8e13f33d45a70549fe2bc11dd070a894dd561909f4d39f5
-  languageName: node
-  linkType: hard
-
 "@types/node-fetch@npm:^2.6.4":
   version: 2.6.4
   resolution: "@types/node-fetch@npm:2.6.4"
@@ -7641,18 +7750,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/gatsby-plugin-vercel-builder@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@vercel/gatsby-plugin-vercel-builder@npm:2.0.1"
+"@vercel/gatsby-plugin-vercel-builder@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@vercel/gatsby-plugin-vercel-builder@npm:2.0.2"
   dependencies:
     "@sinclair/typebox": 0.25.24
     "@vercel/build-utils": 7.0.0
-    "@vercel/node": 3.0.1
+    "@vercel/node": 3.0.2
     "@vercel/routing-utils": 3.0.0
     esbuild: 0.14.47
     etag: 1.8.1
     fs-extra: 11.1.0
-  checksum: 0b370f084fe5610f7b3d74f3e08a88baebddf73e0a3286b5c9e091978e2f97d7a20a4ec9f51ce58a69914a10f2b587816bdb191ccd484386941ebf4a991002e6
+  checksum: cd463821f1dedcf4e0397dc0e3020668d43545f93dfc4eb9714f1d0ebdabacef44ee52be2ff0f979630000accf0aa1baf938dd3602b022d97fcc44b84dfd398c
   languageName: node
   linkType: hard
 
@@ -7670,10 +7779,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/next@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@vercel/next@npm:4.0.0"
-  checksum: 36c214121c11731f31bbec91ddf10d7bd9218dd979685bc4f03363012b6808fea819a140afe8003b29172710b4ad43377b61cda8ce99b252be8c7e6b83597df9
+"@vercel/next@npm:4.0.1":
+  version: 4.0.1
+  resolution: "@vercel/next@npm:4.0.1"
+  checksum: 8421bfef5c09dff205df533ed2977ff618b876db05e72f00d518d60729926068cd630b4cc0e1880fd7cd4467ce90a2fb5a3591ceb92c70d0ffbacac8c302ca66
   languageName: node
   linkType: hard
 
@@ -7698,21 +7807,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/node@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@vercel/node@npm:3.0.1"
+"@vercel/node@npm:3.0.2":
+  version: 3.0.2
+  resolution: "@vercel/node@npm:3.0.2"
   dependencies:
-    "@edge-runtime/node-utils": 2.0.3
-    "@edge-runtime/primitives": 2.1.2
-    "@edge-runtime/vm": 3.0.1
+    "@edge-runtime/node-utils": 2.2.0
+    "@edge-runtime/primitives": 3.1.0
+    "@edge-runtime/vm": 3.1.0
     "@types/node": 14.18.33
-    "@types/node-fetch": 2.6.3
     "@vercel/build-utils": 7.0.0
     "@vercel/error-utils": 2.0.1
     "@vercel/static-config": 3.0.0
     async-listen: 3.0.0
     content-type: 1.0.5
-    edge-runtime: 2.4.4
+    edge-runtime: 2.5.0
     esbuild: 0.14.47
     exit-hook: 2.2.1
     node-fetch: 2.6.9
@@ -7720,7 +7828,8 @@ __metadata:
     ts-morph: 12.0.0
     ts-node: 10.9.1
     typescript: 4.9.5
-  checksum: a86fed924d94702afe1c8bcb01fde2c2e880ebd70d089df6ec1165f3eeb7008e0c5b8282c0614bdbdf5a5b64f280eaf1cc2c4bb35b7150c9de5264391b771451
+    undici: 5.23.0
+  checksum: ce35d72f87a2d50f366da026716513106e11aef4cdc7bfd5d5600280226b7234e77ec10946f2156a031075d4cff466e19983508752e22231467e66a2ba3feac8
   languageName: node
   linkType: hard
 
@@ -7753,9 +7862,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/remix-builder@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@vercel/remix-builder@npm:2.0.0"
+"@vercel/remix-builder@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@vercel/remix-builder@npm:2.0.1"
   dependencies:
     "@vercel/build-utils": 7.0.0
     "@vercel/nft": 0.22.5
@@ -7763,7 +7872,7 @@ __metadata:
     path-to-regexp: 6.2.1
     semver: 7.3.8
     ts-morph: 12.0.0
-  checksum: 508a17da893a3689e775e66880fd1b68896191814f0b1e18b7cf4d471233554f1a419fc9d899b1190e4fd186d720601586554afefb0d34d49bbacbb979c99ed7
+  checksum: f89a9cfc5f419a0282d89f29fa391a5dbe27399a73309a5cfff4b831c09054671ef2ab50168914bbb2876a3cd7c6abe1ada31b654d9725b3335642607fe27999
   languageName: node
   linkType: hard
 
@@ -7787,13 +7896,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/static-build@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@vercel/static-build@npm:2.0.1"
+"@vercel/static-build@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@vercel/static-build@npm:2.0.2"
   dependencies:
     "@vercel/gatsby-plugin-vercel-analytics": 1.0.10
-    "@vercel/gatsby-plugin-vercel-builder": 2.0.1
-  checksum: df43258efab36aa9876d32bf3514499b410832a9deb31aa734c6accaa1e5d5fd18ab29ce50aeb64c7a79b40051eb998f9c5319214fbc3369e8cfcacc95795638
+    "@vercel/gatsby-plugin-vercel-builder": 2.0.2
+  checksum: 05731593799562002d9fc6ce37cab7919012ea4929b42ccf6114ef7002b23afea07177f51b307d855d25b8bc0fffafee72b4bf4d917b480821eb51fb0efdb292
   languageName: node
   linkType: hard
 
@@ -8837,6 +8946,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-listen@npm:3.0.1":
+  version: 3.0.1
+  resolution: "async-listen@npm:3.0.1"
+  checksum: ff519d0bdd819b5d2eee209bd7a573b7f058690696b11aa45128fe4073bd33e2441da0d01134bd464b81def6f423a5de1c28ab35d10ba1a8d81a5374f3515b90
+  languageName: node
+  linkType: hard
+
 "async-sema@npm:^3.1.1":
   version: 3.1.1
   resolution: "async-sema@npm:3.1.1"
@@ -9746,14 +9862,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^6.23.0":
-  version: 6.23.0
-  resolution: "chromatic@npm:6.23.0"
+"chromatic@npm:^6.24.0":
+  version: 6.24.0
+  resolution: "chromatic@npm:6.24.0"
   bin:
     chroma: dist/bin.js
     chromatic: dist/bin.js
     chromatic-cli: dist/bin.js
-  checksum: 4f2c93b893b57e734b2bbfbe20a258a197fe047a97351e23fa832f3e28bae3ef56c43a04db162bc7c7d29fe78086f3e69c5b9ba41259d4ea72a1b00ef51e8364
+  checksum: 31a433981c4b59398680c51d10b1f0fbe76ec91f0c7b0ded9c422af9697a0363721e8d61eb2e5f108b08b3574f02e2d8bf5d1ee1e174f8542e9f08935ef6cf5e
   languageName: node
   linkType: hard
 
@@ -10780,7 +10896,7 @@ __metadata:
     prompts: ^2.4.2
     terser: ^5.19.2
     tsup: ^7.2.0
-    typescript: ^5.1.6
+    typescript: ^5.2.2
     validate-npm-package-name: ^5.0.0
     vitest: ^0.34.2
   bin:
@@ -11452,7 +11568,7 @@ __metadata:
     tslib: 2.6.2
     tslint: 6.1.3
     turbo: 1.10.13
-    typescript: 5.1.6
+    typescript: 5.2.2
     undici: 5.23.0
     ws: 8.13.0
   languageName: unknown
@@ -11633,13 +11749,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"edge-runtime@npm:2.4.4":
-  version: 2.4.4
-  resolution: "edge-runtime@npm:2.4.4"
+"edge-runtime@npm:2.5.0":
+  version: 2.5.0
+  resolution: "edge-runtime@npm:2.5.0"
   dependencies:
-    "@edge-runtime/format": 2.1.0
-    "@edge-runtime/vm": 3.0.3
-    async-listen: 3.0.0
+    "@edge-runtime/format": 2.2.0
+    "@edge-runtime/vm": 3.1.0
+    async-listen: 3.0.1
     mri: 1.2.0
     picocolors: 1.0.0
     pretty-bytes: 5.6.0
@@ -11648,7 +11764,7 @@ __metadata:
     time-span: 4.0.0
   bin:
     edge-runtime: dist/cli/index.js
-  checksum: bff76b930c07e9be1cc5b75667fe19d22d1f3d599b0fe842dae61359d4383d8001485280a816af804e526e62d715ed12b7f97136e3bdd7a0ca34c48aadc5d218
+  checksum: dd4e586fedb8e8c3df93aaf63b94fc9fc1a0b395a6cef321ffea14846d839e4167f9e7883c958e83901dbc3545bb38652d19c4f0e5c3de193e51167043a91fef
   languageName: node
   linkType: hard
 
@@ -16766,7 +16882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2, json5@npm:^2.2.2":
+"json5@npm:^2.1.2, json5@npm:^2.2.2, json5@npm:^2.2.3":
   version: 2.2.3
   resolution: "json5@npm:2.2.3"
   bin:
@@ -24213,7 +24329,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.1.6, typescript@npm:^4.6.4 || ^5.0.0, typescript@npm:^5.1.6":
+"typescript@npm:5.2.2, typescript@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "typescript@npm:5.2.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 7912821dac4d962d315c36800fe387cdc0a6298dba7ec171b350b4a6e988b51d7b8f051317786db1094bd7431d526b648aba7da8236607febb26cf5b871d2d3c
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^4.6.4 || ^5.0.0":
   version: 5.1.6
   resolution: "typescript@npm:5.1.6"
   bin:
@@ -24253,7 +24379,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@5.1.6#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>":
+"typescript@patch:typescript@5.2.2#~builtin<compat/typescript>, typescript@patch:typescript@^5.2.2#~builtin<compat/typescript>":
+  version: 5.2.2
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=14eedb"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 07106822b4305de3f22835cbba949a2b35451cad50888759b6818421290ff95d522b38ef7919e70fb381c5fe9c1c643d7dea22c8b31652a717ddbd57b7f4d554
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>":
   version: 5.1.6
   resolution: "typescript@patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"
   bin:
@@ -24915,24 +25051,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^32.0.1":
-  version: 32.0.1
-  resolution: "vercel@npm:32.0.1"
+"vercel@npm:^32.0.2":
+  version: 32.0.2
+  resolution: "vercel@npm:32.0.2"
   dependencies:
     "@vercel/build-utils": 7.0.0
     "@vercel/go": 3.0.0
     "@vercel/hydrogen": 1.0.0
-    "@vercel/next": 4.0.0
-    "@vercel/node": 3.0.1
+    "@vercel/next": 4.0.1
+    "@vercel/node": 3.0.2
     "@vercel/python": 4.0.0
     "@vercel/redwood": 2.0.0
-    "@vercel/remix-builder": 2.0.0
+    "@vercel/remix-builder": 2.0.1
     "@vercel/ruby": 2.0.0
-    "@vercel/static-build": 2.0.1
+    "@vercel/static-build": 2.0.2
   bin:
     vc: dist/index.js
     vercel: dist/index.js
-  checksum: f4b4047307f6c48048f6ef958f274a6e6cc7af754573e48d3c66754361fbcc7821ce550787ce4930e1380736d4dbd0595d9d756b500a18b90ee1257a44c31d8e
+  checksum: f68a41cb9b4cd1f6230232fa3784a9de2687f9f1c054ba0fcc8cc1061c3264aee23788a22a774a431d0b70058f41c82a42a2ab490f04dcd1ca82e2b21da3870c
   languageName: node
   linkType: hard
 

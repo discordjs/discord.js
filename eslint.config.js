@@ -1,5 +1,3 @@
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import unocss from '@unocss/eslint-plugin';
 import common from 'eslint-config-neon/flat/common.js';
 import edge from 'eslint-config-neon/flat/edge.js';
@@ -9,9 +7,6 @@ import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
 import merge from 'lodash.merge';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -24,8 +19,7 @@ const typeScriptRuleset = merge(...typescript, {
 	languageOptions: {
 		parserOptions: {
 			allowAutomaticSingleRunInference: true,
-			tsconfigRootDir: __dirname,
-			project: ['./tsconfig.eslint.json', './apps/*/tsconfig.eslint.json', './packages/*/tsconfig.eslint.json'],
+			project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 		},
 	},
 	rules: {
@@ -34,7 +28,7 @@ const typeScriptRuleset = merge(...typescript, {
 	settings: {
 		'import/resolver': {
 			typescript: {
-				project: ['./tsconfig.eslint.json', './apps/*/tsconfig.eslint.json', './packages/*/tsconfig.eslint.json'],
+				project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 			},
 		},
 	},
@@ -100,9 +94,9 @@ export default [
 			'no-restricted-globals': 0,
 		},
 	},
+	reactRuleset,
 	nextRuleset,
 	edgeRuleset,
-	reactRuleset,
 	{
 		files: ['**/*{js,mjs,cjs,jsx}'],
 		rules: { 'tsdoc/syntax': 0 },
