@@ -1,10 +1,10 @@
 import type { ApiConstructor } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
+import { CodeHeading } from '~/components/CodeHeading';
 import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../tsdoc/TSDoc';
 import { parametersString } from '../util';
 import { DocumentationSection } from './DocumentationSection';
-import { CodeHeading } from '~/components/CodeHeading';
 
 export function ConstructorSection({ item }: { readonly item: ApiConstructor }) {
 	return (

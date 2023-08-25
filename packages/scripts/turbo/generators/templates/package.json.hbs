@@ -1,7 +1,7 @@
 {
-	"name": "@discordjs/{name}",
+	"name": "@discordjs/{{name}}",
 	"version": "0.1.0",
-	"description": "",
+	"description": "{{description}}",
 	"scripts": {
 		"test": "vitest run",
 		"build": "tsup",
@@ -10,17 +10,24 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
 		"prepack": "yarn build && yarn lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{name}/*'",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{{name}}/*'",
 		"release": "cliff-jumper"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
-	"exports": {
-		"types": "./dist/index.d.ts",
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js"
-	},
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -37,7 +44,7 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/{name}"
+		"directory": "packages/{{name}}"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -47,11 +54,11 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@microsoft/api-extractor": "^7.36.4",
-		"@types/node": "16.18.41",
+		"@types/node": "16.18.42",
 		"@vitest/coverage-v8": "^0.34.2",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.54",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
