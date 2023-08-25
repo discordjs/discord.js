@@ -17,6 +17,7 @@
 		"dev:next": "next dev",
 		"dev:css": "yarn generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' 'contentlayer.config.ts' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
+		"generate:contentlayer": "contentlayer build",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "yarn format"
@@ -90,9 +91,9 @@
 		"lighthouse": "^11.0.0",
 		"prettier": "^3.0.2",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6",
+		"typescript": "^5.2.2",
 		"unocss": "^0.55.2",
-		"vercel": "^32.0.1",
+		"vercel": "^32.0.2",
 		"vitest": "^0.34.2"
 	},
 	"engines": {
