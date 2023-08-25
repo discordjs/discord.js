@@ -264,6 +264,7 @@ export class Activity {
     size: [number, number];
   } | null;
   public state: string | null;
+  public syncId: string | null;
   public timestamps: {
     start: Date | null;
     end: Date | null;

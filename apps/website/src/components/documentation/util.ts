@@ -9,10 +9,10 @@ import type {
 	ApiDocumentedItem,
 	ApiParameterListMixin,
 } from '@microsoft/api-extractor-model';
-import type { TableOfContentsSerialized } from '../TableOfContentItems';
 import { METHOD_SEPARATOR, OVERLOAD_SEPARATOR } from '~/util/constants';
 import { resolveMembers } from '~/util/members';
 import { resolveParameters } from '~/util/model';
+import type { TableOfContentsSerialized } from '../TableOfContentItems';
 
 export function hasProperties(item: ApiItemContainerMixin) {
 	return resolveMembers(item, memberPredicate).some(
