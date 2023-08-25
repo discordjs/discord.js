@@ -19,7 +19,10 @@ export class SimpleContextFetchingStrategy implements IContextFetchingStrategy {
 		return newThrottler;
 	}
 
-	public constructor(private readonly manager: WebSocketManager, public readonly options: FetchingStrategyOptions) {}
+	public constructor(
+		private readonly manager: WebSocketManager,
+		public readonly options: FetchingStrategyOptions,
+	) {}
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		return this.manager.options.retrieveSessionInfo(shardId);

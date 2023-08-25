@@ -3,6 +3,7 @@
 import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 import { Button } from 'ariakit/button';
+import type { Route } from 'next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -23,7 +24,7 @@ export default function Header() {
 				.map((path, idx, original) => (
 					<Link
 						className="rounded outline-none hover:underline focus:ring focus:ring-width-2 focus:ring-blurple"
-						href={`/${original.slice(0, idx + 1).join('/')}`}
+						href={`/${original.slice(0, idx + 1).join('/')}` as Route}
 						key={`${path}-${idx}`}
 					>
 						{path}

@@ -5,8 +5,8 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import type { VersionRouteParams } from './layout';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
+import type { VersionRouteParams } from './layout';
 
 async function loadREADME(packageName: string) {
 	return readFile(join(process.cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');

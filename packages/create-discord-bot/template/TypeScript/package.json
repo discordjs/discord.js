@@ -1,13 +1,14 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "[REPLACE_ME]",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"lint": "prettier --check . && eslint ./src --ext .ts --format=pretty",
+		"lint": "prettier --check . && eslint --ext .ts --format=pretty src",
 		"deploy": "node --require dotenv/config dist/util/deploy.js",
-		"format": "prettier --write . && eslint ./src --ext .ts --fix --format=pretty",
+		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {

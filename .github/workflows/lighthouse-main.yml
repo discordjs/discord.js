@@ -11,7 +11,7 @@ jobs:
 
       - name: Audit production URLs with Lighthouse
         id: lighthouse_audit
-        uses: treosh/lighthouse-ci-action@v9
+        uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
             https://discordjs.dev
