@@ -44,6 +44,14 @@ class TeamMember extends Base {
        */
       this.user = this.client.users._add(data.user);
     }
+
+    if ('role' in data) {
+      /**
+       * The role of this Team Member
+       * @type {TeamMemberRole}
+       */
+      this.role = data.role;
+    }
   }
 
   /**
