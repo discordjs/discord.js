@@ -2386,7 +2386,7 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
+export abstract class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'send',
   'lastMessage',
   'lastPinAt',

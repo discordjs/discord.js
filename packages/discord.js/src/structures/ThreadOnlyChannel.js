@@ -39,6 +39,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  * Represents symbols utilised by thread-only channels.
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
+ * @abstract
  */
 class ThreadOnlyChannel extends GuildChannel {
   constructor(guild, data, client) {
