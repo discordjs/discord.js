@@ -511,7 +511,7 @@ export enum GuildNavigationMentions {
 	 */
 	Customize = '<id:customize>',
 	/**
-	 * {@link https://support.discord.com/hc/en-us/articles/13497665141655 | Server Guide} tab.
+	 * {@link https://support.discord.com/hc/articles/13497665141655 | Server Guide} tab.
 	 */
 	Guide = '<id:guide>',
 }
