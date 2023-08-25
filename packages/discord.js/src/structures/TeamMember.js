@@ -24,7 +24,7 @@ class TeamMember extends Base {
       /**
        * The permissions this Team Member has with regard to the team
        * @type {string[]}
-       * @deprecated
+       * @deprecated Use {@link TeamMember#role} instead.
        */
       this.permissions = data.permissions;
     }

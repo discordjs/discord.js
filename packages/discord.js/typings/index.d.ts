@@ -2992,7 +2992,7 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
-  /** @deprecated */
+  /** @deprecated Use {@link role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
