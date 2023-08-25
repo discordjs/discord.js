@@ -42,13 +42,13 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        run: yarn build
+        run: pnpm run build
 
       - name: Build docs
-        run: yarn docs
+        run: pnpm run docs
 
       - name: Checkout docs repository
         uses: actions/checkout@v3

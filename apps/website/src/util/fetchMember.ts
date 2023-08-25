@@ -1,7 +1,7 @@
-import { addPackageToModel } from '@discordjs/scripts';
 import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';
+import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 

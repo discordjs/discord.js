@@ -4,11 +4,11 @@
 	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "yarn format",
-		"prepack": "yarn lint && yarn build"
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run lint && pnpm run build"
 	},
 	"type": "module",
 	"directories": {
@@ -51,7 +51,7 @@
 	"devDependencies": {
 		"@types/node": "18.17.9",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
