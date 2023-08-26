@@ -2,6 +2,7 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "@sapphire/ts-config/extra-strict",
 	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
 		"declaration": false,
 		"declarationMap": false,
 		"module": "ESNext",

@@ -81,12 +81,14 @@ export async function createDiscordBot({ directory, typescript, packageManager }
 		await writeFile(file, newData);
 	}
 
-	const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
-		let newStr = str.replace('[REPLACE_ME]', directoryName);
-		newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
-		return newStr;
-	});
-	await writeFile('./package.json', newPackageJSON);
+	if (!deno) {
+		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
+			let newStr = str.replace('[REPLACE_ME]', directoryName);
+			newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
+			return newStr;
+		});
+		await writeFile('./package.json', newPackageJSON);
+	}
 
 	try {
 		install(packageManager);
