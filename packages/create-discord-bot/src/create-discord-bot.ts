@@ -11,12 +11,12 @@ import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
 	directory: string;
-	noInstall?: boolean;
+	installPackages: boolean;
 	packageManager: PackageManager;
 	typescript?: boolean;
 }
 
-export async function createDiscordBot({ directory, noInstall, typescript, packageManager }: Options) {
+export async function createDiscordBot({ directory, installPackages, typescript, packageManager }: Options) {
 	const root = path.resolve(directory);
 	const directoryName = path.basename(root);
 
@@ -89,7 +89,7 @@ export async function createDiscordBot({ directory, noInstall, typescript, packa
 	});
 	await writeFile('./package.json', newPackageJSON);
 
-	if (!noInstall) {
+	if (installPackages) {
 		try {
 			install(packageManager);
 		} catch (error) {
