@@ -11,11 +11,12 @@ import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
 	directory: string;
+	installPackages: boolean;
 	packageManager: PackageManager;
 	typescript?: boolean;
 }
 
-export async function createDiscordBot({ directory, typescript, packageManager }: Options) {
+export async function createDiscordBot({ directory, installPackages, typescript, packageManager }: Options) {
 	const root = path.resolve(directory);
 	const directoryName = path.basename(root);
 
@@ -88,16 +89,18 @@ export async function createDiscordBot({ directory, typescript, packageManager }
 	});
 	await writeFile('./package.json', newPackageJSON);
 
-	try {
-		install(packageManager);
-	} catch (error) {
-		console.log();
-		const err = error as ExecException;
-		if (err.signal === 'SIGINT') {
-			console.log(red('Installation aborted.'));
-		} else {
-			console.error(red('Installation failed.'));
-			process.exit(1);
+	if (installPackages) {
+		try {
+			install(packageManager);
+		} catch (error) {
+			console.log();
+			const err = error as ExecException;
+			if (err.signal === 'SIGINT') {
+				console.log(red('Installation aborted.'));
+			} else {
+				console.error(red('Installation failed.'));
+				process.exit(1);
+			}
 		}
 	}
 
