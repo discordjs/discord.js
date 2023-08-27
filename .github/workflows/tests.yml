@@ -25,39 +25,39 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn turbo run build --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=3
+        run: pnpm exec turbo run build --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
 
       - name: Build dependencies (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn turbo run build --filter="...[HEAD^1]" --concurrency=3
+        run: pnpm exec turbo run build --filter="...[HEAD^1]" --concurrency=4
 
       - name: ESLint (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=3 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
 
       - name: ESLint (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn turbo run lint --filter="...[HEAD^1]" --concurrency=3 -- --format=compact
+        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
 
       - name: Tests (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn turbo run test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=3
+        run: pnpm exec turbo run test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
 
       - name: Tests (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn turbo run test --filter="...[HEAD^1]" --concurrency=3
+        run: pnpm exec turbo run test --filter="...[HEAD^1]" --concurrency=4
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}
-        run: yarn turbo run docs --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=3
+        run: pnpm exec turbo run docs --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
 
       - name: Docs (Push)
         if: ${{ github.event_name == 'push' }}
-        run: yarn turbo run docs --filter="...[HEAD^1]" --concurrency=3
+        run: pnpm exec turbo run docs --filter="...[HEAD^1]" --concurrency=4
 
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'

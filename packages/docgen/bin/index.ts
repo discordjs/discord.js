@@ -24,4 +24,4 @@ const command = createCommand()
 const program = command.parse(process.argv);
 const options = program.opts<CLIOptions>();
 
-build(options);
+void build(options);

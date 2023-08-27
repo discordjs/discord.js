@@ -1,4 +1,3 @@
-import { addPackageToModel } from '@discordjs/scripts';
 import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
 import { ApiModel } from '@microsoft/api-extractor-model';
 import dynamic from 'next/dynamic';
@@ -10,6 +9,7 @@ import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
+import { addPackageToModel } from '~/util/addPackageToModel';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 import { Providers } from './providers';
 

@@ -5,7 +5,6 @@
 		".gitignore",
 		".lintstagedrc.json",
 		".prettierrc.json",
-		".yarnrc.yml",
 		"api-extractor.json",
 		"codecov.yml",
 		"eslint.config.js",
@@ -18,12 +17,17 @@
 		"turbo.json",
 		"unocss.config.ts",
 		"vitest.config.ts",
-		"yarn.lock"
+		"pnpm-lock.yaml",
+		"pnpm-workspace.yaml"
 	],
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": [
+				"bin/**/*.ts",
+				"bin/**/*.js",
+				"bin/**/*.mjs",
+				"bin/**/*.cjs",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
@@ -106,7 +110,7 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".contentlayer/**/*", ".next/**/*"],
+			"outputs": [".contentlayer/**/*", ".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#build:prod": {
@@ -127,7 +131,7 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".contentlayer/**/*", ".next/**/*"],
+			"outputs": [".contentlayer/**/*", ".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:local": {
@@ -152,7 +156,7 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**/*"],
+			"outputs": [".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
@@ -173,7 +177,7 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**/*"],
+			"outputs": [".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#generate:contentlayer": {

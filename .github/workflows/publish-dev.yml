@@ -52,14 +52,14 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        run: yarn build
+        run: pnpm run build
 
       - name: Publish package
         run: |
-          yarn workspace ${{ matrix.package }} release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
-          yarn workspace ${{ matrix.package }} npm publish --tag dev || true
+          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
+          pnpm --filter=${{ matrix.package }} publish --tag dev || true
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
