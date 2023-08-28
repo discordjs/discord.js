@@ -344,32 +344,39 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-    switch (type) {
-      case '@':
-      case '@!': {
-        const member = channel.guild?.members.cache.get(id);
-        if (member) {
-          return `@${member.displayName}`;
-        }
+  return str.replaceAll(
+    /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[\w ]+)|a?:(?<emojiName>[\w]+)):)(?<id>\d{17,19})>/g,
+    (match, type, commandName, emojiName, id) => {
+      if (commandName) return `/${commandName}`;
 
-        const user = channel.client.users.cache.get(id);
-        return user ? `@${user.username}` : match;
+      if (emojiName) return `:${emojiName}:`;
+
+      switch (type) {
+        case '@':
+        case '@!': {
+          const member = channel.guild?.members.cache.get(id);
+          if (member) {
+            return `@${member.displayName}`;
+          }
+
+          const user = channel.client.users.cache.get(id);
+          return user ? `@${user.displayName}` : match;
+        }
+        case '@&': {
+          if (channel.type === ChannelType.DM) return match;
+          const role = channel.guild.roles.cache.get(id);
+          return role ? `@${role.name}` : match;
+        }
+        case '#': {
+          const mentionedChannel = channel.client.channels.cache.get(id);
+          return mentionedChannel ? `#${mentionedChannel.name}` : match;
+        }
+        default: {
+          return match;
+        }
       }
-      case '@&': {
-        if (channel.type === ChannelType.DM) return match;
-        const role = channel.guild.roles.cache.get(id);
-        return role ? `@${role.name}` : match;
-      }
-      case '#': {
-        const mentionedChannel = channel.client.channels.cache.get(id);
-        return mentionedChannel ? `#${mentionedChannel.name}` : match;
-      }
-      default: {
-        return match;
-      }
-    }
-  });
+    },
+  );
 }
 
 /**
