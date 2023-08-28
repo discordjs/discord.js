@@ -29,6 +29,7 @@
 npm install @discordjs/formatters
 yarn add @discordjs/formatters
 pnpm add @discordjs/formatters
+bun add @discordjs/formatters
 ```
 
 ## Example usage

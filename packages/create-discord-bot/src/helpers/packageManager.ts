@@ -31,6 +31,10 @@ export function resolvePackageManager(): PackageManager {
 		return 'pnpm';
 	}
 
+	if (npmConfigUserAgent.startsWith('bun')) {
+		return 'bun';
+	}
+
 	console.error(
 		picocolors.yellow(
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
