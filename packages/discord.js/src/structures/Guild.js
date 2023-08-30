@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
@@ -884,17 +885,17 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to edit the guild onboarding.
    * @typedef {Object} GuildOnboardingEditOptions
-   * @property {GuildOnboardingPromptData[]} prompts The prompts shown during onboarding
-   * and in customize community
-   * @property {ChannelResolvable[]} defaultChannels The channels that new members get opted into automatically
-   * @property {boolean} enabled Whether the onboarding is enabled
-   * @property {GuildOnboardingMode} mode The mode to edit the guild onboarding with
+   * @property {GuildOnboardingPromptData[]} [prompts] The prompts shown during onboarding and in customize community
+   * @property {ChannelResolvable[]} [defaultChannels] The channels that new members get opted into automatically
+   * @property {boolean} [enabled] Whether the onboarding is enabled
+   * @property {GuildOnboardingMode} [mode] The mode to edit the guild onboarding with
    * @property {string} [reason] The reason for editing the guild onboarding
    */
 
   /**
    * Data for editing a guild onboarding prompt.
    * @typedef {Object} GuildOnboardingPromptData
+   * @property {string} [id] The id of the prompt
    * @property {string} title The title for the prompt
    * @property {boolean} singleSelect Whether users are limited to selecting one option for the prompt
    * @property {boolean} required Whether the prompt is required before a user completes the onboarding flow
@@ -921,7 +922,9 @@ class Guild extends AnonymousGuild {
   async editOnboarding(options) {
     const newData = await this.client.rest.put(Routes.guildOnboarding(this.id), {
       body: {
-        prompts: options.prompts.map(prompt => ({
+        prompts: options.prompts?.map(prompt => ({
+          // Currently, the option ids are required even for new prompts (which won't be used)
+          id: prompt.id ?? DiscordSnowflake.generate().toString(),
           title: prompt.title,
           single_select: prompt.singleSelect,
           required: prompt.required,
@@ -935,7 +938,7 @@ class Guild extends AnonymousGuild {
             emoji: this.emojis.resolveIdentifier(option.emoji),
           })),
         })),
-        default_channel_ids: options.defaultChannels.map(c => this.channels.resolveId(c)),
+        default_channel_ids: options.defaultChannels?.map(c => this.channels.resolveId(c)),
         enabled: options.enabled,
         mode: options.mode,
       },

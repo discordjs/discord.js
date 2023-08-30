@@ -438,10 +438,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
-  public options: (ApplicationCommandOption & {
-    nameLocalized?: string;
-    descriptionLocalized?: string;
-  })[];
+  public options: (ApplicationCommandOption & { nameLocalized?: string; descriptionLocalized?: string })[];
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
     PermissionsFetchType,
@@ -2462,10 +2459,7 @@ export class PermissionOverwrites extends Base {
   public toJSON(): unknown;
   public static resolveOverwriteOptions(
     options: PermissionOverwriteOptions,
-    initialPermissions: {
-      allow?: PermissionResolvable;
-      deny?: PermissionResolvable;
-    },
+    initialPermissions: { allow?: PermissionResolvable; deny?: PermissionResolvable },
   ): ResolvedOverwriteOptions;
   public static resolve(overwrite: OverwriteResolvable, guild: Guild): APIOverwrite;
 }
@@ -4914,12 +4908,7 @@ export interface ClientEvents {
   guildMembersChunk: [
     members: Collection<Snowflake, GuildMember>,
     guild: Guild,
-    data: {
-      index: number;
-      count: number;
-      notFound: unknown[];
-      nonce: string | undefined;
-    },
+    data: { index: number; count: number; notFound: unknown[]; nonce: string | undefined },
   ];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
@@ -5479,26 +5468,11 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.MemberKick]: { integrationType: string } | null;
   [AuditLogEvent.MemberRoleUpdate]: { integrationType: string } | null;
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
-  [AuditLogEvent.MemberMove]: {
-    channel: VoiceBasedChannel | { id: Snowflake };
-    count: number;
-  };
-  [AuditLogEvent.MessageDelete]: {
-    channel: GuildTextBasedChannel | { id: Snowflake };
-    count: number;
-  };
-  [AuditLogEvent.MessageBulkDelete]: {
-    channel: GuildTextBasedChannel | { id: Snowflake };
-    count: number;
-  };
-  [AuditLogEvent.MessagePin]: {
-    channel: GuildTextBasedChannel | { id: Snowflake };
-    messageId: Snowflake;
-  };
-  [AuditLogEvent.MessageUnpin]: {
-    channel: GuildTextBasedChannel | { id: Snowflake };
-    messageId: Snowflake;
-  };
+  [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
+  [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  [AuditLogEvent.MessageBulkDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  [AuditLogEvent.MessagePin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
+  [AuditLogEvent.MessageUnpin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MemberDisconnect]: { count: number };
   [AuditLogEvent.ChannelOverwriteCreate]:
     | Role
@@ -5518,9 +5492,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
-  [AuditLogEvent.ApplicationCommandPermissionUpdate]: {
-    applicationId: Snowflake;
-  };
+  [AuditLogEvent.ApplicationCommandPermissionUpdate]: { applicationId: Snowflake };
   [AuditLogEvent.AutoModerationBlockMessage]: {
     autoModerationRuleName: string;
     autoModerationRuleTriggerType: AuditLogRuleTriggerType;
@@ -5586,9 +5558,9 @@ export interface AutoModerationRuleCreateOptions {
   reason?: string;
 }
 
-export type AutoModerationRuleEditOptions = Partial<Omit<AutoModerationRuleCreateOptions, 'triggerType'>>;
+export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerationRuleCreateOptions, 'triggerType'>> {}
 
-export type AutoModerationTriggerMetadataOptions = Partial<AutoModerationTriggerMetadata>;
+export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
 
 export interface AutoModerationActionOptions {
   type: AutoModerationActionType;
@@ -5816,14 +5788,15 @@ export type GuildTemplateResolvable = string;
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
 export interface GuildOnboardingEditOptions {
-  prompts: readonly GuildOnboardingPromptData[];
-  defaultChannels: readonly ChannelResolvable[];
-  enabled: boolean;
-  mode: GuildOnboardingMode;
+  prompts?: readonly GuildOnboardingPromptData[];
+  defaultChannels?: readonly ChannelResolvable[];
+  enabled?: boolean;
+  mode?: GuildOnboardingMode;
   reason?: string;
 }
 
 export interface GuildOnboardingPromptData {
+  id?: Snowflake;
   title: string;
   singleSelect: boolean;
   required: boolean;
@@ -6245,18 +6218,12 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export type PartialGuildMember = Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'>;
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
 
-export type PartialMessage = Partialize<
-  Message,
-  'type' | 'system' | 'pinned' | 'tts',
-  'content' | 'cleanContent' | 'author'
->;
+export interface PartialMessage
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
 
-export type PartialMessageReaction = Partialize<MessageReaction, 'count'>;
-
-export interface PartialGuildScheduledEvent
-  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
@@ -6281,7 +6248,7 @@ export enum Partials {
   ThreadMember,
 }
 
-export type PartialUser = Partialize<User, 'username' | 'tag' | 'discriminator'>;
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
