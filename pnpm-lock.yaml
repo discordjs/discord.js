@@ -539,8 +539,8 @@ importers:
         specifier: ^3.9.2
         version: 3.9.2
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -595,7 +595,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
 
   packages/collection:
     devDependencies:
@@ -660,8 +660,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
     devDependencies:
       '@favware/cliff-jumper':
         specifier: ^2.1.1
@@ -704,7 +704,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
 
   packages/create-discord-bot:
     dependencies:
@@ -797,8 +797,8 @@ importers:
         specifier: 8.5.5
         version: 8.5.5
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -907,8 +907,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
     devDependencies:
       '@favware/cliff-jumper':
         specifier: ^2.1.1
@@ -948,7 +948,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
 
   packages/next:
     dependencies:
@@ -974,8 +974,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
     devDependencies:
       '@favware/cliff-jumper':
         specifier: ^2.1.1
@@ -1018,7 +1018,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
 
   packages/proxy:
     dependencies:
@@ -1139,8 +1139,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
       magic-bytes.js:
         specifier: ^1.0.15
         version: 1.0.15
@@ -1192,7 +1192,7 @@ importers:
         version: 5.2.2
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
 
   packages/scripts:
     dependencies:
@@ -1412,8 +1412,8 @@ importers:
         specifier: ^8.5.5
         version: 8.5.5
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1506,8 +1506,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2
       discord-api-types:
-        specifier: 0.37.54
-        version: 0.37.54
+        specifier: 0.37.56
+        version: 0.37.56
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -1562,7 +1562,7 @@ importers:
         version: 5.23.0
       vitest:
         specifier: ^0.34.3
-        version: 0.34.3(happy-dom@10.11.0)
+        version: 0.34.3
       zlib-sync:
         specifier: ^0.1.8
         version: 0.1.8
@@ -3508,25 +3508,25 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@definitelytyped/header-parser@0.0.169:
+  /@definitelytyped/header-parser@0.0.175:
     resolution:
-      { integrity: sha512-6aI0ETYbHRuf5GR/WMq+emPsimC8cOLig6Ncq+JcBLM3cZqEpZV2HQkxEzL5grBLi5ClCX6GtyUrPIpEZsL2UA== }
+      { integrity: sha512-10dur1Gd9SIFHIIkCpsZXRmGeCODy3Ne5ExwH2bkNOZzAG4S6ectSx2N/HxOngePz8V00OhOW+FANWOAbIPtnw== }
     dependencies:
-      '@definitelytyped/typescript-versions': 0.0.169
+      '@definitelytyped/typescript-versions': 0.0.175
       '@types/parsimmon': 1.10.6
       parsimmon: 1.18.1
     dev: true
 
-  /@definitelytyped/typescript-versions@0.0.169:
+  /@definitelytyped/typescript-versions@0.0.175:
     resolution:
-      { integrity: sha512-DFpgq0aDTIuGG2mkvm5uq0Fhzr5ysIiNd6CeqQRXP+596LgK06pdaScWCG7eEFfWWBsS2Y9amGVV6sXTJ1Nl/w== }
+      { integrity: sha512-LtGSBkkskTHI3WCpmMoklF2XU4c0Qqnq2E0LZjsel+m8PihQAP0QAsDB/rSr7Y7WsDGxcxPc3bKNQax+6fqHSw== }
     dev: true
 
-  /@definitelytyped/utils@0.0.169:
+  /@definitelytyped/utils@0.0.175:
     resolution:
-      { integrity: sha512-iua4RM/3Dc4aNKAa138r1xpKB3iE6RPV4uIfVu19aiwNtJnlSrjHMvFqOQvqU5Sv78TraIZ/ScKwSJQYnNlrtA== }
+      { integrity: sha512-VLthuKhIHe+/sG0YEpVAM9OCVMxPlyaYGCeos5N42+NgumeKApa+BsGh6e+aH4EY4kaee+lgC36MwRxBAjiuYA== }
     dependencies:
-      '@definitelytyped/typescript-versions': 0.0.169
+      '@definitelytyped/typescript-versions': 0.0.175
       '@qiwi/npm-registry-client': 8.9.1
       '@types/node': 14.18.56
       charm: 1.0.2
@@ -8552,7 +8552,7 @@ packages:
       std-env: 3.4.3
       test-exclude: 6.0.0
       v8-to-istanbul: 9.1.0
-      vitest: 0.34.3(happy-dom@10.11.0)
+      vitest: 0.34.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10366,7 +10366,6 @@ packages:
     engines: { node: '>=0.10.0' }
     requiresBuild: true
     dev: true
-    optional: true
 
   /collect-all@1.0.4:
     resolution:
@@ -10678,6 +10677,7 @@ packages:
   /console-control-strings@1.1.0:
     resolution:
       { integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ== }
+    requiresBuild: true
     dev: true
 
   /constant-case@2.0.0:
@@ -10952,6 +10952,7 @@ packages:
   /core-util-is@1.0.3:
     resolution:
       { integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ== }
+    requiresBuild: true
 
   /cosmiconfig-typescript-loader@4.4.0(@types/node@20.4.7)(cosmiconfig@8.2.0)(ts-node@10.9.1)(typescript@5.2.2):
     resolution:
@@ -11430,6 +11431,7 @@ packages:
   /delegates@1.0.0:
     resolution:
       { integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ== }
+    requiresBuild: true
     dev: true
 
   /denque@2.1.0:
@@ -11549,9 +11551,9 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /discord-api-types@0.37.54:
+  /discord-api-types@0.37.56:
     resolution:
-      { integrity: sha512-xNO6yzEMfpVSVUa6lOOzgLDy3Gyd8yuBAozGQdjpW9VjRq2Ccboz4FhTrd5v4Hw7pbkCKwnHvddjIYrX0INkUQ== }
+      { integrity: sha512-Ih3wj0ZTaQxaJRqUEXHMIXfXB86bwMGC0wc2nNsyCJqeo3lC4qnxXtFIsC+IGI46+dSIinuayCAZ6sLEEM02Bw== }
     dev: false
 
   /dmd@6.2.0:
@@ -11637,7 +11639,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.3.0-dev.20230827
+      typescript: 5.3.0-dev.20230831
     dev: true
 
   /dts-critic@3.3.11(typescript@5.2.2):
@@ -11647,7 +11649,7 @@ packages:
     peerDependencies:
       typescript: '*'
     dependencies:
-      '@definitelytyped/header-parser': 0.0.169
+      '@definitelytyped/header-parser': 0.0.175
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -11664,9 +11666,9 @@ packages:
     peerDependencies:
       typescript: '>= 3.0.0-dev || >= 3.1.0-dev || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.7.0-dev || >= 3.8.0-dev || >= 3.9.0-dev || >= 4.0.0-dev'
     dependencies:
-      '@definitelytyped/header-parser': 0.0.169
-      '@definitelytyped/typescript-versions': 0.0.169
-      '@definitelytyped/utils': 0.0.169
+      '@definitelytyped/header-parser': 0.0.175
+      '@definitelytyped/typescript-versions': 0.0.175
+      '@definitelytyped/utils': 0.0.175
       dts-critic: 3.3.11(typescript@5.2.2)
       fs-extra: 6.0.1
       json-stable-stringify: 1.0.2
@@ -14276,6 +14278,7 @@ packages:
   /has-unicode@2.0.1:
     resolution:
       { integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ== }
+    requiresBuild: true
     dev: true
 
   /has@1.0.3:
@@ -15068,7 +15071,6 @@ packages:
     dependencies:
       number-is-nan: 1.0.1
     dev: true
-    optional: true
 
   /is-fullwidth-code-point@3.0.0:
     resolution:
@@ -18363,7 +18365,6 @@ packages:
     engines: { node: '>=0.10.0' }
     requiresBuild: true
     dev: true
-    optional: true
 
   /oauth-sign@0.9.0:
     resolution:
@@ -19839,6 +19840,7 @@ packages:
   /readable-stream@2.3.8:
     resolution:
       { integrity: sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA== }
+    requiresBuild: true
     dependencies:
       core-util-is: 1.0.3
       inherits: 2.0.4
@@ -20489,6 +20491,7 @@ packages:
   /safe-buffer@5.1.2:
     resolution:
       { integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g== }
+    requiresBuild: true
     dev: true
 
   /safe-buffer@5.2.1:
@@ -21203,7 +21206,6 @@ packages:
       is-fullwidth-code-point: 1.0.0
       strip-ansi: 3.0.1
     dev: true
-    optional: true
 
   /string-width@4.2.3:
     resolution:
@@ -22502,9 +22504,9 @@ packages:
     engines: { node: '>=14.17' }
     hasBin: true
 
-  /typescript@5.3.0-dev.20230827:
+  /typescript@5.3.0-dev.20230831:
     resolution:
-      { integrity: sha512-LXoK1ae7+xCSaRWV+/dKMoq6vasSldbtHxKLaPvcWGKv4yQbxxiA5gwz3PWtuaE5JbVk0NrZiWATIoRgr/Yufg== }
+      { integrity: sha512-rF6KQ0q/AuevKbtHjFEZ7dXRGv0t6bIcmo2K1ypmwZmnqwcxcvDfHxBjQM0u3v//5rpHiqasPTC8nB7SMEwvOA== }
     engines: { node: '>=14.17' }
     hasBin: true
     dev: true
@@ -23130,6 +23132,29 @@ packages:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
+  /vite-node@0.34.3(@types/node@18.17.9):
+    resolution:
+      { integrity: sha512-+0TzJf1g0tYXj6tR2vEyiA42OPq68QkRZCu/ERSo2PtsDJfBpDyEfuKbRvLmZqi/CgC7SCBtyC+WjTGNMRIaig== }
+    engines: { node: '>=v14.18.0' }
+    hasBin: true
+    dependencies:
+      cac: 6.7.14
+      debug: 4.3.4
+      mlly: 1.4.1
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      vite: 4.4.9(@types/node@18.17.9)
+    transitivePeerDependencies:
+      - '@types/node'
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+    dev: true
+
   /vite-node@0.34.3(@types/node@18.17.9)(terser@5.19.2):
     resolution:
       { integrity: sha512-+0TzJf1g0tYXj6tR2vEyiA42OPq68QkRZCu/ERSo2PtsDJfBpDyEfuKbRvLmZqi/CgC7SCBtyC+WjTGNMRIaig== }
@@ -23215,6 +23240,43 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /vite@4.4.9(@types/node@18.17.9):
+    resolution:
+      { integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA== }
+    engines: { node: ^14.18.0 || >=16.0.0 }
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 18.17.9
+      esbuild: 0.18.20
+      postcss: 8.4.28
+      rollup: 3.28.1
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
+
   /vite@4.4.9(@types/node@18.17.9)(terser@5.19.2):
     resolution:
       { integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA== }
@@ -23251,6 +23313,72 @@ packages:
       terser: 5.19.2
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
+
+  /vitest@0.34.3:
+    resolution:
+      { integrity: sha512-7+VA5Iw4S3USYk+qwPxHl8plCMhA5rtfwMjgoQXMT7rO5ldWcdsdo3U1QD289JgglGK4WeOzgoLTsGFu6VISyQ== }
+    engines: { node: '>=v14.18.0' }
+    hasBin: true
+    peerDependencies:
+      '@edge-runtime/vm': '*'
+      '@vitest/browser': '*'
+      '@vitest/ui': '*'
+      happy-dom: '*'
+      jsdom: '*'
+      playwright: '*'
+      safaridriver: '*'
+      webdriverio: '*'
+    peerDependenciesMeta:
+      '@edge-runtime/vm':
+        optional: true
+      '@vitest/browser':
+        optional: true
+      '@vitest/ui':
+        optional: true
+      happy-dom:
+        optional: true
+      jsdom:
+        optional: true
+      playwright:
+        optional: true
+      safaridriver:
+        optional: true
+      webdriverio:
+        optional: true
+    dependencies:
+      '@types/chai': 4.3.5
+      '@types/chai-subset': 1.3.3
+      '@types/node': 18.17.9
+      '@vitest/expect': 0.34.3
+      '@vitest/runner': 0.34.3
+      '@vitest/snapshot': 0.34.3
+      '@vitest/spy': 0.34.3
+      '@vitest/utils': 0.34.3
+      acorn: 8.10.0
+      acorn-walk: 8.2.0
+      cac: 6.7.14
+      chai: 4.3.8
+      debug: 4.3.4
+      local-pkg: 0.4.3
+      magic-string: 0.30.3
+      pathe: 1.1.1
+      picocolors: 1.0.0
+      std-env: 3.4.3
+      strip-literal: 1.3.0
+      tinybench: 2.5.0
+      tinypool: 0.7.0
+      vite: 4.4.9(@types/node@18.17.9)
+      vite-node: 0.34.3(@types/node@18.17.9)
+      why-is-node-running: 2.2.2
+    transitivePeerDependencies:
+      - less
+      - lightningcss
+      - sass
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
     dev: true
 
   /vitest@0.34.3(happy-dom@10.11.0):
@@ -23646,8 +23774,9 @@ packages:
   /wide-align@1.1.5:
     resolution:
       { integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg== }
+    requiresBuild: true
     dependencies:
-      string-width: 4.2.3
+      string-width: 1.0.2
     dev: true
 
   /wordwrap@1.0.0:
