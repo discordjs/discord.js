@@ -60,6 +60,6 @@ jobs:
       - name: Publish package
         run: |
           pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
-          pnpm --filter=${{ matrix.package }} publish --tag dev || true
+          pnpm --filter=${{ matrix.package }} publish --no-git-checks --tag dev || true
         env:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
