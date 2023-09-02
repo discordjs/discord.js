@@ -1,26 +1,26 @@
+import type { ExecException } from 'node:child_process';
 import { cp, stat, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
-import chalk from 'chalk';
-import validateProjectName from 'validate-npm-package-name';
-import { install, resolvePackageManager } from './helpers/packageManager.js';
+import glob from 'fast-glob';
+import picocolors from 'picocolors';
+import type { PackageManager } from './helpers/packageManager.js';
+import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
 	directory: string;
-	javascript?: boolean;
+	installPackages: boolean;
+	packageManager: PackageManager;
 	typescript?: boolean;
 }
 
-export async function createDiscordBot({ typescript, javascript, directory }: Options) {
-	if (!directory) {
-		console.error(chalk.red('Please specify the project directory.'));
-		process.exit(1);
-	}
-
+export async function createDiscordBot({ directory, installPackages, typescript, packageManager }: Options) {
 	const root = path.resolve(directory);
 	const directoryName = path.basename(root);
+
+	console.log();
 
 	const directoryStats = await stat(root).catch(async (error) => {
 		// Create a new directory if the specified one does not exist.
@@ -35,46 +35,82 @@ export async function createDiscordBot({ typescript, javascript, directory }: Op
 	// If the directory is actually a file or if it's not empty, throw an error.
 	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
 		console.error(
-			chalk.red(`The directory ${chalk.yellow(`"${directoryName}"`)} is either not a directory or is not empty.`),
-		);
-		console.error(chalk.red(`Please specify an empty directory.`));
-		process.exit(1);
-	}
-
-	// We'll use the directory name as the project name. Check npm name validity.
-	const validationResult = validateProjectName(directoryName);
-
-	if (!validationResult.validForNewPackages) {
-		console.error(
-			chalk.red(
-				`Cannot create a project named ${chalk.yellow(
-					`"${directoryName}"`,
-				)} due to npm naming restrictions.\n\nErrors:`,
+			picocolors.red(
+				`The directory ${picocolors.yellow(`"${directoryName}"`)} is either not a directory or is not empty.`,
 			),
 		);
-
-		for (const error of [...(validationResult.errors ?? []), ...(validationResult.warnings ?? [])]) {
-			console.error(chalk.red(`- ${error}`));
-		}
-
-		console.error(chalk.red('\nSee https://docs.npmjs.com/cli/configuring-npm/package-json for more details.'));
+		console.error(picocolors.red(`Please specify an empty directory.`));
 		process.exit(1);
 	}
 
-	console.log(`Creating ${directoryName} in ${chalk.green(root)}.`);
-	await cp(new URL(`../template/${typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
+	console.log(`Creating ${directoryName} in ${picocolors.green(root)}.`);
+	const deno = packageManager === 'deno';
+	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
 		recursive: true,
 	});
 
+	const bun = packageManager === 'bun';
+	if (bun) {
+		await cp(
+			new URL(`../template/Bun/${typescript ? 'TypeScript' : 'JavaScript'}/package.json`, import.meta.url),
+			`${root}/package.json`,
+		);
+
+		if (typescript) {
+			await cp(
+				new URL('../template/Bun/Typescript/tsconfig.eslint.json', import.meta.url),
+				`${root}/tsconfig.eslint.json`,
+			);
+			await cp(new URL('../template/Bun/Typescript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
+		}
+	}
+
 	process.chdir(root);
 
-	const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) =>
-		str.replace('[REPLACE-NAME]', directoryName),
-	);
-	await writeFile('./package.json', newPackageJSON);
+	const newVSCodeSettings = await readFile('./.vscode/settings.json', { encoding: 'utf8' }).then((str) => {
+		let newStr = str.replace('[REPLACE_ME]', deno || bun ? 'auto' : packageManager);
+		if (deno) {
+			// @ts-expect-error: This is fine
+			newStr = newStr.replaceAll('"[REPLACE_BOOL]"', true);
+		}
 
-	const packageManager = resolvePackageManager();
-	install(packageManager);
-	console.log(chalk.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
-	console.log(`Link: ${chalk.cyan(GUIDE_URL)}`);
+		return newStr;
+	});
+	await writeFile('./.vscode/settings.json', newVSCodeSettings);
+
+	const globStream = glob.stream('./src/**/*.ts');
+	for await (const file of globStream) {
+		const newData = await readFile(file, { encoding: 'utf8' }).then((str) =>
+			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js'),
+		);
+		await writeFile(file, newData);
+	}
+
+	if (!deno) {
+		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
+			let newStr = str.replace('[REPLACE_ME]', directoryName);
+			newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
+			return newStr;
+		});
+		await writeFile('./package.json', newPackageJSON);
+	}
+
+	if (installPackages) {
+		try {
+			install(packageManager);
+		} catch (error) {
+			console.log();
+			const err = error as ExecException;
+			if (err.signal === 'SIGINT') {
+				console.log(picocolors.red('Installation aborted.'));
+			} else {
+				console.error(picocolors.red('Installation failed.'));
+				process.exit(1);
+			}
+		}
+	}
+
+	console.log();
+	console.log(picocolors.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
+	console.log(`Link: ${picocolors.cyan(GUIDE_URL)}`);
 }

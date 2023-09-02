@@ -7,8 +7,8 @@ import type {
 } from '@microsoft/api-extractor-model';
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { Property } from './Property';
 import { resolveMembers } from '~/util/members';
+import { Property } from './Property';
 
 export function isPropertyLike(item: ApiItem): item is ApiProperty | ApiPropertySignature {
 	return item.kind === ApiItemKind.Property || item.kind === ApiItemKind.PropertySignature;

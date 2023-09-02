@@ -226,11 +226,9 @@ describe('Markdown escapers', () => {
 			});
 
 			test('neither inline code or code block content', () => {
-				expect(escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false }))
-					// eslint-disable-next-line max-len
-					.toEqual(
-						"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
-					);
+				expect(escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false })).toEqual(
+					"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				);
 			});
 
 			test('neither code blocks or code block content', () => {

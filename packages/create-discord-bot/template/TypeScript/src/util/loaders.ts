@@ -1,10 +1,10 @@
 import type { PathLike } from 'node:fs';
 import { readdir, stat } from 'node:fs/promises';
 import { URL } from 'node:url';
-import type { Command } from '../commands/index.js';
-import { predicate as commandPredicate } from '../commands/index.js';
-import type { Event } from '../events/index.js';
-import { predicate as eventPredicate } from '../events/index.js';
+import type { Command } from '../commands/index.[REPLACE_IMPORT_EXT]';
+import { predicate as commandPredicate } from '../commands/index.[REPLACE_IMPORT_EXT]';
+import type { Event } from '../events/index.[REPLACE_IMPORT_EXT]';
+import { predicate as eventPredicate } from '../events/index.[REPLACE_IMPORT_EXT]';
 
 /**
  * A predicate to check if the structure is valid
@@ -40,8 +40,8 @@ export async function loadStructures<T>(
 
 	// Loop through all the files in the directory
 	for (const file of files) {
-		// If the file is index.js or the file does not end with .js, skip the file
-		if (file === 'index.js' || !file.endsWith('.js')) {
+		// If the file is index.[REPLACE_IMPORT_EXT] or the file does not end with .[REPLACE_IMPORT_EXT], skip the file
+		if (file === 'index.[REPLACE_IMPORT_EXT]' || !file.endsWith('.[REPLACE_IMPORT_EXT]')) {
 			continue;
 		}
 

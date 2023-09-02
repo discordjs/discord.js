@@ -13,7 +13,10 @@ import type {
 import type { WebhooksAPI } from './webhook.js';
 
 export class InteractionsAPI {
-	public constructor(private readonly rest: REST, private readonly webhooks: WebhooksAPI) {}
+	public constructor(
+		private readonly rest: REST,
+		private readonly webhooks: WebhooksAPI,
+	) {}
 
 	/**
 	 * Replies to an interaction
