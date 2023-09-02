@@ -28,6 +28,8 @@ jobs:
             folder: 'proxy'
           - package: '@discordjs/rest'
             folder: 'rest'
+          - package: '@discordjs/structures'
+            folder: 'structures'
           - package: '@discordjs/util'
             folder: 'util'
           - package: '@discordjs/voice'
