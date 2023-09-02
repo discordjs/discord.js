@@ -180,7 +180,10 @@ export class CDN {
 
 		if (typeof options === 'string') {
 			if (!deprecationEmittedForEmoji) {
-				deprecationWarning('Passing a string for CDN#emoji() is deprecated. Use an object instead.');
+				deprecationWarning(
+					'Passing a string for the second parameter of CDN#emoji() is deprecated. Use an object instead.',
+				);
+
 				deprecationEmittedForEmoji = true;
 			}
 
