@@ -1,7 +1,12 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.useESLintClass": false,
+	"eslint.useESLintClass": true,
 	"eslint.experimental.useFlatConfig": true,
+	"eslint.workingDirectories": [
+		{ "directory": "${workspaceFolder}" },
+		{ "pattern": "./apps/*/" },
+		{ "pattern": "./packages/*/" }
+	],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
@@ -15,7 +20,7 @@
 	},
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
-	"npm.packageManager": "yarn",
+	"npm.packageManager": "pnpm",
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
 	"deno.lint": true,

@@ -5,22 +5,23 @@
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "turbo run build",
-		"build:affected": "turbo run build --filter='...[origin/main]'",
-		"build:apps": "turbo run build:local --filter='...{apps/*}'",
-		"build:apps:affected": "turbo run build:local --filter='...{apps/*}[origin/main]'",
-		"test": "turbo run test --parallel",
-		"test:affected": "turbo run test --filter='...[origin/main]' --parallel",
-		"lint": "turbo run lint --parallel",
-		"lint:affected": "turbo run lint --filter='...[origin/main]' --parallel",
-		"format": "turbo run format --parallel",
-		"format:affected": "turbo run format --filter='...[origin/main]' --parallel",
-		"fmt": "turbo run format --parallel",
-		"fmt:affected": "turbo run format --filter='...[origin/main]' --parallel",
-		"docs": "turbo run docs --parallel",
-		"docs:affected": "turbo run docs --filter='...[origin/main]' --parallel",
-		"postinstall": "is-ci || husky install",
-		"update": "yarn upgrade-interactive",
+		"build": "pnpm -- turbo run build --concurrency=4",
+		"build:affected": "turbo run build --filter='...[origin/main]' --concurrency=4",
+		"build:apps": "turbo run build:local --filter='...{apps/*}' --concurrency=4",
+		"build:apps:affected": "turbo run build:local --filter='...{apps/*}[origin/main]' --concurrency=4",
+		"test": "turbo run test --concurrency=4",
+		"test:affected": "turbo run test --filter='...[origin/main]' --concurrency=4",
+		"lint": "turbo run lint --concurrency=4",
+		"lint:affected": "turbo run lint --filter='...[origin/main]' --concurrency=4",
+		"format": "turbo run format --concurrency=4",
+		"format:affected": "turbo run format --filter='...[origin/main]' --concurrency=4",
+		"fmt": "turbo run format --concurrency=4",
+		"fmt:affected": "turbo run format --filter='...[origin/main]' --concurrency=4",
+		"docs": "turbo run docs --concurrency=4",
+		"docs:affected": "turbo run docs --filter='...[origin/main]' --concurrency=4",
+		"prepare": "is-ci || husky install",
+		"update": "pnpm --recursive update --interactive",
+		"update:latest": "pnpm --recursive update --interactive --latest",
 		"create-package": "turbo gen create-package"
 	},
 	"type": "module",
@@ -53,9 +54,10 @@
 		"@favware/cliff-jumper": "^2.1.1",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.7",
-		"@unocss/eslint-plugin": "^0.55.2",
+		"@unocss/eslint-plugin": "^0.55.3",
+		"@vitest/coverage-v8": "^0.34.3",
 		"conventional-changelog-cli": "^3.0.0",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
@@ -63,33 +65,27 @@
 		"lodash.merge": "^4.6.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6",
-		"unocss": "^0.55.2",
-		"vercel": "^32.0.1",
-		"vitest": "^0.34.2"
+		"typescript": "^5.2.2",
+		"unocss": "^0.55.3",
+		"vercel": "^32.1.0",
+		"vitest": "^0.34.3"
 	},
-	"resolutions": {
-		"@contentlayer/utils/@opentelemetry/core": "^1.15.1",
-		"@contentlayer/utils/@opentelemetry/exporter-trace-otlp-grpc": "^0.41.1",
-		"@contentlayer/utils/@opentelemetry/resources": "^1.15.1",
-		"@contentlayer/utils/@opentelemetry/sdk-trace-base": "^1.15.1",
-		"@contentlayer/utils/@opentelemetry/sdk-trace-node": "^1.15.1",
-		"@contentlayer/utils/@opentelemetry/semantic-conventions": "^1.15.1",
-		"@microsoft/tsdoc-config@~0.16.1": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
-		"@microsoft/tsdoc-config@0.16.2": "patch:@microsoft/tsdoc-config@npm%3A0.16.2#./.yarn/patches/@microsoft-tsdoc-config-npm-0.16.2-30fd115d09.patch",
-		"eslint-plugin-import@npm:eslint-plugin-i@latest": "patch:eslint-plugin-i@npm%3A2.28.0-2#./.yarn/patches/eslint-plugin-i-npm-2.28.0-2-4a8edfc1f1.patch",
-		"yaml@2.2.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
-		"yaml@^2.2.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
-		"yaml@^1.10.2": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
-		"yaml@^1.10.0": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch",
-		"yaml@^2.1.1": "patch:yaml@npm%3A2.2.2#./.yarn/patches/yaml-npm-2.2.2-6e3cddb343.patch"
+	"pnpm": {
+		"overrides": {
+			"@contentlayer/utils>@opentelemetry/core": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/exporter-trace-otlp-grpc": "^0.41.1",
+			"@contentlayer/utils>@opentelemetry/resources": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/sdk-trace-base": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/sdk-trace-node": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/semantic-conventions": "^1.15.1"
+		},
+		"patchedDependencies": {
+			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch",
+			"eslint-plugin-i@2.28.0-2": "patches/eslint-plugin-i@2.28.0-2.patch"
+		}
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18.17.1"
 	},
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
-	"packageManager": "yarn@3.6.1"
+	"packageManager": "pnpm@8.7.0"
 }

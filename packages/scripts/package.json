@@ -5,10 +5,10 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo",
-		"fmt": "yarn format"
+		"fmt": "pnpm run format"
 	},
 	"exports": {
 		".": {
@@ -26,7 +26,8 @@
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"directories": {
-		"lib": "src"
+		"lib": "src",
+		"example": "turbo"
 	},
 	"files": [
 		"dist"
@@ -63,16 +64,16 @@
 	"devDependencies": {
 		"@turbo/gen": "^1.10.13",
 		"@types/node": "16.18.44",
-		"@vitest/coverage-v8": "^0.34.2",
+		"@vitest/coverage-v8": "^0.34.3",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6",
-		"vitest": "^0.34.2"
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.3"
 	},
 	"engines": {
 		"node": ">=16.11.0"

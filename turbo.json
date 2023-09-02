@@ -5,7 +5,6 @@
 		".gitignore",
 		".lintstagedrc.json",
 		".prettierrc.json",
-		".yarnrc.yml",
 		"api-extractor.json",
 		"codecov.yml",
 		"eslint.config.js",
@@ -18,24 +17,22 @@
 		"turbo.json",
 		"unocss.config.ts",
 		"vitest.config.ts",
-		"yarn.lock"
+		"pnpm-lock.yaml",
+		"pnpm-workspace.yaml"
 	],
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				".cliff-jumperrc.json",
-				".lintstagedrc.js",
-				".prettierrc.js",
-				"api-extractor-docs.json",
-				"api-extractor.json",
-				"cliff.toml",
+				"bin/**/*.ts",
+				"bin/**/*.js",
+				"bin/**/*.mjs",
+				"bin/**/*.cjs",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
 				"src/**/*.mjs",
 				"src/**/*.cjs",
-				"LICENSE",
 				"package.json",
 				"tsconfig.docs.json",
 				"tsconfig.eslint.json",
@@ -47,15 +44,12 @@
 		"@discordjs/scripts#build": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				".lintstagedrc.js",
-				".prettierrc.js",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
 				"src/**/*.mjs",
 				"src/**/*.cjs",
 				"src/template/**/*",
-				"LICENSE",
 				"package.json",
 				"tsconfig.eslint.json",
 				"tsconfig.json"
@@ -67,18 +61,11 @@
 			"dependsOn": ["^build"],
 			"inputs": [
 				".storybook/**/*",
-				".cliff-jumperrc.json",
-				".lintstagedrc.js",
-				".prettierrc.js",
-				"api-extractor-docs.json",
-				"api-extractor.json",
-				"cliff.toml",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
 				"src/**/*.mjs",
 				"src/**/*.cjs",
-				"LICENSE",
 				"package.json",
 				"tsconfig.eslint.json",
 				"tsconfig.json",
@@ -91,18 +78,11 @@
 			"dependsOn": ["^build"],
 			"inputs": [
 				".storybook/**/*",
-				".cliff-jumperrc.json",
-				".lintstagedrc.js",
-				".prettierrc.js",
-				"api-extractor-docs.json",
-				"api-extractor.json",
-				"cliff.toml",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
 				"src/**/*.mjs",
 				"src/**/*.cjs",
-				"LICENSE",
 				"package.json",
 				"tsconfig.eslint.json",
 				"tsconfig.json",
@@ -130,13 +110,12 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".contentlayer/**/*", ".next/**/*"],
+			"outputs": [".contentlayer/**/*", ".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#build:prod": {
 			"dependsOn": ["^build"],
 			"env": ["METADATA_BASE_URL"],
-			"dotEnv": [".env.development", ".env.development.local", ".env.local"],
 			"inputs": [
 				"public/**/*",
 				"src/**/*.tsx",
@@ -152,7 +131,7 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".contentlayer/**/*", ".next/**/*"],
+			"outputs": [".contentlayer/**/*", ".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:local": {
@@ -177,13 +156,12 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**/*"],
+			"outputs": [".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build", "docs"],
 			"env": ["NEXT_PUBLIC_LOCAL_DEV", "METADATA_BASE_URL", "DATABASE_URL", "EDGE_CONFIG"],
-			"dotEnv": [".env.development", ".env.development.local", ".env.local"],
 			"inputs": [
 				"public/**/*",
 				"src/**/*.tsx",
@@ -199,8 +177,13 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**/*"],
+			"outputs": [".next/**/*", "!.next/cache/**/*"],
 			"outputMode": "full"
+		},
+		"@discordjs/guide#generate:contentlayer": {
+			"inputs": ["src/**/*.mdx"],
+			"outputs": [".contentlayer/**/*"],
+			"outputMode": "errors-only"
 		},
 		"test": {
 			"dependsOn": ["^build"],
@@ -260,8 +243,8 @@
 				"../../.prettierignore",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				"prettierignore",
-				"prettierrc.js",
+				".prettierignore",
+				".prettierrc.js",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
@@ -279,6 +262,33 @@
 			"outputs": [],
 			"outputMode": "errors-only"
 		},
+		"@discordjs/guide#lint": {
+			"dependsOn": ["^build", "generate:contentlayer"],
+			"env": ["METADATA_BASE_URL"],
+			"inputs": [
+				"../../eslint.config.js",
+				"../../.prettierignore",
+				"../../.prettierrc.json",
+				"../../tsconfig.eslint.json",
+				".prettierignore",
+				".prettierrc.js",
+				"public/**/*",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"!src/styles/unocss.css",
+				"src/**/*.json",
+				"src/**/*.mdx",
+				"src/assets/**/*",
+				"contentlayer.config.ts",
+				"next.config.js",
+				"package.json",
+				"tsconfig.eslint.json",
+				"tsconfig.json"
+			],
+			"outputs": [],
+			"outputMode": "errors-only"
+		},
 		"format": {
 			"dependsOn": ["^build"],
 			"inputs": [
@@ -286,8 +296,8 @@
 				"../../.prettierignore",
 				"../../.prettierrc.json",
 				"../../tsconfig.eslint.json",
-				"prettierignore",
-				"prettierrc.js",
+				".prettierignore",
+				".prettierrc.js",
 				"src/**/*.ts",
 				"src/**/*.tsx",
 				"src/**/*.js",
@@ -301,6 +311,33 @@
 				"tsconfig.eslint.json",
 				"tsconfig.json",
 				"vite.config.ts"
+			],
+			"outputs": [],
+			"outputMode": "errors-only"
+		},
+		"@discordjs/guide#format": {
+			"dependsOn": ["^build", "generate:contentlayer"],
+			"env": ["METADATA_BASE_URL"],
+			"inputs": [
+				"../../eslint.config.js",
+				"../../.prettierignore",
+				"../../.prettierrc.json",
+				"../../tsconfig.eslint.json",
+				".prettierignore",
+				".prettierrc.js",
+				"public/**/*",
+				"src/**/*.tsx",
+				"src/**/*.ts",
+				"src/**/*.css",
+				"!src/styles/unocss.css",
+				"src/**/*.json",
+				"src/**/*.mdx",
+				"src/assets/**/*",
+				"contentlayer.config.ts",
+				"next.config.js",
+				"package.json",
+				"tsconfig.eslint.json",
+				"tsconfig.json"
 			],
 			"outputs": [],
 			"outputMode": "errors-only"

@@ -2,7 +2,6 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { SerializeOptions } from 'next-mdx-remote/dist/types';
 import { MDXRemote } from 'next-mdx-remote/rsc';
-import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
@@ -16,7 +15,7 @@ const mdxOptions = {
 	mdxOptions: {
 		remarkPlugins: [remarkGfm],
 		remarkRehypeOptions: { allowDangerousHtml: true },
-		rehypePlugins: [rehypeRaw, rehypeSlug],
+		rehypePlugins: [rehypeSlug],
 		format: 'md',
 	},
 } satisfies SerializeOptions;

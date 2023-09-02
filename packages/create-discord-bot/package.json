@@ -4,16 +4,17 @@
 	"version": "0.2.1",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"prepack": "yarn build && yarn lint",
+		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
 		"release": "cliff-jumper"
 	},
 	"type": "module",
 	"bin": "./dist/index.js",
 	"directories": {
+		"bin": "bin",
 		"lib": "src"
 	},
 	"files": [
@@ -59,19 +60,19 @@
 		"@types/node": "16.18.44",
 		"@types/prompts": "^2.4.4",
 		"@types/validate-npm-package-name": "^4.0.0",
-		"@vitest/coverage-v8": "^0.34.2",
+		"@vitest/coverage-v8": "^0.34.3",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
 		"terser": "^5.19.2",
 		"tsup": "^7.2.0",
-		"typescript": "^5.1.6",
-		"vitest": "^0.34.2"
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.3"
 	},
 	"engines": {
-		"node": ">=18.16.0"
+		"node": ">=18.17.1"
 	},
 	"publishConfig": {
 		"access": "public"

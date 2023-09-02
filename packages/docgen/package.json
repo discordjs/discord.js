@@ -7,8 +7,9 @@
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "yarn format",
-		"prepack": "yarn format && yarn build"
+		"fmt": "pnpm run format",
+		"prepare": "pnpm run build",
+		"prepack": "pnpm run format && pnpm run build"
 	},
 	"bin": "./dist/bin/index.js",
 	"exports": {
@@ -27,6 +28,7 @@
 	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
 	"directories": {
+		"bin": "bin",
 		"lib": "src"
 	},
 	"files": [
@@ -60,20 +62,20 @@
 		"commander": "^11.0.0",
 		"jsdoc-to-markdown": "^8.0.0",
 		"tslib": "^2.6.2",
-		"typedoc": "^0.24.8"
+		"typedoc": "^0.25.0"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.1.1",
 		"@types/jsdoc-to-markdown": "^7.0.3",
 		"@types/node": "16.18.44",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6"
+		"typescript": "^5.2.2"
 	},
 	"engines": {
 		"node": ">=16.11.0"

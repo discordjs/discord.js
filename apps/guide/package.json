@@ -7,21 +7,25 @@
 	"scripts": {
 		"test": "vitest run",
 		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-results",
-		"build:local": "yarn build:prod",
-		"build:prod": "yarn build:css && yarn build:next",
+		"build:local": "pnpm run build:prod",
+		"build:prod": "pnpm run build:css && pnpm run build:next",
 		"build:next": "next build",
-		"build:css": "yarn generate:css",
-		"build:analyze": "cross-env ANALYZE=true yarn build:prod",
+		"build:css": "pnpm run generate:css",
+		"build:analyze": "cross-env ANALYZE=true pnpm run build:prod",
 		"preview": "next start",
-		"dev": "concurrently 'yarn dev:css' 'yarn dev:next'",
+		"dev": "concurrently 'pnpm run dev:css' 'pnpm run dev:next'",
 		"dev:next": "next dev",
-		"dev:css": "yarn generate:css --watch",
+		"dev:css": "pnpm run generate:css --watch",
 		"generate:css": "unocss 'src/**/*.tsx' 'contentlayer.config.ts' '../../packages/ui/src/lib/components/**/*.tsx' --out-file ./src/styles/unocss.css --config ../../unocss.config.ts",
+		"generate:contentlayer": "contentlayer build",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "yarn format"
+		"fmt": "pnpm run format"
 	},
 	"type": "commonjs",
+	"directories": {
+		"lib": "src"
+	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>"
 	],
@@ -51,7 +55,7 @@
 		"@vercel/analytics": "^1.0.2",
 		"@vercel/edge-config": "^0.2.1",
 		"@vercel/og": "^0.5.11",
-		"ariakit": "^2.0.0-next.44",
+		"ariakit": "2.0.0-next.44",
 		"cmdk": "^0.2.0",
 		"contentlayer": "^0.3.4",
 		"next": "^13.4.19",
@@ -73,14 +77,14 @@
 		"@types/node": "18.17.9",
 		"@types/react": "^18.2.21",
 		"@types/react-dom": "^18.2.7",
-		"@unocss/cli": "^0.55.2",
-		"@unocss/eslint-plugin": "^0.55.2",
-		"@unocss/reset": "^0.55.2",
+		"@unocss/cli": "^0.55.3",
+		"@unocss/eslint-plugin": "^0.55.3",
+		"@unocss/reset": "^0.55.3",
 		"@vitejs/plugin-react": "^4.0.4",
-		"@vitest/coverage-v8": "^0.34.2",
+		"@vitest/coverage-v8": "^0.34.3",
 		"concurrently": "^8.2.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.47.0",
+		"eslint": "^8.48.0",
 		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"happy-dom": "^10.11.0",
@@ -90,12 +94,12 @@
 		"lighthouse": "^11.0.0",
 		"prettier": "^3.0.2",
 		"turbo": "^1.10.13",
-		"typescript": "^5.1.6",
-		"unocss": "^0.55.2",
-		"vercel": "^32.0.1",
-		"vitest": "^0.34.2"
+		"typescript": "^5.2.2",
+		"unocss": "^0.55.3",
+		"vercel": "^32.0.2",
+		"vitest": "^0.34.3"
 	},
 	"engines": {
-		"node": ">=18.13.0"
+		"node": ">=18.17.1"
 	}
 }
