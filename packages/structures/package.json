@@ -1,0 +1,90 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/structures",
+	"version": "0.1.0",
+	"description": "Wrapper around Discord's structures",
+	"scripts": {
+		"test": "vitest run",
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/structures/*'",
+		"release": "cliff-jumper"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Chai Kohem <chaikohen@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/structures"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@sapphire/snowflake": "^3.5.5",
+		"discord-api-types": "^0.37.114"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "20.17.10",
+		"@vitest/coverage-v8": "^2.1.8",
+		"cross-env": "^7.0.3",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^8.57.1",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.4.2",
+		"tsup": "^8.3.5",
+		"typescript": "~5.5.4",
+		"vitest": "^2.1.8"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

@@ -219,7 +219,7 @@ jobs:
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}
         run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
             if [[ "${PACKAGE}" == "discord.js" ]]; then
               mkdir -p "out/${PACKAGE}"
