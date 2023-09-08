@@ -73,7 +73,7 @@ jobs:
                 ' ',
                 `*Lighthouse ran on [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
             ].join('\n')
-             core.setOutput("comment", comment);
+            core.setOutput("comment", comment);
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add comment to PR

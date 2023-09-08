@@ -18,11 +18,11 @@
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^4.0.1",
-		"@types/node": "^18.17.6",
+		"@types/node": "^18.17.11",
 		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.47",
+		"eslint-config-neon": "^0.1.56",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
-		"typescript": "^5.1.6"
+		"typescript": "^5.2.2"
 	}
 }

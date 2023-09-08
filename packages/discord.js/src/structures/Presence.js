@@ -217,6 +217,13 @@ class Activity {
     this.party = data.party ?? null;
 
     /**
+     * The sync id of the activity
+     * <info>This property is not documented by Discord and represents the track id in spotify activities.</info>
+     * @type {?string}
+     */
+    this.syncId = data.sync_id ?? null;
+
+    /**
      * Assets for rich presence
      * @type {?RichPresenceAssets}
      */

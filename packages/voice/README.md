@@ -38,6 +38,7 @@
 npm install @discordjs/voice
 yarn add @discordjs/voice
 pnpm add @discordjs/voice
+bun add @discordjs/voice
 ```
 
 ## Dependencies

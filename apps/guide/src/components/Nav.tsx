@@ -1,8 +1,8 @@
 'use client';
 
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { Sidebar } from './Sidebar';
 import { useNav } from '~/contexts/nav';
+import { Sidebar } from './Sidebar';
 
 export function Nav() {
 	const { opened } = useNav();

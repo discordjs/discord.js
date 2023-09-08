@@ -5,5 +5,8 @@
 	"parserOptions": {
 		"project": ["./tsconfig.eslint.json"]
 	},
-	"ignorePatterns": ["**/dist/*"]
+	"ignorePatterns": ["**/dist/*"],
+	"rules": {
+		"import/extensions": 0
+	}
 }

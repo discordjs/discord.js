@@ -9,6 +9,8 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '~/util/fetcher';
 
+const isDev = process.env.NEXT_PUBLIC_LOCAL_DEV ?? process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
+
 export default function VersionSelect() {
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
@@ -21,7 +23,7 @@ export default function VersionSelect() {
 		() =>
 			versions
 				?.map((item, idx) => (
-					<Link href={`/docs/packages/${packageName}/${item}`} key={`${item}-${idx}`}>
+					<Link href={`/docs/packages/${packageName}/${isDev ? 'main' : item}`} key={`${item}-${idx}`}>
 						<MenuItem
 							className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 							onClick={() => versionMenu.setOpen(false)}

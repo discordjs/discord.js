@@ -29,6 +29,7 @@
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
+bun add @discordjs/ws
 ```
 
 ### Optional packages

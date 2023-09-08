@@ -4,18 +4,5 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"include": [
-		"**/*.ts",
-		"**/*.tsx",
-		"**/*.js",
-		"**/*.mjs",
-		"**/*.jsx",
-		"**/*.test.ts",
-		"**/*.test.js",
-		"**/*.test.mjs",
-		"**/*.spec.ts",
-		"**/*.spec.js",
-		"**/*.spec.mjs"
-	],
-	"exclude": []
+	"include": ["*.ts", "*.tsx", "*.js", "*.cjs", "*.mjs", "src", "__tests__"]
 }

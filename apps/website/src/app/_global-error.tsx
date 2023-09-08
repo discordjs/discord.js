@@ -1,8 +1,8 @@
 'use client';
 
 import { Analytics } from '@vercel/analytics/react';
-import { Providers } from './providers';
 import { inter } from '~/util/fonts';
+import { Providers } from './providers';
 
 import '@unocss/reset/tailwind-compat.css';
 import '~/styles/unocss.css';

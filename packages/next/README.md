@@ -22,6 +22,7 @@
 npm install @discordjs/next
 yarn add @discordjs/next
 pnpm add @discordjs/next
+bun add @discordjs/next
 ```
 
 ## Links

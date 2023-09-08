@@ -4,18 +4,19 @@ import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
 import glob from 'fast-glob';
-import { red, yellow, green, cyan } from 'picocolors';
+import picocolors from 'picocolors';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
 	directory: string;
+	installPackages: boolean;
 	packageManager: PackageManager;
 	typescript?: boolean;
 }
 
-export async function createDiscordBot({ directory, typescript, packageManager }: Options) {
+export async function createDiscordBot({ directory, installPackages, typescript, packageManager }: Options) {
 	const root = path.resolve(directory);
 	const directoryName = path.basename(root);
 
@@ -33,12 +34,16 @@ export async function createDiscordBot({ directory, typescript, packageManager }
 
 	// If the directory is actually a file or if it's not empty, throw an error.
 	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
-		console.error(red(`The directory ${yellow(`"${directoryName}"`)} is either not a directory or is not empty.`));
-		console.error(red(`Please specify an empty directory.`));
+		console.error(
+			picocolors.red(
+				`The directory ${picocolors.yellow(`"${directoryName}"`)} is either not a directory or is not empty.`,
+			),
+		);
+		console.error(picocolors.red(`Please specify an empty directory.`));
 		process.exit(1);
 	}
 
-	console.log(`Creating ${directoryName} in ${green(root)}.`);
+	console.log(`Creating ${directoryName} in ${picocolors.green(root)}.`);
 	const deno = packageManager === 'deno';
 	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
 		recursive: true,
@@ -81,27 +86,31 @@ export async function createDiscordBot({ directory, typescript, packageManager }
 		await writeFile(file, newData);
 	}
 
-	const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
-		let newStr = str.replace('[REPLACE_ME]', directoryName);
-		newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
-		return newStr;
-	});
-	await writeFile('./package.json', newPackageJSON);
+	if (!deno) {
+		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
+			let newStr = str.replace('[REPLACE_ME]', directoryName);
+			newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
+			return newStr;
+		});
+		await writeFile('./package.json', newPackageJSON);
+	}
 
-	try {
-		install(packageManager);
-	} catch (error) {
-		console.log();
-		const err = error as ExecException;
-		if (err.signal === 'SIGINT') {
-			console.log(red('Installation aborted.'));
-		} else {
-			console.error(red('Installation failed.'));
-			process.exit(1);
+	if (installPackages) {
+		try {
+			install(packageManager);
+		} catch (error) {
+			console.log();
+			const err = error as ExecException;
+			if (err.signal === 'SIGINT') {
+				console.log(picocolors.red('Installation aborted.'));
+			} else {
+				console.error(picocolors.red('Installation failed.'));
+				process.exit(1);
+			}
 		}
 	}
 
 	console.log();
-	console.log(green('All done! Be sure to read through the discord.js guide for help on your journey.'));
-	console.log(`Link: ${cyan(GUIDE_URL)}`);
+	console.log(picocolors.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
+	console.log(`Link: ${picocolors.cyan(GUIDE_URL)}`);
 }
