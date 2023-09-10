@@ -955,6 +955,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
   private get _censoredToken(): string | null;
+  private readonly _ready: Ready;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
