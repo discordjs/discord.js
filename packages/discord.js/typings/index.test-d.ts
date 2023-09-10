@@ -199,6 +199,8 @@ const client: Client = new Client({
 
 if (client.isReady()) {
   expectType<Client<true>>(client);
+} else {
+  expectType<Client>(client);
 }
 
 const testGuildId = '222078108977594368'; // DJS
