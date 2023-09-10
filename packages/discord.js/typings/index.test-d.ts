@@ -197,6 +197,10 @@ const client: Client = new Client({
   }),
 });
 
+if (client.isReady()) {
+  expectType<Client<true>>(client);
+}
+
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
 const globalCommandId = '123456789012345678'; // example id
