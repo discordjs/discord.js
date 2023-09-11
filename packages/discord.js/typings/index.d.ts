@@ -1,6 +1,3 @@
-// DOM types required for undici
-/// <reference lib="dom" />
-
 import {
   ActionRowBuilder as BuilderActionRow,
   MessageActionRowComponentBuilder,
