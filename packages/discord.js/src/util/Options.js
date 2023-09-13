@@ -4,10 +4,12 @@ const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/res
 const { toSnakeCase } = require('./Transformers');
 const { version } = require('../../package.json');
 
+// TODO(ckohen): switch order of params so full manager is first and "type" is optional
 /**
  * @typedef {Function} CacheFactory
- * @param {Function} manager The manager class the cache is being requested from.
+ * @param {Function} managerType The base manager class the cache is being requested from.
  * @param {Function} holds The class that the cache will hold.
+ * @param {Function} manager The fully extended manager class the cache is being requested from.
  * @returns {Collection} A Collection used to store the cache of the manager.
  */
 
@@ -18,7 +20,7 @@ const { version } = require('../../package.json');
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
  * @property {number} [closeTimeout=5_000] The amount of time in milliseconds to wait for the close frame to be received
- * from the WebSocket. Don't have this too high/low. Its best to have it between 2_000-6_000 ms.
+ * from the WebSocket. Don't have this too high/low. It's best to have it between 2_000-6_000 ms.
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
@@ -150,8 +152,8 @@ class Options extends null {
     const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
 
-    return manager => {
-      const setting = settings[manager.name];
+    return (managerType, _, manager) => {
+      const setting = settings[manager.name] ?? settings[managerType.name];
       /* eslint-disable-next-line eqeqeq */
       if (setting == null) {
         return new Collection();

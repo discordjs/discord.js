@@ -9,8 +9,8 @@ import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 
 export interface MethodDocumentationProps {
-	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
-	method: ApiMethod | ApiMethodSignature;
+	readonly inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
+	readonly method: ApiMethod | ApiMethodSignature;
 }
 
 export function MethodDocumentation({ method, inheritedFrom }: MethodDocumentationProps) {

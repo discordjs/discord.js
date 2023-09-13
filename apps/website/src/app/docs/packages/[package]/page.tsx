@@ -13,6 +13,10 @@ async function getData(pkg: string) {
 		notFound();
 	}
 
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return ['main'];
+	}
+
 	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, { next: { revalidate: 3_600 } });
 	const data: string[] = await res.json();
 

@@ -44,8 +44,8 @@ class BaseClient extends EventEmitter {
    * @returns {void}
    */
   destroy() {
-    this.rest.requestManager.clearHashSweeper();
-    this.rest.requestManager.clearHandlerSweeper();
+    this.rest.clearHashSweeper();
+    this.rest.clearHandlerSweeper();
   }
 
   /**

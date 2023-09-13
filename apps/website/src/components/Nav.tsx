@@ -2,14 +2,14 @@
 
 import dynamic from 'next/dynamic';
 import { Scrollbars } from 'react-custom-scrollbars-2';
+import { useNav } from '~/contexts/nav';
 import { Sidebar } from './Sidebar';
 import type { SidebarSectionItemData } from './Sidebar';
-import { useNav } from '~/contexts/nav';
 
 const PackageSelect = dynamic(async () => import('./PackageSelect'));
 const VersionSelect = dynamic(async () => import('./VersionSelect'));
 
-export function Nav({ members }: { members: SidebarSectionItemData[] }) {
+export function Nav({ members }: { readonly members: SidebarSectionItemData[] }) {
 	const { opened } = useNav();
 
 	return (

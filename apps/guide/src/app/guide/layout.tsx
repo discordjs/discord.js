@@ -1,8 +1,8 @@
 import type { PropsWithChildren } from 'react';
-import { Providers } from './providers';
 import Footer from '~/components/Footer';
 import Header from '~/components/Header';
 import { Nav } from '~/components/Nav';
+import { Providers } from './providers';
 
 export default function Layout({ children }: PropsWithChildren) {
 	return (

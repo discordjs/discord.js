@@ -1,6 +1,7 @@
 import type { ApiItem } from '@microsoft/api-extractor-model';
 import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, DocPlainText } from '@microsoft/tsdoc';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { ItemLink } from '../../ItemLink';
@@ -8,7 +9,7 @@ import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
 import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
-export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.Element {
+export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
 		(tsdoc: DocNode, idx?: number): ReactNode => {
 			switch (tsdoc.kind) {
@@ -31,9 +32,8 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
 
 					if (codeDestination) {
-						const foundItem = item
-							.getAssociatedModel()
-							?.resolveDeclarationReference(codeDestination, item).resolvedApiItem;
+						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item)
+							.resolvedApiItem;
 
 						if (!foundItem) return null;
 
@@ -52,7 +52,7 @@ export function TSDoc({ item, tsdoc }: { item: ApiItem; tsdoc: DocNode }): JSX.E
 						return (
 							<Link
 								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
-								href={urlDestination}
+								href={urlDestination as Route}
 								key={idx}
 							>
 								{linkText ?? urlDestination}

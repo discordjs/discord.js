@@ -23,12 +23,13 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.11.0 or newer is required.**
 
 ```sh
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
+bun add @discordjs/ws
 ```
 
 ### Optional packages

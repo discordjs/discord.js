@@ -10,11 +10,14 @@ import {
 	codeBlock,
 	Faces,
 	formatEmoji,
+	heading,
+	HeadingLevel,
 	hideLinkEmbed,
 	hyperlink,
 	inlineCode,
 	italic,
 	messageLink,
+	orderedList,
 	quote,
 	roleMention,
 	spoiler,
@@ -22,6 +25,7 @@ import {
 	time,
 	TimestampStyles,
 	underscore,
+	unorderedList,
 	userMention,
 } from '../src/index.js';
 
@@ -199,6 +203,42 @@ describe('Message formatters', () => {
 			expect<'https://discord.com/channels/987654321987654/123456789012345678/102938475657483'>(
 				messageLink('123456789012345678', '102938475657483', '987654321987654'),
 			).toEqual('https://discord.com/channels/987654321987654/123456789012345678/102938475657483');
+		});
+	});
+
+	describe('heading', () => {
+		test('GIVEN "discord.js" THEN returns "# discord.js"', () => {
+			expect<'# discord.js'>(heading('discord.js')).toEqual('# discord.js');
+		});
+
+		test('GIVEN "discord.js" AND a heading level 2 from number THEN returns "## discord.js"', () => {
+			expect<'## discord.js'>(heading('discord.js', 2)).toEqual('## discord.js');
+		});
+
+		test('GIVEN "discord.js" AND a heading level 3 from enum THEN returns "### discord.js"', () => {
+			expect<'### discord.js'>(heading('discord.js', HeadingLevel.Three)).toEqual('### discord.js');
+		});
+	});
+
+	describe('orderedList', () => {
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] THEN returns "1. discord.js\n1. discord.js 2\n  1. discord.js"', () => {
+			expect(orderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
+				'1. discord.js\n1. discord.js 2\n  1. discord.js 3',
+			);
+		});
+
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] AND a startNumber THEN returns "${startNumber}. discord.js\n${startNumber}. discord.js 2\n  ${startNumber}. discord.js"', () => {
+			expect(orderedList(['discord.js', 'discord.js 2', ['discord.js 3']], 50)).toEqual(
+				'50. discord.js\n50. discord.js 2\n  50. discord.js 3',
+			);
+		});
+	});
+
+	describe('unorderedList', () => {
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] THEN returns "- discord.js\n- discord.js 2\n  - discord.js"', () => {
+			expect(unorderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
+				'- discord.js\n- discord.js 2\n  - discord.js 3',
+			);
 		});
 	});
 

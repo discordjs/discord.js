@@ -8,6 +8,5 @@ export function useSystemThemeFallback() {
 		if (theme === 'auto') {
 			localStorage.setItem('theme', 'system');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 }

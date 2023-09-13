@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
 export interface IDiscordMessages {
-	rounded?: boolean;
+	readonly rounded?: boolean;
 }
 
 export function DiscordMessages({ rounded, children }: PropsWithChildren<IDiscordMessages>) {

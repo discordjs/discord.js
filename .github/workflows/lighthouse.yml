@@ -43,7 +43,7 @@ jobs:
       - name: Audit preview URL with Lighthouse
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: lighthouse_audit
-        uses: treosh/lighthouse-ci-action@v9
+        uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
             ${{ steps.get_preview_url.outputs.vercel_preview_url }}
@@ -73,7 +73,7 @@ jobs:
                 ' ',
                 `*Lighthouse ran on [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
             ].join('\n')
-             core.setOutput("comment", comment);
+            core.setOutput("comment", comment);
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add comment to PR

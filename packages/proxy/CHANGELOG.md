@@ -2,6 +2,74 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@2.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.0...@discordjs/proxy@2.0.1) - (2023-08-17)
+
+## Documentation
+
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+
+# [@discordjs/proxy@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.1...@discordjs/proxy@2.0.0) - (2023-07-31)
+
+## Refactor
+
+- **REST:** Remove double classing (#9722) ([8f4256d](https://github.com/discordjs/discord.js/commit/8f4256db8a52ac08359d0b3436f41b641ac4e382))
+  - **BREAKING CHANGE:** `REST` and `RequestManager` have been combined, most of the properties, methods, and events from both classes can now be found on `REST`
+  - **BREAKING CHANGE:** `REST#raw` has been removed in favor of `REST#queueRequest`
+  - **BREAKING CHANGE:** `REST#getAgent` has been removed in favor of `REST#agent`
+
+* chore: update for /rest changes
+- **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
+  - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
+  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
+  - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
+  - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
+  - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
+
+# [@discordjs/proxy@1.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.0...@discordjs/proxy@1.4.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Refactor
+
+- **proxy:** Rely on auth header instead (#9422) ([a49ed0a](https://github.com/discordjs/discord.js/commit/a49ed0a2d5934ad7af2e9cfbf7c5ccf171599591))
+
+# [@discordjs/proxy@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.1...@discordjs/proxy@2.0.0) - (2023-07-31)
+
+## Refactor
+
+- **REST:** Remove double classing (#9722) ([8f4256d](https://github.com/discordjs/discord.js/commit/8f4256db8a52ac08359d0b3436f41b641ac4e382))
+  - **BREAKING CHANGE:** `REST` and `RequestManager` have been combined, most of the properties, methods, and events from both classes can now be found on `REST`
+  - **BREAKING CHANGE:** `REST#raw` has been removed in favor of `REST#queueRequest`
+  - **BREAKING CHANGE:** `REST#getAgent` has been removed in favor of `REST#agent`
+
+* chore: update for /rest changes
+- **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
+  - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
+  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
+  - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
+  - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
+  - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
+
+# [@discordjs/proxy@1.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.0...@discordjs/proxy@1.4.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Refactor
+
+- **proxy:** Rely on auth header instead (#9422) ([a49ed0a](https://github.com/discordjs/discord.js/commit/a49ed0a2d5934ad7af2e9cfbf7c5ccf171599591))
+
 # [@discordjs/proxy@1.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.0...@discordjs/proxy@1.4.1) - (2023-05-01)
 
 ## Bug Fixes

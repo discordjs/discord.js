@@ -3,9 +3,9 @@ import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.js';
 import { DiscordMessageBaseReply } from './MessageBaseReply.js';
 
 export interface IDiscordMessageInteraction {
-	author?: IDiscordMessageAuthorReply | undefined;
-	authorNode?: ReactNode | undefined;
-	command?: string;
+	readonly author?: IDiscordMessageAuthorReply | undefined;
+	readonly authorNode?: ReactNode | undefined;
+	readonly command?: string;
 }
 
 export function DiscordMessageInteraction({ author, authorNode, command }: IDiscordMessageInteraction) {

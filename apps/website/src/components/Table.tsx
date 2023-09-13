@@ -7,9 +7,9 @@ export function Table({
 	columns,
 	columnStyles,
 }: {
-	columnStyles?: Record<string, string>;
-	columns: string[];
-	rows: Record<string, ReactNode>[];
+	readonly columnStyles?: Record<string, string>;
+	readonly columns: string[];
+	readonly rows: Record<string, ReactNode>[];
 }) {
 	const cols = useMemo(
 		() =>

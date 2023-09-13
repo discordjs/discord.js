@@ -4,8 +4,8 @@ import { VscWarning } from '@react-icons/all-files/vsc/VscWarning';
 import type { PropsWithChildren } from 'react';
 
 export interface IAlert {
-	title?: string | undefined;
-	type: 'danger' | 'info' | 'success' | 'warning';
+	readonly title?: string | undefined;
+	readonly type: 'danger' | 'info' | 'success' | 'warning';
 }
 
 function resolveType(type: IAlert['type']) {

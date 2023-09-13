@@ -2,7 +2,7 @@ import type { ApiDeclaredItem } from '@microsoft/api-extractor-model';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
 
-export function InheritanceText({ parent }: { parent: ApiDeclaredItem }) {
+export function InheritanceText({ parent }: { readonly parent: ApiDeclaredItem }) {
 	return (
 		<span className="font-semibold">
 			Inherited from{' '}
