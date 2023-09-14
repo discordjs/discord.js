@@ -50,11 +50,15 @@ class GuildScheduledEvent extends Base {
       this.creatorId ??= null;
     }
 
-    /**
-     * The name of the guild scheduled event
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild scheduled event
+       * @type {string}
+       */
+      this.name = data.name;
+    } else {
+      this.name ??= null;
+    }
 
     if ('description' in data) {
       /**
