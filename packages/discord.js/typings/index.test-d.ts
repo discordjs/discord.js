@@ -176,6 +176,10 @@ import {
   GuildOnboarding,
   StringSelectMenuComponentData,
   ButtonComponentData,
+  PartialDMChannel,
+  PartialGuildMember,
+  PartialMessage,
+  PartialMessageReaction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2315,3 +2319,36 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
 }
+
+declare const partialDMChannel: PartialDMChannel;
+expectType<undefined>(partialDMChannel.lastMessageId);
+expectType<ReturnType<DMChannel['toString']>>(partialDMChannel.toString());
+
+declare const partialGuildMember: PartialGuildMember;
+expectType<null>(partialGuildMember.joinedAt);
+expectType<null>(partialGuildMember.joinedTimestamp);
+expectType<null>(partialGuildMember.pending);
+expectType<ReturnType<GuildMember['toString']>>(partialGuildMember.toString());
+
+declare const partialMessage: PartialMessage;
+expectType<null>(partialMessage.type);
+expectType<null>(partialMessage.system);
+expectType<null>(partialMessage.pinned);
+expectType<null>(partialMessage.tts);
+expectAssignable<null | Message['content']>(partialMessage.content);
+expectAssignable<null | Message['cleanContent']>(partialMessage.cleanContent);
+expectAssignable<null | Message['author']>(partialMessage.author);
+
+declare const partialMessageReaction: PartialMessageReaction;
+expectType<null>(partialMessageReaction.count);
+
+declare const partialThreadMeber: PartialThreadMember;
+expectType<null>(partialThreadMeber.flags);
+expectType<null>(partialThreadMeber.joinedAt);
+expectType<null>(partialThreadMeber.joinedTimestamp);
+
+declare const partialUser: PartialUser;
+expectType<null>(partialUser.username);
+expectType<null>(partialUser.tag);
+expectType<null>(partialUser.discriminator);
+expectType<ReturnType<User['toString']>>(partialUser.toString());
