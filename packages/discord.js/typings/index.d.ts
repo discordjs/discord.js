@@ -6115,11 +6115,15 @@ export type Partialize<
   [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
 };
 
-export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
+export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId' | 'toString'> {
   lastMessageId: undefined;
+  toString(): UserMention;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
+export interface PartialGuildMember
+  extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending', null, 'toString'> {
+  toString(): UserMention;
+}
 
 export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
@@ -6149,7 +6153,9 @@ export enum Partials {
   ThreadMember,
 }
 
-export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator', null, 'toString'> {
+  toString(): UserMention;
+}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
