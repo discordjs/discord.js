@@ -1,6 +1,3 @@
-// DOM types required for undici
-/// <reference lib="dom" />
-
 import {
   ActionRowBuilder as BuilderActionRow,
   MessageActionRowComponentBuilder,
@@ -174,7 +171,7 @@ import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
-import * as WebSocket from 'ws';
+import { Data as WebSocketData, WebSocket } from 'ws';
 import {
   RawActivityData,
   RawAnonymousGuildData,
@@ -956,6 +953,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
   private get _censoredToken(): string | null;
+  // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
+  private readonly _ready: Ready;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
@@ -5899,7 +5898,7 @@ export type MessageChannelComponentCollectorOptions<T extends CollectedMessageIn
 >;
 
 export interface MessageEvent {
-  data: WebSocket.Data;
+  data: WebSocketData;
   type: string;
   target: WebSocket;
 }
