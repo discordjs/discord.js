@@ -165,6 +165,7 @@ import {
   GuildOnboardingPromptType,
   AttachmentFlags,
   RoleFlags,
+  TeamMemberRole,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2991,9 +2992,11 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
+  /** @deprecated Use {@link role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
+  public role: TeamMemberRole;
 
   public toString(): UserMention;
 }
