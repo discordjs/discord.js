@@ -895,7 +895,7 @@ class Guild extends AnonymousGuild {
   /**
    * Data for editing a guild onboarding prompt.
    * @typedef {Object} GuildOnboardingPromptData
-   * @property {string} [id] The id of the prompt
+   * @property {Snowflake} [id] The id of the prompt
    * @property {string} title The title for the prompt
    * @property {boolean} singleSelect Whether users are limited to selecting one option for the prompt
    * @property {boolean} required Whether the prompt is required before a user completes the onboarding flow
