@@ -1,9 +1,9 @@
 import { createTsupConfig } from '../../tsup.config.js';
 
 export default createTsupConfig({
-	entry: ['src/create-discord-bot.ts'],
+	entry: ['bin/index.ts'],
 	dts: false,
 	format: 'esm',
-	minify: true,
+	minify: 'terser',
 	sourcemap: false,
 });

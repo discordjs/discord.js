@@ -15,8 +15,8 @@ export function Method({
 	method,
 	inheritedFrom,
 }: {
-	inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
-	method: ApiMethod | ApiMethodSignature;
+	readonly inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
+	readonly method: ApiMethod | ApiMethodSignature;
 }) {
 	if (method.getMergedSiblings().length > 1) {
 		// We have overloads, use the overload switcher, but render
@@ -28,7 +28,7 @@ export function Method({
 			</Fragment>
 		));
 
-		return <OverloadSwitcher overloads={overloads} />;
+		return <OverloadSwitcher methodName={method.displayName} overloads={overloads} />;
 	}
 
 	// We have just a single method, render it on the server.

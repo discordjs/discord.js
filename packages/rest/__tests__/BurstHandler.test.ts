@@ -40,7 +40,7 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 test('Interaction callback creates burst handler', async () => {
 	mockPool.intercept({ path: callbackPath, method: 'POST' }).reply(200);
 
-	expect(api.requestManager.handlers.get(callbackKey)).toBe(undefined);
+	expect(api.handlers.get(callbackKey)).toBe(undefined);
 	expect(
 		await api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
 			auth: false,
@@ -48,7 +48,7 @@ test('Interaction callback creates burst handler', async () => {
 		}),
 		// TODO: This should be ArrayBuffer, there is a bug in undici request
 	).toBeInstanceOf(Uint8Array);
-	expect(api.requestManager.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
+	expect(api.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
 });
 
 test('Requests are handled in bursts', async () => {

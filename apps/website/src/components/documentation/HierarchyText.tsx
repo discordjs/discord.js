@@ -2,7 +2,13 @@ import type { ApiClass, ApiInterface, Excerpt } from '@microsoft/api-extractor-m
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { ExcerptText } from '../ExcerptText';
 
-export function HierarchyText({ item, type }: { item: ApiClass | ApiInterface; type: 'Extends' | 'Implements' }) {
+export function HierarchyText({
+	item,
+	type,
+}: {
+	readonly item: ApiClass | ApiInterface;
+	readonly type: 'Extends' | 'Implements';
+}) {
 	const model = item.getAssociatedModel()!;
 
 	if (

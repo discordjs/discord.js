@@ -1,12 +1,10 @@
-import { setTimeout, clearTimeout } from 'node:timers';
-import { Response } from 'undici';
 import type { RequestInit } from 'undici';
-import type { ResponseLike } from '../REST.js';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
+import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { parseResponse, shouldRetry } from '../utils/utils.js';
 
 /**
@@ -24,7 +22,7 @@ let invalidCountResetTime: number | null = null;
  *
  * @internal
  */
-export function incrementInvalidCount(manager: RequestManager) {
+export function incrementInvalidCount(manager: REST) {
 	if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
 		invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
 		invalidCount = 0;
@@ -57,7 +55,7 @@ export function incrementInvalidCount(manager: RequestManager) {
  * @internal
  */
 export async function makeNetworkRequest(
-	manager: RequestManager,
+	manager: REST,
 	routeId: RouteData,
 	url: string,
 	options: RequestInit,
@@ -65,7 +63,7 @@ export async function makeNetworkRequest(
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout).unref();
+	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
 	if (requestData.signal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
@@ -120,7 +118,7 @@ export async function makeNetworkRequest(
  * @returns - The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
-	manager: RequestManager,
+	manager: REST,
 	res: ResponseLike,
 	method: string,
 	url: string,
@@ -135,7 +133,7 @@ export async function handleErrors(
 		}
 
 		// We are out of retries, throw an error
-		throw new HTTPError(status, method, url, requestData);
+		throw new HTTPError(status, res.statusText, method, url, requestData);
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {

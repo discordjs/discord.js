@@ -163,6 +163,8 @@ import {
   ThreadManager,
   FetchedThreads,
   FetchedThreadsMore,
+  DMMessageManager,
+  GuildMessageManager,
   ApplicationCommandChannelOptionData,
   ApplicationCommandChannelOption,
   ApplicationCommandChoicesOption,
@@ -171,6 +173,9 @@ import {
   ApplicationCommandSubCommand,
   ChatInputApplicationCommandData,
   ApplicationCommandPermissionsManager,
+  GuildOnboarding,
+  StringSelectMenuComponentData,
+  ButtonComponentData,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -191,6 +196,12 @@ const client: Client = new Client({
     },
   }),
 });
+
+if (client.isReady()) {
+  expectType<Client<true>>(client);
+} else {
+  expectType<Client>(client);
+}
 
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
@@ -348,6 +359,19 @@ declare const assertIsMessage: (m: Promise<Message>) => void;
 
 client.on('messageCreate', async message => {
   const { client, channel } = message;
+
+  // https://github.com/discordjs/discord.js/issues/8545
+  {
+    // These should not throw any errors when comparing messages from any source.
+    channel.messages.cache.filter(m => m);
+    (await channel.messages.fetch()).filter(m => m.author.id === message.author.id);
+
+    if (channel.isDMBased()) {
+      expectType<DMMessageManager>(channel.messages.channel.messages);
+    } else {
+      expectType<GuildMessageManager>(channel.messages.channel.messages);
+    }
+  }
 
   if (!message.inGuild() && message.partial) {
     expectNotType<never>(message);
@@ -516,10 +540,10 @@ client.on('messageCreate', async message => {
 
   // Check that both builders and builder data can be sent in messages
   const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-  const buttonsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new ButtonBuilder(),
       { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
       {
         type: ComponentType.Button,
@@ -529,21 +553,34 @@ client.on('messageCreate', async message => {
       },
     ],
   };
-  const selectsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const buttonsRow: ActionRowData<ButtonBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new ButtonBuilder()],
+  };
+
+  const rawStringSelectMenuRow: ActionRowData<StringSelectMenuComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new StringSelectMenuBuilder(),
       {
         type: ComponentType.StringSelect,
-        label: 'select menu',
         options: [{ label: 'test', value: 'test' }],
         customId: 'test',
       },
     ],
   };
 
+  const stringSelectRow: ActionRowData<StringSelectMenuBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new StringSelectMenuBuilder()],
+  };
+
   const embedData = { description: 'test', color: 0xff0000 };
-  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, embedData] });
+
+  channel.send({
+    components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
+    embeds: [embed, embedData],
+  });
 });
 
 client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
@@ -1154,7 +1191,7 @@ client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => 
   expectType<Client<true>>(newClient);
 });
 
-client.on('webhookUpdate', ({ client }) => expectType<Client<true>>(client));
+client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));
 
 client.on('guildCreate', async g => {
   expectType<Client<true>>(g.client);
@@ -1519,7 +1556,7 @@ declare const guildChannelManager: GuildChannelManager;
   if (channel.isTextBased()) {
     const { messages } = channel;
     const message = await messages.fetch('123');
-    expectType<MessageManager<true>>(messages);
+    expectType<GuildMessageManager>(messages);
     expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
@@ -1533,18 +1570,24 @@ declare const guildChannelManager: GuildChannelManager;
 {
   const { messages } = dmChannel;
   const message = await messages.fetch('123');
-  expectType<MessageManager<false>>(messages);
-  expectType<Promise<Message<false>>>(messages.crosspost('1234567890')); // This shouldn't even exist!
-  expectType<Promise<Message<false>>>(messages.edit('1234567890', 'text'));
-  expectType<Promise<Message<false>>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message<false>>>>(messages.fetchPinned());
-  expectType<null>(message.guild);
-  expectType<null>(message.guildId);
-  expectType<TextBasedChannel>(message.channel.messages.channel);
+  expectType<DMMessageManager>(messages);
+  expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
+  expectType<Promise<Message>>(messages.fetch('1234567890'));
+  expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Guild | null>(message.guild);
+  expectType<Snowflake | null>(message.guildId);
+  expectType<DMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
+  expectType<MessageMentions>(message.mentions);
+  expectType<Guild | null>(message.mentions.guild);
+  expectType<Collection<Snowflake, GuildMember> | null>(message.mentions.members);
 
-  expectType<MessageMentions<false>>(message.mentions);
-  expectType<null>(message.mentions.guild);
-  expectType<null>(message.mentions.members);
+  if (messages.channel.isDMBased()) {
+    expectType<DMChannel>(messages.channel);
+    expectType<DMChannel>(messages.channel.messages.channel);
+  }
+
+  // @ts-expect-error Crossposting is not possible in direct messages.
+  messages.crosspost('1234567890');
 }
 
 declare const threadManager: ThreadManager;
@@ -2267,3 +2310,8 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 });
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
+
+{
+  const onboarding = await guild.fetchOnboarding();
+  expectType<GuildOnboarding>(onboarding);
+}

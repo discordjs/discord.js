@@ -151,7 +151,7 @@ const FFMPEG_PCM_EDGE: Omit<Edge, 'from'> = {
 	cost: 2,
 	transformer: (input) =>
 		new prism.FFmpeg({
-			args: typeof input === 'string' ? ['-i', input, ...FFMPEG_PCM_ARGUMENTS] : FFMPEG_PCM_ARGUMENTS,
+			args: ['-i', typeof input === 'string' ? input : '-', ...FFMPEG_PCM_ARGUMENTS],
 		}),
 };
 
@@ -182,7 +182,7 @@ if (canEnableFFmpegOptimizations()) {
 		cost: 2,
 		transformer: (input) =>
 			new prism.FFmpeg({
-				args: typeof input === 'string' ? ['-i', input, ...FFMPEG_OPUS_ARGUMENTS] : FFMPEG_OPUS_ARGUMENTS,
+				args: ['-i', typeof input === 'string' ? input : '-', ...FFMPEG_OPUS_ARGUMENTS],
 			}),
 	};
 	getNode(StreamType.Arbitrary).addEdge(FFMPEG_OGG_EDGE);

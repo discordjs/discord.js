@@ -1,14 +1,11 @@
 'use strict';
 
-const process = require('node:process');
 const { userMention } = require('@discordjs/builders');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const UserFlagsBitField = require('../util/UserFlagsBitField');
-
-let tagDeprecationEmitted = false;
 
 /**
  * Represents a user on Discord.
@@ -125,6 +122,16 @@ class User extends Base {
        */
       this.flags = new UserFlagsBitField(data.public_flags);
     }
+
+    if ('avatar_decoration' in data) {
+      /**
+       * The user avatar decoration's hash
+       * @type {?string}
+       */
+      this.avatarDecoration = data.avatar_decoration;
+    } else {
+      this.avatarDecoration ??= null;
+    }
   }
 
   /**
@@ -161,6 +168,15 @@ class User extends Base {
    */
   avatarURL(options = {}) {
     return this.avatar && this.client.rest.cdn.avatar(this.id, this.avatar, options);
+  }
+
+  /**
+   * A link to the user's avatar decoration.
+   * @param {BaseImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  avatarDecorationURL(options = {}) {
+    return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);
   }
 
   /**
@@ -209,14 +225,8 @@ class User extends Base {
    * if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
-   * @deprecated Use {@link User#username} instead.
    */
   get tag() {
-    if (!tagDeprecationEmitted) {
-      process.emitWarning('User#tag is deprecated. Use User#username instead.', 'DeprecationWarning');
-      tagDeprecationEmitted = true;
-    }
-
     return typeof this.username === 'string'
       ? this.discriminator === '0'
         ? this.username

@@ -106,7 +106,7 @@ test('Significant Invalid Requests', async () => {
 	await expect(e).rejects.toThrowError('Missing Permissions');
 	expect(invalidListener).toHaveBeenCalledTimes(0);
 	// eslint-disable-next-line require-atomic-updates
-	api.requestManager.options.invalidRequestWarningInterval = 2;
+	api.options.invalidRequestWarningInterval = 2;
 
 	const [f, g, h, i, j] = [
 		api.get('/badRequest'),
@@ -504,7 +504,7 @@ test('Unauthorized', async () => {
 		.reply(401, { message: '401: Unauthorized', code: 0 }, responseOptions)
 		.times(2);
 
-	const setTokenSpy = vitest.spyOn(invalidAuthApi.requestManager, 'setToken');
+	const setTokenSpy = vitest.spyOn(invalidAuthApi, 'setToken');
 
 	// Ensure authless requests don't reset the token
 	const promiseWithoutTokenClear = invalidAuthApi.get('/unauthorized', { auth: false });

@@ -8,15 +8,15 @@ import { DiscordMessageEmbedThumbnail, type IDiscordMessageEmbedThumbnail } from
 import { DiscordMessageEmbedTitle, type IDiscordMessageEmbedTitle } from './MessageEmbedTitle.js';
 
 export interface IDiscordMessageEmbed {
-	author?: IDiscordMessageEmbedAuthor | undefined;
-	authorNode?: ReactNode | undefined;
-	fields?: IDiscordMessageEmbedField[];
-	footer?: IDiscordMessageEmbedFooter | undefined;
-	footerNode?: ReactNode | undefined;
-	image?: IDiscordMessageEmbedImage;
-	thumbnail?: IDiscordMessageEmbedThumbnail;
-	title?: IDiscordMessageEmbedTitle | undefined;
-	titleNode?: ReactNode | undefined;
+	readonly author?: IDiscordMessageEmbedAuthor | undefined;
+	readonly authorNode?: ReactNode | undefined;
+	readonly fields?: IDiscordMessageEmbedField[];
+	readonly footer?: IDiscordMessageEmbedFooter | undefined;
+	readonly footerNode?: ReactNode | undefined;
+	readonly image?: IDiscordMessageEmbedImage;
+	readonly thumbnail?: IDiscordMessageEmbedThumbnail;
+	readonly title?: IDiscordMessageEmbedTitle | undefined;
+	readonly titleNode?: ReactNode | undefined;
 }
 
 export function DiscordMessageEmbed({

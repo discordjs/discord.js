@@ -5,6 +5,7 @@ const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const RoleFlagsBitField = require('../util/RoleFlagsBitField');
 
 /**
  * Represents a role on Discord.
@@ -101,6 +102,16 @@ class Role extends Base {
 
     if ('unicode_emoji' in data) this.unicodeEmoji = data.unicode_emoji;
 
+    if ('flags' in data) {
+      /**
+       * The flags of this role
+       * @type {Readonly<RoleFlagsBitField>}
+       */
+      this.flags = new RoleFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new RoleFlagsBitField().freeze();
+    }
+
     /**
      * The tags this role has
      * @type {?Object}
@@ -167,7 +178,9 @@ class Role extends Base {
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => m._roles.includes(this.id));
+    return this.id === this.guild.id
+      ? this.guild.members.cache.clone()
+      : this.guild.members.cache.filter(m => m._roles.includes(this.id));
   }
 
   /**

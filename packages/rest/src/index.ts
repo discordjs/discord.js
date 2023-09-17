@@ -1,15 +1,13 @@
-export * from './lib/CDN.js';
-export * from './lib/errors/DiscordAPIError.js';
-export * from './lib/errors/HTTPError.js';
-export * from './lib/errors/RateLimitError.js';
-export * from './lib/RequestManager.js';
-export * from './lib/REST.js';
-export * from './lib/utils/constants.js';
-export { calculateUserDefaultAvatarIndex, makeURLSearchParams, parseResponse } from './lib/utils/utils.js';
+import { Blob } from 'node:buffer';
+import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { FormData } from 'undici';
+import { setDefaultStrategy } from './environment.js';
+import { makeRequest } from './strategies/undiciRequest.js';
 
-/**
- * The {@link https://github.com/discordjs/discord.js/blob/main/packages/rest/#readme | @discordjs/rest} version
- * that you are currently using.
- */
-// This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
-export const version = '[VI]{{inject}}[/VI]' as string;
+// TODO(ckohen): remove once node engine req is bumped to > v18
+(globalThis as any).FormData ??= FormData;
+globalThis.Blob ??= Blob;
+
+setDefaultStrategy(shouldUseGlobalFetchAndWebSocket() ? fetch : makeRequest);
+
+export * from './shared.js';

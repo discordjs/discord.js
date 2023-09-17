@@ -54,7 +54,7 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 		}
 	}
 
-	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+	// eslint-disable-next-line prefer-named-capture-group
 	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
 }
 

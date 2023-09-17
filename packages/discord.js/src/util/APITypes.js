@@ -211,6 +211,11 @@
  */
 
 /**
+ * @external AttachmentFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
+ */
+
+/**
  * @external AutoModerationActionType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AutoModerationActionType}
  */
@@ -311,6 +316,11 @@
  */
 
 /**
+ * @external GuildOnboardingPromptType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingPromptType}
+ */
+
+/**
  * @external GuildPremiumTier
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildPremiumTier}
  */
@@ -401,6 +411,11 @@
  */
 
 /**
+ * @external RoleFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
+ */
+
+/**
  * @external RESTGetAPIGuildThreadsResult
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
  */
@@ -433,6 +448,11 @@
 /**
  * @external TeamMemberMembershipState
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberMembershipState}
+ */
+
+/**
+ * @external TeamMemberRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberRole}
  */
 
 /**
