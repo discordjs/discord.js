@@ -5414,6 +5414,8 @@ interface GuildAuditLogsTypes {
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
 
 export interface GuildAuditLogsEntryExtraField {
+  [AuditLogEvent.MemberKick]: { integrationType: string } | null;
+  [AuditLogEvent.MemberRoleUpdate]: { integrationType: string } | null;
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
   [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
   [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
