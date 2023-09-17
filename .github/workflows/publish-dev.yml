@@ -63,3 +63,8 @@ jobs:
           pnpm --filter=${{ matrix.package }} publish --no-git-checks --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      - name: Deprecate prior development releases
+        run: pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${{ matrix.package }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
