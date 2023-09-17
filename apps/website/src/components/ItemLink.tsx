@@ -3,15 +3,11 @@
 import type { LinkProps } from 'next/link';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import type { AnchorHTMLAttributes, PropsWithChildren, RefAttributes } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useCurrentPathMeta } from '~/hooks/useCurrentPathMeta';
 
-export interface ItemLinkProps
-	extends Omit<LinkProps, 'href'>,
-		RefAttributes<HTMLAnchorElement>,
-		Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof LinkProps> {
+export interface ItemLinkProps<T extends string> extends Omit<LinkProps<T>, 'href'> {
 	readonly className?: string;
-
 	/**
 	 * The URI of the api item to link to. (e.g. `/RestManager`)
 	 */
@@ -30,7 +26,7 @@ export interface ItemLinkProps
  * This component only needs the relative path to the item, and will automatically
  * generate the full path to the item client-side.
  */
-export function ItemLink(props: PropsWithChildren<ItemLinkProps>) {
+export function ItemLink<T extends string>(props: PropsWithChildren<ItemLinkProps<T>>) {
 	const pathname = usePathname();
 	const { packageName, version } = useCurrentPathMeta();
 
@@ -40,5 +36,5 @@ export function ItemLink(props: PropsWithChildren<ItemLinkProps>) {
 
 	const { itemURI, packageName: pkgName, ...linkProps } = props;
 
-	return <Link href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} {...linkProps} />;
+	return <Link {...linkProps} href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} />;
 }

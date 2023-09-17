@@ -1,3 +1,4 @@
+import process from 'node:process';
 import { URL } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { loadCommands, loadEvents } from './util/loaders.js';
@@ -14,4 +15,4 @@ const commands = await loadCommands(new URL('commands/', import.meta.url));
 registerEvents(commands, events, client);
 
 // Login to the client
-void client.login();
+void client.login(process.env.DISCORD_TOKEN);

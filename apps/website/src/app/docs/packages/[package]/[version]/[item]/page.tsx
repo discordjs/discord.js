@@ -1,4 +1,4 @@
-import { addPackageToModel, tryResolveSummaryText } from '@discordjs/scripts';
+import { tryResolveSummaryText } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -24,6 +24,7 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
+import { addPackageToModel } from '~/util/addPackageToModel';
 import { OVERLOAD_SEPARATOR } from '~/util/constants';
 import type { ItemRouteParams } from '~/util/fetchMember';
 import { fetchMember } from '~/util/fetchMember';

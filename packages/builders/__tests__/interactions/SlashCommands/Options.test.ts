@@ -102,7 +102,6 @@ describe('Application Command toJSON() results', () => {
 			min_value: -1,
 			autocomplete: true,
 			// TODO
-			// @ts-expect-error You *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 
@@ -147,7 +146,6 @@ describe('Application Command toJSON() results', () => {
 			min_value: -1.23,
 			autocomplete: true,
 			// TODO
-			// @ts-expect-error You *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 
@@ -190,7 +188,6 @@ describe('Application Command toJSON() results', () => {
 			required: true,
 			autocomplete: true,
 			// TODO
-			// @ts-expect-error you *can* send an empty array with autocomplete: true, should correct that in types
 			choices: [],
 		});
 

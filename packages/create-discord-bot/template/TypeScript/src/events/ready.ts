@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import type { Event } from './index.js';
+import type { Event } from './index.[REPLACE_IMPORT_EXT]';
 
 export default {
 	name: Events.ClientReady,
@@ -7,4 +7,4 @@ export default {
 	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 	},
-} satisfies Event<'ready'>;
+} satisfies Event<Events.ClientReady>;

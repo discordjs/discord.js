@@ -1,9 +1,9 @@
 import { Analytics } from '@vercel/analytics/react';
 import type { Metadata } from 'next';
 import type { PropsWithChildren } from 'react';
-import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';
 import { inter, jetBrainsMono } from '~/util/fonts';
+import { Providers } from './providers';
 
 import '@unocss/reset/tailwind-compat.css';
 import '~/styles/unocss.css';
@@ -13,6 +13,9 @@ import '~/styles/ch.css';
 import '~/styles/main.css';
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
+	),
 	title: 'discord.js',
 	description: DESCRIPTION,
 	viewport: {

@@ -724,6 +724,15 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Returns a URL for the PNG widget of the guild.
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  widgetImageURL(style) {
+    return this.client.guilds.widgetImageURL(this.id, style);
+  }
+
+  /**
    * Options used to fetch audit logs.
    * @typedef {Object} GuildAuditLogsFetchOptions
    * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry

@@ -1,13 +1,11 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"isolatedModules": true,
 		"jsx": "preserve",
 		"baseUrl": ".",
 		"noEmit": true,
-		"allowJs": false,
-		"incremental": true,
 		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./src/*"]

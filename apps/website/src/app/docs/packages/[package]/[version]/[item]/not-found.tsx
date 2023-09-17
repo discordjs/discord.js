@@ -1,5 +1,6 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -13,7 +14,7 @@ export default function NotFound() {
 			<h2 className="text-[2rem] md:text-[3rem]">Not found.</h2>
 			<Link
 				className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-blurple px-6 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-				href={href}
+				href={href as Route}
 			>
 				Take me back
 			</Link>

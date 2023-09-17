@@ -1,6 +1,7 @@
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
 import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
+import { DEPRECATION_WARNING_PREFIX } from './constants.js';
 import { RequestMethod, type RateLimitData, type ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
@@ -139,4 +140,19 @@ export async function sleep(ms: number): Promise<void> {
  */
 export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
 	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
+}
+
+/**
+ * Irrespective environment warning.
+ *
+ * @remarks Only the message is needed. The deprecation prefix is handled already.
+ * @param message - A string the warning will emit with
+ * @internal
+ */
+export function deprecationWarning(message: string) {
+	if (typeof globalThis.process === 'undefined') {
+		console.warn(`${DEPRECATION_WARNING_PREFIX}: ${message}`);
+	} else {
+		process.emitWarning(message, DEPRECATION_WARNING_PREFIX);
+	}
 }

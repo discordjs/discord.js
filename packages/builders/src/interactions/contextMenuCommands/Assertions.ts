@@ -6,7 +6,7 @@ import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
-	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+	// eslint-disable-next-line prefer-named-capture-group
 	.regex(/^( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}]+ *)+$/u)
 	.setValidationEnabled(isValidationEnabled);
 const typePredicate = s
