@@ -77,8 +77,9 @@ class Attachment {
 
     if ('content_type' in data) {
       /**
-       * The media type of this attachment
+       * The media (MIME) type of this attachment
        * @type {?string}
+       * @see {@link https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types}
        */
       this.contentType = data.content_type;
     } else {
