@@ -19,6 +19,7 @@
  * @property {'WSNotOpen'} WSNotOpen
  * <warn>This property is deprecated.</warn>
  * @property {'ManagerDestroyed'} ManagerDestroyed
+ * <warn>This property is deprecated.</warn>
 
  * @property {'BitFieldInvalid'} BitFieldInvalid
 
@@ -49,20 +50,29 @@
  * @property {'InviteOptionsMissingChannel'} InviteOptionsMissingChannel
 
  * @property {'ButtonLabel'} ButtonLabel
+ * <warn>This property is deprecated.</warn>
  * @property {'ButtonURL'} ButtonURL
+ * <warn>This property is deprecated.</warn>
  * @property {'ButtonCustomId'} ButtonCustomId
+ * <warn>This property is deprecated.</warn>
 
  * @property {'SelectMenuCustomId'} SelectMenuCustomId
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectMenuPlaceholder'} SelectMenuPlaceholder
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionLabel'} SelectOptionLabel
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionValue'} SelectOptionValue
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionDescription'} SelectOptionDescription
+ * <warn>This property is deprecated.</warn>
 
  * @property {'InteractionCollectorError'} InteractionCollectorError
 
  * @property {'FileNotFound'} FileNotFound
 
  * @property {'UserBannerNotFetched'} UserBannerNotFetched
+ * <warn>This property is deprecated.</warn>
  * @property {'UserNoDMChannel'} UserNoDMChannel
 
  * @property {'VoiceNotStageChannel'} VoiceNotStageChannel
@@ -73,13 +83,16 @@
  * @property {'ReqResourceType'} ReqResourceType
 
  * @property {'ImageFormat'} ImageFormat
+ * <warn>This property is deprecated.</warn>
  * @property {'ImageSize'} ImageSize
+ * <warn>This property is deprecated.</warn>
 
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
  * @property {'MessageNonceType'} MessageNonceType
  * @property {'MessageContentType'} MessageContentType
 
  * @property {'SplitMaxLen'} SplitMaxLen
+ * <warn>This property is deprecated.</warn>
 
  * @property {'BanResolveId'} BanResolveId
  * @property {'FetchBanResolveId'} FetchBanResolveId
@@ -122,6 +135,7 @@
  * @property {'ReactionResolveUser'} ReactionResolveUser
 
  * @property {'VanityURL'} VanityURL
+ * <warn>This property is deprecated.</warn>
 
  * @property {'InviteResolveCode'} InviteResolveCode
 

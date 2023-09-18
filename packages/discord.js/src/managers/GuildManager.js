@@ -4,7 +4,7 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, RouteBases } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -277,6 +277,20 @@ class GuildManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
+  }
+
+  /**
+   * Returns a URL for the PNG widget of a guild.
+   * @param {GuildResolvable} guild The guild of the widget image
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  widgetImageURL(guild, style) {
+    const urlSearchParams = String(makeURLSearchParams({ style }));
+
+    return `${RouteBases.api}${Routes.guildWidgetImage(this.resolveId(guild))}${
+      urlSearchParams ? `?${urlSearchParams}` : ''
+    }`;
   }
 }
 
