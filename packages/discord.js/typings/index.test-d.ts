@@ -2322,13 +2322,11 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
 declare const partialDMChannel: PartialDMChannel;
 expectType<undefined>(partialDMChannel.lastMessageId);
-expectType<ReturnType<DMChannel['toString']>>(partialDMChannel.toString());
 
 declare const partialGuildMember: PartialGuildMember;
 expectType<null>(partialGuildMember.joinedAt);
 expectType<null>(partialGuildMember.joinedTimestamp);
 expectType<null>(partialGuildMember.pending);
-expectType<ReturnType<GuildMember['toString']>>(partialGuildMember.toString());
 
 declare const partialMessage: PartialMessage;
 expectType<null>(partialMessage.type);
@@ -2351,4 +2349,3 @@ declare const partialUser: PartialUser;
 expectType<null>(partialUser.username);
 expectType<null>(partialUser.tag);
 expectType<null>(partialUser.discriminator);
-expectType<ReturnType<User['toString']>>(partialUser.toString());

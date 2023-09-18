@@ -6120,15 +6120,11 @@ export type Partialize<
     : T[K];
 };
 
-export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId' | 'toString'> {
+export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
   lastMessageId: undefined;
-  toString(): ReturnType<DMChannel['toString']>;
 }
 
-export interface PartialGuildMember
-  extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending', null, 'toString'> {
-  toString(): ReturnType<GuildMember['toString']>;
-}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
 
 export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
@@ -6158,9 +6154,7 @@ export enum Partials {
   ThreadMember,
 }
 
-export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator', null, 'toString'> {
-  toString(): ReturnType<User['toString']>;
-}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
