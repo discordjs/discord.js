@@ -2342,10 +2342,10 @@ expectAssignable<null | Message['author']>(partialMessage.author);
 declare const partialMessageReaction: PartialMessageReaction;
 expectType<null>(partialMessageReaction.count);
 
-declare const partialThreadMeber: PartialThreadMember;
-expectType<null>(partialThreadMeber.flags);
-expectType<null>(partialThreadMeber.joinedAt);
-expectType<null>(partialThreadMeber.joinedTimestamp);
+declare const partialThreadMember: PartialThreadMember;
+expectType<null>(partialThreadMember.flags);
+expectType<null>(partialThreadMember.joinedAt);
+expectType<null>(partialThreadMember.joinedTimestamp);
 
 declare const partialUser: PartialUser;
 expectType<null>(partialUser.username);
