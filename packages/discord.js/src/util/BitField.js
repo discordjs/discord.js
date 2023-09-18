@@ -165,9 +165,7 @@ class BitField {
     if (typeof DefaultBit === typeof bit && bit >= DefaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) {
-      return bit
-        .map(permission => this.resolve(permission))
-        .reduce((prev, permission) => prev | permission, DefaultBit);
+      return bit.map(bit_ => this.resolve(bit_)).reduce((prev, bit_) => prev | bit_, DefaultBit);
     }
     if (typeof bit === 'string') {
       if (!isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
