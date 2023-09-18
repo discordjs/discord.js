@@ -40,8 +40,9 @@ program
 	})
 	.option('--typescript', 'Whether to use the TypeScript template.')
 	.option('--javascript', 'Whether to use the JavaScript template.')
+	.option('--no-install', 'Whether to not automatically install the packages.')
 	.addOption(
-		new Option('--packageManager <packageManager>', 'The package manager to use.')
+		new Option('--package-manager <packageManager>', 'The package manager to use.')
 			.choices(PACKAGE_MANAGERS)
 			.default(resolvePackageManager()),
 	)
@@ -49,7 +50,7 @@ program
 	.parse();
 
 // eslint-disable-next-line prefer-const
-let { typescript, javascript, packageManager } = program.opts();
+let { typescript, javascript, packageManager, install: installPackages } = program.opts();
 
 if (!projectDirectory) {
 	projectDirectory = (
@@ -100,4 +101,4 @@ if (!deno && typescript === undefined && javascript === undefined) {
 	typescript = useTypescript;
 }
 
-await createDiscordBot({ typescript, directory: projectDirectory, packageManager });
+await createDiscordBot({ typescript, directory: projectDirectory, packageManager, installPackages });

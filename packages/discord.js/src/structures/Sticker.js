@@ -179,11 +179,11 @@ class Sticker extends Base {
   }
 
   /**
-   * Fetches the pack this sticker is part of from Discord, if this is a Nitro sticker.
-   * @returns {Promise<?StickerPack>}
+   * Fetches the pack that contains this sticker.
+   * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
   async fetchPack() {
-    return (this.packId && (await this.client.fetchPremiumStickerPacks()).get(this.packId)) ?? null;
+    return (this.packId && (await this.client.fetchStickerPacks()).get(this.packId)) ?? null;
   }
 
   /**

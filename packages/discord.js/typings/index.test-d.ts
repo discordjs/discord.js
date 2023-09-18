@@ -198,6 +198,12 @@ const client: Client = new Client({
   }),
 });
 
+if (client.isReady()) {
+  expectType<Client<true>>(client);
+} else {
+  expectType<Client>(client);
+}
+
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
 const globalCommandId = '123456789012345678'; // example id
@@ -2071,9 +2077,14 @@ expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAudi
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
-expectType<Promise<null | undefined>>(
+expectType<Promise<{ integrationType: string } | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
 );
+
+expectType<Promise<{ integrationType: string } | null | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberRoleUpdate }).then(al => al.entries.first()?.extra),
+);
+
 expectType<Promise<StageChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.extra),
 );

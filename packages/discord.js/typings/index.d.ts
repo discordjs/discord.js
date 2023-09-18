@@ -1,6 +1,3 @@
-// DOM types required for undici
-/// <reference lib="dom" />
-
 import {
   ActionRowBuilder as BuilderActionRow,
   MessageActionRowComponentBuilder,
@@ -168,12 +165,14 @@ import {
   GuildOnboardingPromptType,
   AttachmentFlags,
   RoleFlags,
+  TeamMemberRole,
+  GuildWidgetStyle,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
-import * as WebSocket from 'ws';
+import { Data as WebSocketData, WebSocket } from 'ws';
 import {
   RawActivityData,
   RawAnonymousGuildData,
@@ -264,6 +263,7 @@ export class Activity {
     size: [number, number];
   } | null;
   public state: string | null;
+  public syncId: string | null;
   public timestamps: {
     start: Date | null;
     end: Date | null;
@@ -953,6 +953,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private _eval(script: string): unknown;
   private _validateOptions(options: ClientOptions): void;
   private get _censoredToken(): string | null;
+  // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
+  private readonly _ready: Ready;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
@@ -976,7 +978,9 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
-  public fetchPremiumStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+  public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+  /** @deprecated Use {@link fetchStickerPacks} instead. */
+  public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -1382,6 +1386,7 @@ export class Guild extends AnonymousGuild {
   public fetchWelcomeScreen(): Promise<WelcomeScreen>;
   public fetchWidget(): Promise<Widget>;
   public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
+  public widgetImageURL(style?: GuildWidgetStyle): string;
   public leave(): Promise<Guild>;
   public disableInvites(disabled?: boolean): Promise<Guild>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -1666,11 +1671,13 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public get guild(): Guild | null;
   public get url(): string;
   public image: string | null;
+  public get partial(): false;
   public coverImageURL(options?: Readonly<BaseImageURLOptions>): string | null;
   public createInviteURL(options?: GuildScheduledEventInviteURLCreateOptions): Promise<string>;
   public edit<T extends GuildScheduledEventSetStatusArg<S>>(
     options: GuildScheduledEventEditOptions<S, T>,
   ): Promise<GuildScheduledEvent<T>>;
+  public fetch(force?: boolean): Promise<GuildScheduledEvent<S>>;
   public delete(): Promise<GuildScheduledEvent<S>>;
   public setName(name: string, reason?: string): Promise<GuildScheduledEvent<S>>;
   public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
@@ -2997,9 +3004,11 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
+  /** @deprecated Use {@link role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
+  public role: TeamMemberRole;
 
   public toString(): UserMention;
 }
@@ -3453,6 +3462,7 @@ export class Widget extends Base {
   private constructor(client: Client<true>, data: RawWidgetData);
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
+  public imageURL(style?: GuildWidgetStyle): string;
   public id: Snowflake;
   public name: string;
   public instantInvite?: string;
@@ -3563,6 +3573,7 @@ export enum DiscordjsErrorCodes {
   WSConnectionExists = 'WSConnectionExists',
   /** @deprecated */
   WSNotOpen = 'WSNotOpen',
+  /** @deprecated */
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
@@ -3593,20 +3604,29 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
+  /** @deprecated */
   ButtonLabel = 'ButtonLabel',
+  /** @deprecated */
   ButtonURL = 'ButtonURL',
+  /** @deprecated */
   ButtonCustomId = 'ButtonCustomId',
 
+  /** @deprecated */
   SelectMenuCustomId = 'SelectMenuCustomId',
+  /** @deprecated */
   SelectMenuPlaceholder = 'SelectMenuPlaceholder',
+  /** @deprecated */
   SelectOptionLabel = 'SelectOptionLabel',
+  /** @deprecated */
   SelectOptionValue = 'SelectOptionValue',
+  /** @deprecated */
   SelectOptionDescription = 'SelectOptionDescription',
 
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
+  /** @deprecated */
   UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
@@ -3617,13 +3637,16 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
+  /** @deprecated */
   ImageFormat = 'ImageFormat',
+  /** @deprecated */
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
 
+  /** @deprecated */
   SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
@@ -3666,6 +3689,7 @@ export enum DiscordjsErrorCodes {
 
   ReactionResolveUser = 'ReactionResolveUser',
 
+  /** @deprecated */
   VanityURL = 'VanityURL',
 
   InviteResolveCode = 'InviteResolveCode',
@@ -3972,6 +3996,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
+  public widgetImageURL(guild: GuildResolvable, style?: GuildWidgetStyle): string;
 }
 
 export interface AddOrRemoveGuildMemberRoleOptions {
@@ -4347,7 +4372,14 @@ export interface AddGuildMemberOptions {
   fetchWhenExisting?: boolean;
 }
 
-export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction | ThreadMember;
+export type AllowedPartial =
+  | User
+  | Channel
+  | GuildMember
+  | Message
+  | MessageReaction
+  | GuildScheduledEvent
+  | ThreadMember;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
@@ -4917,12 +4949,12 @@ export interface ClientEvents {
   stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
   guildScheduledEventCreate: [guildScheduledEvent: GuildScheduledEvent];
   guildScheduledEventUpdate: [
-    oldGuildScheduledEvent: GuildScheduledEvent | null,
+    oldGuildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent | null,
     newGuildScheduledEvent: GuildScheduledEvent,
   ];
-  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent];
-  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent, user: User];
-  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent, user: User];
+  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
+  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
 }
 
 export interface ClientFetchInviteOptions {
@@ -5420,6 +5452,8 @@ interface GuildAuditLogsTypes {
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
 
 export interface GuildAuditLogsEntryExtraField {
+  [AuditLogEvent.MemberKick]: { integrationType: string } | null;
+  [AuditLogEvent.MemberRoleUpdate]: { integrationType: string } | null;
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
   [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
   [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
@@ -5905,7 +5939,7 @@ export type MessageChannelComponentCollectorOptions<T extends CollectedMessageIn
 >;
 
 export interface MessageEvent {
-  data: WebSocket.Data;
+  data: WebSocketData;
   type: string;
   target: WebSocket;
 }
@@ -6135,6 +6169,9 @@ export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
+
+export interface PartialGuildScheduledEvent
+  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 

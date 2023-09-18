@@ -29,6 +29,7 @@
 npm install @discordjs/proxy
 yarn add @discordjs/proxy
 pnpm add @discordjs/proxy
+bun add @discordjs/proxy
 ```
 
 ## Links

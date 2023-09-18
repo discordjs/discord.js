@@ -18,9 +18,9 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Deprecate versions
-        run: 'yarn npm-deprecate --name "*dev*" --package @discordjs/brokers @discordjs/builders @discordjs/collection @discordjs/core @discordjs/formatters discord.js @discordjs/next @discordjs/proxy @discordjs/rest @discordjs/util @discordjs/voice @discordjs/ws'
+        run: 'pnpm exec npm-deprecate --name "*dev*" --package @discordjs/brokers @discordjs/builders @discordjs/collection @discordjs/core @discordjs/formatters discord.js @discordjs/next @discordjs/proxy @discordjs/rest @discordjs/util @discordjs/voice @discordjs/ws'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

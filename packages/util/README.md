@@ -26,6 +26,7 @@
 npm install @discordjs/util
 yarn add @discordjs/util
 pnpm add @discordjs/util
+bun add @discordjs/util
 ```
 
 ## Links
