@@ -176,6 +176,7 @@ import {
   GuildOnboarding,
   StringSelectMenuComponentData,
   ButtonComponentData,
+  MediaChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1324,8 +1325,8 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test thread channels' parent inference
-expectType<TextChannel | NewsChannel | ForumChannel | null>(threadChannel.parent);
-expectType<ForumChannel | null>(threadChannelFromForum.parent);
+expectType<TextChannel | NewsChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
+expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
@@ -1544,6 +1545,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
+  expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
@@ -1603,7 +1605,7 @@ declare const threadManager: ThreadManager;
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;
-expectType<ForumChannel>(guildForumThreadManager.channel);
+expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
 
 declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
@@ -1926,6 +1928,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
@@ -2117,7 +2120,7 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel>(
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel>(
   NonThreadGuildBasedChannel,
 );
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
