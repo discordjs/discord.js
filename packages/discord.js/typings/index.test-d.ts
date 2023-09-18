@@ -2330,6 +2330,21 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 {
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
+
+  expectType<GuildOnboarding>(await guild.editOnboarding(onboarding));
+
+  await guild.editOnboarding({
+    defaultChannels: onboarding.defaultChannels,
+    enabled: onboarding.enabled,
+    mode: onboarding.mode,
+    prompts: onboarding.prompts,
+  });
+
+  const prompt = onboarding.prompts.first()!;
+  const option = prompt.options.first()!;
+
+  await guild.editOnboarding({ prompts: [prompt] });
+  await guild.editOnboarding({ prompts: [{ ...prompt, options: [option] }] });
 }
 
 declare const partialDMChannel: PartialDMChannel;

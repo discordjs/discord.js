@@ -29,7 +29,7 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const { discordSort, getSortableGroupTypes } = require('../util/Util');
+const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -885,8 +885,10 @@ class Guild extends AnonymousGuild {
   /**
    * Options used to edit the guild onboarding.
    * @typedef {Object} GuildOnboardingEditOptions
-   * @property {GuildOnboardingPromptData[]} [prompts] The prompts shown during onboarding and in customize community
-   * @property {ChannelResolvable[]} [defaultChannels] The channels that new members get opted into automatically
+   * @property {GuildOnboardingPromptData[]|Collection<Snowflake, GuildOnboardingPrompt>} [prompts]
+   * The prompts shown during onboarding and in customize community
+   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [defaultChannels]
+   * The channels that new members get opted into automatically
    * @property {boolean} [enabled] Whether the onboarding is enabled
    * @property {GuildOnboardingMode} [mode] The mode to edit the guild onboarding with
    * @property {string} [reason] The reason for editing the guild onboarding
@@ -901,17 +903,20 @@ class Guild extends AnonymousGuild {
    * @property {boolean} required Whether the prompt is required before a user completes the onboarding flow
    * @property {boolean} inOnboarding Whether the prompt is present in the onboarding flow
    * @property {GuildOnboardingPromptType} type The type of the prompt
-   * @property {GuildOnboardingPromptOptionData[]} options The options available within the prompt
+   * @property {GuildOnboardingPromptOptionData[]|Collection<Snowflake, GuildOnboardingPrompt>} options
+   * The options available within the prompt
    */
 
   /**
    * Data for editing a guild onboarding prompt option.
    * @typedef {Object} GuildOnboardingPromptOptionData
-   * @property {ChannelResolvable[]} channels The channels a member is added to when the option is selected
-   * @property {RoleResolvable[]} roles The roles assigned to a member when the option is selected
+   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} channels
+   * The channels a member is added to when the option is selected
+   * @property {RoleResolvable[]|Collection<Snowflake, Role>} roles
+   * The roles assigned to a member when the option is selected
    * @property {string} title The title of the option
-   * @property {string} description The description of the option
-   * @property {EmojiIdentifierResolvable} emoji The emoji of the option
+   * @property {?string} description The description of the option
+   * @property {?(EmojiIdentifierResolvable|GuildOnboardingPromptOptionEmoji)} emoji The emoji of the option
    */
 
   /**
@@ -935,10 +940,10 @@ class Guild extends AnonymousGuild {
             role_ids: option.roles.map(r => this.roles.resolveId(r)),
             title: option.title,
             description: option.description,
-            emoji: this.emojis.resolveIdentifier(option.emoji),
+            emoji: resolvePartialEmoji(option.emoji),
           })),
         })),
-        default_channel_ids: options.defaultChannels?.map(c => this.channels.resolveId(c)),
+        default_channel_ids: options.defaultChannels?.map(channel => this.channels.resolveId(channel)),
         enabled: options.enabled,
         mode: options.mode,
       },

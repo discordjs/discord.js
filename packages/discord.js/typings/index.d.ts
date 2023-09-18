@@ -35,7 +35,7 @@ import {
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
-import { Collection } from '@discordjs/collection';
+import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
@@ -5788,8 +5788,8 @@ export type GuildTemplateResolvable = string;
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
 export interface GuildOnboardingEditOptions {
-  prompts?: readonly GuildOnboardingPromptData[];
-  defaultChannels?: readonly ChannelResolvable[];
+  prompts?: readonly GuildOnboardingPromptData[] | ReadonlyCollection<Snowflake, GuildOnboardingPrompt>;
+  defaultChannels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
   enabled?: boolean;
   mode?: GuildOnboardingMode;
   reason?: string;
@@ -5801,16 +5801,16 @@ export interface GuildOnboardingPromptData {
   singleSelect: boolean;
   required: boolean;
   inOnboarding: boolean;
-  type: GuildOnboardingMode;
-  options: readonly GuildOnboardingPromptOptionData[];
+  type: GuildOnboardingPromptType;
+  options: readonly GuildOnboardingPromptOptionData[] | ReadonlyCollection<Snowflake, GuildOnboardingPromptOption>;
 }
 
 export interface GuildOnboardingPromptOptionData {
-  channels: readonly ChannelResolvable[];
-  roles: readonly RoleResolvable[];
+  channels: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  roles: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
   title: string;
-  description: string;
-  emoji: EmojiIdentifierResolvable;
+  description: string | null;
+  emoji: EmojiIdentifierResolvable | GuildOnboardingPromptOptionEmoji | null;
 }
 
 export interface GuildOnboardingPromptOptionEmoji {
@@ -6224,6 +6224,9 @@ export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
+
+export interface PartialGuildScheduledEvent
+  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
