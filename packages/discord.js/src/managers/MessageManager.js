@@ -86,7 +86,8 @@ class MessageManager extends CachedManager {
    * @example
    * // Fetch messages and filter by a user id
    * channel.messages.fetch()
-   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
+   *   .then(messages => console.log(`${messages.filter(message =>
+   *          message.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
   fetch(options) {

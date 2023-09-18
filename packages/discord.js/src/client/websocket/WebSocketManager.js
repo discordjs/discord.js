@@ -364,7 +364,7 @@ class WebSocketManager extends EventEmitter {
    */
   checkShardsReady() {
     if (this.status === Status.Ready) return;
-    if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.Ready)) {
+    if (this.shards.size !== this.totalShards || this.shards.some(shard => shard.status !== Status.Ready)) {
       return;
     }
 

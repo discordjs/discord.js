@@ -22,7 +22,9 @@ class StickerPack extends Base {
      * The stickers in the pack
      * @type {Collection<Snowflake, Sticker>}
      */
-    this.stickers = new Collection(pack.stickers.map(s => [s.id, new Sticker(client, s)]));
+    this.stickers = new Collection(
+      pack.stickers.map(stickerPack => [stickerPack.id, new Sticker(client, stickerPack)]),
+    );
 
     /**
      * The name of the sticker pack

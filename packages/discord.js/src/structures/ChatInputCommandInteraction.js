@@ -32,7 +32,7 @@ class ChatInputCommandInteraction extends CommandInteraction {
       this.commandName,
       this.options._group,
       this.options._subcommand,
-      ...this.options._hoistedOptions.map(o => `${o.name}:${o.value}`),
+      ...this.options._hoistedOptions.map(option => `${option.name}:${option.value}`),
     ];
     return `/${properties.filter(Boolean).join(' ')}`;
   }
