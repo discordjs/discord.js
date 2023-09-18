@@ -242,6 +242,16 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.MemberKick:
+      case AuditLogEvent.MemberRoleUpdate: {
+        if (data.integration_type) {
+          this.extra = {
+            integrationType: data.integration_type,
+          };
+        }
+        break;
+      }
+
       default:
         break;
     }
