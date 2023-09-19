@@ -88,7 +88,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Obtains one or multiple application commands from Discord, or the cache if it's already available.
-   * @param {Snowflake} [id] The application command's id
+   * @param {Snowflake|FetchApplicationCommandOptions} [id] Options for fetching application command(s)
    * @param {FetchApplicationCommandOptions} [options] Additional options for this fetch
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    * @example
