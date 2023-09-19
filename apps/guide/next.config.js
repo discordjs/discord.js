@@ -12,21 +12,14 @@ const withBundleAnalyzer = bundleAnalyzer({
 module.exports = withBundleAnalyzer(
 	withContentlayer({
 		reactStrictMode: true,
-		eslint: {
-			ignoreDuringBuilds: true,
-		},
-		// Until Next.js fixes their type issues
-		typescript: {
-			ignoreBuildErrors: true,
-		},
 		experimental: {
-			appDir: true,
-			fallbackNodePolyfills: false,
+			typedRoutes: true,
 		},
 		images: {
 			dangerouslyAllowSVG: true,
 			contentDispositionType: 'attachment',
 			contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 		},
+		poweredByHeader: false,
 	}),
 );

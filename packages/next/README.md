@@ -10,6 +10,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -21,6 +22,7 @@
 npm install @discordjs/next
 yarn add @discordjs/next
 pnpm add @discordjs/next
+bun add @discordjs/next
 ```
 
 ## Links

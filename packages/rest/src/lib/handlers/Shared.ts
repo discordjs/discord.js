@@ -1,13 +1,11 @@
-import { setTimeout, clearTimeout } from 'node:timers';
-import { request, type Dispatcher } from 'undici';
-import type { RequestOptions } from '../REST.js';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { RequestInit } from 'undici';
+import type { REST } from '../REST.js';
 import type { DiscordErrorData, OAuthErrorData } from '../errors/DiscordAPIError.js';
 import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
+import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { parseResponse, shouldRetry } from '../utils/utils.js';
-import type { PolyFillAbortSignal } from './IHandler.js';
 
 /**
  * Invalid request limiting is done on a per-IP basis, not a per-token basis.
@@ -24,7 +22,7 @@ let invalidCountResetTime: number | null = null;
  *
  * @internal
  */
-export function incrementInvalidCount(manager: RequestManager) {
+export function incrementInvalidCount(manager: REST) {
 	if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
 		invalidCountResetTime = Date.now() + 1_000 * 60 * 10;
 		invalidCount = 0;
@@ -57,28 +55,26 @@ export function incrementInvalidCount(manager: RequestManager) {
  * @internal
  */
 export async function makeNetworkRequest(
-	manager: RequestManager,
+	manager: REST,
 	routeId: RouteData,
 	url: string,
-	options: RequestOptions,
+	options: RequestInit,
 	requestData: HandlerRequestData,
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout).unref();
+	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
 	if (requestData.signal) {
-		// The type polyfill is required because Node.js's types are incomplete.
-		const signal = requestData.signal as unknown as PolyFillAbortSignal;
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
-		if (signal.aborted) controller.abort();
-		else signal.addEventListener('abort', () => controller.abort());
+		if (requestData.signal.aborted) controller.abort();
+		else requestData.signal.addEventListener('abort', () => controller.abort());
 	}
 
-	let res: Dispatcher.ResponseData;
+	let res: ResponseLike;
 	try {
-		res = await request(url, { ...options, signal: controller.signal });
+		res = await manager.options.makeRequest(url, { ...options, signal: controller.signal });
 	} catch (error: unknown) {
 		if (!(error instanceof Error)) throw error;
 		// Retry the specified number of times if needed
@@ -103,7 +99,7 @@ export async function makeNetworkRequest(
 				data: requestData,
 				retries,
 			},
-			{ ...res },
+			res instanceof Response ? res.clone() : { ...res },
 		);
 	}
 
@@ -122,14 +118,14 @@ export async function makeNetworkRequest(
  * @returns - The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
-	manager: RequestManager,
-	res: Dispatcher.ResponseData,
+	manager: REST,
+	res: ResponseLike,
 	method: string,
 	url: string,
 	requestData: HandlerRequestData,
 	retries: number,
 ) {
-	const status = res.statusCode;
+	const status = res.status;
 	if (status >= 500 && status < 600) {
 		// Retry the specified number of times for possible server side issues
 		if (retries !== manager.options.retries) {
@@ -137,7 +133,7 @@ export async function handleErrors(
 		}
 
 		// We are out of retries, throw an error
-		throw new HTTPError(status, method, url, requestData);
+		throw new HTTPError(status, res.statusText, method, url, requestData);
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {

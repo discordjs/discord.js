@@ -13,16 +13,24 @@
  * @property {'ApplicationCommandPermissionsTokenMissing'} ApplicationCommandPermissionsTokenMissing
 
  * @property {'WSCloseRequested'} WSCloseRequested
+ * <warn>This property is deprecated.</warn>
  * @property {'WSConnectionExists'} WSConnectionExists
+ * <warn>This property is deprecated.</warn>
  * @property {'WSNotOpen'} WSNotOpen
+ * <warn>This property is deprecated.</warn>
  * @property {'ManagerDestroyed'} ManagerDestroyed
+ * <warn>This property is deprecated.</warn>
 
  * @property {'BitFieldInvalid'} BitFieldInvalid
 
  * @property {'ShardingInvalid'} ShardingInvalid
+ * <warn>This property is deprecated.</warn>
  * @property {'ShardingRequired'} ShardingRequired
+ * <warn>This property is deprecated.</warn>
  * @property {'InvalidIntents'} InvalidIntents
+ * <warn>This property is deprecated.</warn>
  * @property {'DisallowedIntents'} DisallowedIntents
+ * <warn>This property is deprecated.</warn>
  * @property {'ShardingNoShards'} ShardingNoShards
  * @property {'ShardingInProcess'} ShardingInProcess
  * @property {'ShardingInvalidEvalBroadcast'} ShardingInvalidEvalBroadcast
@@ -42,20 +50,29 @@
  * @property {'InviteOptionsMissingChannel'} InviteOptionsMissingChannel
 
  * @property {'ButtonLabel'} ButtonLabel
+ * <warn>This property is deprecated.</warn>
  * @property {'ButtonURL'} ButtonURL
+ * <warn>This property is deprecated.</warn>
  * @property {'ButtonCustomId'} ButtonCustomId
+ * <warn>This property is deprecated.</warn>
 
  * @property {'SelectMenuCustomId'} SelectMenuCustomId
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectMenuPlaceholder'} SelectMenuPlaceholder
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionLabel'} SelectOptionLabel
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionValue'} SelectOptionValue
+ * <warn>This property is deprecated.</warn>
  * @property {'SelectOptionDescription'} SelectOptionDescription
+ * <warn>This property is deprecated.</warn>
 
  * @property {'InteractionCollectorError'} InteractionCollectorError
 
  * @property {'FileNotFound'} FileNotFound
 
  * @property {'UserBannerNotFetched'} UserBannerNotFetched
+ * <warn>This property is deprecated.</warn>
  * @property {'UserNoDMChannel'} UserNoDMChannel
 
  * @property {'VoiceNotStageChannel'} VoiceNotStageChannel
@@ -66,13 +83,16 @@
  * @property {'ReqResourceType'} ReqResourceType
 
  * @property {'ImageFormat'} ImageFormat
+ * <warn>This property is deprecated.</warn>
  * @property {'ImageSize'} ImageSize
+ * <warn>This property is deprecated.</warn>
 
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
  * @property {'MessageNonceType'} MessageNonceType
  * @property {'MessageContentType'} MessageContentType
 
  * @property {'SplitMaxLen'} SplitMaxLen
+ * <warn>This property is deprecated.</warn>
 
  * @property {'BanResolveId'} BanResolveId
  * @property {'FetchBanResolveId'} FetchBanResolveId
@@ -106,12 +126,16 @@
 
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
+ * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
+ * <warn>This property is deprecated. Use `MissingManageGuildExpressionsPermission` instead.</warn>
+ *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
 
  * @property {'VanityURL'} VanityURL
+ * <warn>This property is deprecated.</warn>
 
  * @property {'InviteResolveCode'} InviteResolveCode
 
@@ -142,6 +166,7 @@
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
+ * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
 
  * @property {'NotImplemented'} NotImplemented
 
@@ -254,7 +279,9 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
+  'MissingManageGuildExpressionsPermission',
   'MissingManageEmojisAndStickersPermission',
+
   'NotGuildSticker',
 
   'ReactionResolveUser',
@@ -289,6 +316,7 @@ const keys = [
   'ModalSubmitInteractionFieldType',
 
   'InvalidMissingScopes',
+  'InvalidScopesWithPermissions',
 
   'NotImplemented',
 

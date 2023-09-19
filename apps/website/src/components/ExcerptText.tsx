@@ -1,18 +1,18 @@
 import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
 import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
+import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
-import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 
 export interface ExcerptTextProps {
 	/**
 	 * The tokens to render.
 	 */
-	excerpt: Excerpt;
+	readonly excerpt: Excerpt;
 	/**
 	 * The model to resolve item references from.
 	 */
-	model: ApiModel;
+	readonly model: ApiModel;
 }
 
 /**
@@ -20,7 +20,7 @@ export interface ExcerptTextProps {
  */
 export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 	return (
-		<>
+		<span>
 			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
 					const source = token.canonicalReference?.source;
@@ -49,7 +49,7 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						<ItemLink
 							className="text-blurple"
 							itemURI={resolveItemURI(item)}
-							key={`${item.displayName}-${item.containerKey}`}
+							key={`${item.displayName}-${item.containerKey}-${idx}`}
 							packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
 						>
 							{token.text}
@@ -59,6 +59,6 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 
 				return token.text;
 			})}
-		</>
+		</span>
 	);
 }

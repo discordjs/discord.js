@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 /**
  * @external ActivityFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
@@ -134,6 +136,11 @@
  */
 
 /**
+ * @external APIModalInteractionResponseCallbackData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData}
+ */
+
+/**
  * @external APIModalComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIModalComponent}
  */
@@ -146,6 +153,11 @@
 /**
  * @external APIPresence
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPresence}
+ */
+
+/**
+ * @external APIRoleSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIRoleSelectComponent}
  */
 
 /**
@@ -166,6 +178,11 @@
 /**
  * @external APIUser
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUser}
+ */
+
+/**
+ * @external APIUserSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIUserSelectComponent}
  */
 
 /**
@@ -191,6 +208,11 @@
 /**
  * @external ApplicationRoleConnectionMetadataType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationRoleConnectionMetadataType}
+ */
+
+/**
+ * @external AttachmentFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
  */
 
 /**
@@ -294,6 +316,11 @@
  */
 
 /**
+ * @external GuildOnboardingPromptType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingPromptType}
+ */
+
+/**
  * @external GuildPremiumTier
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildPremiumTier}
  */
@@ -321,6 +348,11 @@
 /**
  * @external GuildVerificationLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildVerificationLevel}
+ */
+
+/**
+ * @external GuildWidgetStyle
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildWidgetStyle}
  */
 
 /**
@@ -384,6 +416,16 @@
  */
 
 /**
+ * @external RoleFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
+ */
+
+/**
+ * @external RESTGetAPIGuildThreadsResult
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
+ */
+
+/**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
  */
@@ -411,6 +453,11 @@
 /**
  * @external TeamMemberMembershipState
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberMembershipState}
+ */
+
+/**
+ * @external TeamMemberRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberRole}
  */
 
 /**

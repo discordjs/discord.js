@@ -10,7 +10,7 @@ export interface FunctionBodyProps {
 	overloadDocumentation: React.ReactNode[];
 }
 
-export function FunctionBody({ item }: { item: ApiFunction }) {
+export function FunctionBody({ item }: { readonly item: ApiFunction }) {
 	return (
 		<Documentation>
 			{/* @ts-expect-error async component */}

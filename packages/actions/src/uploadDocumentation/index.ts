@@ -9,7 +9,7 @@ if (!process.env.DATABASE_URL) {
 	setFailed('DATABASE_URL is not set');
 }
 
-const pkg = getInput('package', { required: true });
+const pkg = getInput('package') || '*';
 const version = getInput('version') || 'main';
 
 const sql = connect({
@@ -17,7 +17,7 @@ const sql = connect({
 	url: process.env.DATABASE_URL!,
 });
 
-const globber = await create(`docs/${pkg}/docs/docs.api.json`);
+const globber = await create(`packages/${pkg}/docs/docs.api.json`);
 for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {

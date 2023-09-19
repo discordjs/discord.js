@@ -1,24 +1,34 @@
-FROM node:16-alpine as builder
+FROM node:18-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 RUN apk update
 RUN apk add --no-cache libc6-compat
 
-WORKDIR /usr/proxy
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
 
-COPY manifests .
+COPY . /usr/proxy-container
+WORKDIR /usr/proxy-container
 
-RUN yarn install --immutable
-RUN rm -rf .yarn/cache
+FROM base AS builder
 
-FROM node:16-alpine AS runner
+RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm exec turbo run build --filter='@discordjs/proxy-container...'
 
-WORKDIR /usr/proxy
+FROM builder AS pruned
+
+RUN pnpm --filter='@discordjs/proxy-container' --prod deploy pruned
+
+FROM node:18-alpine AS proxy
+
+WORKDIR /usr/proxy-container
 
 RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 proxy
-USER proxy
+RUN adduser --system --uid 1001 proxy-container
+USER proxy-container
 
-COPY --from=installer /usr/proxy .
-COPY packs .
+COPY --from=pruned /usr/proxy-container/pruned .
 
 CMD ["node", "--enable-source-maps", "dist/index.js"]

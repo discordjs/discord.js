@@ -50,11 +50,16 @@ class GuildScheduledEvent extends Base {
       this.creatorId ??= null;
     }
 
-    /**
-     * The name of the guild scheduled event
-     * @type {string}
-     */
-    this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the guild scheduled event
+       * @type {?string}
+       */
+      this.name = data.name;
+    } else {
+      // Only if partial.
+      this.name ??= null;
+    }
 
     if ('description' in data) {
       /**
@@ -66,37 +71,59 @@ class GuildScheduledEvent extends Base {
       this.description ??= null;
     }
 
-    /**
-     * The timestamp the guild scheduled event will start at
-     * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
-     * @type {?number}
-     */
-    this.scheduledStartTimestamp = data.scheduled_start_time ? Date.parse(data.scheduled_start_time) : null;
+    if ('scheduled_start_time' in data) {
+      /**
+       * The timestamp the guild scheduled event will start at
+       * @type {?number}
+       */
+      this.scheduledStartTimestamp = Date.parse(data.scheduled_start_time);
+    } else {
+      this.scheduledStartTimestamp ??= null;
+    }
 
-    /**
-     * The timestamp the guild scheduled event will end at,
-     * or `null` if the event does not have a scheduled time to end
-     * @type {?number}
-     */
-    this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
+    if ('scheduled_end_time' in data) {
+      /**
+       * The timestamp the guild scheduled event will end at
+       * or `null` if the event does not have a scheduled time to end
+       * @type {?number}
+       */
+      this.scheduledEndTimestamp = data.scheduled_end_time ? Date.parse(data.scheduled_end_time) : null;
+    } else {
+      this.scheduledEndTimestamp ??= null;
+    }
 
-    /**
-     * The privacy level of the guild scheduled event
-     * @type {GuildScheduledEventPrivacyLevel}
-     */
-    this.privacyLevel = data.privacy_level;
+    if ('privacy_level' in data) {
+      /**
+       * The privacy level of the guild scheduled event
+       * @type {?GuildScheduledEventPrivacyLevel}
+       */
+      this.privacyLevel = data.privacy_level;
+    } else {
+      // Only if partial.
+      this.privacyLevel ??= null;
+    }
 
-    /**
-     * The status of the guild scheduled event
-     * @type {GuildScheduledEventStatus}
-     */
-    this.status = data.status;
+    if ('status' in data) {
+      /**
+       * The status of the guild scheduled event
+       * @type {?GuildScheduledEventStatus}
+       */
+      this.status = data.status;
+    } else {
+      // Only if partial.
+      this.status ??= null;
+    }
 
-    /**
-     * The type of hosting entity associated with the scheduled event
-     * @type {GuildScheduledEventEntityType}
-     */
-    this.entityType = data.entity_type;
+    if ('entity_type' in data) {
+      /**
+       * The type of hosting entity associated with the scheduled event
+       * @type {?GuildScheduledEventEntityType}
+       */
+      this.entityType = data.entity_type;
+    } else {
+      // Only if partial.
+      this.entityType ??= null;
+    }
 
     if ('entity_id' in data) {
       /**
@@ -162,6 +189,15 @@ class GuildScheduledEvent extends Base {
     } else {
       this.image ??= null;
     }
+  }
+
+  /**
+   * Whether this guild scheduled event is partial.
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.name === null;
   }
 
   /**
@@ -274,6 +310,15 @@ class GuildScheduledEvent extends Base {
    */
   edit(options) {
     return this.guild.scheduledEvents.edit(this.id, options);
+  }
+
+  /**
+   * Fetches this guild scheduled event.
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
+   * @returns {Promise<GuildScheduledEvent>}
+   */
+  fetch(force = true) {
+    return this.guild.scheduledEvents.fetch({ guildScheduledEvent: this.id, force });
   }
 
   /**

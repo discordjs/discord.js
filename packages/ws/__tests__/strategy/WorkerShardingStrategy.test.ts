@@ -146,9 +146,9 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	mockConstructor.mockRestore();
-	mockSend.mockRestore();
-	mockTerminate.mockRestore();
+	mockConstructor.mockClear();
+	mockSend.mockClear();
+	mockTerminate.mockClear();
 });
 
 test('spawn, connect, send a message, session info, and destroy', async () => {

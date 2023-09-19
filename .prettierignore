@@ -1,0 +1,4 @@
+CODEOWNERS
+CHANGELOG.md
+tsup.config.bundled*
+vitest.config.ts.timestamp*

@@ -1,5 +1,4 @@
 /* eslint-disable jsdoc/check-param-names */
-import { URL } from 'node:url';
 import {
 	ALLOWED_EXTENSIONS,
 	ALLOWED_SIZES,
@@ -9,6 +8,9 @@ import {
 	type ImageSize,
 	type StickerExtension,
 } from './utils/constants.js';
+import { deprecationWarning } from './utils/utils.js';
+
+let deprecationEmittedForEmoji = false;
 
 /**
  * The options used for image URLs
@@ -96,6 +98,21 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a user avatar decoration URL.
+	 *
+	 * @param userId - The id of the user
+	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
+	 * @param options - Optional options for the avatar decoration
+	 */
+	public avatarDecoration(
+		userId: string,
+		userAvatarDecoration: string,
+		options?: Readonly<BaseImageURLOptions>,
+	): string {
+		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
+	}
+
+	/**
 	 * Generates a banner URL, e.g. for a user or a guild.
 	 *
 	 * @param id - The id that has the banner splash
@@ -118,12 +135,15 @@ export class CDN {
 	}
 
 	/**
-	 * Generates the default avatar URL for a discriminator.
+	 * Generates a default avatar URL
 	 *
-	 * @param discriminator - The discriminator modulo 5
+	 * @param index - The default avatar index
+	 * @remarks
+	 * To calculate the index for a user do `(userId >> 22) % 6`,
+	 * or `discriminator % 5` if they're using the legacy username system.
 	 */
-	public defaultAvatar(discriminator: number): string {
-		return this.makeURL(`/embed/avatars/${discriminator}`, { extension: 'png' });
+	public defaultAvatar(index: number): string {
+		return this.makeURL(`/embed/avatars/${index}`, { extension: 'png' });
 	}
 
 	/**
@@ -141,10 +161,38 @@ export class CDN {
 	 * Generates an emoji's URL for an emoji.
 	 *
 	 * @param emojiId - The emoji id
-	 * @param extension - The extension of the emoji
+	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, extension?: ImageExtension): string {
-		return this.makeURL(`/emojis/${emojiId}`, { extension });
+	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
+
+	/**
+	 * Generates an emoji's URL for an emoji.
+	 *
+	 * @param emojiId - The emoji id
+	 * @param extension - The extension of the emoji
+	 * @deprecated This overload is deprecated. Pass an object containing the extension instead.
+	 */
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
+	public emoji(emojiId: string, extension?: ImageExtension): string;
+
+	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
+		let resolvedOptions;
+
+		if (typeof options === 'string') {
+			if (!deprecationEmittedForEmoji) {
+				deprecationWarning(
+					'Passing a string for the second parameter of CDN#emoji() is deprecated. Use an object instead.',
+				);
+
+				deprecationEmittedForEmoji = true;
+			}
+
+			resolvedOptions = { extension: options };
+		} else {
+			resolvedOptions = options;
+		}
+
+		return this.makeURL(`/emojis/${emojiId}`, resolvedOptions);
 	}
 
 	/**

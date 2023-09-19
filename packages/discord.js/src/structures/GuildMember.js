@@ -56,10 +56,12 @@ class GuildMember extends Base {
 
     /**
      * The role ids of the member
+     * @name GuildMember#_roles
      * @type {Snowflake[]}
      * @private
      */
-    this._roles = [];
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
+
     if (data) this._patch(data);
   }
 
@@ -236,12 +238,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * The nickname of this member, or their username if they don't have one
+   * The nickname of this member, or their user display name if they don't have one
    * @type {?string}
    * @readonly
    */
   get displayName() {
-    return this.nickname ?? this.user.username;
+    return this.nickname ?? this.user.displayName;
   }
 
   /**
@@ -423,8 +425,8 @@ class GuildMember extends Base {
 
   /**
    * Times this guild member out.
-   * @param {number|null} timeout The time in milliseconds
-   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
+   * @param {number|null} timeout The duration in milliseconds
+   * for the member's communication to be disabled. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example

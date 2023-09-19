@@ -59,7 +59,6 @@ export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';
-export * from '@discordjs/util';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders#readme | @discordjs/builders} version

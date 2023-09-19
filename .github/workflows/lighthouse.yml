@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Get Vercel preview URL
         id: get_preview_url
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             const comment = context.payload.comment;
@@ -43,7 +43,7 @@ jobs:
       - name: Audit preview URL with Lighthouse
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: lighthouse_audit
-        uses: treosh/lighthouse-ci-action@v9
+        uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
             ${{ steps.get_preview_url.outputs.vercel_preview_url }}
@@ -53,7 +53,7 @@ jobs:
       - name: Format lighthouse score
         if: ${{ steps.get_preview_url.outputs.vercel_preview_url != '' }}
         id: format_lighthouse_score
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           script: |
             const result = ${{ steps.lighthouse_audit.outputs.manifest }}[0].summary
@@ -73,7 +73,7 @@ jobs:
                 ' ',
                 `*Lighthouse ran on [${Object.keys(links)[0]}](${Object.keys(links)[0]})*`
             ].join('\n')
-             core.setOutput("comment", comment);
+            core.setOutput("comment", comment);
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add comment to PR

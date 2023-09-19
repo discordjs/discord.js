@@ -238,8 +238,19 @@ class GuildAuditLogsEntry {
         this.extra = {
           autoModerationRuleName: data.options.auto_moderation_rule_name,
           autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
+
+      case AuditLogEvent.MemberKick:
+      case AuditLogEvent.MemberRoleUpdate: {
+        if (data.integration_type) {
+          this.extra = {
+            integrationType: data.integration_type,
+          };
+        }
+        break;
+      }
 
       default:
         break;

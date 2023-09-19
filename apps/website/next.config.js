@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url';
 import bundleAnalyzer from '@next/bundle-analyzer';
 
 const withBundleAnalyzer = bundleAnalyzer({
@@ -7,26 +6,26 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 export default withBundleAnalyzer({
 	reactStrictMode: true,
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-	outputFileTracing: true,
 	experimental: {
-		appDir: true,
-		outputFileTracingRoot: fileURLToPath(new URL('../../', import.meta.url)),
-		fallbackNodePolyfills: false,
-		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
+		typedRoutes: true,
+		serverComponentsExternalPackages: ['@rushstack/node-core-library', '@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
+	poweredByHeader: false,
 	async redirects() {
 		return [
 			{
 				source: '/static/logo.svg',
 				destination: '/logo.svg',
+				permanent: true,
+			},
+			{
+				source: '/guide/:path*',
+				destination: 'https://next.discordjs.guide/guide/:path*',
 				permanent: true,
 			},
 		];

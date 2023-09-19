@@ -19,6 +19,7 @@ function generateIcon(kind: ApiItemKind) {
 		case ApiItemKind.Interface:
 			return <VscSymbolInterface />;
 		case ApiItemKind.TypeAlias:
+		case ApiItemKind.Variable:
 			return <VscSymbolVariable />;
 		default:
 			return <VscSymbolMethod />;
@@ -29,7 +30,7 @@ export function Header({
 	kind,
 	name,
 	sourceURL,
-}: PropsWithChildren<{ kind: ApiItemKind; name: string; sourceURL?: string | undefined }>) {
+}: PropsWithChildren<{ readonly kind: ApiItemKind; readonly name: string; readonly sourceURL?: string | undefined }>) {
 	return (
 		<div className="flex flex-col">
 			<h2 className="flex flex-row place-items-center justify-between gap-2 break-all text-2xl font-bold">
@@ -38,7 +39,7 @@ export function Header({
 					{name}
 				</span>
 				{sourceURL ? (
-					<a className="text-blurple" href={sourceURL}>
+					<a className="text-blurple" href={sourceURL} rel="external noopener noreferrer" target="_blank">
 						<VscFileCode />
 					</a>
 				) : null}

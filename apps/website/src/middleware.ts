@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { PACKAGES } from './util/constants';
 
 async function fetchLatestVersion(packageName: string) {
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return 'main';
+	}
+
 	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, { cache: 'no-store' });
 	const data: string[] = await res.json();
 
@@ -14,8 +18,8 @@ export default async function middleware(request: NextRequest) {
 		try {
 			const skip = await get<boolean>('SKIP_PACKAGE_VERSION_SELECTION');
 			if (skip) {
-				const latestVersion = await fetchLatestVersion('builders');
-				return NextResponse.redirect(new URL(`/docs/packages/builders/${latestVersion}`, request.url));
+				const latestVersion = await fetchLatestVersion('core');
+				return NextResponse.redirect(new URL(`/docs/packages/core/${latestVersion}`, request.url));
 			}
 		} catch {}
 	}
@@ -26,7 +30,7 @@ export default async function middleware(request: NextRequest) {
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {
 		// eslint-disable-next-line prefer-named-capture-group
-		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'builders';
+		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'core';
 		const latestVersion = await fetchLatestVersion(packageName);
 		return NextResponse.redirect(
 			new URL(request.nextUrl.pathname.replace('stable', latestVersion ?? 'main'), request.url),

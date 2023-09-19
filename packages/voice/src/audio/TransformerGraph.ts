@@ -24,19 +24,27 @@ const FFMPEG_OPUS_ARGUMENTS = [
 
 /**
  * The different types of stream that can exist within the pipeline.
- *
- * @remarks
- * - `Arbitrary` - the type of the stream at this point is unknown.
- * - `Raw` - the stream at this point is s16le PCM.
- * - `OggOpus` - the stream at this point is Opus audio encoded in an Ogg wrapper.
- * - `WebmOpus` - the stream at this point is Opus audio encoded in a WebM wrapper.
- * - `Opus` - the stream at this point is Opus audio, and the stream is in object-mode. This is ready to play.
  */
 export enum StreamType {
+	/**
+	 * The type of the stream at this point is unknown.
+	 */
 	Arbitrary = 'arbitrary',
+	/**
+	 * The stream at this point is Opus audio encoded in an Ogg wrapper.
+	 */
 	OggOpus = 'ogg/opus',
+	/**
+	 * The stream at this point is Opus audio, and the stream is in object-mode. This is ready to play.
+	 */
 	Opus = 'opus',
+	/**
+	 * The stream at this point is s16le PCM.
+	 */
 	Raw = 'raw',
+	/**
+	 * The stream at this point is Opus audio encoded in a WebM wrapper.
+	 */
 	WebmOpus = 'webm/opus',
 }
 
@@ -143,7 +151,7 @@ const FFMPEG_PCM_EDGE: Omit<Edge, 'from'> = {
 	cost: 2,
 	transformer: (input) =>
 		new prism.FFmpeg({
-			args: typeof input === 'string' ? ['-i', input, ...FFMPEG_PCM_ARGUMENTS] : FFMPEG_PCM_ARGUMENTS,
+			args: ['-i', typeof input === 'string' ? input : '-', ...FFMPEG_PCM_ARGUMENTS],
 		}),
 };
 
@@ -174,7 +182,7 @@ if (canEnableFFmpegOptimizations()) {
 		cost: 2,
 		transformer: (input) =>
 			new prism.FFmpeg({
-				args: typeof input === 'string' ? ['-i', input, ...FFMPEG_OPUS_ARGUMENTS] : FFMPEG_OPUS_ARGUMENTS,
+				args: ['-i', typeof input === 'string' ? input : '-', ...FFMPEG_OPUS_ARGUMENTS],
 			}),
 	};
 	getNode(StreamType.Arbitrary).addEdge(FFMPEG_OGG_EDGE);

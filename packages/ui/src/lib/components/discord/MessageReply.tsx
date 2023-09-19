@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
-import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.jsx';
-import { DiscordMessageBaseReply } from './MessageBaseReply.jsx';
+import type { IDiscordMessageAuthorReply } from './MessageAuthorReply.js';
+import { DiscordMessageBaseReply } from './MessageBaseReply.js';
 
 export interface IDiscordMessageReply {
-	author?: IDiscordMessageAuthorReply | undefined;
-	authorNode?: ReactNode | undefined;
-	content: string;
+	readonly author?: IDiscordMessageAuthorReply | undefined;
+	readonly authorNode?: ReactNode | undefined;
+	readonly content: string;
 }
 
 export function DiscordMessageReply({ author, authorNode, content }: IDiscordMessageReply) {

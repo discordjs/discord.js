@@ -5,6 +5,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const { GuildOnboarding } = require('./GuildOnboarding');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -27,7 +28,7 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const { discordSort } = require('../util/Util');
+const { discordSort, getSortableGroupTypes } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -370,6 +371,16 @@ class Guild extends AnonymousGuild {
       this.preferredLocale = data.preferred_locale;
     }
 
+    if ('safety_alerts_channel_id' in data) {
+      /**
+       * The safety alerts channel's id for the guild
+       * @type {?Snowflake}
+       */
+      this.safetyAlertsChannelId = data.safety_alerts_channel_id;
+    } else {
+      this.safetyAlertsChannelId ??= null;
+    }
+
     if (data.channels) {
       this.channels.cache.clear();
       for (const rawChannel of data.channels) {
@@ -509,7 +520,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)}
+   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get widgetChannel() {
@@ -532,6 +543,15 @@ class Guild extends AnonymousGuild {
    */
   get publicUpdatesChannel() {
     return this.client.channels.resolve(this.publicUpdatesChannelId);
+  }
+
+  /**
+   * Safety alerts channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get safetyAlertsChannel() {
+    return this.client.channels.resolve(this.safetyAlertsChannelId);
   }
 
   /**
@@ -673,14 +693,15 @@ class Guild extends AnonymousGuild {
    * Data for the Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)} channel
+   * The widget invite channel
    */
 
   /**
    * The Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake)} channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake)} channel
    * The widget invite channel
    */
 
@@ -701,6 +722,15 @@ class Guild extends AnonymousGuild {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
     };
+  }
+
+  /**
+   * Returns a URL for the PNG widget of the guild.
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  widgetImageURL(style) {
+    return this.client.guilds.widgetImageURL(this.id, style);
   }
 
   /**
@@ -742,6 +772,15 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Fetches the guild onboarding data for this guild.
+   * @returns {Promise<GuildOnboarding>}
+   */
+  async fetchOnboarding() {
+    const data = await this.client.rest.get(Routes.guildOnboarding(this.id));
+    return new GuildOnboarding(this.client, data);
+  }
+
+  /**
    * The data for editing a guild.
    * @typedef {Object} GuildEditOptions
    * @property {string} [name] The name of the guild
@@ -760,6 +799,7 @@ class Guild extends AnonymousGuild {
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {?TextChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {?TextChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {?TextChannelResolvable} [safetyAlertsChannel] The safety alerts channel of the guild
    * @property {?string} [preferredLocale] The preferred locale of the guild
    * @property {GuildFeature[]} [features] The features of the guild
    * @property {?string} [description] The discovery description of the guild
@@ -810,6 +850,7 @@ class Guild extends AnonymousGuild {
     publicUpdatesChannel,
     preferredLocale,
     premiumProgressBarEnabled,
+    safetyAlertsChannel,
     ...options
   }) {
     const data = await this.client.rest.patch(Routes.guild(this.id), {
@@ -832,6 +873,7 @@ class Guild extends AnonymousGuild {
         public_updates_channel_id: publicUpdatesChannel && this.client.channels.resolveId(publicUpdatesChannel),
         preferred_locale: preferredLocale,
         premium_progress_bar_enabled: premiumProgressBarEnabled,
+        safety_alerts_channel_id: safetyAlertsChannel && this.client.channels.resolveId(safetyAlertsChannel),
       },
       reason: options.reason,
     });
@@ -843,7 +885,8 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {TextChannel|NewsChannel|ForumChannel|Snowflake} channel The channel to link for this welcome channel
+   * @property {TextChannel|NewsChannel|ForumChannel|MediaChannel|Snowflake} channel
+   * The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 
@@ -1146,6 +1189,21 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Edits the safety alerts channel of the guild.
+   * @param {?TextChannelResolvable} safetyAlertsChannel The new safety alerts channel
+   * @param {string} [reason] Reason for changing the guild's safety alerts channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild safety alerts channel
+   * guild.setSafetyAlertsChannel(channel)
+   *  .then(updated => console.log(`Updated guild safety alerts channel to ${updated.safetyAlertsChannel.name}`))
+   *  .catch(console.error);
+   */
+  setSafetyAlertsChannel(safetyAlertsChannel, reason) {
+    return this.edit({ safetyAlertsChannel, reason });
+  }
+
+  /**
    * Edits the guild's widget settings.
    * @param {GuildWidgetSettingsData} settings The widget settings for the guild
    * @param {string} [reason] Reason for changing the guild's widget settings
@@ -1304,14 +1362,10 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedChannels(channel) {
-    const category = channel.type === ChannelType.GuildCategory;
-    const channelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
+    const channelIsCategory = channel.type === ChannelType.GuildCategory;
+    const types = getSortableGroupTypes(channel.type);
     return discordSort(
-      this.channels.cache.filter(
-        c =>
-          (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&
-          (category || c.parent === channel.parent),
-      ),
+      this.channels.cache.filter(c => types.includes(c.type) && (channelIsCategory || c.parentId === channel.parentId)),
     );
   }
 }
