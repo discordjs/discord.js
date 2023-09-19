@@ -55,7 +55,6 @@ Webhooks with tokens or other requests that don't include the Authorization head
 ## Links
 
 - [Website][website] ([source][website-source])
-- [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
   Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
@@ -65,8 +64,7 @@ Webhooks with tokens or other requests that don't include the Authorization head
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
+Before creating an issue, please ensure that it hasn't already been reported/suggested.  
 See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
