@@ -74,6 +74,16 @@ class BaseGuildTextChannel extends GuildChannel {
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }
 
+    if ('default_thread_rate_limit_per_user' in data) {
+      /**
+       * The initial rate limit per user (slowmode) to set on newly created threads in a channel.
+       * @type {?number}
+       */
+      this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
+    } else {
+      this.defaultThreadRateLimitPerUser ??= null;
+    }
+
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
