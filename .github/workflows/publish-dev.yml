@@ -54,7 +54,7 @@ jobs:
       - name: Check previous released version
         id: pre-release
         run: |
-          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(jq --raw-output '.version' packages/${{ matrix.folder }}/package.json)\..*-$(git rev-parse --short HEAD)") ]]; \
+          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(git rev-parse --short HEAD)") ]]; \
           then echo '::set-output name=release::false'; \
           else echo '::set-output name=release::true'; fi
 
