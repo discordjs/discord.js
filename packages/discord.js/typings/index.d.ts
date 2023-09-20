@@ -165,6 +165,8 @@ import {
   GuildOnboardingPromptType,
   AttachmentFlags,
   RoleFlags,
+  TeamMemberRole,
+  GuildWidgetStyle,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -355,7 +357,7 @@ export class AutoModerationActionExecution {
   public ruleTriggerType: AutoModerationRuleTriggerType;
   public get user(): User | null;
   public userId: Snowflake;
-  public get channel(): GuildTextBasedChannel | ForumChannel | null;
+  public get channel(): GuildTextBasedChannel | ForumChannel | MediaChannel | null;
   public channelId: Snowflake | null;
   public get member(): GuildMember | null;
   public messageId: Snowflake | null;
@@ -634,6 +636,7 @@ export class BaseGuildEmoji extends Emoji {
 export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, true) {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
+  public defaultThreadRateLimitPerUser: number | null;
   public rateLimitPerUser: number | null;
   public nsfw: boolean;
   public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForNewsChannel>;
@@ -892,6 +895,7 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
   [ChannelType.GuildForum]: ForumChannel;
+  [ChannelType.GuildMedia]: MediaChannel;
 }
 
 export type CategoryChannelType = Exclude<
@@ -903,8 +907,6 @@ export type CategoryChannelType = Exclude<
   | ChannelType.PrivateThread
   | ChannelType.GuildCategory
   | ChannelType.GuildDirectory
-  // TODO: https://github.com/discordjs/discord.js/pull/9662
-  | ChannelType.GuildMedia
 >;
 
 export class CategoryChannel extends GuildChannel {
@@ -977,7 +979,9 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
-  public fetchPremiumStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+  public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+  /** @deprecated Use {@link fetchStickerPacks} instead. */
+  public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -1360,7 +1364,7 @@ export class Guild extends AnonymousGuild {
   public vanityURLUses: number | null;
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | null;
+  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -1383,6 +1387,7 @@ export class Guild extends AnonymousGuild {
   public fetchWelcomeScreen(): Promise<WelcomeScreen>;
   public fetchWidget(): Promise<Widget>;
   public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
+  public widgetImageURL(style?: GuildWidgetStyle): string;
   public leave(): Promise<Guild>;
   public disableInvites(disabled?: boolean): Promise<Guild>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -1667,11 +1672,13 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public get guild(): Guild | null;
   public get url(): string;
   public image: string | null;
+  public get partial(): false;
   public coverImageURL(options?: Readonly<BaseImageURLOptions>): string | null;
   public createInviteURL(options?: GuildScheduledEventInviteURLCreateOptions): Promise<string>;
   public edit<T extends GuildScheduledEventSetStatusArg<S>>(
     options: GuildScheduledEventEditOptions<S, T>,
   ): Promise<GuildScheduledEvent<T>>;
+  public fetch(force?: boolean): Promise<GuildScheduledEvent<S>>;
   public delete(): Promise<GuildScheduledEvent<S>>;
   public setName(name: string, reason?: string): Promise<GuildScheduledEvent<S>>;
   public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
@@ -2387,7 +2394,7 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
+export abstract class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'send',
   'lastMessage',
   'lastPinAt',
@@ -2398,7 +2405,7 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   'createMessageComponentCollector',
   'awaitMessageComponent',
 ]) {
-  public type: ChannelType.GuildForum;
+  public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
   public defaultReactionEmoji: DefaultReactionEmoji | null;
@@ -2408,8 +2415,6 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   public nsfw: boolean;
   public topic: string | null;
   public defaultSortOrder: SortOrderType | null;
-  public defaultForumLayout: ForumLayoutType;
-
   public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
@@ -2421,7 +2426,16 @@ export class ForumChannel extends TextBasedChannelMixin(GuildChannel, true, [
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setDefaultSortOrder(defaultSortOrder: SortOrderType | null, reason?: string): Promise<this>;
+}
+
+export class ForumChannel extends ThreadOnlyChannel {
+  public type: ChannelType.GuildForum;
+  public defaultForumLayout: ForumLayoutType;
   public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;
+}
+
+export class MediaChannel extends ThreadOnlyChannel {
+  public type: ChannelType.GuildMedia;
 }
 
 export class PermissionOverwrites extends Base {
@@ -2991,9 +3005,11 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
+  /** @deprecated Use {@link role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
+  public role: TeamMemberRole;
 
   public toString(): UserMention;
 }
@@ -3016,7 +3032,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
   type: ChannelType.PrivateThread;
 }
 
-export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedChannelMixin(BaseChannel, true, [
+export class ThreadChannel<ThreadOnly extends boolean = boolean> extends TextBasedChannelMixin(BaseChannel, true, [
   'fetchWebhooks',
   'createWebhook',
   'setNSFW',
@@ -3048,7 +3064,7 @@ export class ThreadChannel<Forum extends boolean = boolean> extends TextBasedCha
   public members: ThreadMemberManager;
   public name: string;
   public ownerId: Snowflake | null;
-  public get parent(): If<Forum, ForumChannel, TextChannel | NewsChannel> | null;
+  public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | NewsChannel> | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
@@ -3334,7 +3350,7 @@ export class Webhook extends WebhookMixin() {
   public token: string | null;
   public type: WebhookType;
   public applicationId: Snowflake | null;
-  public get channel(): TextChannel | VoiceChannel | NewsChannel | ForumChannel | StageChannel | null;
+  public get channel(): TextChannel | VoiceChannel | NewsChannel | StageChannel | ForumChannel | MediaChannel | null;
   public isUserCreated(): this is this & {
     type: WebhookType.Incoming;
     applicationId: null;
@@ -3447,6 +3463,7 @@ export class Widget extends Base {
   private constructor(client: Client<true>, data: RawWidgetData);
   private _patch(data: RawWidgetData): void;
   public fetch(): Promise<Widget>;
+  public imageURL(style?: GuildWidgetStyle): string;
   public id: Snowflake;
   public name: string;
   public instantInvite?: string;
@@ -3478,7 +3495,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | ForumChannel | null;
+  public get channel(): TextChannel | NewsChannel | ForumChannel | MediaChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -3557,6 +3574,7 @@ export enum DiscordjsErrorCodes {
   WSConnectionExists = 'WSConnectionExists',
   /** @deprecated */
   WSNotOpen = 'WSNotOpen',
+  /** @deprecated */
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
@@ -3587,20 +3605,29 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
+  /** @deprecated */
   ButtonLabel = 'ButtonLabel',
+  /** @deprecated */
   ButtonURL = 'ButtonURL',
+  /** @deprecated */
   ButtonCustomId = 'ButtonCustomId',
 
+  /** @deprecated */
   SelectMenuCustomId = 'SelectMenuCustomId',
+  /** @deprecated */
   SelectMenuPlaceholder = 'SelectMenuPlaceholder',
+  /** @deprecated */
   SelectOptionLabel = 'SelectOptionLabel',
+  /** @deprecated */
   SelectOptionValue = 'SelectOptionValue',
+  /** @deprecated */
   SelectOptionDescription = 'SelectOptionDescription',
 
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
+  /** @deprecated */
   UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
@@ -3611,13 +3638,16 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
+  /** @deprecated */
   ImageFormat = 'ImageFormat',
+  /** @deprecated */
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
 
+  /** @deprecated */
   SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
@@ -3660,6 +3690,7 @@ export enum DiscordjsErrorCodes {
 
   ReactionResolveUser = 'ReactionResolveUser',
 
+  /** @deprecated */
   VanityURL = 'VanityURL',
 
   InviteResolveCode = 'InviteResolveCode',
@@ -3966,6 +3997,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
+  public widgetImageURL(guild: GuildResolvable, style?: GuildWidgetStyle): string;
 }
 
 export interface AddOrRemoveGuildMemberRoleOptions {
@@ -4175,13 +4207,16 @@ export class StageInstanceManager extends CachedManager<Snowflake, StageInstance
   public delete(channel: StageChannelResolvable): Promise<void>;
 }
 
-export class ThreadManager<Forum extends boolean = boolean> extends CachedManager<
+export class ThreadManager<ThreadOnly extends boolean = boolean> extends CachedManager<
   Snowflake,
-  ThreadChannel<Forum>,
+  ThreadChannel<ThreadOnly>,
   ThreadChannelResolvable
 > {
-  protected constructor(channel: TextChannel | NewsChannel | ForumChannel, iterable?: Iterable<RawThreadChannelData>);
-  public channel: If<Forum, ForumChannel, TextChannel | NewsChannel>;
+  protected constructor(
+    channel: TextChannel | NewsChannel | ForumChannel | MediaChannel,
+    iterable?: Iterable<RawThreadChannelData>,
+  );
+  public channel: If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | NewsChannel>;
   public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<AnyThreadChannel | null>;
   public fetch(
     options: FetchThreadsOptions & { archived: FetchArchivedThreadOptions },
@@ -4338,7 +4373,14 @@ export interface AddGuildMemberOptions {
   fetchWhenExisting?: boolean;
 }
 
-export type AllowedPartial = User | Channel | GuildMember | Message | MessageReaction | ThreadMember;
+export type AllowedPartial =
+  | User
+  | Channel
+  | GuildMember
+  | Message
+  | MessageReaction
+  | GuildScheduledEvent
+  | ThreadMember;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
@@ -4782,6 +4824,7 @@ export interface CategoryCreateChannelOptions {
   position?: number;
   rtcRegion?: string;
   videoQualityMode?: VideoQualityMode;
+  defaultThreadRateLimitPerUser?: number;
   availableTags?: GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
@@ -4815,7 +4858,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: TextChannel | NewsChannel | VoiceChannel | StageChannel | ForumChannel | Snowflake;
+  channel: TextChannel | NewsChannel | VoiceChannel | StageChannel | ForumChannel | MediaChannel | Snowflake;
 }
 
 export interface ClientEvents {
@@ -4893,7 +4936,7 @@ export interface ClientEvents {
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   /** @deprecated Use {@link webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
-  webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel];
+  webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
@@ -4908,12 +4951,12 @@ export interface ClientEvents {
   stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
   guildScheduledEventCreate: [guildScheduledEvent: GuildScheduledEvent];
   guildScheduledEventUpdate: [
-    oldGuildScheduledEvent: GuildScheduledEvent | null,
+    oldGuildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent | null,
     newGuildScheduledEvent: GuildScheduledEvent,
   ];
-  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent];
-  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent, user: User];
-  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent, user: User];
+  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
+  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
 }
 
 export interface ClientFetchInviteOptions {
@@ -5411,6 +5454,8 @@ interface GuildAuditLogsTypes {
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
 
 export interface GuildAuditLogsEntryExtraField {
+  [AuditLogEvent.MemberKick]: { integrationType: string } | null;
+  [AuditLogEvent.MemberRoleUpdate]: { integrationType: string } | null;
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
   [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
   [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
@@ -5576,7 +5621,7 @@ export interface GuildCreateOptions {
 
 export interface GuildWidgetSettings {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | null;
 }
 
 export interface GuildEditOptions {
@@ -5656,7 +5701,7 @@ export interface GuildPruneMembersOptions {
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | Snowflake | null;
+  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | Snowflake | null;
 }
 
 export interface GuildSearchMembersOptions {
@@ -5802,6 +5847,7 @@ export type GuildInvitableChannelResolvable =
   | NewsChannel
   | StageChannel
   | ForumChannel
+  | MediaChannel
   | Snowflake;
 
 export interface InviteCreateOptions {
@@ -6126,6 +6172,9 @@ export interface PartialMessage
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
+export interface PartialGuildScheduledEvent
+  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
+
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
 export interface PartialOverwriteData {
@@ -6317,11 +6366,12 @@ export type Channel =
   | TextChannel
   | AnyThreadChannel
   | VoiceChannel
-  | ForumChannel;
+  | ForumChannel
+  | MediaChannel;
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | ForumChannel
+  PartialGroupDMChannel | ForumChannel | MediaChannel
 >;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
@@ -6410,7 +6460,7 @@ export interface WebhookDeleteOptions {
 export interface WebhookEditOptions {
   name?: string;
   avatar?: BufferResolvable | null;
-  channel?: GuildTextChannelResolvable | VoiceChannel | ForumChannel | StageChannel;
+  channel?: GuildTextChannelResolvable | VoiceChannel | StageChannel | ForumChannel | MediaChannel;
   reason?: string;
 }
 
@@ -6452,7 +6502,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: TextChannel | NewsChannel | ForumChannel | Snowflake;
+  channel: TextChannel | NewsChannel | ForumChannel | MediaChannel | Snowflake;
   emoji?: EmojiIdentifierResolvable;
 }
 

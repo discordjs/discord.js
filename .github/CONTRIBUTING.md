@@ -43,5 +43,8 @@ If you'd like to create another package under the `@discordjs` organization run 
 pnpm run create-package <package-name> [package-description]
 ```
 
-This will create new package directory under `packages/` with the required configuration files. You can
-begin to make changes within the `src/` directory. It may also be required to update the CODEOWNERS file.
+This will create new package directory under `packages/` with the required configuration files. You may begin
+to make changes within the `src/` directory. You may also need to:
+
+- Update workflows that utilize packages
+- Update the CODEOWNERS file

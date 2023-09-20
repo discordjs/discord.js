@@ -147,7 +147,7 @@ class Webhook {
 
   /**
    * The channel the webhook belongs to
-   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel)}
+   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get channel() {
@@ -264,7 +264,7 @@ class Webhook {
    * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
-   * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel} [channel]
+   * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel|MediaChannel} [channel]
    * The new channel for the webhook
    * @property {string} [reason] Reason for editing the webhook
    */

@@ -157,6 +157,7 @@ class GuildChannelManager extends CachedManager {
     rateLimitPerUser,
     rtcRegion,
     videoQualityMode,
+    defaultThreadRateLimitPerUser,
     availableTags,
     defaultReactionEmoji,
     defaultAutoArchiveDuration,
@@ -181,6 +182,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
+        default_thread_rate_limit_per_user: defaultThreadRateLimitPerUser,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_auto_archive_duration: defaultAutoArchiveDuration,
@@ -194,7 +196,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake} channel
+   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake} channel
    * The channel to create the webhook for
    */
 
