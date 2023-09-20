@@ -8,6 +8,7 @@ import {
   APIAuditLog,
   APIAuditLogEntry,
   APIBan,
+  APIChannel,
   APIEmoji,
   APIExtendedInvite,
   APIGuildIntegration,
@@ -75,17 +76,6 @@ import {
   APIGuildScheduledEvent,
   APITextInputComponent,
   APIModalSubmitInteraction,
-  APIGroupDMChannel,
-  APIDMChannel,
-  APIGuildCategoryChannel,
-  APIGuildChannel,
-  ThreadAutoArchiveDuration,
-  GuildTextChannelType,
-  ChannelType,
-  APIChannelBase,
-  APIThreadChannel,
-  APIVoiceChannel,
-  APIGuildForumChannel,
   Permissions,
   GuildDefaultMessageNotifications,
   GuildExplicitContentFilter,
@@ -350,28 +340,3 @@ export interface APIApplicationRoleConnectionMetadata {
   description: string;
   description_localizations?: LocalizationMap;
 }
-
-export interface APITextBasedChannel<T extends ChannelType> extends APIChannelBase<T> {
-  last_message_id?: Snowflake | null;
-  last_pin_timestamp?: string | null;
-  rate_limit_per_user?: number;
-}
-
-export interface APIGuildTextChannel<T extends GuildTextChannelType>
-  extends Omit<APITextBasedChannel<T>, 'name'>,
-    APIGuildChannel<T> {
-  default_auto_archive_duration?: ThreadAutoArchiveDuration;
-  default_thread_rate_limit_per_user?: number;
-  topic?: string | null;
-}
-export type APITextChannel = APIGuildTextChannel<ChannelType.GuildText>;
-export type APINewsChannel = APIGuildTextChannel<ChannelType.GuildNews>;
-export declare type APIChannel =
-  | APIGroupDMChannel
-  | APIDMChannel
-  | APITextChannel
-  | APINewsChannel
-  | APIVoiceChannel
-  | APIGuildCategoryChannel
-  | APIThreadChannel
-  | APIGuildForumChannel;
