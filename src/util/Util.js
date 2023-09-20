@@ -14,6 +14,10 @@ let deprecationEmittedForSplitMessage = false;
 let deprecationEmittedForRemoveMentions = false;
 let deprecationEmittedForResolveAutoArchiveMaxLimit = false;
 
+const TextSortableGroupTypes = ['GUILD_TEXT', 'GUILD_ANNOUCMENT', 'GUILD_FORUM'];
+const VoiceSortableGroupTypes = ['GUILD_VOICE', 'GUILD_STAGE_VOICE'];
+const CategorySortableGroupTypes = ['GUILD_CATEGORY'];
+
 /**
  * Contains various general-purpose utility methods.
  */
@@ -740,6 +744,40 @@ class Util extends null {
       emoji_id: defaultReaction.id,
       emoji_name: defaultReaction.name,
     };
+  }
+
+  /**
+   * Gets an array of the channel types that can be moved in the channel group. For example, a GuildText channel would
+   * return an array containing the types that can be ordered within the text channels (always at the top), and a voice
+   * channel would return an array containing the types that can be ordered within the voice channels (always at the
+   * bottom).
+   * @param {ChannelType} type The type of the channel
+   * @returns {ChannelType[]}
+   * @ignore
+   */
+  static getSortableGroupTypes(type) {
+    switch (type) {
+      case 'GUILD_TEXT':
+      case 'GUILD_ANNOUNCEMENT':
+      case 'GUILD_FORUM':
+        return TextSortableGroupTypes;
+      case 'GUILD_VOICE':
+      case 'GUILD_STAGE_VOICE':
+        return VoiceSortableGroupTypes;
+      case 'GUILD_CATEGORY':
+        return CategorySortableGroupTypes;
+      default:
+        return [type];
+    }
+  }
+
+  /**
+   * Calculates the default avatar index for a given user id.
+   * @param {Snowflake} userId - The user id to calculate the default avatar index for
+   * @returns {number}
+   */
+  static calculateUserDefaultAvatarIndex(userId) {
+    return Number(BigInt(userId) >> 22n) % 6;
   }
 }
 

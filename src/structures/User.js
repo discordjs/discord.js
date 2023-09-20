@@ -5,6 +5,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
 const UserFlags = require('../util/UserFlags');
+const Util = require('../util/Util');
 
 /**
  * Represents a user on Discord.
@@ -41,6 +42,16 @@ class User extends Base {
       this.username ??= null;
     }
 
+    if ('global_name' in data) {
+      /**
+       * The global name of this user
+       * @type {?string}
+       */
+      this.globalName = data.global_name;
+    } else {
+      this.globalName ??= null;
+    }
+
     if ('bot' in data) {
       /**
        * Whether or not the user is a bot
@@ -53,7 +64,8 @@ class User extends Base {
 
     if ('discriminator' in data) {
       /**
-       * A discriminator based on username for the user
+       * The discriminator of this user
+       * <info>`'0'`, or a 4-digit stringified number if they're using the legacy username system</info>
        * @type {?string}
        */
       this.discriminator = data.discriminator;
@@ -110,6 +122,16 @@ class User extends Base {
        */
       this.flags = new UserFlags(data.public_flags);
     }
+
+    if ('avatar_decoration' in data) {
+      /**
+       * The user avatar decoration's hash
+       * @type {?string}
+       */
+      this.avatarDecoration = data.avatar_decoration;
+    } else {
+      this.avatarDecoration ??= null;
+    }
   }
 
   /**
@@ -150,12 +172,23 @@ class User extends Base {
   }
 
   /**
+   * A link to the user's avatar decoration.
+   * @param {StaticImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  avatarDecorationURL({ format, size } = {}) {
+    if (!this.avatarDecoration) return null;
+    return this.client.rest.cdn.AvatarDecoration(this.id, this.avatarDecoration, format, size);
+  }
+
+  /**
    * A link to the user's default avatar
    * @type {string}
    * @readonly
    */
   get defaultAvatarURL() {
-    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
+    const index = this.discriminator === '0' ? Util.calculateUserDefaultAvatarIndex(this.id) : this.discriminator % 5;
+    return this.client.rest.cdn.DefaultAvatar(index);
   }
 
   /**
@@ -193,12 +226,27 @@ class User extends Base {
   }
 
   /**
-   * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
+   * The tag of this user
+   * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
+   * if they're using the legacy username system</info>
    * @type {?string}
    * @readonly
    */
   get tag() {
-    return typeof this.username === 'string' ? `${this.username}#${this.discriminator}` : null;
+    return typeof this.username === 'string'
+      ? this.discriminator === '0'
+        ? this.username
+        : `${this.username}#${this.discriminator}`
+      : null;
+  }
+
+  /**
+   * The global name of this user, or their username if they don't have one
+   * @type {?string}
+   * @readonly
+   */
+  get displayName() {
+    return this.globalName ?? this.username;
   }
 
   /**
@@ -240,6 +288,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
+      this.globalName === user.globalName &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
@@ -259,6 +308,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
+      this.globalName === user.global_name &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.public_flags &&
       ('banner' in user ? this.banner === user.banner : true) &&
