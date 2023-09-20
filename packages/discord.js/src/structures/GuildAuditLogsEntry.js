@@ -150,7 +150,8 @@ class GuildAuditLogsEntry {
      * Specific property changes
      * @type {AuditLogChange[]}
      */
-    this.changes = data.changes?.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) ?? [];
+    this.changes =
+      data.changes?.map(change => ({ key: change.key, old: change.old_value, new: change.new_value })) ?? [];
 
     /**
      * The entry's id
@@ -297,11 +298,10 @@ class GuildAuditLogsEntry {
           ),
         );
     } else if (targetType === Targets.Invite) {
-      let change = this.changes.find(c => c.key === 'code');
-      change = change.new ?? change.old;
+      const inviteChange = this.changes.find(({ key }) => key === 'code');
 
       this.target =
-        guild.invites.cache.get(change) ??
+        guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ??
         new Invite(
           guild.client,
           this.changes.reduce(
