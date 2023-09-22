@@ -151,7 +151,7 @@ class BaseChannel extends Base {
    * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
    * @returns {boolean}
    */
-  isThreadBased() {
+  isThreadOnly() {
     return 'availableTags' in this;
   }
 
