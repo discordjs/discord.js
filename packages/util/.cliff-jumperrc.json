@@ -1,5 +1,6 @@
 {
 	"name": "util",
 	"org": "discordjs",
-	"packagePath": "packages/util"
+	"packagePath": "packages/util",
+	"identifierBase": false
 }

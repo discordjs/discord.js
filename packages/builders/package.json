@@ -73,7 +73,7 @@
 		"tslib": "^2.6.2"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.1.1",
+		"@favware/cliff-jumper": "^2.2.0",
 		"@microsoft/api-extractor": "^7.36.4",
 		"@types/node": "16.18.44",
 		"@vitest/coverage-v8": "^0.34.3",

@@ -1,5 +1,6 @@
 {
 	"name": "next",
 	"org": "discordjs",
-	"packagePath": "packages/next"
+	"packagePath": "packages/next",
+	"identifierBase": false
 }
