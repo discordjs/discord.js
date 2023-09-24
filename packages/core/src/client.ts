@@ -1,4 +1,3 @@
-import { on } from 'node:events';
 import { setTimeout, clearTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { calculateShardId } from '@discordjs/util';
@@ -236,9 +235,13 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		});
 
 		try {
-			for await (const payload of on(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal })) {
-				const [{ data }] = payload as MappedEvents[GatewayDispatchEvents.GuildMembersChunk];
+			const iterator = AsyncEventEmitter.on<
+				typeof this,
+				ManagerShardEventsMap,
+				GatewayDispatchEvents.GuildMembersChunk
+			>(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal });
 
+			for await (const [{ data }] of iterator) {
 				if (data.nonce !== nonce) continue;
 
 				clearTimeout(timer);
