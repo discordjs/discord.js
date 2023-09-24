@@ -305,7 +305,9 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.Invite) {
       const inviteChange = this.changes.find(({ key }) => key === 'code');
 
-      this.target = guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ?? new Invite(guild.client, changesReduce(this.changes, { guild }));
+      this.target =
+        guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ??
+        new Invite(guild.client, changesReduce(this.changes, { guild }));
     } else if (targetType === Targets.Message) {
       // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =
