@@ -61,6 +61,7 @@ jobs:
       - name: Install dependencies
         if: steps.pre-release.outputs.release == 'true'
         uses: ./packages/actions/src/pnpmCache
+
       - name: Build dependencies
         if: steps.pre-release.outputs.release == 'true'
         run: pnpm run build
