@@ -326,9 +326,9 @@ class WebSocketManager extends EventEmitter {
   async destroy() {
     if (this.destroyed) return;
     // TODO: Make a util for getting a stack
-    this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
+    this.debug(Object.assign(new Error(), { name: 'Manager was destroyed:' }).stack);
     this.destroyed = true;
-    await this._ws?.destroy({ code: CloseCodes.Normal });
+    await this._ws?.destroy({ code: CloseCodes.Normal, reason: 'Manager was destroyed' });
   }
 
   /**
