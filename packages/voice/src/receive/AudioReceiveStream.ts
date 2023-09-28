@@ -69,7 +69,7 @@ export class AudioReceiveStream extends Readable {
 			buffer &&
 			(this.end.behavior === EndBehaviorType.AfterInactivity ||
 				(this.end.behavior === EndBehaviorType.AfterSilence &&
-					(buffer.compare(SILENCE_FRAME) !== 0 || typeof this.endTimeout === 'undefined')))
+					(buffer.compare(SILENCE_FRAME) !== 0 || this.endTimeout === undefined)))
 		) {
 			this.renewEndTimeout(this.end);
 		}

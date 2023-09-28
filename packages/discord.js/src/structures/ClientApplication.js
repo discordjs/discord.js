@@ -1,6 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
+const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
@@ -14,7 +15,7 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  */
 
 /**
- * Represents a Client OAuth2 Application.
+ * Represents a client application.
  * @extends {Application}
  */
 class ClientApplication extends Application {
@@ -68,6 +69,26 @@ class ClientApplication extends Application {
       this.flags = new ApplicationFlagsBitField(data.flags).freeze();
     }
 
+    if ('approximate_guild_count' in data) {
+      /**
+       * An approximate amount of guilds this application is in.
+       * @type {?number}
+       */
+      this.approximateGuildCount = data.approximate_guild_count;
+    } else {
+      this.approximateGuildCount ??= null;
+    }
+
+    if ('guild_id' in data) {
+      /**
+       * The id of the guild associated with this application.
+       * @type {?Snowflake}
+       */
+      this.guildId = data.guild_id;
+    } else {
+      this.guildId ??= null;
+    }
+
     if ('cover_image' in data) {
       /**
        * The hash of the application's cover image
@@ -108,6 +129,16 @@ class ClientApplication extends Application {
       this.botPublic ??= null;
     }
 
+    if ('role_connections_verification_url' in data) {
+      /**
+       * This application's role connection verification entry point URL
+       * @type {?string}
+       */
+      this.roleConnectionsVerificationURL = data.role_connections_verification_url;
+    } else {
+      this.roleConnectionsVerificationURL ??= null;
+    }
+
     /**
      * The owner of this OAuth application
      * @type {?(User|Team)}
@@ -117,6 +148,15 @@ class ClientApplication extends Application {
       : data.owner
       ? this.client.users._add(data.owner)
       : this.owner ?? null;
+  }
+
+  /**
+   * The guild associated with this application.
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 
   /**
@@ -133,9 +173,49 @@ class ClientApplication extends Application {
    * @returns {Promise<ClientApplication>}
    */
   async fetch() {
-    const app = await this.client.rest.get(Routes.oauth2CurrentApplication());
-    this._patch(app);
+    const data = await this.client.rest.get(Routes.currentApplication());
+    this._patch(data);
     return this;
+  }
+
+  /**
+   * Gets this application's role connection metadata records
+   * @returns {Promise<ApplicationRoleConnectionMetadata[]>}
+   */
+  async fetchRoleConnectionMetadataRecords() {
+    const metadata = await this.client.rest.get(Routes.applicationRoleConnectionMetadata(this.client.user.id));
+    return metadata.map(data => new ApplicationRoleConnectionMetadata(data));
+  }
+
+  /**
+   * Data for creating or editing an application role connection metadata.
+   * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
+   * @property {string} name The name of the metadata field
+   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {string} description The description of the metadata field
+   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {string} key The dictionary key of the metadata field
+   * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
+   */
+
+  /**
+   * Updates this application's role connection metadata records
+   * @param {ApplicationRoleConnectionMetadataEditOptions[]} records The new role connection metadata records
+   * @returns {Promise<ApplicationRoleConnectionMetadata[]>}
+   */
+  async editRoleConnectionMetadataRecords(records) {
+    const newRecords = await this.client.rest.put(Routes.applicationRoleConnectionMetadata(this.client.user.id), {
+      body: records.map(record => ({
+        type: record.type,
+        key: record.key,
+        name: record.name,
+        name_localizations: record.nameLocalizations,
+        description: record.description,
+        description_localizations: record.descriptionLocalizations,
+      })),
+    });
+
+    return newRecords.map(data => new ApplicationRoleConnectionMetadata(data));
   }
 }
 

@@ -8,15 +8,15 @@ import {
 } from '../Assertions.js';
 
 /**
- * Represents an option within a string select menu component
+ * A builder that creates API-compatible JSON data for string select menu options.
  */
 export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
 	/**
-	 * Creates a new string select menu option from API data
+	 * Creates a new string select menu option from API data.
 	 *
 	 * @param data - The API data to create this string select menu option with
 	 * @example
-	 * Creating a string select menu option from an API data object
+	 * Creating a string select menu option from an API data object:
 	 * ```ts
 	 * const selectMenuOption = new SelectMenuOptionBuilder({
 	 * 	label: 'catchy label',
@@ -24,21 +24,21 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * });
 	 * ```
 	 * @example
-	 * Creating a string select menu option using setters and API data
+	 * Creating a string select menu option using setters and API data:
 	 * ```ts
 	 * const selectMenuOption = new SelectMenuOptionBuilder({
 	 * 	default: true,
 	 * 	value: '1',
 	 * })
-	 * 	.setLabel('woah')
+	 * 	.setLabel('woah');
 	 * ```
 	 */
 	public constructor(public data: Partial<APISelectMenuOption> = {}) {}
 
 	/**
-	 * Sets the label of this option
+	 * Sets the label for this option.
 	 *
-	 * @param label - The label to show on this option
+	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
 		this.data.label = labelValueDescriptionValidator.parse(label);
@@ -46,9 +46,9 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	}
 
 	/**
-	 * Sets the value of this option
+	 * Sets the value for this option.
 	 *
-	 * @param value - The value of this option
+	 * @param value - The value to use
 	 */
 	public setValue(value: string) {
 		this.data.value = labelValueDescriptionValidator.parse(value);
@@ -56,9 +56,9 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	}
 
 	/**
-	 * Sets the description of this option
+	 * Sets the description for this option.
 	 *
-	 * @param description - The description of this option
+	 * @param description - The description to use
 	 */
 	public setDescription(description: string) {
 		this.data.description = labelValueDescriptionValidator.parse(description);
@@ -66,7 +66,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	}
 
 	/**
-	 * Sets whether this option is selected by default
+	 * Sets whether this option is selected by default.
 	 *
 	 * @param isDefault - Whether this option is selected by default
 	 */
@@ -76,9 +76,9 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	}
 
 	/**
-	 * Sets the emoji to display on this option
+	 * Sets the emoji to display for this option.
 	 *
-	 * @param emoji - The emoji to display on this option
+	 * @param emoji - The emoji to use
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
 		this.data.emoji = emojiValidator.parse(emoji);
@@ -86,7 +86,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	}
 
 	/**
-	 * {@inheritDoc ComponentBuilder.toJSON}
+	 * {@inheritDoc BaseSelectMenuBuilder.toJSON}
 	 */
 	public toJSON(): APISelectMenuOption {
 		validateRequiredSelectMenuOptionParameters(this.data.label, this.data.value);

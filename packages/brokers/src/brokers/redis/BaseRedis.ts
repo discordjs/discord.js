@@ -32,7 +32,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	implements IBaseBroker<TEvents>
 {
 	/**
-	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd }
+	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd}
 	 */
 	public static readonly STREAM_DATA_KEY = 'data';
 
@@ -71,7 +71,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	 */
 	public async subscribe(group: string, events: (keyof TEvents)[]): Promise<void> {
 		await Promise.all(
-			// eslint-disable-next-line consistent-return
+			// @ts-expect-error: Intended
 			events.map(async (event) => {
 				this.subscribedEvents.add(event as string);
 				try {
@@ -113,7 +113,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		}
 
 		this.listening = true;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+
 		while (true) {
 			try {
 				const data = await this.streamReadClient.xreadgroupBuffer(

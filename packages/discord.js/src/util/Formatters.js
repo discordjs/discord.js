@@ -27,8 +27,8 @@ const {
  * @param {string} commandName The name of the application command
  * @param {string|Snowflake} subcommandGroupOrSubOrId
  * The subcommand group name, subcommand name, or application command id
- * @param {?(string|Snowflake)} [subcommandNameOrId] The subcommand name or application command id
- * @param {?string} [commandId] The id of the application command
+ * @param {string|Snowflake} [subcommandNameOrId] The subcommand name or application command id
+ * @param {string} [commandId] The id of the application command
  * @returns {string}
  */
 

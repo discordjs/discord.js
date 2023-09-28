@@ -14,16 +14,19 @@ import {
 	textInputStyleValidator,
 } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for text inputs.
+ */
 export class TextInputBuilder
 	extends ComponentBuilder<APITextInputComponent>
 	implements Equatable<APITextInputComponent | JSONEncodable<APITextInputComponent>>
 {
 	/**
-	 * Creates a new text input from API data
+	 * Creates a new text input from API data.
 	 *
 	 * @param data - The API data to create this text input with
 	 * @example
-	 * Creating a select menu option from an API data object
+	 * Creating a select menu option from an API data object:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
 	 * 	custom_id: 'a cool select menu',
@@ -32,7 +35,7 @@ export class TextInputBuilder
 	 * });
 	 * ```
 	 * @example
-	 * Creating a select menu option using setters and API data
+	 * Creating a select menu option using setters and API data:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
 	 * 	label: 'Type something else',
@@ -46,9 +49,9 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the custom id for this text input
+	 * Sets the custom id for this text input.
 	 *
-	 * @param customId - The custom id of this text input
+	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customIdValidator.parse(customId);
@@ -56,9 +59,9 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the label for this text input
+	 * Sets the label for this text input.
 	 *
-	 * @param label - The label for this text input
+	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
 		this.data.label = labelValidator.parse(label);
@@ -66,9 +69,9 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the style for this text input
+	 * Sets the style for this text input.
 	 *
-	 * @param style - The style for this text input
+	 * @param style - The style to use
 	 */
 	public setStyle(style: TextInputStyle) {
 		this.data.style = textInputStyleValidator.parse(style);
@@ -76,7 +79,7 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the minimum length of text for this text input
+	 * Sets the minimum length of text for this text input.
 	 *
 	 * @param minLength - The minimum length of text for this text input
 	 */
@@ -86,7 +89,7 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the maximum length of text for this text input
+	 * Sets the maximum length of text for this text input.
 	 *
 	 * @param maxLength - The maximum length of text for this text input
 	 */
@@ -96,9 +99,9 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the placeholder of this text input
+	 * Sets the placeholder for this text input.
 	 *
-	 * @param placeholder - The placeholder of this text input
+	 * @param placeholder - The placeholder to use
 	 */
 	public setPlaceholder(placeholder: string) {
 		this.data.placeholder = placeholderValidator.parse(placeholder);
@@ -106,9 +109,9 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets the value of this text input
+	 * Sets the value for this text input.
 	 *
-	 * @param value - The value for this text input
+	 * @param value - The value to use
 	 */
 	public setValue(value: string) {
 		this.data.value = valueValidator.parse(value);
@@ -116,7 +119,7 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * Sets whether this text input is required
+	 * Sets whether this text input is required.
 	 *
 	 * @param required - Whether this text input is required
 	 */

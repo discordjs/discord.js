@@ -1,8 +1,10 @@
-import type { REST } from '@discordjs/rest';
+/* eslint-disable jsdoc/check-param-names */
+
+import type { RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
 	type RESTGetAPIStickerResult,
-	type RESTGetNitroStickerPacksResult,
+	type RESTGetStickerPacksResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -10,18 +12,34 @@ export class StickersAPI {
 	public constructor(private readonly rest: REST) {}
 
 	/**
-	 * Fetches all of the nitro sticker packs
+	 * Fetches all of the sticker packs
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#list-sticker-packs}
+	 * @param options - The options for fetching the sticker packs
 	 */
-	public async getNitroStickers() {
-		return this.rest.get(Routes.nitroStickerPacks()) as Promise<RESTGetNitroStickerPacksResult>;
+	public async getStickers({ signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.stickerPacks(), { signal }) as Promise<RESTGetStickerPacksResult>;
+	}
+
+	/**
+	 * Fetches all of the sticker packs
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#list-sticker-packs}
+	 * @param options - The options for fetching the sticker packs
+	 * @deprecated Use {@link getStickers} instead.
+	 */
+	public async getNitroStickers(options: Pick<RequestData, 'signal'> = {}) {
+		return this.getStickers(options);
 	}
 
 	/**
 	 * Fetches a sticker
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sticker#get-sticker}
 	 * @param stickerId - The id of the sticker
+	 * @param options - The options for fetching the sticker
 	 */
-	public async get(stickerId: Snowflake) {
-		return this.rest.get(Routes.sticker(stickerId)) as Promise<RESTGetAPIStickerResult>;
+	public async get(stickerId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.sticker(stickerId), { signal }) as Promise<RESTGetAPIStickerResult>;
 	}
 }

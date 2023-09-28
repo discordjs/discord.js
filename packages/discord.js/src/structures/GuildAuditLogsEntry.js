@@ -84,6 +84,20 @@ const Targets = {
  */
 
 /**
+ * Contructs an object of known properties for a structure from an array of changes.
+ * @param {AuditLogChange[]} changes The array of changes
+ * @param {Object} [initialData={}] The initial data passed to the function
+ * @returns {Object}
+ * @ignore
+ */
+function changesReduce(changes, initialData = {}) {
+  return changes.reduce((accumulator, change) => {
+    accumulator[change.key] = change.new ?? change.old;
+    return accumulator;
+  }, initialData);
+}
+
+/**
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
@@ -94,7 +108,7 @@ class GuildAuditLogsEntry {
    */
   static Targets = Targets;
 
-  constructor(logs, guild, data) {
+  constructor(guild, data, logs) {
     /**
      * The target type of this entry
      * @type {AuditLogTargetType}
@@ -109,7 +123,7 @@ class GuildAuditLogsEntry {
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
-     * The type of action that occured.
+     * The type of action that occurred.
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
@@ -121,13 +135,19 @@ class GuildAuditLogsEntry {
     this.reason = data.reason ?? null;
 
     /**
+     * The id of the user that executed this entry
+     * @type {?Snowflake}
+     */
+    this.executorId = data.user_id;
+
+    /**
      * The user that executed this entry
      * @type {?User}
      */
     this.executor = data.user_id
       ? guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.user_id })
-        : guild.client.users.cache.get(data.user_id)
+        : guild.client.users.cache.get(data.user_id) ?? null
       : null;
 
     /**
@@ -232,12 +252,29 @@ class GuildAuditLogsEntry {
         this.extra = {
           autoModerationRuleName: data.options.auto_moderation_rule_name,
           autoModerationRuleTriggerType: data.options.auto_moderation_rule_trigger_type,
+          channel: guild.client.channels.cache.get(data.options?.channel_id) ?? { id: data.options?.channel_id },
         };
         break;
+
+      case AuditLogEvent.MemberKick:
+      case AuditLogEvent.MemberRoleUpdate: {
+        if (data.integration_type) {
+          this.extra = {
+            integrationType: data.integration_type,
+          };
+        }
+        break;
+      }
 
       default:
         break;
     }
+
+    /**
+     * The id of the target of this entry
+     * @type {?Snowflake}
+     */
+    this.targetId = data.target_id;
 
     /**
      * The target of this entry
@@ -245,137 +282,69 @@ class GuildAuditLogsEntry {
      */
     this.target = null;
     if (targetType === Targets.Unknown) {
-      this.target = this.changes.reduce((o, c) => {
-        o[c.key] = c.new ?? c.old;
-        return o;
-      }, {});
+      this.target = changesReduce(this.changes);
       this.target.id = data.target_id;
       // MemberDisconnect and similar types do not provide a target_id.
     } else if (targetType === Targets.User && data.target_id) {
       this.target = guild.client.options.partials.includes(Partials.User)
         ? guild.client.users._add({ id: data.target_id })
-        : guild.client.users.cache.get(data.target_id);
+        : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Guild) {
       this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.Webhook) {
       this.target =
-        logs.webhooks.get(data.target_id) ??
+        logs?.webhooks.get(data.target_id) ??
         new Webhook(
           guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            {
-              id: data.target_id,
-              guild_id: guild.id,
-            },
-          ),
+          changesReduce(this.changes, {
+            id: data.target_id,
+            guild_id: guild.id,
+          }),
         );
     } else if (targetType === Targets.Invite) {
       let change = this.changes.find(c => c.key === 'code');
       change = change.new ?? change.old;
 
-      this.target =
-        guild.invites.cache.get(change) ??
-        new Invite(
-          guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            { guild },
-          ),
-        );
+      this.target = guild.invites.cache.get(change) ?? new Invite(guild.client, changesReduce(this.changes, { guild }));
     } else if (targetType === Targets.Message) {
       // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =
         data.action_type === AuditLogEvent.MessageBulkDelete
           ? guild.channels.cache.get(data.target_id) ?? { id: data.target_id }
-          : guild.client.users.cache.get(data.target_id);
+          : guild.client.users.cache.get(data.target_id) ?? null;
     } else if (targetType === Targets.Integration) {
       this.target =
-        logs.integrations.get(data.target_id) ??
-        new Integration(
-          guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            { id: data.target_id },
-          ),
-          guild,
-        );
+        logs?.integrations.get(data.target_id) ??
+        new Integration(guild.client, changesReduce(this.changes, { id: data.target_id }), guild);
     } else if (targetType === Targets.Channel || targetType === Targets.Thread) {
-      this.target =
-        guild.channels.cache.get(data.target_id) ??
-        this.changes.reduce(
-          (o, c) => {
-            o[c.key] = c.new ?? c.old;
-            return o;
-          },
-          { id: data.target_id },
-        );
+      this.target = guild.channels.cache.get(data.target_id) ?? changesReduce(this.changes, { id: data.target_id });
     } else if (targetType === Targets.StageInstance) {
       this.target =
         guild.stageInstances.cache.get(data.target_id) ??
         new StageInstance(
           guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            {
-              id: data.target_id,
-              channel_id: data.options?.channel_id,
-              guild_id: guild.id,
-            },
-          ),
+          changesReduce(this.changes, {
+            id: data.target_id,
+            channel_id: data.options?.channel_id,
+            guild_id: guild.id,
+          }),
         );
     } else if (targetType === Targets.Sticker) {
       this.target =
         guild.stickers.cache.get(data.target_id) ??
-        new Sticker(
-          guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            { id: data.target_id },
-          ),
-        );
+        new Sticker(guild.client, changesReduce(this.changes, { id: data.target_id }));
     } else if (targetType === Targets.GuildScheduledEvent) {
       this.target =
         guild.scheduledEvents.cache.get(data.target_id) ??
-        new GuildScheduledEvent(
-          guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            { id: data.target_id, guild_id: guild.id },
-          ),
-        );
+        new GuildScheduledEvent(guild.client, changesReduce(this.changes, { id: data.target_id, guild_id: guild.id }));
     } else if (targetType === Targets.ApplicationCommand) {
-      this.target = logs.applicationCommands.get(data.target_id) ?? { id: data.target_id };
+      this.target = logs?.applicationCommands.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.AutoModeration) {
       this.target =
         guild.autoModerationRules.cache.get(data.target_id) ??
         new AutoModerationRule(
           guild.client,
-          this.changes.reduce(
-            (o, c) => {
-              o[c.key] = c.new ?? c.old;
-              return o;
-            },
-            { id: data.target_id, guild_id: guild.id },
-          ),
+          changesReduce(this.changes, { id: data.target_id, guild_id: guild.id }),
           guild,
         );
     } else if (data.target_id) {

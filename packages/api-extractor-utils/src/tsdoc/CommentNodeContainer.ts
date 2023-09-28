@@ -1,7 +1,7 @@
 import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
 import type { DocNodeContainer } from '@microsoft/tsdoc';
 import { type AnyDocNodeJSON, type DocNodeJSON, node } from './CommentNode.js';
-import { createCommentNode } from '.';
+import { createCommentNode } from './index.js';
 
 export interface DocNodeContainerJSON extends DocNodeJSON {
 	nodes: AnyDocNodeJSON[];

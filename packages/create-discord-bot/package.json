@@ -1,0 +1,80 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "create-discord-bot",
+	"version": "0.2.1",
+	"description": "A simple way to create a startup Discord bot.",
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
+		"release": "cliff-jumper"
+	},
+	"type": "module",
+	"bin": "./dist/index.js",
+	"directories": {
+		"bin": "bin",
+		"lib": "src"
+	},
+	"files": [
+		"dist",
+		"template"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Jiralite <jiralite@live.co.uk>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"discord-api",
+		"discord.js",
+		"create-bot",
+		"init-bot",
+		"init-discord",
+		"boilerplate"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git",
+		"directory": "packages/create-discord-bot"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"commander": "^11.0.0",
+		"fast-glob": "^3.3.1",
+		"picocolors": "^1.0.0",
+		"prompts": "^2.4.2",
+		"validate-npm-package-name": "^5.0.0"
+	},
+	"devDependencies": {
+		"@favware/cliff-jumper": "^2.1.1",
+		"@microsoft/api-extractor": "^7.36.4",
+		"@types/node": "16.18.44",
+		"@types/prompts": "^2.4.4",
+		"@types/validate-npm-package-name": "^4.0.0",
+		"@vitest/coverage-v8": "^0.34.3",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.48.0",
+		"eslint-config-neon": "^0.1.56",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^3.0.2",
+		"terser": "^5.19.2",
+		"tsup": "^7.2.0",
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.3"
+	},
+	"engines": {
+		"node": ">=18.17.1"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

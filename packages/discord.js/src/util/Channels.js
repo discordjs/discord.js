@@ -13,6 +13,7 @@ const getVoiceChannel = lazy(() => require('../structures/VoiceChannel'));
 const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel'));
 const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel'));
 const getForumChannel = lazy(() => require('../structures/ForumChannel'));
+const getMediaChannel = lazy(() => require('../structures/MediaChannel'));
 
 /**
  * Creates a discord.js channel from data received from the API.
@@ -20,10 +21,10 @@ const getForumChannel = lazy(() => require('../structures/ForumChannel'));
  * @param {APIChannel} data The data of the channel to create
  * @param {Guild} [guild] The guild where this channel belongs
  * @param {Object} [extras] Extra information to supply for creating this channel
- * @returns {Channel} Any kind of channel.
+ * @returns {BaseChannel} Any kind of channel.
  * @ignore
  */
-function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction } = {}) {
+function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
   let channel;
   if (!data.guild_id && !guild) {
     if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
@@ -59,7 +60,7 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
         case ChannelType.AnnouncementThread:
         case ChannelType.PublicThread:
         case ChannelType.PrivateThread: {
-          channel = new (getThreadChannel())(guild, data, client, fromInteraction);
+          channel = new (getThreadChannel())(guild, data, client);
           if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
           break;
         }
@@ -68,6 +69,9 @@ function createChannel(client, data, guild, { allowUnknownGuild, fromInteraction
           break;
         case ChannelType.GuildForum:
           channel = new (getForumChannel())(guild, data, client);
+          break;
+        case ChannelType.GuildMedia:
+          channel = new (getMediaChannel())(guild, data, client);
           break;
       }
       if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);

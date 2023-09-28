@@ -1,32 +1,13 @@
-'use client';
+import { Code } from 'bright';
 
-import { PrismAsyncLight } from 'react-syntax-highlighter';
-import { vscDarkPlus, prism } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-
-export function SyntaxHighlighter({ language = 'typescript', code }: { code: string; language?: string }) {
+export function SyntaxHighlighter(props: typeof Code) {
 	return (
 		<>
 			<div data-theme="dark">
-				<PrismAsyncLight
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					language={language}
-					style={vscDarkPlus}
-					wrapLines
-					wrapLongLines
-				>
-					{code}
-				</PrismAsyncLight>
+				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="github-dark-dimmed" />
 			</div>
-			<div data-theme="light">
-				<PrismAsyncLight
-					codeTagProps={{ style: { fontFamily: 'JetBrains Mono' } }}
-					language={language}
-					style={prism}
-					wrapLines
-					wrapLongLines
-				>
-					{code}
-				</PrismAsyncLight>
+			<div className="[&_pre]:border [&_pre]:border-gray-300 [&_pre]:rounded-md" data-theme="light">
+				<Code codeClassName="font-mono" lang={props.lang ?? 'typescript'} {...props} theme="min-light" />
 			</div>
 		</>
 	);

@@ -1,6 +1,7 @@
 'use strict';
 
-const { ChannelSelectMenuBuilder: BuildersChannelSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const { ChannelSelectMenuBuilder: BuildersChannelSelectMenu } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
 /**
@@ -13,15 +14,12 @@ class ChannelSelectMenuBuilder extends BuildersChannelSelectMenu {
   }
 
   /**
-   * Creates a new select menu builder from json data
-   * @param {JSONEncodable<APISelectMenuComponent> | APISelectMenuComponent} other The other data
+   * Creates a new select menu builder from JSON data
+   * @param {ChannelSelectMenuBuilder|ChannelSelectMenuComponent|APIChannelSelectComponent} other The other data
    * @returns {ChannelSelectMenuBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 
@@ -29,5 +27,5 @@ module.exports = ChannelSelectMenuBuilder;
 
 /**
  * @external BuildersChannelSelectMenu
- * @see {@link https://discord.js.org/#/docs/builders/main/class/ChannelSelectMenuBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ChannelSelectMenuBuilder:Class}
  */

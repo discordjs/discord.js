@@ -44,22 +44,24 @@ class ClientUser extends User {
 
   /**
    * Data used to edit the logged in client
-   * @typedef {Object} ClientUserEditData
+   * @typedef {Object} ClientUserEditOptions
    * @property {string} [username] The new username
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
    */
 
   /**
    * Edits the logged in client.
-   * @param {ClientUserEditData} data The new data
+   * @param {ClientUserEditOptions} options The options to provide
    * @returns {Promise<ClientUser>}
    */
-  async edit(data) {
-    if (typeof data.avatar !== 'undefined') data.avatar = await DataResolver.resolveImage(data.avatar);
-    const newData = await this.client.rest.patch(Routes.user(), { body: data });
-    this.client.token = newData.token;
-    this.client.rest.setToken(newData.token);
-    const { updated } = this.client.actions.UserUpdate.handle(newData);
+  async edit({ username, avatar }) {
+    const data = await this.client.rest.patch(Routes.user(), {
+      body: { username, avatar: avatar && (await DataResolver.resolveImage(avatar)) },
+    });
+
+    this.client.token = data.token;
+    this.client.rest.setToken(data.token);
+    const { updated } = this.client.actions.UserUpdate.handle(data);
     return updated ?? this;
   }
 
@@ -96,7 +98,8 @@ class ClientUser extends User {
   /**
    * Options for setting activities
    * @typedef {Object} ActivitiesOptions
-   * @property {string} [name] Name of the activity
+   * @property {string} name Name of the activity
+   * @property {string} [state] State of the activity
    * @property {ActivityType} [type] Type of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    */
@@ -147,7 +150,8 @@ class ClientUser extends User {
   /**
    * Options for setting an activity.
    * @typedef {Object} ActivityOptions
-   * @property {string} [name] Name of the activity
+   * @property {string} name Name of the activity
+   * @property {string} [state] State of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType} [type] Type of the activity
    * @property {number|number[]} [shardId] Shard Id(s) to have the activity set on
@@ -155,7 +159,7 @@ class ClientUser extends User {
 
   /**
    * Sets the activity the client user is playing.
-   * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
+   * @param {string|ActivityOptions} name Activity being played, or options for setting the activity
    * @param {ActivityOptions} [options] Options for setting the activity
    * @returns {ClientPresence}
    * @example

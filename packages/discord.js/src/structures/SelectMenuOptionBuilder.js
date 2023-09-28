@@ -15,7 +15,7 @@ class SelectMenuOptionBuilder extends StringSelectMenuOptionBuilder {
 
     if (!deprecationEmitted) {
       process.emitWarning(
-        'The SelectMenuOptionBuilder class is deprecated, use StringSelectMenuOptionBuilder instead.',
+        'The SelectMenuOptionBuilder class is deprecated. Use StringSelectMenuOptionBuilder instead.',
         'DeprecationWarning',
       );
       deprecationEmitted = true;

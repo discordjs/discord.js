@@ -498,7 +498,7 @@ export class Networking extends EventEmitter {
 	public dispatchAudio() {
 		const state = this.state;
 		if (state.code !== NetworkingStatusCode.Ready) return false;
-		if (typeof state.preparedPacket !== 'undefined') {
+		if (state.preparedPacket !== undefined) {
 			this.playAudioPacket(state.preparedPacket);
 			state.preparedPacket = undefined;
 			return true;

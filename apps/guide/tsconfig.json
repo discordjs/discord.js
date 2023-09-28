@@ -2,18 +2,24 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"isolatedModules": true,
 		"jsx": "preserve",
 		"baseUrl": ".",
 		"noEmit": true,
-		"allowJs": false,
-		"incremental": true,
 		"skipLibCheck": true,
-		"types": ["@astrojs/image/client"],
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
 		"paths": {
-			"~/*": ["./src/*"]
-		}
+			"~/*": ["./src/*"],
+			"contentlayer/generated": ["./.contentlayer/generated"]
+		},
+		"moduleResolution": "node",
+		"resolvePackageJsonExports": false,
+		"resolvePackageJsonImports": false,
+		"esModuleInterop": true
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "types.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
 	"exclude": ["node_modules"]
 }

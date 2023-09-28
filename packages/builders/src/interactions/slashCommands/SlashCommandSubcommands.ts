@@ -11,31 +11,31 @@ import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
 import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
 
 /**
- * Represents a folder for subcommands
+ * Represents a folder for subcommands.
  *
- * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 @mix(SharedNameAndDescription)
 export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationCommandOptions {
 	/**
-	 * The name of this subcommand group
+	 * The name of this subcommand group.
 	 */
 	public readonly name: string = undefined!;
 
 	/**
-	 * The description of this subcommand group
+	 * The description of this subcommand group.
 	 */
 	public readonly description: string = undefined!;
 
 	/**
-	 * The subcommands part of this subcommand group
+	 * The subcommands within this subcommand group.
 	 */
 	public readonly options: SlashCommandSubcommandBuilder[] = [];
 
 	/**
-	 * Adds a new subcommand to this group
+	 * Adds a new subcommand to this group.
 	 *
-	 * @param input - A function that returns a subcommand builder, or an already built builder
+	 * @param input - A function that returns a subcommand builder or an already built builder
 	 */
 	public addSubcommand(
 		input:
@@ -60,6 +60,13 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 		return this;
 	}
 
+	/**
+	 * Serializes this builder to API-compatible JSON data.
+	 *
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
+	 */
 	public toJSON(): APIApplicationCommandSubcommandGroupOption {
 		validateRequiredParameters(this.name, this.description, this.options);
 
@@ -77,27 +84,34 @@ export class SlashCommandSubcommandGroupBuilder implements ToAPIApplicationComma
 export interface SlashCommandSubcommandGroupBuilder extends SharedNameAndDescription {}
 
 /**
- * Represents a subcommand
+ * A builder that creates API-compatible JSON data for slash command subcommands.
  *
- * For more information, go to https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 @mix(SharedNameAndDescription, SharedSlashCommandOptions)
 export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOptions {
 	/**
-	 * The name of this subcommand
+	 * The name of this subcommand.
 	 */
 	public readonly name: string = undefined!;
 
 	/**
-	 * The description of this subcommand
+	 * The description of this subcommand.
 	 */
 	public readonly description: string = undefined!;
 
 	/**
-	 * The options of this subcommand
+	 * The options within this subcommand.
 	 */
 	public readonly options: ApplicationCommandOptionBase[] = [];
 
+	/**
+	 * Serializes this builder to API-compatible JSON data.
+	 *
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
+	 */
 	public toJSON(): APIApplicationCommandSubcommandOption {
 		validateRequiredParameters(this.name, this.description, this.options);
 

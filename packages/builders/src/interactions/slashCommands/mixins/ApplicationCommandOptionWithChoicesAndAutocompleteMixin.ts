@@ -11,16 +11,29 @@ const choicesPredicate = s.object({
 }).array;
 const booleanPredicate = s.boolean;
 
+/**
+ * This mixin holds choices and autocomplete symbols used for options.
+ */
 export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends number | string> {
+	/**
+	 * The choices of this option.
+	 */
 	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
 
+	/**
+	 * Whether this option utilizes autocomplete.
+	 */
 	public readonly autocomplete?: boolean;
 
-	// Since this is present and this is a mixin, this is needed
+	/**
+	 * The type of this option.
+	 *
+	 * @privateRemarks Since this is present and this is a mixin, this is needed.
+	 */
 	public readonly type!: ApplicationCommandOptionType;
 
 	/**
-	 * Adds multiple choices for this option
+	 * Adds multiple choices to this option.
 	 *
 	 * @param choices - The choices to add
 	 */
@@ -51,6 +64,11 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 		return this;
 	}
 
+	/**
+	 * Sets multiple choices for this option.
+	 *
+	 * @param choices - The choices to set
+	 */
 	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(...choices: Input): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
@@ -65,9 +83,9 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 	}
 
 	/**
-	 * Marks the option as autocompletable
+	 * Whether this option uses autocomplete.
 	 *
-	 * @param autocomplete - If this option should be autocompletable
+	 * @param autocomplete - Whether this option should use autocomplete
 	 */
 	public setAutocomplete(autocomplete: boolean): this {
 		// Assert that you actually passed a boolean

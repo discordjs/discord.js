@@ -15,7 +15,7 @@ class SelectMenuInteraction extends StringSelectMenuInteraction {
 
     if (!deprecationEmitted) {
       process.emitWarning(
-        'The SelectMenuInteraction class is deprecated, use StringSelectMenuInteraction instead.',
+        'The SelectMenuInteraction class is deprecated. Use StringSelectMenuInteraction instead.',
         'DeprecationWarning',
       );
       deprecationEmitted = true;

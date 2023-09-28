@@ -8,7 +8,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 /**
  * @typedef {Function} GlobalSweepFilter
  * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/main/class/Collection?scrollTo=sweep)}
+ * See {@link [Collection#sweep](https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep)}
  * for the definition of this function.
  */
 

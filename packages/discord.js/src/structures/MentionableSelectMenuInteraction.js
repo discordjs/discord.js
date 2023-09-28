@@ -11,14 +11,14 @@ const Events = require('../util/Events');
 class MentionableSelectMenuInteraction extends MessageComponentInteraction {
   constructor(client, data) {
     super(client, data);
+    const { resolved, values } = data.data;
+    const { members, users, roles } = resolved ?? {};
 
     /**
      * An array of the selected user and role ids
      * @type {Snowflake[]}
      */
-    this.values = data.data.values ?? [];
-
-    const { members, users, roles } = data.data.resolved ?? {};
+    this.values = values ?? [];
 
     /**
      * Collection of the selected users

@@ -5,10 +5,12 @@ inputs:
     description: 'The input tag'
     required: true
 outputs:
+  subpackage:
+    description: 'Whether this tag is a subpackage tag'
   package:
     description: 'The package string that was extracted from this tag'
   semver:
     description: 'The semver string that was extracted from this tag'
 runs:
   using: node16
-  main: ../../dist/formatTag/index.mjs
+  main: ../../dist/formatTag/index.js

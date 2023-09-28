@@ -1,6 +1,6 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
@@ -138,7 +138,7 @@ class InteractionResponses {
 
   /**
    * Options that can be passed into {@link InteractionResponses#editReply}.
-   * @typedef {WebhookEditMessageOptions} InteractionEditReplyOptions
+   * @typedef {WebhookMessageEditOptions} InteractionEditReplyOptions
    * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
    */
 
@@ -245,7 +245,7 @@ class InteractionResponses {
 
   /**
    * Shows a modal component
-   * @param {APIModal|ModalData|Modal} modal The modal to show
+   * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @returns {Promise<void>}
    */
   async showModal(modal) {
@@ -255,6 +255,7 @@ class InteractionResponses {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
       },
+      auth: false,
     });
     this.replied = true;
   }

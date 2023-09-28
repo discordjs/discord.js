@@ -1,26 +1,55 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/rest",
-	"version": "1.4.0",
+	"version": "2.0.1",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"fmt": "yarn format",
-		"docs": "api-extractor run --local",
-		"prepack": "yarn lint && yarn test && yarn build",
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
+		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
 	"exports": {
-		"import": "./dist/index.mjs",
-		"require": "./dist/index.js",
-		"types": "./dist/index.d.ts"
+		".": {
+			"node": {
+				"require": {
+					"types": "./dist/index.d.ts",
+					"default": "./dist/index.js"
+				},
+				"import": {
+					"types": "./dist/index.d.mts",
+					"default": "./dist/index.mjs"
+				}
+			},
+			"default": {
+				"require": {
+					"types": "./dist/web.d.ts",
+					"default": "./dist/web.js"
+				},
+				"import": {
+					"types": "./dist/web.d.mts",
+					"default": "./dist/web.mjs"
+				}
+			}
+		},
+		"./*": {
+			"require": {
+				"types": "./dist/strategies/*.d.ts",
+				"default": "./dist/strategies/*.js"
+			},
+			"import": {
+				"types": "./dist/strategies/*.d.mts",
+				"default": "./dist/strategies/*.mjs"
+			}
+		}
 	},
+	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -45,7 +74,8 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/rest"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
@@ -55,29 +85,31 @@
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
-		"@sapphire/snowflake": "^3.2.2",
-		"discord-api-types": "^0.37.20",
-		"file-type": "^18.0.0",
-		"tslib": "^2.4.1",
-		"undici": "^5.13.0"
+		"@sapphire/snowflake": "^3.5.1",
+		"@vladfrangu/async_event_emitter": "^2.2.2",
+		"discord-api-types": "0.37.56",
+		"magic-bytes.js": "^1.0.15",
+		"tslib": "^2.6.2",
+		"undici": "5.23.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.9.0",
-		"@microsoft/api-extractor": "^7.33.6",
-		"@types/node": "16.18.3",
-		"@vitest/coverage-c8": "^0.25.3",
+		"@favware/cliff-jumper": "^2.1.1",
+		"@microsoft/api-extractor": "^7.36.4",
+		"@types/node": "18.17.9",
+		"@vitest/coverage-v8": "^0.34.3",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.0.2",
-		"eslint": "^8.28.0",
-		"eslint-config-neon": "^0.1.40",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.8.0",
-		"tsup": "^6.5.0",
-		"typescript": "^4.9.3",
-		"vitest": "^0.25.3"
+		"esbuild-plugin-version-injector": "^1.2.0",
+		"eslint": "^8.48.0",
+		"eslint-config-neon": "^0.1.56",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^3.0.2",
+		"tsup": "^7.2.0",
+		"turbo": "^1.10.13",
+		"typescript": "^5.2.2",
+		"vitest": "^0.34.3"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=16.11.0"
 	},
 	"publishConfig": {
 		"access": "public"

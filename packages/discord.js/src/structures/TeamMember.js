@@ -24,6 +24,7 @@ class TeamMember extends Base {
       /**
        * The permissions this Team Member has with regard to the team
        * @type {string[]}
+       * @deprecated Use {@link TeamMember#role} instead.
        */
       this.permissions = data.permissions;
     }
@@ -42,6 +43,14 @@ class TeamMember extends Base {
        * @type {User}
        */
       this.user = this.client.users._add(data.user);
+    }
+
+    if ('role' in data) {
+      /**
+       * The role of this Team Member
+       * @type {TeamMemberRole}
+       */
+      this.role = data.role;
     }
   }
 
