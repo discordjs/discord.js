@@ -10,7 +10,9 @@ body {
 .dark [data-theme='dark'] {
 	display: block;
 }
-
+.dark {
+  transition: all 0.5s ease;
+}
 .dark [data-theme='light'] {
 	display: none;
 }
