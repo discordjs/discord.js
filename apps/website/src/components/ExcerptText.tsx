@@ -24,13 +24,16 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
 					const source = token.canonicalReference?.source;
+					const symbol = token.canonicalReference?.symbol;
+					if (source && 'packageName' in source && source.packageName === 'discord-api-types' && symbol) {
+						const { meaning, componentPath: path } = symbol;
+						let href = DISCORD_API_TYPES_DOCS_URL;
 
-					if (source && 'packageName' in source && source.packageName === 'discord-api-types') {
-						const meaning = token.canonicalReference.symbol?.meaning;
-						const href =
-							meaning === 'type'
-								? `${DISCORD_API_TYPES_DOCS_URL}#${token.text}`
-								: `${DISCORD_API_TYPES_DOCS_URL}/${meaning}/${token.text}`;
+						// dapi-types doesn't have routes for class members
+						// so we can assume this member is for an enum
+						if (meaning === 'member' && path && 'parent' in path) href += `/enum/${path.parent}#${path.component}`;
+						else if (meaning === 'type') href += `#${token.text}`;
+						else href += `/${meaning}/${token.text}`;
 
 						return (
 							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
