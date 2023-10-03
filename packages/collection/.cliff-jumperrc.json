@@ -1,5 +1,6 @@
 {
 	"name": "collection",
 	"org": "discordjs",
-	"packagePath": "packages/collection"
+	"packagePath": "packages/collection",
+	"identifierBase": false
 }

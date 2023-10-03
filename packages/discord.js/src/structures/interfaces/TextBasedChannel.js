@@ -107,13 +107,6 @@ class TextBasedChannel {
    */
 
   /**
-   * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment File to attach
-   * @property {string} [name='file.jpg'] Filename of the attachment
-   * @property {string} description The description of the file
-   */
-
-  /**
    * Sends a message to this channel.
    * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
    * @returns {Promise<Message>}
