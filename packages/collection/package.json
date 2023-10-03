@@ -67,7 +67,7 @@
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.0",
 		"eslint": "^8.48.0",
-		"eslint-config-neon": "^0.1.56",
+		"eslint-config-neon": "^0.1.57",
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.2",
 		"tsup": "^7.2.0",
