@@ -123,7 +123,7 @@ class ApplicationCommand extends Base {
        * The options of this command
        * @type {ApplicationCommandOption[]}
        */
-      this.options = data.options.map(opt => this.constructor.transformOption(opt, true));
+      this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
       this.options ??= [];
     }
