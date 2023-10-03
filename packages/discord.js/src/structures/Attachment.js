@@ -1,5 +1,6 @@
 'use strict';
 
+const AttachmentFlagsBitField = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util');
 
 /**
@@ -76,8 +77,9 @@ class Attachment {
 
     if ('content_type' in data) {
       /**
-       * The media type of this attachment
+       * The media (MIME) type of this attachment
        * @type {?string}
+       * @see {@link https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types}
        */
       this.contentType = data.content_type;
     } else {
@@ -120,6 +122,16 @@ class Attachment {
       this.waveform = data.waveform;
     } else {
       this.waveform ??= null;
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this attachment
+       * @type {Readonly<AttachmentFlagsBitField>}
+       */
+      this.flags = new AttachmentFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new AttachmentFlagsBitField().freeze();
     }
   }
 

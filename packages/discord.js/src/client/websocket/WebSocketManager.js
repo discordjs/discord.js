@@ -155,6 +155,7 @@ class WebSocketManager extends EventEmitter {
         },
         compression: zlib ? CompressionMethod.ZlibStream : null,
       };
+      if (ws.buildIdentifyThrottler) wsOptions.buildIdentifyThrottler = ws.buildIdentifyThrottler;
       if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;
       this._ws = new WSWebSocketManager(wsOptions);
       this.attachEvents();
@@ -320,12 +321,12 @@ class WebSocketManager extends EventEmitter {
    * Destroys this manager and all its shards.
    * @private
    */
-  destroy() {
+  async destroy() {
     if (this.destroyed) return;
     // TODO: Make a util for getting a stack
     this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
     this.destroyed = true;
-    this._ws.destroy({ code: CloseCodes.Normal });
+    await this._ws?.destroy({ code: CloseCodes.Normal });
   }
 
   /**

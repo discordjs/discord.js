@@ -3,15 +3,14 @@
 import type { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
 import { useSelectedLayoutSegment } from 'next/navigation';
 import { useMemo } from 'react';
+import { useNav } from '~/contexts/nav';
 import { ItemLink } from './ItemLink';
 import { Section } from './Section';
-import { useNav } from '~/contexts/nav';
 
 export interface SidebarSectionItemData {
 	href: string;
@@ -74,7 +73,6 @@ function resolveIcon(item: string) {
 		case 'Interfaces':
 			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
 		default:
@@ -82,7 +80,7 @@ function resolveIcon(item: string) {
 	}
 }
 
-export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
+export function Sidebar({ members }: { readonly members: SidebarSectionItemData[] }) {
 	const segment = useSelectedLayoutSegment();
 	const { setOpened } = useNav();
 

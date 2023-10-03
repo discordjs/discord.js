@@ -19,10 +19,10 @@ export interface TableOfContentsSerializedProperty {
 export type TableOfContentsSerialized = TableOfContentsSerializedMethod | TableOfContentsSerializedProperty;
 
 export interface TableOfContentsItemProps {
-	serializedMembers: TableOfContentsSerialized[];
+	readonly serializedMembers: TableOfContentsSerialized[];
 }
 
-export function TableOfContentsPropertyItem({ property }: { property: TableOfContentsSerializedProperty }) {
+export function TableOfContentsPropertyItem({ property }: { readonly property: TableOfContentsSerializedProperty }) {
 	return (
 		<a
 			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
@@ -35,7 +35,7 @@ export function TableOfContentsPropertyItem({ property }: { property: TableOfCon
 	);
 }
 
-export function TableOfContentsMethodItem({ method }: { method: TableOfContentsSerializedMethod }) {
+export function TableOfContentsMethodItem({ method }: { readonly method: TableOfContentsSerializedMethod }) {
 	if (method.overloadIndex && method.overloadIndex > 1) {
 		return null;
 	}

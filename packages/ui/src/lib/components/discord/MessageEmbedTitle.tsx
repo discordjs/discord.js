@@ -1,6 +1,6 @@
 export interface IDiscordMessageEmbedTitle {
-	title: string;
-	url?: string;
+	readonly title: string;
+	readonly url?: string;
 }
 
 export function DiscordMessageEmbedTitle({ title, url }: IDiscordMessageEmbedTitle) {

@@ -36,5 +36,5 @@ test('no token', async () => {
 test('negative offset', () => {
 	const badREST = new REST({ offset: -5_000 });
 
-	expect(badREST.requestManager.options.offset).toEqual(0);
+	expect(badREST.options.offset).toEqual(0);
 });

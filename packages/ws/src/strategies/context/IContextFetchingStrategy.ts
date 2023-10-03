@@ -25,7 +25,9 @@ export interface IContextFetchingStrategy {
 	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
 	/**
-	 * Resolves once the given shard should be allowed to identify, or rejects if the operation was aborted
+	 * Resolves once the given shard should be allowed to identify
+	 * This should correctly handle the signal and reject with an abort error if the operation is aborted.
+	 * Other errors will cause the shard to reconnect.
 	 */
 	waitForIdentify(shardId: number, signal: AbortSignal): Promise<void>;
 }

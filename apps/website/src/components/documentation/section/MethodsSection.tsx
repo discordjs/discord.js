@@ -8,9 +8,9 @@ import type {
 import { ApiItemKind } from '@microsoft/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useMemo, Fragment } from 'react';
+import { resolveMembers } from '~/util/members';
 import { Method } from '../../model/method/Method';
 import { DocumentationSection } from './DocumentationSection';
-import { resolveMembers } from '~/util/members';
 
 function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	return (
@@ -19,7 +19,7 @@ function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	);
 }
 
-export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
+export function MethodsSection({ item }: { readonly item: ApiItemContainerMixin }) {
 	const members = resolveMembers(item, isMethodLike);
 
 	const methodItems = useMemo(

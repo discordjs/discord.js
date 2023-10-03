@@ -153,8 +153,3 @@ class BaseChannel extends Base {
 }
 
 exports.BaseChannel = BaseChannel;
-
-/**
- * @external APIChannel
- * @see {@link https://discord.com/developers/docs/resources/channel#channel-object}
- */

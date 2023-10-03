@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/eslintrc.json",
   "root": true,
   "extends": ["eslint:recommended"],
   "plugins": ["import"],

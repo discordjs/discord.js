@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tslint.json",
   "extends": ["dtslint/dtslint.json"],
   "rules": {
     "prefer-readonly": false,

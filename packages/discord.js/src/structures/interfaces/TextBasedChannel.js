@@ -17,9 +17,9 @@ class TextBasedChannel {
   constructor() {
     /**
      * A manager of the messages sent to this channel
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * The channel's last message id, if one was sent
@@ -104,13 +104,6 @@ class TextBasedChannel {
    * - `users`
    * - `everyone`
    * @typedef {string} MessageMentionTypes
-   */
-
-  /**
-   * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment File to attach
-   * @property {string} [name='file.jpg'] Filename of the attachment
-   * @property {string} description The description of the file
    */
 
   /**
@@ -410,4 +403,4 @@ module.exports = TextBasedChannel;
 
 // Fixes Circular
 // eslint-disable-next-line import/order
-const MessageManager = require('../../managers/MessageManager');
+const GuildMessageManager = require('../../managers/GuildMessageManager');

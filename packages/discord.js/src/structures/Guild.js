@@ -5,6 +5,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const { GuildOnboarding } = require('./GuildOnboarding');
 const GuildPreview = require('./GuildPreview');
 const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
@@ -27,7 +28,7 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const { discordSort } = require('../util/Util');
+const { discordSort, getSortableGroupTypes } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -519,7 +520,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)}
+   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get widgetChannel() {
@@ -692,14 +693,15 @@ class Guild extends AnonymousGuild {
    * Data for the Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel)} channel The widget invite channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)} channel
+   * The widget invite channel
    */
 
   /**
    * The Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake)} channel
+   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake)} channel
    * The widget invite channel
    */
 
@@ -720,6 +722,15 @@ class Guild extends AnonymousGuild {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
     };
+  }
+
+  /**
+   * Returns a URL for the PNG widget of the guild.
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  widgetImageURL(style) {
+    return this.client.guilds.widgetImageURL(this.id, style);
   }
 
   /**
@@ -758,6 +769,15 @@ class Guild extends AnonymousGuild {
 
     const data = await this.client.rest.get(Routes.guildAuditLog(this.id), { query });
     return new GuildAuditLogs(this, data);
+  }
+
+  /**
+   * Fetches the guild onboarding data for this guild.
+   * @returns {Promise<GuildOnboarding>}
+   */
+  async fetchOnboarding() {
+    const data = await this.client.rest.get(Routes.guildOnboarding(this.id));
+    return new GuildOnboarding(this.client, data);
   }
 
   /**
@@ -865,7 +885,8 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {TextChannel|NewsChannel|ForumChannel|Snowflake} channel The channel to link for this welcome channel
+   * @property {TextChannel|NewsChannel|ForumChannel|MediaChannel|Snowflake} channel
+   * The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
 
@@ -1341,14 +1362,10 @@ class Guild extends AnonymousGuild {
    * @private
    */
   _sortedChannels(channel) {
-    const category = channel.type === ChannelType.GuildCategory;
-    const channelTypes = [ChannelType.GuildText, ChannelType.GuildAnnouncement];
+    const channelIsCategory = channel.type === ChannelType.GuildCategory;
+    const types = getSortableGroupTypes(channel.type);
     return discordSort(
-      this.channels.cache.filter(
-        c =>
-          (channelTypes.includes(channel.type) ? channelTypes.includes(c.type) : c.type === channel.type) &&
-          (category || c.parent === channel.parent),
-      ),
+      this.channels.cache.filter(c => types.includes(c.type) && (channelIsCategory || c.parentId === channel.parentId)),
     );
   }
 }

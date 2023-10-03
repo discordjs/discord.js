@@ -5,7 +5,7 @@ import { FunctionBody } from './FunctionBody';
 
 const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 
-export function Function({ item }: { item: ApiFunction }) {
+export function Function({ item }: { readonly item: ApiFunction }) {
 	const header = <Header kind={item.kind} name={item.name} sourceURL={item.sourceLocation.fileUrl} />;
 
 	if (item.getMergedSiblings().length > 1) {
@@ -16,7 +16,7 @@ export function Function({ item }: { item: ApiFunction }) {
 		return (
 			<div>
 				{header}
-				<OverloadSwitcher overloads={overloads} />
+				<OverloadSwitcher methodName={item.displayName} overloads={overloads} />
 			</div>
 		);
 	}

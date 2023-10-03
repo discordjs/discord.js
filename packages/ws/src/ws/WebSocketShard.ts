@@ -20,7 +20,7 @@ import {
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
-import { WebSocket, type RawData } from 'ws';
+import { WebSocket, type Data } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
 import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
@@ -79,6 +79,12 @@ export interface SendRateLimitState {
 	remaining: number;
 	resetAt: number;
 }
+
+// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
+// const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+// 	? (globalThis as any).WebSocket
+// 	: WebSocket;
+const WebSocketConstructor: typeof WebSocket = WebSocket;
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
@@ -143,6 +149,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await promise;
+		} catch ({ error }: any) {
+			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();
@@ -177,13 +185,27 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const session = await this.strategy.retrieveSessionInfo(this.id);
 
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
+
 		this.debug([`Connecting to ${url}`]);
-		const connection = new WebSocket(url, { handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined })
-			.on('message', this.onMessage.bind(this))
-			.on('error', this.onError.bind(this))
-			.on('close', this.onClose.bind(this));
+
+		const connection = new WebSocketConstructor(url, {
+			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
+		});
 
 		connection.binaryType = 'arraybuffer';
+
+		connection.onmessage = (event) => {
+			void this.onMessage(event.data, event.data instanceof ArrayBuffer);
+		};
+
+		connection.onerror = (event) => {
+			this.onError(event.error);
+		};
+
+		connection.onclose = (event) => {
+			void this.onClose(event.code);
+		};
+
 		this.connection = connection;
 
 		this.#status = WebSocketShardStatus.Connecting;
@@ -247,9 +269,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		if (this.connection) {
 			// No longer need to listen to messages
-			this.connection.removeAllListeners('message');
+			this.connection.onmessage = null;
 			// Prevent a reconnection loop by unbinding the main close event
-			this.connection.removeAllListeners('close');
+			this.connection.onclose = null;
 
 			const shouldClose = this.connection.readyState === WebSocket.OPEN;
 
@@ -260,14 +282,22 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			]);
 
 			if (shouldClose) {
+				let outerResolve: () => void;
+				const promise = new Promise<void>((resolve) => {
+					outerResolve = resolve;
+				});
+
+				this.connection.onclose = outerResolve!;
+
 				this.connection.close(options.code, options.reason);
-				await once(this.connection, 'close');
+
+				await promise;
 				this.emit(WebSocketShardEvents.Closed, { code: options.code });
 			}
 
 			// Lastly, remove the error event.
 			// Doing this earlier would cause a hard crash in case an error event fired on our `close` call
-			this.connection.removeAllListeners('error');
+			this.connection.onerror = null;
 		} else {
 			this.debug(['Destroying a shard that has no connection; please open an issue on GitHub']);
 		}
@@ -387,8 +417,21 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		try {
 			await this.strategy.waitForIdentify(this.id, controller.signal);
 		} catch {
-			this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
-			return;
+			if (controller.signal.aborted) {
+				this.debug(['Was waiting for an identify, but the shard closed in the meantime']);
+				return;
+			}
+
+			this.debug([
+				'IContextFetchingStrategy#waitForIdentify threw an unknown error.',
+				"If you're using a custom strategy, this is probably nothing to worry about.",
+				"If you're not, please open an issue on GitHub.",
+			]);
+
+			await this.destroy({
+				reason: 'Identify throttling logic failed',
+				recover: WebSocketShardDestroyRecovery.Resume,
+			});
 		} finally {
 			this.off(WebSocketShardEvents.Closed, closeHandler);
 		}
@@ -461,17 +504,23 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = false;
 	}
 
-	private async unpackMessage(data: ArrayBuffer | Buffer, isBinary: boolean): Promise<GatewayReceivePayload | null> {
-		const decompressable = new Uint8Array(data);
-
+	private async unpackMessage(data: Data, isBinary: boolean): Promise<GatewayReceivePayload | null> {
 		// Deal with no compression
 		if (!isBinary) {
-			return JSON.parse(this.textDecoder.decode(decompressable)) as GatewayReceivePayload;
+			try {
+				return JSON.parse(data as string) as GatewayReceivePayload;
+			} catch {
+				// This is a non-JSON payload / (at the time of writing this comment) emitted by bun wrongly interpreting custom close codes https://github.com/oven-sh/bun/issues/3392
+				return null;
+			}
 		}
+
+		const decompressable = new Uint8Array(data as ArrayBuffer);
 
 		// Deal with identify compress
 		if (this.useIdentifyCompress) {
 			return new Promise((resolve, reject) => {
+				// eslint-disable-next-line promise/prefer-await-to-callbacks
 				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
@@ -524,8 +573,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		return null;
 	}
 
-	private async onMessage(data: RawData, isBinary: boolean) {
-		const payload = await this.unpackMessage(data as ArrayBuffer | Buffer, isBinary);
+	private async onMessage(data: Data, isBinary: boolean) {
+		const payload = await this.unpackMessage(data, isBinary);
 		if (!payload) {
 			return;
 		}
@@ -697,7 +746,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				throw new Error('Authentication failed');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Authentication failed'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.AlreadyAuthenticated: {
@@ -721,23 +773,38 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidShard: {
-				throw new Error('Invalid shard');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Invalid shard'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.ShardingRequired: {
-				throw new Error('Sharding is required');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Sharding is required'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidAPIVersion: {
-				throw new Error('Used an invalid API version');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used an invalid API version'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				throw new Error('Used invalid intents');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used invalid intents'),
+				});
+				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				throw new Error('Used disallowed intents');
+				this.emit(WebSocketShardEvents.Error, {
+					error: new Error('Used disallowed intents'),
+				});
+				return this.destroy({ code });
 			}
 
 			default: {

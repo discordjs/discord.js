@@ -7,14 +7,15 @@ const withBundleAnalyzer = bundleAnalyzer({
 export default withBundleAnalyzer({
 	reactStrictMode: true,
 	experimental: {
-		appDir: true,
-		serverComponentsExternalPackages: ['@microsoft/api-extractor-model', 'jju'],
+		typedRoutes: true,
+		serverComponentsExternalPackages: ['@rushstack/node-core-library', '@microsoft/api-extractor-model', 'jju'],
 	},
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
+	poweredByHeader: false,
 	async redirects() {
 		return [
 			{

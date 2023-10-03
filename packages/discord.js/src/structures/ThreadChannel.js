@@ -1,10 +1,12 @@
 'use strict';
 
+const { lazy } = require('@discordjs/util');
 const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
+const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const MessageManager = require('../managers/MessageManager');
+const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 
@@ -31,9 +33,9 @@ class ThreadChannel extends BaseChannel {
 
     /**
      * A manager of the messages sent to this thread
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the members that are part of this thread
@@ -248,7 +250,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel)}
+   * @type {?(NewsChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -312,7 +314,7 @@ class ThreadChannel extends BaseChannel {
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
-    const channel = this.parent?.type === ChannelType.GuildForum ? this : this.parent;
+    const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 

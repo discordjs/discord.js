@@ -45,8 +45,10 @@ class GuildInviteManager extends CachedManager {
    * * VoiceChannel
    * * NewsChannel
    * * StageChannel
+   * * ForumChannel
+   * * MediaChannel
    * * Snowflake
-   * @typedef {TextChannel|VoiceChannel|NewsChannel|StageChannel|Snowflake}
+   * @typedef {TextChannel|VoiceChannel|NewsChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
    * GuildInvitableChannelResolvable
    */
 

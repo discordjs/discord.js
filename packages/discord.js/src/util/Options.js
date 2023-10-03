@@ -4,10 +4,12 @@ const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/res
 const { toSnakeCase } = require('./Transformers');
 const { version } = require('../../package.json');
 
+// TODO(ckohen): switch order of params so full manager is first and "type" is optional
 /**
  * @typedef {Function} CacheFactory
- * @param {Function} manager The manager class the cache is being requested from.
+ * @param {Function} managerType The base manager class the cache is being requested from.
  * @param {Function} holds The class that the cache will hold.
+ * @param {Function} manager The fully extended manager class the cache is being requested from.
  * @returns {Collection} A Collection used to store the cache of the manager.
  */
 
@@ -18,7 +20,7 @@ const { version } = require('../../package.json');
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
  * @property {number} [closeTimeout=5_000] The amount of time in milliseconds to wait for the close frame to be received
- * from the WebSocket. Don't have this too high/low. Its best to have it between 2_000-6_000 ms.
+ * from the WebSocket. Don't have this too high/low. It's best to have it between 2_000-6_000 ms.
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
@@ -35,7 +37,7 @@ const { version } = require('../../package.json');
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that clients with the
  * {@link GatewayIntentBits.Guilds} gateway intent should wait for missing guilds to be received before being ready.
- * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
+ * @property {SweeperOptions} [sweepers=this.DefaultSweeperSettings] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
  * @property {Function} [jsonTransformer] A function used to transform outgoing json data
@@ -68,6 +70,19 @@ const { version } = require('../../package.json');
  */
 
 /**
+ * A function to change the concurrency handling for shard identifies of this manager
+ * ```js
+ * async (manager) => {
+ *   const gateway = await manager.fetchGatewayInformation();
+ *   return new SimpleIdentifyThrottler(gateway.session_start_limit.max_concurrency);
+ * }
+ * ```
+ * @typedef {Function} IdentifyThrottlerFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {Awaitable<IIdentifyThrottler>} The identify throttler that this ws manager will use
+ */
+
+/**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
@@ -75,6 +90,7 @@ const { version } = require('../../package.json');
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
  * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
+ * @property {IdentifyThrottlerFunction} [buildIdentifyThrottler] Builds the identify throttler to use for sharding
  */
 
 /**
@@ -136,8 +152,8 @@ class Options extends null {
     const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
 
-    return manager => {
-      const setting = settings[manager.name];
+    return (managerType, _, manager) => {
+      const setting = settings[manager.name] ?? settings[managerType.name];
       /* eslint-disable-next-line eqeqeq */
       if (setting == null) {
         return new Collection();
@@ -213,4 +229,9 @@ module.exports = Options;
 /**
  * @external IShardingStrategy
  * @see {@link https://discord.js.org/docs/packages/ws/stable/IShardingStrategy:Interface}
+ */
+
+/**
+ * @external IIdentifyThrottler
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IIdentifyThrottler:Interface}
  */

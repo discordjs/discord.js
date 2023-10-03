@@ -163,6 +163,20 @@ import {
   ThreadManager,
   FetchedThreads,
   FetchedThreadsMore,
+  DMMessageManager,
+  GuildMessageManager,
+  ApplicationCommandChannelOptionData,
+  ApplicationCommandChannelOption,
+  ApplicationCommandChoicesOption,
+  ApplicationCommandChoicesData,
+  ApplicationCommandSubGroup,
+  ApplicationCommandSubCommand,
+  ChatInputApplicationCommandData,
+  ApplicationCommandPermissionsManager,
+  GuildOnboarding,
+  StringSelectMenuComponentData,
+  ButtonComponentData,
+  MediaChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -183,6 +197,12 @@ const client: Client = new Client({
     },
   }),
 });
+
+if (client.isReady()) {
+  expectType<Client<true>>(client);
+} else {
+  expectType<Client>(client);
+}
 
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
@@ -340,6 +360,19 @@ declare const assertIsMessage: (m: Promise<Message>) => void;
 
 client.on('messageCreate', async message => {
   const { client, channel } = message;
+
+  // https://github.com/discordjs/discord.js/issues/8545
+  {
+    // These should not throw any errors when comparing messages from any source.
+    channel.messages.cache.filter(m => m);
+    (await channel.messages.fetch()).filter(m => m.author.id === message.author.id);
+
+    if (channel.isDMBased()) {
+      expectType<DMMessageManager>(channel.messages.channel.messages);
+    } else {
+      expectType<GuildMessageManager>(channel.messages.channel.messages);
+    }
+  }
 
   if (!message.inGuild() && message.partial) {
     expectNotType<never>(message);
@@ -508,10 +541,10 @@ client.on('messageCreate', async message => {
 
   // Check that both builders and builder data can be sent in messages
   const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
-  const buttonsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new ButtonBuilder(),
       { type: ComponentType.Button, label: 'test', style: ButtonStyle.Primary, customId: 'test' },
       {
         type: ComponentType.Button,
@@ -521,21 +554,34 @@ client.on('messageCreate', async message => {
       },
     ],
   };
-  const selectsRow: ActionRowData<MessageActionRowComponentData> = {
+
+  const buttonsRow: ActionRowData<ButtonBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new ButtonBuilder()],
+  };
+
+  const rawStringSelectMenuRow: ActionRowData<StringSelectMenuComponentData> = {
     type: ComponentType.ActionRow,
     components: [
-      new StringSelectMenuBuilder(),
       {
         type: ComponentType.StringSelect,
-        label: 'select menu',
         options: [{ label: 'test', value: 'test' }],
         customId: 'test',
       },
     ],
   };
 
+  const stringSelectRow: ActionRowData<StringSelectMenuBuilder> = {
+    type: ComponentType.ActionRow,
+    components: [new StringSelectMenuBuilder()],
+  };
+
   const embedData = { description: 'test', color: 0xff0000 };
-  channel.send({ components: [row, buttonsRow, selectsRow], embeds: [embed, embedData] });
+
+  channel.send({
+    components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
+    embeds: [embed, embedData],
+  });
 });
 
 client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
@@ -1146,7 +1192,7 @@ client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => 
   expectType<Client<true>>(newClient);
 });
 
-client.on('webhookUpdate', ({ client }) => expectType<Client<true>>(client));
+client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));
 
 client.on('guildCreate', async g => {
   expectType<Client<true>>(g.client);
@@ -1279,8 +1325,8 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test thread channels' parent inference
-expectType<TextChannel | NewsChannel | ForumChannel | null>(threadChannel.parent);
-expectType<ForumChannel | null>(threadChannelFromForum.parent);
+expectType<TextChannel | NewsChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
+expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
@@ -1355,7 +1401,7 @@ declare const applicationCommandManager: ApplicationCommandManager;
     applicationCommandManager.set([applicationCommandData]),
   );
   expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
-    applicationCommandManager.set([applicationCommandData], '0'),
+    applicationCommandManager.set([applicationCommandData] as const, '0'),
   );
 
   // Test inference of choice values.
@@ -1377,6 +1423,41 @@ declare const applicationCommandManager: ApplicationCommandManager;
   }
 }
 
+declare const applicationCommandPermissionsManager: ApplicationCommandPermissionsManager<
+  {},
+  {},
+  Guild | null,
+  Snowflake
+>;
+{
+  applicationCommandPermissionsManager.add({ permissions: [], token: '' });
+  applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
+  applicationCommandPermissionsManager.set({ permissions: [], token: '' });
+  applicationCommandPermissionsManager.set({ permissions: [] as const, token: '' });
+  applicationCommandPermissionsManager.remove({ channels: [], roles: [], users: [], token: '' });
+
+  applicationCommandPermissionsManager.remove({
+    channels: [] as const,
+    roles: [] as const,
+    users: [] as const,
+    token: '',
+  });
+}
+
+declare const chatInputApplicationCommandData: ChatInputApplicationCommandData;
+{
+  chatInputApplicationCommandData.options = [];
+  chatInputApplicationCommandData.options = [] as const;
+}
+
+declare const applicationCommandChannelOptionData: ApplicationCommandChannelOptionData;
+declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
+{
+  applicationCommandChannelOptionData.channelTypes = [] as const;
+  applicationCommandChannelOptionData.channel_types = [] as const;
+  applicationCommandChannelOption.channelTypes = [] as const;
+}
+
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
@@ -1387,10 +1468,32 @@ declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   applicationNonChoiceOptionData.choices;
 }
 
+declare const applicationCommandChoicesData: ApplicationCommandChoicesData;
+declare const applicationCommandChoicesOption: ApplicationCommandChoicesOption;
+{
+  applicationCommandChoicesData.choices = [];
+  applicationCommandChoicesData.choices = [] as const;
+  applicationCommandChoicesOption.choices = [];
+  applicationCommandChoicesOption.choices = [] as const;
+}
+
+declare const applicationCommandSubCommandData: ApplicationCommandSubCommandData;
+declare const applicationCommandSubCommand: ApplicationCommandSubCommand;
+{
+  applicationCommandSubCommandData.options = [];
+  applicationCommandSubCommandData.options = [] as const;
+  applicationCommandSubCommand.options = [];
+  applicationCommandSubCommand.options = [] as const;
+}
+
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
+declare const applicationCommandSubGroup: ApplicationCommandSubGroup;
 {
   expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
-  expectType<ApplicationCommandSubCommandData[]>(applicationSubGroupCommandData.options);
+  applicationSubGroupCommandData.options = [];
+  applicationSubGroupCommandData.options = [] as const;
+  applicationCommandSubGroup.options = [];
+  applicationCommandSubGroup.options = [] as const;
 }
 
 declare const autoModerationRuleManager: AutoModerationRuleManager;
@@ -1442,6 +1545,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
+  expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
@@ -1454,7 +1558,7 @@ declare const guildChannelManager: GuildChannelManager;
   if (channel.isTextBased()) {
     const { messages } = channel;
     const message = await messages.fetch('123');
-    expectType<MessageManager<true>>(messages);
+    expectType<GuildMessageManager>(messages);
     expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
@@ -1468,18 +1572,24 @@ declare const guildChannelManager: GuildChannelManager;
 {
   const { messages } = dmChannel;
   const message = await messages.fetch('123');
-  expectType<MessageManager<false>>(messages);
-  expectType<Promise<Message<false>>>(messages.crosspost('1234567890')); // This shouldn't even exist!
-  expectType<Promise<Message<false>>>(messages.edit('1234567890', 'text'));
-  expectType<Promise<Message<false>>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message<false>>>>(messages.fetchPinned());
-  expectType<null>(message.guild);
-  expectType<null>(message.guildId);
-  expectType<TextBasedChannel>(message.channel.messages.channel);
+  expectType<DMMessageManager>(messages);
+  expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
+  expectType<Promise<Message>>(messages.fetch('1234567890'));
+  expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Guild | null>(message.guild);
+  expectType<Snowflake | null>(message.guildId);
+  expectType<DMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
+  expectType<MessageMentions>(message.mentions);
+  expectType<Guild | null>(message.mentions.guild);
+  expectType<Collection<Snowflake, GuildMember> | null>(message.mentions.members);
 
-  expectType<MessageMentions<false>>(message.mentions);
-  expectType<null>(message.mentions.guild);
-  expectType<null>(message.mentions.members);
+  if (messages.channel.isDMBased()) {
+    expectType<DMChannel>(messages.channel);
+    expectType<DMChannel>(messages.channel.messages.channel);
+  }
+
+  // @ts-expect-error Crossposting is not possible in direct messages.
+  messages.crosspost('1234567890');
 }
 
 declare const threadManager: ThreadManager;
@@ -1495,7 +1605,7 @@ declare const threadManager: ThreadManager;
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;
-expectType<ForumChannel>(guildForumThreadManager.channel);
+expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
 
 declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
@@ -1814,9 +1924,11 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel>(
         interaction.options.getChannel('test', true, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<TextChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildText] as const));
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
@@ -1965,9 +2077,14 @@ expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAudi
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
-expectType<Promise<null | undefined>>(
+expectType<Promise<{ integrationType: string } | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
 );
+
+expectType<Promise<{ integrationType: string } | null | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberRoleUpdate }).then(al => al.entries.first()?.extra),
+);
+
 expectType<Promise<StageChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.extra),
 );
@@ -2003,7 +2120,7 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel>(
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel>(
   NonThreadGuildBasedChannel,
 );
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
@@ -2201,3 +2318,8 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 });
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
+
+{
+  const onboarding = await guild.fetchOnboarding();
+  expectType<GuildOnboarding>(onboarding);
+}
