@@ -278,8 +278,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Searches for a last item where the given function returns a truthy value. This behaves like
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 */
 	public findLast<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
 	public findLast(fn: (value: V, key: K, collection: this) => unknown): V | undefined;
@@ -306,8 +306,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
 	 * but returns the key rather than the positional index.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 */
 	public findLastKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
 	public findLastKey(fn: (value: V, key: K, collection: this) => unknown): K | undefined;
@@ -595,8 +595,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Applies a function to produce a single value. Identical in behavior to
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
 	 *
-	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
-	 * and `collection`
+	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
 	 * @param initialValue - Starting value for the accumulator
 	 */
 	public reduceRight<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
