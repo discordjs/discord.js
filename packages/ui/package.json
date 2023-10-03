@@ -57,7 +57,7 @@
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.1.1",
+		"@favware/cliff-jumper": "^2.2.0",
 		"@react-icons/all-files": "^4.1.0",
 		"@storybook/addon-essentials": "^7.3.2",
 		"@storybook/addon-interactions": "^7.3.2",

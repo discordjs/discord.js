@@ -55,7 +55,7 @@
 		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.1.1",
+		"@favware/cliff-jumper": "^2.2.0",
 		"@microsoft/api-extractor": "^7.36.4",
 		"@types/node": "16.18.44",
 		"@types/prompts": "^2.4.4",

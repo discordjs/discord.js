@@ -72,7 +72,7 @@
 		"@babel/core": "^7.22.11",
 		"@babel/preset-env": "^7.22.10",
 		"@babel/preset-typescript": "^7.22.11",
-		"@favware/cliff-jumper": "^2.1.1",
+		"@favware/cliff-jumper": "^2.2.0",
 		"@microsoft/api-extractor": "^7.36.4",
 		"@types/jest": "^29.5.4",
 		"@types/node": "16.18.44",
