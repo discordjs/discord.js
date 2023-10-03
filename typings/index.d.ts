@@ -4966,6 +4966,7 @@ export interface StageInstanceCreateOptions {
   topic: string;
   privacyLevel?: PrivacyLevel | number;
   sendStartNotification?: boolean;
+  guildScheduledEvent?: GuildScheduledEventResolvable;
 }
 
 export interface CrosspostedChannel {
