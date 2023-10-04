@@ -221,8 +221,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * should use the `get` method. See
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.find(user => user.username === 'Bob');
@@ -250,8 +250,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
 	 * but returns the key rather than the positional index.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.findKey(user => user.username === 'Bob');
@@ -278,7 +278,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Removes items that satisfy the provided filter function.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @returns The number of removed entries
 	 */
 	public sweep(fn: (value: V, key: K, collection: this) => unknown): number;
@@ -299,8 +299,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
 	 * but returns a Collection instead of an Array.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.filter(user => user.username === 'Bob');
@@ -334,7 +334,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * contains the items that passed and the second contains the items that failed.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
@@ -385,7 +385,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
 	 *
 	 * @param fn - Function that produces a new Collection
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.flatMap(guild => guild.members.cache);
@@ -407,7 +407,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new array, taking three arguments
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.map(user => user.tag);
@@ -430,7 +430,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new collection, taking three arguments
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.mapValues(user => user.tag);
@@ -451,7 +451,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.some(user => user.discriminator === '0000');
@@ -474,7 +474,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.every(user => !user.bot);
@@ -539,7 +539,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * but returns the collection instead of undefined.
 	 *
 	 * @param fn - Function to execute for each element
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection
@@ -565,7 +565,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Runs a function on the collection and returns the collection.
 	 *
 	 * @param fn - Function to execute
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection
