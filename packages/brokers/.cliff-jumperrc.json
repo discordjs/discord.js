@@ -1,5 +1,6 @@
 {
 	"name": "brokers",
 	"org": "discordjs",
-	"packagePath": "packages/brokers"
+	"packagePath": "packages/brokers",
+	"identifierBase": false
 }
