@@ -92,6 +92,8 @@ import {
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildMemberJSONBody,
+	type RESTPutAPIGuildMemberResult,
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -163,6 +165,26 @@ export class GuildsAPI {
 	 */
 	public async delete(guildId: Snowflake, { signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {}) {
 		await this.rest.delete(Routes.guild(guildId), { reason, signal });
+	}
+	
+	/**
+	 * Add user to the guild
+         *
+         * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
+         * @param guildId - The id of the guild that will be added to the user's guilds
+	 * @param userId - The id of the user that will be added to guild
+         * @param body - The options for adding user to guild
+	 */
+	public async addMember(
+		guildId: Snowflake,
+		userId: Snowflake,
+		body: RESTPutAPIGuildMemberJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {}
+	) {
+		return this.rest.put(Routes.guildMember(guildId, userId), {
+			body,
+			signal
+		}) as Promise<RESTPutAPIGuildMemberResult>
 	}
 
 	/**
