@@ -171,8 +171,8 @@ export class GuildsAPI {
 	 * Add user to the guild
          *
          * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
-         * @param guildId - The id of the guild that will be added to the user's guilds
-	 * @param userId - The id of the user that will be added to guild
+         * @param guildId - Id of the guild that will be added to the user's guilds
+	 * @param userId - Id of the user that will be added to guild
          * @param body - The options for adding user to guild
 	 */
 	public async addMember(
