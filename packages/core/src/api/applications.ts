@@ -3,9 +3,7 @@
 import type { RequestData, REST } from '@discordjs/rest';
 import {
 	type RESTGetCurrentApplicationResult,
-	// @ts-expect-error discord-api-types
 	type RESTPatchCurrentApplicationJSONBody,
-	// @ts-expect-error discord-api-types
 	type RESTPatchCurrentApplicationResult,
 	Routes,
 } from 'discord-api-types/v10';
