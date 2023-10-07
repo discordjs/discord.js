@@ -5798,19 +5798,19 @@ export interface GuildOnboardingEditOptions {
 export interface GuildOnboardingPromptData {
   id?: Snowflake;
   title: string;
-  singleSelect: boolean;
-  required: boolean;
-  inOnboarding: boolean;
-  type: GuildOnboardingPromptType;
+  singleSelect?: boolean;
+  required?: boolean;
+  inOnboarding?: boolean;
+  type?: GuildOnboardingPromptType;
   options: readonly GuildOnboardingPromptOptionData[] | ReadonlyCollection<Snowflake, GuildOnboardingPromptOption>;
 }
 
 export interface GuildOnboardingPromptOptionData {
-  channels: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
-  roles: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
+  channels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  roles?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
   title: string;
-  description: string | null;
-  emoji: EmojiIdentifierResolvable | GuildOnboardingPromptOptionEmoji | null;
+  description?: string | null;
+  emoji?: EmojiIdentifierResolvable | GuildOnboardingPromptOptionEmoji | null;
 }
 
 export interface GuildOnboardingPromptOptionEmoji {

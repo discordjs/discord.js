@@ -899,10 +899,10 @@ class Guild extends AnonymousGuild {
    * @typedef {Object} GuildOnboardingPromptData
    * @property {Snowflake} [id] The id of the prompt
    * @property {string} title The title for the prompt
-   * @property {boolean} singleSelect Whether users are limited to selecting one option for the prompt
-   * @property {boolean} required Whether the prompt is required before a user completes the onboarding flow
-   * @property {boolean} inOnboarding Whether the prompt is present in the onboarding flow
-   * @property {GuildOnboardingPromptType} type The type of the prompt
+   * @property {boolean} [singleSelect] Whether users are limited to selecting one option for the prompt
+   * @property {boolean} [required] Whether the prompt is required before a user completes the onboarding flow
+   * @property {boolean} [inOnboarding] Whether the prompt is present in the onboarding flow
+   * @property {GuildOnboardingPromptType} [type] The type of the prompt
    * @property {GuildOnboardingPromptOptionData[]|Collection<Snowflake, GuildOnboardingPrompt>} options
    * The options available within the prompt
    */
@@ -910,13 +910,13 @@ class Guild extends AnonymousGuild {
   /**
    * Data for editing a guild onboarding prompt option.
    * @typedef {Object} GuildOnboardingPromptOptionData
-   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} channels
+   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [channels]
    * The channels a member is added to when the option is selected
-   * @property {RoleResolvable[]|Collection<Snowflake, Role>} roles
+   * @property {RoleResolvable[]|Collection<Snowflake, Role>} [roles]
    * The roles assigned to a member when the option is selected
    * @property {string} title The title of the option
-   * @property {?string} description The description of the option
-   * @property {?(EmojiIdentifierResolvable|GuildOnboardingPromptOptionEmoji)} emoji The emoji of the option
+   * @property {?string} [description] The description of the option
+   * @property {?(EmojiIdentifierResolvable|GuildOnboardingPromptOptionEmoji)} [emoji] The emoji of the option
    */
 
   /**
@@ -935,13 +935,19 @@ class Guild extends AnonymousGuild {
           required: prompt.required,
           in_onboarding: prompt.inOnboarding,
           type: prompt.type,
-          options: prompt.options.map(option => ({
-            channel_ids: option.channels.map(c => this.channels.resolveId(c)),
-            role_ids: option.roles.map(r => this.roles.resolveId(r)),
-            title: option.title,
-            description: option.description,
-            emoji: resolvePartialEmoji(option.emoji),
-          })),
+          options: prompt.options.map(option => {
+            const emoji = resolvePartialEmoji(option.emoji);
+
+            return {
+              channel_ids: option.channels?.map(c => this.channels.resolveId(c)),
+              role_ids: option.roles?.map(r => this.roles.resolveId(r)),
+              title: option.title,
+              description: option.description,
+              emoji_animated: emoji?.animated,
+              emoji_id: emoji?.id,
+              emoji_name: emoji?.name,
+            };
+          }),
         })),
         default_channel_ids: options.defaultChannels?.map(channel => this.channels.resolveId(channel)),
         enabled: options.enabled,
