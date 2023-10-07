@@ -173,7 +173,7 @@ export class GuildsAPI {
          * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
          * @param guildId - The id of the guild to add the user to
 	 * @param userId - The id of the user to add
-         * @param body - The options for adding user to a guild
+         * @param body - The options for adding the user to a guild
 	 */
 	public async addMember(
 		guildId: Snowflake,
