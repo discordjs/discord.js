@@ -166,15 +166,15 @@ export class GuildsAPI {
 	public async delete(guildId: Snowflake, { signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {}) {
 		await this.rest.delete(Routes.guild(guildId), { reason, signal });
 	}
-	
+
 	/**
-         * Adds user to the guild
-         *
-         * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
-         * @param guildId - The id of the guild to add the user to
-         * @param userId - The id of the user to add
-         * @param body - The data for adding users to the guild
-         * @param options - The options for adding users to the guild
+	 * Adds user to the guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
+	 * @param guildId - The id of the guild to add the user to
+	 * @param userId - The id of the user to add
+	 * @param body - The data for adding users to the guild
+	 * @param options - The options for adding users to the guild
 	 */
 	public async addMember(
 		guildId: Snowflake,
