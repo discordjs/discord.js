@@ -1623,12 +1623,14 @@ export class GuildOnboardingPrompt extends Base {
 
 export class GuildOnboardingPromptOption extends Base {
   private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
+  private _emoji: RawEmoji;
+
   public id: Snowflake;
+  public get emoji(): Emoji | GuildEmoji | null;
   public get guild(): Guild;
   public guildId: Snowflake;
   public channels: Collection<Snowflake, GuildChannel>;
   public roles: Collection<Snowflake, Role>;
-  public emoji: GuildOnboardingPromptOptionEmoji | null;
   public title: string;
   public description: string | null;
 }
@@ -5810,10 +5812,10 @@ export interface GuildOnboardingPromptOptionData {
   roles?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
   title: string;
   description?: string | null;
-  emoji?: EmojiIdentifierResolvable | GuildOnboardingPromptOptionEmoji | null;
+  emoji?: EmojiIdentifierResolvable | Emoji | null;
 }
 
-export interface GuildOnboardingPromptOptionEmoji {
+export interface RawEmoji {
   id: Snowflake | null;
   name: string;
   animated: boolean;

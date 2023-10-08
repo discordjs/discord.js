@@ -916,7 +916,7 @@ class Guild extends AnonymousGuild {
    * The roles assigned to a member when the option is selected
    * @property {string} title The title of the option
    * @property {?string} [description] The description of the option
-   * @property {?(EmojiIdentifierResolvable|GuildOnboardingPromptOptionEmoji)} [emoji] The emoji of the option
+   * @property {?(EmojiIdentifierResolvable|Emoji)} [emoji] The emoji of the option
    */
 
   /**
@@ -939,8 +939,8 @@ class Guild extends AnonymousGuild {
             const emoji = resolvePartialEmoji(option.emoji);
 
             return {
-              channel_ids: option.channels?.map(c => this.channels.resolveId(c)),
-              role_ids: option.roles?.map(r => this.roles.resolveId(r)),
+              channel_ids: option.channels?.map(channel => this.channels.resolveId(channel)),
+              role_ids: option.roles?.map(role => this.roles.resolveId(role)),
               title: option.title,
               description: option.description,
               emoji_animated: emoji?.animated,

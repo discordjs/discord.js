@@ -2327,6 +2327,8 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
+declare const emojiResolvable: GuildEmoji | Emoji | string;
+
 {
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
@@ -2345,6 +2347,8 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
   await guild.editOnboarding({ prompts: [prompt] });
   await guild.editOnboarding({ prompts: [{ ...prompt, options: [option] }] });
+
+  await guild.editOnboarding({ prompts: [{ ...prompt, options: [{ ...option, emoji: emojiResolvable }] }] });
 }
 
 declare const partialDMChannel: PartialDMChannel;
