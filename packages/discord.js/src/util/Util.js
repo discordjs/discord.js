@@ -110,7 +110,7 @@ function parseEmoji(text) {
 
 /**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
- * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+ * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
  * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Suppling a snowflake yields `PartialEmojiOnlyId`.
  * @private
  */
