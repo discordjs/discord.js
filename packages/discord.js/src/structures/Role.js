@@ -464,8 +464,3 @@ class Role extends Base {
 }
 
 exports.Role = Role;
-
-/**
- * @external APIRole
- * @see {@link https://discord.com/developers/docs/topics/permissions#role-object}
- */

@@ -36,7 +36,7 @@ class ClientPresence extends Presence {
   /**
    * Parses presence data into a packet ready to be sent to Discord
    * @param {PresenceData} presence The data to parse
-   * @returns {APIPresence}
+   * @returns {GatewayPresenceUpdateData}
    * @private
    */
   _parse({ status, since, afk, activities }) {
@@ -82,9 +82,3 @@ class ClientPresence extends Presence {
 }
 
 module.exports = ClientPresence;
-
-/* eslint-disable max-len */
-/**
- * @external APIPresence
- * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
- */

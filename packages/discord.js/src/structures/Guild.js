@@ -1371,8 +1371,3 @@ class Guild extends AnonymousGuild {
 }
 
 exports.Guild = Guild;
-
-/**
- * @external APIGuild
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-object}
- */
