@@ -185,7 +185,7 @@ export class GuildsAPI {
 		return this.rest.put(Routes.guildMember(guildId, userId), {
 			body,
 			signal
-		}) as Promise<RESTPutAPIGuildMemberResult>
+		}) as Promise<RESTPutAPIGuildMemberResult>;
 	}
 
 	/**
