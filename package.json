@@ -22,7 +22,7 @@
 		"prepare": "is-ci || husky install",
 		"update": "pnpm --recursive update --interactive",
 		"update:latest": "pnpm --recursive update --interactive --latest",
-		"create-package": "turbo gen create-package"
+		"create-package": "turbo gen create-package --args"
 	},
 	"type": "module",
 	"contributors": [
