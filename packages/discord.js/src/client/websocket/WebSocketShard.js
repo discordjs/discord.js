@@ -140,7 +140,7 @@ class WebSocketShard extends EventEmitter {
      */
     this.emit(WebSocketShardEvents.Ready);
 
-    this.expectedGuilds = new Set(packet.guilds.map(d => d.id));
+    this.expectedGuilds = new Set(packet.guilds.map(guild => guild.id));
     this.status = Status.WaitingForGuilds;
   }
 

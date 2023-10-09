@@ -212,7 +212,7 @@ class Sticker extends Base {
    * @example
    * // Update the name of a sticker
    * sticker.edit({ name: 'new name' })
-   *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
+   *   .then(sticker => console.log(`Updated the name of the sticker to ${sticker.name}`))
    *   .catch(console.error);
    */
   edit(options) {
@@ -226,7 +226,7 @@ class Sticker extends Base {
    * @example
    * // Delete a message
    * sticker.delete()
-   *   .then(s => console.log(`Deleted sticker ${s.name}`))
+   *   .then(sticker => console.log(`Deleted sticker ${sticker.name}`))
    *   .catch(console.error);
    */
   async delete(reason) {
