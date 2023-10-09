@@ -231,7 +231,7 @@ class Role extends Base {
     let count = 0;
     for (const role of this.guild.roles.cache.values()) {
       if (this.rawPosition > role.rawPosition) count++;
-      else if (this.rawPosition === role.rawPosition && BigInt(this.id) > BigInt(role.id)) count++;
+      else if (this.rawPosition === role.rawPosition && BigInt(this.id) < BigInt(role.id)) count++;
     }
 
     return count;
