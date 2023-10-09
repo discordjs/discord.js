@@ -153,10 +153,16 @@ class MessageManager extends CachedManager {
    */
 
   /**
+   * Data used to reference an attachment.
+   * @typedef {Object} MessageEditAttachmentData
+   * @property {Snowflake} id The id of the attachment
+   */
+
+  /**
    * Options that can be passed to edit a message.
    * @typedef {BaseMessageOptions} MessageEditOptions
-   * @property {AttachmentPayload[]} [attachments] An array of attachments to keep,
-   * all attachments will be kept if omitted
+   * @property {Array<Attachment|MessageEditAttachmentData>} [attachments] An array of attachments to keep.
+   * All attachments will be kept if omitted
    * @property {MessageFlags} [flags] Which flags to set for the message
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
    */

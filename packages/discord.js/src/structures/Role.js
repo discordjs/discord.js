@@ -205,7 +205,7 @@ class Role extends Base {
       (acc, role) =>
         acc +
         (this.rawPosition === role.rawPosition
-          ? BigInt(this.id) > BigInt(role.id)
+          ? BigInt(this.id) < BigInt(role.id)
           : this.rawPosition > role.rawPosition),
       0,
     );
