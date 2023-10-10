@@ -75,10 +75,6 @@ export default [
 		rules: { 'jsdoc/no-undefined-types': 0 },
 	},
 	{
-		files: [`packages/docgen/**/*${commonFiles}`],
-		rules: { 'import/extensions': 0 },
-	},
-	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
 			'n/prefer-global/url': 0,
@@ -91,10 +87,7 @@ export default [
 	},
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
-		rules: {
-			'import/extensions': 0,
-			'no-restricted-globals': 0,
-		},
+		rules: { 'no-restricted-globals': 0 },
 	},
 	reactRuleset,
 	nextRuleset,

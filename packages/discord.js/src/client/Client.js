@@ -369,7 +369,7 @@ class Client extends BaseClient {
    */
   async fetchStickerPacks() {
     const data = await this.rest.get(Routes.stickerPacks());
-    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
   }
 
   /**

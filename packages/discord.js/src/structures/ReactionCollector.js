@@ -94,9 +94,9 @@ class ReactionCollector extends Collector {
       this.users.set(user.id, user);
     });
 
-    this.on('remove', (reaction, user) => {
+    this.on('remove', (_reaction, user) => {
       this.total--;
-      if (!this.collected.some(r => r.users.cache.has(user.id))) this.users.delete(user.id);
+      if (!this.collected.some(reaction => reaction.users.cache.has(user.id))) this.users.delete(user.id);
     });
   }
 

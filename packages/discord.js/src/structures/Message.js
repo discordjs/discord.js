@@ -141,7 +141,7 @@ class Message extends Base {
        * in a guild for messages that do not mention the client.</info>
        * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e));
+      this.embeds = data.embeds.map(embed => new Embed(embed));
     } else {
       this.embeds = this.embeds?.slice() ?? [];
     }
@@ -153,7 +153,7 @@ class Message extends Base {
        * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(component => createComponent(component));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -181,7 +181,7 @@ class Message extends Base {
        * @type {Collection<Snowflake, Sticker>}
        */
       this.stickers = new Collection(
-        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+        (data.sticker_items ?? data.stickers)?.map(sticker => [sticker.id, new Sticker(this.client, sticker)]),
       );
     } else {
       this.stickers = new Collection(this.stickers);
