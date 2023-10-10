@@ -942,6 +942,7 @@ export abstract class BaseChannel extends Base {
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
+  public isThreadOnly(): this is ThreadOnlyChannel;
   public toString(): ChannelMention | UserMention;
 }
 
