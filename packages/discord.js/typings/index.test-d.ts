@@ -177,6 +177,14 @@ import {
   StringSelectMenuComponentData,
   ButtonComponentData,
   MediaChannel,
+  PartialDMChannel,
+  PartialGuildMember,
+  PartialMessage,
+  PartialMessageReaction,
+  resolvePartialEmoji,
+  PartialEmojiOnlyId,
+  Emoji,
+  PartialEmoji,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -364,8 +372,8 @@ client.on('messageCreate', async message => {
   // https://github.com/discordjs/discord.js/issues/8545
   {
     // These should not throw any errors when comparing messages from any source.
-    channel.messages.cache.filter(m => m);
-    (await channel.messages.fetch()).filter(m => m.author.id === message.author.id);
+    channel.messages.cache.filter(message => message);
+    (await channel.messages.fetch()).filter(({ author }) => author.id === message.author.id);
 
     if (channel.isDMBased()) {
       expectType<DMMessageManager>(channel.messages.channel.messages);
@@ -2047,7 +2055,7 @@ collector.on('end', (collection, reason) => {
   }
 })();
 
-expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+expectType<Promise<number | null>>(shard.eval(client => client.readyTimestamp));
 
 // Test audit logs
 expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));
@@ -2322,4 +2330,46 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 {
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
+}
+
+declare const partialDMChannel: PartialDMChannel;
+expectType<true>(partialDMChannel.partial);
+expectType<undefined>(partialDMChannel.lastMessageId);
+
+declare const partialGuildMember: PartialGuildMember;
+expectType<true>(partialGuildMember.partial);
+expectType<null>(partialGuildMember.joinedAt);
+expectType<null>(partialGuildMember.joinedTimestamp);
+expectType<null>(partialGuildMember.pending);
+
+declare const partialMessage: PartialMessage;
+expectType<true>(partialMessage.partial);
+expectType<null>(partialMessage.type);
+expectType<null>(partialMessage.system);
+expectType<null>(partialMessage.pinned);
+expectType<null>(partialMessage.tts);
+expectAssignable<null | Message['content']>(partialMessage.content);
+expectAssignable<null | Message['cleanContent']>(partialMessage.cleanContent);
+expectAssignable<null | Message['author']>(partialMessage.author);
+
+declare const partialMessageReaction: PartialMessageReaction;
+expectType<true>(partialMessageReaction.partial);
+expectType<null>(partialMessageReaction.count);
+
+declare const partialThreadMember: PartialThreadMember;
+expectType<true>(partialThreadMember.partial);
+expectType<null>(partialThreadMember.flags);
+expectType<null>(partialThreadMember.joinedAt);
+expectType<null>(partialThreadMember.joinedTimestamp);
+
+declare const partialUser: PartialUser;
+expectType<true>(partialUser.partial);
+expectType<null>(partialUser.username);
+expectType<null>(partialUser.tag);
+expectType<null>(partialUser.discriminator);
+
+declare const emoji: Emoji;
+{
+  expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
+  expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
 }

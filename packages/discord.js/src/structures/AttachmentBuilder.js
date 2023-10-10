@@ -105,11 +105,6 @@ class AttachmentBuilder {
 module.exports = AttachmentBuilder;
 
 /**
- * @external APIAttachment
- * @see {@link https://discord.com/developers/docs/resources/channel#attachment-object}
- */
-
-/**
  * @typedef {Object} AttachmentData
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment

@@ -280,9 +280,9 @@ class RoleManager extends CachedManager {
    */
   async setPositions(rolePositions) {
     // Make sure rolePositions are prepared for API
-    rolePositions = rolePositions.map(o => ({
-      id: this.resolveId(o.role),
-      position: o.position,
+    rolePositions = rolePositions.map(rolePosition => ({
+      id: this.resolveId(rolePosition.role),
+      position: rolePosition.position,
     }));
 
     // Call the API to update role positions
