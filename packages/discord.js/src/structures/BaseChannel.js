@@ -147,6 +147,14 @@ class BaseChannel extends Base {
     return 'bitrate' in this;
   }
 
+  /**
+   * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
+   * @returns {boolean}
+   */
+  isThreadOnly() {
+    return 'availableTags' in this;
+  }
+
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
