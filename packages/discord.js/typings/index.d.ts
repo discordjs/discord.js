@@ -3202,9 +3202,10 @@ export function makeError(obj: MakeErrorOptions): Error;
 export function makePlainError(err: Error): MakeErrorOptions;
 export function mergeDefault(def: unknown, given: unknown): unknown;
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
-export function parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
+export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-export function resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
+export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 export function setPosition<T extends Channel | Role>(
   item: T,
@@ -6157,6 +6158,16 @@ export interface PartialChannelData {
   videoQualityMode?: VideoQualityMode;
   permissionOverwrites?: PartialOverwriteData[];
   rateLimitPerUser?: number;
+}
+
+export interface PartialEmoji {
+  animated: boolean;
+  id: Snowflake | undefined;
+  name: string;
+}
+
+export interface PartialEmojiOnlyId {
+  id: Snowflake;
 }
 
 export type Partialize<

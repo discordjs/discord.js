@@ -80,12 +80,20 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 }
 
 /**
+ * A partial emoji object.
+ * @typedef {Object} PartialEmoji
+ * @property {boolean} animated Whether the emoji is animated
+ * @property {Snowflake|undefined} id The id of the emoji
+ * @property {string} name The name of the emoji
+ */
+
+/**
  * Parses emoji info out of a string. The string must be one of:
  * * A UTF-8 emoji (no id)
  * * A URL-encoded UTF-8 emoji (no id)
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
- * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
+ * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
@@ -95,9 +103,15 @@ function parseEmoji(text) {
 }
 
 /**
+ * A partial emoji object with only an id.
+ * @typedef {Object} PartialEmojiOnlyId
+ * @property {Snowflake} id The id of the emoji
+ */
+
+/**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
- * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
- * @returns {?RawEmoji}
+ * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+ * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Suppling a snowflake yields `PartialEmojiOnlyId`.
  * @private
  */
 function resolvePartialEmoji(emoji) {

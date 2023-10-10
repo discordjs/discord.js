@@ -181,6 +181,10 @@ import {
   PartialGuildMember,
   PartialMessage,
   PartialMessageReaction,
+  resolvePartialEmoji,
+  PartialEmojiOnlyId,
+  Emoji,
+  PartialEmoji,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2363,3 +2367,9 @@ expectType<true>(partialUser.partial);
 expectType<null>(partialUser.username);
 expectType<null>(partialUser.tag);
 expectType<null>(partialUser.discriminator);
+
+declare const emoji: Emoji;
+{
+  expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
+  expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
+}
