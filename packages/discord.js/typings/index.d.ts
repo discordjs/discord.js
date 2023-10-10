@@ -3204,7 +3204,8 @@ export function mergeDefault(def: unknown, given: unknown): unknown;
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | PartialEmojiOnlyId | null;
+export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 export function setPosition<T extends Channel | Role>(
   item: T,
