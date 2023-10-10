@@ -6003,9 +6003,13 @@ export interface MessageCreateOptions extends BaseMessageOptions {
 export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
   Pick<MessageCreateOptions, 'flags' | 'stickers'>;
 
+export interface MessageEditAttachmentData {
+  id: Snowflake;
+}
+
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
-  attachments?: JSONEncodable<AttachmentPayload>[];
+  attachments?: (Attachment | MessageEditAttachmentData)[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 

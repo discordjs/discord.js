@@ -123,7 +123,7 @@ class ApplicationCommand extends Base {
        * The options of this command
        * @type {ApplicationCommandOption[]}
        */
-      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+      this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
       this.options ??= [];
     }
@@ -577,7 +577,7 @@ class ApplicationCommand extends Base {
         [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
         value: choice.value,
       })),
-      options: option.options?.map(o => this.transformOption(o, received)),
+      options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,

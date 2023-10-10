@@ -18,7 +18,7 @@ class ActionRow extends Component {
      * @type {Component[]}
      * @readonly
      */
-    this.components = components.map(c => createComponent(c));
+    this.components = components.map(component => createComponent(component));
   }
 
   /**
@@ -39,7 +39,7 @@ class ActionRow extends Component {
    * @returns {APIActionRowComponent}
    */
   toJSON() {
-    return { ...this.data, components: this.components.map(c => c.toJSON()) };
+    return { ...this.data, components: this.components.map(component => component.toJSON()) };
   }
 }
 

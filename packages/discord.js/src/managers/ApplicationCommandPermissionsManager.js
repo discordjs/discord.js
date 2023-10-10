@@ -210,17 +210,17 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       );
     }
 
-    let existing = [];
+    let existingPermissions = [];
     try {
-      existing = await this.fetch({ guild: guildId, command: commandId });
+      existingPermissions = await this.fetch({ guild: guildId, command: commandId });
     } catch (error) {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
 
     const newPermissions = permissions.slice();
-    for (const perm of existing) {
-      if (!newPermissions.some(x => x.id === perm.id)) {
-        newPermissions.push(perm);
+    for (const existingPermission of existingPermissions) {
+      if (!newPermissions.some(newPermission => newPermission.id === existingPermission.id)) {
+        newPermissions.push(existingPermission);
       }
     }
 
