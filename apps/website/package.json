@@ -12,7 +12,7 @@
 		"build:prod": "pnpm run build:copy_readme && pnpm run build:css && pnpm run build:next",
 		"build:next": "next build",
 		"build:css": "pnpm run generate:css",
-		"build:search_indices": "pnpm run scripts/generateAllIndices.js",
+		"build:search_indices": "pnpm node scripts/generateAllIndices.js",
 		"build:analyze": "turbo run docs --filter='@discordjs/*' --concurrency=4 && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"preview": "next start",
 		"dev": "concurrently 'pnpm run dev:css' 'pnpm run dev:next'",
