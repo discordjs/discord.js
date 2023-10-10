@@ -496,6 +496,8 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
+export type ApplicationFlagsResolvable = BitFieldResolvable<ApplicationFlagsString, number>;
+
 export type AutoModerationRuleResolvable = AutoModerationRule | Snowflake;
 
 export abstract class Base {
@@ -1019,6 +1021,7 @@ export class ClientApplication extends Application {
   private constructor(client: Client<true>, data: RawClientApplicationData);
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
+  public bot: User | null;
   public commands: ApplicationCommandManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1030,8 +1033,10 @@ export class ClientApplication extends Application {
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
+  public interactionsEndpointURL: string | null;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
+  public edit(optins: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public editRoleConnectionMetadataRecords(
@@ -6516,6 +6521,18 @@ export interface WelcomeScreenEditOptions {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationEditOptions {
+  customInstallURL?: string;
+  description?: string;
+  roleConnectionsVerificationURL?: string;
+  installParams?: ClientApplicationInstallParams;
+  flags?: ApplicationFlagsResolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
+  coverImage?: BufferResolvable | Base64Resolvable | null;
+  interactionsEndpointURL?: string;
+  tags?: readonly string[];
 }
 
 export interface ClientApplicationInstallParams {
