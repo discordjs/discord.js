@@ -174,9 +174,9 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const filter = m => m.content.includes('discord');
+   * const filter = message => message.content.includes('discord');
    * const collector = channel.createMessageCollector({ filter, time: 15_000 });
-   * collector.on('collect', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', message => console.log(`Collected ${message.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(options = {}) {
@@ -223,7 +223,7 @@ class TextBasedChannel {
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
    * const collector = channel.createMessageComponentCollector({ filter, time: 15_000 });
-   * collector.on('collect', i => console.log(`Collected ${i.customId}`));
+   * collector.on('collect', interaction => console.log(`Collected ${interaction.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageComponentCollector(options = {}) {
@@ -272,7 +272,8 @@ class TextBasedChannel {
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
-      let messageIds = messages instanceof Collection ? [...messages.keys()] : messages.map(m => m.id ?? m);
+      let messageIds =
+        messages instanceof Collection ? [...messages.keys()] : messages.map(message => message.id ?? message);
       if (filterOld) {
         messageIds = messageIds.filter(
           id => Date.now() - DiscordSnowflake.timestampFrom(id) < MaxBulkDeletableMessageAge,
