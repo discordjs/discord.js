@@ -291,11 +291,6 @@ module.exports = MessagePayload;
  */
 
 /**
- * @external APIMessage
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
- */
-
-/**
  * @external RawFile
  * @see {@link https://discord.js.org/docs/packages/rest/stable/RawFile:Interface}
  */

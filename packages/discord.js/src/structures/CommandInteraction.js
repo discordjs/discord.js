@@ -216,9 +216,3 @@ class CommandInteraction extends BaseInteraction {
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
 
 module.exports = CommandInteraction;
-
-/* eslint-disable max-len */
-/**
- * @external APIInteractionDataResolved
- * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-resolved-data-structure}
- */

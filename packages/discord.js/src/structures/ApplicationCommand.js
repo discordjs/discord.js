@@ -591,16 +591,6 @@ module.exports = ApplicationCommand;
 
 /* eslint-disable max-len */
 /**
- * @external APIApplicationCommand
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure}
- */
-
-/**
- * @external APIApplicationCommandOption
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
- */
-
-/**
  * @external ApplicationCommandOptionAllowedChannelTypes
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
  */

@@ -513,8 +513,3 @@ class GuildMember extends Base {
 TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;
-
-/**
- * @external APIGuildMember
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-member-object}
- */
