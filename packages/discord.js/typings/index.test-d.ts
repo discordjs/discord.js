@@ -364,8 +364,8 @@ client.on('messageCreate', async message => {
   // https://github.com/discordjs/discord.js/issues/8545
   {
     // These should not throw any errors when comparing messages from any source.
-    channel.messages.cache.filter(m => m);
-    (await channel.messages.fetch()).filter(m => m.author.id === message.author.id);
+    channel.messages.cache.filter(message => message);
+    (await channel.messages.fetch()).filter(({ author }) => author.id === message.author.id);
 
     if (channel.isDMBased()) {
       expectType<DMMessageManager>(channel.messages.channel.messages);
@@ -2047,7 +2047,7 @@ collector.on('end', (collection, reason) => {
   }
 })();
 
-expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+expectType<Promise<number | null>>(shard.eval(client => client.readyTimestamp));
 
 // Test audit logs
 expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));

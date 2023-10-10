@@ -164,7 +164,8 @@ class GuildAuditLogsEntry {
      * Specific property changes
      * @type {AuditLogChange[]}
      */
-    this.changes = data.changes?.map(c => ({ key: c.key, old: c.old_value, new: c.new_value })) ?? [];
+    this.changes =
+      data.changes?.map(change => ({ key: change.key, old: change.old_value, new: change.new_value })) ?? [];
 
     /**
      * The entry's id
@@ -302,10 +303,11 @@ class GuildAuditLogsEntry {
           }),
         );
     } else if (targetType === Targets.Invite) {
-      let change = this.changes.find(c => c.key === 'code');
-      change = change.new ?? change.old;
+      const inviteChange = this.changes.find(({ key }) => key === 'code');
 
-      this.target = guild.invites.cache.get(change) ?? new Invite(guild.client, changesReduce(this.changes, { guild }));
+      this.target =
+        guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ??
+        new Invite(guild.client, changesReduce(this.changes, { guild }));
     } else if (targetType === Targets.Message) {
       // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =
