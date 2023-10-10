@@ -177,6 +177,10 @@ import {
   StringSelectMenuComponentData,
   ButtonComponentData,
   MediaChannel,
+  PartialDMChannel,
+  PartialGuildMember,
+  PartialMessage,
+  PartialMessageReaction,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2323,3 +2327,39 @@ expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
 }
+
+declare const partialDMChannel: PartialDMChannel;
+expectType<true>(partialDMChannel.partial);
+expectType<undefined>(partialDMChannel.lastMessageId);
+
+declare const partialGuildMember: PartialGuildMember;
+expectType<true>(partialGuildMember.partial);
+expectType<null>(partialGuildMember.joinedAt);
+expectType<null>(partialGuildMember.joinedTimestamp);
+expectType<null>(partialGuildMember.pending);
+
+declare const partialMessage: PartialMessage;
+expectType<true>(partialMessage.partial);
+expectType<null>(partialMessage.type);
+expectType<null>(partialMessage.system);
+expectType<null>(partialMessage.pinned);
+expectType<null>(partialMessage.tts);
+expectAssignable<null | Message['content']>(partialMessage.content);
+expectAssignable<null | Message['cleanContent']>(partialMessage.cleanContent);
+expectAssignable<null | Message['author']>(partialMessage.author);
+
+declare const partialMessageReaction: PartialMessageReaction;
+expectType<true>(partialMessageReaction.partial);
+expectType<null>(partialMessageReaction.count);
+
+declare const partialThreadMember: PartialThreadMember;
+expectType<true>(partialThreadMember.partial);
+expectType<null>(partialThreadMember.flags);
+expectType<null>(partialThreadMember.joinedAt);
+expectType<null>(partialThreadMember.joinedTimestamp);
+
+declare const partialUser: PartialUser;
+expectType<true>(partialUser.partial);
+expectType<null>(partialUser.username);
+expectType<null>(partialUser.tag);
+expectType<null>(partialUser.discriminator);

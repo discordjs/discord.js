@@ -6161,15 +6161,17 @@ export interface PartialChannelData {
 
 export type Partialize<
   T extends AllowedPartial,
-  N extends keyof T | null = null,
-  M extends keyof T | null = null,
-  E extends keyof T | '' = '',
+  NulledKeys extends keyof T | null = null,
+  NullableKeys extends keyof T | null = null,
+  OverridableKeys extends keyof T | '' = '',
 > = {
-  readonly client: Client<true>;
-  id: Snowflake;
-  partial: true;
-} & {
-  [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
+  [K in keyof Omit<T, OverridableKeys>]: K extends 'partial'
+    ? true
+    : K extends NulledKeys
+    ? null
+    : K extends NullableKeys
+    ? T[K] | null
+    : T[K];
 };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
