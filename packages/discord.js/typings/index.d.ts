@@ -1623,7 +1623,7 @@ export class GuildOnboardingPrompt extends Base {
 
 export class GuildOnboardingPromptOption extends Base {
   private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
-  private _emoji: RawEmoji;
+  private _emoji: APIPartialEmoji;
 
   public id: Snowflake;
   public get emoji(): Emoji | GuildEmoji | null;
@@ -5813,12 +5813,6 @@ export interface GuildOnboardingPromptOptionData {
   title: string;
   description?: string | null;
   emoji?: EmojiIdentifierResolvable | Emoji | null;
-}
-
-export interface RawEmoji {
-  id: Snowflake | null;
-  name: string;
-  animated: boolean;
 }
 
 export type HexColorString = `#${string}`;

@@ -46,7 +46,7 @@ class GuildOnboardingPromptOption extends Base {
 
     /**
      * The raw emoji of the option
-     * @type {RawEmoji}
+     * @type {APIPartialEmoji}
      * @private
      */
     this._emoji = data.emoji;

@@ -161,6 +161,11 @@
  */
 
 /**
+ * @external APIPartialEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
+ */
+
+/**
  * @external APIRole
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIRole}
  */
