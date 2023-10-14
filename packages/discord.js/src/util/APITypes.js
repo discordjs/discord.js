@@ -86,8 +86,18 @@
  */
 
 /**
+ * @external APIGuildMember
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildMember}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
+ */
+
+/**
+ * @external APIInteractionDataResolved
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIInteractionDataResolved}
  */
 
 /**
@@ -151,8 +161,8 @@
  */
 
 /**
- * @external APIPresence
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPresence}
+ * @external APIRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIRole}
  */
 
 /**
@@ -163,6 +173,11 @@
 /**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
+ */
+
+/**
+ * @external APISticker
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISticker}
  */
 
 /**
@@ -283,6 +298,11 @@
 /**
  * @external GatewayOpcodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayOpcodes}
+ */
+
+/**
+ * @external GatewayPresenceUpdateData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/GatewayPresenceUpdateData}
  */
 
 /**

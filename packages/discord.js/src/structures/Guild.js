@@ -1263,7 +1263,7 @@ class Guild extends AnonymousGuild {
    * @example
    * // Delete a guild
    * guild.delete()
-   *   .then(g => console.log(`Deleted the guild ${g}`))
+   *   .then(guild => console.log(`Deleted the guild ${guild}`))
    *   .catch(console.error);
    */
   async delete() {
@@ -1365,14 +1365,11 @@ class Guild extends AnonymousGuild {
     const channelIsCategory = channel.type === ChannelType.GuildCategory;
     const types = getSortableGroupTypes(channel.type);
     return discordSort(
-      this.channels.cache.filter(c => types.includes(c.type) && (channelIsCategory || c.parentId === channel.parentId)),
+      this.channels.cache.filter(
+        ({ parentId, type }) => types.includes(type) && (channelIsCategory || parentId === channel.parentId),
+      ),
     );
   }
 }
 
 exports.Guild = Guild;
-
-/**
- * @external APIGuild
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-object}
- */

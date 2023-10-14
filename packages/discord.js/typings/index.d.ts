@@ -496,6 +496,8 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
 
+export type ApplicationFlagsResolvable = BitFieldResolvable<ApplicationFlagsString, number>;
+
 export type AutoModerationRuleResolvable = AutoModerationRule | Snowflake;
 
 export abstract class Base {
@@ -942,6 +944,7 @@ export abstract class BaseChannel extends Base {
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
+  public isThreadOnly(): this is ThreadOnlyChannel;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -1018,6 +1021,7 @@ export class ClientApplication extends Application {
   private constructor(client: Client<true>, data: RawClientApplicationData);
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
+  public bot: User | null;
   public commands: ApplicationCommandManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1029,8 +1033,10 @@ export class ClientApplication extends Application {
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
+  public interactionsEndpointURL: string | null;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
+  public edit(optins: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public editRoleConnectionMetadataRecords(
@@ -3196,9 +3202,10 @@ export function makeError(obj: MakeErrorOptions): Error;
 export function makePlainError(err: Error): MakeErrorOptions;
 export function mergeDefault(def: unknown, given: unknown): unknown;
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
-export function parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
+export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-export function resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
+export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 export function setPosition<T extends Channel | Role>(
   item: T,
@@ -6003,9 +6010,13 @@ export interface MessageCreateOptions extends BaseMessageOptions {
 export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
   Pick<MessageCreateOptions, 'flags' | 'stickers'>;
 
+export interface MessageEditAttachmentData {
+  id: Snowflake;
+}
+
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
-  attachments?: JSONEncodable<AttachmentPayload>[];
+  attachments?: (Attachment | MessageEditAttachmentData)[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
@@ -6149,17 +6160,29 @@ export interface PartialChannelData {
   rateLimitPerUser?: number;
 }
 
+export interface PartialEmoji {
+  animated: boolean;
+  id: Snowflake | undefined;
+  name: string;
+}
+
+export interface PartialEmojiOnlyId {
+  id: Snowflake;
+}
+
 export type Partialize<
   T extends AllowedPartial,
-  N extends keyof T | null = null,
-  M extends keyof T | null = null,
-  E extends keyof T | '' = '',
+  NulledKeys extends keyof T | null = null,
+  NullableKeys extends keyof T | null = null,
+  OverridableKeys extends keyof T | '' = '',
 > = {
-  readonly client: Client<true>;
-  id: Snowflake;
-  partial: true;
-} & {
-  [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
+  [K in keyof Omit<T, OverridableKeys>]: K extends 'partial'
+    ? true
+    : K extends NulledKeys
+    ? null
+    : K extends NullableKeys
+    ? T[K] | null
+    : T[K];
 };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
@@ -6511,6 +6534,18 @@ export interface WelcomeScreenEditOptions {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationEditOptions {
+  customInstallURL?: string;
+  description?: string;
+  roleConnectionsVerificationURL?: string;
+  installParams?: ClientApplicationInstallParams;
+  flags?: ApplicationFlagsResolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
+  coverImage?: BufferResolvable | Base64Resolvable | null;
+  interactionsEndpointURL?: string;
+  tags?: readonly string[];
 }
 
 export interface ClientApplicationInstallParams {
