@@ -910,6 +910,7 @@ class Guild extends AnonymousGuild {
   /**
    * Data for editing a guild onboarding prompt option.
    * @typedef {Object} GuildOnboardingPromptOptionData
+   * @property {?Snowflake} [id] The id of the option
    * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [channels]
    * The channels a member is added to when the option is selected
    * @property {RoleResolvable[]|Collection<Snowflake, Role>} [roles]
@@ -928,7 +929,7 @@ class Guild extends AnonymousGuild {
     const newData = await this.client.rest.put(Routes.guildOnboarding(this.id), {
       body: {
         prompts: options.prompts?.map(prompt => ({
-          // Currently, the option ids are required even for new prompts (which won't be used)
+          // Currently, the prompt ids are required even for new ones (which won't be used)
           id: prompt.id ?? DiscordSnowflake.generate().toString(),
           title: prompt.title,
           single_select: prompt.singleSelect,
@@ -939,6 +940,7 @@ class Guild extends AnonymousGuild {
             const emoji = resolvePartialEmoji(option.emoji);
 
             return {
+              id: option.id,
               channel_ids: option.channels?.map(channel => this.channels.resolveId(channel)),
               role_ids: option.roles?.map(role => this.roles.resolveId(role)),
               title: option.title,

@@ -5808,6 +5808,7 @@ export interface GuildOnboardingPromptData {
 }
 
 export interface GuildOnboardingPromptOptionData {
+  id?: Snowflake | null;
   channels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
   roles?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
   title: string;
