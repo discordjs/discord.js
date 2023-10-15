@@ -3131,13 +3131,20 @@ export class Typing extends Base {
   };
 }
 
+export interface AvatarDecorationData {
+  asset: string;
+  skuId: Snowflake;
+}
+
 export class User extends PartialTextBasedChannel(Base) {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
+  /** @deprecated Use {@link avatarDecorationData} instead */
   public avatarDecoration: string | null;
+  public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
   public bot: boolean;
   public get createdAt(): Date;
@@ -3155,7 +3162,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
-  public avatarDecorationURL(options?: BaseImageURLOptions): string | null;
+  public avatarDecorationURL(options?: ImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;

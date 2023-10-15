@@ -98,8 +98,17 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a user avatar decoration preset URL.
+	 *
+	 * @param asset - The avatar decoration hash
+	 * @param options - Optional options for the avatar decoration preset
+	 */
+	public avatarDecoration(asset: string, options?: Readonly<ImageURLOptions>): string;
+
+	/**
 	 * Generates a user avatar decoration URL.
 	 *
+	 * @deprecated This overload is deprecated. Pass an hash instead.
 	 * @param userId - The id of the user
 	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
 	 * @param options - Optional options for the avatar decoration
@@ -108,8 +117,18 @@ export class CDN {
 		userId: string,
 		userAvatarDecoration: string,
 		options?: Readonly<BaseImageURLOptions>,
+	): string;
+
+	public avatarDecoration(
+		userIdOrAsset: string,
+		assetOrOptions?: Readonly<ImageURLOptions> | string,
+		options?: Readonly<BaseImageURLOptions>,
 	): string {
-		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
+		if (typeof assetOrOptions === 'string') {
+			return this.makeURL(`/avatar-decorations/${userIdOrAsset}/${assetOrOptions}`, options);
+		}
+
+		return this.dynamicMakeURL(`/avatar-decoration-presets/${userIdOrAsset}`, userIdOrAsset, assetOrOptions);
 	}
 
 	/**

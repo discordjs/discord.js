@@ -29,6 +29,14 @@ test('avatar dynamic-not-animated', () => {
 	expect(cdn.avatar(id, hash)).toEqual(`${base}/avatars/${id}/${hash}.webp`);
 });
 
+test('avatar decoration default', () => {
+	expect(cdn.avatarDecoration(id, hash)).toEqual(`${base}/avatar-decorations/${id}/${hash}.webp`);
+});
+
+test('avatar decoration presets default', () => {
+	expect(cdn.avatarDecoration(hash)).toEqual(`${base}/avatar-decoration-presets/${hash}.webp`);
+});
+
 test('banner default', () => {
 	expect(cdn.banner(id, hash)).toEqual(`${base}/banners/${id}/${hash}.webp`);
 });

@@ -127,10 +127,30 @@ class User extends Base {
       /**
        * The user avatar decoration's hash
        * @type {?string}
+       * @deprecated Use `avatarDecorationData` instead
        */
       this.avatarDecoration = data.avatar_decoration;
     } else {
       this.avatarDecoration ??= null;
+    }
+
+    /**
+     * @typedef {Object} AvatarDecorationData
+     * @property {string} asset The avatar decoration hash
+     * @property {Snowflake} skuId The id of the avatar decoration's SKU
+     */
+
+    if (data.avatar_decoration_data) {
+      /**
+       * The user avatar decoration's data
+       * @type {?AvatarDecorationData}
+       */
+      this.avatarDecorationData = {
+        asset: data.avatar_decoration_data.asset,
+        skuId: data.avatar_decoration_data.sku_id,
+      };
+    } else {
+      this.avatarDecorationData = null;
     }
   }
 
@@ -172,10 +192,14 @@ class User extends Base {
 
   /**
    * A link to the user's avatar decoration.
-   * @param {BaseImageURLOptions} [options={}] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   avatarDecorationURL(options = {}) {
+    if (this.avatarDecorationData) {
+      return this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset, options);
+    }
+
     return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);
   }
 
