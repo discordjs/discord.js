@@ -161,6 +161,11 @@
  */
 
 /**
+ * @external APIPartialEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
+ */
+
+/**
  * @external APIRole
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIRole}
  */
@@ -333,6 +338,11 @@
 /**
  * @external GuildNSFWLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildNSFWLevel}
+ */
+
+/**
+ * @external GuildOnboardingMode
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingMode}
  */
 
 /**

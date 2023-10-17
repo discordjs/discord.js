@@ -43,6 +43,12 @@ class GuildOnboarding extends Base {
      * @type {boolean}
      */
     this.enabled = data.enabled;
+
+    /**
+     * The mode of this onboarding
+     * @type {GuildOnboardingMode}
+     */
+    this.mode = data.mode;
   }
 
   /**

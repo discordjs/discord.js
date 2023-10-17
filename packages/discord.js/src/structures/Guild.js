@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
 const AnonymousGuild = require('./AnonymousGuild');
 const GuildAuditLogs = require('./GuildAuditLogs');
@@ -28,7 +29,7 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const DataResolver = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
-const { discordSort, getSortableGroupTypes } = require('../util/Util');
+const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -879,6 +880,85 @@ class Guild extends AnonymousGuild {
     });
 
     return this.client.actions.GuildUpdate.handle(data).updated;
+  }
+
+  /**
+   * Options used to edit the guild onboarding.
+   * @typedef {Object} GuildOnboardingEditOptions
+   * @property {GuildOnboardingPromptData[]|Collection<Snowflake, GuildOnboardingPrompt>} [prompts]
+   * The prompts shown during onboarding and in customize community
+   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [defaultChannels]
+   * The channels that new members get opted into automatically
+   * @property {boolean} [enabled] Whether the onboarding is enabled
+   * @property {GuildOnboardingMode} [mode] The mode to edit the guild onboarding with
+   * @property {string} [reason] The reason for editing the guild onboarding
+   */
+
+  /**
+   * Data for editing a guild onboarding prompt.
+   * @typedef {Object} GuildOnboardingPromptData
+   * @property {Snowflake} [id] The id of the prompt
+   * @property {string} title The title for the prompt
+   * @property {boolean} [singleSelect] Whether users are limited to selecting one option for the prompt
+   * @property {boolean} [required] Whether the prompt is required before a user completes the onboarding flow
+   * @property {boolean} [inOnboarding] Whether the prompt is present in the onboarding flow
+   * @property {GuildOnboardingPromptType} [type] The type of the prompt
+   * @property {GuildOnboardingPromptOptionData[]|Collection<Snowflake, GuildOnboardingPrompt>} options
+   * The options available within the prompt
+   */
+
+  /**
+   * Data for editing a guild onboarding prompt option.
+   * @typedef {Object} GuildOnboardingPromptOptionData
+   * @property {?Snowflake} [id] The id of the option
+   * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [channels]
+   * The channels a member is added to when the option is selected
+   * @property {RoleResolvable[]|Collection<Snowflake, Role>} [roles]
+   * The roles assigned to a member when the option is selected
+   * @property {string} title The title of the option
+   * @property {?string} [description] The description of the option
+   * @property {?(EmojiIdentifierResolvable|Emoji)} [emoji] The emoji of the option
+   */
+
+  /**
+   * Edits the guild onboarding data for this guild.
+   * @param {GuildOnboardingEditOptions} options The options to provide
+   * @returns {Promise<GuildOnboarding>}
+   */
+  async editOnboarding(options) {
+    const newData = await this.client.rest.put(Routes.guildOnboarding(this.id), {
+      body: {
+        prompts: options.prompts?.map(prompt => ({
+          // Currently, the prompt ids are required even for new ones (which won't be used)
+          id: prompt.id ?? DiscordSnowflake.generate().toString(),
+          title: prompt.title,
+          single_select: prompt.singleSelect,
+          required: prompt.required,
+          in_onboarding: prompt.inOnboarding,
+          type: prompt.type,
+          options: prompt.options.map(option => {
+            const emoji = resolvePartialEmoji(option.emoji);
+
+            return {
+              id: option.id,
+              channel_ids: option.channels?.map(channel => this.channels.resolveId(channel)),
+              role_ids: option.roles?.map(role => this.roles.resolveId(role)),
+              title: option.title,
+              description: option.description,
+              emoji_animated: emoji?.animated,
+              emoji_id: emoji?.id,
+              emoji_name: emoji?.name,
+            };
+          }),
+        })),
+        default_channel_ids: options.defaultChannels?.map(channel => this.channels.resolveId(channel)),
+        enabled: options.enabled,
+        mode: options.mode,
+      },
+      reason: options.reason,
+    });
+
+    return new GuildOnboarding(this.client, newData);
   }
 
   /**
