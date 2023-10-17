@@ -67,7 +67,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"tslib": "^2.6.2",
-		"undici": "5.23.0"
+		"undici": "5.26.2"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.0",
