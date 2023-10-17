@@ -75,7 +75,7 @@ class GuildOnboardingPromptOption extends Base {
 
   /**
    * The emoji of this onboarding prompt option
-   * @type {GuildEmoji|Emoji}
+   * @type {?(GuildEmoji|Emoji)}
    */
   get emoji() {
     if (!this._emoji.id && !this._emoji.name) return null;
