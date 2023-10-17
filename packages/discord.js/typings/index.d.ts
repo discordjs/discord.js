@@ -35,7 +35,7 @@ import {
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
-import { Collection } from '@discordjs/collection';
+import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
@@ -167,6 +167,7 @@ import {
   RoleFlags,
   TeamMemberRole,
   GuildWidgetStyle,
+  GuildOnboardingMode,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1378,6 +1379,7 @@ export class Guild extends AnonymousGuild {
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
+  public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
@@ -1603,6 +1605,7 @@ export class GuildOnboarding extends Base {
   public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
   public defaultChannels: Collection<Snowflake, GuildChannel>;
   public enabled: boolean;
+  public mode: GuildOnboardingMode;
 }
 
 export class GuildOnboardingPrompt extends Base {
@@ -1620,12 +1623,14 @@ export class GuildOnboardingPrompt extends Base {
 
 export class GuildOnboardingPromptOption extends Base {
   private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
+  private _emoji: APIPartialEmoji;
+
   public id: Snowflake;
+  public get emoji(): Emoji | GuildEmoji | null;
   public get guild(): Guild;
   public guildId: Snowflake;
   public channels: Collection<Snowflake, GuildChannel>;
   public roles: Collection<Snowflake, Role>;
-  public emoji: GuildOnboardingPromptOptionEmoji | null;
   public title: string;
   public description: string | null;
 }
@@ -5784,10 +5789,31 @@ export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
-export interface GuildOnboardingPromptOptionEmoji {
-  id: Snowflake | null;
-  name: string;
-  animated: boolean;
+export interface GuildOnboardingEditOptions {
+  prompts?: readonly GuildOnboardingPromptData[] | ReadonlyCollection<Snowflake, GuildOnboardingPrompt>;
+  defaultChannels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  enabled?: boolean;
+  mode?: GuildOnboardingMode;
+  reason?: string;
+}
+
+export interface GuildOnboardingPromptData {
+  id?: Snowflake;
+  title: string;
+  singleSelect?: boolean;
+  required?: boolean;
+  inOnboarding?: boolean;
+  type?: GuildOnboardingPromptType;
+  options: readonly GuildOnboardingPromptOptionData[] | ReadonlyCollection<Snowflake, GuildOnboardingPromptOption>;
+}
+
+export interface GuildOnboardingPromptOptionData {
+  id?: Snowflake | null;
+  channels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  roles?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
+  title: string;
+  description?: string | null;
+  emoji?: EmojiIdentifierResolvable | Emoji | null;
 }
 
 export type HexColorString = `#${string}`;
