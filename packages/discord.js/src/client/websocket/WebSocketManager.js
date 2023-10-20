@@ -258,9 +258,7 @@ class WebSocketManager extends EventEmitter {
          * @param {number} id The shard id that disconnected
          */
         this.client.emit(Events.ShardDisconnect, { code, reason: reasonIsDeprecated, wasClean: true }, shardId);
-        if (code in GatewayCloseCodes) {
-          this.debug(`Shard not resumable: ${GatewayCloseCodes[code]}`, shardId);
-        }
+        this.debug(`Shard not resumable: ${code} (${GatewayCloseCodes[code] ?? CloseCodes[code]})`, shardId);
         return;
       }
 
