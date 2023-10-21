@@ -18,8 +18,8 @@ function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
 
   const objProps = Object.keys(obj)
-    .filter(k => !k.startsWith('_'))
-    .map(k => ({ [k]: true }));
+    .filter(key => !key.startsWith('_'))
+    .map(key => ({ [key]: true }));
 
   props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
@@ -39,7 +39,7 @@ function flatten(obj, ...props) {
     // If the valueOf is a Collection, use its array of keys
     else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
     // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-    else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? flatten(e));
+    else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
     // If it's an object with a primitive `valueOf`, use that value
     else if (typeof valueOf !== 'object') out[newProp] = valueOf;
     // If it's an object with a toJSON function, use the return value of it
@@ -80,12 +80,20 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 }
 
 /**
+ * A partial emoji object.
+ * @typedef {Object} PartialEmoji
+ * @property {boolean} animated Whether the emoji is animated
+ * @property {Snowflake|undefined} id The id of the emoji
+ * @property {string} name The name of the emoji
+ */
+
+/**
  * Parses emoji info out of a string. The string must be one of:
  * * A UTF-8 emoji (no id)
  * * A URL-encoded UTF-8 emoji (no id)
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
- * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
+ * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
@@ -95,9 +103,15 @@ function parseEmoji(text) {
 }
 
 /**
+ * A partial emoji object with only an id.
+ * @typedef {Object} PartialEmojiOnlyId
+ * @property {Snowflake} id The id of the emoji
+ */
+
+/**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
- * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
- * @returns {?RawEmoji}
+ * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+ * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  * @private
  */
 function resolvePartialEmoji(emoji) {

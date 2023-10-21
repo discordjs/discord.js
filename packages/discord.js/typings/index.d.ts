@@ -35,7 +35,7 @@ import {
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
-import { Collection } from '@discordjs/collection';
+import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
@@ -167,6 +167,7 @@ import {
   RoleFlags,
   TeamMemberRole,
   GuildWidgetStyle,
+  GuildOnboardingMode,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -495,6 +496,8 @@ export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
   public static Flags: typeof ApplicationFlags;
   public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
 }
+
+export type ApplicationFlagsResolvable = BitFieldResolvable<ApplicationFlagsString, number>;
 
 export type AutoModerationRuleResolvable = AutoModerationRule | Snowflake;
 
@@ -942,6 +945,7 @@ export abstract class BaseChannel extends Base {
   public isTextBased(): this is TextBasedChannel;
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
+  public isThreadOnly(): this is ThreadOnlyChannel;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -1018,6 +1022,7 @@ export class ClientApplication extends Application {
   private constructor(client: Client<true>, data: RawClientApplicationData);
   public botPublic: boolean | null;
   public botRequireCodeGrant: boolean | null;
+  public bot: User | null;
   public commands: ApplicationCommandManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1029,8 +1034,10 @@ export class ClientApplication extends Application {
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
+  public interactionsEndpointURL: string | null;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
+  public edit(optins: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public editRoleConnectionMetadataRecords(
@@ -1372,6 +1379,7 @@ export class Guild extends AnonymousGuild {
   public delete(): Promise<Guild>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
+  public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
   public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
@@ -1597,6 +1605,7 @@ export class GuildOnboarding extends Base {
   public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
   public defaultChannels: Collection<Snowflake, GuildChannel>;
   public enabled: boolean;
+  public mode: GuildOnboardingMode;
 }
 
 export class GuildOnboardingPrompt extends Base {
@@ -1614,12 +1623,14 @@ export class GuildOnboardingPrompt extends Base {
 
 export class GuildOnboardingPromptOption extends Base {
   private constructor(client: Client, data: APIGuildOnboardingPromptOption, guildId: Snowflake);
+  private _emoji: APIPartialEmoji;
+
   public id: Snowflake;
+  public get emoji(): Emoji | GuildEmoji | null;
   public get guild(): Guild;
   public guildId: Snowflake;
   public channels: Collection<Snowflake, GuildChannel>;
   public roles: Collection<Snowflake, Role>;
-  public emoji: GuildOnboardingPromptOptionEmoji | null;
   public title: string;
   public description: string | null;
 }
@@ -3171,7 +3182,7 @@ export class UserContextMenuCommandInteraction<
 > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.User;
   public get targetUser(): User;
-  public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember> | null;
   public inGuild(): this is UserContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is UserContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is UserContextMenuCommandInteraction<'raw'>;
@@ -3196,9 +3207,10 @@ export function makeError(obj: MakeErrorOptions): Error;
 export function makePlainError(err: Error): MakeErrorOptions;
 export function mergeDefault(def: unknown, given: unknown): unknown;
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
-export function parseEmoji(text: string): { animated: boolean; name: string; id: Snowflake | null } | null;
+export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-export function resolvePartialEmoji(emoji: EmojiIdentifierResolvable): Partial<APIPartialEmoji> | null;
+export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 export function setPosition<T extends Channel | Role>(
   item: T,
@@ -5214,6 +5226,7 @@ export interface StageInstanceCreateOptions {
   topic: string;
   privacyLevel?: StageInstancePrivacyLevel;
   sendStartNotification?: boolean;
+  guildScheduledEvent?: GuildScheduledEventResolvable;
 }
 
 export interface CrosspostedChannel {
@@ -5776,10 +5789,31 @@ export type GuildTemplateResolvable = string;
 
 export type GuildVoiceChannelResolvable = VoiceBasedChannel | Snowflake;
 
-export interface GuildOnboardingPromptOptionEmoji {
-  id: Snowflake | null;
-  name: string;
-  animated: boolean;
+export interface GuildOnboardingEditOptions {
+  prompts?: readonly GuildOnboardingPromptData[] | ReadonlyCollection<Snowflake, GuildOnboardingPrompt>;
+  defaultChannels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  enabled?: boolean;
+  mode?: GuildOnboardingMode;
+  reason?: string;
+}
+
+export interface GuildOnboardingPromptData {
+  id?: Snowflake;
+  title: string;
+  singleSelect?: boolean;
+  required?: boolean;
+  inOnboarding?: boolean;
+  type?: GuildOnboardingPromptType;
+  options: readonly GuildOnboardingPromptOptionData[] | ReadonlyCollection<Snowflake, GuildOnboardingPromptOption>;
+}
+
+export interface GuildOnboardingPromptOptionData {
+  id?: Snowflake | null;
+  channels?: readonly ChannelResolvable[] | ReadonlyCollection<Snowflake, GuildChannel>;
+  roles?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
+  title: string;
+  description?: string | null;
+  emoji?: EmojiIdentifierResolvable | Emoji | null;
 }
 
 export type HexColorString = `#${string}`;
@@ -6002,9 +6036,13 @@ export interface MessageCreateOptions extends BaseMessageOptions {
 export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
   Pick<MessageCreateOptions, 'flags' | 'stickers'>;
 
+export interface MessageEditAttachmentData {
+  id: Snowflake;
+}
+
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
-  attachments?: JSONEncodable<AttachmentPayload>[];
+  attachments?: (Attachment | MessageEditAttachmentData)[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
@@ -6148,17 +6186,29 @@ export interface PartialChannelData {
   rateLimitPerUser?: number;
 }
 
+export interface PartialEmoji {
+  animated: boolean;
+  id: Snowflake | undefined;
+  name: string;
+}
+
+export interface PartialEmojiOnlyId {
+  id: Snowflake;
+}
+
 export type Partialize<
   T extends AllowedPartial,
-  N extends keyof T | null = null,
-  M extends keyof T | null = null,
-  E extends keyof T | '' = '',
+  NulledKeys extends keyof T | null = null,
+  NullableKeys extends keyof T | null = null,
+  OverridableKeys extends keyof T | '' = '',
 > = {
-  readonly client: Client<true>;
-  id: Snowflake;
-  partial: true;
-} & {
-  [K in keyof Omit<T, 'client' | 'id' | 'partial' | E>]: K extends N ? null : K extends M ? T[K] | null : T[K];
+  [K in keyof Omit<T, OverridableKeys>]: K extends 'partial'
+    ? true
+    : K extends NulledKeys
+    ? null
+    : K extends NullableKeys
+    ? T[K] | null
+    : T[K];
 };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
@@ -6510,6 +6560,18 @@ export interface WelcomeScreenEditOptions {
   enabled?: boolean;
   description?: string;
   welcomeChannels?: WelcomeChannelData[];
+}
+
+export interface ClientApplicationEditOptions {
+  customInstallURL?: string;
+  description?: string;
+  roleConnectionsVerificationURL?: string;
+  installParams?: ClientApplicationInstallParams;
+  flags?: ApplicationFlagsResolvable;
+  icon?: BufferResolvable | Base64Resolvable | null;
+  coverImage?: BufferResolvable | Base64Resolvable | null;
+  interactionsEndpointURL?: string;
+  tags?: readonly string[];
 }
 
 export interface ClientApplicationInstallParams {

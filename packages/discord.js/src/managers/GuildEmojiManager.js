@@ -130,7 +130,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   async edit(emoji, options) {
     const id = this.resolveId(emoji);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
-    const roles = options.roles?.map(r => this.guild.roles.resolveId(r));
+    const roles = options.roles?.map(role => this.guild.roles.resolveId(role));
     const newData = await this.client.rest.patch(Routes.guildEmoji(this.guild.id, id), {
       body: {
         name: options.name,

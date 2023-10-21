@@ -4,14 +4,6 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 
 /**
- * Represents raw emoji data from the API
- * @typedef {APIEmoji} RawEmoji
- * @property {?Snowflake} id The emoji's id
- * @property {?string} name The emoji's name
- * @property {?boolean} animated Whether the emoji is animated
- */
-
-/**
  * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
  * @extends {Base}
  */
@@ -101,8 +93,3 @@ class Emoji extends Base {
 }
 
 exports.Emoji = Emoji;
-
-/**
- * @external APIEmoji
- * @see {@link https://discord.com/developers/docs/resources/emoji#emoji-object}
- */
