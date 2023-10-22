@@ -59,6 +59,15 @@ class WebhookClient extends BaseClient {
   }
 
   /**
+   * Deletes the webhook.
+   * @param {string} [reason] Reason for deleting this webhook
+   * @returns {Promise<void>}
+   */
+  delete(reason) {
+    return super.delete(reason);
+  }
+
+  /**
    * The options the webhook client was instantiated with.
    * @type {WebhookClientOptions}
    * @name WebhookClient#options
@@ -91,7 +100,6 @@ class WebhookClient extends BaseClient {
 
   sendSlackMessage() {}
   edit() {}
-  delete() {}
   deleteMessage() {}
   get createdTimestamp() {}
   get createdAt() {}
