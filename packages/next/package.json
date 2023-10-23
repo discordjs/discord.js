@@ -71,7 +71,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "0.37.60"
+		"discord-api-types": "0.37.61"
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.0",

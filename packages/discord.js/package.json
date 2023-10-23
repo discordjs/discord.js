@@ -59,7 +59,7 @@
     "@discordjs/ws": "workspace:^",
     "@sapphire/snowflake": "3.5.1",
     "@types/ws": "8.5.7",
-    "discord-api-types": "0.37.60",
+    "discord-api-types": "0.37.61",
     "fast-deep-equal": "3.1.3",
     "lodash.snakecase": "4.1.1",
     "tslib": "2.6.2",
