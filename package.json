@@ -22,7 +22,7 @@
 		"prepare": "is-ci || husky install",
 		"update": "pnpm --recursive update --interactive",
 		"update:latest": "pnpm --recursive update --interactive --latest",
-		"create-package": "turbo gen create-package"
+		"create-package": "turbo gen create-package --args"
 	},
 	"type": "module",
 	"contributors": [
@@ -49,25 +49,25 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^17.7.1",
-		"@commitlint/config-angular": "^17.7.0",
+		"@commitlint/cli": "^17.8.0",
+		"@commitlint/config-angular": "^17.8.0",
 		"@favware/cliff-jumper": "^2.2.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.7",
 		"@unocss/eslint-plugin": "^0.55.3",
 		"@vitest/coverage-v8": "^0.34.3",
 		"conventional-changelog-cli": "^3.0.0",
-		"eslint": "^8.48.0",
+		"eslint": "^8.51.0",
 		"eslint-config-neon": "^0.1.57",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^14.0.1",
 		"lodash.merge": "^4.6.2",
 		"tsup": "^7.2.0",
-		"turbo": "^1.10.13",
+		"turbo": "^1.10.15",
 		"typescript": "^5.2.2",
 		"unocss": "^0.55.3",
-		"vercel": "^32.1.0",
+		"vercel": "^32.4.1",
 		"vitest": "^0.34.3"
 	},
 	"pnpm": {
@@ -81,7 +81,7 @@
 		},
 		"patchedDependencies": {
 			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch",
-			"eslint-plugin-i@2.28.0-2": "patches/eslint-plugin-i@2.28.0-2.patch"
+			"eslint-plugin-i@2.28.1": "patches/eslint-plugin-i@2.28.1.patch"
 		}
 	},
 	"engines": {

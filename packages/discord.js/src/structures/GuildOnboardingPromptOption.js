@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const Base = require('./Base');
-const { resolvePartialEmoji } = require('../util/Util');
+const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents the data of an option from a prompt of a guilds onboarding.
@@ -45,18 +45,11 @@ class GuildOnboardingPromptOption extends Base {
     );
 
     /**
-     * The data for an emoji of a guilds onboarding prompt option
-     * @typedef {Object} GuildOnboardingPromptOptionEmoji
-     * @property {?Snowflake} id The id of the emoji
-     * @property {string} name The name of the emoji
-     * @property {boolean} animated Whether the emoji is animated
+     * The raw emoji of the option
+     * @type {APIPartialEmoji}
+     * @private
      */
-
-    /**
-     * The emoji of the option
-     * @type {?GuildOnboardingPromptOptionEmoji}
-     */
-    this.emoji = resolvePartialEmoji(data.emoji);
+    this._emoji = data.emoji;
 
     /**
      * The title of the option
@@ -78,6 +71,15 @@ class GuildOnboardingPromptOption extends Base {
    */
   get guild() {
     return this.client.guilds.cache.get(this.guildId);
+  }
+
+  /**
+   * The emoji of this onboarding prompt option
+   * @type {?(GuildEmoji|Emoji)}
+   */
+  get emoji() {
+    if (!this._emoji.id && !this._emoji.name) return null;
+    return this.client.emojis.resolve(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 }
 
