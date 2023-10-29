@@ -60,7 +60,7 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 					);
 				}
 
-				return token.text;
+				return token.text.replace(/import\("discord-api-types(?:\/v\d+)?"\)\./, '');
 			})}
 		</span>
 	);
