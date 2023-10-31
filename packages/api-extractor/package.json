@@ -1,0 +1,63 @@
+{
+  "name": "@microsoft/api-extractor",
+  "version": "7.38.1",
+  "description": "Analyze the exported API for a TypeScript library and generate reviews, documentation, and .d.ts rollups",
+  "keywords": [
+    "typescript",
+    "API",
+    "JSDoc",
+    "AEDoc",
+    "TSDoc",
+    "generate",
+    "documentation",
+    "declaration",
+    "dts",
+    ".d.ts",
+    "rollup",
+    "bundle",
+    "compiler",
+    "alpha",
+    "beta"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/rushstack.git",
+    "directory": "apps/api-extractor"
+  },
+  "homepage": "https://api-extractor.com",
+  "main": "lib/index.js",
+  "typings": "dist/rollup.d.ts",
+  "bin": {
+    "api-extractor": "./bin/api-extractor"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "heft build --clean",
+    "_phase:build": "heft run --only build -- --clean",
+    "_phase:test": "heft run --only test -- --clean"
+  },
+  "dependencies": {
+    "@microsoft/api-extractor-model": "workspace:*",
+    "@microsoft/tsdoc": "0.14.2",
+    "@microsoft/tsdoc-config": "~0.16.1",
+    "@rushstack/node-core-library": "workspace:*",
+    "@rushstack/rig-package": "workspace:*",
+    "@rushstack/ts-command-line": "workspace:*",
+    "colors": "~1.2.1",
+    "lodash": "~4.17.15",
+    "resolve": "~1.22.1",
+    "semver": "~7.5.4",
+    "source-map": "~0.6.1",
+    "typescript": "~5.0.4"
+  },
+  "devDependencies": {
+    "local-eslint-config": "workspace:*",
+    "@rushstack/heft": "0.62.0",
+    "@rushstack/heft-node-rig": "2.3.2",
+    "@types/heft-jest": "1.0.1",
+    "@types/lodash": "4.14.116",
+    "@types/node": "18.17.15",
+    "@types/resolve": "1.20.2",
+    "@types/semver": "7.5.0"
+  }
+}

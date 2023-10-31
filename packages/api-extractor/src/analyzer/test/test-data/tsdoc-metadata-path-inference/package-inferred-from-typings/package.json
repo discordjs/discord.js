@@ -1,0 +1,6 @@
+{
+  "name": "package-inferred-from-typings",
+  "version": "1.0.0",
+  "main": "path/to/main.js",
+  "typings": "path/to/typings.d.ts"
+}

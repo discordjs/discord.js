@@ -1,0 +1,7 @@
+{
+  "name": "package-inferred-from-tsdoc-metadata",
+  "version": "1.0.0",
+  "main": "path/to/main.js",
+  "typings": "path/to/typings.d.ts",
+  "tsdocMetadata": "path/to/tsdoc-metadata.json"
+}
