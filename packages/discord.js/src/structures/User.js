@@ -192,12 +192,12 @@ class User extends Base {
 
   /**
    * A link to the user's avatar decoration.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {BaseImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   avatarDecorationURL(options = {}) {
     if (this.avatarDecorationData) {
-      return this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset, options);
+      return this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset);
     }
 
     return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);

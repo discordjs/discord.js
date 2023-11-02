@@ -3162,7 +3162,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
-  public avatarDecorationURL(options?: ImageURLOptions): string | null;
+  public avatarDecorationURL(options?: BaseImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;

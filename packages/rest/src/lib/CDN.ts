@@ -101,14 +101,13 @@ export class CDN {
 	 * Generates a user avatar decoration preset URL.
 	 *
 	 * @param asset - The avatar decoration hash
-	 * @param options - Optional options for the avatar decoration preset
 	 */
-	public avatarDecoration(asset: string, options?: Readonly<ImageURLOptions>): string;
+	public avatarDecoration(asset: string): string;
 
 	/**
 	 * Generates a user avatar decoration URL.
 	 *
-	 * @deprecated This overload is deprecated. Pass an hash instead.
+	 * @deprecated This overload is deprecated. Pass a hash instead.
 	 * @param userId - The id of the user
 	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
 	 * @param options - Optional options for the avatar decoration
@@ -116,19 +115,20 @@ export class CDN {
 	public avatarDecoration(
 		userId: string,
 		userAvatarDecoration: string,
+		// eslint-disable-next-line @typescript-eslint/unified-signatures
 		options?: Readonly<BaseImageURLOptions>,
 	): string;
 
 	public avatarDecoration(
 		userIdOrAsset: string,
-		assetOrOptions?: Readonly<ImageURLOptions> | string,
+		userAvatarDecoration?: string,
 		options?: Readonly<BaseImageURLOptions>,
 	): string {
-		if (typeof assetOrOptions === 'string') {
-			return this.makeURL(`/avatar-decorations/${userIdOrAsset}/${assetOrOptions}`, options);
+		if (userAvatarDecoration) {
+			return this.makeURL(`/avatar-decorations/${userIdOrAsset}/${userAvatarDecoration}`, options);
 		}
 
-		return this.dynamicMakeURL(`/avatar-decoration-presets/${userIdOrAsset}`, userIdOrAsset, assetOrOptions);
+		return this.makeURL(`/avatar-decoration-presets/${userIdOrAsset}`, { extension: 'png' });
 	}
 
 	/**

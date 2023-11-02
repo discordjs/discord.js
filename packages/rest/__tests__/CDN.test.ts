@@ -33,8 +33,8 @@ test('avatar decoration default', () => {
 	expect(cdn.avatarDecoration(id, hash)).toEqual(`${base}/avatar-decorations/${id}/${hash}.webp`);
 });
 
-test('avatar decoration presets default', () => {
-	expect(cdn.avatarDecoration(hash)).toEqual(`${base}/avatar-decoration-presets/${hash}.webp`);
+test('avatar decoration preset', () => {
+	expect(cdn.avatarDecoration(hash)).toEqual(`${base}/avatar-decoration-presets/${hash}.png`);
 });
 
 test('banner default', () => {
