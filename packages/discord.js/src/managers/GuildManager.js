@@ -6,6 +6,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes, RouteBases } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
+const ShardClientUtil = require('../sharding/ShardClientUtil');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
@@ -272,6 +273,7 @@ class GuildManager extends CachedManager {
       const data = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
+      data.shardId = ShardClientUtil.shardIdForGuildId(id, this.client.options.shardCount);
       return this._add(data, options.cache);
     }
 
