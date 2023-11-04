@@ -2,6 +2,7 @@
 	"name": "@discordjs/api-extractor",
 	"version": "7.38.1",
 	"description": "Analyze the exported API for a TypeScript library and generate reviews, documentation, and .d.ts rollups",
+	"private": true,
 	"keywords": [
 		"typescript",
 		"API",

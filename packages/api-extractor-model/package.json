@@ -2,6 +2,7 @@
 	"name": "@discordjs/api-extractor-model",
 	"version": "7.28.2",
 	"description": "A helper library for loading and saving the .api.json files created by API Extractor",
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
