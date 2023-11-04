@@ -34,7 +34,7 @@ export function CodeHeading({ href, className, children, sourceURL, sourceLine }
 				{href ? <Anchor href={href} /> : null}
 				{children}
 			</div>
-			{sourceURL ? SourceLink({ sourceLine, sourceURL }) : null}
+			{sourceURL ? <SourceLink sourceLine={sourceLine} sourceURL={sourceURL} /> : null}
 		</div>
 	);
 }

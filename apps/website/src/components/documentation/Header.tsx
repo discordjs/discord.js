@@ -44,7 +44,7 @@ export function Header({
 					<span>{generateIcon(kind)}</span>
 					{name}
 				</span>
-				{sourceURL ? SourceLink({ sourceLine, sourceURL }) : null}
+				{sourceURL ? <SourceLink sourceLine={sourceLine} sourceURL={sourceURL} /> : null}
 			</h2>
 		</div>
 	);
