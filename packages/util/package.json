@@ -10,7 +10,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
+		"docs": "pnpm run build:docs && api-extractor run --local",
 		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/util/*'",
 		"release": "cliff-jumper"
