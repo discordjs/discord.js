@@ -349,7 +349,6 @@
 				"../../tsconfig.docs.json",
 				"../../tsconfig.json",
 				"api-extractor.json",
-				"api-extractor-docs.json",
 				"docs/**/*",
 				"!docs/docs.json",
 				"!docs/docs.api.json",
