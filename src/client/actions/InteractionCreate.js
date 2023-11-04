@@ -7,7 +7,13 @@ const ButtonInteraction = require('../../structures/ButtonInteraction');
 const CommandInteraction = require('../../structures/CommandInteraction');
 const MessageContextMenuInteraction = require('../../structures/MessageContextMenuInteraction');
 const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const SelectMenuInteraction = require('../../structures/SelectMenuInteraction');
+const {
+  ChannelSelectInteraction,
+  MentionableSelectInteraction,
+  RoleSelectInteraction,
+  SelectMenuInteraction,
+  UserSelectInteraction,
+} = require('../../structures/SelectMenuInteraction');
 const UserContextMenuInteraction = require('../../structures/UserContextMenuInteraction');
 const { Events, InteractionTypes, MessageComponentTypes, ApplicationCommandTypes } = require('../../util/Constants');
 
@@ -51,8 +57,20 @@ class InteractionCreateAction extends Action {
           case MessageComponentTypes.BUTTON:
             InteractionType = ButtonInteraction;
             break;
-          case MessageComponentTypes.SELECT_MENU:
+          case MessageComponentTypes.STRING_SELECT:
             InteractionType = SelectMenuInteraction;
+            break;
+          case MessageComponentTypes.CHANNEL_SELECT:
+            InteractionType = ChannelSelectInteraction;
+            break;
+          case MessageComponentTypes.MENTIONABLE_SELECT:
+            InteractionType = MentionableSelectInteraction;
+            break;
+          case MessageComponentTypes.ROLE_SELECT:
+            InteractionType = RoleSelectInteraction;
+            break;
+          case MessageComponentTypes.USER_SELECT:
+            InteractionType = UserSelectInteraction;
             break;
           default:
             client.emit(
