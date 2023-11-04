@@ -4,7 +4,7 @@ import type {
 	ApiModel,
 	ApiParameterListMixin,
 	Excerpt,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';
 
 export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {

@@ -1,4 +1,4 @@
-import type { ApiDeclaredItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem, ApiItemContainerMixin } from '@discordjs/api-extractor-model';
 import { MethodsSection } from './section/MethodsSection';
 import { PropertiesSection } from './section/PropertiesSection';
 import { hasProperties, hasMethods } from './util';

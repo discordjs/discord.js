@@ -2,20 +2,20 @@
 // See LICENSE in the project root for license information.
 
 import type * as tsdoc from '@microsoft/tsdoc';
-
-import { ApiDocumentedItem } from '../items/ApiDocumentedItem';
-import type { Excerpt } from '../mixins/Excerpt';
-import type { ApiParameterListMixin } from '../mixins/ApiParameterListMixin';
+import { ApiDocumentedItem } from '../items/ApiDocumentedItem.js';
+import type { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
+import type { Excerpt } from '../mixins/Excerpt.js';
 
 /**
  * Constructor options for {@link Parameter}.
+ *
  * @public
  */
 export interface IParameterOptions {
-  name: string;
-  parameterTypeExcerpt: Excerpt;
-  isOptional: boolean;
-  parent: ApiParameterListMixin;
+	isOptional: boolean;
+	name: string;
+	parameterTypeExcerpt: Excerpt;
+	parent: ApiParameterListMixin;
 }
 
 /**
@@ -32,42 +32,41 @@ export interface IParameterOptions {
  * ```
  *
  * `Parameter` objects belong to the {@link (ApiParameterListMixin:interface).parameters} collection.
- *
  * @public
  */
 export class Parameter {
-  /**
-   * An {@link Excerpt} that describes the type of the parameter.
-   */
-  public readonly parameterTypeExcerpt: Excerpt;
+	/**
+	 * An {@link Excerpt} that describes the type of the parameter.
+	 */
+	public readonly parameterTypeExcerpt: Excerpt;
 
-  /**
-   * The parameter name.
-   */
-  public name: string;
+	/**
+	 * The parameter name.
+	 */
+	public name: string;
 
-  /**
-   * Whether the parameter is optional.
-   */
-  public isOptional: boolean;
+	/**
+	 * Whether the parameter is optional.
+	 */
+	public isOptional: boolean;
 
-  private _parent: ApiParameterListMixin;
+	private readonly _parent: ApiParameterListMixin;
 
-  public constructor(options: IParameterOptions) {
-    this.name = options.name;
-    this.parameterTypeExcerpt = options.parameterTypeExcerpt;
-    this.isOptional = options.isOptional;
-    this._parent = options.parent;
-  }
+	public constructor(options: IParameterOptions) {
+		this.name = options.name;
+		this.parameterTypeExcerpt = options.parameterTypeExcerpt;
+		this.isOptional = options.isOptional;
+		this._parent = options.parent;
+	}
 
-  /**
-   * Returns the `@param` documentation for this parameter, if present.
-   */
-  public get tsdocParamBlock(): tsdoc.DocParamBlock | undefined {
-    if (this._parent instanceof ApiDocumentedItem) {
-      if (this._parent.tsdocComment) {
-        return this._parent.tsdocComment.params.tryGetBlockByName(this.name);
-      }
-    }
-  }
+	/**
+	 * Returns the `@param` documentation for this parameter, if present.
+	 */
+	public get tsdocParamBlock(): tsdoc.DocParamBlock | undefined {
+		if (this._parent instanceof ApiDocumentedItem && this._parent.tsdocComment) {
+			return this._parent.tsdocComment.params.tryGetBlockByName(this.name);
+		}
+
+		return undefined;
+	}
 }

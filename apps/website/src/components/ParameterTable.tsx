@@ -1,4 +1,4 @@
-import type { ApiDocumentedItem, ApiParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiDocumentedItem, ApiParameterListMixin } from '@discordjs/api-extractor-model';
 import { useMemo } from 'react';
 import { resolveParameters } from '~/util/model';
 import { ExcerptText } from './ExcerptText';

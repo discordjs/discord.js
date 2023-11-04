@@ -8,7 +8,7 @@ export default withBundleAnalyzer({
 	reactStrictMode: true,
 	experimental: {
 		typedRoutes: true,
-		serverComponentsExternalPackages: ['@rushstack/node-core-library', '@microsoft/api-extractor-model', 'jju'],
+		serverComponentsExternalPackages: ['@rushstack/node-core-library', '@discordjs/api-extractor-model', 'jju'],
 	},
 	images: {
 		dangerouslyAllowSVG: true,

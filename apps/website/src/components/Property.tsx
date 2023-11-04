@@ -3,7 +3,7 @@ import type {
 	ApiItemContainerMixin,
 	ApiProperty,
 	ApiPropertySignature,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import type { PropsWithChildren } from 'react';
 import { Badges } from './Badges';
 import { CodeHeading } from './CodeHeading';
@@ -25,7 +25,11 @@ export function Property({
 		<div className="flex flex-col scroll-mt-30 gap-4" id={item.displayName}>
 			<div className="flex flex-col gap-2 md:-ml-9">
 				<Badges item={item} />
-				<CodeHeading href={`#${item.displayName}`}>
+				<CodeHeading
+					href={`#${item.displayName}`}
+					sourceURL={item.sourceLocation.fileUrl}
+					sourceLine={item.sourceLocation.fileLine}
+				>
 					{`${item.displayName}${item.isOptional ? '?' : ''}`}
 					<span>:</span>
 					{item.propertyTypeExcerpt.text ? (

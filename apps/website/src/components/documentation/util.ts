@@ -1,4 +1,4 @@
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import type {
 	ApiItem,
 	ApiItemContainerMixin,
@@ -8,7 +8,7 @@ import type {
 	ApiPropertySignature,
 	ApiDocumentedItem,
 	ApiParameterListMixin,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import { METHOD_SEPARATOR, OVERLOAD_SEPARATOR } from '~/util/constants';
 import { resolveMembers } from '~/util/members';
 import { resolveParameters } from '~/util/model';

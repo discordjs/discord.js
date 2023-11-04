@@ -2,16 +2,15 @@
 // See LICENSE in the project root for license information.
 
 import type * as ts from 'typescript';
-
-import type { AstModule, AstModuleExportInfo } from './AstModule';
-import { AstSyntheticEntity } from './AstEntity';
-import type { Collector } from '../collector/Collector';
+import type { Collector } from '../collector/Collector.js';
+import { AstSyntheticEntity } from './AstEntity.js';
+import type { AstModule, AstModuleExportInfo } from './AstModule.js';
 
 export interface IAstNamespaceImportOptions {
-  readonly astModule: AstModule;
-  readonly namespaceName: string;
-  readonly declaration: ts.Declaration;
-  readonly symbol: ts.Symbol;
+	readonly astModule: AstModule;
+	readonly declaration: ts.Declaration;
+	readonly namespaceName: string;
+	readonly symbol: ts.Symbol;
 }
 
 /**
@@ -45,52 +44,52 @@ export interface IAstNamespaceImportOptions {
  * The `declare namespace example` is a synthetic construct represented by `AstNamespaceImport`.
  */
 export class AstNamespaceImport extends AstSyntheticEntity {
-  /**
-   * Returns true if the AstSymbolTable.analyze() was called for this object.
-   * See that function for details.
-   */
-  public analyzed: boolean = false;
+	/**
+	 * Returns true if the AstSymbolTable.analyze() was called for this object.
+	 * See that function for details.
+	 */
+	public analyzed: boolean = false;
 
-  /**
-   * For example, if the original statement was `import * as example from "./file";`
-   * then `astModule` refers to the `./file.d.ts` file.
-   */
-  public readonly astModule: AstModule;
+	/**
+	 * For example, if the original statement was `import * as example from "./file";`
+	 * then `astModule` refers to the `./file.d.ts` file.
+	 */
+	public readonly astModule: AstModule;
 
-  /**
-   * For example, if the original statement was `import * as example from "./file";`
-   * then `namespaceName` would be `example`.
-   */
-  public readonly namespaceName: string;
+	/**
+	 * For example, if the original statement was `import * as example from "./file";`
+	 * then `namespaceName` would be `example`.
+	 */
+	public readonly namespaceName: string;
 
-  /**
-   * The original `ts.SyntaxKind.NamespaceImport` which can be used as a location for error messages.
-   */
-  public readonly declaration: ts.Declaration;
+	/**
+	 * The original `ts.SyntaxKind.NamespaceImport` which can be used as a location for error messages.
+	 */
+	public readonly declaration: ts.Declaration;
 
-  /**
-   * The original `ts.SymbolFlags.Namespace` symbol.
-   */
-  public readonly symbol: ts.Symbol;
+	/**
+	 * The original `ts.SymbolFlags.Namespace` symbol.
+	 */
+	public readonly symbol: ts.Symbol;
 
-  public constructor(options: IAstNamespaceImportOptions) {
-    super();
-    this.astModule = options.astModule;
-    this.namespaceName = options.namespaceName;
-    this.declaration = options.declaration;
-    this.symbol = options.symbol;
-  }
+	public constructor(options: IAstNamespaceImportOptions) {
+		super();
+		this.astModule = options.astModule;
+		this.namespaceName = options.namespaceName;
+		this.declaration = options.declaration;
+		this.symbol = options.symbol;
+	}
 
-  /** {@inheritdoc} */
-  public get localName(): string {
-    // abstract
-    return this.namespaceName;
-  }
+	/**
+	 * {@inheritdoc}
+	 */
+	public get localName(): string {
+		// abstract
+		return this.namespaceName;
+	}
 
-  public fetchAstModuleExportInfo(collector: Collector): AstModuleExportInfo {
-    const astModuleExportInfo: AstModuleExportInfo = collector.astSymbolTable.fetchAstModuleExportInfo(
-      this.astModule
-    );
-    return astModuleExportInfo;
-  }
+	public fetchAstModuleExportInfo(collector: Collector): AstModuleExportInfo {
+		const astModuleExportInfo: AstModuleExportInfo = collector.astSymbolTable.fetchAstModuleExportInfo(this.astModule);
+		return astModuleExportInfo;
+	}
 }

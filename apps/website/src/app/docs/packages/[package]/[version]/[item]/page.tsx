@@ -1,4 +1,3 @@
-import { tryResolveSummaryText } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -13,8 +12,9 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 	ApiFunction,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind, ApiModel } from '@discordjs/api-extractor-model';
+import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';

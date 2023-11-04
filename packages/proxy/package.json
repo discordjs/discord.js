@@ -71,7 +71,7 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.0",
-		"@microsoft/api-extractor": "^7.38.0",
+		"@discordjs/api-extractor": "workspace:^",
 		"@types/node": "18.17.9",
 		"@types/supertest": "^2.0.14",
 		"@vitest/coverage-v8": "^0.34.3",

@@ -15,58 +15,58 @@
  * For details about this config file, please see: https://tsdoc.org/pages/packages/tsdoc-config/
  */
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+	"$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
 
-  /**
-   * The "AEDoc" custom tags:
-   */
-  "tagDefinitions": [
-    {
-      "tagName": "@betaDocumentation",
-      "syntaxKind": "modifier"
-    },
-    {
-      "tagName": "@internalRemarks",
-      "syntaxKind": "block"
-    },
-    {
-      "tagName": "@preapproved",
-      "syntaxKind": "modifier"
-    }
-  ],
+	/**
+	 * The "AEDoc" custom tags:
+	 */
+	"tagDefinitions": [
+		{
+			"tagName": "@betaDocumentation",
+			"syntaxKind": "modifier"
+		},
+		{
+			"tagName": "@internalRemarks",
+			"syntaxKind": "block"
+		},
+		{
+			"tagName": "@preapproved",
+			"syntaxKind": "modifier"
+		}
+	],
 
-  /**
-   * TSDoc tags implemented by API Extractor:
-   */
-  "supportForTags": {
-    "@alpha": true,
-    "@beta": true,
-    "@defaultValue": true,
-    "@decorator": true,
-    "@deprecated": true,
-    "@eventProperty": true,
-    "@example": true,
-    "@experimental": true,
-    "@inheritDoc": true,
-    "@internal": true,
-    "@label": true,
-    "@link": true,
-    "@override": true,
-    "@packageDocumentation": true,
-    "@param": true,
-    "@privateRemarks": true,
-    "@public": true,
-    "@readonly": true,
-    "@remarks": true,
-    "@returns": true,
-    "@sealed": true,
-    "@see": true,
-    "@throws": true,
-    "@typeParam": true,
-    "@virtual": true,
+	/**
+	 * TSDoc tags implemented by API Extractor:
+	 */
+	"supportForTags": {
+		"@alpha": true,
+		"@beta": true,
+		"@defaultValue": true,
+		"@decorator": true,
+		"@deprecated": true,
+		"@eventProperty": true,
+		"@example": true,
+		"@experimental": true,
+		"@inheritDoc": true,
+		"@internal": true,
+		"@label": true,
+		"@link": true,
+		"@override": true,
+		"@packageDocumentation": true,
+		"@param": true,
+		"@privateRemarks": true,
+		"@public": true,
+		"@readonly": true,
+		"@remarks": true,
+		"@returns": true,
+		"@sealed": true,
+		"@see": true,
+		"@throws": true,
+		"@typeParam": true,
+		"@virtual": true,
 
-    "@betaDocumentation": true,
-    "@internalRemarks": true,
-    "@preapproved": true
-  }
+		"@betaDocumentation": true,
+		"@internalRemarks": true,
+		"@preapproved": true
+	}
 }

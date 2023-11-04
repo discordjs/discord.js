@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 
-import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiItemKind } from '@discordjs/api-extractor-model';
 import { ImageResponse } from '@vercel/og';
 import type { NextRequest } from 'next/server';
 

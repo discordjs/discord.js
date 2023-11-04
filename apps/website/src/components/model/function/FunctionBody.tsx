@@ -1,4 +1,4 @@
-import type { ApiFunction } from '@microsoft/api-extractor-model';
+import type { ApiFunction } from '@discordjs/api-extractor-model';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { Documentation } from '../../documentation/Documentation';
 import { ParameterSection } from '../../documentation/section/ParametersSection';

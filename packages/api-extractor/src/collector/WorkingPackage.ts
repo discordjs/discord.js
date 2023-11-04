@@ -1,18 +1,17 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import type * as ts from 'typescript';
 import type * as tsdoc from '@microsoft/tsdoc';
-
 import type { INodePackageJson } from '@rushstack/node-core-library';
+import type * as ts from 'typescript';
 
 /**
  * Constructor options for WorkingPackage
  */
 export interface IWorkingPackageOptions {
-  packageFolder: string;
-  packageJson: INodePackageJson;
-  entryPointSourceFile: ts.SourceFile;
+	entryPointSourceFile: ts.SourceFile;
+	packageFolder: string;
+	packageJson: INodePackageJson;
 }
 
 /**
@@ -30,50 +29,50 @@ export interface IWorkingPackageOptions {
  * have an actual package.json file on disk, but we still refer to it in concept.
  */
 export class WorkingPackage {
-  /**
-   * Returns the folder for the package.json file of the working package.
-   *
-   * @remarks
-   * If the entry point is `C:\Folder\project\src\index.ts` and the nearest package.json
-   * is `C:\Folder\project\package.json`, then the packageFolder is `C:\Folder\project`
-   */
-  public readonly packageFolder: string;
+	/**
+	 * Returns the folder for the package.json file of the working package.
+	 *
+	 * @remarks
+	 * If the entry point is `C:\Folder\project\src\index.ts` and the nearest package.json
+	 * is `C:\Folder\project\package.json`, then the packageFolder is `C:\Folder\project`
+	 */
+	public readonly packageFolder: string;
 
-  /**
-   * The parsed package.json file for the working package.
-   */
-  public readonly packageJson: INodePackageJson;
+	/**
+	 * The parsed package.json file for the working package.
+	 */
+	public readonly packageJson: INodePackageJson;
 
-  /**
-   * The entry point being processed during this invocation of API Extractor.
-   *
-   * @remarks
-   * The working package may have multiple entry points; however, today API Extractor
-   * only processes a single entry point during an invocation.  This will be improved
-   * in the future.
-   */
-  public readonly entryPointSourceFile: ts.SourceFile;
+	/**
+	 * The entry point being processed during this invocation of API Extractor.
+	 *
+	 * @remarks
+	 * The working package may have multiple entry points; however, today API Extractor
+	 * only processes a single entry point during an invocation.  This will be improved
+	 * in the future.
+	 */
+	public readonly entryPointSourceFile: ts.SourceFile;
 
-  /**
-   * The `@packageDocumentation` comment, if any, for the working package.
-   */
-  public tsdocComment: tsdoc.DocComment | undefined;
+	/**
+	 * The `@packageDocumentation` comment, if any, for the working package.
+	 */
+	public tsdocComment: tsdoc.DocComment | undefined;
 
-  /**
-   * Additional parser information for `WorkingPackage.tsdocComment`.
-   */
-  public tsdocParserContext: tsdoc.ParserContext | undefined;
+	/**
+	 * Additional parser information for `WorkingPackage.tsdocComment`.
+	 */
+	public tsdocParserContext: tsdoc.ParserContext | undefined;
 
-  public constructor(options: IWorkingPackageOptions) {
-    this.packageFolder = options.packageFolder;
-    this.packageJson = options.packageJson;
-    this.entryPointSourceFile = options.entryPointSourceFile;
-  }
+	public constructor(options: IWorkingPackageOptions) {
+		this.packageFolder = options.packageFolder;
+		this.packageJson = options.packageJson;
+		this.entryPointSourceFile = options.entryPointSourceFile;
+	}
 
-  /**
-   * Returns the full name of the working package.
-   */
-  public get name(): string {
-    return this.packageJson.name;
-  }
+	/**
+	 * Returns the full name of the working package.
+	 */
+	public get name(): string {
+		return this.packageJson.name;
+	}
 }

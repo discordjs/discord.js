@@ -1,4 +1,4 @@
-import type { ApiFunction } from '@microsoft/api-extractor-model';
+import type { ApiFunction } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
 import { Header } from '../../documentation/Header';
 import { FunctionBody } from './FunctionBody';
@@ -6,7 +6,14 @@ import { FunctionBody } from './FunctionBody';
 const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 
 export function Function({ item }: { readonly item: ApiFunction }) {
-	const header = <Header kind={item.kind} name={item.name} sourceURL={item.sourceLocation.fileUrl} />;
+	const header = (
+		<Header
+			kind={item.kind}
+			name={item.name}
+			sourceURL={item.sourceLocation.fileUrl}
+			sourceLine={item.sourceLocation.fileLine}
+		/>
+	);
 
 	if (item.getMergedSiblings().length > 1) {
 		const overloads = item

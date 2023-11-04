@@ -1,4 +1,4 @@
-import type { ApiItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
+import type { ApiItem, ApiItemContainerMixin } from '@discordjs/api-extractor-model';
 
 /**
  * Resolves all inherited members (including merged members) of a given parent.

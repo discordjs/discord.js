@@ -1,31 +1,28 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import { type IApiDeclaredItemOptions, ApiDeclaredItem } from '../items/ApiDeclaredItem.js';
+import { ApiItemKind, Navigation, Meaning } from '../items/ApiItem.js';
+import { type IApiParameterListMixinOptions, ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
+import { type IApiReleaseTagMixinOptions, ApiReleaseTagMixin } from '../mixins/ApiReleaseTagMixin.js';
+import { type IApiReturnTypeMixinOptions, ApiReturnTypeMixin } from '../mixins/ApiReturnTypeMixin.js';
 import {
-  DeclarationReference,
-  Meaning,
-  Navigation
-} from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
-import { ApiItemKind } from '../items/ApiItem';
-import { type IApiDeclaredItemOptions, ApiDeclaredItem } from '../items/ApiDeclaredItem';
-import { type IApiParameterListMixinOptions, ApiParameterListMixin } from '../mixins/ApiParameterListMixin';
-import { type IApiReleaseTagMixinOptions, ApiReleaseTagMixin } from '../mixins/ApiReleaseTagMixin';
-import { type IApiReturnTypeMixinOptions, ApiReturnTypeMixin } from '../mixins/ApiReturnTypeMixin';
-import {
-  type IApiTypeParameterListMixinOptions,
-  ApiTypeParameterListMixin
-} from '../mixins/ApiTypeParameterListMixin';
+	type IApiTypeParameterListMixinOptions,
+	ApiTypeParameterListMixin,
+} from '../mixins/ApiTypeParameterListMixin.js';
 
 /**
  * Constructor options for {@link ApiCallSignature}.
+ *
  * @public
  */
 export interface IApiCallSignatureOptions
-  extends IApiTypeParameterListMixinOptions,
-    IApiParameterListMixinOptions,
-    IApiReleaseTagMixinOptions,
-    IApiReturnTypeMixinOptions,
-    IApiDeclaredItemOptions {}
+	extends IApiTypeParameterListMixinOptions,
+		IApiParameterListMixinOptions,
+		IApiReleaseTagMixinOptions,
+		IApiReturnTypeMixinOptions,
+		IApiDeclaredItemOptions {}
 
 /**
  * Represents a TypeScript function call signature.
@@ -53,36 +50,41 @@ export interface IApiCallSignatureOptions
  *
  * let chooser: IChooser = chooseFirst;
  * ```
- *
  * @public
  */
 export class ApiCallSignature extends ApiTypeParameterListMixin(
-  ApiParameterListMixin(ApiReleaseTagMixin(ApiReturnTypeMixin(ApiDeclaredItem)))
+	ApiParameterListMixin(ApiReleaseTagMixin(ApiReturnTypeMixin(ApiDeclaredItem))),
 ) {
-  public constructor(options: IApiCallSignatureOptions) {
-    super(options);
-  }
+	public constructor(options: IApiCallSignatureOptions) {
+		super(options);
+	}
 
-  public static getContainerKey(overloadIndex: number): string {
-    return `|${ApiItemKind.CallSignature}|${overloadIndex}`;
-  }
+	public static getContainerKey(overloadIndex: number): string {
+		return `|${ApiItemKind.CallSignature}|${overloadIndex}`;
+	}
 
-  /** @override */
-  public get kind(): ApiItemKind {
-    return ApiItemKind.CallSignature;
-  }
+	/**
+	 * @override
+	 */
+	public override get kind(): ApiItemKind {
+		return ApiItemKind.CallSignature;
+	}
 
-  /** @override */
-  public get containerKey(): string {
-    return ApiCallSignature.getContainerKey(this.overloadIndex);
-  }
+	/**
+	 * @override
+	 */
+	public override get containerKey(): string {
+		return ApiCallSignature.getContainerKey(this.overloadIndex);
+	}
 
-  /** @beta @override */
-  public buildCanonicalReference(): DeclarationReference {
-    const parent: DeclarationReference = this.parent
-      ? this.parent.canonicalReference
-      : // .withMeaning() requires some kind of component
-        DeclarationReference.empty().addNavigationStep(Navigation.Members, '(parent)');
-    return parent.withMeaning(Meaning.CallSignature).withOverloadIndex(this.overloadIndex);
-  }
+	/**
+	 * @beta @override
+	 */
+	public override buildCanonicalReference(): DeclarationReference {
+		const parent: DeclarationReference = this.parent
+			? this.parent.canonicalReference
+			: // .withMeaning() requires some kind of component
+			  DeclarationReference.empty().addNavigationStep(Navigation.Members as any, '(parent)');
+		return parent.withMeaning(Meaning.CallSignature as any).withOverloadIndex(this.overloadIndex);
+	}
 }

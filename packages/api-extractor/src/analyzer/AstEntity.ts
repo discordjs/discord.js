@@ -16,17 +16,17 @@
  * ```
  */
 export abstract class AstEntity {
-  /**
-   * The original name of the symbol, as exported from the module (i.e. source file)
-   * containing the original TypeScript definition.  Constructs such as
-   * `import { X as Y } from` may introduce other names that differ from the local name.
-   *
-   * @remarks
-   * For the most part, `localName` corresponds to `followedSymbol.name`, but there
-   * are some edge cases.  For example, the ts.Symbol.name for `export default class X { }`
-   * is actually `"default"`, not `"X"`.
-   */
-  public abstract readonly localName: string;
+	/**
+	 * The original name of the symbol, as exported from the module (i.e. source file)
+	 * containing the original TypeScript definition.  Constructs such as
+	 * `import { X as Y } from` may introduce other names that differ from the local name.
+	 *
+	 * @remarks
+	 * For the most part, `localName` corresponds to `followedSymbol.name`, but there
+	 * are some edge cases.  For example, the ts.Symbol.name for `export default class X { }`
+	 * is actually `"default"`, not `"X"`.
+	 */
+	public abstract readonly localName: string;
 }
 
 /**

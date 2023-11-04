@@ -9,36 +9,36 @@
  * @packageDocumentation
  */
 
-export { ConsoleMessageId } from './api/ConsoleMessageId';
+export { ConsoleMessageId } from './api/ConsoleMessageId.js';
 
-export { CompilerState, ICompilerStateCreateOptions } from './api/CompilerState';
+export { CompilerState, type ICompilerStateCreateOptions } from './api/CompilerState.js';
 
-export { Extractor, IExtractorInvokeOptions, ExtractorResult } from './api/Extractor';
-
-export {
-  IExtractorConfigPrepareOptions,
-  IExtractorConfigLoadForFolderOptions,
-  ExtractorConfig
-} from './api/ExtractorConfig';
-
-export { ExtractorLogLevel } from './api/ExtractorLogLevel';
+export { Extractor, type IExtractorInvokeOptions, ExtractorResult } from './api/Extractor.js';
 
 export {
-  ExtractorMessage,
-  IExtractorMessageProperties,
-  ExtractorMessageCategory
-} from './api/ExtractorMessage';
+	type IExtractorConfigPrepareOptions,
+	type IExtractorConfigLoadForFolderOptions,
+	ExtractorConfig,
+} from './api/ExtractorConfig.js';
 
-export { ExtractorMessageId } from './api/ExtractorMessageId';
+export { ExtractorLogLevel } from './api/ExtractorLogLevel.js';
 
 export {
-  IConfigCompiler,
-  IConfigApiReport,
-  IConfigDocModel,
-  IConfigDtsRollup,
-  IConfigTsdocMetadata,
-  IConfigMessageReportingRule,
-  IConfigMessageReportingTable,
-  IExtractorMessagesConfig,
-  IConfigFile
-} from './api/IConfigFile';
+	ExtractorMessage,
+	type IExtractorMessageProperties,
+	ExtractorMessageCategory,
+} from './api/ExtractorMessage.js';
+
+export { ExtractorMessageId } from './api/ExtractorMessageId.js';
+
+export type {
+	IConfigCompiler,
+	IConfigApiReport,
+	IConfigDocModel,
+	IConfigDtsRollup,
+	IConfigTsdocMetadata,
+	IConfigMessageReportingRule,
+	IConfigMessageReportingTable,
+	IExtractorMessagesConfig,
+	IConfigFile,
+} from './api/IConfigFile.js';

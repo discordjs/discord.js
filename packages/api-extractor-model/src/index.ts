@@ -10,68 +10,75 @@
  * @packageDocumentation
  */
 
-export { AedocDefinitions } from './aedoc/AedocDefinitions';
-export { ReleaseTag } from './aedoc/ReleaseTag';
+export { AedocDefinitions } from './aedoc/AedocDefinitions.js';
+export { ReleaseTag, compare as releaseTagCompare, getTagName as releaseTagGetTagName } from './aedoc/ReleaseTag.js';
 
 // items
-export { IApiDeclaredItemOptions, ApiDeclaredItem } from './items/ApiDeclaredItem';
-export { IApiDocumentedItemOptions, ApiDocumentedItem } from './items/ApiDocumentedItem';
-export { ApiItemKind, IApiItemOptions, ApiItem, IApiItemConstructor } from './items/ApiItem';
-export { IApiPropertyItemOptions, ApiPropertyItem } from './items/ApiPropertyItem';
+export { type IApiDeclaredItemOptions, ApiDeclaredItem } from './items/ApiDeclaredItem.js';
+export { type IApiDocumentedItemOptions, ApiDocumentedItem } from './items/ApiDocumentedItem.js';
+export { ApiItemKind, type IApiItemOptions, ApiItem, type IApiItemConstructor } from './items/ApiItem.js';
+export { type IApiPropertyItemOptions, ApiPropertyItem } from './items/ApiPropertyItem.js';
 
 // mixins
 export {
-  IApiParameterListMixinOptions,
-  IApiParameterOptions,
-  ApiParameterListMixin
-} from './mixins/ApiParameterListMixin';
+	type IApiParameterListMixinOptions,
+	type IApiParameterOptions,
+	ApiParameterListMixin,
+} from './mixins/ApiParameterListMixin.js';
 export {
-  IApiTypeParameterOptions,
-  IApiTypeParameterListMixinOptions,
-  ApiTypeParameterListMixin
-} from './mixins/ApiTypeParameterListMixin';
-export { IApiAbstractMixinOptions, ApiAbstractMixin } from './mixins/ApiAbstractMixin';
-export { IApiItemContainerMixinOptions, ApiItemContainerMixin } from './mixins/ApiItemContainerMixin';
-export { IApiProtectedMixinOptions, ApiProtectedMixin } from './mixins/ApiProtectedMixin';
-export { IApiReleaseTagMixinOptions, ApiReleaseTagMixin } from './mixins/ApiReleaseTagMixin';
-export { IApiReturnTypeMixinOptions, ApiReturnTypeMixin } from './mixins/ApiReturnTypeMixin';
-export { IApiStaticMixinOptions, ApiStaticMixin } from './mixins/ApiStaticMixin';
-export { IApiNameMixinOptions, ApiNameMixin } from './mixins/ApiNameMixin';
-export { IApiOptionalMixinOptions, ApiOptionalMixin } from './mixins/ApiOptionalMixin';
-export { IApiReadonlyMixinOptions, ApiReadonlyMixin } from './mixins/ApiReadonlyMixin';
-export { IApiInitializerMixinOptions, ApiInitializerMixin } from './mixins/ApiInitializerMixin';
-export { IApiExportedMixinOptions, ApiExportedMixin } from './mixins/ApiExportedMixin';
+	type IApiTypeParameterOptions,
+	type IApiTypeParameterListMixinOptions,
+	ApiTypeParameterListMixin,
+} from './mixins/ApiTypeParameterListMixin.js';
+export { type IApiAbstractMixinOptions, ApiAbstractMixin } from './mixins/ApiAbstractMixin.js';
+export { type IApiItemContainerMixinOptions, ApiItemContainerMixin } from './mixins/ApiItemContainerMixin.js';
+export { type IApiProtectedMixinOptions, ApiProtectedMixin } from './mixins/ApiProtectedMixin.js';
+export { type IApiReleaseTagMixinOptions, ApiReleaseTagMixin } from './mixins/ApiReleaseTagMixin.js';
+export { type IApiReturnTypeMixinOptions, ApiReturnTypeMixin } from './mixins/ApiReturnTypeMixin.js';
+export { type IApiStaticMixinOptions, ApiStaticMixin } from './mixins/ApiStaticMixin.js';
+export { type IApiNameMixinOptions, ApiNameMixin } from './mixins/ApiNameMixin.js';
+export { type IApiOptionalMixinOptions, ApiOptionalMixin } from './mixins/ApiOptionalMixin.js';
+export { type IApiReadonlyMixinOptions, ApiReadonlyMixin } from './mixins/ApiReadonlyMixin.js';
+export { type IApiInitializerMixinOptions, ApiInitializerMixin } from './mixins/ApiInitializerMixin.js';
+export { type IApiExportedMixinOptions, ApiExportedMixin } from './mixins/ApiExportedMixin.js';
 export {
-  IFindApiItemsResult,
-  IFindApiItemsMessage,
-  FindApiItemsMessageId
-} from './mixins/IFindApiItemsResult';
+	type IFindApiItemsResult,
+	type IFindApiItemsMessage,
+	FindApiItemsMessageId,
+} from './mixins/IFindApiItemsResult.js';
 
-export { ExcerptTokenKind, IExcerptTokenRange, IExcerptToken, ExcerptToken, Excerpt } from './mixins/Excerpt';
-export { Constructor, PropertiesOf } from './mixins/Mixin';
+export {
+	ExcerptTokenKind,
+	type IExcerptTokenRange,
+	type IExcerptToken,
+	ExcerptToken,
+	Excerpt,
+} from './mixins/Excerpt.js';
+export type { Constructor, PropertiesOf } from './mixins/Mixin.js';
 
 // model
-export { IApiCallSignatureOptions, ApiCallSignature } from './model/ApiCallSignature';
-export { IApiClassOptions, ApiClass } from './model/ApiClass';
-export { IApiConstructorOptions, ApiConstructor } from './model/ApiConstructor';
-export { IApiConstructSignatureOptions, ApiConstructSignature } from './model/ApiConstructSignature';
-export { IApiEntryPointOptions, ApiEntryPoint } from './model/ApiEntryPoint';
-export { IApiEnumOptions, ApiEnum } from './model/ApiEnum';
-export { IApiEnumMemberOptions, ApiEnumMember, EnumMemberOrder } from './model/ApiEnumMember';
-export { IApiFunctionOptions, ApiFunction } from './model/ApiFunction';
-export { IApiIndexSignatureOptions, ApiIndexSignature } from './model/ApiIndexSignature';
-export { IApiInterfaceOptions, ApiInterface } from './model/ApiInterface';
-export { IApiMethodOptions, ApiMethod } from './model/ApiMethod';
-export { IApiMethodSignatureOptions, ApiMethodSignature } from './model/ApiMethodSignature';
-export { ApiModel } from './model/ApiModel';
-export { IApiNamespaceOptions, ApiNamespace } from './model/ApiNamespace';
-export { IApiPackageOptions, ApiPackage, IApiPackageSaveOptions } from './model/ApiPackage';
-export { IParameterOptions, Parameter } from './model/Parameter';
-export { IApiPropertyOptions, ApiProperty } from './model/ApiProperty';
-export { IApiPropertySignatureOptions, ApiPropertySignature } from './model/ApiPropertySignature';
-export { IApiTypeAliasOptions, ApiTypeAlias } from './model/ApiTypeAlias';
-export { ITypeParameterOptions, TypeParameter } from './model/TypeParameter';
-export { IApiVariableOptions, ApiVariable } from './model/ApiVariable';
-export { IResolveDeclarationReferenceResult } from './model/ModelReferenceResolver';
-export { HeritageType } from './model/HeritageType';
-export { ISourceLocationOptions, SourceLocation } from './model/SourceLocation';
+export { type IApiCallSignatureOptions, ApiCallSignature } from './model/ApiCallSignature.js';
+export { type IApiClassOptions, ApiClass } from './model/ApiClass.js';
+export { type IApiConstructorOptions, ApiConstructor } from './model/ApiConstructor.js';
+export { type IApiConstructSignatureOptions, ApiConstructSignature } from './model/ApiConstructSignature.js';
+export { type IApiEntryPointOptions, ApiEntryPoint } from './model/ApiEntryPoint.js';
+export { type IApiEnumOptions, ApiEnum } from './model/ApiEnum.js';
+export { type IApiEnumMemberOptions, ApiEnumMember, EnumMemberOrder } from './model/ApiEnumMember.js';
+export { type IApiFunctionOptions, ApiFunction } from './model/ApiFunction.js';
+export { type IApiIndexSignatureOptions, ApiIndexSignature } from './model/ApiIndexSignature.js';
+export { type IApiInterfaceOptions, ApiInterface } from './model/ApiInterface.js';
+export { type IApiMethodOptions, ApiMethod } from './model/ApiMethod.js';
+export { type IApiMethodSignatureOptions, ApiMethodSignature } from './model/ApiMethodSignature.js';
+export { ApiModel } from './model/ApiModel.js';
+export { type IApiNamespaceOptions, ApiNamespace } from './model/ApiNamespace.js';
+export { type IApiPackageOptions, ApiPackage, type IApiPackageSaveOptions } from './model/ApiPackage.js';
+export { type IParameterOptions, Parameter } from './model/Parameter.js';
+export { type IApiPropertyOptions, ApiProperty } from './model/ApiProperty.js';
+export { type IApiPropertySignatureOptions, ApiPropertySignature } from './model/ApiPropertySignature.js';
+export { type IApiTypeAliasOptions, ApiTypeAlias } from './model/ApiTypeAlias.js';
+export { type ITypeParameterOptions, TypeParameter } from './model/TypeParameter.js';
+export { type IApiVariableOptions, ApiVariable } from './model/ApiVariable.js';
+export type { IResolveDeclarationReferenceResult } from './model/ModelReferenceResolver.js';
+export { HeritageType } from './model/HeritageType.js';
+export { type ISourceLocationOptions, SourceLocation } from './model/SourceLocation.js';
+export { Navigation, Meaning } from './items/ApiItem.js';

@@ -1,7 +1,7 @@
 # @microsoft/api-extractor-model
 
-Use this library to read and write *.api.json files as defined by the [API Extractor](https://api-extractor.com/) tool.
-These files are used to generate a documentation website for your TypeScript package.  The files store the
+Use this library to read and write \*.api.json files as defined by the [API Extractor](https://api-extractor.com/) tool.
+These files are used to generate a documentation website for your TypeScript package. The files store the
 API signatures and doc comments that were extracted from your package.
 
 API documentation for this package: https://rushstack.io/pages/api/api-extractor-model/
@@ -12,13 +12,13 @@ The following code sample shows how to load `example.api.json`, which would be g
 when it analyzes a hypothetical NPM package called `example`:
 
 ```ts
-import { ApiModel, ApiPackage } from '@microsoft/api-extractor-model';
+import { ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
 
 const apiModel: ApiModel = new ApiModel();
 const apiPackage: ApiPackage = apiModel.loadPackage('example.api.json');
 
 for (const member of apiPackage.members) {
-  console.log(member.displayName);
+	console.log(member.displayName);
 }
 ```
 
@@ -27,7 +27,7 @@ For example, a documentation tool may need to resolve `@link` references across 
 In this case we would load the various packages into the `ApiModel`, and then use
 the `ApiModel.resolveDeclarationReference()` to resolve the `@link` targets.
 
-The data structure forms a tree of various classes that start with the `Api` prefix.  The nesting hierarchy
+The data structure forms a tree of various classes that start with the `Api` prefix. The nesting hierarchy
 might look like this:
 
 ```
@@ -51,7 +51,7 @@ You can use the `ApiItem.members` property to traverse this tree.
 Note that the non-abstract classes (e.g. `ApiClass`, `ApiEnum`, `ApiInterface`, etc.) use
 TypeScript "mixin" functions (e.g. `ApiDeclaredItem`, `ApiItemContainerMixin`, etc.) to add various
 features that cannot be represented as a normal inheritance chain (since TypeScript does not allow a child class
-to extend more than one base class).  The "mixin" is a TypeScript merged declaration with three components:
+to extend more than one base class). The "mixin" is a TypeScript merged declaration with three components:
 the function that generates a subclass, an interface that describes the members of the subclass, and
 a namespace containing static members of the class.
 
@@ -60,8 +60,7 @@ a namespace containing static members of the class.
 
 ## Links
 
-- [CHANGELOG.md](
-  https://github.com/microsoft/rushstack/blob/main/libraries/api-extractor-model/CHANGELOG.md) - Find
+- [CHANGELOG.md](https://github.com/microsoft/rushstack/blob/main/libraries/api-extractor-model/CHANGELOG.md) - Find
   out what's new in the latest version
 - [API Reference](https://rushstack.io/pages/api/api-extractor-model/)
 

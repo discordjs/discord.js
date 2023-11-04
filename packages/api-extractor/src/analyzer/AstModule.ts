@@ -2,16 +2,16 @@
 // See LICENSE in the project root for license information.
 
 import type * as ts from 'typescript';
-
-import type { AstSymbol } from './AstSymbol';
-import type { AstEntity } from './AstEntity';
+import type { AstEntity } from './AstEntity.js';
+import type { AstSymbol } from './AstSymbol.js';
 
 /**
  * Represents information collected by {@link AstSymbolTable.fetchAstModuleExportInfo}
  */
 export class AstModuleExportInfo {
-  public readonly exportedLocalEntities: Map<string, AstEntity> = new Map<string, AstEntity>();
-  public readonly starExportedExternalModules: Set<AstModule> = new Set<AstModule>();
+	public readonly exportedLocalEntities: Map<string, AstEntity> = new Map<string, AstEntity>();
+
+	public readonly starExportedExternalModules: Set<AstModule> = new Set<AstModule>();
 }
 
 /**
@@ -24,65 +24,65 @@ export class AstModuleExportInfo {
  * so we use I____Options for both cases in this code base.
  */
 export interface IAstModuleOptions {
-  sourceFile: ts.SourceFile;
-  moduleSymbol: ts.Symbol;
-  externalModulePath: string | undefined;
+	externalModulePath: string | undefined;
+	moduleSymbol: ts.Symbol;
+	sourceFile: ts.SourceFile;
 }
 
 /**
  * An internal data structure that represents a source file that is analyzed by AstSymbolTable.
  */
 export class AstModule {
-  /**
-   * The source file that declares this TypeScript module.  In most cases, the source file's
-   * top-level exports constitute the module.
-   */
-  public readonly sourceFile: ts.SourceFile;
+	/**
+	 * The source file that declares this TypeScript module.  In most cases, the source file's
+	 * top-level exports constitute the module.
+	 */
+	public readonly sourceFile: ts.SourceFile;
 
-  /**
-   * The symbol for the module.  Typically this corresponds to ts.SourceFile itself, however
-   * in some cases the ts.SourceFile may contain multiple modules declared using the `module` keyword.
-   */
-  public readonly moduleSymbol: ts.Symbol;
+	/**
+	 * The symbol for the module.  Typically this corresponds to ts.SourceFile itself, however
+	 * in some cases the ts.SourceFile may contain multiple modules declared using the `module` keyword.
+	 */
+	public readonly moduleSymbol: ts.Symbol;
 
-  /**
-   * Example:  "@rushstack/node-core-library/lib/FileSystem"
-   * but never: "./FileSystem"
-   */
-  public readonly externalModulePath: string | undefined;
+	/**
+	 * Example:  "\@rushstack/node-core-library/lib/FileSystem"
+	 * but never: "./FileSystem"
+	 */
+	public readonly externalModulePath: string | undefined;
 
-  /**
-   * A list of other `AstModule` objects that appear in `export * from "___";` statements.
-   */
-  public readonly starExportedModules: Set<AstModule>;
+	/**
+	 * A list of other `AstModule` objects that appear in `export * from "___";` statements.
+	 */
+	public readonly starExportedModules: Set<AstModule>;
 
-  /**
-   * A partial map of entities exported by this module.  The key is the exported name.
-   */
-  public readonly cachedExportedEntities: Map<string, AstEntity>; // exportName --> entity
+	/**
+	 * A partial map of entities exported by this module.  The key is the exported name.
+	 */
+	public readonly cachedExportedEntities: Map<string, AstEntity>; // exportName --> entity
 
-  /**
-   * Additional state calculated by `AstSymbolTable.fetchWorkingPackageModule()`.
-   */
-  public astModuleExportInfo: AstModuleExportInfo | undefined;
+	/**
+	 * Additional state calculated by `AstSymbolTable.fetchWorkingPackageModule()`.
+	 */
+	public astModuleExportInfo: AstModuleExportInfo | undefined;
 
-  public constructor(options: IAstModuleOptions) {
-    this.sourceFile = options.sourceFile;
-    this.moduleSymbol = options.moduleSymbol;
+	public constructor(options: IAstModuleOptions) {
+		this.sourceFile = options.sourceFile;
+		this.moduleSymbol = options.moduleSymbol;
 
-    this.externalModulePath = options.externalModulePath;
+		this.externalModulePath = options.externalModulePath;
 
-    this.starExportedModules = new Set<AstModule>();
+		this.starExportedModules = new Set<AstModule>();
 
-    this.cachedExportedEntities = new Map<string, AstSymbol>();
+		this.cachedExportedEntities = new Map<string, AstSymbol>();
 
-    this.astModuleExportInfo = undefined;
-  }
+		this.astModuleExportInfo = undefined;
+	}
 
-  /**
-   * If false, then this source file is part of the working package being processed by the `Collector`.
-   */
-  public get isExternal(): boolean {
-    return this.externalModulePath !== undefined;
-  }
+	/**
+	 * If false, then this source file is part of the working package being processed by the `Collector`.
+	 */
+	public get isExternal(): boolean {
+		return this.externalModulePath !== undefined;
+	}
 }

@@ -1,5 +1,5 @@
-import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
-import { ExcerptTokenKind } from '@microsoft/api-extractor-model';
+import type { ApiModel, Excerpt } from '@discordjs/api-extractor-model';
+import { ExcerptTokenKind } from '@discordjs/api-extractor-model';
 import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';

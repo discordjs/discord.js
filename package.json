@@ -81,7 +81,7 @@
 		},
 		"patchedDependencies": {
 			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch",
-			"eslint-plugin-i@2.28.1": "patches/eslint-plugin-i@2.28.1.patch"
+			"eslint-plugin-i@2.29.0": "patches/eslint-plugin-i@2.29.0.patch"
 		}
 	},
 	"engines": {

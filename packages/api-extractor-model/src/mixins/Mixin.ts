@@ -4,9 +4,10 @@
 /**
  * This abstraction is used by the mixin pattern.
  * It describes a class constructor.
+ *
  * @public
  */
-export type Constructor<T = {}> = new (...args: any[]) => T; // eslint-disable-line @typescript-eslint/no-explicit-any
+export type Constructor<T = {}> = new (...args: any[]) => T;
 
 /**
  * This abstraction is used by the mixin pattern.
