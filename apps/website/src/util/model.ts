@@ -24,6 +24,7 @@ export function findMember(model: ApiModel, packageName: string, memberName: str
 interface ResolvedParameter {
 	description?: DocSection | undefined;
 	isOptional: boolean;
+	isRest: boolean;
 	name: string;
 	parameterTypeExcerpt: Excerpt;
 }
@@ -45,6 +46,7 @@ export function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixi
 			name: param.tsdocParamBlock?.parameterName ?? tsdocAnalog?.parameterName ?? param.name,
 			description: param.tsdocParamBlock?.content ?? tsdocAnalog?.content,
 			isOptional: param.isOptional,
+			isRest: param.isRest,
 			parameterTypeExcerpt: param.parameterTypeExcerpt,
 		};
 	});

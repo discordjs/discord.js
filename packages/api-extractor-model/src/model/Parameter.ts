@@ -13,6 +13,7 @@ import type { Excerpt } from '../mixins/Excerpt.js';
  */
 export interface IParameterOptions {
 	isOptional: boolean;
+	isRest: boolean;
 	name: string;
 	parameterTypeExcerpt: Excerpt;
 	parent: ApiParameterListMixin;
@@ -50,12 +51,18 @@ export class Parameter {
 	 */
 	public isOptional: boolean;
 
+	/**
+	 * Whether the parameter is a rest parameter
+	 */
+	public isRest: boolean;
+
 	private readonly _parent: ApiParameterListMixin;
 
 	public constructor(options: IParameterOptions) {
 		this.name = options.name;
 		this.parameterTypeExcerpt = options.parameterTypeExcerpt;
 		this.isOptional = options.isOptional;
+		this.isRest = options.isRest;
 		this._parent = options.parent;
 	}
 

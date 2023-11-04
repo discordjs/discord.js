@@ -63,9 +63,9 @@ export function serializeMembers(clazz: ApiItemContainerMixin): TableOfContentsS
 export function parametersString(item: ApiDocumentedItem & ApiParameterListMixin) {
 	return resolveParameters(item).reduce((prev, cur, index) => {
 		if (index === 0) {
-			return `${prev}${cur.isOptional ? `${cur.name}?` : cur.name}`;
+			return `${prev}${cur.isRest ? '...' : ''}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 		}
 
-		return `${prev}, ${cur.isOptional ? `${cur.name}?` : cur.name}`;
+		return `${prev}, ${cur.isRest ? '...' : ''}${cur.isOptional ? `${cur.name}?` : cur.name}`;
 	}, '');
 }

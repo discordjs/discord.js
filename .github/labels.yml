@@ -52,6 +52,10 @@
   color: e4e669
 - name: need repro
   color: c66037
+- name: packages:api-extractor
+  color: fbca04
+- name: packages:api-extractor-model
+  color: fbca04
 - name: packages:brokers
   color: fbca04
 - name: packages:builders

@@ -1081,6 +1081,7 @@ export class ApiModelGenerator {
 				parameterName: parameter.name.getText().trim(),
 				parameterTypeTokenRange,
 				isOptional: this._collector.typeChecker.isOptionalParameter(parameter),
+				isRest: Boolean(parameter.dotDotDotToken),
 			});
 		}
 
