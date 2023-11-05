@@ -13,7 +13,7 @@ import {
 	ApiDeclaredItem,
 } from '@microsoft/api-extractor-model';
 import type { DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
+import { type Meaning, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import type { DocBlockJSON } from './tsdoc/CommentBlock.js';
 import { createCommentNode } from './tsdoc/index.js';
 
@@ -54,7 +54,7 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 		}
 	}
 
-	// eslint-disable-next-line prefer-named-capture-group, unicorn/no-unsafe-regex
+	// eslint-disable-next-line prefer-named-capture-group
 	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
 }
 

@@ -133,7 +133,9 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
+    const components = this.options.components?.map(component =>
+      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+    );
 
     let username;
     let avatarURL;
@@ -286,11 +288,6 @@ module.exports = MessagePayload;
  * A possible payload option.
  * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
- */
-
-/**
- * @external APIMessage
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */
 
 /**

@@ -373,8 +373,3 @@ class User extends Base {
 TextBasedChannel.applyToClass(User);
 
 module.exports = User;
-
-/**
- * @external APIUser
- * @see {@link https://discord.com/developers/docs/resources/user#user-object}
- */

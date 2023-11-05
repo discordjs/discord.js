@@ -3,6 +3,10 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { PACKAGES } from './util/constants';
 
 async function fetchLatestVersion(packageName: string) {
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return 'main';
+	}
+
 	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, { cache: 'no-store' });
 	const data: string[] = await res.json();
 

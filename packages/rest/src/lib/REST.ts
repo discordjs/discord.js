@@ -317,7 +317,7 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${this.#token}`;
 		}
 
-		// If a reason was set, set it's appropriate header
+		// If a reason was set, set its appropriate header
 		if (request.reason?.length) {
 			headers['X-Audit-Log-Reason'] = encodeURIComponent(request.reason);
 		}

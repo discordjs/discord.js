@@ -176,6 +176,15 @@ import {
   GuildOnboarding,
   StringSelectMenuComponentData,
   ButtonComponentData,
+  MediaChannel,
+  PartialDMChannel,
+  PartialGuildMember,
+  PartialMessage,
+  PartialMessageReaction,
+  resolvePartialEmoji,
+  PartialEmojiOnlyId,
+  Emoji,
+  PartialEmoji,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -196,6 +205,12 @@ const client: Client = new Client({
     },
   }),
 });
+
+if (client.isReady()) {
+  expectType<Client<true>>(client);
+} else {
+  expectType<Client>(client);
+}
 
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
@@ -357,8 +372,8 @@ client.on('messageCreate', async message => {
   // https://github.com/discordjs/discord.js/issues/8545
   {
     // These should not throw any errors when comparing messages from any source.
-    channel.messages.cache.filter(m => m);
-    (await channel.messages.fetch()).filter(m => m.author.id === message.author.id);
+    channel.messages.cache.filter(message => message);
+    (await channel.messages.fetch()).filter(({ author }) => author.id === message.author.id);
 
     if (channel.isDMBased()) {
       expectType<DMMessageManager>(channel.messages.channel.messages);
@@ -1318,8 +1333,8 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test thread channels' parent inference
-expectType<TextChannel | NewsChannel | ForumChannel | null>(threadChannel.parent);
-expectType<ForumChannel | null>(threadChannelFromForum.parent);
+expectType<TextChannel | NewsChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
+expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
@@ -1538,6 +1553,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
+  expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
   expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
@@ -1597,7 +1613,7 @@ declare const threadManager: ThreadManager;
 }
 
 declare const guildForumThreadManager: GuildForumThreadManager;
-expectType<ForumChannel>(guildForumThreadManager.channel);
+expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
 
 declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
@@ -1920,6 +1936,7 @@ client.on('interactionCreate', async interaction => {
       expectType<ForumChannel | VoiceChannel | null>(
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
+      expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
     } else {
       // @ts-expect-error
       consumeCachedCommand(interaction);
@@ -2038,7 +2055,7 @@ collector.on('end', (collection, reason) => {
   }
 })();
 
-expectType<Promise<number | null>>(shard.eval(c => c.readyTimestamp));
+expectType<Promise<number | null>>(shard.eval(client => client.readyTimestamp));
 
 // Test audit logs
 expectType<Promise<GuildAuditLogs<AuditLogEvent.MemberKick>>>(guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }));
@@ -2068,9 +2085,14 @@ expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAudi
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
-expectType<Promise<null | undefined>>(
+expectType<Promise<{ integrationType: string } | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.extra),
 );
+
+expectType<Promise<{ integrationType: string } | null | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MemberRoleUpdate }).then(al => al.entries.first()?.extra),
+);
+
 expectType<Promise<StageChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.extra),
 );
@@ -2106,7 +2128,7 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel>(
+expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel>(
   NonThreadGuildBasedChannel,
 );
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
@@ -2305,7 +2327,68 @@ client.on('guildAuditLogEntryCreate', (auditLogEntry, guild) => {
 
 expectType<Readonly<GuildMemberFlagsBitField>>(guildMember.flags);
 
+declare const emojiResolvable: GuildEmoji | Emoji | string;
+
 {
   const onboarding = await guild.fetchOnboarding();
   expectType<GuildOnboarding>(onboarding);
+
+  expectType<GuildOnboarding>(await guild.editOnboarding(onboarding));
+
+  await guild.editOnboarding({
+    defaultChannels: onboarding.defaultChannels,
+    enabled: onboarding.enabled,
+    mode: onboarding.mode,
+    prompts: onboarding.prompts,
+  });
+
+  const prompt = onboarding.prompts.first()!;
+  const option = prompt.options.first()!;
+
+  await guild.editOnboarding({ prompts: [prompt] });
+  await guild.editOnboarding({ prompts: [{ ...prompt, options: [option] }] });
+
+  await guild.editOnboarding({ prompts: [{ ...prompt, options: [{ ...option, emoji: emojiResolvable }] }] });
+}
+
+declare const partialDMChannel: PartialDMChannel;
+expectType<true>(partialDMChannel.partial);
+expectType<undefined>(partialDMChannel.lastMessageId);
+
+declare const partialGuildMember: PartialGuildMember;
+expectType<true>(partialGuildMember.partial);
+expectType<null>(partialGuildMember.joinedAt);
+expectType<null>(partialGuildMember.joinedTimestamp);
+expectType<null>(partialGuildMember.pending);
+
+declare const partialMessage: PartialMessage;
+expectType<true>(partialMessage.partial);
+expectType<null>(partialMessage.type);
+expectType<null>(partialMessage.system);
+expectType<null>(partialMessage.pinned);
+expectType<null>(partialMessage.tts);
+expectAssignable<null | Message['content']>(partialMessage.content);
+expectAssignable<null | Message['cleanContent']>(partialMessage.cleanContent);
+expectAssignable<null | Message['author']>(partialMessage.author);
+
+declare const partialMessageReaction: PartialMessageReaction;
+expectType<true>(partialMessageReaction.partial);
+expectType<null>(partialMessageReaction.count);
+
+declare const partialThreadMember: PartialThreadMember;
+expectType<true>(partialThreadMember.partial);
+expectType<null>(partialThreadMember.flags);
+expectType<null>(partialThreadMember.joinedAt);
+expectType<null>(partialThreadMember.joinedTimestamp);
+
+declare const partialUser: PartialUser;
+expectType<true>(partialUser.partial);
+expectType<null>(partialUser.username);
+expectType<null>(partialUser.tag);
+expectType<null>(partialUser.discriminator);
+
+declare const emoji: Emoji;
+{
+  expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
+  expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
 }

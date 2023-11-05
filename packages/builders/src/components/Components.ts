@@ -59,7 +59,7 @@ export interface MappedComponentTypes {
  * @param data - The API data to transform to a component class
  */
 export function createComponentBuilder<T extends keyof MappedComponentTypes>(
-	// eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
+	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
 	data: (APIModalComponent | APIMessageComponent) & { type: T },
 ): MappedComponentTypes[T];
 

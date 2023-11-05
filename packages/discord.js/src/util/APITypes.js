@@ -86,8 +86,18 @@
  */
 
 /**
+ * @external APIGuildMember
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildMember}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
+ */
+
+/**
+ * @external APIInteractionDataResolved
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIInteractionDataResolved}
  */
 
 /**
@@ -151,8 +161,13 @@
  */
 
 /**
- * @external APIPresence
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPresence}
+ * @external APIPartialEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
+ */
+
+/**
+ * @external APIRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIRole}
  */
 
 /**
@@ -163,6 +178,11 @@
 /**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
+ */
+
+/**
+ * @external APISticker
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISticker}
  */
 
 /**
@@ -286,6 +306,11 @@
  */
 
 /**
+ * @external GatewayPresenceUpdateData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/GatewayPresenceUpdateData}
+ */
+
+/**
  * @external GuildDefaultMessageNotifications
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildDefaultMessageNotifications}
  */
@@ -313,6 +338,11 @@
 /**
  * @external GuildNSFWLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildNSFWLevel}
+ */
+
+/**
+ * @external GuildOnboardingMode
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingMode}
  */
 
 /**
@@ -348,6 +378,11 @@
 /**
  * @external GuildVerificationLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildVerificationLevel}
+ */
+
+/**
+ * @external GuildWidgetStyle
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildWidgetStyle}
  */
 
 /**
@@ -448,6 +483,11 @@
 /**
  * @external TeamMemberMembershipState
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberMembershipState}
+ */
+
+/**
+ * @external TeamMemberRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberRole}
  */
 
 /**
