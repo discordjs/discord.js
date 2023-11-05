@@ -31,6 +31,8 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
+let deprecationEmittedForPremiumStickerPacks = false;
+
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
  * @extends {BaseClient}
@@ -254,23 +256,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Options used for deleting a webhook.
-   * @typedef {Object} WebhookDeleteOptions
-   * @property {string} [token] Token of the webhook
-   * @property {string} [reason] The reason for deleting the webhook
-   */
-
-  /**
-   * Deletes a webhook.
-   * @param {Snowflake} id The webhook's id
-   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
-   * @returns {Promise<void>}
-   */
-  async deleteWebhook(id, { token, reason } = {}) {
-    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
-  }
-
-  /**
    * Options used when fetching an invite from Discord.
    * @typedef {Object} ClientFetchInviteOptions
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
@@ -358,16 +343,34 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
+   * Obtains the list of available sticker packs.
    * @returns {Promise<Collection<Snowflake, StickerPack>>}
    * @example
-   * client.fetchPremiumStickerPacks()
+   * client.fetchStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
    */
-  async fetchPremiumStickerPacks() {
-    const data = await this.rest.get(Routes.nitroStickerPacks());
-    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  async fetchStickerPacks() {
+    const data = await this.rest.get(Routes.stickerPacks());
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @deprecated Use {@link Client#fetchStickerPacks} instead.
+   */
+  fetchPremiumStickerPacks() {
+    if (!deprecationEmittedForPremiumStickerPacks) {
+      process.emitWarning(
+        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForPremiumStickerPacks = true;
+    }
+
+    return this.fetchStickerPacks();
   }
 
   /**

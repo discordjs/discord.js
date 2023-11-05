@@ -17,6 +17,7 @@ const allowedChannelTypes = [
 	ChannelType.PrivateThread,
 	ChannelType.GuildStageVoice,
 	ChannelType.GuildForum,
+	ChannelType.GuildMedia,
 ] as const;
 
 /**

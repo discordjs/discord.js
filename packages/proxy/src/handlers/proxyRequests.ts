@@ -32,6 +32,10 @@ export function proxyRequests(rest: REST): RequestHandler {
 			headers.authorization = req.headers.authorization;
 		}
 
+		if (req.headers['x-audit-log-reason']) {
+			headers['x-audit-log-reason'] = req.headers['x-audit-log-reason'] as string;
+		}
+
 		try {
 			const discordResponse = await rest.queueRequest({
 				body: req,

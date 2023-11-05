@@ -293,18 +293,20 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public async connect() {
 		const shardCount = await this.getShardCount();
+		// Spawn shards and adjust internal state
+		await this.updateShardCount(shardCount);
 
+		const shardIds = await this.getShardIds();
 		const data = await this.fetchGatewayInformation();
-		if (data.session_start_limit.remaining < shardCount) {
+
+		if (data.session_start_limit.remaining < shardIds.length) {
 			throw new Error(
-				`Not enough sessions remaining to spawn ${shardCount} shards; only ${
+				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
 					data.session_start_limit.remaining
 				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
 			);
 		}
 
-		// First, make sure all our shards are spawned
-		await this.updateShardCount(shardCount);
 		await this.strategy.connect();
 	}
 

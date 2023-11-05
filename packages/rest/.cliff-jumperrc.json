@@ -1,5 +1,6 @@
 {
 	"name": "rest",
 	"org": "discordjs",
-	"packagePath": "packages/rest"
+	"packagePath": "packages/rest",
+	"identifierBase": false
 }
