@@ -11,6 +11,7 @@ exports.WebhookClient = require('./client/WebhookClient');
 // Utilities
 exports.ActivityFlags = require('./util/ActivityFlags');
 exports.ApplicationFlags = require('./util/ApplicationFlags');
+exports.AttachmentFlags = require('./util/AttachmentFlags');
 exports.BaseManager = require('./managers/BaseManager');
 exports.BitField = require('./util/BitField');
 exports.Collection = require('@discordjs/collection').Collection;
