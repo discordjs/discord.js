@@ -596,11 +596,11 @@ export enum Faces {
  */
 export enum GuildNavigationMentions {
 	/**
-	 * _Browse Channels_ tab.
+	 * Browse Channels tab.
 	 */
 	Browse = '<id:browse>',
 	/**
-	 * _Customize_ tab with the server's {@link https://discord.com/developers/docs/resources/guild#guild-onboarding-object | onboarding prompts}.
+	 * Customize tab with the server's {@link https://discord.com/developers/docs/resources/guild#guild-onboarding-object | onboarding prompts}.
 	 */
 	Customize = '<id:customize>',
 	/**
