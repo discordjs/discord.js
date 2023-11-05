@@ -279,7 +279,9 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(PermissionFlagsBits.ViewChannel, false));
+    return this.guild.members.cache.filter(member =>
+      this.permissionsFor(member).has(PermissionFlagsBits.ViewChannel, false),
+    );
   }
 
   /**

@@ -202,7 +202,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in base 10
+   * The displayed role color of this member in base 10
    * @type {number}
    * @readonly
    */
@@ -211,7 +211,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in hexadecimal
+   * The displayed role color of this member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -513,8 +513,3 @@ class GuildMember extends Base {
 TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;
-
-/**
- * @external APIGuildMember
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-member-object}
- */
