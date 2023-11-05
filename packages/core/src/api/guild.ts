@@ -182,11 +182,11 @@ export class GuildsAPI {
 		guildId: Snowflake,
 		userId: Snowflake,
 		body: RESTPutAPIGuildMemberJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {}
+		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.put(Routes.guildMember(guildId, userId), {
 			body,
-			signal
+			signal,
 		}) as Promise<RESTPutAPIGuildMemberResult>;
 	}
 
