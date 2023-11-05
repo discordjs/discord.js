@@ -101,8 +101,7 @@ export class Node {
 }
 
 // Create a node for each stream type
-const NODES = new Map<StreamType, Node>();
-let hasInitializedNodes = false;
+let NODES : (Map<StreamType, Node> | null);
 
 /**
  * Gets a node from its stream type.
@@ -110,16 +109,7 @@ let hasInitializedNodes = false;
  * @param type - The stream type of the target node
  */
 export function getNode(type: StreamType) {
-	if (!hasInitializedNodes) {
-		hasInitializedNodes = true;
-		for (const streamType of Object.values(StreamType)) {
-			NODES.set(streamType, new Node(streamType));
-		}
-
-		initializeNodeEdges();
-	}
-
-	const node = NODES.get(type);
+	const node = (NODES ??= initializeNodes()).get(type);
 	if (!node) throw new Error(`Node type '${type}' does not exist!`);
 	return node;
 }
@@ -133,7 +123,12 @@ function canEnableFFmpegOptimizations(): boolean {
 	return false;
 }
 
-function initializeNodeEdges() {
+function initializeNodes() : Map<StreamType, Node> {
+	let nodes = new Map<StreamType, Node>();
+	for (const streamType of Object.values(StreamType)) {
+		nodes.set(streamType, new Node(streamType));
+	}
+
 	getNode(StreamType.Raw).addEdge({
 		type: TransformerType.OpusEncoder,
 		to: getNode(StreamType.Opus),
@@ -200,6 +195,8 @@ function initializeNodeEdges() {
 		getNode(StreamType.OggOpus).addEdge(FFMPEG_OGG_EDGE);
 		getNode(StreamType.WebmOpus).addEdge(FFMPEG_OGG_EDGE);
 	}
+
+	return nodes;
 }
 
 /**
