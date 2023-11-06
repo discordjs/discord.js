@@ -53,4 +53,23 @@ class BaseGuildEmoji extends Emoji {
   }
 }
 
+/**
+ * Returns a URL for the emoji.
+ * @method imageURL
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @param {BaseImageURLOptions} [options] Options for the image URL
+ * @returns {string}
+ */
+
+/**
+ * Returns a URL for the emoji.
+ * @name url
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {string}
+ * @readonly
+ * @deprecated Use {@link BaseGuildEmoji#imageURL} instead.
+ */
+
 module.exports = BaseGuildEmoji;
