@@ -124,7 +124,7 @@ function canEnableFFmpegOptimizations(): boolean {
 }
 
 function initializeNodes(): Map<StreamType, Node> {
-	let nodes = new Map<StreamType, Node>();
+	const nodes = new Map<StreamType, Node>();
 	for (const streamType of Object.values(StreamType)) {
 		nodes.set(streamType, new Node(streamType));
 	}
