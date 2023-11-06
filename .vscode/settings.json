@@ -16,7 +16,12 @@
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {
-		"*.mdx": "markdown"
+		"*.mdx": "markdown",
+		"api-extractor.json": "jsonc",
+		"api-extractor-docs.json": "jsonc",
+		"tsconfig.json": "jsonc",
+		"tsconfig.eslint.json": "jsonc",
+		"tsconfig.docs.json": "jsonc"
 	},
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",

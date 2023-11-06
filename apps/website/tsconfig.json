@@ -17,7 +17,9 @@
 		"moduleResolution": "node",
 		"resolvePackageJsonExports": false,
 		"resolvePackageJsonImports": false,
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"allowJs": true,
+		"incremental": true
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]

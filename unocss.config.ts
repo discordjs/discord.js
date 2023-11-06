@@ -1,3 +1,4 @@
+import type { UserConfig } from 'unocss';
 import { defineConfig, presetTypography, presetUno } from 'unocss';
 
 export default defineConfig({
@@ -80,4 +81,4 @@ export default defineConfig({
 			},
 		}),
 	],
-});
+}) as UserConfig;
