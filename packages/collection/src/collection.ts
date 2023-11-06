@@ -275,6 +275,64 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Searches for a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
+	 *
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
+	 */
+	public findLast<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown): V | undefined;
+	public findLast<This, V2 extends V>(
+		fn: (this: This, value: V, key: K, collection: this) => value is V2,
+		thisArg: This,
+	): V2 | undefined;
+	public findLast<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): V | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): V | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const val = entries[index]![1];
+			const key = entries[index]![0];
+			if (fn(val, key, this)) return val;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Searches for the key of a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
+	 * but returns the key rather than the positional index.
+	 *
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
+	 */
+	public findLastKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown): K | undefined;
+	public findLastKey<This, K2 extends K>(
+		fn: (this: This, value: V, key: K, collection: this) => key is K2,
+		thisArg: This,
+	): K2 | undefined;
+	public findLastKey<This>(
+		fn: (this: This, value: V, key: K, collection: this) => unknown,
+		thisArg: This,
+	): K | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): K | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const key = entries[index]![0];
+			const val = entries[index]![1];
+			if (fn(val, key, this)) return key;
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Removes items that satisfy the provided filter function.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
@@ -528,6 +586,37 @@ export class Collection<K, V> extends Map<K, V> {
 
 		for (const [key, value] of iterator) {
 			accumulator = fn(accumulator, value, key, this);
+		}
+
+		return accumulator;
+	}
+
+	/**
+	 * Applies a function to produce a single value. Identical in behavior to
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
+	 *
+	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
+	 * @param initialValue - Starting value for the accumulator
+	 */
+	public reduceRight<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		const entries = [...this.entries()];
+		let accumulator!: T;
+
+		let index: number;
+		if (initialValue === undefined) {
+			if (entries.length === 0) throw new TypeError('Reduce of empty collection with no initial value');
+			accumulator = entries[entries.length - 1]![1] as unknown as T;
+			index = entries.length - 1;
+		} else {
+			accumulator = initialValue;
+			index = entries.length;
+		}
+
+		while (--index >= 0) {
+			const key = entries[index]![0];
+			const val = entries[index]![1];
+			accumulator = fn(accumulator, val, key, this);
 		}
 
 		return accumulator;
