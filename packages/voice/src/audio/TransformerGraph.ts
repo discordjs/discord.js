@@ -101,7 +101,7 @@ export class Node {
 }
 
 // Create a node for each stream type
-let NODES : (Map<StreamType, Node> | null);
+let NODES: Map<StreamType, Node> | null = null;
 
 /**
  * Gets a node from its stream type.
