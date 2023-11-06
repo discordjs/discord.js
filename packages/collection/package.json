@@ -62,7 +62,7 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.1",
 		"@microsoft/api-extractor": "^7.38.2",
-		"@types/node": "16.18.44",
+		"@types/node": "16.18.60",
 		"@vitest/coverage-v8": "^0.34.6",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",

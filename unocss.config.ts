@@ -2,6 +2,9 @@ import type { UserConfig } from 'unocss';
 import { defineConfig, presetTypography, presetUno } from 'unocss';
 
 export default defineConfig({
+	content: {
+		filesystem: ['src/**/*.tsx', 'contentlayer.config.ts', '../../packages/ui/src/lib/components/**/*.tsx'],
+	},
 	theme: {
 		colors: {
 			blurple: {
