@@ -46,8 +46,7 @@ test('Interaction callback creates burst handler', async () => {
 			auth: false,
 			body: { type: 4, data: { content: 'Reply' } },
 		}),
-		// TODO: This should be ArrayBuffer, there is a bug in undici request
-	).toBeInstanceOf(Uint8Array);
+	).toBeInstanceOf(ArrayBuffer);
 	expect(api.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
 });
 

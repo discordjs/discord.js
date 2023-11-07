@@ -17,6 +17,9 @@ export interface ItemLinkProps<T extends string> extends Omit<LinkProps<T>, 'hre
 	 * The name of the package the item belongs to.
 	 */
 	readonly packageName?: string | undefined;
+
+	// TODO: This needs to be properly typed above but monkey-patching it for now.
+	readonly title?: string | undefined;
 }
 
 /**

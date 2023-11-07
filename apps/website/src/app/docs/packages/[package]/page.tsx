@@ -6,8 +6,6 @@ import { notFound } from 'next/navigation';
 import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
-export const runtime = 'edge';
-
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {
 		notFound();
