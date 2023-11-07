@@ -9,7 +9,7 @@ export function SourceLink({
 }) {
 	return (
 		<a
-			className="text-blurple"
+			className="text-2xl text-blurple"
 			href={sourceLine ? `${sourceURL}#L${sourceLine}` : sourceURL}
 			rel="external noopener noreferrer"
 			target="_blank"
