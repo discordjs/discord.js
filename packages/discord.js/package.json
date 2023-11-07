@@ -52,7 +52,7 @@
   "homepage": "https://discord.js.org",
   "dependencies": {
     "@discordjs/builders": "workspace:^",
-    "@discordjs/collection": "workspace:^",
+    "@discordjs/collection": "1.5.3",
     "@discordjs/formatters": "workspace:^",
     "@discordjs/rest": "workspace:^",
     "@discordjs/util": "workspace:^",
