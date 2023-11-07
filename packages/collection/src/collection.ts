@@ -751,50 +751,100 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The intersect method returns a new structure containing items where the keys and values are present in both original structures.
+	 * The intersection method returns a new collection containing the items where the key is present in both collections.
 	 *
 	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * const intersection = col1.intersection(col2);
+	 * console.log(col1.intersection(col2));
+	 * // => Collection { 'a' => 1 }
+	 * ```
 	 */
-	public intersect<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
-		const coll = new this.constructor[Symbol.species]<K, T>();
-		for (const [key, value] of other) {
-			if (this.has(key) && Object.is(value, this.get(key))) {
-				coll.set(key, value);
-			}
-		}
-
-		return coll;
-	}
-
-	/**
-	 * The subtract method returns a new structure containing items where the keys and values of the original structure are not present in the other.
-	 *
-	 * @param other - The other Collection to filter against
-	 */
-	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
-		const coll = new this.constructor[Symbol.species]<K, V>();
-		for (const [key, value] of this) {
-			if (!other.has(key) || !Object.is(value, other.get(key))) {
-				coll.set(key, value);
-			}
-		}
-
-		return coll;
-	}
-
-	/**
-	 * The difference method returns a new structure containing items where the key is present in one of the original structures but not the other.
-	 *
-	 * @param other - The other Collection to filter against
-	 */
-	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+	public intersection<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
 		const coll = new this.constructor[Symbol.species]<K, T | V>();
-		for (const [key, value] of other) {
-			if (!this.has(key)) coll.set(key, value);
+
+		for (const [key, value] of this) {
+			if (other.has(key)) coll.set(key, value);
 		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing the items where the key is present in either of the collections.
+	 *
+	 * @remarks
+	 *
+	 * If the collections have any items with the same key, the value from the first collection will be used.
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['b', 3], ['c', 3]]);
+	 * const union = col1.union(col2);
+	 * console.log(union);
+	 * // => Collection { 'a' => 1, 'b' => 2, 'c' => 3 }
+	 * ```
+	 */
+	public union<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+		const coll = new this.constructor[Symbol.species]<K, T | V>(this);
+
+		for (const [key, value] of other) {
+			if (!coll.has(key)) coll.set(key, value);
+		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing the items where the key is present in this collection but not the other.
+	 *
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * console.log(col1.difference(col2));
+	 * // => Collection { 'b' => 2 }
+	 * console.log(col2.difference(col1));
+	 * // => Collection { 'c' => 3 }
+	 * ```
+	 */
+	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
+		const coll = new this.constructor[Symbol.species]<K, V>();
 
 		for (const [key, value] of this) {
 			if (!other.has(key)) coll.set(key, value);
+		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing only the items where the keys are present in either collection, but not both.
+	 *
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * const symmetricDifference = col1.symmetricDifference(col2);
+	 * console.log(col1.symmetricDifference(col2));
+	 * // => Collection { 'b' => 2, 'c' => 3 }
+	 * ```
+	 */
+	public symmetricDifference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+		const coll = new this.constructor[Symbol.species]<K, T | V>();
+
+		for (const [key, value] of this) {
+			if (!other.has(key)) coll.set(key, value);
+		}
+
+		for (const [key, value] of other) {
+			if (!this.has(key)) coll.set(key, value);
 		}
 
 		return coll;
