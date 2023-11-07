@@ -1,4 +1,4 @@
-import type { ApiItemContainerMixin } from '@microsoft/api-extractor-model';
+import type { ApiItemContainerMixin } from '@discordjs/api-extractor-model';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { PropertyList } from '../../PropertyList';
 import { DocumentationSection } from './DocumentationSection';

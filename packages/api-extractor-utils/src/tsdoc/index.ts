@@ -1,4 +1,4 @@
-import type { ApiModel, ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiModel, ApiItem } from '@discordjs/api-extractor-model';
 import {
 	type DocNode,
 	type DocPlainText,

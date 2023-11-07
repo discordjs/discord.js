@@ -1,6 +1,6 @@
 'use client';
 
-import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiItemKind } from '@discordjs/api-extractor-model';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';

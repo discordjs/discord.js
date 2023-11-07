@@ -1,4 +1,4 @@
-import type { ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiItem } from '@discordjs/api-extractor-model';
 import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, DocPlainText } from '@microsoft/tsdoc';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import type { Route } from 'next';

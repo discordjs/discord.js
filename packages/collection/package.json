@@ -10,7 +10,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
+		"docs": "pnpm run build:docs && api-extractor run --local",
 		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/collection/*'",
 		"release": "cliff-jumper"
@@ -61,7 +61,7 @@
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.1",
-		"@microsoft/api-extractor": "^7.38.2",
+		"@discordjs/api-extractor": "workspace:^",
 		"@types/node": "16.18.60",
 		"@vitest/coverage-v8": "^0.34.6",
 		"cross-env": "^7.0.3",

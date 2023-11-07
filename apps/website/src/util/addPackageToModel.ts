@@ -1,5 +1,5 @@
-import type { ApiModel, ApiPackage } from '@microsoft/api-extractor-model';
-import { ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
+import { ApiItem } from '@discordjs/api-extractor-model';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 

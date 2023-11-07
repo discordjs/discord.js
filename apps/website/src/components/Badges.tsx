@@ -1,5 +1,5 @@
-import type { ApiDocumentedItem } from '@microsoft/api-extractor-model';
-import { ApiAbstractMixin, ApiProtectedMixin, ApiReadonlyMixin, ApiStaticMixin } from '@microsoft/api-extractor-model';
+import type { ApiDocumentedItem } from '@discordjs/api-extractor-model';
+import { ApiAbstractMixin, ApiProtectedMixin, ApiReadonlyMixin, ApiStaticMixin } from '@discordjs/api-extractor-model';
 import type { PropsWithChildren } from 'react';
 
 export enum BadgeColor {

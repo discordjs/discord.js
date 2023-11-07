@@ -1,4 +1,4 @@
-import type { ApiDocumentedItem, ApiParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiDocumentedItem, ApiParameterListMixin } from '@discordjs/api-extractor-model';
 import { useMemo } from 'react';
 import { resolveParameters } from '~/util/model';
 import { ExcerptText } from './ExcerptText';
@@ -16,7 +16,7 @@ export function ParameterTable({ item }: { readonly item: ApiDocumentedItem & Ap
 	const rows = useMemo(
 		() =>
 			params.map((param) => ({
-				Name: param.name,
+				Name: param.isRest ? `...${param.name}` : param.name,
 				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} model={item.getAssociatedModel()!} />,
 				Optional: param.isOptional ? 'Yes' : 'No',
 				Description: param.description ? <TSDoc item={item} tsdoc={param.description} /> : 'None',

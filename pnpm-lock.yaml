@@ -229,6 +229,9 @@ importers:
 
   apps/website:
     dependencies:
+      '@discordjs/api-extractor-model':
+        specifier: workspace:^
+        version: link:../../packages/api-extractor-model
       '@discordjs/api-extractor-utils':
         specifier: workspace:^
         version: link:../../packages/api-extractor-utils
@@ -238,9 +241,6 @@ importers:
       '@discordjs/ui':
         specifier: workspace:^
         version: link:../../packages/ui
-      '@microsoft/api-extractor-model':
-        specifier: ^7.28.2
-        version: 7.28.2(@types/node@18.18.8)
       '@microsoft/tsdoc':
         specifier: ^0.14.2
         version: 0.14.2
@@ -439,11 +439,136 @@ importers:
         specifier: ^0.34.6
         version: 0.34.6(happy-dom@12.10.3)
 
+  packages/api-extractor:
+    dependencies:
+      '@discordjs/api-extractor-model':
+        specifier: workspace:^
+        version: link:../api-extractor-model
+      '@microsoft/tsdoc':
+        specifier: 0.14.2
+        version: 0.14.2
+      '@microsoft/tsdoc-config':
+        specifier: 0.16.2
+        version: 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
+      '@rushstack/node-core-library':
+        specifier: 3.61.0
+        version: 3.61.0(@types/node@18.18.8)
+      '@rushstack/rig-package':
+        specifier: 0.5.1
+        version: 0.5.1
+      '@rushstack/ts-command-line':
+        specifier: 4.17.1
+        version: 4.17.1
+      colors:
+        specifier: ~1.2.1
+        version: 1.2.5
+      lodash:
+        specifier: ~4.17.15
+        version: 4.17.21
+      resolve:
+        specifier: ~1.22.1
+        version: 1.22.8
+      semver:
+        specifier: ~7.5.4
+        version: 7.5.4
+      source-map:
+        specifier: ~0.6.1
+        version: 0.6.1
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+    devDependencies:
+      '@types/jest':
+        specifier: ^29.5.7
+        version: 29.5.7
+      '@types/lodash':
+        specifier: ^4.14.200
+        version: 4.14.200
+      '@types/node':
+        specifier: ^18.18.8
+        version: 18.18.8
+      '@types/resolve':
+        specifier: ^1.20.4
+        version: 1.20.4
+      '@types/semver':
+        specifier: ^7.5.0
+        version: 7.5.4
+      cpy-cli:
+        specifier: ^5.0.0
+        version: 5.0.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      eslint:
+        specifier: ^8.53.0
+        version: 8.53.0
+      eslint-config-neon:
+        specifier: ^0.1.57
+        version: 0.1.57(eslint@8.53.0)(typescript@5.2.2)
+      eslint-formatter-pretty:
+        specifier: ^5.0.0
+        version: 5.0.0
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@18.18.8)
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
+      turbo:
+        specifier: ^1.10.16
+        version: 1.10.16
+
+  packages/api-extractor-model:
+    dependencies:
+      '@microsoft/tsdoc':
+        specifier: 0.14.2
+        version: 0.14.2
+      '@microsoft/tsdoc-config':
+        specifier: 0.16.2
+        version: 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
+      '@rushstack/node-core-library':
+        specifier: 3.61.0
+        version: 3.61.0(@types/node@18.18.8)
+    devDependencies:
+      '@types/jest':
+        specifier: ^29.5.7
+        version: 29.5.7
+      '@types/node':
+        specifier: ^18.18.8
+        version: 18.18.8
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      eslint:
+        specifier: ^8.53.0
+        version: 8.53.0
+      eslint-config-neon:
+        specifier: ^0.1.57
+        version: 0.1.57(eslint@8.53.0)(typescript@5.2.2)
+      eslint-formatter-pretty:
+        specifier: ^5.0.0
+        version: 5.0.0
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@18.18.8)
+      prettier:
+        specifier: ^3.0.3
+        version: 3.0.3
+      tsup:
+        specifier: ^7.2.0
+        version: 7.2.0(typescript@5.2.2)
+      turbo:
+        specifier: ^1.10.16
+        version: 1.10.16
+
   packages/api-extractor-utils:
     dependencies:
-      '@microsoft/api-extractor-model':
-        specifier: 7.28.2
-        version: 7.28.2(@types/node@16.18.60)
+      '@discordjs/api-extractor-model':
+        specifier: workspace:^
+        version: link:../api-extractor-model
       '@microsoft/tsdoc':
         specifier: 0.14.2
         version: 0.14.2
@@ -488,12 +613,12 @@ importers:
         specifier: ^5.3.2
         version: 5.3.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -552,12 +677,12 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -600,12 +725,12 @@ importers:
 
   packages/collection:
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -664,12 +789,12 @@ importers:
         specifier: 0.37.61
         version: 0.37.61
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@18.18.8)
       '@types/node':
         specifier: 18.18.8
         version: 18.18.8
@@ -725,12 +850,12 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -911,12 +1036,12 @@ importers:
         specifier: 0.37.61
         version: 0.37.61
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -978,12 +1103,12 @@ importers:
         specifier: 0.37.61
         version: 0.37.61
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@18.18.8)
       '@types/node':
         specifier: 18.18.8
         version: 18.18.8
@@ -1036,12 +1161,12 @@ importers:
         specifier: 5.27.2
         version: 5.27.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@18.18.8)
       '@types/node':
         specifier: 18.18.8
         version: 18.18.8
@@ -1152,12 +1277,12 @@ importers:
         specifier: 5.27.2
         version: 5.27.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@18.17.9)
       '@types/node':
         specifier: 18.17.9
         version: 18.17.9
@@ -1197,12 +1322,12 @@ importers:
 
   packages/scripts:
     dependencies:
+      '@discordjs/api-extractor-model':
+        specifier: workspace:^
+        version: link:../api-extractor-model
       '@discordjs/api-extractor-utils':
         specifier: workspace:^
         version: link:../api-extractor-utils
-      '@microsoft/api-extractor-model':
-        specifier: 7.28.2
-        version: 7.28.2(@types/node@16.18.60)
       '@microsoft/tsdoc':
         specifier: 0.14.2
         version: 0.14.2
@@ -1364,12 +1489,12 @@ importers:
 
   packages/util:
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/node':
         specifier: 16.18.60
         version: 16.18.60
@@ -1434,12 +1559,12 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.23.2
         version: 7.23.2(@babel/core@7.23.2)
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@16.18.60)
       '@types/jest':
         specifier: ^29.5.7
         version: 29.5.7
@@ -1516,12 +1641,12 @@ importers:
         specifier: ^8.14.2
         version: 8.14.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@favware/cliff-jumper':
         specifier: ^2.2.1
         version: 2.2.1
-      '@microsoft/api-extractor':
-        specifier: ^7.38.2
-        version: 7.38.2(@types/node@18.17.9)
       '@types/node':
         specifier: 18.17.9
         version: 18.17.9
@@ -4264,25 +4389,6 @@ packages:
     transitivePeerDependencies:
       - '@types/node'
 
-  /@microsoft/api-extractor-model@7.28.2(@types/node@18.17.9):
-    resolution: {integrity: sha512-vkojrM2fo3q4n4oPh4uUZdjJ2DxQ2+RnDQL/xhTWSRUNPF6P4QyrvY357HBxbnltKcYu+nNNolVqc6TIGQ73Ig==}
-    dependencies:
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 3.61.0(@types/node@18.17.9)
-    transitivePeerDependencies:
-      - '@types/node'
-    dev: true
-
-  /@microsoft/api-extractor-model@7.28.2(@types/node@18.18.8):
-    resolution: {integrity: sha512-vkojrM2fo3q4n4oPh4uUZdjJ2DxQ2+RnDQL/xhTWSRUNPF6P4QyrvY357HBxbnltKcYu+nNNolVqc6TIGQ73Ig==}
-    dependencies:
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 3.61.0(@types/node@18.18.8)
-    transitivePeerDependencies:
-      - '@types/node'
-
   /@microsoft/api-extractor@7.38.2(@types/node@16.18.60):
     resolution: {integrity: sha512-JOARuhTwOcOMIU0O2czscoJy3ddVzIRhSA9/7T1ALuZSNphgWsPk+Bv4E7AnBDmTV4pP4lBNLtCxEHjjpWaytQ==}
     hasBin: true
@@ -4291,46 +4397,6 @@ packages:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
       '@rushstack/node-core-library': 3.61.0(@types/node@16.18.60)
-      '@rushstack/rig-package': 0.5.1
-      '@rushstack/ts-command-line': 4.17.1
-      colors: 1.2.5
-      lodash: 4.17.21
-      resolve: 1.22.8
-      semver: 7.5.4
-      source-map: 0.6.1
-      typescript: 5.0.4
-    transitivePeerDependencies:
-      - '@types/node'
-    dev: true
-
-  /@microsoft/api-extractor@7.38.2(@types/node@18.17.9):
-    resolution: {integrity: sha512-JOARuhTwOcOMIU0O2czscoJy3ddVzIRhSA9/7T1ALuZSNphgWsPk+Bv4E7AnBDmTV4pP4lBNLtCxEHjjpWaytQ==}
-    hasBin: true
-    dependencies:
-      '@microsoft/api-extractor-model': 7.28.2(@types/node@18.17.9)
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 3.61.0(@types/node@18.17.9)
-      '@rushstack/rig-package': 0.5.1
-      '@rushstack/ts-command-line': 4.17.1
-      colors: 1.2.5
-      lodash: 4.17.21
-      resolve: 1.22.8
-      semver: 7.5.4
-      source-map: 0.6.1
-      typescript: 5.0.4
-    transitivePeerDependencies:
-      - '@types/node'
-    dev: true
-
-  /@microsoft/api-extractor@7.38.2(@types/node@18.18.8):
-    resolution: {integrity: sha512-JOARuhTwOcOMIU0O2czscoJy3ddVzIRhSA9/7T1ALuZSNphgWsPk+Bv4E7AnBDmTV4pP4lBNLtCxEHjjpWaytQ==}
-    hasBin: true
-    dependencies:
-      '@microsoft/api-extractor-model': 7.28.2(@types/node@18.18.8)
-      '@microsoft/tsdoc': 0.14.2
-      '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 3.61.0(@types/node@18.18.8)
       '@rushstack/rig-package': 0.5.1
       '@rushstack/ts-command-line': 4.17.1
       colors: 1.2.5
@@ -5638,24 +5704,6 @@ packages:
       semver: 7.5.4
       z-schema: 5.0.5
 
-  /@rushstack/node-core-library@3.61.0(@types/node@18.17.9):
-    resolution: {integrity: sha512-tdOjdErme+/YOu4gPed3sFS72GhtWCgNV9oDsHDnoLY5oDfwjKUc9Z+JOZZ37uAxcm/OCahDHfuu2ugqrfWAVQ==}
-    peerDependencies:
-      '@types/node': '*'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-    dependencies:
-      '@types/node': 18.17.9
-      colors: 1.2.5
-      fs-extra: 7.0.1
-      import-lazy: 4.0.0
-      jju: 1.4.0
-      resolve: 1.22.8
-      semver: 7.5.4
-      z-schema: 5.0.5
-    dev: true
-
   /@rushstack/node-core-library@3.61.0(@types/node@18.18.8):
     resolution: {integrity: sha512-tdOjdErme+/YOu4gPed3sFS72GhtWCgNV9oDsHDnoLY5oDfwjKUc9Z+JOZZ37uAxcm/OCahDHfuu2ugqrfWAVQ==}
     peerDependencies:
@@ -5678,7 +5726,6 @@ packages:
     dependencies:
       resolve: 1.22.8
       strip-json-comments: 3.1.1
-    dev: true
 
   /@rushstack/ts-command-line@4.17.1:
     resolution: {integrity: sha512-2jweO1O57BYP5qdBGl6apJLB+aRIn5ccIRTPDyULh0KMwVzFqWtw6IZWt1qtUoZD/pD2RNkIOosH6Cq45rIYeg==}
@@ -5687,7 +5734,6 @@ packages:
       argparse: 1.0.10
       colors: 1.2.5
       string-argv: 0.3.2
-    dev: true
 
   /@sapphire/async-queue@1.5.0:
     resolution: {integrity: sha512-JkLdIsP8fPAdh9ZZjrbHWR/+mZj0wvKS5ICibcLrRI1j84UmLMshx5n9QmL8b95d4onJ2xxiyugTgSAX7AalmA==}
@@ -6910,7 +6956,6 @@ packages:
 
   /@types/argparse@1.0.38:
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
-    dev: true
 
   /@types/aria-query@5.0.3:
     resolution: {integrity: sha512-0Z6Tr7wjKJIk4OUEjVUQMtyunLDy339vcMaj38Kpj6jM2OE1p3S4kXExKZ7a3uXQAPCoy3sbrP1wibDKaf39oA==}
@@ -7274,6 +7319,10 @@ packages:
 
   /@types/scheduler@0.16.5:
     resolution: {integrity: sha512-s/FPdYRmZR8SjLWGMCuax7r3qCWQw9QKHzXVukAuuIJkXkDRwp+Pu5LMIVFi0Fxbav35WURicYr8u1QsoybnQw==}
+
+  /@types/semver@7.5.0:
+    resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
+    dev: true
 
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
@@ -9613,6 +9662,7 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     dev: true
+    optional: true
 
   /collect-all@1.0.4:
     resolution: {integrity: sha512-RKZhRwJtJEP5FWul+gkSMEnaK6H3AGPTTWOiRimCcs+rc/OmQE3Yhy1Q7A7KsdkG3ZXVdZq68Y6ONSdvkeEcKA==}
@@ -10199,6 +10249,25 @@ packages:
       - ts-node
     dev: true
 
+  /create-jest@29.7.0(@types/node@18.18.8):
+    resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
+    dependencies:
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      exit: 0.1.2
+      graceful-fs: 4.2.11
+      jest-config: 29.7.0(@types/node@18.18.8)
+      jest-util: 29.7.0
+      prompts: 2.4.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+    dev: true
+
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
@@ -10382,7 +10451,7 @@ packages:
       supports-color:
         optional: true
     dependencies:
-      ms: 2.1.1
+      ms: 2.1.3
     dev: true
 
   /debug@4.3.4:
@@ -13860,6 +13929,7 @@ packages:
     dependencies:
       number-is-nan: 1.0.1
     dev: true
+    optional: true
 
   /is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
@@ -14279,6 +14349,34 @@ packages:
       - ts-node
     dev: true
 
+  /jest-cli@29.7.0(@types/node@18.18.8):
+    resolution: {integrity: sha512-OVVobw2IubN/GSYsxETi+gOe7Ka59EFMR/twOU3Jb2GnKKeMGJB5SGUUrEz3SFVmJASUdZUzy83sLNNQ2gZslg==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
+    peerDependencies:
+      node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
+    peerDependenciesMeta:
+      node-notifier:
+        optional: true
+    dependencies:
+      '@jest/core': 29.7.0
+      '@jest/test-result': 29.7.0
+      '@jest/types': 29.6.3
+      chalk: 4.1.2
+      create-jest: 29.7.0(@types/node@18.18.8)
+      exit: 0.1.2
+      import-local: 3.1.0
+      jest-config: 29.7.0(@types/node@18.18.8)
+      jest-util: 29.7.0
+      jest-validate: 29.7.0
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+    dev: true
+
   /jest-config@29.7.0(@types/node@16.18.60):
     resolution: {integrity: sha512-uXbpfeQ7R6TZBqI3/TxCU4q4ttk3u0PJeC+E0zbfSoSjq6bJ7buBPxzQPL0ifrkY4DNu4JUdk0ImlBUYi840eQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -14671,6 +14769,27 @@ packages:
       '@jest/types': 29.6.3
       import-local: 3.1.0
       jest-cli: 29.7.0(@types/node@16.18.60)
+    transitivePeerDependencies:
+      - '@types/node'
+      - babel-plugin-macros
+      - supports-color
+      - ts-node
+    dev: true
+
+  /jest@29.7.0(@types/node@18.18.8):
+    resolution: {integrity: sha512-NIy3oAFp9shda19hy4HK0HRTWKtPJmGdnvywu01nOqNC2vZg+Z+fvJDxpMQA88eb2I9EcafcdjYgsDthnYTvGw==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
+    peerDependencies:
+      node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
+    peerDependenciesMeta:
+      node-notifier:
+        optional: true
+    dependencies:
+      '@jest/core': 29.7.0
+      '@jest/types': 29.6.3
+      import-local: 3.1.0
+      jest-cli: 29.7.0(@types/node@18.18.8)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -16796,6 +16915,7 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     dev: true
+    optional: true
 
   /oauth-sign@0.9.0:
     resolution: {integrity: sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==}
@@ -19302,7 +19422,6 @@ packages:
   /string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
-    dev: true
 
   /string-length@4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
@@ -19321,6 +19440,7 @@ packages:
       is-fullwidth-code-point: 1.0.0
       strip-ansi: 3.0.1
     dev: true
+    optional: true
 
   /string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -21545,7 +21665,7 @@ packages:
   /wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 1.0.2
+      string-width: 4.2.3
     dev: true
 
   /wordwrap@1.0.0:

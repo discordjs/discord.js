@@ -1,4 +1,4 @@
-import type { ApiItem, ApiModel } from '@microsoft/api-extractor-model';
+import type { ApiItem, ApiModel } from '@discordjs/api-extractor-model';
 import type { DocDeclarationReference, DocLinkTag } from '@microsoft/tsdoc';
 import { resolveName, generatePath } from '../parse.js';
 import { type DocNodeJSON, node } from './CommentNode.js';

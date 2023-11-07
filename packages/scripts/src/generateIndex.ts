@@ -1,7 +1,6 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import { generatePath } from '@discordjs/api-extractor-utils';
 import {
 	ApiModel,
 	ApiDeclaredItem,
@@ -9,7 +8,8 @@ import {
 	ApiItem,
 	type ApiPackage,
 	ApiItemKind,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { generatePath } from '@discordjs/api-extractor-utils';
 import {
 	DocNodeKind,
 	type DocCodeSpan,

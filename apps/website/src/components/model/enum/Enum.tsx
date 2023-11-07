@@ -1,4 +1,4 @@
-import type { ApiEnum } from '@microsoft/api-extractor-model';
+import type { ApiEnum } from '@discordjs/api-extractor-model';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { Panel } from '../../Panel';
 import { Documentation } from '../../documentation/Documentation';

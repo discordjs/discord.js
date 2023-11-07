@@ -1,4 +1,4 @@
-import type { ApiDeclaredItem } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem } from '@discordjs/api-extractor-model';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
 

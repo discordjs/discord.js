@@ -1,4 +1,4 @@
-import type { ApiDeclaredItem } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem } from '@discordjs/api-extractor-model';
 import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
 import { TSDoc } from '../tsdoc/TSDoc';
 import { DocumentationSection } from './DocumentationSection';

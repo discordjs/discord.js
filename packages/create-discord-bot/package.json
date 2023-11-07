@@ -56,7 +56,7 @@
 	},
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.1",
-		"@microsoft/api-extractor": "^7.38.2",
+		"@discordjs/api-extractor": "workspace:^",
 		"@types/node": "16.18.60",
 		"@types/prompts": "^2.4.7",
 		"@types/validate-npm-package-name": "^4.0.1",

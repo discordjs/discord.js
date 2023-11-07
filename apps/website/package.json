@@ -50,7 +50,7 @@
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@discordjs/ui": "workspace:^",
-		"@microsoft/api-extractor-model": "^7.28.2",
+		"@discordjs/api-extractor-model": "workspace:^",
 		"@microsoft/tsdoc": "^0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
 		"@planetscale/database": "^1.11.0",

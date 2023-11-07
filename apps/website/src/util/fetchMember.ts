@@ -1,4 +1,4 @@
-import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
+import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';
 import { addPackageToModel } from './addPackageToModel';

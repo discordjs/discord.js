@@ -3,7 +3,7 @@ import type {
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
 import { Fragment } from 'react';
 import { MethodDocumentation } from './MethodDocumentation';

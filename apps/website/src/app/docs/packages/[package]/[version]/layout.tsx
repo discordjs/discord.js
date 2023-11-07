@@ -1,5 +1,5 @@
-import type { ApiFunction, ApiItem } from '@microsoft/api-extractor-model';
-import { ApiModel } from '@microsoft/api-extractor-model';
+import type { ApiFunction, ApiItem } from '@discordjs/api-extractor-model';
+import { ApiModel } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';

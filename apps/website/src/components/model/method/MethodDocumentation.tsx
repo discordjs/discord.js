@@ -3,7 +3,7 @@ import type {
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import { InheritanceText } from '../../InheritanceText';
 import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
