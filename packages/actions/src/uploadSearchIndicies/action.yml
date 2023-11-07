@@ -1,0 +1,5 @@
+name: 'Upload search indicies'
+description: 'Uploads the search indicies to a meilisearch database'
+runs:
+  using: node16
+  main: ../../dist/uploadSearchIndicies/index.js
