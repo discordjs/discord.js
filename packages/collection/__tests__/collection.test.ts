@@ -754,14 +754,6 @@ describe('sort() tests', () => {
 		expect([...coll.values()]).toStrictEqual([1, 2, 3]);
 	});
 
-	test('sort a collection', () => {
-		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		const sorted = coll.sorted((a, b) => a - b);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		expect([...sorted.values()]).toStrictEqual([1, 2, 3]);
-	});
-
 	describe('defaultSort', () => {
 		test('stays the same if it is already sorted', () => {
 			const coll = createTestCollection();
@@ -852,6 +844,48 @@ describe('union() tests', () => {
 		expect(c.size).toStrictEqual(3);
 
 		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['b', 2], ['c', 3]));
+	});
+});
+
+describe('toReversed() tests', () => {
+	test('reverses a collection', () => {
+		const coll = createTestCollection();
+		const reversed = coll.toReversed();
+		expect([...reversed.entries()]).toStrictEqual([
+			['c', 3],
+			['b', 2],
+			['a', 1],
+		]);
+	});
+
+	test('does not the modify original collection', () => {
+		const coll = createTestCollection();
+		const originalEntries = [...coll.entries()];
+		const reversed = coll.toReversed();
+
+		expect(reversed).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
+	});
+});
+
+describe('toSorted() tests', () => {
+	test('sorts a collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const sorted = coll.toSorted((a, b) => a - b);
+		expect([...sorted.entries()]).toStrictEqual([
+			['c', 1],
+			['b', 2],
+			['a', 3],
+		]);
+	});
+
+	test('does not modify the original collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const originalEntries = [...coll.entries()];
+		const sorted = coll.toSorted();
+
+		expect(sorted).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
 	});
 });
 

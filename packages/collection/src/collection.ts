@@ -907,6 +907,14 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
+	 * but returns a Collection instead of an Array.
+	 */
+	public toReversed() {
+		return new this.constructor[Symbol.species](this).reverse();
+	}
+
+	/**
 	 * The sorted method sorts the items of a collection and returns it.
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
@@ -919,7 +927,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public sorted(compareFunction: Comparator<K, V> = Collection.defaultSort) {
+	public toSorted(compareFunction: Comparator<K, V> = Collection.defaultSort) {
 		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
 	}
 
