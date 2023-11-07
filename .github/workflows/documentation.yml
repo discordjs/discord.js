@@ -121,9 +121,9 @@ jobs:
           git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
           git push
 
-  build-indicies:
+  build-indices:
     needs: build-docs
-    name: Build & upload search indicies
+    name: Build & upload search indices
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -147,15 +147,15 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Upload search indicies to meilisearch
+      - name: Upload search indices to meilisearch
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
-        uses: ./packages/actions/src/uploadSearchIndicies
+        uses: ./packages/actions/src/uploadSearchIndices
 
   deploy-website:
-    needs: [build-docs, build-indicies]
+    needs: [build-docs, build-indices]
     name: Deploy website
     runs-on: ubuntu-latest
     if: github.repository_owner == 'discordjs'
@@ -170,7 +170,5 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          ALIAS_DOMAINS: |
-            discord.js.org
-            discordjs.dev
           VERCEL_SCOPE: 'discordjs'
+          PRODUCTION: true
