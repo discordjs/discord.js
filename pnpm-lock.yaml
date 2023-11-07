@@ -902,7 +902,7 @@ importers:
         specifier: workspace:^
         version: link:../builders
       '@discordjs/collection':
-        specifier: workspace:^
+        specifier: 1.5.3
         version: link:../collection
       '@discordjs/formatters':
         specifier: workspace:^

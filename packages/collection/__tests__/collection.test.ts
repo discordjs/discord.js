@@ -116,16 +116,15 @@ describe('combineEntries() tests', () => {
 });
 
 describe('difference() tests', () => {
-	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
-	const coll2 = createTestCollection();
-	const diff = createCollectionFrom(['c', 3]);
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
+	const coll2 = createCollectionFrom(['b', 2], ['d', 4], ['e', 5]);
 
-	test('it removes entries from the bigger collection on the right', () => {
-		expect(coll1.difference(coll2)).toStrictEqual(diff);
+	test('it returns the difference the collections', () => {
+		expect(coll1.difference(coll2)).toStrictEqual(createCollectionFrom(['a', 1], ['c', 3]));
 	});
 
-	test('removes the difference from the bigger collection on the left', () => {
-		expect(coll2.difference(coll1)).toStrictEqual(diff);
+	test('it returns the difference the collections from the opposite order', () => {
+		expect(coll2.difference(coll1)).toStrictEqual(createCollectionFrom(['d', 4], ['e', 5]));
 	});
 });
 
@@ -407,12 +406,12 @@ describe('hasAny() tests', () => {
 	});
 });
 
-describe('intersect() tests', () => {
+describe('intersection() tests', () => {
 	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
 	const coll2 = createCollectionFrom(['a', 1], ['c', 3]);
 
-	test('it returns a new collection', () => {
-		const c = coll1.intersect(coll2);
+	test('it returns the intersection of the collections', () => {
+		const c = coll1.intersection(coll2);
 		expect(c).toBeInstanceOf(Collection);
 		expect(c.size).toStrictEqual(1);
 
@@ -755,14 +754,6 @@ describe('sort() tests', () => {
 		expect([...coll.values()]).toStrictEqual([1, 2, 3]);
 	});
 
-	test('sort a collection', () => {
-		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		const sorted = coll.sorted((a, b) => a - b);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		expect([...sorted.values()]).toStrictEqual([1, 2, 3]);
-	});
-
 	describe('defaultSort', () => {
 		test('stays the same if it is already sorted', () => {
 			const coll = createTestCollection();
@@ -773,19 +764,6 @@ describe('sort() tests', () => {
 			const coll = createCollectionFrom(['a', 5], ['b', 3], ['c', 1]);
 			expect(coll.sort()).toStrictEqual(createCollectionFrom(['c', 1], ['b', 3], ['a', 5]));
 		});
-	});
-});
-
-describe('subtract() tests', () => {
-	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3], ['d', undefined]);
-	const coll2 = createCollectionFrom(['b', 2], ['c', 0]);
-
-	test('it returns a new collection', () => {
-		const c = coll1.subtract(coll2);
-		expect(c).toBeInstanceOf(Collection);
-		expect(c.size).toStrictEqual(3);
-
-		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['c', 3], ['d', undefined]));
 	});
 });
 
@@ -816,6 +794,17 @@ describe('sweep() test', () => {
 	});
 });
 
+describe('symmetricDifference() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
+	const coll2 = createCollectionFrom(['b', 2], ['d', 4], ['e', 5]);
+
+	test('it returns the symmetric difference of the collections', () => {
+		expect(coll1.symmetricDifference(coll2)).toStrictEqual(
+			createCollectionFrom(['a', 1], ['c', 3], ['d', 4], ['e', 5]),
+		);
+	});
+});
+
 describe('tap() tests', () => {
 	const coll = createTestCollection();
 
@@ -842,6 +831,61 @@ describe('toJSON() tests', () => {
 	test('it returns the values as an array', () => {
 		const c = createTestCollection();
 		expect(c.toJSON()).toStrictEqual([1, 2, 3]);
+	});
+});
+
+describe('union() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
+	const coll2 = createCollectionFrom(['a', 1], ['c', 3]);
+
+	test('it returns the union of the collections', () => {
+		const c = coll1.union(coll2);
+		expect(c).toBeInstanceOf(Collection);
+		expect(c.size).toStrictEqual(3);
+
+		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['b', 2], ['c', 3]));
+	});
+});
+
+describe('toReversed() tests', () => {
+	test('reverses a collection', () => {
+		const coll = createTestCollection();
+		const reversed = coll.toReversed();
+		expect([...reversed.entries()]).toStrictEqual([
+			['c', 3],
+			['b', 2],
+			['a', 1],
+		]);
+	});
+
+	test('does not the modify original collection', () => {
+		const coll = createTestCollection();
+		const originalEntries = [...coll.entries()];
+		const reversed = coll.toReversed();
+
+		expect(reversed).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
+	});
+});
+
+describe('toSorted() tests', () => {
+	test('sorts a collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const sorted = coll.toSorted((a, b) => a - b);
+		expect([...sorted.entries()]).toStrictEqual([
+			['c', 1],
+			['b', 2],
+			['a', 3],
+		]);
+	});
+
+	test('does not modify the original collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const originalEntries = [...coll.entries()];
+		const sorted = coll.toSorted();
+
+		expect(sorted).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
 	});
 });
 
