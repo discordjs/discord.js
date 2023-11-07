@@ -5,7 +5,13 @@ on:
       - 'main'
     paths:
       - 'packages/*/src/**'
+      - '!packages/actions/**'
+      - '!packages/api-extractor-utils/**'
       - '!packages/create-discord-bot/**'
+      - '!packages/docgen/**'
+      - '!packages/proxy-container/**'
+      - '!packages/scripts/**'
+      - '!packages/ui/**'
     tags:
       - '**'
   workflow_dispatch:

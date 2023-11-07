@@ -20,7 +20,7 @@ export async function fetchVersions(packageName: string): Promise<string[]> {
 	]);
 
 	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-	return rows[0].data;
+	return rows.map((row) => row.version);
 }
 
 export async function fetchModelJSON(packageName: string, version: string): Promise<unknown> {
