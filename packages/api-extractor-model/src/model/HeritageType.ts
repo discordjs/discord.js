@@ -38,7 +38,10 @@ export class HeritageType {
 	 */
 	public readonly excerpt: Excerpt;
 
-	public constructor(excerpt: Excerpt) {
+	public readonly typeParameters: string[];
+
+	public constructor(excerpt: Excerpt, typeParameters: string[]) {
 		this.excerpt = excerpt;
+		this.typeParameters = typeParameters;
 	}
 }

@@ -131,7 +131,7 @@ export class PackageMetadataManager {
 			tsdocVersion: '0.12',
 			toolPackages: [
 				{
-					packageName: '@microsoft/api-extractor',
+					packageName: '@discordjs/api-extractor',
 					packageVersion: Extractor.version,
 				},
 			],

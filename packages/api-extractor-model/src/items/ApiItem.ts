@@ -8,6 +8,7 @@ import { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
 import type { Constructor, PropertiesOf } from '../mixins/Mixin.js';
 import type { ApiModel } from '../model/ApiModel.js';
 import type { ApiPackage } from '../model/ApiPackage.js';
+import type { DocgenJson } from '../model/Deserializer';
 import type { DeserializerContext } from '../model/DeserializerContext.js';
 
 /**
@@ -24,6 +25,7 @@ export enum ApiItemKind {
 	EntryPoint = 'EntryPoint',
 	Enum = 'Enum',
 	EnumMember = 'EnumMember',
+	Event = 'Event',
 	Function = 'Function',
 	IndexSignature = 'IndexSignature',
 	Interface = 'Interface',
@@ -109,6 +111,12 @@ export class ApiItem {
 		// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 		const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
 		return deserializerModule.Deserializer.deserialize(context, jsonObject);
+	}
+
+	public static deserializeDocgen(jsonObject: DocgenJson, _package: string): ApiItem {
+		// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+		const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+		return deserializerModule.Deserializer.deserializeDocgen(jsonObject, _package);
 	}
 
 	/**

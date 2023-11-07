@@ -24,9 +24,9 @@ export default async function middleware(request: NextRequest) {
 		} catch {}
 	}
 
-	if (request.nextUrl.pathname.includes('discord.js')) {
+	/* if (request.nextUrl.pathname.includes('discord.js')) {
 		return NextResponse.redirect('https://old.discordjs.dev/#/docs/discord.js');
-	}
+	} */
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {
 		// eslint-disable-next-line prefer-named-capture-group
@@ -41,5 +41,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/docs', '/docs/packages/discord.js(.*)?', '/docs/packages/:package/stable/:member*'],
+	matcher: ['/docs', /* '/docs/packages/discord.js(.*)?',*/ '/docs/packages/:package/stable/:member*'],
 };

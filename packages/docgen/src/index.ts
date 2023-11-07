@@ -17,7 +17,7 @@ interface CustomFiles {
 	path?: string;
 }
 
-export async function build({ input, custom: customDocs, root, output, typescript }: CLIOptions) {
+export async function build({ input, custom: customDocs, root, output, newOutput, typescript }: CLIOptions) {
 	let data: (ChildTypes & RootTypes)[] | DeclarationReflection[] = [];
 	if (typescript) {
 		console.log('Parsing Typescript in source files...');
@@ -80,6 +80,11 @@ export async function build({ input, custom: customDocs, root, output, typescrip
 	if (output) {
 		console.log(`Writing to ${output}...`);
 		writeFileSync(output, JSON.stringify(docs.serialize()));
+	}
+
+	if (newOutput) {
+		console.log(`Writing to ${newOutput}...`);
+		writeFileSync(newOutput, JSON.stringify(docs.serializeNew()));
 	}
 
 	console.log('Done!');

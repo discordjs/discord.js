@@ -25,7 +25,7 @@ import {
 	type IApiTypeParameterListMixinJson,
 	ApiTypeParameterListMixin,
 } from '../mixins/ApiTypeParameterListMixin.js';
-import type { IExcerptTokenRange } from '../mixins/Excerpt.js';
+import type { IExcerptTokenRangeWithTypeParameters } from './ApiClass.js';
 import type { DeserializerContext } from './DeserializerContext.js';
 import { HeritageType } from './HeritageType.js';
 
@@ -41,7 +41,7 @@ export interface IApiInterfaceOptions
 		IApiReleaseTagMixinOptions,
 		IApiDeclaredItemOptions,
 		IApiExportedMixinOptions {
-	extendsTokenRanges: IExcerptTokenRange[];
+	extendsTokenRanges: IExcerptTokenRangeWithTypeParameters[];
 }
 
 export interface IApiInterfaceJson
@@ -51,7 +51,7 @@ export interface IApiInterfaceJson
 		IApiReleaseTagMixinJson,
 		IApiDeclaredItemJson,
 		IApiExportedMixinJson {
-	extendsTokenRanges: IExcerptTokenRange[];
+	extendsTokenRanges: IExcerptTokenRangeWithTypeParameters[];
 }
 
 /**
@@ -79,7 +79,7 @@ export class ApiInterface extends ApiItemContainerMixin(
 		super(options);
 
 		for (const extendsTokenRange of options.extendsTokenRanges) {
-			this._extendsTypes.push(new HeritageType(this.buildExcerpt(extendsTokenRange)));
+			this._extendsTypes.push(new HeritageType(this.buildExcerpt(extendsTokenRange), extendsTokenRange.typeParameters));
 		}
 	}
 
@@ -127,7 +127,10 @@ export class ApiInterface extends ApiItemContainerMixin(
 	public override serializeInto(jsonObject: Partial<IApiInterfaceJson>): void {
 		super.serializeInto(jsonObject);
 
-		jsonObject.extendsTokenRanges = this.extendsTypes.map((x) => x.excerpt.tokenRange);
+		jsonObject.extendsTokenRanges = this.extendsTypes.map((x) => ({
+			...x.excerpt.tokenRange,
+			typeParameters: x.typeParameters,
+		}));
 	}
 
 	/**

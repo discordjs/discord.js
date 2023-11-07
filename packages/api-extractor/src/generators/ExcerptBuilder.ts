@@ -1,7 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { ExcerptTokenKind, type IExcerptToken, type IExcerptTokenRange } from '@discordjs/api-extractor-model';
+import {
+	ExcerptTokenKind,
+	type IExcerptToken,
+	type IExcerptTokenRange,
+	type IExcerptTokenRangeWithTypeParameters,
+} from '@discordjs/api-extractor-model';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
@@ -124,6 +129,10 @@ export class ExcerptBuilder {
 
 	public static createEmptyTokenRange(): IExcerptTokenRange {
 		return { startIndex: 0, endIndex: 0 };
+	}
+
+	public static createEmptyTokenRangeWithTypeParameters(): IExcerptTokenRangeWithTypeParameters {
+		return { startIndex: 0, endIndex: 0, typeParameters: [] };
 	}
 
 	private static _buildSpan(excerptTokens: IExcerptToken[], span: Span, state: IBuildSpanState): boolean {

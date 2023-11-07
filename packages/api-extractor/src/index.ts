@@ -3,7 +3,7 @@
 
 /**
  * API Extractor helps with validation, documentation, and reviewing of the exported API for a TypeScript library.
- * The `@microsoft/api-extractor` package provides the command-line tool.  It also exposes a developer API that you
+ * The `@discordjs/api-extractor` package provides the command-line tool.  It also exposes a developer API that you
  * can use to invoke API Extractor programmatically.
  *
  * @packageDocumentation

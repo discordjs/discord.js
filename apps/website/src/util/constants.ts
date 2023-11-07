@@ -3,6 +3,7 @@ export const PACKAGES = [
 	'builders',
 	'collection',
 	'core',
+	'discord.js',
 	'formatters',
 	'next',
 	'proxy',
