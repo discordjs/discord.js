@@ -3,7 +3,7 @@
 
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
-// import { ApiMethod } from '../index.js';
+import type { ApiDeclaredItem } from '../index.js';
 import {
 	ApiItem,
 	apiItem_onParentChanged,
@@ -15,11 +15,10 @@ import {
 import type { ApiClass } from '../model/ApiClass.js';
 import type { ApiInterface } from '../model/ApiInterface.js';
 import type { ApiModel } from '../model/ApiModel.js';
-import type { DeserializerContext } from '../model/DeserializerContext.js';
+import { type DeserializerContext } from '../model/DeserializerContext.js';
 import type { HeritageType } from '../model/HeritageType.js';
 import type { IResolveDeclarationReferenceResult } from '../model/ModelReferenceResolver.js';
 import { ApiNameMixin } from './ApiNameMixin.js';
-// import { ApiTypeParameterListMixin } from './ApiTypeParameterListMixin.js';
 import { type ExcerptToken, ExcerptTokenKind } from './Excerpt.js';
 import { type IFindApiItemsResult, type IFindApiItemsMessage, FindApiItemsMessageId } from './IFindApiItemsResult.js';
 
@@ -40,7 +39,7 @@ export interface IApiItemContainerJson extends IApiItemJson {
 
 interface IMappedTypeParameters {
 	item: ApiItem;
-	mappedTypeParameters: Map<string, string[]>;
+	mappedTypeParameters: Map<string, string>;
 }
 
 const _members: unique symbol = Symbol('ApiItemContainerMixin._members');
@@ -306,6 +305,11 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				}
 			}
 
+			// The Deserializer class is coupled with a ton of other classes, so  we delay loading it
+			// to avoid ES5 circular imports.
+			// *eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+			// const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+
 			const membersByName: Map<string, ApiItem[]> = new Map();
 			const membersByKind: Map<ApiItemKind, ApiItem[]> = new Map();
 
@@ -313,8 +317,15 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 			let next: IMappedTypeParameters | undefined = { item: this, mappedTypeParameters: new Map() };
 
 			while (next?.item) {
-				const membersToAdd: ApiItem[] = [];
-				// const typeParams = next.mappedTypeParameters;
+				const membersToAdd: ApiItem[] = []; /*
+				const typeParams = next.mappedTypeParameters;
+				const context: DeserializerContext = {
+					apiJsonFilename: '',
+					toolPackage: '',
+					toolVersion: '',
+					versionToDeserialize: ApiJsonSchemaVersion.LATEST,
+					tsdocConfiguration: new TSDocConfiguration(),
+				}; */
 
 				// For each member, check to see if we've already seen a member with the same name
 				// previously in the inheritance tree. If so, we know we won't inherit it, and thus
@@ -324,17 +335,45 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					// to the maps themselves to support method overloads with the same name.
 					if (ApiNameMixin.isBaseClassOf(member)) {
 						if (!membersByName.has(member.name)) {
-							// TODO: add this
+							// This was supposed to replace type parameters with their assigned values in inheritance, but doesn't work yet
 							/*
 							if (
 								ApiTypeParameterListMixin.isBaseClassOf(member) &&
 								member.typeParameters.some((param) => typeParams.has(param.name))
 							) {
-								switch (member.kind) {
-									case ApiItemKind.Method:
-										member = new ApiMethod({});
-								}
-							}*/
+								const jsonObject: Partial<IApiItemJson> = {};
+								member.serializeInto(jsonObject);
+								member = deserializerModule.Deserializer.deserialize(context, {
+									...jsonObject,
+									typeParameters: (jsonObject as IApiTypeParameterListMixinJson).typeParameters.map(
+										({ typeParameterName, constraintTokenRange, defaultTypeTokenRange }) => ({
+											typeParameterName: typeParams.get(typeParameterName) ?? typeParameterName,
+											defaultTypeTokenRange,
+											constraintTokenRange,
+										}),
+									),
+								} as IApiTypeParameterListMixinJson);
+							}
+
+							if (ApiReturnTypeMixin.isBaseClassOf(member)) {
+								const jsonObject: Partial<IApiItemJson> = {};
+								member.serializeInto(jsonObject);
+								member = deserializerModule.Deserializer.deserialize(context, {
+									...(jsonObject as IApiReturnTypeMixinJson),
+									excerptTokens: (jsonObject as IApiDeclaredItemJson).excerptTokens.map((token) =>
+										token.kind === ExcerptTokenKind.Content
+											? {
+													kind: ExcerptTokenKind.Content,
+													text: [...typeParams.keys()].reduce(
+														(tok, typ) => tok.replaceAll(new RegExp(`\b${typ}\b`, 'g'), typeParams.get(typ)!),
+														token.text,
+													),
+											  }
+											: token,
+									),
+								} as IApiReturnTypeMixinJson);
+								member[apiItem_onParentChanged](next.item);
+							} // */
 
 							membersToAdd.push(member);
 						}
@@ -439,14 +478,14 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						continue;
 					}
 
-					const mappedTypeParameters: Map<string, string[]> = new Map();
+					const mappedTypeParameters: Map<string, string> = new Map();
 					if (
 						(apiItem.kind === ApiItemKind.Class || apiItem.kind === ApiItemKind.Interface) &&
 						next.item.kind === ApiItemKind.Class
 					) {
 						for (const [index, typeParameter] of extendsType.typeParameters.entries()) {
 							const key = (apiItem as ApiClass | ApiInterface).typeParameters[index]?.name ?? '';
-							mappedTypeParameters.set(key, [...(mappedTypeParameters.get(key) ?? []), typeParameter]);
+							mappedTypeParameters.set(key, typeParameter);
 						}
 					}
 

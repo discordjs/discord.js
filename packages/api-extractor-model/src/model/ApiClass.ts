@@ -52,7 +52,7 @@ export interface IApiClassJson
 		IApiAbstractMixinJson,
 		IApiTypeParameterListMixinJson,
 		IApiExportedMixinJson {
-	extendsTokenRange?: IExcerptTokenRangeWithTypeParameters;
+	extendsTokenRange?: IExcerptTokenRangeWithTypeParameters | undefined;
 	implementsTokenRanges: IExcerptTokenRangeWithTypeParameters[];
 }
 

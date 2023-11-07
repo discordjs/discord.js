@@ -941,6 +941,9 @@ importers:
         specifier: 8.14.2
         version: 8.14.2
     devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
       '@discordjs/docgen':
         specifier: workspace:^
         version: link:../docgen

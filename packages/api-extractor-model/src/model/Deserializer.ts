@@ -508,7 +508,7 @@ export class Deserializer {
 				kind: ApiItemKind.Class,
 				canonicalReference: `${_package}!${_class.name}:class`,
 				name: _class.name,
-				extendsTokenRanges: _class.extends ? [{ startIndex: 1, endIndex: 2, typeParameters: [] }] : [],
+				extendsTokenRange: _class.extends ? { startIndex: 1, endIndex: 2, typeParameters: [] } : undefined,
 				excerptTokens,
 				implementsTokenRanges: _class.implements
 					? [{ startIndex: _class.extends ? 3 : 1, endIndex: _class.extends ? 4 : 2, typeParameters: [] }]
@@ -517,6 +517,7 @@ export class Deserializer {
 				releaseTag: _class.access === 'public' ? 'Public' : 'Internal',
 				docComment: `/**\n * ${_class.description}\n${_class.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''} */`,
 				isExported: _class.access === 'public',
+				isAbstract: Boolean(_class.abstract),
 				fileLine: _class.meta.line,
 				fileUrlPath: `${_class.meta.path.slice(`packages/${_package}/`.length)}/${_class.meta.file}`,
 			});
@@ -540,7 +541,6 @@ export class Deserializer {
 						text: `${_interface.access === 'public' ? 'export ' : ''}interface ${_interface.name}`,
 					},
 				],
-				implementsTokenRanges: [{ startIndex: 0, endIndex: 0, typeParameters: [] }],
 				typeParameters: [],
 				releaseTag: _interface.access === 'public' ? 'Public' : 'Internal',
 				docComment: `/**\n * ${_interface.description}\n${
