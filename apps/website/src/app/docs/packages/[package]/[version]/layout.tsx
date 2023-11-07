@@ -68,6 +68,8 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 		return (member as ApiFunction).overloadIndex === 1;
 	});
 
+	const versions = await fetchVersions(params.package);
+
 	return (
 		<Providers>
 			<Banner className="mb-6" />
@@ -75,7 +77,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 				<Header />
 				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
 					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_145px)]">
-						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} />
+						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} versions={versions} />
 					</div>
 
 					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">

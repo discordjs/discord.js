@@ -148,7 +148,7 @@ class Message extends Base {
 
     if ('components' in data) {
       /**
-       * An array of of action rows in the message.
+       * An array of action rows in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}

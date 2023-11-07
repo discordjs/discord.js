@@ -9,7 +9,13 @@ import type { SidebarSectionItemData } from './Sidebar';
 const PackageSelect = dynamic(async () => import('./PackageSelect'));
 const VersionSelect = dynamic(async () => import('./VersionSelect'));
 
-export function Nav({ members }: { readonly members: SidebarSectionItemData[] }) {
+export function Nav({
+	members,
+	versions,
+}: {
+	readonly members: SidebarSectionItemData[];
+	readonly versions: string[];
+}) {
 	const { opened } = useNav();
 
 	return (
@@ -30,7 +36,7 @@ export function Nav({ members }: { readonly members: SidebarSectionItemData[] })
 			>
 				<div className="flex flex-col gap-4 p-3">
 					<PackageSelect />
-					<VersionSelect />
+					<VersionSelect versions={versions} />
 				</div>
 				<Sidebar members={members} />
 			</Scrollbars>

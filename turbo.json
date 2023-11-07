@@ -36,7 +36,8 @@
 				"package.json",
 				"tsconfig.docs.json",
 				"tsconfig.eslint.json",
-				"tsconfig.json"
+				"tsconfig.json",
+				"tsup.config.ts"
 			],
 			"outputs": ["dist/**/*"],
 			"outputMode": "errors-only"
@@ -52,7 +53,8 @@
 				"src/template/**/*",
 				"package.json",
 				"tsconfig.eslint.json",
-				"tsconfig.json"
+				"tsconfig.json",
+				"tsup.config.ts"
 			],
 			"outputs": ["dist/**/*"],
 			"outputMode": "errors-only"
@@ -257,6 +259,7 @@
 				"package.json",
 				"tsconfig.eslint.json",
 				"tsconfig.json",
+				"tsup.config.ts",
 				"vite.config.ts"
 			],
 			"outputs": [],
@@ -310,6 +313,7 @@
 				"package.json",
 				"tsconfig.eslint.json",
 				"tsconfig.json",
+				"tsup.config.ts",
 				"vite.config.ts"
 			],
 			"outputs": [],

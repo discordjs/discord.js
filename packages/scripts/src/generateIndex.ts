@@ -135,9 +135,11 @@ export function visitNodes(item: ApiItem, tag: string) {
 	return members;
 }
 
-export async function generateIndex(model: ApiModel, packageName: string, tag = 'main') {
-	const members = visitNodes(model.tryGetPackageByName(packageName)!.entryPoints[0]!, tag);
-
+export async function writeIndexToFileSystem(
+	members: ReturnType<typeof visitNodes>,
+	packageName: string,
+	tag = 'main',
+) {
 	const dir = 'searchIndex';
 
 	try {
@@ -147,24 +149,44 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	}
 
 	await writeFile(
-		join(cwd(), 'public', dir, `${packageName}-${tag}-index.json`),
+		join(cwd(), 'public', dir, `${packageName}-${tag.replaceAll('.', '-')}-index.json`),
 		JSON.stringify(members, undefined, 2),
 	);
 }
 
-export async function generateAllIndices() {
+export async function fetchVersions(pkg: string) {
+	const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+	return response.body.json() as Promise<string[]>;
+}
+
+export async function fetchVersionDocs(pkg: string, version: string) {
+	const response = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
+	return response.body.json() as Promise<Record<any, any>>;
+}
+
+export async function generateAllIndices({
+	fetchPackageVersions = fetchVersions,
+	fetchPackageVersionDocs = fetchVersionDocs,
+	writeToFile = true,
+}) {
+	const indicies: Record<any, any>[] = [];
+
 	for (const pkg of PACKAGES) {
-		const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
-		const versions = (await response.body.json()) as any;
+		const versions = await fetchPackageVersions(pkg);
 
 		for (const version of versions) {
 			idx = 0;
 
-			const versionRes = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
-			const data = await versionRes.body.json();
-
+			const data = await fetchPackageVersionDocs(pkg, version);
 			const model = addPackageToModel(new ApiModel(), data);
-			await generateIndex(model, pkg, version);
+			const members = visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!, version);
+			if (writeToFile) {
+				await writeIndexToFileSystem(members, pkg, version);
+			} else {
+				indicies.push({ index: `${pkg}-${version.replaceAll('.', '-')}`, data: members });
+			}
 		}
 	}
+
+	return indicies;
 }
