@@ -1039,7 +1039,7 @@ export class ClientApplication extends Application {
   public interactionsEndpointURL: string | null;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
-  public edit(optins: ClientApplicationEditOptions): Promise<ClientApplication>;
+  public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public editRoleConnectionMetadataRecords(
