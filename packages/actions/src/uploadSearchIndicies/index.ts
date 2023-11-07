@@ -2,15 +2,15 @@ import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import { connect } from '@planetscale/database';
-import MeiliSearch from 'meilisearch';
+import { MeiliSearch } from 'meilisearch';
 import { fetch } from 'undici';
 
 if (!process.env.DATABASE_URL) {
 	setFailed('DATABASE_URL is not set');
 }
 
-if (!process.env.SEARCH_API) {
-	setFailed('SEARCH_API is not set');
+if (!process.env.SEARCH_API_URL) {
+	setFailed('SEARCH_API_URL is not set');
 }
 
 if (!process.env.SEARCH_API_KEY) {

@@ -44,5 +44,6 @@ jobs:
       - name: Upload search indicies to meilisearch
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
         uses: ./packages/actions/src/uploadSearchIndicies
