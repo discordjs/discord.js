@@ -6,8 +6,6 @@ import Link from 'next/link';
 import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
-export const runtime = 'edge';
-
 export default function Page() {
 	return (
 		<div className="mx-auto min-h-screen min-w-xs flex flex-col gap-8 px-4 py-6 sm:w-md lg:px-6 lg:py-6">

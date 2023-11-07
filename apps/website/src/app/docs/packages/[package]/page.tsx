@@ -3,28 +3,22 @@ import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { fetchVersions } from '~/app/docAPI';
 import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
-
-export const runtime = 'edge';
 
 async function getData(pkg: string) {
 	if (!PACKAGES.includes(pkg)) {
 		notFound();
 	}
 
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
-		return ['main'];
-	}
-
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, { next: { revalidate: 3_600 } });
-	const data: string[] = await res.json();
+	const data = await fetchVersions(pkg);
 
 	if (!data.length) {
 		throw new Error('Failed to fetch data');
 	}
 
-	return data.reverse();
+	return data;
 }
 
 export default async function Page({ params }: { params: { package: string } }) {

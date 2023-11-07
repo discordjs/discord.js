@@ -75,6 +75,10 @@ export default [
 		rules: { 'jsdoc/no-undefined-types': 0 },
 	},
 	{
+		files: [`packages/{brokers,create-discord-bot,docgen,ws}/**/*${commonFiles}`],
+		rules: { 'n/no-sync': 0 },
+	},
+	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
 			'n/prefer-global/url': 0,

@@ -15,11 +15,12 @@ export async function fetchVersions(packageName: string): Promise<string[]> {
 		return ['main'];
 	}
 
-	const response = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, {
-		next: { revalidate: 3_600 },
-	});
+	const { rows } = await sql.execute('select version from documentation where name = ? order by version desc', [
+		packageName,
+	]);
 
-	return response.json();
+	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
+	return rows.map((row) => row.version);
 }
 
 export async function fetchModelJSON(packageName: string, version: string): Promise<unknown> {
