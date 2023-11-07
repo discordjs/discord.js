@@ -60,7 +60,7 @@
 		"typescript": "^5.2.2"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public"
