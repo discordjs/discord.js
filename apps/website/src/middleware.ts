@@ -1,16 +1,27 @@
+import { connect } from '@planetscale/database';
 import { get } from '@vercel/edge-config';
 import { NextResponse, type NextRequest } from 'next/server';
 import { PACKAGES } from './util/constants';
+
+const sql = connect({
+	url: process.env.DATABASE_URL!,
+	async fetch(url, init) {
+		delete init?.cache;
+		return fetch(url, { ...init, next: { revalidate: 3_600 } });
+	},
+});
 
 async function fetchLatestVersion(packageName: string) {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return 'main';
 	}
 
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${packageName}`, { cache: 'no-store' });
-	const data: string[] = await res.json();
+	const { rows } = await sql.execute('select version from documentation where name = ? order by version desc', [
+		packageName,
+	]);
 
-	return data.at(-2);
+	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
+	return rows[0].data.at(1);
 }
 
 export default async function middleware(request: NextRequest) {

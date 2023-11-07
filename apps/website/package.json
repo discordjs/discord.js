@@ -72,8 +72,7 @@
 		"react-use": "^17.4.0",
 		"rehype-slug": "^5.1.0",
 		"remark-gfm": "^3.0.1",
-		"sharp": "^0.32.6",
-		"swr": "^2.2.4"
+		"sharp": "^0.32.6"
 	},
 	"devDependencies": {
 		"@next/bundle-analyzer": "^14.0.1",
