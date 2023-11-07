@@ -828,9 +828,14 @@ describe('tap() tests', () => {
 });
 
 describe('toJSON() tests', () => {
-	test('it returns the values as an array', () => {
+	test('it returns the entries of the collection', () => {
 		const c = createTestCollection();
-		expect(c.toJSON()).toStrictEqual([1, 2, 3]);
+
+		expect(c.toJSON()).toStrictEqual([
+			['a', 1],
+			['b', 2],
+			['c', 3],
+		]);
 	});
 });
 
