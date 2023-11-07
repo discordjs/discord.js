@@ -54,7 +54,7 @@ try {
 	console.log('Uploading indices...');
 	for (const index of indicies) {
 		console.log(`Uploading ${index.index}...`);
-		await client.index(index.index).addDocuments([index]);
+		await client.index(index.index).addDocuments(index.data);
 	}
 
 	console.log('Uploaded all indices.');
