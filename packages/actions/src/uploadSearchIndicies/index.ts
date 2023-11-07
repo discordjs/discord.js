@@ -23,7 +23,7 @@ const sql = connect({
 });
 
 const client = new MeiliSearch({
-	host: process.env.SEARCH_API!,
+	host: process.env.SEARCH_API_URL!,
 	apiKey: process.env.SEARCH_API_KEY!,
 });
 
