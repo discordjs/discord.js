@@ -1,9 +1,9 @@
 export const PACKAGES = [
+	'discord.js',
 	'brokers',
 	'builders',
 	'collection',
 	'core',
-	'discord.js',
 	'formatters',
 	'next',
 	'proxy',

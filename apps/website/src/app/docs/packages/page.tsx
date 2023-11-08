@@ -11,7 +11,7 @@ export default function Page() {
 		<div className="mx-auto min-h-screen min-w-xs flex flex-col gap-8 px-4 py-6 sm:w-md lg:px-6 lg:py-6">
 			<h1 className="text-2xl font-semibold">Select a package:</h1>
 			<div className="flex flex-col gap-4">
-				<a className={buttonVariants({ variant: 'secondary' })} href="https://old.discordjs.dev/#/docs/discord.js">
+				{/* <a className={buttonVariants({ variant: 'secondary' })} href="https://old.discordjs.dev/#/docs/discord.js">
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-content-between place-items-center gap-4">
 							<VscPackage size={25} />
@@ -19,7 +19,7 @@ export default function Page() {
 						</div>
 						<VscArrowRight size={20} />
 					</div>
-				</a>
+				</a> */}
 				{PACKAGES.map((pkg, idx) => (
 					<Link
 						className={buttonVariants({ variant: 'secondary' })}
