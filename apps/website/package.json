@@ -6,7 +6,6 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-results",
 		"build:copy_readme": "cpy '../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|util|voice|ws)/README.md' 'src/assets/readme' --rename='home-{{basename}}'",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
@@ -92,7 +91,6 @@
 		"eslint-config-neon": "^0.1.57",
 		"eslint-formatter-pretty": "^5.0.0",
 		"happy-dom": "^12.10.3",
-		"lighthouse": "^11.3.0",
 		"postcss": "^8.4.31",
 		"prettier": "^3.0.3",
 		"turbo": "^1.10.16",

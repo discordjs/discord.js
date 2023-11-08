@@ -6,7 +6,6 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-results",
 		"build:check": "tsc --noEmit",
 		"build:local": "pnpm run build:prod",
 		"build:prod": "next build",
@@ -86,7 +85,6 @@
 		"hast-util-to-string": "^2.0.0",
 		"hastscript": "^8.0.0",
 		"html-escaper": "^3.0.3",
-		"lighthouse": "^11.3.0",
 		"postcss": "^8.4.31",
 		"prettier": "^3.0.3",
 		"turbo": "^1.10.16",

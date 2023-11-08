@@ -1,7 +1,6 @@
 import type { ApiFunction, ApiItem } from '@discordjs/api-extractor-model';
 import { ApiModel } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
-import {} from 'next/types';
 import { notFound } from 'next/navigation';
 import { cache, type PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';

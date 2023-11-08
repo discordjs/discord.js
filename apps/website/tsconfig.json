@@ -4,19 +4,21 @@
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"jsx": "preserve",
 		"baseUrl": ".",
+		"outDir": "dist",
 		"noEmit": true,
-		"paths": {
-			"~/*": ["./src/*"]
-		},
 		"esModuleInterop": true,
 		"allowJs": true,
 		"incremental": true,
+		"skipLibCheck": true,
 		"plugins": [
 			{
 				"name": "next"
 			}
-		]
+		],
+		"paths": {
+			"~/*": ["./src/*"]
+		}
 	},
-	"include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+	"include": ["*.ts", "*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
 }

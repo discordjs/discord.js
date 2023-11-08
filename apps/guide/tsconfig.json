@@ -4,19 +4,21 @@
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"jsx": "preserve",
 		"baseUrl": ".",
+		"outDir": "dist",
 		"noEmit": true,
-		"paths": {
-			"~/*": ["./src/*"],
-			"contentlayer/generated": ["./.contentlayer/generated"]
-		},
 		"esModuleInterop": true,
 		"allowJs": true,
 		"incremental": true,
+		"skipLibCheck": true,
 		"plugins": [
 			{
 				"name": "next"
 			}
-		]
+		],
+		"paths": {
+			"~/*": ["./src/*"],
+			"contentlayer/generated": ["./.contentlayer/generated"]
+		}
 	},
 	"include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
 	"exclude": ["node_modules"]
