@@ -21,7 +21,7 @@ async function fetchLatestVersion(packageName: string) {
 	]);
 
 	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-	return rows[0].data.at(1);
+	return rows.map((row) => row.version).at(1);
 }
 
 export default async function middleware(request: NextRequest) {
