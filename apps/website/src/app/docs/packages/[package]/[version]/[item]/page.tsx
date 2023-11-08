@@ -103,13 +103,18 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return [];
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		notFound();
+		return [];
 	}
 
 	return entry.members.map((member: ApiItem) => ({
