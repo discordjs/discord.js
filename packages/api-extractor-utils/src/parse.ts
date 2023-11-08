@@ -54,8 +54,9 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 		}
 	}
 
-	// eslint-disable-next-line prefer-named-capture-group
-	return path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`);
+	return path.includes('@discordjs/')
+		? path.replace(/@discordjs\/(.*)\/(.*)?/, `$1/${version}/$2`)
+		: path.replace(/(.*)\/(.*)?/, `$1/${version}/$2`);
 }
 
 export function resolveDocComment(item: ApiDeclaredItem) {
