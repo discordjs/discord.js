@@ -4,6 +4,7 @@ import type { ApiItemKind } from '@discordjs/api-extractor-model';
 import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
+import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
@@ -30,6 +31,8 @@ function resolveIcon(item: keyof typeof ApiItemKind) {
 			return <VscSymbolVariable className="shrink-0" size={25} />;
 		case 'Variable':
 			return <VscSymbolVariable className="shrink-0" size={25} />;
+		case 'Event':
+			return <VscSymbolEvent className="shrink-0" size={25} />;
 		default:
 			return <VscSymbolMethod className="shrink-0" size={25} />;
 	}
@@ -98,7 +101,9 @@ export function CmdKDialog() {
 
 	useEffect(() => {
 		const searchDoc = async (searchString: string, version: string) => {
-			const res = await client.index(`${packageName}-${version}`).search(searchString, { limit: 5 });
+			const res = await client
+				.index(`${packageName?.replaceAll('.', '-')}-${version}`)
+				.search(searchString, { limit: 5 });
 			setSearchResults(res.hits);
 		};
 

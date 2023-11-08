@@ -181,7 +181,7 @@ export async function generateAllIndices({
 			if (writeToFile) {
 				await writeIndexToFileSystem(members, pkg, version);
 			} else {
-				indices.push({ index: `${pkg}-${version.replaceAll('.', '-')}`, data: members });
+				indices.push({ index: `${pkg.replaceAll('.', '-')}-${version.replaceAll('.', '-')}`, data: members });
 			}
 		}
 	}

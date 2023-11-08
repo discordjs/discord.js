@@ -25,12 +25,11 @@ export async function fetchVersions(packageName: string): Promise<string[]> {
 
 export async function fetchModelJSON(packageName: string, version: string): Promise<unknown | null> {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
-		const res = await readFile(
-			join(process.cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),
-			'utf8',
-		);
+		let res;
 
 		try {
+			res = await readFile(join(process.cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'), 'utf8');
+
 			return JSON.parse(res);
 		} catch {
 			console.log(res);
