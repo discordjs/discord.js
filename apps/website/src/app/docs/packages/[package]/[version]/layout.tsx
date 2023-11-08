@@ -2,7 +2,7 @@ import type { ApiFunction, ApiItem } from '@discordjs/api-extractor-model';
 import { ApiModel } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
-import type { PropsWithChildren } from 'react';
+import { cache, type PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
 // import { Banner } from '~/components/Banner';
 import { CmdKDialog } from '~/components/CmdK';
@@ -35,14 +35,14 @@ export async function generateStaticParams() {
 	return params;
 }
 
-function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
+const serializeIntoSidebarItemData = cache((item: ApiItem) => {
 	return {
 		kind: item.kind,
 		name: item.displayName,
 		href: resolveItemURI(item),
 		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
-	};
-}
+	} as SidebarSectionItemData;
+});
 
 export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
@@ -81,7 +81,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
 				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
-					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_145px)]">
+					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
 						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} versions={versions} />
 					</div>
 
