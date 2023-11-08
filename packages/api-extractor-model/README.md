@@ -1,4 +1,4 @@
-# @microsoft/api-extractor-model
+# @discordjs/api-extractor-model
 
 Use this library to read and write \*.api.json files as defined by the [API Extractor](https://api-extractor.com/) tool.
 These files are used to generate a documentation website for your TypeScript package. The files store the
@@ -60,7 +60,7 @@ a namespace containing static members of the class.
 
 ## Links
 
-- [CHANGELOG.md](https://github.com/microsoft/rushstack/blob/main/libraries/api-extractor-model/CHANGELOG.md) - Find
+- [CHANGELOG.md](https://github.com/discordjs/discord.js/blob/main/packages/api-extractor-model/CHANGELOG.md) - Find
   out what's new in the latest version
 - [API Reference](https://rushstack.io/pages/api/api-extractor-model/)
 

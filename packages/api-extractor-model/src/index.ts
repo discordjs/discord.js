@@ -58,12 +58,13 @@ export type { Constructor, PropertiesOf } from './mixins/Mixin.js';
 
 // model
 export { type IApiCallSignatureOptions, ApiCallSignature } from './model/ApiCallSignature.js';
-export { type IApiClassOptions, ApiClass } from './model/ApiClass.js';
+export { type IApiClassOptions, ApiClass, type IExcerptTokenRangeWithTypeParameters } from './model/ApiClass.js';
 export { type IApiConstructorOptions, ApiConstructor } from './model/ApiConstructor.js';
 export { type IApiConstructSignatureOptions, ApiConstructSignature } from './model/ApiConstructSignature.js';
 export { type IApiEntryPointOptions, ApiEntryPoint } from './model/ApiEntryPoint.js';
 export { type IApiEnumOptions, ApiEnum } from './model/ApiEnum.js';
 export { type IApiEnumMemberOptions, ApiEnumMember, EnumMemberOrder } from './model/ApiEnumMember.js';
+export { type IApiEventOptions, ApiEvent } from './model/ApiEvent.js';
 export { type IApiFunctionOptions, ApiFunction } from './model/ApiFunction.js';
 export { type IApiIndexSignatureOptions, ApiIndexSignature } from './model/ApiIndexSignature.js';
 export { type IApiInterfaceOptions, ApiInterface } from './model/ApiInterface.js';

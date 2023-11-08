@@ -147,7 +147,11 @@ export class Excerpt {
 			this.tokenRange.endIndex > this.tokens.length ||
 			this.tokenRange.startIndex > this.tokenRange.endIndex
 		) {
-			throw new Error('Invalid token range');
+			throw new Error(
+				`Invalid token range. length:${this.tokens.length}, start:${this.tokenRange.startIndex}, end:${
+					this.tokenRange.endIndex
+				}, ${this.tokens.map((token) => token.text)}`,
+			);
 		}
 
 		this.spannedTokens = this.tokens.slice(this.tokenRange.startIndex, this.tokenRange.endIndex);

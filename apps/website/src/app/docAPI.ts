@@ -23,7 +23,7 @@ export async function fetchVersions(packageName: string): Promise<string[]> {
 	return rows.map((row) => row.version);
 }
 
-export async function fetchModelJSON(packageName: string, version: string): Promise<unknown> {
+export async function fetchModelJSON(packageName: string, version: string): Promise<unknown | null> {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 		const res = await readFile(
 			join(process.cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),

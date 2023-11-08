@@ -3,6 +3,7 @@
 
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
+import type { ApiDeclaredItem } from '../index.js';
 import {
 	ApiItem,
 	apiItem_onParentChanged,
@@ -34,6 +35,11 @@ export interface IApiItemContainerMixinOptions extends IApiItemOptions {
 export interface IApiItemContainerJson extends IApiItemJson {
 	members: IApiItemJson[];
 	preserveMemberOrder?: boolean;
+}
+
+interface IMappedTypeParameters {
+	item: ApiItem;
+	mappedTypeParameters: Map<string, string>;
 }
 
 const _members: unique symbol = Symbol('ApiItemContainerMixin._members');
@@ -299,23 +305,76 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				}
 			}
 
+			// The Deserializer class is coupled with a ton of other classes, so  we delay loading it
+			// to avoid ES5 circular imports.
+			// *eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+			// const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+
 			const membersByName: Map<string, ApiItem[]> = new Map();
 			const membersByKind: Map<ApiItemKind, ApiItem[]> = new Map();
 
-			const toVisit: ApiItem[] = [];
-			let next: ApiItem | undefined = this;
+			const toVisit: IMappedTypeParameters[] = [];
+			let next: IMappedTypeParameters | undefined = { item: this, mappedTypeParameters: new Map() };
 
-			while (next) {
-				const membersToAdd: ApiItem[] = [];
+			while (next?.item) {
+				const membersToAdd: ApiItem[] = []; /*
+				const typeParams = next.mappedTypeParameters;
+				const context: DeserializerContext = {
+					apiJsonFilename: '',
+					toolPackage: '',
+					toolVersion: '',
+					versionToDeserialize: ApiJsonSchemaVersion.LATEST,
+					tsdocConfiguration: new TSDocConfiguration(),
+				}; */
 
 				// For each member, check to see if we've already seen a member with the same name
 				// previously in the inheritance tree. If so, we know we won't inherit it, and thus
 				// do not add it to our `membersToAdd` array.
-				for (const member of next.members) {
+				for (const member of next.item.members) {
 					// We add the to-be-added members to an intermediate array instead of immediately
 					// to the maps themselves to support method overloads with the same name.
 					if (ApiNameMixin.isBaseClassOf(member)) {
 						if (!membersByName.has(member.name)) {
+							// This was supposed to replace type parameters with their assigned values in inheritance, but doesn't work yet
+							/*
+							if (
+								ApiTypeParameterListMixin.isBaseClassOf(member) &&
+								member.typeParameters.some((param) => typeParams.has(param.name))
+							) {
+								const jsonObject: Partial<IApiItemJson> = {};
+								member.serializeInto(jsonObject);
+								member = deserializerModule.Deserializer.deserialize(context, {
+									...jsonObject,
+									typeParameters: (jsonObject as IApiTypeParameterListMixinJson).typeParameters.map(
+										({ typeParameterName, constraintTokenRange, defaultTypeTokenRange }) => ({
+											typeParameterName: typeParams.get(typeParameterName) ?? typeParameterName,
+											defaultTypeTokenRange,
+											constraintTokenRange,
+										}),
+									),
+								} as IApiTypeParameterListMixinJson);
+							}
+
+							if (ApiReturnTypeMixin.isBaseClassOf(member)) {
+								const jsonObject: Partial<IApiItemJson> = {};
+								member.serializeInto(jsonObject);
+								member = deserializerModule.Deserializer.deserialize(context, {
+									...(jsonObject as IApiReturnTypeMixinJson),
+									excerptTokens: (jsonObject as IApiDeclaredItemJson).excerptTokens.map((token) =>
+										token.kind === ExcerptTokenKind.Content
+											? {
+													kind: ExcerptTokenKind.Content,
+													text: [...typeParams.keys()].reduce(
+														(tok, typ) => tok.replaceAll(new RegExp(`\b${typ}\b`, 'g'), typeParams.get(typ)!),
+														token.text,
+													),
+											  }
+											: token,
+									),
+								} as IApiReturnTypeMixinJson);
+								member[apiItem_onParentChanged](next.item);
+							} // */
+
 							membersToAdd.push(member);
 						}
 					} else if (!membersByKind.has(member.kind)) {
@@ -336,18 +395,18 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				}
 
 				// Interfaces can extend multiple interfaces, so iterate through all of them.
-				const extendedItems: ApiItem[] = [];
+				const extendedItems: IMappedTypeParameters[] = [];
 				let extendsTypes: readonly HeritageType[] | undefined;
 
-				switch (next.kind) {
+				switch (next.item.kind) {
 					case ApiItemKind.Class: {
-						const apiClass: ApiClass = next as ApiClass;
+						const apiClass: ApiClass = next.item as ApiClass;
 						extendsTypes = apiClass.extendsType ? [apiClass.extendsType] : [];
 						break;
 					}
 
 					case ApiItemKind.Interface: {
-						const apiInterface: ApiInterface = next as ApiInterface;
+						const apiInterface: ApiInterface = next.item as ApiInterface;
 						extendsTypes = apiInterface.extendsTypes;
 						break;
 					}
@@ -359,7 +418,7 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				if (extendsTypes === undefined) {
 					messages.push({
 						messageId: FindApiItemsMessageId.UnsupportedKind,
-						text: `Unable to analyze references of API item ${next.displayName} because it is of unsupported kind ${next.kind}`,
+						text: `Unable to analyze references of API item ${next.item.displayName} because it is of unsupported kind ${next.item.kind}`,
 					});
 					maybeIncompleteResult = true;
 					next = toVisit.shift();
@@ -387,7 +446,7 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					if (!firstReferenceToken) {
 						messages.push({
 							messageId: FindApiItemsMessageId.ExtendsClauseMissingReference,
-							text: `Unable to analyze extends clause ${extendsType.excerpt.text} of API item ${next.displayName} because no canonical reference was found`,
+							text: `Unable to analyze extends clause ${extendsType.excerpt.text} of API item ${next.item.displayName} because no canonical reference was found`,
 						});
 						maybeIncompleteResult = true;
 						continue;
@@ -397,7 +456,7 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					if (!apiModel) {
 						messages.push({
 							messageId: FindApiItemsMessageId.NoAssociatedApiModel,
-							text: `Unable to analyze references of API item ${next.displayName} because it is not associated with an ApiModel`,
+							text: `Unable to analyze references of API item ${next.item.displayName} because it is not associated with an ApiModel`,
 						});
 						maybeIncompleteResult = true;
 						continue;
@@ -413,13 +472,24 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					if (!apiItem) {
 						messages.push({
 							messageId: FindApiItemsMessageId.DeclarationResolutionFailed,
-							text: `Unable to resolve declaration reference within API item ${next.displayName}: ${apiItemResult.errorMessage}`,
+							text: `Unable to resolve declaration reference within API item ${next.item.displayName}: ${apiItemResult.errorMessage}`,
 						});
 						maybeIncompleteResult = true;
 						continue;
 					}
 
-					extendedItems.push(apiItem);
+					const mappedTypeParameters: Map<string, string> = new Map();
+					if (
+						(apiItem.kind === ApiItemKind.Class || apiItem.kind === ApiItemKind.Interface) &&
+						next.item.kind === ApiItemKind.Class
+					) {
+						for (const [index, typeParameter] of extendsType.typeParameters.entries()) {
+							const key = (apiItem as ApiClass | ApiInterface).typeParameters[index]?.name ?? '';
+							mappedTypeParameters.set(key, typeParameter);
+						}
+					}
+
+					extendedItems.push({ item: apiItem, mappedTypeParameters });
 				}
 
 				// For classes, this array will only have one item. For interfaces, there may be multiple items. Sort the array
@@ -440,7 +510,9 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				//
 				// interface FooBar extends Foo, Bar {}
 				// ```
-				extendedItems.sort((x: ApiItem, y: ApiItem) => x.getSortKey().localeCompare(y.getSortKey()));
+				extendedItems.sort((x: IMappedTypeParameters, y: IMappedTypeParameters) =>
+					x.item.getSortKey().localeCompare(y.item.getSortKey()),
+				);
 
 				toVisit.push(...extendedItems);
 				next = toVisit.shift();

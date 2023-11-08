@@ -12,7 +12,7 @@ export function MethodHeader({ method }: { readonly method: ApiMethod | ApiMetho
 	);
 
 	return (
-		<div className="flex flex-col scroll-mt-30" id={key}>
+		<div className="w-full flex flex-col scroll-mt-30" id={key}>
 			<div className="flex flex-col gap-2 md:-ml-9">
 				<Badges item={method} />
 				<CodeHeading

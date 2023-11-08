@@ -7,7 +7,7 @@
  * ```
  * {
  *   "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
- *   "extends": [ "@microsoft/api-extractor/extends/tsdoc-config.json" ],
+ *   "extends": [ "@discordjs/api-extractor/extends/tsdoc-config.json" ],
  *   . . .
  * }
  * ```

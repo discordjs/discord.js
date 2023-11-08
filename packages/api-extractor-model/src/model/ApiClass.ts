@@ -39,8 +39,12 @@ export interface IApiClassOptions
 		IApiDeclaredItemOptions,
 		IApiTypeParameterListMixinOptions,
 		IApiExportedMixinOptions {
-	extendsTokenRange: IExcerptTokenRange | undefined;
-	implementsTokenRanges: IExcerptTokenRange[];
+	extendsTokenRange: IExcerptTokenRangeWithTypeParameters | undefined;
+	implementsTokenRanges: IExcerptTokenRangeWithTypeParameters[];
+}
+
+export interface IExcerptTokenRangeWithTypeParameters extends IExcerptTokenRange {
+	typeParameters: string[];
 }
 
 export interface IApiClassJson
@@ -48,8 +52,8 @@ export interface IApiClassJson
 		IApiAbstractMixinJson,
 		IApiTypeParameterListMixinJson,
 		IApiExportedMixinJson {
-	extendsTokenRange?: IExcerptTokenRange;
-	implementsTokenRanges: IExcerptTokenRange[];
+	extendsTokenRange?: IExcerptTokenRangeWithTypeParameters | undefined;
+	implementsTokenRanges: IExcerptTokenRangeWithTypeParameters[];
 }
 
 /**
@@ -81,13 +85,18 @@ export class ApiClass extends ApiItemContainerMixin(
 		super(options);
 
 		if (options.extendsTokenRange) {
-			this.extendsType = new HeritageType(this.buildExcerpt(options.extendsTokenRange));
+			this.extendsType = new HeritageType(
+				this.buildExcerpt(options.extendsTokenRange),
+				options.extendsTokenRange.typeParameters,
+			);
 		} else {
 			this.extendsType = undefined;
 		}
 
 		for (const implementsTokenRange of options.implementsTokenRanges) {
-			this._implementsTypes.push(new HeritageType(this.buildExcerpt(implementsTokenRange)));
+			this._implementsTypes.push(
+				new HeritageType(this.buildExcerpt(implementsTokenRange), implementsTokenRange.typeParameters),
+			);
 		}
 	}
 
@@ -138,10 +147,16 @@ export class ApiClass extends ApiItemContainerMixin(
 
 		// Note that JSON does not support the "undefined" value, so we simply omit the field entirely if it is undefined
 		if (this.extendsType) {
-			jsonObject.extendsTokenRange = this.extendsType.excerpt.tokenRange;
+			jsonObject.extendsTokenRange = {
+				...this.extendsType.excerpt.tokenRange,
+				typeParameters: this.extendsType.typeParameters,
+			};
 		}
 
-		jsonObject.implementsTokenRanges = this.implementsTypes.map((x) => x.excerpt.tokenRange);
+		jsonObject.implementsTokenRanges = this.implementsTypes.map((x) => ({
+			...x.excerpt.tokenRange,
+			typeParameters: x.typeParameters,
+		}));
 	}
 
 	/**

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
-import { Banner } from '~/components/Banner';
+// import { Banner } from '~/components/Banner';
 import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
@@ -46,6 +46,11 @@ function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
 
 export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
+
+	if (!modelJSON) {
+		notFound();
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(params.package);
@@ -72,7 +77,7 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 
 	return (
 		<Providers>
-			<Banner className="mb-6" />
+			{/* <Banner className="mb-6" /> */}
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
 				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
 import workersLogo from '~/assets/powered-by-workers.png';
-import { Banner } from '~/components/Banner';
+// import { Banner } from '~/components/Banner';
 import { InstallButton } from '~/components/InstallButton';
 import { buttonVariants } from '~/styles/Button';
 import { DESCRIPTION } from '~/util/constants';
@@ -12,7 +12,7 @@ import { DESCRIPTION } from '~/util/constants';
 export default function Page() {
 	return (
 		<div className="min-h-screen">
-			<Banner />
+			{/* <Banner /> */}
 			<div className="mx-auto max-w-6xl flex flex-col place-items-center gap-24 px-8 pb-16 pt-12 lg:min-h-[calc(100vh_-_40px)] lg:place-content-center lg:py-10">
 				<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
 					<div className="flex flex-col place-items-center gap-10 text-center">
@@ -22,11 +22,11 @@ export default function Page() {
 						</h1>
 						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
 						<div className="flex flex-wrap place-content-center gap-4 md:flex-row">
-							<a className={buttonVariants()} href="https://old.discordjs.dev/#/docs" rel="noopener noreferrer">
+							{/* <a className={buttonVariants()} href="https://old.discordjs.dev/#/docs" rel="noopener noreferrer">
 								Docs
-							</a>
+							</a> */}
 							<Link className={buttonVariants()} href={'/docs' as Route}>
-								Module docs
+								Docs
 							</Link>
 							<a
 								className={buttonVariants({ variant: 'secondary' })}

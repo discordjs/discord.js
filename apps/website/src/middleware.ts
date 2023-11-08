@@ -21,7 +21,7 @@ async function fetchLatestVersion(packageName: string) {
 	]);
 
 	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-	return rows[0].data.at(1);
+	return rows.map((row) => row.version).at(1);
 }
 
 export default async function middleware(request: NextRequest) {
@@ -35,9 +35,9 @@ export default async function middleware(request: NextRequest) {
 		} catch {}
 	}
 
-	if (request.nextUrl.pathname.includes('discord.js')) {
+	/* if (request.nextUrl.pathname.includes('discord.js')) {
 		return NextResponse.redirect('https://old.discordjs.dev/#/docs/discord.js');
-	}
+	} */
 
 	if (PACKAGES.some((pkg) => request.nextUrl.pathname.includes(pkg))) {
 		// eslint-disable-next-line prefer-named-capture-group
@@ -52,5 +52,5 @@ export default async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ['/docs', '/docs/packages/discord.js(.*)?', '/docs/packages/:package/stable/:member*'],
+	matcher: ['/docs', /* '/docs/packages/discord.js(.*)?',*/ '/docs/packages/:package/stable/:member*'],
 };

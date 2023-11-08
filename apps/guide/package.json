@@ -54,7 +54,7 @@
 		"ariakit": "2.0.0-next.44",
 		"cmdk": "^0.2.0",
 		"contentlayer": "^0.3.4",
-		"next": "^14.0.2-canary.14",
+		"next": "14.0.2-canary.20",
 		"next-contentlayer": "^0.3.4",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
@@ -66,7 +66,7 @@
 		"sharp": "^0.32.6"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "^14.0.1",
+		"@next/bundle-analyzer": "14.0.2-canary.20",
 		"@testing-library/react": "^14.0.0",
 		"@testing-library/user-event": "^14.5.1",
 		"@types/html-escaper": "^3.0.1",

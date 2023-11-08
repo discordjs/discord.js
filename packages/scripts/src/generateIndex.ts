@@ -1,23 +1,11 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import {
-	ApiModel,
-	ApiDeclaredItem,
-	ApiItemContainerMixin,
-	ApiItem,
-	type ApiPackage,
-	ApiItemKind,
-} from '@discordjs/api-extractor-model';
+import type { ApiPackage } from '@discordjs/api-extractor-model';
+import { ApiItem, ApiModel, ApiDeclaredItem, ApiItemContainerMixin, ApiItemKind } from '@discordjs/api-extractor-model';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import {
-	DocNodeKind,
-	type DocCodeSpan,
-	type DocNode,
-	type DocParagraph,
-	type DocPlainText,
-	TSDocConfiguration,
-} from '@microsoft/tsdoc';
+import { DocNodeKind, TSDocConfiguration } from '@microsoft/tsdoc';
+import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import { request } from 'undici';
 
@@ -29,6 +17,7 @@ export interface MemberJSON {
 }
 
 export const PACKAGES = [
+	'discord.js',
 	'brokers',
 	'builders',
 	'collection',
@@ -44,17 +33,23 @@ export const PACKAGES = [
 let idx = 0;
 
 export function addPackageToModel(model: ApiModel, data: any) {
-	const tsdocConfiguration = new TSDocConfiguration();
-	const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
-	tsdocConfigFile.configureParser(tsdocConfiguration);
+	let apiPackage: ApiPackage;
+	if (data.metadata) {
+		const tsdocConfiguration = new TSDocConfiguration();
+		const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
+		tsdocConfigFile.configureParser(tsdocConfiguration);
 
-	const apiPackage = ApiItem.deserialize(data, {
-		apiJsonFilename: '',
-		toolPackage: data.metadata.toolPackage,
-		toolVersion: data.metadata.toolVersion,
-		versionToDeserialize: data.metadata.schemaVersion,
-		tsdocConfiguration,
-	}) as ApiPackage;
+		apiPackage = ApiItem.deserialize(data, {
+			apiJsonFilename: '',
+			toolPackage: data.metadata.toolPackage,
+			toolVersion: data.metadata.toolVersion,
+			versionToDeserialize: data.metadata.schemaVersion,
+			tsdocConfiguration,
+		}) as ApiPackage;
+	} else {
+		apiPackage = ApiItem.deserializeDocgen(data, 'discord.js') as ApiPackage;
+	}
+
 	model.addMember(apiPackage);
 	return model;
 }
@@ -81,6 +76,9 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				break;
 			case DocNodeKind.PlainText:
 				retVal += (node as DocPlainText).text;
+				break;
+			case DocNodeKind.LinkTag:
+				retVal += (node as DocLinkTag).urlDestination;
 				break;
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph: {

@@ -1,24 +1,18 @@
-import type {
-	ApiDeclaredItem,
-	ApiItemContainerMixin,
-	ApiProperty,
-	ApiPropertySignature,
-} from '@discordjs/api-extractor-model';
-import type { PropsWithChildren } from 'react';
-import { Badges } from './Badges';
-import { CodeHeading } from './CodeHeading';
-import { ExcerptText } from './ExcerptText';
-import { InheritanceText } from './InheritanceText';
-import { TSDoc } from './documentation/tsdoc/TSDoc';
+import type { ApiDeclaredItem, ApiItemContainerMixin, ApiEvent } from '@discordjs/api-extractor-model';
+import { Badges } from '../Badges';
+import { CodeHeading } from '../CodeHeading';
+import { InheritanceText } from '../InheritanceText';
+import { ParameterTable } from '../ParameterTable';
+import { TSDoc } from '../documentation/tsdoc/TSDoc';
+import { parametersString } from '../documentation/util';
 
-export function Property({
+export function Event({
 	item,
-	children,
 	inheritedFrom,
-}: PropsWithChildren<{
+}: {
 	readonly inheritedFrom?: (ApiDeclaredItem & ApiItemContainerMixin) | undefined;
-	readonly item: ApiProperty | ApiPropertySignature;
-}>) {
+	readonly item: ApiEvent;
+}) {
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return (
@@ -30,18 +24,14 @@ export function Property({
 					sourceURL={item.sourceLocation.fileUrl}
 					sourceLine={item.sourceLocation.fileLine}
 				>
-					{`${item.displayName}${item.isOptional ? '?' : ''}`}
-					<span>:</span>
-					{item.propertyTypeExcerpt.text ? (
-						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
-					) : null}
+					{`${item.name}(${parametersString(item)})`}
 				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (
 				<div className="mb-4 w-full flex flex-col gap-4">
 					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
+					{item.parameters.length ? <ParameterTable item={item} /> : null}
 					{inheritedFrom ? <InheritanceText parent={inheritedFrom} /> : null}
-					{children}
 				</div>
 			) : null}
 		</div>
