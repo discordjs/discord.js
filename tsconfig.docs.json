@@ -3,6 +3,7 @@
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"emitDeclarationOnly": true,
-		"skipLibCheck": true
-	}
+		"declarationMap": true
+	},
+	"exclude": ["node_modules"]
 }

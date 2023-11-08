@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/dot-notation */
+// @ts-nocheck
 import { EventEmitter } from 'node:events';
 import * as _DataStore from '../src/DataStore';
 import {

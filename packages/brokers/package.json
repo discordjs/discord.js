@@ -5,8 +5,8 @@
 	"description": "Powerful set of message brokers",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsc --noEmit --skipLibCheck && tsup",
-		"build:docs": "tsc -p tsconfig.docs.json",
+		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json --lib ESNext,DOM",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
@@ -81,7 +81,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.3",
 		"tsup": "^7.2.0",
-		"turbo": "^1.10.16",
+		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.6"
 	},

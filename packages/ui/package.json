@@ -5,7 +5,7 @@
 	"description": "",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "vite build",
+		"build": "tsc --noEmit && vite build",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"prepack": "pnpm run build && pnpm run lint",
@@ -82,7 +82,7 @@
 		"prettier": "^3.0.3",
 		"prop-types": "^15.8.1",
 		"storybook": "^7.5.3",
-		"turbo": "^1.10.16",
+		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"unocss": "^0.57.2",
 		"vite": "^4.5.0",

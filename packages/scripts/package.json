@@ -5,9 +5,9 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"build": "tsc --noEmit --skipLibCheck && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo",
+		"build": "tsc --noEmit && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo/generators/config.ts",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
 		"fmt": "pnpm run format"
 	},
 	"exports": {
@@ -74,7 +74,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"prettier": "^3.0.3",
 		"tsup": "^7.2.0",
-		"turbo": "^1.10.16",
+		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.6"
 	},

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as VoiceConnection from '../src/VoiceConnection';
 import { joinVoiceChannel } from '../src/joinVoiceChannel';
 

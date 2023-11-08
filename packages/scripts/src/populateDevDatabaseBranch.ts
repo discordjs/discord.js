@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference lib="dom" />
+
 import { readFile } from 'node:fs/promises';
 import process, { cwd } from 'node:process';
 import { create } from '@actions/glob';

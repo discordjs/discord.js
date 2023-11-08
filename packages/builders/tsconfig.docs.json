@@ -5,5 +5,6 @@
 		"outDir": "dist-docs",
 		"exactOptionalPropertyTypes": false
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
 }

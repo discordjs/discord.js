@@ -82,7 +82,7 @@
 		"prettier": "^3.0.3",
 		"supertest": "^6.3.3",
 		"tsup": "^7.2.0",
-		"turbo": "^1.10.16",
+		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.6"
 	},

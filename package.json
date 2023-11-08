@@ -64,7 +64,7 @@
 		"lint-staged": "^15.0.2",
 		"lodash.merge": "^4.6.2",
 		"tsup": "^7.2.0",
-		"turbo": "^1.10.16",
+		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"unocss": "^0.57.2",
 		"vercel": "^32.5.2",

@@ -70,8 +70,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -212,8 +212,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -366,8 +366,8 @@ importers:
         specifier: ^3.0.3
         version: 3.0.3
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -427,8 +427,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -515,8 +515,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
 
   packages/api-extractor-model:
     dependencies:
@@ -558,8 +558,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
 
   packages/api-extractor-utils:
     dependencies:
@@ -592,8 +592,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -641,8 +641,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -711,8 +711,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -756,8 +756,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -820,8 +820,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -975,8 +975,8 @@ importers:
         specifier: 6.1.3
         version: 6.1.3(typescript@5.2.2)
       turbo:
-        specifier: 1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: 5.2.2
         version: 5.2.2
@@ -1024,8 +1024,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1067,8 +1067,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1137,8 +1137,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1198,8 +1198,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1241,8 +1241,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1311,8 +1311,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1381,8 +1381,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1478,8 +1478,8 @@ importers:
         specifier: ^7.5.3
         version: 7.5.3
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1532,8 +1532,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -1611,8 +1611,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       tweetnacl:
         specifier: ^1.0.3
         version: 1.0.3
@@ -1687,8 +1687,8 @@ importers:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
       turbo:
-        specifier: ^1.10.16
-        version: 1.10.16
+        specifier: ^1.10.17-canary.0
+        version: 1.10.17-canary.0
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -20994,64 +20994,64 @@ packages:
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
     dev: false
 
-  /turbo-darwin-64@1.10.16:
-    resolution: {integrity: sha512-+Jk91FNcp9e9NCLYlvDDlp2HwEDp14F9N42IoW3dmHI5ZkGSXzalbhVcrx3DOox3QfiNUHxzWg4d7CnVNCuuMg==}
+  /turbo-darwin-64@1.10.17-canary.0:
+    resolution: {integrity: sha512-IFqslZ0WsTZNmuxUt4SbScP0AtyPydWXPNycgZkk3LhA2Bku0PocpBo3eauF6sHlaZP27MpMT+3C5E1BtT0xWw==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64@1.10.16:
-    resolution: {integrity: sha512-jqGpFZipIivkRp/i+jnL8npX0VssE6IAVNKtu573LXtssZdV/S+fRGYA16tI46xJGxSAivrZ/IcgZrV6Jk80bw==}
+  /turbo-darwin-arm64@1.10.17-canary.0:
+    resolution: {integrity: sha512-WbCJf+mC8ghS64qGYM0rJIovJkxk0t2mK4CyCJbgmOgtkuarwHtM6RmOjD5nCxIjLRXNp+AGAh9nOrzj5/8Dkg==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64@1.10.16:
-    resolution: {integrity: sha512-PpqEZHwLoizQ6sTUvmImcRmACyRk9EWLXGlqceogPZsJ1jTRK3sfcF9fC2W56zkSIzuLEP07k5kl+ZxJd8JMcg==}
+  /turbo-linux-64@1.10.17-canary.0:
+    resolution: {integrity: sha512-BalZrMmkBI0BsF3gc32xwb41NZJLBHsPxK9Ir3wfTFaF4d+eMxEj787XSOBFqY1RMpJwD3+rJDhBu5AEqPG+0w==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64@1.10.16:
-    resolution: {integrity: sha512-TMjFYz8to1QE0fKVXCIvG/4giyfnmqcQIwjdNfJvKjBxn22PpbjeuFuQ5kNXshUTRaTJihFbuuCcb5OYFNx4uw==}
+  /turbo-linux-arm64@1.10.17-canary.0:
+    resolution: {integrity: sha512-0LymkBD45ogjb2H9C93CxJ+pKPoqMXPGBzUUqDsLwLBgMU0uAGiDxHNGjsgJzDfuldMcwxEJrFbK8i0Wa7uXTQ==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64@1.10.16:
-    resolution: {integrity: sha512-+jsf68krs0N66FfC4/zZvioUap/Tq3sPFumnMV+EBo8jFdqs4yehd6+MxIwYTjSQLIcpH8KoNMB0gQYhJRLZzw==}
+  /turbo-windows-64@1.10.17-canary.0:
+    resolution: {integrity: sha512-0b+/XxYcKvOxcuOiB+pj3XwY39rsRsvJeRAus4Y2OHDD4QUsw6u9HNPJ9Rd0hll6/rl4vnW91bzXDWCaCZmSJQ==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64@1.10.16:
-    resolution: {integrity: sha512-sKm3hcMM1bl0B3PLG4ifidicOGfoJmOEacM5JtgBkYM48ncMHjkHfFY7HrJHZHUnXM4l05RQTpLFoOl/uIo2HQ==}
+  /turbo-windows-arm64@1.10.17-canary.0:
+    resolution: {integrity: sha512-xGseknusKdSXQ7kNoCxpYEljvLavosG4F2EWw2GvDpZCoWU1fBoAjHF9q30BXzDz9IWzyIv7+mdpYIZ6G8z1OQ==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo@1.10.16:
-    resolution: {integrity: sha512-2CEaK4FIuSZiP83iFa9GqMTQhroW2QryckVqUydmg4tx78baftTOS0O+oDAhvo9r9Nit4xUEtC1RAHoqs6ZEtg==}
+  /turbo@1.10.17-canary.0:
+    resolution: {integrity: sha512-SKPDwrkEo0RwZYs1+emT474IFEaL1TbaV+Uw/V9Z3i7mko33wtMulat5K8CMpFEJxqaG64yf7XAIlwrJB59YBA==}
     hasBin: true
     optionalDependencies:
-      turbo-darwin-64: 1.10.16
-      turbo-darwin-arm64: 1.10.16
-      turbo-linux-64: 1.10.16
-      turbo-linux-arm64: 1.10.16
-      turbo-windows-64: 1.10.16
-      turbo-windows-arm64: 1.10.16
+      turbo-darwin-64: 1.10.17-canary.0
+      turbo-darwin-arm64: 1.10.17-canary.0
+      turbo-linux-64: 1.10.17-canary.0
+      turbo-linux-arm64: 1.10.17-canary.0
+      turbo-windows-64: 1.10.17-canary.0
+      turbo-windows-arm64: 1.10.17-canary.0
     dev: true
 
   /tweetnacl@0.14.5:

@@ -45,5 +45,6 @@
 		"lib": ["ESNext"],
 		"target": "ESNext",
 		"useDefineForClassFields": true
-	}
+	},
+	"exclude": ["node_modules"]
 }

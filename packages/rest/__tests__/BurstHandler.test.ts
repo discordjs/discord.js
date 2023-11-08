@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
+// @ts-nocheck
 import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';

@@ -1,6 +1,5 @@
 import { expectType } from 'tsd';
-import type { JSONEncodable } from '../../dist/index.js';
-import { isJSONEncodable } from '../../src/index.js';
+import { isJSONEncodable, type JSONEncodable } from '../../src/index.js';
 
 declare const unknownObj: unknown;
 
