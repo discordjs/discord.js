@@ -6,7 +6,7 @@ index 93519fc1e45361f153edd1f4496ca4a006745e8f..8d603be638c297db9593ae9fa92ec535
              });
          }
          if (this.dev && !ctx.fetchCache) return;
-+        const max_fetch_size = Number(process.env.MAX_FETCH_SIZE) || 2 //gets value set in next.config
++        const max_fetch_size = Number(process.env.MAX_FETCH_SIZE) || 5 // gets value set in next.config
          // fetchCache has upper limit of 2MB per-entry currently
 -        if (ctx.fetchCache && JSON.stringify(data).length > 2 * 1024 * 1024) {
 +        if (ctx.fetchCache && JSON.stringify(data).length > max_fetch_size * 1024 * 1024) {
@@ -24,7 +24,7 @@ index 83e061e5a072d253c2db7ea5e796307070cb1f81..5f9a462e3e12965a49ab6419b19ef2fa
              });
          }
          if (this.dev && !ctx.fetchCache) return;
-+        const max_fetch_size = Number(process.env.MAX_FETCH_SIZE) || 2 //gets value set in next.config
++        const max_fetch_size = Number(process.env.MAX_FETCH_SIZE) || 5 //gets value set in next.config
          // fetchCache has upper limit of 2MB per-entry currently
 -        if (ctx.fetchCache && JSON.stringify(data).length > 2 * 1024 * 1024) {
 +        if (ctx.fetchCache && JSON.stringify(data).length > max_fetch_size * 1024 * 1024) {

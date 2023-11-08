@@ -17,7 +17,7 @@ patchedDependencies:
     hash: 35av6rrndvjtr2u2jso66jatbu
     path: patches/@microsoft__tsdoc-config@0.16.2.patch
   next@14.0.2-canary.20:
-    hash: fie3ucsajzx4kxewo7tqmkbkyq
+    hash: 3u4mq7bxekreeqimcfnpxiw27y
     path: patches/next@14.0.2-canary.20.patch
 
 importers:
@@ -116,7 +116,7 @@ importers:
         version: 0.3.4
       next:
         specifier: 14.0.2-canary.20
-        version: 14.0.2-canary.20(patch_hash=fie3ucsajzx4kxewo7tqmkbkyq)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.0.2-canary.20(patch_hash=3u4mq7bxekreeqimcfnpxiw27y)(react-dom@18.2.0)(react@18.2.0)
       next-contentlayer:
         specifier: ^0.3.4
         version: 0.3.4(contentlayer@0.3.4)(next@14.0.2-canary.20)(react-dom@18.2.0)(react@18.2.0)
@@ -146,8 +146,8 @@ importers:
         version: 0.32.6
     devDependencies:
       '@next/bundle-analyzer':
-        specifier: ^14.0.1
-        version: 14.0.1
+        specifier: 14.0.2-canary.20
+        version: 14.0.2-canary.20
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
@@ -282,7 +282,7 @@ importers:
         version: 0.35.0
       next:
         specifier: 14.0.2-canary.20
-        version: 14.0.2-canary.20(patch_hash=fie3ucsajzx4kxewo7tqmkbkyq)(react-dom@18.2.0)(react@18.2.0)
+        version: 14.0.2-canary.20(patch_hash=3u4mq7bxekreeqimcfnpxiw27y)(react-dom@18.2.0)(react@18.2.0)
       next-mdx-remote:
         specifier: ^4.4.1
         version: 4.4.1(react-dom@18.2.0)(react@18.2.0)
@@ -312,8 +312,8 @@ importers:
         version: 0.32.6
     devDependencies:
       '@next/bundle-analyzer':
-        specifier: ^14.0.1
-        version: 14.0.1
+        specifier: 14.0.2-canary.20
+        version: 14.0.2-canary.20
       '@testing-library/react':
         specifier: ^14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
@@ -4799,8 +4799,8 @@ packages:
       tar-fs: 2.1.1
     dev: true
 
-  /@next/bundle-analyzer@14.0.1:
-    resolution: {integrity: sha512-AbZZnj4gZ1ZQFppZxAC9e8+skj0rFiSvY6E6Ut+ydS1r6oizR7PMu/7o02psIm4ekAsmp2O1Eq8IowHQgPWPCQ==}
+  /@next/bundle-analyzer@14.0.2-canary.20:
+    resolution: {integrity: sha512-8hqQkCSVI2QJXEcCIZj+xbSHP5Gv9vSAkm66CY8x09SfrYAUPGkSj+KrqbjzQ++A6sSFG2/E1INudWdTl80eRA==}
     dependencies:
       webpack-bundle-analyzer: 4.7.0
     transitivePeerDependencies:
@@ -17433,7 +17433,7 @@ packages:
       '@contentlayer/core': 0.3.4
       '@contentlayer/utils': 0.3.4
       contentlayer: 0.3.4
-      next: 14.0.2-canary.20(patch_hash=fie3ucsajzx4kxewo7tqmkbkyq)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.0.2-canary.20(patch_hash=3u4mq7bxekreeqimcfnpxiw27y)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
@@ -17478,12 +17478,12 @@ packages:
       react-dom:
         optional: true
     dependencies:
-      next: 14.0.2-canary.20(patch_hash=fie3ucsajzx4kxewo7tqmkbkyq)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.0.2-canary.20(patch_hash=3u4mq7bxekreeqimcfnpxiw27y)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /next@14.0.2-canary.20(patch_hash=fie3ucsajzx4kxewo7tqmkbkyq)(react-dom@18.2.0)(react@18.2.0):
+  /next@14.0.2-canary.20(patch_hash=3u4mq7bxekreeqimcfnpxiw27y)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-8fRym/rsqDEGxy0LNDYeVdvzfIBh4mzfIBTtN5lPraftZlknobkyVXOwkQKleG9pu3ml8AloJDj/lKiaLWvzBQ==}
     engines: {node: '>=18.17.0'}
     hasBin: true
