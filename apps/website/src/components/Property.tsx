@@ -38,7 +38,7 @@ export function Property({
 				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (
-				<div className="mb-4 flex flex-col gap-4">
+				<div className="mb-4 w-full flex flex-col gap-4">
 					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
 					{inheritedFrom ? <InheritanceText parent={inheritedFrom} /> : null}
 					{children}
