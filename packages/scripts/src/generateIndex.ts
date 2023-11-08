@@ -147,7 +147,7 @@ export async function writeIndexToFileSystem(
 	}
 
 	await writeFile(
-		join(cwd(), 'public', dir, `${packageName}-${tag.replaceAll('.', '-')}-index.json`),
+		join(cwd(), 'public', dir, `${packageName}-${tag}-index.json`),
 		JSON.stringify(members, undefined, 2),
 	);
 }
@@ -178,10 +178,14 @@ export async function generateAllIndices({
 			const data = await fetchPackageVersionDocs(pkg, version);
 			const model = addPackageToModel(new ApiModel(), data);
 			const members = visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!, version);
+
+			const sanitizePackageName = pkg.replaceAll('.', '-');
+			const sanitizeVersion = version.replaceAll('.', '-');
+
 			if (writeToFile) {
-				await writeIndexToFileSystem(members, pkg, version);
+				await writeIndexToFileSystem(members, sanitizePackageName, sanitizeVersion);
 			} else {
-				indices.push({ index: `${pkg.replaceAll('.', '-')}-${version.replaceAll('.', '-')}`, data: members });
+				indices.push({ index: `${sanitizePackageName}-${sanitizeVersion}`, data: members });
 			}
 		}
 	}

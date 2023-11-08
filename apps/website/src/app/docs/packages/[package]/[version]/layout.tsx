@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
 import { cache, type PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
-// import { Banner } from '~/components/Banner';
 import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
@@ -77,7 +76,6 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 
 	return (
 		<Providers>
-			{/* <Banner className="mb-6" /> */}
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
 				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">

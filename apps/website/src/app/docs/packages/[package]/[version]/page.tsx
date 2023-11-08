@@ -15,9 +15,8 @@ const loadREADME = cache(async (packageName: string) => {
 const mdxOptions = {
 	mdxOptions: {
 		remarkPlugins: [remarkGfm],
-		remarkRehypeOptions: { allowDangerousHtml: true },
 		rehypePlugins: [rehypeSlug],
-		format: 'md',
+		format: 'mdx',
 	},
 } satisfies SerializeOptions;
 
@@ -26,7 +25,7 @@ export default async function Page({ params }: { params: VersionRouteParams }) {
 	const readmeSource = await loadREADME(packageName);
 
 	return (
-		<div className="max-w-none prose">
+		<div className="relative top-4 max-w-none prose">
 			{/* @ts-expect-error SyntaxHighlighter is assignable */}
 			<MDXRemote components={{ pre: SyntaxHighlighter }} options={mdxOptions} source={readmeSource} />
 		</div>

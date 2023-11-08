@@ -12,7 +12,7 @@ const sql = connect({
 	},
 });
 
-export const fetchVersions = cache(async (packageName: string) => {
+export const fetchVersions = cache(async (packageName: string): Promise<string[]> => {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return ['main'];
 	}

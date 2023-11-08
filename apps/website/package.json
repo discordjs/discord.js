@@ -7,7 +7,7 @@
 	"scripts": {
 		"test": "vitest run",
 		"test:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-results",
-		"build:copy_readme": "cpy '../../packages/*/README.md' 'src/assets/readme' --rename='home-{{basename}}'",
+		"build:copy_readme": "cpy '../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|util|voice|ws)/README.md' 'src/assets/readme' --rename='home-{{basename}}'",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"build:prod": "pnpm run build:copy_readme && pnpm run build:next",
@@ -47,10 +47,10 @@
 	},
 	"homepage": "https://discord.js.org",
 	"dependencies": {
+		"@discordjs/api-extractor-model": "workspace:^",
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@discordjs/ui": "workspace:^",
-		"@discordjs/api-extractor-model": "workspace:^",
 		"@microsoft/tsdoc": "^0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
 		"@planetscale/database": "^1.11.0",

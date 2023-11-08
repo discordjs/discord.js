@@ -11,7 +11,7 @@ const sql = connect({
 	},
 });
 
-async function fetchLatestVersion(packageName: string) {
+async function fetchLatestVersion(packageName: string): Promise<string> {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return 'main';
 	}
@@ -21,7 +21,7 @@ async function fetchLatestVersion(packageName: string) {
 	]);
 
 	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-	return rows.map((row) => row.version).at(1);
+	return rows.map((row) => row.version).at(1) ?? 'main';
 }
 
 export default async function middleware(request: NextRequest) {
@@ -39,9 +39,7 @@ export default async function middleware(request: NextRequest) {
 		// eslint-disable-next-line prefer-named-capture-group
 		const packageName = /\/docs\/packages\/([^/]+)\/.*/.exec(request.nextUrl.pathname)?.[1] ?? 'discord.js';
 		const latestVersion = await fetchLatestVersion(packageName);
-		return NextResponse.redirect(
-			new URL(request.nextUrl.pathname.replace('stable', latestVersion ?? 'main'), request.url),
-		);
+		return NextResponse.redirect(new URL(request.nextUrl.pathname.replace('stable', latestVersion), request.url));
 	}
 
 	return NextResponse.redirect(new URL('/docs/packages', request.url));
