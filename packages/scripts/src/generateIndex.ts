@@ -169,7 +169,7 @@ export async function generateAllIndices({
 	fetchPackageVersionDocs = fetchVersionDocs,
 	writeToFile = true,
 }) {
-	const indicies: Record<any, any>[] = [];
+	const indices: Record<any, any>[] = [];
 
 	for (const pkg of PACKAGES) {
 		const versions = await fetchPackageVersions(pkg);
@@ -183,10 +183,10 @@ export async function generateAllIndices({
 			if (writeToFile) {
 				await writeIndexToFileSystem(members, pkg, version);
 			} else {
-				indicies.push({ index: `${pkg}-${version.replaceAll('.', '-')}`, data: members });
+				indices.push({ index: `${pkg}-${version.replaceAll('.', '-')}`, data: members });
 			}
 		}
 	}
 
-	return indicies;
+	return indices;
 }

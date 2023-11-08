@@ -84,7 +84,7 @@ const Targets = {
  */
 
 /**
- * Contructs an object of known properties for a structure from an array of changes.
+ * Constructs an object of known properties for a structure from an array of changes.
  * @param {AuditLogChange[]} changes The array of changes
  * @param {Object} [initialData={}] The initial data passed to the function
  * @returns {Object}

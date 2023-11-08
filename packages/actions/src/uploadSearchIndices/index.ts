@@ -29,7 +29,7 @@ const client = new MeiliSearch({
 
 try {
 	console.log('Generating all indices...');
-	const indicies = await generateAllIndices({
+	const indices = await generateAllIndices({
 		fetchPackageVersions: async (pkg) => {
 			console.log(`Fetching versions for ${pkg}...`);
 			const { rows } = await sql.execute('select version from documentation where name = ?', [pkg]);
@@ -52,7 +52,7 @@ try {
 	console.log('Generated all indices.');
 
 	console.log('Uploading indices...');
-	for (const index of indicies) {
+	for (const index of indices) {
 		console.log(`Uploading ${index.index}...`);
 		await client.index(index.index).addDocuments(index.data);
 	}

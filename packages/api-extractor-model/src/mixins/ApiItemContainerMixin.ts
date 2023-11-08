@@ -15,7 +15,7 @@ import {
 import type { ApiClass } from '../model/ApiClass.js';
 import type { ApiInterface } from '../model/ApiInterface.js';
 import type { ApiModel } from '../model/ApiModel.js';
-import { type DeserializerContext } from '../model/DeserializerContext.js';
+import type { DeserializerContext } from '../model/DeserializerContext.js';
 import type { HeritageType } from '../model/HeritageType.js';
 import type { IResolveDeclarationReferenceResult } from '../model/ModelReferenceResolver.js';
 import { ApiNameMixin } from './ApiNameMixin.js';

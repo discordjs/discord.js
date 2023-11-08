@@ -57,7 +57,7 @@
 	"devDependencies": {
 		"@favware/cliff-jumper": "^2.2.1",
 		"@discordjs/api-extractor": "workspace:^",
-		"@types/node": "16.18.60",
+		"@types/node": "18.18.8",
 		"@types/prompts": "^2.4.7",
 		"@types/validate-npm-package-name": "^4.0.1",
 		"@vitest/coverage-v8": "^0.34.6",
@@ -72,7 +72,7 @@
 		"vitest": "^0.34.6"
 	},
 	"engines": {
-		"node": ">=18.17.1"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public"

@@ -5,7 +5,7 @@ export default createTsupConfig({
 		'src/index.ts',
 		'src/formatTag/index.ts',
 		'src/uploadDocumentation/index.ts',
-		'src/uploadSearchIndicies/index.ts',
+		'src/uploadSearchIndices/index.ts',
 	],
 	dts: false,
 	format: 'esm',

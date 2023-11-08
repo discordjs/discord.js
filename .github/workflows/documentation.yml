@@ -6,7 +6,6 @@ on:
     paths:
       - 'packages/*/src/**'
       - '!packages/actions/**'
-      - '!packages/api-extractor-utils/**'
       - '!packages/create-discord-bot/**'
       - '!packages/docgen/**'
       - '!packages/proxy-container/**'
@@ -30,7 +29,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  build-docs:
     name: Build & upload documentation
     runs-on: ubuntu-latest
     env:
@@ -121,3 +120,55 @@ jobs:
           git add .
           git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
           git push
+
+  build-indices:
+    needs: build-docs
+    name: Build & upload search indices
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    permissions:
+      contents: read
+      deployments: write
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install node.js v18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
+
+      - name: Build dependencies
+        run: pnpm run build
+
+      - name: Upload search indices to meilisearch
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
+          SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
+        uses: ./packages/actions/src/uploadSearchIndices
+
+  deploy-website:
+    needs: [build-docs, build-indices]
+    name: Deploy website
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build & deploy website
+        uses: BetaHuhn/deploy-to-vercel-action@643bc80032ba62ca41d1a9aaba7b38b51c2b8646
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_SCOPE: 'discordjs'
+          PRODUCTION: true
