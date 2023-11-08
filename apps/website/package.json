@@ -63,7 +63,7 @@
 		"class-variance-authority": "^0.7.0",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.35.0",
-		"next": "^14.0.2-canary.14",
+		"next": "14.0.2-canary.20",
 		"next-mdx-remote": "^4.4.1",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",

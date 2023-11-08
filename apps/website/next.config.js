@@ -16,6 +16,9 @@ export default withBundleAnalyzer({
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
 	poweredByHeader: false,
+	env: {
+		MAX_FETCH_SIZE: 5,
+	},
 	async redirects() {
 		return [
 			{
