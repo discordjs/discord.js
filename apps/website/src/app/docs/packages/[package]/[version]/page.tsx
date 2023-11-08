@@ -1,33 +1,38 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { SerializeOptions } from 'next-mdx-remote/dist/types';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import { compileMDX } from 'next-mdx-remote/rsc';
 import { cache } from 'react';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
-import type { VersionRouteParams } from './layout';
+
+interface VersionRouteParams {
+	package: string;
+	version: string;
+}
 
 const loadREADME = cache(async (packageName: string) => {
 	return readFile(join(process.cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
 });
 
-const mdxOptions = {
-	mdxOptions: {
-		remarkPlugins: [remarkGfm],
-		rehypePlugins: [rehypeSlug],
-		format: 'mdx',
-	},
-} satisfies SerializeOptions;
+export async function generateStaticParams({ params }: { params: VersionRouteParams }) {
+	return [{ package: params.package, version: params.version }];
+}
 
 export default async function Page({ params }: { params: VersionRouteParams }) {
-	const { package: packageName } = params;
-	const readmeSource = await loadREADME(packageName);
+	const readmeSource = await loadREADME(params.package);
+	const { content } = await compileMDX({
+		source: readmeSource,
+		// @ts-expect-error SyntaxHighlighter is assignable
+		components: { pre: SyntaxHighlighter },
+		options: {
+			mdxOptions: {
+				remarkPlugins: [remarkGfm],
+				rehypePlugins: [rehypeSlug],
+				format: 'mdx',
+			},
+		},
+	});
 
-	return (
-		<div className="relative top-4 max-w-none prose">
-			{/* @ts-expect-error SyntaxHighlighter is assignable */}
-			<MDXRemote components={{ pre: SyntaxHighlighter }} options={mdxOptions} source={readmeSource} />
-		</div>
-	);
+	return <div className="relative top-4 max-w-none prose">{content}</div>;
 }

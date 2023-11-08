@@ -5,22 +5,18 @@
 		"jsx": "preserve",
 		"baseUrl": ".",
 		"noEmit": true,
-		"skipLibCheck": true,
+		"paths": {
+			"~/*": ["./src/*"]
+		},
+		"esModuleInterop": true,
+		"allowJs": true,
+		"incremental": true,
 		"plugins": [
 			{
 				"name": "next"
 			}
-		],
-		"paths": {
-			"~/*": ["./src/*"]
-		},
-		"moduleResolution": "node",
-		"resolvePackageJsonExports": false,
-		"resolvePackageJsonImports": false,
-		"esModuleInterop": true,
-		"allowJs": true,
-		"incremental": true
+		]
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+	"include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
 	"exclude": ["node_modules"]
 }

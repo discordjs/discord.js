@@ -1,6 +1,5 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.useESLintClass": true,
 	"eslint.experimental.useFlatConfig": true,
 	"eslint.workingDirectories": [
 		{ "directory": "${workspaceFolder}" },
@@ -16,7 +15,6 @@
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {
-		"*.mdx": "markdown",
 		"api-extractor.json": "jsonc",
 		"api-extractor-docs.json": "jsonc",
 		"tsconfig.json": "jsonc",
@@ -27,8 +25,10 @@
 	"files.eol": "\n",
 	"npm.packageManager": "pnpm",
 	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"deno.enable": false,
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
-	"deno.lint": true,
+	"deno.lint": false,
 	"deno.unstable": false,
 	"deno.config": "./packages/create-discord-bot/template/Deno/deno.jsonc"
 }

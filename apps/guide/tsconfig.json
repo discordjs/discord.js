@@ -5,23 +5,19 @@
 		"jsx": "preserve",
 		"baseUrl": ".",
 		"noEmit": true,
-		"skipLibCheck": true,
-		"plugins": [
-			{
-				"name": "next"
-			}
-		],
 		"paths": {
 			"~/*": ["./src/*"],
 			"contentlayer/generated": ["./.contentlayer/generated"]
 		},
-		"moduleResolution": "node",
-		"resolvePackageJsonExports": false,
-		"resolvePackageJsonImports": false,
 		"esModuleInterop": true,
 		"allowJs": true,
-		"incremental": true
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
+	"include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts", ".contentlayer/generated"],
 	"exclude": ["node_modules"]
 }

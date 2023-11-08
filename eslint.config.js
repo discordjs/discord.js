@@ -7,7 +7,6 @@ import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
 import merge from 'lodash.merge';
-// import {join} from "node:path"
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 

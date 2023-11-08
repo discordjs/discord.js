@@ -178,6 +178,7 @@ export class SourceMapper {
 					// Load up the source map
 					const rawSourceMap: RawSourceMap = JsonFile.load(sourceMapPath) as RawSourceMap;
 
+					// @ts-expect-error: Whatever
 					const sourceMapConsumer: SourceMapConsumer = new SourceMapConsumer(rawSourceMap);
 					const mappingItems: MappingItem[] = [];
 

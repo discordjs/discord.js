@@ -1,6 +1,7 @@
 import type { ApiFunction, ApiItem } from '@discordjs/api-extractor-model';
 import { ApiModel } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
+import {} from 'next/types';
 import { notFound } from 'next/navigation';
 import { cache, type PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
@@ -15,12 +16,12 @@ import { Providers } from './providers';
 const Header = dynamic(async () => import('~/components/Header'));
 const Footer = dynamic(async () => import('~/components/Footer'));
 
-export interface VersionRouteParams {
+interface VersionRouteParams {
 	package: string;
 	version: string;
 }
 
-export async function generateStaticParams() {
+export const generateStaticParams = async () => {
 	const params: VersionRouteParams[] = [];
 
 	await Promise.all(
@@ -32,7 +33,7 @@ export async function generateStaticParams() {
 	);
 
 	return params;
-}
+};
 
 const serializeIntoSidebarItemData = cache((item: ApiItem) => {
 	return {

@@ -11,9 +11,9 @@ on:
           - '@discordjs/builders'
           - '@discordjs/collection'
           - '@discordjs/core'
-          - create-discord-bot
+          - 'create-discord-bot'
           - '@discordjs/formatters'
-          - discord.js
+          - 'discord.js'
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'

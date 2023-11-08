@@ -59,7 +59,7 @@
     "@discordjs/util": "workspace:^",
     "@discordjs/ws": "workspace:^",
     "@sapphire/snowflake": "3.5.1",
-    "@types/ws": "8.5.8",
+    "@types/ws": "8.5.9",
     "discord-api-types": "0.37.61",
     "fast-deep-equal": "3.1.3",
     "lodash.snakecase": "4.1.1",
@@ -68,8 +68,8 @@
     "ws": "8.14.2"
   },
   "devDependencies": {
-    "@discordjs/docgen": "workspace:^",
     "@discordjs/api-extractor": "workspace:^",
+    "@discordjs/docgen": "workspace:^",
     "@favware/cliff-jumper": "2.2.1",
     "@types/node": "16.18.60",
     "cross-env": "^7.0.3",

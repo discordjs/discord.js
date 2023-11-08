@@ -1,5 +1,8 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"remoteCache": {
+		"enabled": true
+	},
 	"globalDependencies": [
 		".commitlintrc.json",
 		".gitignore",

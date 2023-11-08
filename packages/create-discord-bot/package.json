@@ -55,11 +55,11 @@
 		"validate-npm-package-name": "^5.0.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.1",
 		"@discordjs/api-extractor": "workspace:^",
+		"@favware/cliff-jumper": "^2.2.1",
 		"@types/node": "18.18.8",
-		"@types/prompts": "^2.4.7",
-		"@types/validate-npm-package-name": "^4.0.1",
+		"@types/prompts": "^2.4.8",
+		"@types/validate-npm-package-name": "^4.0.2",
 		"@vitest/coverage-v8": "^0.34.6",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.53.0",
