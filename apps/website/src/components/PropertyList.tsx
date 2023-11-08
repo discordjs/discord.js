@@ -4,8 +4,8 @@ import type {
 	ApiItemContainerMixin,
 	ApiProperty,
 	ApiPropertySignature,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import { Fragment, useMemo } from 'react';
 import { resolveMembers } from '~/util/members';
 import { Property } from './Property';

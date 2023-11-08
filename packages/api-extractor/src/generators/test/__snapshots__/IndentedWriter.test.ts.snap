@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`01 Demo from docs 1`] = `
+"begin
+    one
+    two
+end"
+`;
+
+exports[`02 Indent something 1`] = `
+"abc
+    d
+e
+
+
+>>> g
+"
+`;
+
+exports[`03 Indent something with indentBlankLines=true 1`] = `
+"abc
+    d
+e
+>>> 
+>>> 
+>>> g
+"
+`;
+
+exports[`04 Two kinds of indents 1`] = `
+"---
+> a
+> bc
+>     d
+> e
+---
+"
+`;
+
+exports[`05 Edge cases for ensureNewLine() 1`] = `"line"`;
+
+exports[`05 Edge cases for ensureNewLine() 2`] = `
+"previous
+line"
+`;
+
+exports[`06 Edge cases for ensureSkippedLine() 1`] = `"line"`;
+
+exports[`06 Edge cases for ensureSkippedLine() 2`] = `
+"previous
+
+line
+
+"
+`;
+
+exports[`06 trimLeadingSpaces=true 1`] = `
+"    a
+    b  c
+
+>>a   b
+>>	tab
+>>c  
+"
+`;

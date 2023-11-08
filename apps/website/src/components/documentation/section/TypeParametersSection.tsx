@@ -1,4 +1,4 @@
-import type { ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiTypeParameterListMixin } from '@discordjs/api-extractor-model';
 import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
 import { TypeParamTable } from '../../TypeParamTable';
 import { DocumentationSection } from './DocumentationSection';

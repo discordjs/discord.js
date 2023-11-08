@@ -1,5 +1,5 @@
-import type { ApiClass, ApiInterface, Excerpt } from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiClass, ApiInterface, Excerpt } from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import { ExcerptText } from '../ExcerptText';
 
 export function HierarchyText({

@@ -26,7 +26,7 @@ export class StickersAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/sticker#list-sticker-packs}
 	 * @param options - The options for fetching the sticker packs
-	 * @deprecated Use {@link getStickers} instead.
+	 * @deprecated Use {@link StickersAPI.getStickers} instead.
 	 */
 	public async getNitroStickers(options: Pick<RequestData, 'signal'> = {}) {
 		return this.getStickers(options);

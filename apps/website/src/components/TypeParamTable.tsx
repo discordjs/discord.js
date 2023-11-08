@@ -1,4 +1,4 @@
-import type { ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiTypeParameterListMixin } from '@discordjs/api-extractor-model';
 import { useMemo } from 'react';
 import { ExcerptText } from './ExcerptText';
 import { Table } from './Table';

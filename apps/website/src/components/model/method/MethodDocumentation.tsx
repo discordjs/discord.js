@@ -3,7 +3,7 @@ import type {
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import { InheritanceText } from '../../InheritanceText';
 import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
@@ -21,7 +21,7 @@ export function MethodDocumentation({ method, inheritedFrom }: MethodDocumentati
 	}
 
 	return (
-		<div className="mb-4 flex flex-col gap-4">
+		<div className="mb-4 w-full flex flex-col gap-4">
 			{method.tsdocComment ? <TSDoc item={method} tsdoc={method.tsdocComment} /> : null}
 			{method.parameters.length ? <ParameterTable item={method} /> : null}
 			{inheritedFrom && parent ? <InheritanceText parent={inheritedFrom} /> : null}

@@ -26,7 +26,7 @@ export const PACKAGES = [
 /**
  * The stable version of discord.js.
  */
-export const VERSION = '14.11.0' as const;
+export const VERSION = '14.13.0' as const;
 
 /**
  * The API version (for discord-api-types). This is prefixed with a "v".

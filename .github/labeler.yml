@@ -4,6 +4,12 @@ apps:guide:
 apps:website:
   - apps/website/*
   - apps/website/**/*
+packages:api-extractor:
+  - packages/api-extractor/*
+  - packages/api-extractor/**/*
+packages:api-extractor-model:
+  - packages/api-extractor-model/*
+  - packages/api-extractor-model/**/*
 packages:brokers:
   - packages/brokers/*
   - packages/brokers/**/*

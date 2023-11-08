@@ -1,6 +1,7 @@
 'use client';
 
 import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
+import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { useMemo } from 'react';
@@ -16,7 +17,15 @@ export interface TableOfContentsSerializedProperty {
 	name: string;
 }
 
-export type TableOfContentsSerialized = TableOfContentsSerializedMethod | TableOfContentsSerializedProperty;
+export interface TableOfContentsSerializedEvent {
+	kind: 'Event';
+	name: string;
+}
+
+export type TableOfContentsSerialized =
+	| TableOfContentsSerializedEvent
+	| TableOfContentsSerializedMethod
+	| TableOfContentsSerializedProperty;
 
 export interface TableOfContentsItemProps {
 	readonly serializedMembers: TableOfContentsSerialized[];
@@ -57,6 +66,19 @@ export function TableOfContentsMethodItem({ method }: { readonly method: TableOf
 	);
 }
 
+export function TableOfContentsEventItem({ event }: { readonly event: TableOfContentsSerializedEvent }) {
+	return (
+		<a
+			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
+			href={`#${event.name}`}
+			key={`${event.name}-${event.kind}`}
+			title={event.name}
+		>
+			<span className="line-clamp-1">{event.name}</span>
+		</a>
+	);
+}
+
 export function TableOfContentItems({ serializedMembers }: TableOfContentsItemProps) {
 	const propertyItems = useMemo(
 		() =>
@@ -85,6 +107,14 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 		[serializedMembers],
 	);
 
+	const eventItems = useMemo(
+		() =>
+			serializedMembers
+				.filter((member): member is TableOfContentsSerializedEvent => member.kind === 'Event')
+				.map((event, idx) => <TableOfContentsEventItem key={`${event.name}-${event.kind}-${idx}`} event={event} />),
+		[serializedMembers],
+	);
+
 	return (
 		<div className="flex flex-col break-all p-3 pb-8">
 			<div className="ml-2 mt-4 flex flex-row gap-2">
@@ -92,6 +122,17 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 				<span className="font-semibold">Contents</span>
 			</div>
 			<div className="ml-2 mt-5.5 flex flex-col gap-2">
+				{eventItems.length ? (
+					<div className="flex flex-col">
+						<div className="flex flex-row place-items-center gap-4">
+							<VscSymbolEvent size={20} />
+							<div className="p-3 pl-0">
+								<span className="font-semibold">Properties</span>
+							</div>
+						</div>
+						{eventItems}
+					</div>
+				) : null}
 				{propertyItems.length ? (
 					<div className="flex flex-col">
 						<div className="flex flex-row place-items-center gap-4">

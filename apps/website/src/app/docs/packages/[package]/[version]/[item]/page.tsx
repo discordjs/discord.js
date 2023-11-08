@@ -1,4 +1,3 @@
-import { tryResolveSummaryText } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -13,8 +12,9 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 	ApiFunction,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind, ApiModel } from '@discordjs/api-extractor-model';
+import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';
@@ -32,9 +32,15 @@ import { findMember } from '~/util/model';
 
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return undefined;
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
+
 	if (!entry) {
 		return undefined;
 	}
@@ -88,7 +94,11 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 	const searchParams = resolveMemberSearchParams(params.package, member);
 	url.search = searchParams.toString();
 	const ogImage = url.toString();
-	const description = tryResolveSummaryText(member as ApiDeclaredItem);
+	let description;
+
+	if (member) {
+		description = tryResolveSummaryText(member as ApiDeclaredItem);
+	}
 
 	return {
 		title: name,
@@ -103,13 +113,18 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return [];
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		notFound();
+		return [];
 	}
 
 	return entry.members.map((member: ApiItem) => ({

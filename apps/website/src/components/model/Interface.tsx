@@ -1,4 +1,4 @@
-import type { ApiInterface } from '@microsoft/api-extractor-model';
+import type { ApiInterface } from '@discordjs/api-extractor-model';
 // import { Outline } from '../Outline';
 import { Documentation } from '../documentation/Documentation';
 import { HierarchyText } from '../documentation/HierarchyText';

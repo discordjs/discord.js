@@ -1,5 +1,4 @@
-import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
-import { notFound } from 'next/navigation';
+import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
 import { fetchModelJSON } from '~/app/docAPI';
 import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
@@ -13,7 +12,7 @@ export interface ItemRouteParams {
 
 export async function fetchMember({ package: packageName, version: branchName = 'main', item }: ItemRouteParams) {
 	if (!PACKAGES.includes(packageName)) {
-		notFound();
+		return null;
 	}
 
 	const model = new ApiModel();
@@ -22,10 +21,19 @@ export async function fetchMember({ package: packageName, version: branchName = 
 		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
 
 		for (const modelJSONFile of modelJSONFiles) {
+			if (!modelJSONFile) {
+				continue;
+			}
+
 			addPackageToModel(model, modelJSONFile);
 		}
 	} else {
 		const modelJSON = await fetchModelJSON(packageName, branchName);
+
+		if (!modelJSON) {
+			return null;
+		}
+
 		addPackageToModel(model, modelJSON);
 	}
 

@@ -3,7 +3,7 @@ import type {
 	ApiItemContainerMixin,
 	ApiProperty,
 	ApiPropertySignature,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import type { PropsWithChildren } from 'react';
 import { Badges } from './Badges';
 import { CodeHeading } from './CodeHeading';
@@ -25,7 +25,11 @@ export function Property({
 		<div className="flex flex-col scroll-mt-30 gap-4" id={item.displayName}>
 			<div className="flex flex-col gap-2 md:-ml-9">
 				<Badges item={item} />
-				<CodeHeading href={`#${item.displayName}`}>
+				<CodeHeading
+					href={`#${item.displayName}`}
+					sourceURL={item.sourceLocation.fileUrl}
+					sourceLine={item.sourceLocation.fileLine}
+				>
 					{`${item.displayName}${item.isOptional ? '?' : ''}`}
 					<span>:</span>
 					{item.propertyTypeExcerpt.text ? (
@@ -34,7 +38,7 @@ export function Property({
 				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (
-				<div className="mb-4 flex flex-col gap-4">
+				<div className="mb-4 w-full flex flex-col gap-4">
 					{item.tsdocComment ? <TSDoc item={item} tsdoc={item.tsdocComment} /> : null}
 					{inheritedFrom ? <InheritanceText parent={inheritedFrom} /> : null}
 					{children}

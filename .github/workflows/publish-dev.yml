@@ -51,13 +51,24 @@ jobs:
           node-version: 18
           registry-url: https://registry.npmjs.org/
 
+      - name: Check the current development version
+        id: release-check
+        run: |
+          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(git rev-parse --short HEAD)") ]]; \
+            then echo "RELEASE=0" >> "$GITHUB_OUTPUT"; \
+            else echo "RELEASE=1" >> "$GITHUB_OUTPUT"; \
+          fi
+
       - name: Install dependencies
+        if: steps.release-check.outputs.release == '1'
         uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
+        if: steps.release-check.outputs.release == '1'
         run: pnpm run build
 
       - name: Publish package
+        if: steps.release-check.outputs.release == '1'
         run: |
           pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
           pnpm --filter=${{ matrix.package }} publish --no-git-checks --tag dev || true
@@ -65,6 +76,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       - name: Deprecate prior development releases
+        if: steps.release-check.outputs.release == '1'
         run: pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${{ matrix.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

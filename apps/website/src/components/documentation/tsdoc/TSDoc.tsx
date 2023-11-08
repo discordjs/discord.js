@@ -1,4 +1,4 @@
-import type { ApiItem } from '@microsoft/api-extractor-model';
+import type { ApiItem } from '@discordjs/api-extractor-model';
 import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, DocPlainText } from '@microsoft/tsdoc';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import type { Route } from 'next';
@@ -32,7 +32,9 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
 
 					if (codeDestination) {
-						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item)
+						// TODO: Real fix in api-extractor needed
+						const currentItem = item.getAssociatedPackage();
+						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, currentItem)
 							.resolvedApiItem;
 
 						if (!foundItem) return null;

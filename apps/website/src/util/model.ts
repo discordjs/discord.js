@@ -4,11 +4,11 @@ import type {
 	ApiModel,
 	ApiParameterListMixin,
 	Excerpt,
-} from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';
 
 export function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
-	const pkg = model.tryGetPackageByName(`@discordjs/${packageName}`)!;
+	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
 	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
 }
 
@@ -17,13 +17,14 @@ export function findMember(model: ApiModel, packageName: string, memberName: str
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(`@discordjs/${packageName}`)!;
+	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
 	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
 }
 
 interface ResolvedParameter {
 	description?: DocSection | undefined;
 	isOptional: boolean;
+	isRest: boolean;
 	name: string;
 	parameterTypeExcerpt: Excerpt;
 }
@@ -45,6 +46,7 @@ export function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixi
 			name: param.tsdocParamBlock?.parameterName ?? tsdocAnalog?.parameterName ?? param.name,
 			description: param.tsdocParamBlock?.content ?? tsdocAnalog?.content,
 			isOptional: param.isOptional,
+			isRest: param.isRest,
 			parameterTypeExcerpt: param.parameterTypeExcerpt,
 		};
 	});

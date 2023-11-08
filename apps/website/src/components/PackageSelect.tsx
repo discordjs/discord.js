@@ -15,18 +15,18 @@ export default function PackageSelect() {
 	const packageMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
 
 	const packageMenuItems = useMemo(
-		() => [
-			<a href="https://old.discordjs.dev/#/docs/discord.js" key="discord.js">
-				<MenuItem
-					className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
-					id="discord-js"
-					onClick={() => packageMenu.setOpen(false)}
-					state={packageMenu}
-				>
-					discord.js
-				</MenuItem>
-			</a>,
-			...PACKAGES.map((pkg, idx) => (
+		() =>
+			// <a href="https://old.discordjs.dev/#/docs/discord.js" key="discord.js">
+			// 	<MenuItem
+			// 		className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
+			// 		id="discord-js"
+			// 		onClick={() => packageMenu.setOpen(false)}
+			// 		state={packageMenu}
+			// 	>
+			// 		discord.js
+			// 	</MenuItem>
+			// </a>,
+			PACKAGES.map((pkg, idx) => (
 				<Link href={`/docs/packages/${pkg}/main`} key={`${pkg}-${idx}`}>
 					<MenuItem
 						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
@@ -38,7 +38,6 @@ export default function PackageSelect() {
 					</MenuItem>
 				</Link>
 			)),
-		],
 		[packageMenu],
 	);
 

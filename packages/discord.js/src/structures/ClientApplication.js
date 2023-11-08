@@ -6,6 +6,7 @@ const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
+const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -119,6 +120,16 @@ class ClientApplication extends Application {
       this.botRequireCodeGrant ??= null;
     }
 
+    if ('bot' in data) {
+      /**
+       * The bot associated with this application.
+       * @type {?User}
+       */
+      this.bot = this.client.users._add(data.bot);
+    } else {
+      this.bot ??= null;
+    }
+
     if ('bot_public' in data) {
       /**
        * If this application's bot is public
@@ -127,6 +138,16 @@ class ClientApplication extends Application {
       this.botPublic = data.bot_public;
     } else {
       this.botPublic ??= null;
+    }
+
+    if ('interactions_endpoint_url' in data) {
+      /**
+       * This application's interaction endpoint URL.
+       * @type {?string}
+       */
+      this.interactionsEndpointURL = data.interactions_endpoint_url;
+    } else {
+      this.interactionsEndpointURL ??= null;
     }
 
     if ('role_connections_verification_url' in data) {
@@ -166,6 +187,55 @@ class ClientApplication extends Application {
    */
   get partial() {
     return !this.name;
+  }
+
+  /**
+   * Options used for editing an application.
+   * @typedef {Object} ClientApplicationEditOptions
+   * @property {string} [customInstallURL] The application's custom installation URL
+   * @property {string} [description] The application's description
+   * @property {string} [roleConnectionsVerificationURL] The application's role connection verification URL
+   * @property {ClientApplicationInstallParams} [installParams]
+   * Settings for the application's default in-app authorization
+   * @property {ApplicationFlagsResolvable} [flags] The flags for the application
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The application's icon
+   * @property {?(BufferResolvable|Base64Resolvable)} [coverImage] The application's cover image
+   * @property {string} [interactionsEndpointURL] The application's interaction endpoint URL
+   * @property {string[]} [tags] The application's tags
+   */
+
+  /**
+   * Edits this application.
+   * @param {ClientApplicationEditOptions} [options] The options for editing this application
+   * @returns {Promise<ClientApplication>}
+   */
+  async edit({
+    customInstallURL,
+    description,
+    roleConnectionsVerificationURL,
+    installParams,
+    flags,
+    icon,
+    coverImage,
+    interactionsEndpointURL,
+    tags,
+  } = {}) {
+    const data = await this.client.rest.patch(Routes.currentApplication(), {
+      body: {
+        custom_install_url: customInstallURL,
+        description,
+        role_connections_verification_url: roleConnectionsVerificationURL,
+        install_params: installParams,
+        flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
+        icon: icon && (await DataResolver.resolveImage(icon)),
+        cover_image: coverImage && (await DataResolver.resolveImage(coverImage)),
+        interactions_endpoint_url: interactionsEndpointURL,
+        tags,
+      },
+    });
+
+    this._patch(data);
+    return this;
   }
 
   /**
