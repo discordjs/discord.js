@@ -147,6 +147,7 @@ export class ExcerptBuilder {
 			case ts.SyntaxKind.SymbolKeyword:
 			case ts.SyntaxKind.UnknownKeyword:
 			case ts.SyntaxKind.VoidKeyword:
+			case ts.SyntaxKind.TypeOfKeyword:
 				return true;
 			default:
 				return false;
