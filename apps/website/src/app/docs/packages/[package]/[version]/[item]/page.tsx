@@ -26,9 +26,14 @@ import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
 import { addPackageToModel } from '~/util/addPackageToModel';
 import { OVERLOAD_SEPARATOR } from '~/util/constants';
-import type { ItemRouteParams } from '~/util/fetchMember';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
+
+export interface ItemRouteParams {
+	item: string;
+	package: string;
+	version: string;
+}
 
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams) {
 	const modelJSON = await fetchModelJSON(packageName, version);
@@ -152,7 +157,7 @@ function Member({ member }: { readonly member?: ApiItem }) {
 }
 
 export default async function Page({ params }: { params: ItemRouteParams }) {
-	const member = await fetchMember(params);
+	const member = await fetchMember(params.package, params.version ?? 'main', params.item);
 
 	if (!member) {
 		notFound();

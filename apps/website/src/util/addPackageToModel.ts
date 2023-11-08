@@ -2,8 +2,9 @@ import type { ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
 import { ApiItem } from '@discordjs/api-extractor-model';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
+import { cache } from 'react';
 
-export function addPackageToModel(model: ApiModel, data: any) {
+export const addPackageToModel = cache((model: ApiModel, data: any) => {
 	let apiPackage: ApiPackage;
 	if (data.metadata) {
 		const tsdocConfiguration = new TSDocConfiguration();
@@ -23,4 +24,4 @@ export function addPackageToModel(model: ApiModel, data: any) {
 
 	model.addMember(apiPackage);
 	return model;
-}
+});

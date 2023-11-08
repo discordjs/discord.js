@@ -149,13 +149,13 @@ export class ApiClass extends ApiItemContainerMixin(
 		if (this.extendsType) {
 			jsonObject.extendsTokenRange = {
 				...this.extendsType.excerpt.tokenRange,
-				typeParameters: this.extendsType.typeParameters,
+				typeParameters: this.extendsType.typeParameters ?? [],
 			};
 		}
 
 		jsonObject.implementsTokenRanges = this.implementsTypes.map((x) => ({
 			...x.excerpt.tokenRange,
-			typeParameters: x.typeParameters,
+			typeParameters: x.typeParameters ?? [],
 		}));
 	}
 

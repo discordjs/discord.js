@@ -2,14 +2,15 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { SerializeOptions } from 'next-mdx-remote/dist/types';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { cache } from 'react';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 import type { VersionRouteParams } from './layout';
 
-async function loadREADME(packageName: string) {
+const loadREADME = cache(async (packageName: string) => {
 	return readFile(join(process.cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
-}
+});
 
 const mdxOptions = {
 	mdxOptions: {

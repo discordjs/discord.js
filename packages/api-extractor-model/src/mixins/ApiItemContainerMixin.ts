@@ -481,10 +481,9 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					const mappedTypeParameters: Map<string, string> = new Map();
 					if (
 						(apiItem.kind === ApiItemKind.Class || apiItem.kind === ApiItemKind.Interface) &&
-						next.item.kind === ApiItemKind.Class &&
-						extendsType.typeParameters?.length
+						next.item.kind === ApiItemKind.Class
 					) {
-						for (const [index, typeParameter] of extendsType.typeParameters.entries()) {
+						for (const [index, typeParameter] of extendsType.typeParameters?.entries() ?? []) {
 							const key = (apiItem as ApiClass | ApiInterface).typeParameters[index]?.name ?? '';
 							mappedTypeParameters.set(key, typeParameter);
 						}

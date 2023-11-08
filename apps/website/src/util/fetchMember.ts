@@ -1,16 +1,11 @@
 import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
+import { cache } from 'react';
 import { fetchModelJSON } from '~/app/docAPI';
 import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
-export interface ItemRouteParams {
-	item: string;
-	package: string;
-	version: string;
-}
-
-export async function fetchMember({ package: packageName, version: branchName = 'main', item }: ItemRouteParams) {
+export const fetchMember = cache(async (packageName: string, branchName: string, item: string) => {
 	if (!PACKAGES.includes(packageName)) {
 		return null;
 	}
@@ -46,4 +41,4 @@ export async function fetchMember({ package: packageName, version: branchName = 
 	}
 
 	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
-}
+});

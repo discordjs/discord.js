@@ -8,34 +8,10 @@ jobs:
   deploy-website:
     name: Deploy website
     runs-on: ubuntu-latest
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Install dependencies
-        uses: ./packages/actions/src/pnpmCache
-
-      - name: Build dependencies
-        run: pnpm run build
-
-      - name: Cache .next/cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('apps/website/**/*.ts', 'apps/website/**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-
-
-      - name: Pull vercel production environment
-        run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build website artifacts
-        run: pnpm exec vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build & deploy website
         uses: BetaHuhn/deploy-to-vercel-action@643bc80032ba62ca41d1a9aaba7b38b51c2b8646
@@ -47,4 +23,3 @@ jobs:
           VERCEL_SCOPE: 'discordjs'
           GITHUB_DEPLOYMENT_ENV: 'Production – discord-js'
           PRODUCTION: true
-          PREBUILT: true
