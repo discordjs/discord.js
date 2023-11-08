@@ -32,9 +32,15 @@ import { findMember } from '~/util/model';
 
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return undefined;
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
+
 	if (!entry) {
 		return undefined;
 	}
@@ -88,7 +94,11 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 	const searchParams = resolveMemberSearchParams(params.package, member);
 	url.search = searchParams.toString();
 	const ogImage = url.toString();
-	const description = tryResolveSummaryText(member as ApiDeclaredItem);
+	let description;
+
+	if (member) {
+		description = tryResolveSummaryText(member as ApiDeclaredItem);
+	}
 
 	return {
 		title: name,

@@ -46,6 +46,11 @@ function serializeIntoSidebarItemData(item: ApiItem): SidebarSectionItemData {
 
 export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
+
+	if (!modelJSON) {
+		notFound();
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(params.package);
