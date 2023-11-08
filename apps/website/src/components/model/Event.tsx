@@ -4,7 +4,6 @@ import { CodeHeading } from '../CodeHeading';
 import { InheritanceText } from '../InheritanceText';
 import { ParameterTable } from '../ParameterTable';
 import { TSDoc } from '../documentation/tsdoc/TSDoc';
-import { parametersString } from '../documentation/util';
 
 export function Event({
 	item,
@@ -24,7 +23,7 @@ export function Event({
 					sourceURL={item.sourceLocation.fileUrl}
 					sourceLine={item.sourceLocation.fileLine}
 				>
-					{`${item.name}(${parametersString(item)})`}
+					{item.name}
 				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (
