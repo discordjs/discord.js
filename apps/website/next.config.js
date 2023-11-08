@@ -17,7 +17,7 @@ export default withBundleAnalyzer({
 	},
 	poweredByHeader: false,
 	env: {
-		MAX_FETCH_SIZE: 5,
+		MAX_FETCH_SIZE: '5',
 	},
 	async redirects() {
 		return [
