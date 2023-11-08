@@ -10,7 +10,7 @@ import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
 import { addPackageToModel } from '~/util/addPackageToModel';
-import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
+import { PACKAGES } from '~/util/constants';
 import { Providers } from './providers';
 
 const Header = dynamic(async () => import('~/components/Header'));
@@ -26,7 +26,7 @@ export async function generateStaticParams() {
 
 	await Promise.all(
 		PACKAGES.map(async (packageName) => {
-			const versions = (await fetchVersions(packageName)).slice(-N_RECENT_VERSIONS);
+			const versions = await fetchVersions(packageName);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));
 		}),

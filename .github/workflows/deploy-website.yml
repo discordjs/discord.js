@@ -1,10 +1,5 @@
 name: Deploy website
 on:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'apps/website/**'
   workflow_dispatch:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -27,10 +22,19 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
+      - name: Cache .next/cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('apps/website/**/*.ts', 'apps/website/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-
+
       - name: Pull vercel production environment
         run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build website Artifacts
+      - name: Build website artifacts
         run: pnpm exec vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build & deploy website
