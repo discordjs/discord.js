@@ -22,6 +22,8 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 	return (
 		<span>
 			{excerpt.spannedTokens.map((token, idx) => {
+				// TODO: Real fix in api-extractor needed
+				const text = token.text.replaceAll('\n', '').replaceAll(/\s{2}$/g, '');
 				if (token.kind === ExcerptTokenKind.Reference) {
 					const source = token.canonicalReference?.source;
 					const symbol = token.canonicalReference?.symbol;
@@ -32,12 +34,12 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						// dapi-types doesn't have routes for class members
 						// so we can assume this member is for an enum
 						if (meaning === 'member' && path && 'parent' in path) href += `/enum/${path.parent}#${path.component}`;
-						else if (meaning === 'type') href += `#${token.text}`;
-						else href += `/${meaning}/${token.text}`;
+						else if (meaning === 'type') href += `#${text}`;
+						else href += `/${meaning}/${text}`;
 
 						return (
 							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
-								{token.text}
+								{text}
 							</a>
 						);
 					}
@@ -45,7 +47,7 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 					const item = model.resolveDeclarationReference(token.canonicalReference!, model).resolvedApiItem;
 
 					if (!item) {
-						return token.text;
+						return text;
 					}
 
 					return (
@@ -55,12 +57,12 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 							key={`${item.displayName}-${item.containerKey}-${idx}`}
 							packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
 						>
-							{token.text}
+							{text}
 						</ItemLink>
 					);
 				}
 
-				return token.text.replace(/import\("discord-api-types(?:\/v\d+)?"\)\./, '');
+				return text.replace(/import\("discord-api-types(?:\/v\d+)?"\)\./, '');
 			})}
 		</span>
 	);

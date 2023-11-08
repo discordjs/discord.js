@@ -32,7 +32,9 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
 
 					if (codeDestination) {
-						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item)
+						// TODO: Real fix in api-extractor needed
+						const currentItem = item.getAssociatedPackage();
+						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, currentItem)
 							.resolvedApiItem;
 
 						if (!foundItem) return null;
