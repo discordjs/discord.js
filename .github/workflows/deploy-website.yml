@@ -8,6 +8,9 @@ jobs:
   deploy-website:
     name: Deploy website
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
