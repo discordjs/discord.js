@@ -8,7 +8,6 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
-		"prepare": "pnpm run build",
 		"prepack": "pnpm run format && pnpm run build"
 	},
 	"bin": "./bin/index.js",
