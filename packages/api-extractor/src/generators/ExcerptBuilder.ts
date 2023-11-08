@@ -135,6 +135,27 @@ export class ExcerptBuilder {
 		return { startIndex: 0, endIndex: 0, typeParameters: [] };
 	}
 
+	public static isPrimitiveKeyword(node: ts.Node): boolean {
+		switch (node.kind) {
+			case ts.SyntaxKind.AnyKeyword:
+			case ts.SyntaxKind.BigIntKeyword:
+			case ts.SyntaxKind.BooleanKeyword:
+			case ts.SyntaxKind.NeverKeyword:
+			case ts.SyntaxKind.NumberKeyword:
+			case ts.SyntaxKind.ObjectKeyword:
+			case ts.SyntaxKind.StringKeyword:
+			case ts.SyntaxKind.SymbolKeyword:
+			case ts.SyntaxKind.UnknownKeyword:
+			case ts.SyntaxKind.VoidKeyword:
+			case ts.SyntaxKind.TypeOfKeyword:
+			case ts.SyntaxKind.UndefinedKeyword:
+			case ts.SyntaxKind.NullKeyword:
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	private static _buildSpan(excerptTokens: IExcerptToken[], span: Span, state: IBuildSpanState): boolean {
 		if (span.kind === ts.SyntaxKind.JSDocComment) {
 			// Discard any comments
@@ -162,6 +183,8 @@ export class ExcerptBuilder {
 
 			if (canonicalReference) {
 				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix, canonicalReference);
+			} else if (ExcerptBuilder.isPrimitiveKeyword(span.node)) {
+				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix);
 			} else {
 				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Content, span.prefix);
 			}
