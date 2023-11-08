@@ -34,7 +34,7 @@ export async function fetchModelJSON(packageName: string, version: string): Prom
 			return JSON.parse(res);
 		} catch {
 			console.log(res);
-			return {};
+			return null;
 		}
 	}
 
@@ -45,7 +45,7 @@ export async function fetchModelJSON(packageName: string, version: string): Prom
 		]);
 
 		// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-		return rows[0]?.data ?? {};
+		return rows[0]?.data ?? null;
 	}
 
 	const { rows } = await sql.execute('select data from documentation where name = ? and version = ?', [
@@ -54,5 +54,5 @@ export async function fetchModelJSON(packageName: string, version: string): Prom
 	]);
 
 	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-	return rows[0]?.data ?? {};
+	return rows[0]?.data ?? null;
 }
