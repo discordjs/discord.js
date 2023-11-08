@@ -121,5 +121,3 @@ describe(PackageMetadataManager.name, () => {
 		});
 	});
 });
-
-/* eslint-enable @typescript-eslint/typedef */

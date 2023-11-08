@@ -1325,6 +1325,9 @@ importers:
 
   packages/scripts:
     dependencies:
+      '@actions/glob':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@discordjs/api-extractor-model':
         specifier: workspace:^
         version: link:../api-extractor-model
@@ -1337,6 +1340,9 @@ importers:
       '@microsoft/tsdoc-config':
         specifier: 0.16.2
         version: 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
+      '@planetscale/database':
+        specifier: ^1.11.0
+        version: 1.11.0
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -1359,6 +1365,9 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
+      env-cmd:
+        specifier: ^10.1.0
+        version: 10.1.0
       eslint:
         specifier: ^8.53.0
         version: 8.53.0
@@ -7910,10 +7919,6 @@ packages:
   /@types/scheduler@0.16.5:
     resolution: {integrity: sha512-s/FPdYRmZR8SjLWGMCuax7r3qCWQw9QKHzXVukAuuIJkXkDRwp+Pu5LMIVFi0Fxbav35WURicYr8u1QsoybnQw==}
 
-  /@types/semver@7.5.0:
-    resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
-    dev: true
-
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
     dev: true
@@ -11691,6 +11696,15 @@ packages:
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
+    dev: true
+
+  /env-cmd@10.1.0:
+    resolution: {integrity: sha512-mMdWTT9XKN7yNth/6N6g2GuKuJTsKMDHlQFUDacb/heQRRWOTIZ42t1rMHnQu4jYxU1ajdTeJM+9eEETlqToMA==}
+    engines: {node: '>=8.0.0'}
+    hasBin: true
+    dependencies:
+      commander: 4.1.1
+      cross-spawn: 7.0.3
     dev: true
 
   /envinfo@7.11.0:

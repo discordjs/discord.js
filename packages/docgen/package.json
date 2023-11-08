@@ -11,7 +11,7 @@
 		"prepare": "pnpm run build",
 		"prepack": "pnpm run format && pnpm run build"
 	},
-	"bin": "./dist/bin/index.js",
+	"bin": "./bin/index.js",
 	"exports": {
 		".": {
 			"require": {
