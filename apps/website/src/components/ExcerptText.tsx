@@ -1,5 +1,7 @@
 import type { ApiModel, Excerpt } from '@discordjs/api-extractor-model';
 import { ExcerptTokenKind } from '@discordjs/api-extractor-model';
+import type { PropsWithChildren } from 'react';
+import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
@@ -25,6 +27,15 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 				// TODO: Real fix in api-extractor needed
 				const text = token.text.replaceAll('\n', '').replaceAll(/\s{2}$/g, '');
 				if (token.kind === ExcerptTokenKind.Reference) {
+					if (text in BuiltinDocumentationLinks) {
+						const href = BuiltinDocumentationLinks[text as keyof typeof BuiltinDocumentationLinks];
+						return (
+							<DocumentationLink key={`${text}-${idx}`} href={href}>
+								{text}
+							</DocumentationLink>
+						);
+					}
+
 					const source = token.canonicalReference?.source;
 					const symbol = token.canonicalReference?.symbol;
 					if (source && 'packageName' in source && source.packageName === 'discord-api-types' && symbol) {
@@ -38,9 +49,9 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						else href += `/${meaning}/${text}`;
 
 						return (
-							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
+							<DocumentationLink key={`${text}-${idx}`} href={href}>
 								{text}
-							</a>
+							</DocumentationLink>
 						);
 					}
 
@@ -65,5 +76,13 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 				return text.replace(/import\("discord-api-types(?:\/v\d+)?"\)\./, '');
 			})}
 		</span>
+	);
+}
+
+function DocumentationLink({ children, href }: PropsWithChildren<{ readonly href: string }>) {
+	return (
+		<a className="text-blurple" href={href} rel="external noreferrer noopener" target="_blank">
+			{children}
+		</a>
 	);
 }
