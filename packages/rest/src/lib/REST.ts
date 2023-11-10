@@ -434,12 +434,12 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			};
 		}
 
-		const majorIdMatch = /(?:^\/webhooks\/(\d{17,19}\/[^/]+))|(?:^\/(?:channels|guilds|webhooks)\/(\d{17,19}))/.exec(
+		const majorIdMatch = /(?:^\/webhooks\/(\d{17,19}\/[^/?]+))|(?:^\/(?:channels|guilds|webhooks)\/(\d{17,19}))/.exec(
 			endpoint,
 		);
 
 		// Get the major id or id + token for this route - global otherwise
-		const majorId = majorIdMatch?.[1] ?? majorIdMatch?.[2] ?? 'global';
+		const majorId = majorIdMatch?.[2] ?? majorIdMatch?.[1] ?? 'global';
 
 		const baseRoute = endpoint
 			// Strip out all ids
@@ -447,7 +447,7 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			// Strip out reaction as they fall under the same bucket
 			.replace(/\/reactions\/(.*)/, '/reactions/:reaction')
 			// Strip out webhook tokens
-			.replace(/\/webhooks\/:id\/[^/]+/, '/webhooks/:id/:token');
+			.replace(/\/webhooks\/:id\/[^/?]+/, '/webhooks/:id/:token');
 
 		let exceptions = '';
 
