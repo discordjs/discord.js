@@ -8,7 +8,7 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const Shard = require('./Shard');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { mergeDefault, fetchRecommendedShardCount } = require('../util/Util');
+const { fetchRecommendedShardCount } = require('../util/Util');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -47,20 +47,18 @@ class ShardingManager extends EventEmitter {
    * @param {string} file Path to your shard script file
    * @param {ShardingManagerOptions} [options] Options for the sharding manager
    */
-  constructor(file, options = {}) {
+  constructor(file, options) {
     super();
-    options = mergeDefault(
-      {
-        totalShards: 'auto',
-        mode: 'process',
-        respawn: true,
-        silent: false,
-        shardArgs: [],
-        execArgv: [],
-        token: process.env.DISCORD_TOKEN,
-      },
-      options,
-    );
+    options = {
+      totalShards: 'auto',
+      mode: 'process',
+      respawn: true,
+      silent: false,
+      shardArgs: [],
+      execArgv: [],
+      token: process.env.DISCORD_TOKEN,
+      ...options,
+    };
 
     /**
      * Path to the shard script file
