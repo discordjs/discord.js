@@ -187,9 +187,9 @@ export interface VoiceConnection extends EventEmitter {
 	 *
 	 * @eventProperty
 	 */
-	on<T extends VoiceConnectionStatus>(
-		event: T,
-		listener: (oldState: VoiceConnectionState, newState: VoiceConnectionState & { status: T }) => void,
+	on<Event extends VoiceConnectionStatus>(
+		event: Event,
+		listener: (oldState: VoiceConnectionState, newState: VoiceConnectionState & { status: Event }) => void,
 	): this;
 }
 

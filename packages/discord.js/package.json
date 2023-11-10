@@ -6,7 +6,7 @@
   "scripts": {
     "test": "pnpm run docs:test && pnpm run test:typescript",
     "test:typescript": "tsc --noEmit && tsd",
-    "lint": "prettier --check . && tslint typings/index.d.ts && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --format=pretty src",
+    "lint": "prettier --check . && tslint typings/index.d.ts && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --format=pretty src typings",
     "format": "prettier --write . && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --fix --format=pretty src",
     "fmt": "pnpm run format",
     "docs": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../ -o ./docs/docs.json && pnpm run docs:new",
@@ -72,6 +72,8 @@
     "@discordjs/docgen": "workspace:^",
     "@favware/cliff-jumper": "2.2.1",
     "@types/node": "16.18.60",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
     "cross-env": "^7.0.3",
     "dtslint": "4.2.1",
     "eslint": "8.53.0",

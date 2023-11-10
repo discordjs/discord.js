@@ -14,11 +14,11 @@ const booleanPredicate = s.boolean;
 /**
  * This mixin holds choices and autocomplete symbols used for options.
  */
-export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends number | string> {
+export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<ChoiceType extends number | string> {
 	/**
 	 * The choices of this option.
 	 */
-	public readonly choices?: APIApplicationCommandOptionChoice<T>[];
+	public readonly choices?: APIApplicationCommandOptionChoice<ChoiceType>[];
 
 	/**
 	 * Whether this option utilizes autocomplete.
@@ -37,7 +37,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 	 *
 	 * @param choices - The choices to add
 	 */
-	public addChoices(...choices: APIApplicationCommandOptionChoice<T>[]): this {
+	public addChoices(...choices: APIApplicationCommandOptionChoice<ChoiceType>[]): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
@@ -69,7 +69,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<T extends n
 	 *
 	 * @param choices - The choices to set
 	 */
-	public setChoices<Input extends APIApplicationCommandOptionChoice<T>[]>(...choices: Input): this {
+	public setChoices<Input extends APIApplicationCommandOptionChoice<ChoiceType>[]>(...choices: Input): this {
 		if (choices.length > 0 && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}

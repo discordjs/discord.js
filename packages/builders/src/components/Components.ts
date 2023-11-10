@@ -55,21 +55,23 @@ export interface MappedComponentTypes {
 /**
  * Factory for creating components from API data.
  *
- * @typeParam T - The type of component to use
+ * @typeParam Type - The type of component to use
  * @param data - The API data to transform to a component class
  */
-export function createComponentBuilder<T extends keyof MappedComponentTypes>(
+export function createComponentBuilder<Type extends keyof MappedComponentTypes>(
 	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
-	data: (APIModalComponent | APIMessageComponent) & { type: T },
-): MappedComponentTypes[T];
+	data: (APIModalComponent | APIMessageComponent) & { type: Type },
+): MappedComponentTypes[Type];
 
 /**
  * Factory for creating components from API data.
  *
- * @typeParam C - The type of component to use
+ * @typeParam Builder - The type of component to use
  * @param data - The API data to transform to a component class
  */
-export function createComponentBuilder<C extends MessageComponentBuilder | ModalComponentBuilder>(data: C): C;
+export function createComponentBuilder<Builder extends MessageComponentBuilder | ModalComponentBuilder>(
+	data: Builder,
+): Builder;
 
 export function createComponentBuilder(
 	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
