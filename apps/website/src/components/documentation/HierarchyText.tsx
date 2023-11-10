@@ -45,7 +45,7 @@ export function HierarchyText({
 	}
 
 	return (
-		<div className="space-y-4">
+		<div className="flex flex-col gap-4">
 			{excerpts.map((excerpt, idx) => (
 				<div className="flex flex-row place-items-center gap-4" key={`${type}-${idx}`}>
 					<h3 className="text-xl font-bold">{type}</h3>
