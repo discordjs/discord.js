@@ -49,7 +49,7 @@ class ShardingManager extends EventEmitter {
    */
   constructor(file, options) {
     super();
-    options = {
+    const _options = {
       totalShards: 'auto',
       mode: 'process',
       respawn: true,
@@ -74,7 +74,7 @@ class ShardingManager extends EventEmitter {
      * List of shards this sharding manager spawns
      * @type {string|number[]}
      */
-    this.shardList = options.shardList ?? 'auto';
+    this.shardList = _options.shardList ?? 'auto';
     if (this.shardList !== 'auto') {
       if (!Array.isArray(this.shardList)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array.');
@@ -96,7 +96,7 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that all sharding managers spawn in total
      * @type {number}
      */
-    this.totalShards = options.totalShards || 'auto';
+    this.totalShards = _options.totalShards || 'auto';
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
@@ -113,7 +113,7 @@ class ShardingManager extends EventEmitter {
      * Mode for shards to spawn with
      * @type {ShardingManagerMode}
      */
-    this.mode = options.mode;
+    this.mode = _options.mode;
     if (this.mode !== 'process' && this.mode !== 'worker') {
       throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Sharding mode', '"process" or "worker"');
     }
@@ -122,31 +122,31 @@ class ShardingManager extends EventEmitter {
      * Whether shards should automatically respawn upon exiting
      * @type {boolean}
      */
-    this.respawn = options.respawn;
+    this.respawn = _options.respawn;
 
     /**
      * Whether to pass the silent flag to child process (only when {@link ShardingManager#mode} is `process`)
      * @type {boolean}
      */
-    this.silent = options.silent;
+    this.silent = _options.silent;
 
     /**
      * An array of arguments to pass to shards (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
-    this.shardArgs = options.shardArgs;
+    this.shardArgs = _options.shardArgs;
 
     /**
      * An array of arguments to pass to the executable (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
-    this.execArgv = options.execArgv;
+    this.execArgv = _options.execArgv;
 
     /**
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
-    this.token = options.token?.replace(/^Bot\s*/i, '') ?? null;
+    this.token = _options.token?.replace(/^Bot\s*/i, '') ?? null;
 
     /**
      * A collection of shards that this manager has spawned
