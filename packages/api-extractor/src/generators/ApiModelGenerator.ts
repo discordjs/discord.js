@@ -538,9 +538,6 @@ export class ApiModelGenerator {
 
 		if (apiClass === undefined) {
 			const classDeclaration: ts.ClassDeclaration = astDeclaration.declaration as ts.ClassDeclaration;
-			if (name === 'ActionRow') {
-				console.dir(classDeclaration.heritageClauses?.[0]?.types[0]?.typeArguments, { depth: 3 });
-			}
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
@@ -557,9 +554,12 @@ export class ApiModelGenerator {
 					extendsTokenRange = ExcerptBuilder.createEmptyTokenRangeWithTypeParameters();
 					if (heritageClause.types.length > 0) {
 						extendsTokenRange.typeParameters.push(
-							...(heritageClause.types[0]?.typeArguments?.map((typeArgument) =>
-								ts.isTypeReferenceNode(typeArgument) ? typeArgument.typeName.getText() : '',
-							) ?? []),
+							...(heritageClause.types[0]?.typeArguments?.map((typeArgument) => {
+								const typeArgumentTokenRange = ExcerptBuilder.createEmptyTokenRange();
+								nodesToCapture.push({ node: typeArgument, tokenRange: typeArgumentTokenRange });
+
+								return typeArgumentTokenRange;
+							}) ?? []),
 						);
 						nodesToCapture.push({ node: heritageClause.types[0], tokenRange: extendsTokenRange });
 					}
@@ -568,9 +568,14 @@ export class ApiModelGenerator {
 						const implementsTokenRange: IExcerptTokenRangeWithTypeParameters =
 							ExcerptBuilder.createEmptyTokenRangeWithTypeParameters();
 						implementsTokenRange.typeParameters.push(
-							...(heritageClause.types[0]?.typeArguments?.map((typeArgument) =>
-								ts.isTypeReferenceNode(typeArgument) ? typeArgument.typeName.getText() : '',
-							) ?? []),
+							...(heritageType.typeArguments?.map((typeArgument) => {
+								const typeArgumentTokenRange = ExcerptBuilder.createEmptyTokenRange();
+								if (ts.isTypeReferenceNode(typeArgument)) {
+									nodesToCapture.push({ node: typeArgument, tokenRange: typeArgumentTokenRange });
+								}
+
+								return typeArgumentTokenRange;
+							}) ?? []),
 						);
 						implementsTokenRanges.push(implementsTokenRange);
 						nodesToCapture.push({ node: heritageType, tokenRange: implementsTokenRange });
@@ -893,9 +898,14 @@ export class ApiModelGenerator {
 						const extendsTokenRange: IExcerptTokenRangeWithTypeParameters =
 							ExcerptBuilder.createEmptyTokenRangeWithTypeParameters();
 						extendsTokenRange.typeParameters.push(
-							...(heritageClause.types[0]?.typeArguments?.map((typeArgument) =>
-								ts.isTypeReferenceNode(typeArgument) ? typeArgument.typeName.getText() : '',
-							) ?? []),
+							...(heritageType.typeArguments?.map((typeArgument) => {
+								const typeArgumentTokenRange = ExcerptBuilder.createEmptyTokenRange();
+								if (ts.isTypeReferenceNode(typeArgument)) {
+									nodesToCapture.push({ node: typeArgument, tokenRange: typeArgumentTokenRange });
+								}
+
+								return typeArgumentTokenRange;
+							}) ?? []),
 						);
 						extendsTokenRanges.push(extendsTokenRange);
 						nodesToCapture.push({ node: heritageType, tokenRange: extendsTokenRange });

@@ -44,7 +44,7 @@ export interface IApiClassOptions
 }
 
 export interface IExcerptTokenRangeWithTypeParameters extends IExcerptTokenRange {
-	typeParameters: string[];
+	typeParameters: IExcerptTokenRange[];
 }
 
 export interface IApiClassJson
