@@ -181,6 +181,9 @@
 		"docs": {
 			"dependsOn": ["build"],
 			"inputs": [
+				"../api-extractor/src/**",
+				"../api-extractor-model/src/**",
+				"../api-extractor-utils/src/**",
 				"../../api-extractor.json",
 				"../../tsconfig.docs.json",
 				"api-extractor.json",

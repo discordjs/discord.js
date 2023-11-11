@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import type { Excerpt } from '../mixins/Excerpt.js';
+import type { Excerpt, IExcerptTokenRange } from '../mixins/Excerpt.js';
 
 /**
  * Represents a type referenced via an "extends" or "implements" heritage clause for a TypeScript class
@@ -38,9 +38,9 @@ export class HeritageType {
 	 */
 	public readonly excerpt: Excerpt;
 
-	public readonly typeParameters?: string[];
+	public readonly typeParameters?: IExcerptTokenRange[];
 
-	public constructor(excerpt: Excerpt, typeParameters: string[]) {
+	public constructor(excerpt: Excerpt, typeParameters: IExcerptTokenRange[]) {
 		this.excerpt = excerpt;
 		this.typeParameters = typeParameters;
 	}
