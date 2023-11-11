@@ -1,7 +1,11 @@
-import type { APIMentionableSelectComponent, APISelectMenuDefaultValue, Snowflake } from 'discord-api-types/v10';
-import { ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
-import type { RestOrArray } from '../../index.js';
-import { normalizeArray } from '../../index.js';
+import {
+	type APIMentionableSelectComponent,
+	type APISelectMenuDefaultValue,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
 import { optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -41,9 +45,11 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * @param roles - The roles to add
 	 */
 	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
-		const normalizedValues = roles.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.Role };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role>[];
+		const normalizedValues = normalizeArray(roles).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Role as const,
+		}));
+
 		this.data.default_values ??= [];
 		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
 		this.data.default_values.push(...normalizedValues);
@@ -56,9 +62,11 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * @param users - The users to add
 	 */
 	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
-		const normalizedValues = users.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.User };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
+		const normalizedValues = normalizeArray(users).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.User as const,
+		}));
+
 		this.data.default_values ??= [];
 		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
 		this.data.default_values.push(...normalizedValues);

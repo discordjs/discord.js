@@ -1,11 +1,11 @@
-import type {
-	APIChannelSelectComponent,
-	APISelectMenuDefaultValue,
-	ChannelType,
-	Snowflake,
+import {
+	type APIChannelSelectComponent,
+	type ChannelType,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
-import { ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
 import { channelTypesValidator, customIdValidator, optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -70,9 +70,11 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * @param channels - The channels to add
 	 */
 	public addDefaultChannels(...channels: RestOrArray<Snowflake>) {
-		const normalizedValues = channels.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.Channel };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.Channel>[];
+		const normalizedValues = normalizeArray(channels).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Channel as const,
+		}));
+
 		this.data.default_values ??= [];
 		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
 		this.data.default_values.push(...normalizedValues);
@@ -85,9 +87,11 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * @param channels - The channels to set
 	 */
 	public setDefaultChannels(...channels: RestOrArray<Snowflake>) {
-		const normalizedValues = channels.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.Channel };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.Channel>[];
+		const normalizedValues = normalizeArray(channels).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Channel as const,
+		}));
+
 		optionsLengthValidator.parse(normalizedValues.length);
 		this.data.default_values ??= [];
 		this.data.default_values.splice(0, this.data.default_values.length, ...normalizedValues);

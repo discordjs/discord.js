@@ -1,6 +1,10 @@
-import type { APISelectMenuDefaultValue, APIUserSelectComponent, Snowflake } from 'discord-api-types/v10';
-import { ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
-import type { RestOrArray } from '../../index.js';
+import {
+	type APIUserSelectComponent,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
 import { optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -40,9 +44,11 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 * @param users - The users to add
 	 */
 	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
-		const normalizedValues = users.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.User };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
+		const normalizedValues = normalizeArray(users).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.User as const,
+		}));
+
 		this.data.default_values ??= [];
 		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
 		this.data.default_values.push(...normalizedValues);
@@ -55,9 +61,11 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 * @param users - The users to set
 	 */
 	public setDefaultUsers(...users: RestOrArray<Snowflake>) {
-		const normalizedValues = users.map((id) => {
-			return { id, type: SelectMenuDefaultValueType.User };
-		}) as APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
+		const normalizedValues = normalizeArray(users).map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.User as const,
+		}));
+
 		optionsLengthValidator.parse(normalizedValues.length);
 		this.data.default_values ??= [];
 		this.data.default_values.splice(0, this.data.default_values.length, ...normalizedValues);
