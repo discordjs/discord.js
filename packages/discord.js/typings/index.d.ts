@@ -722,11 +722,11 @@ export type AnyComponent =
   | APIModalComponent
   | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>;
 
-export class Component<RawType extends AnyComponent = AnyComponent> {
-  public readonly data: Readonly<RawType>;
-  public get type(): RawType['type'];
-  public toJSON(): RawType;
-  public equals(other: this | RawType): boolean;
+export class Component<RawComponentData extends AnyComponent = AnyComponent> {
+  public readonly data: Readonly<RawComponentData>;
+  public get type(): RawComponentData['type'];
+  public toJSON(): RawComponentData;
+  public equals(other: this | RawComponentData): boolean;
 }
 
 export class ButtonComponent extends Component<APIButtonComponent> {
@@ -6640,8 +6640,8 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
   ? Value
-  : Value extends { toJSON(): infer Result }
-  ? Result
+  : Value extends { toJSON(): infer JSONResult }
+  ? JSONResult
   : Value extends ReadonlyArray<infer ItemType>
   ? Serialized<ItemType>[]
   : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
