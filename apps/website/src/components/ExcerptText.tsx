@@ -1,6 +1,8 @@
 import type { ApiModel, Excerpt } from '@discordjs/api-extractor-model';
 import { ExcerptTokenKind } from '@discordjs/api-extractor-model';
+import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
+import { DocumentationLink } from './DocumentationLink';
 import { ItemLink } from './ItemLink';
 import { resolveItemURI } from './documentation/util';
 
@@ -23,6 +25,15 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 		<span>
 			{excerpt.spannedTokens.map((token, idx) => {
 				if (token.kind === ExcerptTokenKind.Reference) {
+					if (token.text in BuiltinDocumentationLinks) {
+						const href = BuiltinDocumentationLinks[token.text as keyof typeof BuiltinDocumentationLinks];
+						return (
+							<DocumentationLink key={`${token.text}-${idx}`} href={href}>
+								{token.text}
+							</DocumentationLink>
+						);
+					}
+
 					const source = token.canonicalReference?.source;
 					const symbol = token.canonicalReference?.symbol;
 					if (source && 'packageName' in source && source.packageName === 'discord-api-types' && symbol) {
@@ -36,9 +47,9 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						else href += `/${meaning}/${token.text}`;
 
 						return (
-							<a className="text-blurple" href={href} key={idx} rel="external noreferrer noopener" target="_blank">
+							<DocumentationLink key={`${token.text}-${idx}`} href={href}>
 								{token.text}
-							</a>
+							</DocumentationLink>
 						);
 					}
 
