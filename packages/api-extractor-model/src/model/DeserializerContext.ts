@@ -92,12 +92,17 @@ export enum ApiJsonSchemaVersion {
 	V_1011 = 1_011,
 
 	/**
+	 * Add a `fileLine`and `fileColumn` field to track source code location
+	 */
+	V_1012 = 1_012,
+
+	/**
 	 * The current latest .api.json schema version.
 	 *
 	 * IMPORTANT: When incrementing this number, consider whether `OLDEST_SUPPORTED` or `OLDEST_FORWARDS_COMPATIBLE`
 	 * should be updated.
 	 */
-	LATEST = V_1011,
+	LATEST = V_1012,
 
 	/**
 	 * The oldest .api.json schema version that is still supported for backwards compatibility.

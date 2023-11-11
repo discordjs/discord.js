@@ -176,14 +176,17 @@ export class ExcerptBuilder {
 
 			if (span.kind === ts.SyntaxKind.Identifier) {
 				const name: ts.Identifier = span.node as ts.Identifier;
-				if (!ExcerptBuilder._isDeclarationName(name)) {
-					canonicalReference = state.referenceGenerator.getDeclarationReferenceForIdentifier(name);
-				}
+				canonicalReference = state.referenceGenerator.getDeclarationReferenceForIdentifier(name);
 			}
 
 			if (canonicalReference) {
 				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix, canonicalReference);
-			} else if (ExcerptBuilder.isPrimitiveKeyword(span.node)) {
+			} else if (
+				ExcerptBuilder.isPrimitiveKeyword(span.node) ||
+				(span.node.kind === ts.SyntaxKind.Identifier &&
+					((ts.isTypeReferenceNode(span.node.parent) && span.node.parent.typeName === span.node) ||
+						(ts.isTypeParameterDeclaration(span.node.parent) && span.node.parent.name === span.node)))
+			) {
 				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Reference, span.prefix);
 			} else {
 				ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Content, span.prefix);
@@ -209,7 +212,11 @@ export class ExcerptBuilder {
 		}
 
 		if (span.separator) {
-			ExcerptBuilder._appendToken(excerptTokens, ExcerptTokenKind.Content, span.separator);
+			ExcerptBuilder._appendToken(
+				excerptTokens,
+				ExcerptTokenKind.Content,
+				span.separator.replaceAll('\n', '').replaceAll(/\s{2}/g, ' '),
+			);
 			state.lastAppendedTokenIsSeparator = true;
 		}
 
@@ -335,7 +342,7 @@ export class ExcerptBuilder {
 				}
 			}
 		}
-	}
+	} /*
 
 	private static _isDeclarationName(name: ts.Identifier): boolean {
 		return ExcerptBuilder._isDeclaration(name.parent) && name.parent.name === name;
@@ -366,5 +373,5 @@ export class ExcerptBuilder {
 			default:
 				return false;
 		}
-	}
+	} // */
 }
