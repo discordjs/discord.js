@@ -42,9 +42,13 @@ export interface IApiItemContainerJson extends IApiItemJson {
 	preserveMemberOrder?: boolean;
 }
 
+interface ExcerptTokenRangeInDeclaredItem {
+	item: ApiDeclaredItem;
+	range: IExcerptTokenRange;
+}
 interface IMappedTypeParameters {
 	item: ApiItem;
-	mappedTypeParameters: Map<string, IExcerptTokenRange>;
+	mappedTypeParameters: Map<string, ExcerptTokenRangeInDeclaredItem>;
 }
 
 const _members: unique symbol = Symbol('ApiItemContainerMixin._members');
@@ -349,8 +353,11 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						member.serializeInto(jsonObject);
 						const excerptTokens = (jsonObject as IApiDeclaredItemJson).excerptTokens.map((token) => {
 							let x: ExcerptToken | undefined;
-							if (typeParams.has(token.text) && next?.item instanceof ApiDeclaredItem)
-								x = (member as ApiDeclaredItem).excerptTokens[typeParams.get(token.text)!.startIndex];
+							if (typeParams.has(token.text) && next?.item instanceof ApiDeclaredItem) {
+								const originalValue = typeParams.get(token.text)!;
+								x = originalValue.item.excerptTokens[originalValue.range.startIndex];
+							}
+
 							const excerptToken: IExcerptToken = x ? { kind: x.kind, text: x.text } : token;
 							if (x?.canonicalReference !== undefined) {
 								excerptToken.canonicalReference = x.canonicalReference.toString();
@@ -470,14 +477,20 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						continue;
 					}
 
-					const mappedTypeParameters: Map<string, IExcerptTokenRange> = new Map();
+					const mappedTypeParameters: Map<string, ExcerptTokenRangeInDeclaredItem> = new Map();
 					if (
 						(apiItem.kind === ApiItemKind.Class || apiItem.kind === ApiItemKind.Interface) &&
 						next.item.kind === ApiItemKind.Class
 					) {
-						for (const [index, typeParameter] of extendsType.typeParameters?.entries() ?? []) {
-							const key = (apiItem as ApiClass | ApiInterface).typeParameters[index]?.name ?? '';
-							mappedTypeParameters.set(key, typeParameter);
+						for (const [index, key] of (apiItem as ApiClass | ApiInterface).typeParameters.entries() ?? []) {
+							const typeParameter = extendsType.typeParameters?.[index];
+							if (typeParameter)
+								mappedTypeParameters.set(key.name, { item: next.item as ApiDeclaredItem, range: typeParameter });
+							else if (key.defaultTypeExcerpt)
+								mappedTypeParameters.set(key.name, {
+									item: apiItem as ApiDeclaredItem,
+									range: key.defaultTypeExcerpt.tokenRange,
+								});
 						}
 					}
 
