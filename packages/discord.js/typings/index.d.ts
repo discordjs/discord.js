@@ -586,9 +586,6 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionOption<Cached>;
-  private transformResolved(
-    resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionResolvedData<Cached>;
 }
 
 export class InteractionResponse<Cached extends boolean = boolean> {
@@ -2037,6 +2034,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public stickers: Collection<Snowflake, Sticker>;
   public position: number | null;
   public roleSubscriptionData: RoleSubscriptionData | null;
+  public resolved: CommandInteractionResolvedData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;

@@ -26,6 +26,7 @@ const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { cleanContent, resolvePartialEmoji } = require('../util/Util');
+const { transformResolved } = require('../util/transformResolved');
 
 /**
  * Represents a message on Discord.
@@ -221,6 +222,19 @@ class Message extends Base {
       };
     } else {
       this.roleSubscriptionData ??= null;
+    }
+
+    if ('resolved' in data) {
+      /**
+       * Resolved data from auto-populated select menus.
+       * @typedef {Object} CommandInteractionResolvedData;
+       */
+      this.resolved = transformResolved(
+        { client: this.client, guild: this.guild, channel: this.channel },
+        data.resolved,
+      );
+    } else {
+      this.resolved ??= null;
     }
 
     // Discord sends null if the message has not been edited
