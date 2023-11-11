@@ -49,25 +49,25 @@
 	},
 	"homepage": "https://discord.js.org",
 	"devDependencies": {
-		"@commitlint/cli": "^18.2.0",
-		"@commitlint/config-angular": "^18.1.0",
+		"@commitlint/cli": "^18.4.0",
+		"@commitlint/config-angular": "^18.4.0",
 		"@favware/cliff-jumper": "^2.2.1",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.9",
-		"@unocss/eslint-plugin": "^0.57.2",
+		"@unocss/eslint-plugin": "^0.57.3",
 		"@vitest/coverage-v8": "^0.34.6",
 		"conventional-changelog-cli": "^4.1.0",
 		"eslint": "^8.53.0",
 		"eslint-config-neon": "^0.1.57",
 		"husky": "^8.0.3",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^15.0.2",
+		"lint-staged": "^15.1.0",
 		"lodash.merge": "^4.6.2",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
-		"unocss": "^0.57.2",
-		"vercel": "^32.5.2",
+		"unocss": "^0.57.3",
+		"vercel": "^32.5.3",
 		"vitest": "^0.34.6"
 	},
 	"pnpm": {
@@ -88,8 +88,7 @@
 			"@contentlayer/utils>@opentelemetry/semantic-conventions": "^1.15.1"
 		},
 		"patchedDependencies": {
-			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch",
-			"next@14.0.2-canary.20": "patches/next@14.0.2-canary.20.patch"
+			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch"
 		}
 	},
 	"engines": {
