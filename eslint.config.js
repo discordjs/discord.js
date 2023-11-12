@@ -25,6 +25,17 @@ const typeScriptRuleset = merge(...typescript, {
 	},
 	rules: {
 		'@typescript-eslint/consistent-type-definitions': [2, 'interface'],
+		'@typescript-eslint/naming-convention': [
+			2,
+			{
+				selector: 'typeParameter',
+				format: ['PascalCase'],
+				custom: {
+					regex: '^\\w{3,}',
+					match: true,
+				},
+			},
+		],
 	},
 	settings: {
 		'import/resolver': {
@@ -109,6 +120,10 @@ export default [
 			'unicorn/no-this-assignment': 0,
 			'@typescript-eslint/no-this-alias': 0,
 		},
+	},
+	{
+		files: [`packages/{api-extractor,api-extractor-model,api-extractor-utils}/**/*${commonFiles}`],
+		rules: { '@typescript-eslint/naming-convention': 0 },
 	},
 	reactRuleset,
 	nextRuleset,

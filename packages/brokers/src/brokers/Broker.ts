@@ -75,7 +75,7 @@ export interface IPubSubBroker<TEvents extends Record<string, any>>
 	/**
 	 * Publishes an event
 	 */
-	publish<T extends keyof TEvents>(event: T, data: TEvents[T]): Promise<void>;
+	publish<Event extends keyof TEvents>(event: Event, data: TEvents[Event]): Promise<void>;
 }
 
 export interface IRPCBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
@@ -84,5 +84,9 @@ export interface IRPCBroker<TEvents extends Record<string, any>, TResponses exte
 	/**
 	 * Makes an RPC call
 	 */
-	call<T extends keyof TEvents>(event: T, data: TEvents[T], timeoutDuration?: number): Promise<TResponses[T]>;
+	call<Event extends keyof TEvents>(
+		event: Event,
+		data: TEvents[Event],
+		timeoutDuration?: number,
+	): Promise<TResponses[Event]>;
 }

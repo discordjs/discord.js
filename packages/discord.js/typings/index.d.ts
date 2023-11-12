@@ -234,14 +234,14 @@ import {
 declare module 'node:events' {
   class EventEmitter {
     // Add type overloads for client events.
-    public static once<E extends EventEmitter, K extends keyof ClientEvents>(
-      eventEmitter: E,
-      eventName: E extends Client ? K : string,
-    ): Promise<E extends Client ? ClientEvents[K] : any[]>;
-    public static on<E extends EventEmitter, K extends keyof ClientEvents>(
-      eventEmitter: E,
-      eventName: E extends Client ? K : string,
-    ): AsyncIterableIterator<E extends Client ? ClientEvents[K] : any>;
+    public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
+      eventEmitter: Emitter,
+      eventName: Emitter extends Client ? Event : string,
+    ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
+    public static on<Emitter extends EventEmitter, Events extends keyof ClientEvents>(
+      eventEmitter: Emitter,
+      eventName: Emitter extends Client ? Events : string,
+    ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Events] : any>;
   }
 }
 
@@ -296,23 +296,25 @@ export type ActionRowComponentData = MessageActionRowComponentData | ModalAction
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<T extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
+export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
   extends BaseComponentData {
-  components: T[];
+  components: ComponentType[];
 }
 
-export class ActionRowBuilder<T extends AnyComponentBuilder = AnyComponentBuilder> extends BuilderActionRow<T> {
+export class ActionRowBuilder<
+  ComponentType extends AnyComponentBuilder = AnyComponentBuilder,
+> extends BuilderActionRow<ComponentType> {
   constructor(
     data?: Partial<
       | ActionRowData<ActionRowComponentData | JSONEncodable<APIActionRowComponentTypes>>
       | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
     >,
   );
-  public static from<T extends AnyComponentBuilder = AnyComponentBuilder>(
+  public static from<ComponentType extends AnyComponentBuilder = AnyComponentBuilder>(
     other:
-      | JSONEncodable<APIActionRowComponent<ReturnType<T['toJSON']>>>
-      | APIActionRowComponent<ReturnType<T['toJSON']>>,
-  ): ActionRowBuilder<T>;
+      | JSONEncodable<APIActionRowComponent<ReturnType<ComponentType['toJSON']>>>
+      | APIActionRowComponent<ReturnType<ComponentType['toJSON']>>,
+  ): ActionRowBuilder<ComponentType>;
 }
 
 export type MessageActionRowComponent =
@@ -324,12 +326,12 @@ export type MessageActionRowComponent =
   | ChannelSelectMenuComponent;
 export type ModalActionRowComponent = TextInputComponent;
 
-export class ActionRow<T extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
+export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
   APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
 > {
   private constructor(data: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>);
-  public readonly components: T[];
-  public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>>;
+  public readonly components: ComponentType[];
+  public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
 
 export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
@@ -527,7 +529,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Message | APIMessage
 >;
 
-export type BooleanCache<T extends CacheType> = T extends 'cached' ? true : false;
+export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommand;
@@ -595,12 +597,12 @@ export class InteractionResponse<Cached extends boolean = boolean> {
   public id: Snowflake;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  public awaitMessageComponent<T extends MessageComponentType>(
-    options?: AwaitMessageCollectorOptionsParams<T, Cached>,
-  ): Promise<MappedInteractionTypes<Cached>[T]>;
-  public createMessageComponentCollector<T extends MessageComponentType>(
-    options?: MessageCollectorOptionsParams<T, Cached>,
-  ): InteractionCollector<MappedInteractionTypes<Cached>[T]>;
+  public awaitMessageComponent<ComponentType extends MessageComponentType>(
+    options?: AwaitMessageCollectorOptionsParams<ComponentType, Cached>,
+  ): Promise<MappedInteractionTypes<Cached>[ComponentType]>;
+  public createMessageComponentCollector<ComponentType extends MessageComponentType>(
+    options?: MessageCollectorOptionsParams<ComponentType, Cached>,
+  ): InteractionCollector<MappedInteractionTypes<Cached>[ComponentType]>;
   public delete(): Promise<void>;
   public edit(options: string | MessagePayload | WebhookMessageEditOptions): Promise<Message>;
   public fetch(): Promise<Message>;
@@ -676,23 +678,23 @@ export class BaseGuildVoiceChannel extends TextBasedChannelMixin(GuildChannel, t
   public setVideoQualityMode(videoQualityMode: VideoQualityMode, reason?: string): Promise<this>;
 }
 
-export type EnumLike<E, V> = Record<keyof E, V>;
+export type EnumLike<Enum, Value> = Record<keyof Enum, Value>;
 
-export class BitField<S extends string, N extends number | bigint = number> {
-  public constructor(bits?: BitFieldResolvable<S, N>);
-  public bitfield: N;
-  public add(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
-  public any(bit: BitFieldResolvable<S, N>): boolean;
-  public equals(bit: BitFieldResolvable<S, N>): boolean;
-  public freeze(): Readonly<BitField<S, N>>;
-  public has(bit: BitFieldResolvable<S, N>): boolean;
-  public missing(bits: BitFieldResolvable<S, N>, ...hasParams: readonly unknown[]): S[];
-  public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
-  public serialize(...hasParams: readonly unknown[]): Record<S, boolean>;
-  public toArray(...hasParams: readonly unknown[]): S[];
-  public toJSON(): N extends number ? number : string;
-  public valueOf(): N;
-  public [Symbol.iterator](): IterableIterator<S>;
+export class BitField<Flags extends string, Type extends number | bigint = number> {
+  public constructor(bits?: BitFieldResolvable<Flags, Type>);
+  public bitfield: Type;
+  public add(...bits: BitFieldResolvable<Flags, Type>[]): BitField<Flags, Type>;
+  public any(bit: BitFieldResolvable<Flags, Type>): boolean;
+  public equals(bit: BitFieldResolvable<Flags, Type>): boolean;
+  public freeze(): Readonly<BitField<Flags, Type>>;
+  public has(bit: BitFieldResolvable<Flags, Type>): boolean;
+  public missing(bits: BitFieldResolvable<Flags, Type>, ...hasParams: readonly unknown[]): Flags[];
+  public remove(...bits: BitFieldResolvable<Flags, Type>[]): BitField<Flags, Type>;
+  public serialize(...hasParams: readonly unknown[]): Record<Flags, boolean>;
+  public toArray(...hasParams: readonly unknown[]): Flags[];
+  public toJSON(): Type extends number ? number : string;
+  public valueOf(): Type;
+  public [Symbol.iterator](): IterableIterator<Flags>;
   public static Flags: EnumLike<unknown, number | bigint>;
   public static resolve(bit?: BitFieldResolvable<string, number | bigint>): number | bigint;
 }
@@ -717,11 +719,11 @@ export type AnyComponent =
   | APIModalComponent
   | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>;
 
-export class Component<T extends AnyComponent = AnyComponent> {
-  public readonly data: Readonly<T>;
-  public get type(): T['type'];
-  public toJSON(): T;
-  public equals(other: this | T): boolean;
+export class Component<RawComponentData extends AnyComponent = AnyComponent> {
+  public readonly data: Readonly<RawComponentData>;
+  public get type(): RawComponentData['type'];
+  public toJSON(): RawComponentData;
+  public equals(other: this | RawComponentData): boolean;
 }
 
 export class ButtonComponent extends Component<APIButtonComponent> {
@@ -948,7 +950,11 @@ export abstract class BaseChannel extends Base {
   public toString(): ChannelMention | UserMention;
 }
 
-export type If<T extends boolean, A, B = null> = T extends true ? A : T extends false ? B : A | B;
+export type If<Value extends boolean, TrueResult, FalseResult = null> = Value extends true
+  ? TrueResult
+  : Value extends false
+  ? FalseResult
+  : TrueResult | FalseResult;
 
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
@@ -992,29 +998,38 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public isReady(): this is Client<true>;
   public toJSON(): unknown;
 
-  public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
-  public on<S extends string | symbol>(
-    event: Exclude<S, keyof ClientEvents>,
+  public on<Event extends keyof ClientEvents>(
+    event: Event,
+    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
+  ): this;
+  public on<Event extends string | symbol>(
+    event: Exclude<Event, keyof ClientEvents>,
     listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
-  public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
-  public once<S extends string | symbol>(
-    event: Exclude<S, keyof ClientEvents>,
+  public once<Event extends keyof ClientEvents>(
+    event: Event,
+    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
+  ): this;
+  public once<Event extends string | symbol>(
+    event: Exclude<Event, keyof ClientEvents>,
     listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
-  public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
-  public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: unknown[]): boolean;
+  public emit<Event extends keyof ClientEvents>(event: Event, ...args: ClientEvents[Event]): boolean;
+  public emit<Event extends string | symbol>(event: Exclude<Event, keyof ClientEvents>, ...args: unknown[]): boolean;
 
-  public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaitable<void>): this;
-  public off<S extends string | symbol>(
-    event: Exclude<S, keyof ClientEvents>,
+  public off<Event extends keyof ClientEvents>(
+    event: Event,
+    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
+  ): this;
+  public off<Event extends string | symbol>(
+    event: Exclude<Event, keyof ClientEvents>,
     listener: (...args: any[]) => Awaitable<void>,
   ): this;
 
-  public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
-  public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
+  public removeAllListeners<Event extends keyof ClientEvents>(event?: Event): this;
+  public removeAllListeners<Event extends string | symbol>(event?: Exclude<Event, keyof ClientEvents>): this;
 }
 
 export class ClientApplication extends Application {
@@ -1083,48 +1098,48 @@ export class ClientVoiceManager {
 
 export { Collection } from '@discordjs/collection';
 
-export interface CollectorEventTypes<K, V, F extends unknown[] = []> {
-  collect: [V, ...F];
-  ignore: [V, ...F];
-  dispose: [V, ...F];
-  end: [collected: Collection<K, V>, reason: string];
+export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
+  collect: [Value, ...Extras];
+  ignore: [Value, ...Extras];
+  dispose: [Value, ...Extras];
+  end: [collected: Collection<Key, Value>, reason: string];
 }
 
-export abstract class Collector<K, V, F extends unknown[] = []> extends EventEmitter {
-  protected constructor(client: Client<true>, options?: CollectorOptions<[V, ...F]>);
+export abstract class Collector<Key, Value, Extras extends unknown[] = []> extends EventEmitter {
+  protected constructor(client: Client<true>, options?: CollectorOptions<[Value, ...Extras]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
   private _endReason: string | null;
 
   public readonly client: Client;
-  public collected: Collection<K, V>;
+  public collected: Collection<Key, Value>;
   public lastCollectedTimestamp: number | null;
   public get lastCollectedAt(): Date | null;
   public ended: boolean;
   public get endReason(): string | null;
-  public filter: CollectorFilter<[V, ...F]>;
-  public get next(): Promise<V>;
-  public options: CollectorOptions<[V, ...F]>;
+  public filter: CollectorFilter<[Value, ...Extras]>;
+  public get next(): Promise<Value>;
+  public options: CollectorOptions<[Value, ...Extras]>;
   public checkEnd(): boolean;
   public handleCollect(...args: unknown[]): Promise<void>;
   public handleDispose(...args: unknown[]): Promise<void>;
   public stop(reason?: string): void;
   public resetTimer(options?: CollectorResetTimerOptions): void;
-  public [Symbol.asyncIterator](): AsyncIterableIterator<[V, ...F]>;
+  public [Symbol.asyncIterator](): AsyncIterableIterator<[Value, ...Extras]>;
   public toJSON(): unknown;
 
   protected listener: (...args: any[]) => void;
-  public abstract collect(...args: unknown[]): K | null | Promise<K | null>;
-  public abstract dispose(...args: unknown[]): K | null;
+  public abstract collect(...args: unknown[]): Key | null | Promise<Key | null>;
+  public abstract dispose(...args: unknown[]): Key | null;
 
-  public on<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+  public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
   ): this;
 
-  public once<EventKey extends keyof CollectorEventTypes<K, V, F>>(
+  public once<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<K, V, F>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
   ): this;
 }
 
@@ -1190,34 +1205,34 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
-  public getChannel<const T extends ChannelType = ChannelType>(
+  public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required: true,
-    channelTypes?: readonly T[],
+    channelTypes?: readonly Type[],
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
       // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
       // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
       // Hence the need for this ternary
-      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+      type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
-        : T;
+        : Type;
     }
   >;
-  public getChannel<const T extends ChannelType = ChannelType>(
+  public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
-    channelTypes?: readonly T[],
+    channelTypes?: readonly Type[],
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
       // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
       // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
       // Hence the need for this ternary
-      type: T extends ChannelType.PublicThread | ChannelType.AnnouncementThread
+      type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
-        : T;
+        : Type;
     }
   > | null;
   public getString(name: string, required: true): string;
@@ -1382,9 +1397,9 @@ export class Guild extends AnonymousGuild {
   public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
-  public fetchAuditLogs<T extends GuildAuditLogsResolvable = null>(
-    options?: GuildAuditLogsFetchOptions<T>,
-  ): Promise<GuildAuditLogs<T>>;
+  public fetchAuditLogs<Event extends GuildAuditLogsResolvable = null>(
+    options?: GuildAuditLogsFetchOptions<Event>,
+  ): Promise<GuildAuditLogs<Event>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOnboarding(): Promise<GuildOnboarding>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
@@ -1430,14 +1445,14 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<T extends GuildAuditLogsResolvable = AuditLogEvent> {
+export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   private autoModerationRules: Collection<Snowflake, AutoModerationRule>;
-  public entries: Collection<Snowflake, GuildAuditLogsEntry<T>>;
+  public entries: Collection<Snowflake, GuildAuditLogsEntry<Event>>;
   public toJSON(): unknown;
 }
 
@@ -1657,7 +1672,7 @@ export class GuildPreview extends Base {
   public toString(): string;
 }
 
-export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildScheduledEventStatus> extends Base {
+export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = GuildScheduledEventStatus> extends Base {
   private constructor(client: Client<true>, data: RawGuildScheduledEventData);
   public id: Snowflake;
   public guildId: Snowflake;
@@ -1668,7 +1683,7 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public scheduledStartTimestamp: number | null;
   public scheduledEndTimestamp: number | null;
   public privacyLevel: GuildScheduledEventPrivacyLevel;
-  public status: S;
+  public status: Status;
   public entityType: GuildScheduledEventEntityType;
   public entityId: Snowflake | null;
   public entityMetadata: GuildScheduledEventEntityMetadata | null;
@@ -1685,23 +1700,26 @@ export class GuildScheduledEvent<S extends GuildScheduledEventStatus = GuildSche
   public get partial(): false;
   public coverImageURL(options?: Readonly<BaseImageURLOptions>): string | null;
   public createInviteURL(options?: GuildScheduledEventInviteURLCreateOptions): Promise<string>;
-  public edit<T extends GuildScheduledEventSetStatusArg<S>>(
-    options: GuildScheduledEventEditOptions<S, T>,
-  ): Promise<GuildScheduledEvent<T>>;
-  public fetch(force?: boolean): Promise<GuildScheduledEvent<S>>;
-  public delete(): Promise<GuildScheduledEvent<S>>;
-  public setName(name: string, reason?: string): Promise<GuildScheduledEvent<S>>;
-  public setScheduledStartTime(scheduledStartTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<S>>;
-  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<S>>;
-  public setStatus<T extends GuildScheduledEventSetStatusArg<S>>(
-    status: T,
+  public edit<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
+    options: GuildScheduledEventEditOptions<Status, AcceptableStatus>,
+  ): Promise<GuildScheduledEvent<AcceptableStatus>>;
+  public fetch(force?: boolean): Promise<GuildScheduledEvent<Status>>;
+  public delete(): Promise<GuildScheduledEvent<Status>>;
+  public setName(name: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setScheduledStartTime(
+    scheduledStartTime: DateResolvable,
     reason?: string,
-  ): Promise<GuildScheduledEvent<T>>;
-  public setLocation(location: string, reason?: string): Promise<GuildScheduledEvent<S>>;
-  public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
-    options?: T,
-  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
+  ): Promise<GuildScheduledEvent<Status>>;
+  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
+    status: AcceptableStatus,
+    reason?: string,
+  ): Promise<GuildScheduledEvent<AcceptableStatus>>;
+  public setLocation(location: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public fetchSubscribers<Options extends FetchGuildScheduledEventSubscribersOptions>(
+    options?: Options,
+  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<Options>>;
   public toString(): string;
   public isActive(): this is GuildScheduledEvent<GuildScheduledEventStatus.Active>;
   public isCanceled(): this is GuildScheduledEvent<GuildScheduledEventStatus.Canceled>;
@@ -1861,12 +1879,12 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
-export class InteractionCollector<T extends CollectedInteraction> extends Collector<
+export class InteractionCollector<Interaction extends CollectedInteraction> extends Collector<
   Snowflake,
-  T,
-  [Collection<Snowflake, T>]
+  Interaction,
+  [Collection<Snowflake, Interaction>]
 > {
-  public constructor(client: Client<true>, options?: InteractionCollectorOptions<T>);
+  public constructor(client: Client<true>, options?: InteractionCollectorOptions<Interaction>);
   private _handleMessageDeletion(message: Message): void;
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
   private _handleGuildDeletion(guild: Guild): void;
@@ -1877,19 +1895,25 @@ export class InteractionCollector<T extends CollectedInteraction> extends Collec
   public guildId: Snowflake | null;
   public interactionType: InteractionType | null;
   public messageId: Snowflake | null;
-  public options: InteractionCollectorOptions<T>;
+  public options: InteractionCollectorOptions<Interaction>;
   public total: number;
   public users: Collection<Snowflake, User>;
 
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: T) => Awaitable<void>): this;
-  public on(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
+  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
+  public on(
+    event: 'end',
+    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
+  ): this;
   public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 
-  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: T) => Awaitable<void>): this;
-  public once(event: 'end', listener: (collected: Collection<Snowflake, T>, reason: string) => Awaitable<void>): this;
+  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
+  public once(
+    event: 'end',
+    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
+  ): this;
   public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
 }
 
@@ -1954,25 +1978,37 @@ export class InviteGuild extends AnonymousGuild {
   public welcomeScreen: WelcomeScreen | null;
 }
 
-export class LimitedCollection<K, V> extends Collection<K, V> {
-  public constructor(options?: LimitedCollectionOptions<K, V>, iterable?: Iterable<readonly [K, V]>);
+export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
+  public constructor(options?: LimitedCollectionOptions<Key, Value>, iterable?: Iterable<readonly [Key, Value]>);
   public maxSize: number;
-  public keepOverLimit: ((value: V, key: K, collection: this) => boolean) | null;
+  public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
-export type MessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
-  componentType?: T;
-} & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+export type MessageCollectorOptionsParams<
+  ComponentType extends MessageComponentType,
+  Cached extends boolean = boolean,
+> = {
+  componentType?: ComponentType;
+} & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>;
 
-export type MessageChannelCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
-  componentType?: T;
-} & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[T]>;
+export type MessageChannelCollectorOptionsParams<
+  ComponentType extends MessageComponentType,
+  Cached extends boolean = boolean,
+> = {
+  componentType?: ComponentType;
+} & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>;
 
-export type AwaitMessageCollectorOptionsParams<T extends MessageComponentType, Cached extends boolean = boolean> = {
-  componentType?: T;
-} & Pick<InteractionCollectorOptions<MappedInteractionTypes<Cached>[T]>, keyof AwaitMessageComponentOptions<any>>;
+export type AwaitMessageCollectorOptionsParams<
+  ComponentType extends MessageComponentType,
+  Cached extends boolean = boolean,
+> = {
+  componentType?: ComponentType;
+} & Pick<
+  InteractionCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>,
+  keyof AwaitMessageComponentOptions<any>
+>;
 
 export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
   Button: ButtonInteraction<Cached>;
@@ -1984,7 +2020,7 @@ export interface StringMappedInteractionTypes<Cached extends CacheType = CacheTy
   ActionRow: MessageComponentInteraction<Cached>;
 }
 
-export type WrapBooleanCache<T extends boolean> = If<T, 'cached', CacheType>;
+export type WrapBooleanCache<Cached extends boolean> = If<Cached, 'cached', CacheType>;
 
 export interface MappedInteractionTypes<Cached extends boolean = boolean> {
   [ComponentType.Button]: ButtonInteraction<WrapBooleanCache<Cached>>;
@@ -2043,14 +2079,14 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
-  public awaitMessageComponent<T extends MessageComponentType>(
-    options?: AwaitMessageCollectorOptionsParams<T, InGuild>,
-  ): Promise<MappedInteractionTypes<InGuild>[T]>;
+  public awaitMessageComponent<ComponentType extends MessageComponentType>(
+    options?: AwaitMessageCollectorOptionsParams<ComponentType, InGuild>,
+  ): Promise<MappedInteractionTypes<InGuild>[ComponentType]>;
   public awaitReactions(options?: AwaitReactionsOptions): Promise<Collection<Snowflake | string, MessageReaction>>;
   public createReactionCollector(options?: ReactionCollectorOptions): ReactionCollector;
-  public createMessageComponentCollector<T extends MessageComponentType>(
-    options?: MessageCollectorOptionsParams<T, InGuild>,
-  ): InteractionCollector<MappedInteractionTypes<InGuild>[T]>;
+  public createMessageComponentCollector<ComponentType extends MessageComponentType>(
+    options?: MessageCollectorOptionsParams<ComponentType, InGuild>,
+  ): InteractionCollector<MappedInteractionTypes<InGuild>[ComponentType]>;
   public delete(): Promise<Message<InGuild>>;
   public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message<InGuild>>;
   public equals(message: Message, rawData: unknown): boolean;
@@ -2310,7 +2346,7 @@ export class ModalSubmitFields {
   constructor(components: ModalActionRowComponent[][]);
   public components: ActionRowModalData[];
   public fields: Collection<string, ModalActionRowComponent>;
-  public getField<T extends ComponentType>(customId: string, type: T): { type: T } & TextInputModalData;
+  public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
   public getField(customId: string, type?: ComponentType): TextInputModalData;
   public getTextInputValue(customId: string): string;
 }
@@ -2749,22 +2785,25 @@ export class Shard extends EventEmitter {
   public silent: boolean;
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
-  public eval<T>(fn: (client: Client) => T): Promise<T>;
-  public eval<T, P>(fn: (client: Client<true>, context: Serialized<P>) => T, context: P): Promise<T>;
+  public eval<Result>(fn: (client: Client) => Result): Promise<Result>;
+  public eval<Result, Context>(
+    fn: (client: Client<true>, context: Serialized<Context>) => Result,
+    context: Context,
+  ): Promise<Result>;
   public fetchClientValue(prop: string): Promise<unknown>;
   public kill(): void;
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
   public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
 
-  public on<K extends keyof ShardEventTypes>(
-    event: K,
-    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  public on<Event extends keyof ShardEventTypes>(
+    event: Event,
+    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
   ): this;
 
-  public once<K extends keyof ShardEventTypes>(
-    event: K,
-    listener: (...args: ShardEventTypes[K]) => Awaitable<void>,
+  public once<Event extends keyof ShardEventTypes>(
+    event: Event,
+    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
   ): this;
 }
 
@@ -2780,16 +2819,19 @@ export class ShardClientUtil {
   public get ids(): number[];
   public mode: ShardingManagerMode;
   public parentPort: MessagePort | null;
-  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>, options: { shard: number }): Promise<Serialized<T>>;
-  public broadcastEval<T, P>(
-    fn: (client: Client<true>, context: Serialized<P>) => Awaitable<T>,
-    options: { context: P },
-  ): Promise<Serialized<T>[]>;
-  public broadcastEval<T, P>(
-    fn: (client: Client<true>, context: Serialized<P>) => Awaitable<T>,
-    options: { context: P; shard: number },
-  ): Promise<Serialized<T>>;
+  public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
+  public broadcastEval<Result>(
+    fn: (client: Client) => Awaitable<Result>,
+    options: { shard: number },
+  ): Promise<Serialized<Result>>;
+  public broadcastEval<Result, Context>(
+    fn: (client: Client<true>, context: Serialized<Context>) => Awaitable<Result>,
+    options: { context: Context },
+  ): Promise<Serialized<Result>[]>;
+  public broadcastEval<Result, Context>(
+    fn: (client: Client<true>, context: Serialized<Context>) => Awaitable<Result>,
+    options: { context: Context; shard: number },
+  ): Promise<Serialized<Result>>;
   public fetchClientValues(prop: string): Promise<unknown[]>;
   public fetchClientValues(prop: string, shard: number): Promise<unknown>;
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<void>;
@@ -2813,16 +2855,19 @@ export class ShardingManager extends EventEmitter {
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
   public broadcast(message: unknown): Promise<Shard[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>): Promise<Serialized<T>[]>;
-  public broadcastEval<T>(fn: (client: Client) => Awaitable<T>, options: { shard: number }): Promise<Serialized<T>>;
-  public broadcastEval<T, P>(
-    fn: (client: Client<true>, context: Serialized<P>) => Awaitable<T>,
-    options: { context: P },
-  ): Promise<Serialized<T>[]>;
-  public broadcastEval<T, P>(
-    fn: (client: Client<true>, context: Serialized<P>) => Awaitable<T>,
-    options: { context: P; shard: number },
-  ): Promise<Serialized<T>>;
+  public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
+  public broadcastEval<Result>(
+    fn: (client: Client) => Awaitable<Result>,
+    options: { shard: number },
+  ): Promise<Serialized<Result>>;
+  public broadcastEval<Result, Context>(
+    fn: (client: Client<true>, context: Serialized<Context>) => Awaitable<Result>,
+    options: { context: Context },
+  ): Promise<Serialized<Result>[]>;
+  public broadcastEval<Result, Context>(
+    fn: (client: Client<true>, context: Serialized<Context>) => Awaitable<Result>,
+    options: { context: Context; shard: number },
+  ): Promise<Serialized<Result>>;
   public createShard(id: number): Shard;
   public fetchClientValues(prop: string): Promise<unknown[]>;
   public fetchClientValues(prop: string, shard: number): Promise<unknown>;
@@ -2983,7 +3028,9 @@ export class Sweepers {
   public static expiredInviteSweepFilter(
     lifetime?: number,
   ): GlobalSweepFilter<SweeperDefinitions['invites'][0], SweeperDefinitions['invites'][1]>;
-  public static filterByLifetime<K, V>(options?: LifetimeFilterOptions<K, V>): GlobalSweepFilter<K, V>;
+  public static filterByLifetime<Key, Value>(
+    options?: LifetimeFilterOptions<Key, Value>,
+  ): GlobalSweepFilter<Key, Value>;
   public static outdatedMessageSweepFilter(
     lifetime?: number,
   ): GlobalSweepFilter<SweeperDefinitions['messages'][0], SweeperDefinitions['messages'][1]>;
@@ -3197,9 +3244,9 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
 
 export function basename(path: string, ext?: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
-export function discordSort<K, V extends { rawPosition: number; id: Snowflake }>(
-  collection: Collection<K, V>,
-): Collection<K, V>;
+export function discordSort<Key, Value extends { rawPosition: number; id: Snowflake }>(
+  collection: Collection<Key, Value>,
+): Collection<Key, Value>;
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
@@ -3211,11 +3258,11 @@ export function resolveColor(color: ColorResolvable): number;
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
-export function setPosition<T extends Channel | Role>(
-  item: T,
+export function setPosition<Item extends Channel | Role>(
+  item: Item,
   position: number,
   relative: boolean,
-  sorted: Collection<Snowflake, T>,
+  sorted: Collection<Snowflake, Item>,
   client: Client<true>,
   route: string,
   reason?: string,
@@ -3254,15 +3301,15 @@ export interface ChannelCreateOptions {
 
 export function createChannel(client: Client<true>, data: APIChannel, options?: ChannelCreateOptions): Channel;
 
-export function createComponent<T extends keyof MappedComponentTypes>(
-  data: APIMessageComponent & { type: T },
-): MappedComponentTypes[T];
-export function createComponent<C extends Component>(data: C): C;
+export function createComponent<Type extends keyof MappedComponentTypes>(
+  data: APIMessageComponent & { type: Type },
+): MappedComponentTypes[Type];
+export function createComponent<Data extends Component>(data: Data): Data;
 export function createComponent(data: APIMessageComponent | Component): Component;
-export function createComponentBuilder<T extends keyof MappedComponentBuilderTypes>(
-  data: APIMessageComponent & { type: T },
-): MappedComponentBuilderTypes[T];
-export function createComponentBuilder<C extends ComponentBuilder>(data: C): C;
+export function createComponentBuilder<Type extends keyof MappedComponentBuilderTypes>(
+  data: APIMessageComponent & { type: Type },
+): MappedComponentBuilderTypes[Type];
+export function createComponentBuilder<Data extends ComponentBuilder>(data: Data): Data;
 export function createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
 
 /** @deprecated This class is redundant as all methods of the class can be imported from discord.js directly. */
@@ -3463,14 +3510,14 @@ export class WebSocketShard extends EventEmitter {
 
   public send(data: unknown, important?: boolean): void;
 
-  public on<K extends keyof WebSocketShardEventTypes>(
-    event: K,
-    listener: (...args: WebSocketShardEventTypes[K]) => Awaitable<void>,
+  public on<Event extends keyof WebSocketShardEventTypes>(
+    event: Event,
+    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
   ): this;
 
-  public once<K extends keyof WebSocketShardEventTypes>(
-    event: K,
-    listener: (...args: WebSocketShardEventTypes[K]) => Awaitable<void>,
+  public once<Event extends keyof WebSocketShardEventTypes>(
+    event: Event,
+    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
   ): this;
 }
 
@@ -3750,10 +3797,10 @@ export interface DiscordjsErrorFields<Name extends string> {
   get code(): DiscordjsErrorCodes;
 }
 
-export function DiscordjsErrorMixin<T, N extends string>(
-  Base: Constructable<T>,
-  name: N,
-): Constructable<T & DiscordjsErrorFields<N>>;
+export function DiscordjsErrorMixin<Entity, Name extends string>(
+  Base: Constructable<Entity>,
+  name: Name,
+): Constructable<Entity & DiscordjsErrorFields<Name>>;
 
 export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
 
@@ -3770,21 +3817,21 @@ export abstract class BaseManager {
   public readonly client: Client;
 }
 
-export abstract class DataManager<K, Holds, R> extends BaseManager {
+export abstract class DataManager<Key, Holds, Resolvable> extends BaseManager {
   protected constructor(client: Client<true>, holds: Constructable<Holds>);
   public readonly holds: Constructable<Holds>;
-  public get cache(): Collection<K, Holds>;
+  public get cache(): Collection<Key, Holds>;
   public resolve(resolvable: Holds): Holds;
-  public resolve(resolvable: R): Holds | null;
-  public resolveId(resolvable: K | Holds): K;
-  public resolveId(resolvable: R): K | null;
-  public valueOf(): Collection<K, Holds>;
+  public resolve(resolvable: Resolvable): Holds | null;
+  public resolveId(resolvable: Key | Holds): Key;
+  public resolveId(resolvable: Resolvable): Key | null;
+  public valueOf(): Collection<Key, Holds>;
 }
 
-export abstract class CachedManager<K, Holds, R> extends DataManager<K, Holds, R> {
+export abstract class CachedManager<Key, Holds, Resolvable> extends DataManager<Key, Holds, Resolvable> {
   protected constructor(client: Client<true>, holds: Constructable<Holds>, iterable?: Iterable<Holds>);
-  private readonly _cache: Collection<K, Holds>;
-  private _add(data: unknown, cache?: boolean, { id, extras }?: { id: K; extras: unknown[] }): Holds;
+  private readonly _cache: Collection<Key, Holds>;
+  private _add(data: unknown, cache?: boolean, { id, extras }?: { id: Key; extras: unknown[] }): Holds;
 }
 
 export type ApplicationCommandDataResolvable =
@@ -3913,9 +3960,9 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
   public channel: CategoryChannel;
   public get guild(): Guild;
-  public create<T extends CategoryChannelType>(
-    options: CategoryCreateChannelOptions & { type: T },
-  ): Promise<MappedChannelCategoryTypes[T]>;
+  public create<Type extends CategoryChannelType>(
+    options: CategoryCreateChannelOptions & { type: Type },
+  ): Promise<MappedChannelCategoryTypes[Type]>;
   public create(options: CategoryCreateChannelOptions): Promise<TextChannel>;
 }
 
@@ -3960,9 +4007,9 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     targetChannel: TextChannelResolvable,
     reason?: string,
   ): Promise<Snowflake>;
-  public create<T extends GuildChannelTypes>(
-    options: GuildChannelCreateOptions & { type: T },
-  ): Promise<MappedGuildChannelTypes[T]>;
+  public create<Type extends GuildChannelTypes>(
+    options: GuildChannelCreateOptions & { type: Type },
+  ): Promise<MappedGuildChannelTypes[Type]>;
   public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
   public createWebhook(options: WebhookCreateOptions): Promise<Webhook>;
   public edit(channel: GuildChannelResolvable, data: GuildChannelEditOptions): Promise<GuildChannel>;
@@ -4075,17 +4122,20 @@ export class GuildScheduledEventManager extends CachedManager<
   public create(options: GuildScheduledEventCreateOptions): Promise<GuildScheduledEvent>;
   public fetch(): Promise<Collection<Snowflake, GuildScheduledEvent>>;
   public fetch<
-    T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
-  >(options?: T): Promise<GuildScheduledEventManagerFetchResult<T>>;
-  public edit<S extends GuildScheduledEventStatus, T extends GuildScheduledEventSetStatusArg<S>>(
+    Options extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
+  >(options?: Options): Promise<GuildScheduledEventManagerFetchResult<Options>>;
+  public edit<
+    Status extends GuildScheduledEventStatus,
+    AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
+  >(
     guildScheduledEvent: GuildScheduledEventResolvable,
-    options: GuildScheduledEventEditOptions<S, T>,
-  ): Promise<GuildScheduledEvent<T>>;
+    options: GuildScheduledEventEditOptions<Status, AcceptableStatus>,
+  ): Promise<GuildScheduledEvent<AcceptableStatus>>;
   public delete(guildScheduledEvent: GuildScheduledEventResolvable): Promise<void>;
-  public fetchSubscribers<T extends FetchGuildScheduledEventSubscribersOptions>(
+  public fetchSubscribers<Options extends FetchGuildScheduledEventSubscribersOptions>(
     guildScheduledEvent: GuildScheduledEventResolvable,
-    options?: T,
-  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<T>>;
+    options?: Options,
+  ): Promise<GuildScheduledEventManagerFetchSubscribersResult<Options>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -4294,20 +4344,20 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 // to the classes that use these methods without having to manually add them
 // to each of those classes
 
-export type Constructable<T> = abstract new (...args: any[]) => T;
-export function PartialTextBasedChannel<T>(
-  Base?: Constructable<T>,
-): Constructable<T & PartialTextBasedChannelFields<false>>;
+export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
+export function PartialTextBasedChannel<Entity>(
+  Base?: Constructable<Entity>,
+): Constructable<Entity & PartialTextBasedChannelFields<false>>;
 
 export function TextBasedChannelMixin<
-  T,
+  Entity,
   InGuild extends boolean = boolean,
-  I extends keyof TextBasedChannelFields<InGuild> = never,
+  IgnoredFields extends keyof TextBasedChannelFields<InGuild> = never,
 >(
-  Base?: Constructable<T>,
+  Base?: Constructable<Entity>,
   inGuild?: InGuild,
-  ignore?: I[],
-): Constructable<T & Omit<TextBasedChannelFields<InGuild>, I>>;
+  ignore?: IgnoredFields[],
+): Constructable<Entity & Omit<TextBasedChannelFields<InGuild>, IgnoredFields>>;
 
 export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
   send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
@@ -4320,17 +4370,17 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   lastPinTimestamp: number | null;
   get lastPinAt(): Date | null;
   messages: If<InGuild, GuildMessageManager, DMMessageManager>;
-  awaitMessageComponent<T extends MessageComponentType>(
-    options?: AwaitMessageCollectorOptionsParams<T, true>,
-  ): Promise<MappedInteractionTypes[T]>;
+  awaitMessageComponent<ComponentType extends MessageComponentType>(
+    options?: AwaitMessageCollectorOptionsParams<ComponentType, true>,
+  ): Promise<MappedInteractionTypes[ComponentType]>;
   awaitMessages(options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
   ): Promise<Collection<Snowflake, Message | PartialMessage | undefined>>;
-  createMessageComponentCollector<T extends MessageComponentType>(
-    options?: MessageChannelCollectorOptionsParams<T, true>,
-  ): InteractionCollector<MappedInteractionTypes[T]>;
+  createMessageComponentCollector<ComponentType extends MessageComponentType>(
+    options?: MessageChannelCollectorOptionsParams<ComponentType, true>,
+  ): InteractionCollector<MappedInteractionTypes[ComponentType]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
   createWebhook(options: ChannelWebhookCreateOptions): Promise<Webhook>;
   fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -4339,8 +4389,8 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
 
-export function PartialWebhookMixin<T>(Base?: Constructable<T>): Constructable<T & PartialWebhookFields>;
-export function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & WebhookFields>;
+export function PartialWebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & PartialWebhookFields>;
+export function WebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & WebhookFields>;
 
 export interface PartialWebhookFields {
   id: Snowflake;
@@ -4723,18 +4773,18 @@ export interface AutoModerationTriggerMetadata {
   mentionRaidProtectionEnabled: boolean;
 }
 
-export type AwaitMessageComponentOptions<T extends CollectedMessageInteraction> = Omit<
-  MessageComponentCollectorOptions<T>,
+export type AwaitMessageComponentOptions<Interaction extends CollectedMessageInteraction> = Omit<
+  MessageComponentCollectorOptions<Interaction>,
   'max' | 'maxComponents' | 'maxUsers'
 >;
 
-export type ModalSubmitInteractionCollectorOptions<T extends ModalSubmitInteraction> = Omit<
-  InteractionCollectorOptions<T>,
+export type ModalSubmitInteractionCollectorOptions<Interaction extends ModalSubmitInteraction> = Omit<
+  InteractionCollectorOptions<Interaction>,
   'channel' | 'message' | 'guild' | 'interactionType'
 >;
 
-export type AwaitModalSubmitOptions<T extends ModalSubmitInteraction> = Omit<
-  ModalSubmitInteractionCollectorOptions<T>,
+export type AwaitModalSubmitOptions<Interaction extends ModalSubmitInteraction> = Omit<
+  ModalSubmitInteractionCollectorOptions<Interaction>,
   'max' | 'maxComponents' | 'maxUsers'
 > & {
   time: number;
@@ -4764,12 +4814,12 @@ export interface BaseFetchOptions {
   force?: boolean;
 }
 
-export type BitFieldResolvable<T extends string, N extends number | bigint> =
-  | RecursiveReadonlyArray<T | N | `${bigint}` | Readonly<BitField<T, N>>>
-  | T
-  | N
+export type BitFieldResolvable<Flags extends string, Type extends number | bigint> =
+  | RecursiveReadonlyArray<Flags | Type | `${bigint}` | Readonly<BitField<Flags, Type>>>
+  | Flags
+  | Type
   | `${bigint}`
-  | Readonly<BitField<T, N>>;
+  | Readonly<BitField<Flags, Type>>;
 
 export type BufferResolvable = Buffer | string;
 
@@ -4804,7 +4854,7 @@ export interface Caches {
 }
 
 export type CacheConstructors = {
-  [K in keyof Caches]: Caches[K][0] & { name: K };
+  [Cache in keyof Caches]: Caches[Cache][0] & { name: Cache };
 };
 
 type OverriddenCaches =
@@ -4819,11 +4869,11 @@ export type CacheFactory = (
   managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>],
   holds: Caches[(typeof manager)['name']][1],
   manager: CacheConstructors[keyof Caches],
-) => (typeof manager)['prototype'] extends DataManager<infer K, infer V, any> ? Collection<K, V> : never;
+) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any> ? Collection<Key, Value> : never;
 
 export type CacheWithLimitsOptions = {
-  [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer K, infer V, any>
-    ? LimitedCollectionOptions<K, V> | number
+  [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer Key, infer Value, any>
+    ? LimitedCollectionOptions<Key, Value> | number
     : never;
 };
 
@@ -5016,10 +5066,10 @@ export interface CloseEvent {
   reason: string;
 }
 
-export type CollectorFilter<T extends unknown[]> = (...args: T) => boolean | Promise<boolean>;
+export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => boolean | Promise<boolean>;
 
-export interface CollectorOptions<T extends unknown[]> {
-  filter?: CollectorFilter<T>;
+export interface CollectorOptions<FilterArguments extends unknown[]> {
+  filter?: CollectorFilter<FilterArguments>;
   time?: number;
   idle?: number;
   dispose?: boolean;
@@ -5408,7 +5458,9 @@ export interface AttachmentPayload {
   description?: string;
 }
 
-export type GlobalSweepFilter<K, V> = () => ((value: V, key: K, collection: Collection<K, V>) => boolean) | null;
+export type GlobalSweepFilter<Key, Value> = () =>
+  | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
+  | null;
 
 interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
@@ -5531,12 +5583,12 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   AutoModerationRule: AutoModerationRule;
 }
 
-export interface GuildAuditLogsFetchOptions<T extends GuildAuditLogsResolvable> {
+export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
   before?: Snowflake | GuildAuditLogsEntry;
   after?: Snowflake | GuildAuditLogsEntry;
   limit?: number;
   user?: UserResolvable;
-  type?: T;
+  type?: Event;
 }
 
 export type GuildAuditLogsResolvable = AuditLogEvent | null;
@@ -5747,11 +5799,11 @@ export interface GuildScheduledEventCreateOptions {
 }
 
 export interface GuildScheduledEventEditOptions<
-  S extends GuildScheduledEventStatus,
-  T extends GuildScheduledEventSetStatusArg<S>,
+  Status extends GuildScheduledEventStatus,
+  AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
 > extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
   channel?: GuildVoiceChannelResolvable | null;
-  status?: T;
+  status?: AcceptableStatus;
 }
 
 export interface GuildScheduledEventEntityMetadata {
@@ -5763,29 +5815,30 @@ export interface GuildScheduledEventEntityMetadataOptions {
 }
 
 export type GuildScheduledEventManagerFetchResult<
-  T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
-> = T extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions
+  Options extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions | FetchGuildScheduledEventsOptions,
+> = Options extends GuildScheduledEventResolvable | FetchGuildScheduledEventOptions
   ? GuildScheduledEvent
   : Collection<Snowflake, GuildScheduledEvent>;
 
-export type GuildScheduledEventManagerFetchSubscribersResult<T extends FetchGuildScheduledEventSubscribersOptions> =
-  T extends { withMember: true }
-    ? Collection<Snowflake, GuildScheduledEventUser<true>>
-    : Collection<Snowflake, GuildScheduledEventUser<false>>;
+export type GuildScheduledEventManagerFetchSubscribersResult<
+  Options extends FetchGuildScheduledEventSubscribersOptions,
+> = Options extends { withMember: true }
+  ? Collection<Snowflake, GuildScheduledEventUser<true>>
+  : Collection<Snowflake, GuildScheduledEventUser<false>>;
 
 export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
 
-export type GuildScheduledEventSetStatusArg<T extends GuildScheduledEventStatus> =
-  T extends GuildScheduledEventStatus.Scheduled
+export type GuildScheduledEventSetStatusArg<Status extends GuildScheduledEventStatus> =
+  Status extends GuildScheduledEventStatus.Scheduled
     ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
-    : T extends GuildScheduledEventStatus.Active
+    : Status extends GuildScheduledEventStatus.Active
     ? GuildScheduledEventStatus.Completed
     : never;
 
-export interface GuildScheduledEventUser<T> {
+export interface GuildScheduledEventUser<WithMember> {
   guildScheduledEventId: Snowflake;
   user: User;
-  member: T extends true ? GuildMember : null;
+  member: WithMember extends true ? GuildMember : null;
 }
 
 export type GuildTemplateResolvable = string;
@@ -5837,8 +5890,10 @@ export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | ButtonInteraction<Cached>
   | ModalSubmitInteraction<Cached>;
 
-export interface InteractionCollectorOptions<T extends CollectedInteraction, Cached extends CacheType = CacheType>
-  extends CollectorOptions<[T, Collection<Snowflake, T>]> {
+export interface InteractionCollectorOptions<
+  Interaction extends CollectedInteraction,
+  Cached extends CacheType = CacheType,
+> extends CollectorOptions<[Interaction, Collection<Snowflake, Interaction>]> {
   channel?: TextBasedChannelResolvable;
   componentType?: ComponentType;
   guild?: GuildResolvable;
@@ -5900,9 +5955,9 @@ export interface InviteCreateOptions {
 
 export type InviteResolvable = string;
 
-export interface LifetimeFilterOptions<K, V> {
-  excludeFromSweep?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
-  getComparisonTimestamp?: (value: V, key: K, collection: LimitedCollection<K, V>) => number;
+export interface LifetimeFilterOptions<Key, Value> {
+  excludeFromSweep?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => boolean;
+  getComparisonTimestamp?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => number;
   lifetime?: number;
 }
 
@@ -5967,13 +6022,13 @@ export type CollectedMessageInteraction<Cached extends CacheType = CacheType> = 
   ModalSubmitInteraction
 >;
 
-export type MessageComponentCollectorOptions<T extends CollectedMessageInteraction> = Omit<
-  InteractionCollectorOptions<T>,
+export type MessageComponentCollectorOptions<Interaction extends CollectedMessageInteraction> = Omit<
+  InteractionCollectorOptions<Interaction>,
   'channel' | 'message' | 'guild' | 'interactionType'
 >;
 
-export type MessageChannelComponentCollectorOptions<T extends CollectedMessageInteraction> = Omit<
-  InteractionCollectorOptions<T>,
+export type MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction> = Omit<
+  InteractionCollectorOptions<Interaction>,
   'channel' | 'guild' | 'interactionType'
 >;
 
@@ -6157,9 +6212,9 @@ export type PermissionResolvable = BitFieldResolvable<keyof typeof PermissionFla
 
 export type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
 
-export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
+export type RecursiveArray<ItemType> = ReadonlyArray<ItemType | RecursiveArray<ItemType>>;
 
-export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+export type RecursiveReadonlyArray<ItemType> = ReadonlyArray<ItemType | RecursiveReadonlyArray<ItemType>>;
 
 export interface PartialRecipient {
   username: string;
@@ -6200,18 +6255,18 @@ export interface PartialEmojiOnlyId {
 }
 
 export type Partialize<
-  T extends AllowedPartial,
-  NulledKeys extends keyof T | null = null,
-  NullableKeys extends keyof T | null = null,
-  OverridableKeys extends keyof T | '' = '',
+  PartialType extends AllowedPartial,
+  NulledKeys extends keyof PartialType | null = null,
+  NullableKeys extends keyof PartialType | null = null,
+  OverridableKeys extends keyof PartialType | '' = '',
 > = {
-  [K in keyof Omit<T, OverridableKeys>]: K extends 'partial'
+  [K in keyof Omit<PartialType, OverridableKeys>]: K extends 'partial'
     ? true
     : K extends NulledKeys
     ? null
     : K extends NullableKeys
-    ? T[K] | null
-    : T[K];
+    ? PartialType[K] | null
+    : PartialType[K];
 };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
@@ -6373,11 +6428,11 @@ export interface SupportingInteractionResolvedData {
 
 export type SweeperKey = keyof SweeperDefinitions;
 
-export type CollectionSweepFilter<K, V> = (value: V, key: K, collection: Collection<K, V>) => boolean;
+export type CollectionSweepFilter<Key, Value> = (value: Value, key: Key, collection: Collection<Key, Value>) => boolean;
 
-export interface SweepOptions<K, V> {
+export interface SweepOptions<Key, Value> {
   interval: number;
-  filter: GlobalSweepFilter<K, V>;
+  filter: GlobalSweepFilter<Key, Value>;
 }
 
 export interface LifetimeSweepOptions {
@@ -6405,14 +6460,14 @@ export interface SweeperDefinitions {
 }
 
 export type SweeperOptions = {
-  [K in keyof SweeperDefinitions]?: SweeperDefinitions[K][2] extends true
-    ? SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]> | LifetimeSweepOptions
-    : SweepOptions<SweeperDefinitions[K][0], SweeperDefinitions[K][1]>;
+  [Key in keyof SweeperDefinitions]?: SweeperDefinitions[Key][2] extends true
+    ? SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]> | LifetimeSweepOptions
+    : SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]>;
 };
 
-export interface LimitedCollectionOptions<K, V> {
+export interface LimitedCollectionOptions<Key, Value> {
   maxSize?: number;
-  keepOverLimit?: (value: V, key: K, collection: LimitedCollection<K, V>) => boolean;
+  keepOverLimit?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => boolean;
 }
 
 export type Channel =
@@ -6588,17 +6643,17 @@ export interface ClientApplicationInstallParams {
   permissions: Readonly<PermissionsBitField>;
 }
 
-export type Serialized<T> = T extends symbol | bigint | (() => any)
+export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
-  : T extends number | string | boolean | undefined
-  ? T
-  : T extends { toJSON(): infer R }
-  ? R
-  : T extends ReadonlyArray<infer V>
-  ? Serialized<V>[]
-  : T extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
+  : Value extends number | string | boolean | undefined
+  ? Value
+  : Value extends { toJSON(): infer JSONResult }
+  ? JSONResult
+  : Value extends ReadonlyArray<infer ItemType>
+  ? Serialized<ItemType>[]
+  : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
   ? {}
-  : { [K in keyof T]: Serialized<T[K]> };
+  : { [K in keyof Value]: Serialized<Value[K]> };
 
 //#endregion
 

@@ -54,15 +54,15 @@ export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalAction
 /**
  * A builder that creates API-compatible JSON data for action rows.
  *
- * @typeParam T - The types of components this action row holds
+ * @typeParam ComponentType - The types of components this action row holds
  */
-export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBuilder<
+export class ActionRowBuilder<ComponentType extends AnyComponentBuilder> extends ComponentBuilder<
 	APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
 > {
 	/**
 	 * The components within this action row.
 	 */
-	public readonly components: T[];
+	public readonly components: ComponentType[];
 
 	/**
 	 * Creates a new action row from API data.
@@ -100,7 +100,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 */
 	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
-		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as T[];
+		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as ComponentType[];
 	}
 
 	/**
@@ -108,7 +108,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 *
 	 * @param components - The components to add
 	 */
-	public addComponents(...components: RestOrArray<T>) {
+	public addComponents(...components: RestOrArray<ComponentType>) {
 		this.components.push(...normalizeArray(components));
 		return this;
 	}
@@ -118,7 +118,7 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	 *
 	 * @param components - The components to set
 	 */
-	public setComponents(...components: RestOrArray<T>) {
+	public setComponents(...components: RestOrArray<ComponentType>) {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));
 		return this;
 	}
@@ -126,10 +126,10 @@ export class ActionRowBuilder<T extends AnyComponentBuilder> extends ComponentBu
 	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public toJSON(): APIActionRowComponent<ReturnType<T['toJSON']>> {
+	public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>> {
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),
-		} as APIActionRowComponent<ReturnType<T['toJSON']>>;
+		} as APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 	}
 }
