@@ -39,9 +39,9 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 							!codeDestination.packageName &&
 							codeDestination.memberReferences.length === 1 &&
 							codeDestination.memberReferences[0]?.memberIdentifier &&
-							codeDestination.memberReferences[0].memberIdentifier?.identifier in BuiltinDocumentationLinks
+							codeDestination.memberReferences[0].memberIdentifier.identifier in BuiltinDocumentationLinks
 						) {
-							const typeName = codeDestination.memberReferences[0]?.memberIdentifier?.identifier;
+							const typeName = codeDestination.memberReferences[0].memberIdentifier.identifier;
 							const href = BuiltinDocumentationLinks[typeName as keyof typeof BuiltinDocumentationLinks];
 							return (
 								<DocumentationLink key={`${typeName}-${idx}`} href={href}>
