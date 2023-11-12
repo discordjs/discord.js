@@ -156,11 +156,22 @@ export interface RateLimitData {
 	 */
 	method: string;
 	/**
+	 * The time, in milliseconds, that will need to pass before this specific request can be retried
+	 */
+	retryAfter: number;
+	/**
 	 * The route being hit in this request
 	 */
 	route: string;
 	/**
-	 * The time, in milliseconds, until the request-lock is reset
+	 * The time, in milliseconds, that will need to pass before the sublimit lock for the route resets, and requests that fall under a sublimit
+	 * can be retried
+	 *
+	 * This is only present on certain sublimits, and `0` otherwise
+	 */
+	sublimitTimeout: number;
+	/**
+	 * The time, in milliseconds, until the route's request-lock is reset
 	 */
 	timeToReset: number;
 	/**
