@@ -14,7 +14,6 @@ import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, Returns
 export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc: DocNode }): JSX.Element {
 	const createNode = useCallback(
 		(tsdoc: DocNode, idx?: number): ReactNode => {
-			// console.log(item.displayName, DocNodeKind[tsdoc.kind]);
 			switch (tsdoc.kind) {
 				case DocNodeKind.PlainText:
 					return (
@@ -52,7 +51,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 						}
 
 						const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
-						const foundItem = declarationReference.resolvedApiItem;
+						const foundItem = declarationReference?.resolvedApiItem;
 
 						if (!foundItem) return null;
 
