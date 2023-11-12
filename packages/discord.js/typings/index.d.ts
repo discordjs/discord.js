@@ -3581,24 +3581,24 @@ export enum DiscordjsErrorCodes {
   TokenMissing = 'TokenMissing',
   ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
-  /** @deprecated ws errors are now handled in `@discordjs/ws` */
+  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
   WSCloseRequested = 'WSCloseRequested',
-  /** @deprecated ws errors are now handled in `@discordjs/ws` */
+  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
   WSConnectionExists = 'WSConnectionExists',
-  /** @deprecated ws errors are now handled in `@discordjs/ws` */
+  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
   WSNotOpen = 'WSNotOpen',
-  /** @deprecated was never used */
+  /** @deprecated No longer in use */
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
 
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/ws` */
   ShardingInvalid = 'ShardingInvalid',
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/ws` */
   ShardingRequired = 'ShardingRequired',
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/ws` */
   InvalidIntents = 'InvalidIntents',
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/ws` */
   DisallowedIntents = 'DisallowedIntents',
   ShardingNoShards = 'ShardingNoShards',
   ShardingInProcess = 'ShardingInProcess',
@@ -3618,29 +3618,29 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
-  /** @deprecated was never used */
+  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
   ButtonLabel = 'ButtonLabel',
-  /** @deprecated was never used */
+  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
   ButtonURL = 'ButtonURL',
-  /** @deprecated was never used */
+  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
   ButtonCustomId = 'ButtonCustomId',
 
-  /** @deprecated was never used */
+  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
   SelectMenuCustomId = 'SelectMenuCustomId',
-  /** @deprecated was never used */
+  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
   SelectMenuPlaceholder = 'SelectMenuPlaceholder',
-  /** @deprecated was never used */
+  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
   SelectOptionLabel = 'SelectOptionLabel',
-  /** @deprecated was never used */
+  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
   SelectOptionValue = 'SelectOptionValue',
-  /** @deprecated was never used */
+  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
   SelectOptionDescription = 'SelectOptionDescription',
 
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
-  /** @deprecated was never used */
+  /** @deprecated No longer in use */
   UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
@@ -3651,16 +3651,16 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/rest` */
   ImageFormat = 'ImageFormat',
-  /** @deprecated was never used */
+  /** @deprecated This error is now handled in `@discordjs/rest` */
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
 
-  /** @deprecated was never used */
+  /** @deprecated No longer in use */
   SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
@@ -3720,7 +3720,7 @@ export enum DiscordjsErrorCodes {
 
   InteractionAlreadyReplied = 'InteractionAlreadyReplied',
   InteractionNotReplied = 'InteractionNotReplied',
-  /** @deprecated Not used anymore since ephemeral replies can now be deleted without issue */
+  /** @deprecated Not used anymore since ephemeral replies can now be deleted */
   InteractionEphemeralReplied = 'InteractionEphemeralReplied',
 
   CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
