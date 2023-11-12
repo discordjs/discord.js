@@ -6368,7 +6368,7 @@ export interface StageInstanceEditOptions {
 export interface SupportingInteractionResolvedData {
   client: Client;
   guild?: Guild;
-  channel?: Channel;
+  channel?: GuildTextBasedChannel;
 }
 
 export type SweeperKey = keyof SweeperDefinitions;

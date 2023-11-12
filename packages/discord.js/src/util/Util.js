@@ -414,7 +414,7 @@ function parseWebhookURL(url) {
  * @typedef {Object} SupportingInteractionResolvedData
  * @property {Client} client The client
  * @property {Guild} [guild] A guild
- * @property {BaseChannel} [channel] A channel
+ * @property {GuildTextBasedChannel} [channel] A channel
  * @private
  */
 
