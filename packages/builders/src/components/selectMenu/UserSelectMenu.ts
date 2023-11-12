@@ -67,8 +67,7 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 		}));
 
 		optionsLengthValidator.parse(normalizedValues.length);
-		this.data.default_values ??= [];
-		this.data.default_values.splice(0, this.data.default_values.length, ...normalizedValues);
+		this.data.default_values = normalizedValues;
 		return this;
 	}
 }
