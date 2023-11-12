@@ -4,7 +4,7 @@ const { lazy } = require('@discordjs/util');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/transformResolved');
+const { transformResolved } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
 

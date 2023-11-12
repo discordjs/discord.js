@@ -3221,6 +3221,10 @@ export function setPosition<T extends Channel | Role>(
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
 export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+export function transformResolved<Cached extends CacheType>(
+  supportingData: SupportingInteractionResolvedData,
+  data?: APIApplicationCommandInteractionData['resolved'],
+): CommandInteractionResolvedData<Cached>;
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
@@ -6359,6 +6363,12 @@ export type StageChannelResolvable = StageChannel | Snowflake;
 export interface StageInstanceEditOptions {
   topic?: string;
   privacyLevel?: StageInstancePrivacyLevel;
+}
+
+export interface SupportingInteractionResolvedData {
+  client: Client;
+  guild?: Guild;
+  channel?: Channel;
 }
 
 export type SweeperKey = keyof SweeperDefinitions;

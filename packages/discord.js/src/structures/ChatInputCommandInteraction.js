@@ -2,7 +2,7 @@
 
 const CommandInteraction = require('./CommandInteraction');
 const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/transformResolved');
+const { transformResolved } = require('../util/Util');
 
 /**
  * Represents a command interaction.

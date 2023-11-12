@@ -25,8 +25,7 @@ const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { cleanContent, resolvePartialEmoji } = require('../util/Util');
-const { transformResolved } = require('../util/transformResolved');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
  * Represents a message on Discord.
