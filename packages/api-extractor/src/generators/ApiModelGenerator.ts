@@ -36,7 +36,6 @@ import {
 	Navigation,
 } from '@discordjs/api-extractor-model';
 import type * as tsdoc from '@microsoft/tsdoc';
-import { TSDocParser } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
@@ -220,12 +219,16 @@ export class ApiModelGenerator {
 
 	private readonly _apiModel: ApiModel;
 
+	private readonly _tsDocParser: tsdoc.TSDocParser;
+
 	private readonly _referenceGenerator: DeclarationReferenceGenerator;
 
 	public constructor(collector: Collector) {
 		this._collector = collector;
 		this._apiModel = new ApiModel();
 		this._referenceGenerator = new DeclarationReferenceGenerator(collector);
+		// @ts-expect-error we reuse the private tsdocParser from collector here
+		this._tsDocParser = collector._tsdocParser;
 	}
 
 	public get apiModel(): ApiModel {
@@ -500,7 +503,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/*+\n * ${fixLinkTags(parent.construct.description)}\n${
 							parent.construct.params
 								?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
@@ -586,7 +589,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
@@ -658,7 +661,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/*+\n * ${fixLinkTags(parent.construct.description)}\n${
 							parent.construct.params
 								?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
@@ -789,7 +792,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
 							''
@@ -916,7 +919,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
@@ -980,7 +983,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
 							''
@@ -1058,7 +1061,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
 							''
@@ -1166,7 +1169,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 							'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 						}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
@@ -1229,7 +1232,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 							'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 						}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
@@ -1290,7 +1293,7 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? new TSDocParser().parseString(
+				? this._tsDocParser.parseString(
 						`/**\n * ${fixLinkTags(jsDoc.description) ?? ''}\n${
 							'params' in jsDoc
 								? jsDoc.params.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('')
@@ -1425,7 +1428,7 @@ export class ApiModelGenerator {
 				});
 			}
 
-			const docComment: tsdoc.DocComment | undefined = new TSDocParser().parseString(
+			const docComment: tsdoc.DocComment | undefined = this._tsDocParser.parseString(
 				`/**\n * ${fixLinkTags(jsDoc.description)}\n${
 					jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ?? ''
 				}${'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''}${

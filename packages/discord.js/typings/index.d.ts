@@ -986,7 +986,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
-  /** @deprecated Use {@link fetchStickerPacks} instead. */
+  /** @deprecated Use {@link Client#fetchStickerPacks} instead. */
   public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
@@ -1853,7 +1853,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  /** @deprecated Use {@link isStringSelectMenu} instead. */
+  /** @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead. */
   public isSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isAnySelectMenu(): this is AnySelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
@@ -1934,12 +1934,12 @@ export class Invite extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public static InvitesPattern: RegExp;
-  /** @deprecated */
+  /** @deprecated Public Stage Instances don't exist anymore  */
   public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
 }
 
-/** @deprecated */
+/** @deprecated Public Stage Instances don't exist anymore */
 export class InviteStageInstance extends Base {
   private constructor(client: Client<true>, data: RawInviteStageInstance, channelId: Snowflake, guildId: Snowflake);
   public channelId: Snowflake;
@@ -3018,7 +3018,7 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
-  /** @deprecated Use {@link role} instead. */
+  /** @deprecated Use {@link TeamMember#role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
@@ -3581,24 +3581,24 @@ export enum DiscordjsErrorCodes {
   TokenMissing = 'TokenMissing',
   ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
-  /** @deprecated */
+  /** @deprecated ws errors are now handled in `@discordjs/ws` */
   WSCloseRequested = 'WSCloseRequested',
-  /** @deprecated */
+  /** @deprecated ws errors are now handled in `@discordjs/ws` */
   WSConnectionExists = 'WSConnectionExists',
-  /** @deprecated */
+  /** @deprecated ws errors are now handled in `@discordjs/ws` */
   WSNotOpen = 'WSNotOpen',
-  /** @deprecated */
+  /** @deprecated was never used */
   ManagerDestroyed = 'ManagerDestroyed',
 
   BitFieldInvalid = 'BitFieldInvalid',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   ShardingInvalid = 'ShardingInvalid',
-  /** @deprecated */
+  /** @deprecated was never used */
   ShardingRequired = 'ShardingRequired',
-  /** @deprecated */
+  /** @deprecated was never used */
   InvalidIntents = 'InvalidIntents',
-  /** @deprecated */
+  /** @deprecated was never used */
   DisallowedIntents = 'DisallowedIntents',
   ShardingNoShards = 'ShardingNoShards',
   ShardingInProcess = 'ShardingInProcess',
@@ -3618,29 +3618,29 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   ButtonLabel = 'ButtonLabel',
-  /** @deprecated */
+  /** @deprecated was never used */
   ButtonURL = 'ButtonURL',
-  /** @deprecated */
+  /** @deprecated was never used */
   ButtonCustomId = 'ButtonCustomId',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   SelectMenuCustomId = 'SelectMenuCustomId',
-  /** @deprecated */
+  /** @deprecated was never used */
   SelectMenuPlaceholder = 'SelectMenuPlaceholder',
-  /** @deprecated */
+  /** @deprecated was never used */
   SelectOptionLabel = 'SelectOptionLabel',
-  /** @deprecated */
+  /** @deprecated was never used */
   SelectOptionValue = 'SelectOptionValue',
-  /** @deprecated */
+  /** @deprecated was never used */
   SelectOptionDescription = 'SelectOptionDescription',
 
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
@@ -3651,16 +3651,16 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   ImageFormat = 'ImageFormat',
-  /** @deprecated */
+  /** @deprecated was never used */
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
 
-  /** @deprecated */
+  /** @deprecated was never used */
   SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
@@ -3696,14 +3696,14 @@ export enum DiscordjsErrorCodes {
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
   MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
-  /** @deprecated Use {@link MissingManageGuildExpressionsPermission} instead. */
+  /** @deprecated Use {@link DiscordjsErrorCodes.MissingManageGuildExpressionsPermission} instead. */
   MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
 
   NotGuildSticker = 'NotGuildSticker',
 
   ReactionResolveUser = 'ReactionResolveUser',
 
-  /** @deprecated */
+  /** @deprecated Not used anymore since the introduction of `GUILD_WEB_PAGE_VANITY_URL` feature */
   VanityURL = 'VanityURL',
 
   InviteResolveCode = 'InviteResolveCode',
@@ -3720,7 +3720,7 @@ export enum DiscordjsErrorCodes {
 
   InteractionAlreadyReplied = 'InteractionAlreadyReplied',
   InteractionNotReplied = 'InteractionNotReplied',
-  /** @deprecated */
+  /** @deprecated Not used anymore since ephemeral replies can now be deleted without issue */
   InteractionEphemeralReplied = 'InteractionEphemeralReplied',
 
   CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
@@ -4747,7 +4747,7 @@ export interface AwaitReactionsOptions extends ReactionCollectorOptions {
 }
 
 export interface BanOptions {
-  /** @deprecated Use {@link deleteMessageSeconds} instead. */
+  /** @deprecated Use {@link BanOptions#deleteMessageSeconds} instead. */
   deleteMessageDays?: number;
   deleteMessageSeconds?: number;
   reason?: string;
@@ -4947,7 +4947,7 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  /** @deprecated Use {@link webhooksUpdate} instead. */
+  /** @deprecated Use {@link ClientEvents#webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
@@ -5007,10 +5007,10 @@ export interface ClientUserEditOptions {
 }
 
 export interface CloseEvent {
-  /** @deprecated */
+  /** @deprecated not used anymore since using {@link @discordjs/ws!WebSocketManager:class#} internally */
   wasClean: boolean;
   code: number;
-  /** @deprecated */
+  /** @deprecated not used anymore since using {@link @discordjs/ws!WebSocketManager:class#} internally */
   reason: string;
 }
 
@@ -5336,11 +5336,11 @@ export interface FetchGuildScheduledEventSubscribersOptions {
   withMember?: boolean;
 }
 
-interface FetchInviteOptions extends BaseFetchOptions {
+export interface FetchInviteOptions extends BaseFetchOptions {
   code: string;
 }
 
-interface FetchInvitesOptions {
+export interface FetchInvitesOptions {
   channelId?: GuildInvitableChannelResolvable;
   cache?: boolean;
 }
