@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { formatEmoji } = require('@discordjs/builders');
+const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 

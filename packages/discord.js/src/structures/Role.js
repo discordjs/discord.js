@@ -1,6 +1,6 @@
 'use strict';
 
-const { roleMention } = require('@discordjs/builders');
+const { roleMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');

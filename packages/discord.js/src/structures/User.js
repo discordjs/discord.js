@@ -1,6 +1,6 @@
 'use strict';
 
-const { userMention } = require('@discordjs/builders');
+const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
