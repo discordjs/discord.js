@@ -8,7 +8,7 @@ const Attachment = require('../structures/Attachment');
  * @typedef {Object} SupportingInteractionResolvedData
  * @property {Client} client The client
  * @property {Guild} [guild] A guild
- * @property {Channel} [channel] A channel
+ * @property {BaseChannel} [channel] A channel
  * @private
  */
 
