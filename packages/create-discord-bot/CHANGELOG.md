@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [create-discord-bot/0.2.2](https://github.com/discordjs/discord.js/compare/create-discord-bot/0.2.2...create-discord-bot/0.2.2) - (2023-11-12)
+# [create-discord-bot/0.2.2](https://github.com/discordjs/discord.js/compare/create-discord-bot/0.2.1...create-discord-bot/0.2.2) - (2023-11-12)
 
 ## Bug Fixes
 
