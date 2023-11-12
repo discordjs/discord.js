@@ -3,13 +3,13 @@
 import { describe, test, expect } from 'vitest';
 import { Collection } from '../src/index.js';
 
-type TestCollection<V> = Collection<string, V>;
+type TestCollection<Value> = Collection<string, Value>;
 
-function createCollection<V = number>(): TestCollection<V> {
+function createCollection<Value = number>(): TestCollection<Value> {
 	return new Collection();
 }
 
-function createCollectionFrom<V = number>(...entries: [key: string, value: V][]): TestCollection<V> {
+function createCollectionFrom<Value = number>(...entries: [key: string, value: Value][]): TestCollection<Value> {
 	return new Collection(entries);
 }
 

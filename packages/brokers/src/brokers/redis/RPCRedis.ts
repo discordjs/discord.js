@@ -83,11 +83,11 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 	/**
 	 * {@inheritDoc IRPCBroker.call}
 	 */
-	public async call<T extends keyof TEvents>(
-		event: T,
-		data: TEvents[T],
+	public async call<Event extends keyof TEvents>(
+		event: Event,
+		data: TEvents[Event],
 		timeoutDuration: number = this.options.timeout,
-	): Promise<TResponses[T]> {
+	): Promise<TResponses[Event]> {
 		const id = await this.options.redisClient.xadd(
 			event as string,
 			'*',
@@ -103,7 +103,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		const timedOut = new Error(`timed out after ${timeoutDuration}ms`);
 
 		await this.streamReadClient.subscribe(rpcChannel);
-		return new Promise<TResponses[T]>((resolve, reject) => {
+		return new Promise<TResponses[Event]>((resolve, reject) => {
 			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });

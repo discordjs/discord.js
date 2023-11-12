@@ -33,7 +33,7 @@ function serializeSearchParam(value: unknown): string | null {
  * @param options - The options to use
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams<T extends object>(options?: Readonly<T>) {
+export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
 	const params = new URLSearchParams();
 	if (!options) return params;
 

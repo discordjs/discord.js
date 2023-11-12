@@ -148,13 +148,15 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 * @param Instance - The instance of whatever is being added
 	 * @internal
 	 */
-	private _sharedAddOptionMethod<T extends ApplicationCommandOptionBase>(
+	private _sharedAddOptionMethod<OptionBuilder extends ApplicationCommandOptionBase>(
 		input:
-			| Omit<T, 'addChoices'>
-			| Omit<T, 'setAutocomplete'>
-			| T
-			| ((builder: T) => Omit<T, 'addChoices'> | Omit<T, 'setAutocomplete'> | T),
-		Instance: new () => T,
+			| Omit<OptionBuilder, 'addChoices'>
+			| Omit<OptionBuilder, 'setAutocomplete'>
+			| OptionBuilder
+			| ((
+					builder: OptionBuilder,
+			  ) => Omit<OptionBuilder, 'addChoices'> | Omit<OptionBuilder, 'setAutocomplete'> | OptionBuilder),
+		Instance: new () => OptionBuilder,
 	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
 		const { options } = this;
 

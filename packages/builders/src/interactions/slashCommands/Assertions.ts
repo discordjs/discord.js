@@ -66,8 +66,8 @@ export function validateChoicesLength(amountAdding: number, choices?: APIApplica
 }
 
 export function assertReturnOfBuilder<
-	T extends ApplicationCommandOptionBase | SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder,
->(input: unknown, ExpectedInstanceOf: new () => T): asserts input is T {
+	ReturnType extends ApplicationCommandOptionBase | SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder,
+>(input: unknown, ExpectedInstanceOf: new () => ReturnType): asserts input is ReturnType {
 	s.instance(ExpectedInstanceOf).parse(input);
 }
 

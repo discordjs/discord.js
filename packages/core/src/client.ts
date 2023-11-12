@@ -85,8 +85,8 @@ export interface IntrinsicProps {
 	shardId: number;
 }
 
-export interface WithIntrinsicProps<T> extends IntrinsicProps {
-	data: T;
+export interface WithIntrinsicProps<Data> extends IntrinsicProps {
+	data: Data;
 }
 
 export interface MappedEvents {
@@ -332,7 +332,7 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		});
 	}
 
-	private wrapIntrinsicProps<T>(obj: T, shardId: number): WithIntrinsicProps<T> {
+	private wrapIntrinsicProps<ObjectType>(obj: ObjectType, shardId: number): WithIntrinsicProps<ObjectType> {
 		return {
 			api: this.api,
 			shardId,

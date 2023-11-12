@@ -190,8 +190,11 @@ import { expectAssignable, expectNotAssignable, expectNotType, expectType } from
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 
 // Test type transformation:
-declare const serialize: <T>(value: T) => Serialized<T>;
-declare const notPropertyOf: <T, P extends PropertyKey>(value: T, property: P & Exclude<P, keyof T>) => void;
+declare const serialize: <Value>(value: Value) => Serialized<Value>;
+declare const notPropertyOf: <Value, Property extends PropertyKey>(
+  value: Value,
+  property: Property & Exclude<Property, keyof Value>,
+) => void;
 
 const client: Client = new Client({
   intents: GatewayIntentBits.Guilds,

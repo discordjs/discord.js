@@ -1,6 +1,5 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
 const Attachment = require('./Attachment');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
@@ -90,62 +89,6 @@ class CommandInteraction extends BaseInteraction {
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
    * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
-
-  /**
-   * Transforms the resolved received from the API.
-   * @param {APIInteractionDataResolved} resolved The received resolved objects
-   * @returns {CommandInteractionResolvedData}
-   * @private
-   */
-  transformResolved({ members, users, channels, roles, messages, attachments }) {
-    const result = {};
-
-    if (members) {
-      result.members = new Collection();
-      for (const [id, member] of Object.entries(members)) {
-        const user = users[id];
-        result.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
-      }
-    }
-
-    if (users) {
-      result.users = new Collection();
-      for (const user of Object.values(users)) {
-        result.users.set(user.id, this.client.users._add(user));
-      }
-    }
-
-    if (roles) {
-      result.roles = new Collection();
-      for (const role of Object.values(roles)) {
-        result.roles.set(role.id, this.guild?.roles._add(role) ?? role);
-      }
-    }
-
-    if (channels) {
-      result.channels = new Collection();
-      for (const channel of Object.values(channels)) {
-        result.channels.set(channel.id, this.client.channels._add(channel, this.guild) ?? channel);
-      }
-    }
-
-    if (messages) {
-      result.messages = new Collection();
-      for (const message of Object.values(messages)) {
-        result.messages.set(message.id, this.channel?.messages?._add(message) ?? message);
-      }
-    }
-
-    if (attachments) {
-      result.attachments = new Collection();
-      for (const attachment of Object.values(attachments)) {
-        const patched = new Attachment(attachment);
-        result.attachments.set(attachment.id, patched);
-      }
-    }
-
-    return result;
-  }
 
   /**
    * Represents an option of a received command interaction.

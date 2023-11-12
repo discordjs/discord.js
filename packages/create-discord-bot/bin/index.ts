@@ -3,7 +3,7 @@
 // eslint-disable-next-line n/shebang
 import process from 'node:process';
 import { Option, program } from 'commander';
-import { red, yellow, green } from 'picocolors';
+import picocolors from 'picocolors';
 import prompts from 'prompts';
 import validateProjectName from 'validate-npm-package-name';
 import packageJSON from '../package.json' assert { type: 'json' };
@@ -34,7 +34,7 @@ program
 	.version(packageJSON.version)
 	.description('Create a basic discord.js bot.')
 	.argument('[directory]', 'What is the name of the directory you want to create this project in?')
-	.usage(`${green('<directory>')}`)
+	.usage(`${picocolors.green('<directory>')}`)
 	.action((directory) => {
 		projectDirectory = directory;
 	})
@@ -68,13 +68,13 @@ if (!projectDirectory) {
 					const errors = [];
 
 					for (const error of [...(validationResult.errors ?? []), ...(validationResult.warnings ?? [])]) {
-						errors.push(red(`- ${error}`));
+						errors.push(picocolors.red(`- ${error}`));
 					}
 
-					return red(
-						`Cannot create a project named ${yellow(
+					return picocolors.red(
+						`Cannot create a project named ${picocolors.yellow(
 							`"${directory}"`,
-						)} due to npm naming restrictions.\n\nErrors:\n${errors.join('\n')}\n\n${red(
+						)} due to npm naming restrictions.\n\nErrors:\n${errors.join('\n')}\n\n${picocolors.red(
 							'\nSee https://docs.npmjs.com/cli/configuring-npm/package-json for more details.',
 						)}}`,
 					);
