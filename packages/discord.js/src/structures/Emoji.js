@@ -29,7 +29,7 @@ class Emoji extends Base {
      * The emoji's id
      * @type {?Snowflake}
      */
-    this.id = emoji.id;
+    this.id = emoji.id ?? null;
   }
 
   /**
