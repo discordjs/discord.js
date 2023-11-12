@@ -586,9 +586,6 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     option: APIApplicationCommandOption,
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionOption<Cached>;
-  private transformResolved(
-    resolved: APIApplicationCommandInteractionData['resolved'],
-  ): CommandInteractionResolvedData<Cached>;
 }
 
 export class InteractionResponse<Cached extends boolean = boolean> {
@@ -2037,6 +2034,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public stickers: Collection<Snowflake, Sticker>;
   public position: number | null;
   public roleSubscriptionData: RoleSubscriptionData | null;
+  public resolved: CommandInteractionResolvedData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
@@ -3223,6 +3221,10 @@ export function setPosition<T extends Channel | Role>(
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
 export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+export function transformResolved<Cached extends CacheType>(
+  supportingData: SupportingInteractionResolvedData,
+  data?: APIApplicationCommandInteractionData['resolved'],
+): CommandInteractionResolvedData<Cached>;
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
@@ -6361,6 +6363,12 @@ export type StageChannelResolvable = StageChannel | Snowflake;
 export interface StageInstanceEditOptions {
   topic?: string;
   privacyLevel?: StageInstancePrivacyLevel;
+}
+
+export interface SupportingInteractionResolvedData {
+  client: Client;
+  guild?: Guild;
+  channel?: GuildTextBasedChannel;
 }
 
 export type SweeperKey = keyof SweeperDefinitions;
