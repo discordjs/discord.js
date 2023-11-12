@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [@discordjs/util@1.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/util@1.0.2...@discordjs/util@1.0.2) - (2023-11-12)
+# [@discordjs/util@1.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/util@1.0.1...@discordjs/util@1.0.2) - (2023-11-12)
 
 ## Documentation
 
