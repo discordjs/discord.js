@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@0.2.2](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.2.1...create-discord-bot@0.2.2) - (2023-11-12)
+
+## Bug Fixes
+
+- Update module to `NodeNext` in tsconfig.json (#9875) ([f586283](https://github.com/discordjs/discord.js/commit/f58628385cf9df2afc5f543141ed76fbba74aa22))
+
+## Documentation
+
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+
+## Features
+
+- Add `no-install` option (#9604) ([8325fa6](https://github.com/discordjs/discord.js/commit/8325fa65409c157da3448da40669c92c636b3f14))
+- **create-discord-bot:** Bun/deno templates (#9795) ([dd5e745](https://github.com/discordjs/discord.js/commit/dd5e7453e89ae918b94de1c13ce53c7cfd373721))
+
 # [create-discord-bot@0.2.1](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.2.0...create-discord-bot@0.2.1) - (2023-08-17)
 
 ## Bug Fixes

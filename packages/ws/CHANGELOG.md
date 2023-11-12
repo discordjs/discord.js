@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@1.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.1...@discordjs/ws@1.0.2) - (2023-11-12)
+
+## Bug Fixes
+
+- **WebSocketManager:** Available sessions check (#9823) ([e68ab16](https://github.com/discordjs/discord.js/commit/e68ab167c2c85c9fd90fc7c3798ec3bfd2d89760))
+
+## Documentation
+
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+
 # [@discordjs/ws@1.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.0...@discordjs/ws@1.0.1) - (2023-08-17)
 
 ## Documentation

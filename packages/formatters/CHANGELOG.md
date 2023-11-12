@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/formatters@0.3.3](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.3.2...@discordjs/formatters@0.3.3) - (2023-11-12)
+
+## Documentation
+
+- Remove markdown (#9914) ([efbcda7](https://github.com/discordjs/discord.js/commit/efbcda70fcc11583d0979e7e2a1f951a885b9b77))
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+
+## Features
+
+- **formatters:** Add guild navigation mentions (#9436) ([566d5e2](https://github.com/discordjs/discord.js/commit/566d5e2c8145b2dfe94415f30cab6f6712f2cf95))
+- Add new markdown formatters (#9613) ([0d787e9](https://github.com/discordjs/discord.js/commit/0d787e9f797b53974a49f56727acb6318cd8d650))
+
 # [@discordjs/formatters@0.3.2](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.3.1...@discordjs/formatters@0.3.2) - (2023-08-17)
 
 ## Documentation

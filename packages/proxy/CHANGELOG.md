@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@2.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.1...@discordjs/proxy@2.0.2) - (2023-11-12)
+
+## Bug Fixes
+
+- Forward x-audit-log-reason header (#9889) ([6a63c44](https://github.com/discordjs/discord.js/commit/6a63c441fe378ca6dd630ad05e29647903f898bc))
+
+## Documentation
+
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+
 # [@discordjs/proxy@2.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.0...@discordjs/proxy@2.0.1) - (2023-08-17)
 
 ## Documentation

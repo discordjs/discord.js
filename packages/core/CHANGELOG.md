@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.0.1...@discordjs/core@1.1.0) - (2023-11-12)
+
+## Documentation
+
+- **stickers:** Reveal link in the website (#9870) ([332b624](https://github.com/discordjs/discord.js/commit/332b624aed648c707a1ba67da5535fcbf9c84497))
+- **ApplicationsAPI:** Fix `getCurrent()` options description (#9816) ([23a6424](https://github.com/discordjs/discord.js/commit/23a6424261d0d61db2742838f1b5803e3ee00625))
+
+## Features
+
+- **Client:** AsyncIterator-returning method for fetching members (#9771) ([fffe70a](https://github.com/discordjs/discord.js/commit/fffe70a039280830b2773818a776d821a6b1d3dd))
+- Add guild member (#9877) ([c051ed9](https://github.com/discordjs/discord.js/commit/c051ed94271a7f5e5dec9836571ad4856e28f3b5))
+- Onboarding mode and edit method (#9647) ([7671a83](https://github.com/discordjs/discord.js/commit/7671a836f4b080a0c0d42bbbacc6ddd1df7c0ba8))
+- Support new application properties and patch endpoint (#9709) ([1fe7247](https://github.com/discordjs/discord.js/commit/1fe72475286775cdfc68dad251ed662db7375ad1))
+- Implement `GET` current application (#9797) ([50106c7](https://github.com/discordjs/discord.js/commit/50106c77dbce34ccfac2a15e4ed6bfae4727b9ca))
+
+## Refactor
+
+- Stickers are free (no more "premium" packs) (#9791) ([e02a59b](https://github.com/discordjs/discord.js/commit/e02a59bbb6f57c6935230d120867519c1e84d10a))
+
 # [@discordjs/core@1.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.0.0...@discordjs/core@1.0.1) - (2023-08-17)
 
 ## Documentation
