@@ -86,7 +86,7 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	) {
 		const normalizedValues = normalizeArray(values);
 		optionsLengthValidator.parse(normalizedValues.length);
-		this.data.default_values = normalizedValues;
+		this.data.default_values = normalizedValues.slice();
 		return this;
 	}
 }
