@@ -5,8 +5,12 @@ import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
-export const fetchMember = cache(async (packageName: string, branchName: string, item: string) => {
+export const fetchMember = cache(async (packageName: string, branchName: string, item?: string) => {
 	if (!PACKAGES.includes(packageName)) {
+		return null;
+	}
+
+	if (!item) {
 		return null;
 	}
 
