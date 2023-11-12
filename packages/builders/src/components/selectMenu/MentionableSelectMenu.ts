@@ -74,6 +74,24 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	}
 
 	/**
+	 * Adds default values to this auto populated select menu.
+	 *
+	 * @param values - The values to add
+	 */
+	public addDefaultValues(
+		...values: RestOrArray<
+			| APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role>
+			| APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>
+		>
+	) {
+		const normalizedValues = normalizeArray(values);
+		this.data.default_values ??= [];
+		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
+		this.data.default_values.push(...normalizedValues);
+		return this;
+	}
+
+	/**
 	 * Sets default values to this auto populated select menu.
 	 *
 	 * @param values - The values to set
