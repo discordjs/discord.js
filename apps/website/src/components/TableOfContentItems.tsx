@@ -127,7 +127,7 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 						<div className="flex flex-row place-items-center gap-4">
 							<VscSymbolEvent size={20} />
 							<div className="p-3 pl-0">
-								<span className="font-semibold">Properties</span>
+								<span className="font-semibold">Events</span>
 							</div>
 						</div>
 						{eventItems}

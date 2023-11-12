@@ -434,16 +434,20 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			};
 		}
 
-		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(endpoint);
+		const majorIdMatch = /(?:^\/webhooks\/(\d{17,19}\/[^/?]+))|(?:^\/(?:channels|guilds|webhooks)\/(\d{17,19}))/.exec(
+			endpoint,
+		);
 
-		// Get the major id for this route - global otherwise
-		const majorId = majorIdMatch?.[1] ?? 'global';
+		// Get the major id or id + token for this route - global otherwise
+		const majorId = majorIdMatch?.[2] ?? majorIdMatch?.[1] ?? 'global';
 
 		const baseRoute = endpoint
 			// Strip out all ids
 			.replaceAll(/\d{17,19}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
-			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
+			.replace(/\/reactions\/(.*)/, '/reactions/:reaction')
+			// Strip out webhook tokens
+			.replace(/\/webhooks\/:id\/[^/?]+/, '/webhooks/:id/:token');
 
 		let exceptions = '';
 

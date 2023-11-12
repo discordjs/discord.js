@@ -227,19 +227,23 @@ export class SequentialHandler implements IHandler {
 			}
 
 			const rateLimitData: RateLimitData = {
-				timeToReset: timeout,
-				limit,
+				global: isGlobal,
 				method: options.method ?? 'get',
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit,
+				timeToReset: timeout,
+				retryAfter: timeout,
+				sublimitTimeout: 0,
 			};
+
 			// Let library users know they have hit a rate limit
 			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
 			// Determine whether a RateLimitError should be thrown
 			await onRateLimit(this.manager, rateLimitData);
+
 			// When not erroring, emit debug for what is happening
 			if (isGlobal) {
 				this.debug(`Global rate limit hit, blocking all requests for ${timeout}ms`);
@@ -345,15 +349,18 @@ export class SequentialHandler implements IHandler {
 			}
 
 			await onRateLimit(this.manager, {
-				timeToReset: timeout,
-				limit,
+				global: isGlobal,
 				method,
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit,
+				timeToReset: timeout,
+				retryAfter,
+				sublimitTimeout: sublimitTimeout ?? 0,
 			});
+
 			this.debug(
 				[
 					'Encountered unexpected 429 rate limit',
@@ -368,6 +375,7 @@ export class SequentialHandler implements IHandler {
 					`  Sublimit       : ${sublimitTimeout ? `${sublimitTimeout}ms` : 'None'}`,
 				].join('\n'),
 			);
+
 			// If caused by a sublimit, wait it out here so other requests on the route can be handled
 			if (sublimitTimeout) {
 				// Normally the sublimit queue will not exist, however, if a sublimit is hit while in the sublimit queue, it will

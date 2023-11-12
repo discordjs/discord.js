@@ -1,5 +1,11 @@
-import type { APIRoleSelectComponent } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import {
+	type APIRoleSelectComponent,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
@@ -30,5 +36,42 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	 */
 	public constructor(data?: Partial<APIRoleSelectComponent>) {
 		super({ ...data, type: ComponentType.RoleSelect });
+	}
+
+	/**
+	 * Adds default roles to this auto populated select menu.
+	 *
+	 * @param roles - The roles to add
+	 */
+	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(roles);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
+		this.data.default_values ??= [];
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.Role as const,
+			})),
+		);
+
+		return this;
+	}
+
+	/**
+	 * Sets default roles to this auto populated select menu.
+	 *
+	 * @param roles - The roles to set
+	 */
+	public setDefaultRoles(...roles: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(roles);
+		optionsLengthValidator.parse(normalizedValues.length);
+
+		this.data.default_values = normalizedValues.map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Role as const,
+		}));
+
+		return this;
 	}
 }

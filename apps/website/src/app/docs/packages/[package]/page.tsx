@@ -7,6 +7,8 @@ import { fetchVersions } from '~/app/docAPI';
 import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
+export const revalidate = 3_600;
+
 export default async function Page({ params }: { params: { package: string } }) {
 	if (!PACKAGES.includes(params.package)) {
 		notFound();

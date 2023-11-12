@@ -102,16 +102,20 @@ export class BurstHandler implements IHandler {
 		} else if (status === 429) {
 			// Unexpected ratelimit
 			const isGlobal = res.headers.has('X-RateLimit-Global');
+
 			await onRateLimit(this.manager, {
-				timeToReset: retryAfter,
-				limit: Number.POSITIVE_INFINITY,
+				global: isGlobal,
 				method,
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit: Number.POSITIVE_INFINITY,
+				timeToReset: retryAfter,
+				retryAfter,
+				sublimitTimeout: 0,
 			});
+
 			this.debug(
 				[
 					'Encountered unexpected 429 rate limit',
