@@ -27,11 +27,20 @@ class BaseClient extends EventEmitter {
     this.options = {
       ...defaultOptions,
       ...options,
+      presence: {
+        ...defaultOptions.presence,
+        ...options.presence,
+      },
+      sweepers: {
+        ...defaultOptions.sweepers,
+        ...options.sweepers,
+      },
       ws: {
         ...defaultOptions.ws,
         ...options.ws,
       },
       rest: {
+        ...defaultOptions.rest,
         ...options.rest,
         userAgentAppendix: options.rest?.userAgentAppendix
           ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
