@@ -226,7 +226,7 @@ class Message extends Base {
     if ('resolved' in data) {
       /**
        * Resolved data from auto-populated select menus.
-       * @typedef {Object} CommandInteractionResolvedData;
+       * @typedef {Object} CommandInteractionResolvedData
        */
       this.resolved = transformResolved(
         { client: this.client, guild: this.guild, channel: this.channel },
