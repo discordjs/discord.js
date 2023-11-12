@@ -1,4 +1,4 @@
-import { Events } from 'npm:discord.js@^14.13.0';
+import { Events } from 'npm:discord.js@^14.14.0';
 import type { Event } from './index.ts';
 
 export default {
