@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';

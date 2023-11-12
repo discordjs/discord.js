@@ -6,5 +6,5 @@ inputs:
   version:
     description: 'The semver string'
 runs:
-  using: node16
+  using: node20
   main: ../../dist/uploadDocumentation/index.js

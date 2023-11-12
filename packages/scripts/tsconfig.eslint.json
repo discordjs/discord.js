@@ -4,5 +4,20 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"include": ["*.ts", "*.tsx", "*.js", "*.cjs", "*.mjs", "src", "turbo"]
+	"include": [
+		"*.ts",
+		"*.js",
+		"*.cjs",
+		"*.mjs",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.cjs",
+		"src/**/*.mjs",
+		"bin",
+		"scripts",
+		"__tests__",
+		"__mocks__",
+		"turbo"
+	],
+	"exclude": ["node_modules", "turbo/generators/templates"]
 }

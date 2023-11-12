@@ -1,11 +1,13 @@
-import type { ApiDeclaredItem, ApiItemContainerMixin } from '@microsoft/api-extractor-model';
+import type { ApiDeclaredItem, ApiItemContainerMixin } from '@discordjs/api-extractor-model';
+import { EventsSection } from './section/EventsSection';
 import { MethodsSection } from './section/MethodsSection';
 import { PropertiesSection } from './section/PropertiesSection';
-import { hasProperties, hasMethods } from './util';
+import { hasEvents, hasProperties, hasMethods } from './util';
 
 export function Members({ item }: { readonly item: ApiDeclaredItem & ApiItemContainerMixin }) {
 	return (
 		<>
+			{hasEvents(item) ? <EventsSection item={item} /> : null}
 			{hasProperties(item) ? <PropertiesSection item={item} /> : null}
 			{hasMethods(item) ? <MethodsSection item={item} /> : null}
 		</>

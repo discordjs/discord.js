@@ -49,7 +49,7 @@ class ModalSubmitInteraction extends BaseInteraction {
      * The components within the modal
      * @type {ActionRowModalData[]}
      */
-    this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c));
+    this.components = data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component));
 
     /**
      * The fields within the modal
@@ -89,7 +89,10 @@ class ModalSubmitInteraction extends BaseInteraction {
    */
   static transformComponent(rawComponent) {
     return rawComponent.components
-      ? { type: rawComponent.type, components: rawComponent.components.map(c => this.transformComponent(c)) }
+      ? {
+          type: rawComponent.type,
+          components: rawComponent.components.map(component => this.transformComponent(component)),
+        }
       : {
           value: rawComponent.value,
           type: rawComponent.type,

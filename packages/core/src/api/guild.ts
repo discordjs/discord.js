@@ -92,6 +92,10 @@ import {
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildMemberJSONBody,
+	type RESTPutAPIGuildMemberResult,
+	type RESTPutAPIGuildOnboardingJSONBody,
+	type RESTPutAPIGuildOnboardingResult,
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -163,6 +167,27 @@ export class GuildsAPI {
 	 */
 	public async delete(guildId: Snowflake, { signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {}) {
 		await this.rest.delete(Routes.guild(guildId), { reason, signal });
+	}
+
+	/**
+	 * Adds user to the guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#add-guild-member}
+	 * @param guildId - The id of the guild to add the user to
+	 * @param userId - The id of the user to add
+	 * @param body - The data for adding users to the guild
+	 * @param options - The options for adding users to the guild
+	 */
+	public async addMember(
+		guildId: Snowflake,
+		userId: Snowflake,
+		body: RESTPutAPIGuildMemberJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.put(Routes.guildMember(guildId, userId), {
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildMemberResult>;
 	}
 
 	/**
@@ -1240,5 +1265,25 @@ export class GuildsAPI {
 	 */
 	public async getOnboarding(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.guildOnboarding(guildId), { signal }) as Promise<RESTGetAPIGuildOnboardingResult>;
+	}
+
+	/**
+	 * Edits a guild onboarding
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-onboarding}
+	 * @param guildId - The id of the guild
+	 * @param body - The data for editing the guild onboarding
+	 * @param options - The options for editing the guild onboarding
+	 */
+	public async editOnboarding(
+		guildId: Snowflake,
+		body: RESTPutAPIGuildOnboardingJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.put(Routes.guildOnboarding(guildId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildOnboardingResult>;
 	}
 }

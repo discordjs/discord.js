@@ -23,7 +23,7 @@ class CategoryChannelChildManager extends DataManager {
    * @readonly
    */
   get cache() {
-    return this.guild.channels.cache.filter(c => c.parentId === this.channel.id);
+    return this.guild.channels.cache.filter(channel => channel.parentId === this.channel.id);
   }
 
   /**

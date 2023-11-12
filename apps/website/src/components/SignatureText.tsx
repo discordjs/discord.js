@@ -1,4 +1,4 @@
-import type { ApiModel, Excerpt } from '@microsoft/api-extractor-model';
+import type { ApiModel, Excerpt } from '@discordjs/api-extractor-model';
 import { ExcerptText } from './ExcerptText';
 
 export function SignatureText({ excerpt, model }: { readonly excerpt: Excerpt; readonly model: ApiModel }) {

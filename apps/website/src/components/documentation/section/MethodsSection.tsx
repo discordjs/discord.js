@@ -4,8 +4,8 @@ import type {
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useMemo, Fragment } from 'react';
 import { resolveMembers } from '~/util/members';

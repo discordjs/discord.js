@@ -1,4 +1,4 @@
-import { setTimeout } from 'node:timers';
+import { setTimeout, clearTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
@@ -199,42 +199,31 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 	}
 
 	/**
-	 * Requests guild members from the gateway.
+	 * Requests guild members from the gateway and returns an async iterator that yields the data from each guild members chunk event.
 	 *
 	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
 	 * @param options - The options for the request
 	 * @param timeout - The timeout for waiting for each guild members chunk event
+	 * @example
+	 * Requesting all members from a guild
+	 * ```ts
+	 * for await (const { members } of client.requestGuildMembersIterator({ guild_id: '1234567890', query: '', limit: 0 })) {
+	 * 	console.log(members);
+	 * }
+	 * ```
 	 */
-	public async requestGuildMembers(options: GatewayRequestGuildMembersData, timeout = 10_000) {
+	public async *requestGuildMembersIterator(options: GatewayRequestGuildMembersData, timeout = 10_000) {
 		const shardId = calculateShardId(options.guild_id, await this.gateway.getShardCount());
 		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
 
-		const promise = new Promise<RequestGuildMembersResult>((resolve, reject) => {
-			const members: RequestGuildMembersResult['members'] = [];
-			const notFound: RequestGuildMembersResult['notFound'] = [];
-			const presences: RequestGuildMembersResult['presences'] = [];
+		const controller = new AbortController();
 
-			const timer = setTimeout(() => {
-				reject(new Error('Request timed out'));
+		const createTimer = () =>
+			setTimeout(() => {
+				controller.abort();
 			}, timeout);
 
-			const handler = ({ data }: MappedEvents[GatewayDispatchEvents.GuildMembersChunk][0]) => {
-				timer.refresh();
-
-				if (data.nonce !== nonce) return;
-
-				members.push(...data.members);
-				if ('presences' in data) presences.push(...data.presences);
-				if ('not_found' in data) notFound.push(...data.not_found);
-
-				if (data.chunk_index >= data.chunk_count - 1) {
-					this.off(GatewayDispatchEvents.GuildMembersChunk, handler);
-					resolve({ members, nonce, notFound, presences });
-				}
-			};
-
-			this.on(GatewayDispatchEvents.GuildMembersChunk, handler);
-		});
+		let timer: NodeJS.Timeout | undefined = createTimer();
 
 		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
@@ -245,7 +234,72 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 			},
 		});
 
-		return promise;
+		try {
+			const iterator = AsyncEventEmitter.on<
+				typeof this,
+				ManagerShardEventsMap,
+				GatewayDispatchEvents.GuildMembersChunk
+			>(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal });
+
+			for await (const [{ data }] of iterator) {
+				if (data.nonce !== nonce) continue;
+
+				clearTimeout(timer);
+				timer = undefined;
+
+				yield {
+					members: data.members,
+					nonce,
+					notFound: data.not_found ?? null,
+					presences: data.presences ?? null,
+					chunkIndex: data.chunk_index,
+					chunkCount: data.chunk_count,
+				};
+
+				if (data.chunk_index >= data.chunk_count - 1) {
+					break;
+				} else {
+					timer = createTimer();
+				}
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new Error('Request timed out');
+			}
+
+			throw error;
+		} finally {
+			if (timer) {
+				clearTimeout(timer);
+			}
+		}
+	}
+
+	/**
+	 * Requests guild members from the gateway.
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-guild-members}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each guild members chunk event
+	 * @example
+	 * Requesting specific members from a guild
+	 * ```ts
+	 * const { members } = await client.requestGuildMembers({ guild_id: '1234567890', user_ids: ['9876543210'] });
+	 * ```
+	 */
+	public async requestGuildMembers(options: GatewayRequestGuildMembersData, timeout = 10_000) {
+		const members: RequestGuildMembersResult['members'] = [];
+		const notFound: RequestGuildMembersResult['notFound'] = [];
+		const presences: RequestGuildMembersResult['presences'] = [];
+		const nonce = options.nonce ?? DiscordSnowflake.generate().toString();
+
+		for await (const data of this.requestGuildMembersIterator({ ...options, nonce }, timeout)) {
+			members.push(...data.members);
+			if (data.presences) presences.push(...data.presences);
+			if (data.notFound) notFound.push(...data.notFound);
+		}
+
+		return { members, nonce, notFound, presences };
 	}
 
 	/**

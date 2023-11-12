@@ -2,9 +2,10 @@
 
 const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Options = require('../util/Options');
-const { mergeDefault, flatten } = require('../util/Util');
+const { flatten } = require('../util/Util');
 
 /**
  * The base class for all clients.
@@ -22,15 +23,21 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = mergeDefault(Options.createDefault(), {
+    const defaultOptions = Options.createDefault();
+    this.options = {
+      ...defaultOptions,
       ...options,
+      ws: {
+        ...defaultOptions.ws,
+        ...options.ws,
+      },
       rest: {
         ...options.rest,
         userAgentAppendix: options.rest?.userAgentAppendix
           ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
           : undefined,
       },
-    });
+    };
 
     /**
      * The REST manager of the client
@@ -46,6 +53,23 @@ class BaseClient extends EventEmitter {
   destroy() {
     this.rest.clearHashSweeper();
     this.rest.clearHandlerSweeper();
+  }
+
+  /**
+   * Options used for deleting a webhook.
+   * @typedef {Object} WebhookDeleteOptions
+   * @property {string} [token] Token of the webhook
+   * @property {string} [reason] The reason for deleting the webhook
+   */
+
+  /**
+   * Deletes a webhook.
+   * @param {Snowflake} id The webhook's id
+   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
+   * @returns {Promise<void>}
+   */
+  async deleteWebhook(id, { token, reason } = {}) {
+    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
   }
 
   /**

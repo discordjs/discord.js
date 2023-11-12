@@ -3,32 +3,18 @@ import { VscArrowRight } from '@react-icons/all-files/vsc/VscArrowRight';
 import { VscVersions } from '@react-icons/all-files/vsc/VscVersions';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { fetchVersions } from '~/app/docAPI';
 import { buttonVariants } from '~/styles/Button';
 import { PACKAGES } from '~/util/constants';
 
-export const runtime = 'edge';
+export const revalidate = 3_600;
 
-async function getData(pkg: string) {
-	if (!PACKAGES.includes(pkg)) {
+export default async function Page({ params }: { params: { package: string } }) {
+	if (!PACKAGES.includes(params.package)) {
 		notFound();
 	}
 
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
-		return ['main'];
-	}
-
-	const res = await fetch(`https://docs.discordjs.dev/api/info?package=${pkg}`, { next: { revalidate: 3_600 } });
-	const data: string[] = await res.json();
-
-	if (!data.length) {
-		throw new Error('Failed to fetch data');
-	}
-
-	return data.reverse();
-}
-
-export default async function Page({ params }: { params: { package: string } }) {
-	const data = await getData(params.package);
+	const data = await fetchVersions(params.package);
 
 	return (
 		<div className="mx-auto min-h-screen min-w-xs flex flex-col gap-8 px-4 py-6 sm:w-md lg:px-6 lg:py-6">

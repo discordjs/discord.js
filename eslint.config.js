@@ -7,7 +7,6 @@ import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
 import merge from 'lodash.merge';
-// import {join} from "node:path"
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -75,8 +74,8 @@ export default [
 		rules: { 'jsdoc/no-undefined-types': 0 },
 	},
 	{
-		files: [`packages/docgen/**/*${commonFiles}`],
-		rules: { 'import/extensions': 0 },
+		files: [`packages/{api-extractor,brokers,create-discord-bot,docgen,ws}/**/*${commonFiles}`],
+		rules: { 'n/no-sync': 0 },
 	},
 	{
 		files: [`packages/rest/**/*${commonFiles}`],
@@ -91,9 +90,24 @@ export default [
 	},
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
+		rules: { 'no-restricted-globals': 0 },
+	},
+	{
+		files: [`packages/api-extractor-model/**/*${commonFiles}`],
 		rules: {
-			'import/extensions': 0,
-			'no-restricted-globals': 0,
+			'@typescript-eslint/no-namespace': 0,
+			'no-prototype-builtins': 0,
+			'consistent-this': 0,
+			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-this-alias': 0,
+		},
+	},
+	{
+		files: [`packages/api-extractor/**/*${commonFiles}`],
+		rules: {
+			'consistent-this': 0,
+			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-this-alias': 0,
 		},
 	},
 	reactRuleset,

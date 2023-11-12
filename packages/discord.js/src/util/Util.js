@@ -18,8 +18,8 @@ function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
 
   const objProps = Object.keys(obj)
-    .filter(k => !k.startsWith('_'))
-    .map(k => ({ [k]: true }));
+    .filter(key => !key.startsWith('_'))
+    .map(key => ({ [key]: true }));
 
   props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
@@ -39,7 +39,7 @@ function flatten(obj, ...props) {
     // If the valueOf is a Collection, use its array of keys
     else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
     // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-    else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? flatten(e));
+    else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
     // If it's an object with a primitive `valueOf`, use that value
     else if (typeof valueOf !== 'object') out[newProp] = valueOf;
     // If it's an object with a toJSON function, use the return value of it
@@ -80,12 +80,20 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 }
 
 /**
+ * A partial emoji object.
+ * @typedef {Object} PartialEmoji
+ * @property {boolean} animated Whether the emoji is animated
+ * @property {Snowflake|undefined} id The id of the emoji
+ * @property {string} name The name of the emoji
+ */
+
+/**
  * Parses emoji info out of a string. The string must be one of:
  * * A UTF-8 emoji (no id)
  * * A URL-encoded UTF-8 emoji (no id)
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
- * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
+ * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
@@ -95,9 +103,15 @@ function parseEmoji(text) {
 }
 
 /**
+ * A partial emoji object with only an id.
+ * @typedef {Object} PartialEmojiOnlyId
+ * @property {Snowflake} id The id of the emoji
+ */
+
+/**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
- * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
- * @returns {?RawEmoji}
+ * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+ * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  * @private
  */
 function resolvePartialEmoji(emoji) {
@@ -106,26 +120,6 @@ function resolvePartialEmoji(emoji) {
   const { id, name, animated } = emoji;
   if (!id && !name) return null;
   return { id, name, animated: Boolean(animated) };
-}
-
-/**
- * Sets default properties on an object that aren't already specified.
- * @param {Object} def Default properties
- * @param {Object} given Object to assign defaults to
- * @returns {Object}
- * @private
- */
-function mergeDefault(def, given) {
-  if (!given) return def;
-  for (const key in def) {
-    if (!Object.hasOwn(given, key) || given[key] === undefined) {
-      given[key] = def[key];
-    } else if (given[key] === Object(given[key])) {
-      given[key] = mergeDefault(def[key], given[key]);
-    }
-  }
-
-  return given;
 }
 
 /**
@@ -351,32 +345,40 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-    switch (type) {
-      case '@':
-      case '@!': {
-        const member = channel.guild?.members.cache.get(id);
-        if (member) {
-          return `@${member.displayName}`;
-        }
+  return str.replaceAll(
+    /* eslint-disable max-len */
+    /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
+    (match, type, commandName, emojiName, id) => {
+      if (commandName) return `/${commandName}`;
 
-        const user = channel.client.users.cache.get(id);
-        return user ? `@${user.username}` : match;
+      if (emojiName) return `:${emojiName}:`;
+
+      switch (type) {
+        case '@':
+        case '@!': {
+          const member = channel.guild?.members.cache.get(id);
+          if (member) {
+            return `@${member.displayName}`;
+          }
+
+          const user = channel.client.users.cache.get(id);
+          return user ? `@${user.displayName}` : match;
+        }
+        case '@&': {
+          if (channel.type === ChannelType.DM) return match;
+          const role = channel.guild.roles.cache.get(id);
+          return role ? `@${role.name}` : match;
+        }
+        case '#': {
+          const mentionedChannel = channel.client.channels.cache.get(id);
+          return mentionedChannel ? `#${mentionedChannel.name}` : match;
+        }
+        default: {
+          return match;
+        }
       }
-      case '@&': {
-        if (channel.type === ChannelType.DM) return match;
-        const role = channel.guild.roles.cache.get(id);
-        return role ? `@${role.name}` : match;
-      }
-      case '#': {
-        const mentionedChannel = channel.client.channels.cache.get(id);
-        return mentionedChannel ? `#${mentionedChannel.name}` : match;
-      }
-      default: {
-        return match;
-      }
-    }
-  });
+    },
+  );
 }
 
 /**
@@ -412,7 +414,6 @@ module.exports = {
   fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,
-  mergeDefault,
   makeError,
   makePlainError,
   getSortableGroupTypes,

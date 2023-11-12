@@ -1,5 +1,5 @@
-import type { ApiClass, ApiConstructor } from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiClass, ApiConstructor } from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 // import { Outline } from '../Outline';
 import { Badges } from '../Badges';
 import { Documentation } from '../documentation/Documentation';

@@ -43,7 +43,8 @@
 		// Language and Environment
 		"experimentalDecorators": true,
 		"lib": ["ESNext"],
-		"target": "ES2022",
+		"target": "ESNext",
 		"useDefineForClassFields": true
-	}
+	},
+	"exclude": ["node_modules"]
 }

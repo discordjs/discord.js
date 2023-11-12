@@ -15,12 +15,12 @@
 		"discord.js": "^14.13.0"
 	},
 	"devDependencies": {
-		"@sapphire/ts-config": "^4.0.1",
-		"bun-types": "^0.7.3",
-		"eslint": "^8.47.0",
-		"eslint-config-neon": "^0.1.56",
+		"@sapphire/ts-config": "^5.0.0",
+		"bun-types": "^1.0.9",
+		"eslint": "^8.53.0",
+		"eslint-config-neon": "^0.1.57",
 		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.0.2",
+		"prettier": "^3.0.3",
 		"typescript": "^5.2.2"
 	}
 }

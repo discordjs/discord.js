@@ -1,4 +1,3 @@
-import { tryResolveSummaryText } from '@discordjs/scripts';
 import type {
 	ApiClass,
 	ApiDeclaredItem,
@@ -13,8 +12,9 @@ import type {
 	ApiTypeAlias,
 	ApiVariable,
 	ApiFunction,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind, ApiModel } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind, ApiModel } from '@discordjs/api-extractor-model';
+import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { fetchModelJSON } from '~/app/docAPI';
@@ -26,15 +26,28 @@ import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
 import { addPackageToModel } from '~/util/addPackageToModel';
 import { OVERLOAD_SEPARATOR } from '~/util/constants';
-import type { ItemRouteParams } from '~/util/fetchMember';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
 
+export const revalidate = 3_600;
+
+export interface ItemRouteParams {
+	item: string;
+	package: string;
+	version: string;
+}
+
 async function fetchHeadMember({ package: packageName, version, item }: ItemRouteParams) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return undefined;
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
+
 	if (!entry) {
 		return undefined;
 	}
@@ -88,7 +101,11 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 	const searchParams = resolveMemberSearchParams(params.package, member);
 	url.search = searchParams.toString();
 	const ogImage = url.toString();
-	const description = tryResolveSummaryText(member as ApiDeclaredItem);
+	let description;
+
+	if (member) {
+		description = tryResolveSummaryText(member as ApiDeclaredItem);
+	}
 
 	return {
 		title: name,
@@ -103,16 +120,23 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
 	const modelJSON = await fetchModelJSON(packageName, version);
+
+	if (!modelJSON) {
+		return [{ package: packageName, version, item: '' }];
+	}
+
 	const model = addPackageToModel(new ApiModel(), modelJSON);
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		notFound();
+		return [{ package: packageName, version, item: '' }];
 	}
 
 	return entry.members.map((member: ApiItem) => ({
+		package: packageName,
+		version,
 		item: `${member.displayName}${OVERLOAD_SEPARATOR}${member.kind}`,
 	}));
 }
@@ -137,7 +161,7 @@ function Member({ member }: { readonly member?: ApiItem }) {
 }
 
 export default async function Page({ params }: { params: ItemRouteParams }) {
-	const member = await fetchMember(params);
+	const member = await fetchMember(params.package, params.version ?? 'main', params.item);
 
 	if (!member) {
 		notFound();

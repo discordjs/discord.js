@@ -1,19 +1,17 @@
-import { ApiModel, ApiFunction } from '@microsoft/api-extractor-model';
-import { notFound } from 'next/navigation';
+import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
+import { cache } from 'react';
 import { fetchModelJSON } from '~/app/docAPI';
 import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
-export interface ItemRouteParams {
-	item: string;
-	package: string;
-	version: string;
-}
-
-export async function fetchMember({ package: packageName, version: branchName = 'main', item }: ItemRouteParams) {
+export const fetchMember = cache(async (packageName: string, branchName: string, item?: string) => {
 	if (!PACKAGES.includes(packageName)) {
-		notFound();
+		return null;
+	}
+
+	if (!item) {
+		return null;
 	}
 
 	const model = new ApiModel();
@@ -22,10 +20,19 @@ export async function fetchMember({ package: packageName, version: branchName = 
 		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
 
 		for (const modelJSONFile of modelJSONFiles) {
+			if (!modelJSONFile) {
+				continue;
+			}
+
 			addPackageToModel(model, modelJSONFile);
 		}
 	} else {
 		const modelJSON = await fetchModelJSON(packageName, branchName);
+
+		if (!modelJSON) {
+			return null;
+		}
+
 		addPackageToModel(model, modelJSON);
 	}
 
@@ -38,4 +45,4 @@ export async function fetchMember({ package: packageName, version: branchName = 
 	}
 
 	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
-}
+});

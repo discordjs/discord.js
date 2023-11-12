@@ -1,4 +1,4 @@
-import type { ApiVariable } from '@microsoft/api-extractor-model';
+import type { ApiVariable } from '@discordjs/api-extractor-model';
 import { Documentation } from '../documentation/Documentation';
 import { ObjectHeader } from '../documentation/ObjectHeader';
 

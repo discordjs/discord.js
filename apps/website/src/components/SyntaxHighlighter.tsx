@@ -1,6 +1,6 @@
 import { Code } from 'bright';
 
-export function SyntaxHighlighter(props: typeof Code) {
+export async function SyntaxHighlighter(props: typeof Code) {
 	return (
 		<>
 			<div data-theme="dark">

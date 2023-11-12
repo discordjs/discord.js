@@ -221,8 +221,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * should use the `get` method. See
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.find(user => user.username === 'Bob');
@@ -250,8 +250,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
 	 * but returns the key rather than the positional index.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.findKey(user => user.username === 'Bob');
@@ -275,10 +275,68 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Searches for a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
+	 *
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
+	 */
+	public findLast<V2 extends V>(fn: (value: V, key: K, collection: this) => value is V2): V2 | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown): V | undefined;
+	public findLast<This, V2 extends V>(
+		fn: (this: This, value: V, key: K, collection: this) => value is V2,
+		thisArg: This,
+	): V2 | undefined;
+	public findLast<This>(fn: (this: This, value: V, key: K, collection: this) => unknown, thisArg: This): V | undefined;
+	public findLast(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): V | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const val = entries[index]![1];
+			const key = entries[index]![0];
+			if (fn(val, key, this)) return val;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Searches for the key of a last item where the given function returns a truthy value. This behaves like
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
+	 * but returns the key rather than the positional index.
+	 *
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
+	 */
+	public findLastKey<K2 extends K>(fn: (value: V, key: K, collection: this) => key is K2): K2 | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown): K | undefined;
+	public findLastKey<This, K2 extends K>(
+		fn: (this: This, value: V, key: K, collection: this) => key is K2,
+		thisArg: This,
+	): K2 | undefined;
+	public findLastKey<This>(
+		fn: (this: This, value: V, key: K, collection: this) => unknown,
+		thisArg: This,
+	): K | undefined;
+	public findLastKey(fn: (value: V, key: K, collection: this) => unknown, thisArg?: unknown): K | undefined {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		if (thisArg !== undefined) fn = fn.bind(thisArg);
+		const entries = [...this.entries()];
+		for (let index = entries.length - 1; index >= 0; index--) {
+			const key = entries[index]![0];
+			const val = entries[index]![1];
+			if (fn(val, key, this)) return key;
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Removes items that satisfy the provided filter function.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @returns The number of removed entries
 	 */
 	public sweep(fn: (value: V, key: K, collection: this) => unknown): number;
@@ -299,8 +357,8 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
 	 * but returns a Collection instead of an Array.
 	 *
-	 * @param fn - The function to test with (should return boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param fn - The function to test with (should return a boolean)
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.filter(user => user.username === 'Bob');
@@ -334,7 +392,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * contains the items that passed and the second contains the items that failed.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * const [big, small] = collection.partition(guild => guild.memberCount > 250);
@@ -385,7 +443,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
 	 *
 	 * @param fn - Function that produces a new Collection
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.flatMap(guild => guild.members.cache);
@@ -407,7 +465,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new array, taking three arguments
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.map(user => user.tag);
@@ -430,7 +488,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new collection, taking three arguments
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.mapValues(user => user.tag);
@@ -451,7 +509,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.some(user => user.discriminator === '0000');
@@ -474,7 +532,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection.every(user => !user.bot);
@@ -534,12 +592,43 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Applies a function to produce a single value. Identical in behavior to
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
+	 *
+	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
+	 * @param initialValue - Starting value for the accumulator
+	 */
+	public reduceRight<T>(fn: (accumulator: T, value: V, key: K, collection: this) => T, initialValue?: T): T {
+		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
+		const entries = [...this.entries()];
+		let accumulator!: T;
+
+		let index: number;
+		if (initialValue === undefined) {
+			if (entries.length === 0) throw new TypeError('Reduce of empty collection with no initial value');
+			accumulator = entries[entries.length - 1]![1] as unknown as T;
+			index = entries.length - 1;
+		} else {
+			accumulator = initialValue;
+			index = entries.length;
+		}
+
+		while (--index >= 0) {
+			const key = entries[index]![0];
+			const val = entries[index]![1];
+			accumulator = fn(accumulator, val, key, this);
+		}
+
+		return accumulator;
+	}
+
+	/**
 	 * Identical to
 	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach | Map.forEach()},
 	 * but returns the collection instead of undefined.
 	 *
 	 * @param fn - Function to execute for each element
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection
@@ -565,7 +654,7 @@ export class Collection<K, V> extends Map<K, V> {
 	 * Runs a function on the collection and returns the collection.
 	 *
 	 * @param fn - Function to execute
-	 * @param thisArg - Value to use as `this` when executing function
+	 * @param thisArg - Value to use as `this` when executing the function
 	 * @example
 	 * ```ts
 	 * collection
@@ -662,50 +751,100 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
-	 * The intersect method returns a new structure containing items where the keys and values are present in both original structures.
+	 * The intersection method returns a new collection containing the items where the key is present in both collections.
 	 *
 	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * const intersection = col1.intersection(col2);
+	 * console.log(col1.intersection(col2));
+	 * // => Collection { 'a' => 1 }
+	 * ```
 	 */
-	public intersect<T>(other: ReadonlyCollection<K, T>): Collection<K, T> {
-		const coll = new this.constructor[Symbol.species]<K, T>();
-		for (const [key, value] of other) {
-			if (this.has(key) && Object.is(value, this.get(key))) {
-				coll.set(key, value);
-			}
-		}
-
-		return coll;
-	}
-
-	/**
-	 * The subtract method returns a new structure containing items where the keys and values of the original structure are not present in the other.
-	 *
-	 * @param other - The other Collection to filter against
-	 */
-	public subtract<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
-		const coll = new this.constructor[Symbol.species]<K, V>();
-		for (const [key, value] of this) {
-			if (!other.has(key) || !Object.is(value, other.get(key))) {
-				coll.set(key, value);
-			}
-		}
-
-		return coll;
-	}
-
-	/**
-	 * The difference method returns a new structure containing items where the key is present in one of the original structures but not the other.
-	 *
-	 * @param other - The other Collection to filter against
-	 */
-	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+	public intersection<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
 		const coll = new this.constructor[Symbol.species]<K, T | V>();
-		for (const [key, value] of other) {
-			if (!this.has(key)) coll.set(key, value);
+
+		for (const [key, value] of this) {
+			if (other.has(key)) coll.set(key, value);
 		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing the items where the key is present in either of the collections.
+	 *
+	 * @remarks
+	 *
+	 * If the collections have any items with the same key, the value from the first collection will be used.
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['b', 3], ['c', 3]]);
+	 * const union = col1.union(col2);
+	 * console.log(union);
+	 * // => Collection { 'a' => 1, 'b' => 2, 'c' => 3 }
+	 * ```
+	 */
+	public union<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+		const coll = new this.constructor[Symbol.species]<K, T | V>(this);
+
+		for (const [key, value] of other) {
+			if (!coll.has(key)) coll.set(key, value);
+		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing the items where the key is present in this collection but not the other.
+	 *
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * console.log(col1.difference(col2));
+	 * // => Collection { 'b' => 2 }
+	 * console.log(col2.difference(col1));
+	 * // => Collection { 'c' => 3 }
+	 * ```
+	 */
+	public difference<T>(other: ReadonlyCollection<K, T>): Collection<K, V> {
+		const coll = new this.constructor[Symbol.species]<K, V>();
 
 		for (const [key, value] of this) {
 			if (!other.has(key)) coll.set(key, value);
+		}
+
+		return coll;
+	}
+
+	/**
+	 * Returns a new collection containing only the items where the keys are present in either collection, but not both.
+	 *
+	 * @param other - The other Collection to filter against
+	 * @example
+	 * ```ts
+	 * const col1 = new Collection([['a', 1], ['b', 2]]);
+	 * const col2 = new Collection([['a', 1], ['c', 3]]);
+	 * const symmetricDifference = col1.symmetricDifference(col2);
+	 * console.log(col1.symmetricDifference(col2));
+	 * // => Collection { 'b' => 2, 'c' => 3 }
+	 * ```
+	 */
+	public symmetricDifference<T>(other: ReadonlyCollection<K, T>): Collection<K, T | V> {
+		const coll = new this.constructor[Symbol.species]<K, T | V>();
+
+		for (const [key, value] of this) {
+			if (!other.has(key)) coll.set(key, value);
+		}
+
+		for (const [key, value] of other) {
+			if (!this.has(key)) coll.set(key, value);
 		}
 
 		return coll;
@@ -768,6 +907,14 @@ export class Collection<K, V> extends Map<K, V> {
 	}
 
 	/**
+	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
+	 * but returns a Collection instead of an Array.
+	 */
+	public toReversed() {
+		return new this.constructor[Symbol.species](this).reverse();
+	}
+
+	/**
 	 * The sorted method sorts the items of a collection and returns it.
 	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
@@ -780,13 +927,13 @@ export class Collection<K, V> extends Map<K, V> {
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public sorted(compareFunction: Comparator<K, V> = Collection.defaultSort) {
+	public toSorted(compareFunction: Comparator<K, V> = Collection.defaultSort) {
 		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
 	}
 
 	public toJSON() {
 		// toJSON is called recursively by JSON.stringify.
-		return [...this.values()];
+		return [...this.entries()];
 	}
 
 	private static defaultSort<V>(firstValue: V, secondValue: V): number {

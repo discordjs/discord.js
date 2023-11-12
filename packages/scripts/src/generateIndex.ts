@@ -1,23 +1,11 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
+import type { ApiPackage } from '@discordjs/api-extractor-model';
+import { ApiItem, ApiModel, ApiDeclaredItem, ApiItemContainerMixin, ApiItemKind } from '@discordjs/api-extractor-model';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import {
-	ApiModel,
-	ApiDeclaredItem,
-	ApiItemContainerMixin,
-	ApiItem,
-	type ApiPackage,
-	ApiItemKind,
-} from '@microsoft/api-extractor-model';
-import {
-	DocNodeKind,
-	type DocCodeSpan,
-	type DocNode,
-	type DocParagraph,
-	type DocPlainText,
-	TSDocConfiguration,
-} from '@microsoft/tsdoc';
+import { DocNodeKind, TSDocConfiguration } from '@microsoft/tsdoc';
+import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import { request } from 'undici';
 
@@ -29,6 +17,7 @@ export interface MemberJSON {
 }
 
 export const PACKAGES = [
+	'discord.js',
 	'brokers',
 	'builders',
 	'collection',
@@ -44,17 +33,23 @@ export const PACKAGES = [
 let idx = 0;
 
 export function addPackageToModel(model: ApiModel, data: any) {
-	const tsdocConfiguration = new TSDocConfiguration();
-	const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
-	tsdocConfigFile.configureParser(tsdocConfiguration);
+	let apiPackage: ApiPackage;
+	if (data.metadata) {
+		const tsdocConfiguration = new TSDocConfiguration();
+		const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
+		tsdocConfigFile.configureParser(tsdocConfiguration);
 
-	const apiPackage = ApiItem.deserialize(data, {
-		apiJsonFilename: '',
-		toolPackage: data.metadata.toolPackage,
-		toolVersion: data.metadata.toolVersion,
-		versionToDeserialize: data.metadata.schemaVersion,
-		tsdocConfiguration,
-	}) as ApiPackage;
+		apiPackage = ApiItem.deserialize(data, {
+			apiJsonFilename: '',
+			toolPackage: data.metadata.toolPackage,
+			toolVersion: data.metadata.toolVersion,
+			versionToDeserialize: data.metadata.schemaVersion,
+			tsdocConfiguration,
+		}) as ApiPackage;
+	} else {
+		apiPackage = ApiItem.deserializeDocgen(data, 'discord.js') as ApiPackage;
+	}
+
 	model.addMember(apiPackage);
 	return model;
 }
@@ -81,6 +76,9 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				break;
 			case DocNodeKind.PlainText:
 				retVal += (node as DocPlainText).text;
+				break;
+			case DocNodeKind.LinkTag:
+				retVal += (node as DocLinkTag).urlDestination;
 				break;
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph: {
@@ -135,9 +133,11 @@ export function visitNodes(item: ApiItem, tag: string) {
 	return members;
 }
 
-export async function generateIndex(model: ApiModel, packageName: string, tag = 'main') {
-	const members = visitNodes(model.tryGetPackageByName(packageName)!.entryPoints[0]!, tag);
-
+export async function writeIndexToFileSystem(
+	members: ReturnType<typeof visitNodes>,
+	packageName: string,
+	tag = 'main',
+) {
 	const dir = 'searchIndex';
 
 	try {
@@ -152,19 +152,43 @@ export async function generateIndex(model: ApiModel, packageName: string, tag = 
 	);
 }
 
-export async function generateAllIndices() {
+export async function fetchVersions(pkg: string) {
+	const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+	return response.body.json() as Promise<string[]>;
+}
+
+export async function fetchVersionDocs(pkg: string, version: string) {
+	const response = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
+	return response.body.json() as Promise<Record<any, any>>;
+}
+
+export async function generateAllIndices({
+	fetchPackageVersions = fetchVersions,
+	fetchPackageVersionDocs = fetchVersionDocs,
+	writeToFile = true,
+}) {
+	const indices: Record<any, any>[] = [];
+
 	for (const pkg of PACKAGES) {
-		const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
-		const versions = (await response.body.json()) as any;
+		const versions = await fetchPackageVersions(pkg);
 
 		for (const version of versions) {
 			idx = 0;
 
-			const versionRes = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
-			const data = await versionRes.body.json();
-
+			const data = await fetchPackageVersionDocs(pkg, version);
 			const model = addPackageToModel(new ApiModel(), data);
-			await generateIndex(model, pkg, version);
+			const members = visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!, version);
+
+			const sanitizePackageName = pkg.replaceAll('.', '-');
+			const sanitizeVersion = version.replaceAll('.', '-');
+
+			if (writeToFile) {
+				await writeIndexToFileSystem(members, sanitizePackageName, sanitizeVersion);
+			} else {
+				indices.push({ index: `${sanitizePackageName}-${sanitizeVersion}`, data: members });
+			}
 		}
 	}
+
+	return indices;
 }
