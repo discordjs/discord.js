@@ -93,7 +93,7 @@ class GuildMemberManager extends CachedManager {
    * <info>This method requires the {@link PermissionFlagsBits.CreateInstantInvite} permission.
    * @param {UserResolvable} user The user to add to the guild
    * @param {AddGuildMemberOptions} options Options for adding the user to the guild
-   * @returns {Promise<GuildMember|null>}
+   * @returns {Promise<?GuildMember>}
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
@@ -326,9 +326,9 @@ class GuildMemberManager extends CachedManager {
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
+   * @property {?GuildVoiceChannelResolvable} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
+   * @property {?DateResolvable} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
    * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    * @property {string} [reason] Reason for editing this user
@@ -400,7 +400,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Prunes members from the guild based on how long they have been inactive.
    * @param {GuildPruneMembersOptions} [options] Options for pruning
-   * @returns {Promise<number|null>} The number of members that were/will be kicked
+   * @returns {Promise<?number>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
    * guild.members.prune({ dry: true })

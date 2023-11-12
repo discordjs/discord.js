@@ -310,7 +310,7 @@ class ThreadChannel extends BaseChannel {
    * or when the original message in the parent channel is deleted.
    * If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<Message<true>|null>}
+   * @returns {Promise<?Message<true>>}
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
