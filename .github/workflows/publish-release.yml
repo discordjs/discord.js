@@ -34,6 +34,6 @@ jobs:
 
       - name: Publish package
         run: |
-          pnpm --filter=${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} publish
+          pnpm --filter=${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
