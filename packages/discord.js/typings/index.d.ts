@@ -6647,7 +6647,7 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
   ? Value
-  : Value extends { toJSON(): infer JSONResult }
+  : Value extends JSONEncodable<infer JSONResult>
   ? JSONResult
   : Value extends ReadonlyArray<infer ItemType>
   ? Serialized<ItemType>[]
