@@ -70,14 +70,17 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * @param channels - The channels to add
 	 */
 	public addDefaultChannels(...channels: RestOrArray<Snowflake>) {
-		const normalizedValues = normalizeArray(channels).map((id) => ({
-			id,
-			type: SelectMenuDefaultValueType.Channel as const,
-		}));
-
+		const normalizedValues = normalizeArray(channels);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
-		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
-		this.data.default_values.push(...normalizedValues);
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.Channel as const,
+			})),
+		);
+
 		return this;
 	}
 
@@ -87,13 +90,14 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * @param channels - The channels to set
 	 */
 	public setDefaultChannels(...channels: RestOrArray<Snowflake>) {
-		const normalizedValues = normalizeArray(channels).map((id) => ({
+		const normalizedValues = normalizeArray(channels);
+		optionsLengthValidator.parse(normalizedValues.length);
+
+		this.data.default_values = normalizedValues.map((id) => ({
 			id,
 			type: SelectMenuDefaultValueType.Channel as const,
 		}));
 
-		optionsLengthValidator.parse(normalizedValues.length);
-		this.data.default_values = normalizedValues;
 		return this;
 	}
 

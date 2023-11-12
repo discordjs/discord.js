@@ -45,14 +45,17 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * @param roles - The roles to add
 	 */
 	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
-		const normalizedValues = normalizeArray(roles).map((id) => ({
-			id,
-			type: SelectMenuDefaultValueType.Role as const,
-		}));
-
+		const normalizedValues = normalizeArray(roles);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
-		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
-		this.data.default_values.push(...normalizedValues);
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.Role as const,
+			})),
+		);
+
 		return this;
 	}
 
@@ -62,14 +65,17 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * @param users - The users to add
 	 */
 	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
-		const normalizedValues = normalizeArray(users).map((id) => ({
-			id,
-			type: SelectMenuDefaultValueType.User as const,
-		}));
-
+		const normalizedValues = normalizeArray(users);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
-		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
-		this.data.default_values.push(...normalizedValues);
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.User as const,
+			})),
+		);
+
 		return this;
 	}
 
@@ -85,8 +91,8 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 		>
 	) {
 		const normalizedValues = normalizeArray(values);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
-		optionsLengthValidator.parse(this.data.default_values.length + normalizedValues.length);
 		this.data.default_values.push(...normalizedValues);
 		return this;
 	}
