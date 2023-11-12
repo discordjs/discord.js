@@ -1129,7 +1129,7 @@ export abstract class Collector<Key, Value, Extras extends unknown[] = []> exten
   public toJSON(): unknown;
 
   protected listener: (...args: any[]) => void;
-  public abstract collect(...args: unknown[]): Key | null | Promise<Key | null>;
+  public abstract collect(...args: unknown[]): Awaitable<Key | null>;
   public abstract dispose(...args: unknown[]): Key | null;
 
   public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
@@ -5066,7 +5066,7 @@ export interface CloseEvent {
   reason: string;
 }
 
-export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => boolean | Promise<boolean>;
+export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => Awaitable<boolean>;
 
 export interface CollectorOptions<FilterArguments extends unknown[]> {
   filter?: CollectorFilter<FilterArguments>;
@@ -6647,7 +6647,7 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
   ? Value
-  : Value extends { toJSON(): infer JSONResult }
+  : Value extends JSONEncodable<infer JSONResult>
   ? JSONResult
   : Value extends ReadonlyArray<infer ItemType>
   ? Serialized<ItemType>[]
