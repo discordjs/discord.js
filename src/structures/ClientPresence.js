@@ -54,7 +54,7 @@ class ClientPresence extends Presence {
 
         activity.type ??= ActivityTypes.PLAYING;
 
-        if (CustomStatusActivityTypes.some(type => type === activity.type) && !activity.state) {
+        if (CustomStatusActivityTypes.includes(activity.type) && !activity.state) {
           activity.state = activity.name;
           activity.name = 'Custom Status';
         }
