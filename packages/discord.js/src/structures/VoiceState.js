@@ -197,7 +197,7 @@ class VoiceState extends Base {
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {GuildVoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to
+   * @param {?GuildVoiceChannelResolvable} channel Channel to move the member to, or `null` if you want to
    * disconnect them from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
