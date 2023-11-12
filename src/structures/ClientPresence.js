@@ -4,6 +4,8 @@ const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
 const { ActivityTypes, Opcodes } = require('../util/Constants');
 
+const CustomStatusActivityTypes = [ActivityTypes.CUSTOM, ActivityTypes[ActivityTypes.CUSTOM]];
+
 /**
  * Represents the client's presence.
  * @extends {Presence}
@@ -52,7 +54,7 @@ class ClientPresence extends Presence {
 
         activity.type ??= ActivityTypes.PLAYING;
 
-        if (activity.type === ActivityTypes.CUSTOM && !activity.state) {
+        if (CustomStatusActivityTypes.includes(activity.type) && !activity.state) {
           activity.state = activity.name;
           activity.name = 'Custom Status';
         }
