@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.14.1](https://github.com/discordjs/discord.js/compare/14.14.0...14.14.1) - (2023-11-12)
+
+## Bug Fixes
+
+- **Emoji:** `id` set as `undefined` edge case (#9953) ([cc07a28](https://github.com/discordjs/discord.js/commit/cc07a28f125be63a7f1132a5a07d317c160f9a89))
+- **BaseClient:** Default in objects properly (#9952) ([f93abf7](https://github.com/discordjs/discord.js/commit/f93abf7e35ab6793aa530ceadc279d8c80b7aebf))
+
+## Documentation
+
+- Use preferred nullable syntax (`?T` over `T | null`) (#9946) ([1e4ef35](https://github.com/discordjs/discord.js/commit/1e4ef35436cd134db70c1c3152e33342baf9d6b6))
+
+## Refactor
+
+- Use formatters (#9956) ([40726db](https://github.com/discordjs/discord.js/commit/40726db722c7851f4096cda29667ea4ee89da98b))
+
+## Typings
+
+- Use wrapper utilities (#9945) ([4bc1dae](https://github.com/discordjs/discord.js/commit/4bc1dae36f01649127774c40b14e778d65cf25c5))
+
 # [14.14.0](https://github.com/discordjs/discord.js/compare/14.13.0...14.14.0) - (2023-11-12)
 
 ## Bug Fixes
