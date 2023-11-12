@@ -48,6 +48,7 @@
 		"@discordjs/website#build:local": {
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
+				"../../packages/*/README.md",
 				"public/**",
 				"src/**",
 				"scripts/**",
@@ -58,12 +59,13 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**"],
+			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
 			"dependsOn": ["^build"],
 			"inputs": [
+				"../../packages/*/README.md",
 				"public/**",
 				"src/**",
 				"scripts/**",
@@ -74,7 +76,7 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**"],
+			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#generate:contentlayer": {
