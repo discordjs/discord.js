@@ -23,6 +23,6 @@ for await (const file of globber.globGenerator()) {
 		await pool.sql`insert into documentation (version, data) values (${version}, ${data}) on conflict (name, version) do update set data = EXCLUDED.data`;
 	} catch (error) {
 		const err = error as Error;
-		setFailed(err.message);
+		console.log(err.message);
 	}
 }
