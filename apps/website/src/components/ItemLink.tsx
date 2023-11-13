@@ -39,7 +39,5 @@ export function ItemLink<Route extends string>(props: PropsWithChildren<ItemLink
 
 	const { itemURI, packageName: pkgName, ...linkProps } = props;
 
-	return (
-		<Link {...linkProps} prefetch={false} href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} />
-	);
+	return <Link {...linkProps} href={`/docs/packages/${pkgName ?? packageName}/${version}/${itemURI}`} />;
 }

@@ -16,7 +16,6 @@ export default function Page() {
 						className={buttonVariants({ variant: 'secondary' })}
 						href={`/docs/packages/${pkg}`}
 						key={`${pkg}-${idx}`}
-						prefetch={false}
 					>
 						<div className="flex grow flex-row place-content-between place-items-center gap-4">
 							<div className="flex flex-row place-content-between place-items-center gap-4">

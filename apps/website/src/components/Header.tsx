@@ -30,7 +30,6 @@ export default function Header() {
 						className="rounded outline-none hover:underline focus:ring focus:ring-width-2 focus:ring-blurple"
 						href={`/${original.slice(0, idx + 1).join('/')}` as Route}
 						key={`${path}-${idx}`}
-						prefetch={false}
 					>
 						{path}
 					</Link>

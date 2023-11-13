@@ -19,7 +19,7 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 	const versionMenuItems = useMemo(
 		() =>
 			versions?.map((item, idx) => (
-				<Link href={`/docs/packages/${packageName}/${isDev ? 'main' : item}`} key={`${item}-${idx}`} prefetch={false}>
+				<Link href={`/docs/packages/${packageName}/${isDev ? 'main' : item}`} key={`${item}-${idx}`}>
 					<MenuItem
 						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 						onClick={() => versionMenu.setOpen(false)}
