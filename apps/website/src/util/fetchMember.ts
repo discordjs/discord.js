@@ -1,11 +1,10 @@
 import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
-import { cache } from 'react';
 import { fetchModelJSON } from '~/app/docAPI';
 import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
-export const fetchMember = cache(async (packageName: string, branchName: string, item?: string) => {
+export const fetchMember = async (packageName: string, branchName: string, item?: string) => {
 	if (!PACKAGES.includes(packageName)) {
 		return null;
 	}
@@ -33,4 +32,4 @@ export const fetchMember = cache(async (packageName: string, branchName: string,
 	}
 
 	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
-});
+};

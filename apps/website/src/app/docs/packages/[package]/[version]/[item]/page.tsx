@@ -166,7 +166,7 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 	}
 
 	return (
-		<div className="relative top-6">
+		<div className="relative">
 			<Member member={member} />
 		</div>
 	);

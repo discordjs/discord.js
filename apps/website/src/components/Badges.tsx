@@ -28,7 +28,9 @@ export function Badges({ item }: { readonly item: ApiDocumentedItem }) {
 	const isAbstract = ApiAbstractMixin.isBaseClassOf(item) && item.isAbstract;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
 
-	return (
+	const isAny = isStatic || isProtected || isReadonly || isAbstract || isDeprecated;
+
+	return isAny ? (
 		<div className="flex flex-row gap-1 md:ml-7">
 			{isDeprecated ? <Badge color={BadgeColor.Danger}>Deprecated</Badge> : null}
 			{isProtected ? <Badge>Protected</Badge> : null}
@@ -36,5 +38,5 @@ export function Badges({ item }: { readonly item: ApiDocumentedItem }) {
 			{isAbstract ? <Badge>Abstract</Badge> : null}
 			{isReadonly ? <Badge>Readonly</Badge> : null}
 		</div>
-	);
+	) : null;
 }

@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { connect } from '@planetscale/database';
-import { cache } from 'react';
 
 const sql = connect({
 	url: process.env.DATABASE_URL!,
@@ -11,7 +10,7 @@ const sql = connect({
 	},
 });
 
-export const fetchVersions = cache(async (packageName: string): Promise<string[]> => {
+export const fetchVersions = async (packageName: string): Promise<string[]> => {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return ['main'];
 	}
@@ -26,9 +25,9 @@ export const fetchVersions = cache(async (packageName: string): Promise<string[]
 	} catch {
 		return [];
 	}
-});
+};
 
-export const fetchModelJSON = cache(async (packageName: string, version: string) => {
+export const fetchModelJSON = async (packageName: string, version: string) => {
 	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
 		try {
 			const res = await readFile(
@@ -67,4 +66,4 @@ export const fetchModelJSON = cache(async (packageName: string, version: string)
 	} catch {
 		return null;
 	}
-});
+};

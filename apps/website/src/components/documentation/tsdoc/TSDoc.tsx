@@ -109,7 +109,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					);
 
 					return (
-						<div className="flex flex-col space-y-2">
+						<div className="flex flex-col gap-2">
 							{comment.deprecatedBlock ? (
 								<DeprecatedBlock>{createNode(comment.deprecatedBlock.content)}</DeprecatedBlock>
 							) : null}
