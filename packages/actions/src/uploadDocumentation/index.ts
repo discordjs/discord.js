@@ -20,7 +20,7 @@ for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {
 		console.log(`Uploading ${file} with ${version}...`);
-		await pool.sql`insert into documentation (version, data) values (${version}, ${data}) on conflict (version) do update set data = EXCLUDED.data`;
+		await pool.sql`insert into documentation (version, data) values (${version}, ${data}) on conflict (name, version) do update set data = EXCLUDED.data`;
 	} catch (error) {
 		const err = error as Error;
 		setFailed(err.message);
