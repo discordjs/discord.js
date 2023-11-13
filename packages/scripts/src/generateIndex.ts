@@ -166,7 +166,7 @@ export async function generateAllIndices({
 	fetchPackageVersions = fetchVersions,
 	fetchPackageVersionDocs = fetchVersionDocs,
 	writeToFile = true,
-}) {
+} = {}) {
 	const indices: Record<any, any>[] = [];
 
 	for (const pkg of PACKAGES) {

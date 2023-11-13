@@ -57,7 +57,8 @@ try {
 		await Promise.all(
 			indices.map(async (index) => {
 				console.log(`Uploading ${index.index}...`);
-				return client.index(index.index).addDocuments(index.data);
+				await client.createIndex(index.index);
+				await client.index(index.index).addDocuments(index.data);
 			}),
 		);
 	} catch {}
