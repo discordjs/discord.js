@@ -73,6 +73,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								href={urlDestination as Route}
 								key={idx}
+								prefetch={false}
 							>
 								{linkText ?? urlDestination}
 							</Link>
