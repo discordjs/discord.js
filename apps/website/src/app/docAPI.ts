@@ -32,18 +32,20 @@ export const fetchModelJSON = async (packageName: string, version: string) => {
 
 	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		try {
-			const { rows } = await sql`select data from documentation where name = ${packageName} and version = ${'main'}`;
+			const { rows } = await sql`select url from documentation where name = ${packageName} and version = ${'main'}`;
+			const res = await fetch(rows[0]?.url ?? '');
 
-			return rows[0]?.data ?? null;
+			return await res.json();
 		} catch {
 			return null;
 		}
 	}
 
 	try {
-		const { rows } = await sql`select data from documentation where name = ${packageName} and version = ${version}`;
+		const { rows } = await sql`select url from documentation where name = ${packageName} and version = ${version}`;
+		const res = await fetch(rows[0]?.url ?? '');
 
-		return rows[0]?.data ?? null;
+		return await res.json();
 	} catch {
 		return null;
 	}

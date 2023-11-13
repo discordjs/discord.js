@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import { getInput, setFailed } from '@actions/core';
 import { create } from '@actions/glob';
+import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';
 
 if (!process.env.DATABASE_URL) {
@@ -20,7 +21,15 @@ for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {
 		console.log(`Uploading ${file} with ${version}...`);
-		await pool.sql`insert into documentation (version, data) values (${version}, ${data}) on conflict (name, version) do update set data = EXCLUDED.data`;
+		const { name } = JSON.parse(data);
+		const { url } = await put(`${name.replace('@discordjs/', '')}/${version}.json`, data, {
+			access: 'public',
+			addRandomSuffix: false,
+		});
+		await pool.sql`insert into documentation (name, version, url) values (${name.replace(
+			'@discordjs/',
+			'',
+		)}, ${version}, ${url}) on conflict (name, version, url) do update set url = EXCLUDED.url`;
 	} catch (error) {
 		const err = error as Error;
 		console.log(err.message);

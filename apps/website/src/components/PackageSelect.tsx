@@ -14,11 +14,10 @@ export default function PackageSelect() {
 
 	const packageMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
 
-	// TODO: Version number is currently hard coded
 	const packageMenuItems = useMemo(
 		() =>
 			PACKAGES.map((pkg, idx) => (
-				<Link href={`/docs/packages/${pkg}/${pkg === 'discord.js' ? '14.14.1' : 'main'}`} key={`${pkg}-${idx}`}>
+				<Link href={`/docs/packages/${pkg}/main`} key={`${pkg}-${idx}`}>
 					<MenuItem
 						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 						id={pkg}

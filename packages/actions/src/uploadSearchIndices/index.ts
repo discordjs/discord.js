@@ -3,6 +3,7 @@ import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import { createPool } from '@vercel/postgres';
 import { MeiliSearch } from 'meilisearch';
+import { fetch } from 'undici';
 
 if (!process.env.DATABASE_URL) {
 	setFailed('DATABASE_URL is not set');
@@ -36,9 +37,10 @@ try {
 		},
 		fetchPackageVersionDocs: async (pkg, version) => {
 			console.log(`Fetching data for ${pkg} ${version}...`);
-			const { rows } = await pool.sql`select data from documentation where name = ${pkg} and version = ${version}`;
+			const { rows } = await pool.sql`select url from documentation where name = ${pkg} and version = ${version}`;
+			const res = await fetch(rows[0]?.url ?? '');
 
-			return rows[0]?.data ?? null;
+			return res.json();
 		},
 		writeToFile: false,
 	});
