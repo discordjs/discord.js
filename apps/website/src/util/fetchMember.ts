@@ -16,25 +16,13 @@ export const fetchMember = cache(async (packageName: string, branchName: string,
 
 	const model = new ApiModel();
 
-	if (branchName === 'main') {
-		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
+	const modelJSON = await fetchModelJSON(packageName, branchName);
 
-		for (const modelJSONFile of modelJSONFiles) {
-			if (!modelJSONFile) {
-				continue;
-			}
-
-			addPackageToModel(model, modelJSONFile);
-		}
-	} else {
-		const modelJSON = await fetchModelJSON(packageName, branchName);
-
-		if (!modelJSON) {
-			return null;
-		}
-
-		addPackageToModel(model, modelJSON);
+	if (!modelJSON) {
+		return null;
 	}
+
+	addPackageToModel(model, modelJSON);
 
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
 
