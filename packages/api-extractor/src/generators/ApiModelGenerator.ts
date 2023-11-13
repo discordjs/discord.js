@@ -3,7 +3,18 @@
 
 import { existsSync } from 'node:fs';
 import * as path from 'node:path';
+import type {
+	IApiMethodOptions,
+	ApiItemContainerMixin,
+	IApiParameterOptions,
+	IExcerptTokenRange,
+	IExcerptTokenRangeWithTypeParameters,
+	IExcerptToken,
+	IApiTypeParameterOptions,
+	IApiPropertyOptions,
+} from '@discordjs/api-extractor-model';
 import {
+	ApiItemKind,
 	ApiModel,
 	ApiClass,
 	ApiPackage,
@@ -13,16 +24,11 @@ import {
 	ApiNamespace,
 	ApiInterface,
 	ApiPropertySignature,
-	type ApiItemContainerMixin,
 	ReleaseTag,
 	ApiProperty,
 	ApiMethodSignature,
-	type IApiParameterOptions,
 	ApiEnum,
 	ApiEnumMember,
-	type IExcerptTokenRange,
-	type IExcerptTokenRangeWithTypeParameters,
-	type IExcerptToken,
 	ApiConstructor,
 	ApiConstructSignature,
 	ApiFunction,
@@ -30,7 +36,6 @@ import {
 	ApiVariable,
 	ApiTypeAlias,
 	ApiCallSignature,
-	type IApiTypeParameterOptions,
 	EnumMemberOrder,
 	ExcerptTokenKind,
 	Navigation,
@@ -212,6 +217,14 @@ function fixLinkTags(input?: string): string | undefined {
 
 function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
+}
+
+function formatVarType(type: DocgenVarTypeJson): string {
+	return (Array.isArray(type) ? type : type.types ?? []).map((t1) => t1.map((t2) => t2.join('')).join('')).join(' | ');
+}
+
+function getFirstType(type: DocgenVarTypeJson): string {
+	return (Array.isArray(type) ? type[0]?.[0]?.[0] : type.types?.[0]?.[0]?.[0]) ?? 'unknown';
 }
 
 export class ApiModelGenerator {
@@ -432,6 +445,42 @@ export class ApiModelGenerator {
 				...context,
 				name: childDeclaration.astSymbol.localName,
 			});
+		}
+
+		for (const method of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.methods ??
+			[]) {
+			switch (context.parentApiItem.kind) {
+				case ApiItemKind.Class:
+					this._processApiMethod(null, { ...context, name: method.name });
+					break;
+
+				case ApiItemKind.Interface:
+					this._processApiMethodSignature(null, { ...context, name: method.name });
+					break;
+
+				default:
+					console.log(
+						`Found docgen method not in TS typings for ApiItem of kind ${ApiItemKind[context.parentApiItem.kind]}`,
+					);
+			}
+		}
+
+		for (const property of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.props ??
+			[]) {
+			switch (context.parentApiItem.kind) {
+				case ApiItemKind.Class:
+					this._processApiProperty(null, { ...context, name: property.name });
+					break;
+
+				case ApiItemKind.Interface:
+					this._processApiPropertySignature(null, { ...context, name: property.name });
+					break;
+
+				default:
+					console.log(
+						`Found docgen property not in TS typings for ApiItem of kind ${ApiItemKind[context.parentApiItem.kind]}`,
+					);
+			}
 		}
 	}
 
@@ -955,86 +1004,98 @@ export class ApiModelGenerator {
 		});
 	}
 
-	private _processApiMethod(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	private _processApiMethod(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
-		const isStatic: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+		const jsDoc = parent?.methods?.find((method) => method.name === name);
+		const isStatic: boolean = astDeclaration
+			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
+			: jsDoc?.scope === 'static';
+		const overloadIndex: number = astDeclaration ? this._collector.getOverloadIndex(astDeclaration) : 1;
 		const containerKey: string = ApiMethod.getContainerKey(name, isStatic, overloadIndex);
 
 		let apiMethod: ApiMethod | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiMethod;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
-		const jsDoc = parent?.methods?.find((method) => method.name === name);
 
 		if (apiMethod === undefined) {
-			const methodDeclaration: ts.MethodDeclaration = astDeclaration.declaration as ts.MethodDeclaration;
+			if (astDeclaration) {
+				const methodDeclaration: ts.MethodDeclaration = astDeclaration.declaration as ts.MethodDeclaration;
 
-			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
+				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
-			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			nodesToCapture.push({ node: methodDeclaration.type, tokenRange: returnTypeTokenRange });
+				const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
+				nodesToCapture.push({ node: methodDeclaration.type, tokenRange: returnTypeTokenRange });
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
-				nodesToCapture,
-				methodDeclaration.typeParameters,
-			);
+				const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+					nodesToCapture,
+					methodDeclaration.typeParameters,
+				);
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(nodesToCapture, methodDeclaration.parameters);
+				const parameters: IApiParameterOptions[] = this._captureParameters(
+					nodesToCapture,
+					methodDeclaration.parameters,
+				);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
-			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
-							''
-						}${
-							jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-								? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
-								: ''
-						}${
-							jsDoc.deprecated
-								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
-								: ''
-						} */`,
-				  ).docComment
-				: apiItemMetadata.tsdocComment;
-			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
-				return; // trim out items marked as "@internal" or "@alpha"
+				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
+				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const docComment: tsdoc.DocComment | undefined = jsDoc
+					? this._tsDocParser.parseString(
+							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+								jsDoc.params
+									?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+									.join('') ?? ''
+							}${
+								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
+									? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
+									: ''
+							}${
+								jsDoc.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''
+							}${
+								jsDoc.deprecated
+									? ` * @deprecated ${
+											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+									  }\n`
+									: ''
+							} */`,
+					  ).docComment
+					: apiItemMetadata.tsdocComment;
+				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
+				if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
+					return; // trim out items marked as "@internal" or "@alpha"
+				}
+
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
+				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
+				const sourceLocation: ISourceLocation = this._getSourceLocation(methodDeclaration);
+
+				apiMethod = new ApiMethod({
+					name,
+					isAbstract,
+					docComment,
+					releaseTag,
+					isProtected,
+					isStatic,
+					isOptional,
+					typeParameters,
+					parameters,
+					overloadIndex,
+					excerptTokens,
+					returnTypeTokenRange,
+					fileUrlPath: jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
+					fileLine: jsDoc?.meta.line ?? sourceLocation.sourceFileLine,
+					fileColumn: sourceLocation.sourceFileColumn,
+				});
+			} else if (jsDoc) {
+				apiMethod = new ApiMethod(this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
 			}
-
-			const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
-			const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(methodDeclaration);
-
-			apiMethod = new ApiMethod({
-				name,
-				isAbstract,
-				docComment,
-				releaseTag,
-				isProtected,
-				isStatic,
-				isOptional,
-				typeParameters,
-				parameters,
-				overloadIndex,
-				excerptTokens,
-				returnTypeTokenRange,
-				fileUrlPath: jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
-				fileLine: jsDoc?.meta.line ?? sourceLocation.sourceFileLine,
-				fileColumn: sourceLocation.sourceFileColumn,
-			});
 
 			parentApiItem.addMember(apiMethod);
 		}
 	}
 
-	private _processApiMethodSignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	private _processApiMethodSignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
-		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
+		const overloadIndex: number = astDeclaration ? this._collector.getOverloadIndex(astDeclaration) : 1;
 		const containerKey: string = ApiMethodSignature.getContainerKey(name, overloadIndex);
 
 		let apiMethodSignature: ApiMethodSignature | undefined = parentApiItem.tryGetMemberByKey(
@@ -1044,58 +1105,63 @@ export class ApiModelGenerator {
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 
 		if (apiMethodSignature === undefined) {
-			const methodSignature: ts.MethodSignature = astDeclaration.declaration as ts.MethodSignature;
+			if (astDeclaration) {
+				const methodSignature: ts.MethodSignature = astDeclaration.declaration as ts.MethodSignature;
 
-			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
+				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
-			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			nodesToCapture.push({ node: methodSignature.type, tokenRange: returnTypeTokenRange });
+				const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
+				nodesToCapture.push({ node: methodSignature.type, tokenRange: returnTypeTokenRange });
 
-			const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
-				nodesToCapture,
-				methodSignature.typeParameters,
-			);
+				const typeParameters: IApiTypeParameterOptions[] = this._captureTypeParameters(
+					nodesToCapture,
+					methodSignature.typeParameters,
+				);
 
-			const parameters: IApiParameterOptions[] = this._captureParameters(nodesToCapture, methodSignature.parameters);
+				const parameters: IApiParameterOptions[] = this._captureParameters(nodesToCapture, methodSignature.parameters);
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
-			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
-							''
-						}${
-							jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-								? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
-								: ''
-						}${
-							jsDoc.deprecated
-								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
-								: ''
-						} */`,
-				  ).docComment
-				: apiItemMetadata.tsdocComment;
-			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-			const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
+				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
+				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const docComment: tsdoc.DocComment | undefined = jsDoc
+					? this._tsDocParser.parseString(
+							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+								jsDoc.params
+									?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+									.join('') ?? ''
+							}${
+								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
+									? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
+									: ''
+							}${
+								jsDoc.deprecated
+									? ` * @deprecated ${
+											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+									  }\n`
+									: ''
+							} */`,
+					  ).docComment
+					: apiItemMetadata.tsdocComment;
+				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
 
-			apiMethodSignature = new ApiMethodSignature({
-				name,
-				docComment,
-				releaseTag,
-				isOptional,
-				typeParameters,
-				parameters,
-				overloadIndex,
-				excerptTokens,
-				returnTypeTokenRange,
-				fileUrlPath: jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
-				fileLine: jsDoc?.meta.line ?? sourceLocation.sourceFileLine,
-				fileColumn: sourceLocation.sourceFileColumn,
-			});
+				apiMethodSignature = new ApiMethodSignature({
+					name,
+					docComment,
+					releaseTag,
+					isOptional,
+					typeParameters,
+					parameters,
+					overloadIndex,
+					excerptTokens,
+					returnTypeTokenRange,
+					fileUrlPath: jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
+					fileLine: jsDoc?.meta.line ?? sourceLocation.sourceFileLine,
+					fileColumn: sourceLocation.sourceFileColumn,
+				});
+			} else if (jsDoc) {
+				apiMethodSignature = new ApiMethodSignature(this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
+			}
 
 			parentApiItem.addMember(apiMethodSignature);
 		}
@@ -1133,77 +1199,90 @@ export class ApiModelGenerator {
 		});
 	}
 
-	private _processApiProperty(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
-		const isStatic: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0;
+		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
+		const jsDoc = parent?.props?.find((prop) => prop.name === name);
+		const isStatic: boolean = astDeclaration
+			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
+			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
+			? (jsDoc as DocgenPropertyJson).scope === 'static'
+			: false;
 		const containerKey: string = ApiProperty.getContainerKey(name, isStatic);
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
-		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 
 		if (apiProperty === undefined) {
-			const declaration: ts.Declaration = astDeclaration.declaration;
-			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
+			if (astDeclaration) {
+				const declaration: ts.Declaration = astDeclaration.declaration;
+				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
-			const propertyTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			let propertyTypeNode: ts.TypeNode | undefined;
+				const propertyTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
+				let propertyTypeNode: ts.TypeNode | undefined;
 
-			if (ts.isPropertyDeclaration(declaration) || ts.isGetAccessorDeclaration(declaration)) {
-				propertyTypeNode = declaration.type;
+				if (ts.isPropertyDeclaration(declaration) || ts.isGetAccessorDeclaration(declaration)) {
+					propertyTypeNode = declaration.type;
+				}
+
+				if (ts.isSetAccessorDeclaration(declaration)) {
+					// Note that TypeScript always reports an error if a setter does not have exactly one parameter.
+					propertyTypeNode = declaration.parameters[0]!.type;
+				}
+
+				nodesToCapture.push({ node: propertyTypeNode, tokenRange: propertyTypeTokenRange });
+
+				let initializerTokenRange: IExcerptTokenRange | undefined;
+				if (ts.isPropertyDeclaration(declaration) && declaration.initializer) {
+					initializerTokenRange = ExcerptBuilder.createEmptyTokenRange();
+					nodesToCapture.push({ node: declaration.initializer, tokenRange: initializerTokenRange });
+				}
+
+				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
+				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const docComment: tsdoc.DocComment | undefined = jsDoc
+					? this._tsDocParser.parseString(
+							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
+							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
+								'deprecated' in jsDoc && jsDoc.deprecated
+									? ` * @deprecated ${
+											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+									  }\n`
+									: ''
+							} */`,
+					  ).docComment
+					: apiItemMetadata.tsdocComment;
+				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
+				const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
+				const isReadonly: boolean = this._isReadonly(astDeclaration);
+				const sourceLocation: ISourceLocation = this._getSourceLocation(declaration);
+
+				apiProperty = new ApiProperty({
+					name,
+					docComment,
+					releaseTag,
+					isAbstract,
+					isProtected,
+					isStatic,
+					isOptional,
+					isReadonly,
+					excerptTokens,
+					propertyTypeTokenRange,
+					initializerTokenRange,
+					fileUrlPath: jsDoc && 'meta' in jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
+					fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
+					fileColumn: sourceLocation.sourceFileColumn,
+				});
+			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+				apiProperty = new ApiProperty(
+					this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
+				);
+			} else {
+				console.log(`We got a property in ApiItem of kind ${ApiItemKind[parentApiItem.kind]}`);
 			}
 
-			if (ts.isSetAccessorDeclaration(declaration)) {
-				// Note that TypeScript always reports an error if a setter does not have exactly one parameter.
-				propertyTypeNode = declaration.parameters[0]!.type;
-			}
-
-			nodesToCapture.push({ node: propertyTypeNode, tokenRange: propertyTypeTokenRange });
-
-			let initializerTokenRange: IExcerptTokenRange | undefined;
-			if (ts.isPropertyDeclaration(declaration) && declaration.initializer) {
-				initializerTokenRange = ExcerptBuilder.createEmptyTokenRange();
-				nodesToCapture.push({ node: declaration.initializer, tokenRange: initializerTokenRange });
-			}
-
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
-			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-							'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
-						}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
-							'deprecated' in jsDoc && jsDoc.deprecated
-								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
-								: ''
-						} */`,
-				  ).docComment
-				: apiItemMetadata.tsdocComment;
-			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
-			const isAbstract: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Abstract) !== 0;
-			const isReadonly: boolean = this._isReadonly(astDeclaration);
-			const sourceLocation: ISourceLocation = this._getSourceLocation(declaration);
-
-			apiProperty = new ApiProperty({
-				name,
-				docComment,
-				releaseTag,
-				isAbstract,
-				isProtected,
-				isStatic,
-				isOptional,
-				isReadonly,
-				excerptTokens,
-				propertyTypeTokenRange,
-				initializerTokenRange,
-				fileUrlPath: jsDoc && 'meta' in jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
-				fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
-				fileColumn: sourceLocation.sourceFileColumn,
-			});
 			parentApiItem.addMember(apiProperty);
 		} else {
 			// If the property was already declared before (via a merged interface declaration),
@@ -1211,7 +1290,7 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiPropertySignature(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	private _processApiPropertySignature(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
 		const containerKey: string = ApiPropertySignature.getContainerKey(name);
 
@@ -1222,41 +1301,49 @@ export class ApiModelGenerator {
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 
 		if (apiPropertySignature === undefined) {
-			const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
+			if (astDeclaration) {
+				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
 
-			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
+				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
-			const propertyTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
-			nodesToCapture.push({ node: propertySignature.type, tokenRange: propertyTypeTokenRange });
+				const propertyTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
+				nodesToCapture.push({ node: propertySignature.type, tokenRange: propertyTypeTokenRange });
 
-			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
-			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
-			const docComment: tsdoc.DocComment | undefined = jsDoc
-				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-							'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
-						}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
-							'deprecated' in jsDoc && jsDoc.deprecated ? ` * @deprecated ${jsDoc.deprecated}\n` : ''
-						} */`,
-				  ).docComment
-				: apiItemMetadata.tsdocComment;
-			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-			const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
-			const isReadonly: boolean = this._isReadonly(astDeclaration);
-			const sourceLocation: ISourceLocation = this._getSourceLocation(propertySignature);
+				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
+				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
+				const docComment: tsdoc.DocComment | undefined = jsDoc
+					? this._tsDocParser.parseString(
+							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
+							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
+								'deprecated' in jsDoc && jsDoc.deprecated ? ` * @deprecated ${jsDoc.deprecated}\n` : ''
+							} */`,
+					  ).docComment
+					: apiItemMetadata.tsdocComment;
+				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
+				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
+				const isReadonly: boolean = this._isReadonly(astDeclaration);
+				const sourceLocation: ISourceLocation = this._getSourceLocation(propertySignature);
 
-			apiPropertySignature = new ApiPropertySignature({
-				name,
-				docComment,
-				releaseTag,
-				isOptional,
-				excerptTokens,
-				propertyTypeTokenRange,
-				isReadonly,
-				fileUrlPath: jsDoc && 'meta' in jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
-				fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
-				fileColumn: sourceLocation.sourceFileColumn,
-			});
+				apiPropertySignature = new ApiPropertySignature({
+					name,
+					docComment,
+					releaseTag,
+					isOptional,
+					excerptTokens,
+					propertyTypeTokenRange,
+					isReadonly,
+					fileUrlPath: jsDoc && 'meta' in jsDoc ? filePathFromJson(jsDoc.meta) : sourceLocation.sourceFilePath,
+					fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
+					fileColumn: sourceLocation.sourceFileColumn,
+				});
+			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+				apiPropertySignature = new ApiPropertySignature(
+					this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
+				);
+			} else {
+				console.log(`We got a property in ApiItem of kind ${ApiItemKind[parentApiItem.kind]}`);
+			}
 
 			parentApiItem.addMember(apiPropertySignature);
 		} else {
@@ -1582,30 +1669,158 @@ export class ApiModelGenerator {
 				(arr, [type, symbol]) => [
 					...arr,
 					{
-						kind: ExcerptTokenKind.Reference,
+						kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
 						text: type ?? 'unknown',
-						canonicalReference: DeclarationReference.package(this._apiModel.packages[0]!.name)
-							.addNavigationStep(Navigation.Members as any, DeclarationReference.parseComponent(type ?? 'unknown'))
-							.withMeaning(
-								lookup[
-									(
-										(this._collector.entities.find(
-											(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
-										)?.astEntity as AstSymbol | undefined) ??
-										(
-											this._collector.entities.find(
-												(entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity,
-											)?.astEntity as AstImport | undefined
-										)?.astSymbol
-									)?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
-								] ?? ('class' as any),
-							)
-							.toString(),
+						canonicalReference: type?.includes("'")
+							? undefined
+							: DeclarationReference.package(this._apiModel.packages[0]!.name)
+									.addNavigationStep(Navigation.Members as any, DeclarationReference.parseComponent(type ?? 'unknown'))
+									.withMeaning(
+										lookup[
+											(
+												(this._collector.entities.find(
+													(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
+												)?.astEntity as AstSymbol | undefined) ??
+												(
+													this._collector.entities.find(
+														(entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity,
+													)?.astEntity as AstImport | undefined
+												)?.astSymbol
+											)?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
+										] ?? ('class' as any),
+									)
+									.toString(),
 					},
 					{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
 				],
 				[],
 			),
 		);
+	}
+
+	private _mapProp(prop: DocgenPropertyJson, _package: string): IApiPropertyOptions {
+		const mappedVarType = this._mapVarType(prop.type);
+		return {
+			name: prop.name,
+			isAbstract: Boolean(prop.abstract),
+			isProtected: prop.access === 'protected',
+			isStatic: prop.scope === 'static',
+			isOptional: Boolean(prop.nullable),
+			isReadonly: Boolean(prop.readonly),
+			docComment: this._tsDocParser.parseString(
+				`/**\n * ${prop.description}\n${prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
+					prop.readonly ? ' * @readonly\n' : ''
+				} */`,
+			).docComment,
+			excerptTokens: [
+				{
+					kind: ExcerptTokenKind.Content,
+					text: `${prop.access} ${prop.scope === 'static' ? 'static ' : ''}${prop.readonly ? 'readonly ' : ''}${
+						prop.name
+					} :`,
+				},
+				...mappedVarType,
+				{
+					kind: ExcerptTokenKind.Reference,
+					text: formatVarType(prop.type),
+					canonicalReference: `${_package}!${getFirstType(prop.type)}:class`,
+				},
+				{ kind: ExcerptTokenKind.Content, text: ';' },
+			],
+			propertyTypeTokenRange: { startIndex: 1, endIndex: 1 + mappedVarType.length },
+			releaseTag: prop.access === 'public' ? ReleaseTag.Public : ReleaseTag.Internal,
+			fileLine: prop.meta?.line ?? 0,
+			fileUrlPath: prop.meta ? `${prop.meta.path.slice(`packages/${_package}/`.length)}/${prop.meta.file}` : '',
+		};
+	}
+
+	private _mapParam(
+		param: DocgenParamJson,
+		index: number,
+		_package: string,
+		paramTokens: number[],
+	): IApiParameterOptions {
+		return {
+			parameterName: param.name.startsWith('...') ? param.name.slice(3) : param.name,
+			isOptional: Boolean(param.optional),
+			isRest: param.name.startsWith('...'),
+			parameterTypeTokenRange: {
+				startIndex: 1 + index + paramTokens.slice(0, index).reduce((akk, num) => akk + num, 0),
+				endIndex: 1 + index + paramTokens.slice(0, index + 1).reduce((akk, num) => akk + num, 0),
+			},
+		};
+	}
+
+	private _mapMethod(method: DocgenMethodJson, _package: string): IApiMethodOptions {
+		const excerptTokens: IExcerptToken[] = [];
+		excerptTokens.push({
+			kind: ExcerptTokenKind.Content,
+			text: `${
+				method.scope === 'global'
+					? `export function ${method.name}(`
+					: `${method.access}${method.scope === 'static' ? ' static' : ''} ${method.name}(`
+			}${
+				method.params?.length
+					? `${method.params[0]!.name}${method.params[0]!.nullable || method.params[0]!.optional ? '?' : ''}`
+					: '): '
+			}`,
+		});
+		const paramTokens: number[] = [];
+		for (let index = 0; index < (method.params?.length ?? 0) - 1; index++) {
+			const newTokens = this._mapVarType(method.params![index]!.type);
+			paramTokens.push(newTokens.length);
+			excerptTokens.push(...newTokens);
+			excerptTokens.push({
+				kind: ExcerptTokenKind.Content,
+				text: `, ${method.params![index + 1]!.name}${
+					method.params![index + 1]!.nullable || method.params![index + 1]!.optional ? '?' : ''
+				}: `,
+			});
+		}
+
+		if (method.params?.length) {
+			const newTokens = this._mapVarType(method.params[method.params.length - 1]!.type);
+			paramTokens.push(newTokens.length);
+			excerptTokens.push(...newTokens);
+			excerptTokens.push({ kind: ExcerptTokenKind.Content, text: `): ` });
+		}
+
+		const returnTokens = this._mapVarType(method.returns?.[0] ?? []);
+		excerptTokens.push(...returnTokens);
+
+		excerptTokens.push({ kind: ExcerptTokenKind.Content, text: ';' });
+
+		return {
+			name: method.name,
+			isAbstract: Boolean(method.abstract),
+			isOptional: false,
+			isProtected: method.access === 'protected',
+			isStatic: method.scope === 'static',
+			overloadIndex: 1,
+			parameters: method.params?.map((param, index) => this._mapParam(param, index, _package, paramTokens)) ?? [],
+			releaseTag: method.access === 'public' ? ReleaseTag.Public : ReleaseTag.Internal,
+			returnTypeTokenRange: method.returns?.length
+				? method.params?.length
+					? { startIndex: 2 + 2 * method.params.length, endIndex: 3 + 2 * method.params.length }
+					: { startIndex: 1, endIndex: 2 }
+				: { startIndex: 0, endIndex: 0 },
+			typeParameters: [],
+			docComment: this._tsDocParser.parseString(
+				`/**\n * ${method.description}\n${
+					method.params?.map((param) => ` * @param ${param.name} - ${param.description}\n`).join('') ?? ''
+				}${
+					method.returns?.length && !Array.isArray(method.returns[0])
+						? ` * @returns ${method.returns[0]!.description}`
+						: ''
+				}${method.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''}${
+					method.deprecated
+						? ` * @deprecated ${typeof method.deprecated === 'boolean' ? 'yes' : method.deprecated}\n`
+						: ''
+				} */`,
+			).docComment,
+			excerptTokens,
+			fileLine: method.meta.line,
+			fileUrlPath: `${method.meta.path.slice(`packages/${_package}/`.length)}/${method.meta.file}`,
+		};
 	}
 }
