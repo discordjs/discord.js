@@ -9,7 +9,7 @@
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
-		"docs": "pnpm run build:docs && api-extractor run --local",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify",
 		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
 		"release": "cliff-jumper"
