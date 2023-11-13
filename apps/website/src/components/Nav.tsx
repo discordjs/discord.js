@@ -36,7 +36,7 @@ export function Nav({
 			>
 				<div className="flex flex-col gap-4 p-3">
 					<div className="flex flex-col gap-4">
-						<PackageSelect versions={versions} />
+						<PackageSelect />
 						<VersionSelect versions={versions} />
 					</div>
 					<Sidebar members={members} />
