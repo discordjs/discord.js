@@ -4,6 +4,8 @@ import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import type { Route } from 'next';
 import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
+import { DocumentationLink } from '~/components/DocumentationLink';
+import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveItemURI } from '../util';
@@ -32,10 +34,24 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
 
 					if (codeDestination) {
-						// TODO: Real fix in api-extractor needed
-						const currentItem = item.getAssociatedPackage();
-						const foundItem = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, currentItem)
-							.resolvedApiItem;
+						if (
+							!codeDestination.importPath &&
+							!codeDestination.packageName &&
+							codeDestination.memberReferences.length === 1 &&
+							codeDestination.memberReferences[0]!.memberIdentifier &&
+							codeDestination.memberReferences[0]!.memberIdentifier.identifier in BuiltinDocumentationLinks
+						) {
+							const typeName = codeDestination.memberReferences[0]!.memberIdentifier.identifier;
+							const href = BuiltinDocumentationLinks[typeName as keyof typeof BuiltinDocumentationLinks];
+							return (
+								<DocumentationLink key={`${typeName}-${idx}`} href={href}>
+									{typeName}
+								</DocumentationLink>
+							);
+						}
+
+						const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
+						const foundItem = declarationReference?.resolvedApiItem;
 
 						if (!foundItem) return null;
 
@@ -44,6 +60,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								itemURI={resolveItemURI(foundItem)}
 								key={idx}
+								packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
 							>
 								{linkText ?? foundItem.displayName}
 							</ItemLink>
