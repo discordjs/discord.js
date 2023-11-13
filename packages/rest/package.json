@@ -5,7 +5,7 @@
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsup && node ../../scripts/fixMtsImports.mjs types-",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
