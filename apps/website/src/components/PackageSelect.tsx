@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { PACKAGES } from '~/util/constants';
 
-export default function PackageSelect() {
+export default function PackageSelect({ versions }: { readonly versions: string[] }) {
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 
@@ -17,7 +17,7 @@ export default function PackageSelect() {
 	const packageMenuItems = useMemo(
 		() =>
 			PACKAGES.map((pkg, idx) => (
-				<Link href={`/docs/packages/${pkg}/main`} key={`${pkg}-${idx}`}>
+				<Link href={`/docs/packages/${pkg}/${versions.at(packageName === 'discord.js' ? 0 : 1)}`} key={`${pkg}-${idx}`}>
 					<MenuItem
 						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
 						id={pkg}
@@ -28,7 +28,7 @@ export default function PackageSelect() {
 					</MenuItem>
 				</Link>
 			)),
-		[packageMenu],
+		[packageMenu, packageName, versions],
 	);
 
 	return (
