@@ -28,7 +28,7 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", "!.next/cache/**", ".contentlayer/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#build:prod": {
@@ -42,7 +42,7 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", "!.next/cache/**", ".contentlayer/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:local": {
@@ -59,7 +59,7 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
+			"outputs": [".next/**", "!.next/cache/**", "src/assets/readme/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
@@ -76,7 +76,7 @@
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
+			"outputs": [".next/**", "!.next/cache/**", "src/assets/readme/**"],
 			"outputMode": "full"
 		},
 		"@discordjs/guide#generate:contentlayer": {

@@ -62,7 +62,7 @@
 		"class-variance-authority": "^0.7.0",
 		"cmdk": "^0.2.0",
 		"meilisearch": "^0.35.0",
-		"next": "14.0.3-canary.2",
+		"next": "14.0.3-canary.5",
 		"next-mdx-remote": "^4.4.1",
 		"next-themes": "^0.2.1",
 		"react": "^18.2.0",
@@ -74,7 +74,7 @@
 		"sharp": "^0.32.6"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "14.0.3-canary.2",
+		"@next/bundle-analyzer": "14.0.3-canary.5",
 		"@testing-library/react": "^14.1.0",
 		"@testing-library/user-event": "^14.5.1",
 		"@types/node": "18.18.8",

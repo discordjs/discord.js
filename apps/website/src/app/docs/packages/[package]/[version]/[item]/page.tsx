@@ -122,7 +122,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	const modelJSON = await fetchModelJSON(packageName, version);
 
 	if (!modelJSON) {
-		return [{ package: packageName, version, item: '' }];
+		return [];
 	}
 
 	const model = addPackageToModel(new ApiModel(), modelJSON);
@@ -131,7 +131,7 @@ export async function generateStaticParams({ params: { package: packageName, ver
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		return [{ package: packageName, version, item: '' }];
+		return [];
 	}
 
 	return entry.members.map((member: ApiItem) => ({
