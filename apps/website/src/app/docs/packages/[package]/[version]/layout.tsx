@@ -9,7 +9,7 @@ import { Nav } from '~/components/Nav';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
 import { addPackageToModel } from '~/util/addPackageToModel';
-import { PACKAGES } from '~/util/constants';
+import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 import { Providers } from './providers';
 
 export const revalidate = 3_600;
@@ -27,7 +27,7 @@ export const generateStaticParams = async () => {
 
 	await Promise.all(
 		PACKAGES.slice(1).map(async (packageName) => {
-			const versions = await fetchVersions(packageName);
+			const versions = (await fetchVersions(packageName)).slice(0, N_RECENT_VERSIONS);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));
 		}),

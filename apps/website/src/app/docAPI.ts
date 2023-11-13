@@ -2,7 +2,6 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { connect } from '@planetscale/database';
 import { cache } from 'react';
-import { N_RECENT_VERSIONS } from '~/util/constants';
 
 const sql = connect({
 	url: process.env.DATABASE_URL!,
@@ -23,7 +22,7 @@ export const fetchVersions = cache(async (packageName: string): Promise<string[]
 		]);
 
 		// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-		return rows.map((row) => row.version).slice(0, N_RECENT_VERSIONS);
+		return rows.map((row) => row.version);
 	} catch {
 		return [];
 	}
