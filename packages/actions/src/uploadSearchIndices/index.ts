@@ -52,10 +52,15 @@ try {
 	console.log('Generated all indices.');
 
 	console.log('Uploading indices...');
-	for (const index of indices) {
-		console.log(`Uploading ${index.index}...`);
-		await client.index(index.index).addDocuments(index.data);
-	}
+
+	try {
+		await Promise.all(
+			indices.map(async (index) => {
+				console.log(`Uploading ${index.index}...`);
+				return client.index(index.index).addDocuments(index.data);
+			}),
+		);
+	} catch {}
 
 	console.log('Uploaded all indices.');
 } catch (error) {

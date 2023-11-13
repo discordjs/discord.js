@@ -1,5 +1,6 @@
 'use strict';
 
+const { roleMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -452,7 +453,7 @@ class Role extends Base {
    */
   toString() {
     if (this.id === this.guild.id) return '@everyone';
-    return `<@&${this.id}>`;
+    return roleMention(this.id);
   }
 
   toJSON() {

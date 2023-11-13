@@ -1,19 +1,8 @@
 import {
   ActionRowBuilder as BuilderActionRow,
   MessageActionRowComponentBuilder,
-  blockQuote,
-  bold,
   ButtonBuilder as BuilderButtonComponent,
-  channelMention,
-  codeBlock,
   EmbedBuilder as BuildersEmbed,
-  formatEmoji,
-  hideLinkEmbed,
-  hyperlink,
-  inlineCode,
-  italic,
-  quote,
-  roleMention,
   ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
   MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
   RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
@@ -21,12 +10,6 @@ import {
   UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
   TextInputBuilder as BuilderTextInputComponent,
   SelectMenuOptionBuilder as BuildersSelectMenuOption,
-  spoiler,
-  strikethrough,
-  time,
-  TimestampStyles,
-  underscore,
-  userMention,
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
   AnyComponentBuilder,
@@ -34,6 +17,25 @@ import {
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
+import {
+  blockQuote,
+  bold,
+  channelMention,
+  codeBlock,
+  formatEmoji,
+  hideLinkEmbed,
+  hyperlink,
+  inlineCode,
+  italic,
+  quote,
+  roleMention,
+  spoiler,
+  strikethrough,
+  time,
+  TimestampStyles,
+  underscore,
+  userMention,
+} from '@discordjs/formatters';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -1129,7 +1131,7 @@ export abstract class Collector<Key, Value, Extras extends unknown[] = []> exten
   public toJSON(): unknown;
 
   protected listener: (...args: any[]) => void;
-  public abstract collect(...args: unknown[]): Key | null | Promise<Key | null>;
+  public abstract collect(...args: unknown[]): Awaitable<Key | null>;
   public abstract dispose(...args: unknown[]): Key | null;
 
   public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
@@ -5066,7 +5068,7 @@ export interface CloseEvent {
   reason: string;
 }
 
-export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => boolean | Promise<boolean>;
+export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => Awaitable<boolean>;
 
 export interface CollectorOptions<FilterArguments extends unknown[]> {
   filter?: CollectorFilter<FilterArguments>;
@@ -6647,7 +6649,7 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
   ? Value
-  : Value extends { toJSON(): infer JSONResult }
+  : Value extends JSONEncodable<infer JSONResult>
   ? JSONResult
   : Value extends ReadonlyArray<infer ItemType>
   ? Serialized<ItemType>[]

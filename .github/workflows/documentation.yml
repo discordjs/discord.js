@@ -149,26 +149,3 @@ jobs:
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
         uses: ./packages/actions/src/uploadSearchIndices
-
-  deploy-website:
-    needs: build-docs
-    name: Deploy website
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    if: github.repository_owner == 'discordjs'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Build & deploy website
-        uses: BetaHuhn/deploy-to-vercel-action@643bc80032ba62ca41d1a9aaba7b38b51c2b8646
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_SCOPE: 'discordjs'
-          GITHUB_DEPLOYMENT_ENV: 'Production – discord-js'
-          PRODUCTION: true

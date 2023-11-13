@@ -55,7 +55,7 @@ class TextBasedChannel {
   /**
    * The base message options for messages.
    * @typedef {Object} BaseMessageOptions
-   * @property {string|null} [content=''] The content for the message. This can only be `null` when editing a message.
+   * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)

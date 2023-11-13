@@ -897,7 +897,7 @@ importers:
         version: link:../builders
       '@discordjs/collection':
         specifier: 1.5.3
-        version: link:../collection
+        version: 1.5.3
       '@discordjs/formatters':
         specifier: workspace:^
         version: link:../formatters
@@ -3946,6 +3946,11 @@ packages:
       tar-stream: 2.2.0
       which: 4.0.0
     dev: true
+
+  /@discordjs/collection@1.5.3:
+    resolution: {integrity: sha512-SVb428OMd3WO1paV3rm6tSjM4wC+Kecaa1EUGX7vc6/fddvw/6lg90z4QtCqm21zvVe92vMMDt9+DkIvjXImQQ==}
+    engines: {node: '>=16.11.0'}
+    dev: false
 
   /@discoveryjs/json-ext@0.5.7:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -11543,7 +11548,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231111
+      typescript: 5.4.0-dev.20231112
     dev: true
 
   /dts-critic@3.3.11(typescript@5.2.2):
@@ -21378,8 +21383,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231111:
-    resolution: {integrity: sha512-/ebfj4mLRvOEfuewrM6DrZOxBXosLKqFVUU6NPZuOiy0XtMDt0KRfaLhLLZXEoyNNyQd9P6bmZTnNYeTs9hlyA==}
+  /typescript@5.4.0-dev.20231112:
+    resolution: {integrity: sha512-K7RH4eFyxJG7LkKWU0m7WdQrNRNz8yVkt2zW2tT2zfiUzIN2jbh2JLuztSqCsfqMNU5KduO7NvKaKK4QIvGY/Q==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

@@ -8,21 +8,19 @@ jobs:
   deploy-website:
     name: Deploy website
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build & deploy website
-        uses: BetaHuhn/deploy-to-vercel-action@643bc80032ba62ca41d1a9aaba7b38b51c2b8646
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_SCOPE: 'discordjs'
-          GITHUB_DEPLOYMENT_ENV: 'Production – discord-js'
-          PRODUCTION: true
+      - name: Pull vercel production environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build website artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy website artifacts to vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
