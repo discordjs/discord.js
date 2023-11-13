@@ -244,9 +244,6 @@ importers:
       '@microsoft/tsdoc-config':
         specifier: 0.16.2
         version: 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@planetscale/database':
-        specifier: ^1.11.0
-        version: 1.11.0
       '@react-icons/all-files':
         specifier: ^4.1.0
         version: 4.1.0(react@18.2.0)
@@ -259,6 +256,9 @@ importers:
       '@vercel/og':
         specifier: ^0.5.20
         version: 0.5.20
+      '@vercel/postgres':
+        specifier: ^0.5.1
+        version: 0.5.1
       ariakit:
         specifier: 2.0.0-next.44
         version: 2.0.0-next.44(@types/react@18.2.37)(react-dom@18.2.0)(react@18.2.0)
@@ -386,9 +386,9 @@ importers:
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
-      '@planetscale/database':
-        specifier: ^1.11.0
-        version: 1.11.0
+      '@vercel/postgres':
+        specifier: ^0.5.1
+        version: 0.5.1
       meilisearch:
         specifier: ^0.35.0
         version: 0.35.0
@@ -933,7 +933,7 @@ importers:
         version: 5.27.2
       ws:
         specifier: 8.14.2
-        version: 8.14.2
+        version: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1340,9 +1340,9 @@ importers:
       '@microsoft/tsdoc-config':
         specifier: 0.16.2
         version: 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@planetscale/database':
-        specifier: ^1.11.0
-        version: 1.11.0
+      '@vercel/postgres':
+        specifier: ^0.5.1
+        version: 0.5.1
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -1560,7 +1560,7 @@ importers:
         version: 2.6.2
       ws:
         specifier: ^8.14.2
-        version: 8.14.2
+        version: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     devDependencies:
       '@babel/core':
         specifier: ^7.23.3
@@ -1651,7 +1651,7 @@ importers:
         version: 2.6.2
       ws:
         specifier: ^8.14.2
-        version: 8.14.2
+        version: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -4929,6 +4929,12 @@ packages:
       tar-fs: 2.1.1
     dev: true
 
+  /@neondatabase/serverless@0.6.0:
+    resolution: {integrity: sha512-qXxBRYN0m2v8kVQBfMxbzNGn2xFAhTXFibzQlE++NfJ56Shz3m7+MyBBtXDlEH+3Wfa6lToDXf1MElocY4sJ3w==}
+    dependencies:
+      '@types/pg': 8.6.6
+    dev: false
+
   /@next/bundle-analyzer@14.0.3-canary.5:
     resolution: {integrity: sha512-PhGJFo0FDJxIlNyD8SZmVBrDmSESyS2R5snCH0sqCY4OGlJJbWsxQ1EXlL63nO6UtPqxuifcyHUQJNSm6eFWLg==}
     dependencies:
@@ -5361,11 +5367,6 @@ packages:
       picocolors: 1.0.0
       tslib: 2.6.2
     dev: true
-
-  /@planetscale/database@1.11.0:
-    resolution: {integrity: sha512-aWbU+D/IRHoDE9975y+Q4c+EwwAWxCPwFId+N1AhQVFXzbeJMkj6KN2iQtoi03elcLMRdfT+V3i9Z4WRw+/oIA==}
-    engines: {node: '>=16'}
-    dev: false
 
   /@polka/url@1.0.0-next.23:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
@@ -7191,7 +7192,7 @@ packages:
       util: 0.12.5
       util-deprecate: 1.0.2
       watchpack: 2.4.0
-      ws: 8.14.2
+      ws: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -7972,6 +7973,14 @@ packages:
     resolution: {integrity: sha512-SuT16Q1K51EAVPz1K29DJ/sXjhSQ0zjvsypYJ6tlwVsRV9jwW5Adq2ch8Dq8kDBCkYnELS7N7VNCSB5nC56t/g==}
     dev: false
 
+  /@types/pg@8.6.6:
+    resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
+    dependencies:
+      '@types/node': 18.18.9
+      pg-protocol: 1.6.0
+      pg-types: 2.2.0
+    dev: false
+
   /@types/pretty-hrtime@1.0.2:
     resolution: {integrity: sha512-vyv9knII8XeW8TnXDcGH7HqG6FeR56ESN6ExM34d/U8Zvs3xuG34euV6CVyB7KEYI7Ts4lQM8b4NL72e7UadnA==}
     dev: true
@@ -8723,6 +8732,16 @@ packages:
       '@resvg/resvg-wasm': 2.6.0
       satori: 0.10.9
       yoga-wasm-web: 0.3.3
+    dev: false
+
+  /@vercel/postgres@0.5.1:
+    resolution: {integrity: sha512-JKl8QOBIDnifhkxAhIKtY0A5Tb8oWBf2nzZhm0OH7Ffjsl0hGVnDL2w1/FCfpX8xna3JAWM034NGuhZfTFdmiw==}
+    engines: {node: '>=14.6'}
+    dependencies:
+      '@neondatabase/serverless': 0.6.0
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
+      ws: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     dev: false
 
   /@vercel/python@4.1.0:
@@ -9914,6 +9933,13 @@ packages:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+
+  /bufferutil@4.0.8:
+    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.6.1
 
   /builtin-modules@1.1.1:
     resolution: {integrity: sha512-wxXCdllwGhI2kCC0MnvTGYTMvnVZTvqgypkiTI8Pa5tcz2i6VqsqwYGgqwXji+4RgCzms6EajE4IxiUH6HH8nQ==}
@@ -17519,7 +17545,6 @@ packages:
   /node-gyp-build@4.6.1:
     resolution: {integrity: sha512-24vnklJmyRS8ViBNI8KbtK/r/DmXQMRiOMXTNz2nrTnAYUwjmEEbnnpB/+kt+yWRv73bPsSPRFddrcIbAxSiMQ==}
     hasBin: true
-    dev: true
 
   /node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
@@ -18232,6 +18257,26 @@ packages:
       is-reference: 3.0.2
     dev: false
 
+  /pg-int8@1.0.1:
+    resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
+    engines: {node: '>=4.0.0'}
+    dev: false
+
+  /pg-protocol@1.6.0:
+    resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
+    dev: false
+
+  /pg-types@2.2.0:
+    resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
+    engines: {node: '>=4'}
+    dependencies:
+      pg-int8: 1.0.1
+      postgres-array: 2.0.0
+      postgres-bytea: 1.0.0
+      postgres-date: 1.0.7
+      postgres-interval: 1.2.0
+    dev: false
+
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
@@ -18409,6 +18454,28 @@ packages:
       nanoid: 3.3.7
       picocolors: 1.0.0
       source-map-js: 1.0.2
+
+  /postgres-array@2.0.0:
+    resolution: {integrity: sha512-VpZrUqU5A69eQyW2c5CA1jtLecCsN2U/bD6VilrFDWq5+5UIEVO7nazS3TEcHf1zuPYO/sqGvUvW62g86RXZuA==}
+    engines: {node: '>=4'}
+    dev: false
+
+  /postgres-bytea@1.0.0:
+    resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /postgres-date@1.0.7:
+    resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /postgres-interval@1.2.0:
+    resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      xtend: 4.0.2
+    dev: false
 
   /prebuild-install@7.1.1:
     resolution: {integrity: sha512-jAXscXWMcCK8GgCoHOfIr0ODh5ai8mj63L2nWrjuAgXE6tDyYGnx4/8o/rCgU+B4JSyZBKbeZqzhtwtC3ovxjw==}
@@ -21816,6 +21883,13 @@ packages:
       react: 18.2.0
       tslib: 2.6.2
 
+  /utf-8-validate@6.0.3:
+    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
+    engines: {node: '>=6.14.2'}
+    requiresBuild: true
+    dependencies:
+      node-gyp-build: 4.6.1
+
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
@@ -22541,7 +22615,7 @@ packages:
         optional: true
     dev: true
 
-  /ws@8.14.2:
+  /ws@8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3):
     resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
@@ -22552,6 +22626,9 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dependencies:
+      bufferutil: 4.0.8
+      utf-8-validate: 6.0.3
 
   /xdg-app-paths@5.1.0:
     resolution: {integrity: sha512-RAQ3WkPf4KTU1A8RtFx3gWywzVKe00tfOPFfl2NDGqbIFENQO4kqAJp7mhQjNj/33W5x5hiWWUdyfPq/5SU3QA==}
@@ -22579,7 +22656,6 @@ packages:
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
-    dev: true
 
   /y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}

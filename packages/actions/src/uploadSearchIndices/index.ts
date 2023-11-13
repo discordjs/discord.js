@@ -1,9 +1,8 @@
 import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
-import { connect } from '@planetscale/database';
+import { createPool } from '@vercel/postgres';
 import { MeiliSearch } from 'meilisearch';
-import { fetch } from 'undici';
 
 if (!process.env.DATABASE_URL) {
 	setFailed('DATABASE_URL is not set');
@@ -17,9 +16,8 @@ if (!process.env.SEARCH_API_KEY) {
 	setFailed('SEARCH_API_KEY is not set');
 }
 
-const sql = connect({
-	fetch,
-	url: process.env.DATABASE_URL!,
+const pool = createPool({
+	connectionString: process.env.DATABASE_URL,
 });
 
 const client = new MeiliSearch({
@@ -32,20 +30,15 @@ try {
 	const indices = await generateAllIndices({
 		fetchPackageVersions: async (pkg) => {
 			console.log(`Fetching versions for ${pkg}...`);
-			const { rows } = await sql.execute('select version from documentation where name = ?', [pkg]);
+			const { rows } = await pool.sql`select version from documentation where name = ${pkg}`;
 
-			// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
 			return rows.map((row) => row.version);
 		},
 		fetchPackageVersionDocs: async (pkg, version) => {
 			console.log(`Fetching data for ${pkg} ${version}...`);
-			const { rows } = await sql.execute('select data from documentation where name = ? and version = ?', [
-				pkg,
-				version,
-			]);
+			const { rows } = await pool.sql`select data from documentation where name = ${pkg} and version = ${version}`;
 
-			// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
-			return rows[0].data;
+			return rows[0]?.data ?? null;
 		},
 		writeToFile: false,
 	});

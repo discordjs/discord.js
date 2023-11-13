@@ -1,26 +1,15 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { connect } from '@planetscale/database';
-
-const sql = connect({
-	url: process.env.DATABASE_URL!,
-	async fetch(url, init) {
-		delete init?.cache;
-		return fetch(url, { ...init, next: { revalidate: 3_600 } });
-	},
-});
+import { sql } from '@vercel/postgres';
 
 export const fetchVersions = async (packageName: string): Promise<string[]> => {
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV === 'true' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return ['main'];
 	}
 
 	try {
-		const { rows } = await sql.execute('select version from documentation where name = ? order by version desc', [
-			packageName,
-		]);
+		const { rows } = await sql`select version from documentation where name = ${packageName} order by version desc`;
 
-		// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
 		return rows.map((row) => row.version);
 	} catch {
 		return [];
@@ -28,7 +17,7 @@ export const fetchVersions = async (packageName: string): Promise<string[]> => {
 };
 
 export const fetchModelJSON = async (packageName: string, version: string) => {
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV) {
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV === 'true') {
 		try {
 			const res = await readFile(
 				join(process.cwd(), '..', '..', 'packages', packageName, 'docs', 'docs.api.json'),
@@ -43,12 +32,8 @@ export const fetchModelJSON = async (packageName: string, version: string) => {
 
 	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		try {
-			const { rows } = await sql.execute('select data from documentation where name = ? and version = ?', [
-				packageName,
-				'main',
-			]);
+			const { rows } = await sql`select data from documentation where name = ${packageName} and version = ${'main'}`;
 
-			// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
 			return rows[0]?.data ?? null;
 		} catch {
 			return null;
@@ -56,12 +41,8 @@ export const fetchModelJSON = async (packageName: string, version: string) => {
 	}
 
 	try {
-		const { rows } = await sql.execute('select data from documentation where name = ? and version = ?', [
-			packageName,
-			version,
-		]);
+		const { rows } = await sql`select data from documentation where name = ${packageName} and version = ${version}`;
 
-		// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
 		return rows[0]?.data ?? null;
 	} catch {
 		return null;

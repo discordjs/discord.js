@@ -58,7 +58,7 @@
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/tsdoc": "0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
-		"@planetscale/database": "^1.11.0",
+		"@vercel/postgres": "^0.5.1",
 		"tslib": "^2.6.2",
 		"undici": "5.27.2",
 		"yaml": "2.3.4"
