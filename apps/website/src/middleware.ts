@@ -1,26 +1,15 @@
-import { connect } from '@planetscale/database';
 import { get } from '@vercel/edge-config';
+import { sql } from '@vercel/postgres';
 import { NextResponse, type NextRequest } from 'next/server';
 import { PACKAGES } from './util/constants';
 
-const sql = connect({
-	url: process.env.DATABASE_URL!,
-	async fetch(url, init) {
-		delete init?.cache;
-		return fetch(url, { ...init, next: { revalidate: 3_600 } });
-	},
-});
-
 async function fetchLatestVersion(packageName: string): Promise<string> {
-	if (process.env.NEXT_PUBLIC_LOCAL_DEV || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+	if (process.env.NEXT_PUBLIC_LOCAL_DEV === 'true' || process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
 		return 'main';
 	}
 
-	const { rows } = await sql.execute('select version from documentation where name = ? order by version desc', [
-		packageName,
-	]);
+	const { rows } = await sql`select version from documentation where name = ${packageName} order by version desc`;
 
-	// @ts-expect-error: https://github.com/planetscale/database-js/issues/71
 	return rows.map((row) => row.version).at(1) ?? 'main';
 }
 
