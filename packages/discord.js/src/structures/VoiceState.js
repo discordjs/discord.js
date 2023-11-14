@@ -242,8 +242,8 @@ class VoiceState extends Base {
         request_to_speak_timestamp: options.requestToSpeak
           ? new Date().toISOString()
           : options.requestToSpeak === false
-          ? null
-          : undefined,
+            ? null
+            : undefined,
         suppress: options.suppressed,
       },
     });

@@ -99,23 +99,23 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						type: child.type
 							? new DocumentedVarType({ names: [parseType(child.type)] }, this.config).serialize()
 							: child.kindString === 'Method'
-							? new DocumentedVarType(
-									{
-										names: [
-											parseType({
-												type: 'reflection',
-												declaration: child,
-											}),
-										],
-										description: child.signatures?.[0]?.comment?.blockTags
-											?.find((block) => block.tag === '@returns')
-											// eslint-disable-next-line no-param-reassign
-											?.content.reduce((prev, curr) => (prev += curr.text), '')
-											.trim(),
-									},
-									this.config,
-							  ).serialize()
-							: undefined,
+							  ? new DocumentedVarType(
+										{
+											names: [
+												parseType({
+													type: 'reflection',
+													declaration: child,
+												}),
+											],
+											description: child.signatures?.[0]?.comment?.blockTags
+												?.find((block) => block.tag === '@returns')
+												// eslint-disable-next-line no-param-reassign
+												?.content.reduce((prev, curr) => (prev += curr.text), '')
+												.trim(),
+										},
+										this.config,
+							    ).serialize()
+							  : undefined,
 					}));
 
 					return {

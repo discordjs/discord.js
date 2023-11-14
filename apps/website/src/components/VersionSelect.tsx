@@ -14,7 +14,11 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
 
-	const versionMenu = useMenuState({ gutter: 8, sameWidth: true, fitViewport: true });
+	const versionMenu = useMenuState({
+		gutter: 8,
+		sameWidth: true,
+		fitViewport: true,
+	});
 
 	const versionMenuItems = useMemo(
 		() =>

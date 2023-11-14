@@ -71,6 +71,7 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -94,6 +95,7 @@ jobs:
         if: ${{ github.ref_type == 'branch' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./packages/actions/src/uploadDocumentation
 
       - name: Move docs to correct directory

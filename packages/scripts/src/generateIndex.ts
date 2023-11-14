@@ -159,7 +159,7 @@ export async function fetchVersions(pkg: string) {
 
 export async function fetchVersionDocs(pkg: string, version: string) {
 	const response = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
-	return response.body.json() as Promise<Record<any, any>>;
+	return response.body.json();
 }
 
 export async function generateAllIndices({

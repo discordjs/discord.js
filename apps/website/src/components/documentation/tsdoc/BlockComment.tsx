@@ -13,7 +13,9 @@ export function Block({ children, title }: PropsWithChildren<{ readonly title: s
 export function ExampleBlock({
 	children,
 	exampleIndex,
-}: PropsWithChildren<{ readonly exampleIndex?: number | undefined }>): JSX.Element {
+}: PropsWithChildren<{
+	readonly exampleIndex?: number | undefined;
+}>): JSX.Element {
 	return <Block title={`Example ${exampleIndex ? exampleIndex : ''}`}>{children}</Block>;
 }
 

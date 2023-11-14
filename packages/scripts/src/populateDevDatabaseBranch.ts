@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import process, { cwd } from 'node:process';
 import { create } from '@actions/glob';
+import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';
 
 const pool = createPool({
@@ -16,14 +17,29 @@ for await (const file of globber.globGenerator()) {
 	if (parsed?.groups) {
 		console.log(parsed.groups.semver, file);
 		try {
-			await pool.sql`insert into documentation (version, data) values (${parsed.groups.semver}, ${data}) on conflict (name, version) do update set data = EXCLUDED.data`;
+			const { name } = JSON.parse(data);
+			const { url } = await put(`${name.replace('@discordjs/', '')}/${parsed.groups.semver}.json`, data, {
+				access: 'public',
+				addRandomSuffix: false,
+			});
+			await pool.sql`insert into documentation (name, version, url) values (${name.replace('@discordjs/', '')}, ${
+				parsed.groups.semver
+			}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
 		} catch (error) {
 			console.error(error);
 		}
 	} else {
 		console.log('main', file);
 		try {
-			await pool.sql`insert into documentation (version, data) values (${'main'}, ${data}) on conflict (name, version) do update set data = EXCLUDED.data`;
+			const { name } = JSON.parse(data);
+			const { url } = await put(`${name.replace('@discordjs/', '')}/main.json`, data, {
+				access: 'public',
+				addRandomSuffix: false,
+			});
+			await pool.sql`insert into documentation (name, version, url) values (${name.replace(
+				'@discordjs/',
+				'',
+			)}, ${'main'}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
 		} catch (error) {
 			console.error(error);
 		}

@@ -151,22 +151,7 @@
 			"outputMode": "errors-only"
 		},
 		"@discordjs/guide#format": {
-			"dependsOn": ["^build", "build:local", "generate:contentlayer"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"package.json",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputMode": "errors-only"
-		},
-		"@discordjs/website#format": {
-			"dependsOn": ["^build", "build:local"],
+			"dependsOn": ["^build", "generate:contentlayer"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",

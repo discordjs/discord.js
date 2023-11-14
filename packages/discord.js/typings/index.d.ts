@@ -955,8 +955,8 @@ export abstract class BaseChannel extends Base {
 export type If<Value extends boolean, TrueResult, FalseResult = null> = Value extends true
   ? TrueResult
   : Value extends false
-  ? FalseResult
-  : TrueResult | FalseResult;
+    ? FalseResult
+    : TrueResult | FalseResult;
 
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
@@ -1812,10 +1812,10 @@ export type CacheTypeReducer<
 > = [State] extends ['cached']
   ? CachedType
   : [State] extends ['raw']
-  ? RawType
-  : [State] extends ['raw' | 'cached']
-  ? PresentType
-  : Fallback;
+    ? RawType
+    : [State] extends ['raw' | 'cached']
+      ? PresentType
+      : Fallback;
 
 export type Interaction<Cached extends CacheType = CacheType> =
   | ChatInputCommandInteraction<Cached>
@@ -5834,8 +5834,8 @@ export type GuildScheduledEventSetStatusArg<Status extends GuildScheduledEventSt
   Status extends GuildScheduledEventStatus.Scheduled
     ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
     : Status extends GuildScheduledEventStatus.Active
-    ? GuildScheduledEventStatus.Completed
-    : never;
+      ? GuildScheduledEventStatus.Completed
+      : never;
 
 export interface GuildScheduledEventUser<WithMember> {
   guildScheduledEventId: Snowflake;
@@ -6265,10 +6265,10 @@ export type Partialize<
   [K in keyof Omit<PartialType, OverridableKeys>]: K extends 'partial'
     ? true
     : K extends NulledKeys
-    ? null
-    : K extends NullableKeys
-    ? PartialType[K] | null
-    : PartialType[K];
+      ? null
+      : K extends NullableKeys
+        ? PartialType[K] | null
+        : PartialType[K];
 };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
@@ -6648,14 +6648,14 @@ export interface ClientApplicationInstallParams {
 export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
-  ? Value
-  : Value extends JSONEncodable<infer JSONResult>
-  ? JSONResult
-  : Value extends ReadonlyArray<infer ItemType>
-  ? Serialized<ItemType>[]
-  : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
-  ? {}
-  : { [K in keyof Value]: Serialized<Value[K]> };
+    ? Value
+    : Value extends JSONEncodable<infer JSONResult>
+      ? JSONResult
+      : Value extends ReadonlyArray<infer ItemType>
+        ? Serialized<ItemType>[]
+        : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
+          ? {}
+          : { [K in keyof Value]: Serialized<Value[K]> };
 
 //#endregion
 
