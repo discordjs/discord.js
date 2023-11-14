@@ -636,7 +636,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * An object containing information about a guild's vanity invite.
-   * @typedef {Object} Vanity
+   * @typedef {object} Vanity
    * @property {?string} code Vanity invite code
    * @property {number} uses How many times this invite has been used
    */
@@ -692,7 +692,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data for the Guild Widget Settings object
-   * @typedef {Object} GuildWidgetSettings
+   * @typedef {object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
    * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)} channel
    * The widget invite channel
@@ -700,7 +700,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * The Guild Widget Settings object
-   * @typedef {Object} GuildWidgetSettingsData
+   * @typedef {object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
    * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake)} channel
    * The widget invite channel
@@ -736,7 +736,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Options used to fetch audit logs.
-   * @typedef {Object} GuildAuditLogsFetchOptions
+   * @typedef {object} GuildAuditLogsFetchOptions
    * @property {Snowflake|GuildAuditLogsEntry} [before] Consider only entries before this entry
    * @property {Snowflake|GuildAuditLogsEntry} [after] Consider only entries after this entry
    * @property {number} [limit] The number of entries to return
@@ -783,7 +783,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * The data for editing a guild.
-   * @typedef {Object} GuildEditOptions
+   * @typedef {object} GuildEditOptions
    * @property {string} [name] The name of the guild
    * @property {?GuildVerificationLevel} [verificationLevel] The verification level of the guild
    * @property {?GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message
@@ -884,7 +884,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Options used to edit the guild onboarding.
-   * @typedef {Object} GuildOnboardingEditOptions
+   * @typedef {object} GuildOnboardingEditOptions
    * @property {GuildOnboardingPromptData[]|Collection<Snowflake, GuildOnboardingPrompt>} [prompts]
    * The prompts shown during onboarding and in customize community
    * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [defaultChannels]
@@ -896,7 +896,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data for editing a guild onboarding prompt.
-   * @typedef {Object} GuildOnboardingPromptData
+   * @typedef {object} GuildOnboardingPromptData
    * @property {Snowflake} [id] The id of the prompt
    * @property {string} title The title for the prompt
    * @property {boolean} [singleSelect] Whether users are limited to selecting one option for the prompt
@@ -909,7 +909,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data for editing a guild onboarding prompt option.
-   * @typedef {Object} GuildOnboardingPromptOptionData
+   * @typedef {object} GuildOnboardingPromptOptionData
    * @property {?Snowflake} [id] The id of the option
    * @property {ChannelResolvable[]|Collection<Snowflake, GuildChannel>} [channels]
    * The channels a member is added to when the option is selected
@@ -963,7 +963,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Welcome channel data
-   * @typedef {Object} WelcomeChannelData
+   * @typedef {object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
    * @property {TextChannel|NewsChannel|ForumChannel|MediaChannel|Snowflake} channel
    * The channel to link for this welcome channel
@@ -972,7 +972,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Welcome screen edit data
-   * @typedef {Object} WelcomeScreenEditOptions
+   * @typedef {object} WelcomeScreenEditOptions
    * @property {boolean} [enabled] Whether the welcome screen is enabled
    * @property {string} [description] The description for the welcome screen
    * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen

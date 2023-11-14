@@ -208,7 +208,7 @@ class VoiceState extends Base {
 
   /**
    * Data to edit the logged in user's own voice state with, when in a stage channel
-   * @typedef {Object} VoiceStateEditOptions
+   * @typedef {object} VoiceStateEditOptions
    * @property {boolean} [requestToSpeak] Whether or not the client is requesting to become a speaker.
    * <info>Only available to the logged in user's own voice state.</info>
    * @property {boolean} [suppressed] Whether or not the user should be suppressed.

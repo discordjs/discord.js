@@ -30,7 +30,7 @@ class ReactionUserManager extends CachedManager {
 
   /**
    * Options used to fetch users who gave a reaction.
-   * @typedef {Object} FetchReactionUsersOptions
+   * @typedef {object} FetchReactionUsersOptions
    * @property {number} [limit=100] The maximum amount of users to fetch, defaults to `100`
    * @property {Snowflake} [after] Limit fetching users to those with an id greater than the supplied id
    */

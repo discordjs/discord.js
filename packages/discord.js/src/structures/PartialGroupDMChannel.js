@@ -28,7 +28,7 @@ class PartialGroupDMChannel extends BaseChannel {
 
     /**
      * Recipient data received in a {@link PartialGroupDMChannel}.
-     * @typedef {Object} PartialRecipient
+     * @typedef {object} PartialRecipient
      * @property {string} username The username of the recipient
      */
 

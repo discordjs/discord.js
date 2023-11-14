@@ -20,7 +20,7 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel'));
  * @param {Client} client The client
  * @param {APIChannel} data The data of the channel to create
  * @param {Guild} [guild] The guild where this channel belongs
- * @param {Object} [extras] Extra information to supply for creating this channel
+ * @param {object} [extras] Extra information to supply for creating this channel
  * @returns {BaseChannel} Any kind of channel.
  * @ignore
  */

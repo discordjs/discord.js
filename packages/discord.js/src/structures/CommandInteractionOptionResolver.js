@@ -285,7 +285,7 @@ class CommandInteractionOptionResolver {
 
   /**
    * The full autocomplete option object.
-   * @typedef {Object} AutocompleteFocusedOption
+   * @typedef {object} AutocompleteFocusedOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the application command option
    * @property {string} value The value of the option

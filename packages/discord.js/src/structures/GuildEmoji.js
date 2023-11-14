@@ -78,7 +78,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Data for editing an emoji.
-   * @typedef {Object} GuildEmojiEditOptions
+   * @typedef {object} GuildEmojiEditOptions
    * @property {string} [name] The name of the emoji
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] Roles to restrict emoji to
    * @property {string} [reason] Reason for editing this emoji

@@ -8,7 +8,7 @@ const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 
 /**
- * @typedef {Object} ModalComponentData
+ * @typedef {object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
  * @property {ActionRow[]} components The components within this modal
@@ -21,14 +21,14 @@ const MessagePayload = require('../MessagePayload');
 class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
-   * @typedef {Object} InteractionDeferReplyOptions
+   * @typedef {object} InteractionDeferReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
-   * @typedef {Object} InteractionDeferUpdateOptions
+   * @typedef {object} InteractionDeferUpdateOptions
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
@@ -262,7 +262,7 @@ class InteractionResponses {
 
   /**
    * An object containing the same properties as {@link CollectorOptions}, but a few less:
-   * @typedef {Object} AwaitModalSubmitOptions
+   * @typedef {object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} time Time in milliseconds to wait for an interaction before rejecting
    */

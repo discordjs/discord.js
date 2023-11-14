@@ -9,14 +9,14 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
 const getMessage = lazy(() => require('./Message').Message);
 
 /**
- * @typedef {Object} ModalData
+ * @typedef {object} ModalData
  * @property {string} value The value of the field
  * @property {ComponentType} type The component type of the field
  * @property {string} customId The custom id of the field
  */
 
 /**
- * @typedef {Object} ActionRowModalData
+ * @typedef {object} ActionRowModalData
  * @property {ModalData[]} components The components of this action row
  * @property {ComponentType} type The component type of the action row
  */

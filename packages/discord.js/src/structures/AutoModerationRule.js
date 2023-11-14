@@ -59,7 +59,7 @@ class AutoModerationRule extends Base {
     if ('trigger_metadata' in data) {
       /**
        * Additional data used to determine whether an auto moderation rule should be triggered.
-       * @typedef {Object} AutoModerationTriggerMetadata
+       * @typedef {object} AutoModerationTriggerMetadata
        * @property {string[]} keywordFilter The substrings that will be searched for in the content
        * @property {string[]} regexPatterns The regular expression patterns which will be matched against the content
        * <info>Only Rust-flavored regular expressions are supported.</info>
@@ -88,14 +88,14 @@ class AutoModerationRule extends Base {
     if ('actions' in data) {
       /**
        * An object containing information about an auto moderation rule action.
-       * @typedef {Object} AutoModerationAction
+       * @typedef {object} AutoModerationAction
        * @property {AutoModerationActionType} type The type of this auto moderation rule action
        * @property {AutoModerationActionMetadata} metadata Additional metadata needed during execution
        */
 
       /**
        * Additional data used when an auto moderation rule is executed.
-       * @typedef {Object} AutoModerationActionMetadata
+       * @typedef {object} AutoModerationActionMetadata
        * @property {?Snowflake} channelId The id of the channel to which content will be logged
        * @property {?number} durationSeconds The timeout duration in seconds
        * @property {?string} customMessage The custom message that is shown whenever a message is blocked

@@ -9,7 +9,7 @@ const Base = require('./Base');
 class WidgetMember extends Base {
   /**
    * Activity sent in a {@link WidgetMember}.
-   * @typedef {Object} WidgetActivity
+   * @typedef {object} WidgetActivity
    * @property {string} name The name of the activity
    */
 

@@ -125,7 +125,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called when the shard receives the READY payload.
-   * @param {Object} packet The received packet
+   * @param {object} packet The received packet
    * @private
    */
   onReadyPacket(packet) {
@@ -212,7 +212,7 @@ class WebSocketShard extends EventEmitter {
    * <warn>If you use this method, make sure you understand that you need to provide
    * a full [Payload](https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
    * Do not use this method if you don't know what you're doing.</warn>
-   * @param {Object} data The full packet to send
+   * @param {object} data The full packet to send
    * @param {boolean} [important=false] If this packet should be added first in queue
    * <warn>This parameter is **deprecated**. Important payloads are determined by their opcode instead.</warn>
    */

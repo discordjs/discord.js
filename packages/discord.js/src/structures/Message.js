@@ -201,7 +201,7 @@ class Message extends Base {
     if ('role_subscription_data' in data) {
       /**
        * Role subscription data found on {@link MessageType.RoleSubscriptionPurchase} messages.
-       * @typedef {Object} RoleSubscriptionData
+       * @typedef {object} RoleSubscriptionData
        * @property {Snowflake} roleSubscriptionListingId The id of the SKU and listing the user is subscribed to
        * @property {string} tierName The name of the tier the user is subscribed to
        * @property {number} totalMonthsSubscribed The total number of months the user has been subscribed for
@@ -226,7 +226,7 @@ class Message extends Base {
     if ('resolved' in data) {
       /**
        * Resolved data from auto-populated select menus.
-       * @typedef {Object} CommandInteractionResolvedData
+       * @typedef {object} CommandInteractionResolvedData
        */
       this.resolved = transformResolved(
         { client: this.client, guild: this.guild, channel: this.channel },
@@ -358,7 +358,7 @@ class Message extends Base {
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
-     * @typedef {Object} MessageReference
+     * @typedef {object} MessageReference
      * @property {Snowflake} channelId The channel's id the message was referenced
      * @property {?Snowflake} guildId The guild's id the message was referenced
      * @property {?Snowflake} messageId The message's id that was referenced
@@ -384,7 +384,7 @@ class Message extends Base {
 
     /**
      * Partial data of the interaction that a message is a reply to
-     * @typedef {Object} MessageInteraction
+     * @typedef {object} MessageInteraction
      * @property {Snowflake} id The interaction's id
      * @property {InteractionType} type The type of the interaction
      * @property {string} commandName The name of the interaction's application command,
@@ -575,7 +575,7 @@ class Message extends Base {
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {Object} AwaitMessageComponentOptions
+   * @typedef {object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
@@ -866,7 +866,7 @@ class Message extends Base {
 
   /**
    * Options for starting a thread on a message.
-   * @typedef {Object} StartThreadOptions
+   * @typedef {object} StartThreadOptions
    * @property {string} name The name of the new thread
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
    * time after which the thread should automatically archive in case of no recent activity

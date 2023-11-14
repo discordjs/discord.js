@@ -115,7 +115,7 @@ class Role extends Base {
 
     /**
      * The tags this role has
-     * @type {?Object}
+     * @type {?object}
      * @property {Snowflake} [botId] The id of the bot this role belongs to
      * @property {Snowflake|string} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
@@ -228,7 +228,7 @@ class Role extends Base {
 
   /**
    * The data for a role.
-   * @typedef {Object} RoleData
+   * @typedef {object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
@@ -378,7 +378,7 @@ class Role extends Base {
 
   /**
    * Options used to set the position of a role.
-   * @typedef {Object} SetRolePositionOptions
+   * @typedef {object} SetRolePositionOptions
    * @property {boolean} [relative=false] Whether to change the position relative to its current value or not
    * @property {string} [reason] The reason for changing the position
    */

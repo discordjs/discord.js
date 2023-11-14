@@ -101,7 +101,7 @@ class DataResolver extends null {
    */
 
   /**
-   * @typedef {Object} ResolvedFile
+   * @typedef {object} ResolvedFile
    * @property {Buffer} data Buffer containing the file data
    * @property {string} [contentType] Content type of the file
    */

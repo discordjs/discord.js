@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {Object} WebSocketShardEvents
+ * @typedef {object} WebSocketShardEvents
  * @property {string} Close close
  * @property {string} Destroyed destroyed
  * @property {string} InvalidSession invalidSession

@@ -33,8 +33,8 @@ class DataManager extends BaseManager {
 
   /**
    * Resolves a data entry to a data Object.
-   * @param {string|Object} idOrInstance The id or instance of something in this Manager
-   * @returns {?Object} An instance from this Manager
+   * @param {string|object} idOrInstance The id or instance of something in this Manager
+   * @returns {?object} An instance from this Manager
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
@@ -44,7 +44,7 @@ class DataManager extends BaseManager {
 
   /**
    * Resolves a data entry to an instance id.
-   * @param {string|Object} idOrInstance The id or instance of something in this Manager
+   * @param {string|object} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */
   resolveId(idOrInstance) {

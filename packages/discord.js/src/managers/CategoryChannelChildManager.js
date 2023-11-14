@@ -37,7 +37,7 @@ class CategoryChannelChildManager extends DataManager {
 
   /**
    * Options for creating a channel using {@link CategoryChannel#createChannel}.
-   * @typedef {Object} CategoryCreateChannelOptions
+   * @typedef {object} CategoryCreateChannelOptions
    * @property {string} name The name for the new channel
    * @property {ChannelType} [type=ChannelType.GuildText] The type of the new channel.
    * @property {string} [topic] The topic for the new channel

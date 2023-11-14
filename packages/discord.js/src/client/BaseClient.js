@@ -66,7 +66,7 @@ class BaseClient extends EventEmitter {
 
   /**
    * Options used for deleting a webhook.
-   * @typedef {Object} WebhookDeleteOptions
+   * @typedef {object} WebhookDeleteOptions
    * @property {string} [token] Token of the webhook
    * @property {string} [reason] The reason for deleting the webhook
    */

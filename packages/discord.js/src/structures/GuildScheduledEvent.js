@@ -159,7 +159,7 @@ class GuildScheduledEvent extends Base {
     /**
      * Represents the additional metadata for a {@link GuildScheduledEvent}
      * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-metadata}
-     * @typedef {Object} GuildScheduledEventEntityMetadata
+     * @typedef {object} GuildScheduledEventEntityMetadata
      * @property {?string} location The location of the guild scheduled event
      */
     /* eslint-enable max-len */

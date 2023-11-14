@@ -233,7 +233,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Options used to edit a guild channel.
-   * @typedef {Object} GuildChannelEditOptions
+   * @typedef {object} GuildChannelEditOptions
    * @property {string} [name] The name of the channel
    * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
@@ -422,7 +422,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * The data needed for updating a channel's position.
-   * @typedef {Object} ChannelPosition
+   * @typedef {object} ChannelPosition
    * @property {GuildChannel|Snowflake} channel Channel to update
    * @property {number} [position] New position for the channel
    * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
@@ -456,7 +456,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Data returned from fetching threads.
-   * @typedef {Object} FetchedThreads
+   * @typedef {object} FetchedThreads
    * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched
    * @property {Collection<Snowflake, ThreadMember>} members The thread members in the received threads
    */

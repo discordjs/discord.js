@@ -62,7 +62,7 @@ class Shard extends EventEmitter {
 
     /**
      * Environment variables for the shard's process, or workerData for the shard's worker
-     * @type {Object}
+     * @type {object}
      */
     this.env = Object.assign({}, process.env, {
       SHARDING_MANAGER: true,
@@ -207,7 +207,7 @@ class Shard extends EventEmitter {
 
   /**
    * Options used to respawn a shard.
-   * @typedef {Object} ShardRespawnOptions
+   * @typedef {object} ShardRespawnOptions
    * @property {number} [delay=500] How long to wait between killing the process/worker and
    * restarting it (in milliseconds)
    * @property {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client}

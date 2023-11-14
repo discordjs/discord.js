@@ -9,7 +9,7 @@ class BitField {
   /**
    * Numeric bitfield flags.
    * <info>Defined in extension classes</info>
-   * @type {Object}
+   * @type {object}
    * @memberof BitField
    * @abstract
    */
@@ -113,7 +113,7 @@ class BitField {
    * Gets an object mapping field names to a {@link boolean} indicating whether the
    * bit is available.
    * @param {...*} hasParams Additional parameters for the has method, if any
-   * @returns {Object}
+   * @returns {object}
    */
   serialize(...hasParams) {
     const serialized = {};

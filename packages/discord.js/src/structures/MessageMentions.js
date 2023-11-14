@@ -150,7 +150,7 @@ class MessageMentions {
 
     /**
      * Crossposted channel data.
-     * @typedef {Object} CrosspostedChannel
+     * @typedef {object} CrosspostedChannel
      * @property {Snowflake} channelId The mentioned channel's id
      * @property {Snowflake} guildId The id of the guild that has the channel
      * @property {ChannelType} type The channel's type
@@ -242,7 +242,7 @@ class MessageMentions {
 
   /**
    * Options used to check for a mention.
-   * @typedef {Object} MessageMentionsHasOptions
+   * @typedef {object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
    * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to an user

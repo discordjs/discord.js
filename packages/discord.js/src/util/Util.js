@@ -10,9 +10,9 @@ const isObject = d => typeof d === 'object' && d !== null;
 
 /**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
- * @param {Object} obj The object to flatten.
- * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
- * @returns {Object}
+ * @param {object} obj The object to flatten.
+ * @param {...Record<string, boolean|string>} [props] Specific properties to include/exclude.
+ * @returns {object}
  */
 function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
@@ -54,7 +54,7 @@ function flatten(obj, ...props) {
 }
 
 /**
- * @typedef {Object} FetchRecommendedShardCountOptions
+ * @typedef {object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
  */
@@ -81,7 +81,7 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 
 /**
  * A partial emoji object.
- * @typedef {Object} PartialEmoji
+ * @typedef {object} PartialEmoji
  * @property {boolean} animated Whether the emoji is animated
  * @property {Snowflake|undefined} id The id of the emoji
  * @property {string} name The name of the emoji
@@ -104,7 +104,7 @@ function parseEmoji(text) {
 
 /**
  * A partial emoji object with only an id.
- * @typedef {Object} PartialEmojiOnlyId
+ * @typedef {object} PartialEmojiOnlyId
  * @property {Snowflake} id The id of the emoji
  */
 
@@ -124,7 +124,7 @@ function resolvePartialEmoji(emoji) {
 
 /**
  * Options used to make an error object.
- * @typedef {Object} MakeErrorOptions
+ * @typedef {object} MakeErrorOptions
  * @property {string} name Error type
  * @property {string} message Message for the error
  * @property {string} stack Stack for the error
@@ -411,7 +411,7 @@ function parseWebhookURL(url) {
 
 /**
  * Supportive data for interaction resolved data.
- * @typedef {Object} SupportingInteractionResolvedData
+ * @typedef {object} SupportingInteractionResolvedData
  * @property {Client} client The client
  * @property {Guild} [guild] A guild
  * @property {GuildTextBasedChannel} [channel] A channel

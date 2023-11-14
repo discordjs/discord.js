@@ -257,7 +257,7 @@ class Client extends BaseClient {
 
   /**
    * Options used when fetching an invite from Discord.
-   * @typedef {Object} ClientFetchInviteOptions
+   * @typedef {object} ClientFetchInviteOptions
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
    */
@@ -399,7 +399,7 @@ class Client extends BaseClient {
 
   /**
    * Options for {@link Client#generateInvite}.
-   * @typedef {Object} InviteGenerationOptions
+   * @typedef {object} InviteGenerationOptions
    * @property {OAuth2Scopes[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect

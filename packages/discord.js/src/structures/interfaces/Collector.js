@@ -16,7 +16,7 @@ const { flatten } = require('../../util/Util');
 
 /**
  * Options to be applied to the collector.
- * @typedef {Object} CollectorOptions
+ * @typedef {object} CollectorOptions
  * @property {CollectorFilter} [filter] The filter applied to this collector
  * @property {number} [time] How long to run the collector for in milliseconds
  * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
@@ -235,7 +235,7 @@ class Collector extends EventEmitter {
 
   /**
    * Options used to reset the timeout and idle timer of a {@link Collector}.
-   * @typedef {Object} CollectorResetTimerOptions
+   * @typedef {object} CollectorResetTimerOptions
    * @property {number} [time] How long to run the collector for (in milliseconds)
    * @property {number} [idle] How long to wait to stop the collector after inactivity (in milliseconds)
    */

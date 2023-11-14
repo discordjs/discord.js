@@ -78,7 +78,7 @@ class WebSocketManager extends EventEmitter {
 
     /**
      * An array of queued events before this WebSocketManager became ready
-     * @type {Object[]}
+     * @type {object[]}
      * @private
      * @name WebSocketManager#packetQueue
      */
@@ -310,7 +310,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Broadcasts a packet to every shard this manager handles.
-   * @param {Object} packet The packet to send
+   * @param {object} packet The packet to send
    * @private
    */
   broadcast(packet) {
@@ -331,7 +331,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Processes a packet and queues it if this WebSocketManager is not ready.
-   * @param {Object} [packet] The packet to be handled
+   * @param {object} [packet] The packet to be handled
    * @param {WebSocketShard} [shard] The shard that will handle this packet
    * @returns {boolean}
    * @private

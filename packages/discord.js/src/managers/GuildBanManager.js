@@ -60,7 +60,7 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Options used to fetch multiple bans from a guild.
-   * @typedef {Object} FetchBansOptions
+   * @typedef {object} FetchBansOptions
    * @property {number} [limit] The maximum number of bans to return
    * @property {Snowflake} [before] Consider only bans before this id
    * @property {Snowflake} [after] Consider only bans after this id
@@ -130,7 +130,7 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Options used to ban a user from a guild.
-   * @typedef {Object} BanOptions
+   * @typedef {object} BanOptions
    * @property {number} [deleteMessageDays] Number of days of messages to delete, must be between 0 and 7, inclusive
    * <warn>This property is deprecated. Use `deleteMessageSeconds` instead.</warn>
    * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,

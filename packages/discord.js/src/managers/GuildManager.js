@@ -57,7 +57,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Partial data for a Role.
-   * @typedef {Object} PartialRoleData
+   * @typedef {object} PartialRoleData
    * @property {Snowflake|number} [id] The role's id, used to set channel overrides.
    * This is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
@@ -70,7 +70,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Partial overwrite data.
-   * @typedef {Object} PartialOverwriteData
+   * @typedef {object} PartialOverwriteData
    * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {OverwriteType} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
@@ -79,7 +79,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Partial data for a Channel.
-   * @typedef {Object} PartialChannelData
+   * @typedef {object} PartialChannelData
    * @property {Snowflake|number} [id] The channel's id, used to set its parent.
    * This is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
@@ -140,7 +140,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Options used to create a guild.
-   * @typedef {Object} GuildCreateOptions
+   * @typedef {object} GuildCreateOptions
    * @property {string} name The name of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {GuildVerificationLevel} [verificationLevel] The verification level for the guild
@@ -250,7 +250,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Options used to fetch multiple guilds.
-   * @typedef {Object} FetchGuildsOptions
+   * @typedef {object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
    * @property {number} [limit] Maximum number of guilds to request (1-200)

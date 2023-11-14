@@ -4,7 +4,7 @@ const AttachmentFlagsBitField = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util');
 
 /**
- * @typedef {Object} AttachmentPayload
+ * @typedef {object} AttachmentPayload
  * @property {?string} name The name of the attachment
  * @property {Stream|BufferResolvable} attachment The attachment in this payload
  * @property {?string} description The description of the attachment

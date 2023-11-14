@@ -54,7 +54,7 @@ class MessageManager extends CachedManager {
   /**
    * Options used to fetch multiple messages.
    * <info>The `before`, `after`, and `around` parameters are mutually exclusive.</info>
-   * @typedef {Object} FetchMessagesOptions
+   * @typedef {object} FetchMessagesOptions
    * @property {number} [limit] The maximum number of messages to return
    * @property {Snowflake} [before] Consider only messages before this id
    * @property {Snowflake} [after] Consider only messages after this id
@@ -155,7 +155,7 @@ class MessageManager extends CachedManager {
 
   /**
    * Data used to reference an attachment.
-   * @typedef {Object} MessageEditAttachmentData
+   * @typedef {object} MessageEditAttachmentData
    * @property {Snowflake} id The id of the attachment
    */
 

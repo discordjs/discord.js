@@ -42,7 +42,7 @@
               "Number": "number",
               "Boolean": "boolean",
               "Symbol": "symbol",
-              "object": "Object",
+              "Object": "object",
               "function": "Function",
               "array": "Array",
               "date": "Date",

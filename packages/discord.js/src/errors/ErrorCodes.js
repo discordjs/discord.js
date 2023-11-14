@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {Object} DiscordjsErrorCodes
+ * @typedef {object} DiscordjsErrorCodes
 
  * @property {'ClientInvalidOption'} ClientInvalidOption
  * @property {'ClientInvalidProvidedShards'} ClientInvalidProvidedShards

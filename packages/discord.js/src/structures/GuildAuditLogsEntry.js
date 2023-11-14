@@ -51,7 +51,7 @@ const Targets = {
  * * An auto moderation rule
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
- * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
+ * @typedef {?(object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
  * GuildScheduledEvent|ApplicationCommand|AutoModerationRule)} AuditLogEntryTarget
  */
 
@@ -86,8 +86,8 @@ const Targets = {
 /**
  * Constructs an object of known properties for a structure from an array of changes.
  * @param {AuditLogChange[]} changes The array of changes
- * @param {Object} [initialData={}] The initial data passed to the function
- * @returns {Object}
+ * @param {object} [initialData={}] The initial data passed to the function
+ * @returns {object}
  * @ignore
  */
 function changesReduce(changes, initialData = {}) {
@@ -103,7 +103,7 @@ function changesReduce(changes, initialData = {}) {
 class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
-   * @type {Object<string, string>}
+   * @type {Record<string, string>}
    * @memberof GuildAuditLogsEntry
    */
   static Targets = Targets;
@@ -152,7 +152,7 @@ class GuildAuditLogsEntry {
 
     /**
      * An entry in the audit log representing a specific change.
-     * @typedef {Object} AuditLogChange
+     * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * <warn>For application command permissions updates the key is the id of the user, channel,
      * role, or a permission constant that was updated instead of an actual property name</warn>
@@ -175,7 +175,7 @@ class GuildAuditLogsEntry {
 
     /**
      * Any extra data from the entry
-     * @type {?(Object|Role|GuildMember)}
+     * @type {?(object|Role|GuildMember)}
      */
     this.extra = null;
     switch (data.action_type) {

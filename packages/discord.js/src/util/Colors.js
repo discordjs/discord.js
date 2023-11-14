@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {Object} Colors
+ * @typedef {object} Colors
  * @property {number} Default 0x000000 | rgb(0,0,0)
  * @property {number} White 0xFFFFFF | rgb(255,255,255)
  * @property {number} Aqua 0x1ABC9C | rgb(26,188,156)

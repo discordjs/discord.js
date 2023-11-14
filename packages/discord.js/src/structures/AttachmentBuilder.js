@@ -105,7 +105,7 @@ class AttachmentBuilder {
 module.exports = AttachmentBuilder;
 
 /**
- * @typedef {Object} AttachmentData
+ * @typedef {object} AttachmentData
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
  */

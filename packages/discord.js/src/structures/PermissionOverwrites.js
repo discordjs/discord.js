@@ -103,11 +103,11 @@ class PermissionOverwrites extends Base {
    *  'AttachFiles': false,
    * }
    * ```
-   * @typedef {Object} PermissionOverwriteOptions
+   * @typedef {object} PermissionOverwriteOptions
    */
 
   /**
-   * @typedef {Object} ResolvedOverwriteOptions
+   * @typedef {object} ResolvedOverwriteOptions
    * @property {PermissionsBitField} allow The allowed permissions
    * @property {PermissionsBitField} deny The denied permissions
    */
@@ -140,7 +140,7 @@ class PermissionOverwrites extends Base {
 
   /**
    * The raw data for a permission overwrite
-   * @typedef {Object} RawOverwriteData
+   * @typedef {object} RawOverwriteData
    * @property {Snowflake} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} allow The permissions to allow
    * @property {string} deny The permissions to deny
@@ -156,7 +156,7 @@ class PermissionOverwrites extends Base {
 
   /**
    * Data that can be used for a permission overwrite
-   * @typedef {Object} OverwriteData
+   * @typedef {object} OverwriteData
    * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny

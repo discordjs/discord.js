@@ -73,7 +73,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Options used to fetch data from Discord
-   * @typedef {Object} BaseFetchOptions
+   * @typedef {object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */

@@ -79,7 +79,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * Options for fetching multiple threads.
-   * @typedef {Object} FetchThreadsOptions
+   * @typedef {object} FetchThreadsOptions
    * @property {FetchArchivedThreadOptions} [archived] Options used to fetch archived threads
    */
 
@@ -117,7 +117,7 @@ class ThreadManager extends CachedManager {
 
   /**
    * The options used to fetch archived threads.
-   * @typedef {Object} FetchArchivedThreadOptions
+   * @typedef {object} FetchArchivedThreadOptions
    * @property {string} [type='public'] The type of threads to fetch (`public` or `private`)
    * @property {boolean} [fetchAll=false] Whether to fetch **all** archived threads when `type` is `private`
    * <info>This property requires the {@link PermissionFlagsBits.ManageThreads} permission if `true`.</info>

@@ -13,14 +13,14 @@ const { parseWebhookURL } = require('../util/Util');
 class WebhookClient extends BaseClient {
   /**
    * Represents the credentials used for a webhook in the form of its id and token.
-   * @typedef {Object} WebhookClientDataIdWithToken
+   * @typedef {object} WebhookClientDataIdWithToken
    * @property {Snowflake} id The webhook's id
    * @property {string} token The webhook's token
    */
 
   /**
    * Represents the credentials used for a webhook in the form of a URL.
-   * @typedef {Object} WebhookClientDataURL
+   * @typedef {object} WebhookClientDataURL
    * @property {string} url The full URL for the webhook
    */
 
@@ -31,7 +31,7 @@ class WebhookClient extends BaseClient {
 
   /**
    * Options for a webhook client.
-   * @typedef {Object} WebhookClientOptions
+   * @typedef {object} WebhookClientOptions
    * @property {MessageMentionOptions} [allowedMentions] Default value for {@link BaseMessageOptions#allowedMentions}
    * @property {RESTOptions} [rest] Options for the REST manager
    */

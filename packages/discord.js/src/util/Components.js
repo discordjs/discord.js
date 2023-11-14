@@ -4,7 +4,7 @@
 const { ComponentBuilder } = require('@discordjs/builders');
 const { ComponentType } = require('discord-api-types/v10');
 /**
- * @typedef {Object} BaseComponentData
+ * @typedef {object} BaseComponentData
  * @property {ComponentType} type The type of component
  */
 

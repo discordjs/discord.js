@@ -54,7 +54,7 @@ class TextBasedChannel {
 
   /**
    * The base message options for messages.
-   * @typedef {Object} BaseMessageOptions
+   * @typedef {object} BaseMessageOptions
    * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
@@ -67,7 +67,7 @@ class TextBasedChannel {
 
   /**
    * Options for sending a message with a reply.
-   * @typedef {Object} ReplyOptions
+   * @typedef {object} ReplyOptions
    * @property {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
@@ -91,7 +91,7 @@ class TextBasedChannel {
 
   /**
    * Options provided to control parsing of mentions by Discord
-   * @typedef {Object} MessageMentionOptions
+   * @typedef {object} MessageMentionOptions
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
@@ -327,7 +327,7 @@ class TextBasedChannel {
 
   /**
    * Options used to create a {@link Webhook}.
-   * @typedef {Object} ChannelWebhookCreateOptions
+   * @typedef {object} ChannelWebhookCreateOptions
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook

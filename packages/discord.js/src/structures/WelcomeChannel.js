@@ -25,7 +25,7 @@ class WelcomeChannel extends Base {
 
     /**
      * The raw emoji data
-     * @type {Object}
+     * @type {object}
      * @private
      */
     this._emoji = {

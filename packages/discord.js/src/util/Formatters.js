@@ -377,7 +377,7 @@ class Formatters extends null {
   /**
    * The message formatting timestamp
    * [styles](https://discord.com/developers/docs/reference#message-formatting-timestamp-styles) supported by Discord.
-   * @type {Object<string, TimestampStylesString>}
+   * @type {Record<string, TimestampStylesString>}
    * @memberof Formatters
    * @deprecated Import this property directly from discord.js instead.
    */

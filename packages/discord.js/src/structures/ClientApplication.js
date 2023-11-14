@@ -10,7 +10,7 @@ const DataResolver = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
- * @typedef {Object} ClientApplicationInstallParams
+ * @typedef {object} ClientApplicationInstallParams
  * @property {OAuth2Scopes[]} scopes The scopes to add the application to the server with
  * @property {Readonly<PermissionsBitField>} permissions The permissions this bot will request upon joining
  */
@@ -191,7 +191,7 @@ class ClientApplication extends Application {
 
   /**
    * Options used for editing an application.
-   * @typedef {Object} ClientApplicationEditOptions
+   * @typedef {object} ClientApplicationEditOptions
    * @property {string} [customInstallURL] The application's custom installation URL
    * @property {string} [description] The application's description
    * @property {string} [roleConnectionsVerificationURL] The application's role connection verification URL
@@ -259,11 +259,11 @@ class ClientApplication extends Application {
 
   /**
    * Data for creating or editing an application role connection metadata.
-   * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
+   * @typedef {object} ApplicationRoleConnectionMetadataEditOptions
    * @property {string} name The name of the metadata field
-   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {?Record<Locale, string>} [nameLocalizations] The name localizations for the metadata field
    * @property {string} description The description of the metadata field
-   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {?Record<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
    * @property {string} key The dictionary key of the metadata field
    * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
    */

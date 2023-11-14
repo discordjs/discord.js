@@ -6,13 +6,13 @@ const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
 const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels');
 
 /**
- * @typedef {Object} GuildForumTagEmoji
+ * @typedef {object} GuildForumTagEmoji
  * @property {?Snowflake} id The id of a guild's custom emoji
  * @property {?string} name The unicode character of the emoji
  */
 
 /**
- * @typedef {Object} GuildForumTag
+ * @typedef {object} GuildForumTag
  * @property {Snowflake} id The id of the tag
  * @property {string} name The name of the tag
  * @property {boolean} moderated Whether this tag can only be added to or removed from threads
@@ -21,7 +21,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  */
 
 /**
- * @typedef {Object} GuildForumTagData
+ * @typedef {object} GuildForumTagData
  * @property {Snowflake} [id] The id of the tag
  * @property {string} name The name of the tag
  * @property {boolean} [moderated] Whether this tag can only be added to or removed from threads
@@ -30,7 +30,7 @@ const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require(
  */
 
 /**
- * @typedef {Object} DefaultReactionEmoji
+ * @typedef {object} DefaultReactionEmoji
  * @property {?Snowflake} id The id of a guild's custom emoji
  * @property {?string} name The unicode character of the emoji
  */

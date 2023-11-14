@@ -3,7 +3,7 @@
 const { createEnum } = require('./Enums');
 
 /**
- * @typedef {Object} Status
+ * @typedef {object} Status
  * @property {number} Ready
  * @property {number} Connecting
  * @property {number} Reconnecting

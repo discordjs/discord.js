@@ -7,7 +7,7 @@ const { flatten } = require('../util/Util');
 
 /**
  * Activity sent in a message.
- * @typedef {Object} MessageActivity
+ * @typedef {object} MessageActivity
  * @property {string} [partyId] Id of the party represented in activity
  * @property {MessageActivityType} type Type of activity sent
  */
@@ -94,7 +94,7 @@ class Presence extends Base {
     if ('client_status' in data) {
       /**
        * The devices this presence is on
-       * @type {?Object}
+       * @type {?object}
        * @property {?ClientPresenceStatus} web The current presence in the web application
        * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
        * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
@@ -187,7 +187,7 @@ class Activity {
 
     /**
      * Represents timestamps of an activity
-     * @typedef {Object} ActivityTimestamps
+     * @typedef {object} ActivityTimestamps
      * @property {?Date} start When the activity started
      * @property {?Date} end When the activity will end
      */
@@ -205,7 +205,7 @@ class Activity {
 
     /**
      * Represents a party of an activity
-     * @typedef {Object} ActivityParty
+     * @typedef {object} ActivityParty
      * @property {?string} id The party's id
      * @property {number[]} size Size of the party as `[current, max]`
      */

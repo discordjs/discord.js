@@ -15,7 +15,7 @@ const { version } = require('../../package.json');
 
 /**
  * Options for a client.
- * @typedef {Object} ClientOptions
+ * @typedef {object} ClientOptions
  * @property {number|number[]|string} [shards] The shard's id to run, or an array of shard ids. If not specified,
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
@@ -45,12 +45,12 @@ const { version } = require('../../package.json');
 
 /**
  * Options for {@link Sweepers} defining the behavior of cache sweeping
- * @typedef {Object<SweeperKey, SweepOptions>} SweeperOptions
+ * @typedef {Record<SweeperKey, SweepOptions>} SweeperOptions
  */
 
 /**
  * Options for sweeping a single type of item from cache
- * @typedef {Object} SweepOptions
+ * @typedef {object} SweepOptions
  * @property {number} interval The interval (in seconds) at which to perform sweeping of the item
  * @property {number} [lifetime] How long an item should stay in cache until it is considered sweepable.
  * <warn>This property is only valid for the `invites`, `messages`, and `threads` keys. The `filter` property
@@ -84,7 +84,7 @@ const { version } = require('../../package.json');
 
 /**
  * WebSocket options (these are left as snake_case to match the API)
- * @typedef {Object} WebsocketOptions
+ * @typedef {object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
@@ -133,7 +133,7 @@ class Options extends null {
 
   /**
    * Create a cache factory using predefined settings to sweep or limit.
-   * @param {Object<string, LimitedCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
+   * @param {Record<string, LimitedCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
    * If no setting is provided for a manager, it uses Collection.
    * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection.
    * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
@@ -188,7 +188,7 @@ class Options extends null {
    * * `MessageManager` - Limit to 200 messages
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
-   * @type {Object<string, LimitedCollectionOptions|number>}
+   * @type {Record<string, LimitedCollectionOptions|number>}
    */
   static get DefaultMakeCacheSettings() {
     return {

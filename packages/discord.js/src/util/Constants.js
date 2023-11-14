@@ -208,7 +208,7 @@ exports.DeletableMessageTypes = [
  * * {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
  * * {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
  * * {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
- * @typedef {Object} StickerFormatExtensionMap
+ * @typedef {object} StickerFormatExtensionMap
  */
 exports.StickerFormatExtensionMap = {
   [StickerFormatType.PNG]: ImageFormat.PNG,
@@ -218,7 +218,7 @@ exports.StickerFormatExtensionMap = {
 };
 
 /**
- * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
+ * @typedef {object} Constants Constants that can be used in an enum or object-like way.
  * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {SweeperKey[]} SweeperKeys The possible names of items that can be swept in sweepers
  * @property {NonSystemMessageTypes} NonSystemMessageTypes The types of messages that are not deemed a system type
@@ -226,5 +226,5 @@ exports.StickerFormatExtensionMap = {
  * @property {ThreadChannelTypes} ThreadChannelTypes The types of channels that are threads
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
  * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
- * @property {Object} StickerFormatExtensionMap A mapping between sticker formats and their respective image formats.
+ * @property {object} StickerFormatExtensionMap A mapping between sticker formats and their respective image formats.
  */

@@ -34,7 +34,7 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Options used to create a guild sticker.
-   * @typedef {Object} GuildStickerCreateOptions
+   * @typedef {object} GuildStickerCreateOptions
    * @property {AttachmentPayload|BufferResolvable|Stream} file The file for the sticker
    * @property {string} name The name for the sticker
    * @property {string} tags The Discord name of a unicode emoji representing the sticker's expression
