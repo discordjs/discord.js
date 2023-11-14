@@ -42,6 +42,11 @@ export interface IExtractorInvokeOptions {
 	compilerState?: CompilerState;
 
 	/**
+	 * Whether to minify the resulting doc model JSON, i.e. without any indentation or newlines.
+	 */
+	docModelMinify?: boolean;
+
+	/**
 	 * Indicates that API Extractor is running as part of a local build, e.g. on developer's
 	 * machine.
 	 *
@@ -270,7 +275,7 @@ export class Extractor {
 			apiPackage.saveToJsonFile(extractorConfig.apiJsonFilePath, {
 				toolPackage: Extractor.packageName,
 				toolVersion: Extractor.version,
-
+				minify: options?.docModelMinify ?? false,
 				newlineConversion: extractorConfig.newlineKind,
 				ensureFolderExists: true,
 				testMode: extractorConfig.testMode,

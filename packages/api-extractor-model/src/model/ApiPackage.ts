@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { Buffer } from 'node:buffer';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
@@ -10,6 +11,7 @@ import {
 	PackageJsonLookup,
 	type IPackageJson,
 	type JsonObject,
+	FileSystem,
 } from '@rushstack/node-core-library';
 import { ApiDocumentedItem, type IApiDocumentedItemOptions } from '../items/ApiDocumentedItem.js';
 import { ApiItem, ApiItemKind, type IApiItemJson } from '../items/ApiItem.js';
@@ -98,6 +100,11 @@ export interface IApiPackageJson extends IApiItemJson {
  * @public
  */
 export interface IApiPackageSaveOptions extends IJsonFileSaveOptions {
+	/**
+	 * Set to true to not have indentation or newlines in resulting JSON.
+	 */
+	minify?: boolean;
+
 	/**
 	 * Set to true only when invoking API Extractor's test harness.
 	 *
@@ -300,7 +307,13 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		}
 
 		this.serializeInto(jsonObject);
-		JsonFile.save(jsonObject, apiJsonFilename, ioptions);
+		if (ioptions.minify) {
+			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(jsonObject), 'utf8'), {
+				ensureFolderExists: ioptions.ensureFolderExists ?? true,
+			});
+		} else {
+			JsonFile.save(jsonObject, apiJsonFilename, ioptions);
+		}
 	}
 
 	/**
