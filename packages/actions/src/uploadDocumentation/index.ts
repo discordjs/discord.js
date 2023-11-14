@@ -29,7 +29,7 @@ for await (const file of globber.globGenerator()) {
 		await pool.sql`insert into documentation (name, version, url) values (${name.replace(
 			'@discordjs/',
 			'',
-		)}, ${version}, ${url}) on conflict (name, version, url) do update set url = EXCLUDED.url`;
+		)}, ${version}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
 	} catch (error) {
 		const err = error as Error;
 		console.log(err.message);
