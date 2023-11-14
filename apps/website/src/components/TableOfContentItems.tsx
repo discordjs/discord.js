@@ -1,5 +1,6 @@
 'use client';
 
+import { Section } from '@discordjs/ui';
 import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
 import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
@@ -124,35 +125,23 @@ export function TableOfContentItems({ serializedMembers }: TableOfContentsItemPr
 			<div className="ml-2 mt-5.5 flex flex-col gap-2">
 				{eventItems.length ? (
 					<div className="flex flex-col">
-						<div className="flex flex-row place-items-center gap-4">
-							<VscSymbolEvent size={20} />
-							<div className="p-3 pl-0">
-								<span className="font-semibold">Events</span>
-							</div>
-						</div>
-						{eventItems}
+						<Section icon={<VscSymbolEvent size={20} />} title="Events">
+							<div className="flex flex-col">{eventItems}</div>
+						</Section>
 					</div>
 				) : null}
 				{propertyItems.length ? (
 					<div className="flex flex-col">
-						<div className="flex flex-row place-items-center gap-4">
-							<VscSymbolProperty size={20} />
-							<div className="p-3 pl-0">
-								<span className="font-semibold">Properties</span>
-							</div>
-						</div>
-						{propertyItems}
+						<Section icon={<VscSymbolProperty size={20} />} title="Properties">
+							<div className="flex flex-col">{propertyItems}</div>
+						</Section>
 					</div>
 				) : null}
 				{methodItems.length ? (
 					<div className="flex flex-col">
-						<div className="flex flex-row place-items-center gap-4">
-							<VscSymbolMethod size={20} />
-							<div className="p-3 pl-0">
-								<span className="font-semibold">Methods</span>
-							</div>
-						</div>
-						{methodItems}
+						<Section icon={<VscSymbolMethod size={20} />} title="Methods">
+							<div className="flex flex-col">{methodItems}</div>
+						</Section>
 					</div>
 				) : null}
 			</div>
