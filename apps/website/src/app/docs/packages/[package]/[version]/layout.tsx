@@ -27,7 +27,7 @@ export const generateStaticParams = async () => {
 	const params: VersionRouteParams[] = [];
 
 	await Promise.all(
-		PACKAGES.slice(1).map(async (packageName) => {
+		PACKAGES.map(async (packageName) => {
 			const versions = (await fetchVersions(packageName)).slice(0, N_RECENT_VERSIONS);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));

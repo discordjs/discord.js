@@ -86,7 +86,7 @@
 		"hastscript": "^8.0.0",
 		"html-escaper": "^3.0.3",
 		"postcss": "^8.4.31",
-		"prettier": "^3.0.3",
+		"prettier": "^3.1.0",
 		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"unocss": "^0.57.3",

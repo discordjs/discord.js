@@ -92,7 +92,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"happy-dom": "^12.10.3",
 		"postcss": "^8.4.31",
-		"prettier": "^3.0.3",
+		"prettier": "^3.1.0",
 		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",
 		"vercel": "^32.5.3",

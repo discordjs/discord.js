@@ -1206,8 +1206,8 @@ export class ApiModelGenerator {
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
-			? (jsDoc as DocgenPropertyJson).scope === 'static'
-			: false;
+			  ? (jsDoc as DocgenPropertyJson).scope === 'static'
+			  : false;
 		const containerKey: string = ApiProperty.getContainerKey(name, isStatic);
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
