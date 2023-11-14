@@ -119,6 +119,10 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 }
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
+	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return [];
+	}
+
 	const modelJSON = await fetchModelJSON(packageName, version);
 
 	if (!modelJSON) {

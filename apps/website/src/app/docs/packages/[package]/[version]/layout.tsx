@@ -24,11 +24,15 @@ interface VersionRouteParams {
 }
 
 export const generateStaticParams = async () => {
+	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return [];
+	}
+
 	const params: VersionRouteParams[] = [];
 
 	await Promise.all(
 		PACKAGES.map(async (packageName) => {
-			const versions = (await fetchVersions(packageName)).slice(0, N_RECENT_VERSIONS);
+			const versions = (await fetchVersions(packageName)).slice(1, N_RECENT_VERSIONS);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));
 		}),
