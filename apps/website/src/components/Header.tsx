@@ -2,6 +2,7 @@
 
 import { FiCommand } from '@react-icons/all-files/fi/FiCommand';
 import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted';
+import { VscListSelection } from '@react-icons/all-files/vsc/VscListSelection';
 import { VscMenu } from '@react-icons/all-files/vsc/VscMenu';
 import { VscSearch } from '@react-icons/all-files/vsc/VscSearch';
 import { Button } from 'ariakit/button';
@@ -12,12 +13,14 @@ import { usePathname } from 'next/navigation';
 import { Fragment, useMemo } from 'react';
 import { useCmdK } from '~/contexts/cmdK';
 import { useNav } from '~/contexts/nav';
+import { useOutline } from '~/contexts/outline';
 
 const ThemeSwitcher = dynamic(async () => import('./ThemeSwitcher'));
 
 export default function Header() {
 	const pathname = usePathname();
 	const { setOpened } = useNav();
+	const setOutlineOpened = useOutline().setOpened;
 	const dialog = useCmdK();
 
 	const pathElements = useMemo(
@@ -68,13 +71,28 @@ export default function Header() {
 		<header className="sticky top-4 z-20 border border-light-900 rounded-md bg-white/75 shadow backdrop-blur-md dark:border-dark-100 dark:bg-dark-600/75">
 			<div className="block h-16 px-6">
 				<div className="h-full flex flex-row place-content-between place-items-center gap-8">
-					<Button
-						aria-label="Menu"
-						className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
-						onClick={() => setOpened((open) => !open)}
-					>
-						<VscMenu size={24} />
-					</Button>
+					<div className="flex flex-row place-items-center gap-4">
+						<Button
+							aria-label="Menu"
+							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+							onClick={() => {
+								setOpened((open) => !open);
+								setOutlineOpened(false);
+							}}
+						>
+							<VscMenu size={24} />
+						</Button>
+						<Button
+							aria-label="Menu"
+							className="h-6 w-6 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none lg:hidden active:translate-y-px focus:ring focus:ring-width-2 focus:ring-blurple"
+							onClick={() => {
+								setOpened(false);
+								setOutlineOpened((open) => !open);
+							}}
+						>
+							<VscListSelection size={24} className="relative top-.37" />
+						</Button>
+					</div>
 					<div className="hidden lg:flex lg:grow lg:flex-row lg:overflow-hidden">{breadcrumbs}</div>
 					<Button
 						as="div"

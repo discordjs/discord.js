@@ -5,6 +5,7 @@ import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty';
 import { useMemo } from 'react';
+import { useOutline } from '~/contexts/outline';
 
 export interface TableOfContentsSerializedMethod {
 	kind: 'Method' | 'MethodSignature';
@@ -32,12 +33,14 @@ export interface TableOfContentsItemProps {
 }
 
 export function TableOfContentsPropertyItem({ property }: { readonly property: TableOfContentsSerializedProperty }) {
+	const setOutlineOpened = useOutline().setOpened;
 	return (
 		<a
 			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${property.name}`}
 			key={`${property.name}-${property.kind}`}
 			title={property.name}
+			onClick={() => setOutlineOpened(false)}
 		>
 			<span className="line-clamp-1">{property.name}</span>
 		</a>
@@ -45,6 +48,7 @@ export function TableOfContentsPropertyItem({ property }: { readonly property: T
 }
 
 export function TableOfContentsMethodItem({ method }: { readonly method: TableOfContentsSerializedMethod }) {
+	const setOutlineOpened = useOutline().setOpened;
 	if (method.overloadIndex && method.overloadIndex > 1) {
 		return null;
 	}
@@ -57,6 +61,7 @@ export function TableOfContentsMethodItem({ method }: { readonly method: TableOf
 			href={`#${key}`}
 			key={key}
 			title={method.name}
+			onClick={() => setOutlineOpened(false)}
 		>
 			<span className="line-clamp-1">{method.name}</span>
 			{method.overloadIndex && method.overloadIndex > 1 ? (
@@ -67,12 +72,14 @@ export function TableOfContentsMethodItem({ method }: { readonly method: TableOf
 }
 
 export function TableOfContentsEventItem({ event }: { readonly event: TableOfContentsSerializedEvent }) {
+	const setOutlineOpened = useOutline().setOpened;
 	return (
 		<a
 			className="ml-[10px] border-l border-light-800 p-[5px] pl-6.5 text-sm outline-none focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${event.name}`}
 			key={`${event.name}-${event.kind}`}
 			title={event.name}
+			onClick={() => setOutlineOpened(false)}
 		>
 			<span className="line-clamp-1">{event.name}</span>
 		</a>

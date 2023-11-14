@@ -5,7 +5,7 @@ import { Scrollbars } from './Scrollbars';
 import { TableOfContentItems } from './TableOfContentItems';
 
 export function Outline() {
-	const { members } = useOutline();
+	const { members, opened } = useOutline();
 
 	if (!members) {
 		return null;
@@ -13,7 +13,11 @@ export function Outline() {
 
 	return (
 		<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
-			<aside className="fixed bottom-4 left-4 right-4 top-22 z-20 mx-auto hidden max-w-5xl border border-light-900 rounded-md bg-white/75 shadow backdrop-blur-md lg:sticky lg:block lg:h-full lg:max-w-xs lg:min-w-xs lg:w-full dark:border-dark-100 dark:bg-dark-600/75">
+			<aside
+				className={`fixed bottom-4 left-4 right-4 top-22 z-20 mx-auto max-w-5xl border border-light-900 rounded-md bg-white/75 shadow backdrop-blur-md ${
+					opened ? 'block' : 'hidden'
+				} lg:sticky lg:block lg:h-full lg:max-w-xs lg:min-w-xs lg:w-full dark:border-dark-100 dark:bg-dark-600/75`}
+			>
 				<Scrollbars
 					autoHide
 					className="[&>div]:overscroll-none"
