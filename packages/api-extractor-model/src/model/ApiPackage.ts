@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { Buffer } from 'node:buffer';
+import path from 'node:path';
 import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
@@ -30,6 +31,7 @@ export interface IApiPackageOptions
 	extends IApiItemContainerMixinOptions,
 		IApiNameMixinOptions,
 		IApiDocumentedItemOptions {
+	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
 }
@@ -37,6 +39,7 @@ export interface IApiPackageOptions
 const MinifyJSONMapping = {
 	canonicalReference: 'c',
 	constraintTokenRange: 'ctr',
+	dependencies: 'dp',
 	defaultTypeTokenRange: 'dtr',
 	docComment: 'd',
 	endIndex: 'en',
@@ -129,6 +132,11 @@ export interface IApiPackageMetadataJson {
 
 export interface IApiPackageJson extends IApiItemJson {
 	/**
+	 * Names of packages in the same monorepo this one uses mapped to the version of said package.
+	 */
+	dependencies?: Record<string, string>;
+
+	/**
 	 * A file header that stores metadata about the tool that wrote the *.api.json file.
 	 */
 	metadata: IApiPackageMetadataJson;
@@ -188,11 +196,31 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	private readonly _projectFolderUrl?: string | undefined;
 
+	private readonly _dependencies?: Record<string, string> | undefined;
+
 	public constructor(options: IApiPackageOptions) {
 		super(options);
 
 		this._tsdocConfiguration = options.tsdocConfiguration;
 		this._projectFolderUrl = options.projectFolderUrl;
+
+		if (options.dependencies) {
+			this._dependencies = options.dependencies;
+		} else {
+			const packageJson = PackageJsonLookup.instance.tryLoadPackageJsonFor('.');
+			if (packageJson?.dependencies) {
+				this._dependencies = {};
+				for (const [pack, semVer] of Object.entries(packageJson.dependencies)) {
+					const pathToPackage = path.join('..', pack.includes('/') ? pack.slice(pack.lastIndexOf('/')) : pack);
+					if (semVer === 'workspace:^') {
+						this._dependencies[pack] =
+							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
+					} else if (FileSystem.exists(pathToPackage)) {
+						this._dependencies[pack] = semVer;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -206,6 +234,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		super.onDeserializeInto(options, context, jsonObject);
 
 		options.projectFolderUrl = jsonObject.projectFolderUrl;
+		options.dependencies = jsonObject.dependencies;
 	}
 
 	public static loadFromJsonFile(apiJsonFilename: string): ApiPackage {
@@ -303,6 +332,10 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 		return this.members as readonly ApiEntryPoint[];
 	}
 
+	public get dependencies(): Record<string, string> | undefined {
+		return this._dependencies;
+	}
+
 	/**
 	 * The TSDoc configuration that was used when analyzing the API for this package.
 	 *
@@ -358,6 +391,10 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 			jsonObject.projectFolderUrl = this.projectFolderUrl;
 		}
 
+		if (this._dependencies) {
+			jsonObject.dependencies = this._dependencies;
+		}
+
 		this.serializeInto(jsonObject);
 		if (ioptions.minify) {
 			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(this._mapToMinified(jsonObject)), 'utf8'), {
@@ -381,8 +418,11 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 			else {
 				const result: any = {};
 				for (const key of Object.keys(item)) {
-					result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
-						typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+					if (key === 'dependencies') {
+						result[MinifyJSONMapping.dependencies] = item.dependencies;
+					} else
+						result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
+							typeof item[key] === 'object' ? mapper(item[key]) : item[key];
 				}
 
 				return result;
@@ -398,11 +438,14 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 			else {
 				const result: any = {};
 				for (const key of Object.keys(item)) {
-					result[
-						Object.keys(MinifyJSONMapping).find(
-							(look) => MinifyJSONMapping[look as keyof typeof MinifyJSONMapping] === key,
-						)!
-					] = typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+					if (key === MinifyJSONMapping.dependencies) {
+						result.dependencies = item[MinifyJSONMapping.dependencies];
+					} else
+						result[
+							Object.keys(MinifyJSONMapping).find(
+								(look) => MinifyJSONMapping[look as keyof typeof MinifyJSONMapping] === key,
+							)!
+						] = typeof item[key] === 'object' ? mapper(item[key]) : item[key];
 				}
 
 				return result;
