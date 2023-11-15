@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { Buffer } from 'node:buffer';
+import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { TSDocConfigFile } from '@microsoft/tsdoc-config';
@@ -32,6 +33,52 @@ export interface IApiPackageOptions
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
 }
+
+const MinifyJSONMapping = {
+	canonicalReference: 'c',
+	constraintTokenRange: 'ctr',
+	defaultTypeTokenRange: 'dtr',
+	docComment: 'd',
+	endIndex: 'en',
+	excerptTokens: 'ex',
+	extendsTokenRange: 'etr',
+	extendsTokenRanges: 'etrs',
+	fileColumn: 'co',
+	fileLine: 'l',
+	fileUrlPath: 'pat',
+	implementsTokenRanges: 'itrs',
+	initializerTokenRange: 'itr',
+	isAbstract: 'ab',
+	isOptional: 'op',
+	isProtected: 'pr',
+	isReadonly: 'ro',
+	isRest: 'rs',
+	isStatic: 'sta',
+	kind: 'k',
+	members: 'ms',
+	metadata: 'meta',
+	name: 'n',
+	oldestForwardsCompatibleVersion: 'ov',
+	overloadIndex: 'oi',
+	parameterName: 'pn',
+	parameterTypeTokenRange: 'ptr',
+	parameters: 'ps',
+	preserveMemberOrder: 'pmo',
+	projectFolderUrl: 'pdir',
+	propertyTypeTokenRange: 'prtr',
+	releaseTag: 'r',
+	returnTypeTokenRange: 'rtr',
+	schemaVersion: 'v',
+	startIndex: 'st',
+	text: 't',
+	toolPackage: 'tpk',
+	toolVersion: 'tv',
+	tsdocConfig: 'ts',
+	typeParameterName: 'tp',
+	typeParameters: 'tps',
+	typeTokenRange: 'ttr',
+	variableTypeTokenRange: 'vtr',
+};
 
 export interface IApiPackageMetadataJson {
 	/**
@@ -77,7 +124,7 @@ export interface IApiPackageMetadataJson {
 	 * Normally this configuration is loaded from the project's tsdoc.json file.  It is stored
 	 * in the .api.json file so that doc comments can be parsed accurately when loading the file.
 	 */
-	tsdocConfig: JsonObject;
+	tsdocConfig?: JsonObject;
 }
 
 export interface IApiPackageJson extends IApiItemJson {
@@ -162,8 +209,13 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	}
 
 	public static loadFromJsonFile(apiJsonFilename: string): ApiPackage {
-		const jsonObject: IApiPackageJson = JsonFile.load(apiJsonFilename);
+		return this.loadFromJson(JsonFile.load(apiJsonFilename), apiJsonFilename);
+	}
 
+	public static loadFromJson(rawJson: any, apiJsonFilename: string = ''): ApiPackage {
+		const jsonObject =
+			MinifyJSONMapping.metadata in rawJson ? this._mapFromMinified(rawJson) : (rawJson as IApiPackageJson);
+		if (!jsonObject?.metadata) throw new Error(util.inspect(rawJson, { depth: 2 }));
 		if (!jsonObject?.metadata || typeof jsonObject.metadata.schemaVersion !== 'number') {
 			throw new Error(
 				`Error loading ${apiJsonFilename}:` +
@@ -212,7 +264,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 		const tsdocConfiguration: TSDocConfiguration = new TSDocConfiguration();
 
-		if (versionToDeserialize >= ApiJsonSchemaVersion.V_1004) {
+		if (versionToDeserialize >= ApiJsonSchemaVersion.V_1004 && 'tsdocConfiguration' in jsonObject) {
 			const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromObject(jsonObject.metadata.tsdocConfig);
 			if (tsdocConfigFile.hasErrors) {
 				throw new Error(`Error loading ${apiJsonFilename}:\n` + tsdocConfigFile.getErrorSummary());
@@ -308,7 +360,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 		this.serializeInto(jsonObject);
 		if (ioptions.minify) {
-			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(jsonObject), 'utf8'), {
+			FileSystem.writeFile(apiJsonFilename, Buffer.from(JSON.stringify(this._mapToMinified(jsonObject)), 'utf8'), {
 				ensureFolderExists: ioptions.ensureFolderExists ?? true,
 			});
 		} else {
@@ -321,5 +373,42 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	 */
 	public override buildCanonicalReference(): DeclarationReference {
 		return DeclarationReference.package(this.name);
+	}
+
+	private _mapToMinified(jsonObject: IApiPackageJson) {
+		const mapper = (item: any): any => {
+			if (Array.isArray(item)) return item.map(mapper);
+			else {
+				const result: any = {};
+				for (const key of Object.keys(item)) {
+					result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
+						typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+				}
+
+				return result;
+			}
+		};
+
+		return mapper(jsonObject);
+	}
+
+	private static _mapFromMinified(jsonObject: any): IApiPackageJson {
+		const mapper = (item: any): any => {
+			if (Array.isArray(item)) return item.map(mapper);
+			else {
+				const result: any = {};
+				for (const key of Object.keys(item)) {
+					result[
+						Object.keys(MinifyJSONMapping).find(
+							(look) => MinifyJSONMapping[look as keyof typeof MinifyJSONMapping] === key,
+						)!
+					] = typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+				}
+
+				return result;
+			}
+		};
+
+		return mapper(jsonObject) as IApiPackageJson;
 	}
 }
