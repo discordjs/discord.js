@@ -219,12 +219,12 @@ function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
 }
 
-function fixPrimitiveTypes(type: string) {
+function fixPrimitiveTypes(type: string, symbol: string | undefined) {
 	switch (type) {
 		case '*':
 			return 'any';
 		case 'Object':
-			return 'object';
+			return symbol === '<' ? 'Record' : 'object';
 		default:
 			return type;
 	}
@@ -1682,7 +1682,7 @@ export class ApiModelGenerator {
 						...arr,
 						{
 							kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
-							text: fixPrimitiveTypes(type ?? 'unknown'),
+							text: fixPrimitiveTypes(type ?? 'unknown', symbol),
 							canonicalReference: type?.includes("'")
 								? undefined
 								: DeclarationReference.package(this._apiModel.packages[0]!.name)
