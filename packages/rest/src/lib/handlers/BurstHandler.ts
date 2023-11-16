@@ -114,6 +114,7 @@ export class BurstHandler implements IHandler {
 				timeToReset: retryAfter,
 				retryAfter,
 				sublimitTimeout: 0,
+				scope: 'user',
 			});
 
 			this.debug(
@@ -128,6 +129,7 @@ export class BurstHandler implements IHandler {
 					`  Limit          : ${Number.POSITIVE_INFINITY}`,
 					`  Retry After    : ${retryAfter}ms`,
 					`  Sublimit       : None`,
+					`  Scope          : user`,
 				].join('\n'),
 			);
 

@@ -165,6 +165,13 @@ export interface RateLimitData {
 	 */
 	route: string;
 	/**
+	 * The scope of the rate limit that was hit.
+	 *
+	 * This can be `user` for rate limits that are per client, `global` for rate limits that affect all clients or `shared` for rate limits that
+	 * are shared per resource.
+	 */
+	scope: 'global' | 'shared' | 'user';
+	/**
 	 * The time, in milliseconds, that will need to pass before the sublimit lock for the route resets, and requests that fall under a sublimit
 	 * can be retried
 	 *
