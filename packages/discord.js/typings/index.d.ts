@@ -3257,6 +3257,7 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
+/** @internal */
 export function basename(path: string, ext?: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
 export function discordSort<Key, Value extends { rawPosition: number; id: Snowflake }>(
@@ -3265,14 +3266,19 @@ export function discordSort<Key, Value extends { rawPosition: number; id: Snowfl
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
+/** @internal */
 export function makeError(obj: MakeErrorOptions): Error;
+/** @internal */
 export function makePlainError(err: Error): MakeErrorOptions;
+/** @internal */
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
+/** @internal */
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
+/** @internal */
 export function setPosition<Item extends Channel | Role>(
   item: Item,
   position: number,
@@ -3283,6 +3289,7 @@ export function setPosition<Item extends Channel | Role>(
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
 export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+/** @internal */
 export function transformResolved<Cached extends CacheType>(
   supportingData: SupportingInteractionResolvedData,
   data?: APIApplicationCommandInteractionData['resolved'],
@@ -3314,6 +3321,7 @@ export interface ChannelCreateOptions {
   allowFromUnknownGuild?: boolean;
 }
 
+/** @internal */
 export function createChannel(client: Client<true>, data: APIChannel, options?: ChannelCreateOptions): Channel;
 
 export function createComponent<Type extends keyof MappedComponentTypes>(
@@ -6437,6 +6445,7 @@ export interface StageInstanceEditOptions {
   privacyLevel?: StageInstancePrivacyLevel;
 }
 
+/** @internal */
 export interface SupportingInteractionResolvedData {
   client: Client;
   guild?: Guild;
