@@ -5519,6 +5519,11 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModerationRule', 'Create'];
   [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModerationRule', 'Create'];
   [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModerationRule', 'Create'];
+  [163]: ['GuildOnboardingPrompt', 'Create'];
+  [164]: ['GuildOnboardingPrompt', 'Update'];
+  [165]: ['GuildOnboardingPrompt', 'Delete'];
+  [166]: ['GuildOnboarding', 'Create'];
+  [167]: ['GuildOnboarding', 'Update'];
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
@@ -5583,6 +5588,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   GuildScheduledEvent: GuildScheduledEvent;
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
   AutoModerationRule: AutoModerationRule;
+  GuildOnboardingPrompt: GuildOnboardingPrompt;
 }
 
 export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
