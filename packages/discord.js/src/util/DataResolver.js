@@ -25,8 +25,8 @@ const Invite = require('../structures/Invite');
  * Resolves the string to a code based on the passed regex.
  * @param {string} data The string to resolve
  * @param {RegExp} regex The RegExp used to extract the code
- * @private
  * @returns {string}
+ * @private
  */
 function resolveCode(data, regex) {
   return regex.exec(data)?.[1] ?? data;
@@ -35,8 +35,8 @@ function resolveCode(data, regex) {
 /**
  * Resolves InviteResolvable to an invite code.
  * @param {InviteResolvable} data The invite resolvable to resolve
- * @private
  * @returns {string}
+ * @private
  */
 function resolveInviteCode(data) {
   return resolveCode(data, Invite.InvitesPattern);
@@ -45,8 +45,8 @@ function resolveInviteCode(data) {
 /**
  * Resolves GuildTemplateResolvable to a template code.
  * @param {GuildTemplateResolvable} data The template resolvable to resolve
- * @private
  * @returns {string}
+ * @private
  */
 function resolveGuildTemplateCode(data) {
   const GuildTemplate = require('../structures/GuildTemplate');
@@ -77,8 +77,8 @@ function resolveGuildTemplateCode(data) {
 /**
  * Resolves a BufferResolvable to a Buffer.
  * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
- * @private
  * @returns {Promise<ResolvedFile>}
+ * @private
  */
 async function resolveFile(resource) {
   if (Buffer.isBuffer(resource)) return { data: resource };
@@ -115,8 +115,8 @@ async function resolveFile(resource) {
 /**
  * Resolves a Base64Resolvable to a Base 64 image.
  * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
- * @private
  * @returns {?string}
+ * @private
  */
 function resolveBase64(data) {
   if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
@@ -126,8 +126,8 @@ function resolveBase64(data) {
 /**
  * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
  * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
- * @private
  * @returns {Promise<?string>}
+ * @private
  */
 async function resolveImage(image) {
   if (!image) return null;
