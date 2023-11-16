@@ -128,6 +128,7 @@ function resolvePartialEmoji(emoji) {
  * @property {string} name Error type
  * @property {string} message Message for the error
  * @property {string} stack Stack for the error
+ * @private
  */
 
 /**
