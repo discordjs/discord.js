@@ -9,8 +9,6 @@ export function HierarchyText({
 	readonly item: ApiClass | ApiInterface;
 	readonly type: 'Extends' | 'Implements';
 }) {
-	const model = item.getAssociatedModel()!;
-
 	if (
 		(item.kind === ApiItemKind.Class &&
 			(item as ApiClass).extendsType === undefined &&
@@ -50,7 +48,7 @@ export function HierarchyText({
 				<div className="flex flex-row place-items-center gap-4" key={`${type}-${idx}`}>
 					<h3 className="text-xl font-bold">{type}</h3>
 					<span className="break-all font-mono space-y-2">
-						<ExcerptText excerpt={excerpt} model={model} />
+						<ExcerptText excerpt={excerpt} />
 					</span>
 				</div>
 			))}

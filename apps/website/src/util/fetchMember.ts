@@ -23,11 +23,6 @@ export const fetchMember = async (packageName: string, branchName: string, item?
 
 	addPackageToModel(model, modelJSON);
 
-	for (const [pkg, version] of Object.entries(model.tryGetPackageByName(packageName)?.dependencies ?? {})) {
-		const depJSON = await fetchModelJSON(pkg.replace('@discordjs/', ''), version as string);
-		if (depJSON && !model.tryGetPackageByName(pkg)) addPackageToModel(model, depJSON);
-	}
-
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
 
 	// eslint-disable-next-line prefer-const
