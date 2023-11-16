@@ -1278,19 +1278,10 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
+/** @internal */
 export interface ResolvedFile {
   data: Buffer;
   contentType?: string;
-}
-
-export class DataResolver extends null {
-  private constructor();
-  public static resolveBase64(data: Base64Resolvable): string;
-  public static resolveCode(data: string, regex: RegExp): string;
-  public static resolveFile(resource: BufferResolvable | Stream): Promise<ResolvedFile>;
-  public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
-  public static resolveInviteCode(data: InviteResolvable): string;
-  public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }
 
 export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
@@ -3373,6 +3364,19 @@ export class Formatters extends null {
   /** @deprecated Import this method directly from discord.js instead. */
   public static userMention: typeof userMention;
 }
+
+/** @internal */
+export function resolveBase64(data: Base64Resolvable): string;
+/** @internal */
+export function resolveCode(data: string, regex: RegExp): string;
+/** @internal */
+export function resolveFile(resource: BufferResolvable | Stream): Promise<ResolvedFile>;
+/** @internal */
+export function resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
+/** @internal */
+export function resolveInviteCode(data: InviteResolvable): string;
+/** @internal */
+export function resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 
 export type ComponentData =
   | MessageActionRowComponentData
