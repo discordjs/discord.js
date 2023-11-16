@@ -20,7 +20,7 @@ export type ApiItemLike = {
 	[K in keyof ApiItem]?: K extends 'displayName' | 'kind'
 		? ApiItem[K]
 		: K extends 'parent'
-		  ? ApiItemLike
+		  ? ApiItemLike | undefined
 		  : ApiItem[K] | undefined;
 };
 
