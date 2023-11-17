@@ -22,7 +22,7 @@ export function MethodHeader({ method }: { readonly method: ApiMethod | ApiMetho
 				>
 					{`${method.name}(${parametersString(method)})`}
 					<span>:</span>
-					<ExcerptText excerpt={method.returnTypeExcerpt} model={method.getAssociatedModel()!} />
+					<ExcerptText excerpt={method.returnTypeExcerpt} />
 				</CodeHeading>
 			</div>
 		</div>

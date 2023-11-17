@@ -1,26 +1,22 @@
-import type { ApiModel, Excerpt } from '@discordjs/api-extractor-model';
+import type { Excerpt } from '@discordjs/api-extractor-model';
 import { ExcerptTokenKind } from '@discordjs/api-extractor-model';
 import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { DocumentationLink } from './DocumentationLink';
 import { ItemLink } from './ItemLink';
-import { resolveItemURI } from './documentation/util';
+import { resolveCanonicalReference, resolveItemURI } from './documentation/util';
 
 export interface ExcerptTextProps {
 	/**
 	 * The tokens to render.
 	 */
 	readonly excerpt: Excerpt;
-	/**
-	 * The model to resolve item references from.
-	 */
-	readonly model: ApiModel;
 }
 
 /**
  * A component that renders excerpt tokens from an api item.
  */
-export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
+export function ExcerptText({ excerpt }: ExcerptTextProps) {
 	return (
 		<span>
 			{excerpt.spannedTokens.map((token, idx) => {
@@ -53,20 +49,18 @@ export function ExcerptText({ model, excerpt }: ExcerptTextProps) {
 						);
 					}
 
-					const item = token.canonicalReference
-						? model.resolveDeclarationReference(token.canonicalReference!, model).resolvedApiItem
-						: null;
+					const resolved = token.canonicalReference ? resolveCanonicalReference(token.canonicalReference) : null;
 
-					if (!item) {
+					if (!resolved) {
 						return token.text;
 					}
 
 					return (
 						<ItemLink
 							className="text-blurple"
-							itemURI={resolveItemURI(item)}
-							key={`${item.displayName}-${item.containerKey}-${idx}`}
-							packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+							itemURI={resolveItemURI(resolved.item)}
+							key={`${resolved.item.displayName}-${resolved.item.containerKey}-${idx}`}
+							packageName={resolved.package}
 						>
 							{token.text}
 						</ItemLink>
