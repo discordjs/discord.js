@@ -6472,23 +6472,29 @@ export interface LimitedCollectionOptions<Key, Value> {
   keepOverLimit?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => boolean;
 }
 
+type ChannelWithSend = 
+  { send: (message: unknown) => Promise<Message<boolean>> } &
+  (
+    | CategoryChannel
+    | DMChannel
+    | PartialDMChannel
+    | PartialGroupDMChannel
+    | NewsChannel
+    | StageChannel
+    | TextChannel
+    | AnyThreadChannel
+    | VoiceChannel
+  );
+
 export type Channel =
-  | CategoryChannel
-  | DMChannel
-  | PartialDMChannel
-  | PartialGroupDMChannel
-  | NewsChannel
-  | StageChannel
-  | TextChannel
-  | AnyThreadChannel
-  | VoiceChannel
+  | ChannelWithSend
   | ForumChannel
   | MediaChannel;
 
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
   PartialGroupDMChannel | ForumChannel | MediaChannel
-> & { send: (message: unknown) => Promise<Message<boolean>> };
+>;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
