@@ -3834,11 +3834,13 @@ export enum DiscordjsErrorCodes {
   GuildForumMessageRequired = 'GuildForumMessageRequired',
 }
 
+/** @internal */
 export interface DiscordjsErrorFields<Name extends string> {
   readonly name: `${Name} [${DiscordjsErrorCodes}]`;
   get code(): DiscordjsErrorCodes;
 }
 
+/** @internal */
 export function DiscordjsErrorMixin<Entity, Name extends string>(
   Base: Constructable<Entity>,
   name: Name,
@@ -4387,10 +4389,13 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 // to each of those classes
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
+
+/** @internal */
 export function PartialTextBasedChannel<Entity>(
   Base?: Constructable<Entity>,
 ): Constructable<Entity & PartialTextBasedChannelFields<false>>;
 
+/** @internal */
 export function TextBasedChannelMixin<
   Entity,
   InGuild extends boolean = boolean,
@@ -4431,9 +4436,12 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
 
+/** @internal */
 export function PartialWebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & PartialWebhookFields>;
+/** @internal */
 export function WebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & WebhookFields>;
 
+/** @internal */
 export interface PartialWebhookFields {
   id: Snowflake;
   get url(): string;
@@ -4448,6 +4456,7 @@ export interface PartialWebhookFields {
   ): Promise<APIMessage | Message>;
 }
 
+/** @internal */
 export interface WebhookFields extends PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
