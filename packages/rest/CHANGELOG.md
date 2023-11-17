@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [@discordjs/rest@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.2.0...@discordjs/rest@2.2.0) - (2023-11-17)
+# [@discordjs/rest@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.1.0...@discordjs/rest@2.2.0) - (2023-11-17)
 
 ## Bug Fixes
 

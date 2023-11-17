@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [@discordjs/core@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.1...@discordjs/core@1.1.1) - (2023-11-17)
+# [@discordjs/core@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.0...@discordjs/core@1.1.1) - (2023-11-17)
 
 ## Bug Fixes
 
