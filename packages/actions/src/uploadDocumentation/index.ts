@@ -21,7 +21,8 @@ for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {
 		console.log(`Uploading ${file} with ${version}...`);
-		const { name } = JSON.parse(data);
+		const json = JSON.parse(data);
+		const name = json.name ?? json.n;
 		const { url } = await put(`${name.replace('@discordjs/', '')}/${version}.json`, data, {
 			access: 'public',
 			addRandomSuffix: false,
