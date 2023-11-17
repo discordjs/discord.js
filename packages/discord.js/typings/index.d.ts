@@ -5061,10 +5061,10 @@ export interface ClientUserEditOptions {
 }
 
 export interface CloseEvent {
-  /** @deprecated Not used anymore since using {@link @discordjs/ws#WebSocketManager} internally */
+  /** @deprecated Not used anymore since using {@link @discordjs/ws#(WebSocketManager:class)} internally */
   wasClean: boolean;
   code: number;
-  /** @deprecated Not used anymore since using {@link @discordjs/ws#WebSocketManager} internally */
+  /** @deprecated Not used anymore since using {@link @discordjs/ws#(WebSocketManager:class)} internally */
   reason: string;
 }
 
