@@ -6488,7 +6488,7 @@ export type Channel =
 export type TextBasedChannel = Exclude<
   Extract<Channel, { type: TextChannelType }>,
   PartialGroupDMChannel | ForumChannel | MediaChannel
->;
+> & { send: (message: unknown) => Promise<Message<boolean>> };
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
