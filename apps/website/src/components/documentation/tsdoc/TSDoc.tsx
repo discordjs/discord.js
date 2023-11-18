@@ -8,7 +8,7 @@ import { DocumentationLink } from '~/components/DocumentationLink';
 import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
-import { resolveItemURI } from '../util';
+import { resolveCanonicalReference, resolveItemURI } from '../util';
 import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
 export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc: DocNode }): JSX.Element {
@@ -52,17 +52,18 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 
 						const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
 						const foundItem = declarationReference?.resolvedApiItem;
+						const resolved = resolveCanonicalReference(codeDestination);
 
-						if (!foundItem) return null;
+						if (!foundItem && !resolved) return null;
 
 						return (
 							<ItemLink
 								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
-								itemURI={resolveItemURI(foundItem)}
+								itemURI={resolveItemURI(foundItem ?? resolved!.item)}
 								key={idx}
-								packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+								packageName={resolved?.package ?? item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
 							>
-								{linkText ?? foundItem.displayName}
+								{linkText ?? foundItem?.displayName ?? resolved!.item.displayName}
 							</ItemLink>
 						);
 					}
