@@ -991,7 +991,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
-  /** @deprecated Use {@link Client#fetchStickerPacks} instead. */
+  /** @deprecated Use {@link Client.fetchStickerPacks} instead. */
   public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
@@ -1870,7 +1870,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  /** @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead. */
+  /** @deprecated Use {@link BaseInteraction.isStringSelectMenu} instead. */
   public isSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isAnySelectMenu(): this is AnySelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
@@ -3065,7 +3065,7 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
-  /** @deprecated Use {@link TeamMember#role} instead. */
+  /** @deprecated Use {@link TeamMember.role} instead. */
   public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
@@ -4801,7 +4801,7 @@ export interface AwaitReactionsOptions extends ReactionCollectorOptions {
 }
 
 export interface BanOptions {
-  /** @deprecated Use {@link BanOptions#deleteMessageSeconds} instead. */
+  /** @deprecated Use {@link BanOptions.deleteMessageSeconds} instead. */
   deleteMessageDays?: number;
   deleteMessageSeconds?: number;
   reason?: string;
@@ -5001,7 +5001,7 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  /** @deprecated Use {@link ClientEvents#webhooksUpdate} instead. */
+  /** @deprecated Use {@link ClientEvents.webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];

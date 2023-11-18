@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.0...@discordjs/core@1.1.1) - (2023-11-17)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
 # [@discordjs/core@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.0.1...@discordjs/core@1.1.0) - (2023-11-12)
 
 ## Documentation
