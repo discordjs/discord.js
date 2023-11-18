@@ -48,7 +48,9 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 				break;
 			case ApiItemKind.Method:
 			case ApiItemKind.MethodSignature:
-				path += `#${item.displayName}${hasOverloadIndex(item) && item.overloadIndex ? `:${item.overloadIndex}` : ''}`;
+				path += `#${item.displayName}${
+					hasOverloadIndex(item) && item.overloadIndex > 1 ? `:${item.overloadIndex}` : ''
+				}`;
 				break;
 			case ApiItemKind.Property:
 			case ApiItemKind.PropertySignature:
