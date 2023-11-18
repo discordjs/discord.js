@@ -32,9 +32,7 @@ export function Property({
 				>
 					{`${item.displayName}${item.isOptional ? '?' : ''}`}
 					<span>:</span>
-					{item.propertyTypeExcerpt.text ? (
-						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
-					) : null}
+					{item.propertyTypeExcerpt.text ? <ExcerptText excerpt={item.propertyTypeExcerpt} /> : null}
 				</CodeHeading>
 			</div>
 			{hasSummary || inheritedFrom ? (

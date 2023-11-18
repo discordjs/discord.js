@@ -27,6 +27,8 @@ export class RunAction extends CommandLineAction {
 
 	private readonly _typescriptCompilerFolder: CommandLineStringParameter;
 
+	private readonly _minify: CommandLineFlagParameter;
+
 	public constructor(_parser: ApiExtractorCommandLine) {
 		super({
 			actionName: 'run',
@@ -55,6 +57,12 @@ export class RunAction extends CommandLineAction {
 			parameterLongName: '--verbose',
 			parameterShortName: '-v',
 			description: 'Show additional informational messages in the output.',
+		});
+
+		this._minify = this.defineFlagParameter({
+			parameterLongName: '--minify',
+			parameterShortName: '-m',
+			description: 'Minify the resulting doc model JSON, i.e. without any indentation or newlines.',
 		});
 
 		this._diagnosticsParameter = this.defineFlagParameter({
@@ -136,6 +144,7 @@ export class RunAction extends CommandLineAction {
 
 		const extractorResult: ExtractorResult = Extractor.invoke(extractorConfig, {
 			localBuild: this._localParameter.value,
+			docModelMinify: this._minify.value,
 			showVerboseMessages: this._verboseParameter.value,
 			showDiagnostics: this._diagnosticsParameter.value,
 			typescriptCompilerFolder,

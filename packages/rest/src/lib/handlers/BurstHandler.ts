@@ -2,7 +2,7 @@ import type { RequestInit } from 'undici';
 import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
+import type { ResponseLike, HandlerRequestData, RouteData, RateLimitData } from '../utils/types.js';
 import { onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
@@ -102,6 +102,7 @@ export class BurstHandler implements IHandler {
 		} else if (status === 429) {
 			// Unexpected ratelimit
 			const isGlobal = res.headers.has('X-RateLimit-Global');
+			const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
 
 			await onRateLimit(this.manager, {
 				global: isGlobal,
@@ -114,6 +115,7 @@ export class BurstHandler implements IHandler {
 				timeToReset: retryAfter,
 				retryAfter,
 				sublimitTimeout: 0,
+				scope,
 			});
 
 			this.debug(
@@ -128,6 +130,7 @@ export class BurstHandler implements IHandler {
 					`  Limit          : ${Number.POSITIVE_INFINITY}`,
 					`  Retry After    : ${retryAfter}ms`,
 					`  Sublimit       : None`,
+					`  Scope          : ${scope}`,
 				].join('\n'),
 			);
 

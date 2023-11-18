@@ -212,19 +212,26 @@ interface IProcessAstEntityContext {
 
 const linkRegEx = /{@link\s(?<class>\w+)#(?<event>event:)?(?<prop>[\w()]+)(?<name>\s[^}]*)?}/g;
 function fixLinkTags(input?: string): string | undefined {
-	return input?.replaceAll(linkRegEx, '{@link $<class>.$<prop>$<name>}');
+	return input?.replaceAll(
+		linkRegEx,
+		(_match, _p1, _p2, _p3, _p4, _offset, _string, groups) =>
+			`{@link ${groups.class}.${groups.prop}${groups.name ? ` |${groups.name}` : ''}}`,
+	);
 }
 
 function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
 }
 
-function formatVarType(type: DocgenVarTypeJson): string {
-	return (Array.isArray(type) ? type : type.types ?? []).map((t1) => t1.map((t2) => t2.join('')).join('')).join(' | ');
-}
-
-function getFirstType(type: DocgenVarTypeJson): string {
-	return (Array.isArray(type) ? type[0]?.[0]?.[0] : type.types?.[0]?.[0]?.[0]) ?? 'unknown';
+function fixPrimitiveTypes(type: string, symbol: string | undefined) {
+	switch (type) {
+		case '*':
+			return 'any';
+		case 'Object':
+			return symbol === '<' ? 'Record' : 'object';
+		default:
+			return type;
+	}
 }
 
 export class ApiModelGenerator {
@@ -1086,7 +1093,12 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (jsDoc) {
-				apiMethod = new ApiMethod(this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
+				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
+				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
+					return; // trim out items marked as "@internal" or "@alpha"
+				}
+
+				apiMethod = new ApiMethod(methodOptions);
 			}
 
 			parentApiItem.addMember(apiMethod);
@@ -1276,9 +1288,12 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
-				apiProperty = new ApiProperty(
-					this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
-				);
+				const propertyOptions = this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
+				if (propertyOptions.releaseTag === ReleaseTag.Internal || propertyOptions.releaseTag === ReleaseTag.Alpha) {
+					return; // trim out items marked as "@internal" or "@alpha"
+				}
+
+				apiProperty = new ApiProperty(propertyOptions);
 			} else {
 				console.log(`We got a property in ApiItem of kind ${ApiItemKind[parentApiItem.kind]}`);
 			}
@@ -1664,38 +1679,44 @@ export class ApiModelGenerator {
 			[ts.SyntaxKind.InterfaceDeclaration]: 'interface',
 			[ts.SyntaxKind.TypeAliasDeclaration]: 'type',
 		};
-		return mapper.flatMap((typ) =>
-			typ.reduce<IExcerptToken[]>(
-				(arr, [type, symbol]) => [
-					...arr,
-					{
-						kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
-						text: type ?? 'unknown',
-						canonicalReference: type?.includes("'")
-							? undefined
-							: DeclarationReference.package(this._apiModel.packages[0]!.name)
-									.addNavigationStep(Navigation.Members as any, DeclarationReference.parseComponent(type ?? 'unknown'))
-									.withMeaning(
-										lookup[
-											(
-												(this._collector.entities.find(
-													(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
-												)?.astEntity as AstSymbol | undefined) ??
+		return mapper
+			.flatMap((typ, index) => {
+				const result = typ.reduce<IExcerptToken[]>(
+					(arr, [type, symbol]) => [
+						...arr,
+						{
+							kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
+							text: fixPrimitiveTypes(type ?? 'unknown', symbol),
+							canonicalReference: type?.includes("'")
+								? undefined
+								: DeclarationReference.package(this._apiModel.packages[0]!.name)
+										.addNavigationStep(
+											Navigation.Members as any,
+											DeclarationReference.parseComponent(type ?? 'unknown'),
+										)
+										.withMeaning(
+											lookup[
 												(
-													this._collector.entities.find(
-														(entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity,
-													)?.astEntity as AstImport | undefined
-												)?.astSymbol
-											)?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
-										] ?? ('class' as any),
-									)
-									.toString(),
-					},
-					{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
-				],
-				[],
-			),
-		);
+													(this._collector.entities.find(
+														(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
+													)?.astEntity as AstSymbol | undefined) ??
+													(
+														this._collector.entities.find(
+															(entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity,
+														)?.astEntity as AstImport | undefined
+													)?.astSymbol
+												)?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
+											] ?? ('class' as any),
+										)
+										.toString(),
+						},
+						{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
+					],
+					[],
+				);
+				return index === 0 ? result : [{ kind: ExcerptTokenKind.Content, text: ' | ' }, ...result];
+			})
+			.filter((excerpt) => excerpt.text.length);
 	}
 
 	private _mapProp(prop: DocgenPropertyJson, _package: string): IApiPropertyOptions {
@@ -1720,15 +1741,10 @@ export class ApiModelGenerator {
 					} :`,
 				},
 				...mappedVarType,
-				{
-					kind: ExcerptTokenKind.Reference,
-					text: formatVarType(prop.type),
-					canonicalReference: `${_package}!${getFirstType(prop.type)}:class`,
-				},
 				{ kind: ExcerptTokenKind.Content, text: ';' },
 			],
 			propertyTypeTokenRange: { startIndex: 1, endIndex: 1 + mappedVarType.length },
-			releaseTag: prop.access === 'public' ? ReleaseTag.Public : ReleaseTag.Internal,
+			releaseTag: prop.access === 'private' ? ReleaseTag.Internal : ReleaseTag.Public,
 			fileLine: prop.meta?.line ?? 0,
 			fileUrlPath: prop.meta ? `${prop.meta.path.slice(`packages/${_package}/`.length)}/${prop.meta.file}` : '',
 		};
@@ -1798,11 +1814,9 @@ export class ApiModelGenerator {
 			isStatic: method.scope === 'static',
 			overloadIndex: 1,
 			parameters: method.params?.map((param, index) => this._mapParam(param, index, _package, paramTokens)) ?? [],
-			releaseTag: method.access === 'public' ? ReleaseTag.Public : ReleaseTag.Internal,
+			releaseTag: method.access === 'private' ? ReleaseTag.Internal : ReleaseTag.Public,
 			returnTypeTokenRange: method.returns?.length
-				? method.params?.length
-					? { startIndex: 2 + 2 * method.params.length, endIndex: 3 + 2 * method.params.length }
-					: { startIndex: 1, endIndex: 2 }
+				? { startIndex: excerptTokens.length - 1 - returnTokens.length, endIndex: excerptTokens.length - 1 }
 				: { startIndex: 0, endIndex: 0 },
 			typeParameters: [],
 			docComment: this._tsDocParser.parseString(
