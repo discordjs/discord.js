@@ -58,10 +58,10 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 
 		if (typescript) {
 			await cp(
-				new URL('../template/Bun/Typescript/tsconfig.eslint.json', import.meta.url),
+				new URL('../template/Bun/TypeScript/tsconfig.eslint.json', import.meta.url),
 				`${root}/tsconfig.eslint.json`,
 			);
-			await cp(new URL('../template/Bun/Typescript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
+			await cp(new URL('../template/Bun/TypeScript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
 		}
 	}
 
