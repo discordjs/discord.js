@@ -10,6 +10,8 @@ import type {
 	ApiParameterListMixin,
 	ApiEvent,
 } from '@discordjs/api-extractor-model';
+import type { DocDeclarationReference } from '@microsoft/tsdoc';
+import { SelectorKind } from '@microsoft/tsdoc';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
 import { METHOD_SEPARATOR, OVERLOAD_SEPARATOR } from '~/util/constants';
 import { resolveMembers } from '~/util/members';
@@ -26,7 +28,7 @@ export type ApiItemLike = {
 
 interface ResolvedCanonicalReference {
 	item: ApiItemLike;
-	package: string;
+	package: string | undefined;
 }
 
 export function hasProperties(item: ApiItemContainerMixin) {
@@ -51,8 +53,11 @@ export function resolveItemURI(item: ApiItemLike): string {
 		: `${item.parent.displayName}${OVERLOAD_SEPARATOR}${item.parent.kind}${METHOD_SEPARATOR}${item.displayName}`;
 }
 
-export function resolveCanonicalReference(canonicalReference: DeclarationReference): ResolvedCanonicalReference | null {
+export function resolveCanonicalReference(
+	canonicalReference: DeclarationReference | DocDeclarationReference,
+): ResolvedCanonicalReference | null {
 	if (
+		'source' in canonicalReference &&
 		canonicalReference.source &&
 		'packageName' in canonicalReference.source &&
 		canonicalReference.symbol?.componentPath &&
@@ -68,6 +73,23 @@ export function resolveCanonicalReference(canonicalReference: DeclarationReferen
 				}|${canonicalReference.symbol.componentPath.component.toString()}`,
 			},
 		};
+	else if (
+		'memberReferences' in canonicalReference &&
+		canonicalReference.memberReferences.length &&
+		canonicalReference.memberReferences[0]?.memberIdentifier &&
+		canonicalReference.memberReferences[0]?.selector?.selectorKind === SelectorKind.System
+	) {
+		const member = canonicalReference.memberReferences[0]!;
+		return {
+			package: canonicalReference.packageName?.replace('@discordjs/', ''),
+			item: {
+				kind: member.selector!.selector as ApiItemKind,
+				displayName: member.memberIdentifier!.identifier,
+				containerKey: `|${member.selector!.selector}|${member.memberIdentifier!.identifier}`,
+			},
+		};
+	}
+
 	return null;
 }
 
