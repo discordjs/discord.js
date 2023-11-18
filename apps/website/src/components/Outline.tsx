@@ -24,9 +24,9 @@ export function Outline() {
 			>
 				<Button
 					aria-label="Menu"
-					className={`absolute top-1/2 z-1 h-8 w-6 flex transition-all duration-300 flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none backdrop-blur-md ${
+					className={`absolute top-1/2 z-1 h-8 w-6 flex transition-all duration-300 flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-transparent p-0 text-sm font-semibold leading-none no-underline outline-none ${
 						opened ? 'left-1 rotate-180' : navOpened ? 'left-1' : '-left-6'
-					} active:translate-y-px`}
+					} active:translate-y-px lg:hidden`}
 					onClick={() => {
 						setOpened(false);
 						setOutlineOpened((open) => !open);
