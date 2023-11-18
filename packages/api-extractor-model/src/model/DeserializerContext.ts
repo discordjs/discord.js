@@ -97,12 +97,17 @@ export enum ApiJsonSchemaVersion {
 	V_1012 = 1_012,
 
 	/**
+	 * Make tsdocConfiguration optional
+	 */
+	V_1013 = 1_013,
+
+	/**
 	 * The current latest .api.json schema version.
 	 *
 	 * IMPORTANT: When incrementing this number, consider whether `OLDEST_SUPPORTED` or `OLDEST_FORWARDS_COMPATIBLE`
 	 * should be updated.
 	 */
-	LATEST = V_1012,
+	LATEST = V_1013,
 
 	/**
 	 * The oldest .api.json schema version that is still supported for backwards compatibility.
@@ -119,7 +124,7 @@ export enum ApiJsonSchemaVersion {
 	 * if the older library would not be able to deserialize your new file format.  Adding a nonessential field
 	 * is generally okay.  Removing, modifying, or reinterpreting existing fields is NOT safe.
 	 */
-	OLDEST_FORWARDS_COMPATIBLE = V_1001,
+	OLDEST_FORWARDS_COMPATIBLE = V_1013,
 }
 
 export class DeserializerContext {

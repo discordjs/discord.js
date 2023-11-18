@@ -212,7 +212,11 @@ interface IProcessAstEntityContext {
 
 const linkRegEx = /{@link\s(?<class>\w+)#(?<event>event:)?(?<prop>[\w()]+)(?<name>\s[^}]*)?}/g;
 function fixLinkTags(input?: string): string | undefined {
-	return input?.replaceAll(linkRegEx, '{@link $<class>.$<prop>$<name>}');
+	return input?.replaceAll(
+		linkRegEx,
+		(_match, _p1, _p2, _p3, _p4, _offset, _string, groups) =>
+			`{@link ${groups.class}.${groups.prop}${groups.name ? ` |${groups.name}` : ''}}`,
+	);
 }
 
 function filePathFromJson(meta: DocgenMetaJson): string {
