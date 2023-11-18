@@ -1,8 +1,8 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import type { ApiItem } from '@discordjs/api-extractor-model';
 import {
+	type ApiItem,
 	ApiPackage,
 	ApiModel,
 	ApiDeclaredItem,
@@ -38,9 +38,7 @@ export const PACKAGES = [
 let idx = 0;
 
 export function addPackageToModel(model: ApiModel, data: any) {
-	const apiPackage: ApiPackage = ApiPackage.loadFromJson(data);
-
-	model.addMember(apiPackage);
+	model.addMember(ApiPackage.loadFromJson(data));
 	return model;
 }
 
