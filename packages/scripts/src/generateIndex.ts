@@ -1,12 +1,17 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import type { ApiPackage } from '@discordjs/api-extractor-model';
-import { ApiItem, ApiModel, ApiDeclaredItem, ApiItemContainerMixin, ApiItemKind } from '@discordjs/api-extractor-model';
+import type { ApiItem } from '@discordjs/api-extractor-model';
+import {
+	ApiPackage,
+	ApiModel,
+	ApiDeclaredItem,
+	ApiItemContainerMixin,
+	ApiItemKind,
+} from '@discordjs/api-extractor-model';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import { DocNodeKind, TSDocConfiguration } from '@microsoft/tsdoc';
+import { DocNodeKind } from '@microsoft/tsdoc';
 import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import { request } from 'undici';
 
 export interface MemberJSON {
@@ -33,22 +38,7 @@ export const PACKAGES = [
 let idx = 0;
 
 export function addPackageToModel(model: ApiModel, data: any) {
-	let apiPackage: ApiPackage;
-	if (data.metadata) {
-		const tsdocConfiguration = new TSDocConfiguration();
-		const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
-		tsdocConfigFile.configureParser(tsdocConfiguration);
-
-		apiPackage = ApiItem.deserialize(data, {
-			apiJsonFilename: '',
-			toolPackage: data.metadata.toolPackage,
-			toolVersion: data.metadata.toolVersion,
-			versionToDeserialize: data.metadata.schemaVersion,
-			tsdocConfiguration,
-		}) as ApiPackage;
-	} else {
-		apiPackage = ApiItem.deserializeDocgen(data, 'discord.js') as ApiPackage;
-	}
+	const apiPackage: ApiPackage = ApiPackage.loadFromJson(data);
 
 	model.addMember(apiPackage);
 	return model;
