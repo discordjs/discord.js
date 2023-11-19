@@ -210,7 +210,8 @@ interface IProcessAstEntityContext {
 	parentDocgenJson?: DocgenContainerJson | undefined;
 }
 
-const linkRegEx = /{@link\s(?<class>\w+)[#.](?<event>event:)?(?<prop>[\w()]+)(?<name>\s[^}]*)?}/g;
+const linkRegEx =
+	/{@link\s(?:(?<class>\w+)(?:[#.](?<event>event:)?(?<prop>[\w()]+))?|(?<url>https?:\/\/[^\s}]*))(?<name>\s[^}]*)?}/g;
 
 function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
@@ -1683,9 +1684,9 @@ export class ApiModelGenerator {
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
-		return input?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _offset, _string, groups) => {
-			const external = this._jsDocJson?.externals.find((external) => external.name === groups.class);
-			let target = groups.class;
+		return input?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
+			let target = groups.class ?? groups.url;
+			const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
 			const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
 				external?.see?.[0] ?? '',
 			);
@@ -1695,7 +1696,7 @@ export class ApiModelGenerator {
 				})`;
 			}
 
-			return `{@link ${target}.${groups.prop}${groups.name ? ` |${groups.name}` : ''}}`;
+			return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
 		});
 	}
 
