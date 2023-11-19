@@ -1,13 +1,5 @@
 import { type ApiItem, ApiItemKind } from '@discordjs/api-extractor-model';
-import type {
-	DocComment,
-	DocFencedCode,
-	DocInlineTag,
-	DocLinkTag,
-	DocNode,
-	DocNodeContainer,
-	DocPlainText,
-} from '@microsoft/tsdoc';
+import type { DocComment, DocFencedCode, DocLinkTag, DocNode, DocNodeContainer, DocPlainText } from '@microsoft/tsdoc';
 import { DocNodeKind, StandardTags } from '@microsoft/tsdoc';
 import type { Route } from 'next';
 import Link from 'next/link';
