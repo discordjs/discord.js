@@ -31,6 +31,23 @@ interface ResolvedCanonicalReference {
 	package: string | undefined;
 }
 
+const kindToMeaning = new Map([
+	[ApiItemKind.CallSignature, Meaning.CallSignature],
+	[ApiItemKind.Class, Meaning.Class],
+	[ApiItemKind.ConstructSignature, Meaning.ConstructSignature],
+	[ApiItemKind.Constructor, Meaning.Constructor],
+	[ApiItemKind.Enum, Meaning.Enum],
+	[ApiItemKind.Event, Meaning.Event],
+	[ApiItemKind.Function, Meaning.Function],
+	[ApiItemKind.IndexSignature, Meaning.IndexSignature],
+	[ApiItemKind.Interface, Meaning.Interface],
+	[ApiItemKind.Property, Meaning.Member],
+	[ApiItemKind.Namespace, Meaning.Namespace],
+	[ApiItemKind.None, Meaning.ComplexType],
+	[ApiItemKind.TypeAlias, Meaning.TypeAlias],
+	[ApiItemKind.Variable, Meaning.Variable],
+]);
+
 export function hasProperties(item: ApiItemContainerMixin) {
 	return resolveMembers(item, memberPredicate).some(
 		({ item: member }) => member.kind === ApiItemKind.Property || member.kind === ApiItemKind.PropertySignature,
@@ -86,6 +103,9 @@ export function resolveCanonicalReference(
 				kind: member.selector!.selector as ApiItemKind,
 				displayName: member.memberIdentifier!.identifier,
 				containerKey: `|${member.selector!.selector}|${member.memberIdentifier!.identifier}`,
+				members: canonicalReference.memberReferences
+					.slice(1)
+					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier?.identifier })),
 			},
 		};
 	}
@@ -93,37 +113,12 @@ export function resolveCanonicalReference(
 	return null;
 }
 
-function mapMeaningToKind(meaning: Meaning): ApiItemKind {
-	switch (meaning) {
-		case Meaning.CallSignature:
-			return ApiItemKind.CallSignature;
-		case Meaning.Class:
-			return ApiItemKind.Class;
-		case Meaning.ComplexType:
-			throw new Error('Not a valid canonicalReference: Meaning.ComplexType');
-		case Meaning.ConstructSignature:
-			return ApiItemKind.ConstructSignature;
-		case Meaning.Constructor:
-			return ApiItemKind.Constructor;
-		case Meaning.Enum:
-			return ApiItemKind.Enum;
-		case Meaning.Event:
-			return ApiItemKind.Event;
-		case Meaning.Function:
-			return ApiItemKind.Function;
-		case Meaning.IndexSignature:
-			return ApiItemKind.IndexSignature;
-		case Meaning.Interface:
-			return ApiItemKind.Interface;
-		case Meaning.Member:
-			return ApiItemKind.Property;
-		case Meaning.Namespace:
-			return ApiItemKind.Namespace;
-		case Meaning.TypeAlias:
-			return ApiItemKind.TypeAlias;
-		case Meaning.Variable:
-			return ApiItemKind.Variable;
-	}
+export function mapMeaningToKind(meaning: Meaning): ApiItemKind {
+	return [...kindToMeaning.entries()].find((mapping) => mapping[1] === meaning)?.[0];
+}
+
+export function mapKindToMeaning(kind: ApiItemKind): Meaning {
+	return kindToMeaning.get(kind);
 }
 
 export function memberPredicate(
