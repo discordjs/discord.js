@@ -19,11 +19,15 @@ import { resolveParameters } from '~/util/model';
 import type { TableOfContentsSerialized } from '../TableOfContentItems';
 
 export type ApiItemLike = {
-	[K in keyof ApiItem]?: K extends 'displayName' | 'kind'
+	[K in keyof ApiItem]?: K extends 'displayName'
 		? ApiItem[K]
-		: K extends 'parent'
-		  ? ApiItemLike | undefined
-		  : ApiItem[K] | undefined;
+		: K extends 'kind'
+		  ? string
+		  : K extends 'parent'
+		    ? ApiItemLike | undefined
+		    : K extends 'members'
+		      ? readonly ApiItemLike[]
+		      : ApiItem[K] | undefined;
 };
 
 interface ResolvedCanonicalReference {
@@ -100,12 +104,12 @@ export function resolveCanonicalReference(
 		return {
 			package: canonicalReference.packageName?.replace('@discordjs/', ''),
 			item: {
-				kind: member.selector!.selector as ApiItemKind,
+				kind: member.selector!.selector,
 				displayName: member.memberIdentifier!.identifier,
 				containerKey: `|${member.selector!.selector}|${member.memberIdentifier!.identifier}`,
 				members: canonicalReference.memberReferences
 					.slice(1)
-					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier?.identifier })),
+					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier!.identifier! })),
 			},
 		};
 	}
@@ -114,11 +118,11 @@ export function resolveCanonicalReference(
 }
 
 export function mapMeaningToKind(meaning: Meaning): ApiItemKind {
-	return [...kindToMeaning.entries()].find((mapping) => mapping[1] === meaning)?.[0];
+	return [...kindToMeaning.entries()].find((mapping) => mapping[1] === meaning)?.[0] ?? ApiItemKind.None;
 }
 
 export function mapKindToMeaning(kind: ApiItemKind): Meaning {
-	return kindToMeaning.get(kind);
+	return kindToMeaning.get(kind) ?? Meaning.Variable;
 }
 
 export function memberPredicate(
