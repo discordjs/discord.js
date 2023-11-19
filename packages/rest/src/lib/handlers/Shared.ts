@@ -115,7 +115,7 @@ export async function makeNetworkRequest(
  * @param url - The fully resolved url to make the request to
  * @param requestData - Extra data from the user's request needed for errors and additional processing
  * @param retries - The number of retries this request has already attempted (recursion occurs on the handler)
- * @returns - The response if the status code is not handled or null to request a retry
+ * @returns The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
 	manager: REST,
