@@ -18,17 +18,13 @@ import { resolveMembers } from '~/util/members';
 import { resolveParameters } from '~/util/model';
 import type { TableOfContentsSerialized } from '../TableOfContentItems';
 
-export type ApiItemLike = {
-	[K in keyof ApiItem]?: K extends 'displayName'
-		? ApiItem[K]
-		: K extends 'kind'
-		  ? string
-		  : K extends 'parent'
-		    ? ApiItemLike | undefined
-		    : K extends 'members'
-		      ? readonly ApiItemLike[]
-		      : ApiItem[K] | undefined;
-};
+export interface ApiItemLike {
+	containerKey?: string;
+	displayName: string;
+	kind: string;
+	members?: readonly ApiItemLike[];
+	parent?: ApiItemLike | undefined;
+}
 
 interface ResolvedCanonicalReference {
 	item: ApiItemLike;
