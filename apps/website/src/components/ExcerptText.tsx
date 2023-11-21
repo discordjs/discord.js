@@ -38,9 +38,13 @@ export function ExcerptText({ excerpt }: ExcerptTextProps) {
 
 						// dapi-types doesn't have routes for class members
 						// so we can assume this member is for an enum
-						if (meaning === 'member' && path && 'parent' in path) href += `/enum/${path.parent}#${path.component}`;
-						else if (meaning === 'type' || meaning === 'var') href += `#${token.text}`;
-						else href += `/${meaning}/${token.text}`;
+						if (meaning === 'member' && path && 'parent' in path) {
+							href += `/enum/${path.parent}#${path.component}`;
+						} else if (meaning === 'type' || meaning === 'var') {
+							href += `#${token.text}`;
+						} else {
+							href += `/${meaning}/${token.text}`;
+						}
 
 						return (
 							<DocumentationLink key={`${token.text}-${idx}`} href={href}>

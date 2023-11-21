@@ -62,9 +62,13 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 
 							// dapi-types doesn't have routes for class members
 							// so we can assume this member is for an enum
-							if (kind === 'enum' && members?.[0]) href += `/enum/${displayName}#${members[0].displayName}`;
-							else if (kind === 'type' || kind === 'var') href += `#${displayName}`;
-							else href += `/${kind}/${displayName}`;
+							if (kind === 'enum' && members?.[0]) {
+								href += `/enum/${displayName}#${members[0].displayName}`;
+							} else if (kind === 'type' || kind === 'var') {
+								href += `#${displayName}`;
+							} else {
+								href += `/${kind}/${displayName}`;
+							}
 
 							return (
 								<DocumentationLink key={`${containerKey}-${idx}`} href={href}>
