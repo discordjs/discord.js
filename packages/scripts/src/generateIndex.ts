@@ -37,11 +37,6 @@ export const PACKAGES = [
 ];
 let idx = 0;
 
-export function addPackageToModel(model: ApiModel, data: any) {
-	model.addMember(ApiPackage.loadFromJson(data));
-	return model;
-}
-
 /**
  * Attempts to resolve the summary text for the given item.
  *
@@ -164,7 +159,8 @@ export async function generateAllIndices({
 			idx = 0;
 
 			const data = await fetchPackageVersionDocs(pkg, version);
-			const model = addPackageToModel(new ApiModel(), data);
+			const model = new ApiModel();
+			model.addMember(ApiPackage.loadFromJson(data));
 			const members = visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!, version);
 
 			const sanitizePackageName = pkg.replaceAll('.', '-');

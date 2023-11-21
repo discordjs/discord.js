@@ -13,7 +13,7 @@ import type {
 	ApiVariable,
 	ApiFunction,
 } from '@discordjs/api-extractor-model';
-import { ApiItemKind, ApiModel } from '@discordjs/api-extractor-model';
+import { ApiItemKind, ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
 import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -24,7 +24,6 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import { addPackageToModel } from '~/util/addPackageToModel';
 import { OVERLOAD_SEPARATOR } from '~/util/constants';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
@@ -44,7 +43,8 @@ async function fetchHeadMember({ package: packageName, version, item }: ItemRout
 		return undefined;
 	}
 
-	const model = addPackageToModel(new ApiModel(), modelJSON);
+	const model = new ApiModel();
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
@@ -129,7 +129,8 @@ export async function generateStaticParams({ params: { package: packageName, ver
 		return [];
 	}
 
-	const model = addPackageToModel(new ApiModel(), modelJSON);
+	const model = new ApiModel();
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
