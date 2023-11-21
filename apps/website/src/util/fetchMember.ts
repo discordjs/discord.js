@@ -1,6 +1,5 @@
-import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
+import { ApiModel, ApiFunction, ApiPackage } from '@discordjs/api-extractor-model';
 import { fetchModelJSON } from '~/app/docAPI';
-import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
@@ -21,7 +20,7 @@ export const fetchMember = async (packageName: string, branchName: string, item?
 		return null;
 	}
 
-	addPackageToModel(model, modelJSON);
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
 
