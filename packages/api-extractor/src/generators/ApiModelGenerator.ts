@@ -1053,7 +1053,7 @@ export class ApiModelGenerator {
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}`
+									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''
@@ -1143,7 +1143,7 @@ export class ApiModelGenerator {
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}`
+									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.deprecated
@@ -1409,9 +1409,9 @@ export class ApiModelGenerator {
 								: ''
 						}${
 							'returns' in jsDoc
-								? jsDoc.returns.map(
-										(ret) => ` * @returns ${Array.isArray(ret) ? '' : this._fixLinkTags(ret.description) ?? ''}\n`,
-								  )
+								? jsDoc.returns
+										.map((ret) => ` * @returns ${Array.isArray(ret) ? '' : this._fixLinkTags(ret.description) ?? ''}\n`)
+										.join('')
 								: ''
 						} */`,
 				  ).docComment
@@ -1854,7 +1854,7 @@ export class ApiModelGenerator {
 						.join('') ?? ''
 				}${
 					method.returns?.length && !Array.isArray(method.returns[0])
-						? ` * @returns ${this._fixLinkTags(method.returns[0]!.description) ?? ''}`
+						? ` * @returns ${this._fixLinkTags(method.returns[0]!.description) ?? ''}\n`
 						: ''
 				}${method.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''}${
 					method.deprecated
