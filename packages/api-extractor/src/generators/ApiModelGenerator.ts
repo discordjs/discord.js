@@ -1093,6 +1093,10 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (jsDoc) {
+				if (jsDoc.inherited) {
+					return;
+				}
+
 				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
 				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
@@ -1774,7 +1778,7 @@ export class ApiModelGenerator {
 			text: `${
 				method.scope === 'global'
 					? `export function ${method.name}(`
-					: `${method.access}${method.scope === 'static' ? ' static' : ''} ${method.name}(`
+					: `${`${method.access} ` ?? ''}${method.scope === 'static' ? 'static ' : ''}${method.name}(`
 			}${
 				method.params?.length
 					? `${method.params[0]!.name}${method.params[0]!.nullable || method.params[0]!.optional ? '?' : ''}`
@@ -1823,8 +1827,8 @@ export class ApiModelGenerator {
 				`/**\n * ${method.description}\n${
 					method.params?.map((param) => ` * @param ${param.name} - ${param.description}\n`).join('') ?? ''
 				}${
-					method.returns?.length && !Array.isArray(method.returns[0])
-						? ` * @returns ${method.returns[0]!.description}`
+					method.returns?.length && !Array.isArray(method.returns[0]) && method.returns[0]?.description
+						? ` * @returns ${method.returns[0].description}`
 						: ''
 				}${method.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''}${
 					method.deprecated
