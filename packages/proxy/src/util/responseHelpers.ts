@@ -67,7 +67,7 @@ export function populateAbortErrorResponse(res: ServerResponse): void {
  *
  * @param res - The server response to populate
  * @param error - The error to check and use
- * @returns - True if the error is known and the response object was populated, otherwise false
+ * @returns `true` if the error is known and the response object was populated, otherwise `false`
  */
 export function populateErrorResponse(res: ServerResponse, error: unknown): boolean {
 	if (error instanceof DiscordAPIError || error instanceof HTTPError) {
