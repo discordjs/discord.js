@@ -210,14 +210,8 @@ interface IProcessAstEntityContext {
 	parentDocgenJson?: DocgenContainerJson | undefined;
 }
 
-const linkRegEx = /{@link\s(?<class>\w+)#(?<event>event:)?(?<prop>[\w()]+)(?<name>\s[^}]*)?}/g;
-function fixLinkTags(input?: string): string | undefined {
-	return input?.replaceAll(
-		linkRegEx,
-		(_match, _p1, _p2, _p3, _p4, _offset, _string, groups) =>
-			`{@link ${groups.class}.${groups.prop}${groups.name ? ` |${groups.name}` : ''}}`,
-	);
-}
+const linkRegEx =
+	/{@link\s(?:(?<class>\w+)(?:[#.](?<event>event:)?(?<prop>[\w()]+))?|(?<url>https?:\/\/[^\s}]*))(?<name>\s[^}]*)?}/g;
 
 function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
@@ -243,6 +237,8 @@ export class ApiModelGenerator {
 
 	private readonly _referenceGenerator: DeclarationReferenceGenerator;
 
+	private readonly _jsDocJson: DocgenJson | undefined;
+
 	public constructor(collector: Collector) {
 		this._collector = collector;
 		this._apiModel = new ApiModel();
@@ -257,11 +253,11 @@ export class ApiModelGenerator {
 
 	public buildApiPackage(): ApiPackage {
 		const packageDocComment: tsdoc.DocComment | undefined = this._collector.workingPackage.tsdocComment;
-		let jsDocJson: DocgenJson | undefined;
 
 		const jsDocFilepath = `${this._collector.extractorConfig.apiJsonFilePath.slice(0, -8)}json`;
 		if (existsSync(jsDocFilepath)) {
-			jsDocJson = JsonFile.load(jsDocFilepath);
+			// @ts-expect-error assign value only when starting to build a new ApiPackage
+			this._jsDocJson = JsonFile.load(jsDocFilepath);
 		}
 
 		const apiPackage: ApiPackage = new ApiPackage({
@@ -284,7 +280,7 @@ export class ApiModelGenerator {
 					name: entity.nameForEmit!,
 					isExported: entity.exportedFromEntryPoint,
 					parentApiItem: apiEntryPoint,
-					parentDocgenJson: jsDocJson,
+					parentDocgenJson: this._jsDocJson,
 				});
 			}
 		}
@@ -560,9 +556,9 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
 				? this._tsDocParser.parseString(
-						`/*+\n * ${fixLinkTags(parent.construct.description)}\n${
+						`/*+\n * ${this._fixLinkTags(parent.construct.description) ?? ''}\n${
 							parent.construct.params
-								?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
 				  ).docComment
@@ -646,10 +642,12 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
 				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
+						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+							jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
+						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 								  }\n`
 								: ''
 						} */`,
@@ -718,9 +716,9 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = parent?.construct
 				? this._tsDocParser.parseString(
-						`/*+\n * ${fixLinkTags(parent.construct.description)}\n${
+						`/*+\n * ${this._fixLinkTags(parent.construct.description) ?? ''}\n${
 							parent.construct.params
-								?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
 				  ).docComment
@@ -849,17 +847,18 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
 				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-							jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ??
-							''
+						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+							jsDoc.params
+								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+								.join('') ?? ''
 						}${
 							jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-								? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
+								? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}`
 								: ''
 						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 								  }\n`
 								: ''
 						} */`,
@@ -976,10 +975,12 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
 				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description)}\n${jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
+						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+							jsDoc.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
+						}${
 							jsDoc.deprecated
 								? ` * @deprecated ${
-										typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 								  }\n`
 								: ''
 						} */`,
@@ -1046,20 +1047,20 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
 								jsDoc.params
-									?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+									?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
+									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''
 							}${
 								jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									  }\n`
 									: ''
 							} */`,
@@ -1136,18 +1137,18 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
 								jsDoc.params
-									?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`)
+									?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 									.join('') ?? ''
 							}${
 								jsDoc.returns?.length && !Array.isArray(jsDoc.returns[0])
-									? ` * @returns ${fixLinkTags(jsDoc.returns[0]!.description ?? '')}`
+									? ` * @returns ${this._fixLinkTags(jsDoc.returns[0]!.description) ?? ''}\n`
 									: ''
 							}${
 								jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									  }\n`
 									: ''
 							} */`,
@@ -1253,12 +1254,12 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 									  }\n`
 									: ''
 							} */`,
@@ -1328,10 +1329,14 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${fixLinkTags(jsDoc.description)}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
-								'deprecated' in jsDoc && jsDoc.deprecated ? ` * @deprecated ${jsDoc.deprecated}\n` : ''
+								'deprecated' in jsDoc && jsDoc.deprecated
+									? ` * @deprecated ${
+											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+									  }\n`
+									: ''
 							} */`,
 					  ).docComment
 					: apiItemMetadata.tsdocComment;
@@ -1396,13 +1401,17 @@ export class ApiModelGenerator {
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 			const docComment: tsdoc.DocComment | undefined = jsDoc
 				? this._tsDocParser.parseString(
-						`/**\n * ${fixLinkTags(jsDoc.description) ?? ''}\n${
+						`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
 							'params' in jsDoc
-								? jsDoc.params.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('')
+								? jsDoc.params
+										.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+										.join('')
 								: ''
 						}${
 							'returns' in jsDoc
-								? jsDoc.returns.map((ret) => ` * @returns ${Array.isArray(ret) ? '' : fixLinkTags(ret.description)}\n`)
+								? jsDoc.returns
+										.map((ret) => ` * @returns ${Array.isArray(ret) ? '' : this._fixLinkTags(ret.description) ?? ''}\n`)
+										.join('')
 								: ''
 						} */`,
 				  ).docComment
@@ -1531,12 +1540,14 @@ export class ApiModelGenerator {
 			}
 
 			const docComment: tsdoc.DocComment | undefined = this._tsDocParser.parseString(
-				`/**\n * ${fixLinkTags(jsDoc.description)}\n${
-					jsDoc.params?.map((param) => ` * @param ${param.name} - ${fixLinkTags(param.description)}\n`).join('') ?? ''
+				`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+					jsDoc.params
+						?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+						.join('') ?? ''
 				}${'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''}${
 					'deprecated' in jsDoc && jsDoc.deprecated
 						? ` * @deprecated ${
-								typeof jsDoc.deprecated === 'string' ? fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+								typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
 						  }\n`
 						: ''
 				} */`,
@@ -1672,6 +1683,23 @@ export class ApiModelGenerator {
 		return sourceLocation;
 	}
 
+	private _fixLinkTags(input?: string): string | undefined {
+		return input?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
+			let target = groups.class ?? groups.url;
+			const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
+			const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
+				external?.see?.[0] ?? '',
+			);
+			if (match) {
+				target = `discord-api-types#(${match.groups!.name}:${
+					/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
+				})`;
+			}
+
+			return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
+		});
+	}
+
 	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
 		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
@@ -1729,9 +1757,9 @@ export class ApiModelGenerator {
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${prop.description}\n${prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''}${
-					prop.readonly ? ' * @readonly\n' : ''
-				} */`,
+				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${
+					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
+				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
 			excerptTokens: [
 				{
@@ -1820,11 +1848,13 @@ export class ApiModelGenerator {
 				: { startIndex: 0, endIndex: 0 },
 			typeParameters: [],
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${method.description}\n${
-					method.params?.map((param) => ` * @param ${param.name} - ${param.description}\n`).join('') ?? ''
+				`/**\n * ${this._fixLinkTags(method.description) ?? ''}\n${
+					method.params
+						?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
+						.join('') ?? ''
 				}${
 					method.returns?.length && !Array.isArray(method.returns[0])
-						? ` * @returns ${method.returns[0]!.description}`
+						? ` * @returns ${this._fixLinkTags(method.returns[0]!.description) ?? ''}\n`
 						: ''
 				}${method.examples?.map((example) => ` * @example\n * \`\`\`js\n * ${example}\n * \`\`\`\n`).join('') ?? ''}${
 					method.deprecated
