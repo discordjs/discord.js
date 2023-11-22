@@ -15,9 +15,9 @@ export function TypeParamTable({ item }: { readonly item: ApiTypeParameterListMi
 		() =>
 			item.typeParameters.map((typeParam) => ({
 				Name: typeParam.name,
-				Constraints: <ExcerptText excerpt={typeParam.constraintExcerpt} />,
+				Constraints: <ExcerptText excerpt={typeParam.constraintExcerpt} apiPackage={item.getAssociatedPackage()!} />,
 				Optional: typeParam.isOptional ? 'Yes' : 'No',
-				Default: <ExcerptText excerpt={typeParam.defaultTypeExcerpt} />,
+				Default: <ExcerptText excerpt={typeParam.defaultTypeExcerpt} apiPackage={item.getAssociatedPackage()!} />,
 				Description: typeParam.tsdocTypeParamBlock ? (
 					<TSDoc item={item} tsdoc={typeParam.tsdocTypeParamBlock.content} />
 				) : (

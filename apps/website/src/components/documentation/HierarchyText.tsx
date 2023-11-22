@@ -48,7 +48,7 @@ export function HierarchyText({
 				<div className="flex flex-row place-items-center gap-4" key={`${type}-${idx}`}>
 					<h3 className="text-xl font-bold">{type}</h3>
 					<span className="break-all font-mono space-y-2">
-						<ExcerptText excerpt={excerpt} />
+						<ExcerptText excerpt={excerpt} apiPackage={item.getAssociatedPackage()!} />
 					</span>
 				</div>
 			))}

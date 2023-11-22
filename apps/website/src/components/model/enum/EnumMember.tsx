@@ -14,7 +14,9 @@ export function EnumMember({ member }: { readonly member: ApiEnumMember }) {
 			>
 				{member.name}
 				<span>=</span>
-				{member.initializerExcerpt ? <SignatureText excerpt={member.initializerExcerpt} /> : null}
+				{member.initializerExcerpt ? (
+					<SignatureText excerpt={member.initializerExcerpt} apiPackage={member.getAssociatedPackage()!} />
+				) : null}
 			</CodeHeading>
 			{member.tsdocComment ? <TSDoc item={member} tsdoc={member.tsdocComment.summarySection} /> : null}
 		</div>
