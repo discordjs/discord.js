@@ -19,11 +19,11 @@ class BaseClient extends EventEmitter {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
     }
 
+    const defaultOptions = Options.createDefault();
     /**
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    const defaultOptions = Options.createDefault();
     this.options = {
       ...defaultOptions,
       ...options,

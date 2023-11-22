@@ -1405,7 +1405,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * The voice state adapter for this guild that can be used with @discordjs/voice to play audio in voice
+   * The voice state adapter for this guild that can be used with `@discordjs/voice` to play audio in voice
    * and stage channels.
    * @type {Function}
    * @readonly

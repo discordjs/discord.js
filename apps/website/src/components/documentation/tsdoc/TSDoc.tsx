@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { DocumentationLink } from '~/components/DocumentationLink';
 import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
+import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
 import { resolveCanonicalReference, resolveItemURI } from '../util';
@@ -32,7 +33,6 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					return <Fragment key={idx} />;
 				case DocNodeKind.LinkTag: {
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
-
 					if (codeDestination) {
 						if (
 							!codeDestination.importPath &&
@@ -55,6 +55,28 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 						const resolved = resolveCanonicalReference(codeDestination, item.getAssociatedPackage());
 
 						if (!foundItem && !resolved) return null;
+
+						if (resolved && resolved.package === 'discord-api-types') {
+							const { displayName, kind, members, containerKey } = resolved.item;
+							let href = DISCORD_API_TYPES_DOCS_URL;
+
+							// dapi-types doesn't have routes for class members
+							// so we can assume this member is for an enum
+							if (kind === 'enum' && members?.[0]) {
+								href += `/enum/${displayName}#${members[0].displayName}`;
+							} else if (kind === 'type' || kind === 'var') {
+								href += `#${displayName}`;
+							} else {
+								href += `/${kind}/${displayName}`;
+							}
+
+							return (
+								<DocumentationLink key={`${containerKey}-${idx}`} href={href}>
+									{displayName}
+									{members?.map((member) => `.${member.displayName}`).join('') ?? ''}
+								</DocumentationLink>
+							);
+						}
 
 						return (
 							<ItemLink
