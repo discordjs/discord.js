@@ -17,7 +17,7 @@ export function ParameterTable({ item }: { readonly item: ApiDocumentedItem & Ap
 		() =>
 			params.map((param) => ({
 				Name: param.isRest ? `...${param.name}` : param.name,
-				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} />,
+				Type: <ExcerptText excerpt={param.parameterTypeExcerpt} apiPackage={item.getAssociatedPackage()!} />,
 				Optional: param.isOptional ? 'Yes' : 'No',
 				Description: param.description ? <TSDoc item={item} tsdoc={param.description} /> : 'None',
 			})),

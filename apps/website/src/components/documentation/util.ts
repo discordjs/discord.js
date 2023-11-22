@@ -9,6 +9,7 @@ import type {
 	ApiDocumentedItem,
 	ApiParameterListMixin,
 	ApiEvent,
+	ApiPackage,
 } from '@discordjs/api-extractor-model';
 import type { DocDeclarationReference } from '@microsoft/tsdoc';
 import { SelectorKind } from '@microsoft/tsdoc';
@@ -29,6 +30,7 @@ export interface ApiItemLike {
 interface ResolvedCanonicalReference {
 	item: ApiItemLike;
 	package: string | undefined;
+	version: string | undefined;
 }
 
 const kindToMeaning = new Map([
@@ -72,6 +74,7 @@ export function resolveItemURI(item: ApiItemLike): string {
 
 export function resolveCanonicalReference(
 	canonicalReference: DeclarationReference | DocDeclarationReference,
+	apiPackage: ApiPackage | undefined,
 ): ResolvedCanonicalReference | null {
 	if (
 		'source' in canonicalReference &&
@@ -89,6 +92,8 @@ export function resolveCanonicalReference(
 					canonicalReference.symbol.meaning
 				}|${canonicalReference.symbol.componentPath.component.toString()}`,
 			},
+			// eslint-disable-next-line unicorn/better-regex
+			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
 	else if (
 		'memberReferences' in canonicalReference &&
@@ -107,6 +112,8 @@ export function resolveCanonicalReference(
 					.slice(1)
 					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier!.identifier! })),
 			},
+			// eslint-disable-next-line unicorn/better-regex
+			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
 		};
 	}
 

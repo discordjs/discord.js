@@ -52,7 +52,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 
 						const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
 						const foundItem = declarationReference?.resolvedApiItem;
-						const resolved = resolveCanonicalReference(codeDestination);
+						const resolved = resolveCanonicalReference(codeDestination, item.getAssociatedPackage());
 
 						if (!foundItem && !resolved) return null;
 
@@ -84,6 +84,12 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 								itemURI={resolveItemURI(foundItem ?? resolved!.item)}
 								key={idx}
 								packageName={resolved?.package ?? item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+								version={
+									resolved?.package
+										? // eslint-disable-next-line unicorn/better-regex
+										  item.getAssociatedPackage()?.dependencies?.[resolved.package]?.replace(/[~^]/, '')
+										: undefined
+								}
 							>
 								{linkText ?? foundItem?.displayName ?? resolved!.item.displayName}
 							</ItemLink>
