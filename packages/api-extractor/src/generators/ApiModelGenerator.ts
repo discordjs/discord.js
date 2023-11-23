@@ -1724,7 +1724,7 @@ export class ApiModelGenerator {
 							?.astEntity as AstImport | undefined);
 					const astSymbol = astEntity instanceof AstImport ? astEntity.astSymbol : astEntity;
 					const match = astEntity instanceof AstImport ? moduleNameRegEx.exec(astEntity.modulePath) : null;
-					const pkg = match?.groups?.package ?? this._apiModel.packages[0]!.name;
+					const pkg = match?.groups!.package ?? this._apiModel.packages[0]!.name;
 					return [
 						...arr,
 						{
