@@ -3,6 +3,7 @@
 import type { ApiItemKind } from '@discordjs/api-extractor-model';
 import { ImageResponse } from '@vercel/og';
 import type { NextRequest } from 'next/server';
+import { resolvePackageName } from '~/util/resolvePackageName';
 
 export const runtime = 'edge';
 
@@ -87,7 +88,7 @@ export async function GET(request: NextRequest) {
 	const hasMethods = searchParams.has('methods');
 	const hasProps = searchParams.has('props');
 	const hasMembers = searchParams.has('members');
-	const pkg = hasPkg ? searchParams.get('pkg') : '';
+	const pkg = hasPkg ? resolvePackageName(searchParams.get('pkg')!) : '';
 	const kind = hasKind ? searchParams.get('kind')! : 'Method';
 	const name = hasName ? searchParams.get('name')!.slice(0, 100) : 'My default name which is super long to overflow';
 	const methods = hasMethods ? searchParams.get('methods') : '';
@@ -103,7 +104,7 @@ export async function GET(request: NextRequest) {
 				tw="flex flex-row bg-[#181818] h-full w-full p-24"
 			>
 				<div tw="flex flex-col mx-auto h-full text-white">
-					<div tw="flex flex-row text-4xl text-gray-400">@discordjs/{pkg}</div>
+					<div tw="flex flex-row text-4xl text-gray-400">{pkg}</div>
 					<div tw="flex flex-col justify-between h-full w-full pt-14">
 						<div tw="flex flex-row items-center max-w-full">
 							<span tw="mr-6">{resolveIcon(kind as keyof typeof ApiItemKind)}</span>

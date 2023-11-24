@@ -237,6 +237,7 @@ export class SequentialHandler implements IHandler {
 				timeToReset: timeout,
 				retryAfter: timeout,
 				sublimitTimeout: 0,
+				scope: 'user',
 			};
 
 			// Let library users know they have hit a rate limit
@@ -281,6 +282,7 @@ export class SequentialHandler implements IHandler {
 		const reset = res.headers.get('X-RateLimit-Reset-After');
 		const hash = res.headers.get('X-RateLimit-Bucket');
 		const retry = res.headers.get('Retry-After');
+		const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
 
 		// Update the total number of requests that can be made before the rate limit resets
 		this.limit = limit ? Number(limit) : Number.POSITIVE_INFINITY;
@@ -359,6 +361,7 @@ export class SequentialHandler implements IHandler {
 				timeToReset: timeout,
 				retryAfter,
 				sublimitTimeout: sublimitTimeout ?? 0,
+				scope,
 			});
 
 			this.debug(
@@ -373,6 +376,7 @@ export class SequentialHandler implements IHandler {
 					`  Limit          : ${limit}`,
 					`  Retry After    : ${retryAfter}ms`,
 					`  Sublimit       : ${sublimitTimeout ? `${sublimitTimeout}ms` : 'None'}`,
+					`  Scope          : ${scope}`,
 				].join('\n'),
 			);
 

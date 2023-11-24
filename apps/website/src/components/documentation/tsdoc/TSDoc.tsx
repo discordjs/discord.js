@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { Fragment, useCallback, type ReactNode } from 'react';
 import { DocumentationLink } from '~/components/DocumentationLink';
 import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
+import { DISCORD_API_TYPES_DOCS_URL } from '~/util/constants';
 import { ItemLink } from '../../ItemLink';
 import { SyntaxHighlighter } from '../../SyntaxHighlighter';
-import { resolveItemURI } from '../util';
+import { resolveCanonicalReference, resolveItemURI } from '../util';
 import { DefaultValueBlock, DeprecatedBlock, ExampleBlock, RemarksBlock, ReturnsBlock, SeeBlock } from './BlockComment';
 
 export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc: DocNode }): JSX.Element {
@@ -32,7 +33,6 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					return <Fragment key={idx} />;
 				case DocNodeKind.LinkTag: {
 					const { codeDestination, urlDestination, linkText } = tsdoc as DocLinkTag;
-
 					if (codeDestination) {
 						if (
 							!codeDestination.importPath &&
@@ -52,17 +52,46 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 
 						const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
 						const foundItem = declarationReference?.resolvedApiItem;
+						const resolved = resolveCanonicalReference(codeDestination, item.getAssociatedPackage());
 
-						if (!foundItem) return null;
+						if (!foundItem && !resolved) return null;
+
+						if (resolved && resolved.package === 'discord-api-types') {
+							const { displayName, kind, members, containerKey } = resolved.item;
+							let href = DISCORD_API_TYPES_DOCS_URL;
+
+							// dapi-types doesn't have routes for class members
+							// so we can assume this member is for an enum
+							if (kind === 'enum' && members?.[0]) {
+								href += `/enum/${displayName}#${members[0].displayName}`;
+							} else if (kind === 'type' || kind === 'var') {
+								href += `#${displayName}`;
+							} else {
+								href += `/${kind}/${displayName}`;
+							}
+
+							return (
+								<DocumentationLink key={`${containerKey}-${idx}`} href={href}>
+									{displayName}
+									{members?.map((member) => `.${member.displayName}`).join('') ?? ''}
+								</DocumentationLink>
+							);
+						}
 
 						return (
 							<ItemLink
 								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
-								itemURI={resolveItemURI(foundItem)}
+								itemURI={resolveItemURI(foundItem ?? resolved!.item)}
 								key={idx}
-								packageName={item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+								packageName={resolved?.package ?? item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
+								version={
+									resolved?.package
+										? // eslint-disable-next-line unicorn/better-regex
+										  item.getAssociatedPackage()?.dependencies?.[resolved.package]?.replace(/[~^]/, '')
+										: undefined
+								}
 							>
-								{linkText ?? foundItem.displayName}
+								{linkText ?? foundItem?.displayName ?? resolved!.item.displayName}
 							</ItemLink>
 						);
 					}

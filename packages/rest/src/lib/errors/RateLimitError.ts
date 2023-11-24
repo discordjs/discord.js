@@ -21,6 +21,8 @@ export class RateLimitError extends Error implements RateLimitData {
 
 	public sublimitTimeout: number;
 
+	public scope: RateLimitData['scope'];
+
 	public constructor({
 		timeToReset,
 		limit,
@@ -32,6 +34,7 @@ export class RateLimitError extends Error implements RateLimitData {
 		global,
 		retryAfter,
 		sublimitTimeout,
+		scope,
 	}: RateLimitData) {
 		super();
 		this.timeToReset = timeToReset;
@@ -44,6 +47,7 @@ export class RateLimitError extends Error implements RateLimitData {
 		this.global = global;
 		this.retryAfter = retryAfter;
 		this.sublimitTimeout = sublimitTimeout;
+		this.scope = scope;
 	}
 
 	/**

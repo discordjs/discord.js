@@ -6,9 +6,10 @@ import type {
 	Excerpt,
 } from '@discordjs/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';
+import { resolvePackageName } from './resolvePackageName';
 
 export const findMemberByKey = (model: ApiModel, packageName: string, containerKey: string) => {
-	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
+	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
 	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
 };
 
@@ -17,7 +18,7 @@ export const findMember = (model: ApiModel, packageName: string, memberName: str
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
+	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
 	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
 };
 

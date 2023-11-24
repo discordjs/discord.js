@@ -33,7 +33,7 @@ export function Property({
 					{`${item.displayName}${item.isOptional ? '?' : ''}`}
 					<span>:</span>
 					{item.propertyTypeExcerpt.text ? (
-						<ExcerptText excerpt={item.propertyTypeExcerpt} model={item.getAssociatedModel()!} />
+						<ExcerptText excerpt={item.propertyTypeExcerpt} apiPackage={item.getAssociatedPackage()!} />
 					) : null}
 				</CodeHeading>
 			</div>

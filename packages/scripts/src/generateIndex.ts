@@ -1,12 +1,17 @@
 import { stat, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import type { ApiPackage } from '@discordjs/api-extractor-model';
-import { ApiItem, ApiModel, ApiDeclaredItem, ApiItemContainerMixin, ApiItemKind } from '@discordjs/api-extractor-model';
+import {
+	type ApiItem,
+	ApiPackage,
+	ApiModel,
+	ApiDeclaredItem,
+	ApiItemContainerMixin,
+	ApiItemKind,
+} from '@discordjs/api-extractor-model';
 import { generatePath } from '@discordjs/api-extractor-utils';
-import { DocNodeKind, TSDocConfiguration } from '@microsoft/tsdoc';
+import { DocNodeKind } from '@microsoft/tsdoc';
 import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { TSDocConfigFile } from '@microsoft/tsdoc-config';
 import { request } from 'undici';
 
 export interface MemberJSON {
@@ -31,28 +36,6 @@ export const PACKAGES = [
 	'ws',
 ];
 let idx = 0;
-
-export function addPackageToModel(model: ApiModel, data: any) {
-	let apiPackage: ApiPackage;
-	if (data.metadata) {
-		const tsdocConfiguration = new TSDocConfiguration();
-		const tsdocConfigFile = TSDocConfigFile.loadFromObject(data.metadata.tsdocConfig);
-		tsdocConfigFile.configureParser(tsdocConfiguration);
-
-		apiPackage = ApiItem.deserialize(data, {
-			apiJsonFilename: '',
-			toolPackage: data.metadata.toolPackage,
-			toolVersion: data.metadata.toolVersion,
-			versionToDeserialize: data.metadata.schemaVersion,
-			tsdocConfiguration,
-		}) as ApiPackage;
-	} else {
-		apiPackage = ApiItem.deserializeDocgen(data, 'discord.js') as ApiPackage;
-	}
-
-	model.addMember(apiPackage);
-	return model;
-}
 
 /**
  * Attempts to resolve the summary text for the given item.
@@ -176,7 +159,8 @@ export async function generateAllIndices({
 			idx = 0;
 
 			const data = await fetchPackageVersionDocs(pkg, version);
-			const model = addPackageToModel(new ApiModel(), data);
+			const model = new ApiModel();
+			model.addMember(ApiPackage.loadFromJson(data));
 			const members = visitNodes(model.tryGetPackageByName(pkg)!.entryPoints[0]!, version);
 
 			const sanitizePackageName = pkg.replaceAll('.', '-');
