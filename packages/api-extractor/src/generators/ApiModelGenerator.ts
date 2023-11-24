@@ -46,7 +46,7 @@ import { JsonFile, Path } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
-import type { AstImport } from '../analyzer/AstImport.js';
+import { AstImport } from '../analyzer/AstImport.js';
 import type { AstModule } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
@@ -212,6 +212,8 @@ interface IProcessAstEntityContext {
 
 const linkRegEx =
 	/{@link\s(?:(?<class>\w+)(?:[#.](?<event>event:)?(?<prop>[\w()]+))?|(?<url>https?:\/\/[^\s}]*))(?<name>\s[^}]*)?}/g;
+
+const moduleNameRegEx = /^(?<package>(?:@[\w.-]+\/)?[\w.-]+)(?<path>(?:\/[\w.-]+)+)?$/i;
 
 function filePathFromJson(meta: DocgenMetaJson): string {
 	return `${meta.path.slice('packages/discord.js/'.length)}/${meta.file}`;
@@ -1713,39 +1715,37 @@ export class ApiModelGenerator {
 		};
 		return mapper
 			.flatMap((typ, index) => {
-				const result = typ.reduce<IExcerptToken[]>(
-					(arr, [type, symbol]) => [
+				const result = typ.reduce<IExcerptToken[]>((arr, [type, symbol]) => {
+					const astEntity =
+						(this._collector.entities.find(
+							(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
+						)?.astEntity as AstSymbol | undefined) ??
+						(this._collector.entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
+							?.astEntity as AstImport | undefined);
+					const astSymbol = astEntity instanceof AstImport ? astEntity.astSymbol : astEntity;
+					const match = astEntity instanceof AstImport ? moduleNameRegEx.exec(astEntity.modulePath) : null;
+					const pkg = match?.groups!.package ?? this._apiModel.packages[0]!.name;
+					return [
 						...arr,
 						{
 							kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
 							text: fixPrimitiveTypes(type ?? 'unknown', symbol),
 							canonicalReference: type?.includes("'")
 								? undefined
-								: DeclarationReference.package(this._apiModel.packages[0]!.name)
+								: DeclarationReference.package(pkg)
 										.addNavigationStep(
 											Navigation.Members as any,
 											DeclarationReference.parseComponent(type ?? 'unknown'),
 										)
 										.withMeaning(
-											lookup[
-												(
-													(this._collector.entities.find(
-														(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
-													)?.astEntity as AstSymbol | undefined) ??
-													(
-														this._collector.entities.find(
-															(entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity,
-														)?.astEntity as AstImport | undefined
-													)?.astSymbol
-												)?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
-											] ?? ('class' as any),
+											lookup[astSymbol?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
+												('class' as any),
 										)
 										.toString(),
 						},
 						{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
-					],
-					[],
-				);
+					];
+				}, []);
 				return index === 0 ? result : [{ kind: ExcerptTokenKind.Content, text: ' | ' }, ...result];
 			})
 			.filter((excerpt) => excerpt.text.length);
