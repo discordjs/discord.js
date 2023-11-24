@@ -5,9 +5,9 @@ import {
 	type ApiMethod,
 	type ApiMethodSignature,
 } from '@discordjs/api-extractor-model';
+import { ParameterSection } from '~/components/documentation/section/ParametersSection';
 import { TypeParameterSection } from '~/components/documentation/section/TypeParametersSection';
 import { InheritanceText } from '../../InheritanceText';
-import { ParameterTable } from '../../ParameterTable';
 import { TSDoc } from '../../documentation/tsdoc/TSDoc';
 
 export interface MethodDocumentationProps {
@@ -32,7 +32,7 @@ export function MethodDocumentation({ method, inheritedFrom }: MethodDocumentati
 				<TSDoc item={method} tsdoc={method.tsdocComment ?? firstOverload!} />
 			) : null}
 			{method.typeParameters.length ? <TypeParameterSection item={method} /> : null}
-			{method.parameters.length ? <ParameterTable item={method} /> : null}
+			{method.parameters.length ? <ParameterSection item={method} /> : null}
 			{inheritedFrom && parent ? <InheritanceText parent={inheritedFrom} /> : null}
 		</div>
 	);
