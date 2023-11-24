@@ -35,7 +35,7 @@ export interface TableOfContentsItemProps {
 export function TableOfContentsPropertyItem({ property }: { readonly property: TableOfContentsSerializedProperty }) {
 	return (
 		<a
-			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded focus:ring focus:ring-width-2 focus:ring-blurple"
+			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${property.name}`}
 			key={`${property.name}-${property.kind}`}
 			title={property.name}
@@ -54,7 +54,7 @@ export function TableOfContentsMethodItem({ method }: { readonly method: TableOf
 
 	return (
 		<a
-			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded focus:ring focus:ring-width-2 focus:ring-blurple"
+			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${key}`}
 			key={key}
 			title={method.name}
@@ -70,7 +70,7 @@ export function TableOfContentsMethodItem({ method }: { readonly method: TableOf
 export function TableOfContentsEventItem({ event }: { readonly event: TableOfContentsSerializedEvent }) {
 	return (
 		<a
-			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded focus:ring focus:ring-width-2 focus:ring-blurple"
+			className="ml-5 flex flex-col border-l border-light-800 p-[5px] pl-6 outline-none first:mt-1 focus:border-0 dark:border-dark-100 focus:rounded active:bg-light-800 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-100 dark:hover:bg-dark-200"
 			href={`#${event.name}`}
 			key={`${event.name}-${event.kind}`}
 			title={event.name}
