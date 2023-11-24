@@ -1,18 +1,21 @@
 'use strict';
 
+const BaseClient = require('../client/BaseClient');
 const Webhook = require('./Webhook');
 
 /**
  * Represents a webhook for an Interaction
  * @implements {Webhook}
+ * @extends {BaseClient}
  */
-class InteractionWebhook {
+class InteractionWebhook extends BaseClient {
   /**
    * @param {Client} client The instantiating client
    * @param {Snowflake} id The application's id
    * @param {string} token The interaction's token
    */
   constructor(client, id, token) {
+    super(client.options);
     /**
      * The client that instantiated the interaction webhook
      * @name InteractionWebhook#client
