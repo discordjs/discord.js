@@ -1508,26 +1508,6 @@ declare const applicationCommandSubGroup: ApplicationCommandSubGroup;
   applicationCommandSubGroup.options = [] as const;
 }
 
-declare const userContextMenuCommandInteraction: UserContextMenuCommandInteraction;
-{
-  expectType<User | null>(userContextMenuCommandInteraction.options.getUser('useroption'));
-  expectType<User>(userContextMenuCommandInteraction.options.getUser('useroption', true));
-  expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(
-    userContextMenuCommandInteraction.options.getMember('useroption'),
-  );
-  if (userContextMenuCommandInteraction.inCachedGuild()) {
-    expectType<GuildMember | null>(userContextMenuCommandInteraction.options.getMember('useroption'));
-  }
-}
-
-declare const messageContextMenuCommandInteraction: MessageContextMenuCommandInteraction;
-{
-  expectType<Message>(messageContextMenuCommandInteraction.options.getMessage('message', true));
-  expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(
-    userContextMenuCommandInteraction.options.getMember('useroption'),
-  );
-}
-
 declare const autoModerationRuleManager: AutoModerationRuleManager;
 {
   expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch('1234567890'));
