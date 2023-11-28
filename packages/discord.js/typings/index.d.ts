@@ -3242,6 +3242,7 @@ export class UserContextMenuCommandInteraction<
     | 'getMentionable'
     | 'getRole'
     | 'getNumber'
+    | 'getAttachment'
     | 'getInteger'
     | 'getString'
     | 'getChannel'
