@@ -20,7 +20,7 @@ export function Outline() {
 			<aside
 				className={`fixed block bottom-4 top-22 z-20 mx-auto max-w-5xl border border-light-900 rounded-md bg-white/75 shadow backdrop-blur-md transition-all duration-300 ${
 					opened ? 'left-4 right-4 ' : 'left-full -right-[calc(100vw_-_32px)]'
-				} lg:sticky lg:block lg:h-full lg:max-w-xs lg:min-w-xs lg:w-full dark:border-dark-100 dark:bg-dark-600/75`}
+				} lg:sticky lg:h-full lg:max-w-xs lg:min-w-xs lg:w-full dark:border-dark-100 dark:bg-dark-600/75`}
 			>
 				<Button
 					aria-label="Menu"
