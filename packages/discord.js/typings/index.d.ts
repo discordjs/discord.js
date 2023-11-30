@@ -1921,6 +1921,7 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
 
 export class InteractionWebhook extends PartialWebhookMixin() {
   public constructor(client: Client<true>, id: Snowflake, token: string);
+  public readonly client: Client<true>;
   public token: string;
   public send(options: string | MessagePayload | InteractionReplyOptions): Promise<Message>;
   public editMessage(
