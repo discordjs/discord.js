@@ -20,7 +20,6 @@ export function TypeAlias({ item }: { readonly item: ApiTypeAlias }) {
 				depth++;
 			}
 
-			console.log(token.text);
 			if (token.text.includes('>')) {
 				depth--;
 			}
