@@ -32,7 +32,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      REF_TYPE: ${{ inputs.ref_type || github.ref_type}}
+      REF_TYPE: ${{ inputs.ref_type || github.ref_type }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
