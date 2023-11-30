@@ -231,7 +231,7 @@ import {
   RawWelcomeScreenData,
   RawWidgetData,
   RawWidgetMemberData,
-} from './rawDataTypes';
+} from './rawDataTypes.js';
 
 declare module 'node:events' {
   class EventEmitter {
