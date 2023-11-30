@@ -146,6 +146,7 @@ export function serializeMembers(clazz: ApiItemContainerMixin): TableOfContentsS
 			return {
 				kind: member.kind as 'Method' | 'MethodSignature',
 				name: member.displayName,
+				overloadIndex: (member as ApiMethod | ApiMethodSignature).overloadIndex,
 			};
 		} else if (member.kind === 'Event') {
 			return {
@@ -156,7 +157,6 @@ export function serializeMembers(clazz: ApiItemContainerMixin): TableOfContentsS
 			return {
 				kind: member.kind as 'Property' | 'PropertySignature',
 				name: member.displayName,
-				overloadIndex: (member as ApiMethod | ApiMethodSignature).overloadIndex,
 			};
 		}
 	});
