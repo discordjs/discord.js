@@ -12,12 +12,24 @@
     "docs": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../ -o ./docs/docs.json && pnpm run docs:new",
     "docs:test": "docgen -i './src/*.js' './src/**/*.js' -c ./docs/index.json -r ../../",
     "docs:new": "api-extractor run --local --minify",
-    "prepack": "pnpm run lint && pnpm run test",
+    "prepack": "pnpm run lint && pnpm run test && node ./scripts/esmDts.mjs",
     "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'",
     "release": "cliff-jumper"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./typings/index.d.mts",
+        "default": "./src/index.js"
+      },
+      "require": {
+        "types": "./typings/index.d.ts",
+        "default": "./src/index.js"
+      }
+    }
+  },
   "directories": {
     "lib": "src",
     "test": "test"
