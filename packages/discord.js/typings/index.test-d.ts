@@ -1803,6 +1803,8 @@ client.on('interactionCreate', async interaction => {
       interaction.commandType === ApplicationCommandType.Message)
   ) {
     expectType<MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction>(interaction);
+    // @ts-expect-error No attachment options on contextmenu commands
+    interaction.options.getAttachment('name');
     if (interaction.inCachedGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
@@ -1836,12 +1838,36 @@ client.on('interactionCreate', async interaction => {
     interaction.commandType === ApplicationCommandType.Message
   ) {
     expectType<Message>(interaction.targetMessage);
+    expectType<Message | null>(interaction.options.getMessage('_MESSAGE'));
     if (interaction.inCachedGuild()) {
       expectType<Message<true>>(interaction.targetMessage);
+      expectType<Message<true> | null>(interaction.options.getMessage('_MESSAGE'));
     } else if (interaction.inRawGuild()) {
       expectType<Message<false>>(interaction.targetMessage);
+      expectType<Message<false> | null>(interaction.options.getMessage('_MESSAGE'));
     } else if (interaction.inGuild()) {
       expectType<Message>(interaction.targetMessage);
+      expectType<Message | null>(interaction.options.getMessage('_MESSAGE'));
+    }
+  }
+
+  if (
+    interaction.type === InteractionType.ApplicationCommand &&
+    interaction.commandType === ApplicationCommandType.User
+  ) {
+    expectType<User>(interaction.targetUser);
+    expectType<GuildMember | APIInteractionGuildMember | null>(interaction.targetMember);
+    expectType<User | null>(interaction.options.getUser('user'));
+    expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
+    if (interaction.inCachedGuild()) {
+      expectType<GuildMember | null>(interaction.targetMember);
+      expectType<GuildMember | null>(interaction.options.getMember('user'));
+    } else if (interaction.inRawGuild()) {
+      expectType<APIInteractionGuildMember | null>(interaction.targetMember);
+      expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
+    } else if (interaction.inGuild()) {
+      expectType<GuildMember | APIInteractionGuildMember | null>(interaction.targetMember);
+      expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
     }
   }
 
@@ -1975,6 +2001,9 @@ client.on('interactionCreate', async interaction => {
     expectType<string | null>(interaction.options.getSubcommandGroup());
     expectType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     expectType<string | null>(interaction.options.getSubcommandGroup(false));
+
+    // @ts-expect-error
+    interaction.options.getMessage('name');
   }
 
   if (interaction.isRepliable()) {

@@ -542,6 +542,8 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     | 'getFocused'
     | 'getMentionable'
     | 'getRole'
+    | 'getUser'
+    | 'getMember'
     | 'getAttachment'
     | 'getNumber'
     | 'getInteger'
@@ -1269,19 +1271,6 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
-  public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
-    | 'getFocused'
-    | 'getMentionable'
-    | 'getRole'
-    | 'getNumber'
-    | 'getInteger'
-    | 'getString'
-    | 'getChannel'
-    | 'getBoolean'
-    | 'getSubcommandGroup'
-    | 'getSubcommand'
-  >;
   public targetId: Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
@@ -2222,6 +2211,21 @@ export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.Message;
+  public options: Omit<
+    CommandInteractionOptionResolver<Cached>,
+    | 'getFocused'
+    | 'getMentionable'
+    | 'getRole'
+    | 'getUser'
+    | 'getNumber'
+    | 'getAttachment'
+    | 'getInteger'
+    | 'getString'
+    | 'getChannel'
+    | 'getBoolean'
+    | 'getSubcommandGroup'
+    | 'getSubcommand'
+  >;
   public get targetMessage(): NonNullable<CommandInteractionOption<Cached>['message']>;
   public inGuild(): this is MessageContextMenuCommandInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is MessageContextMenuCommandInteraction<'cached'>;
@@ -3233,6 +3237,21 @@ export class UserContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.User;
+  public options: Omit<
+    CommandInteractionOptionResolver<Cached>,
+    | 'getMessage'
+    | 'getFocused'
+    | 'getMentionable'
+    | 'getRole'
+    | 'getNumber'
+    | 'getAttachment'
+    | 'getInteger'
+    | 'getString'
+    | 'getChannel'
+    | 'getBoolean'
+    | 'getSubcommandGroup'
+    | 'getSubcommand'
+  >;
   public get targetUser(): User;
   public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember> | null;
   public inGuild(): this is UserContextMenuCommandInteraction<'raw' | 'cached'>;
