@@ -1,10 +1,5 @@
-import type {
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiModel,
-	ApiParameterListMixin,
-	Excerpt,
-} from '@discordjs/api-extractor-model';
+import type { ApiDocumentedItem, ApiEntryPoint, ApiModel, Excerpt } from '@discordjs/api-extractor-model';
+import { ApiParameterListMixin } from '@discordjs/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';
 import { resolvePackageName } from './resolvePackageName';
 
@@ -41,7 +36,14 @@ interface ResolvedParameter {
  */
 export function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin): ResolvedParameter[] {
 	return item.parameters.map((param, idx) => {
-		const tsdocAnalog = item.tsdocComment?.params.blocks[idx];
+		const tsdocAnalog =
+			item.tsdocComment?.params.blocks[idx] ??
+			item
+				.getMergedSiblings()
+				.find(
+					(paramList): paramList is ApiDocumentedItem & ApiParameterListMixin =>
+						ApiParameterListMixin.isBaseClassOf(paramList) && paramList.overloadIndex === 1,
+				)?.tsdocComment?.params.blocks[idx];
 
 		return {
 			name: param.tsdocParamBlock?.parameterName ?? tsdocAnalog?.parameterName ?? param.name,

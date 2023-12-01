@@ -77,7 +77,7 @@ import {
   Snowflake,
   APIGuildScheduledEvent,
 } from 'discord-api-types/v10';
-import { GuildChannel, Guild, PermissionOverwrites } from '.';
+import { GuildChannel, Guild, PermissionOverwrites } from './index.js';
 
 export type RawActivityData = GatewayActivity;
 

@@ -231,7 +231,7 @@ import {
   RawWelcomeScreenData,
   RawWidgetData,
   RawWidgetMemberData,
-} from './rawDataTypes';
+} from './rawDataTypes.js';
 
 declare module 'node:events' {
   class EventEmitter {
@@ -861,9 +861,9 @@ export interface IconData {
   proxyIconURL?: string;
 }
 
-export type EmbedAuthorData = Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> & IconData;
+export interface EmbedAuthorData extends Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>, IconData {}
 
-export type EmbedFooterData = Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> & IconData;
+export interface EmbedFooterData extends Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>, IconData {}
 
 export interface EmbedAssetData extends Omit<APIEmbedImage, 'proxy_url'> {
   proxyURL?: string;
@@ -1978,29 +1978,29 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
 
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
-export type MessageCollectorOptionsParams<
+export interface MessageCollectorOptionsParams<
   ComponentType extends MessageComponentType,
   Cached extends boolean = boolean,
-> = {
+> extends MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]> {
   componentType?: ComponentType;
-} & MessageComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>;
+}
 
-export type MessageChannelCollectorOptionsParams<
+export interface MessageChannelCollectorOptionsParams<
   ComponentType extends MessageComponentType,
   Cached extends boolean = boolean,
-> = {
+> extends MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]> {
   componentType?: ComponentType;
-} & MessageChannelComponentCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>;
+}
 
-export type AwaitMessageCollectorOptionsParams<
+export interface AwaitMessageCollectorOptionsParams<
   ComponentType extends MessageComponentType,
   Cached extends boolean = boolean,
-> = {
+> extends Pick<
+    InteractionCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>,
+    keyof AwaitMessageComponentOptions<any>
+  > {
   componentType?: ComponentType;
-} & Pick<
-  InteractionCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>,
-  keyof AwaitMessageComponentOptions<any>
->;
+}
 
 export interface StringMappedInteractionTypes<Cached extends CacheType = CacheType> {
   Button: ButtonInteraction<Cached>;
@@ -2441,7 +2441,9 @@ export interface GuildForumTag {
   emoji: GuildForumTagEmoji | null;
 }
 
-export type GuildForumTagData = Partial<GuildForumTag> & { name: string };
+export interface GuildForumTagData extends Partial<GuildForumTag> {
+  name: string;
+}
 
 export interface DefaultReactionEmoji {
   id: Snowflake | null;
@@ -3993,7 +3995,7 @@ export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelRes
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
-export type FetchGuildApplicationCommandFetchOptions = Omit<FetchApplicationCommandOptions, 'guildId'>;
+export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> {}
 
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
   private constructor(guild: Guild, iterable?: Iterable<RawApplicationCommandData>);
@@ -4340,7 +4342,7 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
 
   public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
   public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
-  public remove(id: Snowflake | '@me', reason?: string): Promise<Snowflake>;
+  public remove(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
 }
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {
@@ -4440,7 +4442,7 @@ export interface WebhookFields extends PartialWebhookFields {
 
 //#region Typedefs
 
-export type ActivitiesOptions = Omit<ActivityOptions, 'shardId'>;
+export interface ActivitiesOptions extends Omit<ActivityOptions, 'shardId'> {}
 
 export interface ActivityOptions {
   name: string;
@@ -4795,22 +4797,16 @@ export interface AutoModerationTriggerMetadata {
   mentionRaidProtectionEnabled: boolean;
 }
 
-export type AwaitMessageComponentOptions<Interaction extends CollectedMessageInteraction> = Omit<
-  MessageComponentCollectorOptions<Interaction>,
-  'max' | 'maxComponents' | 'maxUsers'
->;
+export interface AwaitMessageComponentOptions<Interaction extends CollectedMessageInteraction>
+  extends Omit<MessageComponentCollectorOptions<Interaction>, 'max' | 'maxComponents' | 'maxUsers'> {}
 
-export type ModalSubmitInteractionCollectorOptions<Interaction extends ModalSubmitInteraction> = Omit<
-  InteractionCollectorOptions<Interaction>,
-  'channel' | 'message' | 'guild' | 'interactionType'
->;
+export interface ModalSubmitInteractionCollectorOptions<Interaction extends ModalSubmitInteraction>
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
 
-export type AwaitModalSubmitOptions<Interaction extends ModalSubmitInteraction> = Omit<
-  ModalSubmitInteractionCollectorOptions<Interaction>,
-  'max' | 'maxComponents' | 'maxUsers'
-> & {
+export interface AwaitModalSubmitOptions<Interaction extends ModalSubmitInteraction>
+  extends Omit<ModalSubmitInteractionCollectorOptions<Interaction>, 'max' | 'maxComponents' | 'maxUsers'> {
   time: number;
-};
+}
 
 export interface AwaitMessagesOptions extends MessageCollectorOptions {
   errors?: string[];
@@ -5133,14 +5129,14 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
   attachments?: Collection<Snowflake, Attachment>;
 }
 
-export type AutocompleteFocusedOption = Pick<CommandInteractionOption, 'name'> & {
+export interface AutocompleteFocusedOption extends Pick<CommandInteractionOption, 'name'> {
   focused: true;
   type:
     | ApplicationCommandOptionType.String
     | ApplicationCommandOptionType.Integer
     | ApplicationCommandOptionType.Number;
   value: string;
-};
+}
 
 export declare const Colors: {
   Default: 0x000000;
@@ -5932,7 +5928,7 @@ export interface InteractionDeferReplyOptions {
   fetchReply?: boolean;
 }
 
-export type InteractionDeferUpdateOptions = Omit<InteractionDeferReplyOptions, 'ephemeral'>;
+export interface InteractionDeferUpdateOptions extends Omit<InteractionDeferReplyOptions, 'ephemeral'> {}
 
 export interface InteractionReplyOptions extends BaseMessageOptions {
   tts?: boolean;
@@ -6044,15 +6040,11 @@ export type CollectedMessageInteraction<Cached extends CacheType = CacheType> = 
   ModalSubmitInteraction
 >;
 
-export type MessageComponentCollectorOptions<Interaction extends CollectedMessageInteraction> = Omit<
-  InteractionCollectorOptions<Interaction>,
-  'channel' | 'message' | 'guild' | 'interactionType'
->;
+export interface MessageComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
 
-export type MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction> = Omit<
-  InteractionCollectorOptions<Interaction>,
-  'channel' | 'guild' | 'interactionType'
->;
+export interface MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> {}
 
 export interface MessageEvent {
   data: WebSocketData;
@@ -6113,8 +6105,9 @@ export interface MessageCreateOptions extends BaseMessageOptions {
   >;
 }
 
-export type GuildForumThreadMessageCreateOptions = BaseMessageOptions &
-  Pick<MessageCreateOptions, 'flags' | 'stickers'>;
+export interface GuildForumThreadMessageCreateOptions
+  extends BaseMessageOptions,
+    Pick<MessageCreateOptions, 'flags' | 'stickers'> {}
 
 export interface MessageEditAttachmentData {
   id: Snowflake;
@@ -6234,9 +6227,7 @@ export type PermissionResolvable = BitFieldResolvable<keyof typeof PermissionFla
 
 export type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
 
-export type RecursiveArray<ItemType> = ReadonlyArray<ItemType | RecursiveArray<ItemType>>;
-
-export type RecursiveReadonlyArray<ItemType> = ReadonlyArray<ItemType | RecursiveReadonlyArray<ItemType>>;
+export interface RecursiveReadonlyArray<ItemType> extends ReadonlyArray<ItemType | RecursiveReadonlyArray<ItemType>> {}
 
 export interface PartialRecipient {
   username: string;
@@ -6586,7 +6577,7 @@ export interface WebhookClientDataURL {
   url: string;
 }
 
-export type WebhookClientOptions = Pick<ClientOptions, 'allowedMentions' | 'rest'>;
+export interface WebhookClientOptions extends Pick<ClientOptions, 'allowedMentions' | 'rest'> {}
 
 export interface WebhookDeleteOptions {
   token?: string;

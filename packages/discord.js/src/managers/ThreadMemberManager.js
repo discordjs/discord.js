@@ -103,11 +103,13 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Remove a user from the thread.
-   * @param {Snowflake|'@me'} id The id of the member to remove
+   * @param {UserResolvable|'@me'} member The member to remove
    * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
-  async remove(id, reason) {
+  async remove(member, reason) {
+    const id = member === '@me' ? member : this.client.users.resolveId(member);
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
     await this.client.rest.delete(Routes.threadMembers(this.thread.id, id), { reason });
     return id;
   }
