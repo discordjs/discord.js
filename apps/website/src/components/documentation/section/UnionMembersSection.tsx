@@ -27,6 +27,7 @@ export function UnionMembersSection({
 			)),
 		[item, members],
 	);
+
 	return (
 		<DocumentationSection icon={<VscSymbolArray size={20} />} padded title="Union Members">
 			<div className="flex flex-col gap-4">{unionMembers}</div>
