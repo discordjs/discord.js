@@ -32,6 +32,7 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      REF_TYPE: ${{ inputs.ref_type || github.ref_type }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
@@ -61,14 +62,14 @@ jobs:
           path: 'out'
 
       - name: Extract package and semver from tag
-        if: ${{ github.ref_type == 'tag' }}
+        if: ${{ env.REF_TYPE == 'tag' }}
         id: extract-tag
         uses: ./packages/actions/src/formatTag
         with:
-          tag: ${{ github.ref_name }}
+          tag: ${{ inputs.ref || github.ref_name }}
 
       - name: Upload documentation to database
-        if: ${{ github.ref_type == 'tag' }}
+        if: ${{ env.REF_TYPE == 'tag' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
@@ -78,7 +79,7 @@ jobs:
           version: ${{ steps.extract-tag.outputs.semver }}
 
       - name: Move docs to correct directory
-        if: ${{ github.ref_type == 'tag' }}
+        if: ${{ env.REF_TYPE == 'tag' }}
         env:
           PACKAGE: ${{ steps.extract-tag.outputs.package }}
           SEMVER: ${{ steps.extract-tag.outputs.semver }}
@@ -92,14 +93,14 @@ jobs:
           fi
 
       - name: Upload documentation to database
-        if: ${{ github.ref_type == 'branch' }}
+        if: ${{ env.REF_TYPE == 'branch' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./packages/actions/src/uploadDocumentation
 
       - name: Move docs to correct directory
-        if: ${{ github.ref_type == 'branch' }}
+        if: ${{ env.REF_TYPE == 'branch' }}
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do

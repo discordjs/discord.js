@@ -202,7 +202,7 @@
       }
     },
     {
-      "files": ["typings/*.ts"],
+      "files": ["typings/*.ts", "scripts/*.mjs"],
       "parser": "@typescript-eslint/parser",
       "plugins": ["@typescript-eslint"],
       "rules": {
