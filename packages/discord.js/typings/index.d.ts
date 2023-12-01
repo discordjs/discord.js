@@ -6069,9 +6069,9 @@ export interface BaseMessageOptions {
     | AttachmentPayload
   )[];
   components?: (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
+    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent | ActionRowComponent>>
+    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder | ActionRowComponent>
+    | APIActionRowComponent<APIMessageActionRowComponent | ActionRowComponent>
   )[];
 }
 
