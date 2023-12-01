@@ -2279,6 +2279,7 @@ expectType<Promise<APIMessage>>(webhookClient.send('content'));
 expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
 expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 
+expectType<Client<true>>(interactionWebhook.client);
 expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
