@@ -58,7 +58,7 @@ class PermissionOverwriteManager extends CachedManager {
    * message.channel.permissionOverwrites.set([
    *   {
    *      id: message.author.id,
-   *      deny: [PermissionsFlagsBit.ViewChannel],
+   *      deny: [PermissionFlagsBits.ViewChannel],
    *   },
    * ], 'Needed to change permissions');
    */
