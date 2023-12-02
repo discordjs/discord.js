@@ -1,25 +1,28 @@
 ---
-title: Setting up a bot application
-category: Installations and preparations
+title: Setting up an application
+category: Getting started
 ---
 
-# Setting up a bot application
+# Setting up an application
 
-## Creating your bot
+You'll need to create an application on Discord's developer portal so your bot has a token to interact with Discord's API.
 
-Now that you've installed Node, discord.js, and hopefully a linter, you're almost ready to start coding! The next step you need to take is setting up an actual Discord bot application via Discord's website.
+## Creating the application
 
-It's effortless to create one. The steps you need to take are as follows:
+Follow these steps:
 
-1. Open the [Discord developer portal](https://discord.com/developers/applications) and log into your account.
+1. Open the [Discord developer portal](https://discord.com/developers/applications). You'll need to be logged in.
 2. Click on the "New Application" button.
 3. Enter a name and confirm the pop-up window by clicking the "Create" button.
+   - You'll need to agree to the [Developer Terms of Service](https://discord.com/developers/docs/policies-and-agreements/terms-of-service) and [Developer Policy](https://discord.com/developers/docs/policies-and-agreements/developer-policy).
 
 You should see a page like this:
 
 ![Successfully created application](/assets/create-app.png)
 
-You can edit your application's name, description, and avatar here. Once you've saved your changes, move on by selecting the "Bot" tab in the left pane.
+You can edit your application's name, description, and avatar here. Copy the application id and paste it in the .env file after _`APPLICATION_ID=`_.
+
+Once you've saved your changes, move on by selecting the "Bot" tab in the left pane.
 
 ## Your bot's token
 
@@ -32,9 +35,11 @@ On the bot tab, you'll see a section like this:
 
 ![Bot application](/assets/bot-user.png)
 
-In this panel, you can give your bot a snazzy avatar, set its username, and make it public or private. Your bot's token will be revealed when you press the "Reset Token" button and confirm. When we ask you to paste your bot's token somewhere, this is the value that you need to put in. If you happen to lose your bot's token at some point, you need to come back to this page and reset your bot's token again which will reveal the new token, invalidating all old ones.
+In this panel, you can give your bot a snazzy avatar, set its username, and make it public or private. Your bot's token will be revealed when you press the "Reset Token" button and confirm. Once you've done this, copy it and paste it in the .env file after _`DISCORD_TOKEN=`_.
 
-### What is a token, anyway?
+If you happen to lose your bot's token at some point, you will need to come back to this page and reset your bot's token which will reveal the new token, invalidating all old ones.
+
+### Bot token explanation
 
 A token is essentially your bot's password; it's what your bot uses to login to Discord. With that said, **it is vital that you do not ever share this token with anybody, purposely or accidentally**. If someone does manage to get a hold of your bot's token, they can use your bot as if it were theirs—this means they can perform malicious acts with it.
 
@@ -51,8 +56,6 @@ Let's imagine that you have a bot on over 1,000 servers, and it took you many, m
 - Make your bot leave all of the servers it has joined;
 
 All that and much, much more. Sounds pretty terrible, right? So make sure to keep your bot's token as safe as possible!
-
-In the [configuration files](../creating-your-bot/configuration-files) page of the guide, we cover how to safely store your bot's token in a configuration file.
 
 <Alert title="Compromised tokens" type="danger">
 	If your bot token has been compromised by committing it to a public repository, posting it in discord.js support etc.
