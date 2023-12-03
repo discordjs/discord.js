@@ -65,6 +65,12 @@ class BaseInteraction extends Base {
      * @type {?(GuildMember|APIGuildMember)}
      */
     this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
+    
+    /**
+     * A function that will be run with the response.
+     * @type {function}
+     */
+    this.respondFunction = data.respondFunction ?? null;
 
     /**
      * The version
