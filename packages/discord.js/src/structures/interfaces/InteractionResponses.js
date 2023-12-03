@@ -66,15 +66,22 @@ class InteractionResponses {
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     this.ephemeral = options.ephemeral ?? false;
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    
+    let response = {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
           flags: options.ephemeral ? MessageFlags.Ephemeral : undefined,
         },
       },
-      auth: false,
-    });
+    }
+    if(this.respondFunction){
+      this.respondFunction(response)
+      this.respondFunction = null
+    }else{
+      response.auth = false
+      await this.client.rest.post(Routes.interactionCallback(this.id, this.token), response)
+    }
     this.deferred = true;
 
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
@@ -107,15 +114,24 @@ class InteractionResponses {
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
-
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    
+    let response = {
       body: {
         type: InteractionResponseType.ChannelMessageWithSource,
         data,
       },
       files,
-      auth: false,
-    });
+    }
+    if(this.respondFunction){
+      if(response.files?.length){
+        console.warn("Directly responding with files is not supported yet. Defer the reply instead.")
+      }
+      this.respondFunction(response);
+      this.respondFunction = null;
+    }else{
+      response.auth = false;
+      await this.client.rest.post(Routes.interactionCallback(this.id, this.token), response);
+    }
     this.replied = true;
 
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
@@ -197,12 +213,18 @@ class InteractionResponses {
    */
   async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    let response = {
       body: {
         type: InteractionResponseType.DeferredMessageUpdate,
       },
-      auth: false,
-    });
+    }
+    if(this.respondFunction){
+      this.respondFunction(response);
+      this.respondFunction = null;
+    }else{
+      response.auth = false;
+      await this.client.rest.post(Routes.interactionCallback(this.id, this.token), response);
+    }
     this.deferred = true;
 
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
@@ -250,13 +272,19 @@ class InteractionResponses {
    */
   async showModal(modal) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    let response = {
       body: {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
       },
-      auth: false,
-    });
+    }
+    if(this.respondFunction){
+      this.respondFunction(response);
+      this.respondFunction = null;
+    }else{
+      response.auth = false;
+      await this.client.rest.post(Routes.interactionCallback(this.id, this.token), response);
+    }
     this.replied = true;
   }
 
