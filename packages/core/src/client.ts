@@ -16,6 +16,9 @@ import {
 	type GatewayChannelDeleteDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
+	type GatewayEntitlementCreateDispatchData,
+	type GatewayEntitlementDeleteDispatchData,
+	type GatewayEntitlementUpdateDispatchData,
 	type GatewayGuildAuditLogEntryCreateDispatchData,
 	type GatewayGuildBanAddDispatchData,
 	type GatewayGuildBanRemoveDispatchData,
@@ -103,6 +106,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
 	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
+	[GatewayDispatchEvents.EntitlementCreate]: [WithIntrinsicProps<GatewayEntitlementCreateDispatchData>];
+	[GatewayDispatchEvents.EntitlementDelete]: [WithIntrinsicProps<GatewayEntitlementDeleteDispatchData>];
+	[GatewayDispatchEvents.EntitlementUpdate]: [WithIntrinsicProps<GatewayEntitlementUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
 	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
 	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
