@@ -83,7 +83,7 @@ class AutocompleteInteraction extends BaseInteraction {
   async respond(options) {
     if (this.responded) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    let response = {
       body: {
         type: InteractionResponseType.ApplicationCommandAutocompleteResult,
         data: {
@@ -93,8 +93,14 @@ class AutocompleteInteraction extends BaseInteraction {
           })),
         },
       },
-      auth: false,
-    });
+    }
+    if(this.respondFunction) {
+      this.respondFunction(response);
+      this.respondFunction = null;
+    }else{
+      response.auth = false;
+      await this.client.rest.post(Routes.interactionCallback(this.id, this.token), response);
+    }
     this.responded = true;
   }
 }
