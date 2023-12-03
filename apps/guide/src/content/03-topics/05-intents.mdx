@@ -19,42 +19,33 @@ const client = new Client({
 
 This is the most basic usage of intents for discord.js. By specifying _`GatewayIntentBits.Guilds`_, we will receive gateway events regarding guilds. This includes receiving information about guilds as the bot starts up, such as the roles in the guild and the respective shard id.
 
-<Alert title="Tip" type="info">
-	It is recommended to set at least the _`GatewayIntentBits.Guilds`_ intent for discord.js.
-</Alert>
-
-Let's look at another example.
-
-```js
-import { Client, GatewayIntentBits } from 'discord.js';
-
-const client = new Client({
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildScheduledEvents],
-});
-```
-
-We've included an additional intent: _`GuildScheduledEvents`_. This intent will allow us to receive gateway events regarding scheduled events.
-
-Imagine a scenario where we have a moderation bot that needs to listen to bans occurring in the server. It would also need to listen to messages to moderate them. The following intents would be needed:
-
-```js
-import { Client, GatewayIntentBits } from 'discord.js';
-
-const client = new Client({
-	intents: [
-		GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildModeration,
-		GatewayIntentBits.GuildMessages,
-		GatewayIntentBits.MessageContent,
-	],
-});
-```
-
-The _`GatewayIntentBits.GuildModeration`_ intent allows us to listen for bans occurring in the server.
-
-The last two intents are required to read messages. _`GatewayIntentBits.GuildMessages`_ allows us to receive gateway events for messages in a guild. However, we are unable to view the contents of the message as that is tied to a privileged intent: _`GatewayIntentBits.MessageContent`_. That's why this gateway event is specified. Read on for more details about privileged intents.
-
 The full list of _`GatewayIntentBits`_ one can specify can be found <DiscordAPITypesLink type="enum" parent="GatewayIntentBits">on the documentation</DiscordAPITypesLink>. An explanation of what each intent does can be found [on Discord's documentation](https://discord.com/developers/docs/topics/gateway#list-of-intents).
+
+## Considerations
+
+In discord.js, some intents require an extra bit of consideration.
+
+### _`GatewayIntentBits.Guilds`_
+
+discord.js relies heavily on caching in the library. It is recommended to set at least the _`GatewayIntentBits.Guilds`_ intent for discord.js to avoid these pitfalls.
+
+### _`GatewayIntentBits.GuildMembers`_
+
+Fetching members in a guild via <DocsLink type="class" parent="GuildMemberManager" symbol="fetch" brackets /> requests them over the gateway. As such, this intent is required and you may receive a timeout error if this intent is not specified.
+
+### _`GatewayIntentBits.DirectMessages`_
+
+This intent is required to receive direct messages. In discord.js however, you **must** specify partials as well. See the [partials](https://media.discordapp.net/attachments/999796393810067607/1161040112663138414/image.png) topic on how this is done.
+
+### _`GatewayIntentBits.MessageContent`_
+
+Unlike other intents, this only populates user-generated fields. See [Discord's documentation](https://discord.com/developers/docs/topics/gateway#message-content-intent) on what exactly this intent unveils.
+
+It is a common mistake to not see the message content in a message—this is usually because this intent is not specified.
+
+<Alert title="Info" type="info">
+	This is a privileged intent. Read on for more information.
+</Alert>
 
 ## Privileged intents
 
@@ -66,7 +57,7 @@ Some gateway events are considered privileged. Currently, these are:
 
 To use these intents, you will need to enable them in the developer portal. If your bot is in over 75 guilds, you will need to verify your bot and request usage of your desired intents.
 
-Carefully think if you need these gateway intents. They are opt-in so users across the platform can enjoy a higher level of privacy. Presences can expose some personal information, such as the games being played and overall online time. You might find that it isn't necessary for your bot to have this level of information about all guild members at all times.
+Carefully think if you need these intents. They are opt-in so users across the platform can enjoy a higher level of privacy. Presences can expose some personal information, such as the games being played and overall online time. You might find that it isn't necessary for your bot to have this level of information about all guild members at all times.
 
 ### Disallowed intents
 
