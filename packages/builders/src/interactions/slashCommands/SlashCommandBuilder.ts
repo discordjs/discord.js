@@ -210,20 +210,23 @@ export class SlashCommandBuilder {
 	}
 }
 
-export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions {}
+export interface SlashCommandBuilder
+	extends SharedNameAndDescription,
+		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder> {}
 
 /**
  * An interface specifically for slash command subcommands.
  */
-export interface SlashCommandSubcommandsOnlyBuilder
-	extends Omit<SlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {}
+export interface SlashCommandSubcommandsOnlyBuilder extends SharedNameAndDescription {
+	options: ToAPIApplicationCommandOptions[];
+}
 
 /**
  * An interface specifically for slash command options.
  */
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
-		SharedSlashCommandOptions,
+		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>,
 		Pick<SlashCommandBuilder, 'toJSON'> {}
 
 /**

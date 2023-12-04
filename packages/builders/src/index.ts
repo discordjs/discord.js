@@ -49,7 +49,8 @@ export * from './interactions/slashCommands/options/user.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesMixin.js';
 export * from './interactions/slashCommands/mixins/NameAndDescription.js';
 export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js';
 
