@@ -3276,6 +3276,7 @@ export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
 /** @internal */
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+/** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 /** @internal */
