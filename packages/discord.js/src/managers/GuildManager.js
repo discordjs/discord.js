@@ -14,7 +14,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
@@ -179,7 +179,7 @@ class GuildManager extends CachedManager {
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {
         name,
-        icon: icon && (await DataResolver.resolveImage(icon)),
+        icon: icon && (await resolveImage(icon)),
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
