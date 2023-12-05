@@ -135,6 +135,8 @@ class Webhook {
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
    * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
+   * @property {Snowflake[]} [appliedTags]
+   * The tags to apply to the created thread (only available if webhook is in a forum channel)
    */
 
   /**
