@@ -2,10 +2,10 @@
 
 /* eslint-env jest */
 
-const { DataResolver } = require('../src');
+const { resolveGuildTemplateCode } = require('../src');
 
 describe('resolveGuildTemplateCode', () => {
   test('basic', () => {
-    expect(DataResolver.resolveGuildTemplateCode('https://discord.new/abc')).toEqual('abc');
+    expect(resolveGuildTemplateCode('https://discord.new/abc')).toEqual('abc');
   });
 });

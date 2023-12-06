@@ -26,7 +26,7 @@ const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
@@ -862,11 +862,11 @@ class Guild extends AnonymousGuild {
         explicit_content_filter: explicitContentFilter,
         afk_channel_id: afkChannel && this.client.channels.resolveId(afkChannel),
         afk_timeout: afkTimeout,
-        icon: icon && (await DataResolver.resolveImage(icon)),
+        icon: icon && (await resolveImage(icon)),
         owner_id: owner && this.client.users.resolveId(owner),
-        splash: splash && (await DataResolver.resolveImage(splash)),
-        discovery_splash: discoverySplash && (await DataResolver.resolveImage(discoverySplash)),
-        banner: banner && (await DataResolver.resolveImage(banner)),
+        splash: splash && (await resolveImage(splash)),
+        discovery_splash: discoverySplash && (await resolveImage(discoverySplash)),
+        banner: banner && (await resolveImage(banner)),
         system_channel_id: systemChannel && this.client.channels.resolveId(systemChannel),
         system_channel_flags:
           systemChannelFlags === undefined ? undefined : SystemChannelFlagsBitField.resolve(systemChannelFlags),
