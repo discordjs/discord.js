@@ -26,7 +26,7 @@ export function getUserDataTemplate(): Readonly<Partial<APIUser>> {
 /**
  * Represents any user on Discord.
  */
-export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser> {
+export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser, Omitted> {
 	public constructor(
 		/**
 		 * The raw data received from the API for the user
@@ -34,7 +34,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 		data: Omit<APIUser, Omitted>,
 	) {
 		// Cast here so the getters can access the properties, and provide typesafety by explicitly assigning return values
-		super(data as APIUser, { template: UserDataTemplate });
+		super(data, { template: UserDataTemplate });
 	}
 
 	public override patch(data: Partial<APIUser>) {
@@ -45,49 +45,49 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * The user's id
 	 */
 	public get id() {
-		return this[kData].id as 'id' extends Omitted ? never : APIUser['id'];
+		return this[kData].id;
 	}
 
 	/**
 	 * The username of the user
 	 */
 	public get username() {
-		return this[kData].username as 'username' extends Omitted ? never : APIUser['username'];
+		return this[kData].username;
 	}
 
 	/**
 	 * The user's 4 digit tag, if a bot or not migrated to unique usernames
 	 */
 	public get discriminator() {
-		return this[kData].discriminator as 'discriminator' extends Omitted ? never : APIUser['discriminator'];
+		return this[kData].discriminator;
 	}
 
 	/**
 	 * The user's display name, the application name for bots
 	 */
 	public get globalName() {
-		return this[kData].global_name as 'global_name' extends Omitted ? never : APIUser['global_name'];
+		return this[kData].global_name;
 	}
 
 	/**
 	 * The user avatar's hash
 	 */
 	public get avatar() {
-		return this[kData].avatar as 'avatar' extends Omitted ? never : APIUser['avatar'];
+		return this[kData].avatar;
 	}
 
 	/**
 	 * Whether the user is a bot
 	 */
 	public get bot() {
-		return (this[kData].bot ?? false) as 'bot' extends Omitted ? never : APIUser['bot'];
+		return this[kData].bot ?? false;
 	}
 
 	/**
 	 * Whether the user is an Official Discord System user
 	 */
 	public get system() {
-		return (this[kData].system ?? false) as 'system' extends Omitted ? never : APIUser['system'];
+		return this[kData].system ?? false;
 	}
 
 	/**
@@ -95,7 +95,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was fetched with an OAuth2 token and the `identify` scope</info>
 	 */
 	public get mfaEnabled() {
-		return this[kData].mfa_enabled as 'mfa_enabled' extends Omitted ? never : APIUser['mfa_enabled'];
+		return this[kData].mfa_enabled;
 	}
 
 	/**
@@ -103,7 +103,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was manually fetched</info>
 	 */
 	public get banner() {
-		return this[kData].banner as 'banner' extends Omitted ? never : APIUser['banner'];
+		return this[kData].banner;
 	}
 
 	/**
@@ -111,7 +111,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was manually fetched</info>
 	 */
 	public get accentColor() {
-		return this[kData].accent_color as 'accent_color' extends Omitted ? never : APIUser['accent_color'];
+		return this[kData].accent_color;
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was fetched with an Oauth2 token and the `identify` scope</info>
 	 */
 	public get locale() {
-		return this[kData].locale as 'locale' extends Omitted ? never : APIUser['locale'];
+		return this[kData].locale;
 	}
 
 	/**
@@ -127,7 +127,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was fetched with an OAuth2 token and the `email` scope</info>
 	 */
 	public get verified() {
-		return this[kData].verified as 'verified' extends Omitted ? never : APIUser['verified'];
+		return this[kData].verified;
 	}
 
 	/**
@@ -135,7 +135,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was fetched with an OAuth2 token and the `email` scope</info>
 	 */
 	public get email() {
-		return this[kData].email as 'email' extends Omitted ? never : APIUser['email'];
+		return this[kData].email;
 	}
 
 	/**
@@ -143,7 +143,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info> This property is only set when the user was fetched with an OAuth2 token and the `identity` scope</info>
 	 */
 	public get flags() {
-		return this[kData].flags as 'flags' extends Omitted ? never : APIUser['flags'];
+		return this[kData].flags;
 	}
 
 	/**
@@ -151,28 +151,28 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * <info>This property is only set when the user was fetched with an OAuth2 token and the `identify` scope</info>
 	 */
 	public get premiumType() {
-		return this[kData].premium_type as 'premium_type' extends Omitted ? never : APIUser['premium_type'];
+		return this[kData].premium_type;
 	}
 
 	/**
 	 * The public flags for the user
 	 */
 	public get publicFlags() {
-		return this[kData].public_flags as 'public_flags' extends Omitted ? never : APIUser['public_flags'];
+		return this[kData].public_flags;
 	}
 
 	/**
 	 * The user's avatar decoration hash
 	 */
 	public get avatarDecoration() {
-		return this[kData].avatar_decoration as 'avatar_decoration' extends Omitted ? never : APIUser['avatar_decoration'];
+		return this[kData].avatar_decoration;
 	}
 
 	/**
 	 * The timestamp the user was created at
 	 */
 	public get createdTimestamp() {
-		return this.id ? DiscordSnowflake.timestampFrom(this.id) : null;
+		return typeof this.id === 'string' ? DiscordSnowflake.timestampFrom(this.id) : null;
 	}
 
 	/**
