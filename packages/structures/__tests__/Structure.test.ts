@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Structure } from '../src/Structure.js';
-import { data as kData } from '../src/utils/symbols.js';
+import { kData } from '../src/utils/symbols.js';
 
 describe('Base Structure', () => {
 	const data = { test: true, patched: false, removed: true };
