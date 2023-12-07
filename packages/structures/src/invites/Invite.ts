@@ -1,10 +1,6 @@
 import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import {
-	data as kData,
-	expiresTimestamp as kExpiresTimestamp,
-	createdTimestamp as kCreatedTimestamp,
-} from '../utils/symbols.js';
+import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
 
 export class Invite<
 	Omitted extends keyof APIExtendedInvite | '' = 'created_at' | 'expires_at',
@@ -40,16 +36,14 @@ export class Invite<
 		data: Omit<APIExtendedInvite, Omitted>,
 	) {
 		super(data, { template: Invite.DataTemplate });
-		this._optimizeData(data);
 	}
 
 	public override _patch(data: Partial<APIExtendedInvite>) {
 		super._patch(data, { template: Invite.DataTemplate });
-		this._optimizeData(data);
 		return this;
 	}
 
-	private _optimizeData(data: Partial<APIExtendedInvite>) {
+	protected override _optimizeData(data: Partial<APIExtendedInvite>) {
 		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : this[kExpiresTimestamp] ?? null;
 		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : this[kCreatedTimestamp] ?? null;
 	}

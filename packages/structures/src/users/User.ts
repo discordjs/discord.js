@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIUser } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { data as kData } from '../utils/symbols.js';
+import { kData } from '../utils/symbols.js';
 
 /**
  * Represents any user on Discord.

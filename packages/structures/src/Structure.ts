@@ -1,4 +1,4 @@
-import { data as kData } from './utils/symbols.js';
+import { kData } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
 /**
@@ -21,12 +21,16 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 
 	protected constructor(data: Readonly<Partial<DataType>>, { template }: { template?: {} } = {}) {
 		this[kData] = Object.assign(template ? Object.create(template) : {}, data);
+		this._optimizeData(data);
 	}
 
 	protected _patch(data: Readonly<Partial<DataType>>, { template }: { template?: {} } = {}): this {
 		this[kData] = Object.assign(template ? Object.create(template) : {}, this[kData], data);
+		this._optimizeData(data);
 		return this;
 	}
+
+	protected _optimizeData(_data: Partial<DataType>) {}
 
 	public toJSON(): DataType {
 		// This will be DataType provided nothing is omitted, when omits occur, subclass needs to overwrite this.
