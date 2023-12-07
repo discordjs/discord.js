@@ -23,7 +23,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 		this[kData] = Object.assign(template ? Object.create(template) : {}, data);
 	}
 
-	protected patch(data: Readonly<Partial<DataType>>, { template }: { template?: {} } = {}): this {
+	protected _patch(data: Readonly<Partial<DataType>>, { template }: { template?: {} } = {}): this {
 		this[kData] = Object.assign(template ? Object.create(template) : {}, this[kData], data);
 		return this;
 	}

@@ -3,42 +3,26 @@ import type { APIUser } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { data as kData } from '../utils/symbols.js';
 
-let UserDataTemplate: Partial<APIUser> = {};
-
-/**
- * Sets the template used for removing data from the raw data stored for each User
- *
- * @param template - the template
- */
-export function setUserDataTemplate(template: Partial<APIUser>) {
-	UserDataTemplate = template;
-}
-
-/**
- * Gets the template used for removing data from the raw data stored for each User
- *
- * @returns the template
- */
-export function getUserDataTemplate(): Readonly<Partial<APIUser>> {
-	return UserDataTemplate;
-}
-
 /**
  * Represents any user on Discord.
  */
 export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser, Omitted> {
+	/**
+	 * The template used for removing data from the raw data stored for each User
+	 */
+	public static DataTemplate: Partial<APIUser> = {};
+
 	public constructor(
 		/**
 		 * The raw data received from the API for the user
 		 */
 		data: Omit<APIUser, Omitted>,
 	) {
-		// Cast here so the getters can access the properties, and provide typesafety by explicitly assigning return values
-		super(data, { template: UserDataTemplate });
+		super(data, { template: User.DataTemplate });
 	}
 
-	public override patch(data: Partial<APIUser>) {
-		return super.patch(data, { template: UserDataTemplate });
+	public override _patch(data: Partial<APIUser>) {
+		return super._patch(data, { template: User.DataTemplate });
 	}
 
 	/**
