@@ -135,7 +135,8 @@ export class Invite<
 	 * The time the invite was created at
 	 */
 	public get createdAt() {
-		return this[kCreatedTimestamp] && new Date(this[kCreatedTimestamp]);
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 
 	/**
