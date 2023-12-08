@@ -93,7 +93,7 @@ export class Invite<
 	 */
 	public get expiresAt() {
 		const expiresTimestamp = this.expiresTimestamp;
-		return expiresTimestamp && new Date(expiresTimestamp);
+		return expiresTimestamp ? new Date(expiresTimestamp) : null;
 	}
 
 	/**
