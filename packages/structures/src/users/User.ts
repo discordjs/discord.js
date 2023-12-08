@@ -163,7 +163,8 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * The time the user was created at
 	 */
 	public get createdAt() {
-		return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 
 	/**
