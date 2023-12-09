@@ -2,6 +2,12 @@ import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-
 import { Structure } from '../Structure.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
 
+/**
+ * Represents an invitation to a discord channel
+ *
+ * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Extended - Whether the invite is a full extended invite
+ */
 export class Invite<
 	Omitted extends keyof APIExtendedInvite | '' = 'created_at' | 'expires_at',
 	Extended extends boolean = false,
@@ -17,16 +23,27 @@ export class Invite<
 
 	/**
 	 * The template used for removing data from the raw data stored for each Invite
-	 * <info>This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.</info>
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static DataTemplate: Partial<APIExtendedInvite> = {
 		set created_at(_: string) {},
 		set expires_at(_: string) {},
 	};
 
+	/**
+	 * Optimized storage of {@link APIExtendedInvite.expires_at}
+	 *
+	 * @internal
+	 */
 	protected [kExpiresTimestamp]: number | null = null;
 
+	/**
+	 * Optimized storage of {@link APIExtendedInvite.created_at}
+	 *
+	 * @internal
+	 */
 	protected [kCreatedTimestamp]: number | null = null;
 
 	public constructor(
@@ -38,11 +55,17 @@ export class Invite<
 		super(data, { template: Invite.DataTemplate });
 	}
 
+	/**
+	 * {@inheritDoc Structure._patch}
+	 */
 	public override _patch(data: Partial<APIExtendedInvite>) {
 		super._patch(data, { template: Invite.DataTemplate });
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc Structure._optimizeData}
+	 */
 	protected override _optimizeData(data: Partial<APIExtendedInvite>) {
 		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : this[kExpiresTimestamp] ?? null;
 		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : this[kCreatedTimestamp] ?? null;
@@ -64,7 +87,8 @@ export class Invite<
 
 	/**
 	 * The approximate number of online members of the guild this invite is for
-	 * <info>Only available when the invite was fetched from `GET /invites/<code>` with counts</info>
+	 *
+	 * @remarks Only available when the invite was fetched from `GET /invites/<code>` with counts
 	 */
 	public get presenceCount() {
 		return this[kData].approximate_presence_count;
@@ -72,7 +96,8 @@ export class Invite<
 
 	/**
 	 * The approximate total number of members of the guild this invite is for
-	 * <info>Only available when the invite was fetched from `GET /invites/<code>` with counts</info>
+	 *
+	 * @remarks Only available when the invite was fetched from `GET /invites/<code>` with counts
 	 */
 	public get memberCount() {
 		return this[kData].approximate_member_count;
@@ -155,6 +180,9 @@ export class Invite<
 		return this.url;
 	}
 
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
 	public override toJSON() {
 		const clone = super.toJSON();
 		if (this[kExpiresTimestamp]) {
@@ -168,11 +196,10 @@ export class Invite<
 		return clone;
 	}
 
+	/**
+	 * {@inheritDoc Object.valueOf}
+	 */
 	public override valueOf() {
 		return this.code ?? super.valueOf();
 	}
-}
-
-const test = new Invite({} as APIExtendedInvite);
-if (test.code) {
 }
