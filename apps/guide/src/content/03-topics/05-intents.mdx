@@ -5,7 +5,7 @@ category: Topics
 
 # Intents
 
-Intents are an important part of establishing a WebSocket connection, as they define behaviour regarding gateway events and impact received data via the REST API.
+Intents are an important part of establishing a WebSocket connection, as they define behavior regarding gateway events and impact received data via the REST API.
 
 ## Usage
 
@@ -17,9 +17,9 @@ const client = new Client({
 });
 ```
 
-This is the most basic usage of intents for discord.js. By specifying _`GatewayIntentBits.Guilds`_, we will receive gateway events regarding guilds. This includes receiving information about guilds as the bot starts up, such as the roles in the guild and the respective shard id.
+This is the most basic usage of intents for discord.js. By specifying _`GatewayIntentBits.Guilds`_, your bot will receive gateway events regarding guilds. This includes receiving initial information about guilds it is in at startup, such as role data and the shard id to be used.
 
-The full list of _`GatewayIntentBits`_ one can specify can be found <DiscordAPITypesLink type="enum" parent="GatewayIntentBits">on the documentation</DiscordAPITypesLink>. An explanation of what each intent does can be found [on Discord's documentation](https://discord.com/developers/docs/topics/gateway#list-of-intents).
+You can find the full list of _`GatewayIntentBits`_ <DiscordAPITypesLink type="enum" parent="GatewayIntentBits">on the documentation</DiscordAPITypesLink> and an explanation of what each intent does [on Discord's API documentation](https://discord.com/developers/docs/topics/gateway#list-of-intents).
 
 ## Considerations
 
@@ -27,7 +27,7 @@ In discord.js, some intents require an extra bit of consideration.
 
 ### _`GatewayIntentBits.Guilds`_
 
-discord.js relies heavily on caching in the library. It is recommended to set at least the _`GatewayIntentBits.Guilds`_ intent for discord.js to avoid these pitfalls.
+discord.js relies heavily on caching in the library. We recommend you set at least the _`GatewayIntentBits.Guilds`_ intent to avoid these pitfalls.
 
 ### _`GatewayIntentBits.GuildMembers`_
 
@@ -55,7 +55,7 @@ Some gateway events are considered privileged. Currently, these are:
 - _`GatewayIntentBits.GuildMembers`_
 - _`GatewayIntentBits.MessageContent`_
 
-To use these intents, you will need to enable them in the developer portal. If your bot is in over 75 guilds, you will need to verify your bot and request usage of your desired intents.
+To use these intents, you will need to enable them in the developer portal. If your bot is in over 75 guilds, you will need to verify it and request usage of your desired intents.
 
 Carefully think if you need these intents. They are opt-in so users across the platform can enjoy a higher level of privacy. Presences can expose some personal information, such as the games being played and overall online time. You might find that it isn't necessary for your bot to have this level of information about all guild members at all times.
 
