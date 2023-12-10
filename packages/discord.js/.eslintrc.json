@@ -229,6 +229,10 @@
           {
             "selector": "TSDeclareFunction > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType",
             "message": "Array parameters on functions must be readonly"
+          },
+          {
+            "selector": "TSInterfaceDeclaration TSPropertySignature :not(TSTypeOperator[operator=readonly]) > TSArrayType",
+            "message": "Array properties on interfaces must be readonly"
           }
         ]
       }

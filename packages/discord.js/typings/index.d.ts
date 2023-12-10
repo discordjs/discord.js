@@ -305,7 +305,7 @@ export type ActionRowComponent = MessageActionRowComponent | ModalActionRowCompo
 
 export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
   extends BaseComponentData {
-  components: ComponentType[];
+  components: readonly ComponentType[];
 }
 
 export class ActionRowBuilder<
@@ -870,7 +870,7 @@ export interface EmbedData {
   thumbnail?: EmbedAssetData;
   provider?: APIEmbedProvider;
   author?: EmbedAuthorData;
-  fields?: APIEmbedField[];
+  fields?: readonly APIEmbedField[];
   video?: EmbedAssetData;
 }
 
@@ -2368,7 +2368,7 @@ export class MessageReaction {
 export interface ModalComponentData {
   customId: string;
   title: string;
-  components: (
+  components: readonly (
     | JSONEncodable<APIActionRowComponent<APIModalActionRowComponent>>
     | ActionRowData<ModalActionRowComponentData>
   )[];
@@ -2386,7 +2386,7 @@ export interface TextInputModalData extends BaseModalData {
 
 export interface ActionRowModalData {
   type: ComponentType.ActionRow;
-  components: TextInputModalData[];
+  components: readonly TextInputModalData[];
 }
 
 export class ModalSubmitFields {
@@ -4594,7 +4594,7 @@ export interface ActivityOptions {
 export interface AddGuildMemberOptions {
   accessToken: string;
   nick?: string;
-  roles?: Collection<Snowflake, Role> | RoleResolvable[];
+  roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   mute?: boolean;
   deaf?: boolean;
   force?: boolean;
@@ -4928,10 +4928,10 @@ export interface AutoModerationActionMetadata {
 }
 
 export interface AutoModerationTriggerMetadata {
-  keywordFilter: string[];
-  regexPatterns: string[];
-  presets: AutoModerationRuleKeywordPresetType[];
-  allowList: string[];
+  keywordFilter: readonly string[];
+  regexPatterns: readonly string[];
+  presets: readonly AutoModerationRuleKeywordPresetType[];
+  allowList: readonly string[];
   mentionTotalLimit: number | null;
   mentionRaidProtectionEnabled: boolean;
 }
@@ -4948,11 +4948,11 @@ export interface AwaitModalSubmitOptions<Interaction extends ModalSubmitInteract
 }
 
 export interface AwaitMessagesOptions extends MessageCollectorOptions {
-  errors?: string[];
+  errors?: readonly string[];
 }
 
 export interface AwaitReactionsOptions extends ReactionCollectorOptions {
-  errors?: string[];
+  errors?: readonly string[];
 }
 
 export interface BanOptions {
@@ -5036,7 +5036,7 @@ export type CacheWithLimitsOptions = {
 
 export interface CategoryCreateChannelOptions {
   name: string;
-  permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+  permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   topic?: string;
   type?: CategoryChannelType;
   nsfw?: boolean;
@@ -5047,7 +5047,7 @@ export interface CategoryCreateChannelOptions {
   rtcRegion?: string;
   videoQualityMode?: VideoQualityMode;
   defaultThreadRateLimitPerUser?: number;
-  availableTags?: GuildForumTagData[];
+  availableTags?: readonly GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   defaultSortOrder?: SortOrderType;
@@ -5123,7 +5123,7 @@ export interface ClientEvents {
   guildMembersChunk: [
     members: Collection<Snowflake, GuildMember>,
     guild: Guild,
-    data: { index: number; count: number; notFound: unknown[]; nonce: string | undefined },
+    data: { index: number; count: number; notFound: readonly unknown[]; nonce: string | undefined },
   ];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
@@ -5189,12 +5189,12 @@ export interface ClientFetchInviteOptions {
 }
 
 export interface ClientOptions {
-  shards?: number | number[] | 'auto';
+  shards?: number | readonly number[] | 'auto';
   shardCount?: number;
   closeTimeout?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
-  partials?: Partials[];
+  partials?: readonly Partials[];
   failIfNotExists?: boolean;
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
@@ -5253,7 +5253,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   value?: string | number | boolean;
   focused?: boolean;
   autocomplete?: boolean;
-  options?: CommandInteractionOption[];
+  options?: readonly CommandInteractionOption[];
   user?: User;
   member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
@@ -5565,7 +5565,7 @@ export interface FetchMemberOptions extends BaseFetchOptions {
 }
 
 export interface FetchMembersOptions {
-  user?: UserResolvable | UserResolvable[];
+  user?: UserResolvable | readonly UserResolvable[];
   query?: string;
   limit?: number;
   withPresences?: boolean;
@@ -5771,10 +5771,10 @@ export interface AutoModerationRuleCreateOptions {
   eventType: AutoModerationRuleEventType;
   triggerType: AutoModerationRuleTriggerType;
   triggerMetadata?: AutoModerationTriggerMetadataOptions;
-  actions: AutoModerationActionOptions[];
+  actions: readonly AutoModerationActionOptions[];
   enabled?: boolean;
-  exemptRoles?: Collection<Snowflake, Role> | RoleResolvable[];
-  exemptChannels?: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[];
+  exemptRoles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
+  exemptChannels?: Collection<Snowflake, GuildBasedChannel> | readonly GuildChannelResolvable[];
   reason?: string;
 }
 
@@ -5822,7 +5822,7 @@ export interface GuildChannelEditOptions {
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode | null;
-  availableTags?: GuildForumTagData[];
+  availableTags?: readonly GuildForumTagData[];
   defaultReactionEmoji?: DefaultReactionEmoji | null;
   defaultThreadRateLimitPerUser?: number;
   flags?: ChannelFlagsResolvable;
@@ -5842,8 +5842,8 @@ export interface GuildCreateOptions {
   verificationLevel?: GuildVerificationLevel;
   defaultMessageNotifications?: GuildDefaultMessageNotifications;
   explicitContentFilter?: GuildExplicitContentFilter;
-  roles?: PartialRoleData[];
-  channels?: PartialChannelData[];
+  roles?: readonly PartialRoleData[];
+  channels?: readonly PartialChannelData[];
   afkChannelId?: Snowflake | number;
   afkTimeout?: number;
   systemChannelId?: Snowflake | number;
@@ -5873,7 +5873,7 @@ export interface GuildEditOptions {
   publicUpdatesChannel?: TextChannelResolvable | null;
   safetyAlertsChannel?: TextChannelResolvable | null;
   preferredLocale?: Locale | null;
-  features?: `${GuildFeature}`[];
+  features?: readonly `${GuildFeature}`[];
   description?: string | null;
   premiumProgressBarEnabled?: boolean;
   reason?: string;
@@ -5882,13 +5882,13 @@ export interface GuildEditOptions {
 export interface GuildEmojiCreateOptions {
   attachment: BufferResolvable | Base64Resolvable;
   name: string;
-  roles?: Collection<Snowflake, Role> | RoleResolvable[];
+  roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   reason?: string;
 }
 
 export interface GuildEmojiEditOptions {
   name?: string;
-  roles?: Collection<Snowflake, Role> | RoleResolvable[];
+  roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   reason?: string;
 }
 
@@ -5927,7 +5927,7 @@ export interface GuildPruneMembersOptions {
   days?: number;
   dry?: boolean;
   reason?: string;
-  roles?: RoleResolvable[];
+  roles?: readonly RoleResolvable[];
 }
 
 export interface GuildWidgetSettingsData {
@@ -6093,7 +6093,7 @@ export interface InviteGenerationOptions {
   permissions?: PermissionResolvable;
   guild?: GuildResolvable;
   disableGuildSelect?: boolean;
-  scopes: OAuth2Scopes[];
+  scopes: readonly OAuth2Scopes[];
 }
 
 export type GuildInvitableChannelResolvable =
@@ -6213,9 +6213,9 @@ export interface MessageMentionsHasOptions {
 }
 
 export interface MessageMentionOptions {
-  parse?: MessageMentionTypes[];
-  roles?: Snowflake[];
-  users?: Snowflake[];
+  parse?: readonly MessageMentionTypes[];
+  roles?: readonly Snowflake[];
+  users?: readonly Snowflake[];
   repliedUser?: boolean;
 }
 
@@ -6223,9 +6223,9 @@ export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
 export interface BaseMessageOptions {
   content?: string;
-  embeds?: (JSONEncodable<APIEmbed> | APIEmbed)[];
+  embeds?: readonly (JSONEncodable<APIEmbed> | APIEmbed)[];
   allowedMentions?: MessageMentionOptions;
-  files?: (
+  files?: readonly (
     | BufferResolvable
     | Stream
     | JSONEncodable<APIAttachment>
@@ -6233,7 +6233,7 @@ export interface BaseMessageOptions {
     | AttachmentBuilder
     | AttachmentPayload
   )[];
-  components?: (
+  components?: readonly (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
@@ -6245,7 +6245,7 @@ export interface MessageCreateOptions extends BaseMessageOptions {
   nonce?: string | number;
   enforceNonce?: boolean;
   reply?: ReplyOptions;
-  stickers?: StickerResolvable[];
+  stickers?: readonly StickerResolvable[];
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
     MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
@@ -6262,7 +6262,7 @@ export interface MessageEditAttachmentData {
 
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
-  attachments?: (Attachment | MessageEditAttachmentData)[];
+  attachments?: readonly (Attachment | MessageEditAttachmentData)[];
   flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
 }
 
@@ -6286,7 +6286,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
-  options: SelectMenuComponentOptionData[];
+  options: readonly SelectMenuComponentOptionData[];
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
@@ -6303,7 +6303,7 @@ export interface MentionableSelectMenuComponentData extends BaseSelectMenuCompon
 
 export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.ChannelSelect;
-  channelTypes?: ChannelType[];
+  channelTypes?: readonly ChannelType[];
 }
 
 export interface MessageSelectOption {
@@ -6383,8 +6383,8 @@ export interface PartialRecipient {
 export interface PresenceData {
   status?: PresenceStatusData;
   afk?: boolean;
-  activities?: ActivitiesOptions[];
-  shardId?: number | number[];
+  activities?: readonly ActivitiesOptions[];
+  shardId?: number | readonly number[];
 }
 
 export type PresenceResolvable = Presence | UserResolvable | Snowflake;
@@ -6400,7 +6400,7 @@ export interface PartialChannelData {
   userLimit?: number;
   rtcRegion?: string | null;
   videoQualityMode?: VideoQualityMode;
-  permissionOverwrites?: PartialOverwriteData[];
+  permissionOverwrites?: readonly PartialOverwriteData[];
   rateLimitPerUser?: number;
 }
 
@@ -6547,13 +6547,13 @@ export type ShardingManagerMode = 'process' | 'worker';
 
 export interface ShardingManagerOptions {
   totalShards?: number | 'auto';
-  shardList?: number[] | 'auto';
+  shardList?: readonly number[] | 'auto';
   mode?: ShardingManagerMode;
   respawn?: boolean;
   silent?: boolean;
-  shardArgs?: string[];
+  shardArgs?: readonly string[];
   token?: string;
-  execArgv?: string[];
+  execArgv?: readonly string[];
 }
 
 export { Snowflake };
@@ -6680,7 +6680,7 @@ export interface GuildTextThreadCreateOptions<AllowedThreadType> extends StartTh
 
 export interface GuildForumThreadCreateOptions extends StartThreadOptions {
   message: GuildForumThreadMessageCreateOptions | MessagePayload;
-  appliedTags?: Snowflake[];
+  appliedTags?: readonly Snowflake[];
 }
 
 export interface ThreadEditOptions {
@@ -6690,7 +6690,7 @@ export interface ThreadEditOptions {
   rateLimitPerUser?: number;
   locked?: boolean;
   invitable?: boolean;
-  appliedTags?: Snowflake[];
+  appliedTags?: readonly Snowflake[];
   flags?: ChannelFlagsResolvable;
   reason?: string;
 }
@@ -6786,7 +6786,7 @@ export interface WelcomeChannelData {
 export interface WelcomeScreenEditOptions {
   enabled?: boolean;
   description?: string;
-  welcomeChannels?: WelcomeChannelData[];
+  welcomeChannels?: readonly WelcomeChannelData[];
 }
 
 export interface ClientApplicationEditOptions {
@@ -6802,7 +6802,7 @@ export interface ClientApplicationEditOptions {
 }
 
 export interface ClientApplicationInstallParams {
-  scopes: OAuth2Scopes[];
+  scopes: readonly OAuth2Scopes[];
   permissions: Readonly<PermissionsBitField>;
 }
 
