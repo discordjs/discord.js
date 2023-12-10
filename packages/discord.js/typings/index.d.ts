@@ -2888,6 +2888,7 @@ export class DirectoryChannel extends BaseChannel {
   public guild: InviteGuild;
   public guildId: Snowflake;
   public name: string;
+  public toString(): ChannelMention;
 }
 
 export class StageInstance extends Base {

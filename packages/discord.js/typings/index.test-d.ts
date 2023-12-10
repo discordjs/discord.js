@@ -186,6 +186,7 @@ import {
   Emoji,
   PartialEmoji,
   Awaitable,
+  DirectoryChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2282,16 +2283,22 @@ declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
-declare const stageChannel: StageChannel;
 declare const partialGroupDMChannel: PartialGroupDMChannel;
+declare const stageChannel: StageChannel;
+declare const directoryChannel: DirectoryChannel;
+declare const mediaChannel: MediaChannel;
 
 expectType<ChannelMention>(textChannel.toString());
+expectType<UserMention>(dmChannel.toString());
 expectType<ChannelMention>(voiceChannel.toString());
+expectType<ChannelMention>(partialGroupDMChannel.toString());
+expectType<ChannelMention>(categoryChannel.toString());
 expectType<ChannelMention>(newsChannel.toString());
 expectType<ChannelMention>(threadChannel.toString());
 expectType<ChannelMention>(stageChannel.toString());
-expectType<ChannelMention>(partialGroupDMChannel.toString());
-expectType<UserMention>(dmChannel.toString());
+expectType<ChannelMention>(directoryChannel.toString());
+expectType<ChannelMention>(forumChannel.toString());
+expectType<ChannelMention>(mediaChannel.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
