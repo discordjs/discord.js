@@ -395,23 +395,26 @@ export class AutoModerationRule extends Base {
   public delete(reason?: string): Promise<void>;
   public setName(name: string, reason?: string): Promise<AutoModerationRule>;
   public setEventType(eventType: AutoModerationRuleEventType, reason?: string): Promise<AutoModerationRule>;
-  public setKeywordFilter(keywordFilter: string[], reason?: string): Promise<AutoModerationRule>;
-  public setRegexPatterns(regexPatterns: string[], reason?: string): Promise<AutoModerationRule>;
-  public setPresets(presets: AutoModerationRuleKeywordPresetType[], reason?: string): Promise<AutoModerationRule>;
-  public setAllowList(allowList: string[], reason?: string): Promise<AutoModerationRule>;
+  public setKeywordFilter(keywordFilter: readonly string[], reason?: string): Promise<AutoModerationRule>;
+  public setRegexPatterns(regexPatterns: readonly string[], reason?: string): Promise<AutoModerationRule>;
+  public setPresets(
+    presets: readonly AutoModerationRuleKeywordPresetType[],
+    reason?: string,
+  ): Promise<AutoModerationRule>;
+  public setAllowList(allowList: readonly string[], reason?: string): Promise<AutoModerationRule>;
   public setMentionTotalLimit(mentionTotalLimit: number, reason?: string): Promise<AutoModerationRule>;
   public setMentionRaidProtectionEnabled(
     mentionRaidProtectionEnabled: boolean,
     reason?: string,
   ): Promise<AutoModerationRule>;
-  public setActions(actions: AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
+  public setActions(actions: readonly AutoModerationActionOptions[], reason?: string): Promise<AutoModerationRule>;
   public setEnabled(enabled?: boolean, reason?: string): Promise<AutoModerationRule>;
   public setExemptRoles(
-    roles: Collection<Snowflake, Role> | RoleResolvable[],
+    roles: Collection<Snowflake, Role> | readonly RoleResolvable[],
     reason?: string,
   ): Promise<AutoModerationRule>;
   public setExemptChannels(
-    channels: Collection<Snowflake, GuildBasedChannel> | GuildChannelResolvable[],
+    channels: Collection<Snowflake, GuildBasedChannel> | readonly GuildChannelResolvable[],
     reason?: string,
   ): Promise<AutoModerationRule>;
 }
@@ -469,14 +472,19 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
     defaultMemberPermissions: PermissionResolvable | null,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public setOptions(options: ApplicationCommandOptionData[]): Promise<ApplicationCommand<PermissionsFetchType>>;
+  public setOptions(
+    options: readonly ApplicationCommandOptionData[],
+  ): Promise<ApplicationCommand<PermissionsFetchType>>;
   public equals(
     command: ApplicationCommand | ApplicationCommandData | RawApplicationCommandData,
     enforceOptionOrder?: boolean,
   ): boolean;
   public static optionsEqual(
-    existing: ApplicationCommandOption[],
-    options: ApplicationCommandOption[] | ApplicationCommandOptionData[] | APIApplicationCommandOption[],
+    existing: readonly ApplicationCommandOption[],
+    options:
+      | readonly ApplicationCommandOption[]
+      | readonly ApplicationCommandOptionData[]
+      | readonly APIApplicationCommandOption[],
     enforceOptionOrder?: boolean,
   ): boolean;
   private static _optionEquals(
@@ -1062,7 +1070,7 @@ export class ClientApplication extends Application {
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
-    records: ApplicationRoleConnectionMetadataEditOptions[],
+    records: readonly ApplicationRoleConnectionMetadataEditOptions[],
   ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
@@ -1080,10 +1088,10 @@ export class ClientUser extends User {
   public edit(options: ClientUserEditOptions): Promise<this>;
   public setActivity(options?: ActivityOptions): ClientPresence;
   public setActivity(name: string, options?: Omit<ActivityOptions, 'name'>): ClientPresence;
-  public setAFK(afk?: boolean, shardId?: number | number[]): ClientPresence;
+  public setAFK(afk?: boolean, shardId?: number | readonly number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable | null): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
-  public setStatus(status: PresenceStatusData, shardId?: number | number[]): ClientPresence;
+  public setStatus(status: PresenceStatusData, shardId?: number | readonly number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
 }
 
@@ -1175,13 +1183,13 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public inGuild(): this is AutocompleteInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is AutocompleteInteraction<'cached'>;
   public inRawGuild(): this is AutocompleteInteraction<'raw'>;
-  public respond(options: ApplicationCommandOptionChoiceData[]): Promise<void>;
+  public respond(options: readonly ApplicationCommandOptionChoiceData[]): Promise<void>;
 }
 
 export class CommandInteractionOptionResolver<Cached extends CacheType = CacheType> {
   private constructor(
     client: Client<true>,
-    options: CommandInteractionOption[],
+    options: readonly CommandInteractionOption[],
     resolved: CommandInteractionResolvedData,
   );
   public readonly client: Client;
@@ -1192,14 +1200,14 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   private _subcommand: string | null;
   private _getTypedOption(
     name: string,
-    allowedTypes: ApplicationCommandOptionType[],
-    properties: (keyof ApplicationCommandOption)[],
+    allowedTypes: readonly ApplicationCommandOptionType[],
+    properties: readonly (keyof ApplicationCommandOption)[],
     required: true,
   ): CommandInteractionOption<Cached>;
   private _getTypedOption(
     name: string,
-    allowedTypes: ApplicationCommandOptionType[],
-    properties: (keyof ApplicationCommandOption)[],
+    allowedTypes: readonly ApplicationCommandOptionType[],
+    properties: readonly (keyof ApplicationCommandOption)[],
     required: boolean,
   ): CommandInteractionOption<Cached> | null;
 
@@ -1923,11 +1931,17 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
   public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
-  public on(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public on(
+    event: 'end',
+    listener: (collected: ReadonlyCollection<Snowflake, Interaction>, reason: string) => void,
+  ): this;
   public on(event: string, listener: (...args: any[]) => void): this;
 
   public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
-  public once(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public once(
+    event: 'end',
+    listener: (collected: ReadonlyCollection<Snowflake, Interaction>, reason: string) => void,
+  ): this;
   public once(event: string, listener: (...args: any[]) => void): this;
 }
 
@@ -2268,8 +2282,8 @@ export class MessageFlagsBitField extends BitField<MessageFlagsString> {
 export class MessageMentions<InGuild extends boolean = boolean> {
   private constructor(
     message: Message,
-    users: APIUser[] | Collection<Snowflake, User>,
-    roles: Snowflake[] | Collection<Snowflake, Role>,
+    users: readonly APIUser[] | Collection<Snowflake, User>,
+    roles: readonly Snowflake[] | Collection<Snowflake, Role>,
     everyone: boolean,
     repliedUser?: APIUser | User,
   );
@@ -2376,7 +2390,7 @@ export interface ActionRowModalData {
 }
 
 export class ModalSubmitFields {
-  constructor(components: ModalActionRowComponent[][]);
+  constructor(components: readonly (readonly ModalActionRowComponent[])[]);
   public components: ActionRowModalData[];
   public fields: Collection<string, ModalActionRowComponent>;
   public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
@@ -2502,7 +2516,7 @@ export abstract class ThreadOnlyChannel extends GuildChannel {
   public nsfw: boolean;
   public topic: string | null;
   public defaultSortOrder: SortOrderType | null;
-  public setAvailableTags(tags: GuildForumTagData[], reason?: string): Promise<this>;
+  public setAvailableTags(tags: readonly GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
   public createInvite(options?: InviteCreateOptions): Promise<Invite>;
@@ -2592,7 +2606,7 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
     listener: (reaction: MessageReaction, user: User) => void,
   ): this;
   public on(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void): this;
-  public on(event: string, listener: (...args: any[]) => void): this;
+  public on(event: string, listener: (...args: readonly any[]) => void): this;
 
   public once(
     event: 'collect' | 'dispose' | 'remove' | 'ignore',
@@ -2602,7 +2616,7 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
     event: 'end',
     listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void,
   ): this;
-  public once(event: string, listener: (...args: any[]) => void): this;
+  public once(event: string, listener: (...args: readonly any[]) => void): this;
 }
 
 export class ReactionEmoji extends Emoji {
@@ -2883,8 +2897,8 @@ export class ShardClientUtil {
 
 export class ShardingManager extends EventEmitter {
   public constructor(file: string, options?: ShardingManagerOptions);
-  private _performOnShards(method: string, args: unknown[]): Promise<unknown[]>;
-  private _performOnShards(method: string, args: unknown[], shard: number): Promise<unknown>;
+  private _performOnShards(method: string, args: readonly unknown[]): Promise<unknown[]>;
+  private _performOnShards(method: string, args: readonly unknown[], shard: number): Promise<unknown>;
 
   public file: string;
   public respawn: boolean;
@@ -3208,7 +3222,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public setLocked(locked?: boolean, reason?: string): Promise<AnyThreadChannel>;
   public setName(name: string, reason?: string): Promise<AnyThreadChannel>;
   // The following 3 methods can only be run on forum threads.
-  public setAppliedTags(appliedTags: Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
+  public setAppliedTags(appliedTags: readonly Snowflake[], reason?: string): Promise<ThreadChannel<true>>;
   public pin(reason?: string): Promise<ThreadChannel<true>>;
   public unpin(reason?: string): Promise<ThreadChannel<true>>;
   public toString(): ChannelMention;
@@ -3334,7 +3348,12 @@ export function makeError(obj: MakeErrorOptions): Error;
 /** @internal */
 export function makePlainError(err: Error): MakeErrorOptions;
 /** @internal */
-export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
+export function moveElementInArray(
+  array: readonly unknown[],
+  element: unknown,
+  newIndex: number,
+  offset?: boolean,
+): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
 /** @internal */
@@ -4146,7 +4165,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
     id?: undefined,
     options?: FetchGuildApplicationCommandFetchOptions,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
-  public set(commands: ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+  public set(commands: readonly ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
 export type MappedGuildChannelTypes = {

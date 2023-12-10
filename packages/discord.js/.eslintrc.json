@@ -204,6 +204,9 @@
     {
       "files": ["typings/*.ts", "scripts/*.mjs"],
       "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
       "plugins": ["@typescript-eslint"],
       "rules": {
         "@typescript-eslint/naming-convention": [
@@ -215,6 +218,17 @@
               "regex": "^\\w{3,}",
               "match": true
             }
+          }
+        ],
+        "no-restricted-syntax": [
+          2,
+          {
+            "selector": "MethodDefinition > TSEmptyBodyFunctionExpression > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType",
+            "message": "Array parameters on methods must be readonly"
+          },
+          {
+            "selector": "TSDeclareFunction > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType",
+            "message": "Array parameters on functions must be readonly"
           }
         ]
       }
