@@ -223,7 +223,7 @@
         "no-restricted-syntax": [
           2,
           {
-            "selector": "MethodDefinition > TSEmptyBodyFunctionExpression > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType",
+            "selector": "MethodDefinition[key.name!=on][key.name!=once][key.name!=off] > TSEmptyBodyFunctionExpression > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType",
             "message": "Array parameters on methods must be readonly"
           },
           {

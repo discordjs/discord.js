@@ -2609,7 +2609,7 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
     event: 'end',
     listener: (collected: ReadonlyCollection<Snowflake, MessageReaction>, reason: string) => void,
   ): this;
-  public on(event: string, listener: (...args: readonly any[]) => void): this;
+  public on(event: string, listener: (...args: any[]) => void): this;
 
   public once(
     event: 'collect' | 'dispose' | 'remove' | 'ignore',
@@ -2619,7 +2619,7 @@ export class ReactionCollector extends Collector<Snowflake | string, MessageReac
     event: 'end',
     listener: (collected: ReadonlyCollection<Snowflake, MessageReaction>, reason: string) => void,
   ): this;
-  public once(event: string, listener: (...args: readonly any[]) => void): this;
+  public once(event: string, listener: (...args: any[]) => void): this;
 }
 
 export class ReactionEmoji extends Emoji {
