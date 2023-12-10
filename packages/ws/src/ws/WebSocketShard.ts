@@ -7,7 +7,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import { inflate } from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -80,11 +80,9 @@ export interface SendRateLimitState {
 	resetAt: number;
 }
 
-// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
-// const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
-// 	? (globalThis as any).WebSocket
-// 	: WebSocket;
-const WebSocketConstructor: typeof WebSocket = WebSocket;
+const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+	? (globalThis as any).WebSocket
+	: WebSocket;
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
