@@ -52,8 +52,7 @@ export enum WebSocketShardDestroyRecovery {
 	Resume,
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type WebSocketShardEventsMap = {
+export interface WebSocketShardEventsMap {
 	[WebSocketShardEvents.Closed]: [{ code: number }];
 	[WebSocketShardEvents.Debug]: [payload: { message: string }];
 	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
@@ -62,7 +61,7 @@ export type WebSocketShardEventsMap = {
 	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
 	[WebSocketShardEvents.Resumed]: [];
 	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
-};
+}
 
 export interface WebSocketShardDestroyOptions {
 	code?: number;

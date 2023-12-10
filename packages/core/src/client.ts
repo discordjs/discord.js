@@ -163,9 +163,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
 }
 
-export type ManagerShardEventsMap = {
-	[K in keyof MappedEvents]: MappedEvents[K];
-};
+export interface ManagerShardEventsMap extends MappedEvents {}
 
 export interface ClientOptions {
 	gateway: Gateway;
