@@ -4079,7 +4079,7 @@ export interface FetchEntitlementOptions {
   limit?: number;
   guild?: GuildResolvable;
   user?: UserResolvable;
-  skus?: SKUResolvable[];
+  skus?: readonly SKUResolvable[];
   excludeEnded?: boolean;
   cache?: boolean;
   before?: Snowflake;
