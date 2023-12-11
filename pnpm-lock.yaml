@@ -1707,6 +1707,9 @@ importers:
       prettier:
         specifier: ^3.1.0
         version: 3.1.0
+      tsd:
+        specifier: ^0.29.0
+        version: 0.29.0
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(typescript@5.2.2)
@@ -11783,7 +11786,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231210
+      typescript: 5.4.0-dev.20231211
     dev: true
 
   /dts-critic@3.3.11(typescript@5.2.2):
@@ -21754,8 +21757,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231210:
-    resolution: {integrity: sha512-bvcnD6rhU4q0TAh4FEs0ja7xaSSguJLzzXhqx8xeG+OUQwrXcE2GbXO1gMu0z5FK/zGYxnJlkMFvEMSdzRlH8Q==}
+  /typescript@5.4.0-dev.20231211:
+    resolution: {integrity: sha512-QbX1BYW7kMO+l74HzSfmOSGl66t/DmtqnNRcaUTeowtc/SX/v7WCV3jpuaHgAIS0eDKorcRoRizmWrxlvBOeUQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

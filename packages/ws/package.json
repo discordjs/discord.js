@@ -94,6 +94,7 @@
 		"eslint-formatter-pretty": "^5.0.0",
 		"mock-socket": "^9.3.1",
 		"prettier": "^3.1.0",
+		"tsd": "^0.29.0",
 		"tsup": "^7.2.0",
 		"turbo": "^1.10.17-canary.0",
 		"typescript": "^5.2.2",

@@ -177,7 +177,7 @@ export interface RequestGuildMembersResult {
 	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
 }
 
-export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class Client extends AsyncEventEmitter<MappedEvents> {
 	public readonly rest: REST;
 
 	public readonly gateway: Gateway;
