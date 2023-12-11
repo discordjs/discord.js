@@ -191,8 +191,12 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		this.api = new API(rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
-			// @ts-expect-error event props can't be resolved properly, but they are correct
-			this.emit(dispatch.t, this.wrapIntrinsicProps(dispatch.d, shardId));
+			this.emit(
+				// TODO: move this expect-error down to the next line once entitlements get merged, so missing dispatch types result in errors
+				// @ts-expect-error event props can't be resolved properly, but they are correct
+				dispatch.t,
+				this.wrapIntrinsicProps(dispatch.d, shardId),
+			);
 		});
 	}
 
