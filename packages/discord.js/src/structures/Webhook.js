@@ -83,7 +83,7 @@ class Webhook {
       this.channelId = data.channel_id;
     }
 
-    if ('user' in data) {
+    if ('user' in data && data.user !== null) {
       /**
        * The owner of the webhook
        * @type {?(User|APIUser)}
