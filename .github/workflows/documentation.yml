@@ -89,7 +89,7 @@ jobs:
       - name: Extract package and semver from tag
         if: ${{ env.REF_TYPE == 'tag' }}
         id: extract-tag
-        uses: ./packages/actions/src/formatTag
+        uses: ./packages/actions/src/formatTag@main
         with:
           tag: ${{ inputs.ref || github.ref_name }}
 
@@ -98,7 +98,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-        uses: ./packages/actions/src/uploadDocumentation
+        uses: ./packages/actions/src/uploadDocumentation@main
         with:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
@@ -122,7 +122,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
-        uses: ./packages/actions/src/uploadDocumentation
+        uses: ./packages/actions/src/uploadDocumentation@main
 
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}
@@ -166,7 +166,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        uses: ./packages/actions/src/pnpmCache
+        uses: ./packages/actions/src/pnpmCache@main
 
       - name: Build dependencies
         run: pnpm run build
@@ -176,4 +176,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
-        uses: ./packages/actions/src/uploadSearchIndices
+        uses: ./packages/actions/src/uploadSearchIndices@main
