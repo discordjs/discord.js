@@ -33,6 +33,10 @@ discord.js relies heavily on caching in the library. We recommend you set at lea
 
 Fetching members in a guild via <DocsLink type="class" parent="GuildMemberManager" symbol="fetch" brackets /> requests them over the gateway. As such, this intent is required and you may receive a timeout error if this intent is not specified.
 
+<Alert title="Info" type="info">
+	This is a privileged intent. Read on for more information.
+</Alert>
+
 ### _`GatewayIntentBits.DirectMessages`_
 
 This intent is required to receive direct messages. In discord.js however, you **must** specify partials as well. See the partials topic on how this is done.
