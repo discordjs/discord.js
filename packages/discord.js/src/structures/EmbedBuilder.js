@@ -12,6 +12,7 @@ const { resolveColor } = require('../util/Util');
 class EmbedBuilder extends BuildersEmbed {
   constructor(data) {
     super(toSnakeCase(data));
+    this._id = null; //aqui inicializamos o valor como null
   }
 
   /**
@@ -22,6 +23,13 @@ class EmbedBuilder extends BuildersEmbed {
   setColor(color) {
     return super.setColor(color && resolveColor(color));
   }
+
+  setID(id){
+    this.id = id;
+    return {
+      id: this
+    };
+  } //criando um metodo para setar o id
 
   /**
    * Creates a new embed builder from JSON data
@@ -40,6 +48,14 @@ class EmbedBuilder extends BuildersEmbed {
   get length() {
     return embedLength(this.data);
   }
+  toJSON() {//aqui editamos o toJson da classe pai, antes de ser serielizado. Ai caso ID nao seja null, editamos o obj antes de ser serializado e adicionamos o ID
+    const baseData = super.toJSON();
+    if (this.id !== null) {
+      baseData.ID = this._id;
+    }
+    return baseData;
+  }
+
 }
 
 module.exports = EmbedBuilder;
