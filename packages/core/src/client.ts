@@ -163,9 +163,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
 }
 
-export type ManagerShardEventsMap = {
-	[K in keyof MappedEvents]: MappedEvents[K];
-};
+export interface ManagerShardEventsMap extends MappedEvents {}
 
 export interface ClientOptions {
 	gateway: Gateway;
@@ -179,7 +177,7 @@ export interface RequestGuildMembersResult {
 	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
 }
 
-export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class Client extends AsyncEventEmitter<MappedEvents> {
 	public readonly rest: REST;
 
 	public readonly gateway: Gateway;
@@ -193,8 +191,12 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		this.api = new API(rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
-			// @ts-expect-error event props can't be resolved properly, but they are correct
-			this.emit(dispatch.t, this.wrapIntrinsicProps(dispatch.d, shardId));
+			this.emit(
+				// TODO: move this expect-error down to the next line once entitlements get merged, so missing dispatch types result in errors
+				// @ts-expect-error event props can't be resolved properly, but they are correct
+				dispatch.t,
+				this.wrapIntrinsicProps(dispatch.d, shardId),
+			);
 		});
 	}
 
