@@ -86,7 +86,7 @@
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.0",
 		"@sapphire/snowflake": "^3.5.1",
-		"@vladfrangu/async_event_emitter": "^2.2.2",
+		"@vladfrangu/async_event_emitter": "^2.2.4",
 		"discord-api-types": "0.37.61",
 		"magic-bytes.js": "^1.5.0",
 		"tslib": "^2.6.2",
