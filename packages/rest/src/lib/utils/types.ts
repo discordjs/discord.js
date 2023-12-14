@@ -14,9 +14,7 @@ export interface RestEvents {
 	restDebug: [info: string];
 }
 
-export type RestEventsMap = {
-	[K in keyof RestEvents]: RestEvents[K];
-};
+export interface RestEventsMap extends RestEvents {}
 
 /**
  * Options to be passed when creating the REST instance

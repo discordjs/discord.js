@@ -18,7 +18,7 @@ import { RequestMethod } from './utils/types.js';
 import type {
 	RESTOptions,
 	ResponseLike,
-	RestEventsMap,
+	RestEvents,
 	HashData,
 	InternalRequest,
 	RouteLike,
@@ -31,7 +31,7 @@ import { isBufferLike, parseResponse } from './utils/utils.js';
 /**
  * Represents the class that manages handlers for endpoints
  */
-export class REST extends AsyncEventEmitter<RestEventsMap> {
+export class REST extends AsyncEventEmitter<RestEvents> {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
