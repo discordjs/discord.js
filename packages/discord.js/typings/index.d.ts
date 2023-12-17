@@ -1002,34 +1002,25 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public isReady(): this is Client<true>;
   public toJSON(): unknown;
 
-  public on<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public on<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public on<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
-  public once<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public once<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public once<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
   public emit<Event extends keyof ClientEvents>(event: Event, ...args: ClientEvents[Event]): boolean;
   public emit<Event extends string | symbol>(event: Exclude<Event, keyof ClientEvents>, ...args: unknown[]): boolean;
 
-  public off<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public off<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public off<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
   public removeAllListeners<Event extends keyof ClientEvents>(event?: Event): this;
@@ -1138,12 +1129,12 @@ export abstract class Collector<Key, Value, Extras extends unknown[] = []> exten
 
   public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
   ): this;
 
   public once<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
   ): this;
 }
 
@@ -1884,19 +1875,13 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
-  public on(
-    event: 'end',
-    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
-  ): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
+  public on(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public on(event: string, listener: (...args: any[]) => void): this;
 
-  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
-  public once(
-    event: 'end',
-    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
-  ): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
+  public once(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public once(event: string, listener: (...args: any[]) => void): this;
 }
 
 export class InteractionWebhook extends PartialWebhookMixin() {
@@ -2798,12 +2783,12 @@ export class Shard extends EventEmitter {
 
   public on<Event extends keyof ShardEventTypes>(
     event: Event,
-    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: ShardEventTypes[Event]) => void,
   ): this;
 
   public once<Event extends keyof ShardEventTypes>(
     event: Event,
-    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: ShardEventTypes[Event]) => void,
   ): this;
 }
 
@@ -2874,9 +2859,9 @@ export class ShardingManager extends EventEmitter {
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
   public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
 
-  public on(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
+  public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
-  public once(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
+  public once(event: 'shardCreate', listener: (shard: Shard) => void): this;
 }
 
 export interface FetchRecommendedShardCountOptions {
@@ -3555,12 +3540,12 @@ export class WebSocketShard extends EventEmitter {
 
   public on<Event extends keyof WebSocketShardEventTypes>(
     event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[Event]) => void,
   ): this;
 
   public once<Event extends keyof WebSocketShardEventTypes>(
     event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[Event]) => void,
   ): this;
 }
 
