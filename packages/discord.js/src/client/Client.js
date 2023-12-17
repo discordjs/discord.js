@@ -23,7 +23,7 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const DataResolver = require('../util/DataResolver');
+const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
@@ -273,7 +273,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchInvite(invite, options) {
-    const code = DataResolver.resolveInviteCode(invite);
+    const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
       with_expiration: true,
@@ -293,7 +293,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchGuildTemplate(template) {
-    const code = DataResolver.resolveGuildTemplateCode(template);
+    const code = resolveGuildTemplateCode(template);
     const data = await this.rest.get(Routes.template(code));
     return new GuildTemplate(this, data);
   }

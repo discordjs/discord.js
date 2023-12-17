@@ -6,7 +6,7 @@ const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -227,8 +227,8 @@ class ClientApplication extends Application {
         role_connections_verification_url: roleConnectionsVerificationURL,
         install_params: installParams,
         flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
-        icon: icon && (await DataResolver.resolveImage(icon)),
-        cover_image: coverImage && (await DataResolver.resolveImage(coverImage)),
+        icon: icon && (await resolveImage(icon)),
+        cover_image: coverImage && (await resolveImage(coverImage)),
         interactions_endpoint_url: interactionsEndpointURL,
         tags,
       },
