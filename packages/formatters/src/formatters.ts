@@ -64,7 +64,7 @@ export function bold<Content extends string>(content: Content): `**${Content}**`
  * @deprecated Use {@link underline} instead.
  */
 export function underscore<Content extends string>(content: Content): `__${Content}__` {
-	return `__${content}__`;
+	return underline(content);
 }
 
 /**
