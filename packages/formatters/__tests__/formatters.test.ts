@@ -24,7 +24,7 @@ import {
 	strikethrough,
 	time,
 	TimestampStyles,
-	underscore,
+	underline,
 	unorderedList,
 	userMention,
 } from '../src/index.js';
@@ -58,9 +58,9 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('underscore', () => {
+	describe('underline', () => {
 		test('GIVEN "discord.js" THEN returns "__discord.js__"', () => {
-			expect<'__discord.js__'>(underscore('discord.js')).toEqual('__discord.js__');
+			expect<'__discord.js__'>(underline('discord.js')).toEqual('__discord.js__');
 		});
 	});
 
