@@ -186,6 +186,8 @@ import {
   Emoji,
   PartialEmoji,
   Awaitable,
+  Channel,
+  DirectoryChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2282,16 +2284,12 @@ declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
-declare const stageChannel: StageChannel;
-declare const partialGroupDMChannel: PartialGroupDMChannel;
+type UserMentionChannels = DMChannel | PartialDMChannel;
+declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;
+declare const userMentionChannels: UserMentionChannels;
 
-expectType<ChannelMention>(textChannel.toString());
-expectType<ChannelMention>(voiceChannel.toString());
-expectType<ChannelMention>(newsChannel.toString());
-expectType<ChannelMention>(threadChannel.toString());
-expectType<ChannelMention>(stageChannel.toString());
-expectType<ChannelMention>(partialGroupDMChannel.toString());
-expectType<UserMention>(dmChannel.toString());
+expectType<ChannelMention>(channelMentionChannels.toString());
+expectType<UserMention>(userMentionChannels.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
@@ -2313,7 +2311,9 @@ expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
 
+declare const partialGroupDMChannel: PartialGroupDMChannel;
 declare const categoryChannel: CategoryChannel;
+declare const stageChannel: StageChannel;
 declare const forumChannel: ForumChannel;
 
 await forumChannel.edit({
