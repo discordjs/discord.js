@@ -298,7 +298,7 @@ class ClientApplication extends Application {
   }
 
   /**
-   * Gets this application's skus
+   * Gets this application's SKUs
    * @returns {Promise<Collection<Snowflake, SKU>>}
    */
   async fetchSKUs() {

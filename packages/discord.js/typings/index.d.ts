@@ -4075,7 +4075,7 @@ export interface UserEntitlementCreateOptions {
   user: UserResolvable;
 }
 
-export interface FetchEntitlementOptions {
+export interface FetchEntitlementsOptions {
   limit?: number;
   guild?: GuildResolvable;
   user?: UserResolvable;
@@ -4088,7 +4088,7 @@ export interface FetchEntitlementOptions {
 
 export class EntitlementManager extends CachedManager<Snowflake, Entitlement, EntitlementResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<APIEntitlement>);
-  public fetch(options?: FetchEntitlementOptions): Promise<Collection<Snowflake, Entitlement>>;
+  public fetch(options?: FetchEntitlementsOptions): Promise<Collection<Snowflake, Entitlement>>;
   public createTest(options: GuildEntitlementCreateOptions | UserEntitlementCreateOptions): Promise<Entitlement>;
   public deleteTest(entitlement: EntitlementResolvable): Promise<void>;
 }

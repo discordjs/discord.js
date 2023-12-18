@@ -43,7 +43,7 @@ class EntitlementManager extends CachedManager {
    * @property {number} [limit] The maximum number of entitlements to fetch
    * @property {GuildResolvable} [guild] The guild to fetch entitlements for
    * @property {UserResolvable} [user] The user to fetch entitlements for
-   * @property {SKUResolvable[]} [skus] The skus to fetch entitlements for
+   * @property {SKUResolvable[]} [skus] The SKUs to fetch entitlements for
    * @property {boolean} [excludeEnded] Whether to exclude ended entitlements
    * @property {boolean} [cache=true] Whether to cache the fetched entitlements
    * @property {Snowflake} [before] Consider only entitlements before this entitlement id
@@ -78,7 +78,7 @@ class EntitlementManager extends CachedManager {
    * Options used to create a test entitlement
    * <info>Either `guild` or `user` must be provided, but not both</info>
    * @typedef {Object} EntitlementCreateOptions
-   * @property {SKUResolvable} sku The id of the sku to create the entitlement for
+   * @property {SKUResolvable} sku The id of the SKU to create the entitlement for
    * @property {GuildResolvable} [guild] The guild to create the entitlement for
    * @property {UserResolvable} [user] The user to create the entitlement for
    */
