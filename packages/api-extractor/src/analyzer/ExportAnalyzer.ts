@@ -853,7 +853,7 @@ export class ExportAnalyzer {
 				? TypeScriptInternals.getModeForUsageLocation(
 						importOrExportDeclaration.getSourceFile(),
 						importOrExportDeclaration.moduleSpecifier,
-				  )
+					)
 				: undefined;
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
 			importOrExportDeclaration.getSourceFile(),

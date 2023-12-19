@@ -12,7 +12,7 @@ import { resolveItemURI } from '~/components/documentation/util';
 import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 import { Providers } from './providers';
 
-export const revalidate = 3_600;
+export const revalidate = 0;
 
 const Header = dynamic(async () => import('~/components/Header'));
 const Footer = dynamic(async () => import('~/components/Footer'));

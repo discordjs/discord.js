@@ -563,7 +563,7 @@ export class ApiModelGenerator {
 								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
@@ -650,10 +650,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isAbstract: boolean = (ts.getCombinedModifierFlags(classDeclaration) & ts.ModifierFlags.Abstract) !== 0;
@@ -723,7 +723,7 @@ export class ApiModelGenerator {
 								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructSignature);
@@ -861,10 +861,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(functionDeclaration);
@@ -983,10 +983,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(interfaceDeclaration);
@@ -1063,10 +1063,10 @@ export class ApiModelGenerator {
 								jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
@@ -1155,10 +1155,10 @@ export class ApiModelGenerator {
 								jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1225,8 +1225,8 @@ export class ApiModelGenerator {
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
-			  ? (jsDoc as DocgenPropertyJson).scope === 'static'
-			  : false;
+				? (jsDoc as DocgenPropertyJson).scope === 'static'
+				: false;
 		const containerKey: string = ApiProperty.getContainerKey(name, isStatic);
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
@@ -1266,10 +1266,10 @@ export class ApiModelGenerator {
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1341,10 +1341,10 @@ export class ApiModelGenerator {
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1420,7 +1420,7 @@ export class ApiModelGenerator {
 										.join('')
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(typeAliasDeclaration);
@@ -1554,7 +1554,7 @@ export class ApiModelGenerator {
 					'deprecated' in jsDoc && jsDoc.deprecated
 						? ` * @deprecated ${
 								typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-						  }\n`
+							}\n`
 						: ''
 				} */`,
 			).docComment;

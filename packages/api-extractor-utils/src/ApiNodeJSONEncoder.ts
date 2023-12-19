@@ -252,7 +252,7 @@ export class ApiNodeJSONEncoder {
 							parentKey: item.parent.containerKey,
 							parentName: item.parent.displayName,
 							path: generatePath(item.parent.getHierarchy(), version),
-					  }
+						}
 					: null,
 		};
 	}
