@@ -18,7 +18,7 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
 
-	const { data } = useSWR<string[]>('/api/user', { fetcher, fallbackData: versions });
+	const { data } = useSWR<string[]>(`/api/${packageName}/versions`, { fetcher, fallbackData: versions });
 
 	const versionMenu = useMenuState({
 		gutter: 8,
