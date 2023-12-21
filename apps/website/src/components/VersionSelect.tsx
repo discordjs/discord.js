@@ -10,15 +10,14 @@ import useSWR from 'swr';
 
 const isDev = process.env.NEXT_PUBLIC_LOCAL_DEV === 'true' ?? process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
 
-// eslint-disable-next-line promise/prefer-await-to-then
-const fetcher = async (url: string) => fetch(url).then(async (res) => res.json());
-
 export default function VersionSelect({ versions }: { readonly versions: string[] }) {
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
 
-	const { data } = useSWR<string[]>(`/api/${packageName}/versions`, { fetcher, fallbackData: versions });
+	const { data } = useSWR<string[]>(packageName ? `/api/${packageName}/versions` : null, {
+		fallbackData: versions,
+	});
 
 	const versionMenu = useMenuState({
 		gutter: 8,
