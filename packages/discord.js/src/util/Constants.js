@@ -14,6 +14,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
  * * `applicationCommands` - both global and guild commands
  * * `bans`
  * * `emojis`
+ * * `entitlements`
  * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
  * * `guildMembers`
  * * `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
@@ -32,6 +33,7 @@ exports.SweeperKeys = [
   'applicationCommands',
   'bans',
   'emojis',
+  'entitlements',
   'invites',
   'guildMembers',
   'messages',

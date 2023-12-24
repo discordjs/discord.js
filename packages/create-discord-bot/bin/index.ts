@@ -101,4 +101,9 @@ if (!deno && typescript === undefined && javascript === undefined) {
 	typescript = useTypescript;
 }
 
-await createDiscordBot({ typescript, directory: projectDirectory, packageManager, installPackages });
+await createDiscordBot({
+	typescript,
+	directory: projectDirectory,
+	packageManager,
+	installPackages,
+});

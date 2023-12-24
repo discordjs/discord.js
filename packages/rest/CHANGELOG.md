@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.1.0...@discordjs/rest@2.2.0) - (2023-11-17)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Features
+
+- Present x-ratelimit-scope for 429s hit (#9973) ([6df233d](https://github.com/discordjs/discord.js/commit/6df233de14e343578fdee3c99a85494e898c7ecc))
+
+## Typings
+
+- Use wrapper utilities (#9945) ([4bc1dae](https://github.com/discordjs/discord.js/commit/4bc1dae36f01649127774c40b14e778d65cf25c5))
+
 # [@discordjs/rest@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.0.1...@discordjs/rest@2.1.0) - (2023-11-12)
 
 ## Bug Fixes

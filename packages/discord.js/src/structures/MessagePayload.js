@@ -5,7 +5,7 @@ const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const { basename, verifyString } = require('../util/Util');
 
@@ -257,7 +257,7 @@ class MessagePayload {
       name = fileLike.name ?? findName(attachment);
     }
 
-    const { data, contentType } = await DataResolver.resolveFile(attachment);
+    const { data, contentType } = await resolveFile(attachment);
     return { data, name, contentType };
   }
 

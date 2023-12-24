@@ -186,6 +186,10 @@ import {
   Emoji,
   PartialEmoji,
   Awaitable,
+  Channel,
+  DirectoryChannel,
+  Entitlement,
+  SKU,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1803,6 +1807,8 @@ client.on('interactionCreate', async interaction => {
       interaction.commandType === ApplicationCommandType.Message)
   ) {
     expectType<MessageContextMenuCommandInteraction | UserContextMenuCommandInteraction>(interaction);
+    // @ts-expect-error No attachment options on contextmenu commands
+    interaction.options.getAttachment('name');
     if (interaction.inCachedGuild()) {
       expectAssignable<ContextMenuCommandInteraction>(interaction);
       expectAssignable<Guild>(interaction.guild);
@@ -1836,12 +1842,36 @@ client.on('interactionCreate', async interaction => {
     interaction.commandType === ApplicationCommandType.Message
   ) {
     expectType<Message>(interaction.targetMessage);
+    expectType<Message | null>(interaction.options.getMessage('_MESSAGE'));
     if (interaction.inCachedGuild()) {
       expectType<Message<true>>(interaction.targetMessage);
+      expectType<Message<true> | null>(interaction.options.getMessage('_MESSAGE'));
     } else if (interaction.inRawGuild()) {
       expectType<Message<false>>(interaction.targetMessage);
+      expectType<Message<false> | null>(interaction.options.getMessage('_MESSAGE'));
     } else if (interaction.inGuild()) {
       expectType<Message>(interaction.targetMessage);
+      expectType<Message | null>(interaction.options.getMessage('_MESSAGE'));
+    }
+  }
+
+  if (
+    interaction.type === InteractionType.ApplicationCommand &&
+    interaction.commandType === ApplicationCommandType.User
+  ) {
+    expectType<User>(interaction.targetUser);
+    expectType<GuildMember | APIInteractionGuildMember | null>(interaction.targetMember);
+    expectType<User | null>(interaction.options.getUser('user'));
+    expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
+    if (interaction.inCachedGuild()) {
+      expectType<GuildMember | null>(interaction.targetMember);
+      expectType<GuildMember | null>(interaction.options.getMember('user'));
+    } else if (interaction.inRawGuild()) {
+      expectType<APIInteractionGuildMember | null>(interaction.targetMember);
+      expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
+    } else if (interaction.inGuild()) {
+      expectType<GuildMember | APIInteractionGuildMember | null>(interaction.targetMember);
+      expectType<GuildMember | APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
     }
   }
 
@@ -1975,6 +2005,9 @@ client.on('interactionCreate', async interaction => {
     expectType<string | null>(interaction.options.getSubcommandGroup());
     expectType<string | null>(interaction.options.getSubcommandGroup(booleanValue));
     expectType<string | null>(interaction.options.getSubcommandGroup(false));
+
+    // @ts-expect-error
+    interaction.options.getMessage('name');
   }
 
   if (interaction.isRepliable()) {
@@ -2253,16 +2286,12 @@ declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
-declare const stageChannel: StageChannel;
-declare const partialGroupDMChannel: PartialGroupDMChannel;
+type UserMentionChannels = DMChannel | PartialDMChannel;
+declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;
+declare const userMentionChannels: UserMentionChannels;
 
-expectType<ChannelMention>(textChannel.toString());
-expectType<ChannelMention>(voiceChannel.toString());
-expectType<ChannelMention>(newsChannel.toString());
-expectType<ChannelMention>(threadChannel.toString());
-expectType<ChannelMention>(stageChannel.toString());
-expectType<ChannelMention>(partialGroupDMChannel.toString());
-expectType<UserMention>(dmChannel.toString());
+expectType<ChannelMention>(channelMentionChannels.toString());
+expectType<UserMention>(userMentionChannels.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
@@ -2279,11 +2308,14 @@ expectType<Promise<APIMessage>>(webhookClient.send('content'));
 expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
 expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 
+expectType<Client<true>>(interactionWebhook.client);
 expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
 
+declare const partialGroupDMChannel: PartialGroupDMChannel;
 declare const categoryChannel: CategoryChannel;
+declare const stageChannel: StageChannel;
 declare const forumChannel: ForumChannel;
 
 await forumChannel.edit({
@@ -2395,4 +2427,56 @@ declare const emoji: Emoji;
 {
   expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
   expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
+}
+
+declare const application: ClientApplication;
+declare const entitlement: Entitlement;
+declare const sku: SKU;
+{
+  expectType<Collection<Snowflake, SKU>>(await application.fetchSKUs());
+  expectType<Collection<Snowflake, Entitlement>>(await application.entitlements.fetch());
+
+  await application.entitlements.fetch({
+    guild,
+    skus: ['12345678901234567', sku],
+    user,
+    excludeEnded: true,
+    limit: 10,
+  });
+
+  await application.entitlements.createTest({ sku: '12345678901234567', user });
+  await application.entitlements.createTest({ sku, guild });
+
+  await application.entitlements.deleteTest(entitlement);
+
+  expectType<boolean>(entitlement.isActive());
+
+  if (entitlement.isUserSubscription()) {
+    expectType<Snowflake>(entitlement.userId);
+    expectType<User>(await entitlement.fetchUser());
+    expectType<null>(entitlement.guildId);
+    expectType<null>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  } else if (entitlement.isGuildSubscription()) {
+    expectType<Snowflake>(entitlement.guildId);
+    expectType<Guild>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  }
+
+  if (entitlement.isTest()) {
+    expectType<null>(entitlement.startsTimestamp);
+    expectType<null>(entitlement.endsTimestamp);
+    expectType<null>(entitlement.startsAt);
+    expectType<null>(entitlement.endsAt);
+  }
+
+  client.on(Events.InteractionCreate, async interaction => {
+    expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
+
+    if (interaction.isRepliable()) {
+      await interaction.sendPremiumRequired();
+    }
+  });
 }

@@ -1,11 +1,9 @@
-import { ApiModel, ApiFunction } from '@discordjs/api-extractor-model';
-import { cache } from 'react';
+import { ApiModel, ApiFunction, ApiPackage } from '@discordjs/api-extractor-model';
 import { fetchModelJSON } from '~/app/docAPI';
-import { addPackageToModel } from './addPackageToModel';
 import { OVERLOAD_SEPARATOR, PACKAGES } from './constants';
 import { findMember, findMemberByKey } from './model';
 
-export const fetchMember = cache(async (packageName: string, branchName: string, item?: string) => {
+export const fetchMember = async (packageName: string, branchName: string, item?: string) => {
 	if (!PACKAGES.includes(packageName)) {
 		return null;
 	}
@@ -16,25 +14,13 @@ export const fetchMember = cache(async (packageName: string, branchName: string,
 
 	const model = new ApiModel();
 
-	if (branchName === 'main') {
-		const modelJSONFiles = await Promise.all(PACKAGES.map(async (pkg) => fetchModelJSON(pkg, branchName)));
+	const modelJSON = await fetchModelJSON(packageName, branchName);
 
-		for (const modelJSONFile of modelJSONFiles) {
-			if (!modelJSONFile) {
-				continue;
-			}
-
-			addPackageToModel(model, modelJSONFile);
-		}
-	} else {
-		const modelJSON = await fetchModelJSON(packageName, branchName);
-
-		if (!modelJSON) {
-			return null;
-		}
-
-		addPackageToModel(model, modelJSON);
+	if (!modelJSON) {
+		return null;
 	}
+
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 
 	const [memberName, overloadIndex] = decodeURIComponent(item).split(OVERLOAD_SEPARATOR);
 
@@ -45,4 +31,4 @@ export const fetchMember = cache(async (packageName: string, branchName: string,
 	}
 
 	return memberName && containerKey ? findMemberByKey(model, packageName, containerKey) ?? null : null;
-});
+};

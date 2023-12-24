@@ -1,18 +1,16 @@
 import type { ApiFunction, ApiItem } from '@discordjs/api-extractor-model';
-import { ApiModel } from '@discordjs/api-extractor-model';
+import { ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
 import dynamic from 'next/dynamic';
 import { notFound } from 'next/navigation';
-import { cache, type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { fetchModelJSON, fetchVersions } from '~/app/docAPI';
 import { CmdKDialog } from '~/components/CmdK';
 import { Nav } from '~/components/Nav';
+import { Outline } from '~/components/Outline';
 import type { SidebarSectionItemData } from '~/components/Sidebar';
 import { resolveItemURI } from '~/components/documentation/util';
-import { addPackageToModel } from '~/util/addPackageToModel';
-import { PACKAGES } from '~/util/constants';
+import { N_RECENT_VERSIONS, PACKAGES } from '~/util/constants';
 import { Providers } from './providers';
-
-export const revalidate = 3_600;
 
 const Header = dynamic(async () => import('~/components/Header'));
 const Footer = dynamic(async () => import('~/components/Footer'));
@@ -23,11 +21,15 @@ interface VersionRouteParams {
 }
 
 export const generateStaticParams = async () => {
+	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return [];
+	}
+
 	const params: VersionRouteParams[] = [];
 
 	await Promise.all(
-		PACKAGES.slice(1).map(async (packageName) => {
-			const versions = await fetchVersions(packageName);
+		PACKAGES.map(async (packageName) => {
+			const versions = (await fetchVersions(packageName)).slice(1, N_RECENT_VERSIONS);
 
 			params.push(...versions.map((version) => ({ package: packageName, version })));
 		}),
@@ -36,14 +38,14 @@ export const generateStaticParams = async () => {
 	return params;
 };
 
-const serializeIntoSidebarItemData = cache((item: ApiItem) => {
+const serializeIntoSidebarItemData = (item: ApiItem) => {
 	return {
 		kind: item.kind,
 		name: item.displayName,
 		href: resolveItemURI(item),
 		overloadIndex: 'overloadIndex' in item ? (item.overloadIndex as number) : undefined,
 	} as SidebarSectionItemData;
-});
+};
 
 export default async function PackageLayout({ children, params }: PropsWithChildren<{ params: VersionRouteParams }>) {
 	const modelJSON = await fetchModelJSON(params.package, params.version);
@@ -52,7 +54,8 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 		notFound();
 	}
 
-	const model = addPackageToModel(new ApiModel(), modelJSON);
+	const model = new ApiModel();
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 
 	const pkg = model.tryGetPackageByName(params.package);
 
@@ -80,15 +83,17 @@ export default async function PackageLayout({ children, params }: PropsWithChild
 		<Providers>
 			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
 				<Header />
-				<div className="relative top-2.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
+				<div className="relative top-6.5 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
 					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
 						<Nav members={members.map((member) => serializeIntoSidebarItemData(member))} versions={versions} />
 					</div>
 
-					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">
+					<div className="relative top-4.5 mx-auto max-w-5xl min-w-xs w-full pb-10">
 						{children}
 						<Footer />
 					</div>
+
+					<Outline />
 				</div>
 			</main>
 			<CmdKDialog />

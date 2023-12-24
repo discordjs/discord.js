@@ -17,7 +17,10 @@ export function InstallButton() {
 
 	return (
 		<button
-			className={buttonVariants({ variant: 'secondary', className: 'cursor-copy font-mono' })}
+			className={buttonVariants({
+				variant: 'secondary',
+				className: 'cursor-copy font-mono',
+			})}
 			onClick={() => {
 				setInteracted(true);
 				copyToClipboard('npm install discord.js');

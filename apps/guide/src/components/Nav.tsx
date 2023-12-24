@@ -23,7 +23,9 @@ export function Nav() {
 				)}
 				universal
 			>
-				<Sidebar />
+				<div className="flex flex-col gap-4 p-3">
+					<Sidebar />
+				</div>
 			</Scrollbars>
 		</nav>
 	);

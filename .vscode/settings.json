@@ -9,9 +9,9 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.organizeImports": false,
-		"source.fixAll.eslint": true,
-		"source.fixAll": true
+		"source.organizeImports": "never",
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll": "explicit"
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {

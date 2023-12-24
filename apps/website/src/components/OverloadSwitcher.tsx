@@ -15,7 +15,10 @@ export default function OverloadSwitcher({
 	methodName,
 	overloads,
 	children,
-}: PropsWithChildren<{ readonly methodName: string; readonly overloads: ReactNode[] }>) {
+}: PropsWithChildren<{
+	readonly methodName: string;
+	readonly overloads: ReactNode[];
+}>) {
 	const [hash, setHash] = useState(() => (typeof window === 'undefined' ? '' : window.location.hash));
 	const hashChangeHandler = useCallback(() => {
 		setHash(window.location.hash);

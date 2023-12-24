@@ -15,10 +15,6 @@ const loadREADME = cache(async (packageName: string) => {
 	return readFile(join(process.cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
 });
 
-export async function generateStaticParams({ params }: { params: VersionRouteParams }) {
-	return [{ package: params.package, version: params.version }];
-}
-
 export default async function Page({ params }: { params: VersionRouteParams }) {
 	const readmeSource = await loadREADME(params.package);
 	const { content } = await compileMDX({

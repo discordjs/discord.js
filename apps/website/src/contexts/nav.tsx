@@ -10,7 +10,10 @@ import {
 	useMemo,
 } from 'react';
 
-export const NavContext = createContext<{ opened: boolean; setOpened: Dispatch<SetStateAction<boolean>> }>({
+export const NavContext = createContext<{
+	opened: boolean;
+	setOpened: Dispatch<SetStateAction<boolean>>;
+}>({
 	opened: false,
 	setOpened: (_) => {},
 });

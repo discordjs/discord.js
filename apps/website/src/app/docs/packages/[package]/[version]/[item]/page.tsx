@@ -13,7 +13,7 @@ import type {
 	ApiVariable,
 	ApiFunction,
 } from '@discordjs/api-extractor-model';
-import { ApiItemKind, ApiModel } from '@discordjs/api-extractor-model';
+import { ApiItemKind, ApiModel, ApiPackage } from '@discordjs/api-extractor-model';
 import { tryResolveSummaryText } from '@discordjs/scripts';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -24,12 +24,11 @@ import { TypeAlias } from '~/components/model/TypeAlias';
 import { Variable } from '~/components/model/Variable';
 import { Enum } from '~/components/model/enum/Enum';
 import { Function } from '~/components/model/function/Function';
-import { addPackageToModel } from '~/util/addPackageToModel';
 import { OVERLOAD_SEPARATOR } from '~/util/constants';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
 
-export const revalidate = 3_600;
+export const revalidate = 86_400;
 
 export interface ItemRouteParams {
 	item: string;
@@ -44,7 +43,8 @@ async function fetchHeadMember({ package: packageName, version, item }: ItemRout
 		return undefined;
 	}
 
-	const model = addPackageToModel(new ApiModel(), modelJSON);
+	const model = new ApiModel();
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
@@ -119,19 +119,24 @@ export async function generateMetadata({ params }: { params: ItemRouteParams }) 
 }
 
 export async function generateStaticParams({ params: { package: packageName, version } }: { params: ItemRouteParams }) {
+	if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview') {
+		return [];
+	}
+
 	const modelJSON = await fetchModelJSON(packageName, version);
 
 	if (!modelJSON) {
-		return [{ package: packageName, version, item: '' }];
+		return [];
 	}
 
-	const model = addPackageToModel(new ApiModel(), modelJSON);
+	const model = new ApiModel();
+	model.addMember(ApiPackage.loadFromJson(modelJSON));
 
 	const pkg = model.tryGetPackageByName(packageName);
 	const entry = pkg?.entryPoints[0];
 
 	if (!entry) {
-		return [{ package: packageName, version, item: '' }];
+		return [];
 	}
 
 	return entry.members.map((member: ApiItem) => ({
@@ -168,7 +173,7 @@ export default async function Page({ params }: { params: ItemRouteParams }) {
 	}
 
 	return (
-		<div className="relative top-6">
+		<div className="relative">
 			<Member member={member} />
 		</div>
 	);

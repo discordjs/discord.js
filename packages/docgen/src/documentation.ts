@@ -164,7 +164,7 @@ export class Documentation {
 								file: member.sources?.[0]?.fileName,
 								line: member.sources?.[0]?.line,
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
-						  };
+							};
 
 				if (prop!.name) {
 					info.push(`member of "${prop!.name}"`);

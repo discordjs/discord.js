@@ -1,26 +1,21 @@
-import type {
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiModel,
-	ApiParameterListMixin,
-	Excerpt,
-} from '@discordjs/api-extractor-model';
+import type { ApiDocumentedItem, ApiEntryPoint, ApiModel, Excerpt } from '@discordjs/api-extractor-model';
+import { ApiParameterListMixin } from '@discordjs/api-extractor-model';
 import type { DocSection } from '@microsoft/tsdoc';
-import { cache } from 'react';
+import { resolvePackageName } from './resolvePackageName';
 
-export const findMemberByKey = cache((model: ApiModel, packageName: string, containerKey: string) => {
-	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
+export const findMemberByKey = (model: ApiModel, packageName: string, containerKey: string) => {
+	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
 	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
-});
+};
 
-export const findMember = cache((model: ApiModel, packageName: string, memberName: string | undefined) => {
+export const findMember = (model: ApiModel, packageName: string, memberName: string | undefined) => {
 	if (!memberName) {
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`)!;
+	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
 	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
-});
+};
 
 interface ResolvedParameter {
 	description?: DocSection | undefined;
@@ -41,7 +36,14 @@ interface ResolvedParameter {
  */
 export function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin): ResolvedParameter[] {
 	return item.parameters.map((param, idx) => {
-		const tsdocAnalog = item.tsdocComment?.params.blocks[idx];
+		const tsdocAnalog =
+			item.tsdocComment?.params.blocks[idx] ??
+			item
+				.getMergedSiblings()
+				.find(
+					(paramList): paramList is ApiDocumentedItem & ApiParameterListMixin =>
+						ApiParameterListMixin.isBaseClassOf(paramList) && paramList.overloadIndex === 1,
+				)?.tsdocComment?.params.blocks[idx];
 
 		return {
 			name: param.tsdocParamBlock?.parameterName ?? tsdocAnalog?.parameterName ?? param.name,

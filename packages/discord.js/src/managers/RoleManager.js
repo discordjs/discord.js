@@ -6,7 +6,7 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
@@ -139,8 +139,8 @@ class RoleManager extends CachedManager {
     color &&= resolveColor(color);
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
@@ -191,8 +191,8 @@ class RoleManager extends CachedManager {
 
     let icon = options.icon;
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 

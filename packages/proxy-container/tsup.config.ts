@@ -4,5 +4,4 @@ export default createTsupConfig({
 	dts: false,
 	format: 'esm',
 	minify: 'terser',
-	keepNames: false,
 });

@@ -16,11 +16,18 @@ const getForumChannel = lazy(() => require('../structures/ForumChannel'));
 const getMediaChannel = lazy(() => require('../structures/MediaChannel'));
 
 /**
+ * Extra options for creating a channel.
+ * @typedef {Object} CreateChannelOptions
+ * @property {boolean} [allowFromUnknownGuild] Whether to allow creating a channel from an unknown guild
+ * @private
+ */
+
+/**
  * Creates a discord.js channel from data received from the API.
  * @param {Client} client The client
  * @param {APIChannel} data The data of the channel to create
  * @param {Guild} [guild] The guild where this channel belongs
- * @param {Object} [extras] Extra information to supply for creating this channel
+ * @param {CreateChannelOptions} [extras] Extra information to supply for creating this channel
  * @returns {BaseChannel} Any kind of channel.
  * @ignore
  */

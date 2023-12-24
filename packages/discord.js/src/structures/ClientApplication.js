@@ -1,12 +1,15 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
+const { SKU } = require('./SKU');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
+const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -28,6 +31,12 @@ class ClientApplication extends Application {
      * @type {ApplicationCommandManager}
      */
     this.commands = new ApplicationCommandManager(this.client);
+
+    /**
+     * The entitlement manager for this application
+     * @type {EntitlementManager}
+     */
+    this.entitlements = new EntitlementManager(this.client);
   }
 
   _patch(data) {
@@ -167,8 +176,8 @@ class ClientApplication extends Application {
     this.owner = data.team
       ? new Team(this.client, data.team)
       : data.owner
-      ? this.client.users._add(data.owner)
-      : this.owner ?? null;
+        ? this.client.users._add(data.owner)
+        : this.owner ?? null;
   }
 
   /**
@@ -227,8 +236,8 @@ class ClientApplication extends Application {
         role_connections_verification_url: roleConnectionsVerificationURL,
         install_params: installParams,
         flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
-        icon: icon && (await DataResolver.resolveImage(icon)),
-        cover_image: coverImage && (await DataResolver.resolveImage(coverImage)),
+        icon: icon && (await resolveImage(icon)),
+        cover_image: coverImage && (await resolveImage(coverImage)),
         interactions_endpoint_url: interactionsEndpointURL,
         tags,
       },
@@ -286,6 +295,15 @@ class ClientApplication extends Application {
     });
 
     return newRecords.map(data => new ApplicationRoleConnectionMetadata(data));
+  }
+
+  /**
+   * Gets this application's SKUs
+   * @returns {Promise<Collection<Snowflake, SKU>>}
+   */
+  async fetchSKUs() {
+    const skus = await this.client.rest.get(Routes.skus(this.id));
+    return skus.reduce((coll, sku) => coll.set(sku.id, new SKU(this.client, sku)), new Collection());
   }
 }
 

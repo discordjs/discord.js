@@ -35,10 +35,12 @@ export function Nav({
 				universal
 			>
 				<div className="flex flex-col gap-4 p-3">
-					<PackageSelect />
-					<VersionSelect versions={versions} />
+					<div className="flex flex-col gap-4">
+						<PackageSelect />
+						<VersionSelect versions={versions} />
+					</div>
+					<Sidebar members={members} />
 				</div>
-				<Sidebar members={members} />
 			</Scrollbars>
 		</nav>
 	);

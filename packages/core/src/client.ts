@@ -16,6 +16,9 @@ import {
 	type GatewayChannelDeleteDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
+	type GatewayEntitlementCreateDispatchData,
+	type GatewayEntitlementDeleteDispatchData,
+	type GatewayEntitlementUpdateDispatchData,
 	type GatewayGuildAuditLogEntryCreateDispatchData,
 	type GatewayGuildBanAddDispatchData,
 	type GatewayGuildBanRemoveDispatchData,
@@ -103,6 +106,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
 	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
+	[GatewayDispatchEvents.EntitlementCreate]: [WithIntrinsicProps<GatewayEntitlementCreateDispatchData>];
+	[GatewayDispatchEvents.EntitlementDelete]: [WithIntrinsicProps<GatewayEntitlementDeleteDispatchData>];
+	[GatewayDispatchEvents.EntitlementUpdate]: [WithIntrinsicProps<GatewayEntitlementUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
 	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
 	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
@@ -163,9 +169,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
 }
 
-export type ManagerShardEventsMap = {
-	[K in keyof MappedEvents]: MappedEvents[K];
-};
+export interface ManagerShardEventsMap extends MappedEvents {}
 
 export interface ClientOptions {
 	gateway: Gateway;
@@ -179,7 +183,7 @@ export interface RequestGuildMembersResult {
 	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
 }
 
-export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class Client extends AsyncEventEmitter<MappedEvents> {
 	public readonly rest: REST;
 
 	public readonly gateway: Gateway;
@@ -193,8 +197,11 @@ export class Client extends AsyncEventEmitter<ManagerShardEventsMap> {
 		this.api = new API(rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
-			// @ts-expect-error event props can't be resolved properly, but they are correct
-			this.emit(dispatch.t, this.wrapIntrinsicProps(dispatch.d, shardId));
+			this.emit(
+				dispatch.t,
+				// @ts-expect-error event props can't be resolved properly, but they are correct
+				this.wrapIntrinsicProps(dispatch.d, shardId),
+			);
 		});
 	}
 

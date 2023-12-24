@@ -30,7 +30,7 @@ export async function build({ input, custom: customDocs, root, output, newOutput
 		}
 	} else {
 		console.log('Parsing JSDocs in source files...');
-		// eslint-disable-next-line n/no-sync
+
 		data = jsdoc2md.getTemplateDataSync({ files: input }) as (ChildTypes & RootTypes)[];
 		console.log(`${data.length} JSDoc items parsed.`);
 	}

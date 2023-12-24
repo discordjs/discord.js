@@ -13,7 +13,7 @@ const Webhook = require('../structures/Webhook');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -219,7 +219,7 @@ class GuildChannelManager extends CachedManager {
     const id = this.resolveId(channel);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await DataResolver.resolveImage(avatar);
+      avatar = await resolveImage(avatar);
     }
     const data = await this.client.rest.post(Routes.channelWebhooks(id), {
       body: {
