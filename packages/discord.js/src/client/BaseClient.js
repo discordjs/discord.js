@@ -107,8 +107,8 @@ class BaseClient extends EventEmitter {
     return flatten(this, ...props);
   }
 
-  [Symbol.dispose]() {
-    this.destroy();
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
   }
 }
 
