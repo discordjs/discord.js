@@ -106,6 +106,10 @@ class BaseClient extends EventEmitter {
   toJSON(...props) {
     return flatten(this, ...props);
   }
+
+  [Symbol.dispose]() {
+    this.destroy();
+  }
 }
 
 module.exports = BaseClient;

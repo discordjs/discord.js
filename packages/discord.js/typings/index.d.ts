@@ -526,6 +526,7 @@ export class BaseClient extends EventEmitter {
   public rest: REST;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
+  public [Symbol.dispose](): void;
 }
 
 export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
