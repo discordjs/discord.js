@@ -6,6 +6,7 @@ import { Menu, MenuButton, MenuItem, useMenuState } from 'ariakit/menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
+import useSWR from 'swr';
 
 const isDev = process.env.NEXT_PUBLIC_LOCAL_DEV === 'true' ?? process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview';
 
@@ -13,6 +14,10 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 	const pathname = usePathname();
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
+
+	const { data } = useSWR<string[]>(packageName ? `/api/${packageName}/versions` : null, {
+		fallbackData: versions,
+	});
 
 	const versionMenu = useMenuState({
 		gutter: 8,
@@ -22,7 +27,7 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 
 	const versionMenuItems = useMemo(
 		() =>
-			versions?.map((item, idx) => (
+			data?.map((item, idx) => (
 				<Link href={`/docs/packages/${packageName}/${isDev ? 'main' : item}`} key={`${item}-${idx}`}>
 					<MenuItem
 						className="my-0.5 rounded bg-white p-3 text-sm outline-none active:bg-light-800 dark:bg-dark-600 hover:bg-light-700 focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-400 dark:hover:bg-dark-500"
@@ -33,7 +38,7 @@ export default function VersionSelect({ versions }: { readonly versions: string[
 					</MenuItem>
 				</Link>
 			)) ?? [],
-		[versions, packageName, versionMenu],
+		[data, packageName, versionMenu],
 	);
 
 	return (

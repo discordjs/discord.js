@@ -61,8 +61,19 @@ export function bold<Content extends string>(content: Content): `**${Content}**`
  *
  * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
+ * @deprecated Use {@link underline} instead.
  */
 export function underscore<Content extends string>(content: Content): `__${Content}__` {
+	return underline(content);
+}
+
+/**
+ * Formats the content into underlined text.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function underline<Content extends string>(content: Content): `__${Content}__` {
 	return `__${content}__`;
 }
 

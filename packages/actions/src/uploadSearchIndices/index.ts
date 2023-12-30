@@ -52,7 +52,10 @@ try {
 		await Promise.all(
 			indices.map(async (index) => {
 				console.log(`Uploading ${index.index}...`);
-				await client.createIndex(index.index);
+				try {
+					await client.createIndex(index.index);
+				} catch {}
+
 				await client.index(index.index).addDocuments(index.data);
 			}),
 		);

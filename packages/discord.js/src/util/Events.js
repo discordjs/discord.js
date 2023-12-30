@@ -14,6 +14,9 @@
  * @property {string} ChannelUpdate channelUpdate
  * @property {string} ClientReady ready
  * @property {string} Debug debug
+ * @property {string} EntitlementCreate entitlementCreate
+ * @property {string} EntitlementUpdate entitlementUpdate
+ * @property {string} EntitlementDelete entitlementDelete
  * @property {string} Error error
  * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
  * @property {string} GuildAvailable guildAvailable
@@ -96,6 +99,9 @@ module.exports = {
   ChannelUpdate: 'channelUpdate',
   ClientReady: 'ready',
   Debug: 'debug',
+  EntitlementCreate: 'entitlementCreate',
+  EntitlementUpdate: 'entitlementUpdate',
+  EntitlementDelete: 'entitlementDelete',
   Error: 'error',
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildAvailable: 'guildAvailable',

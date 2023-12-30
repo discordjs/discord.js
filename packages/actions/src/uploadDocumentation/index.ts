@@ -32,7 +32,6 @@ for await (const file of globber.globGenerator()) {
 			'',
 		)}, ${version}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
 	} catch (error) {
-		const err = error as Error;
-		console.log(err.message);
+		console.log(error);
 	}
 }
