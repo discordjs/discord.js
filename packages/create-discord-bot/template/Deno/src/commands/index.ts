@@ -1,4 +1,4 @@
-import type { RESTPostAPIApplicationCommandsJSONBody, CommandInteraction } from 'npm:discord.js@^14.14.0';
+import type { RESTPostAPIApplicationCommandsJSONBody, CommandInteraction } from 'npm:discord.js@^14.14.1';
 import type { StructurePredicate } from '../util/loaders.ts';
 
 /**
