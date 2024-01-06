@@ -1,7 +1,6 @@
 'use strict';
 
 const process = require('node:process');
-const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 
@@ -98,7 +97,7 @@ class Emoji extends Base {
    * reaction.message.channel.send(`The emoji used was: ${reaction.emoji}`);
    */
   toString() {
-    return this.id ? formatEmoji(this.id, this.animated) : this.name;
+    return this.id ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
   }
 
   toJSON() {
