@@ -336,11 +336,30 @@ export function formatEmoji<EmojiId extends Snowflake>(
 	animated?: boolean,
 ): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>`;
 
-export function formatEmoji<EmojiId extends Snowflake>(
+/**
+ * Formats an emoji id into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @param emojiId - The emoji id to format
+ * @param animated - Whether the emoji is animated
+ * @param name - The name of the emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, Name extends string>(
+	emojiId: EmojiId,
+	animated?: boolean,
+	name?: Name,
+): `<:${Name}:${EmojiId}>` | `<a:${Name}:${EmojiId}>`;
+
+export function formatEmoji<EmojiId extends Snowflake, Name extends string>(
 	emojiId: EmojiId,
 	animated = false,
+	name: Name
 ): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>` {
-	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
+	if (name === undefined) {
+	        return `<${animated ? 'a' : ''}:_:${emojiId}>`;
+	}
+
+	return `<${animated ? 'a' : ''}:${name}:${emojiId}>`;
 }
 
 /**
