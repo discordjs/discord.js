@@ -2398,6 +2398,10 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | InteractionEditReplyOptions,
