@@ -355,11 +355,7 @@ export function formatEmoji<EmojiId extends Snowflake, Name extends string>(
 	animated = false,
 	name: Name
 ): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>` {
-	if (name === undefined) {
-	        return `<${animated ? 'a' : ''}:_:${emojiId}>`;
-	}
-
-	return `<${animated ? 'a' : ''}:${name}:${emojiId}>`;
+	return `<${animated ? 'a' : ''}:${name ?? '_'}:${emojiId}>`;
 }
 
 /**
