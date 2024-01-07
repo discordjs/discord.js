@@ -426,7 +426,7 @@ class Sweepers {
 
     for (const guild of this.client.guilds.cache.values()) {
       // We may be unable to sweep the cache if the guild is unavailable and was never patched
-      if (!(key in guild)) continue;
+      if (!guild.available) continue;
 
       const { cache } = guild[key];
 
