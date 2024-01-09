@@ -344,8 +344,8 @@ export function formatEmoji<EmojiId extends Snowflake>(
  * @param options - The options for formatting an emoji
  */
 export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
-	options: Omit<FormatEmojiOptions<EmojiId, EmojiName>, 'animated'> & { animated?: false },
-): `<:${EmojiName}:${EmojiId}>`;
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated: true },
+): `<a:${EmojiName}:${EmojiId}>`;
 
 /**
  * Formats an animated emoji id and name into a fully qualified emoji identifier.
@@ -355,8 +355,8 @@ export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>
  * @param options - The options for formatting an emoji
  */
 export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
-	options: Omit<FormatEmojiOptions<EmojiId, EmojiName>, 'animated'> & { animated?: true },
-): `<a:${EmojiName}:${EmojiId}>`;
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated?: false },
+): `<:${EmojiName}:${EmojiId}>`;
 
 /**
  * Formats an emoji id and name into a fully qualified emoji identifier.
