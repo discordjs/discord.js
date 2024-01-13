@@ -12,8 +12,8 @@
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^1.1.0",
-		"discord.js": "^14.14.0",
+		"@discordjs/core": "^1.1.1",
+		"discord.js": "^14.14.1",
 		"dotenv": "^16.3.1"
 	},
 	"devDependencies": {
