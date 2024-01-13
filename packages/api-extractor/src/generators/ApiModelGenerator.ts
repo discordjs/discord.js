@@ -1769,9 +1769,9 @@ export class ApiModelGenerator {
 			excerptTokens: [
 				{
 					kind: ExcerptTokenKind.Content,
-					text: `${prop.access} ${prop.scope === 'static' ? 'static ' : ''}${prop.readonly ? 'readonly ' : ''}${
-						prop.name
-					} :`,
+					text: `${prop.access ? `${prop.access} ` : ''}${prop.scope === 'static' ? 'static ' : ''}${
+						prop.readonly ? 'readonly ' : ''
+					}${prop.name} :`,
 				},
 				...mappedVarType,
 				{ kind: ExcerptTokenKind.Content, text: ';' },
