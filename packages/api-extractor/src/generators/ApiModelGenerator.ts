@@ -1710,6 +1710,7 @@ export class ApiModelGenerator {
 		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
+			[ts.SyntaxKind.EnumDeclaration]: 'enum',
 			[ts.SyntaxKind.InterfaceDeclaration]: 'interface',
 			[ts.SyntaxKind.TypeAliasDeclaration]: 'type',
 		};
