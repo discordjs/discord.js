@@ -134,7 +134,7 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async send(options) {
+ async send(options, file=null) {
     const User = require('../User');
     const { GuildMember } = require('../GuildMember');
 
@@ -151,9 +151,21 @@ class TextBasedChannel {
       messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
-    const { body, files } = await messagePayload.resolveFiles();
+    var { body, files } = await messagePayload.resolveFiles();
+    if (file) {
+      if (Array.isArray(file)) {
+        files = file.map(function get(file) {
+          return {data: Buffer.from(file.contents), name: file.name, contentType: file.type};
+        });
+      }
+      else if ((file.name) && (file.contents) && (file.type)) {
+      files = [{data: Buffer.from(file.contents), name: file.name, contentType: file.type}];
+      }
+      else {
+        throw new Error("INVALID FILE");
+      }
+    }
     const d = await this.client.rest.post(Routes.channelMessages(this.id), { body, files });
-
     return this.messages.cache.get(d.id) ?? this.messages._add(d);
   }
 
