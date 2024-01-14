@@ -109,6 +109,7 @@ class TextBasedChannel {
   /**
    * Sends a message to this channel.
    * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @param {fileObject|fileObjectarray} file The file or files to send alongside the message, implemented with string file creation
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message
