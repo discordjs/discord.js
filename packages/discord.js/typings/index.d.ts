@@ -6722,6 +6722,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
   avatarURL?: string;
   threadId?: Snowflake;
   threadName?: string;
+  appliedTags?: Snowflake[];
 }
 
 export interface WebSocketOptions {
