@@ -175,6 +175,7 @@ import {
   SKUType,
   APIEntitlement,
   EntitlementType,
+  UserPremiumType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3252,6 +3253,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
+  public premiumType: UserPremiumType | null;
   public system: boolean;
   public get tag(): string;
   public username: string;

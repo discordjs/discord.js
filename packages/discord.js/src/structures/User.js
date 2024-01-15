@@ -123,6 +123,16 @@ class User extends Base {
       this.flags = new UserFlagsBitField(data.public_flags);
     }
 
+    if ('premium_type' in data) {
+      /**
+       * The type of Nitro subscription on a user's account
+       * @type {?UserPremiumType}
+       */
+      this.premiumType = data.premium_type;
+    } else {
+      this.premiumType ??= null;
+    }
+
     if ('avatar_decoration' in data) {
       /**
        * The user avatar decoration's hash
@@ -285,6 +295,7 @@ class User extends Base {
       this.globalName === user.globalName &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.flags?.bitfield &&
+      this.premiumType === user.premiumType &&
       this.banner === user.banner &&
       this.accentColor === user.accentColor
     );
@@ -305,6 +316,7 @@ class User extends Base {
       this.globalName === user.global_name &&
       this.avatar === user.avatar &&
       this.flags?.bitfield === user.public_flags &&
+      this.premiumType === user.premium_type &&
       ('banner' in user ? this.banner === user.banner : true) &&
       ('accent_color' in user ? this.accentColor === user.accent_color : true)
     );
