@@ -66,7 +66,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 										// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 										.trim() || undefined,
 								type: [[[(child.type as LiteralType | undefined)?.value]]],
-						  }))
+							}))
 						: undefined,
 				};
 			}
@@ -99,7 +99,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						type: child.type
 							? new DocumentedVarType({ names: [parseType(child.type)] }, this.config).serialize()
 							: child.kindString === 'Method'
-							  ? new DocumentedVarType(
+								? new DocumentedVarType(
 										{
 											names: [
 												parseType({
@@ -114,8 +114,8 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 												.trim(),
 										},
 										this.config,
-							    ).serialize()
-							  : undefined,
+									).serialize()
+								: undefined,
 					}));
 
 					return {
@@ -185,7 +185,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 										},
 										this.config,
 									).serialize(),
-							  ]
+								]
 							: undefined,
 						returnsDescription:
 							sig?.comment?.blockTags

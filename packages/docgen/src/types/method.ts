@@ -57,7 +57,7 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((param) =>
 							new DocumentedParam(param, this.config).serialize(),
-					  )
+						)
 					: undefined,
 				returns: signature.type
 					? [
@@ -74,7 +74,7 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 								},
 								this.config,
 							).serialize(),
-					  ]
+						]
 					: undefined,
 				returnsDescription:
 					signature.comment?.blockTags
@@ -113,7 +113,7 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 							{ names: param.type.names, description: param.description, nullable: param.nullable },
 							this.config,
 						).serialize(),
-				  )
+					)
 				: undefined,
 			meta: new DocumentedItemMeta(data.meta, this.config).serialize(),
 		};

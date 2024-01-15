@@ -87,7 +87,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 								version={
 									resolved?.package
 										? // eslint-disable-next-line unicorn/better-regex
-										  item.getAssociatedPackage()?.dependencies?.[resolved.package]?.replace(/[~^]/, '')
+											item.getAssociatedPackage()?.dependencies?.[resolved.package]?.replace(/[~^]/, '')
 										: undefined
 								}
 							>

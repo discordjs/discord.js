@@ -186,6 +186,10 @@ import {
   Emoji,
   PartialEmoji,
   Awaitable,
+  Channel,
+  DirectoryChannel,
+  Entitlement,
+  SKU,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2282,16 +2286,12 @@ declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
-declare const stageChannel: StageChannel;
-declare const partialGroupDMChannel: PartialGroupDMChannel;
+type UserMentionChannels = DMChannel | PartialDMChannel;
+declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;
+declare const userMentionChannels: UserMentionChannels;
 
-expectType<ChannelMention>(textChannel.toString());
-expectType<ChannelMention>(voiceChannel.toString());
-expectType<ChannelMention>(newsChannel.toString());
-expectType<ChannelMention>(threadChannel.toString());
-expectType<ChannelMention>(stageChannel.toString());
-expectType<ChannelMention>(partialGroupDMChannel.toString());
-expectType<UserMention>(dmChannel.toString());
+expectType<ChannelMention>(channelMentionChannels.toString());
+expectType<UserMention>(userMentionChannels.toString());
 expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
@@ -2313,7 +2313,9 @@ expectType<Promise<Message>>(interactionWebhook.send('content'));
 expectType<Promise<Message>>(interactionWebhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(interactionWebhook.fetchMessage(snowflake));
 
+declare const partialGroupDMChannel: PartialGroupDMChannel;
 declare const categoryChannel: CategoryChannel;
+declare const stageChannel: StageChannel;
 declare const forumChannel: ForumChannel;
 
 await forumChannel.edit({
@@ -2425,4 +2427,56 @@ declare const emoji: Emoji;
 {
   expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
   expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
+}
+
+declare const application: ClientApplication;
+declare const entitlement: Entitlement;
+declare const sku: SKU;
+{
+  expectType<Collection<Snowflake, SKU>>(await application.fetchSKUs());
+  expectType<Collection<Snowflake, Entitlement>>(await application.entitlements.fetch());
+
+  await application.entitlements.fetch({
+    guild,
+    skus: ['12345678901234567', sku],
+    user,
+    excludeEnded: true,
+    limit: 10,
+  });
+
+  await application.entitlements.createTest({ sku: '12345678901234567', user });
+  await application.entitlements.createTest({ sku, guild });
+
+  await application.entitlements.deleteTest(entitlement);
+
+  expectType<boolean>(entitlement.isActive());
+
+  if (entitlement.isUserSubscription()) {
+    expectType<Snowflake>(entitlement.userId);
+    expectType<User>(await entitlement.fetchUser());
+    expectType<null>(entitlement.guildId);
+    expectType<null>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  } else if (entitlement.isGuildSubscription()) {
+    expectType<Snowflake>(entitlement.guildId);
+    expectType<Guild>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  }
+
+  if (entitlement.isTest()) {
+    expectType<null>(entitlement.startsTimestamp);
+    expectType<null>(entitlement.endsTimestamp);
+    expectType<null>(entitlement.startsAt);
+    expectType<null>(entitlement.endsAt);
+  }
+
+  client.on(Events.InteractionCreate, async interaction => {
+    expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
+
+    if (interaction.isRepliable()) {
+      await interaction.sendPremiumRequired();
+    }
+  });
 }

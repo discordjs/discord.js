@@ -170,6 +170,11 @@ import {
   TeamMemberRole,
   GuildWidgetStyle,
   GuildOnboardingMode,
+  APISKU,
+  SKUFlags,
+  SKUType,
+  APIEntitlement,
+  EntitlementType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -585,6 +590,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
+  public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -1002,34 +1008,25 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public isReady(): this is Client<true>;
   public toJSON(): unknown;
 
-  public on<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public on<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public on<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
-  public once<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public once<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public once<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
   public emit<Event extends keyof ClientEvents>(event: Event, ...args: ClientEvents[Event]): boolean;
   public emit<Event extends string | symbol>(event: Exclude<Event, keyof ClientEvents>, ...args: unknown[]): boolean;
 
-  public off<Event extends keyof ClientEvents>(
-    event: Event,
-    listener: (...args: ClientEvents[Event]) => Awaitable<void>,
-  ): this;
+  public off<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
   public off<Event extends string | symbol>(
     event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => Awaitable<void>,
+    listener: (...args: any[]) => void,
   ): this;
 
   public removeAllListeners<Event extends keyof ClientEvents>(event?: Event): this;
@@ -1042,6 +1039,7 @@ export class ClientApplication extends Application {
   public botRequireCodeGrant: boolean | null;
   public bot: User | null;
   public commands: ApplicationCommandManager;
+  public entitlements: EntitlementManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
   public cover: string | null;
@@ -1058,6 +1056,7 @@ export class ClientApplication extends Application {
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
+  public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
     records: ApplicationRoleConnectionMetadataEditOptions[],
   ): Promise<ApplicationRoleConnectionMetadata[]>;
@@ -1138,12 +1137,12 @@ export abstract class Collector<Key, Value, Extras extends unknown[] = []> exten
 
   public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
   ): this;
 
   public once<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
     event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => Awaitable<void>,
+    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
   ): this;
 }
 
@@ -1278,19 +1277,10 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
+/** @internal */
 export interface ResolvedFile {
   data: Buffer;
   contentType?: string;
-}
-
-export class DataResolver extends null {
-  private constructor();
-  public static resolveBase64(data: Base64Resolvable): string;
-  public static resolveCode(data: string, regex: RegExp): string;
-  public static resolveFile(resource: BufferResolvable | Stream): Promise<ResolvedFile>;
-  public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
-  public static resolveInviteCode(data: InviteResolvable): string;
-  public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 }
 
 export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
@@ -1321,6 +1311,32 @@ export class Emoji extends Base {
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
+}
+
+export class Entitlement extends Base {
+  private constructor(client: Client<true>, data: APIEntitlement);
+  public id: Snowflake;
+  public skuId: Snowflake;
+  public userId: Snowflake;
+  public guildId: Snowflake | null;
+  public applicationId: Snowflake;
+  public type: EntitlementType;
+  public deleted: boolean;
+  public startsTimestamp: number | null;
+  public endsTimestamp: number | null;
+  public get guild(): Guild | null;
+  public get startsAt(): Date | null;
+  public get endsAt(): Date | null;
+  public fetchUser(): Promise<User>;
+  public isActive(): boolean;
+  public isTest(): this is this & {
+    startsTimestamp: null;
+    endsTimestamp: null;
+    get startsAt(): null;
+    get endsAt(): null;
+  };
+  public isUserSubscription(): this is this & { guildId: null; get guild(): null };
+  public isGuildSubscription(): this is this & { guildId: Snowflake; guild: Guild };
 }
 
 export class Guild extends AnonymousGuild {
@@ -1847,6 +1863,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
+  public entitlements: Collection<Snowflake, Entitlement>;
   public inGuild(): this is BaseInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is BaseInteraction<'cached'>;
   public inRawGuild(): this is BaseInteraction<'raw'>;
@@ -1893,19 +1910,13 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
-  public on(
-    event: 'end',
-    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
-  ): this;
-  public on(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
+  public on(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public on(event: string, listener: (...args: any[]) => void): this;
 
-  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => Awaitable<void>): this;
-  public once(
-    event: 'end',
-    listener: (collected: Collection<Snowflake, Interaction>, reason: string) => Awaitable<void>,
-  ): this;
-  public once(event: string, listener: (...args: any[]) => Awaitable<void>): this;
+  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
+  public once(event: 'end', listener: (collected: Collection<Snowflake, Interaction>, reason: string) => void): this;
+  public once(event: string, listener: (...args: any[]) => void): this;
 }
 
 export class InteractionWebhook extends PartialWebhookMixin() {
@@ -2202,6 +2213,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
+  public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2400,6 +2412,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public sendPremiumRequired(): Promise<void>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
@@ -2807,12 +2820,12 @@ export class Shard extends EventEmitter {
 
   public on<Event extends keyof ShardEventTypes>(
     event: Event,
-    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: ShardEventTypes[Event]) => void,
   ): this;
 
   public once<Event extends keyof ShardEventTypes>(
     event: Event,
-    listener: (...args: ShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: ShardEventTypes[Event]) => void,
   ): this;
 }
 
@@ -2883,9 +2896,9 @@ export class ShardingManager extends EventEmitter {
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
   public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
 
-  public on(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
+  public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
-  public once(event: 'shardCreate', listener: (shard: Shard) => Awaitable<void>): this;
+  public once(event: 'shardCreate', listener: (shard: Shard) => void): this;
 }
 
 export interface FetchRecommendedShardCountOptions {
@@ -2898,6 +2911,23 @@ export {
   SnowflakeGenerateOptions,
   DeconstructedSnowflake,
 } from '@sapphire/snowflake';
+
+export class SKU extends Base {
+  private constructor(client: Client<true>, data: APISKU);
+  public id: Snowflake;
+  public type: SKUType;
+  public applicationId: Snowflake;
+  public name: string;
+  public slug: string;
+  public flags: Readonly<SKUFlagsBitField>;
+}
+
+export type SKUFlagsString = keyof typeof SKUFlags;
+
+export class SKUFlagsBitField extends BitField<SKUFlagsString> {
+  public static FLAGS: typeof SKUFlags;
+  public static resolve(bit?: BitFieldResolvable<SKUFlagsString, number>): number;
+}
 
 export class StageChannel extends BaseGuildVoiceChannel {
   public get stageInstance(): StageInstance | null;
@@ -2912,6 +2942,7 @@ export class DirectoryChannel extends BaseChannel {
   public guild: InviteGuild;
   public guildId: Snowflake;
   public name: string;
+  public toString(): ChannelMention;
 }
 
 export class StageInstance extends Base {
@@ -2996,6 +3027,9 @@ export class Sweepers {
   public sweepBans(filter: CollectionSweepFilter<SweeperDefinitions['bans'][0], SweeperDefinitions['bans'][1]>): number;
   public sweepEmojis(
     filter: CollectionSweepFilter<SweeperDefinitions['emojis'][0], SweeperDefinitions['emojis'][1]>,
+  ): number;
+  public sweepEntitlements(
+    filter: CollectionSweepFilter<SweeperDefinitions['entitlements'][0], SweeperDefinitions['entitlements'][1]>,
   ): number;
   public sweepInvites(
     filter: CollectionSweepFilter<SweeperDefinitions['invites'][0], SweeperDefinitions['invites'][1]>,
@@ -3266,6 +3300,7 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
+/** @internal */
 export function basename(path: string, ext?: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
 export function discordSort<Key, Value extends { rawPosition: number; id: Snowflake }>(
@@ -3274,14 +3309,20 @@ export function discordSort<Key, Value extends { rawPosition: number; id: Snowfl
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
+/** @internal */
 export function makeError(obj: MakeErrorOptions): Error;
+/** @internal */
 export function makePlainError(err: Error): MakeErrorOptions;
+/** @internal */
 export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
+/** @internal */
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
+/** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
+/** @internal */
 export function setPosition<Item extends Channel | Role>(
   item: Item,
   position: number,
@@ -3292,10 +3333,12 @@ export function setPosition<Item extends Channel | Role>(
   reason?: string,
 ): Promise<{ id: Snowflake; position: number }[]>;
 export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+/** @internal */
 export function transformResolved<Cached extends CacheType>(
   supportingData: SupportingInteractionResolvedData,
   data?: APIApplicationCommandInteractionData['resolved'],
 ): CommandInteractionResolvedData<Cached>;
+export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 
 export interface MappedComponentBuilderTypes {
   [ComponentType.Button]: ButtonBuilder;
@@ -3319,11 +3362,18 @@ export interface MappedComponentTypes {
   [ComponentType.TextInput]: TextInputComponent;
 }
 
-export interface ChannelCreateOptions {
+/** @internal */
+export interface CreateChannelOptions {
   allowFromUnknownGuild?: boolean;
 }
 
-export function createChannel(client: Client<true>, data: APIChannel, options?: ChannelCreateOptions): Channel;
+/** @internal */
+export function createChannel(
+  client: Client<true>,
+  data: APIChannel,
+  guild?: Guild,
+  extras?: CreateChannelOptions,
+): Channel;
 
 export function createComponent<Type extends keyof MappedComponentTypes>(
   data: APIMessageComponent & { type: Type },
@@ -3373,6 +3423,19 @@ export class Formatters extends null {
   /** @deprecated Import this method directly from discord.js instead. */
   public static userMention: typeof userMention;
 }
+
+/** @internal */
+export function resolveBase64(data: Base64Resolvable): string;
+/** @internal */
+export function resolveCode(data: string, regex: RegExp): string;
+/** @internal */
+export function resolveFile(resource: BufferResolvable | Stream): Promise<ResolvedFile>;
+/** @internal */
+export function resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
+/** @internal */
+export function resolveInviteCode(data: InviteResolvable): string;
+/** @internal */
+export function resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 
 export type ComponentData =
   | MessageActionRowComponentData
@@ -3536,12 +3599,12 @@ export class WebSocketShard extends EventEmitter {
 
   public on<Event extends keyof WebSocketShardEventTypes>(
     event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[Event]) => void,
   ): this;
 
   public once<Event extends keyof WebSocketShardEventTypes>(
     event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => Awaitable<void>,
+    listener: (...args: WebSocketShardEventTypes[Event]) => void,
   ): this;
 }
 
@@ -3814,13 +3877,17 @@ export enum DiscordjsErrorCodes {
   SweepFilterReturn = 'SweepFilterReturn',
 
   GuildForumMessageRequired = 'GuildForumMessageRequired',
+
+  EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
 }
 
+/** @internal */
 export interface DiscordjsErrorFields<Name extends string> {
   readonly name: `${Name} [${DiscordjsErrorCodes}]`;
   get code(): DiscordjsErrorCodes;
 }
 
+/** @internal */
 export function DiscordjsErrorMixin<Entity, Name extends string>(
   Base: Constructable<Entity>,
   name: Name,
@@ -3993,6 +4060,37 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
+}
+
+export type EntitlementResolvable = Snowflake | Entitlement;
+export type SKUResolvable = Snowflake | SKU;
+
+export interface GuildEntitlementCreateOptions {
+  sku: SKUResolvable;
+  guild: GuildResolvable;
+}
+
+export interface UserEntitlementCreateOptions {
+  sku: SKUResolvable;
+  user: UserResolvable;
+}
+
+export interface FetchEntitlementsOptions {
+  limit?: number;
+  guild?: GuildResolvable;
+  user?: UserResolvable;
+  skus?: readonly SKUResolvable[];
+  excludeEnded?: boolean;
+  cache?: boolean;
+  before?: Snowflake;
+  after?: Snowflake;
+}
+
+export class EntitlementManager extends CachedManager<Snowflake, Entitlement, EntitlementResolvable> {
+  private constructor(client: Client<true>, iterable: Iterable<APIEntitlement>);
+  public fetch(options?: FetchEntitlementsOptions): Promise<Collection<Snowflake, Entitlement>>;
+  public createTest(options: GuildEntitlementCreateOptions | UserEntitlementCreateOptions): Promise<Entitlement>;
+  public deleteTest(entitlement: EntitlementResolvable): Promise<void>;
 }
 
 export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> {}
@@ -4369,10 +4467,13 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 // to each of those classes
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
+
+/** @internal */
 export function PartialTextBasedChannel<Entity>(
   Base?: Constructable<Entity>,
 ): Constructable<Entity & PartialTextBasedChannelFields<false>>;
 
+/** @internal */
 export function TextBasedChannelMixin<
   Entity,
   InGuild extends boolean = boolean,
@@ -4413,9 +4514,12 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
 
+/** @internal */
 export function PartialWebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & PartialWebhookFields>;
+/** @internal */
 export function WebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & WebhookFields>;
 
+/** @internal */
 export interface PartialWebhookFields {
   id: Snowflake;
   get url(): string;
@@ -4430,6 +4534,7 @@ export interface PartialWebhookFields {
   ): Promise<APIMessage | Message>;
 }
 
+/** @internal */
 export interface WebhookFields extends PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
@@ -4966,6 +5071,9 @@ export interface ClientEvents {
   emojiCreate: [emoji: GuildEmoji];
   emojiDelete: [emoji: GuildEmoji];
   emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
+  entitlementCreate: [entitlement: Entitlement];
+  entitlementDelete: [entitlement: Entitlement];
+  entitlementUpdate: [oldEntitlement: Entitlement | null, newEntitlement: Entitlement];
   error: [error: Error];
   guildAuditLogEntryCreate: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
   guildAvailable: [guild: Guild];
@@ -5178,6 +5286,9 @@ export enum Events {
   AutoModerationRuleDelete = 'autoModerationRuleDelete',
   AutoModerationRuleUpdate = 'autoModerationRuleUpdate',
   ClientReady = 'ready',
+  EntitlementCreate = 'entitlementCreate',
+  EntitlementDelete = 'entitlementDelete',
+  EntitlementUpdate = 'entitlementUpdate',
   GuildAuditLogEntryCreate = 'guildAuditLogEntryCreate',
   GuildAvailable = 'guildAvailable',
   GuildCreate = 'guildCreate',
@@ -5979,6 +6090,7 @@ export interface LifetimeFilterOptions<Key, Value> {
   lifetime?: number;
 }
 
+/** @internal */
 export interface MakeErrorOptions {
   name: string;
   message: string;
@@ -6433,6 +6545,7 @@ export interface StageInstanceEditOptions {
   privacyLevel?: StageInstancePrivacyLevel;
 }
 
+/** @internal */
 export interface SupportingInteractionResolvedData {
   client: Client;
   guild?: Guild;
@@ -6459,6 +6572,7 @@ export interface SweeperDefinitions {
   autoModerationRules: [Snowflake, AutoModerationRule];
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];
+  entitlements: [Snowflake, Entitlement];
   invites: [string, Invite, true];
   guildMembers: [Snowflake, GuildMember];
   messages: [Snowflake, Message, true];

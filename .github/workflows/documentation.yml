@@ -51,8 +51,33 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
+      - name: Checkout main repository
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: actions/checkout@v3
+        with:
+          path: 'main'
+
+      - name: Build main
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        shell: bash
+        run: |
+          cd main
+          pnpm install --frozen-lockfile --prefer-offline --loglevel error
+          pnpm run build
+          cd ..
+
       - name: Build docs
         run: pnpm run docs
+
+      - name: Build docs with main api-extractor
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        run: |
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
+          for PACKAGE in "${PACKAGES[@]}"; do
+            cd "packages/${PACKAGE}"
+            ../../main/packages/api-extractor/bin/api-extractor run --local --minify
+            cd ../..
+          done
 
       - name: Checkout docs repository
         uses: actions/checkout@v3
@@ -69,11 +94,21 @@ jobs:
           tag: ${{ inputs.ref || github.ref_name }}
 
       - name: Upload documentation to database
-        if: ${{ env.REF_TYPE == 'tag' }}
+        if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./packages/actions/src/uploadDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
+      - name: Upload documentation to database
+        if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
@@ -93,11 +128,18 @@ jobs:
           fi
 
       - name: Upload documentation to database
-        if: ${{ env.REF_TYPE == 'branch' }}
+        if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./packages/actions/src/uploadDocumentation
+
+      - name: Upload documentation to database
+        if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadDocumentation
 
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}

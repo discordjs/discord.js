@@ -165,6 +165,9 @@ const Messages = {
   [DjsErrorCodes.SweepFilterReturn]: 'The return value of the sweepFilter function was not false or a Function',
 
   [DjsErrorCodes.GuildForumMessageRequired]: 'You must provide a message to create a guild forum thread',
+
+  [DjsErrorCodes.EntitlementCreateInvalidOwner]:
+    'You must provide either a guild or a user to create an entitlement, but not both',
 };
 
 module.exports = Messages;
