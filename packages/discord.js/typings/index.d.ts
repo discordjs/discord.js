@@ -3666,6 +3666,15 @@ export type NonSystemMessageType =
   | MessageType.ChatInputCommand
   | MessageType.ContextMenuCommand;
 
+export type UndeletableMessageType =
+  | MessageType.RecipientAdd
+  | MessageType.RecipientRemove
+  | MessageType.Call
+  | MessageType.ChannelNameChange
+  | MessageType.ChannelIconChange
+  | MessageType.ThreadStarterMessage;
+
+/** @deprecated This type will no longer be updated. Use {@link UndeletableMessageType} instead. */
 export type DeletableMessageType =
   | MessageType.AutoModerationAction
   | MessageType.ChannelFollowAdd
@@ -3698,6 +3707,8 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  UndeletableMessageTypes: UndeletableMessageType[];
+  /** @deprecated This list will no longer be updated. Use {@link Constants.UndeletableMessageTypes} */
   DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
