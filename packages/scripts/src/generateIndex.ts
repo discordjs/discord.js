@@ -66,7 +66,7 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 					const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
 					if (declarationReference?.resolvedApiItem) {
 						const foundItem = declarationReference?.resolvedApiItem;
-						retVal += urlDestination ?? linkText ?? foundItem?.displayName;
+						retVal += linkText ?? foundItem?.displayName;
 						break;
 					}
 
