@@ -64,8 +64,14 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				const { codeDestination, urlDestination, linkText } = node as DocLinkTag;
 				if (codeDestination) {
 					const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
-					const foundItem = declarationReference?.resolvedApiItem;
-					retVal += urlDestination ?? linkText ?? foundItem?.displayName;
+					if (declarationReference?.resolvedApiItem) {
+						const foundItem = declarationReference?.resolvedApiItem;
+						retVal += urlDestination ?? linkText ?? foundItem?.displayName;
+						break;
+					}
+
+					const typeName = codeDestination.memberReferences.map((ref) => ref.memberIdentifier!.identifier).join('.');
+					retVal += typeName;
 					break;
 				}
 
