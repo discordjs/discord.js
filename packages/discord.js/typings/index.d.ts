@@ -3708,7 +3708,7 @@ export const Constants: {
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
   UndeletableMessageTypes: UndeletableMessageType[];
-  /** @deprecated This list will no longer be updated. Use {@link Constants.UndeletableMessageTypes} */
+  /** @deprecated This list will no longer be updated. Use {@link Constants.UndeletableMessageTypes} instead. */
   DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
