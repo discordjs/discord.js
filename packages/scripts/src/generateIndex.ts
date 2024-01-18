@@ -65,17 +65,16 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 				if (codeDestination) {
 					const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
 					if (declarationReference?.resolvedApiItem) {
-						const foundItem = declarationReference?.resolvedApiItem;
-						retVal += linkText ?? foundItem?.displayName;
-						break;
+						const foundItem = declarationReference.resolvedApiItem;
+						retVal += linkText ?? foundItem.displayName;
+					} else {
+						const typeName = codeDestination.memberReferences.map((ref) => ref.memberIdentifier?.identifier).join('.');
+						retVal += typeName;
 					}
-
-					const typeName = codeDestination.memberReferences.map((ref) => ref.memberIdentifier!.identifier).join('.');
-					retVal += typeName;
-					break;
+				} else {
+					retVal += linkText ?? urlDestination;
 				}
 
-				retVal += linkText ?? urlDestination;
 				break;
 			}
 
