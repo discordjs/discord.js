@@ -647,6 +647,7 @@ export class BaseGuildEmoji extends Emoji {
   public requiresColons: boolean | null;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface BaseGuildTextChannel extends TextBasedChannelFields<true>, GuildChannel {}
 export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
@@ -667,6 +668,7 @@ export class BaseGuildTextChannel extends GuildChannel {
   public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface BaseGuildVoiceChannel
   extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'>,
     GuildChannel {}
@@ -1284,6 +1286,7 @@ export interface ResolvedFile {
   contentType?: string;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface DMChannel
   extends Omit<
       TextBasedChannelFields<false>,
@@ -1921,6 +1924,7 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public once(event: string, listener: (...args: any[]) => void): this;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface InteractionWebhook extends PartialWebhookFields {}
 export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
@@ -3140,6 +3144,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
   type: ChannelType.PrivateThread;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface ThreadChannel<ThreadOnly extends boolean = boolean>
   extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'>,
     BaseChannel {}
@@ -3238,6 +3243,7 @@ export class Typing extends Base {
   };
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface User extends PartialTextBasedChannelFields<false>, Base {}
 export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
@@ -3492,6 +3498,7 @@ export class VoiceState extends Base {
   public edit(options: VoiceStateEditOptions): Promise<this>;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface Webhook extends WebhookFields {}
 export class Webhook {
   private constructor(client: Client<true>, data?: RawWebhookData);
@@ -3539,6 +3546,7 @@ export class Webhook {
   public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message>;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface WebhookClient extends WebhookFields, BaseClient {}
 export class WebhookClient extends BaseClient {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
