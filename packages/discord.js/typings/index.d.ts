@@ -1921,7 +1921,8 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public once(event: string, listener: (...args: any[]) => void): this;
 }
 
-export class InteractionWebhook extends PartialWebhookMixin() {
+export interface InteractionWebhook extends PartialWebhookFields {}
+export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
   public token: string;
@@ -3491,7 +3492,8 @@ export class VoiceState extends Base {
   public edit(options: VoiceStateEditOptions): Promise<this>;
 }
 
-export class Webhook extends WebhookMixin() {
+export interface Webhook extends WebhookFields {}
+export class Webhook {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -3537,7 +3539,8 @@ export class Webhook extends WebhookMixin() {
   public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message>;
 }
 
-export class WebhookClient extends WebhookMixin(BaseClient) {
+export interface WebhookClient extends WebhookFields, BaseClient {}
+export class WebhookClient extends BaseClient {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
   public options: WebhookClientOptions;
@@ -4503,11 +4506,6 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
-
-/** @internal */
-export function PartialWebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & PartialWebhookFields>;
-/** @internal */
-export function WebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & WebhookFields>;
 
 /** @internal */
 export interface PartialWebhookFields {
