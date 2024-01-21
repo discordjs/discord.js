@@ -647,7 +647,8 @@ export class BaseGuildEmoji extends Emoji {
   public requiresColons: boolean | null;
 }
 
-export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, true) {
+export interface BaseGuildTextChannel extends TextBasedChannelFields<true>, GuildChannel {}
+export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public defaultThreadRateLimitPerUser: number | null;
@@ -666,10 +667,10 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, tr
   public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
 }
 
-export class BaseGuildVoiceChannel extends TextBasedChannelMixin(GuildChannel, true, [
-  'lastPinTimestamp',
-  'lastPinAt',
-]) {
+export interface BaseGuildVoiceChannel
+  extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'>,
+    GuildChannel {}
+export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public bitrate: number;
   public get full(): boolean;
@@ -1283,13 +1284,13 @@ export interface ResolvedFile {
   contentType?: string;
 }
 
-export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
-  'bulkDelete',
-  'fetchWebhooks',
-  'createWebhook',
-  'setRateLimitPerUser',
-  'setNSFW',
-]) {
+export interface DMChannel
+  extends Omit<
+      TextBasedChannelFields<false>,
+      'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
+    >,
+    BaseChannel {}
+export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
   public recipientId: Snowflake;
@@ -1568,7 +1569,8 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export class GuildMember extends PartialTextBasedChannel(Base) {
+export interface GuildMember extends PartialTextBasedChannelFields<false>, Base {}
+export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
   public avatar: string | null;
@@ -2463,17 +2465,21 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export abstract class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
-  'send',
-  'lastMessage',
-  'lastPinAt',
-  'bulkDelete',
-  'sendTyping',
-  'createMessageCollector',
-  'awaitMessages',
-  'createMessageComponentCollector',
-  'awaitMessageComponent',
-]) {
+export interface ThreadOnlyChannel
+  extends Omit<
+      TextBasedChannelFields,
+      | 'send'
+      | 'lastMessage'
+      | 'lastPinAt'
+      | 'bulkDelete'
+      | 'sendTyping'
+      | 'createMessageCollector'
+      | 'awaitMessages'
+      | 'createMessageComponentCollector'
+      | 'awaitMessageComponent'
+    >,
+    GuildChannel {}
+export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
@@ -3133,11 +3139,10 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
   type: ChannelType.PrivateThread;
 }
 
-export class ThreadChannel<ThreadOnly extends boolean = boolean> extends TextBasedChannelMixin(BaseChannel, true, [
-  'fetchWebhooks',
-  'createWebhook',
-  'setNSFW',
-]) {
+export interface ThreadChannel<ThreadOnly extends boolean = boolean>
+  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'>,
+    BaseChannel {}
+export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
@@ -3232,7 +3237,8 @@ export class Typing extends Base {
   };
 }
 
-export class User extends PartialTextBasedChannel(Base) {
+export interface User extends PartialTextBasedChannelFields<false>, Base {}
+export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
 
@@ -4467,22 +4473,6 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 // to each of those classes
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
-
-/** @internal */
-export function PartialTextBasedChannel<Entity>(
-  Base?: Constructable<Entity>,
-): Constructable<Entity & PartialTextBasedChannelFields<false>>;
-
-/** @internal */
-export function TextBasedChannelMixin<
-  Entity,
-  InGuild extends boolean = boolean,
-  IgnoredFields extends keyof TextBasedChannelFields<InGuild> = never,
->(
-  Base?: Constructable<Entity>,
-  inGuild?: InGuild,
-  ignore?: IgnoredFields[],
-): Constructable<Entity & Omit<TextBasedChannelFields<InGuild>, IgnoredFields>>;
 
 export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
   send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
