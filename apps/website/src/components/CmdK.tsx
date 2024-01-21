@@ -58,6 +58,7 @@ export function CmdKDialog() {
 						router.push(item.path);
 						dialog!.setOpen(false);
 					}}
+					value={item.path}
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-items-center gap-4">
