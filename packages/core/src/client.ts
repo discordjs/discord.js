@@ -16,6 +16,9 @@ import {
 	type GatewayChannelDeleteDispatchData,
 	type GatewayChannelPinsUpdateDispatchData,
 	type GatewayChannelUpdateDispatchData,
+	type GatewayEntitlementCreateDispatchData,
+	type GatewayEntitlementDeleteDispatchData,
+	type GatewayEntitlementUpdateDispatchData,
 	type GatewayGuildAuditLogEntryCreateDispatchData,
 	type GatewayGuildBanAddDispatchData,
 	type GatewayGuildBanRemoveDispatchData,
@@ -103,6 +106,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
 	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
 	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
+	[GatewayDispatchEvents.EntitlementCreate]: [WithIntrinsicProps<GatewayEntitlementCreateDispatchData>];
+	[GatewayDispatchEvents.EntitlementDelete]: [WithIntrinsicProps<GatewayEntitlementDeleteDispatchData>];
+	[GatewayDispatchEvents.EntitlementUpdate]: [WithIntrinsicProps<GatewayEntitlementUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
 	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
 	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
@@ -192,9 +198,8 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 			this.emit(
-				// TODO: move this expect-error down to the next line once entitlements get merged, so missing dispatch types result in errors
-				// @ts-expect-error event props can't be resolved properly, but they are correct
 				dispatch.t,
+				// @ts-expect-error event props can't be resolved properly, but they are correct
 				this.wrapIntrinsicProps(dispatch.d, shardId),
 			);
 		});

@@ -28,7 +28,7 @@ import { OVERLOAD_SEPARATOR } from '~/util/constants';
 import { fetchMember } from '~/util/fetchMember';
 import { findMember } from '~/util/model';
 
-export const revalidate = 3_600;
+export const revalidate = 86_400;
 
 export interface ItemRouteParams {
 	item: string;

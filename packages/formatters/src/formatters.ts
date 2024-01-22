@@ -61,8 +61,19 @@ export function bold<Content extends string>(content: Content): `**${Content}**`
  *
  * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
+ * @deprecated Use {@link underline} instead.
  */
 export function underscore<Content extends string>(content: Content): `__${Content}__` {
+	return underline(content);
+}
+
+/**
+ * Formats the content into underlined text.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function underline<Content extends string>(content: Content): `__${Content}__` {
 	return `__${content}__`;
 }
 
@@ -325,11 +336,75 @@ export function formatEmoji<EmojiId extends Snowflake>(
 	animated?: boolean,
 ): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>`;
 
-export function formatEmoji<EmojiId extends Snowflake>(
-	emojiId: EmojiId,
-	animated = false,
-): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>` {
-	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
+/**
+ * Formats a non-animated emoji id and name into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied name
+ * @param options - The options for formatting an emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated: true },
+): `<a:${EmojiName}:${EmojiId}>`;
+
+/**
+ * Formats an animated emoji id and name into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied name
+ * @param options - The options for formatting an emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated?: false },
+): `<:${EmojiName}:${EmojiId}>`;
+
+/**
+ * Formats an emoji id and name into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied emoji name
+ * @param options - The options for formatting an emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName>,
+): `<:${EmojiName}:${EmojiId}>` | `<a:${EmojiName}:${EmojiId}>`;
+
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	emojiIdOrOptions: EmojiId | FormatEmojiOptions<EmojiId, EmojiName>,
+	animated?: boolean,
+): `<:${string}:${EmojiId}>` | `<a:${string}:${EmojiId}>` {
+	const options =
+		typeof emojiIdOrOptions === 'string'
+			? {
+					id: emojiIdOrOptions,
+					animated: animated ?? false,
+				}
+			: emojiIdOrOptions;
+
+	const { id, animated: isAnimated, name: emojiName } = options;
+
+	return `<${isAnimated ? 'a' : ''}:${emojiName ?? '_'}:${id}>`;
+}
+
+/**
+ * The options for formatting an emoji.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied emoji name
+ */
+export interface FormatEmojiOptions<EmojiId extends Snowflake, EmojiName extends string> {
+	/**
+	 * Whether the emoji is animated
+	 */
+	animated?: boolean;
+	/**
+	 * The emoji id to format
+	 */
+	id: EmojiId;
+	/**
+	 * The name of the emoji
+	 */
+	name?: EmojiName;
 }
 
 /**

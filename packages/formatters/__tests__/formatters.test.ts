@@ -24,7 +24,7 @@ import {
 	strikethrough,
 	time,
 	TimestampStyles,
-	underscore,
+	underline,
 	unorderedList,
 	userMention,
 } from '../src/index.js';
@@ -58,9 +58,9 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('underscore', () => {
+	describe('underline', () => {
 		test('GIVEN "discord.js" THEN returns "__discord.js__"', () => {
-			expect<'__discord.js__'>(underscore('discord.js')).toEqual('__discord.js__');
+			expect<'__discord.js__'>(underline('discord.js')).toEqual('__discord.js__');
 		});
 	});
 
@@ -175,6 +175,40 @@ describe('Message formatters', () => {
 
 		test('GIVEN animated emojiId THEN returns "<a:_:${emojiId}>"', () => {
 			expect<`<a:_:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual('<a:_:827220205352255549>');
+		});
+
+		test('GIVEN static id in options object THEN returns "<:_:${id}>"', () => {
+			expect<`<:_:851461487498493952>`>(formatEmoji({ id: '851461487498493952' })).toEqual('<:_:851461487498493952>');
+		});
+
+		test('GIVEN static id in options object WITH animated explicitly false THEN returns "<:_:${id}>"', () => {
+			expect<`<:_:851461487498493952>`>(formatEmoji({ animated: false, id: '851461487498493952' })).toEqual(
+				'<:_:851461487498493952>',
+			);
+		});
+
+		test('GIVEN animated id in options object THEN returns "<a:_:${id}>"', () => {
+			expect<`<a:_:827220205352255549>`>(formatEmoji({ animated: true, id: '827220205352255549' })).toEqual(
+				'<a:_:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id and name in options object THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(formatEmoji({ id: '851461487498493952', name: 'test' })).toEqual(
+				'<:test:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id and name WITH animated explicitly false THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(
+				formatEmoji({ animated: false, id: '851461487498493952', name: 'test' }),
+			).toEqual('<:test:851461487498493952>');
+		});
+
+		test('GIVEN animated id and name THEN returns "<a:${name}:${id}>"', () => {
+			expect<`<a:test:827220205352255549>`>(
+				formatEmoji({ id: '827220205352255549', name: 'test', animated: true }),
+			).toEqual('<a:test:827220205352255549>');
 		});
 	});
 

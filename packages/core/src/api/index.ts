@@ -5,6 +5,7 @@ import { ChannelsAPI } from './channel.js';
 import { GuildsAPI } from './guild.js';
 import { InteractionsAPI } from './interactions.js';
 import { InvitesAPI } from './invite.js';
+import { MonetizationAPI } from './monetization.js';
 import { OAuth2API } from './oauth2.js';
 import { RoleConnectionsAPI } from './roleConnections.js';
 import { StageInstancesAPI } from './stageInstances.js';
@@ -20,6 +21,7 @@ export * from './channel.js';
 export * from './guild.js';
 export * from './interactions.js';
 export * from './invite.js';
+export * from './monetization.js';
 export * from './oauth2.js';
 export * from './roleConnections.js';
 export * from './stageInstances.js';
@@ -41,6 +43,8 @@ export class API {
 	public readonly interactions: InteractionsAPI;
 
 	public readonly invites: InvitesAPI;
+
+	public readonly monetization: MonetizationAPI;
 
 	public readonly oauth2: OAuth2API;
 
@@ -64,6 +68,7 @@ export class API {
 		this.channels = new ChannelsAPI(rest);
 		this.guilds = new GuildsAPI(rest);
 		this.invites = new InvitesAPI(rest);
+		this.monetization = new MonetizationAPI(rest);
 		this.roleConnections = new RoleConnectionsAPI(rest);
 		this.oauth2 = new OAuth2API(rest);
 		this.stageInstances = new StageInstancesAPI(rest);

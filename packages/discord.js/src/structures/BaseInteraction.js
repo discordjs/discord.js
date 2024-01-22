@@ -1,6 +1,7 @@
 'use strict';
 
 const { deprecate } = require('node:util');
+const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -62,7 +63,7 @@ class BaseInteraction extends Base {
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?(GuildMember|APIGuildMember)}
+     * @type {?(GuildMember|APIInteractionGuildMember)}
      */
     this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
 
@@ -133,6 +134,15 @@ class BaseInteraction extends Base {
      * @type {?Locale}
      */
     this.guildLocale = data.guild_locale ?? null;
+
+    /**
+     * The entitlements for the invoking user, representing access to premium SKUs
+     * @type {Collection<Snowflake, Entitlement>}
+     */
+    this.entitlements = data.entitlements.reduce(
+      (coll, entitlement) => coll.set(entitlement.id, this.client.application.entitlements._add(entitlement)),
+      new Collection(),
+    );
   }
 
   /**

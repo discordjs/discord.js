@@ -71,7 +71,7 @@ export class DocumentedEvent extends DocumentedItem<DeclarationReflection | Even
 								},
 								this.config,
 							).serialize(),
-					  ]
+						]
 					: undefined,
 				returnsDescription:
 					signature.comment?.blockTags

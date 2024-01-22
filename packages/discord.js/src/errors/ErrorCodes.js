@@ -173,6 +173,8 @@
  * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
 
  * @property {'SweepFilterReturn'} SweepFilterReturn
+
+ * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
  */
 
 const keys = [
@@ -323,6 +325,8 @@ const keys = [
   'SweepFilterReturn',
 
   'GuildForumMessageRequired',
+
+  'EntitlementCreateInvalidOwner',
 ];
 
 // JSDoc for IntelliSense purposes

@@ -281,6 +281,11 @@
  */
 
 /**
+ * @external EntitlementType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntitlementType}
+ */
+
+/**
  * @external ForumLayoutType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
  */
@@ -458,6 +463,16 @@
 /**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ */
+
+/**
+ * @external SKUFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUFlags}
+ */
+
+/**
+ * @external SKUType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUType}
  */
 
 /**
