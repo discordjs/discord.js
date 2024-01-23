@@ -203,11 +203,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			void this.onClose(event.code);
 		};
 
+		connection.onopen = () => {
+			this.sendRateLimitState = getInitialSendRateLimitState();
+		};
+
 		this.connection = connection;
 
 		this.#status = WebSocketShardStatus.Connecting;
-
-		this.sendRateLimitState = getInitialSendRateLimitState();
 
 		const { ok } = await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 		if (!ok) {
