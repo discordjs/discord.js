@@ -192,7 +192,7 @@ export interface RateLimitData {
 export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<boolean>;
 
 /**
- * A function that determines the ratelimit offset for a given request.
+ * A function that determines the rate limit offset for a given request.
  */
 export type GetRateLimitOffsetFunction = (route: string) => number;
 
