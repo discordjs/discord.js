@@ -214,7 +214,7 @@ export class SequentialHandler implements IHandler {
 
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
-				timeout = offset - Date.now();
+				timeout = this.manager.globalReset + offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay
 				if (!this.manager.globalDelay) {
 					// The global delay function clears the global delay state when it is resolved
@@ -350,7 +350,7 @@ export class SequentialHandler implements IHandler {
 
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
-				timeout = offset - Date.now();
+				timeout = this.manager.globalReset + offset - Date.now();
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
