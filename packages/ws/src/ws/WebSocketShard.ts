@@ -381,7 +381,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		await this.sendQueue.wait();
 
 		const now = Date.now();
-		if (now > this.sendRateLimitState.resetAt) {
+		if (now >= this.sendRateLimitState.resetAt) {
 			this.sendRateLimitState = getInitialSendRateLimitState();
 		}
 
