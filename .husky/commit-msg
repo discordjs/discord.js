@@ -1,3 +1,1 @@
-#!/bin/sh
-
 pnpm exec commitlint --edit $1
