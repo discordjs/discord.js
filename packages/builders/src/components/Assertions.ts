@@ -1,80 +1,60 @@
-import { s } from '@sapphire/shapeshift';
 import { ButtonStyle, ChannelType, type APIMessageComponentEmoji } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../util/validation.js';
+import { z } from 'zod';
 import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOption.js';
 
-export const customIdValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(100)
-	.setValidationEnabled(isValidationEnabled);
+export const customIdValidator = z.string().min(1).max(100);
 
-export const emojiValidator = s
+export const emojiValidator = z
 	.object({
-		id: s.string,
-		name: s.string,
-		animated: s.boolean,
+		id: z.string(),
+		name: z.string(),
+		animated: z.boolean(),
 	})
-	.partial.strict.setValidationEnabled(isValidationEnabled);
+	.partial()
+	.strict();
 
-export const disabledValidator = s.boolean;
+export const disabledValidator = z.boolean();
 
-export const buttonLabelValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(80)
-	.setValidationEnabled(isValidationEnabled);
+export const buttonLabelValidator = z.string().min(1).max(80);
 
-export const buttonStyleValidator = s.nativeEnum(ButtonStyle);
+export const buttonStyleValidator = z.nativeEnum(ButtonStyle);
 
-export const placeholderValidator = s.string.lengthLessThanOrEqual(150).setValidationEnabled(isValidationEnabled);
-export const minMaxValidator = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(25)
-	.setValidationEnabled(isValidationEnabled);
+export const placeholderValidator = z.string().max(150);
+export const minMaxValidator = z.number().int().gte(0).lte(25);
 
-export const labelValueDescriptionValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(100)
-	.setValidationEnabled(isValidationEnabled);
+export const labelValueDescriptionValidator = z.string().min(1).max(100);
 
-export const jsonOptionValidator = s
-	.object({
-		label: labelValueDescriptionValidator,
-		value: labelValueDescriptionValidator,
-		description: labelValueDescriptionValidator.optional,
-		emoji: emojiValidator.optional,
-		default: s.boolean.optional,
-	})
-	.setValidationEnabled(isValidationEnabled);
+export const jsonOptionValidator = z.object({
+	label: labelValueDescriptionValidator,
+	value: labelValueDescriptionValidator,
+	description: labelValueDescriptionValidator.optional(),
+	emoji: emojiValidator.optional(),
+	default: z.boolean().optional(),
+});
 
-export const optionValidator = s.instance(StringSelectMenuOptionBuilder).setValidationEnabled(isValidationEnabled);
+export const optionValidator = z.instanceof(StringSelectMenuOptionBuilder);
 
-export const optionsValidator = optionValidator.array
-	.lengthGreaterThanOrEqual(0)
-	.setValidationEnabled(isValidationEnabled);
-export const optionsLengthValidator = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(25)
-	.setValidationEnabled(isValidationEnabled);
+export const optionsValidator = optionValidator.array().min(0);
+export const optionsLengthValidator = z.number().int().gte(0).lte(25);
 
 export function validateRequiredSelectMenuParameters(options: StringSelectMenuOptionBuilder[], customId?: string) {
 	customIdValidator.parse(customId);
 	optionsValidator.parse(options);
 }
 
-export const defaultValidator = s.boolean;
+export const defaultValidator = z.boolean();
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
 	labelValueDescriptionValidator.parse(label);
 	labelValueDescriptionValidator.parse(value);
 }
 
-export const channelTypesValidator = s.nativeEnum(ChannelType).array.setValidationEnabled(isValidationEnabled);
+export const channelTypesValidator = z.nativeEnum(ChannelType).array();
 
-export const urlValidator = s.string
-	.url({
-		allowedProtocols: ['http:', 'https:', 'discord:'],
-	})
-	.setValidationEnabled(isValidationEnabled);
+export const urlValidator = z
+	.string()
+	.url()
+	.regex(/^(?<proto>https?|discord):\/\//);
 
 export function validateRequiredButtonParameters(
 	style?: ButtonStyle,

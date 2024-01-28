@@ -1,12 +1,12 @@
-import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
+import { z } from 'zod';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
 import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
-const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6_000);
-const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000);
+const minLengthValidator = z.number().min(0).max(6_000);
+const maxLengthValidator = z.number().min(1).max(6_000);
 
 /**
  * A slash command string option.
