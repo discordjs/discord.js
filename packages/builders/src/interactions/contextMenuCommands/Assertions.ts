@@ -1,18 +1,15 @@
-import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandType } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { z } from 'zod';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
-const namePredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(32)
+const namePredicate = z
+	.string()
+	.min(1)
+	.max(32)
 	// eslint-disable-next-line prefer-named-capture-group
-	.regex(/^( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}]+ *)+$/u)
-	.setValidationEnabled(isValidationEnabled);
-const typePredicate = s
-	.union(s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message))
-	.setValidationEnabled(isValidationEnabled);
-const booleanPredicate = s.boolean;
+	.regex(/^( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}]+ *)+$/u);
+const typePredicate = z.union([z.literal(ApplicationCommandType.User), z.literal(ApplicationCommandType.Message)]);
+const booleanPredicate = z.boolean();
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);
@@ -34,17 +31,23 @@ export function validateRequiredParameters(name: string, type: number) {
 	validateType(type);
 }
 
-const dmPermissionPredicate = s.boolean.nullish;
+const dmPermissionPredicate = z.boolean().nullish();
 
 export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
 	dmPermissionPredicate.parse(value);
 }
 
-const memberPermissionPredicate = s.union(
-	s.bigint.transform((value) => value.toString()),
-	s.number.safeInt.transform((value) => value.toString()),
-	s.string.regex(/^\d+$/),
-).nullish;
+const memberPermissionPredicate = z
+	.union([
+		z.bigint().transform((value) => value.toString()),
+		z
+			.number()
+			.int()
+			.safe()
+			.transform((value) => value.toString()),
+		z.string().regex(/^\d+$/),
+	])
+	.nullish();
 
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);

@@ -1,15 +1,17 @@
-import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
+import { z } from 'zod';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
-const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
-const numberPredicate = s.number.greaterThan(Number.NEGATIVE_INFINITY).lessThan(Number.POSITIVE_INFINITY);
-const choicesPredicate = s.object({
-	name: stringPredicate,
-	name_localizations: localizationMapPredicate,
-	value: s.union(stringPredicate, numberPredicate),
-}).array;
+const stringPredicate = z.string().min(1).max(100);
+const numberPredicate = z.number().gt(Number.NEGATIVE_INFINITY).lt(Number.POSITIVE_INFINITY);
+const choicesPredicate = z
+	.object({
+		name: stringPredicate,
+		name_localizations: localizationMapPredicate,
+		value: z.union([stringPredicate, numberPredicate]),
+	})
+	.array();
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
