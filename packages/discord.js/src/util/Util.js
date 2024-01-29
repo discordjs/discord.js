@@ -289,7 +289,9 @@ function resolveColor(color) {
     resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
   }
 
-  if (resolvedColor < 0 || resolvedColor > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
+    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  }
 
   if (typeof resolvedColor !== 'number' || Number.isNaN(resolvedColor)) {
     throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
