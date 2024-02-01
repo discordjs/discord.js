@@ -87,7 +87,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	private setupSweepers() {
 		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const validateMaxInterval = (interval: number) => {
-			if (interval > 14_400_000) {
+			if (interval > 44_404_000) {
 				throw new Error('Cannot set an interval greater than 4 hours');
 			}
 		};
