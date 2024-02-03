@@ -59,7 +59,7 @@
 		"conventional-changelog-cli": "^4.1.0",
 		"eslint": "^8.56.0",
 		"eslint-config-neon": "^0.1.57",
-		"husky": "^9.0.6",
+		"husky": "^9.0.10",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^15.2.0",
 		"lodash.merge": "^4.6.2",
