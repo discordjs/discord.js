@@ -2,7 +2,8 @@ import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v
 import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { DEPRECATION_WARNING_PREFIX } from './constants.js';
-import { RequestMethod, type RateLimitData, type ResponseLike } from './types.js';
+import { RequestMethod } from './types.js';
+import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -155,4 +156,19 @@ export function deprecationWarning(message: string) {
 	} else {
 		process.emitWarning(message, DEPRECATION_WARNING_PREFIX);
 	}
+}
+
+/**
+ * Normalizes the offset for rate limits. Applies a Math.max(0, N) to prevent negative offsets,
+ * also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeRateLimitOffset(offset: GetRateLimitOffsetFunction | number, route: string): number {
+	if (typeof offset === 'number') {
+		return Math.max(0, offset);
+	}
+
+	const result = offset(route);
+	return Math.max(0, result);
 }
