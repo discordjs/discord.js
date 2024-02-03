@@ -14,9 +14,11 @@ import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBas
 /**
  * This mixin holds symbols that can be shared in slash command options.
  *
- * @typeParam ShouldOmitSubcommandFunctions - Whether to omit subcommand functions.
+ * @typeParam TypeAfterAddingOptions - The type this class should return after adding an option.
  */
-export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
+export class SharedSlashCommandOptions<
+	TypeAfterAddingOptions extends SharedSlashCommandOptions<TypeAfterAddingOptions>,
+> {
 	public readonly options!: ToAPIApplicationCommandOptions[];
 
 	/**
@@ -87,16 +89,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 * @param input - A function that returns an option builder or an already built builder
 	 */
 	public addStringOption(
-		input:
-			| Omit<SlashCommandStringOption, 'addChoices'>
-			| Omit<SlashCommandStringOption, 'setAutocomplete'>
-			| SlashCommandStringOption
-			| ((
-					builder: SlashCommandStringOption,
-			  ) =>
-					| Omit<SlashCommandStringOption, 'addChoices'>
-					| Omit<SlashCommandStringOption, 'setAutocomplete'>
-					| SlashCommandStringOption),
+		input: SlashCommandStringOption | ((builder: SlashCommandStringOption) => SlashCommandStringOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandStringOption);
 	}
@@ -107,16 +100,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 * @param input - A function that returns an option builder or an already built builder
 	 */
 	public addIntegerOption(
-		input:
-			| Omit<SlashCommandIntegerOption, 'addChoices'>
-			| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
-			| SlashCommandIntegerOption
-			| ((
-					builder: SlashCommandIntegerOption,
-			  ) =>
-					| Omit<SlashCommandIntegerOption, 'addChoices'>
-					| Omit<SlashCommandIntegerOption, 'setAutocomplete'>
-					| SlashCommandIntegerOption),
+		input: SlashCommandIntegerOption | ((builder: SlashCommandIntegerOption) => SlashCommandIntegerOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandIntegerOption);
 	}
@@ -127,16 +111,7 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 * @param input - A function that returns an option builder or an already built builder
 	 */
 	public addNumberOption(
-		input:
-			| Omit<SlashCommandNumberOption, 'addChoices'>
-			| Omit<SlashCommandNumberOption, 'setAutocomplete'>
-			| SlashCommandNumberOption
-			| ((
-					builder: SlashCommandNumberOption,
-			  ) =>
-					| Omit<SlashCommandNumberOption, 'addChoices'>
-					| Omit<SlashCommandNumberOption, 'setAutocomplete'>
-					| SlashCommandNumberOption),
+		input: SlashCommandNumberOption | ((builder: SlashCommandNumberOption) => SlashCommandNumberOption),
 	) {
 		return this._sharedAddOptionMethod(input, SlashCommandNumberOption);
 	}
@@ -149,15 +124,9 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 	 * @internal
 	 */
 	private _sharedAddOptionMethod<OptionBuilder extends ApplicationCommandOptionBase>(
-		input:
-			| Omit<OptionBuilder, 'addChoices'>
-			| Omit<OptionBuilder, 'setAutocomplete'>
-			| OptionBuilder
-			| ((
-					builder: OptionBuilder,
-			  ) => Omit<OptionBuilder, 'addChoices'> | Omit<OptionBuilder, 'setAutocomplete'> | OptionBuilder),
+		input: OptionBuilder | ((builder: OptionBuilder) => OptionBuilder),
 		Instance: new () => OptionBuilder,
-	): ShouldOmitSubcommandFunctions extends true ? Omit<this, 'addSubcommand' | 'addSubcommandGroup'> : this {
+	): TypeAfterAddingOptions {
 		const { options } = this;
 
 		// First, assert options conditions - we cannot have more than 25 options
@@ -171,6 +140,6 @@ export class SharedSlashCommandOptions<ShouldOmitSubcommandFunctions = true> {
 		// Push it
 		options.push(result);
 
-		return this;
+		return this as unknown as TypeAfterAddingOptions;
 	}
 }
