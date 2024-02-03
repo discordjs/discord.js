@@ -37,22 +37,22 @@ export interface IconData {
 /**
  * Represents the author data of an embed.
  */
-export type EmbedAuthorData = IconData & Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>;
+export interface EmbedAuthorData extends IconData, Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'> {}
 
 /**
  * Represents the author options of an embed.
  */
-export type EmbedAuthorOptions = Omit<EmbedAuthorData, 'proxyIconURL'>;
+export interface EmbedAuthorOptions extends Omit<EmbedAuthorData, 'proxyIconURL'> {}
 
 /**
  * Represents the footer data of an embed.
  */
-export type EmbedFooterData = IconData & Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>;
+export interface EmbedFooterData extends IconData, Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'> {}
 
 /**
  * Represents the footer options of an embed.
  */
-export type EmbedFooterOptions = Omit<EmbedFooterData, 'proxyIconURL'>;
+export interface EmbedFooterOptions extends Omit<EmbedFooterData, 'proxyIconURL'> {}
 
 /**
  * Represents the image data of an embed.
@@ -170,7 +170,7 @@ export class EmbedBuilder {
 	 * You can set a maximum of 25 fields.
 	 * @param fields - The fields to set
 	 */
-	public setFields(...fields: RestOrArray<APIEmbedField>) {
+	public setFields(...fields: RestOrArray<APIEmbedField>): this {
 		this.spliceFields(0, this.data.fields?.length ?? 0, ...normalizeArray(fields));
 		return this;
 	}

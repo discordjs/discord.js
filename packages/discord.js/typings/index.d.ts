@@ -1208,6 +1208,12 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
+  /**
+   * @privateRemarks
+   * The ternary in the return type is required.
+   * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
+   * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
+   */
   public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required: true,
@@ -1215,14 +1221,17 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
-      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
-      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
-      // Hence the need for this ternary
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
         : Type;
     }
   >;
+  /**
+   * @privateRemarks
+   * The ternary in the return type is required.
+   * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
+   * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
+   */
   public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
@@ -1230,9 +1239,6 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
-      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
-      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
-      // Hence the need for this ternary
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
         : Type;
