@@ -1,5 +1,6 @@
 import { ApplicationCommandType } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { parse } from '../../util/validation.js';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
 const namePredicate = z
@@ -12,15 +13,15 @@ const typePredicate = z.union([z.literal(ApplicationCommandType.User), z.literal
 const booleanPredicate = z.boolean();
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
-	booleanPredicate.parse(value);
+	parse(booleanPredicate, value);
 }
 
 export function validateName(name: unknown): asserts name is string {
-	namePredicate.parse(name);
+	parse(namePredicate, name);
 }
 
 export function validateType(type: unknown): asserts type is ContextMenuCommandType {
-	typePredicate.parse(type);
+	parse(typePredicate, type);
 }
 
 export function validateRequiredParameters(name: string, type: number) {
@@ -34,7 +35,7 @@ export function validateRequiredParameters(name: string, type: number) {
 const dmPermissionPredicate = z.boolean().nullish();
 
 export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
-	dmPermissionPredicate.parse(value);
+	parse(dmPermissionPredicate, value);
 }
 
 const memberPermissionPredicate = z
@@ -50,5 +51,5 @@ const memberPermissionPredicate = z
 	.nullish();
 
 export function validateDefaultMemberPermissions(permissions: unknown) {
-	return memberPermissionPredicate.parse(permissions);
+	return parse(memberPermissionPredicate, permissions);
 }

@@ -1,5 +1,6 @@
 import { TextInputStyle } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { parse } from '../../util/validation.js';
 import { customIdValidator } from '../Assertions.js';
 
 export const textInputStyleValidator = z.union([
@@ -21,7 +22,7 @@ export const placeholderValidator = z.string().max(100);
 export const labelValidator = z.string().min(1).max(45);
 
 export function validateRequiredParameters(customId?: string, style?: TextInputStyle, label?: string) {
-	customIdValidator.parse(customId);
-	textInputStyleValidator.parse(style);
-	labelValidator.parse(label);
+	parse(customIdValidator, customId);
+	parse(textInputStyleValidator, style);
+	parse(labelValidator, label);
 }

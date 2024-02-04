@@ -6,6 +6,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { parse } from '../../util/validation.js';
 import { channelTypesValidator, customIdValidator, optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -48,7 +49,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	public addChannelTypes(...types: RestOrArray<ChannelType>) {
 		const normalizedTypes = normalizeArray(types);
 		this.data.channel_types ??= [];
-		this.data.channel_types.push(...channelTypesValidator.parse(normalizedTypes));
+		this.data.channel_types.push(...parse(channelTypesValidator, normalizedTypes));
 		return this;
 	}
 
@@ -60,7 +61,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	public setChannelTypes(...types: RestOrArray<ChannelType>) {
 		const normalizedTypes = normalizeArray(types);
 		this.data.channel_types ??= [];
-		this.data.channel_types.splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(normalizedTypes));
+		this.data.channel_types.splice(0, this.data.channel_types.length, ...parse(channelTypesValidator, normalizedTypes));
 		return this;
 	}
 
@@ -71,7 +72,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 */
 	public addDefaultChannels(...channels: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(channels);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
+		parse(optionsLengthValidator, (this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
 
 		this.data.default_values.push(
@@ -91,7 +92,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 */
 	public setDefaultChannels(...channels: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(channels);
-		optionsLengthValidator.parse(normalizedValues.length);
+		parse(optionsLengthValidator, normalizedValues.length);
 
 		this.data.default_values = normalizedValues.map((id) => ({
 			id,
@@ -105,7 +106,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * {@inheritDoc BaseSelectMenuBuilder.toJSON}
 	 */
 	public override toJSON(): APIChannelSelectComponent {
-		customIdValidator.parse(this.data.custom_id);
+		parse(customIdValidator, this.data.custom_id);
 
 		return {
 			...this.data,

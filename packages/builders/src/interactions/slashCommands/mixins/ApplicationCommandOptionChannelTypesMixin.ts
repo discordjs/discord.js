@@ -1,5 +1,6 @@
 import { ChannelType } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 
 /**
  * The allowed channel types used for a channel option in a slash command builder.
@@ -52,7 +53,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 			Reflect.set(this, 'channel_types', []);
 		}
 
-		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+		this.channel_types!.push(...parse(channelTypesPredicate, channelTypes));
 
 		return this;
 	}
