@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
 import { z } from 'zod';
+import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
+import { parse } from '../../../util/validation.js';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = z.string().min(1).max(100);
@@ -40,7 +41,7 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(normalizedChoices);
+		parse(choicesPredicate, normalizedChoices);
 
 		if (this.choices === undefined) {
 			Reflect.set(this, 'choices', []);
@@ -51,9 +52,9 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 		for (const { name, name_localizations, value } of normalizedChoices) {
 			// Validate the value
 			if (this.type === ApplicationCommandOptionType.String) {
-				stringPredicate.parse(value);
+				parse(stringPredicate, value);
 			} else {
-				numberPredicate.parse(value);
+				parse(numberPredicate, value);
 			}
 
 			this.choices!.push({ name, name_localizations, value });
@@ -73,7 +74,7 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(normalizedChoices);
+		parse(choicesPredicate, normalizedChoices);
 
 		Reflect.set(this, 'choices', []);
 		this.addChoices(normalizedChoices);

@@ -691,6 +691,9 @@ importers:
       zod:
         specifier: ^3.22.4
         version: 3.22.4
+      zod-validation-error:
+        specifier: ^3.0.0
+        version: 3.0.0(zod@3.22.4)
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -31348,10 +31351,20 @@ snapshots:
     dependencies:
       nan: 2.18.0
 
-  zod-validation-error@2.1.0(zod@3.22.4):
+  /zod-validation-error@3.0.0(zod@3.22.4):
+    resolution: {integrity: sha512-x+agsJJG9rvC7axF0xqTEdZhJkLHyIZkdOAWDJSmwGPzxNHMHwtU6w2yDOAAP6yuSfTAUhAMJRBfhVGY64ySEQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      zod: ^3.18.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
     dependencies:
       zod: 3.22.4
+    dev: false
 
-  zod@3.22.4: {}
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+    dev: false
 
   zwitch@2.0.4: {}

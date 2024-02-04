@@ -1,6 +1,7 @@
 import { isJSONEncodable, type Equatable, type JSONEncodable } from '@discordjs/util';
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
 import isEqual from 'fast-deep-equal';
+import { parse } from '../../util/validation.js';
 import { customIdValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 import {
@@ -54,7 +55,7 @@ export class TextInputBuilder
 	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
-		this.data.custom_id = customIdValidator.parse(customId);
+		this.data.custom_id = parse(customIdValidator, customId);
 		return this;
 	}
 
@@ -64,7 +65,7 @@ export class TextInputBuilder
 	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
-		this.data.label = labelValidator.parse(label);
+		this.data.label = parse(labelValidator, label);
 		return this;
 	}
 
@@ -74,7 +75,7 @@ export class TextInputBuilder
 	 * @param style - The style to use
 	 */
 	public setStyle(style: TextInputStyle) {
-		this.data.style = textInputStyleValidator.parse(style);
+		this.data.style = parse(textInputStyleValidator, style);
 		return this;
 	}
 
@@ -84,7 +85,7 @@ export class TextInputBuilder
 	 * @param minLength - The minimum length of text for this text input
 	 */
 	public setMinLength(minLength: number) {
-		this.data.min_length = minLengthValidator.parse(minLength);
+		this.data.min_length = parse(minLengthValidator, minLength);
 		return this;
 	}
 
@@ -94,7 +95,7 @@ export class TextInputBuilder
 	 * @param maxLength - The maximum length of text for this text input
 	 */
 	public setMaxLength(maxLength: number) {
-		this.data.max_length = maxLengthValidator.parse(maxLength);
+		this.data.max_length = parse(maxLengthValidator, maxLength);
 		return this;
 	}
 
@@ -104,7 +105,7 @@ export class TextInputBuilder
 	 * @param placeholder - The placeholder to use
 	 */
 	public setPlaceholder(placeholder: string) {
-		this.data.placeholder = placeholderValidator.parse(placeholder);
+		this.data.placeholder = parse(placeholderValidator, placeholder);
 		return this;
 	}
 
@@ -114,7 +115,7 @@ export class TextInputBuilder
 	 * @param value - The value to use
 	 */
 	public setValue(value: string) {
-		this.data.value = valueValidator.parse(value);
+		this.data.value = parse(valueValidator, value);
 		return this;
 	}
 
@@ -124,7 +125,7 @@ export class TextInputBuilder
 	 * @param required - Whether this text input is required
 	 */
 	public setRequired(required = true) {
-		this.data.required = requiredValidator.parse(required);
+		this.data.required = parse(requiredValidator, required);
 		return this;
 	}
 

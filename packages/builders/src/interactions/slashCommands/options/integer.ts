@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, type APIApplicationCommandIntegerOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
@@ -29,7 +30,7 @@ export class SlashCommandIntegerOption
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
 	 */
 	public setMaxValue(max: number): this {
-		numberValidator.parse(max);
+		parse(numberValidator, max);
 
 		Reflect.set(this, 'max_value', max);
 
@@ -40,7 +41,7 @@ export class SlashCommandIntegerOption
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
 	 */
 	public setMinValue(min: number): this {
-		numberValidator.parse(min);
+		parse(numberValidator, min);
 
 		Reflect.set(this, 'min_value', min);
 

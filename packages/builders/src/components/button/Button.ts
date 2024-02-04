@@ -6,6 +6,7 @@ import {
 	type APIButtonComponentWithCustomId,
 	type ButtonStyle,
 } from 'discord-api-types/v10';
+import { parse } from '../../util/validation.js';
 import {
 	buttonLabelValidator,
 	buttonStyleValidator,
@@ -59,7 +60,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param style - The style to use
 	 */
 	public setStyle(style: ButtonStyle) {
-		this.data.style = buttonStyleValidator.parse(style);
+		this.data.style = parse(buttonStyleValidator, style);
 		return this;
 	}
 
@@ -72,7 +73,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param url - The URL to use
 	 */
 	public setURL(url: string) {
-		(this.data as APIButtonComponentWithURL).url = urlValidator.parse(url);
+		(this.data as APIButtonComponentWithURL).url = parse(urlValidator, url);
 		return this;
 	}
 
@@ -84,7 +85,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
-		(this.data as APIButtonComponentWithCustomId).custom_id = customIdValidator.parse(customId);
+		(this.data as APIButtonComponentWithCustomId).custom_id = parse(customIdValidator, customId);
 		return this;
 	}
 
@@ -94,7 +95,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param emoji - The emoji to use
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		this.data.emoji = emojiValidator.parse(emoji);
+		this.data.emoji = parse(emojiValidator, emoji);
 		return this;
 	}
 
@@ -104,7 +105,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param disabled - Whether to disable this button
 	 */
 	public setDisabled(disabled = true) {
-		this.data.disabled = disabledValidator.parse(disabled);
+		this.data.disabled = parse(disabledValidator, disabled);
 		return this;
 	}
 
@@ -114,7 +115,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
-		this.data.label = buttonLabelValidator.parse(label);
+		this.data.label = parse(buttonLabelValidator, label);
 		return this;
 	}
 

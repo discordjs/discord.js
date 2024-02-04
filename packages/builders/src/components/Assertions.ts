@@ -1,5 +1,6 @@
 import { ButtonStyle, ChannelType, type APIMessageComponentEmoji } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { parse } from '../util/validation.js';
 import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOption.js';
 
 export const customIdValidator = z.string().min(1).max(100);
@@ -38,15 +39,15 @@ export const optionsValidator = optionValidator.array().min(0);
 export const optionsLengthValidator = z.number().int().gte(0).lte(25);
 
 export function validateRequiredSelectMenuParameters(options: StringSelectMenuOptionBuilder[], customId?: string) {
-	customIdValidator.parse(customId);
-	optionsValidator.parse(options);
+	parse(customIdValidator, customId);
+	parse(optionsValidator, options);
 }
 
 export const defaultValidator = z.boolean();
 
 export function validateRequiredSelectMenuOptionParameters(label?: string, value?: string) {
-	labelValueDescriptionValidator.parse(label);
-	labelValueDescriptionValidator.parse(value);
+	parse(labelValueDescriptionValidator, label);
+	parse(labelValueDescriptionValidator, value);
 }
 
 export const channelTypesValidator = z.nativeEnum(ChannelType).array();

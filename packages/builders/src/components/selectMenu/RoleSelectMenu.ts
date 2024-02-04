@@ -5,6 +5,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { parse } from '../../util/validation.js';
 import { optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -45,7 +46,7 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	 */
 	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(roles);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
+		parse(optionsLengthValidator, (this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
 
 		this.data.default_values.push(
@@ -65,7 +66,7 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	 */
 	public setDefaultRoles(...roles: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(roles);
-		optionsLengthValidator.parse(normalizedValues.length);
+		parse(optionsLengthValidator, normalizedValues.length);
 
 		this.data.default_values = normalizedValues.map((id) => ({
 			id,

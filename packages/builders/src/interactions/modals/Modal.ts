@@ -10,6 +10,7 @@ import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../com
 import { customIdValidator } from '../../components/Assertions.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { parse } from '../../util/validation.js';
 import { titleValidator, validateRequiredParameters } from './Assertions.js';
 
 /**
@@ -43,7 +44,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @param title - The title to use
 	 */
 	public setTitle(title: string) {
-		this.data.title = titleValidator.parse(title);
+		this.data.title = parse(titleValidator, title);
 		return this;
 	}
 
@@ -53,7 +54,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
-		this.data.custom_id = customIdValidator.parse(customId);
+		this.data.custom_id = parse(customIdValidator, customId);
 		return this;
 	}
 

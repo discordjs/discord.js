@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, type APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
 import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
@@ -34,7 +35,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	 * @param max - The maximum length this option can be
 	 */
 	public setMaxLength(max: number): this {
-		maxLengthValidator.parse(max);
+		parse(maxLengthValidator, max);
 
 		Reflect.set(this, 'max_length', max);
 
@@ -47,7 +48,7 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 	 * @param min - The minimum length this option can be
 	 */
 	public setMinLength(min: number): this {
-		minLengthValidator.parse(min);
+		parse(minLengthValidator, min);
 
 		Reflect.set(this, 'min_length', min);
 

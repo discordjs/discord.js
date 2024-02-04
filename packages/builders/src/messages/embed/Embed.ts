@@ -1,5 +1,6 @@
 import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter, APIEmbedImage } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { parse } from '../../util/validation.js';
 import {
 	colorPredicate,
 	descriptionPredicate,
@@ -113,7 +114,7 @@ export class EmbedBuilder {
 		validateFieldLength(normalizedFields.length, this.data.fields);
 
 		// Data assertions
-		embedFieldsArrayPredicate.parse(normalizedFields);
+		parse(embedFieldsArrayPredicate, normalizedFields);
 
 		if (this.data.fields) this.data.fields.push(...normalizedFields);
 		else this.data.fields = normalizedFields;
@@ -154,7 +155,8 @@ export class EmbedBuilder {
 		validateFieldLength(fields.length - deleteCount, this.data.fields);
 
 		// Data assertions
-		embedFieldsArrayPredicate.parse(fields);
+		parse(embedFieldsArrayPredicate, fields);
+
 		if (this.data.fields) this.data.fields.splice(index, deleteCount, ...fields);
 		else this.data.fields = fields;
 		return this;
@@ -188,7 +190,7 @@ export class EmbedBuilder {
 		}
 
 		// Data assertions
-		embedAuthorPredicate.parse(options);
+		parse(embedAuthorPredicate, options);
 
 		this.data.author = { name: options.name, url: options.url, icon_url: options.iconURL };
 		return this;
@@ -201,7 +203,7 @@ export class EmbedBuilder {
 	 */
 	public setColor(color: RGBTuple | number | null): this {
 		// Data assertions
-		colorPredicate.parse(color);
+		parse(colorPredicate, color);
 
 		if (Array.isArray(color)) {
 			const [red, green, blue] = color;
@@ -220,7 +222,7 @@ export class EmbedBuilder {
 	 */
 	public setDescription(description: string | null): this {
 		// Data assertions
-		descriptionPredicate.parse(description);
+		parse(descriptionPredicate, description);
 
 		this.data.description = description ?? undefined;
 		return this;
@@ -238,7 +240,7 @@ export class EmbedBuilder {
 		}
 
 		// Data assertions
-		embedFooterPredicate.parse(options);
+		parse(embedFooterPredicate, options);
 
 		this.data.footer = { text: options.text, icon_url: options.iconURL };
 		return this;
@@ -251,7 +253,7 @@ export class EmbedBuilder {
 	 */
 	public setImage(url: string | null): this {
 		// Data assertions
-		imageURLPredicate.parse(url);
+		parse(imageURLPredicate, url);
 
 		this.data.image = url ? { url } : undefined;
 		return this;
@@ -264,7 +266,7 @@ export class EmbedBuilder {
 	 */
 	public setThumbnail(url: string | null): this {
 		// Data assertions
-		imageURLPredicate.parse(url);
+		parse(imageURLPredicate, url);
 
 		this.data.thumbnail = url ? { url } : undefined;
 		return this;
@@ -277,7 +279,7 @@ export class EmbedBuilder {
 	 */
 	public setTimestamp(timestamp: Date | number | null = Date.now()): this {
 		// Data assertions
-		timestampPredicate.parse(timestamp);
+		parse(timestampPredicate, timestamp);
 
 		this.data.timestamp = timestamp ? new Date(timestamp).toISOString() : undefined;
 		return this;
@@ -290,7 +292,7 @@ export class EmbedBuilder {
 	 */
 	public setTitle(title: string | null): this {
 		// Data assertions
-		titlePredicate.parse(title);
+		parse(titlePredicate, title);
 
 		this.data.title = title ?? undefined;
 		return this;
@@ -303,7 +305,7 @@ export class EmbedBuilder {
 	 */
 	public setURL(url: string | null): this {
 		// Data assertions
-		urlPredicate.parse(url);
+		parse(urlPredicate, url);
 
 		this.data.url = url ?? undefined;
 		return this;

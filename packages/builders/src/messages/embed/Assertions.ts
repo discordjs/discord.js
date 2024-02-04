@@ -1,5 +1,6 @@
 import type { APIEmbedField } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { parse } from '../../util/validation.js';
 
 export const fieldNamePredicate = z.string().min(1).max(256);
 
@@ -18,7 +19,7 @@ export const embedFieldsArrayPredicate = embedFieldPredicate.array();
 export const fieldLengthPredicate = z.number().max(25);
 
 export function validateFieldLength(amountAdding: number, fields?: APIEmbedField[]): void {
-	fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
+	parse(fieldLengthPredicate, (fields?.length ?? 0) + amountAdding);
 }
 
 export const authorNamePredicate = fieldNamePredicate.nullable();
