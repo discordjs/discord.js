@@ -8,16 +8,14 @@ const OverloadSwitcher = dynamic(async () => import('../../OverloadSwitcher'));
 
 export function Function({ item }: { readonly item: ApiFunction }) {
 	if (item.getMergedSiblings().length > 1) {
-		const overloads = item
-			.getMergedSiblings()
-			.map((sibling, idx) => <FunctionBody item={sibling as ApiFunction} key={`${sibling.displayName}-${idx}`} />);
-
-		return (
-			<Documentation>
-				<ObjectHeader item={item} />
-				<OverloadSwitcher methodName={item.displayName} overloads={overloads} />
+		const overloads = item.getMergedSiblings().map((sibling, idx) => (
+			<Documentation key={`${sibling.displayName}-${idx}`}>
+				<ObjectHeader item={sibling as ApiFunction} />
+				<FunctionBody item={sibling as ApiFunction} />
 			</Documentation>
-		);
+		));
+
+		return <OverloadSwitcher methodName={item.displayName} overloads={overloads} />;
 	}
 
 	return (

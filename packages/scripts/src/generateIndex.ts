@@ -60,9 +60,24 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 			case DocNodeKind.PlainText:
 				retVal += (node as DocPlainText).text;
 				break;
-			case DocNodeKind.LinkTag:
-				retVal += (node as DocLinkTag).urlDestination;
+			case DocNodeKind.LinkTag: {
+				const { codeDestination, urlDestination, linkText } = node as DocLinkTag;
+				if (codeDestination) {
+					const declarationReference = item.getAssociatedModel()?.resolveDeclarationReference(codeDestination, item);
+					if (declarationReference?.resolvedApiItem) {
+						const foundItem = declarationReference.resolvedApiItem;
+						retVal += linkText ?? foundItem.displayName;
+					} else {
+						const typeName = codeDestination.memberReferences.map((ref) => ref.memberIdentifier?.identifier).join('.');
+						retVal += typeName;
+					}
+				} else {
+					retVal += linkText ?? urlDestination;
+				}
+
 				break;
+			}
+
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph: {
 				for (const child of (node as DocParagraph).nodes) {
