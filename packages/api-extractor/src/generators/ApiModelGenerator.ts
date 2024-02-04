@@ -1712,6 +1712,7 @@ export class ApiModelGenerator {
 		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
+			[ts.SyntaxKind.EnumDeclaration]: 'enum',
 			[ts.SyntaxKind.InterfaceDeclaration]: 'interface',
 			[ts.SyntaxKind.TypeAliasDeclaration]: 'type',
 		};
@@ -1770,9 +1771,9 @@ export class ApiModelGenerator {
 			excerptTokens: [
 				{
 					kind: ExcerptTokenKind.Content,
-					text: `${prop.access} ${prop.scope === 'static' ? 'static ' : ''}${prop.readonly ? 'readonly ' : ''}${
-						prop.name
-					} :`,
+					text: `${prop.access ? `${prop.access} ` : ''}${prop.scope === 'static' ? 'static ' : ''}${
+						prop.readonly ? 'readonly ' : ''
+					}${prop.name} :`,
 				},
 				...mappedVarType,
 				{ kind: ExcerptTokenKind.Content, text: ';' },
