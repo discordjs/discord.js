@@ -25,9 +25,9 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 				case DocNodeKind.Section:
 				case DocNodeKind.Paragraph:
 					return (
-						<span className="break-words leading-relaxed" key={idx}>
+						<div className="break-words leading-relaxed" key={idx}>
 							{(tsdoc as DocNodeContainer).nodes.map((node, idx) => createNode(node, idx))}
-						</span>
+						</div>
 					);
 				case DocNodeKind.SoftBreak:
 					return <Fragment key={idx} />;

@@ -3,7 +3,7 @@ import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { ResponseLike, HandlerRequestData, RouteData, RateLimitData } from '../utils/types.js';
-import { onRateLimit, sleep } from '../utils/utils.js';
+import { normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 /**
@@ -90,7 +90,8 @@ export class BurstHandler implements IHandler {
 		const retry = res.headers.get('Retry-After');
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1_000 + this.manager.options.offset;
+		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
+		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {

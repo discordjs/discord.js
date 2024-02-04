@@ -19,7 +19,7 @@
 		"fmt:affected": "turbo run format --filter='...[origin/main]' --concurrency=4",
 		"docs": "turbo run docs --concurrency=4",
 		"docs:affected": "turbo run docs --filter='...[origin/main]' --concurrency=4",
-		"prepare": "is-ci || husky install",
+		"prepare": "is-ci || husky",
 		"update": "pnpm --recursive update --interactive",
 		"update:latest": "pnpm --recursive update --interactive --latest",
 		"create-package": "turbo gen create-package --args"
@@ -59,7 +59,7 @@
 		"conventional-changelog-cli": "^4.1.0",
 		"eslint": "^8.56.0",
 		"eslint-config-neon": "^0.1.57",
-		"husky": "^8.0.3",
+		"husky": "^9.0.10",
 		"is-ci": "^3.0.1",
 		"lint-staged": "^15.2.0",
 		"lodash.merge": "^4.6.2",
