@@ -291,12 +291,12 @@ function resolveColor(color) {
     resolvedColor = color;
   }
 
-  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
-    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  if (!Number.isInteger(resolvedColor)) {
+    throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
   }
 
-  if (typeof resolvedColor !== 'number' || Number.isNaN(resolvedColor)) {
-    throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
+  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
+    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
   }
 
   return resolvedColor;

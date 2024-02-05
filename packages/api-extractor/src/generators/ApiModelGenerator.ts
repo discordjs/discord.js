@@ -1690,26 +1690,29 @@ export class ApiModelGenerator {
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
-		return input?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
-			let target = groups.class ?? groups.url;
-			const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
-			const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
-				external?.see?.[0] ?? '',
-			);
-			if (match) {
-				target = `discord-api-types#(${match.groups!.name}:${
-					/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
-				})`;
-			}
+		return input
+			?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
+				let target = groups.class ?? groups.url;
+				const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
+				const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
+					external?.see?.[0] ?? '',
+				);
+				if (match) {
+					target = `discord-api-types#(${match.groups!.name}:${
+						/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
+					})`;
+				}
 
-			return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
-		});
+				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
+			})
+			.replaceAll('* ', '\n * * ');
 	}
 
 	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
 		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
+			[ts.SyntaxKind.EnumDeclaration]: 'enum',
 			[ts.SyntaxKind.InterfaceDeclaration]: 'interface',
 			[ts.SyntaxKind.TypeAliasDeclaration]: 'type',
 		};
@@ -1768,9 +1771,9 @@ export class ApiModelGenerator {
 			excerptTokens: [
 				{
 					kind: ExcerptTokenKind.Content,
-					text: `${prop.access} ${prop.scope === 'static' ? 'static ' : ''}${prop.readonly ? 'readonly ' : ''}${
-						prop.name
-					} :`,
+					text: `${prop.access ? `${prop.access} ` : ''}${prop.scope === 'static' ? 'static ' : ''}${
+						prop.readonly ? 'readonly ' : ''
+					}${prop.name} :`,
 				},
 				...mappedVarType,
 				{ kind: ExcerptTokenKind.Content, text: ';' },
