@@ -386,7 +386,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		if (this.sendRateLimitState.sent + 1 >= 115) {
-			// Sprinkle in a little randomness just incase.
+			// Sprinkle in a little randomness just in case.
 			const sleepFor = this.sendRateLimitState.resetAt - now + Math.random() * 1_500;
 
 			this.debug([`Was about to hit the send rate limit, sleeping for ${sleepFor}ms`]);
