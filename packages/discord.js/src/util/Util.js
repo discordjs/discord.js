@@ -287,6 +287,8 @@ function resolveColor(color) {
     resolvedColor = Colors[color];
   } else if (Array.isArray(color)) {
     resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
+  } else {
+    resolvedColor = color;
   }
 
   if (!Number.isInteger(resolvedColor)) {
