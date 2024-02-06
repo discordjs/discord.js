@@ -11,7 +11,7 @@
     "fmt": "pnpm run format",
     "docs": "docgen -i \"./src/*.js\" \"./src/**/*.js\" -c ./docs/index.json -r ../../ -o ./docs/docs.json && pnpm run docs:new",
     "docs:test": "docgen -i \"./src/*.js\" \"./src/**/*.js\" -c ./docs/index.json -r ../../",
-    "docs:new": "api-extractor run --local --minify",
+    "docs:new": "api-extractor run --local --minify && generate-split-documentation",
     "prepack": "pnpm run lint && pnpm run test && node ./scripts/esmDts.mjs",
     "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'",
     "release": "cliff-jumper"
@@ -82,6 +82,7 @@
   "devDependencies": {
     "@discordjs/api-extractor": "workspace:^",
     "@discordjs/docgen": "workspace:^",
+    "@discordjs/scripts": "workspace:^",
     "@favware/cliff-jumper": "2.2.3",
     "@types/node": "16.18.60",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
