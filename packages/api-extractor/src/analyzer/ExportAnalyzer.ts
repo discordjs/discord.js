@@ -260,6 +260,7 @@ export class ExportAnalyzer {
 				: undefined;
 
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
+			this._program,
 			importOrExportDeclaration.getSourceFile(),
 			moduleSpecifier,
 			mode,
@@ -856,6 +857,7 @@ export class ExportAnalyzer {
 					)
 				: undefined;
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
+			this._program,
 			importOrExportDeclaration.getSourceFile(),
 			moduleSpecifier,
 			mode,

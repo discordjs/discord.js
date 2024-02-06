@@ -63,17 +63,17 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@favware/cliff-jumper": "^2.2.3",
 		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^0.34.6",
+		"@vitest/coverage-v8": "^1.2.2",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^8.56.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.1.1",
-		"tsup": "^7.2.0",
-		"turbo": "^1.11.2",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"eslint-config-neon": "^0.1.58",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"tsup": "^8.0.1",
+		"turbo": "^1.12.2",
+		"typescript": "^5.3.3",
+		"vitest": "^1.2.2"
 	},
 	"engines": {
 		"node": ">=18"
