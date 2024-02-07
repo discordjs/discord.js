@@ -619,6 +619,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -686,6 +689,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -734,6 +740,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -798,6 +807,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -953,6 +965,9 @@ importers:
       '@discordjs/docgen':
         specifier: workspace:^
         version: link:../docgen
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: 2.2.3
         version: 2.2.3
@@ -1054,6 +1069,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1124,6 +1142,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1182,6 +1203,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1301,6 +1325,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1364,6 +1391,9 @@ importers:
       '@vercel/postgres':
         specifier: ^0.7.2
         version: 0.7.2
+      commander:
+        specifier: ^11.1.0
+        version: 11.1.0
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -1525,6 +1555,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1598,6 +1631,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -1680,6 +1716,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
       '@favware/cliff-jumper':
         specifier: ^2.2.3
         version: 2.2.3
@@ -4020,7 +4059,7 @@ packages:
     dependencies:
       '@definitelytyped/typescript-versions': 0.1.0
       '@definitelytyped/utils': 0.1.1
-      semver: 7.6.0
+      semver: 7.5.4
     dev: true
 
   /@definitelytyped/typescript-packages@0.1.0:
@@ -4036,7 +4075,7 @@ packages:
       typescript-5.1: /typescript@5.1.6
       typescript-5.2: /typescript@5.2.2
       typescript-5.3: /typescript@5.3.3
-      typescript-5.4: /typescript@5.4.0-dev.20240205
+      typescript-5.4: /typescript@5.4.0-dev.20240206
     dev: true
 
   /@definitelytyped/typescript-versions@0.1.0:
@@ -5591,7 +5630,7 @@ packages:
       nopt: 7.2.0
       proc-log: 3.0.0
       read-package-json-fast: 3.0.2
-      semver: 7.6.0
+      semver: 7.5.4
       walk-up-path: 3.0.1
     dev: true
 
@@ -5599,7 +5638,7 @@ packages:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.5.4
     dev: true
 
   /@npmcli/map-workspaces@3.0.4:
@@ -5947,7 +5986,7 @@ packages:
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.6.0
+      semver: 7.5.4
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -7736,7 +7775,7 @@ packages:
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
       read-pkg-up: 7.0.1
-      semver: 7.6.0
+      semver: 7.5.4
       telejson: 7.2.0
       tiny-invariant: 1.3.1
       ts-dedent: 2.2.0
@@ -9028,7 +9067,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.0
+      semver: 7.5.4
       tsutils: 3.21.0(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -9050,7 +9089,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
-      semver: 7.6.0
+      semver: 7.5.4
       ts-api-utils: 1.2.0(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -9096,7 +9135,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.3.3)
       eslint: 8.56.0
       eslint-scope: 5.1.1
-      semver: 7.6.0
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9692,7 +9731,7 @@ packages:
       std-env: 3.7.0
       test-exclude: 6.0.0
       v8-to-istanbul: 9.2.0
-      vitest: 1.2.2(@types/node@18.18.8)(happy-dom@13.3.8)
+      vitest: 1.2.2(@types/node@18.17.9)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -11757,7 +11796,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 12.1.1
-      semver: 7.6.0
+      semver: 7.5.4
       split2: 4.2.0
     dev: true
 
@@ -12505,7 +12544,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240205
+      typescript: 5.4.0-dev.20240206
     dev: true
 
   /dts-critic@3.3.11(typescript@5.3.3):
@@ -13445,7 +13484,7 @@ packages:
       get-tsconfig: 4.7.2
       is-glob: 4.0.3
       minimatch: 3.1.2
-      semver: 7.6.0
+      semver: 7.5.4
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-typescript
@@ -19045,7 +19084,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.5.4
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -19073,7 +19112,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.6.0
+      semver: 7.5.4
       validate-npm-package-name: 3.0.0
     dev: true
 
@@ -23016,8 +23055,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240205:
-    resolution: {integrity: sha512-waxaX9QSNlTxyhaeS398h73fWzOr0DOq2rV6ZQSDywcabZjxeiCv18hYDIZXRk4dT0Q0DxhbNAL/THzjKjtDlQ==}
+  /typescript@5.4.0-dev.20240206:
+    resolution: {integrity: sha512-8P1XYxDbG/AyGE5tB8+JpeiQfS5ye1BTvIVDZaHhoK9nJuCn4nkB0L66lvfwYB+46hA4rLo3vE3WkIToSYtqQA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true

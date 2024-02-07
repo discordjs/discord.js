@@ -31,6 +31,7 @@
 		"lib": "src"
 	},
 	"files": [
+		"bin/index.js",
 		"dist"
 	],
 	"contributors": [

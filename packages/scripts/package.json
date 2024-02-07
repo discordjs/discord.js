@@ -10,26 +10,31 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
 		"fmt": "pnpm run format"
 	},
+	"bin": {
+		"generate-split-documentation": "./bin/generateSplitDocumentation.js"
+	},
 	"exports": {
 		".": {
 			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/src/index.js"
 			},
 			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
+				"types": "./dist/src/index.d.mts",
+				"default": "./dist/src/index.mjs"
 			}
 		}
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"directories": {
+		"bin": "bin",
 		"lib": "src",
 		"example": "turbo"
 	},
 	"files": [
+		"bin/generateSplitDocumentation.js",
 		"dist"
 	],
 	"contributors": [
@@ -60,6 +65,7 @@
 		"@microsoft/tsdoc-config": "0.16.2",
 		"@vercel/blob": "^0.20.0",
 		"@vercel/postgres": "^0.7.2",
+		"commander": "^11.1.0",
 		"tslib": "^2.6.2",
 		"undici": "6.6.1",
 		"yaml": "2.3.4"
