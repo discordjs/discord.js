@@ -22,10 +22,12 @@ function resolveIcon(item: keyof typeof ApiItemKind) {
 		case 'Class':
 			return <VscSymbolClass className="shrink-0" size={25} />;
 		case 'Enum':
+		case 'EnumMember':
 			return <VscSymbolEnum className="shrink-0" size={25} />;
 		case 'Interface':
 			return <VscSymbolInterface className="shrink-0" size={25} />;
 		case 'Property':
+		case 'PropertySignature':
 			return <VscSymbolProperty className="shrink-0" size={25} />;
 		case 'TypeAlias':
 			return <VscSymbolVariable className="shrink-0" size={25} />;
