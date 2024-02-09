@@ -140,9 +140,8 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
     });
     const existing = this.cache.get(id);
     if (existing) {
-      const clone = existing._clone();
-      clone._patch(newData);
-      return clone;
+      existing._patch(newData);
+      return existing; 
     }
     return this._add(newData);
   }

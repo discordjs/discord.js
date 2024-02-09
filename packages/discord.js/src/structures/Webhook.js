@@ -359,9 +359,8 @@ class Webhook {
     const existing = messageManager.cache.get(d.id);
     if (!existing) return messageManager._add(d);
 
-    const clone = existing._clone();
-    clone._patch(d);
-    return clone;
+    existing._patch(d);
+    return existing; 
   }
 
   /**

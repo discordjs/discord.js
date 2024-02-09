@@ -115,9 +115,8 @@ class GuildStickerManager extends CachedManager {
 
     const existing = this.cache.get(stickerId);
     if (existing) {
-      const clone = existing._clone();
-      clone._patch(d);
-      return clone;
+      existing._patch(d);
+      return existing; 
     }
     return this._add(d);
   }

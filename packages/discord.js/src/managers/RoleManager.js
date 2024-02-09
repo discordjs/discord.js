@@ -208,9 +208,8 @@ class RoleManager extends CachedManager {
 
     const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: options.reason });
 
-    const clone = role._clone();
-    clone._patch(d);
-    return clone;
+    role._patch(d);
+    return role; 
   }
 
   /**
