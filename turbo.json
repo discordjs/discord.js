@@ -52,10 +52,9 @@
 				"public/**",
 				"src/**",
 				"scripts/**",
-				"!src/styles/unocss.css",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.js",
+				"next.config.mjs",
 				"package.json",
 				"tsconfig.json"
 			],
@@ -69,10 +68,9 @@
 				"public/**",
 				"src/**",
 				"scripts/**",
-				"!src/styles/unocss.css",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.js",
+				"next.config.mjs",
 				"package.json",
 				"tsconfig.json"
 			],

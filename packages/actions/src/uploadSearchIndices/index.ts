@@ -52,9 +52,14 @@ try {
 		await Promise.all(
 			indices.map(async (index) => {
 				console.log(`Uploading ${index.index}...`);
+				let task;
 				try {
-					await client.createIndex(index.index);
+					task = await client.createIndex(index.index);
 				} catch {}
+
+				if (task) {
+					await client.waitForTask(task.taskUid);
+				}
 
 				await client.index(index.index).addDocuments(index.data);
 			}),
