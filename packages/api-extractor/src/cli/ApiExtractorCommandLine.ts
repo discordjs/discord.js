@@ -45,7 +45,7 @@ export class ApiExtractorCommandLine extends CommandLineParser {
 				console.error(os.EOL + colors.red('ERROR: ' + error.message.trim()));
 			}
 
-			// eslint-disable-next-line no-restricted-globals, n/prefer-global/process
+			// eslint-disable-next-line no-restricted-globals
 			process.exitCode = 1;
 		}
 	}

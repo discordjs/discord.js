@@ -278,19 +278,28 @@ function verifyString(
  * @returns {number} A color
  */
 function resolveColor(color) {
+  let resolvedColor;
+
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
     if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
-    color = Colors[color];
+    resolvedColor = Colors[color];
   } else if (Array.isArray(color)) {
-    color = (color[0] << 16) + (color[1] << 8) + color[2];
+    resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
+  } else {
+    resolvedColor = color;
   }
 
-  if (color < 0 || color > 0xffffff) throw new DiscordjsRangeError(ErrorCodes.ColorRange);
-  if (typeof color !== 'number' || Number.isNaN(color)) throw new DiscordjsTypeError(ErrorCodes.ColorConvert);
+  if (!Number.isInteger(resolvedColor)) {
+    throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
+  }
 
-  return color;
+  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
+    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  }
+
+  return resolvedColor;
 }
 
 /**

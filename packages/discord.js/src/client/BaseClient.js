@@ -44,7 +44,7 @@ class BaseClient extends EventEmitter {
         ...options.rest,
         userAgentAppendix: options.rest?.userAgentAppendix
           ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
-          : undefined,
+          : Options.userAgentAppendix,
       },
     };
 
