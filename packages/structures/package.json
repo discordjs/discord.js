@@ -4,7 +4,7 @@
 	"version": "0.1.0",
 	"description": "Wrapper around Discord's structures",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run && tsd",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
@@ -76,6 +76,7 @@
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.4.2",
+		"tsd": "^0.31.2",
 		"tsup": "^8.3.5",
 		"typescript": "~5.5.4",
 		"vitest": "^2.1.8"
@@ -86,5 +87,8 @@
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
+	},
+	"tsd": {
+		"directory": "__tests__/types"
 	}
 }
