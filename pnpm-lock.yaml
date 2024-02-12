@@ -1486,6 +1486,9 @@ importers:
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
+      tsd:
+        specifier: ^0.30.4
+        version: 0.30.4
       tsup:
         specifier: ^8.0.1
         version: 8.0.2(typescript@5.3.3)
@@ -10807,6 +10810,7 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     dev: true
+    optional: true
 
   /collect-all@1.0.4:
     resolution: {integrity: sha512-RKZhRwJtJEP5FWul+gkSMEnaK6H3AGPTTWOiRimCcs+rc/OmQE3Yhy1Q7A7KsdkG3ZXVdZq68Y6ONSdvkeEcKA==}
@@ -11936,7 +11940,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240210
+      typescript: 5.4.0-dev.20240211
     dev: true
 
   /dts-critic@3.3.11(typescript@5.3.3):
@@ -15157,6 +15161,7 @@ packages:
     dependencies:
       number-is-nan: 1.0.1
     dev: true
+    optional: true
 
   /is-fullwidth-code-point@3.0.0:
     resolution: {integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==}
@@ -18519,6 +18524,7 @@ packages:
     engines: {node: '>=0.10.0'}
     requiresBuild: true
     dev: true
+    optional: true
 
   /nypm@0.3.6:
     resolution: {integrity: sha512-2CATJh3pd6CyNfU5VZM7qSwFu0ieyabkEdnogE30Obn1czrmOYiZ8DOZLe1yBdLKWoyD3Mcy2maUs+0MR3yVjQ==}
@@ -21143,6 +21149,7 @@ packages:
       is-fullwidth-code-point: 1.0.0
       strip-ansi: 3.0.1
     dev: true
+    optional: true
 
   /string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -22353,6 +22360,12 @@ packages:
 
   /typescript@5.4.0-dev.20240210:
     resolution: {integrity: sha512-2Gzli3tdbcXsjTYrQXJhqtevbqmk6soSQYu/n2x05Psj4YeFIcP/zGICTZx5UNF+la7n6+tVoj7dZNr0TQK6jg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true
+
+  /typescript@5.4.0-dev.20240211:
+    resolution: {integrity: sha512-2EEMVld7E3UHff+5pBQJ01ic3Wjzf/1555yu2KZ4mOaVpkBat6YDOidLnlngeQUeoBUv182Wp2ozye0H2RNzaQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -23741,7 +23754,7 @@ packages:
   /wide-align@1.1.5:
     resolution: {integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==}
     dependencies:
-      string-width: 1.0.2
+      string-width: 4.2.3
     dev: true
 
   /wordwrap@1.0.0:
