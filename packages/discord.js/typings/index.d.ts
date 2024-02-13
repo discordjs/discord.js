@@ -3915,23 +3915,23 @@ export enum DiscordjsErrorCodes {
   EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
 }
 
-/** @internal */
-export interface DiscordjsErrorFields<Name extends string> {
-  readonly name: `${Name} [${DiscordjsErrorCodes}]`;
-  get code(): DiscordjsErrorCodes;
+export class DiscordjsError extends Error {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `Error [${DiscordjsErrorCodes}]`;
 }
 
-/** @internal */
-export function DiscordjsErrorMixin<Entity, Name extends string>(
-  Base: Constructable<Entity>,
-  name: Name,
-): Constructable<Entity & DiscordjsErrorFields<Name>>;
+export class DiscordjsTypeError extends TypeError {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `TypeError [${DiscordjsErrorCodes}]`;
+}
 
-export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
-
-export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') {}
-
-export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') {}
+export class DiscordjsRangeError extends RangeError {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `RangeError [${DiscordjsErrorCodes}]`;
+}
 
 //#endregion
 
