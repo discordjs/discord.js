@@ -9,21 +9,15 @@ const choicesPredicate = s.object({
 	name_localizations: localizationMapPredicate,
 	value: s.union(stringPredicate, numberPredicate),
 }).array;
-const booleanPredicate = s.boolean;
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
  */
-export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<ChoiceType extends number | string> {
+export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number | string> {
 	/**
 	 * The choices of this option.
 	 */
 	public readonly choices?: APIApplicationCommandOptionChoice<ChoiceType>[];
-
-	/**
-	 * Whether this option utilizes autocomplete.
-	 */
-	public readonly autocomplete?: boolean;
 
 	/**
 	 * The type of this option.
@@ -38,7 +32,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<ChoiceType 
 	 * @param choices - The choices to add
 	 */
 	public addChoices(...choices: APIApplicationCommandOptionChoice<ChoiceType>[]): this {
-		if (choices.length > 0 && this.autocomplete) {
+		if (choices.length > 0 && 'autocomplete' in this && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
@@ -70,7 +64,7 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<ChoiceType 
 	 * @param choices - The choices to set
 	 */
 	public setChoices<Input extends APIApplicationCommandOptionChoice<ChoiceType>[]>(...choices: Input): this {
-		if (choices.length > 0 && this.autocomplete) {
+		if (choices.length > 0 && 'autocomplete' in this && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
@@ -78,24 +72,6 @@ export class ApplicationCommandOptionWithChoicesAndAutocompleteMixin<ChoiceType 
 
 		Reflect.set(this, 'choices', []);
 		this.addChoices(...choices);
-
-		return this;
-	}
-
-	/**
-	 * Whether this option uses autocomplete.
-	 *
-	 * @param autocomplete - Whether this option should use autocomplete
-	 */
-	public setAutocomplete(autocomplete: boolean): this {
-		// Assert that you actually passed a boolean
-		booleanPredicate.parse(autocomplete);
-
-		if (autocomplete && Array.isArray(this.choices) && this.choices.length > 0) {
-			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
-		}
-
-		Reflect.set(this, 'autocomplete', autocomplete);
 
 		return this;
 	}

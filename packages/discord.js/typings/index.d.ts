@@ -648,7 +648,9 @@ export class BaseGuildEmoji extends Emoji {
   public requiresColons: boolean | null;
 }
 
-export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, true) {
+// tslint:disable-next-line no-empty-interface
+export interface BaseGuildTextChannel extends TextBasedChannelFields<true>, GuildChannel {}
+export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
   public defaultThreadRateLimitPerUser: number | null;
@@ -667,10 +669,11 @@ export class BaseGuildTextChannel extends TextBasedChannelMixin(GuildChannel, tr
   public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
 }
 
-export class BaseGuildVoiceChannel extends TextBasedChannelMixin(GuildChannel, true, [
-  'lastPinTimestamp',
-  'lastPinAt',
-]) {
+// tslint:disable-next-line no-empty-interface
+export interface BaseGuildVoiceChannel
+  extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'>,
+    GuildChannel {}
+export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public bitrate: number;
   public get full(): boolean;
@@ -1209,6 +1212,12 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   public getSubcommandGroup(required?: boolean): string | null;
   public getBoolean(name: string, required: true): boolean;
   public getBoolean(name: string, required?: boolean): boolean | null;
+  /**
+   * @privateRemarks
+   * The ternary in the return type is required.
+   * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
+   * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
+   */
   public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required: true,
@@ -1216,14 +1225,17 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
-      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
-      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
-      // Hence the need for this ternary
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
         : Type;
     }
   >;
+  /**
+   * @privateRemarks
+   * The ternary in the return type is required.
+   * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
+   * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
+   */
   public getChannel<const Type extends ChannelType = ChannelType>(
     name: string,
     required?: boolean,
@@ -1231,9 +1243,6 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
   ): Extract<
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
-      // The `type` property of the PublicThreadChannel class is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`
-      // If the user only passed one of those channel types, the Extract<> would have resolved to `never`
-      // Hence the need for this ternary
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
         ? ChannelType.PublicThread | ChannelType.AnnouncementThread
         : Type;
@@ -1284,13 +1293,14 @@ export interface ResolvedFile {
   contentType?: string;
 }
 
-export class DMChannel extends TextBasedChannelMixin(BaseChannel, false, [
-  'bulkDelete',
-  'fetchWebhooks',
-  'createWebhook',
-  'setRateLimitPerUser',
-  'setNSFW',
-]) {
+// tslint:disable-next-line no-empty-interface
+export interface DMChannel
+  extends Omit<
+      TextBasedChannelFields<false>,
+      'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
+    >,
+    BaseChannel {}
+export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
   public recipientId: Snowflake;
@@ -1569,7 +1579,8 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export class GuildMember extends PartialTextBasedChannel(Base) {
+export interface GuildMember extends PartialTextBasedChannelFields<false>, Base {}
+export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
   public avatar: string | null;
@@ -1920,7 +1931,9 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public once(event: string, listener: (...args: any[]) => void): this;
 }
 
-export class InteractionWebhook extends PartialWebhookMixin() {
+// tslint:disable-next-line no-empty-interface
+export interface InteractionWebhook extends PartialWebhookFields {}
+export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
   public token: string;
@@ -2464,17 +2477,21 @@ export interface DefaultReactionEmoji {
   name: string | null;
 }
 
-export abstract class ThreadOnlyChannel extends TextBasedChannelMixin(GuildChannel, true, [
-  'send',
-  'lastMessage',
-  'lastPinAt',
-  'bulkDelete',
-  'sendTyping',
-  'createMessageCollector',
-  'awaitMessages',
-  'createMessageComponentCollector',
-  'awaitMessageComponent',
-]) {
+export interface ThreadOnlyChannel
+  extends Omit<
+      TextBasedChannelFields,
+      | 'send'
+      | 'lastMessage'
+      | 'lastPinAt'
+      | 'bulkDelete'
+      | 'sendTyping'
+      | 'createMessageCollector'
+      | 'awaitMessages'
+      | 'createMessageComponentCollector'
+      | 'awaitMessageComponent'
+    >,
+    GuildChannel {}
+export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
   public availableTags: GuildForumTag[];
@@ -3134,11 +3151,11 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
   type: ChannelType.PrivateThread;
 }
 
-export class ThreadChannel<ThreadOnly extends boolean = boolean> extends TextBasedChannelMixin(BaseChannel, true, [
-  'fetchWebhooks',
-  'createWebhook',
-  'setNSFW',
-]) {
+// tslint:disable-next-line no-empty-interface
+export interface ThreadChannel<ThreadOnly extends boolean = boolean>
+  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'>,
+    BaseChannel {}
+export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
@@ -3233,7 +3250,9 @@ export class Typing extends Base {
   };
 }
 
-export class User extends PartialTextBasedChannel(Base) {
+// tslint:disable-next-line no-empty-interface
+export interface User extends PartialTextBasedChannelFields<false>, Base {}
+export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
 
@@ -3486,7 +3505,9 @@ export class VoiceState extends Base {
   public edit(options: VoiceStateEditOptions): Promise<this>;
 }
 
-export class Webhook extends WebhookMixin() {
+// tslint:disable-next-line no-empty-interface
+export interface Webhook extends WebhookFields {}
+export class Webhook {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -3532,7 +3553,9 @@ export class Webhook extends WebhookMixin() {
   public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message>;
 }
 
-export class WebhookClient extends WebhookMixin(BaseClient) {
+// tslint:disable-next-line no-empty-interface
+export interface WebhookClient extends WebhookFields, BaseClient {}
+export class WebhookClient extends BaseClient {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
   public options: WebhookClientOptions;
@@ -3667,6 +3690,15 @@ export type NonSystemMessageType =
   | MessageType.ChatInputCommand
   | MessageType.ContextMenuCommand;
 
+export type UndeletableMessageType =
+  | MessageType.RecipientAdd
+  | MessageType.RecipientRemove
+  | MessageType.Call
+  | MessageType.ChannelNameChange
+  | MessageType.ChannelIconChange
+  | MessageType.ThreadStarterMessage;
+
+/** @deprecated This type will no longer be updated. Use {@link UndeletableMessageType} instead. */
 export type DeletableMessageType =
   | MessageType.AutoModerationAction
   | MessageType.ChannelFollowAdd
@@ -3699,6 +3731,8 @@ export const Constants: {
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
+  UndeletableMessageTypes: UndeletableMessageType[];
+  /** @deprecated This list will no longer be updated. Use {@link Constants.UndeletableMessageTypes} instead. */
   DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
@@ -3882,23 +3916,23 @@ export enum DiscordjsErrorCodes {
   EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
 }
 
-/** @internal */
-export interface DiscordjsErrorFields<Name extends string> {
-  readonly name: `${Name} [${DiscordjsErrorCodes}]`;
-  get code(): DiscordjsErrorCodes;
+export class DiscordjsError extends Error {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `Error [${DiscordjsErrorCodes}]`;
 }
 
-/** @internal */
-export function DiscordjsErrorMixin<Entity, Name extends string>(
-  Base: Constructable<Entity>,
-  name: Name,
-): Constructable<Entity & DiscordjsErrorFields<Name>>;
+export class DiscordjsTypeError extends TypeError {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `TypeError [${DiscordjsErrorCodes}]`;
+}
 
-export class DiscordjsError extends DiscordjsErrorMixin(Error, 'Error') {}
-
-export class DiscordjsTypeError extends DiscordjsErrorMixin(TypeError, 'TypeError') {}
-
-export class DiscordjsRangeError extends DiscordjsErrorMixin(RangeError, 'RangeError') {}
+export class DiscordjsRangeError extends RangeError {
+  private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
+  public readonly code: DiscordjsErrorCodes;
+  public get name(): `RangeError [${DiscordjsErrorCodes}]`;
+}
 
 //#endregion
 
@@ -4469,22 +4503,6 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
 
-/** @internal */
-export function PartialTextBasedChannel<Entity>(
-  Base?: Constructable<Entity>,
-): Constructable<Entity & PartialTextBasedChannelFields<false>>;
-
-/** @internal */
-export function TextBasedChannelMixin<
-  Entity,
-  InGuild extends boolean = boolean,
-  IgnoredFields extends keyof TextBasedChannelFields<InGuild> = never,
->(
-  Base?: Constructable<Entity>,
-  inGuild?: InGuild,
-  ignore?: IgnoredFields[],
-): Constructable<Entity & Omit<TextBasedChannelFields<InGuild>, IgnoredFields>>;
-
 export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
   send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
 }
@@ -4514,11 +4532,6 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
   setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
-
-/** @internal */
-export function PartialWebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & PartialWebhookFields>;
-/** @internal */
-export function WebhookMixin<Entity>(Base?: Constructable<Entity>): Constructable<Entity & WebhookFields>;
 
 /** @internal */
 export interface PartialWebhookFields {
@@ -6723,6 +6736,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
   avatarURL?: string;
   threadId?: Snowflake;
   threadName?: string;
+  appliedTags?: Snowflake[];
 }
 
 export interface WebSocketOptions {

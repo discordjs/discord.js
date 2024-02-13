@@ -39,7 +39,7 @@ const Messages = {
     `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   [DjsErrorCodes.ColorRange]: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
-  [DjsErrorCodes.ColorConvert]: 'Unable to convert color to a number.',
+  [DjsErrorCodes.ColorConvert]: color => `Unable to convert "${color}" to a number.`,
 
   [DjsErrorCodes.InviteOptionsMissingChannel]:
     'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',

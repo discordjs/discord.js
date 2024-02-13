@@ -27,7 +27,7 @@ export function InstallButton() {
 			}}
 			type="button"
 		>
-			<span className="font-semibold text-blurple">{'>'}</span> npm install discord.js{' '}
+			<span className="text-blurple font-semibold">{'>'}</span> npm install discord.js{' '}
 			{state.value && interacted ? (
 				<FiCheck className="ml-1 inline-block text-green-500" />
 			) : (

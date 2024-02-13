@@ -25,9 +25,9 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 				case DocNodeKind.Section:
 				case DocNodeKind.Paragraph:
 					return (
-						<span className="break-words leading-relaxed" key={idx}>
+						<div className="break-words leading-relaxed" key={idx}>
 							{(tsdoc as DocNodeContainer).nodes.map((node, idx) => createNode(node, idx))}
-						</span>
+						</div>
 					);
 				case DocNodeKind.SoftBreak:
 					return <Fragment key={idx} />;
@@ -80,7 +80,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 
 						return (
 							<ItemLink
-								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
+								className="rounded text-blurple font-mono outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								itemURI={resolveItemURI(foundItem ?? resolved!.item)}
 								key={idx}
 								packageName={resolved?.package ?? item.getAssociatedPackage()?.displayName.replace('@discordjs/', '')}
@@ -99,7 +99,7 @@ export function TSDoc({ item, tsdoc }: { readonly item: ApiItem; readonly tsdoc:
 					if (urlDestination) {
 						return (
 							<Link
-								className="rounded font-mono text-blurple outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
+								className="rounded text-blurple font-mono outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 								href={urlDestination as Route}
 								key={idx}
 							>

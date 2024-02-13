@@ -1,4 +1,3 @@
-/* eslint-disable n/prefer-global/process */
 /* eslint-disable no-restricted-globals */
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
