@@ -517,7 +517,7 @@ export abstract class Base {
   public valueOf(): string;
 }
 
-export class BaseClient extends EventEmitter {
+export class BaseClient extends EventEmitter implements AsyncDisposable {
   public constructor(options?: ClientOptions | WebhookClientOptions);
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
@@ -526,6 +526,7 @@ export class BaseClient extends EventEmitter {
   public rest: REST;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
+  public [Symbol.asyncDispose](): Promise<void>;
 }
 
 export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
