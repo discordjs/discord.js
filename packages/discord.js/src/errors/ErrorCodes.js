@@ -88,8 +88,9 @@
  * <warn>This property is deprecated.</warn>
 
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
- * @property {'MessageNonceType'} MessageNonceType
  * @property {'MessageContentType'} MessageContentType
+ * @property {'MessageNonceRequired'} MessageNonceRequired
+ * @property {'MessageNonceType'} MessageNonceType
 
  * @property {'SplitMaxLen'} SplitMaxLen
  * <warn>This property is deprecated.</warn>
@@ -244,8 +245,9 @@ const keys = [
   'ImageSize',
 
   'MessageBulkDeleteType',
-  'MessageNonceType',
   'MessageContentType',
+  'MessageNonceRequired',
+  'MessageNonceType',
 
   'SplitMaxLen',
 
