@@ -59,6 +59,13 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
+	 * The name displayed in the client for this user when no nickname is set
+	 */
+	public get displayName() {
+		return this.globalName ?? this.username;
+	}
+
+	/**
 	 * The user avatar's hash
 	 */
 	public get avatar() {
@@ -134,28 +141,12 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * The flags on the user's account
-	 *
-	 * @remarks  This property is only set when the user was fetched with an OAuth2 token and the `identity` scope
-	 */
-	public get flags() {
-		return this[kData].flags;
-	}
-
-	/**
 	 * The type of nitro subscription on the user's account
 	 *
 	 * @remarks This property is only set when the user was fetched with an OAuth2 token and the `identify` scope
 	 */
 	public get premiumType() {
 		return this[kData].premium_type;
-	}
-
-	/**
-	 * The public flags for the user
-	 */
-	public get publicFlags() {
-		return this[kData].public_flags;
 	}
 
 	/**
