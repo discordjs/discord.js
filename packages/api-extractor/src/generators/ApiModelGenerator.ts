@@ -1231,7 +1231,11 @@ export class ApiModelGenerator {
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
 
-		if (apiProperty === undefined) {
+		if (
+			apiProperty === undefined &&
+			(astDeclaration ||
+				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+		) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
 				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
@@ -1322,7 +1326,10 @@ export class ApiModelGenerator {
 		const parent = context.parentDocgenJson as DocgenInterfaceJson | DocgenPropertyJson | DocgenTypedefJson | undefined;
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 
-		if (apiPropertySignature === undefined) {
+		if (
+			apiPropertySignature === undefined &&
+			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+		) {
 			if (astDeclaration) {
 				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
 
@@ -1643,6 +1650,54 @@ export class ApiModelGenerator {
 		}
 
 		return parameters;
+	}
+
+	private _isInherited(
+		container: DocgenClassJson | DocgenInterfaceJson,
+		jsDoc: DocgenParamJson | DocgenPropertyJson,
+		containerKind: ApiItemKind,
+	): boolean {
+		switch (containerKind) {
+			case ApiItemKind.Class: {
+				const token = (container as DocgenClassJson).extends;
+				const parentName = Array.isArray(token) ? token[0]?.[0]?.[0] : token?.types?.[0]?.[0]?.[0];
+				const parentJson = this._jsDocJson?.classes.find((clas) => clas.name === parentName);
+				if (parentJson) {
+					if (parentJson.props?.find((prop) => prop.name === jsDoc.name)) {
+						return true;
+					} else {
+						return this._isInherited(parentJson, jsDoc, containerKind);
+					}
+				}
+
+				break;
+			}
+
+			case ApiItemKind.Interface: {
+				const token = (container as DocgenInterfaceJson).extends;
+				const parentNames = Array.isArray(token) ? token.map((parent) => parent[0]?.[0]) : undefined;
+				const parentJsons = parentNames?.map((name) =>
+					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
+				);
+				if (parentJsons?.length) {
+					for (const parentJson of parentJsons) {
+						if (
+							parentJson?.props?.find((prop) => prop.name === jsDoc.name) ||
+							this._isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
+						) {
+							return true;
+						}
+					}
+				}
+
+				break;
+			}
+
+			default:
+				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${jsDoc?.name} `);
+		}
+
+		return false;
 	}
 
 	private _isReadonly(astDeclaration: AstDeclaration): boolean {
