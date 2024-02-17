@@ -74,8 +74,9 @@ const Messages = {
   [DjsErrorCodes.ImageSize]: size => `Invalid image size: ${size}`,
 
   [DjsErrorCodes.MessageBulkDeleteType]: 'The messages must be an Array, Collection, or number.',
-  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
   [DjsErrorCodes.MessageContentType]: 'Message content must be a string.',
+  [DjsErrorCodes.MessageNonceRequired]: 'Message nonce is required when enforceNonce is true.',
+  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
 
   [DjsErrorCodes.SplitMaxLen]: 'Chunk exceeds the max length and contains no split characters.',
 

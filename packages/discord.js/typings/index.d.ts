@@ -3828,8 +3828,9 @@ export enum DiscordjsErrorCodes {
   ImageSize = 'ImageSize',
 
   MessageBulkDeleteType = 'MessageBulkDeleteType',
-  MessageNonceType = 'MessageNonceType',
   MessageContentType = 'MessageContentType',
+  MessageNonceRequired = 'MessageNonceRequired',
+  MessageNonceType = 'MessageNonceType',
 
   /** @deprecated No longer in use */
   SplitMaxLen = 'SplitMaxLen',
@@ -6223,6 +6224,7 @@ export interface BaseMessageOptions {
 export interface MessageCreateOptions extends BaseMessageOptions {
   tts?: boolean;
   nonce?: string | number;
+  enforceNonce?: boolean;
   reply?: ReplyOptions;
   stickers?: StickerResolvable[];
   flags?: BitFieldResolvable<
