@@ -1,0 +1,58 @@
+name: Websites bug report
+description: Report an issue with the documentation or guide websites.
+labels: [bug, need repro]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for filing an issue! If you are here to ask a question, use Discord instead: https://discord.gg/djs
+
+        This issue form is for our documentation and guide websites.
+  - type: dropdown
+    id: application
+    attributes:
+      label: Which application is this bug report for?
+      options:
+        - Documentation
+        - Guide
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue description
+      description: Describe the issue in as much detail as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: What steps must be taken to reproduce this issue?
+      placeholder: |
+        1. Visit a page
+        2. Click a link
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: List necessary versions here. This includes your browser, operating system etc.
+      placeholder: |
+        - Safari 16.4 (18615.1.26.11.23)
+        - macOS Ventura 13.3.1
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Issue priority
+      description: Please be realistic. If you need to elaborate on your reasoning, please use the issue description field above.
+      options:
+        - Low (slightly annoying)
+        - Medium (should be fixed soon)
+        - High (immediate attention needed)
+    validations:
+      required: true

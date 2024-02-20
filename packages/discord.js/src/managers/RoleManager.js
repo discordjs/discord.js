@@ -6,7 +6,7 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
@@ -137,10 +137,10 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
     color &&= resolveColor(color);
-    if (typeof permissions !== 'undefined') permissions = new PermissionsBitField(permissions);
+    if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
@@ -191,17 +191,16 @@ class RoleManager extends CachedManager {
 
     let icon = options.icon;
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
     const body = {
       name: options.name,
-      color: typeof options.color === 'undefined' ? undefined : resolveColor(options.color),
+      color: options.color === undefined ? undefined : resolveColor(options.color),
       hoist: options.hoist,
-      permissions:
-        typeof options.permissions === 'undefined' ? undefined : new PermissionsBitField(options.permissions),
+      permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,
       icon,
       unicode_emoji: options.unicodeEmoji,
@@ -281,9 +280,9 @@ class RoleManager extends CachedManager {
    */
   async setPositions(rolePositions) {
     // Make sure rolePositions are prepared for API
-    rolePositions = rolePositions.map(o => ({
-      id: this.resolveId(o.role),
-      position: o.position,
+    rolePositions = rolePositions.map(rolePosition => ({
+      id: this.resolveId(rolePosition.role),
+      position: rolePosition.position,
     }));
 
     // Call the API to update role positions
@@ -308,11 +307,14 @@ class RoleManager extends CachedManager {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'Role nor a Snowflake');
     }
 
-    if (resolvedRole1.position === resolvedRole2.position) {
+    const role1Position = resolvedRole1.position;
+    const role2Position = resolvedRole2.position;
+
+    if (role1Position === role2Position) {
       return Number(BigInt(resolvedRole2.id) - BigInt(resolvedRole1.id));
     }
 
-    return resolvedRole1.position - resolvedRole2.position;
+    return role1Position - role2Position;
   }
 
   /**

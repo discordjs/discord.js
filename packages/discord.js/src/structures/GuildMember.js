@@ -54,7 +54,14 @@ class GuildMember extends Base {
      */
     this.communicationDisabledUntilTimestamp = null;
 
-    this._roles = [];
+    /**
+     * The role ids of the member
+     * @name GuildMember#_roles
+     * @type {Snowflake[]}
+     * @private
+     */
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
+
     if (data) this._patch(data);
   }
 
@@ -195,7 +202,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in base 10
+   * The displayed role color of this member in base 10
    * @type {number}
    * @readonly
    */
@@ -204,7 +211,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in hexadecimal
+   * The displayed role color of this member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -231,12 +238,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * The nickname of this member, or their username if they don't have one
+   * The nickname of this member, or their user display name if they don't have one
    * @type {?string}
    * @readonly
    */
   get displayName() {
-    return this.nickname ?? this.user.username;
+    return this.nickname ?? this.user.displayName;
   }
 
   /**
@@ -340,6 +347,16 @@ class GuildMember extends Base {
    * @param {?string} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Set a nickname for a guild member
+   * guildMember.setNickname('cool nickname', 'Needed a new nickname')
+   *   .then(member => console.log(`Set nickname of ${member.user.username}`))
+   *   .catch(console.error);
+   * @example
+   * // Remove a nickname for a guild member
+   * guildMember.setNickname(null, 'No nicknames allowed!')
+   *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
+   *   .catch(console.error);
    */
   setNickname(nick, reason) {
     return this.edit({ nick, reason });
@@ -382,12 +399,12 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   ban(options) {
-    return this.guild.members.ban(this, options);
+    return this.guild.bans.create(this, options);
   }
 
   /**
    * Times this guild member out.
-   * @param {DateResolvable|null} communicationDisabledUntil The date or timestamp
+   * @param {?DateResolvable} communicationDisabledUntil The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
@@ -396,6 +413,11 @@ class GuildMember extends Base {
    * guildMember.disableCommunicationUntil(Date.now() + (5 * 60 * 1000), 'They deserved it')
    *   .then(console.log)
    *   .catch(console.error);
+   * @example
+   * // Remove the timeout of a guild member
+   * guildMember.disableCommunicationUntil(null)
+   *   .then(member => console.log(`Removed timeout for ${member.displayName}`))
+   *   .catch(console.error);
    */
   disableCommunicationUntil(communicationDisabledUntil, reason) {
     return this.edit({ communicationDisabledUntil, reason });
@@ -403,8 +425,8 @@ class GuildMember extends Base {
 
   /**
    * Times this guild member out.
-   * @param {number|null} timeout The time in milliseconds
-   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
+   * @param {?number} timeout The duration in milliseconds
+   * for the member's communication to be disabled. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
@@ -472,17 +494,22 @@ class GuildMember extends Base {
     json.displayAvatarURL = this.displayAvatarURL();
     return json;
   }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
 }
+
+/**
+ * Sends a message to this user.
+ * @method send
+ * @memberof GuildMember
+ * @instance
+ * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+ * @returns {Promise<Message>}
+ * @example
+ * // Send a direct message
+ * guildMember.send('Hello!')
+ *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
+ *   .catch(console.error);
+ */
 
 TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;
-
-/**
- * @external APIGuildMember
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-member-object}
- */

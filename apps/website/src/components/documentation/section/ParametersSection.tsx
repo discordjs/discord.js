@@ -1,12 +1,12 @@
-import type { ApiParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiDocumentedItem, ApiParameterListMixin } from '@discordjs/api-extractor-model';
 import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
-import { ResponsiveSection } from './ResponsiveSection';
-import { ParameterTable } from '~/components/ParameterTable';
+import { ParameterTable } from '../../ParameterTable';
+import { DocumentationSection } from './DocumentationSection';
 
-export function ParameterSection({ item }: { item: ApiParameterListMixin }) {
+export function ParameterSection({ item }: { readonly item: ApiDocumentedItem & ApiParameterListMixin }) {
 	return (
-		<ResponsiveSection icon={<VscSymbolParameter size={20} />} padded title="Parameters">
+		<DocumentationSection icon={<VscSymbolParameter size={20} />} padded title="Parameters">
 			<ParameterTable item={item} />
-		</ResponsiveSection>
+		</DocumentationSection>
 	);
 }

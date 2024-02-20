@@ -1,13 +1,13 @@
 /**
  * Represents an object capable of representing itself as a JSON object
  *
- * @typeParam T - The JSON type corresponding to {@link JSONEncodable.toJSON} outputs.
+ * @typeParam Value - The JSON type corresponding to {@link JSONEncodable.toJSON} outputs.
  */
-export interface JSONEncodable<T> {
+export interface JSONEncodable<Value> {
 	/**
 	 * Transforms this object to its JSON format
 	 */
-	toJSON(): T;
+	toJSON(): Value;
 }
 
 /**

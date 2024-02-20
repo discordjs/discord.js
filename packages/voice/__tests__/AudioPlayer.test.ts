@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/dot-notation */
+
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import type { AudioPlayer } from '../src/audio/AudioPlayer';
 import { createAudioPlayer, AudioPlayerStatus, SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';

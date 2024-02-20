@@ -2,247 +2,305 @@ import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
- * Wraps the content inside a codeblock with no language
+ * Wraps the content inside a code block with no language.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function codeBlock<C extends string>(content: C): `\`\`\`\n${C}\n\`\`\``;
+export function codeBlock<Content extends string>(content: Content): `\`\`\`\n${Content}\n\`\`\``;
 
 /**
- * Wraps the content inside a codeblock with the specified language
+ * Wraps the content inside a code block with the specified language.
  *
- * @param language - The language for the codeblock
+ * @typeParam Language - This is inferred by the supplied language
+ * @typeParam Content - This is inferred by the supplied content
+ * @param language - The language for the code block
  * @param content - The content to wrap
  */
-export function codeBlock<L extends string, C extends string>(language: L, content: C): `\`\`\`${L}\n${C}\n\`\`\``;
+export function codeBlock<Language extends string, Content extends string>(
+	language: Language,
+	content: Content,
+): `\`\`\`${Language}\n${Content}\n\`\`\``;
+
 export function codeBlock(language: string, content?: string): string {
-	return typeof content === 'undefined' ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
+	return content === undefined ? `\`\`\`\n${language}\n\`\`\`` : `\`\`\`${language}\n${content}\n\`\`\``;
 }
 
 /**
- * Wraps the content inside \`backticks\`, which formats it as inline code
+ * Wraps the content inside \`backticks\` which formats it as inline code.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function inlineCode<C extends string>(content: C): `\`${C}\`` {
+export function inlineCode<Content extends string>(content: Content): `\`${Content}\`` {
 	return `\`${content}\``;
 }
 
 /**
- * Formats the content into italic text
+ * Formats the content into italic text.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function italic<C extends string>(content: C): `_${C}_` {
+export function italic<Content extends string>(content: Content): `_${Content}_` {
 	return `_${content}_`;
 }
 
 /**
- * Formats the content into bold text
+ * Formats the content into bold text.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function bold<C extends string>(content: C): `**${C}**` {
+export function bold<Content extends string>(content: Content): `**${Content}**` {
 	return `**${content}**`;
 }
 
 /**
- * Formats the content into underscored text
+ * Formats the content into underscored text.
  *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @deprecated Use {@link underline} instead.
+ */
+export function underscore<Content extends string>(content: Content): `__${Content}__` {
+	return underline(content);
+}
+
+/**
+ * Formats the content into underlined text.
+ *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function underscore<C extends string>(content: C): `__${C}__` {
+export function underline<Content extends string>(content: Content): `__${Content}__` {
 	return `__${content}__`;
 }
 
 /**
- * Formats the content into strike-through text
+ * Formats the content into strike-through text.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function strikethrough<C extends string>(content: C): `~~${C}~~` {
+export function strikethrough<Content extends string>(content: Content): `~~${Content}~~` {
 	return `~~${content}~~`;
 }
 
 /**
- * Formats the content into a quote. This needs to be at the start of the line for Discord to format it
+ * Formats the content into a quote.
  *
+ * @remarks This needs to be at the start of the line for Discord to format it.
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function quote<C extends string>(content: C): `> ${C}` {
+export function quote<Content extends string>(content: Content): `> ${Content}` {
 	return `> ${content}`;
 }
 
 /**
- * Formats the content into a block quote. This needs to be at the start of the line for Discord to format it
+ * Formats the content into a block quote.
  *
+ * @remarks This needs to be at the start of the line for Discord to format it.
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function blockQuote<C extends string>(content: C): `>>> ${C}` {
+export function blockQuote<Content extends string>(content: Content): `>>> ${Content}` {
 	return `>>> ${content}`;
 }
 
 /**
- * Wraps the URL into `<>`, which stops it from embedding
+ * Wraps the URL into `<>` which stops it from embedding.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param url - The URL to wrap
  */
-export function hideLinkEmbed<C extends string>(url: C): `<${C}>`;
+export function hideLinkEmbed<Content extends string>(url: Content): `<${Content}>`;
 
 /**
- * Wraps the URL into `<>`, which stops it from embedding
+ * Wraps the URL into `<>` which stops it from embedding.
  *
  * @param url - The URL to wrap
  */
 export function hideLinkEmbed(url: URL): `<${string}>`;
+
 export function hideLinkEmbed(url: URL | string) {
 	return `<${url}>`;
 }
 
 /**
- * Formats the content and the URL into a masked URL
+ * Formats the content and the URL into a masked URL.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to display
  * @param url - The URL the content links to
  */
-export function hyperlink<C extends string>(content: C, url: URL): `[${C}](${string})`;
+export function hyperlink<Content extends string>(content: Content, url: URL): `[${Content}](${string})`;
 
 /**
- * Formats the content and the URL into a masked URL
+ * Formats the content and the URL into a masked URL.
  *
+ * @typeParam Content - This is inferred by the supplied content
+ * @typeParam Url - This is inferred by the supplied URL
  * @param content - The content to display
  * @param url - The URL the content links to
  */
-export function hyperlink<C extends string, U extends string>(content: C, url: U): `[${C}](${U})`;
+export function hyperlink<Content extends string, Url extends string>(
+	content: Content,
+	url: Url,
+): `[${Content}](${Url})`;
 
 /**
- * Formats the content and the URL into a masked URL
+ * Formats the content and the URL into a masked URL with a custom tooltip.
  *
+ * @typeParam Content - This is inferred by the supplied content
+ * @typeParam Title - This is inferred by the supplied title
  * @param content - The content to display
  * @param url - The URL the content links to
  * @param title - The title shown when hovering on the masked link
  */
-export function hyperlink<C extends string, T extends string>(
-	content: C,
+export function hyperlink<Content extends string, Title extends string>(
+	content: Content,
 	url: URL,
-	title: T,
-): `[${C}](${string} "${T}")`;
+	title: Title,
+): `[${Content}](${string} "${Title}")`;
 
 /**
- * Formats the content and the URL into a masked URL
+ * Formats the content and the URL into a masked URL with a custom tooltip.
  *
+ * @typeParam Content - This is inferred by the supplied content
+ * @typeParam Url - This is inferred by the supplied URL
+ * @typeParam Title - This is inferred by the supplied title
  * @param content - The content to display
  * @param url - The URL the content links to
  * @param title - The title shown when hovering on the masked link
  */
-export function hyperlink<C extends string, U extends string, T extends string>(
-	content: C,
-	url: U,
-	title: T,
-): `[${C}](${U} "${T}")`;
+export function hyperlink<Content extends string, Url extends string, Title extends string>(
+	content: Content,
+	url: Url,
+	title: Title,
+): `[${Content}](${Url} "${Title}")`;
+
 export function hyperlink(content: string, url: URL | string, title?: string) {
 	return title ? `[${content}](${url} "${title}")` : `[${content}](${url})`;
 }
 
 /**
- * Wraps the content inside spoiler (hidden text)
+ * Formats the content into a spoiler.
  *
+ * @typeParam Content - This is inferred by the supplied content
  * @param content - The content to wrap
  */
-export function spoiler<C extends string>(content: C): `||${C}||` {
+export function spoiler<Content extends string>(content: Content): `||${Content}||` {
 	return `||${content}||`;
 }
 
 /**
- * Formats a user ID into a user mention
+ * Formats a user id into a user mention.
  *
- * @param userId - The user ID to format
+ * @typeParam UserId - This is inferred by the supplied user id
+ * @param userId - The user id to format
  */
-export function userMention<C extends Snowflake>(userId: C): `<@${C}>` {
+export function userMention<UserId extends Snowflake>(userId: UserId): `<@${UserId}>` {
 	return `<@${userId}>`;
 }
 
 /**
- * Formats a channel ID into a channel mention
+ * Formats a channel id into a channel mention.
  *
- * @param channelId - The channel ID to format
+ * @typeParam ChannelId - This is inferred by the supplied channel id
+ * @param channelId - The channel id to format
  */
-export function channelMention<C extends Snowflake>(channelId: C): `<#${C}>` {
+export function channelMention<ChannelId extends Snowflake>(channelId: ChannelId): `<#${ChannelId}>` {
 	return `<#${channelId}>`;
 }
 
 /**
- * Formats a role ID into a role mention
+ * Formats a role id into a role mention.
  *
- * @param roleId - The role ID to format
+ * @typeParam RoleId - This is inferred by the supplied role id
+ * @param roleId - The role id to format
  */
-export function roleMention<C extends Snowflake>(roleId: C): `<@&${C}>` {
+export function roleMention<RoleId extends Snowflake>(roleId: RoleId): `<@&${RoleId}>` {
 	return `<@&${roleId}>`;
 }
 
 /**
- * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
+ * Formats an application command name, subcommand group name, subcommand name, and id into an application command mention.
  *
+ * @typeParam CommandName - This is inferred by the supplied command name
+ * @typeParam SubcommandGroupName - This is inferred by the supplied subcommand group name
+ * @typeParam SubcommandName - This is inferred by the supplied subcommand name
+ * @typeParam CommandId - This is inferred by the supplied command id
  * @param commandName - The application command name to format
  * @param subcommandGroupName - The subcommand group name to format
  * @param subcommandName - The subcommand name to format
- * @param commandId - The application command ID to format
+ * @param commandId - The application command id to format
  */
 export function chatInputApplicationCommandMention<
-	N extends string,
-	G extends string,
-	S extends string,
-	I extends Snowflake,
->(commandName: N, subcommandGroupName: G, subcommandName: S, commandId: I): `</${N} ${G} ${S}:${I}>`;
-
-/**
- * Formats an application command name, subcommand name, and ID into an application command mention
- *
- * @param commandName - The application command name to format
- * @param subcommandName - The subcommand name to format
- * @param commandId - The application command ID to format
- */
-export function chatInputApplicationCommandMention<N extends string, S extends string, I extends Snowflake>(
-	commandName: N,
-	subcommandName: S,
-	commandId: I,
-): `</${N} ${S}:${I}>`;
-
-/**
- * Formats an application command name and ID into an application command mention
- *
- * @param commandName - The application command name to format
- * @param commandId - The application command ID to format
- */
-export function chatInputApplicationCommandMention<N extends string, I extends Snowflake>(
-	commandName: N,
-	commandId: I,
-): `</${N}:${I}>`;
-
-/**
- * Formats an application command name, subcommand group name, subcommand name, and ID into an application command mention
- *
- * @param commandName - The application command name to format
- * @param subcommandGroupName - The subcommand group name to format
- * @param subcommandName - The subcommand name to format
- * @param commandId - The application command ID to format
- */
-export function chatInputApplicationCommandMention<
-	N extends string,
-	G extends Snowflake | string,
-	S extends Snowflake | string,
-	I extends Snowflake,
+	CommandName extends string,
+	SubcommandGroupName extends string,
+	SubcommandName extends string,
+	CommandId extends Snowflake,
 >(
-	commandName: N,
-	subcommandGroupName: G,
-	subcommandName?: S,
-	commandId?: I,
-): `</${N} ${G} ${S}:${I}>` | `</${N} ${G}:${S}>` | `</${N}:${G}>` {
-	if (typeof commandId !== 'undefined') {
+	commandName: CommandName,
+	subcommandGroupName: SubcommandGroupName,
+	subcommandName: SubcommandName,
+	commandId: CommandId,
+): `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`;
+
+/**
+ * Formats an application command name, subcommand name, and id into an application command mention.
+ *
+ * @typeParam CommandName - This is inferred by the supplied command name
+ * @typeParam SubcommandName - This is inferred by the supplied subcommand name
+ * @typeParam CommandId - This is inferred by the supplied command id
+ * @param commandName - The application command name to format
+ * @param subcommandName - The subcommand name to format
+ * @param commandId - The application command id to format
+ */
+export function chatInputApplicationCommandMention<
+	CommandName extends string,
+	SubcommandName extends string,
+	CommandId extends Snowflake,
+>(
+	commandName: CommandName,
+	subcommandName: SubcommandName,
+	commandId: CommandId,
+): `</${CommandName} ${SubcommandName}:${CommandId}>`;
+
+/**
+ * Formats an application command name and id into an application command mention.
+ *
+ * @typeParam CommandName - This is inferred by the supplied command name
+ * @typeParam CommandId - This is inferred by the supplied command id
+ * @param commandName - The application command name to format
+ * @param commandId - The application command id to format
+ */
+export function chatInputApplicationCommandMention<CommandName extends string, CommandId extends Snowflake>(
+	commandName: CommandName,
+	commandId: CommandId,
+): `</${CommandName}:${CommandId}>`;
+
+export function chatInputApplicationCommandMention<
+	CommandName extends string,
+	SubcommandGroupName extends Snowflake | string,
+	SubcommandName extends Snowflake | string,
+	CommandId extends Snowflake,
+>(
+	commandName: CommandName,
+	subcommandGroupName: SubcommandGroupName,
+	subcommandName?: SubcommandName,
+	commandId?: CommandId,
+):
+	| `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`
+	| `</${CommandName} ${SubcommandGroupName}:${SubcommandName}>`
+	| `</${CommandName}:${SubcommandGroupName}>` {
+	if (commandId !== undefined) {
 		return `</${commandName} ${subcommandGroupName} ${subcommandName!}:${commandId}>`;
 	}
 
-	if (typeof subcommandName !== 'undefined') {
+	if (subcommandName !== undefined) {
 		return `</${commandName} ${subcommandGroupName}:${subcommandName}>`;
 	}
 
@@ -250,124 +308,304 @@ export function chatInputApplicationCommandMention<
 }
 
 /**
- * Formats an emoji ID into a fully qualified emoji identifier
+ * Formats a non-animated emoji id into a fully qualified emoji identifier.
  *
- * @param emojiId - The emoji ID to format
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @param emojiId - The emoji id to format
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: false): `<:_:${C}>`;
+export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: false): `<:_:${EmojiId}>`;
 
 /**
- * Formats an emoji ID into a fully qualified emoji identifier
+ * Formats an animated emoji id into a fully qualified emoji identifier.
  *
- * @param emojiId - The emoji ID to format
- * @param animated - Whether the emoji is animated or not. Defaults to `false`
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @param emojiId - The emoji id to format
+ * @param animated - Whether the emoji is animated
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: true): `<a:_:${C}>`;
+export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: true): `<a:_:${EmojiId}>`;
 
 /**
- * Formats an emoji ID into a fully qualified emoji identifier
+ * Formats an emoji id into a fully qualified emoji identifier.
  *
- * @param emojiId - The emoji ID to format
- * @param animated - Whether the emoji is animated or not. Defaults to `false`
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @param emojiId - The emoji id to format
+ * @param animated - Whether the emoji is animated
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated?: boolean): `<:_:${C}>` | `<a:_:${C}>`;
+export function formatEmoji<EmojiId extends Snowflake>(
+	emojiId: EmojiId,
+	animated?: boolean,
+): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>`;
 
 /**
- * Formats an emoji ID into a fully qualified emoji identifier
+ * Formats a non-animated emoji id and name into a fully qualified emoji identifier.
  *
- * @param emojiId - The emoji ID to format
- * @param animated - Whether the emoji is animated or not. Defaults to `false`
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied name
+ * @param options - The options for formatting an emoji
  */
-export function formatEmoji<C extends Snowflake>(emojiId: C, animated = false): `<:_:${C}>` | `<a:_:${C}>` {
-	return `<${animated ? 'a' : ''}:_:${emojiId}>`;
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated: true },
+): `<a:${EmojiName}:${EmojiId}>`;
+
+/**
+ * Formats an animated emoji id and name into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied name
+ * @param options - The options for formatting an emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName> & { animated?: false },
+): `<:${EmojiName}:${EmojiId}>`;
+
+/**
+ * Formats an emoji id and name into a fully qualified emoji identifier.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied emoji name
+ * @param options - The options for formatting an emoji
+ */
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	options: FormatEmojiOptions<EmojiId, EmojiName>,
+): `<:${EmojiName}:${EmojiId}>` | `<a:${EmojiName}:${EmojiId}>`;
+
+export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>(
+	emojiIdOrOptions: EmojiId | FormatEmojiOptions<EmojiId, EmojiName>,
+	animated?: boolean,
+): `<:${string}:${EmojiId}>` | `<a:${string}:${EmojiId}>` {
+	const options =
+		typeof emojiIdOrOptions === 'string'
+			? {
+					id: emojiIdOrOptions,
+					animated: animated ?? false,
+				}
+			: emojiIdOrOptions;
+
+	const { id, animated: isAnimated, name: emojiName } = options;
+
+	return `<${isAnimated ? 'a' : ''}:${emojiName ?? '_'}:${id}>`;
+}
+
+/**
+ * The options for formatting an emoji.
+ *
+ * @typeParam EmojiId - This is inferred by the supplied emoji id
+ * @typeParam EmojiName - This is inferred by the supplied emoji name
+ */
+export interface FormatEmojiOptions<EmojiId extends Snowflake, EmojiName extends string> {
+	/**
+	 * Whether the emoji is animated
+	 */
+	animated?: boolean;
+	/**
+	 * The emoji id to format
+	 */
+	id: EmojiId;
+	/**
+	 * The name of the emoji
+	 */
+	name?: EmojiName;
 }
 
 /**
  * Formats a channel link for a direct message channel.
  *
+ * @typeParam ChannelId - This is inferred by the supplied channel id
  * @param channelId - The channel's id
  */
-export function channelLink<C extends Snowflake>(channelId: C): `https://discord.com/channels/@me/${C}`;
+export function channelLink<ChannelId extends Snowflake>(
+	channelId: ChannelId,
+): `https://discord.com/channels/@me/${ChannelId}`;
 
 /**
  * Formats a channel link for a guild channel.
  *
+ * @typeParam ChannelId - This is inferred by the supplied channel id
+ * @typeParam GuildId - This is inferred by the supplied guild id
  * @param channelId - The channel's id
  * @param guildId - The guild's id
  */
-export function channelLink<C extends Snowflake, G extends Snowflake>(
-	channelId: C,
-	guildId: G,
-): `https://discord.com/channels/${G}/${C}`;
+export function channelLink<ChannelId extends Snowflake, GuildId extends Snowflake>(
+	channelId: ChannelId,
+	guildId: GuildId,
+): `https://discord.com/channels/${GuildId}/${ChannelId}`;
 
-export function channelLink<C extends Snowflake, G extends Snowflake>(
-	channelId: C,
-	guildId?: G,
-): `https://discord.com/channels/@me/${C}` | `https://discord.com/channels/${G}/${C}` {
+export function channelLink<ChannelId extends Snowflake, GuildId extends Snowflake>(
+	channelId: ChannelId,
+	guildId?: GuildId,
+): `https://discord.com/channels/@me/${ChannelId}` | `https://discord.com/channels/${GuildId}/${ChannelId}` {
 	return `https://discord.com/channels/${guildId ?? '@me'}/${channelId}`;
 }
 
 /**
  * Formats a message link for a direct message channel.
  *
+ * @typeParam ChannelId - This is inferred by the supplied channel id
+ * @typeParam MessageId - This is inferred by the supplied message id
  * @param channelId - The channel's id
  * @param messageId - The message's id
  */
-export function messageLink<C extends Snowflake, M extends Snowflake>(
-	channelId: C,
-	messageId: M,
-): `https://discord.com/channels/@me/${C}/${M}`;
+export function messageLink<ChannelId extends Snowflake, MessageId extends Snowflake>(
+	channelId: ChannelId,
+	messageId: MessageId,
+): `https://discord.com/channels/@me/${ChannelId}/${MessageId}`;
 
 /**
  * Formats a message link for a guild channel.
  *
+ * @typeParam ChannelId - This is inferred by the supplied channel id
+ * @typeParam MessageId - This is inferred by the supplied message id
+ * @typeParam GuildId - This is inferred by the supplied guild id
  * @param channelId - The channel's id
  * @param messageId - The message's id
  * @param guildId - The guild's id
  */
-export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
-	channelId: C,
-	messageId: M,
-	guildId: G,
-): `https://discord.com/channels/${G}/${C}/${M}`;
+export function messageLink<ChannelId extends Snowflake, MessageId extends Snowflake, GuildId extends Snowflake>(
+	channelId: ChannelId,
+	messageId: MessageId,
+	guildId: GuildId,
+): `https://discord.com/channels/${GuildId}/${ChannelId}/${MessageId}`;
 
-export function messageLink<C extends Snowflake, M extends Snowflake, G extends Snowflake>(
-	channelId: C,
-	messageId: M,
-	guildId?: G,
-): `https://discord.com/channels/@me/${C}/${M}` | `https://discord.com/channels/${G}/${C}/${M}` {
-	return `${typeof guildId === 'undefined' ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
+export function messageLink<ChannelId extends Snowflake, MessageId extends Snowflake, GuildId extends Snowflake>(
+	channelId: ChannelId,
+	messageId: MessageId,
+	guildId?: GuildId,
+):
+	| `https://discord.com/channels/@me/${ChannelId}/${MessageId}`
+	| `https://discord.com/channels/${GuildId}/${ChannelId}/${MessageId}` {
+	return `${guildId === undefined ? channelLink(channelId) : channelLink(channelId, guildId)}/${messageId}`;
 }
 
 /**
- * Formats a date into a short date-time string
+ * The heading levels for expanded markdown.
+ */
+export enum HeadingLevel {
+	/**
+	 * The first heading level.
+	 */
+	One = 1,
+	/**
+	 * The second heading level.
+	 */
+	Two,
+	/**
+	 * The third heading level.
+	 */
+	Three,
+}
+
+/**
+ * Formats the content into a heading level.
  *
- * @param date - The date to format, defaults to the current time
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<Content extends string>(content: Content, level?: HeadingLevel.One): `# ${Content}`;
+
+/**
+ * Formats the content into a heading level.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<Content extends string>(content: Content, level: HeadingLevel.Two): `## ${Content}`;
+
+/**
+ * Formats the content into a heading level.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ * @param level - The heading level
+ */
+export function heading<Content extends string>(content: Content, level: HeadingLevel.Three): `### ${Content}`;
+
+export function heading(content: string, level?: HeadingLevel) {
+	switch (level) {
+		case HeadingLevel.Three:
+			return `### ${content}`;
+		case HeadingLevel.Two:
+			return `## ${content}`;
+		default:
+			return `# ${content}`;
+	}
+}
+
+/**
+ * A type that recursively traverses into arrays.
+ */
+export type RecursiveArray<ItemType> = readonly (ItemType | RecursiveArray<ItemType>)[];
+
+/**
+ * Callback function for list formatters.
+ *
+ * @internal
+ */
+function listCallback(element: RecursiveArray<string>, startNumber?: number, depth = 0): string {
+	if (Array.isArray(element)) {
+		return element.map((element) => listCallback(element, startNumber, depth + 1)).join('\n');
+	}
+
+	return `${'  '.repeat(depth - 1)}${startNumber ? `${startNumber}.` : '-'} ${element}`;
+}
+
+/**
+ * Formats the elements in the array to an ordered list.
+ *
+ * @param list - The array of elements to list
+ * @param startNumber - The starting number for the list
+ */
+export function orderedList(list: RecursiveArray<string>, startNumber = 1): string {
+	return listCallback(list, Math.max(startNumber, 1));
+}
+
+/**
+ * Formats the elements in the array to an unordered list.
+ *
+ * @param list - The array of elements to list
+ */
+export function unorderedList(list: RecursiveArray<string>): string {
+	return listCallback(list);
+}
+
+/**
+ * Formats a date into a short date-time string.
+ *
+ * @param date - The date to format. Defaults to the current time
  */
 export function time(date?: Date): `<t:${bigint}>`;
 
 /**
- * Formats a date given a format style
+ * Formats a date given a format style.
  *
+ * @typeParam Style - This is inferred by the supplied {@link TimestampStylesString}
  * @param date - The date to format
  * @param style - The style to use
  */
-export function time<S extends TimestampStylesString>(date: Date, style: S): `<t:${bigint}:${S}>`;
+export function time<Style extends TimestampStylesString>(date: Date, style: Style): `<t:${bigint}:${Style}>`;
 
 /**
- * Formats the given timestamp into a short date-time string
+ * Formats the given timestamp into a short date-time string.
  *
- * @param seconds - The time to format, represents an UNIX timestamp in seconds
+ * @typeParam Seconds - This is inferred by the supplied timestamp
+ * @param seconds - A Unix timestamp in seconds
  */
-export function time<C extends number>(seconds: C): `<t:${C}>`;
+export function time<Seconds extends number>(seconds: Seconds): `<t:${Seconds}>`;
 
 /**
- * Formats the given timestamp into a short date-time string
+ * Formats the given timestamp into a short date-time string.
  *
- * @param seconds - The time to format, represents an UNIX timestamp in seconds
+ * @typeParam Seconds - This is inferred by the supplied timestamp
+ * @typeParam Style - This is inferred by the supplied {@link TimestampStylesString}
+ * @param seconds - A Unix timestamp in seconds
  * @param style - The style to use
  */
-export function time<C extends number, S extends TimestampStylesString>(seconds: C, style: S): `<t:${C}:${S}>`;
+export function time<Seconds extends number, Style extends TimestampStylesString>(
+	seconds: Seconds,
+	style: Style,
+): `<t:${Seconds}:${Style}>`;
+
 export function time(timeOrSeconds?: Date | number, style?: TimestampStylesString): string {
 	if (typeof timeOrSeconds !== 'number') {
 		// eslint-disable-next-line no-param-reassign
@@ -378,66 +616,101 @@ export function time(timeOrSeconds?: Date | number, style?: TimestampStylesStrin
 }
 
 /**
- * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles} supported by Discord
+ * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles}
+ * supported by Discord.
  */
 export const TimestampStyles = {
 	/**
-	 * Short time format, consisting of hours and minutes, e.g. 16:20
+	 * Short time format, consisting of hours and minutes.
+	 *
+	 * @example `16:20`
 	 */
 	ShortTime: 't',
 
 	/**
-	 * Long time format, consisting of hours, minutes, and seconds, e.g. 16:20:30
+	 * Long time format, consisting of hours, minutes, and seconds.
+	 *
+	 * @example `16:20:30`
 	 */
 	LongTime: 'T',
 
 	/**
-	 * Short date format, consisting of day, month, and year, e.g. 20/04/2021
+	 * Short date format, consisting of day, month, and year.
+	 *
+	 * @example `20/04/2021`
 	 */
 	ShortDate: 'd',
 
 	/**
-	 * Long date format, consisting of day, month, and year, e.g. 20 April 2021
+	 * Long date format, consisting of day, month, and year.
+	 *
+	 * @example `20 April 2021`
 	 */
 	LongDate: 'D',
 
 	/**
-	 * Short date-time format, consisting of short date and short time formats, e.g. 20 April 2021 16:20
+	 * Short date-time format, consisting of short date and short time formats.
+	 *
+	 * @example `20 April 2021 16:20`
 	 */
 	ShortDateTime: 'f',
 
 	/**
-	 * Long date-time format, consisting of long date and short time formats, e.g. Tuesday, 20 April 2021 16:20
+	 * Long date-time format, consisting of long date and short time formats.
+	 *
+	 * @example `Tuesday, 20 April 2021 16:20`
 	 */
 	LongDateTime: 'F',
 
 	/**
-	 * Relative time format, consisting of a relative duration format, e.g. 2 months ago
+	 * Relative time format, consisting of a relative duration format.
+	 *
+	 * @example `2 months ago`
 	 */
 	RelativeTime: 'R',
 } as const satisfies Record<string, string>;
 
 /**
- * The possible values, see {@link TimestampStyles} for more information
+ * The possible {@link TimestampStyles} values.
  */
 export type TimestampStylesString = (typeof TimestampStyles)[keyof typeof TimestampStyles];
 
+// prettier-ignore
 /**
- * An enum with all the available faces from Discord's native slash commands
+ * All the available faces from Discord's native slash commands.
  */
 export enum Faces {
 	/**
-	 * ¯\\_(ツ)\\_/¯
+	 * `¯\_(ツ)_/¯`
 	 */
-	Shrug = '¯\\_(ツ)\\_/¯',
+	// eslint-disable-next-line no-useless-escape
+	Shrug = '¯\_(ツ)_/¯',
 
 	/**
-	 * (╯°□°）╯︵ ┻━┻
+	 * `(╯°□°)╯︵ ┻━┻`
 	 */
-	Tableflip = '(╯°□°）╯︵ ┻━┻',
+	Tableflip = '(╯°□°)╯︵ ┻━┻',
 
 	/**
-	 * ┬─┬ ノ( ゜-゜ノ)
+	 * `┬─┬ノ( º _ ºノ)`
 	 */
-	Unflip = '┬─┬ ノ( ゜-゜ノ)',
+	Unflip = '┬─┬ノ( º _ ºノ)',
+}
+
+/**
+ * All the available guild navigation mentions.
+ */
+export enum GuildNavigationMentions {
+	/**
+	 * Browse Channels tab.
+	 */
+	Browse = '<id:browse>',
+	/**
+	 * Customize tab with the server's {@link https://discord.com/developers/docs/resources/guild#guild-onboarding-object | onboarding prompts}.
+	 */
+	Customize = '<id:customize>',
+	/**
+	 * {@link https://support.discord.com/hc/articles/13497665141655 | Server Guide} tab.
+	 */
+	Guide = '<id:guide>',
 }

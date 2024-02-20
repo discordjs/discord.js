@@ -1,6 +1,5 @@
 import { expectType } from 'tsd';
-import type { Equatable } from '../../dist';
-import { isEquatable } from '../../src/index.js';
+import { isEquatable, type Equatable } from '../../src/index.js';
 
 declare const unknownObj: unknown;
 

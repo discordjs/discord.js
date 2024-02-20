@@ -3,15 +3,26 @@ import { ApplicationCommandOptionType, type APIApplicationCommandNumberOption } 
 import { mix } from 'ts-mixer';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
 const numberValidator = s.number;
 
-@mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
+/**
+ * A slash command number option.
+ */
+@mix(
+	ApplicationCommandNumericOptionMinMaxValueMixin,
+	ApplicationCommandOptionWithAutocompleteMixin,
+	ApplicationCommandOptionWithChoicesMixin,
+)
 export class SlashCommandNumberOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.Number as const;
 
 	/**
@@ -36,6 +47,9 @@ export class SlashCommandNumberOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandNumberOption {
 		this.runRequiredValidations();
 
@@ -43,10 +57,11 @@ export class SlashCommandNumberOption
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandNumberOption;
 	}
 }
 
 export interface SlashCommandNumberOption
 	extends ApplicationCommandNumericOptionMinMaxValueMixin,
-		ApplicationCommandOptionWithChoicesAndAutocompleteMixin<number> {}
+		ApplicationCommandOptionWithChoicesMixin<number>,
+		ApplicationCommandOptionWithAutocompleteMixin {}

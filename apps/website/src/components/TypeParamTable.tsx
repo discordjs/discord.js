@@ -1,4 +1,4 @@
-import type { ApiTypeParameterListMixin } from '@microsoft/api-extractor-model';
+import type { ApiTypeParameterListMixin } from '@discordjs/api-extractor-model';
 import { useMemo } from 'react';
 import { ExcerptText } from './ExcerptText';
 import { Table } from './Table';
@@ -10,22 +10,21 @@ const rowElements = {
 	Default: 'font-mono whitespace-pre break-normal',
 };
 
-export function TypeParamTable({ item }: { item: ApiTypeParameterListMixin }) {
-	const model = item.getAssociatedModel()!;
+export function TypeParamTable({ item }: { readonly item: ApiTypeParameterListMixin }) {
 	const rows = useMemo(
 		() =>
 			item.typeParameters.map((typeParam) => ({
 				Name: typeParam.name,
-				Constraints: <ExcerptText excerpt={typeParam.constraintExcerpt} model={model} />,
+				Constraints: <ExcerptText excerpt={typeParam.constraintExcerpt} apiPackage={item.getAssociatedPackage()!} />,
 				Optional: typeParam.isOptional ? 'Yes' : 'No',
-				Default: <ExcerptText excerpt={typeParam.defaultTypeExcerpt} model={model} />,
+				Default: <ExcerptText excerpt={typeParam.defaultTypeExcerpt} apiPackage={item.getAssociatedPackage()!} />,
 				Description: typeParam.tsdocTypeParamBlock ? (
 					<TSDoc item={item} tsdoc={typeParam.tsdocTypeParamBlock.content} />
 				) : (
 					'None'
 				),
 			})),
-		[item, model],
+		[item],
 	);
 
 	return (

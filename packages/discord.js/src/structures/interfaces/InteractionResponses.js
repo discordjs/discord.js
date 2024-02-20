@@ -1,8 +1,9 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -101,13 +102,14 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
+
+    this.ephemeral = new MessageFlagsBitField(data.flags).has(MessageFlags.Ephemeral);
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -246,7 +248,7 @@ class InteractionResponses {
 
   /**
    * Shows a modal component
-   * @param {APIModal|ModalData|Modal} modal The modal to show
+   * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @returns {Promise<void>}
    */
   async showModal(modal) {
@@ -255,6 +257,22 @@ class InteractionResponses {
       body: {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
+      },
+      auth: false,
+    });
+    this.replied = true;
+  }
+
+  /**
+   * Responds to the interaction with an upgrade button.
+   * <info>Only available for applications with monetization enabled.</info>
+   * @returns {Promise<void>}
+   */
+  async sendPremiumRequired() {
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.PremiumRequired,
       },
       auth: false,
     });
@@ -304,6 +322,7 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
+      'sendPremiumRequired',
       'awaitModalSubmit',
     ];
 

@@ -1,19 +1,18 @@
-import process from 'node:process';
+import { getUserAgentAppendix } from '@discordjs/util';
 import { APIVersion } from 'discord-api-types/v10';
-import { Agent } from 'undici';
-import type { RESTOptions } from '../REST.js';
+import { getDefaultStrategy } from '../../environment.js';
+import type { RESTOptions, ResponseLike } from './types.js';
 
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
 
+/**
+ * The default string to append onto the user agent.
+ */
+export const DefaultUserAgentAppendix = getUserAgentAppendix();
+
 export const DefaultRestOptions = {
-	get agent() {
-		return new Agent({
-			connect: {
-				timeout: 30_000,
-			},
-		});
-	},
+	agent: null,
 	api: 'https://discord.com/api',
 	authPrefix: 'Bot',
 	cdn: 'https://cdn.discordapp.com',
@@ -24,17 +23,20 @@ export const DefaultRestOptions = {
 	rejectOnRateLimit: null,
 	retries: 3,
 	timeout: 15_000,
-	userAgentAppendix: `Node.js ${process.version}`,
+	userAgentAppendix: DefaultUserAgentAppendix,
 	version: APIVersion,
 	hashSweepInterval: 14_400_000, // 4 Hours
 	hashLifetime: 86_400_000, // 24 Hours
 	handlerSweepInterval: 3_600_000, // 1 Hour
+	async makeRequest(...args): Promise<ResponseLike> {
+		return getDefaultStrategy()(...args);
+	},
 } as const satisfies Required<RESTOptions>;
 
 /**
  * The events that the REST manager emits
  */
-export const enum RESTEvents {
+export enum RESTEvents {
 	Debug = 'restDebug',
 	HandlerSweep = 'handlerSweep',
 	HashSweep = 'hashSweep',
@@ -55,3 +57,12 @@ export const OverwrittenMimeTypes = {
 	// https://github.com/discordjs/discord.js/issues/8557
 	'image/apng': 'image/png',
 } as const satisfies Readonly<Record<string, string>>;
+
+export const BurstHandlerMajorIdKey = 'burst';
+
+/**
+ * Prefix for deprecation warnings.
+ *
+ * @internal
+ */
+export const DEPRECATION_WARNING_PREFIX = 'DeprecationWarning' as const;

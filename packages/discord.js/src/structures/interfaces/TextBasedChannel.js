@@ -17,9 +17,9 @@ class TextBasedChannel {
   constructor() {
     /**
      * A manager of the messages sent to this channel
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * The channel's last message id, if one was sent
@@ -55,13 +55,13 @@ class TextBasedChannel {
   /**
    * The base message options for messages.
    * @typedef {Object} BaseMessageOptions
-   * @property {string|null} [content=''] The content for the message. This can only be `null` when editing a message.
-   * @property {Embed[]|APIEmbed[]} [embeds] The embeds for the message
+   * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
+   * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
+   * @property {Array<(AttachmentBuilder|Attachment|AttachmentPayload|BufferResolvable)>} [files]
    * The files to send with the message.
-   * @property {ActionRow[]|ActionRowBuilder[]} [components]
+   * @property {Array<(ActionRowBuilder|ActionRow|APIActionRowComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
    */
 
@@ -75,13 +75,22 @@ class TextBasedChannel {
 
   /**
    * The options for sending a message.
-   * @typedef {BaseMessageOptions} MessageCreateOptions
+   * @typedef {BaseMessageOptions} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
-   * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {string} [nonce] The nonce for the message
+   * <info>This property is required if `enforceNonce` set to `true`.</info>
+   * @property {boolean} [enforceNonce] Whether the nonce should be checked for uniqueness in the past few minutes.
+   * If another message was created by the same author with the same nonce,
+   * that message will be returned and no new message will be created
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
+   */
+
+  /**
+   * The options for sending a message.
+   * @typedef {BaseMessageCreateOptions} MessageCreateOptions
+   * @property {ReplyOptions} [reply] The options for replying to a message
    */
 
   /**
@@ -99,13 +108,6 @@ class TextBasedChannel {
    * - `users`
    * - `everyone`
    * @typedef {string} MessageMentionTypes
-   */
-
-  /**
-   * @typedef {Object} FileOptions
-   * @property {BufferResolvable} attachment File to attach
-   * @property {string} [name='file.jpg'] Filename of the attachment
-   * @property {string} description The description of the file
    */
 
   /**
@@ -127,25 +129,6 @@ class TextBasedChannel {
    * @example
    * // Send a local file
    * channel.send({
-   *   files: [{
-   *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
-   * // Send an embed with a local image inside
-   * channel.send({
-   *   content: 'This is an embed',
-   *   embeds: [
-   *     {
-   *       thumbnail: {
-   *         url: 'attachment://file.jpg'
-   *       }
-   *     }
-   *   ],
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
    *     name: 'file.jpg',
@@ -195,9 +178,9 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const filter = m => m.content.includes('discord');
+   * const filter = message => message.content.includes('discord');
    * const collector = channel.createMessageCollector({ filter, time: 15_000 });
-   * collector.on('collect', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', message => console.log(`Collected ${message.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(options = {}) {
@@ -244,7 +227,7 @@ class TextBasedChannel {
    * // Create a button interaction collector
    * const filter = (interaction) => interaction.customId === 'button' && interaction.user.id === 'someId';
    * const collector = channel.createMessageComponentCollector({ filter, time: 15_000 });
-   * collector.on('collect', i => console.log(`Collected ${i.customId}`));
+   * collector.on('collect', interaction => console.log(`Collected ${interaction.customId}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageComponentCollector(options = {}) {
@@ -293,7 +276,8 @@ class TextBasedChannel {
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
-      let messageIds = messages instanceof Collection ? [...messages.keys()] : messages.map(m => m.id ?? m);
+      let messageIds =
+        messages instanceof Collection ? [...messages.keys()] : messages.map(message => message.id ?? message);
       if (filterOld) {
         messageIds = messageIds.filter(
           id => Date.now() - DiscordSnowflake.timestampFrom(id) < MaxBulkDeletableMessageAge,
@@ -424,4 +408,4 @@ module.exports = TextBasedChannel;
 
 // Fixes Circular
 // eslint-disable-next-line import/order
-const MessageManager = require('../../managers/MessageManager');
+const GuildMessageManager = require('../../managers/GuildMessageManager');

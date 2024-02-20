@@ -1,4 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
+
 import { Buffer } from 'node:buffer';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { VoiceConnection } from '../VoiceConnection';

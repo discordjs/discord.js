@@ -1,5 +1,6 @@
 {
 	"name": "voice",
 	"org": "discordjs",
-	"packagePath": "packages/voice"
+	"packagePath": "packages/voice",
+	"identifierBase": false
 }

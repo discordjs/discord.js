@@ -10,25 +10,26 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
 ## Installation
 
-**Node.js 18.13.0 or newer is required.**
+**Node.js 18 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/next
 yarn add @discordjs/next
 pnpm add @discordjs/next
+bun add @discordjs/next
 ```
 
 ## Links
 
 - [Website][website] ([source][website-source])
-- [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
-  See also the [Update Guide][guide-update], including updated and removed items in the library.
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
 - [Discord API Discord server][discord-api]
 - [GitHub][source]
@@ -43,12 +44,11 @@ See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
 
-[website]: https://discord.js.org/
+[website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/#/docs/next
+[documentation]: https://discord.js.org/docs/packages/next/stable
 [guide]: https://discordjs.guide/
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html

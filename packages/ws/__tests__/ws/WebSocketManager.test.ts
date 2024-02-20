@@ -54,13 +54,13 @@ test('fetch gateway information', async () => {
 	expect(initial).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 
 	const cached = await manager.fetchGatewayInformation();
 	expect(cached).toEqual(data);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -72,7 +72,7 @@ test('fetch gateway information', async () => {
 	expect(forced).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -146,7 +146,7 @@ test('update shard count', async () => {
 	expect(await manager.getShardCount()).toBe(2);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -229,8 +229,11 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
-	// eslint-disable-next-line id-length
-	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
+	const send: GatewaySendPayload = {
+		op: GatewayOpcodes.RequestGuildMembers,
+		// eslint-disable-next-line id-length
+		d: { guild_id: '1234', limit: 0, query: '' },
+	};
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);
 });

@@ -56,7 +56,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
+    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
   }
 
   /**
@@ -91,7 +91,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @example
    * // Edit an emoji
    * emoji.edit({ name: 'newemoji' })
-   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .then(emoji => console.log(`Edited emoji ${emoji}`))
    *   .catch(console.error);
    */
   edit(options) {

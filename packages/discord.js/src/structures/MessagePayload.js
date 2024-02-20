@@ -1,12 +1,11 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable } = require('@discordjs/builders');
-const { lazy } = require('@discordjs/util');
+const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const { basename, verifyString } = require('../util/Util');
 
@@ -107,7 +106,7 @@ class MessagePayload {
     let content;
     if (this.options.content === null) {
       content = '';
-    } else if (typeof this.options.content !== 'undefined') {
+    } else if (this.options.content !== undefined) {
       content = verifyString(this.options.content, DiscordjsRangeError, ErrorCodes.MessageContentType, true);
     }
 
@@ -127,28 +126,37 @@ class MessagePayload {
     const tts = Boolean(this.options.tts);
 
     let nonce;
-    if (typeof this.options.nonce !== 'undefined') {
+    if (this.options.nonce !== undefined) {
       nonce = this.options.nonce;
       if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
         throw new DiscordjsRangeError(ErrorCodes.MessageNonceType);
       }
     }
 
-    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
+    const enforce_nonce = Boolean(this.options.enforceNonce);
+    if (enforce_nonce && nonce === undefined) {
+      throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+    }
+
+    const components = this.options.components?.map(component =>
+      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+    );
 
     let username;
     let avatarURL;
     let threadName;
+    let appliedTags;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
       if (this.options.threadName) threadName = this.options.threadName;
+      if (this.options.appliedTags) appliedTags = this.options.appliedTags;
     }
 
     let flags;
     if (
-      typeof this.options.flags !== 'undefined' ||
-      (this.isMessage && typeof this.options.reply === 'undefined') ||
+      this.options.flags !== undefined ||
+      (this.isMessage && this.options.reply === undefined) ||
       this.isMessageManager
     ) {
       flags =
@@ -163,11 +171,11 @@ class MessagePayload {
     }
 
     let allowedMentions =
-      typeof this.options.allowedMentions === 'undefined'
+      this.options.allowedMentions === undefined
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
 
-    if (typeof allowedMentions?.repliedUser !== 'undefined') {
+    if (allowedMentions?.repliedUser !== undefined) {
       allowedMentions = { ...allowedMentions, replied_user: allowedMentions.repliedUser };
       delete allowedMentions.repliedUser;
     }
@@ -198,19 +206,20 @@ class MessagePayload {
       content,
       tts,
       nonce,
+      enforce_nonce,
       embeds: this.options.embeds?.map(embed =>
         isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
       components,
       username,
       avatar_url: avatarURL,
-      allowed_mentions:
-        typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
+      allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
       flags,
       message_reference,
       attachments: this.options.attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
+      applied_tags: appliedTags,
     };
     return this;
   }
@@ -228,8 +237,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} fileLike Something that could
-   * be resolved to a file
+   * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {
@@ -258,7 +266,7 @@ class MessagePayload {
       name = fileLike.name ?? findName(attachment);
     }
 
-    const { data, contentType } = await DataResolver.resolveFile(attachment);
+    const { data, contentType } = await resolveFile(attachment);
     return { data, name, contentType };
   }
 
@@ -292,11 +300,6 @@ module.exports = MessagePayload;
  */
 
 /**
- * @external APIMessage
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
- */
-
-/**
  * @external RawFile
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/RawFile}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RawFile:Interface}
  */

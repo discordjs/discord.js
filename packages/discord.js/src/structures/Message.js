@@ -1,7 +1,7 @@
 'use strict';
 
-const { messageLink } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
+const { messageLink } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
   InteractionType,
@@ -22,10 +22,10 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { cleanContent, resolvePartialEmoji } = require('../util/Util');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -141,19 +141,19 @@ class Message extends Base {
        * in a guild for messages that do not mention the client.</info>
        * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e));
+      this.embeds = data.embeds.map(embed => new Embed(embed));
     } else {
       this.embeds = this.embeds?.slice() ?? [];
     }
 
     if ('components' in data) {
       /**
-       * An array of of action rows in the message.
+       * An array of action rows in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(component => createComponent(component));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -181,7 +181,7 @@ class Message extends Base {
        * @type {Collection<Snowflake, Sticker>}
        */
       this.stickers = new Collection(
-        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+        (data.sticker_items ?? data.stickers)?.map(sticker => [sticker.id, new Sticker(this.client, sticker)]),
       );
     } else {
       this.stickers = new Collection(this.stickers);
@@ -221,6 +221,19 @@ class Message extends Base {
       };
     } else {
       this.roleSubscriptionData ??= null;
+    }
+
+    if ('resolved' in data) {
+      /**
+       * Resolved data from auto-populated select menus.
+       * @typedef {Object} CommandInteractionResolvedData
+       */
+      this.resolved = transformResolved(
+        { client: this.client, guild: this.guild, channel: this.channel },
+        data.resolved,
+      );
+    } else {
+      this.resolved ??= null;
     }
 
     // Discord sends null if the message has not been edited
@@ -602,11 +615,17 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+
     // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked.
+    // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
     if (this.channel?.isThread()) {
-      return precheck && !this.channel.locked;
+      if (this.channel.archived) return false;
+      if (this.channel.locked) {
+        const permissions = this.channel.permissionsFor(this.client.user);
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      }
     }
+
     return precheck;
   }
 
@@ -616,7 +635,7 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (!DeletableMessageTypes.includes(this.type)) return false;
+    if (UndeletableMessageTypes.includes(this.type)) return false;
 
     if (!this.guild) {
       return this.author.id === this.client.user.id;
@@ -787,9 +806,9 @@ class Message extends Base {
 
     return this.client.actions.MessageReactionAdd.handle(
       {
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
+        [this.client.actions.injectedUser]: this.client.user,
+        [this.client.actions.injectedChannel]: this.channel,
+        [this.client.actions.injectedMessage]: this,
         emoji: resolvePartialEmoji(emoji),
       },
       true,
@@ -816,7 +835,6 @@ class Message extends Base {
    * @typedef {BaseMessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**

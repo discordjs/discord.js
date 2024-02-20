@@ -1,0 +1,5 @@
+CODEOWNERS
+CHANGELOG.md
+tsup.config.bundled*
+vitest.config.ts.timestamp*
+pnpm-lock.yaml

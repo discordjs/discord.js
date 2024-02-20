@@ -23,13 +23,15 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const DataResolver = require('../util/DataResolver');
+const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
+
+let deprecationEmittedForPremiumStickerPacks = false;
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -226,7 +228,7 @@ class Client extends BaseClient {
       await this.ws.connect();
       return this.token;
     } catch (error) {
-      this.destroy();
+      await this.destroy();
       throw error;
     }
   }
@@ -237,18 +239,18 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ws.status === Status.Ready;
+    return !this.ws.destroyed && this.ws.status === Status.Ready;
   }
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  destroy() {
+  async destroy() {
     super.destroy();
 
     this.sweepers.destroy();
-    this.ws.destroy();
+    await this.ws.destroy();
     this.token = null;
     this.rest.setToken(null);
   }
@@ -271,7 +273,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchInvite(invite, options) {
-    const code = DataResolver.resolveInviteCode(invite);
+    const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
       with_expiration: true,
@@ -291,7 +293,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchGuildTemplate(template) {
-    const code = DataResolver.resolveGuildTemplateCode(template);
+    const code = resolveGuildTemplateCode(template);
     const data = await this.rest.get(Routes.template(code));
     return new GuildTemplate(this, data);
   }
@@ -307,7 +309,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token), { auth: typeof token === 'undefined' });
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: token === undefined });
     return new Webhook(this, { token, ...data });
   }
 
@@ -341,16 +343,34 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
+   * Obtains the list of available sticker packs.
    * @returns {Promise<Collection<Snowflake, StickerPack>>}
    * @example
-   * client.fetchPremiumStickerPacks()
+   * client.fetchStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
    */
-  async fetchPremiumStickerPacks() {
-    const data = await this.rest.get(Routes.nitroStickerPacks());
-    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  async fetchStickerPacks() {
+    const data = await this.rest.get(Routes.stickerPacks());
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @deprecated Use {@link Client#fetchStickerPacks} instead.
+   */
+  fetchPremiumStickerPacks() {
+    if (!deprecationEmittedForPremiumStickerPacks) {
+      process.emitWarning(
+        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForPremiumStickerPacks = true;
+    }
+
+    return this.fetchStickerPacks();
   }
 
   /**
@@ -411,7 +431,7 @@ class Client extends BaseClient {
     if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
 
     const { scopes } = options;
-    if (typeof scopes === 'undefined') {
+    if (scopes === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (!Array.isArray(scopes)) {
@@ -419,6 +439,9 @@ class Client extends BaseClient {
     }
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
+    }
+    if (!scopes.includes(OAuth2Scopes.Bot) && options.permissions) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
@@ -485,7 +508,7 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
+    if (options.intents === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
       options.intents = new IntentsBitField(options.intents).freeze();
@@ -512,10 +535,40 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
+    if (
+      (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
+      options.allowedMentions === null
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
+    }
+    if (typeof options.presence !== 'object' || options.presence === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    }
+    if (typeof options.ws !== 'object' || options.ws === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (typeof options.rest !== 'object' || options.rest === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
+    }
+    if (typeof options.jsonTransformer !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
+    }
   }
 }
 
 module.exports = Client;
+
+/**
+ * @class SnowflakeUtil
+ * @classdesc This class is an alias for {@link https://www.npmjs.com/package/@sapphire/snowflake @sapphire/snowflake}'s
+ * `DiscordSnowflake` class.
+ *
+ * Check their documentation
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_snowflake.Snowflake here}
+ * ({@link https://www.sapphirejs.dev/docs/Guide/utilities/snowflake guide})
+ * to see what you can do.
+ * @hideconstructor
+ */
 
 /**
  * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
@@ -544,15 +597,15 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
+ * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
  */
 
 /**
  * @external ImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/ImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
  */
 
 /**
  * @external BaseImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/BaseImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

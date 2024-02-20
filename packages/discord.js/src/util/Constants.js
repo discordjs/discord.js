@@ -14,6 +14,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
  * * `applicationCommands` - both global and guild commands
  * * `bans`
  * * `emojis`
+ * * `entitlements`
  * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
  * * `guildMembers`
  * * `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
@@ -32,6 +33,7 @@ exports.SweeperKeys = [
   'applicationCommands',
   'bans',
   'emojis',
+  'entitlements',
   'invites',
   'guildMembers',
   'messages',
@@ -71,6 +73,27 @@ exports.NonSystemMessageTypes = [
  */
 
 /**
+ * The types of guild channels that are text-based. The available types are:
+ * * {@link ChannelType.GuildText}
+ * * {@link ChannelType.GuildAnnouncement}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
+ * * {@link ChannelType.GuildVoice}
+ * * {@link ChannelType.GuildStageVoice}
+ * @typedef {ChannelType[]} GuildTextBasedChannelTypes
+ */
+exports.GuildTextBasedChannelTypes = [
+  ChannelType.GuildText,
+  ChannelType.GuildAnnouncement,
+  ChannelType.AnnouncementThread,
+  ChannelType.PublicThread,
+  ChannelType.PrivateThread,
+  ChannelType.GuildVoice,
+  ChannelType.GuildStageVoice,
+];
+
+/**
  * The channels that are text-based.
  * * DMChannel
  * * GuildTextBasedChannel
@@ -93,17 +116,10 @@ exports.NonSystemMessageTypes = [
  * * {@link ChannelType.PublicThread}
  * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
+ * * {@link ChannelType.GuildStageVoice}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [
-  ChannelType.DM,
-  ChannelType.GuildText,
-  ChannelType.GuildAnnouncement,
-  ChannelType.AnnouncementThread,
-  ChannelType.PublicThread,
-  ChannelType.PrivateThread,
-  ChannelType.GuildVoice,
-];
+exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
@@ -140,6 +156,25 @@ exports.SelectMenuTypes = [
 ];
 
 /**
+ * The types of messages that cannot be deleted. The available types are:
+ * * {@link MessageType.RecipientAdd}
+ * * {@link MessageType.RecipientRemove}
+ * * {@link MessageType.Call}
+ * * {@link MessageType.ChannelNameChange}
+ * * {@link MessageType.ChannelIconChange}
+ * * {@link MessageType.ThreadStarterMessage}
+ * @typedef {MessageType[]} UndeletableMessageTypes
+ */
+exports.UndeletableMessageTypes = [
+  MessageType.RecipientAdd,
+  MessageType.RecipientRemove,
+  MessageType.Call,
+  MessageType.ChannelNameChange,
+  MessageType.ChannelIconChange,
+  MessageType.ThreadStarterMessage,
+];
+
+/**
  * The types of messages that can be deleted. The available types are:
  * * {@link MessageType.AutoModerationAction}
  * * {@link MessageType.ChannelFollowAdd}
@@ -163,6 +198,7 @@ exports.SelectMenuTypes = [
  * * {@link MessageType.ThreadCreated}
  * * {@link MessageType.UserJoin}
  * @typedef {MessageType[]} DeletableMessageTypes
+ * @deprecated This list will no longer be updated. Use {@link UndeletableMessageTypes} instead.
  */
 exports.DeletableMessageTypes = [
   MessageType.AutoModerationAction,

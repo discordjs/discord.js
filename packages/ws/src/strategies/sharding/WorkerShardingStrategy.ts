@@ -3,9 +3,13 @@ import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import { IdentifyThrottler } from '../../utils/IdentifyThrottler.js';
-import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from '../../ws/WebSocketShard';
+import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler.js';
+import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager.js';
+import type {
+	WebSocketShardDestroyOptions,
+	WebSocketShardEvents,
+	WebSocketShardStatus,
+} from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy.js';
 
@@ -18,14 +22,14 @@ export enum WorkerSendPayloadOp {
 	Destroy,
 	Send,
 	SessionInfoResponse,
-	ShardCanIdentify,
+	ShardIdentifyResponse,
 	FetchStatus,
 }
 
 export type WorkerSendPayload =
+	| { nonce: number; ok: boolean; op: WorkerSendPayloadOp.ShardIdentifyResponse }
 	| { nonce: number; op: WorkerSendPayloadOp.FetchStatus; shardId: number }
 	| { nonce: number; op: WorkerSendPayloadOp.SessionInfoResponse; session: SessionInfo | null }
-	| { nonce: number; op: WorkerSendPayloadOp.ShardCanIdentify }
 	| { op: WorkerSendPayloadOp.Connect; shardId: number }
 	| { op: WorkerSendPayloadOp.Destroy; options?: WebSocketShardDestroyOptions; shardId: number }
 	| { op: WorkerSendPayloadOp.Send; payload: GatewaySendPayload; shardId: number };
@@ -39,14 +43,16 @@ export enum WorkerReceivePayloadOp {
 	WaitForIdentify,
 	FetchStatusResponse,
 	WorkerReady,
+	CancelIdentify,
 }
 
 export type WorkerReceivePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
 	| { data: any; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
+	| { nonce: number; op: WorkerReceivePayloadOp.CancelIdentify }
 	| { nonce: number; op: WorkerReceivePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerReceivePayloadOp.RetrieveSessionInfo; shardId: number }
-	| { nonce: number; op: WorkerReceivePayloadOp.WaitForIdentify }
+	| { nonce: number; op: WorkerReceivePayloadOp.WaitForIdentify; shardId: number }
 	| { op: WorkerReceivePayloadOp.Connected; shardId: number }
 	| { op: WorkerReceivePayloadOp.Destroyed; shardId: number }
 	| { op: WorkerReceivePayloadOp.UpdateSessionInfo; session: SessionInfo | null; shardId: number }
@@ -84,11 +90,12 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 	private readonly fetchStatusPromises = new Collection<number, (status: WebSocketShardStatus) => void>();
 
-	private readonly throttler: IdentifyThrottler;
+	private readonly waitForIdentifyControllers = new Collection<number, AbortController>();
+
+	private throttler?: IIdentifyThrottler;
 
 	public constructor(manager: WebSocketManager, options: WorkerShardingStrategyOptions) {
 		this.manager = manager;
-		this.throttler = new IdentifyThrottler(manager);
 		this.options = options;
 	}
 
@@ -122,10 +129,10 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			const payload = {
+			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.Connect,
 				shardId,
-			} satisfies WorkerSendPayload;
+			};
 
 			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<void>((resolve) => this.connectPromises.set(shardId, resolve));
@@ -143,11 +150,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const promises = [];
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
-			const payload = {
+			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.Destroy,
 				shardId,
 				options,
-			} satisfies WorkerSendPayload;
+			};
 
 			promises.push(
 				// eslint-disable-next-line no-promise-executor-return, promise/prefer-await-to-then
@@ -171,11 +178,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			throw new Error(`No worker found for shard ${shardId}`);
 		}
 
-		const payload = {
+		const payload: WorkerSendPayload = {
 			op: WorkerSendPayloadOp.Send,
 			shardId,
 			payload: data,
-		} satisfies WorkerSendPayload;
+		};
 		worker.postMessage(payload);
 	}
 
@@ -187,11 +194,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 
 		for (const [shardId, worker] of this.#workerByShardId.entries()) {
 			const nonce = Math.random();
-			const payload = {
+			const payload: WorkerSendPayload = {
 				op: WorkerSendPayloadOp.FetchStatus,
 				shardId,
 				nonce,
-			} satisfies WorkerSendPayload;
+			};
 
 			// eslint-disable-next-line no-promise-executor-return
 			const promise = new Promise<WebSocketShardStatus>((resolve) => this.fetchStatusPromises.set(nonce, resolve));
@@ -297,10 +304,21 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.WaitForIdentify: {
-				await this.throttler.waitForIdentify();
+				const throttler = await this.ensureThrottler();
+
+				// If this rejects it means we aborted, in which case we reply elsewhere.
+				try {
+					const controller = new AbortController();
+					this.waitForIdentifyControllers.set(payload.nonce, controller);
+					await throttler.waitForIdentify(payload.shardId, controller.signal);
+				} catch {
+					return;
+				}
+
 				const response: WorkerSendPayload = {
-					op: WorkerSendPayloadOp.ShardCanIdentify,
+					op: WorkerSendPayloadOp.ShardIdentifyResponse,
 					nonce: payload.nonce,
+					ok: true,
 				};
 				worker.postMessage(response);
 				break;
@@ -315,6 +333,25 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			case WorkerReceivePayloadOp.WorkerReady: {
 				break;
 			}
+
+			case WorkerReceivePayloadOp.CancelIdentify: {
+				this.waitForIdentifyControllers.get(payload.nonce)?.abort();
+				this.waitForIdentifyControllers.delete(payload.nonce);
+
+				const response: WorkerSendPayload = {
+					op: WorkerSendPayloadOp.ShardIdentifyResponse,
+					nonce: payload.nonce,
+					ok: false,
+				};
+				worker.postMessage(response);
+
+				break;
+			}
 		}
+	}
+
+	private async ensureThrottler(): Promise<IIdentifyThrottler> {
+		this.throttler ??= await this.manager.options.buildIdentifyThrottler(this.manager);
+		return this.throttler;
 	}
 }

@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 /**
  * @external ActivityFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityFlags}
@@ -44,6 +46,11 @@
  */
 
 /**
+ * @external APIChannelSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIChannelSelectComponent}
+ */
+
+/**
  * @external APIEmbed
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIEmbed}
  */
@@ -79,8 +86,18 @@
  */
 
 /**
+ * @external APIGuildMember
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildMember}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
+ */
+
+/**
+ * @external APIInteractionDataResolved
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIInteractionDataResolved}
  */
 
 /**
@@ -96,6 +113,11 @@
 /**
  * @external APIInteractionGuildMember
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIInteractionGuildMember}
+ */
+
+/**
+ * @external APIMentionableSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMentionableSelectComponent}
  */
 
 /**
@@ -124,6 +146,11 @@
  */
 
 /**
+ * @external APIModalInteractionResponseCallbackData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponseCallbackData}
+ */
+
+/**
  * @external APIModalComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIModalComponent}
  */
@@ -134,18 +161,33 @@
  */
 
 /**
- * @external APIPresence
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPresence}
+ * @external APIPartialEmoji
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
  */
 
 /**
- * @external APISelectMenuComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuComponent}
+ * @external APIRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIRole}
+ */
+
+/**
+ * @external APIRoleSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIRoleSelectComponent}
  */
 
 /**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
+ */
+
+/**
+ * @external APISticker
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISticker}
+ */
+
+/**
+ * @external APIStringSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIStringSelectComponent}
  */
 
 /**
@@ -156,6 +198,11 @@
 /**
  * @external APIUser
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIUser}
+ */
+
+/**
+ * @external APIUserSelectComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIUserSelectComponent}
  */
 
 /**
@@ -181,6 +228,11 @@
 /**
  * @external ApplicationRoleConnectionMetadataType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationRoleConnectionMetadataType}
+ */
+
+/**
+ * @external AttachmentFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
  */
 
 /**
@@ -229,6 +281,11 @@
  */
 
 /**
+ * @external EntitlementType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntitlementType}
+ */
+
+/**
  * @external ForumLayoutType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ForumLayoutType}
  */
@@ -251,6 +308,11 @@
 /**
  * @external GatewayOpcodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayOpcodes}
+ */
+
+/**
+ * @external GatewayPresenceUpdateData
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/GatewayPresenceUpdateData}
  */
 
 /**
@@ -284,6 +346,16 @@
  */
 
 /**
+ * @external GuildOnboardingMode
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingMode}
+ */
+
+/**
+ * @external GuildOnboardingPromptType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildOnboardingPromptType}
+ */
+
+/**
  * @external GuildPremiumTier
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildPremiumTier}
  */
@@ -311,6 +383,11 @@
 /**
  * @external GuildVerificationLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildVerificationLevel}
+ */
+
+/**
+ * @external GuildWidgetStyle
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildWidgetStyle}
  */
 
 /**
@@ -374,8 +451,28 @@
  */
 
 /**
+ * @external RoleFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
+ */
+
+/**
+ * @external RESTGetAPIGuildThreadsResult
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#RESTGetAPIGuildThreadsResult}
+ */
+
+/**
  * @external RESTJSONErrorCodes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ */
+
+/**
+ * @external SKUFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUFlags}
+ */
+
+/**
+ * @external SKUType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/SKUType}
  */
 
 /**
@@ -401,6 +498,11 @@
 /**
  * @external TeamMemberMembershipState
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberMembershipState}
+ */
+
+/**
+ * @external TeamMemberRole
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/TeamMemberRole}
  */
 
 /**

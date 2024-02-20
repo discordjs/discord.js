@@ -4,13 +4,13 @@ import type {
 	ApiItemContainerMixin,
 	ApiMethod,
 	ApiMethodSignature,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { useMemo, Fragment } from 'react';
-import { ResponsiveSection } from './ResponsiveSection';
-import { Method } from '~/components/model/method/Method';
 import { resolveMembers } from '~/util/members';
+import { Method } from '../../model/method/Method';
+import { DocumentationSection } from './DocumentationSection';
 
 function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	return (
@@ -19,7 +19,7 @@ function isMethodLike(item: ApiItem): item is ApiMethod | ApiMethodSignature {
 	);
 }
 
-export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
+export function MethodsSection({ item }: { readonly item: ApiItemContainerMixin }) {
 	const members = resolveMembers(item, isMethodLike);
 
 	const methodItems = useMemo(
@@ -31,15 +31,15 @@ export function MethodsSection({ item }: { item: ApiItemContainerMixin }) {
 					}`}
 				>
 					<Method inheritedFrom={inherited as ApiDeclaredItem & ApiItemContainerMixin} method={method} />
-					<div className="border-light-900 dark:border-dark-100 -mx-8 border-t-2" />
+					<div className="border-t-2 border-light-900 dark:border-dark-100" />
 				</Fragment>
 			)),
 		[members],
 	);
 
 	return (
-		<ResponsiveSection icon={<VscSymbolMethod size={20} />} padded title="Methods">
+		<DocumentationSection icon={<VscSymbolMethod size={20} />} padded title="Methods">
 			<div className="flex flex-col gap-4">{methodItems}</div>
-		</ResponsiveSection>
+		</DocumentationSection>
 	);
 }

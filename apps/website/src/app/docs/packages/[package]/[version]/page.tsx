@@ -1,67 +1,34 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { serialize } from 'next-mdx-remote/serialize';
-import rehypeIgnore from 'rehype-ignore';
-import rehypePrettyCode, { type Options } from 'rehype-pretty-code';
-import rehypeRaw from 'rehype-raw';
+import { compileMDX } from 'next-mdx-remote/rsc';
+import { cache } from 'react';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
-import { getHighlighter } from 'shiki';
-import shikiLangJavascript from 'shiki/languages/javascript.tmLanguage.json';
-import shikiLangTypescript from 'shiki/languages/typescript.tmLanguage.json';
-import shikiThemeDarkPlus from 'shiki/themes/dark-plus.json';
-import shikiThemeLightPlus from 'shiki/themes/light-plus.json';
-import type { VersionRouteParams } from './layout';
-import { MDXRemote } from '~/components/MDXRemote';
+import { SyntaxHighlighter } from '~/components/SyntaxHighlighter';
 
-async function loadREADME(packageName: string) {
+interface VersionRouteParams {
+	package: string;
+	version: string;
+}
+
+const loadREADME = cache(async (packageName: string) => {
 	return readFile(join(process.cwd(), 'src', 'assets', 'readme', packageName, 'home-README.md'), 'utf8');
-}
-
-async function generateMDX(readme: string) {
-	return serialize(readme, {
-		mdxOptions: {
-			remarkPlugins: [remarkGfm],
-			remarkRehypeOptions: { allowDangerousHtml: true },
-			rehypePlugins: [
-				rehypeRaw,
-				rehypeIgnore,
-				rehypeSlug,
-				[
-					rehypePrettyCode,
-					{
-						theme: {
-							dark: shikiThemeDarkPlus,
-							light: shikiThemeLightPlus,
-						},
-						getHighlighter: async (options?: Partial<Options>) =>
-							getHighlighter({
-								...options,
-								langs: [
-									// @ts-expect-error: Working as intended
-									{ id: 'javascript', aliases: ['js'], scopeName: 'source.js', grammar: shikiLangJavascript },
-									// @ts-expect-error: Working as intended
-									{ id: 'typescript', aliases: ['ts'], scopeName: 'source.ts', grammar: shikiLangTypescript },
-								],
-							}),
-					},
-				],
-			],
-			format: 'md',
-		},
-	});
-}
+});
 
 export default async function Page({ params }: { params: VersionRouteParams }) {
-	const { package: packageName } = params;
-	const readmeSource = await loadREADME(packageName);
-	const mdxSource = await generateMDX(readmeSource);
+	const readmeSource = await loadREADME(params.package);
+	const { content } = await compileMDX({
+		source: readmeSource,
+		// @ts-expect-error SyntaxHighlighter is assignable
+		components: { pre: SyntaxHighlighter },
+		options: {
+			mdxOptions: {
+				remarkPlugins: [remarkGfm],
+				rehypePlugins: [rehypeSlug],
+				format: 'mdx',
+			},
+		},
+	});
 
-	return (
-		<article className="dark:bg-dark-600 bg-white p-10">
-			<div className="prose max-w-none">
-				<MDXRemote {...mdxSource} />
-			</div>
-		</article>
-	);
+	return <div className="relative top-4 max-w-none prose">{content}</div>;
 }

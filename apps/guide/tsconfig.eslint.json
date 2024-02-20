@@ -1,22 +1,26 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
 		"allowJs": true
 	},
 	"include": [
-		"**/*.ts",
-		"**/*.tsx",
-		"**/*.js",
-		"**/*.cjs",
-		"**/*.mjs",
-		"**/*.jsx",
-		"**/*.astro",
-		"**/*.test.ts",
-		"**/*.test.js",
-		"**/*.test.mjs",
-		"**/*.spec.ts",
-		"**/*.spec.js",
-		"**/*.spec.mjs"
+		"*.ts",
+		"*.tsx",
+		"*.js",
+		".jsx",
+		"*.cjs",
+		"*.mjs",
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.js",
+		"src/**/*.jsx",
+		"src/**/*.cjs",
+		"src/**/*.mjs",
+		"bin",
+		"scripts",
+		"__tests__",
+		"__mocks__"
 	],
-	"exclude": []
+	"exclude": ["node_modules"]
 }

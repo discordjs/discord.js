@@ -1,0 +1,10 @@
+name: 'Upload documentation'
+description: 'Uploads the docs.api.json file to a neon postgresql database'
+inputs:
+  package:
+    description: 'The package string'
+  version:
+    description: 'The semver string'
+runs:
+  using: node20
+  main: ../../dist/uploadDocumentation/index.js

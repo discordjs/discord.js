@@ -164,7 +164,7 @@ export class Documentation {
 								file: member.sources?.[0]?.fileName,
 								line: member.sources?.[0]?.line,
 								path: dirname(member.sources?.[0]?.fileName ?? ''),
-						  };
+							};
 
 				if (prop!.name) {
 					info.push(`member of "${prop!.name}"`);
@@ -264,6 +264,186 @@ export class Documentation {
 			interfaces: [...this.interfaces.values()].map((_interface) => _interface.serialize()),
 			typedefs: [...this.typedefs.values()].map((_typedef) => _typedef.serialize()),
 			externals: [...this.externals.values()].map((_external) => _external.serialize()),
+			custom: this.custom,
+		};
+	}
+
+	public serializeNew() {
+		return {
+			metadata: {
+				toolPackage: '@discordjs/docgen',
+				toolVersion: Documentation.FORMAT_VERSION,
+				schemaVersion: 1_011,
+				oldestForwardsCompatibleVersion: 1_001,
+				tsdocConfig: {
+					$schema: 'https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json',
+					noStandardTags: true,
+					tagDefinitions: [
+						{
+							tagName: '@alpha',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@beta',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@defaultValue',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@decorator',
+							syntaxKind: 'block',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@deprecated',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@eventProperty',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@example',
+							syntaxKind: 'block',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@experimental',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@inheritDoc',
+							syntaxKind: 'inline',
+						},
+						{
+							tagName: '@internal',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@label',
+							syntaxKind: 'inline',
+						},
+						{
+							tagName: '@link',
+							syntaxKind: 'inline',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@override',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@packageDocumentation',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@param',
+							syntaxKind: 'block',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@privateRemarks',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@public',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@readonly',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@remarks',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@returns',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@sealed',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@see',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@throws',
+							syntaxKind: 'block',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@typeParam',
+							syntaxKind: 'block',
+							allowMultiple: true,
+						},
+						{
+							tagName: '@virtual',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@betaDocumentation',
+							syntaxKind: 'modifier',
+						},
+						{
+							tagName: '@internalRemarks',
+							syntaxKind: 'block',
+						},
+						{
+							tagName: '@preapproved',
+							syntaxKind: 'modifier',
+						},
+					],
+					supportForTags: {
+						'@alpha': true,
+						'@beta': true,
+						'@defaultValue': true,
+						'@decorator': true,
+						'@deprecated': true,
+						'@eventProperty': true,
+						'@example': true,
+						'@experimental': true,
+						'@inheritDoc': true,
+						'@internal': true,
+						'@label': true,
+						'@link': true,
+						'@override': true,
+						'@packageDocumentation': true,
+						'@param': true,
+						'@privateRemarks': true,
+						'@public': true,
+						'@readonly': true,
+						'@remarks': true,
+						'@returns': true,
+						'@sealed': true,
+						'@see': true,
+						'@throws': true,
+						'@typeParam': true,
+						'@virtual': true,
+						'@betaDocumentation': true,
+						'@internalRemarks': true,
+						'@preapproved': true,
+					},
+					reportUnsupportedHtmlElements: false,
+				},
+			},
+			projectFolderUrl: 'https://github.com/discordjs/discord.js/tree/main/packages/discord.js',
+			kind: 'Package',
+			canonicalReference: 'discord.js!',
+			docComment: '',
+			name: 'discord.js',
+			preserveMemberOrder: false,
+			members: [
+				...[...this.classes.values()].map((_class) => _class.serialize()),
+				...[...this.functions.values()].map((_function) => _function.serialize()),
+				...[...this.interfaces.values()].map((_interface) => _interface.serialize()),
+				...[...this.typedefs.values()].map((_typedef) => _typedef.serialize()),
+				...[...this.externals.values()].map((_external) => _external.serialize()),
+			],
 			custom: this.custom,
 		};
 	}

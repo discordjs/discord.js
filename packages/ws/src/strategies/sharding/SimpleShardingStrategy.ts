@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { WebSocketManager } from '../../ws/WebSocketManager';
+import type { WebSocketManager } from '../../ws/WebSocketManager.js';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';
@@ -23,6 +23,7 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 	 */
 	public async spawn(shardIds: number[]) {
 		const strategyOptions = await managerToFetchingStrategyOptions(this.manager);
+
 		for (const shardId of shardIds) {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);

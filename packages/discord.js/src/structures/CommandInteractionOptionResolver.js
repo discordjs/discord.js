@@ -97,7 +97,7 @@ class CommandInteractionOptionResolver {
       return null;
     } else if (!allowedTypes.includes(option.type)) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionType, name, option.type, allowedTypes.join(', '));
-    } else if (required && properties.every(prop => option[prop] === null || typeof option[prop] === 'undefined')) {
+    } else if (required && properties.every(prop => option[prop] === null || option[prop] === undefined)) {
       throw new DiscordjsTypeError(ErrorCodes.CommandInteractionOptionEmpty, name, option.type);
     }
     return option;
