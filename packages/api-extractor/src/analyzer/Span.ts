@@ -369,7 +369,7 @@ export class Span {
 	 * can make changes to Span.modification for each node.
 	 */
 	public forEach(callback: (span: Span) => void): void {
-		// eslint-disable-next-line n/callback-return, n/no-callback-literal
+		// eslint-disable-next-line n/callback-return
 		callback(this);
 		for (const child of this.children) {
 			// eslint-disable-next-line unicorn/no-array-for-each
