@@ -45,7 +45,7 @@ class MessageReaction {
   _patch(data) {
     if ('burst_colors' in data) {
       /**
-       * HEX colors used for super reaction
+       * Hexadecimal colors used for this super reaction
        * @type {string[]}
        */
       this.burstColors = data.burst_colors;
@@ -63,13 +63,13 @@ class MessageReaction {
       /**
        * The reaction count details object contains information about super and normal reaction counts.
        * @typedef {Object} ReactionCountDetailsData
-       * @property {number} burst Count of super reaction
-       * @property {number} normal Count of normal reaction
+       * @property {number} burst Count of super reactions
+       * @property {number} normal Count of normal reactions
        */
 
       /**
        * The reaction count details object contains information about super and normal reaction counts.
-       * @type {?ReactionCountDetailsData}
+       * @type {ReactionCountDetailsData}
        */
       this.countDetails = {
         burst: data.count_details.burst,
