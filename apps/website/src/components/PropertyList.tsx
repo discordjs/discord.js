@@ -3,19 +3,18 @@ import type {
 	ApiItem,
 	ApiItemContainerMixin,
 	ApiProperty,
-	ApiPropertyItem,
 	ApiPropertySignature,
-} from '@microsoft/api-extractor-model';
-import { ApiItemKind } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiItemKind } from '@discordjs/api-extractor-model';
 import { Fragment, useMemo } from 'react';
-import { Property, PropertySeparatorType } from './Property';
 import { resolveMembers } from '~/util/members';
+import { Property } from './Property';
 
 export function isPropertyLike(item: ApiItem): item is ApiProperty | ApiPropertySignature {
 	return item.kind === ApiItemKind.Property || item.kind === ApiItemKind.PropertySignature;
 }
 
-export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
+export function PropertyList({ item }: { readonly item: ApiItemContainerMixin }) {
 	const members = resolveMembers(item, isPropertyLike);
 
 	const propertyItems = useMemo(
@@ -25,10 +24,9 @@ export function PropertyList({ item }: { item: ApiItemContainerMixin }) {
 					<Fragment key={`${prop.item.displayName}-${idx}`}>
 						<Property
 							inheritedFrom={prop.inherited as ApiDeclaredItem & ApiItemContainerMixin}
-							item={prop.item as ApiPropertyItem}
-							separator={PropertySeparatorType.Type}
+							item={prop.item as ApiProperty}
 						/>
-						<div className="border-light-900 dark:border-dark-100 border-t-2" />
+						<div className="border-t-2 border-light-900 dark:border-dark-100" />
 					</Fragment>
 				);
 			}),

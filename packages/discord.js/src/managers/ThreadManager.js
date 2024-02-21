@@ -6,18 +6,21 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
  * @extends {CachedManager}
  */
 class ThreadManager extends CachedManager {
+  static [MakeCacheOverrideSymbol] = ThreadManager;
+
   constructor(channel, iterable) {
     super(channel.client, ThreadChannel, iterable);
 
     /**
      * The channel this Manager belongs to
-     * @type {TextChannel|NewsChannel|ForumChannel}
+     * @type {TextChannel|NewsChannel|ForumChannel|MediaChannel}
      */
     this.channel = channel;
   }
@@ -171,13 +174,13 @@ class ThreadManager extends CachedManager {
   }
 
   /**
-   * Obtains all active thread channels in the guild.
-   * This internally calls {@link GuildChannelManager#fetchActiveThreads}.
+   * Obtains all active threads in the channel.
    * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    */
-  fetchActive(cache = true) {
-    return this.channel.guild.channels.fetchActiveThreads(cache);
+  async fetchActive(cache = true) {
+    const data = await this.channel.guild.channels.rawFetchGuildActiveThreads();
+    return this.constructor._mapThreads(data, this.client, { parent: this.channel, cache });
   }
 
   static _mapThreads(rawThreads, client, { parent, guild, cache }) {
@@ -188,10 +191,10 @@ class ThreadManager extends CachedManager {
     }, new Collection());
 
     // Discord sends the thread id as id in this object
-    const threadMembers = rawThreads.members.reduce(
-      (coll, raw) => coll.set(raw.user_id, threads.get(raw.id).members._add(raw)),
-      new Collection(),
-    );
+    const threadMembers = rawThreads.members.reduce((coll, raw) => {
+      const thread = threads.get(raw.id);
+      return thread ? coll.set(raw.user_id, thread.members._add(raw)) : coll;
+    }, new Collection());
 
     const response = { threads, members: threadMembers };
 

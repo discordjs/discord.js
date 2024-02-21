@@ -2,17 +2,30 @@ import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandStringOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
 const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6_000);
 const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000);
 
-@mix(ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
+/**
+ * A slash command string option.
+ */
+@mix(ApplicationCommandOptionWithAutocompleteMixin, ApplicationCommandOptionWithChoicesMixin)
 export class SlashCommandStringOption extends ApplicationCommandOptionBase {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.String as const;
 
+	/**
+	 * The maximum length of this option.
+	 */
 	public readonly max_length?: number;
 
+	/**
+	 * The minimum length of this option.
+	 */
 	public readonly min_length?: number;
 
 	/**
@@ -41,6 +54,9 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandStringOption {
 		this.runRequiredValidations();
 
@@ -48,8 +64,10 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandStringOption;
 	}
 }
 
-export interface SlashCommandStringOption extends ApplicationCommandOptionWithChoicesAndAutocompleteMixin<string> {}
+export interface SlashCommandStringOption
+	extends ApplicationCommandOptionWithChoicesMixin<string>,
+		ApplicationCommandOptionWithAutocompleteMixin {}

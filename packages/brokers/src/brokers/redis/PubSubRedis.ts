@@ -36,7 +36,7 @@ export class PubSubRedisBroker<TEvents extends Record<string, any>>
 	/**
 	 * {@inheritDoc IPubSubBroker.publish}
 	 */
-	public async publish<T extends keyof TEvents>(event: T, data: TEvents[T]): Promise<void> {
+	public async publish<Event extends keyof TEvents>(event: Event, data: TEvents[Event]): Promise<void> {
 		await this.options.redisClient.xadd(
 			event as string,
 			'*',

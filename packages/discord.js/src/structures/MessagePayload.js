@@ -1,12 +1,11 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable } = require('@discordjs/builders');
-const { lazy } = require('@discordjs/util');
+const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const { basename, verifyString } = require('../util/Util');
 
@@ -134,15 +133,24 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
+    const enforce_nonce = Boolean(this.options.enforceNonce);
+    if (enforce_nonce && nonce === undefined) {
+      throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+    }
+
+    const components = this.options.components?.map(component =>
+      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+    );
 
     let username;
     let avatarURL;
     let threadName;
+    let appliedTags;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
       if (this.options.threadName) threadName = this.options.threadName;
+      if (this.options.appliedTags) appliedTags = this.options.appliedTags;
     }
 
     let flags;
@@ -198,6 +206,7 @@ class MessagePayload {
       content,
       tts,
       nonce,
+      enforce_nonce,
       embeds: this.options.embeds?.map(embed =>
         isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
@@ -210,6 +219,7 @@ class MessagePayload {
       attachments: this.options.attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
+      applied_tags: appliedTags,
     };
     return this;
   }
@@ -227,8 +237,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
-   * @param {BufferResolvable|Stream|JSONEncodable<AttachmentPayload>} fileLike Something that could
-   * be resolved to a file
+   * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {
@@ -257,7 +266,7 @@ class MessagePayload {
       name = fileLike.name ?? findName(attachment);
     }
 
-    const { data, contentType } = await DataResolver.resolveFile(attachment);
+    const { data, contentType } = await resolveFile(attachment);
     return { data, name, contentType };
   }
 
@@ -291,11 +300,6 @@ module.exports = MessagePayload;
  */
 
 /**
- * @external APIMessage
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
- */
-
-/**
  * @external RawFile
- * @see {@link https://discord.js.org/docs/packages/rest/main/RawFile:Interface}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RawFile:Interface}
  */

@@ -49,9 +49,11 @@ export * from './interactions/slashCommands/options/user.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase.js';
 export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesMixin.js';
 export * from './interactions/slashCommands/mixins/NameAndDescription.js';
 export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js';
+export * from './interactions/slashCommands/mixins/SharedSubcommands.js';
 
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
@@ -59,11 +61,11 @@ export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';
-export * from '@discordjs/util';
 
 /**
- * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders/#readme | @discordjs/builders} version
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders#readme | @discordjs/builders} version
  * that you are currently using.
+ *
+ * @privateRemarks This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild.
  */
-// This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild
 export const version = '[VI]{{inject}}[/VI]' as string;

@@ -1,4 +1,4 @@
-import type { ApiEnum } from '@microsoft/api-extractor-model';
+import type { ApiEnum } from '@discordjs/api-extractor-model';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
 import { Panel } from '../../Panel';
 import { Documentation } from '../../documentation/Documentation';
@@ -6,7 +6,7 @@ import { ObjectHeader } from '../../documentation/ObjectHeader';
 import { DocumentationSection } from '../../documentation/section/DocumentationSection';
 import { EnumMember } from './EnumMember';
 
-export function Enum({ item }: { item: ApiEnum }) {
+export function Enum({ item }: { readonly item: ApiEnum }) {
 	return (
 		<Documentation>
 			<ObjectHeader item={item} />

@@ -1,17 +1,16 @@
 'use client';
 
-import type { ApiItemKind } from '@microsoft/api-extractor-model';
+import type { ApiItemKind } from '@discordjs/api-extractor-model';
 import { VscSymbolClass } from '@react-icons/all-files/vsc/VscSymbolClass';
 import { VscSymbolEnum } from '@react-icons/all-files/vsc/VscSymbolEnum';
-import { VscSymbolField } from '@react-icons/all-files/vsc/VscSymbolField';
 import { VscSymbolInterface } from '@react-icons/all-files/vsc/VscSymbolInterface';
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { VscSymbolVariable } from '@react-icons/all-files/vsc/VscSymbolVariable';
-import { usePathname } from 'next/navigation';
+import { useSelectedLayoutSegment } from 'next/navigation';
 import { useMemo } from 'react';
+import { useNav } from '~/contexts/nav';
 import { ItemLink } from './ItemLink';
 import { Section } from './Section';
-import { useNav } from '~/contexts/nav';
 
 export interface SidebarSectionItemData {
 	href: string;
@@ -74,7 +73,6 @@ function resolveIcon(item: string) {
 		case 'Interfaces':
 			return <VscSymbolInterface size={20} />;
 		case 'Types':
-			return <VscSymbolField size={20} />;
 		case 'Variables':
 			return <VscSymbolVariable size={20} />;
 		default:
@@ -82,22 +80,27 @@ function resolveIcon(item: string) {
 	}
 }
 
-export function Sidebar({ members }: { members: SidebarSectionItemData[] }) {
-	const pathname = usePathname();
+export function Sidebar({ members }: { readonly members: SidebarSectionItemData[] }) {
+	const segment = useSelectedLayoutSegment();
 	const { setOpened } = useNav();
 
 	const groupItems = useMemo(() => groupMembers(members), [members]);
 
 	return (
-		<div className="flex flex-col gap-3 p-3">
+		<div className="flex flex-col gap-4">
 			{(Object.keys(groupItems) as (keyof GroupedMembers)[])
 				.filter((group) => groupItems[group].length)
 				.map((group, idx) => (
-					<Section icon={resolveIcon(group)} key={`${group}-${idx}`} title={group}>
+					<Section
+						buttonClassName="bg-light-600 hover:bg-light-700 active:bg-light-800 dark:bg-dark-400 dark:hover:bg-dark-300 dark:active:bg-dark-400 focus:ring-width-2 focus:ring-blurple rounded p-3 outline-none focus:ring z-10"
+						icon={resolveIcon(group)}
+						key={`${group}-${idx}`}
+						title={group}
+					>
 						{groupItems[group].map((member, index) => (
 							<ItemLink
-								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l p-[5px] pl-6 outline-0 focus:rounded focus:border-0 focus:ring ${
-									pathname === member.href
+								className={`dark:border-dark-100 border-light-800 focus:ring-width-2 focus:ring-blurple ml-5 flex flex-col border-l first:mt-1 p-[5px] pl-6 outline-none focus:rounded focus:border-0 focus:ring ${
+									decodeURIComponent(segment ?? '') === member.href
 										? 'bg-blurple text-white'
 										: 'dark:hover:bg-dark-200 dark:active:bg-dark-100 hover:bg-light-700 active:bg-light-800'
 								}`}

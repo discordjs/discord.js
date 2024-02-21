@@ -1,6 +1,6 @@
 'use strict';
 
-const { channelLink } = require('@discordjs/builders');
+const { channelLink, channelMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -89,7 +89,7 @@ class BaseChannel extends Base {
    * console.log(`Hello from ${channel}!`);
    */
   toString() {
-    return `<#${this.id}>`;
+    return channelMention(this.id);
   }
 
   /**
@@ -147,14 +147,17 @@ class BaseChannel extends Base {
     return 'bitrate' in this;
   }
 
+  /**
+   * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
+   * @returns {boolean}
+   */
+  isThreadOnly() {
+    return 'availableTags' in this;
+  }
+
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
 
 exports.BaseChannel = BaseChannel;
-
-/**
- * @external APIChannel
- * @see {@link https://discord.com/developers/docs/resources/channel#channel-object}
- */

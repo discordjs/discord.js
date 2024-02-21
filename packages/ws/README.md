@@ -13,6 +13,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -22,19 +23,19 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.11.0 or newer is required.**
 
 ```sh
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
+bun add @discordjs/ws
 ```
 
 ### Optional packages
 
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
-- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Example usage
 

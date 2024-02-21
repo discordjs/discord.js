@@ -24,27 +24,28 @@ class GenericAction {
   }
 
   getPayload(data, manager, id, partialType, cache) {
-    const existing = manager.cache.get(id);
-    if (!existing && this.client.options.partials.includes(partialType)) {
-      return manager._add(data, cache);
-    }
-    return existing;
+    return this.client.options.partials.includes(partialType) ? manager._add(data, cache) : manager.cache.get(id);
   }
 
   getChannel(data) {
+    const payloadData = {};
     const id = data.channel_id ?? data.id;
+
+    if ('recipients' in data) {
+      payloadData.recipients = data.recipients;
+    } else {
+      // Try to resolve the recipient, but do not add the client user.
+      const recipient = data.author ?? data.user ?? { id: data.user_id };
+      if (recipient.id !== this.client.user.id) payloadData.recipients = [recipient];
+    }
+
+    if (id !== undefined) payloadData.id = id;
+    if ('guild_id' in data) payloadData.guild_id = data.guild_id;
+    if ('last_message_id' in data) payloadData.last_message_id = data.last_message_id;
+
     return (
       data[this.client.actions.injectedChannel] ??
-      this.getPayload(
-        {
-          id,
-          guild_id: data.guild_id,
-          recipients: [data.author ?? data.user ?? { id: data.user_id }],
-        },
-        this.client.channels,
-        id,
-        Partials.Channel,
-      )
+      this.getPayload(payloadData, this.client.channels, id, Partials.Channel)
     );
   }
 

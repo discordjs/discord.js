@@ -1,9 +1,8 @@
 /* eslint-disable react/no-unknown-property */
 
 import { ImageResponse } from '@vercel/og';
-import type { ServerRuntime } from 'next/types';
 
-export const runtime: ServerRuntime = 'edge';
+export const runtime = 'edge';
 
 const fonts = fetch(new URL('../../../assets/fonts/Inter-Black.ttf', import.meta.url)).then(async (res) =>
 	res.arrayBuffer(),

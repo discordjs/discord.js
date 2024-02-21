@@ -117,7 +117,7 @@ export class WorkerBootstrapper {
 						break;
 					}
 
-					case WorkerSendPayloadOp.ShardCanIdentify: {
+					case WorkerSendPayloadOp.ShardIdentifyResponse: {
 						break;
 					}
 
@@ -127,11 +127,11 @@ export class WorkerBootstrapper {
 							throw new Error(`Shard ${payload.shardId} does not exist`);
 						}
 
-						const response = {
+						const response: WorkerReceivePayload = {
 							op: WorkerReceivePayloadOp.FetchStatusResponse,
 							status: shard.status,
 							nonce: payload.nonce,
-						} satisfies WorkerReceivePayload;
+						};
 
 						parentPort!.postMessage(response);
 						break;
@@ -150,12 +150,12 @@ export class WorkerBootstrapper {
 			for (const event of options.forwardEvents ?? Object.values(WebSocketShardEvents)) {
 				// @ts-expect-error: Event types incompatible
 				shard.on(event, (data) => {
-					const payload = {
+					const payload: WorkerReceivePayload = {
 						op: WorkerReceivePayloadOp.Event,
 						event,
 						data,
 						shardId,
-					} satisfies WorkerReceivePayload;
+					};
 					parentPort!.postMessage(payload);
 				});
 			}
@@ -168,9 +168,9 @@ export class WorkerBootstrapper {
 		// Lastly, start listening to messages from the parent thread
 		this.setupThreadEvents();
 
-		const message = {
+		const message: WorkerReceivePayload = {
 			op: WorkerReceivePayloadOp.WorkerReady,
-		} satisfies WorkerReceivePayload;
+		};
 		parentPort!.postMessage(message);
 	}
 }
