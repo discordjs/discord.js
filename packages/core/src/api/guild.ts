@@ -137,10 +137,8 @@ export class GuildsAPI {
 			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
 		};
 
-		const query = 'with_counts' in queryOrOptions ? makeURLSearchParams(queryOrOptions) : undefined;
-
-		if (query) {
-			requestData.query = query;
+		if ('with_counts' in queryOrOptions) {
+			requestData.query = makeURLSearchParams(queryOrOptions);
 		}
 
 		return this.rest.get(Routes.guild(guildId), requestData) as Promise<RESTGetAPIGuildResult>;
