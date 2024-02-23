@@ -6,6 +6,7 @@ import node from 'eslint-config-neon/flat/node.js';
 import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
+// import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
@@ -62,6 +63,8 @@ const nextRuleset = merge(...next, { files: [`apps/**/*${commonFiles}`] });
 const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
+
+// const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
 
 /** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
@@ -133,4 +136,5 @@ export default [
 		rules: { 'tsdoc/syntax': 0 },
 	},
 	prettierRuleset,
+	// oxlintRuleset,
 ];

@@ -13,16 +13,10 @@ export function TypeAlias({ item }: { readonly item: ApiTypeAlias }) {
 		let depth = 0;
 		for (const token of item.typeExcerpt.spannedTokens) {
 			if (token.text.includes('?')) {
-				return [];
+				return [item.typeExcerpt.spannedTokens];
 			}
 
-			if (token.text.includes('<')) {
-				depth++;
-			}
-
-			if (token.text.includes('>')) {
-				depth--;
-			}
+			depth += token.text.split('<').length - token.text.split('>').length;
 
 			if (token.text.trim() === '|' && depth === 0) {
 				if (currentUnionMember.length) {
@@ -47,7 +41,7 @@ export function TypeAlias({ item }: { readonly item: ApiTypeAlias }) {
 			}
 		}
 
-		if (currentUnionMember.length && union.length) {
+		if (currentUnionMember.length) {
 			union.push(currentUnionMember);
 		}
 

@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { ExcerptText } from '~/components/ExcerptText';
 import { DocumentationSection } from './DocumentationSection';
 
-export type UnionMember = ExcerptToken[];
+export type UnionMember = readonly ExcerptToken[];
 
 export function UnionMembersSection({
 	item,

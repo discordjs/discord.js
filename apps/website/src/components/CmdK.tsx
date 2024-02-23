@@ -52,12 +52,13 @@ export function CmdKDialog() {
 		() =>
 			searchResults?.map((item, idx) => (
 				<Command.Item
-					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base font-semibold leading-none text-black outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
+					className="my-1 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-content-center rounded bg-transparent px-4 py-2 text-base text-black font-semibold leading-none outline-none active:translate-y-px dark:border-dark-100 active:bg-neutral-200 hover:bg-neutral-100 dark:text-white [&[aria-selected]]:ring [&[aria-selected]]:ring-width-2 [&[aria-selected]]:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
 					key={`${item.id}-${idx}`}
 					onSelect={() => {
 						router.push(item.path);
 						dialog!.setOpen(false);
 					}}
+					value={`${item.id}`}
 				>
 					<div className="flex grow flex-row place-content-between place-items-center gap-4">
 						<div className="flex flex-row place-items-center gap-4">

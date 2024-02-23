@@ -26,6 +26,7 @@ import {
 	type RESTGetAPIGuildPreviewResult,
 	type RESTGetAPIGuildPruneCountQuery,
 	type RESTGetAPIGuildPruneCountResult,
+	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
@@ -109,9 +110,38 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild
+	 * @deprecated Use the overload with a query instead.
 	 */
-	public async get(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.guild(guildId), { signal }) as Promise<RESTGetAPIGuildResult>;
+	public async get(guildId: Snowflake, { signal }?: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
+
+	/**
+	 * Fetches a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
+	 * @param guildId - The id of the guild
+	 * @param query - The query options for fetching the guild
+	 * @param options - The options for fetching the guild
+	 */
+	public async get(
+		guildId: Snowflake,
+		query?: RESTGetAPIGuildQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTGetAPIGuildResult>;
+
+	public async get(
+		guildId: Snowflake,
+		queryOrOptions: Pick<RequestData, 'signal'> | RESTGetAPIGuildQuery = {},
+		options: Pick<RequestData, 'signal'> = {},
+	) {
+		const requestData: RequestData = {
+			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
+		};
+
+		if ('with_counts' in queryOrOptions) {
+			requestData.query = makeURLSearchParams(queryOrOptions);
+		}
+
+		return this.rest.get(Routes.guild(guildId), requestData) as Promise<RESTGetAPIGuildResult>;
 	}
 
 	/**
