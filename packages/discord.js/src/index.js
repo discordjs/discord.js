@@ -1,6 +1,9 @@
 'use strict';
 
+const { polyfillDispose } = require('@discordjs/util');
 const { __exportStar } = require('tslib');
+
+polyfillDispose();
 
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient');

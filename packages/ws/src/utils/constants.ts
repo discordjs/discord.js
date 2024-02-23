@@ -71,7 +71,7 @@ export const ImportantGatewayOpcodes = new Set([
 
 export function getInitialSendRateLimitState(): SendRateLimitState {
 	return {
-		remaining: 120,
+		sent: 0,
 		resetAt: Date.now() + 60_000,
 	};
 }

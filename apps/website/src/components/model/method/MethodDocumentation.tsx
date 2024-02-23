@@ -19,8 +19,9 @@ export function MethodDocumentation({ method, inheritedFrom }: MethodDocumentati
 	const parent = method.parent as ApiDeclaredItem;
 	const firstOverload = method
 		.getMergedSiblings()
-		.find((meth): meth is ApiMethod => meth.kind === ApiItemKind.Method && (meth as ApiMethod).overloadIndex === 1)
-		?.tsdocComment;
+		.find(
+			(meth): meth is ApiMethod => meth.kind === ApiItemKind.Method && (meth as ApiMethod).overloadIndex === 1,
+		)?.tsdocComment;
 
 	if (!(method.tsdocComment?.summarySection || firstOverload?.summarySection || method.parameters.length > 0)) {
 		return null;

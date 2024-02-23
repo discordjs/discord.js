@@ -6,7 +6,7 @@ export interface IDiscordMessageEmbedTitle {
 export function DiscordMessageEmbedTitle({ title, url }: IDiscordMessageEmbedTitle) {
 	return url ? (
 		<a
-			className="mt-2 font-medium text-blue-500 hover:underline"
+			className="mt-2 text-blue-500 font-medium hover:underline"
 			href={url}
 			rel="noreferrer noopener external"
 			target="_blank"

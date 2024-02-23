@@ -193,6 +193,7 @@ import {
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import { ReadonlyCollection } from '@discordjs/collection';
 
 // Test type transformation:
 declare const serialize: <Value>(value: Value) => Serialized<Value>;
@@ -1171,8 +1172,8 @@ client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<Client<true>>(addedMembers.first()!.client);
   expectType<Client<true>>(removedMembers.first()!.client);
   expectType<Client<true>>(thread.client);
-  expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
-  expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
+  expectType<ReadonlyCollection<Snowflake, ThreadMember>>(addedMembers);
+  expectType<ReadonlyCollection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
   expectType<AnyThreadChannel>(thread);
   const left = removedMembers.first();
   if (!left) return;
@@ -1990,7 +1991,7 @@ client.on('interactionCreate', async interaction => {
     const requiredOption = interaction.options.get('name', true);
     expectType<CommandInteractionOption | null>(optionalOption);
     expectType<CommandInteractionOption>(requiredOption);
-    expectType<CommandInteractionOption[] | undefined>(requiredOption.options);
+    expectType<readonly CommandInteractionOption[] | undefined>(requiredOption.options);
 
     expectType<string | null>(interaction.options.getString('name', booleanValue));
     expectType<string | null>(interaction.options.getString('name', false));
@@ -2082,7 +2083,7 @@ collector.on('dispose', (vals, ...other) => {
 });
 
 collector.on('end', (collection, reason) => {
-  expectType<Collection<string, Interaction>>(collection);
+  expectType<ReadonlyCollection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
 

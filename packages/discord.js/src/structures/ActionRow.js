@@ -27,7 +27,7 @@ class ActionRow extends Component {
    * @memberof ActionRow
    * @param {ActionRowBuilder|ActionRow|APIActionRowComponent} other The other data
    * @returns {ActionRowBuilder}
-   * @deprecated Use {@link ActionRowBuilder.from} instead.
+   * @deprecated Use {@link ActionRowBuilder.from | ActionRowBuilder#from} instead.
    */
   static from = deprecate(
     other => new this(isJSONEncodable(other) ? other.toJSON() : other),

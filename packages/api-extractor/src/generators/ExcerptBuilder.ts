@@ -324,8 +324,12 @@ export class ExcerptBuilder {
 					prevToken.text += currentToken.text;
 					// Remove BarTokens from excerpts if they immediately follow a LessThanToken, e.g. `Promise< | Something>`
 					// would become `Promise<Something>`
-					if (/<\s*\|/.test(prevToken.text)) {
-						prevToken.text = prevToken.text.replace(/<\s*\|\s*/, '<');
+					if (/<(?:\s*\||\s+)/.test(prevToken.text)) {
+						prevToken.text = prevToken.text.replaceAll(/<\s*\|?\s*/g, '<');
+					}
+
+					if (/\s+>/.test(prevToken.text)) {
+						prevToken.text = prevToken.text.replaceAll(/\s*>/g, '>');
 					}
 
 					mergeCount = 1;

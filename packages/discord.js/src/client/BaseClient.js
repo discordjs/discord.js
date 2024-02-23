@@ -106,6 +106,10 @@ class BaseClient extends EventEmitter {
   toJSON(...props) {
     return flatten(this, ...props);
   }
+
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
+  }
 }
 
 module.exports = BaseClient;

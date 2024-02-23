@@ -55,7 +55,9 @@ export async function loadStructures(dir, predicate, recursive = true) {
 		const structure = (await import(`${dir}/${file}`)).default;
 
 		// If the structure is a valid structure, add it
-		if (predicate(structure)) structures.push(structure);
+		if (predicate(structure)) {
+			structures.push(structure);
+		}
 	}
 
 	return structures;

@@ -12,7 +12,7 @@ import {
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { DocNodeKind } from '@microsoft/tsdoc';
 import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
-import { request } from 'undici';
+import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
 export interface MemberJSON {
 	kind: string;
@@ -21,20 +21,6 @@ export interface MemberJSON {
 	summary: string | null;
 }
 
-export const PACKAGES = [
-	'discord.js',
-	'brokers',
-	'builders',
-	'collection',
-	'core',
-	'formatters',
-	'next',
-	'proxy',
-	'rest',
-	'util',
-	'voice',
-	'ws',
-];
 let idx = 0;
 
 /**
@@ -148,16 +134,6 @@ export async function writeIndexToFileSystem(
 		join(cwd(), 'public', dir, `${packageName}-${tag}-index.json`),
 		JSON.stringify(members, undefined, 2),
 	);
-}
-
-export async function fetchVersions(pkg: string) {
-	const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
-	return response.body.json() as Promise<string[]>;
-}
-
-export async function fetchVersionDocs(pkg: string, version: string) {
-	const response = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
-	return response.body.json();
 }
 
 export async function generateAllIndices({

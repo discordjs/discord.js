@@ -23,9 +23,8 @@ If you want to test changes you've made locally, you can do so by using `pnpm li
 
 1. Create a new directory `mkdir discordjs-test` and move into it `cd discordjs-test`
 2. Initialize a new pnpm project `pnpm init`
-3. Now link the local discord.js project you cloned earlier `pnpm link {PATH_TO_DISCORDJS_REPO}`
-4. Install packages you'd like to test locally `pnpm add discord.js@latest`, `pnpm add @discordjs/rest@latest`, etc. **Note: Make sure you use `latest` tag or else pnpm will try to install the remote package from npm**
-5. Import the package in your source code and test them out!
+3. Now link the discord.js package from the directory you cloned earlier `pnpm link {PATH_TO_DISCORDJS_REPO}/packages/<package>`. (e.g. `pnpm link ~/discord.js/packages/rest`)
+4. Import the package in your source code and test them out!
 
 ### Working with TypeScript packages
 

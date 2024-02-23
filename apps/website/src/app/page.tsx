@@ -18,7 +18,7 @@ export default function Page() {
 							The <span className="relative rounded bg-blurple px-3 py-1 text-white">most popular</span> way to build
 							Discord bots.
 						</h1>
-						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
+						<p className="my-6 text-neutral-700 leading-normal dark:text-neutral-300">{DESCRIPTION}</p>
 						<div className="flex flex-wrap place-content-center gap-4 md:flex-row">
 							<Link className={buttonVariants()} href={'/docs' as Route}>
 								Docs

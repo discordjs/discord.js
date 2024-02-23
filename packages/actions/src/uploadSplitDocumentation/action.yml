@@ -1,0 +1,10 @@
+name: 'Upload split documentation'
+description: 'Splits and uploads the docs.api.json file into more fine-grained [item].api.json files'
+inputs:
+  package:
+    description: 'The package string'
+  version:
+    description: 'The semver string'
+runs:
+  using: node20
+  main: ../../dist/uploadSplitDocumentation/index.js

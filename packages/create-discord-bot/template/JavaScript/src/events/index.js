@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 /**
  * Defines the structure of an event.
  *
@@ -9,15 +11,19 @@
  */
 
 /**
+ * Defines the schema for an event.
+ *
+ */
+export const schema = z.object({
+	name: z.string(),
+	once: z.boolean().optional().default(false),
+	execute: z.function(),
+});
+
+/**
  * Defines the predicate to check if an object is a valid Event type.
  *
  * @type {import('../util/loaders').StructurePredicate<Event>}
  * @returns {structure is Event}
  */
-export const predicate = (structure) =>
-	Boolean(structure) &&
-	typeof structure === 'object' &&
-	'name' in structure &&
-	'execute' in structure &&
-	typeof structure.name === 'string' &&
-	typeof structure.execute === 'function';
+export const predicate = (structure) => schema.safeParse(structure).success;

@@ -75,14 +75,19 @@ export class TypeScriptInternals {
 	 * The compiler populates this cache as part of analyzing the source file.
 	 */
 	public static getResolvedModule(
+		program: ts.Program,
 		sourceFile: ts.SourceFile,
 		moduleNameText: string,
 		mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined,
 	): ts.ResolvedModuleFull | undefined {
 		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v4.7.2/src/compiler/utilities.ts#L161
-
-		return (ts as any).getResolvedModule(sourceFile, moduleNameText, mode);
+		// https://github.com/microsoft/TypeScript/blob/v5.3.3/src/compiler/types.ts#L4698
+		const result: ts.ResolvedModuleWithFailedLookupLocations | undefined = (program as any).getResolvedModule(
+			sourceFile,
+			moduleNameText,
+			mode,
+		);
+		return result?.resolvedModule;
 	}
 
 	/**
