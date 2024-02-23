@@ -23450,6 +23450,7 @@ packages:
       '@unocss/vite': 0.58.5(vite@5.0.12)
       vite: 5.0.12(@types/node@18.18.8)
     transitivePeerDependencies:
+      - postcss
       - rollup
       - supports-color
     dev: true
