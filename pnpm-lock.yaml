@@ -30545,6 +30545,7 @@ snapshots:
     optionalDependencies:
       vite: 5.2.9(@types/node@20.12.7)(terser@5.29.1)
     transitivePeerDependencies:
+      - postcss
       - rollup
       - supports-color
 
