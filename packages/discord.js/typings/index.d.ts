@@ -311,7 +311,7 @@ export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowC
 export class ActionRowBuilder<
   ComponentType extends AnyComponentBuilder = AnyComponentBuilder,
 > extends BuilderActionRow<ComponentType> {
-  constructor(
+  public constructor(
     data?: Partial<
       | ActionRowData<ActionRowComponentData | JSONEncodable<APIActionRowComponentTypes>>
       | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
@@ -2396,7 +2396,7 @@ export interface ActionRowModalData {
 }
 
 export class ModalSubmitFields {
-  constructor(components: readonly (readonly ModalActionRowComponent[])[]);
+  private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
   public components: ActionRowModalData[];
   public fields: Collection<string, ModalActionRowComponent>;
   public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
