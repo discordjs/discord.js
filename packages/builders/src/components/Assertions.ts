@@ -18,7 +18,17 @@ export const disabledValidator = z.boolean();
 
 export const buttonLabelValidator = z.string().min(1).max(80);
 
-export const buttonStyleValidator = z.nativeEnum(ButtonStyle);
+export const buttonStyleValidator = z.union([
+	z.nativeEnum(ButtonStyle),
+	z
+		.enum(
+			Object.values(ButtonStyle).filter((value) => typeof value === 'string') as [
+				keyof typeof ButtonStyle,
+				...(keyof typeof ButtonStyle)[],
+			],
+		)
+		.transform((key) => ButtonStyle[key]),
+]);
 
 export const placeholderValidator = z.string().max(150);
 export const minMaxValidator = z.number().int().gte(0).lte(25);
@@ -50,7 +60,19 @@ export function validateRequiredSelectMenuOptionParameters(label?: string, value
 	parse(labelValueDescriptionValidator, value);
 }
 
-export const channelTypesValidator = z.nativeEnum(ChannelType).array();
+export const channelTypesValidator = z
+	.union([
+		z.nativeEnum(ChannelType),
+		z
+			.enum(
+				Object.values(ChannelType).filter((value) => typeof value === 'string') as [
+					keyof typeof ChannelType,
+					...(keyof typeof ChannelType)[],
+				],
+			)
+			.transform((key) => ChannelType[key]),
+	])
+	.array();
 
 export const urlValidator = z
 	.string()
