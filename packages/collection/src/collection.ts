@@ -15,7 +15,7 @@ export interface CollectionConstructor {
  */
 export type ReadonlyCollection<Key, Value> = Omit<
 	Collection<Key, Value>,
-	'delete' | 'ensure' | 'forEach' | 'get' | 'reverse' | 'set' | 'sort' | 'sweep'
+	'clear' | 'delete' | 'ensure' | 'forEach' | 'get' | 'reverse' | 'set' | 'sort' | 'sweep'
 > &
 	ReadonlyMap<Key, Value>;
 
