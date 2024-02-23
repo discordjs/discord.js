@@ -141,6 +141,7 @@ class WebSocketManager extends EventEmitter {
     }
     if (!this._ws) {
       const wsOptions = {
+        agent: ws.agent,
         intents: intents.bitfield,
         rest: this.client.rest,
         token: this.client.token,

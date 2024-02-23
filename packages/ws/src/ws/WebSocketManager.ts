@@ -1,3 +1,4 @@
+import type { Agent } from 'node:http';
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
 import { polyfillDispose } from '@discordjs/util';
@@ -77,6 +78,10 @@ export interface RequiredWebSocketManagerOptions {
  * Optional additional configuration for the WebSocketManager
  */
 export interface OptionalWebSocketManagerOptions {
+	/**
+	 * The proxy agent to use for the WebSocket connections
+	 */
+	agent?: Agent;
 	/**
 	 * Builds an identify throttler to use for this manager's shards
 	 */

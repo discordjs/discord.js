@@ -187,6 +187,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		const connection = new WebSocketConstructor(url, {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
+			agent: this.strategy.options.agent,
 		});
 
 		connection.binaryType = 'arraybuffer';
