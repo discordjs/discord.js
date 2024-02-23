@@ -3352,7 +3352,8 @@ export function makeError(obj: MakeErrorOptions): Error;
 export function makePlainError(err: Error): MakeErrorOptions;
 /** @internal */
 export function moveElementInArray(
-  array: readonly unknown[],
+  // eslint-disable-next-line no-restricted-syntax
+  array: unknown[],
   element: unknown,
   newIndex: number,
   offset?: boolean,
@@ -6766,7 +6767,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
   avatarURL?: string;
   threadId?: Snowflake;
   threadName?: string;
-  appliedTags?: Snowflake[];
+  appliedTags?: readonly Snowflake[];
 }
 
 export interface WebSocketOptions {
