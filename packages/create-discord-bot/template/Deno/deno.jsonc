@@ -5,14 +5,14 @@
 		"deploy": "deno run --allow-read --allow-env --allow-net src/util/deploy.ts",
 		"format": "deno fmt",
 		"fmt": "deno fmt",
-		"start": "deno run --allow-read --allow-env --allow-net src/index.ts"
+		"start": "deno run --allow-read --allow-env --allow-net src/index.ts",
 	},
 	"lint": {
 		"include": ["src/"],
 		"rules": {
 			"tags": ["recommended"],
-			"exclude": ["require-await", "no-await-in-sync-fn"]
-		}
+			"exclude": ["require-await", "no-await-in-sync-fn"],
+		},
 	},
 	"fmt": {
 		"useTabs": true,
@@ -20,7 +20,7 @@
 		"semiColons": true,
 		"singleQuote": true,
 		"proseWrap": "preserve",
-		"include": ["src/"]
+		"include": ["src/"],
 	},
 	"compilerOptions": {
 		"alwaysStrict": true,
@@ -36,6 +36,6 @@
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
 		"exactOptionalPropertyTypes": false,
-		"noImplicitOverride": true
-	}
+		"noImplicitOverride": true,
+	},
 }

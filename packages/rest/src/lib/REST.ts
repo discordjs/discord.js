@@ -77,7 +77,6 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 		super();
 		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
 		this.options = { ...DefaultRestOptions, ...options };
-		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;
 
