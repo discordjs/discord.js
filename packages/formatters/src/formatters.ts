@@ -683,7 +683,6 @@ export enum Faces {
 	/**
 	 * `¯\_(ツ)_/¯`
 	 */
-	// eslint-disable-next-line no-useless-escape
 	Shrug = '¯\\_(ツ)_/¯',
 
 	/**
