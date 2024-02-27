@@ -675,7 +675,6 @@ export const TimestampStyles = {
  */
 export type TimestampStylesString = (typeof TimestampStyles)[keyof typeof TimestampStyles];
 
-// prettier-ignore
 /**
  * All the available faces from Discord's native slash commands.
  */
