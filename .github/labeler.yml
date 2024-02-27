@@ -46,6 +46,9 @@ packages:proxy-container:
 packages:rest:
   - packages/rest/*
   - packages/rest/**/*
+packages:structures:
+  - packages/structures/*
+  - packages/structures/**/*
 packages:ui:
   - packages/ui/*
   - packages/ui/**/*
