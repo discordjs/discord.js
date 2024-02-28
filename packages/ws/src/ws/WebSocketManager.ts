@@ -1,4 +1,3 @@
-import type { Agent } from 'node:http';
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
 import { polyfillDispose } from '@discordjs/util';
@@ -16,7 +15,8 @@ import {
 } from 'discord-api-types/v10';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
-import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
+import { DefaultWebSocketManagerOptions } from '../utils/constants.js';
+import type { ProxyAgentOptions, CompressionMethod, Encoding } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
 
 // We put this here because in index.ts WebSocketManager seems to be outputted before polyfillDispose() is called from tsup.
@@ -79,10 +79,6 @@ export interface RequiredWebSocketManagerOptions {
  */
 export interface OptionalWebSocketManagerOptions {
 	/**
-	 * The proxy agent to use for the WebSocket connections
-	 */
-	agent?: Agent;
-	/**
 	 * Builds an identify throttler to use for this manager's shards
 	 */
 	buildIdentifyThrottler(manager: WebSocketManager): Awaitable<IIdentifyThrottler>;
@@ -132,6 +128,10 @@ export interface OptionalWebSocketManagerOptions {
 	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
 	 */
 	largeThreshold: number | null;
+	/**
+	 * The proxy agent to use for the WebSocket connections
+	 */
+	proxyAgentOptions?: ProxyAgentOptions;
 	/**
 	 * How long to wait for a shard's READY packet before giving up
 	 */

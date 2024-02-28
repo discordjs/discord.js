@@ -44,6 +44,7 @@ import {
   IShardingStrategy,
   IIdentifyThrottler,
   SessionInfo,
+  ProxyAgentOptions,
 } from '@discordjs/ws';
 import {
   APIActionRowComponent,
@@ -6777,6 +6778,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 }
 
 export interface WebSocketOptions {
+  proxyAgentOptions: ProxyAgentOptions;
   large_threshold?: number;
   version?: number;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;

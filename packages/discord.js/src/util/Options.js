@@ -3,6 +3,7 @@
 const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
 const { version } = require('../../package.json');
+const { HttpsProxyAgentOptions } = require('https-proxy-agent');
 
 // TODO(ckohen): switch order of params so full manager is first and "type" is optional
 /**
@@ -11,6 +12,12 @@ const { version } = require('../../package.json');
  * @param {Function} holds The class that the cache will hold.
  * @param {Function} manager The fully extended manager class the cache is being requested from.
  * @returns {Collection} A Collection used to store the cache of the manager.
+ */
+
+/**
+ * @typedef {Object} ProxyAgentOptions
+ * @property {string|URL} [proxy] The proxy URL
+ * @property {HttpsProxyAgentOptions} [httpsProxyAgentOptions] The options for the proxy agent
  */
 
 /**
@@ -85,6 +92,7 @@ const { version } = require('../../package.json');
 /**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
+ * @property {ProxyAgentOptions} [proxyAgentOptions] The options for the proxy agent
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;

@@ -20,6 +20,7 @@ import {
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import { WebSocket, type Data } from 'ws';
 import type { Inflate } from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
@@ -185,9 +186,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([`Connecting to ${url}`]);
 
+		const { proxy, httpsProxyAgentOptions } = this.strategy.options.proxyAgentOptions ?? {
+			proxy: undefined,
+			httpsProxyAgentOptions: undefined,
+		};
+		const agent = proxy ? new HttpsProxyAgent(proxy, httpsProxyAgentOptions) : undefined;
 		const connection = new WebSocketConstructor(url, {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
-			agent: this.strategy.options.agent,
+			agent,
 		});
 
 		connection.binaryType = 'arraybuffer';
