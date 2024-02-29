@@ -113,6 +113,24 @@ jobs:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
 
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./packages/actions/src/uploadSplitDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadSplitDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'tag' }}
         env:
@@ -140,6 +158,18 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./main/packages/actions/src/uploadDocumentation
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./packages/actions/src/uploadSplitDocumentation
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadSplitDocumentation
 
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}
