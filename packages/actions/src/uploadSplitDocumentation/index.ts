@@ -1,4 +1,4 @@
-import { readFile, readdir } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import { basename, dirname, relative, sep } from 'node:path';
 import { cwd } from 'node:process';
 import { getInput } from '@actions/core';
@@ -15,7 +15,6 @@ const promises = [];
 const globber = await create(`packages/${pkg}/docs/${pkg}/split/*.api.json`);
 console.log('Glob: ', await globber.glob());
 for await (const file of globber.globGenerator()) {
-	console.log('Dir:', dirname(file), 'Files:', await readdir(dirname(file)));
 	const data = await readFile(file, 'utf8');
 	const pkgName = dirname(relative(cwd(), file)).split(sep)[1];
 	try {
