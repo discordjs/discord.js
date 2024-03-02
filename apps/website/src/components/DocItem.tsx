@@ -114,15 +114,15 @@ export function DocItem({
 				<PropertyNode node={node.members.properties} packageName={packageName} version={version} />
 			) : null}
 
-			{node.members?.events?.length ? (
-				<div>
-					<EventNode node={node.members.events} packageName={packageName} version={version} />
-				</div>
-			) : null}
-
 			{node.members?.methods?.length ? (
 				<div>
 					<MethodNode node={node.members.methods} packageName={packageName} version={version} />
+				</div>
+			) : null}
+
+			{node.members?.events?.length ? (
+				<div>
+					<EventNode node={node.members.events} packageName={packageName} version={version} />
 				</div>
 			) : null}
 

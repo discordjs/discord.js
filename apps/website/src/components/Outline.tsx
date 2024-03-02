@@ -57,40 +57,6 @@ export async function Outline({ node }: { readonly node: any }) {
 							</Collapsible>
 						) : null}
 
-						{node.members?.events?.length ? (
-							<Collapsible className="flex flex-col gap-4 px-4" defaultOpen>
-								<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
-									<h2 className="flex place-items-center gap-2 text-xl font-bold">
-										<VscSymbolEvent aria-hidden className="flex-shrink-0" size={24} />
-										Events
-									</h2>
-									<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-									<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
-								</CollapsibleTrigger>
-
-								<CollapsibleContent>
-									<div className="flex flex-col gap-2 px-4">
-										{node.members.events.map((event: any, idx: number) => {
-											return (
-												<Fragment key={`${event.displayName}-${idx}`}>
-													<div className="flex flex-col gap-4">
-														<div className="flex place-content-between place-items-center">
-															<Link
-																href={`#${event.displayName}`}
-																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
-															>
-																{event.displayName}
-															</Link>
-														</div>
-													</div>
-												</Fragment>
-											);
-										})}
-									</div>
-								</CollapsibleContent>
-							</Collapsible>
-						) : null}
-
 						{node.members?.methods?.length ? (
 							<Collapsible className="flex flex-col gap-4 px-4" defaultOpen>
 								<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
@@ -114,6 +80,40 @@ export async function Outline({ node }: { readonly node: any }) {
 																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
 															>
 																{method.displayName}
+															</Link>
+														</div>
+													</div>
+												</Fragment>
+											);
+										})}
+									</div>
+								</CollapsibleContent>
+							</Collapsible>
+						) : null}
+
+						{node.members?.events?.length ? (
+							<Collapsible className="flex flex-col gap-4 px-4" defaultOpen>
+								<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
+									<h2 className="flex place-items-center gap-2 text-xl font-bold">
+										<VscSymbolEvent aria-hidden className="flex-shrink-0" size={24} />
+										Events
+									</h2>
+									<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
+									<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+								</CollapsibleTrigger>
+
+								<CollapsibleContent>
+									<div className="flex flex-col gap-2 px-4">
+										{node.members.events.map((event: any, idx: number) => {
+											return (
+												<Fragment key={`${event.displayName}-${idx}`}>
+													<div className="flex flex-col gap-4">
+														<div className="flex place-content-between place-items-center">
+															<Link
+																href={`#${event.displayName}`}
+																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
+															>
+																{event.displayName}
 															</Link>
 														</div>
 													</div>

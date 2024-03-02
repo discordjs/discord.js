@@ -410,6 +410,9 @@ importers:
       meilisearch:
         specifier: ^0.37.0
         version: 0.37.0
+      p-limit:
+        specifier: ^5.0.0
+        version: 5.0.0
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -3957,8 +3960,6 @@ packages:
     peerDependencies:
       markdown-wasm: 1.x
     peerDependenciesMeta:
-      esbuild:
-        optional: true
       markdown-wasm:
         optional: true
     dependencies:
@@ -4017,10 +4018,6 @@ packages:
     peerDependencies:
       '@effect-ts/otel-node': '*'
     peerDependenciesMeta:
-      '@effect-ts/core':
-        optional: true
-      '@effect-ts/otel':
-        optional: true
       '@effect-ts/otel-node':
         optional: true
     dependencies:
@@ -13566,9 +13563,6 @@ packages:
 
   /clipanion@3.2.1:
     resolution: {integrity: sha512-dYFdjLb7y1ajfxQopN05mylEpK9ZX0sO1/RfMXdfmwjlIsPkbh4p7A682x++zFPLDCo1x3p82dtljHf5cW2LKA==}
-    peerDependenciesMeta:
-      typanion:
-        optional: true
     dependencies:
       typanion: 3.14.0
     dev: false
@@ -14778,7 +14772,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240228
+      typescript: 5.5.0-dev.20240302
     dev: true
 
   /dts-critic@3.3.11(typescript@5.3.3):
@@ -21840,7 +21834,6 @@ packages:
     engines: {node: '>=18'}
     dependencies:
       yocto-queue: 1.0.0
-    dev: true
 
   /p-locate@3.0.0:
     resolution: {integrity: sha512-x+12w/To+4GFfgJhBEpiDcLozRJGegY+Ei7/z0tSLkMmxGZNybVMSfWj9aJn8Z5Fc7dBUNJOOVgPv2H7IwulSQ==}
@@ -25678,8 +25671,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240228:
-    resolution: {integrity: sha512-bdFIn0U4p7+PrnESpBPXDc6jRXynawwVQssEw2Pd2o/Mud34LwGgqHXOgIY5EEmZFPjzT3osXB7VKQP1cdHi3g==}
+  /typescript@5.5.0-dev.20240302:
+    resolution: {integrity: sha512-Cbr0okulu+L25e+Hg7miQGjy1iPM2jm1BkdFBYdf+JK7eCw8HF19Ud22FuZ15Nmcfxz9SU384MNQFFhwy+adrw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -27420,7 +27413,6 @@ packages:
   /yocto-queue@1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
-    dev: true
 
   /yoga-wasm-web@0.3.3:
     resolution: {integrity: sha512-N+d4UJSJbt/R3wqY7Coqs5pcV0aUj2j9IaQ3rNj9bVCLld8tTGKRa2USARjnvZJWVx1NDmQev8EknoczaOQDOA==}
