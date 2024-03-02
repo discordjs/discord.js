@@ -21,6 +21,7 @@ const limit = pLimit(10);
 const promises = [];
 
 const globber = await create(`packages/${pkg}/docs/docs.api.json`);
+console.log('Glob: ', await globber.glob());
 for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {

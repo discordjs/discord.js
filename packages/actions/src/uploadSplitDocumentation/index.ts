@@ -13,6 +13,7 @@ const limit = pLimit(10);
 const promises = [];
 
 const globber = await create(`packages/${pkg}/docs/${pkg}/split/*.api.json`);
+console.log('Glob: ', await globber.glob());
 for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	const pkgName = dirname(relative(cwd(), file)).split(sep)[1];
