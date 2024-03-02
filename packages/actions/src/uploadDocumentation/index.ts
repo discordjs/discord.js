@@ -1,4 +1,5 @@
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
 import process from 'node:process';
 import { getInput, setFailed } from '@actions/core';
 import { create } from '@actions/glob';
@@ -23,6 +24,7 @@ const promises = [];
 const globber = await create(`packages/${pkg}/docs/docs.api.json`);
 console.log('Glob: ', await globber.glob());
 for await (const file of globber.globGenerator()) {
+	console.log('Dir:', dirname(file), 'Files:', await readdir(dirname(file)));
 	const data = await readFile(file, 'utf8');
 	try {
 		promises.push(
