@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
-import { basename } from 'node:path';
+import { basename, dirname, relative, sep } from 'node:path';
+import { cwd } from 'node:process';
 import { getInput } from '@actions/core';
 import { create } from '@actions/glob';
 import { put } from '@vercel/blob';
@@ -14,14 +15,14 @@ const promises = [];
 const globber = await create(`packages/${pkg}/docs/${pkg}/split/*.api.json`);
 for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
+	const pkgName = dirname(relative(cwd(), file)).split(sep)[1];
 	try {
 		promises.push(
 			// eslint-disable-next-line @typescript-eslint/no-loop-func
 			limit(async () => {
-				console.log(`Uploading ${file} with ${version}...`);
+				console.log(`Uploading ${file} with ${version} from ${pkgName}...`);
 				const name = basename(file).replace('main.', '');
-
-				await put(`rewrite/${pkg}/${version}.${name}`, data, {
+				await put(`rewrite/${pkgName}/${version}.${name}`, data, {
 					access: 'public',
 					addRandomSuffix: false,
 				});
