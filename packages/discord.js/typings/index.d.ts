@@ -657,7 +657,7 @@ export class BaseGuildEmoji extends Emoji {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface BaseGuildTextChannel extends TextBasedChannelFields<true>, GuildChannel {}
+export interface BaseGuildTextChannel extends TextBasedChannelFields<true> {}
 export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
@@ -678,9 +678,7 @@ export class BaseGuildTextChannel extends GuildChannel {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface BaseGuildVoiceChannel
-  extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'>,
-    GuildChannel {}
+export interface BaseGuildVoiceChannel extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'> {}
 export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public bitrate: number;
@@ -1310,10 +1308,9 @@ export interface ResolvedFile {
 // tslint:disable-next-line no-empty-interface
 export interface DMChannel
   extends Omit<
-      TextBasedChannelFields<false>,
-      'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
-    >,
-    BaseChannel {}
+    TextBasedChannelFields<false>,
+    'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
+  > {}
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
@@ -1593,7 +1590,7 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export interface GuildMember extends PartialTextBasedChannelFields<false>, Base {}
+export interface GuildMember extends PartialTextBasedChannelFields<false> {}
 export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
@@ -2499,18 +2496,17 @@ export interface DefaultReactionEmoji {
 
 export interface ThreadOnlyChannel
   extends Omit<
-      TextBasedChannelFields,
-      | 'send'
-      | 'lastMessage'
-      | 'lastPinAt'
-      | 'bulkDelete'
-      | 'sendTyping'
-      | 'createMessageCollector'
-      | 'awaitMessages'
-      | 'createMessageComponentCollector'
-      | 'awaitMessageComponent'
-    >,
-    GuildChannel {}
+    TextBasedChannelFields,
+    | 'send'
+    | 'lastMessage'
+    | 'lastPinAt'
+    | 'bulkDelete'
+    | 'sendTyping'
+    | 'createMessageCollector'
+    | 'awaitMessages'
+    | 'createMessageComponentCollector'
+    | 'awaitMessageComponent'
+  > {}
 export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
@@ -3176,8 +3172,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
 
 // tslint:disable-next-line no-empty-interface
 export interface ThreadChannel<ThreadOnly extends boolean = boolean>
-  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'>,
-    BaseChannel {}
+  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'> {}
 export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
@@ -3274,7 +3269,7 @@ export class Typing extends Base {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface User extends PartialTextBasedChannelFields<false>, Base {}
+export interface User extends PartialTextBasedChannelFields<false> {}
 export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
