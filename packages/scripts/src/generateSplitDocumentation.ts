@@ -270,7 +270,7 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 					displayName: resolved.item.displayName,
 					containerKey: resolved.item.containerKey,
 					uri: resolveItemURI(resolved.item),
-					packageName: resolved.package,
+					packageName: resolved.package?.replace('@discordjs/', ''),
 					version: resolved.version,
 				},
 			};

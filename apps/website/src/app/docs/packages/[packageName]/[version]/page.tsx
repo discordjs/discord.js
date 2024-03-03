@@ -7,7 +7,7 @@ import { getHighlighterCore } from 'shiki/core';
 import getWasm from 'shiki/wasm';
 
 const highlighter = await getHighlighterCore({
-	themes: [import('shiki/themes/vitesse-light.mjs'), import('shiki/themes/vitesse-dark.mjs')],
+	themes: [import('shiki/themes/github-light.mjs'), import('shiki/themes/github-dark-dimmed.mjs')],
 	langs: [
 		import('shiki/langs/typescript.mjs'),
 		import('shiki/langs/javascript.mjs'),
@@ -23,7 +23,7 @@ export default async function Page({ params }: { readonly params: { readonly pac
 	);
 
 	return (
-		<div className="prose prose-neutral mx-auto max-w-screen-lg dark:prose-invert">
+		<div className="prose prose-neutral mx-auto max-w-screen-xl dark:prose-invert">
 			<MDXRemote
 				options={{
 					mdxOptions: {
@@ -34,8 +34,8 @@ export default async function Page({ params }: { readonly params: { readonly pac
 								highlighter,
 								{
 									themes: {
-										light: 'vitesse-light',
-										dark: 'vitesse-dark',
+										light: 'github-light',
+										dark: 'github-dark-dimmed',
 									},
 								},
 							],

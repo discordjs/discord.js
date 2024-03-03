@@ -2,6 +2,7 @@ import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted'
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { fetchSitemap } from '~/util/fetchSitemap';
 import { fetchVersions } from '~/util/fetchVersions';
 import { resolveNodeKind } from './DocKind';
 import { NavigationItem } from './NavigationItem';
@@ -26,13 +27,7 @@ export async function Navigation({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	const isMainVersion = version === 'main';
-	const fileContent = await fetch(
-		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.sitemap.api.json`,
-		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
-	);
-	const node = await fileContent.json();
-
+	const node = await fetchSitemap({ packageName, version });
 	const versions = await fetchVersions(packageName);
 
 	const groupedNodes = node.reduce((acc: any, node: any) => {

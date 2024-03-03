@@ -69,12 +69,12 @@
 		"ws": "^8.16.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.23.9",
-		"@babel/preset-env": "^7.23.9",
+		"@babel/core": "^7.24.0",
+		"@babel/preset-env": "^7.24.0",
 		"@babel/preset-typescript": "^7.23.3",
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^2.2.3",
+		"@favware/cliff-jumper": "^3.0.0",
 		"@types/jest": "^29.5.12",
 		"@types/node": "16.18.60",
 		"cross-env": "^7.0.3",

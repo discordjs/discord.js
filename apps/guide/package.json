@@ -65,12 +65,12 @@
 		"sharp": "^0.33.2"
 	},
 	"devDependencies": {
-		"@next/bundle-analyzer": "14.1.0",
+		"@next/bundle-analyzer": "14.1.1",
 		"@testing-library/react": "^14.2.1",
 		"@testing-library/user-event": "^14.5.2",
 		"@types/html-escaper": "^3.0.2",
 		"@types/node": "18.18.8",
-		"@types/react": "^18.2.60",
+		"@types/react": "^18.2.61",
 		"@types/react-dom": "^18.2.19",
 		"@unocss/eslint-plugin": "^0.58.5",
 		"@unocss/postcss": "^0.58.5",

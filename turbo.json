@@ -175,10 +175,12 @@
 				"docs/**",
 				"!docs/docs.json",
 				"!docs/docs.api.json",
+				"!docs/*/split/**",
 				"tsconfig.docs.json"
 			],
-			"outputs": ["dist-docs/**", "docs/docs.json", "docs/docs.api.json"],
-			"outputMode": "errors-only"
+			"outputs": ["dist-docs/**", "docs/docs.json", "docs/docs.api.json", "docs/*/split/**"],
+			"outputMode": "errors-only",
+			"cache": false
 		},
 		"changelog": {
 			"inputs": ["cliff.toml"],
