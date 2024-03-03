@@ -76,6 +76,7 @@ jobs:
           for PACKAGE in "${PACKAGES[@]}"; do
             cd "packages/${PACKAGE}"
             ../../main/packages/api-extractor/bin/api-extractor run --local --minify
+            ../../main/packages/scripts/bin/generateSplitDocumentation
             cd ../..
           done
 

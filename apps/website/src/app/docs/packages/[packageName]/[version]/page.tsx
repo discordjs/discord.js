@@ -23,7 +23,7 @@ export default async function Page({ params }: { readonly params: { readonly pac
 	);
 
 	return (
-		<div className="prose prose-neutral mx-auto max-w-screen-lg dark:prose-invert">
+		<div className="prose prose-neutral mx-auto max-w-screen-xl dark:prose-invert">
 			<MDXRemote
 				options={{
 					mdxOptions: {

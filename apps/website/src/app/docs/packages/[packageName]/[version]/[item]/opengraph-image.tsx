@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { ImageResponse } from 'next/og';
+import { fetchNode } from '~/util/fetchNode';
 import { resolveKind } from '~/util/resolveNodeKind';
 
 export const runtime = 'edge';
@@ -16,14 +17,7 @@ export default async function Image({
 }: {
 	readonly params: { readonly item: string; readonly packageName: string; readonly version: string };
 }) {
-	const normalizeItem = params.item.split(encodeURIComponent(':')).join('.').toLowerCase();
-
-	const isMainVersion = params.version === 'main';
-	const fileContent = await fetch(
-		`${process.env.BLOB_STORAGE_URL}/rewrite/${params.packageName}/${params.version}.${normalizeItem}.api.json`,
-		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
-	);
-	const node = await fileContent.json();
+	const node = await fetchNode({ item: params.item, packageName: params.packageName, version: params.version });
 
 	return new ImageResponse(
 		(
