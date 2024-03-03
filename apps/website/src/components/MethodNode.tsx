@@ -1,6 +1,7 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
+import { ENV } from '~/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -31,7 +32,7 @@ async function MethodBodyNode({
 				<div className="flex place-content-between place-items-center">
 					<h3
 						id={method.displayName}
-						className={`${overload ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
 					>
 						<Badges node={method} /> {method.displayName}
 						<span>

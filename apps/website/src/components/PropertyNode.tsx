@@ -2,6 +2,7 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import { ENV } from '~/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExcerptNode } from './ExcerptNode';
@@ -39,7 +40,7 @@ export async function PropertyNode({
 									<div className="flex place-content-between place-items-center">
 										<h3
 											id={property.displayName}
-											className="group flex scroll-mt-8 flex-col gap-2 break-words font-mono font-semibold"
+											className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 break-words font-mono font-semibold`}
 										>
 											<Badges node={property} />
 											<span>

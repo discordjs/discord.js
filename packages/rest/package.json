@@ -90,7 +90,7 @@
 		"discord-api-types": "0.37.61",
 		"magic-bytes.js": "^1.8.0",
 		"tslib": "^2.6.2",
-		"undici": "6.6.2"
+		"undici": "6.7.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",

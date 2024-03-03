@@ -48,7 +48,7 @@
 		"meilisearch": "^0.37.0",
 		"p-limit": "^5.0.0",
 		"tslib": "^2.6.2",
-		"undici": "6.6.2"
+		"undici": "6.7.0"
 	},
 	"devDependencies": {
 		"@types/node": "18.18.8",

@@ -417,8 +417,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
     devDependencies:
       '@types/node':
         specifier: 18.18.8
@@ -965,8 +965,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
       ws:
         specifier: 8.16.0
         version: 8.16.0
@@ -1035,8 +1035,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       typedoc:
-        specifier: ^0.25.9
-        version: 0.25.9(typescript@5.3.3)
+        specifier: ^0.25.10
+        version: 0.25.10(typescript@5.3.3)
     devDependencies:
       '@favware/cliff-jumper':
         specifier: ^3.0.0
@@ -1209,8 +1209,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1331,8 +1331,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1410,8 +1410,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
       yaml:
         specifier: 2.4.0
         version: 2.4.0
@@ -1774,8 +1774,8 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
       undici:
-        specifier: 6.6.2
-        version: 6.6.2
+        specifier: 6.7.0
+        version: 6.7.0
       vitest:
         specifier: ^1.3.1
         version: 1.3.1(@types/node@18.17.9)
@@ -4726,6 +4726,11 @@ packages:
   /@fastify/busboy@2.1.0:
     resolution: {integrity: sha512-+KpH+QxZU7O4675t3mnkQKcZZg56u+K/Ct2K+N2AZYNVK8kyeo/bI18tI8aPm3tvNNRyTWfj6s5tnGNlcbQRsA==}
     engines: {node: '>=14'}
+    dev: false
+
+  /@fastify/busboy@2.1.1:
+    resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
+    engines: {node: '>=14'}
 
   /@favware/cliff-jumper@3.0.0:
     resolution: {integrity: sha512-Sw2IO0nBzJK/J3WgVQmzKZ0i0eecOcLv2yyABsDNqTSEfov1U505/iryRhpdo8JGAzzVqaDh+S02lBT8IDIDmg==}
@@ -5478,7 +5483,7 @@ packages:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.5.4
+      semver: 7.6.0
       tar: 6.2.0
     transitivePeerDependencies:
       - encoding
@@ -6093,7 +6098,7 @@ packages:
       '@opentelemetry/propagator-b3': 1.17.1(@opentelemetry/api@1.6.0)
       '@opentelemetry/propagator-jaeger': 1.17.1(@opentelemetry/api@1.6.0)
       '@opentelemetry/sdk-trace-base': 1.17.1(@opentelemetry/api@1.6.0)
-      semver: 7.5.4
+      semver: 7.6.0
     dev: false
 
   /@opentelemetry/semantic-conventions@1.15.2:
@@ -9711,7 +9716,7 @@ packages:
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
       read-pkg-up: 7.0.1
-      semver: 7.5.4
+      semver: 7.6.0
       telejson: 7.2.0
       tiny-invariant: 1.3.1
       ts-dedent: 2.2.0
@@ -11166,7 +11171,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.4
+      semver: 7.6.0
       tsutils: 3.21.0(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -11188,7 +11193,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
-      semver: 7.5.4
+      semver: 7.6.0
       ts-api-utils: 1.2.1(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -11232,7 +11237,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
-      semver: 7.5.4
+      semver: 7.6.0
       ts-api-utils: 1.2.1(typescript@5.3.3)
       typescript: 5.3.3
     transitivePeerDependencies:
@@ -11278,7 +11283,7 @@ packages:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.3.3)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.5.4
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11300,7 +11305,7 @@ packages:
       '@typescript-eslint/types': 6.19.0
       '@typescript-eslint/typescript-estree': 6.19.0(typescript@5.3.3)
       eslint: 8.57.0
-      semver: 7.5.4
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11344,7 +11349,7 @@ packages:
       '@typescript-eslint/types': 7.0.2
       '@typescript-eslint/typescript-estree': 7.0.2(typescript@5.3.3)
       eslint: 8.57.0
-      semver: 7.5.4
+      semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -14793,7 +14798,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240302
+      typescript: 5.5.0-dev.20240303
     dev: true
 
   /dts-critic@3.3.11(typescript@5.3.3):
@@ -15462,7 +15467,7 @@ packages:
         optional: true
     dependencies:
       eslint: 8.57.0
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
   /eslint-config-neon@0.1.59(eslint@8.57.0)(typescript@5.3.3):
@@ -17093,7 +17098,7 @@ packages:
     hasBin: true
     dependencies:
       meow: 12.1.1
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
   /github-slugger@1.5.0:
@@ -21448,7 +21453,7 @@ packages:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.13.1
-      semver: 7.5.4
+      semver: 7.6.0
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -25603,8 +25608,8 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typedoc@0.25.9(typescript@5.3.3):
-    resolution: {integrity: sha512-jVoGmfNw848iW0L313+jqHbsknepwDV6F9nzk1H30oWhKXkw65uaENgR6QtTw9a5KqRWEb6nwNd54KxffBJyWw==}
+  /typedoc@0.25.10(typescript@5.3.3):
+    resolution: {integrity: sha512-v10rtOFojrjW9og3T+6wAKeJaGMuojU87DXGZ33sfs+554wgPTRG+s07Ag1BjPZI85Y5QPVouPI63JQ6fcQM5w==}
     engines: {node: '>= 16'}
     hasBin: true
     peerDependencies:
@@ -25671,8 +25676,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240302:
-    resolution: {integrity: sha512-Cbr0okulu+L25e+Hg7miQGjy1iPM2jm1BkdFBYdf+JK7eCw8HF19Ud22FuZ15Nmcfxz9SU384MNQFFhwy+adrw==}
+  /typescript@5.5.0-dev.20240303:
+    resolution: {integrity: sha512-CArlmRujLMr+lZw5jO+0yp94n8PswoXkD10bgEBn45GCY6CSdzMJFJy3UneQWik+cB3aq0hZ8iHWEtjY93ALNg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
@@ -25747,7 +25752,7 @@ packages:
     resolution: {integrity: sha512-cSb4bPFd5qgR7qr2jYAi0hlX9n5YKK2ONKkLFkxl+v/9BvC0sOpZjBHDBSXc5lWAf5ty9oZdRXytBIHzgUcerw==}
     engines: {node: '>=14.0'}
     dependencies:
-      '@fastify/busboy': 2.1.0
+      '@fastify/busboy': 2.1.1
     dev: true
 
   /undici@5.28.3:
@@ -25757,11 +25762,11 @@ packages:
       '@fastify/busboy': 2.1.0
     dev: false
 
-  /undici@6.6.2:
-    resolution: {integrity: sha512-vSqvUE5skSxQJ5sztTZ/CdeJb1Wq0Hf44hlYMciqHghvz+K88U0l7D6u1VsndoFgskDcnU+nG3gYmMzJVzd9Qg==}
+  /undici@6.7.0:
+    resolution: {integrity: sha512-IcWssIyDN1gk6Mcae44q04oRoWTKrW8OKz0effVK1xdWwAgMPnfpxhn9RXUSL5JlwSikO18R7Ibk7Nukz6kxWA==}
     engines: {node: '>=18.0'}
     dependencies:
-      '@fastify/busboy': 2.1.0
+      '@fastify/busboy': 2.1.1
 
   /unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
