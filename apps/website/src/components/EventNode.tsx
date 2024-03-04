@@ -1,5 +1,7 @@
 import { VscSymbolEvent } from '@react-icons/all-files/vsc/VscSymbolEvent';
-import { ChevronDown, ChevronUp, Code2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
+import Link from 'next/link';
+import { ENV } from '~/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -29,17 +31,22 @@ async function EventBodyNode({
 				<div className="flex place-content-between place-items-center">
 					<h3
 						id={event.displayName}
-						className={`${overload ? 'scroll-mt-16' : 'scroll-mt-8'} break-words font-mono font-semibold`}
+						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
 					>
 						<Badges node={event} /> {event.displayName}
-						{event.typeParameters?.length ? (
-							<>
-								{'<'}
-								<TypeParameterNode node={event.typeParameters} version={version} />
-								{'>'}
-							</>
-						) : null}
-						({event.parameters?.length ? <ParameterNode node={event.parameters} version={version} /> : null})
+						<span>
+							<Link href={`#${event.displayName}`} className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block">
+								<LinkIcon aria-hidden size={16} />
+							</Link>
+							{event.typeParameters?.length ? (
+								<>
+									{'<'}
+									<TypeParameterNode node={event.typeParameters} version={version} />
+									{'>'}
+								</>
+							) : null}
+							({event.parameters?.length ? <ParameterNode node={event.parameters} version={version} /> : null})
+						</span>
 					</h3>
 
 					<a

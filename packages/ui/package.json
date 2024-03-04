@@ -57,7 +57,7 @@
 		"react-dom": "^18.2.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.3",
+		"@favware/cliff-jumper": "^3.0.0",
 		"@react-icons/all-files": "^4.1.0",
 		"@storybook/addon-essentials": "^7.6.17",
 		"@storybook/addon-interactions": "^7.6.17",
@@ -68,7 +68,7 @@
 		"@storybook/react-vite": "^7.6.17",
 		"@storybook/testing-library": "^0.2.2",
 		"@types/node": "18.18.8",
-		"@types/react": "^18.2.60",
+		"@types/react": "^18.2.61",
 		"@types/react-dom": "^18.2.19",
 		"@unocss/eslint-plugin": "^0.58.5",
 		"@unocss/reset": "^0.58.5",

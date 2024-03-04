@@ -1,6 +1,7 @@
 import { LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import { ENV } from '~/util/env';
 import { Badges } from './Badges';
 import { DocNode } from './DocNode';
 import { ExcerptNode } from './ExcerptNode';
@@ -20,7 +21,10 @@ export async function TypeParameterNode({
 				return (
 					<Fragment key={`${typeParameter.name}-${idx}`}>
 						<div className={description ? '' : 'inline after:content-[",_"] last-of-type:after:content-none'}>
-							<h3 id={typeParameter.name} className="group inline scroll-mt-8 break-words font-mono font-semibold">
+							<h3
+								id={typeParameter.name}
+								className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group inline break-words font-mono font-semibold`}
+							>
 								{description ? <Badges node={typeParameter} /> : null}
 								<span>
 									{description ? (

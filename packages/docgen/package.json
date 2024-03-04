@@ -62,10 +62,10 @@
 		"commander": "^12.0.0",
 		"jsdoc-to-markdown": "^8.0.1",
 		"tslib": "^2.6.2",
-		"typedoc": "^0.25.9"
+		"typedoc": "^0.25.10"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.3",
+		"@favware/cliff-jumper": "^3.0.0",
 		"@types/jsdoc-to-markdown": "^7.0.6",
 		"@types/node": "18.18.8",
 		"cross-env": "^7.0.3",

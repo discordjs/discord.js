@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
 import { LocalizedStringProvider } from 'react-aria-components/i18n';
 import { DESCRIPTION } from '~/util/constants';
+import { ENV } from '~/util/env';
 import { Providers } from './providers';
 
 import '~/styles/main.css';
@@ -80,9 +81,21 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} suppressHydrationWarning>
-			<body className="bg-white dark:bg-[#121212]">
+			<body className="relative bg-white dark:bg-[#121212]">
 				<LocalizedStringProvider locale="en-US" />
-				<Providers>{children}</Providers>
+				<Providers>
+					{ENV.IS_LOCAL_DEV ? (
+						<div className="sticky top-0 z-10 flex h-10 place-content-center place-items-center bg-red-500 text-lg text-white">
+							Local test environment
+						</div>
+					) : null}
+					{ENV.IS_PREVIEW ? (
+						<div className="sticky top-0 z-10 flex h-10 place-content-center place-items-center bg-red-500 text-lg text-white">
+							Preview deployment
+						</div>
+					) : null}
+					{children}
+				</Providers>
 				<Analytics />
 			</body>
 		</html>

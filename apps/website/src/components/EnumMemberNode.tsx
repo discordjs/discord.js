@@ -2,6 +2,7 @@ import { VscSymbolEnumMember } from '@react-icons/all-files/vsc/VscSymbolEnumMem
 import { Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
+import { ENV } from '~/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -34,7 +35,10 @@ export async function EnumMemberNode({
 						<Fragment key={`${enumMember.displayName}-${idx}`}>
 							<div className="flex flex-col gap-4">
 								<div className="flex place-content-between place-items-center">
-									<h3 id={enumMember.displayName} className="group scroll-mt-8 break-words font-mono font-semibold">
+									<h3
+										id={enumMember.displayName}
+										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+									>
 										<Badges node={enumMember} />
 										<span>
 											<Link

@@ -1,6 +1,7 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
+import { ENV } from '~/util/env';
 import { ParameterNode } from './ParameterNode';
 import { SummaryNode } from './SummaryNode';
 
@@ -13,7 +14,10 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 			</h2>
 
 			<div className="flex place-content-between place-items-center">
-				<h3 id="constructor" className="group scroll-mt-8 break-words font-mono font-semibold">
+				<h3
+					id="constructor"
+					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+				>
 					{/* constructor({parsedContent.constructor.parametersString}) */}
 					<Link href="#constructor" className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block">
 						<LinkIcon aria-hidden size={16} />
