@@ -21,8 +21,8 @@ export default defineConfig({
 			},
 		},
 		fontFamily: {
-			sans: 'var(--font-inter)',
-			mono: 'var(--font-mono)',
+			sans: 'var(--font-geist-sans)',
+			mono: 'var(--font-geist-mono)',
 		},
 	},
 	presets: [
@@ -53,6 +53,9 @@ export default defineConfig({
 				},
 				'a > img[height="44"]': {
 					height: '44px',
+				},
+				'div[align="center"] > p > a + a': {
+					'margin-left': '0.5em',
 				},
 				h1: {
 					display: 'flex',

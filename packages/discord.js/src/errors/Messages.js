@@ -39,7 +39,7 @@ const Messages = {
     `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   [DjsErrorCodes.ColorRange]: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
-  [DjsErrorCodes.ColorConvert]: 'Unable to convert color to a number.',
+  [DjsErrorCodes.ColorConvert]: color => `Unable to convert "${color}" to a number.`,
 
   [DjsErrorCodes.InviteOptionsMissingChannel]:
     'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
@@ -74,8 +74,9 @@ const Messages = {
   [DjsErrorCodes.ImageSize]: size => `Invalid image size: ${size}`,
 
   [DjsErrorCodes.MessageBulkDeleteType]: 'The messages must be an Array, Collection, or number.',
-  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
   [DjsErrorCodes.MessageContentType]: 'Message content must be a string.',
+  [DjsErrorCodes.MessageNonceRequired]: 'Message nonce is required when enforceNonce is true.',
+  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
 
   [DjsErrorCodes.SplitMaxLen]: 'Chunk exceeds the max length and contains no split characters.',
 

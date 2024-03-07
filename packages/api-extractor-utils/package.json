@@ -51,18 +51,15 @@
 	"devDependencies": {
 		"@types/node": "18.18.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.56.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.1.1",
-		"tsup": "^7.2.0",
-		"turbo": "^1.11.2",
-		"typescript": "^5.2.2"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.59",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"tsup": "^8.0.2",
+		"turbo": "^1.12.4",
+		"typescript": "^5.3.3"
 	},
 	"engines": {
 		"node": ">=18"
-	},
-	"publishConfig": {
-		"access": "public"
 	}
 }

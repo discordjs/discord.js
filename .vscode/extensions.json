@@ -8,7 +8,6 @@
 		"eamodio.gitlens",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
-		"antfu.unocss",
 		"unifiedjs.vscode-mdx"
 	]
 }

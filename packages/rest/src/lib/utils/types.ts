@@ -90,7 +90,7 @@ export interface RESTOptions {
 	 *
 	 * @defaultValue `50`
 	 */
-	offset: number;
+	offset: GetRateLimitOffsetFunction | number;
 	/**
 	 * Determines how rate limiting and pre-emptive throttling should be handled.
 	 * When an array of strings, each element is treated as a prefix for the request route
@@ -190,6 +190,11 @@ export interface RateLimitData {
  * A function that determines whether the rate limit hit should throw an Error
  */
 export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<boolean>;
+
+/**
+ * A function that determines the rate limit offset for a given request.
+ */
+export type GetRateLimitOffsetFunction = (route: string) => number;
 
 export interface APIRequest {
 	/**

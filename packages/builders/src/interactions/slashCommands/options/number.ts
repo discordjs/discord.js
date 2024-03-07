@@ -3,14 +3,19 @@ import { ApplicationCommandOptionType, type APIApplicationCommandNumberOption } 
 import { mix } from 'ts-mixer';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
 const numberValidator = s.number;
 
 /**
  * A slash command number option.
  */
-@mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
+@mix(
+	ApplicationCommandNumericOptionMinMaxValueMixin,
+	ApplicationCommandOptionWithAutocompleteMixin,
+	ApplicationCommandOptionWithChoicesMixin,
+)
 export class SlashCommandNumberOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
@@ -58,4 +63,5 @@ export class SlashCommandNumberOption
 
 export interface SlashCommandNumberOption
 	extends ApplicationCommandNumericOptionMinMaxValueMixin,
-		ApplicationCommandOptionWithChoicesAndAutocompleteMixin<number> {}
+		ApplicationCommandOptionWithChoicesMixin<number>,
+		ApplicationCommandOptionWithAutocompleteMixin {}

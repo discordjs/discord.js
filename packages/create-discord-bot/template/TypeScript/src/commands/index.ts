@@ -1,4 +1,5 @@
 import type { RESTPostAPIApplicationCommandsJSONBody, CommandInteraction } from 'discord.js';
+import { z } from 'zod';
 import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
 
 /**
@@ -17,11 +18,16 @@ export type Command = {
 	execute(interaction: CommandInteraction): Promise<void> | void;
 };
 
-// Defines the predicate to check if an object is a valid Command type
-export const predicate: StructurePredicate<Command> = (structure): structure is Command =>
-	Boolean(structure) &&
-	typeof structure === 'object' &&
-	'data' in structure! &&
-	'execute' in structure &&
-	typeof structure.data === 'object' &&
-	typeof structure.execute === 'function';
+/**
+ * Defines the schema for a command
+ */
+export const schema = z.object({
+	data: z.record(z.any()),
+	execute: z.function(),
+});
+
+/**
+ * Defines the predicate to check if an object is a valid Command type.
+ */
+export const predicate: StructurePredicate<Command> = (structure: unknown): structure is Command =>
+	schema.safeParse(structure).success;

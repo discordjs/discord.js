@@ -6,7 +6,9 @@ import node from 'eslint-config-neon/flat/node.js';
 import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
+// import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
+import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -48,9 +50,7 @@ const typeScriptRuleset = merge(...typescript, {
 
 const reactRuleset = merge(...react, {
 	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
-	plugins: { '@unocss': unocss },
 	rules: {
-		'@unocss/order': 2,
 		'@next/next/no-html-link-for-pages': 0,
 		'react/react-in-jsx-scope': 0,
 		'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
@@ -63,8 +63,9 @@ const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
-export default [
+// const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
+
+export default tseslint.config(
 	{
 		ignores: [
 			'**/node_modules/',
@@ -126,6 +127,13 @@ export default [
 		rules: { '@typescript-eslint/naming-convention': 0 },
 	},
 	reactRuleset,
+	{
+		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		plugins: { '@unocss': unocss },
+		rules: {
+			'@unocss/order': 2,
+		},
+	},
 	nextRuleset,
 	edgeRuleset,
 	{
@@ -133,4 +141,5 @@ export default [
 		rules: { 'tsdoc/syntax': 0 },
 	},
 	prettierRuleset,
-];
+	// oxlintRuleset,
+);

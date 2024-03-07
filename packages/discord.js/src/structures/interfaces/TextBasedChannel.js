@@ -77,7 +77,11 @@ class TextBasedChannel {
    * The options for sending a message.
    * @typedef {BaseMessageOptions} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
-   * @property {string} [nonce=''] The nonce for the message
+   * @property {string} [nonce] The nonce for the message
+   * <info>This property is required if `enforceNonce` set to `true`.</info>
+   * @property {boolean} [enforceNonce] Whether the nonce should be checked for uniqueness in the past few minutes.
+   * If another message was created by the same author with the same nonce,
+   * that message will be returned and no new message will be created
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.SuppressNotifications` can be set.</info>
