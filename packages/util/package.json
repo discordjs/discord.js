@@ -82,7 +82,8 @@
 		"node": ">=16.11.0"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	},
 	"tsd": {
 		"directory": "__tests__/types"
