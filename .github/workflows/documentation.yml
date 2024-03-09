@@ -66,6 +66,17 @@ jobs:
           pnpm run build
           cd ..
 
+      - name: Extract package and semver from tag
+        if: ${{ env.REF_TYPE == 'tag' }}
+        id: extract-tag
+        uses: ./packages/actions/src/formatTag
+        with:
+          tag: ${{ inputs.ref || github.ref_name }}
+
+      - name: Apply tag to api-extractor config
+        if: ${{ env.REF_TYPE == 'tag' && !inputs.ref }}
+        run: sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ steps.extract-tag.outputs.semver }}!' "packages/${{ steps.extract-tag.outputs.package}}/"
+
       - name: Build docs
         run: pnpm run docs
 
@@ -87,13 +98,6 @@ jobs:
           repository: 'discordjs/docs'
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
-
-      - name: Extract package and semver from tag
-        if: ${{ env.REF_TYPE == 'tag' }}
-        id: extract-tag
-        uses: ./packages/actions/src/formatTag
-        with:
-          tag: ${{ inputs.ref || github.ref_name }}
 
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
