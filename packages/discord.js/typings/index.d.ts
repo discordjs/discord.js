@@ -2354,8 +2354,10 @@ export class MessageReaction {
   private constructor(client: Client<true>, data: RawMessageReactionData, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
 
+  public burstColors: string[];
   public readonly client: Client<true>;
   public count: number;
+  public countDetails: ReactionCountDetailsData;
   public get emoji(): GuildEmoji | ReactionEmoji;
   public me: boolean;
   public message: Message | PartialMessage;
@@ -6323,6 +6325,11 @@ export interface MessageSelectOption {
   emoji: APIPartialEmoji | null;
   label: string;
   value: string;
+}
+
+export interface ReactionCountDetailsData {
+  burst: number;
+  normal: number;
 }
 
 export interface SelectMenuComponentOptionData {
