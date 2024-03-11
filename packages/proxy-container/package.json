@@ -56,8 +56,8 @@
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"turbo": "^1.12.4",
-		"typescript": "^5.3.3"
+		"turbo": "^1.12.5",
+		"typescript": "^5.4.2"
 	},
 	"engines": {
 		"node": ">=18"

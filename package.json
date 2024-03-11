@@ -51,7 +51,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^19.0.3",
 		"@commitlint/config-angular": "^19.0.3",
-		"@favware/cliff-jumper": "^3.0.0",
+		"@favware/cliff-jumper": "^3.0.1",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.9",
 		"@unocss/eslint-plugin": "^0.58.5",
@@ -65,11 +65,11 @@
 		"lodash.merge": "^4.6.2",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"turbo": "^1.12.4",
-		"typescript": "^5.3.3",
-		"typescript-eslint": "^7.1.0",
+		"turbo": "^1.12.5",
+		"typescript": "^5.4.2",
+		"typescript-eslint": "^7.1.1",
 		"unocss": "^0.58.5",
-		"vercel": "^33.5.3",
+		"vercel": "^33.5.5",
 		"vitest": "^1.3.1"
 	},
 	"pnpm": {

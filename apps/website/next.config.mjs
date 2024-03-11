@@ -22,8 +22,7 @@ export default withBundleAnalyzer({
 	},
 	webpack(config, { isServer }) {
 		if (!isServer) {
-			// Don't include any locale strings in the client JS bundle.
-			config.plugins.push(localesPlugin.webpack({ locales: [] }));
+			config.plugins.push(localesPlugin.webpack({ locales: ['en-US'] }));
 		}
 
 		return config;

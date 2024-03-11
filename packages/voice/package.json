@@ -74,7 +74,7 @@
 		"@babel/preset-typescript": "^7.23.3",
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^3.0.0",
+		"@favware/cliff-jumper": "^3.0.1",
 		"@types/jest": "^29.5.12",
 		"@types/node": "16.18.60",
 		"cross-env": "^7.0.3",
@@ -87,9 +87,9 @@
 		"mock-socket": "^9.3.1",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"turbo": "^1.12.4",
+		"turbo": "^1.12.5",
 		"tweetnacl": "^1.0.3",
-		"typescript": "^5.3.3"
+		"typescript": "^5.4.2"
 	},
 	"engines": {
 		"node": ">=16.11.0"

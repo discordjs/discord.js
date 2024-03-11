@@ -10,21 +10,34 @@ export async function fetchDependencies({
 	readonly version: string;
 }) {
 	if (ENV.IS_LOCAL_DEV) {
-		const fileContent = await readFile(
-			join(process.cwd(), `../../packages/${packageName}/docs/${packageName}/split/${version}.dependencies.api.json`),
-			'utf8',
-		);
+		try {
+			const fileContent = await readFile(
+				join(process.cwd(), `../../packages/${packageName}/docs/${packageName}/split/${version}.dependencies.api.json`),
+				'utf8',
+			);
 
-		return JSON.parse(fileContent);
+			const parsedDependencies = JSON.parse(fileContent);
+
+			return Object.entries<string>(parsedDependencies)
+				.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
+				.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+		} catch {
+			return [];
+		}
 	}
 
-	const isMainVersion = version === 'main';
-	const fileContent = await fetch(
-		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.dependencies.api.json`,
-		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
-	);
-	const parsedDependencies = await fileContent.json();
-	return Object.entries<string>(parsedDependencies)
-		.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
-		.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+	try {
+		const isMainVersion = version === 'main';
+		const fileContent = await fetch(
+			`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.dependencies.api.json`,
+			{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
+		);
+		const parsedDependencies = await fileContent.json();
+
+		return Object.entries<string>(parsedDependencies)
+			.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
+			.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+	} catch {
+		return [];
+	}
 }

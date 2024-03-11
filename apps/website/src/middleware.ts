@@ -8,9 +8,13 @@ async function fetchLatestVersion(packageName: string): Promise<string> {
 		return 'main';
 	}
 
-	const { rows } = await sql`select version from documentation where name = ${packageName} order by version desc`;
+	try {
+		const { rows } = await sql`select version from documentation where name = ${packageName} order by version desc`;
 
-	return rows.map((row) => row.version).at(1) ?? 'main';
+		return rows.map((row) => row.version).at(1) ?? 'main';
+	} catch {
+		return '';
+	}
 }
 
 export default async function middleware(request: NextRequest) {
