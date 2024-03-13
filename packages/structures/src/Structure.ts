@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
-import { kData } from './utils/symbols.js';
+import { kData, kMixinConstruct } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
 /**
@@ -7,12 +7,11 @@ import type { ReplaceOmittedWithUnknown } from './utils/types.js';
  *
  * @internal
  */
-export interface StructureExtraOptions {
-	/**
-	 * The template used to remove unwanted properties from raw data storage
-	 */
-	template?: {};
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface StructureExtraOptions {}
+
+export const DataTemplatePropetyName = 'DataTemplate';
+export const OptimizeDataPropertyName = '_optimizeData';
 
 /**
  * Represents a data model from the Discord API
@@ -31,6 +30,32 @@ export interface StructureExtraOptions {
  */
 export abstract class Structure<DataType, Omitted extends keyof DataType | '' = ''> {
 	/**
+	 * A construct function used when mixing to allow mixins to set optimized property defaults
+	 *
+	 * @remarks This should only be used to set defaults, setting optimized values should be done
+	 * in the mixins `_optimizeData` method, which is automatically called and should not be called here.
+	 * @remarks Furthermore, this function will be called before the constructor in the mixed class, and can therefore
+	 * never override defaults of the base class.
+	 * @param data - The full API data received by the Structure
+	 */
+	protected [kMixinConstruct]?(data: Partial<DataType>): void;
+
+	/**
+	 * The template used for removing data from the raw data stored for each Structure.
+	 *
+	 * @remarks This template should be overriden in all subclasses to provide more accurate type information.
+	 * The template in the base {@link Structure} class will have no effect on most subclasses for this reason.
+	 */
+	protected static [DataTemplatePropetyName]: Record<string, unknown> = {};
+
+	/**
+	 * @returns A cloned version of the data template, ready to create a new data object.
+	 */
+	private _getDataTemplate() {
+		return Object.create((this.constructor as typeof Structure).DataTemplate);
+	}
+
+	/**
 	 * The raw data from the API for this struture
 	 *
 	 * @internal
@@ -42,10 +67,12 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 *
 	 * @param data - the data from the API that this structure will represent
 	 * @param extraOptions - any additional options needed to appropriately construct a structure from the data
+	 * @remarks To be made public in subclasses
 	 * @internal
 	 */
-	protected constructor(data: Readonly<Partial<DataType>>, { template }: StructureExtraOptions = {}) {
-		this[kData] = Object.assign(template ? Object.create(template) : {}, data);
+	protected constructor(data: Readonly<Partial<DataType>>) {
+		this[kData] = Object.assign(this._getDataTemplate(), data);
+		this[kMixinConstruct]?.(data);
 		this._optimizeData(data);
 	}
 
@@ -54,11 +81,12 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 *
 	 * @param data - the updated data from the API to patch with
 	 * @param extraOptions - any additional options needed to appropriately patch the data
+	 * @remarks To be made public in subclasses
 	 * @returns this
 	 * @internal
 	 */
-	protected _patch(data: Readonly<Partial<DataType>>, { template }: StructureExtraOptions = {}): this {
-		this[kData] = Object.assign(template ? Object.create(template) : {}, this[kData], data);
+	protected _patch(data: Readonly<Partial<DataType>>): this {
+		this[kData] = Object.assign(this._getDataTemplate(), this[kData], data);
 		this._optimizeData(data);
 		return this;
 	}
@@ -72,7 +100,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @virtual
 	 * @internal
 	 */
-	protected _optimizeData(_data: Partial<DataType>) {}
+	protected [OptimizeDataPropertyName](_data: Partial<DataType>) {}
 
 	/**
 	 * Transforms this object to its JSON format with raw API data (or close to it),

@@ -1,5 +1,6 @@
-import type { Structure } from './Structure.js';
+import { DataTemplatePropetyName, OptimizeDataPropertyName, type Structure } from './Structure.js';
 import type { kData } from './utils/symbols.js';
+import { kMixinConstruct } from './utils/symbols.js';
 import type { CollapseUnion, MergePrototypes } from './utils/types.js';
 
 export type Mixinable<ClassType> = new (...args: unknown[]) => ClassType;
@@ -37,26 +38,105 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 	destination: DestinationClass,
 	mixins: Mixinable<MixinBase<DestinationClass['prototype']>>[],
 ) {
+	const dataTemplates: Record<string, unknown>[] = [];
+	const dataOptimizations: ((data: unknown) => void)[] = [];
+	const constructors: ((data: Partial<unknown>) => void)[] = [];
+
 	for (const mixin of mixins) {
-		const originalDescriptors = Object.getOwnPropertyDescriptors(
-			mixin.prototype as MixinBase<DestinationClass['prototype']>,
-		);
-		const usingDescriptors: { [prop: string]: PropertyDescriptor } = {};
-		for (const [prop, descriptor] of Object.entries(originalDescriptors)) {
-			if (['constructor'].includes(prop)) {
-				continue;
+		// The entire prototype chain, in reverse order, since we want to copy it all
+		const prototypeChain: MixinBase<DestinationClass['prototype']>[] = [];
+		let extendedClass = mixin;
+		while (extendedClass.prototype !== undefined) {
+			if (
+				DataTemplatePropetyName in extendedClass &&
+				typeof extendedClass.DataTemplate === 'object' &&
+				// eslint-disable-next-line no-eq-null, eqeqeq
+				extendedClass.DataTemplate != null
+			) {
+				dataTemplates.push(extendedClass.DataTemplate as Record<string, unknown>);
 			}
 
-			if (
-				typeof descriptor.get !== 'undefined' ||
-				typeof descriptor.set !== 'undefined' ||
-				typeof descriptor.value === 'function'
-			) {
-				usingDescriptors[prop] = descriptor;
-			}
+			prototypeChain.unshift(extendedClass.prototype);
+			extendedClass = Object.getPrototypeOf(extendedClass);
 		}
 
-		Object.defineProperties(destination.prototype, usingDescriptors);
+		for (const prototype of prototypeChain) {
+			// Synboled data isn't traversed by Object.entries, we can handle it here
+			if (prototype[kMixinConstruct]) {
+				constructors.push(prototype[kMixinConstruct]);
+			}
+
+			// Copy instance methods and setters / getters
+			const originalDescriptors = Object.getOwnPropertyDescriptors(prototype);
+			const usingDescriptors: { [prop: string]: PropertyDescriptor } = {};
+			for (const [prop, descriptor] of Object.entries(originalDescriptors)) {
+				// Drop constructor
+				if (['constructor'].includes(prop)) {
+					continue;
+				}
+
+				// Special case for optimize function, we want to combine these
+				if (prop === OptimizeDataPropertyName) {
+					if (typeof descriptor.value !== 'function') return;
+					dataOptimizations.push(descriptor.value);
+					continue;
+				}
+
+				// Shouldn't be anything other than these without being instantiated, but just in case
+				if (
+					typeof descriptor.get !== 'undefined' ||
+					typeof descriptor.set !== 'undefined' ||
+					typeof descriptor.value === 'function'
+				) {
+					usingDescriptors[prop] = descriptor;
+				}
+			}
+
+			Object.defineProperties(destination.prototype, usingDescriptors);
+		}
+
+		// Set the function to call any mixed constructors
+		if (constructors.length > 0) {
+			Object.defineProperty(destination.prototype, kMixinConstruct, {
+				writable: true,
+				enumerable: false,
+				configurable: true,
+				// eslint-disable-next-line func-name-matching
+				value: function _mixinConstructors(data: Partial<unknown>) {
+					for (const construct of constructors) {
+						construct.call(this, data);
+					}
+				},
+			});
+		}
+
+		// Combine all optimizations into a single function
+		if (dataOptimizations.length > 0) {
+			const baseOptimize = Object.getOwnPropertyDescriptor(destination, OptimizeDataPropertyName);
+			if (baseOptimize && typeof baseOptimize.value === 'function') {
+				dataOptimizations.unshift(baseOptimize.value);
+			}
+
+			Object.defineProperty(destination.prototype, OptimizeDataPropertyName, {
+				writable: true,
+				enumerable: false,
+				configurable: true,
+				// eslint-disable-next-line func-name-matching
+				value: function _optimizeData(data: unknown) {
+					for (const optimization of dataOptimizations) {
+						optimization.call(this, data);
+					}
+				},
+			});
+		}
+
+		// Copy the properties (setters) of each mixins template to the destinations template
+		if (dataTemplates.length > 0) {
+			destination[DataTemplatePropetyName] ??= {};
+			for (const template of dataTemplates) {
+				Object.defineProperties(destination[DataTemplatePropetyName], Object.getOwnPropertyDescriptors(template));
+			}
+		}
 	}
 }
 
@@ -76,7 +156,7 @@ export type MixinTypes<
 				Structure<DataType, Omitted>[typeof kData] extends
 				// @ts-expect-error kData is protected
 				Mixins[number][typeof kData]
-				? Omit<MergePrototypes<Mixins>, keyof BaseClass>
+				? Omit<MergePrototypes<Mixins>, keyof BaseClass | typeof kMixinConstruct>
 				: never
 			: never
 		: never

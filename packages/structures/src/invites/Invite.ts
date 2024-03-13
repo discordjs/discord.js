@@ -27,7 +27,7 @@ export class Invite<
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
-	public static DataTemplate: Partial<APIExtendedInvite> = {
+	public static override DataTemplate: Partial<APIExtendedInvite> = {
 		set created_at(_: string) {},
 		set expires_at(_: string) {},
 	};
@@ -52,14 +52,14 @@ export class Invite<
 		 */
 		data: Omit<APIExtendedInvite, Omitted>,
 	) {
-		super(data, { template: Invite.DataTemplate });
+		super(data);
 	}
 
 	/**
 	 * {@inheritDoc Structure._patch}
 	 */
 	public override _patch(data: Partial<APIExtendedInvite>) {
-		super._patch(data, { template: Invite.DataTemplate });
+		super._patch(data);
 		return this;
 	}
 
