@@ -255,7 +255,11 @@ export class ExportAnalyzer {
 			: importOrExportDeclaration.moduleSpecifier;
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			specifier && ts.isStringLiteralLike(specifier)
-				? ts.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
+				? ts.getModeForUsageLocation(
+						importOrExportDeclaration.getSourceFile(),
+						specifier,
+						this._program.getCompilerOptions(),
+					)
 				: undefined;
 
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
@@ -882,6 +886,7 @@ export class ExportAnalyzer {
 				? ts.getModeForUsageLocation(
 						importOrExportDeclaration.getSourceFile(),
 						importOrExportDeclaration.moduleSpecifier,
+						this._program.getCompilerOptions(),
 					)
 				: undefined;
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
