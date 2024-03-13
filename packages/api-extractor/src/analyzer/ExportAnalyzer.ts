@@ -197,9 +197,8 @@ export class ExportAnalyzer {
 			(moduleReference.moduleSpecifierSymbol.flags & ts.SymbolFlags.Alias) !== 0
 		) {
 			// Follow the import/export declaration to one hop the exported item inside the target module
-			let followedSymbol: ts.Symbol | undefined = TypeScriptInternals.getImmediateAliasedSymbol(
+			let followedSymbol: ts.Symbol | undefined = this._typeChecker.getImmediateAliasedSymbol(
 				moduleReference.moduleSpecifierSymbol,
-				this._typeChecker,
 			);
 
 			if (followedSymbol === undefined) {
@@ -256,7 +255,7 @@ export class ExportAnalyzer {
 			: importOrExportDeclaration.moduleSpecifier;
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			specifier && ts.isStringLiteralLike(specifier)
-				? TypeScriptInternals.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
+				? ts.getModeForUsageLocation(importOrExportDeclaration.getSourceFile(), specifier)
 				: undefined;
 
 		const resolvedModule: ts.ResolvedModuleFull | undefined = TypeScriptInternals.getResolvedModule(
@@ -392,7 +391,7 @@ export class ExportAnalyzer {
 					break;
 				}
 
-				const currentAlias: ts.Symbol = TypeScriptInternals.getImmediateAliasedSymbol(current, this._typeChecker);
+				const currentAlias: ts.Symbol | undefined = this._typeChecker.getImmediateAliasedSymbol(current);
 				// Stop if we reach the end of the chain
 				if (!currentAlias || currentAlias === current) {
 					break;
@@ -547,11 +546,13 @@ export class ExportAnalyzer {
 				//   SemicolonToken:  pre=[;]
 
 				// Issue tracking this feature: https://github.com/microsoft/rushstack/issues/2780
-				throw new Error(
-					`The "export * as ___" syntax is not supported yet; as a workaround,` +
-						` use "import * as ___" with a separate "export { ___ }" declaration\n` +
-						SourceFileLocationFormatter.formatDeclaration(declaration),
-				);
+				const namespaceExport: ts.NamespaceExport = declaration as ts.NamespaceExport;
+				exportName = namespaceExport.name.getText().trim();
+				// throw new Error(
+				// 	`The "export * as ___" syntax is not supported yet; as a workaround,` +
+				// 		` use "import * as ___" with a separate "export { ___ }" declaration\n` +
+				// 		SourceFileLocationFormatter.formatDeclaration(declaration),
+				// );
 			} else {
 				throw new InternalError(
 					`Unimplemented export declaration kind: ${declaration.getText()}\n` +
@@ -562,6 +563,33 @@ export class ExportAnalyzer {
 			// Ignore "export { A }" without a module specifier
 			if (exportDeclaration.moduleSpecifier) {
 				const externalModulePath: string | undefined = this._tryGetExternalModulePath(exportDeclaration);
+
+				if (declaration.kind === ts.SyntaxKind.NamespaceExport) {
+					if (externalModulePath === undefined) {
+						const astModule: AstModule = this._fetchSpecifierAstModule(exportDeclaration, declarationSymbol);
+						let namespaceImport: AstNamespaceImport | undefined = this._astNamespaceImportByModule.get(astModule);
+						if (namespaceImport === undefined) {
+							namespaceImport = new AstNamespaceImport({
+								namespaceName: declarationSymbol.name,
+								astModule,
+								declaration,
+								symbol: declarationSymbol,
+							});
+							this._astNamespaceImportByModule.set(astModule, namespaceImport);
+						}
+
+						return namespaceImport;
+					}
+
+					// Here importSymbol=undefined because {@inheritDoc} and such are not going to work correctly for
+					// a package or source file.
+					return this._fetchAstImport(undefined, {
+						importKind: AstImportKind.StarImport,
+						exportName,
+						modulePath: externalModulePath,
+						isTypeOnly: exportDeclaration.isTypeOnly,
+					});
+				}
 
 				if (externalModulePath !== undefined) {
 					return this._fetchAstImport(declarationSymbol, {
@@ -851,7 +879,7 @@ export class ExportAnalyzer {
 		const moduleSpecifier: string = this._getModuleSpecifier(importOrExportDeclaration);
 		const mode: ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined =
 			importOrExportDeclaration.moduleSpecifier && ts.isStringLiteralLike(importOrExportDeclaration.moduleSpecifier)
-				? TypeScriptInternals.getModeForUsageLocation(
+				? ts.getModeForUsageLocation(
 						importOrExportDeclaration.getSourceFile(),
 						importOrExportDeclaration.moduleSpecifier,
 					)
