@@ -8,6 +8,8 @@ describe('Base Structure', () => {
 	beforeEach(() => {
 		// @ts-expect-error Structure constructor is protected
 		struct = new Structure(data);
+		// @ts-expect-error Structure.DataTemplate is protected
+		Structure.DataTemplate = {};
 	});
 
 	test('Data reference is not identical (clone via Object.assign)', () => {
@@ -16,8 +18,10 @@ describe('Base Structure', () => {
 	});
 
 	test('Remove properties via template (constructor)', () => {
+		// @ts-expect-error Structure.DataTemplate is protected
+		Structure.DataTemplate = { set removed(_) {} };
 		// @ts-expect-error Structure constructor is protected
-		const templatedStruct: Structure<typeof data> = new Structure(data, { template: { set removed(_) {} } });
+		const templatedStruct: Structure<typeof data> = new Structure(data);
 		expect(templatedStruct[kData].removed).toBe(undefined);
 		// Setters still exist and pass "in" test unfortunately
 		expect('removed' in templatedStruct[kData]).toBe(true);
@@ -37,10 +41,12 @@ describe('Base Structure', () => {
 	});
 
 	test('Remove properties via template (_patch)', () => {
+		// @ts-expect-error Structure.DataTemplate is protected
+		Structure.DataTemplate = { set removed(_) {} };
 		// @ts-expect-error Structure constructor is protected
-		const templatedStruct: Structure<typeof data> = new Structure(data, { template: { set removed(_) {} } });
+		const templatedStruct: Structure<typeof data> = new Structure(data);
 		// @ts-expect-error Structure#patch is protected
-		templatedStruct._patch({ removed: false }, { template: { set removed(_) {} } });
+		templatedStruct._patch({ removed: false });
 		expect(templatedStruct[kData].removed).toBe(undefined);
 		// Setters still exist and pass "in" test unfortunately
 		expect('removed' in templatedStruct[kData]).toBe(true);

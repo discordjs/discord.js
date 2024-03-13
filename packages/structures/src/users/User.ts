@@ -12,7 +12,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	/**
 	 * The template used for removing data from the raw data stored for each User
 	 */
-	public static DataTemplate: Partial<APIUser> = {};
+	public static override DataTemplate: Partial<APIUser> = {};
 
 	public constructor(
 		/**
@@ -20,14 +20,14 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 		 */
 		data: Omit<APIUser, Omitted>,
 	) {
-		super(data, { template: User.DataTemplate });
+		super(data);
 	}
 
 	/**
 	 * {@inheritDoc Structure._patch}
 	 */
 	public override _patch(data: Partial<APIUser>) {
-		return super._patch(data, { template: User.DataTemplate });
+		return super._patch(data);
 	}
 
 	/**

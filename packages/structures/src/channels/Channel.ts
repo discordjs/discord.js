@@ -1,6 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIChannel, APIPartialChannel, ChannelType } from 'discord-api-types/v10';
-import type { StructureExtraOptions } from '../Structure.js';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 
@@ -13,6 +12,14 @@ export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends
 	? APIChannel
 	: Extract<APIChannel, { type: Type }>;
 
+/**
+ * Represents any channel on Discord.
+ *
+ * @typeParam Type - Specify the type of the channel being constructed for more accurate data types
+ * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks While this class can be directly constructed for any channel type, this class is not intended to be used directly,
+ * preferring instead to create class that extend this class with the appropriate mixins for each channel type.
+ */
 export class Channel<
 	Type extends ChannelType | 'unknown' = 'unknown',
 	Omitted extends keyof ChannelDataType<Type> | '' = '',
@@ -20,26 +27,25 @@ export class Channel<
 	/**
 	 * The template used for removing data from the raw data stored for each Channel.
 	 *
-	 * @remarks This template will only apply to channels constructed
-	 * Use the appropriate subclass template to remove data from that channel type
+	 * @remarks This template is only guaranteed to apply to channels constructed directly via `new Channel()`.
+	 * Use the appropriate subclass template to remove data from that channel type.
 	 */
-	public static DataTemplate: Partial<APIChannel> = {};
+	public static override DataTemplate: Partial<APIChannel> = {};
 
 	public constructor(
 		/**
 		 * The raw data received from the API for the channel
 		 */
 		data: Omit<ChannelDataType<Type>, Omitted>,
-		extraOptions?: StructureExtraOptions,
 	) {
-		super(data as ChannelDataType<Type>, extraOptions ?? { template: Channel.DataTemplate });
+		super(data as ChannelDataType<Type>);
 	}
 
 	/**
 	 * {@inheritDoc Structure._patch}
 	 */
-	public override _patch(data: Partial<ChannelDataType<Type>>, extraOptions: StructureExtraOptions) {
-		return super._patch(data, extraOptions ?? { template: Channel.DataTemplate });
+	public override _patch(data: Partial<ChannelDataType<Type>>) {
+		return super._patch(data);
 	}
 
 	/**
@@ -104,7 +110,7 @@ export class Channel<
 	/**
 	 * Indiciates whether this channel is in a guild
 	 *
-	 * @privateRemarks OVerriden to `true` on `GuildChannelMixin`
+	 * @privateRemarks Overriden to `true` on `GuildChannelMixin`
 	 */
 	public isGuildBased() {
 		return false;
