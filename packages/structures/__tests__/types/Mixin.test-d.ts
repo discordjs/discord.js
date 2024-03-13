@@ -1,13 +1,20 @@
 import { expectNotType, expectType } from 'tsd';
 import { expectTypeOf } from 'vitest';
 import type { MixinTypes } from '../../src/Mixin.js';
+import type { kMixinConstruct } from '../../src/utils/symbols.js';
 import type { MixinProperty1, Base, MixinProperty2 } from '../mixinClasses.js';
 
-declare const extendsNoOmit: Omit<MixinProperty1, keyof Base>;
-declare const extendsOmitProperty1: Omit<MixinProperty1<'property1'>, keyof Base>;
-declare const extendsBothNoOmit: Omit<MixinProperty1 & MixinProperty2, keyof Base>;
-declare const extendsBothOmitProperty1: Omit<MixinProperty1<'property1'> & MixinProperty2<'property1'>, keyof Base>;
-declare const extendsBothOmitBoth: Omit<MixinProperty1<'property1'> & MixinProperty2<'property2'>, keyof Base>;
+declare const extendsNoOmit: Omit<MixinProperty1, keyof Base | typeof kMixinConstruct>;
+declare const extendsOmitProperty1: Omit<MixinProperty1<'property1'>, keyof Base | typeof kMixinConstruct>;
+declare const extendsBothNoOmit: Omit<MixinProperty1 & MixinProperty2, keyof Base | typeof kMixinConstruct>;
+declare const extendsBothOmitProperty1: Omit<
+	MixinProperty1<'property1'> & MixinProperty2<'property1'>,
+	keyof Base | typeof kMixinConstruct
+>;
+declare const extendsBothOmitBoth: Omit<
+	MixinProperty1<'property1'> & MixinProperty2<'property2'>,
+	keyof Base | typeof kMixinConstruct
+>;
 
 expectType<MixinTypes<Base, [MixinProperty1]>>(extendsNoOmit);
 expectType<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>]>>(extendsOmitProperty1);
