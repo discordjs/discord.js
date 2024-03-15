@@ -102,10 +102,10 @@ class ClientUser extends User {
 
   /**
    * Sets the banner of the logged in client.
-   * @param {?(BufferResolvable|Base64Resolvable)} banner The new avatar
+   * @param {?(BufferResolvable|Base64Resolvable)} banner The new banner
    * @returns {Promise<ClientUser>}
    * @example
-   * // Set avatar
+   * // Set banner
    * client.user.setBanner('./banner.png')
    *   .then(user => console.log(`New banner set!`))
    *   .catch(console.error);
