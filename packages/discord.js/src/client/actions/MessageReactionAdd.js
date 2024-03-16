@@ -36,17 +36,19 @@ class MessageReactionAdd extends Action {
       emoji: data.emoji,
       count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
+      burst_colors: data.burst_colors,
     });
     if (!reaction) return false;
-    reaction._add(user);
+    reaction._add(user, data.burst);
     if (fromStructure) return { message, reaction, user };
     /**
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji
+     * @param {boolean} burst Determines when a super reaction is added
      */
-    this.client.emit(Events.MessageReactionAdd, reaction, user);
+    this.client.emit(Events.MessageReactionAdd, reaction, user, data.burst);
 
     return { message, reaction, user };
   }

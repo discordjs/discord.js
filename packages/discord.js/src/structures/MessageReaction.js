@@ -147,17 +147,31 @@ class MessageReaction {
     return this._emoji.id ?? this._emoji.name;
   }
 
-  _add(user) {
+  _add(user, burst) {
     if (this.partial) return;
     this.users.cache.set(user.id, user);
-    if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
+    if (!this.me || user.id !== this.message.client.user.id || this.count === 0) {
+      this.count++;
+      if (burst) {
+        this.countDetails.burst++;
+      } else {
+        this.countDetails.normal++;
+      }
+    }
     this.me ||= user.id === this.message.client.user.id;
   }
 
-  _remove(user) {
+  _remove(user, burst) {
     if (this.partial) return;
     this.users.cache.delete(user.id);
-    if (!this.me || user.id !== this.message.client.user.id) this.count--;
+    if (!this.me || user.id !== this.message.client.user.id) {
+      this.count--;
+      if (burst) {
+        this.countDetails.burst--;
+      } else {
+        this.countDetails.normal--;
+      }
+    }
     if (user.id === this.message.client.user.id) this.me = false;
     if (this.count <= 0 && this.users.cache.size === 0) {
       this.message.reactions.cache.delete(this.emoji.id ?? this.emoji.name);

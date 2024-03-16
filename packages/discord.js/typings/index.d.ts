@@ -5120,8 +5120,8 @@ export interface ClientEvents {
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>, channel: GuildTextBasedChannel];
-  messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
-  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
+  messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser, burst: boolean];
+  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser, burst: boolean];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   ready: [client: Client<true>];
