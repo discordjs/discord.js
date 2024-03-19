@@ -3926,6 +3926,8 @@ export enum DiscordjsErrorCodes {
   GuildForumMessageRequired = 'GuildForumMessageRequired',
 
   EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
+
+  BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
 }
 
 export class DiscordjsError extends Error {
@@ -4249,6 +4251,10 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
   public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+  public bulkBan(
+    users: ReadonlyCollection<Snowflake, UserResolvable> | readonly UserResolvable[],
+    options?: BulkBanOptions,
+  ): Promise<BulkBanResult>;
   public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
   public fetch(
     options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
@@ -4272,6 +4278,10 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
   public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
   public remove(user: UserResolvable, reason?: string): Promise<User | null>;
+  public bulkCreate(
+    users: ReadonlyCollection<Snowflake, UserResolvable> | readonly UserResolvable[],
+    options?: BulkBanOptions,
+  ): Promise<BulkBanResult>;
 }
 
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
@@ -4957,6 +4967,13 @@ export interface BanOptions {
   deleteMessageDays?: number;
   deleteMessageSeconds?: number;
   reason?: string;
+}
+
+export interface BulkBanOptions extends Omit<BanOptions, 'deleteMessageDays'> {}
+
+export interface BulkBanResult {
+  bannedUsers: readonly Snowflake[];
+  failedUsers: readonly Snowflake[];
 }
 
 export type Base64Resolvable = Buffer | Base64String;
