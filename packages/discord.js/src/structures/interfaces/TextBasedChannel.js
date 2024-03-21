@@ -53,6 +53,23 @@ class TextBasedChannel {
   }
 
   /**
+   * Represents the data for a poll answer.
+   * @typedef {Object} PollAnswerData
+   * @property {string} text The text for the poll answer
+   * @property {EmojiIdentifierResolvable} [emoji] The emoji for the poll answer
+   */
+
+  /**
+   * Represents the data for a poll.
+   * @typedef {Object} PollData
+   * @property {PollQuestionMedia} question The question for the poll
+   * @property {PollAnswerData[]} answers The answers for the poll
+   * @property {number} duration The duration in hours for the poll
+   * @property {boolean} allowMultiselect Whether the poll allows multiple answers
+   * @property {PollLayoutType} [layoutType] The layout type for the poll
+   */
+
+  /**
    * The base message options for messages.
    * @typedef {Object} BaseMessageOptions
    * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
@@ -63,6 +80,7 @@ class TextBasedChannel {
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|ActionRow|APIActionRowComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
+   * @property {PollData} [poll] The poll to send with the message
    */
 
   /**
