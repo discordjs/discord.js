@@ -35,6 +35,8 @@ jobs:
           - package: '@discordjs/ws'
             folder: 'ws'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -71,7 +73,7 @@ jobs:
         if: steps.release-check.outputs.release == '1'
         run: |
           pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
-          pnpm --filter=${{ matrix.package }} publish --no-git-checks --tag dev || true
+          pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 

@@ -3,6 +3,7 @@ import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import { createPool } from '@vercel/postgres';
 import { MeiliSearch } from 'meilisearch';
+import pLimit from 'p-limit';
 import { fetch } from 'undici';
 
 if (!process.env.DATABASE_URL) {
@@ -25,6 +26,9 @@ const client = new MeiliSearch({
 	host: process.env.SEARCH_API_URL!,
 	apiKey: process.env.SEARCH_API_KEY!,
 });
+
+const limit = pLimit(10);
+let promises: Promise<any>[] = [];
 
 try {
 	console.log('Generating all indices...');
@@ -49,12 +53,18 @@ try {
 	console.log('Uploading indices...');
 
 	try {
-		await Promise.all(
-			indices.map(async (index) => {
+		// eslint-disable-next-line @typescript-eslint/no-floating-promises
+		promises = indices.map(async (index) =>
+			limit(async () => {
 				console.log(`Uploading ${index.index}...`);
+				let task;
 				try {
-					await client.createIndex(index.index);
+					task = await client.createIndex(index.index);
 				} catch {}
+
+				if (task) {
+					await client.waitForTask(task.taskUid);
+				}
 
 				await client.index(index.index).addDocuments(index.data);
 			}),
@@ -65,4 +75,10 @@ try {
 } catch (error) {
 	const err = error as Error;
 	setFailed(err.message);
+}
+
+try {
+	await Promise.all(promises);
+} catch (error) {
+	console.log(error);
 }

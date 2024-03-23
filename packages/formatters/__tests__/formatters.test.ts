@@ -314,12 +314,9 @@ describe('Message formatters', () => {
 	});
 
 	describe('Faces', () => {
-		// prettier-ignore
-		/* eslint-disable no-useless-escape */
-		test('GIVEN Faces.Shrug THEN returns "¯\_(ツ)_/¯"', () => {
-			expect<'¯\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\_(ツ)_/¯');
+		test('GIVEN Faces.Shrug THEN returns "¯\\_(ツ)_/¯"', () => {
+			expect<'¯\\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\\_(ツ)_/¯');
 		});
-		/* eslint-enable no-useless-escape */
 
 		test('GIVEN Faces.Tableflip THEN returns "(╯°□°)╯︵ ┻━┻"', () => {
 			expect<'(╯°□°)╯︵ ┻━┻'>(Faces.Tableflip).toEqual('(╯°□°)╯︵ ┻━┻');
