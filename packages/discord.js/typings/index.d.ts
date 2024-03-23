@@ -1115,7 +1115,7 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
-export { Collection } from '@discordjs/collection';
+export { Collection, ReadonlyCollection } from '@discordjs/collection';
 
 export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
   collect: [Value, ...Extras];
