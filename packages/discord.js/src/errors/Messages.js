@@ -169,6 +169,8 @@ const Messages = {
 
   [DjsErrorCodes.EntitlementCreateInvalidOwner]:
     'You must provide either a guild or a user to create an entitlement, but not both',
+
+  [DjsErrorCodes.BulkBanUsersOptionEmpty]: 'Option "users" array or collection is empty',
 };
 
 module.exports = Messages;
