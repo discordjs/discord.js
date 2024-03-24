@@ -5,7 +5,7 @@
  * @param arr - The (possibly variadic) data to normalize
  */
 export function normalizeArray<ItemType>(arr: RestOrArray<ItemType>): ItemType[] {
-	if (Array.isArray(arr[0])) return arr[0];
+	if (Array.isArray(arr[0])) return [...arr[0]];
 	return arr as ItemType[];
 }
 
