@@ -24,7 +24,7 @@ export interface RangeOptions {
  * @remarks
  * This method is end-exclusive, for example the last number yielded by `range(5)` is 4. If you
  * prefer for the end to be included add 1 to the range or `end` option.
- * @param range - A number representing the the range to yield (exclusive) or an object with start, end and step
+ * @param range - A number representing the range to yield (exclusive) or an object with start, end and step
  * @example
  * Basic range
  * ```ts
