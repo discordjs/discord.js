@@ -92,6 +92,8 @@ export interface WithIntrinsicProps<Data> extends IntrinsicProps {
 	data: Data;
 }
 
+type GatewayMessagePollVoteData = any;
+
 export interface MappedEvents {
 	[GatewayDispatchEvents.ApplicationCommandPermissionsUpdate]: [
 		WithIntrinsicProps<GatewayApplicationCommandPermissionsUpdateDispatchData>,
@@ -143,6 +145,8 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageCreate]: [WithIntrinsicProps<GatewayMessageCreateDispatchData>];
 	[GatewayDispatchEvents.MessageDelete]: [WithIntrinsicProps<GatewayMessageDeleteDispatchData>];
 	[GatewayDispatchEvents.MessageDeleteBulk]: [WithIntrinsicProps<GatewayMessageDeleteBulkDispatchData>];
+	['MESSAGE_POLL_VOTE_ADD']: [WithIntrinsicProps<GatewayMessagePollVoteData>];
+	['MESSAGE_POLL_VOTE_REMOVE']: [WithIntrinsicProps<GatewayMessagePollVoteData>];
 	[GatewayDispatchEvents.MessageReactionAdd]: [WithIntrinsicProps<GatewayMessageReactionAddDispatchData>];
 	[GatewayDispatchEvents.MessageReactionRemove]: [WithIntrinsicProps<GatewayMessageReactionRemoveDispatchData>];
 	[GatewayDispatchEvents.MessageReactionRemoveAll]: [WithIntrinsicProps<GatewayMessageReactionRemoveAllDispatchData>];

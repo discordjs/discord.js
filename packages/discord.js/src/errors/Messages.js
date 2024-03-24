@@ -169,6 +169,8 @@ const Messages = {
 
   [DjsErrorCodes.EntitlementCreateInvalidOwner]:
     'You must provide either a guild or a user to create an entitlement, but not both',
+
+  [DjsErrorCodes.PollAlreadyExpired]: 'This poll has already expired.',
 };
 
 module.exports = Messages;

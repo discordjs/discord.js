@@ -176,6 +176,8 @@
  * @property {'SweepFilterReturn'} SweepFilterReturn
 
  * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'PollAlreadyExpired'} PollAlreadyExpired
  */
 
 const keys = [
@@ -329,6 +331,8 @@ const keys = [
   'GuildForumMessageRequired',
 
   'EntitlementCreateInvalidOwner',
+
+  'PollAlreadyExpired',
 ];
 
 // JSDoc for IntelliSense purposes
