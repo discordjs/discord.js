@@ -1,7 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { ChannelType } from 'discord-api-types/v10';
-import type { RestOrArray } from '../../../util/normalizeArray';
-import { normalizeArray } from '../../../util/normalizeArray';
+import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray';
 
 /**
  * The allowed channel types used for a channel option in a slash command builder.

@@ -1,7 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
-import type { RestOrArray } from '../../../util/normalizeArray.js';
-import { normalizeArray } from '../../../util/normalizeArray.js';
+import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
