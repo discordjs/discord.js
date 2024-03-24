@@ -1,11 +1,12 @@
 'use strict';
 
+const { DiscordAPIError } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
-const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
+const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
@@ -293,15 +294,21 @@ class ThreadChannel extends BaseChannel {
    * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<?ThreadMember>}
    */
-  async fetchOwner({ cache = true, force = false } = {}) {
-    if (!force) {
-      const existing = this.members.cache.get(this.ownerId);
-      if (existing) return existing;
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
     }
 
-    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch({ cache });
-    return members.get(this.ownerId) ?? null;
+    // TODO: Remove that catch in the next major version
+    const member = await this.members._fetchSingle({ ...options, user: this.ownerId }).catch(error => {
+      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
+        return null;
+      }
+
+      throw error;
+    });
+
+    return member;
   }
 
   /**
