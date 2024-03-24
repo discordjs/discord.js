@@ -1,7 +1,8 @@
-import { s } from '@sapphire/shapeshift';
 import type { ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 
-const booleanPredicate = s.boolean;
+const booleanPredicate = z.boolean();
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
@@ -26,7 +27,7 @@ export class ApplicationCommandOptionWithAutocompleteMixin {
 	 */
 	public setAutocomplete(autocomplete: boolean): this {
 		// Assert that you actually passed a boolean
-		booleanPredicate.parse(autocomplete);
+		parse(booleanPredicate, autocomplete);
 
 		if (autocomplete && 'choices' in this && Array.isArray(this.choices) && this.choices.length > 0) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');

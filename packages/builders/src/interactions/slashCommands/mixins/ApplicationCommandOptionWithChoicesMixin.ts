@@ -1,14 +1,17 @@
-import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
-const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
-const numberPredicate = s.number.greaterThan(Number.NEGATIVE_INFINITY).lessThan(Number.POSITIVE_INFINITY);
-const choicesPredicate = s.object({
-	name: stringPredicate,
-	name_localizations: localizationMapPredicate,
-	value: s.union(stringPredicate, numberPredicate),
-}).array;
+const stringPredicate = z.string().min(1).max(100);
+const numberPredicate = z.number().gt(Number.NEGATIVE_INFINITY).lt(Number.POSITIVE_INFINITY);
+const choicesPredicate = z
+	.object({
+		name: stringPredicate,
+		name_localizations: localizationMapPredicate,
+		value: z.union([stringPredicate, numberPredicate]),
+	})
+	.array();
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
@@ -36,7 +39,7 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(choices);
+		parse(choicesPredicate, choices);
 
 		if (this.choices === undefined) {
 			Reflect.set(this, 'choices', []);
@@ -47,9 +50,9 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 		for (const { name, name_localizations, value } of choices) {
 			// Validate the value
 			if (this.type === ApplicationCommandOptionType.String) {
-				stringPredicate.parse(value);
+				parse(stringPredicate, value);
 			} else {
-				numberPredicate.parse(value);
+				parse(numberPredicate, value);
 			}
 
 			this.choices!.push({ name, name_localizations, value });
@@ -68,7 +71,7 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(choices);
+		parse(choicesPredicate, choices);
 
 		Reflect.set(this, 'choices', []);
 		this.addChoices(...choices);

@@ -1,4 +1,5 @@
 import type { APISelectMenuComponent } from 'discord-api-types/v10';
+import { parse } from '../../util/validation.js';
 import { customIdValidator, disabledValidator, minMaxValidator, placeholderValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 
@@ -16,7 +17,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param placeholder - The placeholder to use
 	 */
 	public setPlaceholder(placeholder: string) {
-		this.data.placeholder = placeholderValidator.parse(placeholder);
+		this.data.placeholder = parse(placeholderValidator, placeholder);
 		return this;
 	}
 
@@ -26,7 +27,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param minValues - The minimum values that must be selected
 	 */
 	public setMinValues(minValues: number) {
-		this.data.min_values = minMaxValidator.parse(minValues);
+		this.data.min_values = parse(minMaxValidator, minValues);
 		return this;
 	}
 
@@ -36,7 +37,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param maxValues - The maximum values that must be selected
 	 */
 	public setMaxValues(maxValues: number) {
-		this.data.max_values = minMaxValidator.parse(maxValues);
+		this.data.max_values = parse(minMaxValidator, maxValues);
 		return this;
 	}
 
@@ -46,7 +47,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
-		this.data.custom_id = customIdValidator.parse(customId);
+		this.data.custom_id = parse(customIdValidator, customId);
 		return this;
 	}
 
@@ -56,7 +57,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param disabled - Whether this select menu is disabled
 	 */
 	public setDisabled(disabled = true) {
-		this.data.disabled = disabledValidator.parse(disabled);
+		this.data.disabled = parse(disabledValidator, disabled);
 		return this;
 	}
 
@@ -64,7 +65,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): SelectMenuType {
-		customIdValidator.parse(this.data.custom_id);
+		parse(customIdValidator, this.data.custom_id);
 		return {
 			...this.data,
 		} as SelectMenuType;

@@ -1,5 +1,6 @@
-import { s } from '@sapphire/shapeshift';
 import { ChannelType } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 
 /**
  * The allowed channel types used for a channel option in a slash command builder.
@@ -25,7 +26,13 @@ const allowedChannelTypes = [
  */
 export type ApplicationCommandOptionAllowedChannelTypes = (typeof allowedChannelTypes)[number];
 
-const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
+const channelTypesPredicate = z.array(
+	z.union([
+		z.literal(allowedChannelTypes[0]),
+		z.literal(allowedChannelTypes[1]),
+		...allowedChannelTypes.slice(2).map((type) => z.literal(type)),
+	]),
+);
 
 /**
  * This mixin holds channel type symbols used for options.
@@ -46,7 +53,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 			Reflect.set(this, 'channel_types', []);
 		}
 
-		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+		this.channel_types!.push(...parse(channelTypesPredicate, channelTypes));
 
 		return this;
 	}

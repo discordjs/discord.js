@@ -1,12 +1,13 @@
-import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandNumberOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
+import { z } from 'zod';
+import { parse } from '../../../util/validation.js';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
 import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
-const numberValidator = s.number;
+const numberValidator = z.number();
 
 /**
  * A slash command number option.
@@ -29,7 +30,7 @@ export class SlashCommandNumberOption
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
 	 */
 	public setMaxValue(max: number): this {
-		numberValidator.parse(max);
+		parse(numberValidator, max);
 
 		Reflect.set(this, 'max_value', max);
 
@@ -40,7 +41,7 @@ export class SlashCommandNumberOption
 	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
 	 */
 	public setMinValue(min: number): this {
-		numberValidator.parse(min);
+		parse(numberValidator, min);
 
 		Reflect.set(this, 'min_value', min);
 
