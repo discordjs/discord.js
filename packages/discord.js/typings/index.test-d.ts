@@ -32,6 +32,7 @@ import {
   APIChannelSelectComponent,
   APIMentionableSelectComponent,
   APIModalInteractionResponseCallbackData,
+  WebhookType,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -538,8 +539,10 @@ client.on('messageCreate', async message => {
   if (webhook.isChannelFollower()) {
     expectAssignable<Guild | APIPartialGuild>(webhook.sourceGuild);
     expectAssignable<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+    expectType<Webhook<WebhookType.ChannelFollower>>(webhook);
   } else if (webhook.isIncoming()) {
     expectType<string>(webhook.token);
+    expectType<Webhook<WebhookType.Incoming>>(webhook);
   }
 
   expectNotType<Guild | APIPartialGuild>(webhook.sourceGuild);
@@ -2344,6 +2347,7 @@ declare const snowflake: Snowflake;
 expectType<Promise<Message>>(webhook.send('content'));
 expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
 
 expectType<Promise<APIMessage>>(webhookClient.send('content'));
 expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
