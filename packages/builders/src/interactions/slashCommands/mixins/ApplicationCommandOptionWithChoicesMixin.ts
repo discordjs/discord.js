@@ -1,5 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { ApplicationCommandOptionType, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
 import { localizationMapPredicate, validateChoicesLength } from '../Assertions.js';
 
 const stringPredicate = s.string.lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100);
@@ -31,20 +32,21 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 	 *
 	 * @param choices - The choices to add
 	 */
-	public addChoices(...choices: APIApplicationCommandOptionChoice<ChoiceType>[]): this {
-		if (choices.length > 0 && 'autocomplete' in this && this.autocomplete) {
+	public addChoices(...choices: RestOrArray<APIApplicationCommandOptionChoice<ChoiceType>>): this {
+		const normalizedChoices = normalizeArray(choices);
+		if (normalizedChoices.length > 0 && 'autocomplete' in this && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(choices);
+		choicesPredicate.parse(normalizedChoices);
 
 		if (this.choices === undefined) {
 			Reflect.set(this, 'choices', []);
 		}
 
-		validateChoicesLength(choices.length, this.choices);
+		validateChoicesLength(normalizedChoices.length, this.choices);
 
-		for (const { name, name_localizations, value } of choices) {
+		for (const { name, name_localizations, value } of normalizedChoices) {
 			// Validate the value
 			if (this.type === ApplicationCommandOptionType.String) {
 				stringPredicate.parse(value);
@@ -63,15 +65,16 @@ export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number 
 	 *
 	 * @param choices - The choices to set
 	 */
-	public setChoices<Input extends APIApplicationCommandOptionChoice<ChoiceType>[]>(...choices: Input): this {
-		if (choices.length > 0 && 'autocomplete' in this && this.autocomplete) {
+	public setChoices<Input extends APIApplicationCommandOptionChoice<ChoiceType>>(...choices: RestOrArray<Input>): this {
+		const normalizedChoices = normalizeArray(choices);
+		if (normalizedChoices.length > 0 && 'autocomplete' in this && this.autocomplete) {
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		choicesPredicate.parse(choices);
+		choicesPredicate.parse(normalizedChoices);
 
 		Reflect.set(this, 'choices', []);
-		this.addChoices(...choices);
+		this.addChoices(normalizedChoices);
 
 		return this;
 	}
