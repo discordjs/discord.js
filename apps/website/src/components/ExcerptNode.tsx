@@ -20,7 +20,7 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 							<Link
 								key={`${excerpt.resolvedItem.displayName}-${idx}`}
 								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
-								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${version}/${excerpt.resolvedItem.uri}`}
+								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${excerpt.resolvedItem.version ?? version}/${excerpt.resolvedItem.uri}`}
 							>
 								{excerpt.text}
 							</Link>

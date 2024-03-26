@@ -17,7 +17,10 @@ export async function fetchNode({
 	if (ENV.IS_LOCAL_DEV) {
 		try {
 			const fileContent = await readFile(
-				join(process.cwd(), `../../packages/${packageName}/docs/split/${version}.${normalizeItem}.api.json`),
+				join(
+					process.cwd(),
+					`../../packages/${packageName}/docs/${packageName}/split/${version}.${normalizeItem}.api.json`,
+				),
 				'utf8',
 			);
 

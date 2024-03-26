@@ -13,7 +13,7 @@ export async function fetchSitemap({
 	if (ENV.IS_LOCAL_DEV) {
 		try {
 			const fileContent = await readFile(
-				join(process.cwd(), `../../packages/${packageName}/docs/split/${version}.sitemap.api.json`),
+				join(process.cwd(), `../../packages/${packageName}/docs/${packageName}/split/${version}.sitemap.api.json`),
 				'utf8',
 			);
 
