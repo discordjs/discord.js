@@ -13,7 +13,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 						<Link
 							key={`${node.text}-${idx}`}
 							className="font-mono text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
-							href={`/docs/packages/${node.resolvedPackage.packageName}/${version}/${node.uri}`}
+							href={`/docs/packages/${node.resolvedPackage.packageName}/${node.resolvedPackage.version ?? version}/${node.uri}`}
 						>
 							{node.text}
 						</Link>
