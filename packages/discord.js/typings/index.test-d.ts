@@ -203,8 +203,6 @@ import {
   RoleSelectMenuComponent,
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
-  ForumThreadChannel,
-  TextThreadChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1630,10 +1628,8 @@ declare const guildChannelManager: GuildChannelManager;
 
 declare const threadManager: ThreadManager;
 {
-  expectType<Promise<ForumThreadChannel | TextThreadChannel | null>>(threadManager.fetch('12345678901234567'));
-  expectType<Promise<ForumThreadChannel | TextThreadChannel | null>>(
-    threadManager.fetch('12345678901234567', { cache: true, force: false }),
-  );
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567'));
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567', { cache: true, force: false }));
   expectType<Promise<FetchedThreads>>(threadManager.fetch());
   expectType<Promise<FetchedThreads>>(threadManager.fetch({}));
   expectType<Promise<FetchedThreadsMore>>(threadManager.fetch({ archived: { limit: 4 } }));

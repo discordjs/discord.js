@@ -3158,9 +3158,9 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
-export type AnyThreadChannel = PublicThreadChannel<boolean> | PrivateThreadChannel;
 export type ForumThreadChannel = PublicThreadChannel<true>;
 export type TextThreadChannel = PublicThreadChannel<false> | PrivateThreadChannel;
+export type AnyThreadChannel = TextThreadChannel | ForumThreadChannel;
 
 export interface PublicThreadChannel<Forum extends boolean = boolean> extends ThreadChannel<Forum> {
   type: ChannelType.PublicThread | ChannelType.AnnouncementThread;
