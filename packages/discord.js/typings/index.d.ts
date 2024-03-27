@@ -6655,7 +6655,8 @@ export type Channel =
   | NewsChannel
   | StageChannel
   | TextChannel
-  | AnyThreadChannel
+  | PublicThreadChannel
+  | PrivateThreadChannel
   | VoiceChannel
   | ForumChannel
   | MediaChannel;
