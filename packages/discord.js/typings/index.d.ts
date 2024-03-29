@@ -1642,6 +1642,38 @@ export class GuildMember extends Base {
   public valueOf(): string;
 }
 
+export class UncachedGuildMember extends Base {
+  private constructor(client: Client<true>, data: RawGuildMemberData, guildId: Snowflake);
+  public avatar: string | null;
+  public get dmChannel(): DMChannel | null;
+  public get displayName(): string;
+  public get id(): Snowflake;
+  public pending: boolean;
+  public get communicationDisabledUntil(): Date | null;
+  public communicationDisabledUntilTimestamp: number | null;
+  public parsedFlags: Readonly<GuildMemberFlagsBitField>;
+  public get joinedAt(): Date | null;
+  public joinedTimestamp: number | null;
+  public nickname: string | null;
+  public partial: true;
+  public parsedPermissions: Readonly<PermissionsBitField>;
+  public get premiumSince(): Date | null;
+  public premiumSinceTimestamp: number | null;
+  public roleIds: Snowflake[];
+  public user: User;
+  public avatarURL(options?: ImageURLOptions): string | null;
+  public createDM(force?: boolean): Promise<DMChannel>;
+  public deleteDM(): Promise<DMChannel>;
+  public displayAvatarURL(options?: ImageURLOptions): string;
+  public isCommunicationDisabled(): this is GuildMember & {
+    communicationDisabledUntilTimestamp: number;
+    readonly communicationDisabledUntil: Date;
+  };
+  public toJSON(): unknown;
+  public toString(): UserMention;
+  public valueOf(): string;
+}
+
 export class GuildOnboarding extends Base {
   private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
   public get guild(): Guild;
