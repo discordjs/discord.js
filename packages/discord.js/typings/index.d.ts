@@ -180,7 +180,6 @@ import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
-import { Data as WebSocketData, WebSocket } from 'ws';
 import {
   RawActivityData,
   RawAnonymousGuildData,
@@ -5484,13 +5483,6 @@ export type EmojiIdentifierResolvable =
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
-export interface ErrorEvent {
-  error: unknown;
-  message: string;
-  type: string;
-  target: WebSocket;
-}
-
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
   locale?: LocaleString;
@@ -6202,12 +6194,6 @@ export interface MessageComponentCollectorOptions<Interaction extends CollectedM
 
 export interface MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
   extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> {}
-
-export interface MessageEvent {
-  data: WebSocketData;
-  type: string;
-  target: WebSocket;
-}
 
 export interface MessageInteraction {
   id: Snowflake;
