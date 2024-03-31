@@ -1434,7 +1434,7 @@ export class Guild extends AnonymousGuild {
   public fetchPreview(): Promise<GuildPreview>;
   public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
   public fetchVanityData(): Promise<Vanity>;
-  public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+  public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>>;
   public fetchWelcomeScreen(): Promise<WelcomeScreen>;
   public fetchWidget(): Promise<Widget>;
   public fetchWidgetSettings(): Promise<GuildWidgetSettings>;
@@ -1476,7 +1476,7 @@ export class Guild extends AnonymousGuild {
 export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
-  private webhooks: Collection<Snowflake, Webhook>;
+  private webhooks: Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>;
   private integrations: Collection<Snowflake | string, Integration>;
   private guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
   private autoModerationRules: Collection<Snowflake, AutoModerationRule>;
@@ -3529,8 +3529,8 @@ export class VoiceState extends Base {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface Webhook extends WebhookFields {}
-export class Webhook {
+export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
+export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -3538,35 +3538,23 @@ export class Webhook {
   public readonly client: Client;
   public guildId: Snowflake;
   public name: string;
-  public owner: User | APIUser | null;
-  public sourceGuild: Guild | APIPartialGuild | null;
-  public sourceChannel: NewsChannel | APIPartialChannel | null;
-  public token: string | null;
-  public type: WebhookType;
-  public applicationId: Snowflake | null;
+  public owner: Type extends WebhookType.Incoming ? User | APIUser | null : User | APIUser;
+  public sourceGuild: Type extends WebhookType.ChannelFollower ? Guild | APIPartialGuild : null;
+  public sourceChannel: Type extends WebhookType.ChannelFollower ? NewsChannel | APIPartialChannel : null;
+  public token: Type extends WebhookType.Incoming
+    ? string
+    : Type extends WebhookType.ChannelFollower
+      ? null
+      : string | null;
+  public type: Type;
+  public applicationId: Type extends WebhookType.Application ? Snowflake : null;
   public get channel(): TextChannel | VoiceChannel | NewsChannel | StageChannel | ForumChannel | MediaChannel | null;
-  public isUserCreated(): this is this & {
-    type: WebhookType.Incoming;
-    applicationId: null;
+  public isUserCreated(): this is Webhook<WebhookType.Incoming> & {
     owner: User | APIUser;
   };
-  public isApplicationCreated(): this is this & {
-    type: WebhookType.Application;
-    applicationId: Snowflake;
-    owner: User | APIUser;
-  };
-  public isIncoming(): this is this & {
-    type: WebhookType.Incoming;
-    token: string;
-  };
-  public isChannelFollower(): this is this & {
-    type: WebhookType.ChannelFollower;
-    sourceGuild: Guild | APIPartialGuild;
-    sourceChannel: NewsChannel | APIPartialChannel;
-    token: null;
-    applicationId: null;
-    owner: User | APIUser;
-  };
+  public isApplicationCreated(): this is Webhook<WebhookType.Application>;
+  public isIncoming(): this is Webhook<WebhookType.Incoming>;
+  public isChannelFollower(): this is Webhook<WebhookType.ChannelFollower>;
 
   public editMessage(
     message: MessageResolvable,
@@ -4192,14 +4180,16 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     options: GuildChannelCreateOptions & { type: Type },
   ): Promise<MappedGuildChannelTypes[Type]>;
   public create(options: GuildChannelCreateOptions): Promise<TextChannel>;
-  public createWebhook(options: WebhookCreateOptions): Promise<Webhook>;
+  public createWebhook(options: WebhookCreateOptions): Promise<Webhook<WebhookType.Incoming>>;
   public edit(channel: GuildChannelResolvable, data: GuildChannelEditOptions): Promise<GuildChannel>;
   public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildBasedChannel | null>;
   public fetch(
     id?: undefined,
     options?: BaseFetchOptions,
   ): Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>;
-  public fetchWebhooks(channel: GuildChannelResolvable): Promise<Collection<Snowflake, Webhook>>;
+  public fetchWebhooks(
+    channel: GuildChannelResolvable,
+  ): Promise<Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>>;
   public setPosition(
     channel: GuildChannelResolvable,
     position: number,
@@ -4553,8 +4543,8 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean>
     options?: MessageChannelCollectorOptionsParams<ComponentType, true>,
   ): InteractionCollector<MappedInteractionTypes[ComponentType]>;
   createMessageCollector(options?: MessageCollectorOptions): MessageCollector;
-  createWebhook(options: ChannelWebhookCreateOptions): Promise<Webhook>;
-  fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+  createWebhook(options: ChannelWebhookCreateOptions): Promise<Webhook<WebhookType.Incoming>>;
+  fetchWebhooks(): Promise<Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>>;
   sendTyping(): Promise<void>;
   setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
@@ -4580,7 +4570,7 @@ export interface WebhookFields extends PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
   delete(reason?: string): Promise<void>;
-  edit(options: WebhookEditOptions): Promise<Webhook>;
+  edit(options: WebhookEditOptions): Promise<this>;
   sendSlackMessage(body: unknown): Promise<boolean>;
 }
 
@@ -5736,7 +5726,7 @@ export interface GuildAuditLogsEntryExtraField {
 export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
   User: User | null;
   Guild: Guild;
-  Webhook: Webhook;
+  Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
   Invite: Invite;
   Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
@@ -6337,7 +6327,7 @@ export type MessageTarget =
   | TextBasedChannel
   | User
   | GuildMember
-  | Webhook
+  | Webhook<WebhookType.Incoming>
   | WebhookClient
   | Message
   | MessageManager;
