@@ -372,7 +372,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deletes any DMs with this member.
+   * Deletes a DM channel (if one exists) between the client and the member. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {

@@ -16,18 +16,16 @@ class UncachedGuildMember extends Base {
     super(client);
 
     /**
-     * The guild that this member is part of
-     * @type {Guild}
+     * The ID of the guild that this member is part of
+     * @type {string}
      */
     this.guildId = guildId;
 
-    if ('user' in data) {
-      /**
-       * The user that this guild member instance represents
-       * @type {?User}
-       */
-      this.user = this.client.users._add(data.user, true);
-    }
+    /**
+     * The user that this guild member instance represents
+     * @type {User}
+     */
+    this.user = this.client.users._add(data.user, true);
 
     /**
      * The nickname of this member, if they have one
@@ -39,7 +37,7 @@ class UncachedGuildMember extends Base {
      * The guild member's avatar hash
      * @type {?string}
      */
-    this.avatar = data.avatar ?? null;
+    this.avatar = data.avatar;
 
     /**
      * The role ids of the member
@@ -77,15 +75,13 @@ class UncachedGuildMember extends Base {
 
     /**
      * Whether the user is deafened in voice channels
-     * @type {?boolean}
-     * @deprecated
+     * @type {boolean | undefined}
      */
     this.deaf = data.deaf;
 
     /**
      * Whether the user is muted in voice channels
-     * @type {?boolean}
-     * @deprecated
+     * @type {boolean | undefined}
      */
     this.mute = data.mute;
 
@@ -257,7 +253,7 @@ class UncachedGuildMember extends Base {
   }
 
   /**
-   * Deletes any DMs with this member.
+   * Deletes a DM channel (if one exists) between the client and the member. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -302,7 +298,7 @@ class UncachedGuildMember extends Base {
 
   toJSON() {
     const json = super.toJSON({
-      guild: 'guildId',
+      guildId: true,
       user: 'userId',
       displayName: true,
       roles: true,

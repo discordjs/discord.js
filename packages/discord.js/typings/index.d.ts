@@ -1642,11 +1642,17 @@ export class GuildMember extends Base {
   public valueOf(): string;
 }
 
+export interface UncachedGuildMember extends PartialTextBasedChannelFields<false> {}
 export class UncachedGuildMember extends Base {
-  private constructor(client: Client<true>, data: RawGuildMemberData, guildId: Snowflake);
+  private constructor(
+    client: Client<true>,
+    data: APIInteractionGuildMember | APIInteractionDataResolvedGuildMember,
+    guildId: Snowflake,
+  );
   public avatar: string | null;
   public get dmChannel(): DMChannel | null;
   public get displayName(): string;
+  public guildId: string;
   public get id(): Snowflake;
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
@@ -1655,6 +1661,8 @@ export class UncachedGuildMember extends Base {
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public nickname: string | null;
+  public mute?: boolean;
+  public deaf?: boolean;
   public partial: true;
   public parsedPermissions: Readonly<PermissionsBitField>;
   public get premiumSince(): Date | null;
