@@ -176,6 +176,8 @@
  * @property {'SweepFilterReturn'} SweepFilterReturn
 
  * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
  */
 
 const keys = [
@@ -329,6 +331,8 @@ const keys = [
   'GuildForumMessageRequired',
 
   'EntitlementCreateInvalidOwner',
+
+  'BulkBanUsersOptionEmpty',
 ];
 
 // JSDoc for IntelliSense purposes
