@@ -325,4 +325,4 @@ class UncachedGuildMember extends Base {
 
 TextBasedChannel.applyToClass(UncachedGuildMember);
 
-exports.UncachedGuildMember = UncachedGuildMember;
+module.exports = UncachedGuildMember;
