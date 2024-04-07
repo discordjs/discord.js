@@ -176,7 +176,7 @@ export class InteractionsAPI {
 	}
 
 	/**
-	 * Updates the the message the component interaction was triggered on
+	 * Updates the message the component interaction was triggered on
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction

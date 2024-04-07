@@ -686,8 +686,8 @@ importers:
         specifier: ^3.9.6
         version: 3.9.6
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -813,8 +813,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -949,12 +949,9 @@ importers:
       '@sapphire/snowflake':
         specifier: 3.5.3
         version: 3.5.3
-      '@types/ws':
-        specifier: 8.5.10
-        version: 8.5.10
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -967,9 +964,6 @@ importers:
       undici:
         specifier: 6.7.1
         version: 6.7.1
-      ws:
-        specifier: 8.16.0
-        version: 8.16.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1075,8 +1069,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1148,8 +1142,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1322,8 +1316,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1619,8 +1613,8 @@ importers:
         specifier: ^8.5.10
         version: 8.5.10
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1716,8 +1710,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: 0.37.61
-        version: 0.37.61
+        specifier: 0.37.78
+        version: 0.37.78
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -4067,7 +4061,7 @@ packages:
     dependencies:
       '@definitelytyped/typescript-versions': 0.1.1
       '@definitelytyped/utils': 0.1.5
-      semver: 7.5.4
+      semver: 7.6.0
     dev: true
 
   /@definitelytyped/typescript-versions@0.1.1:
@@ -6398,7 +6392,7 @@ packages:
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.5.4
+      semver: 7.6.0
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -14526,8 +14520,8 @@ packages:
       path-type: 4.0.0
     dev: true
 
-  /discord-api-types@0.37.61:
-    resolution: {integrity: sha512-o/dXNFfhBpYHpQFdT6FWzeO7pKc838QeeZ9d91CfVAtpr5XLK4B/zYxQbYgPdoMiTDvJfzcsLW5naXgmHGDNXw==}
+  /discord-api-types@0.37.78:
+    resolution: {integrity: sha512-IJdyOPhq7r9Gw5/4X9u4vG8rX7+AwOtX7flUSQyQ1vAZzlnN452GGElUPmjQJIo8gB5VwMesbA9eMW+f0NMWVA==}
     dev: false
 
   /dlv@1.1.3:
@@ -21336,7 +21330,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.5.4
+      semver: 7.6.0
       validate-npm-package-name: 3.0.0
     dev: true
 
