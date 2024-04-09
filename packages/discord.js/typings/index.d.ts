@@ -1093,6 +1093,7 @@ export class ClientUser extends User {
   public setActivity(name: string, options?: Omit<ActivityOptions, 'name'>): ClientPresence;
   public setAFK(afk?: boolean, shardId?: number | readonly number[]): ClientPresence;
   public setAvatar(avatar: BufferResolvable | Base64Resolvable | null): Promise<this>;
+  public setBanner(banner: BufferResolvable | Base64Resolvable | null): Promise<this>;
   public setPresence(data: PresenceData): ClientPresence;
   public setStatus(status: PresenceStatusData, shardId?: number | readonly number[]): ClientPresence;
   public setUsername(username: string): Promise<this>;
@@ -5233,6 +5234,7 @@ export interface ClientPresenceStatusData {
 export interface ClientUserEditOptions {
   username?: string;
   avatar?: BufferResolvable | Base64Resolvable | null;
+  banner?: BufferResolvable | Base64Resolvable | null;
 }
 
 export interface CloseEvent {
