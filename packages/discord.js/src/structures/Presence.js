@@ -123,11 +123,11 @@ class Presence extends Base {
       this === presence ||
       (presence &&
         this.status === presence.status &&
-        this.activities.length === presence.activities.length &&
-        this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
         this.clientStatus?.web === presence.clientStatus?.web &&
         this.clientStatus?.mobile === presence.clientStatus?.mobile &&
-        this.clientStatus?.desktop === presence.clientStatus?.desktop)
+        this.clientStatus?.desktop === presence.clientStatus?.desktop &&
+        this.activities.length === presence.activities.length &&
+        this.activities.every((activity, index) => activity.equals(presence.activities[index])))
     );
   }
 
