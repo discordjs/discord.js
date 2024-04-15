@@ -75,6 +75,8 @@ import {
 	type RESTPatchAPIGuildWidgetSettingsResult,
 	type RESTPostAPIAutoModerationRuleJSONBody,
 	type RESTPostAPIAutoModerationRuleResult,
+	type RESTPostAPIGuildBulkBanJSONBody,
+	type RESTPostAPIGuildBulkBanResult,
 	type RESTPostAPIGuildChannelJSONBody,
 	type RESTPostAPIGuildChannelResult,
 	type RESTPostAPIGuildEmojiJSONBody,
@@ -362,6 +364,26 @@ export class GuildsAPI {
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.guildBan(guildId, userId), { reason, signal });
+	}
+
+	/**
+	 * Bulk ban users from a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#bulk-guild-ban}
+	 * @param guildId - The id of the guild to bulk ban users in
+	 * @param body - The data for bulk banning users
+	 * @param options - The options for bulk banning users
+	 */
+	public async bulkBanUsers(
+		guildId: Snowflake,
+		body: RESTPostAPIGuildBulkBanJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.guildBulkBan(guildId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPostAPIGuildBulkBanResult>;
 	}
 
 	/**
