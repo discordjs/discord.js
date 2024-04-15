@@ -41,7 +41,7 @@ import {
 	Navigation,
 } from '@discordjs/api-extractor-model';
 import type * as tsdoc from '@microsoft/tsdoc';
-import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
@@ -1796,8 +1796,8 @@ export class ApiModelGenerator {
 											DeclarationReference.parseComponent(type ?? 'unknown'),
 										)
 										.withMeaning(
-											lookup[astSymbol?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
-												('class' as any),
+											(lookup[astSymbol?.astDeclarations.at(-1)?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
+												'class') as Meaning,
 										)
 										.toString(),
 						},
