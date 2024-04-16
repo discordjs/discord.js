@@ -716,9 +716,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      downlevel-dts:
-        specifier: ^0.11.0
-        version: 0.11.0
       esbuild-plugin-version-injector:
         specifier: ^1.2.1
         version: 1.2.1
@@ -14595,15 +14592,6 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /downlevel-dts@0.11.0:
-    resolution: {integrity: sha512-vo835pntK7kzYStk7xUHDifiYJvXxVhUapt85uk2AI94gUUAQX9HNRtrcMHNSc3YHJUEHGbYIGsM99uIbgAtxw==}
-    hasBin: true
-    dependencies:
-      semver: 7.5.4
-      shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240311
-    dev: true
-
   /dts-critic@3.3.11(typescript@5.4.2):
     resolution: {integrity: sha512-HMO2f9AO7ge44YO8OK18f+cxm/IaE1CFuyNFbfJRCEbyazWj5X5wWDF6W4CGdo5Ax0ILYVfJ7L/rOwuUN1fzWw==}
     engines: {node: '>=10.17.0'}
@@ -17744,11 +17732,6 @@ packages:
       es-errors: 1.3.0
       hasown: 2.0.1
       side-channel: 1.0.5
-    dev: true
-
-  /interpret@1.4.0:
-    resolution: {integrity: sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==}
-    engines: {node: '>= 0.10'}
     dev: true
 
   /intl-messageformat@10.5.11:
@@ -23019,13 +23002,6 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /rechoir@0.6.2:
-    resolution: {integrity: sha512-HFM8rkZ+i3zrV+4LQjwQ0W+ez98pApMGM3HUrN04j3CqzPOzl9nmP15Y8YXNm8QHGv/eacOVEjqhmWpkRV0NAw==}
-    engines: {node: '>= 0.10'}
-    dependencies:
-      resolve: 1.22.8
-    dev: true
-
   /redent@3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
@@ -23820,16 +23796,6 @@ packages:
   /shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-    dev: true
-
-  /shelljs@0.8.5:
-    resolution: {integrity: sha512-TiwcRcrkhHvbrZbnRcFYMLl30Dfov3HKqzp5tO5b4pt6G/SezKcYhmDg15zXVBswHmctSAQKznqNW2LO5tTDow==}
-    engines: {node: '>=4'}
-    hasBin: true
-    dependencies:
-      glob: 7.2.3
-      interpret: 1.4.0
-      rechoir: 0.6.2
     dev: true
 
   /shiki@0.14.7:
@@ -25503,12 +25469,6 @@ packages:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  /typescript@5.5.0-dev.20240311:
-    resolution: {integrity: sha512-Cdp0eYgn/19lkcrq7WCqQxmnvCqvuJrd/jGhm1HyPMSYVTGzjxVP0NfXr2A4YVS12IAipt1uO4zgAJeLlYG2JA==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: true
 
   /typical@2.6.1:
     resolution: {integrity: sha512-ofhi8kjIje6npGozTip9Fr8iecmYfEbS06i0JnIg+rh51KakryWF4+jX8lLKZVhy6N+ID45WYSFCxPOdTWCzNg==}
