@@ -17,7 +17,15 @@ import { TypeParameterNode } from './TypeParameterNode';
 import { UnionMember } from './UnionMember';
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
 
-async function OverloadNode({ node, packageName, version }: { node: any; packageName: string; version: string }) {
+async function OverloadNode({
+	node,
+	packageName,
+	version,
+}: {
+	readonly node: any;
+	readonly packageName: string;
+	readonly version: string;
+}) {
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex gap-2">
