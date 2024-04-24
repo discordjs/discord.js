@@ -382,6 +382,36 @@ class Message extends Base {
       this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
     }
 
+    if (data.interaction_metadata) {
+      /**
+       * Partial data of the interaction that this message is a result of
+       * @typedef {Object} MessageInteractionMetadata
+       * @property {Snowflake} id The interaction's id
+       * @property {InteractionType} type The type of the interaction
+       * @property {User} user The user that invoked the interaction
+       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
+       * IDs for installation context(s) related to an interaction
+       * @property {?Snowflake} originalResponseMessageId
+       * ID of the original response message, present only on follow-up messages
+       * @property {?Snowflake} interactedMessageId
+       * ID of the message that contained interactive component,
+       * present only on messages created from component interactions
+       * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
+       * Metadata for the interaction that was used to open the modal, present only on modal submit interactions
+       */
+      this.interactionMetadata = {
+        id: data.interaction_metadata.id,
+        type: data.interaction_metadata.type,
+        user: this.client.users._add(data.interaction_metadata.user),
+        authorizingIntegrationOwners: data.interaction_metadata.authorizing_integration_owners,
+        originalResponseMessageId: data.interaction_metadata.original_response_message_id ?? null,
+        interactedMessageId: data.interaction_metadata.interacted_message_id ?? null,
+        triggeringInteractionMetadata: data.interaction_metadata.triggering_interaction_metadata ?? null,
+      };
+    } else {
+      this.interactionMetadata ??= null;
+    }
+
     /**
      * Partial data of the interaction that a message is a reply to
      * @typedef {Object} MessageInteraction

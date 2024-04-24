@@ -151,6 +151,28 @@ class ApplicationCommand extends Base {
       this.dmPermission ??= null;
     }
 
+    if ('integration_types' in data) {
+      /**
+       * Installation context(s) where the command is available
+       * <info>Only for globally-scoped commands</info>
+       * @type {?ApplicationIntegrationType[]}
+       */
+      this.integrationTypes = data.integration_types;
+    } else {
+      this.integrationTypes ??= null;
+    }
+
+    if ('contexts' in data) {
+      /**
+       * Interaction context(s) where the command can be used
+       * <info>Only for globally-scoped commands</info>
+       * @type {?InteractionContextType[]}
+       */
+      this.contexts = data.contexts;
+    } else {
+      this.contexts ??= null;
+    }
+
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes

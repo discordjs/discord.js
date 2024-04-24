@@ -61,6 +61,16 @@ class ClientApplication extends Application {
       this.installParams ??= null;
     }
 
+    if ('integration_types_config' in data) {
+      /**
+       * Default scopes and permissions for each supported installation context
+       * @type {APIApplicationIntegrationTypesConfigMap}
+       */
+      this.integrationTypesConfig = data.integration_types_config;
+    } else {
+      this.integrationTypesConfig ??= null;
+    }
+
     if ('custom_install_url' in data) {
       /**
        * This application's custom installation URL
