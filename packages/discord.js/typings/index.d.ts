@@ -445,6 +445,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  /** @deprecated Use {@link ApplicationCommand.contexts} instead */
   public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
@@ -2100,6 +2101,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
+  /** @deprecated Use {@link Message.interactionMetadata} instead */
   public interaction: MessageInteraction | null;
   public interactionMetadata: MessageInteractionMetadata | null;
   public get member(): GuildMember | null;

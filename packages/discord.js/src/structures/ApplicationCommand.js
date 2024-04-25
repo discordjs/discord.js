@@ -145,6 +145,7 @@ class ApplicationCommand extends Base {
        * Whether the command can be used in DMs
        * <info>This property is always `null` on guild commands</info>
        * @type {?boolean}
+       * @deprecated Use {@link ApplicationCommand#contexts} instead.
        */
       this.dmPermission = data.dm_permission;
     } else {

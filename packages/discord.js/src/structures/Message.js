@@ -420,6 +420,7 @@ class Message extends Base {
      * @property {string} commandName The name of the interaction's application command,
      * as well as the subcommand and subcommand group, where applicable
      * @property {User} user The user that invoked the interaction
+     * @deprecated Use {@link Message#interactionMetadata} instead.
      */
 
     if (data.interaction) {
