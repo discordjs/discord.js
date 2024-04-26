@@ -71,6 +71,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/rest": "workspace:^",
