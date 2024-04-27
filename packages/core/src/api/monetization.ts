@@ -77,4 +77,20 @@ export class MonetizationAPI {
 	) {
 		await this.rest.delete(Routes.entitlement(applicationId, entitlementId), { signal });
 	}
+
+	/**
+	 * Marks a given entitlement for the user as consumed. Only available for One-Time Purchase consumable SKUs.
+	 *
+	 * @see {@link https://discord.com/developers/docs/monetization/entitlements#consume-an-entitlement}
+	 * @param applicationId - The application id to consume the entitlement for
+	 * @param entitlementId - The entitlement id to consume
+	 * @param options - The options for consuming the entitlement
+	 */
+	public async consumeEntitlement(
+		applicationId: Snowflake,
+		entitlementId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.post(Routes.consumeEntitlement(applicationId, entitlementId), { signal });
+	}
 }

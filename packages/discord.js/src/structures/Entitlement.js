@@ -1,5 +1,6 @@
 'use strict';
 
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 
 /**
@@ -91,6 +92,16 @@ class Entitlement extends Base {
     } else {
       this.endsTimestamp ??= null;
     }
+
+    if ('consumed' in data) {
+      /**
+       * Whether this entitlement has been consumed
+       * @type {boolean}
+       */
+      this.consumed = data.consumed;
+    } else {
+      this.consumed ??= false;
+    }
   }
 
   /**
@@ -158,6 +169,15 @@ class Entitlement extends Base {
    */
   fetchUser() {
     return this.client.users.fetch(this.userId);
+  }
+
+  /**
+   * Marks this entitlement as consumed
+   * <info>Only available for One-Time Purchase consumable SKUs.</info>
+   * @returns {Promise<void>}
+   */
+  async consume() {
+    await this.client.rest.post(Routes.consumeEntitlement(this.applicationId, this.id));
   }
 }
 
