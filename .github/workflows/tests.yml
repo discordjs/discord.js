@@ -35,14 +35,6 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run build --filter="...[HEAD^1]" --concurrency=4
 
-      - name: ESLint (PR)
-        if: ${{ github.event_name != 'push' }}
-        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
-
-      - name: ESLint (Push)
-        if: ${{ github.event_name == 'push' }}
-        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
-
       - name: Tests (PR)
         if: ${{ github.event_name != 'push' }}
         run: pnpm exec turbo run test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
@@ -50,6 +42,14 @@ jobs:
       - name: Tests (Push)
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run test --filter="...[HEAD^1]" --concurrency=4
+
+      - name: ESLint (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
+
+      - name: ESLint (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}

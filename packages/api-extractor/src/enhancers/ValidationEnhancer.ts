@@ -229,7 +229,7 @@ export class ValidationEnhancer {
 				continue;
 			}
 
-			if (collectorEntity && collectorEntity.consumable) {
+			if (collectorEntity?.consumable) {
 				if (releaseTagCompare(declarationReleaseTag, referencedReleaseTag) > 0) {
 					collector.messageRouter.addAnalyzerIssue(
 						ExtractorMessageId.IncompatibleReleaseTags,
