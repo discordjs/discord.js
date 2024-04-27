@@ -113,11 +113,19 @@ export class ModelReferenceResolver {
 			const memberSelector: DocMemberSelector | undefined = memberReference.selector;
 			if (memberSelector === undefined) {
 				if (foundMembers.length > 1) {
-					result.errorMessage = `The member reference ${JSON.stringify(identifier)} was ambiguous`;
-					return result;
+					const foundClass: ApiItem | undefined = foundMembers.find((member) => member.kind === ApiItemKind.Class);
+					if (
+						foundClass &&
+						foundMembers.filter((member) => member.kind === ApiItemKind.Interface).length === foundMembers.length - 1
+					) {
+						currentItem = foundClass;
+					} else {
+						result.errorMessage = `The member reference ${JSON.stringify(identifier)} was ambiguous`;
+						return result;
+					}
+				} else {
+					currentItem = foundMembers[0]!;
 				}
-
-				currentItem = foundMembers[0]!;
 			} else {
 				let memberSelectorResult: IResolveDeclarationReferenceResult;
 				switch (memberSelector.selectorKind) {
