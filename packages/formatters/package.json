@@ -53,6 +53,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"discord-api-types": "0.37.82"
 	},

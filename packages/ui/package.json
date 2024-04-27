@@ -50,6 +50,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@react-icons/all-files": "^4.1.0",
 		"ariakit": "2.0.0-next.44",

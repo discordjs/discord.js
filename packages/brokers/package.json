@@ -65,6 +65,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@msgpack/msgpack": "^3.0.0-beta2",
 		"@vladfrangu/async_event_emitter": "^2.2.4",
