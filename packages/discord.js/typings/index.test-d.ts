@@ -204,6 +204,7 @@ import {
   RoleSelectMenuComponent,
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
+  Poll,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2524,4 +2525,25 @@ declare const sku: SKU;
       await interaction.sendPremiumRequired();
     }
   });
+}
+
+await textChannel.send({
+  poll: {
+    question: {
+      text: 'Question',
+    },
+    duration: 60,
+    answers: [{ text: 'Answer 1' }, { text: 'Answer 2', emoji: '<:1blade:874989932983238726>' }],
+    allowMultiselect: false,
+  },
+});
+
+declare const poll: Poll;
+{
+  expectType<Message>(await poll.end());
+
+  const answer = poll.answers.first()!;
+  expectType<number>(answer.voteCount);
+
+  expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
 }

@@ -175,6 +175,9 @@ import {
   SKUType,
   APIEntitlement,
   EntitlementType,
+  APIPoll,
+  PollLayoutType,
+  APIPollAnswer,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2586,6 +2589,39 @@ export class Presence extends Base {
   public equals(presence: Presence): boolean;
 }
 
+export interface PollQuestionMedia {
+  text: string;
+}
+
+export class Poll extends Base {
+  private constructor(client: Client<true>, data: APIPoll, message: Message);
+  public readonly message: Message;
+  public question: PollQuestionMedia;
+  public answers: Collection<number, PollAnswer>;
+  public expiresTimestamp: number;
+  public get expiresAt(): Date;
+  public allowMultiselect: boolean;
+  public layoutType: PollLayoutType;
+  public resultsFinalized: boolean;
+  public end(): Promise<Message>;
+}
+
+export interface FetchPollVotersOptions {
+  after?: Snowflake;
+  limit?: number;
+}
+
+export class PollAnswer extends Base {
+  private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
+  private _emoji: APIPartialEmoji | null;
+  public readonly poll: Poll;
+  public id: number;
+  public text: string | null;
+  public voteCount: number;
+  public get emoji(): GuildEmoji | Emoji | null;
+  public fetchVoters(options?: FetchPollVotersOptions): Promise<Collection<Snowflake, User>>;
+}
+
 export class ReactionCollector extends Collector<Snowflake | string, MessageReaction, [User]> {
   public constructor(message: Message, options?: ReactionCollectorOptions);
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
@@ -3929,6 +3965,8 @@ export enum DiscordjsErrorCodes {
   EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
 
   BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
+
+  PollAlreadyExpired = 'PollAlreadyExpired',
 }
 
 export class DiscordjsError extends Error {
@@ -4977,6 +5015,19 @@ export interface BulkBanResult {
   failedUsers: readonly Snowflake[];
 }
 
+export interface PollData {
+  question: PollQuestionMedia;
+  answers: readonly PollAnswerData[];
+  duration: number;
+  allowMultiselect: boolean;
+  layoutType?: PollLayoutType;
+}
+
+export interface PollAnswerData {
+  text: string;
+  emoji?: EmojiIdentifierResolvable;
+}
+
 export type Base64Resolvable = Buffer | Base64String;
 
 export type Base64String = string;
@@ -5146,6 +5197,8 @@ export interface ClientEvents {
   inviteDelete: [invite: Invite];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
+  messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
+  messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
     message: Message | PartialMessage,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
@@ -5372,6 +5425,8 @@ export enum Events {
   MessageDelete = 'messageDelete',
   MessageUpdate = 'messageUpdate',
   MessageBulkDelete = 'messageDeleteBulk',
+  MessagePollVoteAdd = 'messagePollVoteAdd',
+  MessagePollVoteRemove = 'messagePollVoteRemove',
   MessageReactionAdd = 'messageReactionAdd',
   MessageReactionRemove = 'messageReactionRemove',
   MessageReactionRemoveAll = 'messageReactionRemoveAll',
@@ -6244,6 +6299,7 @@ export interface BaseMessageOptions {
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
+  poll?: PollData;
 }
 
 export interface MessageCreateOptions extends BaseMessageOptions {

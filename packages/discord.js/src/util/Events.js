@@ -53,6 +53,8 @@
  * @property {string} MessageBulkDelete messageDeleteBulk
  * @property {string} MessageCreate messageCreate
  * @property {string} MessageDelete messageDelete
+ * @property {string} MessagePollVoteAdd messagePollVoteAdd
+ * @property {string} MessagePollVoteRemove messagePollVoteRemove
  * @property {string} MessageReactionAdd messageReactionAdd
  * @property {string} MessageReactionRemove messageReactionRemove
  * @property {string} MessageReactionRemoveAll messageReactionRemoveAll
@@ -138,6 +140,8 @@ module.exports = {
   MessageBulkDelete: 'messageDeleteBulk',
   MessageCreate: 'messageCreate',
   MessageDelete: 'messageDelete',
+  MessagePollVoteAdd: 'messagePollVoteAdd',
+  MessagePollVoteRemove: 'messagePollVoteRemove',
   MessageReactionAdd: 'messageReactionAdd',
   MessageReactionRemove: 'messageReactionRemove',
   MessageReactionRemoveAll: 'messageReactionRemoveAll',
