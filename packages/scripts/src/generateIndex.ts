@@ -19,6 +19,7 @@ export interface MemberJSON {
 	name: string;
 	path: string;
 	summary: string | null;
+	type: number;
 }
 
 let idx = 0;
@@ -89,6 +90,30 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 	return retVal;
 }
 
+export enum SearchOrderType {
+	Class,
+	Interface,
+	TypeAlias,
+	Function,
+	Enum,
+	Variable,
+	Event,
+	Method,
+	Property,
+	MethodSignature,
+	PropertySignature,
+	EnumMember,
+	Package,
+	Namespace,
+	IndexSignature,
+	CallSignature,
+	Constructor,
+	ConstructSignature,
+	EntryPoint,
+	Model,
+	None,
+}
+
 export function visitNodes(item: ApiItem, tag: string) {
 	const members: (MemberJSON & { id: number })[] = [];
 
@@ -111,6 +136,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 			kind: member.kind,
 			summary: tryResolveSummaryText(member) ?? '',
 			path: generatePath(member.getHierarchy(), tag),
+			type: SearchOrderType[member.kind as keyof typeof SearchOrderType],
 		});
 	}
 

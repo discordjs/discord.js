@@ -46,6 +46,7 @@
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:local": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -62,6 +63,7 @@
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -206,6 +208,7 @@
 			"persistent": true
 		},
 		"@discordjs/website#dev": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build", "^docs"],
 			"outputMode": "full",
 			"cache": false,

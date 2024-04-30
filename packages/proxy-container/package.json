@@ -43,6 +43,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/proxy": "workspace:^",
 		"@discordjs/rest": "workspace:^",
@@ -52,12 +53,12 @@
 		"@types/node": "18.18.8",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
-		"eslint-config-neon": "^0.1.59",
+		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.2.5",
 		"tsup": "^8.0.2",
-		"turbo": "^1.12.5",
-		"typescript": "^5.4.2"
+		"turbo": "^1.13.2",
+		"typescript": "^5.4.5"
 	},
 	"engines": {
 		"node": ">=18"

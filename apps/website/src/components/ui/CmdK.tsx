@@ -95,6 +95,7 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 					q: searchString,
 					limit: 25,
 					attributesToSearchOn: ['name'],
+					sort: ['type:asc'],
 				})),
 			});
 			setSearchResults(result.results.flatMap((res) => res.hits));

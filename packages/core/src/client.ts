@@ -198,8 +198,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 			this.emit(
-				dispatch.t,
+				// TODO: This comment will have to be moved down once the new Poll events are added to the `ManagerShardEventsMap`
 				// @ts-expect-error event props can't be resolved properly, but they are correct
+				dispatch.t,
 				this.wrapIntrinsicProps(dispatch.d, shardId),
 			);
 		});
