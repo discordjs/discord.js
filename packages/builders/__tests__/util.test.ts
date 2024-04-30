@@ -24,6 +24,7 @@ describe('normalizeArray', () => {
 
 	test('always returns a clone', () => {
 		const arr = [1, 2, 3];
+		expect(normalizeArray([arr])).toEqual(arr);
 		expect(normalizeArray([arr])).not.toBe(arr);
 	});
 });
