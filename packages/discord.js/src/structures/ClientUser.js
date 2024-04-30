@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const User = require('./User');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 /**
  * Represents the logged in client's Discord user.
@@ -47,6 +47,7 @@ class ClientUser extends User {
    * @typedef {Object} ClientUserEditOptions
    * @property {string} [username] The new username
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The new banner
    */
 
   /**
@@ -54,9 +55,13 @@ class ClientUser extends User {
    * @param {ClientUserEditOptions} options The options to provide
    * @returns {Promise<ClientUser>}
    */
-  async edit({ username, avatar }) {
+  async edit({ username, avatar, banner }) {
     const data = await this.client.rest.patch(Routes.user(), {
-      body: { username, avatar: avatar && (await DataResolver.resolveImage(avatar)) },
+      body: {
+        username,
+        avatar: avatar && (await resolveImage(avatar)),
+        banner: banner && (await resolveImage(banner)),
+      },
     });
 
     this.client.token = data.token;
@@ -93,6 +98,20 @@ class ClientUser extends User {
    */
   setAvatar(avatar) {
     return this.edit({ avatar });
+  }
+
+  /**
+   * Sets the banner of the logged in client.
+   * @param {?(BufferResolvable|Base64Resolvable)} banner The new banner
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // Set banner
+   * client.user.setBanner('./banner.png')
+   *   .then(user => console.log(`New banner set!`))
+   *   .catch(console.error);
+   */
+  setBanner(banner) {
+    return this.edit({ banner });
   }
 
   /**

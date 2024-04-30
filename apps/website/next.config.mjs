@@ -1,4 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
+import localesPlugin from '@react-aria/optimize-locales-plugin';
 
 const withBundleAnalyzer = bundleAnalyzer({
 	enabled: process.env.ANALYZE === 'true',
@@ -6,18 +7,25 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 export default withBundleAnalyzer({
 	reactStrictMode: true,
-	experimental: {
-		typedRoutes: true,
-		serverComponentsExternalPackages: ['@rushstack/node-core-library', '@discordjs/api-extractor-model', 'jju'],
-	},
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
 	},
-	poweredByHeader: false,
-	env: {
-		MAX_FETCH_SIZE: '5',
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
+	experimental: {
+		ppr: false,
+	},
+	webpack(config, { isServer }) {
+		if (!isServer) {
+			config.plugins.push(localesPlugin.webpack({ locales: ['en-US'] }));
+		}
+
+		return config;
 	},
 	async redirects() {
 		return [

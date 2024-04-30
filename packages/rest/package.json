@@ -10,7 +10,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local --minify",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rest/*'",
 		"release": "cliff-jumper"
@@ -81,37 +81,40 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/util": "workspace:^",
-		"@sapphire/async-queue": "^1.5.0",
-		"@sapphire/snowflake": "^3.5.1",
-		"@vladfrangu/async_event_emitter": "^2.2.2",
-		"discord-api-types": "0.37.61",
-		"magic-bytes.js": "^1.5.0",
+		"@sapphire/async-queue": "^1.5.2",
+		"@sapphire/snowflake": "^3.5.3",
+		"@vladfrangu/async_event_emitter": "^2.2.4",
+		"discord-api-types": "0.37.82",
+		"magic-bytes.js": "^1.10.0",
 		"tslib": "^2.6.2",
-		"undici": "5.27.2"
+		"undici": "6.13.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@favware/cliff-jumper": "^2.2.1",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^3.0.2",
 		"@types/node": "18.17.9",
-		"@vitest/coverage-v8": "^0.34.6",
+		"@vitest/coverage-v8": "^1.5.0",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.53.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.1.0",
-		"tsup": "^7.2.0",
-		"turbo": "^1.10.17-canary.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"tsup": "^8.0.2",
+		"turbo": "^1.13.2",
+		"typescript": "^5.4.5",
+		"vitest": "^1.5.0"
 	},
 	"engines": {
 		"node": ">=16.11.0"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

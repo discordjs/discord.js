@@ -98,16 +98,17 @@ class Emoji extends Base {
    * reaction.message.channel.send(`The emoji used was: ${reaction.emoji}`);
    */
   toString() {
-    return this.id ? formatEmoji(this.id, this.animated) : this.name;
+    return this.id ? formatEmoji({ animated: this.animated, id: this.id, name: this.name }) : this.name;
   }
 
   toJSON() {
-    return super.toJSON({
+    const json = super.toJSON({
       guild: 'guildId',
       createdTimestamp: true,
-      url: true,
       identifier: true,
     });
+    json.imageURL = this.imageURL();
+    return json;
   }
 }
 

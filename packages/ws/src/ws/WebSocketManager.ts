@@ -1,5 +1,6 @@
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
+import { polyfillDispose } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	Routes,
@@ -9,11 +10,16 @@ import {
 	type RESTGetAPIGatewayBotResult,
 	type GatewayIntentBits,
 	type GatewaySendPayload,
+	type GatewayDispatchPayload,
+	type GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
+
+// We put this here because in index.ts WebSocketManager seems to be outputted before polyfillDispose() is called from tsup.
+polyfillDispose();
 
 /**
  * Represents a range of shard ids
@@ -178,15 +184,26 @@ export interface OptionalWebSocketManagerOptions {
 	version: string;
 }
 
-export type WebSocketManagerOptions = OptionalWebSocketManagerOptions & RequiredWebSocketManagerOptions;
+export interface WebSocketManagerOptions extends OptionalWebSocketManagerOptions, RequiredWebSocketManagerOptions {}
 
-export type ManagerShardEventsMap = {
-	[K in keyof WebSocketShardEventsMap]: [
-		WebSocketShardEventsMap[K] extends [] ? { shardId: number } : WebSocketShardEventsMap[K][0] & { shardId: number },
+export interface CreateWebSocketManagerOptions
+	extends Partial<OptionalWebSocketManagerOptions>,
+		RequiredWebSocketManagerOptions {}
+
+export interface ManagerShardEventsMap {
+	[WebSocketShardEvents.Closed]: [{ code: number; shardId: number }];
+	[WebSocketShardEvents.Debug]: [payload: { message: string; shardId: number }];
+	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload; shardId: number }];
+	[WebSocketShardEvents.Error]: [payload: { error: Error; shardId: number }];
+	[WebSocketShardEvents.Hello]: [{ shardId: number }];
+	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData; shardId: number }];
+	[WebSocketShardEvents.Resumed]: [{ shardId: number }];
+	[WebSocketShardEvents.HeartbeatComplete]: [
+		payload: { ackAt: number; heartbeatAt: number; latency: number; shardId: number },
 	];
-};
+}
 
-export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements AsyncDisposable {
 	/**
 	 * The options being used by this manager
 	 */
@@ -212,7 +229,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 */
 	private readonly strategy: IShardingStrategy;
 
-	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
+	public constructor(options: CreateWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 		this.strategy = this.options.buildStrategy(this);
@@ -320,5 +337,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public fetchStatus() {
 		return this.strategy.fetchStatus();
+	}
+
+	public async [Symbol.asyncDispose]() {
+		await this.destroy();
 	}
 }

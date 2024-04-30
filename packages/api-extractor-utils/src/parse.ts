@@ -64,7 +64,7 @@ export function generatePath(items: readonly ApiItem[], version: string) {
 
 	return path.includes('@discordjs/')
 		? path.replace(/@discordjs\/(?<package>.*)\/(?<member>.*)?/, `$<package>/${version}/$<member>`)
-		: path.replace(/(?<oackage>.*)\/(?<member>.*)?/, `$<package>/${version}/$<member>`);
+		: path.replace(/(?<package>.*)\/(?<member>.*)?/, `$<package>/${version}/$<member>`);
 }
 
 export function resolveDocComment(item: ApiDeclaredItem) {

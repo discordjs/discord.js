@@ -1,26 +1,34 @@
 import { Analytics } from '@vercel/analytics/react';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
+import { LocalizedStringProvider } from 'react-aria-components/i18n';
 import { DESCRIPTION } from '~/util/constants';
-import { inter, jetBrainsMono } from '~/util/fonts';
+import { ENV } from '~/util/env';
 import { Providers } from './providers';
 
-import '~/styles/cmdk.css';
 import '~/styles/main.css';
+import 'overlayscrollbars/overlayscrollbars.css';
 
 export const viewport: Viewport = {
 	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#1c1c1e' },
+		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
+		{ media: '(prefers-color-scheme: dark)', color: '#121212' },
 	],
 	colorScheme: 'light dark',
 };
 
 export const metadata: Metadata = {
 	metadataBase: new URL(
-		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
+		process.env.NEXT_PUBLIC_LOCAL_DEV === 'true'
+			? `http://localhost:${process.env.PORT ?? 3_000}`
+			: 'https://discord.js.org',
 	),
-	title: 'discord.js',
+	title: {
+		template: '%s | discord.js',
+		default: 'discord.js',
+	},
 	description: DESCRIPTION,
 	icons: {
 		other: [
@@ -66,15 +74,28 @@ export const metadata: Metadata = {
 	},
 
 	other: {
-		'msapplication-TileColor': '#1c1c1e',
+		'msapplication-TileColor': '#121212',
 	},
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
-				<Providers>{children}</Providers>
+		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} suppressHydrationWarning>
+			<body className="relative bg-white dark:bg-[#121212]">
+				<LocalizedStringProvider locale="en-US" />
+				<Providers>
+					{ENV.IS_LOCAL_DEV ? (
+						<div className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 place-content-center place-items-center rounded-md border border-red-400/35 bg-red-500/65 p-2 px-4 text-center text-base text-white shadow-md backdrop-blur">
+							Local test environment
+						</div>
+					) : null}
+					{ENV.IS_PREVIEW ? (
+						<div className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 place-content-center place-items-center rounded-md border border-red-400/35 bg-red-500/65 p-2 px-4 text-center text-base text-white shadow-md backdrop-blur">
+							Preview environment
+						</div>
+					) : null}
+					{children}
+				</Providers>
 				<Analytics />
 			</body>
 		</html>

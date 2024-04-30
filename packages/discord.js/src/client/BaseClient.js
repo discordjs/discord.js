@@ -44,7 +44,7 @@ class BaseClient extends EventEmitter {
         ...options.rest,
         userAgentAppendix: options.rest?.userAgentAppendix
           ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
-          : undefined,
+          : Options.userAgentAppendix,
       },
     };
 
@@ -105,6 +105,10 @@ class BaseClient extends EventEmitter {
 
   toJSON(...props) {
     return flatten(this, ...props);
+  }
+
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
   }
 }
 

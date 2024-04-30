@@ -88,8 +88,9 @@
  * <warn>This property is deprecated.</warn>
 
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
- * @property {'MessageNonceType'} MessageNonceType
  * @property {'MessageContentType'} MessageContentType
+ * @property {'MessageNonceRequired'} MessageNonceRequired
+ * @property {'MessageNonceType'} MessageNonceType
 
  * @property {'SplitMaxLen'} SplitMaxLen
  * <warn>This property is deprecated.</warn>
@@ -173,6 +174,10 @@
  * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
 
  * @property {'SweepFilterReturn'} SweepFilterReturn
+
+ * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
  */
 
 const keys = [
@@ -242,8 +247,9 @@ const keys = [
   'ImageSize',
 
   'MessageBulkDeleteType',
-  'MessageNonceType',
   'MessageContentType',
+  'MessageNonceRequired',
+  'MessageNonceType',
 
   'SplitMaxLen',
 
@@ -323,6 +329,10 @@ const keys = [
   'SweepFilterReturn',
 
   'GuildForumMessageRequired',
+
+  'EntitlementCreateInvalidOwner',
+
+  'BulkBanUsersOptionEmpty',
 ];
 
 // JSDoc for IntelliSense purposes

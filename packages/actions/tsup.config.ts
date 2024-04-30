@@ -6,6 +6,7 @@ export default createTsupConfig({
 		'src/formatTag/index.ts',
 		'src/uploadDocumentation/index.ts',
 		'src/uploadSearchIndices/index.ts',
+		'src/uploadSplitDocumentation/index.ts',
 	],
 	dts: false,
 	format: 'esm',

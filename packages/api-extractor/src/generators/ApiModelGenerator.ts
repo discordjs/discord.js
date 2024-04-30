@@ -41,7 +41,7 @@ import {
 	Navigation,
 } from '@discordjs/api-extractor-model';
 import type * as tsdoc from '@microsoft/tsdoc';
-import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import { DeclarationReference, type Meaning } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { JsonFile, Path } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
@@ -563,7 +563,7 @@ export class ApiModelGenerator {
 								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
@@ -650,10 +650,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isAbstract: boolean = (ts.getCombinedModifierFlags(classDeclaration) & ts.ModifierFlags.Abstract) !== 0;
@@ -723,7 +723,7 @@ export class ApiModelGenerator {
 								?.map((param) => ` * @param ${param.name} - ${this._fixLinkTags(param.description) ?? ''}\n`)
 								.join('') ?? ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructSignature);
@@ -861,10 +861,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(functionDeclaration);
@@ -983,10 +983,10 @@ export class ApiModelGenerator {
 							jsDoc.deprecated
 								? ` * @deprecated ${
 										typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-								  }\n`
+									}\n`
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(interfaceDeclaration);
@@ -1063,10 +1063,10 @@ export class ApiModelGenerator {
 								jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
@@ -1155,10 +1155,10 @@ export class ApiModelGenerator {
 								jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1225,13 +1225,17 @@ export class ApiModelGenerator {
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
-			  ? (jsDoc as DocgenPropertyJson).scope === 'static'
-			  : false;
+				? (jsDoc as DocgenPropertyJson).scope === 'static'
+				: false;
 		const containerKey: string = ApiProperty.getContainerKey(name, isStatic);
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
 
-		if (apiProperty === undefined) {
+		if (
+			apiProperty === undefined &&
+			(astDeclaration ||
+				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+		) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
 				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
@@ -1266,10 +1270,10 @@ export class ApiModelGenerator {
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1322,7 +1326,10 @@ export class ApiModelGenerator {
 		const parent = context.parentDocgenJson as DocgenInterfaceJson | DocgenPropertyJson | DocgenTypedefJson | undefined;
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 
-		if (apiPropertySignature === undefined) {
+		if (
+			apiPropertySignature === undefined &&
+			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+		) {
 			if (astDeclaration) {
 				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
 
@@ -1341,10 +1348,10 @@ export class ApiModelGenerator {
 								'deprecated' in jsDoc && jsDoc.deprecated
 									? ` * @deprecated ${
 											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-									  }\n`
+										}\n`
 									: ''
 							} */`,
-					  ).docComment
+						).docComment
 					: apiItemMetadata.tsdocComment;
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
@@ -1420,7 +1427,7 @@ export class ApiModelGenerator {
 										.join('')
 								: ''
 						} */`,
-				  ).docComment
+					).docComment
 				: apiItemMetadata.tsdocComment;
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(typeAliasDeclaration);
@@ -1554,7 +1561,7 @@ export class ApiModelGenerator {
 					'deprecated' in jsDoc && jsDoc.deprecated
 						? ` * @deprecated ${
 								typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-						  }\n`
+							}\n`
 						: ''
 				} */`,
 			).docComment;
@@ -1645,6 +1652,54 @@ export class ApiModelGenerator {
 		return parameters;
 	}
 
+	private _isInherited(
+		container: DocgenClassJson | DocgenInterfaceJson,
+		jsDoc: DocgenParamJson | DocgenPropertyJson,
+		containerKind: ApiItemKind,
+	): boolean {
+		switch (containerKind) {
+			case ApiItemKind.Class: {
+				const token = (container as DocgenClassJson).extends;
+				const parentName = Array.isArray(token) ? token[0]?.[0]?.[0] : token?.types?.[0]?.[0]?.[0];
+				const parentJson = this._jsDocJson?.classes.find((clas) => clas.name === parentName);
+				if (parentJson) {
+					if (parentJson.props?.find((prop) => prop.name === jsDoc.name)) {
+						return true;
+					} else {
+						return this._isInherited(parentJson, jsDoc, containerKind);
+					}
+				}
+
+				break;
+			}
+
+			case ApiItemKind.Interface: {
+				const token = (container as DocgenInterfaceJson).extends;
+				const parentNames = Array.isArray(token) ? token.map((parent) => parent[0]?.[0]) : undefined;
+				const parentJsons = parentNames?.map((name) =>
+					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
+				);
+				if (parentJsons?.length) {
+					for (const parentJson of parentJsons) {
+						if (
+							parentJson?.props?.find((prop) => prop.name === jsDoc.name) ||
+							this._isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
+						) {
+							return true;
+						}
+					}
+				}
+
+				break;
+			}
+
+			default:
+				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${jsDoc?.name} `);
+		}
+
+		return false;
+	}
+
 	private _isReadonly(astDeclaration: AstDeclaration): boolean {
 		switch (astDeclaration.declaration.kind) {
 			case ts.SyntaxKind.GetAccessor:
@@ -1690,26 +1745,29 @@ export class ApiModelGenerator {
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
-		return input?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
-			let target = groups.class ?? groups.url;
-			const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
-			const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
-				external?.see?.[0] ?? '',
-			);
-			if (match) {
-				target = `discord-api-types#(${match.groups!.name}:${
-					/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
-				})`;
-			}
+		return input
+			?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
+				let target = groups.class ?? groups.url;
+				const external = this._jsDocJson?.externals.find((external) => groups.class && external.name === groups.class);
+				const match = /discord-api-types-(?<type>[^#]*?)(?:#|\/(?<kind>[^#/]*)\/)(?<name>[^/}]*)}$/.exec(
+					external?.see?.[0] ?? '',
+				);
+				if (match) {
+					target = `discord-api-types#(${match.groups!.name}:${
+						/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
+					})`;
+				}
 
-			return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
-		});
+				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
+			})
+			.replaceAll('* ', '\n * * ');
 	}
 
 	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
 		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
+			[ts.SyntaxKind.EnumDeclaration]: 'enum',
 			[ts.SyntaxKind.InterfaceDeclaration]: 'interface',
 			[ts.SyntaxKind.TypeAliasDeclaration]: 'type',
 		};
@@ -1738,8 +1796,8 @@ export class ApiModelGenerator {
 											DeclarationReference.parseComponent(type ?? 'unknown'),
 										)
 										.withMeaning(
-											lookup[astSymbol?.astDeclarations[0]?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
-												('class' as any),
+											(lookup[astSymbol?.astDeclarations.at(-1)?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
+												'class') as Meaning,
 										)
 										.toString(),
 						},
@@ -1768,9 +1826,9 @@ export class ApiModelGenerator {
 			excerptTokens: [
 				{
 					kind: ExcerptTokenKind.Content,
-					text: `${prop.access} ${prop.scope === 'static' ? 'static ' : ''}${prop.readonly ? 'readonly ' : ''}${
-						prop.name
-					} :`,
+					text: `${prop.access ? `${prop.access} ` : ''}${prop.scope === 'static' ? 'static ' : ''}${
+						prop.readonly ? 'readonly ' : ''
+					}${prop.name} :`,
 				},
 				...mappedVarType,
 				{ kind: ExcerptTokenKind.Content, text: ';' },

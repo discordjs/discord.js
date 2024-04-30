@@ -14,6 +14,7 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
  * * `applicationCommands` - both global and guild commands
  * * `bans`
  * * `emojis`
+ * * `entitlements`
  * * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
  * * `guildMembers`
  * * `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
@@ -32,6 +33,7 @@ exports.SweeperKeys = [
   'applicationCommands',
   'bans',
   'emojis',
+  'entitlements',
   'invites',
   'guildMembers',
   'messages',
@@ -154,6 +156,25 @@ exports.SelectMenuTypes = [
 ];
 
 /**
+ * The types of messages that cannot be deleted. The available types are:
+ * * {@link MessageType.RecipientAdd}
+ * * {@link MessageType.RecipientRemove}
+ * * {@link MessageType.Call}
+ * * {@link MessageType.ChannelNameChange}
+ * * {@link MessageType.ChannelIconChange}
+ * * {@link MessageType.ThreadStarterMessage}
+ * @typedef {MessageType[]} UndeletableMessageTypes
+ */
+exports.UndeletableMessageTypes = [
+  MessageType.RecipientAdd,
+  MessageType.RecipientRemove,
+  MessageType.Call,
+  MessageType.ChannelNameChange,
+  MessageType.ChannelIconChange,
+  MessageType.ThreadStarterMessage,
+];
+
+/**
  * The types of messages that can be deleted. The available types are:
  * * {@link MessageType.AutoModerationAction}
  * * {@link MessageType.ChannelFollowAdd}
@@ -177,6 +198,7 @@ exports.SelectMenuTypes = [
  * * {@link MessageType.ThreadCreated}
  * * {@link MessageType.UserJoin}
  * @typedef {MessageType[]} DeletableMessageTypes
+ * @deprecated This list will no longer be updated. Use {@link UndeletableMessageTypes} instead.
  */
 exports.DeletableMessageTypes = [
   MessageType.AutoModerationAction,

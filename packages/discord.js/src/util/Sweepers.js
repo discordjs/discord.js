@@ -107,6 +107,23 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all client application entitlements and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine which entitlements will be removed from the caches.
+   * @returns {number} Amount of entitlements that were removed from the caches
+   */
+  sweepEntitlements(filter) {
+    if (typeof filter !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
+    }
+
+    const entitlements = this.client.application.entitlements.cache.sweep(filter);
+
+    this.client.emit(Events.CacheSweep, `Swept ${entitlements} entitlements.`);
+
+    return entitlements;
+  }
+
+  /**
    * Sweeps all guild invites and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine which invites will be removed from the caches.
    * @returns {number} Amount of invites that were removed from the caches
@@ -408,6 +425,9 @@ class Sweepers {
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
+      // We may be unable to sweep the cache if the guild is unavailable and was never patched
+      if (!guild.available) continue;
+
       const { cache } = guild[key];
 
       guilds++;

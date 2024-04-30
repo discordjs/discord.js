@@ -265,7 +265,7 @@ export interface IConfigMessageReportingRule {
 	addToApiReportFile?: boolean;
 
 	/**
-	 * Specifies whether the message should be written to the the tool's output log.
+	 * Specifies whether the message should be written to the tool's output log.
 	 *
 	 * @remarks
 	 * Note that the `addToApiReportFile` property may supersede this option.
