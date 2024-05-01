@@ -1,8 +1,5 @@
 'use strict';
 
-const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
 
@@ -68,24 +65,25 @@ class PollAnswer extends Base {
   }
 
   /**
-   * @typedef {Object} FetchPollVotersOptions
+   * Options used for fetching voters of a poll answer.
+   * @typedef {Object} BaseFetchPollAnswerVotersOptions
    * @property {number} [limit] The maximum number of voters to fetch
    * @property {Snowflake} [after] The user id to fetch voters after
    */
 
   /**
-   * Fetches the users that voted for this answer
-   * @param {FetchPollVotersOptions} [options={}] The options for fetching voters
+   * Fetches the users that voted for this answer.
+   * @param {BaseFetchPollAnswerVotersOptions} [options={}] The options for fetching voters
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  async fetchVoters({ after, limit } = {}) {
-    const { message } = this.poll;
-
-    const voters = await this.client.rest.get(Routes.pollAnswerVoters(message.channel.id, message.id, this.id), {
-      query: makeURLSearchParams({ limit, after }),
+  fetchVoters({ after, limit } = {}) {
+    return this.poll.message.channel.fetchPollAnswerVoters({
+      channelId: this.poll.message.channel.id,
+      messageId: this.poll.message.id,
+      answerId: this.id,
+      after,
+      limit,
     });
-
-    return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
   }
 }
 

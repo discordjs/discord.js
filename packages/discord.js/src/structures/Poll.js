@@ -1,7 +1,6 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { PollAnswer } = require('./PollAnswer');
 const { DiscordjsError } = require('../errors/DJSError');
@@ -95,19 +94,15 @@ class Poll extends Base {
   }
 
   /**
-   * End this poll
+   * Ends this poll.
    * @returns {Promise<Message>}
    */
-  async end() {
+  end() {
     if (Date.now() > this.expiresTimestamp) {
-      throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
+      return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
     }
 
-    const message = await this.client.rest.post(Routes.expirePoll(this.message.channel.id, this.message.id));
-
-    const clone = this.message._clone();
-    clone._patch(message);
-    return clone;
+    return this.message.channel.messages.endPoll(this.message.channel.id, this.message.id);
   }
 }
 
