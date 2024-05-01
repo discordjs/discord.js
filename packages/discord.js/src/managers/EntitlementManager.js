@@ -124,6 +124,16 @@ class EntitlementManager extends CachedManager {
 
     await this.client.rest.delete(Routes.entitlement(this.client.application.id, resolved));
   }
+
+  /**
+   * Marks an entitlement as consumed
+   * <info>Only available for One-Time Purchase consumable SKUs.</info>
+   * @param {Snowflake} entitlementId The id of the entitlement to consume
+   * @returns {Promise<void>}
+   */
+  async consume(entitlementId) {
+    await this.client.rest.post(Routes.consumeEntitlement(this.client.application.id, entitlementId));
+  }
 }
 
 exports.EntitlementManager = EntitlementManager;

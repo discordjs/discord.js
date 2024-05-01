@@ -1,6 +1,5 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 
 /**
@@ -177,7 +176,7 @@ class Entitlement extends Base {
    * @returns {Promise<void>}
    */
   async consume() {
-    await this.client.rest.post(Routes.consumeEntitlement(this.applicationId, this.id));
+    await this.client.application.entitlements.consume(this.id);
   }
 }
 
