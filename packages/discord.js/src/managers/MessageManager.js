@@ -279,7 +279,7 @@ class MessageManager extends CachedManager {
   }
 
   /**
-   * Options used for fetching voters of an answer in an uncached poll.
+   * Options used for fetching voters of an answer in a poll.
    * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
    * @param {Snowflake} channelId The id of the channel
    * @param {Snowflake} messageId The id of the message
