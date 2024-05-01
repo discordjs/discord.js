@@ -2495,6 +2495,8 @@ declare const sku: SKU;
 
   await application.entitlements.deleteTest(entitlement);
 
+  await application.entitlements.consume(snowflake);
+
   expectType<boolean>(entitlement.isActive());
 
   if (entitlement.isUserSubscription()) {
