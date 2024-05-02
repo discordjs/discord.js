@@ -266,6 +266,38 @@ class MessageManager extends CachedManager {
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
   }
+
+  /**
+   * Ends a poll.
+   * @param {Snowflake} channelId The id of the channel
+   * @param {Snowflake} messageId The id of the message
+   * @returns {Promise<Message>}
+   */
+  async endPoll(channelId, messageId) {
+    const message = await this.client.rest.post(Routes.expirePoll(channelId, messageId));
+    return this._add(message, false);
+  }
+
+  /**
+   * Options used for fetching voters of an answer in a poll.
+   * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
+   * @param {Snowflake} channelId The id of the channel
+   * @param {Snowflake} messageId The id of the message
+   * @param {number} answerId The id of the answer
+   */
+
+  /**
+   * Fetches the users that voted for a poll answer.
+   * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
+   * @returns {Promise<Collection<Snowflake, User>>}
+   */
+  async fetchPollAnswerVoters({ channelId, messageId, answerId, after, limit }) {
+    const voters = await this.client.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {
+      query: makeURLSearchParams({ limit, after }),
+    });
+
+    return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
+  }
 }
 
 module.exports = MessageManager;

@@ -2608,7 +2608,7 @@ export class Poll extends Base {
   public end(): Promise<Message>;
 }
 
-export interface FetchPollVotersOptions {
+export interface BaseFetchPollAnswerVotersOptions {
   after?: Snowflake;
   limit?: number;
 }
@@ -2621,7 +2621,7 @@ export class PollAnswer extends Base {
   public text: string | null;
   public voteCount: number;
   public get emoji(): GuildEmoji | Emoji | null;
-  public fetchVoters(options?: FetchPollVotersOptions): Promise<Collection<Snowflake, User>>;
+  public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export class ReactionCollector extends Collector<Snowflake | string, MessageReaction, [User]> {
@@ -4397,6 +4397,12 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
   ): Promise<GuildMember>;
 }
 
+export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
+  channelId: Snowflake;
+  messageId: Snowflake;
+  answerId: number;
+}
+
 export abstract class MessageManager<InGuild extends boolean = boolean> extends CachedManager<
   Snowflake,
   Message<InGuild>,
@@ -4415,6 +4421,8 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
+  public endPoll(channelId: Snowflake, messageId: Snowflake): Promise<Message>;
+  public fetchPollAnswerVoters(options: FetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export class DMMessageManager extends MessageManager {
