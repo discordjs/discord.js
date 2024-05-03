@@ -18,12 +18,18 @@ export enum Encoding {
  * Valid compression methods
  */
 export enum CompressionMethod {
-	ZlibStream = 'zlib-stream',
+	ZLibNative,
+	ZLibSync,
 }
 
 export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
+
+export const CompressionParameterMap = {
+	[CompressionMethod.ZLibNative]: 'zlib-stream',
+	[CompressionMethod.ZLibSync]: 'zlib-stream',
+} as const satisfies Record<CompressionMethod, string>;
 
 /**
  * Default options used by the manager
@@ -45,7 +51,7 @@ export const DefaultWebSocketManagerOptions = {
 	},
 	version: APIVersion,
 	encoding: Encoding.JSON,
-	transportCompression: null,
+	compression: null,
 	useIdentifyCompression: false,
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();

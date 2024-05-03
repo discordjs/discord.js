@@ -96,6 +96,12 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	buildStrategy(manager: WebSocketManager): IShardingStrategy;
 	/**
+	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
+	 *
+	 * @defaultValue `null` (no transport compression)
+	 */
+	compression: CompressionMethod | null;
+	/**
 	 * The encoding to use
 	 *
 	 * @defaultValue `'json'`
@@ -166,12 +172,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * ```
 	 */
 	shardIds: number[] | ShardRange | null;
-	/**
-	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
-	 *
-	 * @defaultValue `null` (no transport compression)
-	 */
-	transportCompression: CompressionMethod | null;
 	/**
 	 * Function used to store session information for a given shard
 	 */

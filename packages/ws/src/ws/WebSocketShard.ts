@@ -1,12 +1,12 @@
+import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
-import type { Inflate } from 'node:zlib';
-import { inflate, createInflate, constants as zlibConstants } from 'node:zlib';
+import * as nativeZLib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -20,9 +20,18 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
+import type * as ZLibSync from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
-import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
+import {
+	CompressionMethod,
+	CompressionParameterMap,
+	ImportantGatewayOpcodes,
+	getInitialSendRateLimitState,
+} from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
+
+// eslint-disable-next-line promise/prefer-await-to-then
+const getZLibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
 
 export enum WebSocketShardEvents {
 	Closed = 'closed',
@@ -83,7 +92,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private useIdentifyCompression = false;
 
-	private inflate: Inflate | null = null;
+	private nativeInflate: nativeZLib.Inflate | null = null;
+
+	private zLibSyncInflate: ZLibSync.Inflate | null = null;
 
 	private readonly textDecoder = new TextDecoder();
 
@@ -156,28 +167,50 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
-		const { version, encoding, transportCompression: compression, useIdentifyCompression } = this.strategy.options;
+		const { version, encoding, compression, useIdentifyCompression } = this.strategy.options;
 		this.useIdentifyCompression = useIdentifyCompression;
 
 		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
-		if (compression) {
+		if (compression !== null) {
 			if (useIdentifyCompression) {
 				console.warn('WebSocketShard: transport compression is enabled, disabling identify compression');
 				this.useIdentifyCompression = false;
 			}
 
-			params.append('compress', compression);
-			const inflate = createInflate({
-				chunkSize: 65_535,
-				flush: zlibConstants.Z_SYNC_FLUSH,
-			});
+			params.append('compress', CompressionParameterMap[compression]);
 
-			inflate.on('error', (error) => {
-				this.emit(WebSocketShardEvents.Error, { error });
-			});
+			switch (compression) {
+				case CompressionMethod.ZLibNative: {
+					const inflate = nativeZLib.createInflate({
+						chunkSize: 65_535,
+						flush: nativeZLib.constants.Z_SYNC_FLUSH,
+					});
 
-			this.inflate = inflate;
+					inflate.on('error', (error) => {
+						this.emit(WebSocketShardEvents.Error, { error });
+					});
+
+					this.nativeInflate = inflate;
+
+					break;
+				}
+
+				case CompressionMethod.ZLibSync: {
+					const zlib = await getZLibSync();
+					if (zlib) {
+						this.zLibSyncInflate = new zlib.Inflate({
+							chunkSize: 65_535,
+							to: 'string',
+						});
+					} else {
+						console.warn('WebSocketShard: Compression is enabled but zlib-sync is not installed.');
+						params.delete('compress');
+					}
+
+					break;
+				}
+			}
 		}
 
 		const session = await this.strategy.retrieveSessionInfo(this.id);
@@ -452,7 +485,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompression ? 'identify' : 'none'}`,
+			`compression: ${this.nativeInflate ? 'zlib-stream' : this.useIdentifyCompression ? 'identify' : 'none'}`,
 		]);
 
 		const data: GatewayIdentifyData = {
@@ -535,7 +568,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (this.useIdentifyCompression) {
 			return new Promise((resolve, reject) => {
 				// eslint-disable-next-line promise/prefer-await-to-callbacks
-				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
+				nativeZLib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
 						return;
@@ -547,7 +580,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		// Deal with gw wide zlib-stream compression
-		if (this.inflate) {
+		if (this.strategy.options.compression !== null) {
 			const flush =
 				decompressable.length >= 4 &&
 				decompressable.at(-4) === 0x00 &&
@@ -555,26 +588,53 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				decompressable.at(-2) === 0xff &&
 				decompressable.at(-1) === 0xff;
 
-			this.inflate!.write(decompressable, 'binary');
+			if (this.nativeInflate) {
+				this.nativeInflate!.write(decompressable, 'binary');
 
-			if (!flush) {
-				return null;
+				if (!flush) {
+					return null;
+				}
+
+				const [result] = await once(this.nativeInflate, 'data');
+				if (!result) {
+					return null;
+				}
+
+				return JSON.parse(
+					typeof result === 'string' ? result : this.textDecoder.decode(result),
+				) as GatewayReceivePayload;
+			} else if (this.zLibSyncInflate) {
+				const zLibSync = (await getZLibSync())!;
+				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
+
+				if (this.zLibSyncInflate.err) {
+					this.emit(WebSocketShardEvents.Error, {
+						error: new Error(
+							`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`,
+						),
+					});
+				}
+
+				if (!flush) {
+					return null;
+				}
+
+				const { result } = this.zLibSyncInflate;
+				if (!result) {
+					return null;
+				}
+
+				return JSON.parse(
+					typeof result === 'string' ? result : this.textDecoder.decode(result),
+				) as GatewayReceivePayload;
 			}
-
-			const [result] = await once(this.inflate, 'data');
-
-			if (!result) {
-				return null;
-			}
-
-			return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
 		}
 
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
 			`useIdentifyCompress: ${this.useIdentifyCompression.toString()}`,
-			`inflate: ${Boolean(this.inflate).toString()}`,
+			`inflate: ${Boolean(this.nativeInflate).toString()}`,
 		]);
 
 		return null;
