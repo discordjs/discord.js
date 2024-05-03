@@ -485,7 +485,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.nativeInflate ? 'zlib-stream' : this.useIdentifyCompression ? 'identify' : 'none'}`,
+			`compression: ${this.strategy.options.compression === null ? (this.useIdentifyCompression ? 'identify' : 'none') : 'zlib-stream'}`,
 		]);
 
 		const data: GatewayIdentifyData = {
@@ -633,8 +633,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
-			`useIdentifyCompress: ${this.useIdentifyCompression.toString()}`,
-			`inflate: ${Boolean(this.nativeInflate).toString()}`,
+			`useIdentifyCompression: ${this.useIdentifyCompression.toString()}`,
+			`inflate: ${this.nativeInflate ? 'node:zlib' : 'zlib-sync'} (zlib-stream)`,
 		]);
 
 		return null;
