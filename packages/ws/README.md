@@ -52,7 +52,7 @@ const manager = new WebSocketManager({
 	// uncomment if you have zlib-sync installed and want to use compression
 	// compression: CompressionMethod.ZLibSync,
 
-	// alternatively, we now support compression using node's native `node:zlib` module:
+	// alternatively, we support compression using node's native `node:zlib` module:
 	// compression: CompressionMethod.ZLibNative,
 });
 
