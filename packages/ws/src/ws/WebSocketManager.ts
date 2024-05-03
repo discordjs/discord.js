@@ -177,7 +177,7 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
 	/**
-	 * Whether to use the `compress` option when identifying - mutually exclusive with `transportCompression`
+	 * Whether to use the `compress` option when identifying
 	 *
 	 * @defaultValue `false`
 	 */
