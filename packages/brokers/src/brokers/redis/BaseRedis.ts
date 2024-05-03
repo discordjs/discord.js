@@ -36,7 +36,7 @@ export interface RedisBrokerOptions extends BaseBrokerOptions {
 }
 
 /**
- * Default broker options
+ * Default broker options for redis
  */
 export const DefaultRedisBrokerOptions = {
 	...DefaultBrokerOptions,
