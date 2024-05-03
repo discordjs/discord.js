@@ -1,5 +1,4 @@
 import { Buffer } from 'node:buffer';
-import { randomBytes } from 'node:crypto';
 import { encode, decode } from '@msgpack/msgpack';
 import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 
@@ -7,10 +6,6 @@ import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
  * Base options for a broker implementation
  */
 export interface BaseBrokerOptions {
-	/**
-	 * How long to block for messages when polling
-	 */
-	blockTimeout?: number;
 	/**
 	 * Function to use for decoding messages
 	 */
@@ -21,25 +16,12 @@ export interface BaseBrokerOptions {
 	 */
 	// eslint-disable-next-line @typescript-eslint/method-signature-style
 	encode?: (data: unknown) => Buffer;
-	/**
-	 * Max number of messages to poll at once
-	 */
-	maxChunk?: number;
-	/**
-	 * Unique consumer name.
-	 *
-	 * @see {@link https://redis.io/commands/xreadgroup/}
-	 */
-	name?: string;
 }
 
 /**
  * Default broker options
  */
 export const DefaultBrokerOptions = {
-	name: randomBytes(20).toString('hex'),
-	maxChunk: 10,
-	blockTimeout: 5_000,
 	encode: (data): Buffer => {
 		const encoded = encode(data);
 		return Buffer.from(encoded.buffer, encoded.byteOffset, encoded.byteLength);
