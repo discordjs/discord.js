@@ -132,7 +132,7 @@ const manager = new WebSocketManager({
 		new WorkerShardingStrategy(manager, {
 			shardsPerWorker: 2,
 			workerPath: './worker.js',
-			// Optionally, if you you have custom messaging, like for analytic collection, you can use this:
+			// Optionally, if you have custom messaging, like for analytic collection, you can use this:
 			async unknownPayloadHandler(data: any) {
 				// handle data here :3
 			},
