@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.15.1](https://github.com/discordjs/discord.js/compare/14.15.0...14.15.1) - (2024-05-04)
+
+## Bug Fixes
+
+- **MessageManager:** Poll methods don't need a channel id (#10249) ([0474a43](https://github.com/discordjs/discord.js/commit/0474a4375146b57b35074dadbaa83274416f899e))
+
 # [14.15.0](https://github.com/discordjs/discord.js/compare/14.14.1...14.15.0) - (2024-05-04)
 
 ## Bug Fixes
