@@ -102,7 +102,7 @@ class Poll extends Base {
       return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
     }
 
-    return this.message.channel.messages.endPoll(this.message.channel.id, this.message.id);
+    return this.message.channel.messages.endPoll(this.message.id);
   }
 }
 

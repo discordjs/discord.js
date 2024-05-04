@@ -280,7 +280,6 @@ class MessageManager extends CachedManager {
   /**
    * Options used for fetching voters of an answer in a poll.
    * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
-   * @param {Snowflake} channelId The id of the channel
    * @param {Snowflake} messageId The id of the message
    * @param {number} answerId The id of the answer
    */
@@ -290,8 +289,8 @@ class MessageManager extends CachedManager {
    * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  async fetchPollAnswerVoters({ channelId, messageId, answerId, after, limit }) {
-    const voters = await this.client.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {
+  async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
+    const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
       query: makeURLSearchParams({ limit, after }),
     });
 

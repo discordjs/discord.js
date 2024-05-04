@@ -78,7 +78,6 @@ class PollAnswer extends Base {
    */
   fetchVoters({ after, limit } = {}) {
     return this.poll.message.channel.fetchPollAnswerVoters({
-      channelId: this.poll.message.channel.id,
       messageId: this.poll.message.id,
       answerId: this.id,
       after,
