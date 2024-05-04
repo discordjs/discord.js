@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.1...@discordjs/core@1.2.0) - (2024-05-04)
+
+## Bug Fixes
+
+- **Gateway:** Export interface (#10060) ([ce84d3e](https://github.com/discordjs/discord.js/commit/ce84d3efee7186150c89698916e7211a2423a839))
+
+## Documentation
+
+- Remove duplicated words (#10178) ([26af386](https://github.com/discordjs/discord.js/commit/26af3868a5648042b7715a14b8ed8dd2f478345c))
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- Consumable entitlements (#10235) ([9978870](https://github.com/discordjs/discord.js/commit/997887069a00b732e62ba7bdceed714e3ede1079))
+- Polls (#10185) ([a1aeaeb](https://github.com/discordjs/discord.js/commit/a1aeaeb9d804b126dd525b6090c6f2ff9591cb9c))
+- **GuildsAPI:** Bulk ban users (#10202) ([bfc3b10](https://github.com/discordjs/discord.js/commit/bfc3b100dad97417b64ecc94d8f84135c3208072))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- **guild:** Add `with_counts` to getting guilds (#10143) ([8c2abab](https://github.com/discordjs/discord.js/commit/8c2ababa786be470519e08846a1d843b406f9f50))
+- Premium application subscriptions (#9907) ([c4fcee3](https://github.com/discordjs/discord.js/commit/c4fcee3ef6021c440f162a5764d5d9465f06dc9b))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- **oauth2:** Remove unnecessary dependency on 'node:url' (#10141) ([906ade9](https://github.com/discordjs/discord.js/commit/906ade9cc54ef3c162734e70215bef1b1cf1793e))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
+# [@discordjs/core@1.1.1](https://github.com/discordjs/discord.js/tree/@discordjs/core@1.1.1) - (2023-11-18)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
 # [@discordjs/core@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.0...@discordjs/core@1.1.1) - (2023-11-17)
 
 ## Bug Fixes
