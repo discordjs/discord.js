@@ -485,7 +485,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.strategy.options.compression === null ? (this.useIdentifyCompression ? 'identify' : 'none') : 'zlib-stream'}`,
+			`compression: ${this.strategy.options.compression === null ? (this.useIdentifyCompression ? 'identify' : 'none') : CompressionParameterMap[this.strategy.options.compression]}`,
 		]);
 
 		const data: GatewayIdentifyData = {
@@ -551,6 +551,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = false;
 	}
 
+	private parseResult(result: any): GatewayReceivePayload | null {
+		if (!result) {
+			return null;
+		}
+
+		return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
+	}
+
 	private async unpackMessage(data: Data, isBinary: boolean): Promise<GatewayReceivePayload | null> {
 		// Deal with no compression
 		if (!isBinary) {
@@ -589,20 +597,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				decompressable.at(-1) === 0xff;
 
 			if (this.nativeInflate) {
-				this.nativeInflate!.write(decompressable, 'binary');
+				this.nativeInflate.write(decompressable, 'binary');
 
 				if (!flush) {
 					return null;
 				}
 
 				const [result] = await once(this.nativeInflate, 'data');
-				if (!result) {
-					return null;
-				}
-
-				return JSON.parse(
-					typeof result === 'string' ? result : this.textDecoder.decode(result),
-				) as GatewayReceivePayload;
+				return this.parseResult(result);
 			} else if (this.zLibSyncInflate) {
 				const zLibSync = (await getZLibSync())!;
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
@@ -620,13 +622,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				}
 
 				const { result } = this.zLibSyncInflate;
-				if (!result) {
-					return null;
-				}
-
-				return JSON.parse(
-					typeof result === 'string' ? result : this.textDecoder.decode(result),
-				) as GatewayReceivePayload;
+				return this.parseResult(result);
 			}
 		}
 
@@ -634,7 +630,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
 			`useIdentifyCompression: ${this.useIdentifyCompression.toString()}`,
-			`inflate: ${this.nativeInflate ? 'node:zlib' : 'zlib-sync'} (zlib-stream)`,
+			`inflate: ${this.strategy.options.compression ? CompressionMethod[this.strategy.options.compression] : 'none'}`,
 		]);
 
 		return null;
