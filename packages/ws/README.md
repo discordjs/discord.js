@@ -134,7 +134,7 @@ const manager = new WebSocketManager({
 			workerPath: './worker.js',
 			// Optionally, if you have custom messaging, like for analytic collection, you can use this:
 			async unknownPayloadHandler(data: any) {
-				// handle data here
+				// handle data here :3
 			},
 		}),
 });
