@@ -50,10 +50,10 @@ const manager = new WebSocketManager({
 	intents: 0, // for no intents
 	rest,
 	// uncomment if you have zlib-sync installed and want to use compression
-	// compression: CompressionMethod.ZLibSync,
+	// compression: CompressionMethod.ZlibSync,
 
 	// alternatively, we support compression using node's native `node:zlib` module:
-	// compression: CompressionMethod.ZLibNative,
+	// compression: CompressionMethod.ZlibNative,
 });
 
 manager.on(WebSocketShardEvents.Dispatch, (event) => {

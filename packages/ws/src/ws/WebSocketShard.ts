@@ -4,7 +4,7 @@ import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timer
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
-import type * as nativeZLib from 'node:zlib';
+import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
@@ -20,7 +20,7 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
-import type * as ZLibSync from 'zlib-sync';
+import type * as ZlibSync from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import {
 	CompressionMethod,
@@ -31,8 +31,8 @@ import {
 import type { SessionInfo } from './WebSocketManager.js';
 
 /* eslint-disable promise/prefer-await-to-then */
-const getZLibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
-const getNativeZLib = lazy(async () => import('node:zlib').then((mod) => mod).catch(() => null));
+const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
+const getNativeZlib = lazy(async () => import('node:zlib').then((mod) => mod).catch(() => null));
 /* eslint-enable promise/prefer-await-to-then */
 
 export enum WebSocketShardEvents {
@@ -92,9 +92,9 @@ const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket(
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private nativeInflate: nativeZLib.Inflate | null = null;
+	private nativeInflate: nativeZlib.Inflate | null = null;
 
-	private zLibSyncInflate: ZLibSync.Inflate | null = null;
+	private zLibSyncInflate: ZlibSync.Inflate | null = null;
 
 	private readonly textDecoder = new TextDecoder();
 
@@ -193,8 +193,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			params.append('compress', CompressionParameterMap[compression]);
 
 			switch (compression) {
-				case CompressionMethod.ZLibNative: {
-					const zlib = await getNativeZLib();
+				case CompressionMethod.ZlibNative: {
+					const zlib = await getNativeZlib();
 					if (zlib) {
 						const inflate = zlib.createInflate({
 							chunkSize: 65_535,
@@ -214,8 +214,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					break;
 				}
 
-				case CompressionMethod.ZLibSync: {
-					const zlib = await getZLibSync();
+				case CompressionMethod.ZlibSync: {
+					const zlib = await getZlibSync();
 					if (zlib) {
 						this.zLibSyncInflate = new zlib.Inflate({
 							chunkSize: 65_535,
@@ -232,7 +232,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		if (useIdentifyCompression) {
-			const zlib = await getNativeZLib();
+			const zlib = await getNativeZlib();
 			if (!zlib) {
 				console.warn('WebSocketShard: Identify compression is enabled, but node:zlib is not available.');
 				this.identifyCompressionEnabled = false;
@@ -602,7 +602,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (this.identifyCompressionEnabled) {
 			// eslint-disable-next-line no-async-promise-executor
 			return new Promise(async (resolve, reject) => {
-				const zlib = (await getNativeZLib())!;
+				const zlib = (await getNativeZlib())!;
 				// eslint-disable-next-line promise/prefer-await-to-callbacks
 				zlib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
@@ -634,7 +634,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				const [result] = await once(this.nativeInflate, 'data');
 				return this.parseInflateResult(result);
 			} else if (this.zLibSyncInflate) {
-				const zLibSync = (await getZLibSync())!;
+				const zLibSync = (await getZlibSync())!;
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
