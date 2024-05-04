@@ -269,12 +269,11 @@ class MessageManager extends CachedManager {
 
   /**
    * Ends a poll.
-   * @param {Snowflake} channelId The id of the channel
    * @param {Snowflake} messageId The id of the message
    * @returns {Promise<Message>}
    */
-  async endPoll(channelId, messageId) {
-    const message = await this.client.rest.post(Routes.expirePoll(channelId, messageId));
+  async endPoll(messageId) {
+    const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
     return this._add(message, false);
   }
 
