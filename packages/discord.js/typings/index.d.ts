@@ -2113,6 +2113,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
+  public poll: Poll | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
