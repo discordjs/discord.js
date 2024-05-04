@@ -4,7 +4,7 @@ import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timer
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
-import * as nativeZLib from 'node:zlib';
+import type * as nativeZLib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
@@ -30,8 +30,10 @@ import {
 } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
-// eslint-disable-next-line promise/prefer-await-to-then
+/* eslint-disable promise/prefer-await-to-then */
 const getZLibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
+const getNativeZLib = lazy(async () => import('node:zlib').then((mod) => mod).catch(() => null));
+/* eslint-enable promise/prefer-await-to-then */
 
 export enum WebSocketShardEvents {
 	Closed = 'closed',
@@ -90,8 +92,6 @@ const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket(
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private useIdentifyCompression = false;
-
 	private nativeInflate: nativeZLib.Inflate | null = null;
 
 	private zLibSyncInflate: ZLibSync.Inflate | null = null;
@@ -125,6 +125,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	public readonly id: number;
 
 	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
+
+	private identifyCompressionEnabled = false;
+
+	/**
+	 * @privateRemarks
+	 *
+	 * This is needed because `this.strategy.options.compression` is not an actual reflection of the compression method
+	 * used, but rather the compression method that the user wants to use. This is because the libraries could just be missing.
+	 */
+	private get transportCompressionEnabled() {
+		return this.strategy.options.compression !== null && (Boolean(this.nativeInflate) || Boolean(this.zLibSyncInflate));
+	}
 
 	public get status(): WebSocketShardStatus {
 		return this.#status;
@@ -168,30 +180,36 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		const { version, encoding, compression, useIdentifyCompression } = this.strategy.options;
-		this.useIdentifyCompression = useIdentifyCompression;
+		this.identifyCompressionEnabled = useIdentifyCompression;
 
 		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
 		if (compression !== null) {
 			if (useIdentifyCompression) {
 				console.warn('WebSocketShard: transport compression is enabled, disabling identify compression');
-				this.useIdentifyCompression = false;
+				this.identifyCompressionEnabled = false;
 			}
 
 			params.append('compress', CompressionParameterMap[compression]);
 
 			switch (compression) {
 				case CompressionMethod.ZLibNative: {
-					const inflate = nativeZLib.createInflate({
-						chunkSize: 65_535,
-						flush: nativeZLib.constants.Z_SYNC_FLUSH,
-					});
+					const zlib = await getNativeZLib();
+					if (zlib) {
+						const inflate = zlib.createInflate({
+							chunkSize: 65_535,
+							flush: zlib.constants.Z_SYNC_FLUSH,
+						});
 
-					inflate.on('error', (error) => {
-						this.emit(WebSocketShardEvents.Error, { error });
-					});
+						inflate.on('error', (error) => {
+							this.emit(WebSocketShardEvents.Error, { error });
+						});
 
-					this.nativeInflate = inflate;
+						this.nativeInflate = inflate;
+					} else {
+						console.warn('WebSocketShard: Compression is set to native but node:zlib is not available.');
+						params.delete('compress');
+					}
 
 					break;
 				}
@@ -204,12 +222,20 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 							to: 'string',
 						});
 					} else {
-						console.warn('WebSocketShard: Compression is enabled but zlib-sync is not installed.');
+						console.warn('WebSocketShard: Compression is set to zlib-sync, but it is not installed.');
 						params.delete('compress');
 					}
 
 					break;
 				}
+			}
+		}
+
+		if (useIdentifyCompression) {
+			const zlib = await getNativeZLib();
+			if (!zlib) {
+				console.warn('WebSocketShard: Identify compression is enabled, but node:zlib is not available.');
+				this.identifyCompressionEnabled = false;
 			}
 		}
 
@@ -485,14 +511,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.strategy.options.compression === null ? (this.useIdentifyCompression ? 'identify' : 'none') : CompressionParameterMap[this.strategy.options.compression]}`,
+			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
 		const data: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
-			compress: this.useIdentifyCompression,
+			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};
 
@@ -573,10 +599,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const decompressable = new Uint8Array(data as ArrayBuffer);
 
 		// Deal with identify compress
-		if (this.useIdentifyCompression) {
-			return new Promise((resolve, reject) => {
+		if (this.identifyCompressionEnabled) {
+			// eslint-disable-next-line no-async-promise-executor
+			return new Promise(async (resolve, reject) => {
+				const zlib = (await getNativeZLib())!;
 				// eslint-disable-next-line promise/prefer-await-to-callbacks
-				nativeZLib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
+				zlib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
 						return;
@@ -587,8 +615,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			});
 		}
 
-		// Deal with gw wide zlib-stream compression
-		if (this.strategy.options.compression !== null) {
+		// Deal with transport compression
+		if (this.transportCompressionEnabled) {
 			const flush =
 				decompressable.length >= 4 &&
 				decompressable.at(-4) === 0x00 &&
@@ -629,8 +657,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
-			`useIdentifyCompression: ${this.useIdentifyCompression.toString()}`,
-			`inflate: ${this.strategy.options.compression ? CompressionMethod[this.strategy.options.compression] : 'none'}`,
+			`useIdentifyCompression: ${this.identifyCompressionEnabled.toString()}`,
+			`inflate: ${this.transportCompressionEnabled ? CompressionMethod[this.strategy.options.compression!] : 'none'}`,
 		]);
 
 		return null;
