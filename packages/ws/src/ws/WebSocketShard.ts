@@ -135,7 +135,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	 * used, but rather the compression method that the user wants to use. This is because the libraries could just be missing.
 	 */
 	private get transportCompressionEnabled() {
-		return this.strategy.options.compression !== null && (Boolean(this.nativeInflate) || Boolean(this.zLibSyncInflate));
+		return this.strategy.options.compression !== null && (this.nativeInflate ?? this.zLibSyncInflate) !== null;
 	}
 
 	public get status(): WebSocketShardStatus {
