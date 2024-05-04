@@ -657,7 +657,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
-			`useIdentifyCompression: ${this.identifyCompressionEnabled.toString()}`,
+			`identifyCompressionEnabled: ${this.identifyCompressionEnabled.toString()}`,
 			`inflate: ${this.transportCompressionEnabled ? CompressionMethod[this.strategy.options.compression!] : 'none'}`,
 		]);
 
