@@ -231,7 +231,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 		}
 
-		if (useIdentifyCompression) {
+		if (this.identifyCompressionEnabled) {
 			const zlib = await getNativeZlib();
 			if (!zlib) {
 				console.warn('WebSocketShard: Identify compression is enabled, but node:zlib is not available.');
