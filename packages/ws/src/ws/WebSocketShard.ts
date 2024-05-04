@@ -551,7 +551,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.isAck = false;
 	}
 
-	private parseResult(result: any): GatewayReceivePayload | null {
+	private parseInflateResult(result: any): GatewayReceivePayload | null {
 		if (!result) {
 			return null;
 		}
@@ -604,7 +604,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				}
 
 				const [result] = await once(this.nativeInflate, 'data');
-				return this.parseResult(result);
+				return this.parseInflateResult(result);
 			} else if (this.zLibSyncInflate) {
 				const zLibSync = (await getZLibSync())!;
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
@@ -622,7 +622,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				}
 
 				const { result } = this.zLibSyncInflate;
-				return this.parseResult(result);
+				return this.parseInflateResult(result);
 			}
 		}
 
