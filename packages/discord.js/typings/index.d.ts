@@ -178,6 +178,8 @@ import {
   APIPoll,
   PollLayoutType,
   APIPollAnswer,
+  APISelectMenuDefaultValue,
+  SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -6364,10 +6366,12 @@ export interface StringSelectMenuComponentData extends BaseSelectMenuComponentDa
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.UserSelect;
+  defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
 }
 
 export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.RoleSelect;
+  defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role>[];
 }
 
 export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData {
@@ -6377,6 +6381,7 @@ export interface MentionableSelectMenuComponentData extends BaseSelectMenuCompon
 export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.ChannelSelect;
   channelTypes?: readonly ChannelType[];
+  defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Channel>[];
 }
 
 export interface MessageSelectOption {
