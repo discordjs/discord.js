@@ -333,15 +333,18 @@ describe('Slash Commands', () => {
 				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(() => new Collection())).toThrowError();
 			});
-            
-            test("GIVEN valid builder with consistent method return types to builder, THEN does not throw error", () => {
-                type BuilderPropsOnly<Type = SlashCommandBuilder> = Pick<Type, keyof {
-                    [Key in keyof Type as Type[Key] extends (...args: any) => any ? never : Key]: any;
-                }>;
-                
-                expectTypeOf(getBuilder().addStringOption(getStringOption())).toMatchTypeOf<BuilderPropsOnly>();
-                
-                expectTypeOf(getBuilder().addSubcommand(getSubcommand())).toMatchTypeOf<BuilderPropsOnly>();
+
+			test('GIVEN valid builder with consistent method return types to builder, THEN does not throw error', () => {
+				type BuilderPropsOnly<Type = SlashCommandBuilder> = Pick<
+					Type,
+					keyof {
+						[Key in keyof Type as Type[Key] extends (...args: any) => any ? never : Key]: any;
+					}
+				>;
+
+				expectTypeOf(getBuilder().addStringOption(getStringOption())).toMatchTypeOf<BuilderPropsOnly>();
+
+				expectTypeOf(getBuilder().addSubcommand(getSubcommand())).toMatchTypeOf<BuilderPropsOnly>();
 			});
 
 			test('GIVEN valid builder with defaultPermission false THEN does not throw error', () => {
