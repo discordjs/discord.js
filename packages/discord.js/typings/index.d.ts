@@ -6376,6 +6376,7 @@ export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData
 
 export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.MentionableSelect;
+  defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role | SelectMenuDefaultValueType.User>[];
 }
 
 export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
