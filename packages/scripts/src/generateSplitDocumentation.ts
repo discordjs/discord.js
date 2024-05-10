@@ -328,7 +328,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					if (!foundItem && !resolved) {
 						return {
 							kind: DocNodeKind.LinkTag,
-							text: null,
+							text: codeDestination.memberReferences[0]?.memberIdentifier?.identifier ?? null,
 						};
 					}
 
