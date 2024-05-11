@@ -148,7 +148,7 @@ class PermissionOverwrites extends Base {
    */
 
   /**
-   * Data that can be resolved into {@link RawOverwriteData}. This can be:
+   * Data that can be resolved into {@link APIOverwrite}. This can be:
    * * PermissionOverwrites
    * * OverwriteData
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable
@@ -164,7 +164,7 @@ class PermissionOverwrites extends Base {
    */
 
   /**
-   * Resolves an overwrite into {@link RawOverwriteData}.
+   * Resolves an overwrite into {@link APIOverwrite}.
    * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
    * @param {Guild} [guild] The guild to resolve from
    * @returns {RawOverwriteData}

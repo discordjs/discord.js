@@ -161,6 +161,11 @@
  */
 
 /**
+ * @external APIOverwrite
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIOverwrite}
+ */
+
+/**
  * @external APIPartialEmoji
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
  */
