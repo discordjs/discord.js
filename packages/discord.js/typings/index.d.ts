@@ -6726,6 +6726,8 @@ export type TextBasedChannel = Exclude<
   PartialGroupDMChannel | ForumChannel | MediaChannel
 >;
 
+export type TextBasedChannels = TextBasedChannel;
+
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM>;
