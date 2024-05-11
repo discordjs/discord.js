@@ -13,7 +13,7 @@ class MessagePollVoteRemoveAction extends Action {
 
     const { poll } = message;
 
-    const answer = poll.answers.get(data.answer_id);
+    const answer = poll?.answers.get(data.answer_id);
     if (!answer) return false;
 
     answer.voteCount--;

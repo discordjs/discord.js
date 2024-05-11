@@ -2549,9 +2549,8 @@ declare const poll: Poll;
 
   expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
 
-  await messageManager.endPoll(snowflake, snowflake);
+  await messageManager.endPoll(snowflake);
   await messageManager.fetchPollAnswerVoters({
-    channelId: snowflake,
     messageId: snowflake,
     answerId: 1,
   });

@@ -2113,6 +2113,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
+  public poll: Poll | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -4398,7 +4399,6 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
-  channelId: Snowflake;
   messageId: Snowflake;
   answerId: number;
 }
@@ -4421,7 +4421,7 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
-  public endPoll(channelId: Snowflake, messageId: Snowflake): Promise<Message>;
+  public endPoll(messageId: Snowflake): Promise<Message>;
   public fetchPollAnswerVoters(options: FetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 

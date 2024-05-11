@@ -135,6 +135,10 @@ const manager = new WebSocketManager({
 		new WorkerShardingStrategy(manager, {
 			shardsPerWorker: 2,
 			workerPath: './worker.js',
+			// Optionally, if you have custom messaging, like for analytic collection, you can use this:
+			async unknownPayloadHandler(data: any) {
+				// handle data here :3
+			},
 		}),
 });
 ```
@@ -143,6 +147,7 @@ And your `worker.ts` file:
 
 ```ts
 import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
+import { parentPort } from 'node:worker_threads';
 
 const bootstrapper = new WorkerBootstrapper();
 void bootstrapper.bootstrap({
@@ -161,6 +166,9 @@ void bootstrapper.bootstrap({
 		});
 	},
 });
+
+// This will go to `unknownPayloadHandler` in the main thread, or be ignored if not provided
+parentPort!.postMessage({ custom: 'data' });
 ```
 
 ## Links
