@@ -11,7 +11,7 @@ import { BaseRedisBroker } from './BaseRedis.js';
  * import { PubSubRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new PubSubRedisBroker({ redisClient: new Redis() });
+ * const broker = new PubSubRedisBroker(new Redis());
  *
  * await broker.publish('test', 'Hello World!');
  * await broker.destroy();
@@ -20,7 +20,7 @@ import { BaseRedisBroker } from './BaseRedis.js';
  * import { PubSubRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new PubSubRedisBroker({ redisClient: new Redis() });
+ * const broker = new PubSubRedisBroker(new Redis());
  * 	broker.on('test', ({ data, ack }) => {
  * 	console.log(data);
  * 	void ack();
@@ -37,19 +37,14 @@ export class PubSubRedisBroker<TEvents extends Record<string, any>>
 	 * {@inheritDoc IPubSubBroker.publish}
 	 */
 	public async publish<Event extends keyof TEvents>(event: Event, data: TEvents[Event]): Promise<void> {
-		await this.options.redisClient.xadd(
-			event as string,
-			'*',
-			BaseRedisBroker.STREAM_DATA_KEY,
-			this.options.encode(data),
-		);
+		await this.redisClient.xadd(event as string, '*', BaseRedisBroker.STREAM_DATA_KEY, this.options.encode(data));
 	}
 
 	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
 		const payload: { ack(): Promise<void>; data: unknown } = {
 			data,
 			ack: async () => {
-				await this.options.redisClient.xack(event, group, id);
+				await this.redisClient.xack(event, group, id);
 			},
 		};
 
