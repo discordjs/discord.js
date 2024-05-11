@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@0.3.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.2.3...create-discord-bot@0.3.0) - (2024-05-04)
+
+## Bug Fixes
+
+- **Bun:** Fix typo for Bun template (#9987) ([ce0be39](https://github.com/discordjs/discord.js/commit/ce0be392d818b13ba5a081811519b559202cdba8))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Improve structure validation with zod (#10103) ([1d56544](https://github.com/discordjs/discord.js/commit/1d565443b0edc46d785f1993d743f683f19bcbb4))
+
 # [create-discord-bot@0.2.3](https://github.com/discordjs/discord.js/compare/create-discord-bot/0.2.2...create-discord-bot/0.2.3) - (2023-11-12)
 
 ## Bug Fixes

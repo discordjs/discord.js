@@ -269,19 +269,17 @@ class MessageManager extends CachedManager {
 
   /**
    * Ends a poll.
-   * @param {Snowflake} channelId The id of the channel
    * @param {Snowflake} messageId The id of the message
    * @returns {Promise<Message>}
    */
-  async endPoll(channelId, messageId) {
-    const message = await this.client.rest.post(Routes.expirePoll(channelId, messageId));
+  async endPoll(messageId) {
+    const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
     return this._add(message, false);
   }
 
   /**
    * Options used for fetching voters of an answer in a poll.
    * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
-   * @param {Snowflake} channelId The id of the channel
    * @param {Snowflake} messageId The id of the message
    * @param {number} answerId The id of the answer
    */
@@ -291,8 +289,8 @@ class MessageManager extends CachedManager {
    * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  async fetchPollAnswerVoters({ channelId, messageId, answerId, after, limit }) {
-    const voters = await this.client.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {
+  async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
+    const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
       query: makeURLSearchParams({ limit, after }),
     });
 

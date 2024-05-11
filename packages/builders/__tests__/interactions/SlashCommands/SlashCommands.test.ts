@@ -357,6 +357,10 @@ describe('Slash Commands', () => {
 					getBuilder().addStringOption(getStringOption().setChoices({ name: 'owo', value: 'uwu' })),
 				).not.toThrowError();
 			});
+
+			test('GIVEN valid builder with NSFW, THEN does not throw error', () => {
+				expect(() => getBuilder().setName('foo').setDescription('foo').setNSFW(true)).not.toThrowError();
+			});
 		});
 
 		describe('Builder with subcommand (group) options', () => {
@@ -518,6 +522,14 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
 
 				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
+			});
+
+			test('GIVEN valid permission with options THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().addBooleanOption(getBooleanOption()).setDefaultMemberPermissions('1'),
+				).not.toThrowError();
+
+				expect(() => getBuilder().addChannelOption(getChannelOption()).setDMPermission(false)).not.toThrowError();
 			});
 		});
 	});
