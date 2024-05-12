@@ -1,9 +1,9 @@
 import type { Buffer } from 'node:buffer';
 import { clearTimeout, setTimeout } from 'node:timers';
+import type Redis from 'ioredis/built/Redis.js';
 import type { IRPCBroker } from '../Broker.js';
-import { DefaultBrokerOptions } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
-import { BaseRedisBroker } from './BaseRedis.js';
+import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
 interface InternalPromise {
 	reject(error: any): void;
@@ -22,9 +22,9 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
  * Default values used for the {@link RPCRedisBrokerOptions}
  */
 export const DefaultRPCRedisBrokerOptions = {
-	...DefaultBrokerOptions,
+	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'redisClient'>>;
+} as const satisfies Required<RPCRedisBrokerOptions>;
 
 /**
  * RPC broker powered by Redis
@@ -35,7 +35,7 @@ export const DefaultRPCRedisBrokerOptions = {
  * import { RPCRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ * const broker = new RPCRedisBroker(new Redis());
  *
  * console.log(await broker.call('testcall', 'Hello World!'));
  * await broker.destroy();
@@ -44,7 +44,7 @@ export const DefaultRPCRedisBrokerOptions = {
  * import { RPCRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ * const broker = new RPCRedisBroker(new Redis());
  * broker.on('testcall', ({ data, ack, reply }) => {
  * 	console.log('responder', data);
  * 	void ack();
@@ -65,8 +65,8 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 
 	protected readonly promises = new Map<string, InternalPromise>();
 
-	public constructor(options: RPCRedisBrokerOptions) {
-		super(options);
+	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {
+		super(redisClient, options);
 		this.options = { ...DefaultRPCRedisBrokerOptions, ...options };
 
 		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
@@ -88,7 +88,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		data: TEvents[Event],
 		timeoutDuration: number = this.options.timeout,
 	): Promise<TResponses[Event]> {
-		const id = await this.options.redisClient.xadd(
+		const id = await this.redisClient.xadd(
 			event as string,
 			'*',
 			BaseRedisBroker.STREAM_DATA_KEY,
@@ -118,10 +118,10 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.options.redisClient.xack(event, group, id);
+				await this.redisClient.xack(event, group, id);
 			},
 			reply: async (data) => {
-				await this.options.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
+				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
 			},
 		};
 
