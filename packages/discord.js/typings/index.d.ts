@@ -5003,12 +5003,12 @@ export interface Caches {
   // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
   GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
   GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
-  GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: ForumThreadChannel];
+  GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: typeof ThreadChannel<true>];
   GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
   GuildMessageManager: [manager: typeof GuildMessageManager, holds: typeof Message<true>];
   GuildScheduledEventManager: [manager: typeof GuildScheduledEventManager, holds: typeof GuildScheduledEvent];
   GuildStickerManager: [manager: typeof GuildStickerManager, holds: typeof Sticker];
-  GuildTextThreadManager: [manager: typeof GuildTextThreadManager, holds: TextThreadChannel];
+  GuildTextThreadManager: [manager: typeof GuildTextThreadManager, holds: typeof ThreadChannel<false>];
   MessageManager: [manager: typeof MessageManager, holds: typeof Message];
   // TODO: PermissionOverwriteManager: [manager: typeof PermissionOverwriteManager, holds: typeof PermissionOverwrites];
   PresenceManager: [manager: typeof PresenceManager, holds: typeof Presence];
@@ -5016,7 +5016,7 @@ export interface Caches {
   ReactionUserManager: [manager: typeof ReactionUserManager, holds: typeof User];
   // TODO: RoleManager: [manager: typeof RoleManager, holds: typeof Role];
   StageInstanceManager: [manager: typeof StageInstanceManager, holds: typeof StageInstance];
-  ThreadManager: [manager: typeof ThreadManager, holds: AnyThreadChannel];
+  ThreadManager: [manager: typeof ThreadManager, holds: typeof ThreadChannel];
   ThreadMemberManager: [manager: typeof ThreadMemberManager, holds: typeof ThreadMember];
   UserManager: [manager: typeof UserManager, holds: typeof User];
   VoiceStateManager: [manager: typeof VoiceStateManager, holds: typeof VoiceState];
