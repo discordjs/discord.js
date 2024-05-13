@@ -6,6 +6,7 @@ import { type ApiItem, ApiItemKind } from '../items/ApiItem.js';
 import { ApiItemContainerMixin } from '../mixins/ApiItemContainerMixin.js';
 import { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
 import type { ApiEntryPoint } from './ApiEntryPoint.js';
+import type { ApiMethod } from './ApiMethod.js';
 import type { ApiModel } from './ApiModel.js';
 import type { ApiPackage } from './ApiPackage.js';
 
@@ -113,11 +114,23 @@ export class ModelReferenceResolver {
 			const memberSelector: DocMemberSelector | undefined = memberReference.selector;
 			if (memberSelector === undefined) {
 				if (foundMembers.length > 1) {
-					result.errorMessage = `The member reference ${JSON.stringify(identifier)} was ambiguous`;
-					return result;
+					const foundClass: ApiItem | undefined = foundMembers.find((member) => member.kind === ApiItemKind.Class);
+					if (
+						foundClass &&
+						foundMembers.filter((member) => member.kind === ApiItemKind.Interface).length === foundMembers.length - 1
+					) {
+						currentItem = foundClass;
+					} else if (
+						foundMembers.every((member) => member.kind === ApiItemKind.Method && (member as ApiMethod).overloadIndex)
+					) {
+						currentItem = foundMembers.find((member) => (member as ApiMethod).overloadIndex === 1)!;
+					} else {
+						result.errorMessage = `The member reference ${JSON.stringify(identifier)} was ambiguous`;
+						return result;
+					}
+				} else {
+					currentItem = foundMembers[0]!;
 				}
-
-				currentItem = foundMembers[0]!;
 			} else {
 				let memberSelectorResult: IResolveDeclarationReferenceResult;
 				switch (memberSelector.selectorKind) {

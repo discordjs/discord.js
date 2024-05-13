@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { OverlayScrollbarsComponent } from './OverlayScrollbars';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 
@@ -13,7 +14,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 						<Link
 							key={`${node.text}-${idx}`}
 							className="font-mono text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
-							href={`/docs/packages/${node.resolvedPackage.packageName}/${version}/${node.uri}`}
+							href={`/docs/packages/${node.resolvedPackage.packageName}/${node.resolvedPackage.version ?? version}/${node.uri}`}
 						>
 							{node.text}
 						</Link>
@@ -26,6 +27,21 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 							key={`${node.text}-${idx}`}
 							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 							href={node.uri}
+							rel="external noreferrer noopener"
+							target="_blank"
+						>
+							{`${node.text}${node.members}`}
+						</a>
+					);
+				}
+
+				if (node.text in BuiltinDocumentationLinks) {
+					const href = BuiltinDocumentationLinks[node.text as keyof typeof BuiltinDocumentationLinks];
+					return (
+						<a
+							key={`${node.text}-${idx}`}
+							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+							href={href}
 							rel="external noreferrer noopener"
 							target="_blank"
 						>

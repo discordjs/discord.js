@@ -66,7 +66,10 @@ try {
 					await client.waitForTask(task.taskUid);
 				}
 
-				await client.index(index.index).addDocuments(index.data);
+				const searchIndex = client.index(index.index);
+				await searchIndex.updateSettings({ sortableAttributes: ['type'] });
+
+				await searchIndex.addDocuments(index.data);
 			}),
 		);
 	} catch {}

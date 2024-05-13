@@ -15,14 +15,14 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -35,14 +35,6 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run build --filter="...[HEAD^1]" --concurrency=4
 
-      - name: ESLint (PR)
-        if: ${{ github.event_name != 'push' }}
-        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
-
-      - name: ESLint (Push)
-        if: ${{ github.event_name == 'push' }}
-        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
-
       - name: Tests (PR)
         if: ${{ github.event_name != 'push' }}
         run: pnpm exec turbo run test --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4
@@ -50,6 +42,14 @@ jobs:
       - name: Tests (Push)
         if: ${{ github.event_name == 'push' }}
         run: pnpm exec turbo run test --filter="...[HEAD^1]" --concurrency=4
+
+      - name: ESLint (PR)
+        if: ${{ github.event_name != 'push' }}
+        run: pnpm exec turbo run lint --filter="...[origin/${{ github.event_name == 'pull_request' && github.event.pull_request.base.ref || 'main' }}]" --concurrency=4 -- --format=compact
+
+      - name: ESLint (Push)
+        if: ${{ github.event_name == 'push' }}
+        run: pnpm exec turbo run lint --filter="...[HEAD^1]" --concurrency=4 -- --format=compact
 
       - name: Docs (PR)
         if: ${{ github.event_name != 'push' }}
@@ -62,3 +62,5 @@ jobs:
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'
         uses: ./packages/actions/src/uploadCoverage
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}

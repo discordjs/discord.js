@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.2.0...@discordjs/rest@2.3.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Remove hyphen after `@returns` (#9989) ([e9ff991](https://github.com/discordjs/discord.js/commit/e9ff99101b9800f36839e6158d544c8ef5938d22))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- **REST:** Dynamic rate limit offsets (#10099) ([278396e](https://github.com/discordjs/discord.js/commit/278396e815add4e028e43034fab586f971a043d4))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
+## Styling
+
+- Fix up lint ([d869d9b](https://github.com/discordjs/discord.js/commit/d869d9b3fecc3d89c051128380907e258a6a6c63))
+
+## Testing
+
+- Skip flaky rest test (#10234) ([dc8f149](https://github.com/discordjs/discord.js/commit/dc8f14967c2c10b26c1be986d42e5d135675ad43))
+
+# [@discordjs/rest@2.2.0](https://github.com/discordjs/discord.js/tree/@discordjs/rest@2.2.0) - (2023-11-18)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Features
+
+- Present x-ratelimit-scope for 429s hit (#9973) ([6df233d](https://github.com/discordjs/discord.js/commit/6df233de14e343578fdee3c99a85494e898c7ecc))
+
+## Typings
+
+- Use wrapper utilities (#9945) ([4bc1dae](https://github.com/discordjs/discord.js/commit/4bc1dae36f01649127774c40b14e778d65cf25c5))
+
 # [@discordjs/rest@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.1.0...@discordjs/rest@2.2.0) - (2023-11-17)
 
 ## Bug Fixes

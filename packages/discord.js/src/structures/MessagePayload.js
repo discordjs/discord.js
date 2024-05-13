@@ -7,7 +7,7 @@ const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, verifyString } = require('../util/Util');
+const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
@@ -202,6 +202,21 @@ class MessagePayload {
       this.options.attachments = attachments;
     }
 
+    let poll;
+    if (this.options.poll) {
+      poll = {
+        question: {
+          text: this.options.poll.question.text,
+        },
+        answers: this.options.poll.answers.map(answer => ({
+          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+        })),
+        duration: this.options.poll.duration,
+        allow_multiselect: this.options.poll.allowMultiselect,
+        layout_type: this.options.poll.layoutType,
+      };
+    }
+
     this.body = {
       content,
       tts,
@@ -220,6 +235,7 @@ class MessagePayload {
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
+      poll,
     };
     return this;
   }

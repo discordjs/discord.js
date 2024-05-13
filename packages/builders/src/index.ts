@@ -54,6 +54,7 @@ export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithC
 export * from './interactions/slashCommands/mixins/NameAndDescription.js';
 export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js';
 export * from './interactions/slashCommands/mixins/SharedSubcommands.js';
+export * from './interactions/slashCommands/mixins/SharedSlashCommand.js';
 
 export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
 export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
