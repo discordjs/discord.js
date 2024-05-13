@@ -23,7 +23,7 @@ class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
    * * 'process' to use child processes
-   * * 'worker' to use [Worker threads](https://nodejs.org/api/worker_threads.html)
+   * * 'worker' to use {@link Worker} threads
    * @typedef {string} ShardingManagerMode
    */
 

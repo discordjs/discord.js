@@ -15,14 +15,14 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -62,3 +62,5 @@ jobs:
       - name: Upload Coverage
         if: github.repository_owner == 'discordjs'
         uses: ./packages/actions/src/uploadCoverage
+        with:
+          codecov_token: ${{ secrets.CODECOV_TOKEN }}

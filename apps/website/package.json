@@ -45,6 +45,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@radix-ui/react-collapsible": "^1.0.3",
 		"@react-icons/all-files": "^4.1.0",

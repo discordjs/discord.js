@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.2...@discordjs/ws@1.1.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Remove duplicate word in comment (#10244) ([96169ad](https://github.com/discordjs/discord.js/commit/96169add6d2db37706629c0172692533948a9dca))
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Remove utf-8-validate (#10059) ([7e12bee](https://github.com/discordjs/discord.js/commit/7e12bee337af169bb131d34fa29ed090ebd26c71))
+
+## Features
+
+- **ws:** Support for custom worker messaging (#10241) ([728164e](https://github.com/discordjs/discord.js/commit/728164ed868167d43dec7b7e8d11052a37694968))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- Add support for `using` keyword on discord.js `Client` and `WebSocketManager` (#10063) ([543d617](https://github.com/discordjs/discord.js/commit/543d61737e0709b9d88029d01156d48cfcaf3bcc))
+- Use globally available WebSocket client in runtimes that have it (#10042) ([319ef9a](https://github.com/discordjs/discord.js/commit/319ef9a70b92dbb11726b270ab84e73ca932850f))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- **WebSocketShard:** Payload sending (#10098) ([c878b65](https://github.com/discordjs/discord.js/commit/c878b65ef586cd9b42f765515f87f43cb6165f61))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
 # [@discordjs/ws@1.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.1...@discordjs/ws@1.0.2) - (2023-11-12)
 
 ## Bug Fixes

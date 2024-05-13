@@ -26,6 +26,7 @@
 		"directory": "packages/api-extractor"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"bin": {
 		"api-extractor": "./bin/api-extractor"
 	},

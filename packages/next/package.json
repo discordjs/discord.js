@@ -63,6 +63,7 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/builders": "workspace:^",
 		"@discordjs/collection": "workspace:^",
@@ -71,7 +72,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "0.37.79"
+		"discord-api-types": "0.37.83"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
